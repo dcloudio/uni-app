@@ -83,7 +83,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.toast.showToast)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/prompt.html#showtoast)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.showToast.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=showToast&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=showToast&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=showToast&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=showToast&secondType=all&type=1)
@@ -98,7 +98,7 @@
 <!-- ## uni.hideToast() @hidetoast -->
 
 ::: sourceCode
-## uni.hideToast(options?) @hidetoast
+## uni.hideToast() @hidetoast
 
 > GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-prompt
 
@@ -115,44 +115,6 @@
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
-### 参数 
-
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **HideToastOptions** | 否 |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| allType | boolean | 否 | Web: x; 微信小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 是否关闭所有类型的 toast，默认不关闭。仅鸿蒙平台支持。 |
-| success | (res: [HideToastSuccess](#hidetoastsuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 成功回调函数定义 |
-| fail | (res: [HideToastFail](#hidetoastfail-values)) => void | 否 | Web: x; 微信小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 失败回调函数定义 |
-| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 完成回调函数定义 |
-| noConflict | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性<br/> | 
-
-#### HideToastSuccess 的属性值 @hidetoastsuccess-values 
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| errMsg | string | 是 |
-
-#### HideToastFail 的属性值 @hidetoastfail-values 
-
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errCode | number | 是 | 错误码 |
-| errSubject | string | 是 | 统一错误主题（模块）名称 |
-| data | any | 否 | 错误信息中包含的数据 |
-| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |
-
-#### errCode 的属性描述
-
-| 合法值 | 描述 |
-| :- | :- |
-| 1 | 撤销 |
-| 1001 | 请求参数非法 |
 
 
 
@@ -163,7 +125,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.toast.hideToast)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/prompt.html#hidetoast)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.hideToast.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=hideToast&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=hideToast&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=hideToast&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=hideToast&secondType=all&type=1)
