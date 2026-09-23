@@ -3,14 +3,15 @@ import fs from 'fs'
 import path from 'path'
 import moduleAlias from 'module-alias'
 import { isInHBuilderX } from './utils'
+import { resolveHBuilderXPluginPath } from './pluginPaths'
 import type { Formatter } from '../logs/format'
 
 const hbxPlugins = {
-  typescript: 'compile-typescript/node_modules/typescript',
-  less: 'compile-less/node_modules/less',
-  sass: 'compile-dart-sass/node_modules/sass',
-  stylus: 'compile-stylus/node_modules/stylus',
-  pug: 'compile-pug-cli/node_modules/pug',
+  typescript: ['compile-typescript', 'node_modules/typescript'],
+  less: ['compile-less', 'node_modules/less'],
+  sass: ['compile-dart-sass', 'node_modules/sass'],
+  stylus: ['compile-stylus', 'node_modules/stylus'],
+  pug: ['compile-pug-cli', 'node_modules/pug'],
 } as const
 
 const commonVuePackages = [
@@ -290,15 +291,16 @@ export function initModuleAlias() {
   if (isInHBuilderX()) {
     // 又是为了复用 HBuilderX 的插件逻辑，硬编码映射
     Object.keys(hbxPlugins).forEach((lang) => {
-      const realPath = path.resolve(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        hbxPlugins[lang as keyof typeof hbxPlugins]
-      )
+      const [pluginName, subpath] = hbxPlugins[lang as keyof typeof hbxPlugins]
+      const realPath = resolveHBuilderXPluginPath(pluginName, subpath)
       moduleAlias.addAlias(
         lang,
         // @ts-expect-error
         () => {
           try {
+            if (!realPath) {
+              throw new Error(`HBuilder plugin "${pluginName}" is not found`)
+            }
             require.resolve(realPath)
           } catch (e) {
             const msg = moduleAliasFormatter.format(
@@ -328,10 +330,11 @@ export function initModuleAlias() {
             packageJson === 'package.json' &&
             (hbxPlugins as any)[pkgName]
           ) {
-            return path.resolve(
-              process.env.UNI_HBUILDERX_PLUGINS,
-              hbxPlugins[pkgName as keyof typeof hbxPlugins],
-              packageJson
+            const [pluginName, subpath] =
+              hbxPlugins[pkgName as keyof typeof hbxPlugins]
+            return (
+              resolveHBuilderXPluginPath(pluginName, subpath, packageJson) ||
+              join(...paths)
             )
           }
         }

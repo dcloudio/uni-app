@@ -2,6 +2,36 @@ import os from 'os'
 import path from 'path'
 import { parse } from 'jsonc-parser'
 
+export const getHBuilderXPluginPaths = once(() => {
+  const raw = process.env.HX_PLUGIN_PATHS
+  if (!raw) {
+    return
+  }
+
+  const pluginPaths = JSON.parse(raw)
+  if (
+    !pluginPaths ||
+    typeof pluginPaths !== 'object' ||
+    Array.isArray(pluginPaths)
+  ) {
+    throw new Error('Invalid HX_PLUGIN_PATHS')
+  }
+  return pluginPaths as Record<string, string>
+})
+
+export function resolveHBuilderXPluginPath(
+  pluginName: string,
+  ...subpaths: string[]
+): string | undefined {
+  const pluginPaths = getHBuilderXPluginPaths()
+  const pluginPath = pluginPaths
+    ? pluginPaths[pluginName]
+    : process.env.UNI_HBUILDERX_PLUGINS
+    ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS, pluginName)
+    : undefined
+  return pluginPath ? path.resolve(pluginPath, ...subpaths) : undefined
+}
+
 export function parseJson(jsonStr: string) {
   return parse(jsonStr)
 }
@@ -22,7 +52,7 @@ export function once<T extends (...args: any[]) => any>(
 
 export const runByHBuilderX = once(() => {
   return (
-    !!process.env.UNI_HBUILDERX_PLUGINS &&
+    (!!process.env.HX_PLUGIN_PATHS || !!process.env.UNI_HBUILDERX_PLUGINS) &&
     (!!process.env.RUN_BY_HBUILDERX || !!process.env.HX_Version)
   )
 })
@@ -31,6 +61,9 @@ export const isInHBuilderX = once(() => {
   // 自动化测试传入了 HX_APP_ROOT(其实就是UNI_HBUILDERX_PLUGINS)
   if (process.env.HX_APP_ROOT) {
     process.env.UNI_HBUILDERX_PLUGINS = process.env.HX_APP_ROOT + '/plugins'
+    return true
+  }
+  if (process.env.HX_PLUGIN_PATHS && process.env.UNI_HBUILDERX_PLUGINS) {
     return true
   }
   try {
@@ -45,6 +78,9 @@ export const isInHBuilderX = once(() => {
     }
   } catch (e) {
     // console.error(e)
+  }
+  if (process.env.HX_PLUGIN_PATHS) {
+    return true
   }
   return false
 })

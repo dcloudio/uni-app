@@ -1,7 +1,11 @@
 import type * as tsTypes from 'typescript'
 import * as path from 'path'
 import { extend } from '@vue/shared'
-import { isInHBuilderX, isUTSCloudCompiler } from '../../shared'
+import {
+  isInHBuilderX,
+  isUTSCloudCompiler,
+  resolveHBuilderXPluginPath,
+} from '../../shared'
 
 export interface UTS2JavaScriptBaseOptions {
   cwd: string
@@ -13,7 +17,7 @@ export interface UTS2JavaScriptBaseOptions {
 }
 
 function createTsConfigPaths(
-  pluginPath: string,
+  pluginPath: string | undefined,
   cliVitePath: string,
   virtualModulesMap: Record<string, string> | string[]
 ): Record<string, string[]> {
@@ -21,13 +25,13 @@ function createTsConfigPaths(
   if (Array.isArray(virtualModulesMap)) {
     virtualModulesMap.forEach((module) => {
       virtualPaths['@dcloudio/virtual-modules/' + module] = [
-        path.resolve(pluginPath, module),
+        resolveVirtualModule(pluginPath, module),
       ]
     })
   } else {
     Object.keys(virtualModulesMap).forEach((module) => {
       virtualPaths['@dcloudio/virtual-modules/' + module] = [
-        path.resolve(pluginPath, virtualModulesMap[module]),
+        path.resolve(pluginPath!, virtualModulesMap[module]),
       ]
     })
   }
@@ -148,9 +152,14 @@ export function createBasicUtsOptions(
     })
   } else if (isInHBuilderXBool || isUTSCloudCompilerBool) {
     const pluginPath = isInHBuilderXBool
-      ? process.env.UNI_HBUILDERX_PLUGINS
+      ? undefined
       : path.resolve(process.cwd(), '../')
-    const cliVitePath = path.resolve(pluginPath, 'uniapp-cli-vite')
+    const cliVitePath = isInHBuilderXBool
+      ? resolveHBuilderXPluginPath('uniapp-cli-vite')
+      : path.resolve(pluginPath!, 'uniapp-cli-vite')
+    if (!cliVitePath) {
+      throw new Error('HBuilder plugin "uniapp-cli-vite" is required')
+    }
     const virtualModules = [
       'uniapp-cli-vite/node_modules/vite/client',
       'hbuilderx-language-services/builtin-dts/uts-types/common/index.d.ts',
@@ -171,4 +180,16 @@ export function createBasicUtsOptions(
     })
   }
   return options
+}
+
+function resolveVirtualModule(pluginPath: string | undefined, module: string) {
+  if (pluginPath) {
+    return path.resolve(pluginPath, module)
+  }
+  const [pluginName, ...subpaths] = module.split('/')
+  const resolved = resolveHBuilderXPluginPath(pluginName, ...subpaths)
+  if (!resolved) {
+    throw new Error(`HBuilder plugin "${pluginName}" is required`)
+  }
+  return resolved
 }

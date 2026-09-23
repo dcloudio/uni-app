@@ -5,7 +5,7 @@ import glob from 'fast-glob'
 import { type Import, type Unimport, createUnimport } from 'unimport'
 import type * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
-import { isInHBuilderX } from './hbx'
+import { isInHBuilderX, resolveHBuilderXPluginPath } from './hbx'
 import {
   camelize,
   capitalize,
@@ -274,9 +274,10 @@ export function resolveUTSCompiler(throwError = false): typeof UTSCompiler {
   }
   if (isInHBuilderX()) {
     try {
-      compilerPath = require.resolve(
-        path.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts-v1')
-      )
+      const hbuilderxCompilerPath = resolveHBuilderXPluginPath('uniapp-uts-v1')
+      if (hbuilderxCompilerPath) {
+        compilerPath = require.resolve(hbuilderxCompilerPath)
+      }
     } catch (e) {}
   }
   if (!compilerPath) {
@@ -821,15 +822,18 @@ export const parseUniExtApiNamespacesJsOnce = once(
 
 export function resolveUniTypeScript() {
   if (isInHBuilderX()) {
-    return require(path.resolve(
-      process.env.UNI_HBUILDERX_PLUGINS,
+    const typescriptPath = resolveHBuilderXPluginPath(
       'uniapp-uts-v1',
       'node_modules',
       '@dcloudio',
       'uni-uts-v1',
       'lib',
       'typescript'
-    ))
+    )
+    if (!typescriptPath) {
+      throw new Error('HBuilder plugin "uniapp-uts-v1" is required')
+    }
+    return require(typescriptPath)
   }
   return require('@dcloudio/uni-uts-v1/lib/typescript')
 }

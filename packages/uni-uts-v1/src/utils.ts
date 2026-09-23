@@ -23,6 +23,7 @@ import {
   isInHBuilderX,
   normalizePath,
   parseJson,
+  resolveHBuilderXPluginPath,
   resolveSourceMapPath,
   runByHBuilderX,
 } from './shared'
@@ -465,33 +466,39 @@ export function getSwiftCompilerServer(): SwiftCompilerServer | undefined {
 function getCompilerServer(
   pluginName: 'uts-development-ios' | 'uniapp-runextension'
 ): KotlinCompilerServer | SwiftCompilerServer | undefined {
-  if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    console.error(`该项目必须在 HBuilderX 中运行`)
+  if (!process.env.HX_PLUGIN_PATHS && !process.env.UNI_HBUILDERX_PLUGINS) {
+    console.error(`该项目必须在 HBuilder 中运行`)
     return
   }
   const isAndroid = pluginName === 'uniapp-runextension'
-  const compilerServerPath = path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    `${pluginName}/out/${isAndroid ? 'main.js' : 'external.js'}`
+  const compilerServerPath = resolveHBuilderXPluginPath(
+    pluginName,
+    'out',
+    isAndroid ? 'main.js' : 'external.js'
   )
-  const installed = isAndroid
-    ? fs.existsSync(compilerServerPath) &&
-      fs.existsSync(
-        path.resolve(
-          process.env.UNI_HBUILDERX_PLUGINS,
-          `uts-development-android/out/external.js`
-        )
+  const androidDevelopmentServerPath = isAndroid
+    ? resolveHBuilderXPluginPath(
+        'uts-development-android',
+        'out',
+        'external.js'
       )
-    : fs.existsSync(compilerServerPath)
-  if (installed) {
+    : undefined
+  if (
+    compilerServerPath &&
+    fs.existsSync(compilerServerPath) &&
+    (!isAndroid ||
+      (!!androidDevelopmentServerPath &&
+        fs.existsSync(androidDevelopmentServerPath)))
+  ) {
     // eslint-disable-next-line no-restricted-globals
     return require(compilerServerPath)
+  }
+  if (runByHBuilderX()) {
+    installHBuilderXPlugin(isAndroid ? 'uts-development-android' : pluginName)
   } else {
-    if (runByHBuilderX()) {
-      installHBuilderXPlugin(isAndroid ? 'uts-development-android' : pluginName)
-    } else {
-      console.error(compilerServerPath + ' is not found')
-    }
+    console.error(
+      `${compilerServerPath || `HBuilder plugin "${pluginName}"`} is not found`
+    )
   }
 }
 
@@ -1305,11 +1312,12 @@ function formatExtApiProviderName(service: string, name: string) {
 }
 
 export function requireUniHelpers() {
-  require(path.resolve(
-    process.env.UNI_HBUILDERX_PLUGINS,
-    'uni_helpers/lib/bytenode'
-  ))
-  return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+  const helpersDir = resolveHBuilderXPluginPath('uni_helpers')
+  if (!helpersDir) {
+    throw new Error('HBuilder plugin "uni_helpers" is not found')
+  }
+  require(path.resolve(helpersDir, 'lib/bytenode'))
+  return require(helpersDir)
 }
 
 export function resolveBundleInputRoot(
