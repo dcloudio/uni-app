@@ -83,7 +83,7 @@ APP 蒸汽模式注意事项：
 | url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
 | animationType | string | 否 | none | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
 | animationDuration | number | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 窗口关闭动画的持续时间，单位为 ms |
-| disableEscBack | boolean | 否 | false | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否禁用按键盘 ESC 时关闭 |
+| disableEscBack | boolean | 否 | false | Web: 4.31; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否禁用按键盘 ESC 时关闭 |
 | parentPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要绑定的父级页面实例 |
 | triggerParentHide | boolean | 否 | false | Web: 4.41; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 是否触发父页面的 onHide 生命周期 |
 | success | (result: [OpenDialogPageSuccess](#opendialogpagesuccess-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |

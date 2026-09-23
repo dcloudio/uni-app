@@ -45,13 +45,10 @@
 
 #### ScanCodeSuccess 的属性值 @scancodesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| result | string | 是 | Web: x |  |
-| scanType | string | 是 | Web: x |  |
-| charSet | string | 否 | Web: x; 微信小程序: 4.41 | 所扫码的字符集<br/> |
-| path | string | 否 | Web: x; 微信小程序: 4.41 | 当所扫的码为当前小程序二维码时，会返回此字段，内容为二维码携带的 path<br/> |
-| rawData | string | 否 | Web: x; 微信小程序: 4.41 | 原始数据，base64编码<br/> |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| result | string | 是 | Web: x |
+| scanType | string | 是 | Web: x |
 
 
 
@@ -110,7 +107,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.scanCode)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/barcode.html#scancode)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/scan/wx.scanCode.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=scanCode&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=scanCode&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=scanCode&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=scanCode&secondType=all&type=1)
