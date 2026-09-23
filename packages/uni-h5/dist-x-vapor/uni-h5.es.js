@@ -10036,15 +10036,16 @@ function setupPage(comp, path) {
       const route = usePageRoute();
       const router2 = __UNI_FEATURE_PAGES__ ? useRouter() : void 0;
       const query = decodedQuery(route.query);
-      instance2.attrs.__pageQuery = query;
+      instance2.__pageQuery = query;
       {
         const pageInstance = getPageInstanceByChild(instance2);
         if (isDialogPageInstance(pageInstance)) {
-          instance2.attrs.__pageQuery = decodedQuery(
+          const dialogQuery = decodedQuery(
             parseQuery(
               (pageInstance == null ? void 0 : pageInstance.attrs.route).split("?")[1] || ""
             )
           );
+          instance2.__pageQuery = dialogQuery;
         }
       }
       getPage$BasePage(instance2.proxy).options = query;
@@ -20215,7 +20216,7 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      let query = instance2.attrs.__pageQuery;
+      let query = instance2.__pageQuery;
       const scriptLang = instance2.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
@@ -20271,7 +20272,7 @@ function createErrorHandler(app) {
         invokeHook(appInstance.proxy, ON_ERROR, err);
       }
     } else {
-      logError(err, info, instance2 ? instance2.$.vnode : null, false);
+      logError(err, info, instance2 == null ? void 0 : instance2.$, false);
     }
   };
 }

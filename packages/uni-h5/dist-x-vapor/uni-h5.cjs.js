@@ -3694,15 +3694,16 @@ function setupPage(comp, path) {
       const route = usePageRoute();
       __UNI_FEATURE_PAGES__ ? vueRouter.useRouter() : void 0;
       const query = uniShared.decodedQuery(route.query);
-      instance.attrs.__pageQuery = query;
+      instance.__pageQuery = query;
       {
         const pageInstance = getPageInstanceByChild(instance);
         if (isDialogPageInstance(pageInstance)) {
-          instance.attrs.__pageQuery = uniShared.decodedQuery(
+          const dialogQuery = uniShared.decodedQuery(
             uniShared.parseQuery(
               (pageInstance == null ? void 0 : pageInstance.attrs.route).split("?")[1] || ""
             )
           );
+          instance.__pageQuery = dialogQuery;
         }
       }
       getPage$BasePage(instance.proxy).options = query;
@@ -10368,7 +10369,7 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      let query = instance.attrs.__pageQuery;
+      let query = instance.__pageQuery;
       const scriptLang = instance.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
@@ -10424,7 +10425,7 @@ function createErrorHandler(app) {
         invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
       }
     } else {
-      Vue.logError(err, info, instance ? instance.$.vnode : null, false);
+      Vue.logError(err, info, instance == null ? void 0 : instance.$, false);
     }
   };
 }
