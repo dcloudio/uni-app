@@ -133,7 +133,8 @@ function initHooks(options, instance, publicThis) {
         instance.__isVisible = true;
         // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
         try {
-            let query = instance.attrs.__pageQuery;
+            let query;
+            query = instance.attrs.__pageQuery;
             const scriptLang = instance.type.__scriptLang;
             const isUTS = !scriptLang || scriptLang === 'uts';
             // onLoad 的 query 进行 decode

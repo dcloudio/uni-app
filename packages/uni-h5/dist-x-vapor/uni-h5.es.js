@@ -20216,7 +20216,8 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      let query = instance2.__pageQuery;
+      let query;
+      query = instance2.__pageQuery;
       const scriptLang = instance2.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
