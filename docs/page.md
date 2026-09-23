@@ -230,7 +230,7 @@ app平台vdom模式无页面滚动，且其根节点高度为从导航栏底部�
 | onShareAppMessage | onShareAppMessage | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发<br/><br/>监听用户点击页面内转发按钮（`<button>` 组件 `open-type="share"`）或右上角菜单“转发”按钮的行为，并自定义转发内容。 |
 | onShareTimeline | onShareTimeline | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发到朋友圈<br/><br/>监听右上角菜单“分享到朋友圈”按钮的行为，并自定义发享内容。<br/> |
 | onAddToFavorites | onAddToFavorites | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角收藏<br/><br/>监听用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容。<br/> |
-| onTabItemTap | onTabItemTap | Web: 4.0; 微信小程序: 4.41; Android: 5.26; iOS: 5.26; HarmonyOS: 5.26 | 当前是 tab 页时，点击 tab 时触发 |
+| onTabItemTap | onTabItemTap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 当前是 tab 页时，点击 tab 时触发 |
 | onNavigationBarButtonTap | onNavigationBarButtonTap | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏按钮点击事件 |
 | onNavigationBarSearchInputChanged | onNavigationBarSearchInputChanged | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框输入内容变化事件<br/> |
 | onNavigationBarSearchInputConfirmed | onNavigationBarSearchInputConfirmed | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。<br/> |
@@ -503,9 +503,9 @@ onShow和onHide是成对出现的。
 当前是 tab 页时，点击 tab 时触发
 
 #### onTabItemTap 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.26 | 5.26 | 5.26 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | 4.61 | x |
 
 
 #### 参数 

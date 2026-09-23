@@ -18,7 +18,7 @@
 | v-pre | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | v-once | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | v-memo | Web: x; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| v-cloak | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| v-cloak | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 ### v-text
 
@@ -2313,6 +2313,7 @@ export default {
 
 <script setup lang="uts">
 const to = ref<string>('content1')
+const showingString = ref<string>('穿梭内容在 body 中')
 const disabled = ref<boolean>(false)
 const show = ref<boolean>(false)
 
