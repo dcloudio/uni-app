@@ -7,6 +7,9 @@ export const isInHBuilderX = once(() => {
     process.env.UNI_HBUILDERX_PLUGINS = process.env.HX_APP_ROOT + '/plugins'
     return true
   }
+  if (process.env.HX_PLUGIN_PATHS && process.env.UNI_HBUILDERX_PLUGINS) {
+    return true
+  }
   try {
     const { name } = require(path.resolve(
       process.cwd(),
@@ -18,6 +21,9 @@ export const isInHBuilderX = once(() => {
     }
   } catch (e) {
     // console.error(e)
+  }
+  if (process.env.HX_PLUGIN_PATHS) {
+    return true
   }
   return false
 })

@@ -21,6 +21,7 @@ import {
 import type { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 import { isInHBuilderX } from './hbx'
+import { resolveHBuilderXPluginPath } from './hbx/pluginPaths'
 import { parseManifestJsonOnce } from './json'
 import { M } from './messages'
 
@@ -233,14 +234,15 @@ export function enableSourceMap() {
 }
 
 export function requireUniHelpers() {
-  if (process.env.UNI_HBUILDERX_PLUGINS) {
-    require(path.resolve(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uni_helpers/lib/bytenode'
-    ))
+  const hbuilderxHelpersDir = resolveHBuilderXPluginPath('uni_helpers')
+  const helpersDir = process.env.UNI_HELPERS_DIR ?? hbuilderxHelpersDir
+  if (helpersDir === undefined) {
+    throw new Error('HBuilder plugin "uni_helpers" is not found')
   }
-  return require(process.env.UNI_HELPERS_DIR ??
-    path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+  if (hbuilderxHelpersDir) {
+    require(path.resolve(hbuilderxHelpersDir, 'lib/bytenode'))
+  }
+  return require(helpersDir)
 }
 
 export function normalizeEmitAssetFileName(fileName: string) {

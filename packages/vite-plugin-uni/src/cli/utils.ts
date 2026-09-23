@@ -18,6 +18,7 @@ import {
   output,
   parseManifestJsonOnce,
   parseScripts,
+  resolveHBuilderXPluginPath,
   resolveUniAppXHarmonyScriptEngine,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
@@ -137,9 +138,15 @@ export function initEnv(
   process.env.UNI_NODE_ENV = process.env.VITE_USER_NODE_ENV =
     process.env.NODE_ENV
 
-  process.env.UNI_CLI_CONTEXT = isInHBuilderX()
-    ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
-    : process.cwd()
+  if (isInHBuilderX()) {
+    const cliContext = resolveHBuilderXPluginPath('uniapp-cli-vite')
+    if (!cliContext) {
+      throw new Error('HBuilder plugin "uniapp-cli-vite" is required')
+    }
+    process.env.UNI_CLI_CONTEXT = cliContext
+  } else {
+    process.env.UNI_CLI_CONTEXT = process.cwd()
+  }
 
   // TODO 待优化
   initUTSPlatform(options)

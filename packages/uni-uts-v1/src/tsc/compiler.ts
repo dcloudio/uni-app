@@ -8,7 +8,7 @@ import type {
   UniXCompilerOptions,
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
-import { normalizePath } from '../shared'
+import { getHBuilderXPluginPaths, normalizePath } from '../shared'
 import { SPECIAL_CHARS, isEnableGenericsParameterDefaults } from '../utils'
 import { COLORS, generateCodeFrame } from '../stacktrace/utils'
 
@@ -55,14 +55,13 @@ export function createUniXCompiler(
   const inputDir = normalizePath(options.inputDir)
   const utsLibDir = path.resolve(__dirname, '../../lib')
 
-  const pluginPath = process.env.UNI_HBUILDERX_PLUGINS
+  const hbuilderxPluginPaths = getHBuilderXPluginPaths()
+  const legacyPluginPath = process.env.UNI_HBUILDERX_PLUGINS
     ? process.env.UNI_HBUILDERX_PLUGINS
     : path.resolve(process.cwd(), '../')
-
-  const hxLanguageServiceDir = path.resolve(
-    pluginPath,
-    'hbuilderx-language-services'
-  )
+  const hxLanguageServiceDir = hbuilderxPluginPaths
+    ? hbuilderxPluginPaths['hbuilderx-language-services']
+    : path.resolve(legacyPluginPath, 'hbuilderx-language-services')
 
   const tsFactory = require(path.resolve(
     utsLibDir,
@@ -99,7 +98,8 @@ export function createUniXCompiler(
     mode,
     targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
     tsFactory,
-    hxPluginDir: pluginPath,
+    hxPluginDir: hbuilderxPluginPaths ? undefined : legacyPluginPath,
+    hxPluginPaths: hbuilderxPluginPaths,
     paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
