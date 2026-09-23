@@ -70,7 +70,6 @@ type UniXCompilerOptions = {
     utsLibDir: string;
     hxLanguageServiceDir?: string;
     hxPluginDir?: string;
-    hxPluginPaths?: Record<string, string>;
     outputDir: string;
     paths?: CompilerOptions['paths'];
     incremental?: boolean;
