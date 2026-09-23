@@ -3555,6 +3555,9 @@ var openDialogPage = (options) => {
   if (noAnimation) {
     callback(page);
   }
+  if (dialogPage.__nativePageId == null) {
+    dialogPage.__nativePageId = page.pageId;
+  }
   var successOptions = {
     errMsg: "openDialogPage:ok"
   };
