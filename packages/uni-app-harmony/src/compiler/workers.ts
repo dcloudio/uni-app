@@ -13,11 +13,10 @@ import {
 function resolveAllUniModules(): string[] {
   const inputDir = process.env.UNI_INPUT_DIR
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
-  return fs
-    .readdirSync(uniModulesDir)
-    .filter((module) =>
-      fs.statSync(path.resolve(uniModulesDir, module, 'utssdk')).isDirectory()
-    )
+  return fs.readdirSync(uniModulesDir).filter((module) => {
+    const utssdkDir = path.resolve(uniModulesDir, module, 'utssdk')
+    return fs.existsSync(utssdkDir) && fs.statSync(utssdkDir).isDirectory()
+  })
 }
 
 export async function buildWorkers() {
