@@ -12,6 +12,7 @@
   * [拦截器](interceptor.md)
   * [启动](launch.md)
   * [安装 WGT](install-wgt.md)
+  * [重启应用](./get-app.md#restart)
   * [退出应用](exit.md)
   * [获取服务提供商](provider.md)
   * [uni.getPerformance](get-performance.md)

@@ -37,8 +37,7 @@
 | backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 背景颜色值，有效值为十六进制颜色 |
 | success | (result: [SetNavigationBarColorSuccess](#setnavigationbarcolorsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (error: [SetNavigationBarColorFail](#setnavigationbarcolorfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (res: [SetNavigationBarColorComplete](#setnavigationbarcolorcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| animation | **SetNavigationBarColorOptionsAnimation** | 否 | 微信小程序: 4.41 | 动画效果<br/> |
+| complete | (res: [SetNavigationBarColorComplete](#setnavigationbarcolorcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### frontColor 的属性描述
 
@@ -46,22 +45,6 @@
 | :- |
 | #ffffff |
 | #000000 |
-
-##### animation 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| duration | number | 否 | 微信小程序: 4.41 | 动画变化时间，单位 ms<br/> |
-| timingFunc | string | 否 | 微信小程序: 4.41 | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
-
-###### timingFunc 的属性描述
-
-| 合法值 |
-| :- |
-| linear |
-| easeIn |
-| easeOut |
-| easeInOut | 
 
 #### SetNavigationBarColorSuccess 的属性值 @setnavigationbarcolorsuccess-values 
 
@@ -200,7 +183,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setNavigationBarColor)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#setnavigationbarcolor)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/navigation-bar/wx.setNavigationBarColor.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=setNavigationBarColor&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setNavigationBarColor&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setNavigationBarColor&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setNavigationBarColor&secondType=all&type=1)
