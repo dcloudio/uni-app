@@ -1269,3 +1269,5 @@ web和小程序的text组件暂未支持max-lines组件属性，后续计划蒸�
 ## Bug & Tips@tips
 - app-Android平台和app-iOS VDOM平台 selectable开启后，仅支持全部文字复制，暂不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
 - web平台4.86版本起text组件调整为display:block，嵌套text组件时，子text默认display为inline。此前版本无论父子均为inline。如无必要请勿覆盖text的display样式，以免出现预期外的效果。
+- 支付宝小程序中的换行规则是：文本包含 `\n` 时换行，其他换行表示不会被当作换行处理。
+- 支付宝小程序的 `text` 不触发触摸相关事件，需要承载触摸事件时请使用 `view`。

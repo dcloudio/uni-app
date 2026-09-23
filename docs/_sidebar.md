@@ -65,11 +65,12 @@
     * [原生联调](native/debug/harmony.md)
 * 小程序平台专题指南
   * [概述](mp/README.md)
-  * [AI 开发模式接入指南](mp/mp-weixin-ai-develop.md)
   * [独立分包](mp/independent-subpackage.md)
   * [组件和 WXS](mp/native-component-and-wxs.md)
   * [分包异步化](mp/miniprogram-subcontract-asynchrony.md)
-  * [适配 glass-easel](mp/mp-weixin-glass-easel.md)
+  * 微信
+    * [AI 开发模式接入指南](mp/mp-weixin-ai-develop.md)
+    * [适配 glass-easel](mp/mp-weixin-glass-easel.md)
 * 运行和调试
   * [Android/iOS运行](tutorial/run-app.md)
   * [DevTools 审查元素、网络、存储](tutorial/debug/devtools.md)

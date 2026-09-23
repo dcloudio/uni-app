@@ -804,6 +804,8 @@ defineExpose({
 ### Bug & Tips
 
 - uni-app x 4.0以前，连续触发`click`或`tap`事件，可能会出现事件丢失的情况。请升级新版
+- 支付宝小程序的触摸事件参数不提供 `stopPropagation` 和 `preventDefault` 方法。
+- 支付宝小程序的 `longpress` 事件参数不提供 `touches` 信息。
 
 ::: info 调整
 

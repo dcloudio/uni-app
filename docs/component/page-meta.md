@@ -35,6 +35,10 @@
 
 <!-- UTSCOMJSON.page-meta.component_type -->
 
+### Tips
+
+更新 `scroll-top` 后，`page-font-size` 和 `root-font-size` 设置的文字大小可能丢失；可在 `page-style` 中设置 `font-size` 临时规避。
+
 
 
 ### 示例

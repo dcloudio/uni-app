@@ -11,24 +11,28 @@ Google Play 的政策要求：
 
 **注意**  ：
 Android17+，默认会开启16KB兼容性检测，如果应用中包含未适配支持 16KB 的 so 库，在启动时会弹出 `Android 应用兼容性` 提示框。  
-提示内容为：“此应用不符合 16KB 对齐要求。ELF文件对齐检查失败。”虽然这个列表中也会出现 DCloud的自有so库，但其实是因为三方sdk不支持16KB导致打包时被降级了。如去掉不支持16KB的三方sdk再打包，可以正常通过16K校验。
+提示内容为：“此应用不符合 16KB 对齐要求。ELF文件对齐检查失败。”。
+虽然这个列表中也会出现 DCloud的自有so库，但其实是因为三方sdk不支持16KB导致打包时被降级了。
+如去掉不支持16KB的三方sdk再打包，可以正常通过16K校验，不再弹框报警。
 
 
 ## 不支持 16KB 的模块  
 虽然 uni-app x 核心功能模块已适配支持 16KB 内存页面大小，但部分涉及三方 SDK 的so库仍未完全适配支持。  
+
+以下列出三方sdk清单，开发者可根据需要，去除这些sdk再打包。有些三方sdk已经不再维护，开发者可在插件市场寻求替代方案或自行使用uni-agent开发相关插件。
 
 ### [live-pusher 组件](../component/live-pusher.md)
 `uni-live-pusher`模块是由 DCloud 的合作伙伴七牛提供并实现 live-pusher 组件相关功能，此模块依赖七牛的多媒体SDK，但该 SDK 目前未适配支持 16KB 内存页面大小。  
 建议应用用于提交 Google Play 时不要使用此功能。  
 
 涉及的so库文件列表：
-- libpldroid_mmprocessing.so
-- libpldroid_streaming_aac_encoder.so
-- libpldroid_streaming_amix.so
-- libpldroid_streaming_core.so
-- libpldroid_streaming_h264_encoder.so
-- libpldroid_streaming_puic.so
-- libpldroid_streaming_srt.so
+- `libpldroid_mmprocessing.so`
+- `libpldroid_streaming_aac_encoder.so`
+- `libpldroid_streaming_amix.so`
+- `libpldroid_streaming_core.so`
+- `libpldroid_streaming_h264_encoder.so`
+- `libpldroid_streaming_puic.so`
+- `libpldroid_streaming_srt.so`
 
 
 ### [live-player 组件](../component/live-player.md)
@@ -47,16 +51,16 @@ Android17+，默认会开启16KB兼容性检测，如果应用中包含未适配
 - libssl.1.1.so
 - libswresample.so
 - libyuv.so
-- libpldroid_streaming_srt.so 
+- `libpldroid_streaming_srt.so `
 
 
 ### [uni-ad](https://uniapp.dcloud.net.cn/uni-ad/)
 `uni-ad`使用国内广告渠道SDK 仅支持国内环境，建议应用用于提交 Google Play 时不要使用国内渠道 SDK。  
 
 涉及的so库文件列表：
-- libplt-base.so
-- libsgcore.so
-- libti-monitor.so
+- libsgcore.so（快手）
+- `libttmplayer_lite.so`、`libavmdl_lite.so`（穿山甲）
+- libwmAliAgainstId.so（旺脉）
 
 
 > HBuilder4.83及以上版本 国外广告 `applovin`、`pangle(海外穿山甲)` 广告渠道 SDK 已适配支持 16KB 内存页面大小。  

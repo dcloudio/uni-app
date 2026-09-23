@@ -1,8 +1,6 @@
 # 组件
 
-我们可以对一段要复用的js/uts逻辑代码进行封装，抽出function、module等形式。
-
-那么涉及UI的复用时，该如何抽象？
+我们可以对一段要复用的js/ts/uts逻辑代码进行封装，抽出function、module等形式。那么涉及UI的复用时，该如何抽象？
 
 这就是vue的组件机制，把视图template、script、style都封装到独立的uvue组件文件中，在其他需要的地方使用组件的名称进行引用。
 
@@ -33,7 +31,7 @@ uni-app x 组件基于 vue 单文件组件规范，一个组件内，有 3 个�
 
 
 ## 创建及引用组件 @create-and-import-component
-<!-- TODO：此处需要重写 -->
+
 ### 创建组件 @create-component
 
 #### easycom
@@ -56,14 +54,14 @@ uni-app x 项目支持使用 `.vue`、`.uvue` 文件作为组件使用，但同�
 
 只要组件安装在项目的 `components` 目录下或 `uni_modules/插件 id/components/插件 id/插件 id.uvue` 目录下，并符合 `组件名称/组件名称.(vue|uvue)` 目录结构。就可以不用引用、注册，直接在页面中使用。
 
-- 比如 [uni-loading](https://ext.dcloud.net.cn/plugin?id=15980)，它导入到项目后，存放在了目录 /uni_modules/uni-loading/components/uni-loading/uni-loading.uvue
+- 比如 [uni-link](https://ext.dcloud.net.cn/plugin?id=27898)，它导入到项目后，存放在了目录 /uni_modules/uni-link-x/components/uni-link/uni-link.uvue
 
-  同时它的组件名称也叫 uni-loading，所以这样的组件，不用在 script 里注册和引用。如下：
+  同时它的组件名称也叫 uni-link，所以这样的组件，不用在 script 里注册和引用。如下：
 
   ```html
   <template>
       <view>
-        <uni-loading></uni-loading><!-- 这里会显示一个loading -->
+        <uni-link></uni-link><!-- 这里会显示一个loading -->
       </view>
     </template>
   <script>
@@ -72,9 +70,9 @@ uni-app x 项目支持使用 `.vue`、`.uvue` 文件作为组件使用，但同�
   </script>
   ```
 
-这里出现了`uni_module`的概念，简单说下，它是uni-app的一种包管理方案。
+这里出现了`uni_module`的概念，简单说下，它是uni-app(x)的一种包管理方案。
 
-`uni_module`其实不止服务于组件，它可以容纳组件、script库、页面、项目等所有DCloud插件市场所支持的种类。
+`uni_module`其实不止服务于组件，它可以容纳组件、script库、原生插件、页面、项目等所有DCloud插件市场所支持的种类。
 
 在HBuilderX中点右键可方便的更新插件，插件作者也可以方便的上传插件。
 
@@ -105,7 +103,7 @@ uni_module有详细的专项文档，请另行查阅[uni_module规范](https://u
     <child ref="component1"></child>
   </view>
 </template>
-<script setup lang="uts">
+<script setup>
 // 引入 child 组件
 import child from './child.vue'
 
@@ -473,7 +471,7 @@ export default {
 
 :::
 
-#### 在 `main.uts` 中使用 `app.config.globalProperties`
+#### 在 `main.uts/ts/js` 中使用 `app.config.globalProperties`
 
 如在 `main.uts` 中的 `createApp` 方法中使用：
 ```ts
@@ -1137,10 +1135,6 @@ export default {
 <script setup lang="uts">
   import { testInOtherFile } from './call-method-easycom-uni-modules'
 
-  // #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR
-  import { PropsChangeEvent } from '@/uni_modules/test-props'
-  // #endif
-
   const delay = () : Promise<string> =>
     new Promise((resolve, _) => {
       setTimeout(() => {
@@ -1410,7 +1404,7 @@ Android VDOM模式是强类型，如果不是内置组件，也不是easycom组�
 
 callMethod可用于所有自定义组件，包括easycom组件也可以使用，只不过easycom组件可以直接`.`。
 
-蒸汽模式下不再推荐使用`callMethod`
+蒸汽模式下不再推荐使用`callMethod`，正常的使用`.`操作符访问组件的方法即可。
 
 **语法**
 
@@ -1593,11 +1587,11 @@ export default {
 
 **bug&tips**
 
-- 目前uts组件，即封装原生ui给uni-app或uni-app x的页面中使用，类型与内置组件的 Uni`组件名(驼峰)`Element 方式相同。目前没有代码提示。
+- 目前uts插件 - uni-app兼容模式组件，即封装原生ui给uni-app或uni-app x VDOM模式的页面中使用，类型与内置组件的 Uni`组件名(驼峰)`Element 方式相同。目前没有代码提示。
 
 ### 组件监听应用、页面生命周期 @component-page-lifecycle
 
-|组件中监听应用生命周期 |Android |Android(Vapor)  |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
+|组件中监听应用生命周期 |Android(VDOM) |Android(Vapor)  |iOS(VDOM)  | iOS(Vapor) |HarmonyOS(VDOM) | HarmonyOS(Vapor) |Web |微信小程序 |
 |:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		  |:-:               |:-:	 |:-:		  |
 |onAppShow          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
 |onAppHide          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
@@ -1679,7 +1673,7 @@ export default {
 
 :::
 
-|组件中监听页面生命周期 |Android |Android(Vapor) |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
+|组件中监听页面生命周期 |Android(VDOM) |Android(Vapor) |iOS(VDOM)  | iOS(Vapor) |HarmonyOS(VDOM) | HarmonyOS(Vapor) |Web |微信小程序 |
 |:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		   |:-:               |:-:	|:-:		  |
 |onLoad             |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
 |onPageShow         |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
@@ -1884,25 +1878,6 @@ export default {
 
 ## 组件的生命周期 @component-lifecycle
 
-### 组件生命周期（选项式 API）兼容性 @component-lifecycle-options-compatibility
-
-|  | 兼容性 | 描述 |
-| :- | :- | :- |
-| beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
-| created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
-| beforeMount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之前调用。<br/>相关的 render 函数首次被调用。<br/>当这个钩子被调用时，组件已经完成了其响应式状态的设置，但还没有创建 DOM 节点。<br/>它即将首次执行 DOM 渲染过程。 |
-| mounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之后调用。<br/>el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| beforeUpdate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件即将因为一个响应式状态变更而更新其 DOM 树之前调用。<br/>数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| updated | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件因为一个响应式状态变更而更新其 DOM 树之后调用。<br/>父组件的更新钩子将在其子组件的更新钩子之后调用。<br/>这个钩子会在组件的任意 DOM 更新后被调用，这些更新可能是由不同的状态变更导致的。<br/>如果你需要在某个特定的状态更改后访问更新后的 DOM，请使用 nextTick() 作为替代。 |
-| beforeUnmount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。<br/>当这个钩子被调用时，组件实例依然还保有全部的功能。 |
-| unmounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。<br/>可以在这个钩子中手动清理一些副作用，例如计时器、DOM 事件监听器或者与服务器的连接。 |
-| errorCaptured | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在捕获了后代组件传递的错误时调用。<br/>这个钩子带有三个实参：错误对象、触发该错误的组件实例，以及一个说明错误来源类型的信息字符串。<br/>这个钩子可以通过返回 false 来阻止错误继续向上传递。 |
-| renderTracked | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件的渲染作用追踪后调用。<br/>跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。<br/>此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。 |
-| renderTriggered | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件触发了重新渲染之后调用。<br/>当虚拟 DOM 重新渲染为 triggered.Similarly 为renderTracked，接收 debugger event 作为参数。<br/>此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。 |
-| activated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件被插入到 DOM 中时调用。<br/>keep-alive 组件激活时调用。 |
-| deactivated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件从 DOM 中被移除时调用。<br/>keep-alive 组件停用时调用。 |
-| serverPrefetch | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当组件实例在服务器上被渲染之前要完成的异步函数。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。 |
-
 ### 组件生命周期（组合式 API）兼容性 @component-lifecycle-composition-compatibility
 
 |  | 兼容性 | 描述 |
@@ -1931,6 +1906,25 @@ export default {
 | onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
 | onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
 | onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
+
+### 组件生命周期（选项式 API）兼容性 @component-lifecycle-options-compatibility
+
+|  | 兼容性 | 描述 |
+| :- | :- | :- |
+| beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
+| created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
+| beforeMount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之前调用。<br/>相关的 render 函数首次被调用。<br/>当这个钩子被调用时，组件已经完成了其响应式状态的设置，但还没有创建 DOM 节点。<br/>它即将首次执行 DOM 渲染过程。 |
+| mounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之后调用。<br/>el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| beforeUpdate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件即将因为一个响应式状态变更而更新其 DOM 树之前调用。<br/>数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| updated | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件因为一个响应式状态变更而更新其 DOM 树之后调用。<br/>父组件的更新钩子将在其子组件的更新钩子之后调用。<br/>这个钩子会在组件的任意 DOM 更新后被调用，这些更新可能是由不同的状态变更导致的。<br/>如果你需要在某个特定的状态更改后访问更新后的 DOM，请使用 nextTick() 作为替代。 |
+| beforeUnmount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。<br/>当这个钩子被调用时，组件实例依然还保有全部的功能。 |
+| unmounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。<br/>可以在这个钩子中手动清理一些副作用，例如计时器、DOM 事件监听器或者与服务器的连接。 |
+| errorCaptured | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在捕获了后代组件传递的错误时调用。<br/>这个钩子带有三个实参：错误对象、触发该错误的组件实例，以及一个说明错误来源类型的信息字符串。<br/>这个钩子可以通过返回 false 来阻止错误继续向上传递。 |
+| renderTracked | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件的渲染作用追踪后调用。<br/>跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。<br/>此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。 |
+| renderTriggered | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件触发了重新渲染之后调用。<br/>当虚拟 DOM 重新渲染为 triggered.Similarly 为renderTracked，接收 debugger event 作为参数。<br/>此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。 |
+| activated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件被插入到 DOM 中时调用。<br/>keep-alive 组件激活时调用。 |
+| deactivated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件从 DOM 中被移除时调用。<br/>keep-alive 组件停用时调用。 |
+| serverPrefetch | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当组件实例在服务器上被渲染之前要完成的异步函数。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。 |
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/lifecycle/component/ChildComponentOptions.uvue)
 
@@ -2356,13 +2350,13 @@ defineOptions({
 
 ## ref
 
-在 `uni-app js 引擎版`中，非 `Web端` 只能用于获取自定义组件，不能用于获取内置组件实例（如：`view`、`text`）。\
+在 `老uni-app`中，非 `Web端` 只能用于获取自定义组件，不能用于获取内置组件实例（如：`view`、`text`）。\
 在 `uni-app x` 中，内置组件会返回组件根节点的引用，自定义组件会返回组件实例。
 
 **注意事项：**
 - 如果多个节点或自定义组件绑定相同 `ref` 属性，将获取到最后一个节点或组件实例的引用。
 - 在 `v-for` 循环时，绑定 `ref` 属性会获取到节点或组件实例的集合。
-- 在 `uni-app x` 中，要访问 `$refs` 中的属性，需要使用索引方式。
+- 访问 `$refs` 中的属性，Android平台VDOM模式无法使用`.`运算符，需要使用索引方式。
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/component-instance/refs/refs-options.uvue)
 
@@ -2552,7 +2546,7 @@ export default {
 
 ## 自定义组件 v-model 绑定复杂表达式 @v-model-complex-expression
 
-自定义组件 `v-model` 绑定复杂表达式时，需要通过 `as` 指定类型(仅App-Android 平台)。
+自定义组件 `v-model` 绑定复杂表达式时，Android平台VDOM模式需要通过 `as` 指定类型。
 
 ::: preview
 

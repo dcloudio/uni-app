@@ -88,17 +88,6 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## 通用类型
-
-
-### GeneralCallbackResult @generalcallbackresult-values 
-
-| 名称 | 类型 | 必备 | 描述 |
-| :- | :- | :- | :- |
-| errMsg | string | 是 | 错误信息 |
-
-
-
 ## uni.setUserCaptureScreen(options) @setusercapturescreen
 
 设置防截屏

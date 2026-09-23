@@ -57,7 +57,7 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): 5.25; iOS(VDOM): 4.18; iOS(Vapor): 5.25; HarmonyOS: x | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色。微信小程序端在模拟器中不生效，建议使用真机调试验证 |
-| backgroundTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 下拉 loading 的样式，仅支持 dark / light |
+| backgroundTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "dark" | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): 5.31; iOS(VDOM): 4.31; iOS(Vapor): 5.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31 | 下拉 loading 的样式，仅支持 dark / light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
@@ -198,17 +198,19 @@ H5 特有配置
 | :- | :- | :- | :- | :- |
 | x | x | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否允许向下拉拽。支持 YES / NO |
-| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
-| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否进入时显示导航栏的 loading。支持 YES / NO |
-| titleImage | string |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
-| backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图链接 |
-| backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图底色 |
-| gestureBack | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
-| enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
+| 属性 | 类型 | 默认值 | 必填 | 描述 |
+| :- | :- | :- | :- | :- |
+| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | 是否允许向下拉拽。支持 YES / NO |
+| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
+| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | 导航栏点击穿透 |
+| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | 是否进入时显示导航栏的 loading。支持 YES / NO |
+| titleImage | string |  | 否 | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
+| backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图链接 |
+| backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图底色 |
+| gestureBack | 'YES' \| 'NO' | "No" | 否 | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
+| enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
+
+支付宝小程序默认开启页面回弹，可能影响触摸事件；可以将 `allowsBounceVertical` 配置为 `NO` 关闭页面回弹。
 
 
 #### mp-weixin 配置项列表 @globalstyle-mp-weixin
@@ -309,7 +311,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。注意：disableScroll 设置为 true 时 enablePullDownRefresh:true 无效 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): 5.25; iOS(VDOM): 4.18; iOS(Vapor): 5.25; HarmonyOS: x | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色。微信小程序端在模拟器中不生效，建议使用真机调试验证 |
-| backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 下拉 loading 的样式，仅支持 dark/light |
+| backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): 5.31; iOS(VDOM): 4.31; iOS(Vapor): 5.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31 | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 页面旋转设置，支持 auto 设备自适应 / portrait 竖向 / landscape 横向 |
@@ -358,6 +360,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 	* 小程序平台，pages.json中各个颜色的设置仅支持普通的16进制数值。App和Web支持设为transparent，即透明。
 	* 如需动态设置状态栏颜色，使用api [uni.setNavigationBarColor](../api/set-navigation-bar-color.md)
 	* 当navigationStyle设为custom时，原生导航栏不显示。此时需要注意系统状态栏背景色恒为透明。
+	* 支付宝小程序不支持完全自定义导航栏，配置 `navigationStyle: "custom"` 不生效。
 	* 注意不同手机的状态栏高度并不相同，如需获取本机的状态栏高度，使用api [uni.getWindowInfo](../api/get-window-info.md) 或 css变量 [--status-bar-height](../css/common/variable.md)
 	* 配置hideStatusBar可以隐藏状态栏
 	* 同时隐藏状态栏hideStatusBar和底部指示器hideBottomNavigationIndicator，可以实现页面全屏
@@ -421,17 +424,17 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | :- | :- | :- | :- | :- |
 | x | x | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否允许向下拉拽。支持 YES / NO |
-| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
-| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否进入时显示导航栏的 loading。支持 YES / NO |
-| titleImage | string |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
-| backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图链接 |
-| backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 下拉露出显示的背景图底色 |
-| gestureBack | 'YES' \| 'NO' | "No" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
-| enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
+| 属性 | 类型 | 默认值 | 必填 | 描述 |
+| :- | :- | :- | :- | :- |
+| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | 是否允许向下拉拽。支持 YES / NO |
+| transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
+| titlePenetrate | 'YES' \| 'NO' | "No" | 否 | 导航栏点击穿透 |
+| showTitleLoading | 'YES' \| 'NO' | "No" | 否 | 是否进入时显示导航栏的 loading。支持 YES / NO |
+| titleImage | string |  | 否 | 导航栏图片地址，替换导航栏标题，必须为https的图片链接地址 |
+| backgroundImageUrl | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图链接 |
+| backgroundImageColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | 下拉露出显示的背景图底色 |
+| gestureBack | 'YES' \| 'NO' | "No" | 否 | 支付宝小程序 iOS 用，是否支持手势返回。支持 YES / NO |
+| enableScrollBar | 'YES' \| 'NO' | "YES" | 否 | 支付宝小程序 Android 用，是否显示 WebView 滚动条。支持 YES / NO。 |
 
 
 ##### mp-weixin 配置项列表 @style-mp-weixin
@@ -472,18 +475,18 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | borderStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tabbar 上边框的颜色，可选值 black、white，black对应颜色rgba(0,0,0,0.33)，white对应颜色rgba(255,255,255,0.33)。 |
 | borderColor | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): √; iOS(Vapor): x; HarmonyOS: x | tabbar 上边框的颜色（优先级高于 borderStyle） |
 | blurEffect | 'dark' \| 'extralight' \| 'light' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 高斯模糊效果 |
-| glassEffect | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 15.0; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS: x | 是否开启玻璃效果 tabBar。iOS 26 及以上使用系统液态玻璃效果，iOS 26 以下降级为系统毛玻璃效果。启用后仅支持图片图标，不支持 iconfont。 |
+| glassEffect | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 15.0; iOS(VDOM): x; iOS(Vapor): 5.23; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 是否开启玻璃效果 tabBar。iOS 26 及以上使用系统液态玻璃效果，iOS 26 以下降级为系统毛玻璃效果。启用后仅支持图片图标，不支持 iconfont。鸿蒙平台为开启沉浸光感效果并叠加在页面内容之上，启用后在 7.0.0(26) 之上为沉浸光感效果且为胶囊形态，在 6.1.0(23) 之上为毛玻璃效果且为胶囊形态，在更低版本为普通毛玻璃效果。 |
 | list | Array\<[PagesOptionsTabbarList](#pagesoptionstabbarlist)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的列表，详见 list 属性说明，最少2个、最多5个 tab |
 | position | 'top' \| 'bottom' | "bottom" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | tabbar 的位置,可选值 bottom、top。 |
-| fontSize | string | "10px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 文字默认大小 |
-| iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 图标默认宽度（高度等比例缩放） |
-| spacing | string | "3px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 图标和文字的间距 |
+| fontSize | string | "10px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | 文字默认大小 |
+| iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | 图标默认宽度（高度等比例缩放） |
+| spacing | string | "3px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | 图标和文字的间距 |
 | height | string | "50px" | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.14; HarmonyOS: x | tabBar 默认高度 |
 | midButton | [midButton 配置项列表](#tabbar-midbutton) |  | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): √; iOS(Vapor): x; HarmonyOS: x | 中间按钮 仅在 list 项为偶数时有效 |
-| iconfontSrc | string |  | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | list设置 iconfont 属性时，需要指定字体文件路径 |
-| backgroundImage | string |  | 否 | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 设置背景图片，优先级高于 backgroundColor |
-| backgroundRepeat | 'repeat' \| 'repeat-x' \| 'repeat-y' \| 'no-repeat' | "no-repeat" | 否 | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 设置标题栏的背景图平铺方式 |
-| redDotColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | tabbar上红点颜色 |
+| iconfontSrc | string |  | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | list设置 iconfont 属性时，需要指定字体文件路径 |
+| backgroundImage | string |  | 否 | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | 设置背景图片，优先级高于 backgroundColor |
+| backgroundRepeat | 'repeat' \| 'repeat-x' \| 'repeat-y' \| 'no-repeat' | "no-repeat" | 否 | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | 设置标题栏的背景图平铺方式 |
+| redDotColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | tabbar上红点颜色 |
 
 <a id="tabbar-tips"></a>
 
@@ -556,7 +559,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| text | string | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字库 Unicode 码 |
+| text | string | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): 5.31; HarmonyOS: x | 字库 Unicode 码 |
 | selectedText | string | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 选中后字库 Unicode 码 |
 | fontSize | string | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标字号(px) |
 | color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标颜色 |
@@ -767,7 +770,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。注意：disableScroll 设置为 true 时 enablePullDownRefresh:true 无效 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): 5.25; iOS(VDOM): 4.18; iOS(Vapor): 5.25; HarmonyOS: x | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色。微信小程序端在模拟器中不生效，建议使用真机调试验证 |
-| backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 下拉 loading 的样式，仅支持 dark/light |
+| backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): 5.31; iOS(VDOM): 4.31; iOS(Vapor): 5.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31 | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 页面旋转设置，支持 auto 设备自适应 / portrait 竖向 / landscape 横向 |

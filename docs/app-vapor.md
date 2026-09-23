@@ -406,12 +406,6 @@ DCloud推出uts语言，是为了解决性能问题，主要是跨语言通信�
 同时VDOM模式的uts编写的页面，仍可以通过uts2js运行在蒸汽模式上，不会因此造成向下兼容问题。\
 uni-app x 蒸汽模式也保留了uts插件中操作UI的能力。
 
-至于js和uts本身的执行速度，其实各有千秋。uts的优势主要是跨语言通信折损上。\
-从HBuilderX 5.25+，推出了全新优化的uts插件通道。它也是目前跨语言通信优化的天花板。\
-flutter的dart、react native的js，都有原生插件通道，flutter走的是序列化，react native在turboModules中避免了序列化，但要求使用者构建c++编译环境。\
-而 uni-app x 蒸汽模式的uts插件通道，拥有更好的性能，利用codegen + uts语言特性，即避免了序列化、又无需使用者构建c++环境。并且 uni-app x 拥有比jsi性能更优秀的js桥。\
-另外 uni-app x 中 arraybuffer 是跨语言共享内存的，此数据类型的传递无需跨语言通信。
-
 - uni-app x 虽然渲染快，但逻辑代码使用了js。一个原生应用的代码改成js后，逻辑部分是不是会变慢？
 
 其实js和java/kotlin谁快谁慢，很难定论，只能说各有千秋。比如json处理、字符串正则匹配，在js中这些API其实c语言实现的，而java/kotlin坚持自举，这些基础库是java语言自身写的，反而没有js快。\
@@ -420,6 +414,28 @@ js和c，这对组合，在Android和鸿蒙上都具备动态更新的能力，�
 或者说原生的逻辑不想改，想要复用，也可以让js来调用它。包括kmp写的逻辑，也可以让js来调用。\
 如果担心js的线程问题，uni-app x 提供了 [uts worker](./api/create-worker.md)。\
 整体来讲，把原生应用迁移为 uni-app x，你的用户的感受肯定是更流畅。
+
+- uni-app x 逻辑层改成js后，调用原生的跨语言通信成本是否上升了？
+
+跨语言通信成本，曾经是很多跨平台框架的痛点。尤其是Android平台，js 和 kotlin 中间还隔着一个c。但时代已不同。
+
+跨语言通信最高频的是UI。\
+原生UI在kotlin层，驱动逻辑在js层，创建一个组件来回通信，页面上组件多起来就会变卡。react native 一直都有这问题。\
+但 uni-app x 蒸汽模式，template和style的代码是直接编译字节码/机器码的，不是编译成js，根本不需要js和kotlin来回通信。这套机制不但超越了 react native 的跨语言通信，连原生开发的同语言UI操作都无法与 uni-app x蒸汽模式 匹敌。\
+同时在Element API等必须在js里操作原生UI的场景，也定制了高效的通信方案，单次跨语言通信的成本仅在0.001毫秒左右。
+
+除了UI，另一个跨语言通信场景是原生插件。\
+过去老的uni-app，以及react native、flutter，在js和原生通信时搭建通用通信桥，都使用了序列化方案。\
+react native已经改用了turboModules架构，通过codegen方式避免序列化。\
+uni-app x 蒸汽在Android平台也是codegen的（HBuilderX 5.25+），没有序列化，而且也不需要像react native的turboModules那样要求开发者编译c++代码。\
+目前仅flutter的原生插件仍然在序列化，原生通信性能较低。
+
+另外 uni-app x 中 arraybuffer 是跨语言共享内存的，此数据类型的传递无需跨语言通信。\
+比如高频调用蓝牙数据，从原生传递到js，使用的是共享内存的arraybuffer，原生通过系统蓝牙API获取到arraybuffer，js层可直接读取arraybuffer，不存在跨语言通信折损。\
+至于持续定位，其实不高频，采集频率是秒级的，uni-app x的跨语言通信成本是微秒级的，折算成秒，是0.000001秒左右。\
+
+所以虽然uni-app x 蒸汽模式改用了js引擎，但开发者无需像过去那样忧虑跨语言通信问题。
+
 
 本章节主要是围绕性能的FAQ。整个 uni-app x 的FAQ，另见[概述](./readme.md#FAQ)
 
@@ -485,10 +501,6 @@ ninja: error: failed recompaction: Permission denied。
     * list-view下仅第一个在list-item上的v-for且有:key属性，才支持复用。如果一个list-view下多组list-item各自有v-for，第2个起的v-for并不复用
     * list-item和list-view需要编写在同一个uvue文件内，否则list-item不会被复用。即，不要把list-item包装到另一个组件。
     * 符合条件能复用的list-item会当做真正的list-item，其他不符合复用条件的list-item都会被编译为view。
-    * list-view不支持横向滚动
-    * list-item宽度固定为100%，获取position时固定为absolute。
-    * list-item不支持直接以文字节点作为子节点，必须使用text包裹文字内容。
-    * list-item不支持设置margin
 - 变更：swiper组件的变化
     * 可以通过indicator-class、indicator-active-class自定义默认指示器的样式
     * 可通过 `<template v-slot:indicator>` ，传入自定义的指示器
@@ -542,6 +554,7 @@ ninja: error: failed recompaction: Permission denied。
 
 其他还有一些差异，见文档的兼容性说明。
 
+
 ## 使用uni-agent，从VDOM模式升级到蒸汽模式@vom2vapor
 
 1. 在vdom模式下，要求uni-agent把复杂的组合选择器，改成 简单的class选择器或分组选择器，确认是否正常
@@ -560,40 +573,13 @@ ninja: error: failed recompaction: Permission denied。
 
 uni-app x 是逻辑层和视图层分离，逻辑层即script内，是uts/js。视图层是`template`和`style`区域。
 
-App平台的蒸汽模式下，视图层有较大的变化。
+蒸汽模式的视图层，把`template`和`style`直接编译为底层的机器码或字节码。
 
-VDOM模式的视图层是编译为uts/js代码，然后驱动原生渲染。
-
-而蒸汽模式的视图层，把`template`和`style`直接编译为底层c代码对应的机器码/字节码。
-
-根据编译目标不同，App平台的视图层产物分为字节码和机器码两种模式。
-
-### 机器码
-
-机器码模式，是把`template`和`style`编译为优化度非常高的C代码，再经平台编译器编译为机器码运行。
-
-优点：
-- 渲染性能高一点点。
-
-缺点：
-- 编译速度比字节码模式慢非常多，因为需要编译C代码。大型工程的c++编译是非常非常慢的。
-- 开发阶段的差量编译体验差。
-- iOS只能在mac电脑上开发。
-
-### 字节码
-
-为了平衡机器码的性能和开发易用性。从5.11起新增了字节码编译模式。字节码也是二进制格式。
-
-优点：
-- 编译速度更快。
-- 开发阶段支持差量更新。
-- 发行后支持 wgt 热更新。（暂未上线）
-
-缺点：
-- 渲染性能低于机器码3%左右。由于蒸汽模式比原生快了数倍，所以字节码虽比机器码慢了一点点，但仍快过原生数倍。
+- 机器码：是把`template`和`style`编译为优化度非常高的C代码，再经平台编译器编译为机器码运行。性能略高但编译非常慢。
+- 字节码：需HBuilder 5.11+。把机器码改成字节码，编译速度更快。性能比机器码低3%左右。发行后可支持 wgt 热更新（需HBuilder 5.31+）。
 
 正常情况下，使用字节码即可。
 
 因为最初在5.0版上线鸿蒙蒸汽模式时只有机器码，所以目前在鸿蒙上是提供了字节码或机器码2个选项。
 
-而在后续上线iOS和Android蒸汽模式时，只提供了字节码选项。实测机器码会造成云打包非常非常慢，暂不计划开放。
+而在后续上线iOS和Android蒸汽模式时，只提供了字节码选项。

@@ -11,6 +11,7 @@
   * [Base64](base64.md)
   * [拦截器](interceptor.md)
   * [启动](launch.md)
+  * [安装 WGT](install-wgt.md)
   * [退出应用](exit.md)
   * [获取服务提供商](provider.md)
   * [uni.getPerformance](get-performance.md)

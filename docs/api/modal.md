@@ -512,3 +512,4 @@ uni.showModal({
 	}
 })
 ```
+* `uni.showModal` 是跨平台模态弹框 API，在App和web平台样式一致。如需在 App iOS 26+ 的蒸汽模式中使用液态玻璃效果，可使用 [uni-glass-modal](https://ext.dcloud.net.cn/plugin?name=uni-glass-modal) 插件（HBuilderX 5.25+）；iOS 26 以下将降级为系统毛玻璃效果。

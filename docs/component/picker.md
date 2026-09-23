@@ -25,6 +25,8 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 
 或者使用开源组件[uni-data-picker](https://ext.dcloud.net.cn/plugin?id=3796)。这是也是基于[picker-view组件](picker-view.md)封装的云端一体组件，如果需要选择城市，那么推荐使用该组件。
 
+支付宝小程序日期选择器的 `change` 事件返回值格式类似 `2026/10/11`，与微信小程序的 `2026-10-11` 不同。
+
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
@@ -70,10 +72,6 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 | city | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 市级选择器 |
 | region | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 区级选择器 |
 | sub-district | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 街道选择器 |
-
-### 支付宝小程序注意事项
-
-支付宝小程序不支持 `picker` 的 `mode` 属性，如需多平台兼容，需要为支付宝小程序单独处理选择能力。
 
 
 ### 事件

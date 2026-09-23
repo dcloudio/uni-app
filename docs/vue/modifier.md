@@ -16,9 +16,9 @@
 阻止事件的默认行为（例如阻止链接跳转或表单提交）
 
 **兼容性 <Help />** 
- | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | √ | 4.51 | 4.51 | x |
+ | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 4.51 | 4.51 | x | 5.0 |
 
 `android & ios 4.51 +` 支持 `touch` 事件通过 `preventDefault` 阻止滚动与点击事件
 

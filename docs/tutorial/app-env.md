@@ -64,7 +64,7 @@ HBuilderX4.36+版本开始uts插件支持添加自定义仓储服务器，详情
 > 使用 XCode 的 xcodebuild 命令编译  
 
 - **从2026年8月30号开始HBuilderX5.14及以上alpha版本云端打包环境已升级为XCode26.6**  
-- **从2026年3月22号开始HBuilderX4.66及以上release版本云端部分打包机环境升级为XCode26.3**
+- **从2026年9月19号开始HBuilderX4.75及以上release版本云端部分打包机环境升级为XCode26.6**
 
 
 ### HBuilderX5.25及以上版本云端打包环境

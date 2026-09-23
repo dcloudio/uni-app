@@ -2,10 +2,10 @@
 
 > `App.uvue` 从HBuilderX 5.0+起支持组合式 API。
 
-::: warning Android注意
-- 暂不支持 `<script setup>` 和 `<script>` 同时使用，如果需要配置 `options` 内容，比如 `name`，可以使用 `defineOptions`。
-- 暂不支持顶层 `await`。
-- 暂不支持 `<script setup>` 配置 `generic` 泛型类型参数。
+::: warning 注意
+- App-Android VDOM 模式和 App 平台蒸汽模式均不支持同时使用 `<script setup>` 和 `<script>`。如需配置 `options` 内容（例如 `name`），可以使用 `defineOptions`。
+- App-Android VDOM 模式、微信小程序 VDOM 模式和 App 平台蒸汽模式均不支持顶层 `await`。
+- App-Android VDOM 模式不支持通过 `<script setup>` 的 `generic` 属性声明泛型类型参数。
 
 :::
 
@@ -599,9 +599,7 @@ const stateText = computed(() => {
 
   若要避免深层响应式转换，只想保留对这个对象顶层次访问的响应性，请使用 [shallowReactive()](#shallowreactive) 作替代。
 
-::: warning 注意
-- `reactive` 在 app-android 平台目前不支持对 class 做响应式，推荐使用 type 定义存储数据的对象类型。
-:::
+注意： `reactive` 在 App-Android VDOM 模式不支持对 class 做响应式，此时推荐使用 type 定义存储数据的对象类型。
 
 - 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/reactivity/core/reactive/reactive.uvue)
 
@@ -1134,9 +1132,8 @@ const stateText = computed(() => {
   watchEffect(() => {
     arrWithObjForEachCount.value++
     arrWithObj.forEach((item) => {
-      const name = (item as UTSJSONObject)['name']
-      const count = (item as UTSJSONObject)['count']
-      // console.log('arrWithObj forEach:', name, count)
+      item['name']
+      item['count']
     })
   })
   
@@ -1176,6 +1173,7 @@ const stateText = computed(() => {
       margin-bottom: 10px;
     }
 </style>
+
 ```
 
 :::
@@ -1877,7 +1875,7 @@ const updateReadonlyData = () => {
 
 
 ::: warning 注意
-- `toRefs()` 仅支持 `Array` 和 `UTSJSONObject`, 不支持自定义类型。
+- App-Android VDOM 模式 `toRefs()` 仅支持 `Array` 和 `UTSJSONObject`, 不支持自定义类型。
 :::
 
 ### 示例代码 @example
@@ -2368,7 +2366,6 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 | shallowReactive() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | shallowReadonly() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | toRaw() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
-| markRaw() |   |
 | effectScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | getCurrentScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | onScopeDispose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
@@ -2965,7 +2962,7 @@ const triggerRefState = () => {
 
 ::: warning 注意
 - `getCurrentInstance` 只能在 setup 或生命周期钩子中调用。
-- 在 `app` 端 `proxy` 属性可能为空，需使用 `!` 非空断言操作符。
+- 在 `app` 端 `proxy` 属性可能为空，在uts/ts等涉及类型的语言中需使用 `!` 非空断言操作符。
 :::
 
 ```uts
@@ -3405,21 +3402,6 @@ const updateTitle = () => {
 
 ## \<script setup> @script_setup
 
-### 基本语法 @basic-syntax
-
-- 仅支持 `export default {}` 方式定义组件。
-- `data` 仅支持函数返回对象字面量方式。
-  ```ts
-  <script lang="uts">
-    export default {
-      data() {
-        return {
-          // 必须写这里
-        }
-      }
-    }
-  </script>
-  ```
 
 
 
@@ -3439,8 +3421,9 @@ const updateTitle = () => {
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ts | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x | typescript |
+| ts | Web: x; 微信小程序: √; Android(VDOM): x; Android(Vapor): 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | TypeScript |
 | uts | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
+| js | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | JavaScript |
 
 
 
@@ -3893,8 +3876,6 @@ defineExpose({
 
 在底层，这个宏声明了一个 model prop 和一个相应的值更新事件。如果第一个参数是一个字符串字面量，它将被用作 prop 名称；否则，prop 名称将默认为 `"modelValue"`。在这两种情况下，你都可以再传递一个额外的对象，它可以包含 prop 的选项和 model ref 的值转换选项。
 
-**注意：** android 端 `defineModel` 暂不支持创建 `Array` 类型 `prop`。
-
 #### 示例
 
 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/directive/v-model/Foo-composition.uvue)
@@ -4274,6 +4255,9 @@ const props = withDefaults(defineProps<CustomProps>(), {
 
 ### 与渲染函数一起使用
 
+::: warning 注意
+`render()` 函数仅在 `VDOM 模式`下支持。
+:::
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/render-function/render/render-composition.uvue)
 

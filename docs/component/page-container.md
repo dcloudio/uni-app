@@ -66,6 +66,7 @@ page-container 的特点：
 - Web 暂不支持拦截侧滑返回和浏览器的后退按钮
 - `overlay-style` 设置 `pointer-events: none` 可以实现点击遮罩层不关闭弹窗
 - 居中弹出为全屏显示。此行为是为了对齐小程序的表现。由于遮罩层被覆盖，并不会触发 `click-overlay` 事件，可以自行调整 `custom-style` 的样式来规避此行为
+- 支付宝小程序中，当开启 `overlay` 并设置 `overlay-style` 后蒙层可能覆盖整个 `page-container` 内容区域，可以在 `overlay-style` 中补充 `z-index: 0` 规避此问题。
 
 
 

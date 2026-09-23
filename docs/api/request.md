@@ -1291,6 +1291,7 @@ complete: () => {
 
 如不释放，在调用Task对象的方法将导致控制台报错：
 `error: instance object does not exist: id:15`
+* Android release 包默认禁止 http 明文请求（Android 9+ targetSdkVersion≥28）。会导致联网失败，表现为报错 CLEARTEXT communication to xxx not permitted by network security policy（如 {"errCode":602001,"errMsg":"request system error",...,"cause":{"message":"CLEARTEXT communication to xxx not permitted by network security policy"}}）。优先推荐使用 https 来解决。如果确定坚持不安全的http，那么方案如下：在项目根目录新建 AndroidManifest.xml，给 application 节点加 android:usesCleartextTraffic="true"，配置方式见 https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html
 
 ## 通用类型
 

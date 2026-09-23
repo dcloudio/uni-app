@@ -73,8 +73,6 @@ vue的script分组合式和选项式。选项式属于比较老的技术，在�
 
 可以看出整体和html还是很接近的。但响应式变量和绑定机制，可以免去写大量的dom操作代码，让开发更高效轻松。
 
-基于选项式的示例，下面章节会提供。
-
 ## template
 
 template中文名为`模板`，它类似html的标签。但有2个区别：
@@ -124,29 +122,59 @@ template中文名为`模板`，它类似html的标签。但有2个区别：
 ## script
 
 script中编写逻辑代码。
+uvue文件中只能有一个script标签。
 
-uvue中只能有一个script标签。
+script标签有2个属性，lang和setup。
 
-script标签的属性如下：
-- lang
+```vue
+<script setup lang="ts">
+```
 
-在VDOM模式，lang只能使用uts，Android平台按uts2kt执行，此时要求强类型。其他平台按uts2js执行，不要求强类型。
+### lang
 
-在蒸汽模式，lang最终运行在js环境中，不再要求强类型。
-* 在HBuilderX 5.31以前，不能手动指定lang，script均按uts2js执行，强行设置lang为ts/js反而会触发bug。
-* 从5.31+，lang可以设置ts和js。
+#### VDOM模式
+VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求强类型。其他平台按uts2js执行，不要求强类型。
+
+#### 蒸汽模式
+蒸汽模式，lang最终运行在js环境中，不再要求强类型。
+
+##### HBuilderX 5.31以前统一uts2js
+不能手动指定lang，script均按uts2js执行，强行设置lang为ts/js反而会触发bug。
+
+页面外链的脚本文件，不管是`*.js`、`*.ts`、`*.uts`，统一执行uts2js。并且推荐使用uts文件，更稳定。
+
+按uts2js执行时，uts里也可以使用ts/js的写法。此时写类型不严谨的js时，可能触发类型校验告警，但忽略即可。
+
+##### 5.31+，js/ts/uts变成3种独立策略@utstsjs
+	
+页面script的lang可以设置uts、ts和js。
+
+页面外链的脚本文件，也可以独立使用 `*.js`、`*.ts`、`*.uts`。不再统一执行uts2js。
+
+如果页面script未设置，则根据全局配置 manifest.json 中 蒸汽模式下 script lang 的默认值来执行。如果未改动manifest默认值，则默认为`ts`。
+
+注意：默认值是 `ts`。不是uni-app默认的`js`，也不是uni-app x VDOM模式默认的`uts`。
+默认值之所以调整，一是为了方便AI，二是为了提升编译速度。
+
+此时uts、ts、js三者将有不同的编译逻辑，见下。
 
 蒸汽模式下，使用uts、ts，实际也需要经过uts2js、ts2js的编译流程。uts、ts和js的区别：
-* js：没有额外的编译流程。编译速度快。
-* ts：需执行ts2js的编译器，类型仅对开发阶段生效，实际运行时会擦除类型。编译速度中。
-* uts：需执行uts2js编译器。编译速度慢。为了拉齐uts编译原生强类型的跨端表现，运行时与标准js有略微差异：
+- js：没有额外的编译流程。编译速度快。
+- ts：需执行ts2js的编译器，类型仅对开发阶段生效，实际运行时会擦除类型。编译速度中。
+- uts：需执行uts2js编译器。编译速度慢。为了拉齐uts编译原生强类型的跨端表现，运行时与标准js有略微差异：
 	+ 支持UTSJSONObject
 	+ type没有擦除而是编译成了class
 	+ 把部分js内置API返回值从undefined改为null
 
-	不使用uts时，将无法再使用UTSJSONObject，type会被擦除，运行时内置API被改成`null`的会还原为`undefined`。
+	不使用uts时，将无法再使用UTSJSONObject，UTSJSONObject变成了普通的object，type会被擦除，运行时内置API被改成`null`的会还原为`undefined`。
+	
+	如果你之前使用过UTSJSONObject的专有方法，比如getString、getNumber、getArray等方法，在5.31+运行，由于默认按ts编译，会造成控制台报警找不到相关类型和方法，此时有如下处理方案：
+	1. 把相关页面的script的lang，显式指定为uts。
+	2. 把UTSJSONObject的写法，改成普通object写法。
 
-- setup
+5.31+，不同后缀的文件，比如`*.js`、`*.ts`、`*.uts`，互相import的时，都按各自独立的编译器编译。
+
+### setup
 setup属性声明代表script里的代码为组合式写法，如果没有setup属性则为选项式写法。蒸汽模式只支持setup。
 
 **注意：** 所有 `vue` 公开的 `API` 都是不需要 `import` 的, `uni-app x` 会自动引入。
@@ -186,7 +214,6 @@ vue3新增的组合式API，是纯编程的，解决了选项式不够灵活的�
 1. 组合式API的组件，可以监听引用其页面的页面级生命周期。而选项式是不能的。有相关需求的组件，需使用组合式API，或在选项式中使用setup函数。[详见](./component.md#component-page-lifecycle)
 2. 选项式的type类型定义在`export default {}`外，这些都是应用级全局的，略微影响性能。[见下](#export-default-out)
 3. uts插件的兼容模式组件，其中的根index.vue，只支持选项式。兼容模式组件已经不再推荐使用，蒸汽模式也不支持，推荐使用uts标准模式组件。
-
 
 一般推荐的建议是：
 1. 如果新写页面和组件，建议直接使用组合式。
@@ -367,7 +394,7 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 ### Class 与 Style 绑定 @class-style
 
 - `uni-app x` 在VDOM模式下支持绑定  `UTSJSONObject` 和 `Map` 类型数据。蒸汽模式不支持 `Map` 类型数据。
-- VDOM模式下，在App-Android平台上 `Map` 的性能高于 `UTSJSONObject` 数据类型。从 `uni-app x 4.01` 起，Web平台也支持了 `Map` 类型绑定。
+- VDOM模式下，在App-Android平台上 `Map` 的性能高于 `UTSJSONObject` 数据类型。从 `uni-app x 4.01` 起，Web平台在uts2js时也支持了 `Map` 类型绑定。
 
 如下示例中，给 view 组件的 style 和 class 分别绑定了两个响应式变量，就可以通过在逻辑代码里修改变量而实现动态修改样式。
 ```vue
@@ -486,6 +513,8 @@ useCssModule('classes')
 
 单文件组件的 `<style>` 标签支持使用 `v-bind` CSS 函数将 CSS 的值链接到动态的组件状态：
 
+选项式写法：
+
 ```vue
 <template>
   <text class="text">hello</text>
@@ -508,7 +537,7 @@ export default {
 </style>
 ```
 
-这个语法同样也适用于 `<script setup>`，且支持 UTS 表达式 (需要用引号包裹起来)：
+组合式写法： `<script setup>`，且支持 UTS 表达式 (需要用引号包裹起来)：
 
 ```vue
 <script setup>
@@ -531,8 +560,8 @@ const theme = {
 
 ## 利用AI将选项式转换为组合式@ai
 
-推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，可以直接转换选项式代码为组合式代码，并自动监控控制台报错然后自动修复。
-官方的很多页面如hello uni-app x，都是这样转的。
+推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，可以直接转换选项式代码为组合式代码，并自动监控控制台报错然后自动修复。\
+官方的很多页面如 hello uni-app x，都是这样转的。
 
 如果您使用其他AI，可以使用下面的提示词：
 
@@ -552,8 +581,6 @@ const theme = {
 10. 在测试例页面用到页面中的数据或方法时，必须通过 `defineExpose` 显式暴露数据和方法，避免测试无法访问。
 11. 在页面生命周期中，`onPullDownRefresh` 应作为页面生命周期函数处理，而不是写成普通方法。
 12. 检查控制台的编译报错，如果有报错自行修复，并再次检查编译报错，直到无报错编译通过。
-
-
 
 ## 利用 AI 适配蒸汽模式@ai-vapor
 

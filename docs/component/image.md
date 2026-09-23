@@ -378,3 +378,4 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
 - app-android平台由于默认启用了图片缩放（即根据组件实际宽高加载图片，以节省内存），所以可能导致load事件返回的图片尺寸并非图片原始尺寸
 - app-android平台不支持CMYK色彩的图片，[详见](https://github.com/facebook/fresco/issues/1404)
 - app-ios平台 VDOM模式的image组件不支持padding style（padding-top、padding-left、padding-right、padding-bottom）
+- 支付宝小程序中，给 `image` 设置 `padding` 时图片仍可能占满组件区域，不能依赖 `padding` 改变图片的实际显示区域。
