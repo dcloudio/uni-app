@@ -12,7 +12,6 @@
 
 创建 camera 上下文 CameraContext 对象。
 
-
 通过本API，可操作摄像头组件进行拍照、录像。
 
 参考文档：
@@ -388,7 +387,7 @@ stopRecord
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.component.createCameraContext)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=createCameraContext&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/media/camera/CameraContext.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createCameraContext&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createCameraContext&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createCameraContext&secondType=all&type=1)

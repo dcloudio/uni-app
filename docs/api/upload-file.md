@@ -39,7 +39,10 @@
 | timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
 | success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 成功返回的回调函数 |
 | fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
+| complete | (result: any) => void | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） |
+| enableHttp2 | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
+| enableProfile | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `3.5.0`<br/><br/>是否开启 profile。iOS 和 Android 端默认开启，其他端暂不支持。开启后可在接口回调的 res.profile 中查看性能调试信息。<br/> |
+| enableQuic | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> | 
 
 ##### files 的属性描述
 
@@ -55,6 +58,43 @@
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据 |
 | statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| profile | **UploadFileSuccessProfile** | 否 | 微信小程序: 4.41 | 需要基础库： `3.5.0`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)。目前 iOS 和 Android 端支持。<br/> |
+
+#### profile 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| SSLconnectionEnd | number | 否 | 微信小程序: 4.41 | SSL建立完成的时间,如果不是安全连接,则值为 0<br/> |
+| SSLconnectionStart | number | 否 | 微信小程序: 4.41 | SSL建立连接的时间,如果不是安全连接,则值为 0<br/> |
+| connectEnd | number | 否 | 微信小程序: 4.41 | HTTP（TCP） 完成建立连接的时间（完成握手），如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接完成的时间。注意这里握手结束，包括安全连接建立完成、SOCKS 授权通过<br/> |
+| connectStart | number | 否 | 微信小程序: 4.41 | HTTP（TCP） 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间<br/> |
+| domainLookUpEnd | number | 否 | 微信小程序: 4.41 | Local DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等<br/> |
+| domainLookUpStart | number | 否 | 微信小程序: 4.41 | Local DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等<br/> |
+| downstreamThroughputKbpsEstimate | number | 否 | 微信小程序: 4.41 | 评估当前网络下载的kbps<br/> |
+| estimate_nettype | number | 否 | 微信小程序: 4.41 | 评估的网络状态 unknown, offline, slow 2g, 2g, 3g, 4g, last/0, 1, 2, 3, 4, 5, 6<br/> |
+| fetchStart | number | 否 | 微信小程序: 4.41 | 组件准备好使用 HTTP 请求抓取资源的时间，这发生在检查本地缓存之前<br/> |
+| httpDNSDomainLookUpEnd | number | 否 | 微信小程序: 4.41 | 需要基础库： `3.8.9`<br/><br/>httpDNS 完成查询的时间。仅当开启 httpDNS 功能时返回该字段。目前仅wx.request接口支持<br/> |
+| httpDNSDomainLookUpStart | number | 否 | 微信小程序: 4.41 | 需要基础库： `3.8.9`<br/><br/>httpDNS 开始查询的时间。仅当开启 httpDNS 功能时返回该字段。目前仅wx.request接口支持<br/> |
+| httpRttEstimate | number | 否 | 微信小程序: 4.41 | 协议层根据多个请求评估当前网络的 rtt（仅供参考）<br/> |
+| invokeStart | number | 否 | 微信小程序: 4.41 | 需要基础库： `3.8.10`<br/><br/>调用接口的时间。<br/> |
+| peerIP | string | 否 | 微信小程序: 4.41 | 当前请求的IP<br/> |
+| port | number | 否 | 微信小程序: 4.41 | 当前请求的端口<br/> |
+| protocol | string | 否 | 微信小程序: 4.41 | 使用协议类型，有效值：http1.1, h2, quic, unknown<br/> |
+| queueEnd | number | 否 | 微信小程序: 4.41 | 需要基础库： `3.8.10`<br/><br/>结束排队的时间。达到并行上限时才需要排队。如果未发生排队，则该字段和 queueStart 字段值相同<br/> |
+| queueStart | number | 否 | 微信小程序: 4.41 | 需要基础库： `3.8.10`<br/><br/>开始排队的时间。达到并行上限时才需要排队。<br/> |
+| receivedBytedCount | number | 否 | 微信小程序: 4.41 | 收到字节数<br/> |
+| redirectEnd | number | 否 | 微信小程序: 4.41 | 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0<br/> |
+| redirectStart | number | 否 | 微信小程序: 4.41 | 第一个 HTTP 重定向发生时的时间。有跳转且是同域名内的重定向才算，否则值为 0<br/> |
+| requestEnd | number | 否 | 微信小程序: 4.41 | HTTP请求读取真实文档结束的时间<br/> |
+| requestStart | number | 否 | 微信小程序: 4.41 | HTTP请求读取真实文档开始的时间（完成建立连接），包括从本地读取缓存。连接错误重连时，这里显示的也是新建立连接的时间<br/> |
+| responseEnd | number | 否 | 微信小程序: 4.41 | HTTP 响应全部接收完成的时间（获取到最后一个字节），包括从本地读取缓存<br/> |
+| responseStart | number | 否 | 微信小程序: 4.41 | HTTP 开始接收响应的时间（获取到第一个字节），包括从本地读取缓存<br/> |
+| rtt | number | 否 | 微信小程序: 4.41 | 当次请求连接过程中实时 rtt<br/> |
+| sendBytesCount | number | 否 | 微信小程序: 4.41 | 发送的字节数<br/> |
+| socketReused | boolean | 否 | 微信小程序: 4.41 | 是否复用连接<br/> |
+| throughputKbps | number | 否 | 微信小程序: 4.41 | 当前网络的实际下载kbps<br/> |
+| transportRttEstimate | number | 否 | 微信小程序: 4.41 | 传输层根据多个请求评估的当前网络的 rtt（仅供参考）<br/> |
+| usingHighPerformanceMode | boolean | 否 | 微信小程序: 4.41 | 是否走到了高性能模式。基础库 v3.3.4 起支持。<br/> |
 
 #### UploadFileFail 的属性值 @uploadfilefail-values 
 
@@ -467,7 +507,7 @@ complete: () => {
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.uploadFile)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/network-file.html#uploadfile)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=uploadFile&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/upload/UploadTask.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=uploadFile&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=uploadFile&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=uploadFile&secondType=all&type=1)

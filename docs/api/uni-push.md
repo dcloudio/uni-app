@@ -81,7 +81,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| requestPermission | boolean | 否 | false | Web: x; Android: 5.25; iOS: x; HarmonyOS: x | 是否申请通知权限 | 
+| requestPermission | boolean | 否 | true | Web: x; Android: 5.25; iOS: x; HarmonyOS: x | 是否申请通知权限 | 
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 

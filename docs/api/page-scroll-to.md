@@ -164,7 +164,7 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.pageScrollTo)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/scroll.html#pagescrollto)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=pageScrollTo&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/scroll/wx.pageScrollTo.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=pageScrollTo&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=pageScrollTo&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=pageScrollTo&secondType=all&type=1)

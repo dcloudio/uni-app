@@ -697,7 +697,7 @@ getFileInfo
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的文件路径 (本地路径) |
-| digestAlgorithm | string | 否 | Web: x | 计算文件摘要的算法，不传默认使用 "md5" |
+| digestAlgorithm | string | 否 | Web: x | 计算文件摘要的算法 |
 | success | (res: [GetFileInfoSuccessResult](#getfileinfosuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 通用的错误返回结果回调 |
 | complete | (res: any) => void | 否 | Web: x | 通用的结束返回结果回调 | 
@@ -708,8 +708,6 @@ getFileInfo
 | :- |  :-: | :- |
 | md5 | Web: x | md5 算法 |
 | sha1 | Web: x | sha1 算法 |
-| sha256 | Web: x; 微信小程序: 4.41; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | sha256 算法 |
-| none | Web: x; 微信小程序: 4.41; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 不计算摘要，digest 字段返回空字符串 |
 
 ###### GetFileInfoSuccessResult 的属性值 @getfileinfosuccessresult-values 
 
@@ -2282,35 +2280,6 @@ unzip
 | 1300033 | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
 
 
-
-#### unzipSync(options: UnzipSyncOptions): boolean; @unzipsync
-unzipSync
-解压文件
-##### unzipSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 5.31 | 5.31 | 7.0 (26.0.0) | 5.31 |
-
-##### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **UnzipSyncOptions** | 是 | Web: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| zipFilePath | string | 是 | Web: x | 源文件路径，支持本地路径, 只可以是 zip 压缩文件 |
-| targetPath | string | 是 | Web: x | 目标目录路径, 支持本地路径 | 
-
-
-##### 返回值 
-
-| 类型 |
-| :- |
-| boolean |
- 
 
 #### writeFile(options: WriteFileOptions): void; @writefile
 writeFile

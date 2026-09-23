@@ -74,7 +74,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setNavigationBarTitle)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#setnavigationbartitle)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=setNavigationBarTitle&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/navigation-bar/wx.setNavigationBarTitle.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setNavigationBarTitle&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setNavigationBarTitle&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setNavigationBarTitle&secondType=all&type=1)
