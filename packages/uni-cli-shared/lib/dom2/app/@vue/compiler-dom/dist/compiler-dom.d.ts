@@ -1,6 +1,5 @@
 import { CodegenResult, CompilerError, CompilerOptions, ComponentNode, DirectiveTransform, ExpressionNode, NodeTransform, ParserOptions, RootNode, SimpleExpressionNode, SourceLocation, TransformContext } from "@vue/compiler-core";
 export * from "@vue/compiler-core";
-
 //#region temp/packages/compiler-dom/src/parserOptions.d.ts
 export declare const parserOptions: ParserOptions;
 //#endregion
@@ -50,16 +49,16 @@ export declare const resolveModifiers: (key: ExpressionNode | string, modifiers:
 //#endregion
 //#region temp/packages/compiler-dom/src/htmlNesting.d.ts
 /**
-* Copied from https://github.com/MananTank/validate-html-nesting
-* with ISC license
-*
-* To avoid runtime dependency on validate-html-nesting
-* This file should not change very often in the original repo
-* but we may need to keep it up-to-date from time to time.
-*/
+ * Copied from https://github.com/MananTank/validate-html-nesting
+ * with ISC license
+ *
+ * To avoid runtime dependency on validate-html-nesting
+ * This file should not change very often in the original repo
+ * but we may need to keep it up-to-date from time to time.
+ */
 /**
-* returns true if given parent-child nesting is valid HTML
-*/
+ * returns true if given parent-child nesting is valid HTML
+ */
 export declare function isValidHTMLNesting(parent: string, child: string): boolean;
 //#endregion
 //#region temp/packages/compiler-dom/src/transforms/Transition.d.ts

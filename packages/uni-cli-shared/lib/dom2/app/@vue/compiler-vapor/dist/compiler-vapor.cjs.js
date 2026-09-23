@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.4
+  * @vue/compiler-vapor v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -180,7 +180,8 @@ function resolveExpression(exp, isComponent) {
 }
 function parseStaticAttrBooleanExpression(exp) {
 	try {
-		return (0, _vue_shared.includeBooleanAttr)(exp.isStatic ? exp.content : new Function(`return ${exp.content}`)());
+		const result = exp.isStatic ? exp.content : new Function(`return ${exp.content}`)();
+		return (0, _vue_shared.includeBooleanAttr)(result);
 	} catch (e) {}
 	return null;
 }
@@ -210,6 +211,10 @@ function isInTransition(context) {
 function isTransitionNode(node) {
 	return node.type === 1 && isTransitionTag(node.tag);
 }
+/** Transition or TransitionGroup: hosts whose children render specially. */
+function isTransitionHostNode(node) {
+	return node.type === 1 && (isTransitionTag(node.tag) || isTransitionGroupTag(node.tag));
+}
 function isTransitionTag(tag) {
 	tag = tag.toLowerCase();
 	return tag === "transition" || tag === "vaportransition";
@@ -226,6 +231,9 @@ function isTeleportTag(tag) {
 	tag = tag.toLowerCase();
 	return tag === "teleport" || tag === "vaporteleport";
 }
+function isComponentTag(tag) {
+	return tag === "component" || tag === "Component";
+}
 function isBuiltInComponent(tag) {
 	if (isTeleportTag(tag)) return "VaporTeleport";
 	else if (tag === "Suspense" || tag === "suspense") return "Suspense";
@@ -235,7 +243,8 @@ function isBuiltInComponent(tag) {
 }
 function getBlockShape(block) {
 	if (block.returns.length === 0) return 0;
-	return block.returns.length === 1 ? 1 : 2;
+	if (block.returns.length > 1) return 2;
+	return block.node.type === 1 && block.node.children.every((child) => child.type === 2 || child.type === 5) ? 2 : 1;
 }
 //#endregion
 //#region packages/compiler-vapor/src/transform.ts
@@ -408,6 +417,7 @@ var TransformContext = class TransformContext {
 			node,
 			parent: this,
 			index,
+			inVOnce: this.inVOnce && !isComponentNode(this.node),
 			template: "",
 			templateRoot: false,
 			childrenTemplate: [],
@@ -534,8 +544,10 @@ function transformNode(context) {
 	const exitFns = [];
 	for (const nodeTransform of nodeTransforms) {
 		const onExit = nodeTransform(node, context);
-		if (onExit) if ((0, _vue_shared.isArray)(onExit)) exitFns.push(...onExit);
-		else exitFns.push(onExit);
+		if (onExit) {
+			if ((0, _vue_shared.isArray)(onExit)) exitFns.push(...onExit);
+			else exitFns.push(onExit);
+		}
 		if (!context.node) return;
 		else node = context.node;
 	}
@@ -588,8 +600,18 @@ function getNextId(map, n) {
 	if (map && map.has(n)) return map.get(n);
 	return n;
 }
+function isComponentNode(node) {
+	return node.type === 1 && node.tagType === 1;
+}
 //#endregion
 //#region packages/compiler-vapor/src/generators/utils.ts
+/**
+* Run a helper call inside the once ambient: a helper that creates its own
+* effects at a v-once site has them run once like compiled ones do.
+*/
+function genOnce(call, context) {
+	return genCall(context.helper("withOnce"), ["() => ", ...call]);
+}
 const IMPORT_EXP_START = "__IMPORT_EXP_START__";
 const IMPORT_EXP_END = "__IMPORT_EXP_END__";
 const IMPORT_EXPR_RE = new RegExp(`${IMPORT_EXP_START}(.*?)${IMPORT_EXP_END}`, "g");
@@ -734,6 +756,10 @@ function codeFragmentToString(code, context) {
 		});
 	}
 }
+/** Formats a numeric flags argument with its dev-only name annotation. */
+function genFlags(flags, names) {
+	return `${flags} /* ${names.join(", ")} */`;
+}
 //#endregion
 //#region packages/compiler-vapor/src/generators/dom.ts
 function genInsertNode({ parent, elements, anchor }, { helper }) {
@@ -743,7 +769,7 @@ function genInsertNode({ parent, elements, anchor }, { helper }) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/expression.ts
-function genExpression(node, context, assignment) {
+function genExpression(node, context, assignment, asParams = false) {
 	node = context.getExpressionReplacement(node);
 	const { content, ast, isStatic, loc } = node;
 	const { options } = context;
@@ -762,10 +788,13 @@ function genExpression(node, context, assignment) {
 	const ids = [];
 	const parentStackMap = /* @__PURE__ */ new Map();
 	const parentStack = [];
-	(0, _vue_compiler_dom.walkIdentifiers)(ast, (id) => {
+	(0, _vue_compiler_dom.walkIdentifiers)(ast, (id, _, __, isReference, isLocal) => {
+		if (isLocal) {
+			if (!id.typeAnnotation && !id.optional) return;
+		} else if (!isReference) return;
 		ids.push(id);
 		parentStackMap.set(id, parentStack.slice());
-	}, false, parentStack);
+	}, asParams, parentStack);
 	let hasMemberExpression = false;
 	if (ids.length) {
 		const [frag, push] = buildCodeFragment();
@@ -786,7 +815,7 @@ function genExpression(node, context, assignment) {
 			const leadingText = content.slice(lastEnd, start);
 			if (leadingText.length) push([leadingText, -3]);
 			hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
-			push(...genIdentifier(source, context, {
+			push(...genIdentifier(asParams ? id.name : source, context, {
 				start: (0, _vue_compiler_dom.advancePositionWithClone)(node.loc.start, source, start),
 				end: (0, _vue_compiler_dom.advancePositionWithClone)(node.loc.start, source, end),
 				source
@@ -809,17 +838,18 @@ function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, s
 	const idMap = identifiers[raw];
 	if (idMap && idMap.length) {
 		const replacement = idMap[0];
-		if ((0, _vue_shared.isString)(replacement)) if (parent && parent.type === "ObjectProperty" && parent.shorthand) return [[
-			`${name}: ${replacement}`,
-			-2,
-			loc
-		]];
-		else return [[
-			replacement,
-			-2,
-			loc
-		]];
-		else return genExpression(replacement, context, assignment);
+		if ((0, _vue_shared.isString)(replacement)) {
+			if (parent && parent.type === "ObjectProperty" && parent.shorthand) return [[
+				`${name}: ${replacement}`,
+				-2,
+				loc
+			]];
+			else return [[
+				replacement,
+				-2,
+				loc
+			]];
+		} else return genExpression(replacement, context, assignment);
 	}
 	let prefix;
 	const type = bindingMetadata && bindingMetadata[raw];
@@ -876,8 +906,10 @@ function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, s
 		default: raw = withAssignment(raw);
 	}
 	else {
-		if (canPrefix(raw)) if (type === "props-aliased") raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
-		else raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+		if (canPrefix(raw)) {
+			if (type === "props-aliased") raw = `$props['${bindingMetadata.__propsAliases[raw]}']`;
+			else raw = `${type === "props" ? "$props" : "_ctx"}.${raw}`;
+		}
 		raw = withAssignment(raw);
 	}
 	return [prefix, [
@@ -938,6 +970,7 @@ function analyzeExpressions(expressions) {
 		const seenParents = /* @__PURE__ */ new Set();
 		(0, _vue_compiler_dom.walkIdentifiers)(exp.ast, (currentNode, parent, parentStack) => {
 			if (parent && isMemberExpression$3(parent) && !seenParents.has(parent)) {
+				var _parentStack$index;
 				seenParents.add(parent);
 				let hasGlobalIdentifier = false;
 				const memberExp = extractMemberExpression(parent, (id) => {
@@ -947,8 +980,14 @@ function analyzeExpressions(expressions) {
 					});
 					if ((0, _vue_shared.isGloballyAllowed)(id.name)) hasGlobalIdentifier = true;
 				});
+				if (memberExp === void 0) return;
 				const parentOfMemberExp = parentStack[parentStack.length - 2];
 				if (parentOfMemberExp && isCallExpression(parentOfMemberExp)) return;
+				let chainChild = parent;
+				let index = parentStack.length - 2;
+				while (((_parentStack$index = parentStack[index]) === null || _parentStack$index === void 0 ? void 0 : _parentStack$index.type) === "TSNonNullExpression") chainChild = parentStack[index--];
+				const chainParent = parentStack[index];
+				if (chainParent && chainParent.type === "OptionalMemberExpression" && !chainParent.optional && chainParent.object === chainChild) return;
 				if (hasGlobalIdentifier) return;
 				registerVariable(memberExp, exp, false, {
 					start: parent.start,
@@ -1094,7 +1133,7 @@ function processRepeatedExpressions(context, expressions, varDeclarations, updat
 		for (const exp of expressions) {
 			const processed = getProcessedExpression(exp, expressionReplacements);
 			if (processed.content === content) setExpressionReplacement(expressionReplacements, exp, varName, null);
-			else if (processed.content.includes(content)) {
+			else if (!content.includes("?.") && processed.content.includes(content)) {
 				const replacements = findContentReplacements(processed, content, varName);
 				if (replacements.length) {
 					const replacedContent = applyContentReplacements(processed.content, replacements);
@@ -1127,23 +1166,14 @@ function applyReplacementPlan(context, expressionReplacements, replacementPlan) 
 	}
 }
 function findContentReplacements(exp, content, replacement) {
-	const identifiers = getIdentifierRanges(exp);
-	if (!identifiers.length) return [];
+	const nodeRanges = getNodeRanges(exp);
+	if (!nodeRanges.size) return [];
 	const replacements = [];
 	let searchStart = 0;
 	let start = exp.content.indexOf(content, searchStart);
 	while (start !== -1) {
 		const end = start + content.length;
-		let canReplace = false;
-		for (const identifier of identifiers) {
-			if (start >= identifier.end || end <= identifier.start) continue;
-			if (start > identifier.start || end < identifier.end) {
-				canReplace = false;
-				break;
-			}
-			canReplace = true;
-		}
-		if (canReplace) {
+		if (nodeRanges.has(`${start}:${end}`)) {
 			replacements.push({
 				start,
 				end,
@@ -1163,6 +1193,15 @@ function findIdentifierReplacements(exp, name, replacement) {
 		content: replacement
 	});
 	return replacements;
+}
+function getNodeRanges(exp) {
+	const ranges = /* @__PURE__ */ new Set();
+	if (!exp.ast || typeof exp.ast !== "object") return ranges;
+	(0, estree_walker.walk)(exp.ast, { enter(node) {
+		if ((0, _vue_compiler_dom.isFunctionType)(node) || node.type === "TemplateElement" || node.type.startsWith("TS") && !_vue_compiler_dom.TS_NODE_TYPES.includes(node.type)) return this.skip();
+		if (node.start != null && node.end != null) ranges.add(`${node.start - 1}:${node.end - 1}`);
+	} });
+	return ranges;
 }
 function getIdentifierRanges(exp) {
 	if (!exp.ast || typeof exp.ast !== "object") return [];
@@ -1230,24 +1269,44 @@ function getUniqueDeclarationName(baseName, reservedNames) {
 	reservedNames.add(name);
 	return name;
 }
+/**
+* Returns the source of a member expression, or `undefined` if it contains a
+* node that cannot be extracted, e.g. `foo[bar ? 'a' : 'b']`. Such expressions
+* must not be cached - the extracted source would be incomplete.
+*/
 function extractMemberExpression(exp, onIdentifier) {
-	if (!exp) return "";
+	if (!exp) return;
 	switch (exp.type) {
 		case "Identifier":
 			onIdentifier(exp);
 			return exp.name;
 		case "StringLiteral": return exp.extra ? exp.extra.raw : exp.value;
 		case "NumericLiteral": return exp.value.toString();
-		case "BinaryExpression": return `${extractMemberExpression(exp.left, onIdentifier)} ${exp.operator} ${extractMemberExpression(exp.right, onIdentifier)}`;
-		case "CallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
-		case "OptionalCallExpression": return `${extractMemberExpression(exp.callee, onIdentifier)}?.(${exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier)).join(", ")})`;
+		case "BinaryExpression": {
+			var _exp$extra;
+			const left = extractMemberExpression(exp.left, onIdentifier);
+			const right = extractMemberExpression(exp.right, onIdentifier);
+			if (left === void 0 || right === void 0) return;
+			const expression = `${left} ${exp.operator} ${right}`;
+			return ((_exp$extra = exp.extra) === null || _exp$extra === void 0 ? void 0 : _exp$extra.parenthesized) ? `(${expression})` : expression;
+		}
+		case "CallExpression":
+		case "OptionalCallExpression": {
+			const callee = extractMemberExpression(exp.callee, onIdentifier);
+			const args = exp.arguments.map((arg) => extractMemberExpression(arg, onIdentifier));
+			if (callee === void 0 || args.some((arg) => arg === void 0)) return;
+			return `${callee}${exp.type === "OptionalCallExpression" ? "?." : ""}(${args.join(", ")})`;
+		}
 		case "MemberExpression":
-		case "OptionalMemberExpression":
+		case "OptionalMemberExpression": {
 			const object = extractMemberExpression(exp.object, onIdentifier);
+			const property = extractMemberExpression(exp.property, exp.computed ? onIdentifier : _vue_shared.NOOP);
+			if (object === void 0 || property === void 0) return;
 			const optional = exp.type === "OptionalMemberExpression" && exp.optional;
-			return `${object}${exp.computed ? `${optional ? "?." : ""}[${extractMemberExpression(exp.property, onIdentifier)}]` : `${optional ? "?." : "."}${extractMemberExpression(exp.property, _vue_shared.NOOP)}`}`;
-		case "TSNonNullExpression": return `${extractMemberExpression(exp.expression, onIdentifier)}`;
-		default: return "";
+			return `${object}${exp.computed ? `${optional ? "?." : ""}[${property}]` : `${optional ? "?." : "."}${property}`}`;
+		}
+		case "TSNonNullExpression": return extractMemberExpression(exp.expression, onIdentifier);
+		default: return;
 	}
 }
 const isCallExpression = (node) => {
@@ -1382,31 +1441,31 @@ function isConstantBinding(value, context) {
 //#region packages/compiler-vapor/src/generators/for.ts
 function genFor(oper, context) {
 	const { helper } = context;
-	const { source, value, key, index, render, keyProp, once, id, component, onlyChild, slotRoot } = oper;
-	const rawValue = value && value.content;
-	const rawKey = key && key.content;
-	const rawIndex = index && index.content;
+	const { source, value, key, index, render, keyProp, once, id, component, onlyChild, slotRoot, wrappedRows } = oper;
 	const sourceExpr = [
 		"() => (",
 		...genExpression(source, context),
 		")"
 	];
+	const plugins = context.options.expressionPlugins;
 	const idToPathMap = parseValueDestructure(value, context);
+	const keyToPathMap = parseValueDestructure(key, context);
+	const indexToPathMap = parseValueDestructure(index, context);
 	const [depth, exitScope] = context.enterScope();
 	const itemVar = `_for_item${depth}`;
-	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, plugins);
 	idMap[itemVar] = null;
 	const args = [itemVar];
-	if (rawKey) {
+	if (key) {
 		const keyVar = `_for_key${depth}`;
 		args.push(`, ${keyVar}`);
-		idMap[rawKey] = `${keyVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(keyToPathMap, `${keyVar}.value`, plugins));
 		idMap[keyVar] = null;
-	}
-	if (rawIndex) {
+	} else if (index) args.push(", _");
+	if (index) {
 		const indexVar = `_for_index${depth}`;
 		args.push(`, ${indexVar}`);
-		idMap[rawIndex] = `${indexVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(indexToPathMap, `${indexVar}.value`, plugins));
 		idMap[indexVar] = null;
 	}
 	const { selectorPatterns, keyOnlyBindingPatterns, skippedEffectIndexes } = matchPatterns(render, keyProp, idMap, context);
@@ -1435,7 +1494,7 @@ function genFor(oper, context) {
 		return frag;
 	}, idMap);
 	exitScope();
-	const flags = genForFlags(onlyChild, component, isFragmentBlock(render), !component && isSingleNodeBlock(render), once, slotRoot);
+	const flags = genForFlags(onlyChild, component, isFragmentBlock(render), !component && isSingleNodeBlock(render), once, slotRoot, wrappedRows);
 	const onResetCalls = [];
 	for (let i = 0; i < selectorPatterns.length; i++) onResetCalls.push(NEWLINE, `n${id}.onReset(${selectorName(i)}.reset)`);
 	return [
@@ -1447,27 +1506,23 @@ function genFor(oper, context) {
 	];
 	function genCallback(expr) {
 		if (!expr) return false;
-		const res = context.withId(() => genExpression(expr, context), genSimpleIdMap());
-		return [
-			...genMulti([
-				"(",
-				")",
-				", "
-			], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex),
+		return context.withId(() => [
+			...genAliasParams(value, key, index, context),
 			" => (",
-			...res,
+			...genExpression(expr, context),
 			")"
-		];
+		], genSimpleIdMap());
 	}
 	function genSimpleIdMap() {
 		const idMap = {};
-		if (rawKey) idMap[rawKey] = null;
-		if (rawIndex) idMap[rawIndex] = null;
-		idToPathMap.forEach((_, id) => idMap[id] = null);
+		const collect = (map) => map.forEach((_, id) => idMap[id] = null);
+		collect(idToPathMap);
+		collect(keyToPathMap);
+		collect(indexToPathMap);
 		return idMap;
 	}
 }
-function genForFlags(onlyChild, component, isFragment, isSingleNode, once, slotRoot) {
+function genForFlags(onlyChild, component, isFragment, isSingleNode, once, slotRoot, wrappedRows) {
 	let flags = 0;
 	const names = [];
 	if (onlyChild) {
@@ -1494,8 +1549,12 @@ function genForFlags(onlyChild, component, isFragment, isSingleNode, once, slotR
 		flags |= 32;
 		names.push("SLOT_ROOT");
 	}
+	if (wrappedRows) {
+		flags |= 64;
+		names.push("WRAPPED_ROWS");
+	}
 	if (!flags) return;
-	return `${flags} /* ${names.join(", ")} */`;
+	return genFlags(flags, names);
 }
 function isSingleNodeBlock(block) {
 	const child = getSingleReturnedChild(block);
@@ -1512,6 +1571,13 @@ function getSingleReturnedChild(block) {
 	const id = block.returns[0];
 	for (const child of block.dynamic.children) if (child.id === id) return child;
 }
+function genAliasParams(value, key, index, context) {
+	return genMulti([
+		"(",
+		")",
+		", "
+	], value ? genExpression(value, context, void 0, true) : key || index ? "_" : void 0, key ? genExpression(key, context, void 0, true) : index ? "__" : void 0, index && genExpression(index, context, void 0, true));
+}
 function parseValueDestructure(value, context) {
 	const map = /* @__PURE__ */ new Map();
 	if (value) {
@@ -1527,12 +1593,13 @@ function parseValueDestructure(value, context) {
 					for (let i = 0; i < parentStack.length; i++) {
 						const parent = parentStack[i];
 						const child = parentStack[i + 1] || id;
-						if (parent.type === "ObjectProperty" && parent.value === child) if (parent.key.type === "StringLiteral") path += `[${JSON.stringify(parent.key.value)}]`;
-						else if (parent.computed) {
-							isDynamic = true;
-							path += `[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`;
-						} else path += `.${parent.key.name}`;
-						else if (parent.type === "ArrayPattern") {
+						if (parent.type === "ObjectProperty" && parent.value === child) {
+							if (parent.key.type === "StringLiteral") path += `[${JSON.stringify(parent.key.value)}]`;
+							else if (parent.computed) {
+								isDynamic = true;
+								path += `[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`;
+							} else path += `.${parent.key.name}`;
+						} else if (parent.type === "ArrayPattern") {
 							const index = parent.elements.indexOf(child);
 							if (child.type === "RestElement") path += `.slice(${index})`;
 							else path += `[${index}]`;
@@ -1546,7 +1613,7 @@ function parseValueDestructure(value, context) {
 								} else return JSON.stringify(p.key.name);
 							}).join(", ") + "]";
 						}
-						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
+						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression" && child.left === id)) {
 							isDynamic = true;
 							helper = isDom2 ? context.helper("getSharedDataDefaultValue") : context.helper("getDefaultValue");
 							const rawDefault = rawValue.slice(child.right.start - 1, child.right.end - 1);
@@ -1633,7 +1700,7 @@ function matchSelectorPattern(effect, key, idMap, context) {
 				if (typeof node === "object" && node && node.type === "BinaryExpression" && node.operator === "===" && node.left.type !== "PrivateName") {
 					const { left, right } = node;
 					for (const [a, b] of [[left, right], [right, left]]) {
-						const aIsKey = isKeyOnlyBinding(a, key, content);
+						const aIsKey = content.slice(a.start - 1, a.end - 1) === key;
 						const bIsKey = isKeyOnlyBinding(b, key, content);
 						const bVars = analyzeVariableScopes(b, idMap);
 						if (aIsKey && !bIsKey && !bVars.length) matcheds.push([a, b]);
@@ -1704,8 +1771,10 @@ function genIf(oper, context, isNested = false) {
 	];
 	let positiveArg = genBlock(positive, context);
 	let negativeArg = false;
-	if (negative) if (negative.type === 1) negativeArg = genBlock(negative, context);
-	else negativeArg = ["() => ", ...genIf(negative, context, true)];
+	if (negative) {
+		if (negative.type === 1) negativeArg = genBlock(negative, context);
+		else negativeArg = ["() => ", ...genIf(negative, context, true)];
+	}
 	if (!isNested) push(NEWLINE, `const n${oper.id} = `);
 	push(...genCall(helper("createIf"), conditionExpr, positiveArg, negativeArg, flags));
 	return frag;
@@ -1716,7 +1785,7 @@ function genIfFlags(blockShape, once, slotRoot, index) {
 	if (once) flags |= 16;
 	else if (index !== void 0) flags |= index + 1 << 8;
 	if (flags === 1) return false;
-	return `${flags} /* ${genIfFlagNames(once, slotRoot, index, blockShape)} */`;
+	return genFlags(flags, genIfFlagNames(once, slotRoot, index, blockShape));
 }
 function genIfFlagNames(once, slotRoot, index, blockShape) {
 	const names = [`TRUE_${genBlockShapeName(blockShape)}`];
@@ -1728,7 +1797,7 @@ function genIfFlagNames(once, slotRoot, index, blockShape) {
 	if (once) names.push("ONCE");
 	if (slotRoot) names.push("SLOT_ROOT");
 	if (!once && index !== void 0) names.push(`KEYED_INDEX_${index}`);
-	return names.join(", ");
+	return names;
 }
 function genBlockShapeName(flags) {
 	switch (flags & 3) {
@@ -1741,7 +1810,7 @@ function genBlockShapeName(flags) {
 //#endregion
 //#region packages/compiler-vapor/src/generators/prop.ts
 const helpers = {
-	setText: { name: "setText" },
+	setElementText: { name: "setElementText" },
 	setHtml: { name: "setHtml" },
 	setClass: { name: "setClass" },
 	setClassName: { name: "setClassName" },
@@ -1792,11 +1861,13 @@ function resolveClassName(values, context) {
 		const staticValue = getLiteralExpressionValue(value, true);
 		if (staticValue != null) {
 			const normalized = (0, _vue_shared.normalizeClass)(staticValue);
-			if (normalized) if (sawSuffix) suffix = appendClass$1(suffix, normalized);
-			else if (sawDynamic) {
-				sawSuffix = true;
-				suffix = appendClass$1(suffix, normalized);
-			} else prefix = appendClass$1(prefix, normalized);
+			if (normalized) {
+				if (sawSuffix) suffix = appendClass$1(suffix, normalized);
+				else if (sawDynamic) {
+					sawSuffix = true;
+					suffix = appendClass$1(suffix, normalized);
+				} else prefix = appendClass$1(prefix, normalized);
+			}
 			continue;
 		}
 		const ast = value.ast;
@@ -1941,8 +2012,10 @@ function genPropValue(values, context) {
 function getRuntimeHelper(tag, key, modifier) {
 	const tagName = tag.toUpperCase();
 	const isSVG = (0, _vue_shared.isSVGTag)(tag);
-	if (modifier) if (modifier === ".") return getSpecialHelper(key, tagName, isSVG) || helpers.setDOMProp;
-	else return isSVG ? (0, _vue_shared.extend)({ isSVG: true }, helpers.setAttr) : helpers.setAttr;
+	if (modifier) {
+		if (modifier === ".") return getSpecialHelper(key, tagName, isSVG) || helpers.setDOMProp;
+		else return isSVG ? (0, _vue_shared.extend)({ isSVG: true }, helpers.setAttr) : helpers.setAttr;
+	}
 	const helper = getSpecialHelper(key, tagName, isSVG);
 	if (helper) return helper;
 	if (/aria[A-Z]/.test(key)) return helpers.setDOMProp;
@@ -1955,14 +2028,14 @@ function getSpecialHelper(keyName, tagName, isSVG) {
 	else if (keyName === "class") return (0, _vue_shared.extend)({ isSVG }, helpers.setClass);
 	else if (keyName === "style") return helpers.setStyle;
 	else if (keyName === "innerHTML") return helpers.setHtml;
-	else if (keyName === "textContent") return helpers.setText;
+	else if (keyName === "textContent") return helpers.setElementText;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/templateRef.ts
 const setTemplateRefIdent = `_setTemplateRef`;
 function genSetTemplateRef(oper, context) {
 	const [refValue, refKey] = genRefValue(oper.value, context);
-	if (context.staticTemplateRefHelperCandidate === oper) return genSetStaticTemplateRef(oper, refValue, refKey, context);
+	if (!oper.effect && !oper.refFor && oper.value.isStatic) return genSetStaticTemplateRef(oper, refValue, refKey, context);
 	context.needsTemplateRefSetter = true;
 	return [NEWLINE, ...genCall(setTemplateRefIdent, `n${oper.element}`, refValue, oper.refFor && "true", refKey)];
 }
@@ -1971,13 +2044,7 @@ function genSetStaticTemplateRef(oper, refValue, refKey, context) {
 }
 function genSetTemplateRefBinding(oper, context) {
 	const [refValue, refKey] = genRefValue(oper.value, context);
-	const setter = context.inSlotBlock && setTemplateRefIdent;
-	if (context.inSlotBlock) context.needsTemplateRefSetter = true;
-	return [NEWLINE, ...genCall([context.helper("setTemplateRefBinding"), "undefined"], `n${oper.element}`, ["() => ", ...refValue], ...setter || oper.refFor || refKey ? [
-		setter,
-		oper.refFor && "true",
-		refKey
-	] : [])];
+	return [NEWLINE, ...genCall([context.helper("setTemplateRefBinding"), "undefined"], `n${oper.element}`, ["() => ", ...refValue], ...oper.refFor || refKey ? [oper.refFor && "true", refKey] : [])];
 }
 function genRefValue(value, context) {
 	if (value && context.options.inline) {
@@ -2006,16 +2073,6 @@ function genGetTextChild(oper, context) {
 	return [NEWLINE, `const x${oper.parent} = ${context.helper("txt")}(n${oper.parent})`];
 }
 //#endregion
-//#region packages/compiler-vapor/src/generators/vShow.ts
-function genVShow(oper, context) {
-	const { element } = oper;
-	return [NEWLINE, ...genCall(context.helper("applyVShow"), `n${element}`, [
-		`() => (`,
-		...genExpression(oper.dir.exp, context),
-		`)`
-	])];
-}
-//#endregion
 //#region packages/compiler-vapor/src/generators/modifier.ts
 function genDirectiveModifiers(modifiers) {
 	return modifiers.map((value) => `${(0, _vue_compiler_dom.isSimpleIdentifier)(value) ? value : JSON.stringify(value)}: true`).join(", ");
@@ -2031,11 +2088,11 @@ const helperMap = {
 };
 function genVModel(oper, context) {
 	const { modelType, element, dir: { exp, modifiers } } = oper;
-	return [NEWLINE, ...genCall(context.helper(helperMap[modelType]), `n${element}`, [
+	return genCall(context.helper(helperMap[modelType]), `n${element}`, [
 		`() => (`,
 		...genExpression(exp, context),
 		`)`
-	], genModelHandler(exp, context), modifiers.length ? `{ ${genDirectiveModifiers(modifiers.map((e) => e.content))} }` : void 0)];
+	], genModelHandler(exp, context), modifiers.length ? `{ ${genDirectiveModifiers(modifiers.map((e) => e.content))} }` : void 0);
 }
 function genModelHandler(exp, context) {
 	return [
@@ -2043,46 +2100,6 @@ function genModelHandler(exp, context) {
 		...genExpression(exp, context, "_value"),
 		")"
 	];
-}
-//#endregion
-//#region packages/compiler-vapor/src/generators/directive.ts
-function genBuiltinDirective(oper, context) {
-	switch (oper.name) {
-		case "show": return genVShow(oper, context);
-		case "model": return genVModel(oper, context);
-		default: return [];
-	}
-}
-/**
-* user directives via `withVaporDirectives`
-*/
-function genDirectivesForElement(id, context) {
-	const dirs = filterCustomDirectives(id, context.block.operation);
-	return dirs.length ? genCustomDirectives(dirs, context) : [];
-}
-function genCustomDirectives(opers, context) {
-	const { helper } = context;
-	const element = `n${opers[0].element}`;
-	const directives = genMulti(DELIMITERS_ARRAY, ...opers.map(genDirectiveItem));
-	return [NEWLINE, ...genCall(helper("withVaporDirectives"), element, directives)];
-	function genDirectiveItem({ dir, name, asset }) {
-		const directiveVar = asset ? (0, _vue_compiler_dom.toValidAssetId)(name, "directive") : genExpression((0, _vue_shared.extend)((0, _vue_compiler_dom.createSimpleExpression)(name, false), { ast: null }), context);
-		const value = dir.exp && [
-			"() => (",
-			...genExpression(dir.exp, context),
-			")"
-		];
-		const argument = dir.arg && genExpression(dir.arg, context);
-		const modifiers = !!dir.modifiers.length && [
-			"{ ",
-			genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
-			" }"
-		];
-		return genMulti(DELIMITERS_ARRAY.concat("void 0"), directiveVar, value, argument, modifiers);
-	}
-}
-function filterCustomDirectives(id, operations) {
-	return operations.filter((oper) => oper.type === 13 && oper.element === id && !oper.builtin);
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/component.ts
@@ -2098,34 +2115,46 @@ function genCreateComponent(operation, context) {
 	const tag = genTag();
 	const { root, props, slots, once, slotRoot } = operation;
 	const isRuntimeDynamicComponent = !!(operation.dynamic && !operation.dynamic.isStatic);
-	const dynamicComponentFlags = isRuntimeDynamicComponent ? genDynamicComponentFlags(root, once, slotRoot) : false;
-	const rawSlots = genRawSlots(slots, context);
+	const dynamicComponentFlags = isRuntimeDynamicComponent ? genDynamicComponentFlags(root, once, slotRoot, operation.ns) : false;
+	const nsArg = !isRuntimeDynamicComponent && (operation.useCreateElement || operation.asset || !!operation.dynamic) && operation.ns ? String(operation.ns) : false;
+	const slotDeclarations = [];
+	const rawSlots = genRawSlots(slots, context, slotDeclarations);
 	const [ids, handlers] = processInlineHandlers(props, context);
 	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
+	const inlineHandlers = handlers.reduce((acc, { name, value }) => {
+		const handler = genEventHandler(context, [value]);
+		return [
+			...acc,
+			`const ${name} = `,
+			...handler,
+			NEWLINE
+		];
+	}, []);
 	return [
 		NEWLINE,
-		...handlers.reduce((acc, { name, value }) => {
-			const handler = genEventHandler(context, [value]);
-			return [
-				...acc,
-				`const ${name} = `,
-				...handler,
-				NEWLINE
-			];
-		}, []),
+		...inlineHandlers,
+		...slotDeclarations.length ? genMulti([
+			"let ",
+			NEWLINE,
+			", "
+		], ...slotDeclarations) : [],
 		`const n${operation.id} = `,
-		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? false : once && "true", isRuntimeDynamicComponent ? false : maybeSelfReference && "true"),
-		...genDirectivesForElement(operation.id, context)
+		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? operation.key && [
+			"() => (",
+			...genExpression(operation.key, context),
+			")"
+		] : once && "true", useAssetComponentHelper ? maybeSelfReference && "true" : nsArg, useAssetComponentHelper && nsArg)
 	];
 	function genTag() {
 		if (operation.useCreateElement) return JSON.stringify(operation.tag);
-		else if (operation.dynamic) if (operation.dynamic.isStatic) return genCall(helper("resolveDynamicComponent"), genExpression(operation.dynamic, context));
-		else return [
-			"() => (",
-			...genExpression(operation.dynamic, context),
-			")"
-		];
-		else if (useAssetComponentHelper) {
+		else if (operation.dynamic) {
+			if (operation.dynamic.isStatic) return genCall(helper("resolveDynamicComponent"), genExpression(operation.dynamic, context));
+			else return [
+				"() => (",
+				...genExpression(operation.dynamic, context),
+				")"
+			];
+		} else if (useAssetComponentHelper) {
 			const name = maybeSelfReference ? operation.tag.slice(0, -6) : operation.tag;
 			return JSON.stringify(name);
 		} else if (operation.asset) return (0, _vue_compiler_dom.toValidAssetId)(operation.tag, "component");
@@ -2140,9 +2169,11 @@ function genCreateComponent(operation, context) {
 		}
 	}
 }
-function genDynamicComponentFlags(root, once, slotRoot, extraFlags) {
+function genDynamicComponentFlags(root, once, slotRoot, nsOrExtra, ns) {
 	let flags = 0;
 	const names = [];
+	const extraFlags = Array.isArray(nsOrExtra) ? nsOrExtra : void 0;
+	const namespace = Array.isArray(nsOrExtra) ? ns : nsOrExtra;
 	if (root) {
 		flags |= 1;
 		names.push("SINGLE_ROOT");
@@ -2159,8 +2190,15 @@ function genDynamicComponentFlags(root, once, slotRoot, extraFlags) {
 		flags |= flag;
 		names.push(name);
 	}
+	if (namespace === 1) {
+		flags |= 8;
+		names.push("NS_SVG");
+	} else if (namespace === 2) {
+		flags |= 16;
+		names.push("NS_MATHML");
+	}
 	if (!flags) return false;
-	return `${flags} /* ${names.join(", ")} */`;
+	return genFlags(flags, names);
 }
 function getUniqueHandlerName(context, name) {
 	const { seenInlineHandlerNames } = context;
@@ -2282,31 +2320,32 @@ function genDynamicProps(props, context, directStaticLiteralProps = false) {
 		if ((0, _vue_shared.isArray)(p)) {
 			if (p.length) frags.push(genStaticProps(p, context, void 0, directStaticLiteralProps));
 			continue;
-		} else if (p.kind === 1) if (p.model) {
-			const entries = [genProp(p, context)];
-			const updateKey = p.key.isStatic ? [JSON.stringify(`onUpdate:${(0, _vue_shared.camelize)(p.key.content)}`)] : [
-				"[\"onUpdate:\" + ",
-				...genExpression(p.key, context),
-				"]"
-			];
-			entries.push([
-				...updateKey,
-				": ",
-				...genModelHandler(p.values[0], context)
-			]);
-			const { modelModifiers } = p;
-			if (modelModifiers && modelModifiers.length) {
-				const modifiersKey = p.key.isStatic ? genStaticModifierPropKey(p.key.content) : [
-					"[",
+		} else if (p.kind === 1) {
+			if (p.model) {
+				const entries = [genProp(p, context)];
+				const updateKey = p.key.isStatic ? [JSON.stringify(`onUpdate:${(0, _vue_shared.camelize)(p.key.content)}`)] : [
+					"[\"onUpdate:\" + ",
 					...genExpression(p.key, context),
-					" + \"Modifiers\"]"
+					"]"
 				];
-				const modifiersVal = genDirectiveModifiers(modelModifiers);
-				entries.push([...modifiersKey, `: { ${modifiersVal} }`]);
-			}
-			expr = genMulti(DELIMITERS_OBJECT_NEWLINE, ...entries);
-		} else expr = genMulti(DELIMITERS_OBJECT, genProp(p, context, false, false));
-		else {
+				entries.push([
+					...updateKey,
+					": ",
+					...genModelHandler(p.values[0], context)
+				]);
+				const { modelModifiers } = p;
+				if (modelModifiers && modelModifiers.length) {
+					const modifiersKey = p.key.isStatic ? genStaticModifierPropKey(p.key.content) : [
+						"[",
+						...genExpression(p.key, context),
+						" + \"Modifiers\"]"
+					];
+					const modifiersVal = genDirectiveModifiers(modelModifiers);
+					entries.push([...modifiersKey, `: { ${modifiersVal} }`]);
+				}
+				expr = genMulti(DELIMITERS_OBJECT_NEWLINE, ...entries);
+			} else expr = genMulti(DELIMITERS_OBJECT, genProp(p, context, false, false));
+		} else {
 			expr = genExpression(p.value, context);
 			if (p.handler) expr = genCall(helper("toHandlers"), expr);
 		}
@@ -2376,42 +2415,40 @@ function isDirectTemplateConstantAst(node) {
 	}
 	return false;
 }
-function genRawSlots(slots, context) {
+function genRawSlots(slots, context, slotDeclarations) {
 	if (!slots.length) return;
 	const staticSlots = slots[0];
 	if (staticSlots.slotType === 0) {
 		const defaultSlot = getSingleDefaultSlot(staticSlots);
 		if (defaultSlot && slots.length === 1) return genSlotBlockWithProps(defaultSlot, context);
-		return genStaticSlots(staticSlots, context, slots.length > 1 ? slots.slice(1) : void 0);
+		return genStaticSlots(staticSlots, context, slotDeclarations, slots.length > 1 ? slots.slice(1) : void 0);
 	} else return genStaticSlots({
 		slotType: 0,
 		slots: {}
-	}, context, slots);
+	}, context, slotDeclarations, slots);
 }
 function getSingleDefaultSlot({ slots }) {
 	const names = Object.keys(slots);
 	return names.length === 1 && names[0] === "default" ? slots.default : void 0;
 }
-function genStaticSlots({ slots }, context, dynamicSlots) {
+function genStaticSlots({ slots }, context, slotDeclarations, dynamicSlots) {
 	const args = Object.keys(slots).map((name) => [`${JSON.stringify(name)}: `, ...genSlotBlockWithProps(slots[name], context)]);
-	if (dynamicSlots) args.push([`$: `, ...genDynamicSlots(dynamicSlots, context)]);
+	if (dynamicSlots) args.push([`$: `, ...genDynamicSlots(dynamicSlots, context, slotDeclarations)]);
 	return genMulti(DELIMITERS_OBJECT_NEWLINE, ...args);
 }
-function genDynamicSlots(slots, context) {
-	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slot.slotType !== 2)));
+function genDynamicSlots(slots, context, slotDeclarations) {
+	return genMulti(DELIMITERS_ARRAY_NEWLINE, ...slots.map((slot) => slot.slotType === 0 ? genStaticSlots(slot, context, slotDeclarations) : slot.slotType === 4 ? slot.slots.content : genDynamicSlot(slot, context, slotDeclarations, slot.slotType !== 2)));
 }
-function genDynamicSlot(slot, context, withFunction = false) {
+function genDynamicSlot(slot, context, slotDeclarations, withFunction = false) {
 	let frag;
 	switch (slot.slotType) {
 		case 1:
-			frag = genBasicDynamicSlot(slot, context);
+			frag = genBasicDynamicSlot(slot, context, slotDeclarations);
 			break;
 		case 2:
 			frag = genLoopSlot(slot, context);
 			break;
-		case 3:
-			frag = genConditionalSlot(slot, context);
-			break;
+		case 3: frag = genConditionalSlot(slot, context, slotDeclarations);
 	}
 	if (!withFunction) return frag;
 	return [
@@ -2420,32 +2457,38 @@ function genDynamicSlot(slot, context, withFunction = false) {
 		")"
 	];
 }
-function genBasicDynamicSlot(slot, context) {
+function genBasicDynamicSlot(slot, context, slotDeclarations) {
 	const { name, fn } = slot;
-	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context, false)]);
+	const slotName = context.getUniqueLocalName("s");
+	slotDeclarations.push(slotName);
+	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], [
+		`fn: ${slotName} || (${slotName} = `,
+		...genSlotBlockWithProps(fn, context, false),
+		")"
+	]);
 }
 function genLoopSlot(slot, context) {
 	const { name, fn, loop, keyProp } = slot;
 	const { value, key, index, source } = loop;
-	const rawValue = value && value.content;
-	const rawKey = key && key.content;
-	const rawIndex = index && index.content;
+	const plugins = context.options.expressionPlugins;
 	const idToPathMap = parseValueDestructure(value, context);
+	const keyToPathMap = parseValueDestructure(key, context);
+	const indexToPathMap = parseValueDestructure(index, context);
 	const [depth, exitScope] = context.enterScope();
 	const itemVar = `_for_item${depth}`;
-	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, context.options.expressionPlugins);
+	const idMap = buildDestructureIdMap(idToPathMap, `${itemVar}.value`, plugins);
 	idMap[itemVar] = null;
 	const args = [itemVar];
-	if (rawKey) {
+	if (key) {
 		const keyVar = `_for_key${depth}`;
 		args.push(keyVar);
-		idMap[rawKey] = `${keyVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(keyToPathMap, `${keyVar}.value`, plugins));
 		idMap[keyVar] = null;
-	} else if (rawIndex) args.push("_");
-	if (rawIndex) {
+	} else if (index) args.push("_");
+	if (index) {
 		const indexVar = `_for_index${depth}`;
 		args.push(indexVar);
-		idMap[rawIndex] = `${indexVar}.value`;
+		Object.assign(idMap, buildDestructureIdMap(indexToPathMap, `${indexVar}.value`, plugins));
 		idMap[indexVar] = null;
 	}
 	const renderSlot = [
@@ -2459,14 +2502,11 @@ function genLoopSlot(slot, context) {
 	];
 	exitScope();
 	const rawIdMap = {};
-	if (rawKey) rawIdMap[rawKey] = null;
-	if (rawIndex) rawIdMap[rawIndex] = null;
-	idToPathMap.forEach((_, id) => rawIdMap[id] = null);
-	const rawParams = genMulti([
-		"(",
-		")",
-		", "
-	], rawValue ? rawValue : rawKey || rawIndex ? "_" : void 0, rawKey ? rawKey : rawIndex ? "__" : void 0, rawIndex);
+	const collect = (map) => map.forEach((_, id) => rawIdMap[id] = null);
+	collect(idToPathMap);
+	collect(keyToPathMap);
+	collect(indexToPathMap);
+	const rawParams = context.withId(() => genAliasParams(value, key, index, context), rawIdMap);
 	const getName = [
 		...rawParams,
 		" => (",
@@ -2485,17 +2525,17 @@ function genLoopSlot(slot, context) {
 		")"
 	], renderSlot, getName, getKey)];
 }
-function genConditionalSlot(slot, context) {
+function genConditionalSlot(slot, context, slotDeclarations) {
 	const { condition, positive, negative } = slot;
 	return [
 		...genExpression(condition, context),
 		INDENT_START,
 		NEWLINE,
 		"? ",
-		...genDynamicSlot(positive, context),
+		...genDynamicSlot(positive, context, slotDeclarations),
 		NEWLINE,
 		": ",
-		...negative ? [...genDynamicSlot(negative, context)] : ["void 0"],
+		...negative ? genDynamicSlot(negative, context, slotDeclarations) : ["void 0"],
 		INDENT_END
 	];
 }
@@ -2505,28 +2545,22 @@ function genSlotBlockWithProps(oper, context, emitNonStableFlag = true) {
 	let depth;
 	const { props } = oper;
 	const idToPathMap = props ? parseValueDestructure(props, context) : /* @__PURE__ */ new Map();
-	if (props) if (props.ast) {
-		[depth, exitScope] = context.enterScope();
-		propsName = `_slotProps${depth}`;
-	} else propsName = props.content;
+	if (props) {
+		if (props.ast) {
+			[depth, exitScope] = context.enterScope();
+			propsName = `_slotProps${depth}`;
+		} else propsName = props.content;
+	}
 	const idMap = idToPathMap.size ? buildDestructureIdMap(idToPathMap, propsName || "", context.options.expressionPlugins) : {};
 	if (propsName) idMap[propsName] = null;
 	const exitSlotBlock = context.enterSlotBlock();
 	const hasStableRoot = hasStableSlotRoot(oper, context);
 	if (!hasStableRoot) markSlotRootOperations(oper, context);
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
-	if (emitNonStableFlag && !hasStableRoot) blockFn = genCall(context.helper("extend"), blockFn, [`{ _: ${genSlotFlags$1(8)} }`]);
+	if (emitNonStableFlag && !hasStableRoot) blockFn = genCall(context.helper("extend"), blockFn, [`{ _: ${genFlags(1, ["NON_STABLE"])} }`]);
 	exitSlotBlock();
 	exitScope && exitScope();
 	return blockFn;
-}
-function genSlotFlags$1(flags) {
-	const names = [];
-	if (flags & 1) names.push("NO_SLOTTED");
-	if (flags & 2) names.push("ONCE");
-	if (flags & 4) names.push("SLOT_ROOT");
-	if (flags & 8) names.push("NON_STABLE");
-	return `${flags} /* ${names.join(", ")} */`;
 }
 function needsVaporCtx(block) {
 	return hasComponentOrSlotInBlock(block);
@@ -2556,16 +2590,16 @@ function hasComponentOrSlotInOperations(operations) {
 		case 14:
 			if (hasComponentOrSlotInIf(op)) return true;
 			break;
-		case 15:
-			if (hasComponentOrSlotInBlock(op.render)) return true;
-			break;
+		case 15: if (hasComponentOrSlotInBlock(op.render)) return true;
 	}
 	return false;
 }
 function hasComponentOrSlotInIf(node) {
 	if (hasComponentOrSlotInBlock(node.positive)) return true;
-	if (node.negative) if ("positive" in node.negative) return hasComponentOrSlotInIf(node.negative);
-	else return hasComponentOrSlotInBlock(node.negative);
+	if (node.negative) {
+		if ("positive" in node.negative) return hasComponentOrSlotInIf(node.negative);
+		else return hasComponentOrSlotInBlock(node.negative);
+	}
 	return false;
 }
 //#endregion
@@ -2594,10 +2628,76 @@ function genSlotFlags(flags) {
 	const names = [];
 	if (flags & 1) names.push("NO_SLOTTED");
 	if (flags & 2) names.push("ONCE");
-	if (flags & 4) names.push("SLOT_ROOT");
-	if (flags & 16) names.push("SHARED_FALLBACK");
-	if (flags & 32) names.push("INHERIT_FALLBACK");
-	return `${flags} /* ${names.join(", ")} */`;
+	if (flags & 4) names.push("FORWARDED");
+	if (flags & 8) names.push("SHARED_FALLBACK");
+	return genFlags(flags, names);
+}
+//#endregion
+//#region packages/compiler-vapor/src/generators/vShow.ts
+function genVShow(oper, context) {
+	const { element } = oper;
+	return genCall(context.helper("applyVShow"), `n${element}`, [
+		`() => (`,
+		...genExpression(oper.dir.exp, context),
+		`)`
+	]);
+}
+//#endregion
+//#region packages/compiler-vapor/src/generators/directive.ts
+function genBuiltinDirective(oper, context) {
+	let call;
+	switch (oper.name) {
+		case "show":
+			call = genVShow(oper, context);
+			break;
+		case "model":
+			call = genVModel(oper, context);
+			break;
+		default: return [];
+	}
+	return [NEWLINE, ...oper.once ? genOnce(call, context) : call];
+}
+/**
+* user directives via `withVaporDirectives`, emitted at the end of the block
+* so the element's props, children and v-model are in place first
+*/
+function genCustomDirectives(operations, context) {
+	const byElement = /* @__PURE__ */ new Map();
+	for (const oper of operations) if (oper.type === 13 && !oper.builtin) {
+		const dirs = byElement.get(oper.element);
+		if (dirs) dirs.push(oper);
+		else byElement.set(oper.element, [oper]);
+	}
+	const [frag, push] = buildCodeFragment();
+	for (const dirs of byElement.values()) push(...genElementDirectives(dirs, context));
+	return frag;
+}
+function genElementDirectives(opers, context) {
+	const { helper } = context;
+	const element = `n${opers[0].element}`;
+	const directiveItems = opers.map(genDirectiveItem);
+	const directives = genMulti(DELIMITERS_ARRAY, ...directiveItems);
+	const call = genCall(helper("withVaporDirectives"), element, directives);
+	return [NEWLINE, ...opers[0].once ? genOnce(call, context) : call];
+	function genDirectiveItem({ dir, name, asset }) {
+		const directiveVar = asset ? (0, _vue_compiler_dom.toValidAssetId)(name, "directive") : genExpression((0, _vue_shared.extend)((0, _vue_compiler_dom.createSimpleExpression)(name, false), { ast: null }), context);
+		const value = dir.exp && [
+			"() => (",
+			...genExpression(dir.exp, context),
+			")"
+		];
+		const argument = dir.arg && [
+			"() => (",
+			...genExpression(dir.arg, context),
+			")"
+		];
+		const modifiers = !!dir.modifiers.length && [
+			"{ ",
+			genDirectiveModifiers(dir.modifiers.map((m) => m.content)),
+			" }"
+		];
+		return genMulti(DELIMITERS_ARRAY.concat("void 0"), directiveVar, value, argument, modifiers);
+	}
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/key.ts
@@ -2714,10 +2814,7 @@ function genTemplates(templates, context) {
 function genSelf(dynamic, context, flushBeforeDynamic) {
 	const [frag, push] = buildCodeFragment();
 	const { id, template, operation, hasDynamicChild } = dynamic;
-	if (id !== void 0 && template !== void 0) {
-		push(NEWLINE, `const n${id} = ${context.tName(template)}()`);
-		push(...genDirectivesForElement(id, context));
-	}
+	if (id !== void 0 && template !== void 0) push(NEWLINE, `const n${id} = ${context.tName(template)}()`);
 	if (operation) push(...genOperationWithInsertionState(operation, context));
 	if (hasDynamicChild) push(...genChildren(dynamic, context, push, `n${id}`, flushBeforeDynamic));
 	return frag;
@@ -2749,14 +2846,15 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			continue;
 		}
 		const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
-		if (id === void 0 && !child.hasDynamicChild) {
+		const ownsSubtree = child.operation !== void 0;
+		if (id === void 0 && (!child.hasDynamicChild || ownsSubtree)) {
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 			continue;
 		}
 		const elementIndex = index + offset;
 		const inlinePlaceholder = id === void 0 && canInlinePlaceholder(child) && child.template == null && child.operation === void 0 && !(child.flags & 6);
-		const accessPath = genAccessPath(context, from, elementIndex, prev);
+		const accessPath = genAccessPath(context, from, elementIndex, prev, child.isText);
 		if (inlinePlaceholder) {
 			if (prev && prev[2]) {
 				push(...genChildren(child, context, pushBlock, [
@@ -2786,17 +2884,16 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 			variable = id === void 0 ? context.pName(context.block.tempId++) : `n${id}`;
 			pushBlock(NEWLINE, id === void 0 ? `let ${variable} = ` : `const ${variable} = `, ...accessPath);
 		}
-		if (id === child.anchor && !child.hasDynamicChild) {
+		if (id === child.anchor && (!child.hasDynamicChild || ownsSubtree)) {
 			flushBeforeDynamic && flushBeforeDynamic(child, push);
 			push(...genSelf(child, context, flushBeforeDynamic));
 		}
-		if (id !== void 0) push(...genDirectivesForElement(id, context));
 		prev = [
 			variable,
 			elementIndex,
 			id === void 0
 		];
-		push(...genChildren(child, context, pushBlock, variable, flushBeforeDynamic));
+		if (!ownsSubtree) push(...genChildren(child, context, pushBlock, variable, flushBeforeDynamic));
 	}
 	return frag;
 }
@@ -2804,14 +2901,15 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flush
 * Build one DOM lookup path while preserving the fast sibling walk:
 * adjacent nodes use _next(prev), otherwise fall back to _nthChild(parent).
 */
-function genAccessPath({ helper }, from, elementIndex, prev) {
-	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0]) : genCall(helper("nthChild"), from, String(elementIndex));
-	if (elementIndex === 0) return genCall(helper("child"), from);
+function genAccessPath({ helper }, from, elementIndex, prev, isText) {
+	const textHint = isText ? "true" : void 0;
+	if (prev) return elementIndex - prev[1] === 1 ? genCall(helper("next"), prev[0], textHint) : genCall(helper("nthChild"), from, String(elementIndex), textHint);
+	if (elementIndex === 0) return genCall(helper("child"), from, textHint);
 	if (elementIndex === 1) {
 		const firstChild = genCall(helper("child"), from);
-		return genCall(helper("next"), firstChild);
+		return genCall(helper("next"), firstChild, textHint);
 	}
-	return genCall(helper("nthChild"), from, String(elementIndex));
+	return genCall(helper("nthChild"), from, String(elementIndex), textHint);
 }
 /**
 * Only inline a placeholder when materializing it would not save a parent
@@ -2926,6 +3024,7 @@ function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffec
 	if (effectIndex < effect.length) push(...genEffectRange(effectIndex, effect.length, genEffectsExtraFrag));
 	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
 	if (modelOperations.length) push(...genOperations(modelOperations, context));
+	push(...genCustomDirectives(operation, context));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
 	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "[]"]);
@@ -2966,9 +3065,8 @@ function markSlotRootOperationsImpl(block, context, sharedFallback, respectStabl
 			markSlotRootOperationsImpl(operation.block, context, sharedFallback, respectStableRoot);
 		} else if (operation.type === 11) markSlotRootComponent(operation);
 		else if (operation.type === 12) {
-			if (!(operation.flags & 2)) operation.flags |= 4;
-			if (sharedFallback) operation.flags |= 16;
-			else operation.flags |= 32;
+			operation.flags |= 4;
+			if (sharedFallback) operation.flags |= 8;
 		}
 	}
 }
@@ -3070,8 +3168,10 @@ function collectSingleUseAssetComponents(block) {
 		switch (operation.type) {
 			case 14:
 				visitBlock(operation.positive, false);
-				if (operation.negative) if (operation.negative.type === 14) visitOperation(operation.negative, false);
-				else visitBlock(operation.negative, false);
+				if (operation.negative) {
+					if (operation.negative.type === 14) visitOperation(operation.negative, false);
+					else visitBlock(operation.negative, false);
+				}
 				break;
 			case 15:
 				visitBlock(operation.render, false);
@@ -3079,9 +3179,7 @@ function collectSingleUseAssetComponents(block) {
 			case 16:
 				visitBlock(operation.block, false);
 				break;
-			case 12:
-				if (operation.fallback) visitBlock(operation.fallback, false);
-				break;
+			case 12: if (operation.fallback) visitBlock(operation.fallback, false);
 		}
 	}
 	function visitSlots(slots) {
@@ -3096,7 +3194,6 @@ function collectSingleUseAssetComponents(block) {
 			case 3:
 				visitSlots([slot.positive]);
 				if (slot.negative) visitSlots([slot.negative]);
-				break;
 		}
 	}
 }
@@ -3148,14 +3245,16 @@ var CodegenContext = class {
 	enterScope() {
 		return [this.scopeLevel++, () => this.scopeLevel--];
 	}
-	getUniqueLocalName(base, scopeNames) {
+	getUniqueLocalName(base, scopeNames = this.generatedLocalNames) {
 		const name = this.findAvailableName(base, scopeNames);
 		scopeNames.add(name);
 		this.generatedLocalNames.add(name);
 		return name;
 	}
 	isNameAvailable(name, reservedNames) {
+		var _this$identifiers$nam;
 		if (this.bindingNames.has(name) || reservedNames.has(name)) return false;
+		if ((_this$identifiers$nam = this.identifiers[name]) === null || _this$identifiers$nam === void 0 ? void 0 : _this$identifiers$nam.length) return false;
 		for (const alias of this.helpers.values()) if (alias === name) return false;
 		return true;
 	}
@@ -3243,7 +3342,6 @@ var CodegenContext = class {
 		this.block = ir.block;
 		this.bindingNames = new Set(this.options.bindingMetadata ? Object.keys(this.options.bindingMetadata) : []);
 		this.initNextIdMap();
-		this.staticTemplateRefHelperCandidate = getStaticTemplateRefHelperCandidate(ir.block);
 	}
 };
 function generate(ir, options = {}) {
@@ -3295,11 +3393,6 @@ function genAssetImports({ ir }) {
 	}
 	return imports;
 }
-function getStaticTemplateRefHelperCandidate(block) {
-	if (block.operation.length !== 1) return;
-	const operation = block.operation[0];
-	if (operation.type === 9 && !operation.effect && !operation.refFor && operation.value.isStatic) return operation;
-}
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
 function normalizeBindShorthand(arg, context) {
@@ -3307,7 +3400,8 @@ function normalizeBindShorthand(arg, context) {
 		context.options.onError((0, _vue_compiler_dom.createCompilerError)(53, arg.loc));
 		return (0, _vue_compiler_dom.createSimpleExpression)("", true, arg.loc);
 	}
-	const exp = (0, _vue_compiler_dom.createSimpleExpression)((0, _vue_shared.camelize)(arg.content), false, arg.loc);
+	const propName = (0, _vue_shared.camelize)(arg.content);
+	const exp = (0, _vue_compiler_dom.createSimpleExpression)(propName, false, arg.loc);
 	exp.ast = null;
 	return exp;
 }
@@ -3321,20 +3415,52 @@ const transformVBind = (dir, node, context) => {
 		context.options.onError((0, _vue_compiler_dom.createCompilerError)(34, loc));
 		exp = (0, _vue_compiler_dom.createSimpleExpression)("", true, loc);
 	}
-	const isComponent = node.tagType === 1;
-	const isDom2DataAttr = context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-");
-	exp = resolveExpression(exp, isComponent || isDom2DataAttr);
 	arg = resolveExpression(arg);
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || !arg.isStatic || (0, _vue_shared.isSpecialBooleanAttr)(arg.content) || isCheckboxValueProp(node, arg.content) || !!context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-") || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
+	exp = resolveExpression(exp, excludeNumber);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
-	if (modifiersString.includes("camel")) if (arg.isStatic) arg = (0, _vue_shared.extend)({}, arg, { content: (0, _vue_shared.camelize)(arg.content) });
-	else camel = true;
+	if (modifiersString.includes("camel")) {
+		if (arg.isStatic) arg = (0, _vue_shared.extend)({}, arg, { content: (0, _vue_shared.camelize)(arg.content) });
+		else camel = true;
+	}
 	return {
 		key: arg,
 		value: exp,
 		loc,
 		runtimeCamelize: camel,
 		modifier: modifiersString.includes("prop") ? "." : modifiersString.includes("attr") ? "^" : void 0
+	};
+};
+//#endregion
+//#region packages/compiler-vapor/src/transforms/transformKey.ts
+const dynamicComponentKeys = /* @__PURE__ */ new WeakMap();
+const transformKey = (node, context) => {
+	if (node.type !== 1 || context.inVOnce || findDir$4(node, "for") || node.tagType === 3 && findDir$4(node, /^(if|else-if|else|slot)$/, true)) return;
+	const dir = findProp$1(node, "key", true, true);
+	if (!dir || dir.type === 6) return;
+	let value;
+	value = dir.exp || normalizeBindShorthand(dir.arg, context);
+	if (isStaticExpression(value, context.options.bindingMetadata)) return;
+	if (isComponentTag(node.tag) && findProp$1(node, "is", true, true)) {
+		dynamicComponentKeys.set(node, value);
+		return;
+	}
+	let id = context.reference();
+	context.dynamic.flags |= 6;
+	context.node = node = wrapTemplate(node, ["key"]);
+	const block = newBlock(node);
+	const exitBlock = context.enterBlock(block);
+	return () => {
+		exitBlock();
+		context.dynamic.operation = {
+			type: 16,
+			node,
+			id,
+			...context.effectBoundary(),
+			value,
+			block
+		};
 	};
 };
 //#endregion
@@ -3385,7 +3511,54 @@ const VaporErrorMessages = {
 };
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformElement.ts
-const isReservedProp = /* @__PURE__ */ (0, _vue_shared.makeMap)(",key,ref,ref_for,ref_key,");
+const isReservedProp = /*#__PURE__*/ (0, _vue_shared.makeMap)(",key,ref,ref_for,ref_key,");
+/**
+* `true-value` / `false-value` are only read back by `v-model` on a checkbox,
+* and they are dropped from the ssr output, so a checkbox that only carries
+* them in the template has nothing left to read from after hydration. A
+* dynamic `type` can still make the element a checkbox at runtime.
+*/
+function isCheckboxValueProp(node, key) {
+	if (node.tag !== "input" || key !== "true-value" && key !== "false-value") return false;
+	const type = findProp$1(node, "type");
+	return type ? type.type === 7 || type.value.content === "checkbox" : (0, _vue_compiler_dom.hasDynamicKeyVBind)(node);
+}
+/**
+* Props the template string cannot carry, so they have to be applied by a
+* runtime prop setter instead:
+* - `<textarea>` / `<select>` ignore a `value` content attribute, the value
+*   only takes effect as a dom property - which is where vdom sends it too,
+*   see `shouldSetAsProp`
+* - `true-value` / `false-value`, see `isCheckboxValueProp`
+*/
+function isRuntimeOnlyProp(node, key) {
+	return key === "value" && (node.tag === "textarea" || node.tag === "select") || isCheckboxValueProp(node, key);
+}
+/**
+* Props `v-model` reads back off the element as raw values (`_value`,
+* `_trueValue`, `_falseValue`), so a number literal bound to them has to keep
+* its type - vdom bails on `<option :value="1">` in its own static
+* stringification for the same reason.
+*
+* Deliberately wider than `isRuntimeOnlyProp`: a literal `<input value="1">`
+* belongs in the template string, only the type of a *bound* number has to
+* survive. So this one is consulted by `v-bind`, that one by
+* `transformNativeElement`.
+*/
+function isModelValueProp(node, key) {
+	const { tag } = node;
+	return key === "value" && (tag === "input" || tag === "option" || tag === "textarea" || tag === "select") || isCheckboxValueProp(node, key);
+}
+/**
+* Boolean attributes are folded into the template from the value itself, which
+* needs the type it was written with: `:disabled="0"` is `false`, while the
+* `"0"` a stringified template attribute would carry is `true`. `hidden` is
+* not a boolean attribute - it also takes `until-found` - but a number means
+* the same thing there.
+*/
+function isFoldableBooleanAttr(key) {
+	return (0, _vue_shared.isBooleanAttr)(key) || key === "hidden";
+}
 const transformElement = (node, context) => {
 	let effectIndex = context.block.effect.length;
 	const getEffectIndex = () => effectIndex++;
@@ -3450,6 +3623,8 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 	let asset = true;
 	if (!dynamicComponent && !useCreateElement) {
 		const { isEasyComponent } = context.options;
+		const isProp = findProp$1(node, "is");
+		if (isProp && isProp.type === 6 && isVueIsValue(isProp)) tag = isProp.value.content.slice(4);
 		const isEasyCom = isEasyComponent && isEasyComponent(tag);
 		if (!isEasyCom) {
 			const fromSetup = resolveSetupReference(tag, context);
@@ -3492,16 +3667,18 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 		once: context.inVOnce,
 		dynamic: dynamicComponent,
 		useCreateElement,
-		flatten
+		flatten,
+		ns: node.ns || void 0,
+		key: dynamicComponentKeys.get(node)
 	};
 	if (staticKey) context.registerOperation(createSetBlockKey(id, staticKey, node));
 	context.slots = [];
 }
-function extractElementFlatten(node, propsResult, context) {
+function extractElementFlatten(node, propsResult, context, reportInvalid = true) {
 	if (!context.options.platform) return;
-	const flatten = extractStaticBooleanProp(propsResult, "flatten", (loc) => {
+	const flatten = extractStaticBooleanProp(propsResult, "flatten", reportInvalid ? (loc) => {
 		context.options.onError(createVaporCompilerError(101, loc));
-	});
+	} : void 0);
 	if (flatten != null) node.flatten = flatten;
 	return flatten;
 }
@@ -3523,6 +3700,9 @@ function extractStaticBooleanProp(propsResult, name, onInvalid) {
 		}
 	}
 }
+function isVueIsValue(prop) {
+	return !!prop.value && prop.value.content.startsWith("vue:");
+}
 function resolveDynamicComponent(node) {
 	const isProp = findProp$1(node, "is", false, true);
 	if (!isProp) return;
@@ -3538,6 +3718,7 @@ function resolveSetupReference(name, context) {
 }
 const dynamicKeys = ["indeterminate"];
 const NEEDS_QUOTES_RE = /[\s"'`=<>]/;
+const LEADING_NEWLINE_RE = /^\r?\n/;
 const UNSAFE_ATTR_NAME_RE = /[\u0000-\u0020"'<=/>]/;
 function isDataProp(prop) {
 	const name = prop.key.content;
@@ -3546,7 +3727,6 @@ function isDataProp(prop) {
 function transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, omitEndTag, getOperationIndex) {
 	const isDom2 = !!context.options.platform;
 	if (isDom2) omitEndTag = false;
-	if (isDom2) extractElementFlatten(node, propsResult, context);
 	const { tag } = node;
 	const { scopeId } = context.options;
 	let template = "";
@@ -3562,7 +3742,6 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				if (context.options.rootElementFromUniModule) template += ` gen-root-custom-native="${rootElementTagName}"`;
 			}
 		}
-		if (node.flatten) template += ` flatten`;
 	}
 	const dynamicProps = [];
 	if (propsResult[0]) {
@@ -3599,6 +3778,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				for (let i = indicesToRemove.length - 1; i >= 0; i--) props.splice(indicesToRemove[i], 1);
 			}
+			if (extractElementFlatten(node, propsResult, context, false)) template += ` flatten`;
 		}
 		let hasStaticStyle = false;
 		let hasClass = false;
@@ -3632,7 +3812,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				if (key.content === "class") hasClass = true;
 			}
 			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) template += ` ${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
-			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
+			else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content) && !isRuntimeOnlyProp(node, key.content)) {
 				if (isDom2 && key.content === "style") {
 					hasStaticStyle = true;
 					const checkStaticStyle = context.options.checkStaticStyle;
@@ -3654,7 +3834,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				const value = values[0].content === "''" ? "" : values[0].content;
 				appendTemplateProp(key.content, value);
-			} else if (canStringifyAttrName && !prop.modifier && ((0, _vue_shared.isBooleanAttr)(key.content) || key.content === "hidden") && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
+			} else if (canStringifyAttrName && !prop.modifier && isFoldableBooleanAttr(key.content) && (foldedValue = foldBooleanAttrValue(key.content, values)) != null) {
 				if (foldedValue) appendTemplateProp(key.content);
 			} else if (canStringifyAttrName && !prop.modifier && !isDom2 && hasBoundValue(values) && (foldedValue = key.content === "class" ? foldClassValues(values) : key.content === "style" ? foldStyleValues(values) : void 0) != null) {
 				if (foldedValue) appendTemplateProp(key.content, foldedValue, true);
@@ -3683,7 +3863,9 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			}, getEffectIndex);
 		}
 	}
-	template += `>` + context.childrenTemplate.join("");
+	let children = context.childrenTemplate.join("");
+	if (node.ns === 0 && _vue_compiler_dom.parserOptions.isIgnoreNewlineTag(tag) && LEADING_NEWLINE_RE.test(children)) children = `\n` + children;
+	template += `>` + children;
 	if (!(0, _vue_shared.isVoidTag)(tag) && !omitEndTag) template += `</${tag}>`;
 	context.templateRoot = singleRoot;
 	if (context.parent && context.parent.node.type === 1 && !(0, _vue_compiler_dom.isValidHTMLNesting)(context.parent.node.tag, tag)) {
@@ -3711,7 +3893,8 @@ function foldStyleValues(values) {
 		if (!evaluated || !isStaticStyleValue(evaluated.value)) return;
 		evaluatedValues.push(evaluated.value);
 	}
-	return (0, _vue_shared.stringifyStyle)((0, _vue_shared.normalizeStyle)(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues));
+	const normalized = (0, _vue_shared.normalizeStyle)(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues);
+	return (0, _vue_shared.stringifyStyle)(normalized);
 }
 function isStaticStyleValue(value) {
 	if (typeof value === "string") return true;
@@ -3812,6 +3995,7 @@ function evaluateObjectExpression(node) {
 	return { value };
 }
 function resolveStaticKey(node, context, isComponent) {
+	if (context.parent.node !== context.block.node) return;
 	const keyProp = findProp$1(node, "key", false, true);
 	if (!keyProp) return;
 	if (keyProp.type === 6) return keyProp.value ? (0, _vue_compiler_dom.createSimpleExpression)(keyProp.value.content, true, keyProp.value.loc) : EMPTY_EXPRESSION;
@@ -3849,9 +4033,10 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 			if (prop.name === "bind") {
 				if (prop.exp) {
 					const objectLiteralProps = isComponent ? resolveComponentObjectLiteralBindProps(prop.exp, context, props, prop) : resolveNativeObjectLiteralBindProps(prop.exp, context, props, prop);
-					if (objectLiteralProps) if (isComponent) pushStaticObjectLiteralProps(objectLiteralProps);
-					else results.push(...objectLiteralProps.map(toDirectiveResult));
-					else {
+					if (objectLiteralProps) {
+						if (isComponent) pushStaticObjectLiteralProps(objectLiteralProps);
+						else results.push(...objectLiteralProps.map(toDirectiveResult));
+					} else {
 						dynamicExpr.push(prop.exp);
 						pushMergeArg();
 						dynamicArgs.push({
@@ -3862,29 +4047,30 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 				} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(34, prop.loc));
 				continue;
 			} else if (prop.name === "on") {
-				if (prop.exp) if (isComponent) {
-					const objectLiteralProps = resolveComponentObjectLiteralOnProps(prop.exp, context, props, prop);
-					if (objectLiteralProps) pushStaticObjectLiteralProps(objectLiteralProps);
-					else {
-						dynamicExpr.push(prop.exp);
-						pushMergeArg();
-						dynamicArgs.push({
-							kind: 0,
-							value: prop.exp,
-							handler: true
-						});
-					}
-				} else context.registerEffect([prop.exp], {
-					type: 7,
-					node,
-					element: context.reference(),
-					event: prop.exp
-				}, getEffectIndex);
-				else context.options.onError((0, _vue_compiler_dom.createCompilerError)(35, prop.loc));
+				if (prop.exp) {
+					if (isComponent) {
+						const objectLiteralProps = resolveComponentObjectLiteralOnProps(prop.exp, context, props, prop);
+						if (objectLiteralProps) pushStaticObjectLiteralProps(objectLiteralProps);
+						else {
+							dynamicExpr.push(prop.exp);
+							pushMergeArg();
+							dynamicArgs.push({
+								kind: 0,
+								value: prop.exp,
+								handler: true
+							});
+						}
+					} else context.registerEffect([prop.exp], {
+						type: 7,
+						node,
+						element: context.reference(),
+						event: prop.exp
+					}, getEffectIndex);
+				} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(35, prop.loc));
 				continue;
 			}
 		}
-		if (isDynamicComponent && (prop.type === 6 && prop.name === "is" || prop.type === 7 && prop.name === "bind" && (0, _vue_compiler_dom.isStaticArgOf)(prop.arg, "is"))) continue;
+		if (prop.type === 6 ? prop.name === "is" && (isDynamicComponent || isVueIsValue(prop)) : isDynamicComponent && prop.name === "bind" && (0, _vue_compiler_dom.isStaticArgOf)(prop.arg, "is")) continue;
 		const result = transformProp(prop, node, context);
 		if (result) {
 			dynamicExpr.push(result.key, result.value);
@@ -4061,6 +4247,10 @@ function transformProp(prop, node, context) {
 	const directiveTransform = context.options.directiveTransforms[name];
 	if (directiveTransform) return directiveTransform(prop, node, context);
 	if (!(0, _vue_shared.isBuiltInDirective)(name)) {
+		if (node.tagType === 2) {
+			context.options.onError((0, _vue_compiler_dom.createCompilerError)(36, prop.loc));
+			return;
+		}
 		const fromSetup = resolveSetupReference(`v-${name}`, context);
 		if (fromSetup) name = fromSetup;
 		else context.directive.add(name);
@@ -4070,7 +4260,8 @@ function transformProp(prop, node, context) {
 			element: context.reference(),
 			dir: prop,
 			name,
-			asset: !fromSetup
+			asset: !fromSetup,
+			once: context.inVOnce
 		});
 	}
 }
@@ -4111,9 +4302,6 @@ function mergePropValues(existing, incoming) {
 	const newValues = incoming.values;
 	existing.values.push(...newValues);
 }
-function isComponentTag(tag) {
-	return tag === "component" || tag === "Component";
-}
 function shouldUseCreateElement(node, context) {
 	return context.options.isCustomElement(node.tag) || node.tagType === 0 && node.tag === "template";
 }
@@ -4131,12 +4319,13 @@ const transformChildren = (node, context) => {
 		childContext.templateCloseBlocks = isInSameTemplate ? childTemplateCloseState.blocks : false;
 		transformNode(childContext);
 		const childDynamic = childContext.dynamic;
+		const createsNode = isFragment || childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true;
 		if (isFragment) {
 			childContext.reference();
 			childContext.registerTemplate();
 			if (!(childDynamic.flags & 2) || childDynamic.flags & 4) context.block.returns.push(childContext.dynamic.id);
 		} else if (useCreateElement) {
-			if (childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true) {
+			if (createsNode) {
 				childContext.reference();
 				childContext.registerTemplate();
 				childDynamic.flags |= 6;
@@ -4145,6 +4334,7 @@ const transformChildren = (node, context) => {
 		if (childDynamic.hasDynamicChild || childDynamic.id !== void 0 || childDynamic.flags & 2 || childDynamic.flags & 4) context.dynamic.hasDynamicChild = true;
 		childDynamic.type = child.type;
 		if (child.type === 1) childDynamic.tag = child.tag;
+		if (!createsNode) childDynamic.flags |= 2;
 		context.dynamic.children[i] = childDynamic;
 	}
 	if (!isFragment) processDynamicChildren(context);
@@ -4233,13 +4423,13 @@ function processInterpolation(context) {
 	const values = processTextLikeChildren(collectAdjacentText(context), context);
 	if (values.length === 0 && parentNode.type !== 0) return;
 	const literalValues = values.map((v) => getLiteralExpressionValue(v));
-	if (literalValues.every((v) => v != null) && parentNode.type !== 0) {
-		const text = literalValues.join("");
+	const text = literalValues.every((v) => v != null) ? literalValues.join("") : null;
+	const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
+	if (text !== null && parentNode.type !== 0 && (isElementChild || text !== "")) {
 		if (parentNode.type === 1 && shouldUseCreateElement(parentNode, context.parent) && text[0] === "<") {
 			materializeLiteralTextNode((0, _vue_compiler_dom.createSimpleExpression)(text, true, context.node.loc), context);
 			return;
 		}
-		const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
 		context.template += isElementChild ? (0, _vue_shared.escapeHtml)(text) : text;
 		return;
 	}
@@ -4258,6 +4448,7 @@ function processInterpolation(context) {
 	}
 	context.template += isDom2 ? isTextNode ? TEXT_NODE_PLACEHOLDER : TEXT_PLACEHOLDER : " ";
 	const id = context.reference();
+	context.dynamic.isText = isElementChild;
 	if (values.length === 0) return;
 	context.registerEffect(values, {
 		type: 5,
@@ -4345,7 +4536,7 @@ function isTextLike(node) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vText.ts
-const isRawTextContainer = /* @__PURE__ */ (0, _vue_shared.makeMap)("iframe,noembed,noframes,noscript,script,style,xmp");
+const isRawTextContainer = /*@__PURE__*/ (0, _vue_shared.makeMap)("iframe,noembed,noframes,noscript,script,style,xmp");
 const transformVText = (dir, node, context) => {
 	let { exp, loc } = dir;
 	if (!exp) {
@@ -4366,16 +4557,17 @@ const transformVText = (dir, node, context) => {
 	};
 	const literal = getLiteralExpressionValue(exp);
 	const useCreateElement = shouldUseCreateElement(context.node, context);
-	if (literal != null) if (useCreateElement || isRawTextContainer(node.tag)) {
-		const id = registerSyntheticTextChild(context, "", [exp]);
-		context.registerOperation({
-			type: 10,
-			node,
-			elements: [id],
-			parent: context.reference()
-		});
-	} else context.childrenTemplate = [(0, _vue_shared.escapeHtml)(literal)];
-	else {
+	if (literal != null) {
+		if (useCreateElement || isRawTextContainer(node.tag)) {
+			const id = registerSyntheticTextChild(context, "", [exp]);
+			context.registerOperation({
+				type: 10,
+				node,
+				elements: [id],
+				parent: context.reference()
+			});
+		} else context.childrenTemplate = [(0, _vue_shared.escapeHtml)(literal)];
+	} else {
 		let id;
 		if (useCreateElement) {
 			id = registerSyntheticTextChild(context, "");
@@ -4418,7 +4610,7 @@ function isConstantVTextExpression(exp, bindings) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vOn.ts
-const delegatedEvents = /* @__PURE__ */ (0, _vue_shared.makeMap)("beforeinput,click,dblclick,contextmenu,focusin,focusout,input,keydown,keyup,mousedown,mousemove,mouseout,mouseover,mouseup,pointerdown,pointermove,pointerout,pointerover,pointerup,touchend,touchmove,touchstart");
+const delegatedEvents = /*#__PURE__*/ (0, _vue_shared.makeMap)("beforeinput,click,dblclick,contextmenu,focusin,focusout,input,keydown,keyup,mousedown,mousemove,mouseout,mouseover,mouseup,pointerdown,pointermove,pointerout,pointerover,pointerup,touchend,touchmove,touchstart");
 const transformVOn = (dir, node, context) => {
 	let { arg, exp, loc, modifiers } = dir;
 	const isComponent = node.tagType === 1;
@@ -4521,7 +4713,8 @@ const transformVShow = (dir, node, context) => {
 		element: context.reference(),
 		dir,
 		name: "show",
-		builtin: true
+		builtin: true,
+		once: context.inVOnce
 	});
 };
 //#endregion
@@ -4577,30 +4770,29 @@ const transformVModel = (dir, node, context) => {
 	const { tag } = node;
 	const isCustomElement = context.options.isCustomElement(tag);
 	let modelType = "text";
-	if (tag === "input" || tag === "textarea" || tag === "select" || isCustomElement) if (tag === "input" || isCustomElement) {
-		const type = (0, _vue_compiler_dom.findProp)(node, "type");
-		if (type) {
-			if (type.type === 7) modelType = "dynamic";
-			else if (type.value) switch (type.value.content) {
-				case "radio":
-					modelType = "radio";
-					break;
-				case "checkbox":
-					modelType = "checkbox";
-					break;
-				case "file":
-					modelType = void 0;
-					context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(60, dir.loc));
-					break;
-				default:
-					checkDuplicatedValue();
-					break;
-			}
-		} else if ((0, _vue_compiler_dom.hasDynamicKeyVBind)(node)) modelType = "dynamic";
+	if (tag === "input" || tag === "textarea" || tag === "select" || isCustomElement) {
+		if (tag === "input" || isCustomElement) {
+			const type = (0, _vue_compiler_dom.findProp)(node, "type");
+			if (type) {
+				if (type.type === 7) modelType = "dynamic";
+				else if (type.value) switch (type.value.content) {
+					case "radio":
+						modelType = "radio";
+						break;
+					case "checkbox":
+						modelType = "checkbox";
+						break;
+					case "file":
+						modelType = void 0;
+						context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(60, dir.loc));
+						break;
+					default: checkDuplicatedValue();
+				}
+			} else if ((0, _vue_compiler_dom.hasDynamicKeyVBind)(node)) modelType = "dynamic";
+			else checkDuplicatedValue();
+		} else if (tag === "select") modelType = "select";
 		else checkDuplicatedValue();
-	} else if (tag === "select") modelType = "select";
-	else checkDuplicatedValue();
-	else context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(58, dir.loc));
+	} else context.options.onError((0, _vue_compiler_dom.createDOMCompilerError)(58, dir.loc));
 	if (modelType) context.registerOperation({
 		type: 13,
 		node,
@@ -4608,7 +4800,8 @@ const transformVModel = (dir, node, context) => {
 		dir,
 		name: "model",
 		modelType,
-		builtin: true
+		builtin: true,
+		once: context.inVOnce
 	});
 	function checkDuplicatedValue() {
 		const value = (0, _vue_compiler_dom.findDir)(node, "bind");
@@ -4790,6 +4983,8 @@ function processFor(node, dir, context) {
 	const idProp = findProp$1(node, "id");
 	const idProperty = idProp && propToExpression(idProp);
 	const isComponent = node.tagType === 1 || isTemplateWithSingleComponent(node);
+	const parentNode = context.parent && context.parent.node;
+	const wrappedRows = node.tagType === 3 && !(parentNode && isTransitionHostNode(parentNode)) && (node.children.length !== 1 || node.children[0].type !== 1 || !!findDir$4(node.children[0], ROW_FRAGMENT_DIR_RE));
 	context.node = node = wrapTemplate(node, ["for", "key"]);
 	context.dynamic.flags |= 6;
 	const id = context.reference();
@@ -4815,10 +5010,12 @@ function processFor(node, dir, context) {
 			render,
 			once: context.inVOnce || isStaticExpression(source, context.options.bindingMetadata),
 			component: isComponent && node.children[0].type === 1 && node.children[0].tagType === 1,
-			onlyChild: !!isOnlyChild
+			onlyChild: !!isOnlyChild,
+			wrappedRows
 		};
 	};
 }
+const ROW_FRAGMENT_DIR_RE = /^(?:if|for)$/;
 function isTemplateWithSingleComponent(node) {
 	if (node.tag !== "template") return false;
 	const nonCommentChildren = node.children.filter((c) => c.type !== 3);
@@ -4834,14 +5031,17 @@ const transformSlotOutlet = (node, context) => {
 	let slotName;
 	const slotProps = [];
 	for (const prop of node.props) if (prop.type === 6) {
-		if (prop.value) if (prop.name === "name") slotName = (0, _vue_compiler_dom.createSimpleExpression)(prop.value.content, true, prop.loc);
-		else slotProps.push((0, _vue_shared.extend)({}, prop, { name: (0, _vue_shared.camelize)(prop.name) }));
-	} else if (prop.name === "bind" && (0, _vue_compiler_dom.isStaticArgOf)(prop.arg, "name")) if (prop.exp) slotName = prop.exp;
-	else {
-		slotName = (0, _vue_compiler_dom.createSimpleExpression)((0, _vue_shared.camelize)(prop.arg.content), false, prop.arg.loc);
-		slotName.ast = null;
-	}
-	else {
+		if (prop.value) {
+			if (prop.name === "name") slotName = (0, _vue_compiler_dom.createSimpleExpression)(prop.value.content, true, prop.loc);
+			else slotProps.push((0, _vue_shared.extend)({}, prop, { name: (0, _vue_shared.camelize)(prop.name) }));
+		}
+	} else if (prop.name === "bind" && (0, _vue_compiler_dom.isStaticArgOf)(prop.arg, "name")) {
+		if (prop.exp) slotName = prop.exp;
+		else {
+			slotName = (0, _vue_compiler_dom.createSimpleExpression)((0, _vue_shared.camelize)(prop.arg.content), false, prop.arg.loc);
+			slotName.ast = null;
+		}
+	} else {
 		let slotProp = prop;
 		if (slotProp.name === "bind" && slotProp.arg && (0, _vue_compiler_dom.isStaticExp)(slotProp.arg)) slotProp = (0, _vue_shared.extend)({}, prop, { arg: (0, _vue_shared.extend)({}, slotProp.arg, { content: (0, _vue_shared.camelize)(slotProp.arg.content) }) });
 		slotProps.push(slotProp);
@@ -4851,8 +5051,6 @@ const transformSlotOutlet = (node, context) => {
 	if (slotProps.length) {
 		const [isDynamic, props] = buildProps((0, _vue_shared.extend)({}, node, { props: slotProps }), context, true);
 		irProps = isDynamic ? props : [props];
-		const runtimeDirective = context.block.operation.find((oper) => oper.type === 13 && oper.element === id);
-		if (runtimeDirective) context.options.onError((0, _vue_compiler_dom.createCompilerError)(36, runtimeDirective.dir.loc));
 	}
 	return () => {
 		exitBlock && exitBlock();
@@ -4902,10 +5100,11 @@ function transformComponentSlot(node, dir, context) {
 	const { children } = node;
 	const arg = dir && dir.arg;
 	const hasTemplateSlots = children.some(isSlotTemplateChild);
+	const isTransitionHost = isTransitionHostNode(node);
 	const emptyTextNodes = [];
 	const nonSlotTemplateChildren = children.filter((n) => {
 		if (isSlotTemplateChild(n)) return false;
-		if (n.type === 3 && hasTemplateSlots) {
+		if (n.type === 3 && (hasTemplateSlots || isTransitionHost)) {
 			ignoreComment(n, context);
 			return false;
 		}
@@ -4927,12 +5126,13 @@ function transformComponentSlot(node, dir, context) {
 			context.options.onError((0, _vue_compiler_dom.createCompilerError)(37, dir.loc));
 			return;
 		}
-		if (nonSlotTemplateChildren.length) if (hasStaticSlot(slots, "default")) context.options.onError((0, _vue_compiler_dom.createCompilerError)(39, nonSlotTemplateChildren[0].loc));
-		else {
-			registerSlot(slots, arg, block);
-			context.slots = slots;
-		}
-		else if (hasOtherSlots) context.slots = slots;
+		if (nonSlotTemplateChildren.length) {
+			if (hasStaticSlot(slots, "default")) context.options.onError((0, _vue_compiler_dom.createCompilerError)(39, nonSlotTemplateChildren[0].loc));
+			else {
+				registerSlot(slots, arg, block);
+				context.slots = slots;
+			}
+		} else if (hasOtherSlots) context.slots = slots;
 	};
 }
 function transformTemplateSlot(node, dir, context) {
@@ -4978,16 +5178,18 @@ function transformTemplateSlot(node, dir, context) {
 			};
 			ifNode.negative = negative;
 		} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(30, vElse.loc));
-	} else if (vFor) if (vFor.forParseResult) {
-		const keyProp = findProp$1(node, "key");
-		registerDynamicSlot(slots, {
-			slotType: 2,
-			name: arg,
-			fn: block,
-			loop: vFor.forParseResult,
-			keyProp: keyProp && propToExpression(keyProp)
-		});
-	} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
+	} else if (vFor) {
+		if (vFor.forParseResult) {
+			const keyProp = findProp$1(node, "key");
+			registerDynamicSlot(slots, {
+				slotType: 2,
+				name: arg,
+				fn: block,
+				loop: vFor.forParseResult,
+				keyProp: keyProp && propToExpression(keyProp)
+			});
+		} else context.options.onError((0, _vue_compiler_dom.createCompilerError)(32, vFor.loc));
+	}
 	return onExit;
 }
 function ensureStaticSlots(slots) {
@@ -5046,32 +5248,6 @@ function hasMultipleChildren(node) {
 	if (children.length > 0 && children.every((c, index) => c.type === 1 && (!(0, _vue_compiler_dom.isTemplateNode)(c) || !hasMultipleChildren(c)) && !findDir$4(c, "for") && (index === 0 ? findDir$4(c, "if") : hasElse(c)))) return false;
 	return children.length !== 1;
 }
-//#endregion
-//#region packages/compiler-vapor/src/transforms/transformKey.ts
-const transformKey = (node, context) => {
-	if (node.type !== 1 || context.inVOnce || findDir$4(node, "for")) return;
-	const dir = findProp$1(node, "key", true, true);
-	if (!dir || dir.type === 6) return;
-	let value;
-	value = dir.exp || normalizeBindShorthand(dir.arg, context);
-	if (isStaticExpression(value, context.options.bindingMetadata)) return;
-	let id = context.reference();
-	context.dynamic.flags |= 6;
-	context.node = node = wrapTemplate(node, ["key"]);
-	const block = newBlock(node);
-	const exitBlock = context.enterBlock(block);
-	return () => {
-		exitBlock();
-		context.dynamic.operation = {
-			type: 16,
-			node,
-			id,
-			...context.effectBoundary(),
-			value,
-			block
-		};
-	};
-};
 //#endregion
 //#region packages/compiler-vapor/src/compile.ts
 function compile(source, options = {}) {
