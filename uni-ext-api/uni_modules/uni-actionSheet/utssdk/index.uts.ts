@@ -22,6 +22,7 @@ export const showActionSheet: ShowActionSheet = (options: ShowActionSheetOptions
 	})
 	uni.openDialogPage({
 		url: `/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+		animationType: 'none',
 		fail(err) {
 			// #ifndef APP-HARMONY
 			const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`)
