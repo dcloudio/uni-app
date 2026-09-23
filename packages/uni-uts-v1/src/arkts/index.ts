@@ -157,18 +157,20 @@ export async function compileArkTSExtApi(
     .replace(/-/g, '_')
 
   // 拷贝所有ets、har文件
-  const utssdkHarmonyDir = path.resolve(pluginDir, 'utssdk/app-harmony')
-  const harmonyRawFiles = sync('**/*.{ets,js,har,tgz}', {
-    cwd: utssdkHarmonyDir,
-  })
+  const harmonyRawFiles = sync(
+    [
+      'utssdk/**/*.ets',
+      'utssdk/app-harmony/**/*.{js,har,tgz}',
+      'customElements/**/*.{js,ets}',
+    ],
+    {
+      cwd: pluginDir,
+    }
+  )
   const depEtsFiles: string[] = []
   for (const harmonyRawFile of harmonyRawFiles) {
-    const srcFile = path.resolve(utssdkHarmonyDir, harmonyRawFile)
-    const destFile = path.resolve(
-      outputUniModuleDir,
-      'utssdk/app-harmony',
-      harmonyRawFile
-    )
+    const srcFile = path.resolve(pluginDir, harmonyRawFile)
+    const destFile = path.resolve(outputUniModuleDir, harmonyRawFile)
     if (/\.(ets|js)$/.test(harmonyRawFile)) {
       depEtsFiles.push(srcFile)
       if (rewriteConsoleExpr) {
