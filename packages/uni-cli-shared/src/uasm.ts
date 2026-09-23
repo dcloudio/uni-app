@@ -725,7 +725,7 @@ export function resolveUasmLoadPath(
     return
   }
   if (platform === 'app-ios') {
-    return moduleName
+    return `Uasm${capitalize(camelize(moduleName))}`
   }
   const libraryName = resolveUasmLibraryFileName(moduleName)
   if (isProduction) {
