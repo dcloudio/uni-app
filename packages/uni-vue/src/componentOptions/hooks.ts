@@ -67,12 +67,11 @@ export function initHooks(
     instance.__isVisible = true
     // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
     try {
+      let query: Record<string, any>
       //#if _X_VAPOR_
-      // @ts-expect-error 编译期分支会保留一个 query 声明
-      let query = (instance as any).__pageQuery as Record<string, any>
+      query = (instance as any).__pageQuery
       //#else
-      // @ts-expect-error 编译期分支会保留一个 query 声明
-      let query = instance.attrs.__pageQuery as Record<string, any>
+      query = instance.attrs.__pageQuery as Record<string, any>
       //#endif
       const scriptLang = (instance.type as any).__scriptLang
       const isUTS = !scriptLang || scriptLang === 'uts'
