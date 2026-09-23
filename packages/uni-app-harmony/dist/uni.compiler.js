@@ -270,9 +270,10 @@ const ComponentsWithProviderX = ['uni-map'];
 function resolveAllUniModules() {
     const inputDir = process.env.UNI_INPUT_DIR;
     const uniModulesDir = path__default.default.resolve(inputDir, 'uni_modules');
-    return fs__default.default
-        .readdirSync(uniModulesDir)
-        .filter((module) => fs__default.default.statSync(path__default.default.resolve(uniModulesDir, module, 'utssdk')).isDirectory());
+    return fs__default.default.readdirSync(uniModulesDir).filter((module) => {
+        const utssdkDir = path__default.default.resolve(uniModulesDir, module, 'utssdk');
+        return fs__default.default.existsSync(utssdkDir) && fs__default.default.statSync(utssdkDir).isDirectory();
+    });
 }
 async function buildWorkers() {
     const workers = uniCliShared.getWorkers();
