@@ -4,7 +4,7 @@
 
 |  | 兼容性 |
 | :- | :- |
-| v-text | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| v-text | Web: 4.0; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x |
 | v-html | Web: 4.0; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS: x; HarmonyOS: x |
 | v-show | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-if | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
@@ -18,7 +18,7 @@
 | v-pre | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | v-once | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | v-memo | Web: x; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| v-cloak | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| v-cloak | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 ### v-text
 
@@ -93,7 +93,7 @@ export default {
 更新元素的内容，并且不会被解析。
 
 ::: warning 注意
-在 `App-android` 平台，`v-html` 指令通过编译为 [rich-text](../component/rich-text.md) 组件实现。因此，`v-html` 指令的内容必须是 `rich-text` 支持的格式, 并且要遵循标签嵌套规则，例如， `swiper` 标签内只允许嵌套 `swiper-item` 标签。\
+在 `App-android VDOM 模式`，`v-html` 指令通过编译为 [rich-text](../component/rich-text.md) 组件实现。因此，`v-html` 指令的内容必须是 `rich-text` 支持的格式。\
 同时，受限于 `rich-text` 组件不支持 `class` 样式，`v-html` 指令中同样不支持 `class` 样式。\
 绑定 `v-html` 的标签内的内容会被忽略，`v-html` 指令的内容会编译为 `rich-text` 组件渲染为该标签的子节点。
 :::
@@ -541,7 +541,7 @@ export default {
 
 基于原始数据多次渲染元素或模板块。
 
-- 期望的绑定值类型：`Array | UTSJSONObject | number | string | Iterable`
+- 期望的绑定值类型：`Array | Object/UTSJSONObject | number | string | Iterable`
 
 - 详细信息
 
@@ -1810,7 +1810,8 @@ export default {
   当组件的 `selected` 状态改变，默认会重新创建大量的 vnode，尽管绝大部分都跟之前是一模一样的。`v-memo` 用在这里本质上是在说“只有当该项的被选中状态改变时才需要更新”。这使得每个选中状态没有变的项能完全重用之前的 vnode 并跳过差异比较。注意这里 memo 依赖数组中并不需要包含 `item.id`，因为 Vue 也会根据 item 的 `:key` 进行判断。
 
   ::: warning 警告
-  当搭配 `v-for` 使用 `v-memo`，确保两者都绑定在同一个元素上。`v-memo` 不能用在 `v-for` 内部。
+  - 当搭配 `v-for` 使用 `v-memo`，确保两者都绑定在同一个元素上。`v-memo` 不能用在 `v-for` 内部。
+  - `v-memo` 的作用是在 VDOM 模式下缓存虚拟 DOM 子树，在依赖未变化时跳过 vnode 创建和虚拟 DOM diff。蒸汽模式去除了虚拟 DOM，不会创建 vnode，也不需要进行虚拟 DOM diff，因此不支持且不需要使用 `v-memo`。
   :::
 
   `v-memo` 也能被用于在一些默认优化失败的边际情况下，手动避免子组件出现不需要的更新。但是一样的，开发者需要负责指定正确的依赖数组以免跳过必要的更新。
@@ -1942,10 +1943,6 @@ export default {
 - [作用域插槽的类型](../component/README.md#作用域插槽的类型)
 - [监听页面生命周期](../component/README.md#监听页面生命周期)
 - [vue 与 uvue 不同文件后缀的优先级](../component/README.md#priority)
-
-::: warning 注意
-- App 端，如需页面级滚动，根节点必须是 `scroll-view` 标签。
-:::
 
 ### \<KeepAlive> @keep-alive
 
@@ -2316,7 +2313,6 @@ export default {
 
 <script setup lang="uts">
 const to = ref<string>('content1')
-const showingString = ref<string>('穿梭内容在 body 中')
 const disabled = ref<boolean>(false)
 const show = ref<boolean>(false)
 

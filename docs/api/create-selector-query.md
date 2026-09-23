@@ -859,6 +859,7 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 **注意事项：**
 
 1. Web 平台 `<template>` 下如果存在多个节点，如果是在组件内部查询，可能会导致查询到其他组件或页面的元素
+2. 支付宝小程序中，`createSelectorQuery().in()` 只能将查询范围设置为自定义组件，不能用于页面；页面查询需要在页面渲染完成后调用，否则可能查询不到结果。
 
 ## 通用类型
 

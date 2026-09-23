@@ -180,6 +180,8 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 
 给camera组件设一个id属性，将id的值传入uni.createCameraContext()，即可得到camera组件的上下文对象，进一步可使用`.takePhoto()`、`.startRecord()`等方法。
 
+支付宝小程序需要在 camera 组件初始化完成、触发 `onReady` 回调后再调用 `uni.createCameraContext`，并且必须传入 camera 组件的 `id`。
+
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/camera/camera.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/camera/camera.uvue) 
 >

@@ -780,6 +780,44 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。
   ```
 
 
+### JS引擎
+蒸汽模式下 Android 平台业务逻辑代码运行在Google V8 JS 引擎中。  
+Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针对多种 CPU 架构（如 armeabi-v7a、arm64-v8a 等）分别打包。为严格控制 APK 的安装包体积，构建时默认禁用了 ICU 模块（编译参数 v8_enable_i18n_support = false）。  
+
+> 后续会提供配置使用包含 ICU 功能的 V8 引擎
+
+启用该裁剪后，所有与国际化（i18n）、本地化格式化以及复杂 Unicode 字符处理相关的 API 与特性将被限制或禁用，具体影响如下：  
++ [Intl](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Intl) 全局对象不可用  
+  Intl 全局对象及相关 API 将完全不可用，影响的具体 API 包括：  
+  - Intl.DateTimeFormat：日期和时间的本地化格式化  
+  - Intl.NumberFormat：数字、货币、百分比的本地化格式化  
+  - Intl.Collator：基于特定语言环境的字符串排序与比较  
+  - Intl.PluralRules：复数形式的匹配与选择规则  
+  - Intl.RelativeTimeFormat：相对时间格式化（如“3 天前”）  
+  - Intl.Segmenter：文本分词、断句与断字  
+  - Intl.ListFormat：连贯列表文本格式化（如“A、B 和 C”）  
+  - Intl.DisplayNames：标准代码/标识符（如国家/地区代码、语言代码）的显示名称转换  
++ 标准 String & Date 原型链方法本地化能力退化  
+  - 字符串转换退化：  
+    String.prototype.toLocaleLowerCase()：退化为普通的 toLowerCase()  
+    String.prototype.toLocaleUpperCase()：退化为普通的 toUpperCase()  
+    String.prototype.localeCompare()：无法按指定 locale 的字典顺序排序，直接退化为基于 Unicode 码点（Code Point）的逐字符比较  
+  - 日期与数字格式化退化：  
+    以下方法无法根据传入的 locale 参数（如 'zh-CN', 'en-US', 'de-DE'）生成本地化字符串，而是统一退化为固定的 ISO 或默认英文格式输出。  
+    Date.prototype.toLocaleString()  
+    Date.prototype.toLocaleDateString()  
+    Date.prototype.toLocaleTimeString()  
+    Number.prototype.toLocaleString()  
++ 复杂文本分词、大小写折叠与 Unicode 边界识别受限  
+  - Unicode 规范化受限：String.prototype.normalize() 方法在处理带重音符号或组合字符（Combining Characters）的字符串时，可能报错或无法准确转换。
+  - 边界文本识别削弱：缺少 Unicode 字符数据库（UCD）支持，在处理非 ASCII 字符、复杂语系（如泰语、阿拉伯语、印地语）及复合 Emoji 时可能产生异常：  
+    * 字符长度统计偏离：基于 UTF-16 单元格的 .length 属性在测量复合字符（如组合 Emoji 👨‍👩‍👧‍👦）时，无法反映真实的用户视觉字符（Grapheme Cluster）数量。  
+    * 字符截断破坏字形：使用 substring()、slice() 等方法切片时，极易在组合字符中间发生错位截断，导致显示乱码或产生非法占位符。  
++ 正则表达式 Unicode 属性转义匹配受限  
+  在正则表达式开启 u 或 v 标志（Unicode Mode）时，依赖 Unicode 属性匹配（Unicode Property Escapes）的功能会受到影响：  
+  例如 \p{UnicodeProperty} 或 \p{Script=Han}（用于匹配汉字、特定语种字符集或 Emoji 属性分类）等语法，因缺乏 ICU 提供的 UCD 数据库支持，会导致引擎抛出 SyntaxError 或无法正确识别非 ASCII 字符的属性。  
+
+
 
 ## 权限配置 @permissions  
 

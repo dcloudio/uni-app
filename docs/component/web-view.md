@@ -129,12 +129,15 @@ UniWebViewErrorEvent -- Extends --> UniCustomEvent&ltUniWebViewErrorEventDetail&
 | fullUrl | string | 是 | 加载错误的网页链接，完整链接，4.13版本起支持 |
 | src | string | 是 | 加载错误的网页链接，完整链接，4.13版本起支持 |
 
-###### 的属性值 @errcode-values
+#### errCode 的属性描述
+
 | 合法值 |
 | :- |
 | 100001 |
 | 100002 |
 | 100003 |
+
+
 #### UniWebViewLoadEvent
 
 ```mermaid

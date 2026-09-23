@@ -20,7 +20,7 @@
 
 
 - iOS26以下：组件降级为系统毛玻璃效果，"regular" 映射为系统标准毛玻璃材质，"clear" 映射为更轻、更透明的毛玻璃材质，interactive、tint-color 属性将不生效。
-- 液态玻璃（Liquid Glass）是iOS26特有效果。它和毛玻璃在显示效果、触摸效果上并不一样。如需其他平台上使用毛玻璃效果，应使用css的[backdrop-filter](../css/backdrop-filter.md)
+- 液态玻璃（Liquid Glass）是iOS26特有效果。它和毛玻璃在显示效果、触摸效果上并不一样。但多端适配时，其他平台应该和iOS26以下一样，降级为毛玻璃效果。毛玻璃/背景高斯模糊使用css的[backdrop-filter](../css/backdrop-filter.md)实现。
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |

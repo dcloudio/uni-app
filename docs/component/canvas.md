@@ -67,6 +67,8 @@ uni-app x 中废弃了老版方案，使用了 W3C 规范和微信小程序的�
 
 注意：新版规范需要开发者根据自己的场景手动处理高清屏问题。
 
+支付宝小程序通过 `createImage` 获取图片对象时，`src` 不能设置为本地图片；必须在 `canvas` 组件的 `onReady` 回调中获取 canvas 实例和上下文。
+
 canvas相关的API较多，参考如下：
 
 - [W3C 规范](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/canvas)
