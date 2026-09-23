@@ -10369,7 +10369,8 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      let query = instance.__pageQuery;
+      let query;
+      query = instance.__pageQuery;
       const scriptLang = instance.type.__scriptLang;
       const isUTS = !scriptLang || scriptLang === "uts";
       if (true) {
