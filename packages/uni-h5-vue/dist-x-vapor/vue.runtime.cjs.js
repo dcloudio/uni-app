@@ -5181,6 +5181,7 @@ const getPublicPropertiesMap = () => {
 		$refs: (i) => /* @__PURE__ */ shallowReadonly(i.refs),
 		$parent: (i) => getPublicInstance(i.parent),
 		$root: (i) => getPublicInstance(i.root),
+		$page: (i) => i.page || null,
 		$host: (i) => i.ce,
 		$emit: (i) => i.emit,
 		$options: (i) => resolveMergedOptions(i),

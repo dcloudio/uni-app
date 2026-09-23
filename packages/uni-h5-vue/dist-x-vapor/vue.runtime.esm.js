@@ -5197,6 +5197,7 @@ const getPublicPropertiesMap = () => {
 		$refs: (i) => !!(process.env.NODE_ENV !== "production") ? /* @__PURE__ */ shallowReadonly(i.refs) : i.refs,
 		$parent: (i) => getPublicInstance(i.parent),
 		$root: (i) => getPublicInstance(i.root),
+		$page: (i) => i.page || null,
 		$host: (i) => i.ce,
 		$emit: (i) => i.emit,
 		$options: (i) => __VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type,
