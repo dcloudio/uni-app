@@ -396,7 +396,6 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [visibility](visibility.md) |
 | [white-space](white-space.md) |
 | [width](width.md) |
-| [word-break](word-break.md) |
 | [z-index](z-index.md) |
 
 

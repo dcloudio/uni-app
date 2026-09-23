@@ -1135,6 +1135,10 @@ export default {
 <script setup lang="uts">
   import { testInOtherFile } from './call-method-easycom-uni-modules'
 
+  // #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR
+  import { PropsChangeEvent } from '@/uni_modules/test-props'
+  // #endif
+
   const delay = () : Promise<string> =>
     new Promise((resolve, _) => {
       setTimeout(() => {

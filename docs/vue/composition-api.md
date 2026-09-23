@@ -1132,8 +1132,9 @@ const stateText = computed(() => {
   watchEffect(() => {
     arrWithObjForEachCount.value++
     arrWithObj.forEach((item) => {
-      item['name']
-      item['count']
+      const name = (item as UTSJSONObject)['name']
+      const count = (item as UTSJSONObject)['count']
+      // console.log('arrWithObj forEach:', name, count)
     })
   })
   
@@ -1173,7 +1174,6 @@ const stateText = computed(() => {
       margin-bottom: 10px;
     }
 </style>
-
 ```
 
 :::
