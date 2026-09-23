@@ -951,7 +951,14 @@ const defineSystemComponent = (options) => {
     MODE: 3
     // 标记为vue3
   };
-  return Vue.defineComponent(options);
+  const setup = options.setup;
+  if (setup) {
+    options.setup = (props2, context) => {
+      const result = setup(props2, context);
+      return typeof result === "function" ? result() : result;
+    };
+  }
+  return Vue.defineVaporComponent(options);
 };
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({

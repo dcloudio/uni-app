@@ -1,6 +1,6 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, LINEFEED, PRIMARY_COLOR, passive, debounce, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_WEB_INVOKE_APP_SERVICE, callOptions, formatDateTime, addFont, resolveOwnerEl } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { createVNode, getCurrentInstance, ref, defineComponent as defineComponent$1, openBlock, createElementBlock, Fragment, renderList, isVNode, createBlock, createElementVNode, Comment, Text, cloneVNode, provide, computed, inject, onBeforeUnmount, mergeProps, onMounted, watch, reactive, isReactive, nextTick, useSSRContext, unref, watchEffect, onActivated, ssrContextKey, onBeforeMount, withCtx, resolveDynamicComponent, withDirectives, vShow, shallowRef, markRaw, onUnmounted, createTextVNode, h, isInSSRComponentSetup, injectHook, logError, Transition } from "vue";
+import { createVNode, getCurrentInstance, ref, defineVaporComponent, openBlock, createElementBlock, Fragment, renderList, isVNode, createBlock, createElementVNode, Comment, Text, cloneVNode, defineComponent as defineComponent$1, provide, computed, inject, onBeforeUnmount, mergeProps, onMounted, watch, reactive, isReactive, nextTick, useSSRContext, unref, watchEffect, onActivated, ssrContextKey, onBeforeMount, withCtx, resolveDynamicComponent, withDirectives, vShow, shallowRef, markRaw, onUnmounted, createTextVNode, h, isInSSRComponentSetup, injectHook, logError, Transition } from "vue";
 import { isArray, isString, extend, capitalize, camelize, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isFunction, isPromise, EMPTY_OBJ, hyphenate } from "@vue/shared";
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderClass, ssrRenderStyle, ssrRenderAttr, ssrRenderList, ssrRenderSlot, ssrRenderVNode } from "vue/server-renderer";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createMemoryHistory, VaporRouterView } from "vue-router";
@@ -772,7 +772,14 @@ const defineSystemComponent = (options) => {
     MODE: 3
     // 标记为vue3
   };
-  return defineComponent$1(options);
+  const setup = options.setup;
+  if (setup) {
+    options.setup = (props2, context) => {
+      const result = setup(props2, context);
+      return typeof result === "function" ? result() : result;
+    };
+  }
+  return defineVaporComponent(options);
 };
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({
