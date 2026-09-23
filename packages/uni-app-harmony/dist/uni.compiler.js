@@ -3,13 +3,15 @@
 var appVite = require('@dcloudio/uni-app-vite');
 var uniAppUts = require('@dcloudio/uni-app-uts');
 var path = require('path');
-var fs = require('fs-extra');
+var fs$1 = require('fs-extra');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
+var fs = require('fs');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
+var fs__default$1 = /*#__PURE__*/_interopDefault(fs$1);
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 var ExternalModules = [
@@ -261,6 +263,17 @@ var ExternalModulesDom2 = [
 const ComponentsWithProvider = [];
 const ComponentsWithProviderX = ['uni-map'];
 
+/**
+ * 临时放在此处，其他地方没有这种需求
+ * 所有含utssdk的uni_modules都可能是worker的依赖
+ */
+function resolveAllUniModules() {
+    const inputDir = process.env.UNI_INPUT_DIR;
+    const uniModulesDir = path__default.default.resolve(inputDir, 'uni_modules');
+    return fs__default.default
+        .readdirSync(uniModulesDir)
+        .filter((module) => fs__default.default.statSync(path__default.default.resolve(uniModulesDir, module, 'utssdk')).isDirectory());
+}
 async function buildWorkers() {
     const workers = uniCliShared.getWorkers();
     if (!Object.keys(workers).length) {
@@ -275,6 +288,7 @@ async function buildWorkers() {
             rootDir,
             outDir: process.env.UNI_OUTPUT_DIR,
             footer: `;(new ${workers[workPath]}()).entry()`,
+            uni_modules: resolveAllUniModules(),
         });
         if (result && result.error) {
             throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR);
@@ -750,7 +764,7 @@ function initUniExtApi() {
     });
 }
 function isEncrypt(pluginDir) {
-    return fs__default.default.existsSync(path__default.default.resolve(pluginDir, 'encrypt'));
+    return fs__default$1.default.existsSync(path__default.default.resolve(pluginDir, 'encrypt'));
 }
 
 var index = [
