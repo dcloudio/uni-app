@@ -700,6 +700,24 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
 混合单位：它支持跨单位计算，比如用百分比减去固定像素（100% - 20px）
 优先级控制：乘除法的优先级高于加减法，如果你想先算加减，必须用圆括号 () 括起来，例如 calc((100% - 20px) / 2)
 
+### 形式化语法
+```css
+<calc()> =
+  calc( <calc-sum> )
+
+<calc-sum> =
+  <calc-product> [ [ '+' | '-' ] <calc-product> ]*
+
+<calc-product> =
+  <calc-value> [ [ '*' | / ] <calc-value> ]*
+
+<calc-value> =
+  <number> |
+  <dimension> |
+  <percentage> |
+  ( <calc-sum> )
+```
+
 ### 示例 
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/function/calc.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/function/calc.uvue) 
 >
@@ -982,24 +1000,6 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
   }
 </style>
 
-```
-
-### 形式化语法
-```css
-<calc()> =
-  calc( <calc-sum> )
-
-<calc-sum> =
-  <calc-product> [ [ '+' | '-' ] <calc-product> ]*
-
-<calc-product> =
-  <calc-value> [ [ '*' | / ] <calc-value> ]*
-
-<calc-value> =
-  <number> |
-  <dimension> |
-  <percentage> |
-  ( <calc-sum> )
 ```
 
 **注意：**
