@@ -299,8 +299,10 @@ function resolveScript(descriptor, options, ssr, customElement) {
 	if (!descriptor.script && !descriptor.scriptSetup) return null;
 	const cached = getResolvedScript(descriptor, ssr);
 	if (cached) return cached;
+	const extraOptions = options.script?.extraOptions?.(descriptor);
 	const resolved = options.compiler.compileScript(descriptor, {
 		...options.script,
+		...extraOptions,
 		id: descriptor.id,
 		isProd: options.isProduction,
 		inlineTemplate: isUseInlineTemplate(descriptor, options),
