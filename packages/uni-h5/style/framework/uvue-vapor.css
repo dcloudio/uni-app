@@ -1,7 +1,468 @@
 /*
+ * Web Vapor 使用独立的完整框架样式入口。
+ * 这里保留当前尚未迁移的 uni-* 宿主组件样式，并追加原生宿主的 Vapor 规则；
+ * VDOM 模式继续使用 uvue.css，两个入口不会同时加载。
+ */
+
+html,
+body {
+  font-family: -apple-system, HelveticaNeue;
+}
+
+@font-face {
+  font-family: "uni-icon";
+  src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
+}
+
+body, uni-page-body {
+  background-color: var(--background-color-content);
+}
+
+uni-app uni-page-body {
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+uni-app uni-page-body,
+uni-app uni-top-window,
+uni-app uni-left-window,
+uni-app uni-right-window {
+  position: relative;
+}
+
+uni-app uni-left-window .uni-left-window,
+uni-app uni-right-window .uni-right-window {
+  height: 100%;
+}
+
+uni-app.uni-app--showtabbar uni-page-body::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: var(--tab-bar-height);
+  height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+  min-height: var(--tab-bar-height);
+  min-height: calc(var(--tab-bar-height) + constant(safe-area-inset-bottom));
+  min-height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+}
+
+uni-app.uni-app--showtabbar uni-page-wrapper::after {
+  display: none;
+}
+
+uni-app uni-input,
+uni-app uni-textarea,
+uni-app uni-match-media {
+  font-size: 16px;
+  text-align: left;
+}
+
+/* input 布局对齐 App 端 */
+uni-app uni-input {
+  height: auto;
+  display: flex;
+}
+
+uni-app uni-input>.uni-input-wrapper {
+  height: auto;
+  flex: 1;
+}
+
+uni-app uni-input>.uni-input-wrapper>.uni-input-input {
+  height: auto;
+  flex: 1;
+}
+
+/* 文字容器 */
+uni-app uni-textarea,
+uni-app uni-label {
+  overflow: hidden;
+  flex-basis: auto;
+  letter-spacing: 0;
+}
+
+uni-app uni-label {
+  letter-spacing: 0;
+}
+
+/* uni-app uni-* */
+uni-app uni-ad-draw,
+uni-app uni-ad-fullscreen-video,
+uni-app uni-ad-interactive,
+uni-app uni-ad-interstitial,
+uni-app uni-ad-rewarded-video,
+uni-app uni-ad,
+uni-app uni-animation-view,
+uni-app uni-audio,
+uni-app uni-block,
+uni-app uni-button,
+uni-app uni-camera,
+uni-app uni-canvas,
+uni-app uni-checkbox-group,
+uni-app uni-checkbox,
+uni-app uni-cover-image,
+uni-app uni-cover-view,
+uni-app uni-custom-tab-bar,
+uni-app uni-editor,
+uni-app uni-form,
+uni-app uni-icon,
+uni-app uni-input,
+uni-app uni-label,
+uni-app uni-list-item,
+uni-app uni-list-view,
+uni-app uni-live-player,
+uni-app uni-live-pusher,
+uni-app uni-map,
+uni-app uni-match-media,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-navigation-bar,
+uni-app uni-navigator,
+uni-app uni-open-data,
+uni-app uni-page-meta,
+/* uni-app uni-picker-view-column, */
+uni-app uni-picker-view,
+uni-app uni-picker,
+uni-app uni-progress,
+uni-app uni-radio-group,
+uni-app uni-radio,
+uni-app uni-rich-text,
+uni-app uni-scroll-view,
+uni-app uni-slider,
+uni-app uni-sticky-header,
+uni-app uni-sticky-section,
+uni-app uni-swiper-item,
+uni-app uni-swiper,
+uni-app uni-switch,
+uni-app uni-template,
+uni-app uni-textarea,
+uni-app uni-unicloud-db,
+uni-app uni-video,
+uni-app uni-web-view {
+  position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
+  min-height: 0px;
+  min-width: 0px;
+  border-width: medium;
+}
+
+uni-app uni-rich-text {
+  line-height: 1.5;
+}
+
+/* uni-app uni-* */
+uni-app uni-ad-draw[hidden],
+uni-app uni-ad-fullscreen-video[hidden],
+uni-app uni-ad-interactive[hidden],
+uni-app uni-ad-interstitial[hidden],
+uni-app uni-ad-rewarded-video[hidden],
+uni-app uni-ad[hidden],
+uni-app uni-animation-view[hidden],
+uni-app uni-audio[hidden],
+uni-app uni-block[hidden],
+uni-app uni-button[hidden],
+uni-app uni-camera[hidden],
+uni-app uni-canvas[hidden],
+uni-app uni-checkbox-group[hidden],
+uni-app uni-checkbox[hidden],
+uni-app uni-cover-image[hidden],
+uni-app uni-cover-view[hidden],
+uni-app uni-custom-tab-bar[hidden],
+uni-app uni-editor[hidden],
+uni-app uni-form[hidden],
+uni-app uni-icon[hidden],
+uni-app uni-input[hidden],
+uni-app uni-label[hidden],
+uni-app uni-list-item[hidden],
+uni-app uni-list-view[hidden],
+uni-app uni-live-player[hidden],
+uni-app uni-live-pusher[hidden],
+uni-app uni-map[hidden],
+uni-app uni-match-media[hidden],
+uni-app uni-movable-area[hidden],
+uni-app uni-movable-view[hidden],
+uni-app uni-navigation-bar[hidden],
+uni-app uni-navigator[hidden],
+uni-app uni-open-data[hidden],
+uni-app uni-page-meta[hidden],
+uni-app uni-picker-view-column[hidden],
+uni-app uni-picker-view[hidden],
+uni-app uni-picker[hidden],
+uni-app uni-progress[hidden],
+uni-app uni-radio-group[hidden],
+uni-app uni-radio[hidden],
+uni-app uni-rich-text[hidden],
+uni-app uni-scroll-view[hidden],
+uni-app uni-slider[hidden],
+uni-app uni-sticky-header[hidden],
+uni-app uni-sticky-section[hidden],
+uni-app uni-swiper-item[hidden],
+uni-app uni-swiper[hidden],
+uni-app uni-switch[hidden],
+uni-app uni-template[hidden],
+uni-app uni-textarea[hidden],
+uni-app uni-unicloud-db[hidden],
+uni-app uni-video[hidden],
+uni-app uni-web-view[hidden] {
+  display: none !important;
+}
+
+/* 与开发者元素接触的容器 */
+uni-app uni-page-body,
+uni-app uni-left-window .uni-left-window,
+uni-app uni-right-window .uni-right-window,
+uni-app uni-top-window .uni-top-window,
+uni-app uni-animation-view,
+uni-app uni-block,
+uni-app uni-match-media,
+uni-app uni-label,
+uni-app uni-swiper,
+uni-app uni-swiper-item,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-cover-view,
+uni-app uni-list-item,
+uni-app uni-navigator,
+uni-app uni-radio-group,
+uni-app uni-checkbox-group,
+uni-app uni-scroll-view,
+uni-app uni-list-view,
+uni-app uni-unicloud-db,
+uni-app uni-custom-tab-bar,
+uni-app uni-sticky-section,
+uni-app uni-sticky-header {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: flex-start;
+}
+
+/* 此样式可被manifest.json内配置的flex-direction重置 */
+uni-app uni-page-body,
+uni-app uni-left-window .uni-left-window,
+uni-app uni-right-window .uni-right-window,
+uni-app uni-top-window .uni-top-window,
+uni-app uni-match-media,
+uni-app uni-label,
+uni-app uni-swiper,
+uni-app uni-swiper-item,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-cover-view,
+uni-app uni-list-item,
+uni-app uni-navigator,
+uni-app uni-radio-group,
+uni-app uni-checkbox-group,
+uni-app uni-scroll-view,
+uni-app uni-list-view,
+uni-app uni-unicloud-db,
+uni-app uni-sticky-section,
+uni-app uni-sticky-header {
+  flex-direction: column;
+}
+
+/* 与开发者元素接触的非滚动容器 */
+uni-app uni-match-media,
+uni-app uni-label,
+uni-app uni-swiper,
+uni-app uni-swiper-item,
+uni-app uni-movable-area,
+uni-app uni-movable-view,
+uni-app uni-cover-view,
+uni-app uni-list-item,
+uni-app uni-navigator,
+uni-app uni-radio-group,
+uni-app uni-checkbox-group {
+  overflow: hidden;
+}
+
+uni-app uni-button {
+  margin: 0;
+}
+
+/* 透传scroll-view的flex-direction样式 */
+uni-app uni-scroll-view {
+  width: auto;
+}
+
+uni-app .uni-scroll-view,
+uni-app .uni-scroll-view-content,
+uni-app .uni-list-view-visible,
+uni-app uni-navigator a {
+  flex-direction: inherit;
+  align-items: inherit;
+  align-content: inherit;
+  justify-content: inherit;
+  flex-wrap: inherit;
+}
+
+uni-app uni-navigator a {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+uni-app .uni-scroll-view-content,
+uni-app .uni-sticky-header-wrapper {
+  display: flex;
+  min-height: 0px;
+}
+
+uni-app uni-swiper-item {
+  position: absolute;
+}
+
+/* 设置默认的光标颜色 */
+uni-app .uni-input-input,
+uni-app .uni-textarea-textarea {
+  caret-color: #3393e2;
+}
+
+uni-app .uni-input-input:disabled,
+uni-app .uni-textarea-textarea:disabled {
+  cursor: inherit;
+}
+
+uni-app uni-checkbox {
+  align-items: center;
+}
+
+uni-app .uni-checkbox-wrapper {
+  flex-direction: inherit;
+  align-content: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  width: 100%;
+  height: 100%;
+}
+
+/* 覆盖 video 的 poster 背景 */
+uni-app .uni-video-cover {
+  background-color: unset;
+}
+
+/**
+ * 界面相关api样式
+ */
+body .uni-toast {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(76, 76, 76, 0.95);
+}
+
+body .uni-toast__icon {
+  margin: 8px 0px;
+}
+
+body .uni-toast__content {
+  margin: 0px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8)
+}
+
+body .uni-modal {
+  border-radius: 12px;
+}
+
+body .uni-modal__hd {
+  padding: 32px 24px 16px;
+}
+
+body .uni-modal__title {
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.4;
+  -webkit-line-clamp: unset;
+}
+
+body .uni-modal__bd {
+  font-size: 17px;
+  padding: 0 24px;
+  margin-bottom: 32px;
+  min-height: unset;
+  max-height: 300px;
+  overflow: hidden auto;
+  hyphens: auto;
+}
+
+body .uni-modal__textarea {
+  display: block;
+  width: 100%;
+  height: 48px;
+  font-size: 17px;
+  line-height: 24px;
+  padding: 0px 8px;
+}
+
+body .uni-modal__ft {
+  line-height: 56px;
+  font-size: 17px;
+}
+
+body .uni-modal__btn {
+  font-weight: 700;
+}
+
+body .uni-modal__btn_primary {
+  color: #576b95;
+}
+
+@media screen and (max-width: 500px) {
+  body .uni-actionsheet {
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background-color: #f7f7f7;
+    overflow: hidden;
+  }
+
+  body .uni-actionsheet__menu {
+    border-radius: 0px;
+    background-color: #ffffff;
+  }
+
+  body .uni-actionsheet__action {
+    border-radius: 0px;
+    margin-top: 8px;
+  }
+
+  body .uni-actionsheet__cell,
+  body .uni-actionsheet__title {
+    padding: 16px;
+    line-height: 24px;
+  }
+
+  body .uni-actionsheet__cell {
+    font-size: 17px;
+  }
+
+  body .uni-actionsheet__title {
+    font-size: 14px;
+    color: #747474;
+  }
+}
+
+:is(.uni-video-slots *) {
+  pointer-events: auto;
+}
+
+/*
  * Web Vapor 使用原生 div、span、img 承载 view、text、image。
- * 过渡期仍由 uvue.css 提供尚未迁移组件的旧标签样式；组件完成 Vapor 迁移后，
- * 相关规则统一收敛到本文件并移除旧样式入口。
+ * 上面的框架规则兼容当前仍使用 uni-* 宿主标签的内置组件；组件完成 Vapor 迁移后，
+ * 相关旧宿主规则再逐步移除。
  */
 
 div:where([uni-view]),

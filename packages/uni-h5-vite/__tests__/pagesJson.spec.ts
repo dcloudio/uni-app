@@ -73,6 +73,7 @@ describe('h5 pages.json page route', () => {
     expect(code).not.toContain(
       "import '@dcloudio/uni-h5/style/framework/uvue-vapor.css'"
     )
+    expect(code).toContain("import '@dcloudio/uni-h5/style/framework/uvue.css'")
     expect(code).toContain('import { defineAsyncComponent,')
     expect(code).not.toContain('defineVaporAsyncComponent')
     expect(code).toContain(
@@ -101,6 +102,9 @@ describe('h5 pages.json page route', () => {
 
     expect(code).toContain(
       "import '@dcloudio/uni-h5/style/framework/uvue-vapor.css'"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-h5/style/framework/uvue.css'"
     )
     expect(code).toContain(
       "import { defineVaporAsyncComponent as defineAsyncComponent, defineVaporComponent, createAssetComponent } from 'vue'"
@@ -135,6 +139,12 @@ describe('h5 pages.json page route', () => {
   test('Web Vapor SSR 保持服务端异步组件包装', () => {
     const code = transform(true, true)
 
+    expect(code).toContain(
+      "import '@dcloudio/uni-h5/style/framework/uvue-vapor.css'"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-h5/style/framework/uvue.css'"
+    )
     expect(code).toContain('import { defineAsyncComponent,')
     expect(code).not.toContain('defineVaporAsyncComponent')
     expect(code).toContain(

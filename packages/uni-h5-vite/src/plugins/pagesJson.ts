@@ -166,12 +166,12 @@ function generateCssCode(config: ResolvedConfig) {
   if (define.__UNI_FEATURE_TABBAR__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'tabBar.css')
   }
-  // x 项目直接集成 uvue.css
+  // x 项目按渲染模式加载唯一一份框架基础样式
   if (process.env.UNI_APP_X === 'true') {
-    cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uvue.css')
     if (isUniAppXWebVapor()) {
-      // 过渡期继续加载 uvue.css 提供尚未迁移组件的样式，Vapor 规则统一收敛到独立入口。
       cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uvue-vapor.css')
+    } else {
+      cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uvue.css')
     }
   } else {
     if (define.__UNI_FEATURE_NVUE__) {
