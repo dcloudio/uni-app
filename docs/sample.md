@@ -6,7 +6,7 @@
 - [hello uvue](https://gitcode.com/dcloud/hello-uvue)：vue语法的使用示例
 - [uni-api](https://gitcode.com/dcloud/uni-api)：uni api的实现源码。大量uts API插件源码，适合uts插件作者学习
 - [uni-component](https://gitcode.com/dcloud/uni-component)：内置组件的实现源码。uts组件插件源码，适合uts插件作者学习
-- [uni-ai-x](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)：用于快速搭建 AI 聊天类应用的开源插件，适合开发者学习 AI 功能与 uni-app x 结合的开发方案
+- [uni-ai x](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)：用于快速搭建 AI 聊天类应用的开源插件，跨平台的仿deepseek客户端
 
 这些开源项目的master分支对应着HBuilderX最新正式版，alpha分支对应着最新alpha版。
 
@@ -31,7 +31,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 
 以下列出部分案例：
 
-- uni-ai-x：（蒸汽模式案例）[Android](https://web-ext-storage.dcloud.net.cn/ext/uni-ai-x/__UNI__8A096E7_0917211824.apk)
+- uni-ai x：（蒸汽模式案例）开源、跨平台AI聊天流式markdown渲染项目。 [Android](https://web-ext-storage.dcloud.net.cn/ext/uni-ai-x/__UNI__8A096E7_0917211824.apk)、[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
 
 - 发票匣：（蒸汽模式案例）[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
 - 仪表宝典(化工资料)：（蒸汽模式案例）[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app )

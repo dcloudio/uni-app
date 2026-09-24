@@ -674,6 +674,13 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 ## calc @calc
 > uni-app x 5.31+ App平台 蒸汽模式支持calc方法
 
+
+
+### 兼容性 <Help /> 
+ | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | 5.31 | x | 5.31 | x | 5.31 |
+
 calc() 函数允许在声明 CSS 属性值时执行计算。
 
 ### 语法
@@ -693,8 +700,292 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
 混合单位：它支持跨单位计算，比如用百分比减去固定像素（100% - 20px）
 优先级控制：乘除法的优先级高于加减法，如果你想先算加减，必须用圆括号 () 括起来，例如 calc((100% - 20px) / 2)
 
+### 示例 
+ 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/function/calc.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/function/calc.uvue) 
+>
+> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+```uvue
+<template>
+  <view ref="pageRef" class="page uni-theme-root">
+    <view class="calc-style-test">
+      <text class="calc-test-label">width: {{ calcMode ? 'calc(50% / 2 + 24px)' : '375rpx' }}; height: calc((12px + 8px) * 2);</text>
+      <view class="track ">
+        <view ref="switchRef" class="basic-case">
+          <text class="case-text">{{ calcMode ? '50% / 2 + 24px' : '375rpx' }}</text>
+        </view>
+      </view>
+    </view>
+    <button class="switch-button element-bottom" size="mini" @click="toggleCalcValue">切换 calc / 375rpx</button>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">width: calc(var(--calc-base) * 2); height: calc(var(--calc-base) + 12px);</text>
+      <view class="variable-row  element-bottom">
+        <view class="variable-case">
+          <text class="case-text">var * 2</text>
+        </view>
+        <button size="mini" @click="toggleVariable">切换变量</button>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">height/padding: calc(var(--uni-safe-area-inset-*) + px);</text>
+      <view class="safe-area-case  element-bottom">
+        <text class="safe-area-text" style="background-color: #1f9d68;">safe area</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">width: calc(375rpx + 50% - 12px);</text>
+      <view class="rpx-test element-bottom" style="background-color: #2878d0;">
+        <text style="font-size: 12px;color: #ffffff;">width:calc(375rpx + 50% - 12px);</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">padding: calc(10px);</text>
+      <view class="padding-test element-bottom" style="background-color: #2878d0;">
+        <text style="font-size: 12px;color: #ffffff;background-color: #1f9d68;">padding: calc(10px);</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">margin: calc(var(--calc-base) + 2px);</text>
+      <view class="element-bottom" style="background-color: #2878d0;">
+        <text class="margin-test" style="font-size: 12px;color: #ffffff;background-color: #1f9d68;">margin: calc(var(--calc-base) + 2px);</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-bottom-left-radius: calc(60rpx);</text>
+      <view ref="borderBottomLeftRadiusRef" class="calc-test-box">
+        <text class="case-text">bottom left</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-bottom-right-radius: calc(50% - 30px);</text>
+      <view ref="borderBottomRightRadiusRef" class="calc-test-box">
+        <text class="case-text">bottom right</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-radius: calc(var(--border-radius) - 30px);</text>
+      <view ref="borderRadiusRef" class="calc-test-box">
+        <text class="case-text">radius</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-top-left-radius: calc((12.5% + 15px)*2);</text>
+      <view ref="borderTopLeftRadiusRef" class="calc-test-box">
+        <text class="case-text">top left</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-top-right-radius: calc(60px);</text>
+      <view ref="borderTopRightRadiusRef" class="calc-test-box">
+        <text class="case-text">top right</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">transform: translateX(calc(10% + 12px));</text>
+      <view ref="transformRef" class="calc-test-box">
+        <text class="case-text">transform</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">transform-origin: calc(25% + 10px) calc(50% - 6px);</text>
+      <view ref="transformOriginRef" class="calc-test-box">
+        <text class="case-text">origin</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">box-shadow: calc(4px + 4rpx) calc(3px + 1rpx) calc(2px + 6rpx) #999999;</text>
+      <view ref="boxShadowRef" class="calc-test-box">
+        <text class="case-text">shadow</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">opacity: calc(0.35 + 0.35);</text>
+      <view ref="opacityRef" class="calc-test-box">
+        <text class="case-text">opacity</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const pageRef = ref(null as UniElement | null)
+  const switchRef = ref(null as UniElement | null)
+  const borderBottomLeftRadiusRef = ref(null as UniElement | null)
+  const borderBottomRightRadiusRef = ref(null as UniElement | null)
+  const borderRadiusRef = ref(null as UniElement | null)
+  const borderTopLeftRadiusRef = ref(null as UniElement | null)
+  const borderTopRightRadiusRef = ref(null as UniElement | null)
+  const transformRef = ref(null as UniElement | null)
+  const transformOriginRef = ref(null as UniElement | null)
+  const boxShadowRef = ref(null as UniElement | null)
+  const opacityRef = ref(null as UniElement | null)
+  const calcMode = ref(true)
+  let expanded = false
+
+
+  onReady(() => {
+    borderBottomLeftRadiusRef.value?.style.setProperty('border-bottom-left-radius', 'calc(60rpx)')
+    borderBottomRightRadiusRef.value?.style.setProperty('border-bottom-right-radius', 'calc(50% - 30px)')
+    borderRadiusRef.value?.style.setProperty('border-radius', 'calc(var(--border-radius) - 30px)')
+    borderTopLeftRadiusRef.value?.style.setProperty('border-top-left-radius', 'calc((12.5% + 15px)*2)')
+    borderTopRightRadiusRef.value?.style.setProperty('border-top-right-radius', '60px')
+    transformRef.value?.style.setProperty('transform', 'translateX(calc(10% + 12px))')
+    transformOriginRef.value?.style.setProperty('transform-origin', 'calc(25% + 10px) calc(50% - 6px)')
+    transformOriginRef.value?.style.setProperty('transform', 'rotate(8deg)')
+    boxShadowRef.value?.style.setProperty('box-shadow', 'calc(4px + 4rpx) calc(3px + 1rpx) calc(2px + 6rpx) #999999')
+    opacityRef.value?.style.setProperty('opacity', 'calc(0.35 + 0.35)')
+  })
+
+  const toggleCalcValue = () => {
+    calcMode.value = !calcMode.value
+    switchRef.value?.style.setProperty(
+      'width',
+      calcMode.value ? 'calc(50% / 2 + 24px)' : '375rpx'
+    )
+  }
+
+  const toggleVariable = () => {
+    expanded = !expanded
+    pageRef.value?.style.setProperty('--calc-base', expanded ? '48px' : '28px')
+  }
+</script>
+
+<style>
+  .page {
+    --calc-base: 28px;
+    --border-radius: 60px;
+    --calc-surface-color: #dfe3e8;
+    --calc-text-color: #202124;
+    flex-grow: 1;
+    padding: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page.uni-theme-root {
+      --calc-surface-color: #3b3b3b;
+      --calc-text-color: #ffffff;
+    }
+  }
+
+  .element-bottom {
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--calc-text-color, #202124);
+  }
+
+  .track {
+    width: 100%;
+    height: 40px;
+    background-color: var(--calc-surface-color, #dfe3e8);
+  }
+
+  .switch-button {
+    margin-top: 6px;
+  }
+
+  .basic-case {
+    width: calc(50% / 2 + 24px);
+    height: calc((12px + 8px) * 2);
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .variable-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .variable-case {
+    width: calc(var(--calc-base) * 2);
+    height: calc(var(--calc-base) + 12px);
+    margin-right: 12px;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .case-text,
+  .safe-area-text {
+    font-size: 12px;
+    color: #ffffff;
+  }
+
+  .safe-area-case {
+    width: 100%;
+    height: calc(var(--uni-safe-area-inset-top) + var(--uni-safe-area-inset-bottom) + 48px);
+    padding-top: calc(var(--uni-safe-area-inset-top) + 6px);
+    padding-right: calc(var(--uni-safe-area-inset-right) + 6px);
+    padding-bottom: calc(var(--uni-safe-area-inset-bottom) + 6px);
+    padding-left: calc(var(--uni-safe-area-inset-left) + 6px);
+    background-color: #2878d0;
+    margin-bottom: 12px;
+  }
+
+  .fixed-test {
+    position: fixed;
+    height: 60px;
+    width: 100%;
+    background-color: #2878d0;
+    top: calc(100% - 70px);
+  }
+
+  .rpx-test {
+    width: calc(375rpx + 50% - 12px);
+  }
+
+  .padding-test {
+    background-color: var(--calc-surface-color, #dfe3e8);
+    padding: calc(10px);
+  }
+
+  .margin-test {
+    margin: calc(var(--calc-base) + 2px);
+  }
+
+  .calc-style-test {
+    flex-direction: column;
+    padding: 10px;
+    background-color: var(--calc-surface-color, #dfe3e8);
+  }
+
+  .calc-test-label {
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--calc-text-color, #202124);
+  }
+
+  .calc-test-box {
+    width: 120px;
+    height: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+</style>
+
+```
+
 ### 形式化语法
-```css 
+```css
 <calc()> =
   calc( <calc-sum> )
 
@@ -715,5 +1006,5 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
 App平台相比web平台，calc有以下差异：
 - `calc`中只支持`var` 方法, 不支持 `<frequency>`, `<angle>`, `<time>`, `<color-function>`,`<resolution>`, `<flex>`
 - 支持的属性`<width>`,`<height>`,`<padding-*>`,`<maring-*>`,`<border-*>`,`<top>`,`<left>`,`<right>`,`<bottom>`,`<flex-basis>`
-- `border-*-radius`目前不支持两值，如：border-bottom-right-radius: 10px 20px; 如果使用了 `calc` 且含百分比会根据width进行计算，如：border-bottom-right-radius: calc(50%); 且宽为 40px 计算之后的样式为:border-bottom-right-radius: 20px;
-- `border-width-*` 目前不支持百分比，该属性的calc也不支持
+- `border-*-radius`目前不支持双值配置(例如：border-bottom-right-radius: 10px 20px;) 百分比计算基准：若在圆角中使用 calc() 且包含百分比，其计算基准固定为 width（宽度）。（示例：当元素宽度为 40px 时，border-bottom-right-radius: calc(50%); 将被转换为 20px）;
+- `border-width-*` 属性本身不支持百分比单位，且其对应的 calc() 计算同样不支持百分比。
