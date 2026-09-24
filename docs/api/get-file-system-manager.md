@@ -13,9 +13,9 @@
 获取文件管理器
 
 ### getFileSystemManager 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 文件管理器对象，用于操作应用可访问的本地文件空间，在app平台是应用沙盒目录。
@@ -67,9 +67,9 @@
 access
 判断文件/目录是否存在
 ##### access 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -131,9 +131,9 @@ access
 accessSync
 FileSystemManager.access 的同步版本
 ##### accessSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -147,9 +147,9 @@ FileSystemManager.access 的同步版本
 appendFile
 在文件结尾追加内容
 ##### appendFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -163,7 +163,7 @@ appendFile
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要追加内容的文件路径 (本地路径) |
 | encoding | string | 否 | Web: x | 指定写入文件的字符编码<br/>支持:ascii base64 utf-8<br/>只在 data 类型是 String 时有效 |
-| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 要追加的文本或二进制数据，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持arraybuffer |
+| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 要追加的文本或二进制数据，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持arraybuffer |
 | success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 通用的正确返回结果回调 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 通用的错误返回结果回调 |
 | complete | (res: any) => void | 否 | Web: x | 通用的结束返回结果回调 | 
@@ -221,9 +221,9 @@ appendFile
 appendFileSync
 FileSystemManager.appendFile 的同步版本
 ##### appendFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -239,9 +239,9 @@ FileSystemManager.appendFile 的同步版本
 close
 关闭文件
 ##### close 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -303,9 +303,9 @@ close
 closeSync
 同步关闭文件
 ##### closeSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -325,9 +325,9 @@ closeSync
 copyFile
 复制文件
 ##### copyFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -390,9 +390,9 @@ copyFile
 copyFileSync
 FileSystemManager.copyFile 的同步版本
 ##### copyFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -407,9 +407,9 @@ FileSystemManager.copyFile 的同步版本
 fstat
 获取文件的状态信息
 ##### fstat 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -447,9 +447,9 @@ fstat
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -464,9 +464,9 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -522,9 +522,9 @@ isFile
 fstatSync
 同步获取文件的状态信息
 ##### fstatSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -559,9 +559,9 @@ fstatSync
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -576,9 +576,9 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -594,9 +594,9 @@ isFile
 ftruncate
 对文件内容进行截断操作
 ##### ftruncate 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -659,9 +659,9 @@ ftruncate
 ftruncateSync
 同步对文件内容进行截断操作
 ##### ftruncateSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -682,9 +682,9 @@ ftruncateSync
 getFileInfo
 获取该本地临时文件 或 本地缓存文件 信息
 ##### getFileInfo 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -697,7 +697,7 @@ getFileInfo
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 要读取的文件路径 (本地路径) |
-| digestAlgorithm | string | 否 | Web: x | 计算文件摘要的算法 |
+| digestAlgorithm | string | 否 | Web: x | 计算文件摘要的算法，不传默认使用 "md5" |
 | success | (res: [GetFileInfoSuccessResult](#getfileinfosuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 通用的错误返回结果回调 |
 | complete | (res: any) => void | 否 | Web: x | 通用的结束返回结果回调 | 
@@ -708,6 +708,8 @@ getFileInfo
 | :- |  :-: | :- |
 | md5 | Web: x | md5 算法 |
 | sha1 | Web: x | sha1 算法 |
+| sha256 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | sha256 算法 |
+| none | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 不计算摘要，digest 字段返回空字符串 |
 
 ###### GetFileInfoSuccessResult 的属性值 @getfileinfosuccessresult-values 
 
@@ -761,9 +763,9 @@ getFileInfo
 getSavedFileList
 获取该已保存的本地缓存文件列表
 ##### getSavedFileList 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -830,9 +832,9 @@ getSavedFileList
 mkdir
 创建目录
 ##### mkdir 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -895,9 +897,9 @@ mkdir
 mkdirSync
 FileSystemManager.mkdir 的同步版本
 ##### mkdirSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -912,9 +914,9 @@ FileSystemManager.mkdir 的同步版本
 open
 打开文件，返回文件描述符
 ##### open 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -998,9 +1000,9 @@ open
 openSync
 同步打开文件，返回文件描述符
 ##### openSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1042,9 +1044,9 @@ openSync
 readFile
 读取本地文件内容
 ##### readFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -1074,7 +1076,7 @@ readFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61 | 读取的内容，类型为 String 或 ArrayBuffer，在4.31以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer |
+| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61 | 读取的内容，类型为 String 或 ArrayBuffer，在4.31以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
@@ -1121,9 +1123,9 @@ readFile
 readFileSync
 FileSystemManager.readFile 的同步版本参数
 ##### readFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1144,9 +1146,9 @@ FileSystemManager.readFile 的同步版本参数
 read
 读文件
 ##### read 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1210,8 +1212,8 @@ read
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 被写入的缓存区的对象，即接口入参的 arrayBuffer |
-| bytesRead | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 实际读取的字节数 |
+| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 被写入的缓存区的对象，即接口入参的 arrayBuffer |
+| bytesRead | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 实际读取的字节数 |
 
 
 
@@ -1219,9 +1221,9 @@ read
 readSync
 读文件
 ##### readSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1233,7 +1235,7 @@ readSync
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
+| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 数据写入的缓冲区，必须是 ArrayBuffer 实例 |
 | fd | string | 是 | Web: x | 文件描述符。fd 通过 [FileSystemManager.open](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.open.html) 或 [FileSystemManager.openSync](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.openSync.html) 接口获得 |
 | length | number | 否 | Web: x | 要从文件中读取的字节数，默认0 |
 | offset | number | 否 | Web: x | 缓冲区中的写入偏移量，默认0 |
@@ -1250,16 +1252,16 @@ readSync
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 被写入的缓存区的对象，即接口入参的 arrayBuffer |
-| bytesRead | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 实际读取的字节数 | 
+| arrayBuffer | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 被写入的缓存区的对象，即接口入参的 arrayBuffer |
+| bytesRead | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 实际读取的字节数 | 
 
 #### readdir(options: ReadDirOptions): void; @readdir
 readdir
 读取目录内文件列表
 ##### readdir 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -1327,9 +1329,9 @@ readdir
 readdirSync
 FileSystemManager.readdir 的同步版本
 ##### readdirSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1349,9 +1351,9 @@ FileSystemManager.readdir 的同步版本
 readZipEntry
 读取压缩包内的文件
 ##### readZipEntry 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1445,9 +1447,9 @@ readZipEntry
 rmdir
 删除目录
 ##### rmdir 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -1510,9 +1512,9 @@ rmdir
 rmdirSync
 FileSystemManager.rmdir 的同步版本
 ##### rmdirSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1527,9 +1529,9 @@ FileSystemManager.rmdir 的同步版本
 rename
 重命名文件。可以把文件从 oldPath 移动到 newPath
 ##### rename 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -1592,9 +1594,9 @@ rename
 renameSync
 FileSystemManager.rename 的同步版本
 ##### renameSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1609,9 +1611,9 @@ FileSystemManager.rename 的同步版本
 removeSavedFile
 删除该小程序下已保存的本地缓存文件
 ##### removeSavedFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1673,9 +1675,9 @@ removeSavedFile
 readCompressedFile
 读取指定压缩类型的本地文件内容
 ##### readCompressedFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | x |
 
 ##### 参数 
 
@@ -1744,9 +1746,9 @@ readCompressedFile
 readCompressedFileSync
 同步读取指定压缩类型的本地文件内容
 ##### readCompressedFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | x |
 
 ##### 参数 
 
@@ -1767,9 +1769,9 @@ readCompressedFileSync
 saveFile
 保存临时文件到本地。此接口会移动临时文件，因此调用成功后，tempFilePath 将不可用。
 ##### saveFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1838,9 +1840,9 @@ saveFile
 saveFileSync
 FileSystemManager.saveFile 的同步版本。自 `4.71` 起，返回 `unifile://` 协议的路径
 ##### saveFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -1861,9 +1863,9 @@ FileSystemManager.saveFile 的同步版本。自 `4.71` 起，返回 `unifile://
 stat
 获取文件 Stats 对象
 ##### stat 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -1909,9 +1911,9 @@ stat
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -1926,9 +1928,9 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -1984,9 +1986,9 @@ isFile
 statSync
 FileSystemManager.stat 的同步版本
 ##### statSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -2023,9 +2025,9 @@ FileSystemManager.stat 的同步版本
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -2040,9 +2042,9 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.31 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
 
 
 
@@ -2058,9 +2060,9 @@ isFile
 truncate
 对文件内容进行截断操作
 ##### truncate 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -2123,9 +2125,9 @@ truncate
 truncateSync
 对文件内容进行截断操作 (truncate 的同步版本)
 ##### truncateSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -2140,9 +2142,9 @@ truncateSync
 unlink
 删除文件
 ##### unlink 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -2204,9 +2206,9 @@ unlink
 unlinkSync
 FileSystemManager.unlink 的同步版本
 ##### unlinkSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -2220,9 +2222,9 @@ FileSystemManager.unlink 的同步版本
 unzip
 解压文件
 ##### unzip 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -2281,13 +2283,42 @@ unzip
 
 
 
+#### unzipSync(options: UnzipSyncOptions): boolean; @unzipsync
+unzipSync
+解压文件
+##### unzipSync 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | 5.31 | 5.31 | 7.0 (26.0.0) | 5.31 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **UnzipSyncOptions** | 是 | Web: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| zipFilePath | string | 是 | Web: x | 源文件路径，支持本地路径, 只可以是 zip 压缩文件 |
+| targetPath | string | 是 | Web: x | 目标目录路径, 支持本地路径 | 
+
+
+##### 返回值 
+
+| 类型 |
+| :- |
+| boolean |
+ 
+
 #### writeFile(options: WriteFileOptions): void; @writefile
 writeFile
 写文件
 ##### writeFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -2301,7 +2332,7 @@ writeFile
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 文件路径，只支持绝对地址 |
 | encoding | string | 否 | Web: x | 指定写入文件的字符编码,<br/>支持:ascii base64 utf-8，默认值是 utf-8，仅在 data 类型是 String 时有效 |
-| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，之前类型是string，iOS平台4.61及以后、Android平台4.31及以后支持ArrayBuffer类型 |
+| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，之前类型是string，iOS平台4.61及以后、Android平台4.31及以后支持ArrayBuffer类型 |
 | success | (res: FileManagerSuccessResult) => void | 否 | Web: x | 通用的正确返回结果回调 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 通用的错误返回结果回调 |
 | complete | (res: any) => void | 否 | Web: x | 通用的结束返回结果回调 | 
@@ -2359,9 +2390,9 @@ writeFile
 writeFileSync
 FileSystemManager.writeFile 的同步版本
 ##### writeFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.51 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.51 |
 
 ##### 参数 
 
@@ -2377,9 +2408,9 @@ FileSystemManager.writeFile 的同步版本
 write
 写入文件
 ##### write 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -2392,10 +2423,10 @@ write
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | fd | string | 是 |  | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持ArrayBuffer |
-| offset | number | 否 | 0 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，决定 ArrayBuffer 中要被写入的部位，即 ArrayBuffer 中的索引，默认0 |
-| length | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 ArrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 |
-| position | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | Andorid平台4.31及以后版本新增，指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。 |
+| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，iOS平台4.61、Android平台4.31及以后支持ArrayBuffer |
+| offset | number | 否 | 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，决定 ArrayBuffer 中要被写入的部位，即 ArrayBuffer 中的索引，默认0 |
+| length | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | Android平台4.31及以后版本新增，只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 ArrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 |
+| position | number | 否 |  | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: x; HarmonyOS: 4.61 | Andorid平台4.31及以后版本新增，指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。 |
 | encoding | string | 否 |  | Web: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
 | success | (res: [WriteResult](#writeresult-values)) => void | 否 |  | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 |  | Web: x | 通用的错误返回结果回调 |
@@ -2460,9 +2491,9 @@ write
 writeSync
 同步写入文件
 ##### writeSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 
@@ -2475,11 +2506,11 @@ writeSync
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | fd | string | 是 | Web: x | 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得 |
-| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer类型 |
+| data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer类型 |
 | encoding | string | 否 | Web: x | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
-| length | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 arrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 ，4.31及以后版本新增 |
-| offset | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffer 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
-| position | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。4.31及以后版本新增 | 
+| length | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 arrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 ，4.31及以后版本新增 |
+| offset | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffer 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
+| position | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。4.31及以后版本新增 | 
 
 ##### encoding 的属性描述
 

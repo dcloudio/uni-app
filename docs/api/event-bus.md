@@ -15,9 +15,9 @@
 
 
 ### $on 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 
@@ -60,9 +60,9 @@
 4.31+ 开始第二个参数的类型由 `Function | null` 调整为 `any | null`, 支持传入 `uni.$on`、`uni.$once` 返回的事件监听器 id, 移除指定事件监听器。
 
 ### $off 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 
@@ -99,9 +99,9 @@
 
 
 ### $once 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 
@@ -143,9 +143,9 @@
 在iOS平台UTS环境下或者UTS和JS通信时参数仅支持基础类型、string、Array、UTSJSONObject,其中Array，UTSJSONObject也仅支持包含上述类型,on和emit类型需匹配否则会产生异常
 
 ### $emit 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.31 | 4.61 |
 
 
 ### 参数 

@@ -14,9 +14,9 @@
 
 
 ### setNavigationBarTitle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.97 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -29,10 +29,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| title | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 页面标题 |
-| success | (result: [SetNavigationBarTitleSuccess](#setnavigationbartitlesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (error: [SetNavigationBarTitleFail](#setnavigationbartitlefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (res: [SetNavigationBarTitleComplete](#setnavigationbartitlecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| title | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 页面标题 |
+| success | (result: [SetNavigationBarTitleSuccess](#setnavigationbartitlesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (error: [SetNavigationBarTitleFail](#setnavigationbartitlefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (res: [SetNavigationBarTitleComplete](#setnavigationbartitlecomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SetNavigationBarTitleSuccess 的属性值 @setnavigationbartitlesuccess-values 
 
@@ -74,7 +74,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setNavigationBarTitle)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#setnavigationbartitle)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/navigation-bar/wx.setNavigationBarTitle.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=setNavigationBarTitle&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setNavigationBarTitle&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setNavigationBarTitle&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setNavigationBarTitle&secondType=all&type=1)

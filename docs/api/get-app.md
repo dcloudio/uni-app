@@ -65,7 +65,7 @@ getHarmonyAbility
 | UIAbility |
  
 
-#### restart(url?: string): void @restart
+#### restart(options?: UniAppRestartOptions): void @restart
 restart
 重启应用
 ##### restart 兼容性 <Help /> 
@@ -75,9 +75,15 @@ restart
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **UniAppRestartOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string | 否 | Web: x; 微信小程序: x; HarmonyOS: x | 重启后打开的页面地址 | 
+| url | string | 否 | Web: x; 微信小程序: x; HarmonyOS: x | 重启直达页面路径。路径后可以带参数，参数与路径之间使用 ? 分隔，参数键与参数值用 = 相连，不同参数用 & 分隔，如 'path?key=value&key2=value2' | 
 
 
  

@@ -9,37 +9,37 @@
 App平台暂未提供全局的uni监听API，而是需要在页面生命周期onResize 中监听页面尺寸变化。[另见](../page.md#onresize)
 
 ### onWindowResize 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (result: [UniNamespace.WindowResizeResult](#uninamespace-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| callback | (result: [UniNamespace.WindowResizeResult](#uninamespace-values)) => void | 是 | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
 
 ### UniNamespace.WindowResizeResult 的属性值 @uninamespace-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| size | **WindowResizeResultSize** | 是 | Android: x; iOS: x; HarmonyOS: x | 变化后的窗口的大小，单位为 px ，{windowWidth,windowHeight} |
-| deviceOrientation | string | 否 | Android: x; iOS: x; HarmonyOS: x | 变化后的设备方向<br/>- landscape: undefined<br/>- portrait: undefined |
+| size | **WindowResizeResultSize** | 是 | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 变化后的窗口的大小，单位为 px ，{windowWidth,windowHeight} |
+| deviceOrientation | string | 否 | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 变化后的设备方向<br/>- landscape: undefined<br/>- portrait: undefined |
 
 #### size 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| windowWidth | number | 是 | Android: x; iOS: x; HarmonyOS: x | 变化后的窗口宽度，单位 px |
-| windowHeight | number | 是 | Android: x; iOS: x; HarmonyOS: x | 变化后的窗口高度，单位 px |
+| windowWidth | number | 是 | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 变化后的窗口宽度，单位 px |
+| windowHeight | number | 是 | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 变化后的窗口高度，单位 px |
 
 #### deviceOrientation 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| landscape | Android: x; iOS: x; HarmonyOS: x |
-| portrait | Android: x; iOS: x; HarmonyOS: x |
+| landscape | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| portrait | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 
 
@@ -72,16 +72,16 @@ App平台暂未提供全局的uni监听API，而是需要在页面生命周期on
 文档: [http://uniapp.dcloud.io/api/ui/window?id=offwindowresize](http://uniapp.dcloud.io/api/ui/window?id=offwindowresize)
 
 ### offWindowResize 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (result: any) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
+| callback | (result: any) => void | 是 | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
 
 
 

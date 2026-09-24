@@ -7,24 +7,24 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=showLeftWindow](http://uniapp.dcloud.io/api/ui/adapt?id=showLeftWindow)
 
 ### showLeftWindow 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -57,24 +57,24 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=showRightWindow](http://uniapp.dcloud.io/api/ui/adapt?id=showRightWindow)
 
 ### showRightWindow 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -107,24 +107,24 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=showTopWindow](http://uniapp.dcloud.io/api/ui/adapt?id=showTopWindow)
 
 ### showTopWindow 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -158,24 +158,24 @@
 
 
 ### hideLeftWindow 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -209,24 +209,24 @@
 
 
 ### hideRightWindow 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -261,24 +261,24 @@
 
 
 ### hideTopWindow 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | [UniNamespace.CommonOptions](#uninamespace-values) | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -311,9 +311,9 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=getTopWindowStyle](http://uniapp.dcloud.io/api/ui/adapt?id=getTopWindowStyle)
 
 ### getTopWindowStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -354,9 +354,9 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=getLeftWindowStyle](http://uniapp.dcloud.io/api/ui/adapt?id=getLeftWindowStyle)
 
 ### getLeftWindowStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -397,9 +397,9 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=getRightWindowStyle](http://uniapp.dcloud.io/api/ui/adapt?id=getRightWindowStyle)
 
 ### getRightWindowStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -440,23 +440,23 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=setTopWindowStyle](http://uniapp.dcloud.io/api/ui/adapt?id=setTopWindowStyle)
 
 ### setTopWindowStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | string | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | string | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| Partial<CSSStyleDeclaration> | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| string.CSSURIString | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+| Record<string, any> | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| string.CSSURIString | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
 
 
 
@@ -489,23 +489,23 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=setLeftWindowStyle](http://uniapp.dcloud.io/api/ui/adapt?id=setLeftWindowStyle)
 
 ### setLeftWindowStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | string | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | string | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| Partial<CSSStyleDeclaration> | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| string.CSSURIString | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+| Record<string, any> | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| string.CSSURIString | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
 
 
 
@@ -538,23 +538,23 @@
 文档: [http://uniapp.dcloud.io/api/ui/adapt?id=setRightWindowStyle](http://uniapp.dcloud.io/api/ui/adapt?id=setRightWindowStyle)
 
 ### setRightWindowStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | string | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| options | string | 是 | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| Partial<CSSStyleDeclaration> | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| string.CSSURIString | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+| Record<string, any> | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| string.CSSURIString | 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
 
 
 

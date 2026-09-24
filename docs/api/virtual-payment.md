@@ -41,9 +41,9 @@
 请求支付
 
 ### requestVirtualPayment 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 |
 
 
 uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
@@ -61,9 +61,9 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | apple | **AppleIAPOptions** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 苹果IAP的参数 |
-| success | (result: [RequestVirtualPaymentSuccess](#requestvirtualpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (result: [RequestVirtualPaymentFail](#requestvirtualpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| success | (result: [RequestVirtualPaymentSuccess](#requestvirtualpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (result: [RequestVirtualPaymentFail](#requestvirtualpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） |
 | mode | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 支付的类型, 不同的支付类型有各自额外要传的附加参数<br/><br/>可选值：<br/>- 'short_series_goods': 道具直购;<br/>- 'short_series_coin': 代币充值;<br/> |
 | paySig | string | 否 | Web: x; 微信小程序: 4.41; Android: x |  |
 | signData | **RequestVirtualPaymentOptionsSignData** | 否 | Web: x; 微信小程序: 4.41; Android: x | 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}'<br/> |

@@ -13,9 +13,9 @@
 请求支付
 
 ### requestPayment 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.02 | 4.18 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 4.02 | 4.18 | 4.61 |
 
 
 uni.requestPayment是一个统一各平台的客户端支付API，客户端均使用本API调用支付。
@@ -41,10 +41,10 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | provider | string | 是 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
-| orderInfo | string | 是 | Web: x; 微信小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
-| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [RequestPaymentFail](#requestpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| orderInfo | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
+| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [RequestPaymentFail](#requestpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
 | nonceStr | string | 否 | Web: x; 微信小程序: 4.41 | 随机字符串，长度为32个字符以下<br/> |
 | package | string | 否 | Web: x; 微信小程序: 4.41 | 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=***<br/> |
 | paySign | string | 否 | Web: x; 微信小程序: 4.41 | 签名，具体见微信支付文档<br/> |
@@ -63,7 +63,7 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | object | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 返回数据 |
+| data | object | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 返回数据 |
 
 #### RequestPaymentFail 的属性值 @requestpaymentfail-values 
 

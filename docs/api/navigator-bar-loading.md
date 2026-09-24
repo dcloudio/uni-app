@@ -14,9 +14,9 @@
 
 
 ### showNavigationBarLoading 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -58,7 +58,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.navigatorBarLoading.showNavigationBarLoading)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#shownavigationbarloading)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/navigation-bar/wx.showNavigationBarLoading.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=showNavigationBarLoading&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=showNavigationBarLoading&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=showNavigationBarLoading&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=showNavigationBarLoading&secondType=all&type=1)
@@ -86,9 +86,9 @@
 
 
 ### hideNavigationBarLoading 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -130,7 +130,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.navigatorBarLoading.hideNavigationBarLoading)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/navigationbar.html#hidenavigationbarloading)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/navigation-bar/wx.hideNavigationBarLoading.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=hideNavigationBarLoading&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=hideNavigationBarLoading&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=hideNavigationBarLoading&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=hideNavigationBarLoading&secondType=all&type=1)

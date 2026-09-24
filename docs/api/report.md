@@ -19,17 +19,17 @@
 `uni.report` 需要依赖 [`uni统计`](https://ext.dcloud.net.cn?name=uni-stat)，集成方式请查看[文档](https://uniapp.dcloud.net.cn/uni-stat-uniappx)。
 
 ### report 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 5.25 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 描述 |
-| :- | :- | :- | :- |
-| eventKey | string | 是 | 自定义事件名称 |
-| param | any | 否 | 自定义事件参数 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| eventKey | string | 是 | 支付宝小程序: x | 自定义事件名称 |
+| param | any | 否 | 支付宝小程序: x | 自定义事件参数 | 
 
 
 

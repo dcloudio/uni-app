@@ -34,9 +34,9 @@ uni.setStorage函数定义
 
 
 ### setStorage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -93,9 +93,9 @@ uni.setStorageSync函数定义
 
 
 ### setStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -143,9 +143,9 @@ uni.getStorage函数定义
 
 
 ### getStorage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -217,9 +217,9 @@ uni.getStorageSync函数定义
 
 
 ### getStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -284,9 +284,9 @@ uni.getStorageInfo函数定义
 
 
 ### getStorageInfo 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -349,9 +349,9 @@ uni.getStorageInfoSync函数定义
 
 
 ### getStorageInfoSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -406,9 +406,9 @@ uni.removeStorage函数定义
 
 
 ### removeStorage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -464,9 +464,9 @@ uni.removeStorageSync函数定义
 
 
 ### removeStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -513,9 +513,9 @@ uni.clearStorage函数定义
 
 
 ### clearStorage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -570,9 +570,9 @@ uni.clearStorageSync函数定义
 
 
 ### clearStorageSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
 
 
 
