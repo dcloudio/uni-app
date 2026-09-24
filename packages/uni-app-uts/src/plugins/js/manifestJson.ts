@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import {
+  M,
   MANIFEST_JSON_UTS,
   isUniAppXAndroidJsEngine,
   parseJson,
@@ -144,6 +145,15 @@ export function uniAppManifestPlugin(
               updateHarmonyManifestModules(manifest, modules)
             } else {
               updateManifestModules(platform, manifest, modules)
+              // 仅发行模式才会走摇树逻辑，蒸汽模式安卓、iOS平台需要打印摇树结果
+              if (process.env.UNI_APP_X_VAPOR === 'true') {
+                console.log(
+                  M['vapor.tree.shaking.applied'].replace(
+                    '{modules}',
+                    modules.join(',')
+                  )
+                )
+              }
             }
           }
         }
