@@ -87,4 +87,8 @@ export default {
   'pages.json.page.slash': '路径 "{pagePath}" 不能以 "/" 开头',
   'pages.json.tabbar.page.notfound':
     'tabBar 中配置的页面 "{pagePath}" 未在 pages.json 中注册。',
+  'vapor.tree.shaking.applied': `根据manifest.json的模块选择和摇树扫描结果，本次打包将包含如下内置模块和插件：
+{modules}
+如果需要添加更多模块，请在manifest.json中添加（添加后需重新打包）。涉及三方sdk的在可视化界面选择更多模块，其他模块根据文档在manifest.json源码视图添加。[详情](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html)
+注意：如某模块未包含在自定义基座中，相关API无法在自定义基座中使用；如某模块未包含在正式包中，后续wgt资源更新后相关API无法使用。`,
 } as const

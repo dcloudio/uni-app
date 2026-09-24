@@ -84,4 +84,8 @@ export default {
   'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
   'pages.json.tabbar.page.notfound':
     'The tabBar page "{pagePath}" is not declared in "pages.json".',
+  'vapor.tree.shaking.applied': `Based on the module selection and tree-shaking scan results in manifest.json, the following built-in modules and plugins will be included in this build:
+{modules}
+If you need to add more modules, please add them in manifest.json (you need to rebuild after adding). For third-party SDKs, select more modules in the visual interface, and add other modules according to the documentation in the source view of manifest.json. [Details](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html)
+Note: If a module is not included in the custom playground, the related APIs cannot be used in the custom playground; if a module is not included in the official package, the related APIs cannot be used after subsequent wgt resource updates.`,
 } as const
