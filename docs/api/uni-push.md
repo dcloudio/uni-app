@@ -62,7 +62,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 启动监听推送消息事件
 
-> HBuilderX5.25及以上版本 Android平台 新增 options 参数（requestPermission属性）配置配置是否主动申请通知权限
+> Android平台 HBuilderX 5.25及以上版本、鸿蒙平台自 HBuilderX 5.31及以上版本，新增 options 参数（requestPermission 属性），配置是否主动申请通知权限。
 
 ### onPushMessage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
