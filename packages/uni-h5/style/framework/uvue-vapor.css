@@ -1,0 +1,115 @@
+/*
+ * Web Vapor 使用原生 div、span、img 承载 view、text、image。
+ * 过渡期仍由 uvue.css 提供尚未迁移组件的旧标签样式；组件完成 Vapor 迁移后，
+ * 相关规则统一收敛到本文件并移除旧样式入口。
+ */
+
+div:where([uni-view]),
+span:where([uni-text]),
+img:where([uni-image]) {
+  position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-width: medium;
+  font-size: 16px;
+  text-align: left;
+}
+
+div:where([uni-view]) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: flex-start;
+}
+
+span:where([uni-text]) {
+  display: block;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+
+span:where([uni-text]) > span:where([uni-text]) {
+  display: inline;
+}
+
+span:where([uni-text][selectable]) {
+  cursor: auto;
+  user-select: text;
+}
+
+img:where([uni-image]) {
+  width: 320px;
+  height: 240px;
+  display: inline-block;
+  -webkit-touch-callout: none;
+  user-select: none;
+  object-fit: fill;
+  object-position: center;
+}
+
+div:where([uni-view][hidden]),
+span:where([uni-text][hidden]),
+img:where([uni-image][hidden]) {
+  display: none !important;
+}
+
+img:where([uni-image])[mode='aspectFit'] {
+  object-fit: contain;
+  object-position: center;
+}
+
+img:where([uni-image])[mode='aspectFill'] {
+  object-fit: cover;
+  object-position: center;
+}
+
+img:where([uni-image])[mode='top'] {
+  object-fit: none;
+  object-position: center top;
+}
+
+img:where([uni-image])[mode='bottom'] {
+  object-fit: none;
+  object-position: center bottom;
+}
+
+img:where([uni-image])[mode='center'] {
+  object-fit: none;
+  object-position: center;
+}
+
+img:where([uni-image])[mode='left'] {
+  object-fit: none;
+  object-position: left center;
+}
+
+img:where([uni-image])[mode='right'] {
+  object-fit: none;
+  object-position: right center;
+}
+
+img:where([uni-image])[mode='top left'] {
+  object-fit: none;
+  object-position: left top;
+}
+
+img:where([uni-image])[mode='top right'] {
+  object-fit: none;
+  object-position: right top;
+}
+
+img:where([uni-image])[mode='bottom left'] {
+  object-fit: none;
+  object-position: left bottom;
+}
+
+img:where([uni-image])[mode='bottom right'] {
+  object-fit: none;
+  object-position: right bottom;
+}

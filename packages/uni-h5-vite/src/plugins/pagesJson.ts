@@ -169,6 +169,10 @@ function generateCssCode(config: ResolvedConfig) {
   // x 项目直接集成 uvue.css
   if (process.env.UNI_APP_X === 'true') {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uvue.css')
+    if (isUniAppXWebVapor()) {
+      // 过渡期继续加载 uvue.css 提供尚未迁移组件的样式，Vapor 规则统一收敛到独立入口。
+      cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'uvue-vapor.css')
+    }
   } else {
     if (define.__UNI_FEATURE_NVUE__) {
       cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'nvue.css')
