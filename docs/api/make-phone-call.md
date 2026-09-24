@@ -13,9 +13,9 @@
 拨打电话
 
 ### makePhoneCall 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.63 | 4.63 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 4.63 | 4.63 | 4.61 |
 
 
 ::: warning 注意
@@ -34,10 +34,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| phoneNumber | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 需要拨打的电话号码 |
-| success | (result: MakePhoneCallSuccess) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 成功返回的回调函数 |
-| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
+| phoneNumber | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 需要拨打的电话号码 |
+| success | (result: MakePhoneCallSuccess) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 成功返回的回调函数 |
+| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### MakePhoneCallFail 的属性值 @makephonecallfail-values 
 
@@ -64,7 +64,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.makePhoneCall)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/phone.html#makephonecall)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/phone/wx.makePhoneCall.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=makePhoneCall&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=makePhoneCall&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=makePhoneCall&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=makePhoneCall&secondType=all&type=1)

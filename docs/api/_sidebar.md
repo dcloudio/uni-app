@@ -141,6 +141,8 @@
   * [创建 editor 组件上下文对象](create-editor-context-async.md)
 * Worker
   * [创建 worker 对象](create-worker.md)
+* UASM
+  * [加载 UASM](uasm.md)
 * [DOM](dom/README.md)
   * [DOM概述](dom/README.md)
   * [UniElement](dom/unielement.md)

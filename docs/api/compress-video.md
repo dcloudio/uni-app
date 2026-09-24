@@ -3,9 +3,9 @@
 压缩视频
 
 ### compressVideo 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.18 | 4.25 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 4.18 | 4.25 | 4.61 |
 
 
 ### 参数 
@@ -20,8 +20,8 @@
 | :- | :- | :- |  :-: | :- |
 | src | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
 | quality | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 压缩质量<br/> |
-| bitrate | number | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.25 | 码率，单位 kbps |
-| fps | number | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.25 | 帧率 |
+| bitrate | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 4.25 | 码率，单位 kbps |
+| fps | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 4.25 | 帧率 |
 | resolution | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 相对于原视频的分辨率比例，取值范围(0, 1\] |
 | success | (callback: [CompressVideoSuccess](#compressvideosuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
 | fail | (callback: [CompressVideoFail](#compressvideofail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
@@ -33,7 +33,7 @@
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 压缩后的临时文件地址 |
 | size | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 压缩后的大小，单位 kB |
-| byteSize | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频文件的字节大小 |
+| byteSize | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频文件的字节大小 |
 
 #### CompressVideoFail 的属性值 @compressvideofail-values 
 

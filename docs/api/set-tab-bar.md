@@ -14,9 +14,9 @@
 
 
 ### showTabBar 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -109,9 +109,9 @@
 
 
 ### hideTabBar 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -204,9 +204,9 @@
 
 
 ### showTabBarRedDot 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -299,9 +299,9 @@
 
 
 ### hideTabBarRedDot 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -394,9 +394,9 @@
 
 
 ### setTabBarBadge 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -490,9 +490,9 @@
 
 
 ### removeTabBarBadge 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -585,9 +585,9 @@
 
 
 ### setTabBarStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.0 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.0 |
 
 
 ### 参数 
@@ -605,7 +605,7 @@
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |   | tab 的背景色 |
 | backgroundImage | string | 否 |   | 图片背景 |
 | backgroundRepeat | string | 否 |   | 背景图平铺方式 |
-| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.23; 微信小程序: 4.41; Android: x; iOS: 4.23; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | tabbar上边框的颜色（优先级高于 borderStyle） |
+| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.23; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: 4.23; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | tabbar上边框的颜色（优先级高于 borderStyle） |
 | borderStyle | string | 否 |   | tabbar上边框的颜色 |
 | success | (result: [SetTabBarStyleSuccess](#settabbarstylesuccess-values)) => void | 否 |   | 接口调用成功的回调函数 |
 | fail | (result: [SetTabBarStyleFail](#settabbarstylefail-values)) => void | 否 |   | 接口调用失败的回调函数 |
@@ -702,9 +702,9 @@
 
 
 ### setTabBarItem 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -721,7 +721,7 @@
 | text | string | 否 |   | tab 上按钮文字 |
 | iconPath | string | 否 |   | 图片路径 |
 | selectedIconPath | string | 否 |   | 选中时的图片路径 |
-| pagePath | string | 否 | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 页面绝对路径 |
+| pagePath | string | 否 | Web: √; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 页面绝对路径 |
 | iconfont | **SetTabBarItemIconFontOptions** | 否 |   | 字体图标，优先级高于 iconPath |
 | visible | boolean | 否 |   | tab 是否显示 |
 | success | (result: [SetTabBarItemSuccess](#settabbaritemsuccess-values)) => void | 否 |   | 接口调用成功的回调函数 |

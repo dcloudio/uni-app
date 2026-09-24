@@ -3,9 +3,9 @@
 保存视频到系统相册
 
 ### saveVideoToPhotosAlbum 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.18 | 4.18 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 4.18 | 4.18 | 4.61 |
 
 
 ### 参数 
@@ -18,10 +18,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
-| success | (callback: SaveVideoToPhotosAlbumSuccess) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 接口调用成功的回调函数 |
-| fail | (callback: [SaveVideoToPhotosAlbumFail](#savevideotophotosalbumfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.18; iOS: 4.18 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
+| success | (callback: SaveVideoToPhotosAlbumSuccess) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.18; iOS: 4.18 | 接口调用成功的回调函数 |
+| fail | (callback: [SaveVideoToPhotosAlbumFail](#savevideotophotosalbumfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.18; iOS: 4.18 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.18; iOS: 4.18 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SaveVideoToPhotosAlbumFail 的属性值 @savevideotophotosalbumfail-values 
 

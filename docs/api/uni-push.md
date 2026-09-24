@@ -24,31 +24,31 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 > HBuilderX5.25及以上版本 Android平台 调整为不再主动申请通知权限，可调用 [uni.requestSystemPermission](../api/request-system-permission.md) 主动申请通知权限
 
 ### getPushClientId 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | 3.98 | 4.18 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.27 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| options | **GetPushClientIdOptions** | 是 |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **GetPushClientIdOptions** | 是 | 支付宝小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 描述 |
-| :- | :- | :- | :- | :- |
-| success | (result: [GetPushClientIdSuccess](#getpushclientidsuccess-values)) => void | 否 | null | 接口调用成功的回调函数 |
-| fail | (result: [UniError](/err-spec.md#unierror)) => void | 否 | null | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| success | (result: [GetPushClientIdSuccess](#getpushclientidsuccess-values)) => void | 否 | null | 支付宝小程序: x | 接口调用成功的回调函数 |
+| fail | (result: [UniError](/err-spec.md#unierror)) => void | 否 | null | 支付宝小程序: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 支付宝小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetPushClientIdSuccess 的属性值 @getpushclientidsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cid | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 个推客户端推送id，对应uni-id-device表的push_clientid<br/> |
-| errMsg | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 错误描述<br/> |
+| cid | string | 是 | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 | 个推客户端推送id，对应uni-id-device表的push_clientid<br/> |
+| errMsg | string | 是 | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 | 错误描述<br/> |
 
 
 
@@ -65,37 +65,37 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 > Android平台 HBuilderX 5.25及以上版本、鸿蒙平台自 HBuilderX 5.31及以上版本，新增 options 参数（requestPermission 属性），配置是否主动申请通知权限。
 
 ### onPushMessage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | 3.98 | 4.18 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.27 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 |   |  |
-| options | **OnPushMessageOptions** | 否 | Web: x; Android: 5.25; iOS: x; HarmonyOS: x | onPushMessage参数 |
+| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 | 支付宝小程序: x |  |
+| options | **OnPushMessageOptions** | 否 | Web: x; 支付宝小程序: x; Android: 5.25; iOS: x; HarmonyOS: x | onPushMessage参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| requestPermission | boolean | 否 | true | Web: x; Android: 5.25; iOS: x; HarmonyOS: x | 是否申请通知权限 | 
+| requestPermission | boolean | 否 | false | Web: x; 支付宝小程序: x; Android: 5.25; iOS: x; HarmonyOS: x | 是否申请通知权限 | 
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
+| type | string | 是 | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
 | data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| "click" | Web: 4.27; Android: 3.98; iOS: 4.18 |
-| receive |   |
+| "click" | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 |
+| receive | 支付宝小程序: x |
 
 
 
@@ -114,30 +114,30 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 关闭推送消息监听事件，iOS端调用会关闭所有监听。
 
 ### offPushMessage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | 3.98 | 4.18 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.27 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
 
 
 ### 参数 
 
-| 名称 | 类型 | 必填 |
-| :- | :- | :- |
-| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 | 支付宝小程序: x | 
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
+| type | string | 是 | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
 | data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| "click" | Web: 4.27; Android: 3.98; iOS: 4.18 |
-| receive |   |
+| "click" | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 |
+| receive | 支付宝小程序: x |
 
 
 
