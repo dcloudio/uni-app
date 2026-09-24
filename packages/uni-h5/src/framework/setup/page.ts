@@ -333,9 +333,9 @@ export function onPageReady(instance: ComponentInternalInstance) {
 }
 
 function updateCurPageBodyScopeId(instance: ComponentInternalInstance) {
-  const pageRoot = getPageInstanceByChild(instance)?.subTree
-    ?.el as Element | null
-  const pageBodyEl = pageRoot?.querySelector?.('uni-page-body')
+  const pageRoot = getPageInstanceByChild(instance)?.proxy
+    ?.$el as Element | null
+  const pageBodyEl = pageRoot?.querySelector('uni-page-body')
   if (!pageBodyEl) {
     return false
   }
