@@ -33,6 +33,7 @@ export const getAppBaseInfo: MPProtocol = {
           __GLOBAL__.getAccountInfoSync().miniProgram.appId
         if (miniProgramAppId) {
           parameters.packagename = miniProgramAppId
+          parameters.packageName = miniProgramAppId
         }
       }
     } catch (error) {}
