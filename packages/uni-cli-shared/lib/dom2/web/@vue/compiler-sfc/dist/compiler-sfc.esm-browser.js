@@ -43699,7 +43699,8 @@ function compileScript(sfc, options) {
 			returned += `get ${key}() { return ${key} }, set ${key}(${setArg}) { ${key} = ${setArg} }, `;
 		} else returned += `${key}, `;
 		returned = returned.replace(/, $/, "") + ` }`;
-	} else if (sfc.template && !sfc.template.src) {
+	} else if (options.componentType === "app") returned = "";
+	else if (sfc.template && !sfc.template.src) {
 		if (ssr) hasInlinedSsrRenderFn = true;
 		const { code, preamble, tips, errors, helpers, map } = compileTemplate(_objectSpread2(_objectSpread2({
 			filename,
