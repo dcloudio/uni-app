@@ -9277,9 +9277,9 @@ function onPageReady(instance2) {
   }
 }
 function updateCurPageBodyScopeId(instance2) {
-  var _a, _b, _c;
-  const pageRoot = (_b = (_a = getPageInstanceByChild(instance2)) == null ? void 0 : _a.subTree) == null ? void 0 : _b.el;
-  const pageBodyEl = (_c = pageRoot == null ? void 0 : pageRoot.querySelector) == null ? void 0 : _c.call(pageRoot, "uni-page-body");
+  var _a, _b;
+  const pageRoot = (_b = (_a = getPageInstanceByChild(instance2)) == null ? void 0 : _a.proxy) == null ? void 0 : _b.$el;
+  const pageBodyEl = pageRoot == null ? void 0 : pageRoot.querySelector("uni-page-body");
   if (!pageBodyEl) {
     return false;
   }
@@ -29011,7 +29011,6 @@ const showActionSheet$1 = (options) => {
   });
   uni.openDialogPage({
     url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
-    animationType: "none",
     fail(err) {
       var _a, _b;
       const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`);
@@ -30630,7 +30629,6 @@ const showModal$1 = (options) => {
   });
   const openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
-    animationType: "none",
     fail(err) {
       var _a2, _b2;
       const res2 = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
@@ -30838,7 +30836,6 @@ const showLoading$1 = (options) => {
   });
   const openRet = uni.openDialogPage({
     url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
-    animationType: "none",
     fail(err) {
       var _a2, _b2;
       const res2 = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
