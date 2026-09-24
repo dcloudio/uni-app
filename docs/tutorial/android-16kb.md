@@ -40,34 +40,44 @@ Android17+，默认会开启16KB兼容性检测，如果应用中包含未适配
 建议应用用于提交 Google Play 时不要使用此功能。  
 
 涉及的so库文件列表：
-- libavcodec.so
-- libavformat.so
-- libavutil.so
-- libcrypto.1.1.so
-- libcurl.so
-- libqplayer2-core.so
-- libsoundtouch.so
-- libsrt.so
-- libssl.1.1.so
-- libswresample.so
-- libyuv.so
-- `libpldroid_streaming_srt.so `
+- `libavcodec.so`
+- `libavformat.so`
+- `libavutil.so`
+- `libcrypto.1.1.so`
+- `libcurl.so`
+- `libqplayer2-core.so`
+- `libsoundtouch.so`
+- `libsrt.so`
+- `libssl.1.1.so`
+- `libswresample.so`
+- `libyuv.so`
+- `libpldroid_streaming_srt.so`
 
 
 ### [uni-ad](https://uniapp.dcloud.net.cn/uni-ad/)
-`uni-ad`使用国内广告渠道SDK 仅支持国内环境，建议应用用于提交 Google Play 时不要使用国内渠道 SDK。  
+`uni-ad`国内广告渠道SDK 仅支持国内环境，建议应用用于提交 Google Play 时不要使用国内广告渠道 SDK。  
 
-涉及的so库文件列表：
-- libsgcore.so（快手）
-- `libttmplayer_lite.so`、`libavmdl_lite.so`（穿山甲）
-- libwmAliAgainstId.so（旺脉）
+以下为未适配支持 16KB 内存页面大小的广告渠道，及其so库文件列表：
+- 穿山甲GroMore
+  + `libttmplayer_lite.so`
+  + `libavmdl_lite.so`
+- 快手广告联盟  
+  + `libsgcore.so`
+- 旺脉
+  + `libwmAliAgainstId.so`
 
 
 > HBuilder4.83及以上版本 国外广告 `applovin`、`pangle(海外穿山甲)` 广告渠道 SDK 已适配支持 16KB 内存页面大小。  
 
 
 ### [uni-push](../api/uni-push.md)
-`uni-push`使用了个推的sdk，在国内环境下，该sdk又依赖`卓信ID SDK`，但`卓信ID SDK` 目前未适配支持 16KB 内存页面大小。  
+`uni-push`是由 DCloud 与合作伙伴个推共同推出的统一推送服务。
+
+**HBuilder X 5.31 及以上版本**  
+已更新`uni-push`使用的个推 SDK 为 `3.3.15` 版，适配支持 16KB 内存页面大小。
+
+**HBuilder X 5.31 以下版本**  
+`uni-push`使用的个推 SDK 依赖`卓信ID SDK`，但该 SDK 目前未适配支持 16KB 内存页面大小。  
 为满足 Google Play 的要求，应用在提交至 Google Play 时需避免使用`卓信ID SDK`。按以下方式配置，使用`uni-push`时将不会包含`卓信ID SDK`：  
 1. 项目manifest.json可视化界面，在 “安卓App配置” 下的 “uni-push（消息推送）” 中只勾选 “Google FCM推送SDK”  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/uni-push/android-16k-unipush-fcm.png)  
@@ -79,7 +89,13 @@ Android17+，默认会开启16KB兼容性检测，如果应用中包含未适配
 
 
 ### [uni实人认证](../api/facial-recognition-meta-info.md)  
-`uni实人认证`功能仅支持国内环境，建议应用用于提交 Google Play 时不要使用此功能。
+`uni实人认证`是 DCloud 与合作伙伴共同推出的金融级实人认证服务，通过对比人脸、活体检测、姓名和身份证号码，来确认用户身份的有效性。
+
+**HBuilder X 5.31 及以上版本**  
+已更新`uni实人认证`使用的阿里云金融级实人认证 SDK 为 `2.3.16.1` 版，适配支持 16KB 内存页面大小。
+
+**HBuilder X 5.31 以下版本**  
+`uni实人认证`功能仅支持国内环境，建议应用提交 Google Play 时不要勾选此模块，或更新到最新版本HBuilder X解决。
 
 涉及的so库文件列表：
 - libaliyunaf.so  
@@ -87,7 +103,12 @@ Android17+，默认会开启16KB兼容性检测，如果应用中包含未适配
 
 
 ### [腾讯地图](../component/map.md)  
-腾讯地图使用的 SDK 版本为 `5.8.3`，暂未更新到最新版本，需等待官方升级腾讯地图SDK版本适配。
+
+**HBuilder X 5.31 及以上版本**  
+已更新`腾讯地图`模块使用的腾讯地图 SDK 为 `6.13.0` 版，适配支持 16KB 内存页面大小。  
+
+**HBuilder X 5.31 以下版本**  
+`腾讯地图`使用的 SDK 版本为 `5.8.3`，未适配支持 16KB 内存页面大小，请更新到最新版本HBuilder X解决。
 
 使用腾讯地图SDK的API：
 - [uni.createMapContext](../api/create-map-context.md)
