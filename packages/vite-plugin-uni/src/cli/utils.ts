@@ -8,6 +8,7 @@ import type { BuildOptions, InlineConfig, Logger } from 'vite'
 import {
   M,
   getPlatformDir,
+  getUniAppXVaporScriptLang,
   initModulePaths,
   initPreContext,
   isInHBuilderX,
@@ -370,17 +371,31 @@ export function initEnv(
         renderMode
     )
   )
-  if (
-    isUniAppXVapor() &&
-    (process.env.UNI_PLATFORM === 'app' ||
-      process.env.UNI_PLATFORM === 'app-harmony')
-  ) {
+  const vaporScriptPlatform =
+    process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+  const isVaporScriptPlatform =
+    isUniAppXVapor() ||
+    (isX &&
+      (vaporScriptPlatform === 'web' ||
+        vaporScriptPlatform?.startsWith('mp-') === true))
+  if (isVaporScriptPlatform) {
+    if (
+      process.env.UNI_PLATFORM === 'app' ||
+      process.env.UNI_PLATFORM === 'app-harmony'
+    ) {
+      console.log(
+        M['view.render.compiler.target'].replace(
+          '{target}',
+          process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+            ? M['view.render.compiler.target.bytecode']
+            : M['view.render.compiler.target.nativecode']
+        )
+      )
+    }
     console.log(
-      M['view.render.compiler.target'].replace(
-        '{target}',
-        process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
-          ? M['view.render.compiler.target.bytecode']
-          : M['view.render.compiler.target.nativecode']
+      M['vapor.default.script.lang'].replace(
+        '{lang}',
+        getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
       )
     )
   }

@@ -3,6 +3,8 @@ export default {
   'view.render.compiler.target': 'Current view.render compile target: {target}',
   'view.render.compiler.target.bytecode': 'bytecode',
   'view.render.compiler.target.nativecode': 'nativecode',
+  'vapor.default.script.lang':
+    'Default script lang for current uvue/vue files: {lang}',
   'style.isolation.version': 'Style isolation version: {version}',
   'style.isolation.version.upgrade':
     'Style isolation version: {version}. Upgrading to 2.0 is recommended.',
