@@ -68,7 +68,7 @@ UniNativeViewElement -- Extends --> UniElement
 ##### bindHarmonyFrameNode 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
-| x | x | 4.61 | x |
+| x | x | 4.61 | 5.31 |
 
 
 ##### 参数 
@@ -117,7 +117,7 @@ UniNativeViewElement -- Extends --> UniElement
 ##### getHarmonyFrameNode 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
-| x | x | 4.61 | x |
+| x | x | 4.61 | 5.31 |
 
 
 
