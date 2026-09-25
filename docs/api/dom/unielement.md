@@ -15,7 +15,7 @@
 | :- | :- | :- |  :-: | :- |
 | id | string | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 只读属性，当前元素的标识符 |
 | isConnected | boolean | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
-| attributes | Map\<string, any> | 是 | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 只读属性，当前元素上所有属性元素的集合 |
+| attributes | Map\<string, any> | 是 | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): 5.31; iOS(VDOM): 4.11; iOS(Vapor): 5.31; iOS(VDOM) UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31 | 只读属性，当前元素上所有属性元素的集合 |
 | classList | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素 class 属性的动态集合 |
 | dataset | any | 是 | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素上自定义数据属性（data-*）的集合 |
 | children | Array&lt;[UniElement](/api/dom/unielement.md)&gt; | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素包含的子元素的集合 |
@@ -2326,17 +2326,17 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| id | string | 是 | Web: √; 微信小程序: 4.53; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 获取或设置用于标识动画的字符串 |
-| playState | string | 是 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 返回动画播放状态。可选值：`running`动画正在运行；`paused`动画暂停；`finished`动画播放完成；`idle`动画取消或者失败 |
+| id | string | 是 | Web: √; 微信小程序: 4.53; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 获取或设置用于标识动画的字符串 |
+| playState | string | 是 | Web: √; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 返回动画播放状态。可选值：`running`动画正在运行；`paused`动画暂停；`finished`动画播放完成；`idle`动画取消或者失败 |
 ###### UniAnimation 的方法 @unianimation-values 
 
 ###### oncancel: (event: UniAnimationPlaybackEvent) => void @oncancel
 oncancel
 监听动画取消事件
 ###### oncancel 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| √ | 5.21 | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| √ | 5.21 | 5.31 | 4.51 | 4.53 | x | 5.08 |
 
 ##### 参数 
 
@@ -2356,9 +2356,9 @@ oncancel
 onfinish
 监听动画完成事件
 ###### onfinish 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| √ | x | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| √ | x | x | 4.51 | 4.53 | x | 5.08 |
 
 ##### 参数 
 
@@ -2378,9 +2378,9 @@ onfinish
 cancel
 终止并取消所有动画
 ###### cancel 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| √ | 4.53 | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| √ | 4.53 | 5.31 | 4.51 | 4.53 | x | 5.08 |
 
 
 
@@ -2389,9 +2389,9 @@ cancel
 finish
 动画跳转到最后一毫秒并立即播放完成
 ###### finish 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| √ | x | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| √ | x | x | 4.51 | 4.53 | x | 5.08 |
 
 
 
@@ -2400,9 +2400,9 @@ finish
 pause
 暂停动画播放
 ###### pause 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| √ | x | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| √ | x | x | 4.51 | 4.53 | x | 5.08 |
 
 
 
@@ -2411,9 +2411,9 @@ pause
 play
 开始或恢复动画播放
 ###### play 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| √ | 4.53 | 4.51 | 4.53 | x | 5.08 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| √ | 4.53 | 5.31 | 4.51 | 4.53 | x | 5.08 |
 
 
 
