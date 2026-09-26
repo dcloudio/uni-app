@@ -1,14 +1,11 @@
 * [概述](README.md)
 * [蒸汽模式](app-vapor.md)
+* benchmark
+  * [Android性能评测基准报告](benchmark/vapor-benchmark-android.md)
+  * [iOS性能评测基准报告](benchmark/vapor-benchmark-ios.md)
+  * [鸿蒙性能评测基准报告](benchmark/vapor-benchmark-harmony.md)
 * [项目](project.md)
 * [页面](page.md)
-* 教程
-	* Android VDOM模式注意
-		* [强类型下与js开发的差别](tutorial/codegap.md)
-		* [request联网教程](tutorial/request.md)
-	* [复杂列表开发指南](tutorial/stickynestlist.md)
-	* [全局变量与状态管理](tutorial/store.md)
-  * [几种组件标记的概念澄清](tutorial/idref.md)
 * web平台专题指南
   * [概述](web/README.md)
   * [跨域](tutorial/CORS.md)
@@ -73,28 +70,24 @@
     * [适配 glass-easel](mp/mp-weixin-glass-easel.md)
 * 运行和调试
   * [Android/iOS运行](tutorial/run-app.md)
-  * [DevTools 审查元素、网络、存储](tutorial/debug/devtools.md)
-  * [uts插件Android运行配置](tutorial/uts-development-android.md)
-  * [Android 审查元素](debug/android-inspector.md)
-  * [Android Debug断点](tutorial/uni-uts-debug.md)
-  * [Android 内存泄漏排查](tutorial/android-memoryleak.md)
-  * [uts插件iOS运行配置](tutorial/uts-development-ios.md)
-  * [uts插件iOS Debug](tutorial/uni-uts-debug-ios.md)
   * [鸿蒙运行](tutorial/harmony/runbuild.md)
-  * [鸿蒙Debug断点](tutorial/uni-uts-debug-harmony.md)
-* [性能优化](performance.md)
+  * [uts插件Android运行配置](tutorial/uts-development-android.md)
+  * [uts插件iOS运行配置](tutorial/uts-development-ios.md)
+  * [DevTools 审查元素、网络、存储](tutorial/debug/devtools.md)
+  * [Android Debug断点](tutorial/uni-uts-debug.md)
+  * [iOS Debug断点](tutorial/uni-uts-debug-ios.md)
+  * [鸿蒙 Debug断点](tutorial/uni-uts-debug-harmony.md)
+  * [Android 审查元素](debug/android-inspector.md)
+  * [Android 内存泄漏排查](tutorial/android-memoryleak.md)
 * [uni错误规范](err-spec.md)
 * [暗黑模式](api/theme-change.md)
 * [宽屏适配](adapt.md)
 * [国际化](i18n.md)
 * [源码和示例](sample.md)
 * [兼容性表格导读](tutorial/compatibility.md)
-* benchmark
-  * [Android性能评测基准报告](benchmark/vapor-benchmark-android.md)
-  * [iOS性能评测基准报告](benchmark/vapor-benchmark-ios.md)
-  * [鸿蒙性能评测基准报告](benchmark/vapor-benchmark-harmony.md)
 * 选型参考
 	* [一文讲透原生渲染和自渲染](./select/native-render-and-self-render.md)
+	* [uni-app x和uni-app的对比](./uniappvsuniappx.md)
 * [uni-app 升级 uni-app x](uniapptox.md)
 * 安全专题
   * [综述](tutorial/safe.md)
@@ -133,8 +126,15 @@
     * [安卓、鸿蒙厂商推送配置](uni-push/vendor_config.md)
     * [谷歌FCM配置](uni-push/google-fcm.md)
   * [uni统计](https://uniapp.dcloud.net.cn/uni-stat-uniappx)
-* cursor/vscode插件
-  * [语言服务插件](tutorial/ls-plugin.md)
+* 教程
+	* [性能优化](performance.md)
+	* [复杂列表开发指南](tutorial/stickynestlist.md)
+	* [全局变量与状态管理](tutorial/store.md)
+  * [几种组件标记的概念澄清](tutorial/idref.md)
+	* Android VDOM模式注意
+		* [强类型下与js开发的差别](tutorial/codegap.md)
+		* [request联网教程](tutorial/request.md)
+	* [cursor/vscode插件语言服务插件](tutorial/ls-plugin.md)
   * [AI Rules/MCP](tutorial/rules_mcp.md)
 * 更新日志
   * [正式版](release.md)
