@@ -95,6 +95,12 @@ const UNI_APP_STYLE_CLASSES =
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
+    if (context.inVPre) {
+      if (isElementNode(node)) {
+        rewriteAlipayStyleIsolationClasses(node, context)
+      }
+      return
+    }
     if (node.type === NodeTypes.INTERPOLATION) {
       const content = node.content
       const isFilter = isFilterExpr(content, context)
