@@ -155,7 +155,7 @@ uni-app x 的预置css变量，比uni-app多了安全区相关的css变量，[�
 针对摄像头挖空区、Android底部的全面屏手势、三键导航，uni-app x都新增了获取状态和设置参数的能力。
 包括：
 - [uni.getWindowInfo](./api/get-window-info.md)、
-- [pages.json](./collocation/pagesjson.md#style 配置项列表)中配置hideBottomNavigationIndicator、androidThreeButtonNavigationTranslucent、androidThreeButtonNavigationBackgroundColor、androidThreeButtonNavigationStyle，
+- [pages.json](./collocation/pagesjson.md#pagesoptionspage-style)中配置hideBottomNavigationIndicator、androidThreeButtonNavigationTranslucent、androidThreeButtonNavigationBackgroundColor、androidThreeButtonNavigationStyle，
 - UniPage对象上的[getPageStyle/setPageStyle方法](./api/unipage.md#unipage-methods)。
 
 uni-app x 的内置UI，包括导航栏、tabbar、video全屏、各种弹窗，均适配了各种屏幕，包括正常屏、折叠屏、小窗模式。
