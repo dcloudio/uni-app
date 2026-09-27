@@ -4,10 +4,15 @@ uni-app x，是下一代 uni-app，是一个基于vue、js/ts/uts、css和原生
 
 uni-app x 四年磨一剑，在2026年推出[蒸汽模式](./app-vapor.md)后，终于实现了跨平台框架的终极愿景：即跨平台，又做到了比原生更快的渲染速度。见[性能对比](#pk)
 
+uni-app x 的特点：
+1. 跨平台多：开发一次，即可编译到 Android、iOS、鸿蒙、web、微信小程序、支付宝小程序等众多平台
+2. AI熟悉：语法使用vue、js/ts、css，组件和API命名沿袭自老uni-app及小程序规范，AI对这些规范非常熟悉。配套 [uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，专为uni产品优化的AI Coding Agent
+3. 性能高：uni-app x 蒸汽模式的渲染性能超过原生及其他跨平台框架数倍 [见下](#pk)
+4. 内置组件和API丰富：数百个跨平台的内置组件和API，无需插件满足大多数应用开发场景
+5. 生态丰富：兼容npm库，独立插件市场有3千款插件
+
 可以体验打包后的[hello uni-app x](https://hellouniappx.dcloud.net.cn)，访问地址或扫描二维码后获取：
 
-开发一次，即可编译到 Android、iOS、鸿蒙、web、微信小程序、支付宝小程序。
-  
 <div>
 	<a
 		href="https://hellouniappx.dcloud.net.cn" target="_blank"
@@ -54,7 +59,7 @@ hello uni-app x 的源码见：[https://gitcode.com/dcloud/hello-uni-app-x](http
 
 ## VDOM模式和蒸汽模式
 
-uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可以编译为kotlin、Swift、ets、js的跨平台强类型语言。
+uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可以编译为kotlin、swift、ets、js的跨平台强类型语言。
 * `web/小程序`平台，编译为JavaScript
 * `Android`平台，编译为Kotlin
 * `iOS`平台，编译Swift
@@ -63,6 +68,7 @@ uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可
 虽然跨语言调用障碍抹平，但由于VDOM的存在以及渲染引擎不够强大，实际渲染速度比原生慢。
 
 2026年，uni-app x 推出了新一代的[蒸汽模式](./app-vapor.md)，由于新版的渲染引擎性能远超原生数倍，改成js也还是快于原生数倍。
+
 考虑到AI熟悉度、易用性、生态、动态化、以及老uni用户的升级，在蒸汽模式下改用普通的ts/js。
 
 如果写成uts，Android和iOS也会通过uts2js运行在js引擎上。鸿蒙目前运行在arkts引擎上，未来为了热更新，也会提供运行在js引擎上的选项。
@@ -93,7 +99,7 @@ uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup>
 	const title = ref("Hello world")
 
 	onLoad(() => {

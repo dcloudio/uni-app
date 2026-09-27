@@ -1,14 +1,15 @@
 # API概述
 
-uni-app x项目的uts代码中可以使用很多API。包括：
+uni-app x项目可以使用很多API。包括：
 
-1. uts的api，包括[内置对象](../uts/buildin-object-api/global.md)，以及平台专有对象[UTSAndroid](../uts/utsandroid.md)、[UTSiOS](../uts/utsios.md)、[UTSHarmony](../uts/utsharmony.md)
+1. js/uts的内置api，比如[内置对象](../uts/buildin-object-api/global.md)
 2. 全局api，前面不需要加`uni.`。如`getApp`
 3. uni.xxx的内置api。见左侧
 4. uniCloud.xxx的内置api [详见](./unicloud/README.md)
 5. dom的api [详见](../dom/README.md)
 6. vue的api [详见](../vue/README.md)
-7. 平台原生api
+7. uts插件平台专用API：[UTSAndroid](../uts/utsandroid.md)、[UTSiOS](../uts/utsios.md)、[UTSHarmony](../uts/utsharmony.md)
+8. 平台原生api
 	* Android 所有原生API
 	* iOS 所有原生API
 	* harmony 所有原生API
@@ -18,11 +19,12 @@ uni-app x项目的uts代码中可以使用很多API。包括：
 uni-app x中，不会限制任何平台原来的API无法调用。常用的跨平台API，都已经封装在uni的API中，但所有的平台API均可以在uni-app x中调用。
 
 ## os原生api的使用
+
 由于uts可以直接调用Android、iOS、鸿蒙的api，所以os和三方sdk的能力都可以在uts中调用。
 
 虽然Android VDOM 模式，以及鸿蒙 arkts 驱动 下可以在页面里调用原生API。但这并不规范，规范的做法是在uts插件中使用uts调用原生API。
 
-如下是一个Android vdom模式的例子：
+如下是一个Android VDOM模式的例子：
 
 ```vue
 <script setup lang="uts">
@@ -40,17 +42,13 @@ uni-app x中，不会限制任何平台原来的API无法调用。常用的跨�
 - uni.getSystemInfoSync，是uni的api
 - import的Build，是Android os的api
 
-可以看出，在uni-app x里，可以直接调用os的能力，不受限制，语法是uts的语法，但需要了解什么功能在原生里是哪个api。
-
-使用`uni.getSystemInfoSync`则比较简单，看uni的文档即可，且可跨平台。
-
 其实，[uni.getSystemInfoSync](https://gitcode.com/dcloud/uni-api/blob/master/uni_modules/uni-getSystemInfo/utssdk/app-android/index.uts) 的内部实现就是一个uts模块，底层使用了一样的代码，也是import了android.os.Build。
 
 大多数uni.的api，都是uts开发的，它们开源在[uni-api](https://gitcode.com/dcloud/uni-api)。
 
 插件市场也有很多做好的uts插件，方便开发者拿来即用。[uts插件](https://ext.dcloud.net.cn/?cat1=8&type=UpdatedDate)
 
-虽然上述页面可以直接调用原生Android能力，但正规开发时，原生能力应封装为[uni_modules](https://uniapp.dcloud.net.cn/plugin/uni_modules.html)形式的[uts插件](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html)。这样方便共享、方便跨平台。（iOS在js驱动模式时，uvue页面中不支持调用swift API，需封装为uts插件调用原生API）
+虽然上述Android VDOM模式页面可以直接调用原生Android能力，但正规开发时，原生能力应封装为[uni_modules](https://uniapp.dcloud.net.cn/plugin/uni_modules.html)形式的[uts插件](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html)。这样方便共享、方便跨平台。
 
 uni-app x 中不再支持plus和weex的API。过去plus api中一些常用的api，一部分在uni-app x中进行了替换增补、一部分提供了uts操作原生的示例代码。[详见](ext.md)
 
