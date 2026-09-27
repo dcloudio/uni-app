@@ -44,9 +44,9 @@ uts这门语言，有2个用途：
   <thead>
     <tr>
       <th></th>
-      <th colspan="3">uni-app</th>
-      <th colspan="3">uni-app x VDOM模式</th>
-			<th colspan="3">uni-app x 蒸汽模式</th>
+      <th colspan="2">uni-app</th>
+      <th colspan="2">uni-app x VDOM模式</th>
+			<th colspan="2">uni-app x 蒸汽模式</th>
     </tr>
   </thead>
   <tbody>
@@ -88,9 +88,9 @@ uts这门语言，有2个用途：
     </tr>
     <tr>
       <td>HarmonyNext</td>
-      <td>JS</td>
+      <td>JS(jsvm引擎中)</td>
       <td>ets</td>
-      <td>js（运行在ArkTS引擎中）</td>
+      <td>js(ArkTS引擎中)</td>
       <td>ets</td>
 			<td>js（可选择运行在ArkTS或jsvm中）</td>
 			<td>ets</td>
@@ -446,12 +446,9 @@ uts是全面了解ts、kotlin、swift、ArkTS等不同的语言后，全新设�
 
 ## 其他FAQ
 
-- Q：使用uts，万一uts编译器有bug、干坏事，怎么办？
-1. uts发展已经2年了，已经有上千个项目和插件上线，语言虽然还需要继续完善，但本身不存在影响项目发布的bug。
-2. uts编译后的kt、swift代码，都在uni-app x项目的unpackage目录下，开发者都可以看到，可以放心使用。
-
-- Q：uts不如js好用
-1. 我们承认js的灵活和易用在所有编程语言里名列前茅。如果你认为基于js的uni-app已经能满足你的跨平台需求那也很好。如果你追求原生的性能体验，那么选择uts虽然需要一定的学习和适应成本，但我们相信这个成本比任何其他方案都低。
+- Q：使用uts，万一uts编译器有bug、乱埋点，怎么办？
+1. uts从2022年推出，已经有上千个项目和插件上线，语言虽然还需要继续完善，但本身不存在影响项目发布的bug。
+2. uts编译后的kt、swift、ets代码，都在uni-app x项目的unpackage目录下，开发者都可以看到，可以放心使用。
 
 - Q：引用ts/js类型文件时编译器如何处理
 1. 在目标语言非js时，仅可引用ts文件，此时ts文件会当做uts文件处理。
