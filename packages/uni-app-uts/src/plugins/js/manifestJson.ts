@@ -103,7 +103,10 @@ export function uniAppManifestPlugin(
         outputManifestJson.app = outputManifestJson.app || {}
         outputManifestJson.app.defaultAppTheme = selectedTheme
       }
-      if (process.env.NODE_ENV !== 'development') {
+      /**
+       * 鸿蒙平台push、一键登录必须获取摇树结果，因此在非开发模式下或鸿蒙平台必须执行摇树逻辑
+       */
+      if (process.env.NODE_ENV !== 'development' || isXHarmony) {
         // 生产模式，记录使用到的modules
         const ids = Array.from(this.getModuleIds())
         const uniExtApis = new Set<string>()
