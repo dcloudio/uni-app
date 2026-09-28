@@ -274,6 +274,7 @@ HBuilderX4.31 支持打包界面直接勾选广告渠道，参考[App打包配�
 | :-		| :-					|:-	|:-		|:-		|
 | gdt		| 腾讯优量汇广告联盟		|x	|3.99	|4.22	|
 | gm		| 穿山甲GroMore			|x	|3.99	|4.22	|
+| gm-content| 穿山甲内容联盟（短剧/信息流）|x	|5.31	|x		|
 | ks		| 快手广告联盟			|x	|3.99	|4.22	|
 | bd		| 百度百青藤广告联盟		|x	|3.99	|4.22	|
 | sigmob	| Sigmob广告联盟			|x	|3.99	|4.22	|
@@ -302,6 +303,25 @@ HBuilderX4.31 支持打包界面直接勾选广告渠道，参考[App打包配�
 ::: warning 注意事项
 开屏广告展示前会先显示`splash启动界面`，等待开屏广告服务器返回数据后渲染开屏广告，超过2.5秒未成功加载广告则不显示开屏广告，直接进入应用首页。
 app平台默认`启动界面`为白色（暗黑模式下为黑色），为了避免等待加载开屏广告时白屏，建议开通开屏广告后在manifest中配置`启动界面`，详情参考[splash启动界面](./manifest-splashscreen.md)
+:::
+
+#### 短剧广告
+
+配置 `gm-content` 模块后，可使用短剧广告。短剧广告来自 uni-ad 内容聚合模块（短剧/信息流场景，对应穿山甲内容生态），用户免费观看指定集数后，观看激励视频解锁后续剧集。
+
+使用短剧广告需完成以下配置：
+
+1. 在 [uni-ad 后台](https://uniad.dcloud.net.cn/) 开通短剧广告位，获取广告位标识 `adpid`；
+2. 在项目 `nativeResources/android/assets/` 下添加 `gm_SDK_Setting.json`，配置穿山甲内容联盟 SDK 参数与 VOD 点播 license，该文件随自定义基座打进 APK assets；
+3. 制作自定义基座（标准基座不包含短剧运行时，会报错 `-5020`）。
+
+代码使用方式：
+
+- API 模式（自行搭建短剧列表页，调用 `open` 打开原生播放页）：[uni.createDramaAd](../api/create-drama-ad.md)
+- 组件模式（内嵌短剧首页 Fragment）：[ad-drama 组件](../component/ad-drama.md)
+
+::: warning 注意事项
+短剧广告仅支持 Android 平台。
 :::
 
 #### 广告缓存
