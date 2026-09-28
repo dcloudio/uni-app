@@ -6,12 +6,12 @@
 
 短剧广告：通过短剧内容生态（穿山甲内容联盟）变现的高价值广告形式。开发者将短剧内容（列表、播放页）嵌入自己的应用，用户免费观看指定集数后，需观看激励视频解锁后续剧集，从而实现广告变现。
 
-uni-app x 内置短剧插件 uni-drama，提供两种接入方式：
+uni-app x 内置短剧 uni-drama，提供两种接入方式：
 
 | 接入方式 | 说明 | 适用场景 |
 | :- | :- | :- |
 | API 模式 | 通过 `uni.createDramaAd` 创建实例，自行搭建短剧列表页，调用查询接口获取短剧数据，再调用 `open` 打开原生播放页 | 需要自定义短剧列表页样式、深度定制业务 |
-| 组件模式 | 使用 `<ad-drama>` 组件（native-view），内嵌短剧首页 Fragment，组件挂载即自动加载 | 快速接入，直接使用渠道提供的短剧首页 |
+| 组件模式 | 使用 `<ad-drama>` 组件（native-view）| 快速接入，直接使用渠道提供的短剧首页 |
 
 组件模式另见：[ad-drama 组件](../component/ad-drama.md)。
 
@@ -23,7 +23,7 @@ uni-app x 内置短剧插件 uni-drama，提供两种接入方式：
 
 2. 配置广告模块
 
-   短剧广告能力来自 uni-ad 的内容聚合模块 `gm-content`（对应穿山甲内容生态，含短剧/信息流场景）。在 `manifest.json` 的 `app -> distribute -> modules` 下添加：
+   短剧广告能力来自 uni-ad 的内容聚合模块 `gm-content`。在 `manifest.json` 的 `app -> distribute -> modules` 下添加：
 
    ```json
    	modules:{
@@ -35,9 +35,9 @@ uni-app x 内置短剧插件 uni-drama，提供两种接入方式：
 
    详见 [manifest uni-ad 模块配置](../collocation/manifest-modules.md#uni-ad)。
 
-3. 配置原生资源
+3. 配置 SDK 配置文件
 
-   在项目 `nativeResources/android/assets/` 下添加 `gm_SDK_Setting.json`，配置穿山甲内容联盟 SDK 参数与 VOD 点播 license。该文件随自定义基座打进 APK assets。
+   在穿山甲后台 `内容输出 -> 接入管理` 找到需要接入内容 SDK 的应用，点击"下载SDK参数配置"，将下载的 SDK 配置文件（例如 `sdk_setting_file.json`）重命名为 `gm_SDK_Setting.json`，然后放到项目根目录的 `nativeResources/android/assets/`、`nativeResources/ios/Resources/` 目录下。
 
 4. 制作自定义基座
 
@@ -45,7 +45,7 @@ uni-app x 内置短剧插件 uni-drama，提供两种接入方式：
 
 ### 服务器回调
 
-用户观看激励视频解锁剧集后，为防止客户端伪造看完广告的凭据，解锁集数的发放由服务器回调完成，这是业内通行的安全方案。调用 `open` 时传入 `urlCallback`（userId/extra），激励发放时会透传到业务服务器参与校验。
+用户观看激励视频解锁剧集后，为防止客户端伪造看完广告的凭据，解锁集数的发放由服务器回调完成，这是业内通行的安全方案。调用 `open` 时传入 `urlCallback`（userId/extra），激励发放时会透传到业务服务器参与校验。服务器回调机制详见 [激励视频广告服务器回调](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#callback)。
 
 ### createDramaAd 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android |
@@ -698,43 +698,9 @@ offUnlockEvent
  
 
 
-### 错误码
-
-| 错误码 | 说明 |
-| :-: | :- |
-| -5001 | 广告位标识 adpid 为空。 |
-| -5010 | 宿主 Activity 缺失。 |
-| -5011 | 短剧客户端已销毁。 |
-| -5012 | 短剧模块未加载。创建实例即自动加载，请等待 `onLoad` 事件触发后再调用查询方法。 |
-| -5015 | 宿主 Activity 不是 FragmentActivity。 |
-| -5016 | 短剧详情页/首页创建失败。 |
-| -5017 | 短剧 Fragment 缺失。 |
-| -5018 | Activity content 视图获取失败。 |
-| -5020 | 短剧运行时加载失败（当前基座缺少短剧类，需自定义基座）。 |
-| -5500 | uni-ad SDK start 失败（启动门禁拦截）。 |
-
-**渠道透传错误**：除上表外，其余错误码为短剧 AAR / 广告渠道透传（如 `-5005` 广告加载失败）。此类错误的 `extra` 字段为渠道错误明细 JSON 数组，每项包含 `p`（渠道标识）、`id`、`code`（渠道错误码）、`msg`（渠道错误描述），可用于定位配置问题。例如：
-
-```json
-[{"p":"gm","id":"1","code":4,"msg":"package_name参数与平台package_name不匹配"}]
-```
-
 ## Tips
 
-+ 短剧广告仅支持 Android 平台，且需使用自定义基座，标准基座缺少短剧运行时会报错 `-5020`。
-
-+ 当前版本为自动加载模式：创建实例即自动加载短剧模块，无需手动调用 `load()`（当前版本未提供该方法）。列表查询等实例方法需在 `onLoad` 事件触发后调用，否则报错 `-5012`。
-
-+ `onLoad` 可能同步到达：若短剧模块已就绪（如从短剧组件页返回后再次创建实例），`onLoad` 事件会在 `uni.createDramaAd` 返回前同步触发。依赖 onLoad 时序的业务（如加载计时）需在创建实例之前完成初始化。
-
-+ 排查指引：
-
-  | 现象 | 定位 |
-  | :- | :- |
-  | 创建实例后一直"加载中" | 检查 adpid 是否正确、网络是否可用、uni-ad 后台广告位状态 |
-  | 报错 `-5020` | 未使用自定义基座，或基座中未包含短剧 AAR |
-  | 报错 `-5500` | uni-ad SDK 启动被门禁拦截，检查 uni-ad 后台应用配置 |
-  | 渠道透传错误且 extra 含 package_name 不匹配 | nativeResources 中渠道配置的包名与平台登记的 package_name 不一致 |
++ 短剧广告仅支持 Android 平台。
 
 <!-- UTSAPIJSON.createDramaAd.example -->
 

@@ -326,7 +326,7 @@ app平台默认`启动界面`为白色（暗黑模式下为黑色），为了避
 使用短剧广告需完成以下配置：
 
 1. 在 [uni-ad 后台](https://uniad.dcloud.net.cn/) 开通短剧广告位，获取广告位标识 `adpid`；
-2. 在项目 `nativeResources/android/assets/` 下添加 `gm_SDK_Setting.json`，配置穿山甲内容联盟 SDK 参数与 VOD 点播 license，该文件随自定义基座打进 APK assets；
+2. 在穿山甲后台 `内容输出 -> 接入管理` 下载应用的 SDK 参数配置文件，重命名为 `gm_SDK_Setting.json`，放到项目根目录的 `nativeResources/android/assets/` 目录下；
 3. 制作自定义基座（标准基座不包含短剧运行时，会报错 `-5020`）。
 
 代码使用方式：
