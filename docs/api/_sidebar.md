@@ -121,6 +121,7 @@
   * [开屏广告manifest配置](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html#uni-ad)
   * [激励视频广告](create-rewarded-video-ad.md)
   * [插屏广告](create-interstitial-ad.md)
+  * [短剧](create-drama-ad.md)
 * 支付
   * [支付（requestPayment）](request-payment.md)
   * [虚拟支付（requestVirtualPayment）](virtual-payment.md)
