@@ -71,7 +71,10 @@ export const transformTeleport = function (node: RootNode | TemplateChildNode) {
         type: NodeTypes.ELEMENT,
         tag: 'view',
         tagType: ElementTypes.ELEMENT,
-        props: [createAttributeNode('class', 'a-page')],
+        props: [
+          createAttributeNode('class', 'a-page'),
+          createAttributeNode('style', 'height: auto'),
+        ],
         children: node.children,
         loc: locStub,
       } as TemplateChildNode,
