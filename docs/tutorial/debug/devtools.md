@@ -109,7 +109,7 @@ Storage 暂不支持新建数据或修改 Key。UTS 插件内调用存储 API �
 
 ## 常见问题
 
-### DevTools 一直显示等待应用连接
+### DevTools 一直显示等待应用连接@faq-connecting
 
 请依次确认：
 
