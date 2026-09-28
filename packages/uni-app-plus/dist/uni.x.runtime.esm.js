@@ -2104,7 +2104,7 @@ var onThemeChange = function(themeMode) {
       var routeOptions = initRouteOptions(basePage.path, "");
       routeOptions.meta.isQuit = basePage.meta.isQuit;
       var style = parsePageStyle(routeOptions);
-      page.$page.setPageStyle(style);
+      page.$page.setPageStyle(new UTSJSONObject(style));
     });
   };
   handlePage();
