@@ -1291,6 +1291,7 @@ const getAppBaseInfo$1 = {
                 const miniProgramAppId = my.getAccountInfoSync().miniProgram.appId;
                 if (miniProgramAppId) {
                     parameters.packagename = miniProgramAppId;
+                    parameters.packageName = miniProgramAppId;
                 }
             }
         }
