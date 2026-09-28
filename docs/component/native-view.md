@@ -14,15 +14,15 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| @init | (event: [UniNativeViewInitEvent](#uninativeviewinitevent)) => void | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | native-view初始化时回调，event.detail = { element: 'native-view元素实例对象'} |
+| @init | (event: [UniNativeViewInitEvent](#uninativeviewinitevent)) => void | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | native-view初始化时回调，event.detail = { element: 'native-view元素实例对象'} |
 
 
 ### 事件
