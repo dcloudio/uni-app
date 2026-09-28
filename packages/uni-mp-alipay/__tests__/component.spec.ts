@@ -451,7 +451,7 @@ describe('mp-alipay: transform component x', () => {
     test('single root', () => {
       assert(
         `<teleport to="#foo" disabled defer><view/></teleport>`,
-        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page"><view/></view></root-portal>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page" style="height:auto"><view/></view></root-portal>`,
         `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
@@ -466,7 +466,7 @@ describe('mp-alipay: transform component x', () => {
     test('multiple roots', () => {
       assert(
         `<teleport to="#foo" disabled defer><view/><view/></teleport>`,
-        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page"><view/><view/></view></root-portal>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page" style="height:auto"><view/><view/></view></root-portal>`,
         `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
