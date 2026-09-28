@@ -8,38 +8,38 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| version | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>跳转到的小程序版本，**线上版本必须设置为 release** |
-| name | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>要跳转到的功能页 |
-| args | object | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(object)*<br/>功能页参数，参数格式与具体功能页相关 |
-| @success | eventhandler | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>功能页返回，且操作成功时触发， detail 格式与具体功能页相关 |
-| @fail | eventhandler | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>功能页返回，且操作失败时触发， detail 格式与具体功能页相关 |
-| @cancel | eventhandler | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>因用户操作从功能页返回时触发 |
+| version | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>跳转到的小程序版本，**线上版本必须设置为 release** |
+| name | string | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>要跳转到的功能页 |
+| args | object | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(object)*<br/>功能页参数，参数格式与具体功能页相关 |
+| @success | eventhandler | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>功能页返回，且操作成功时触发， detail 格式与具体功能页相关 |
+| @fail | eventhandler | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>功能页返回，且操作失败时触发， detail 格式与具体功能页相关 |
+| @cancel | eventhandler | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>因用户操作从功能页返回时触发 |
 
 #### version 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| develop | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 开发版 |
-| trial | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 体验版 |
-| release | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 正式版 |
+| develop | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 开发版 |
+| trial | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 体验版 |
+| release | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 正式版 |
 
 #### name 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| loginAndGetUserInfo | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [用户信息功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/user-info.html) |
-| requestPayment | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [支付功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/request-payment.html) |
-| chooseAddress | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [收货地址功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-address.html) |
-| chooseInvoice | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [获取发票功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-invoice.html) |
-| chooseInvoiceTitle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [获取发票抬头功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-invoice-title.html) |
+| loginAndGetUserInfo | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | [用户信息功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/user-info.html) |
+| requestPayment | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | [支付功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/request-payment.html) |
+| chooseAddress | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | [收货地址功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-address.html) |
+| chooseInvoice | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | [获取发票功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-invoice.html) |
+| chooseInvoiceTitle | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | [获取发票抬头功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-invoice-title.html) |
 
 
 

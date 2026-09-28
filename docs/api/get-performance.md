@@ -1,21 +1,21 @@
 ## uni.getPerformance
 
-返回一个Performance对象实例
+获取性能管理对象 Performance 实例
 
 
 ### getPerformance 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 3.91 | 4.25 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 3.91 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
 
 ### 返回值 
 
-| 类型 |
-| :- |
-| [Performance](#performance-values) |
+| 类型 | 描述 |
+| :- | :- |
+| [Performance](#performance-values) | 性能管理对象 |
 
 #### Performance 的方法 @performance-values 
 
@@ -148,9 +148,9 @@ getEntriesByName
 
 ##### 返回值 
 
-| 类型 |
-| :- |
-| [PerformanceObserver](#performanceobserver-values) |
+| 类型 | 描述 |
+| :- | :- |
+| [PerformanceObserver](#performanceobserver-values) | 性能事件监听器对象 |
 
 ###### PerformanceObserver 的方法 @performanceobserver-values 
 
@@ -164,9 +164,9 @@ observe
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | **PerformanceObserverOptions** | 是 | Web: x |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **PerformanceObserverOptions** | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): x; iOS(VDOM): 4.25; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 性能监听参数 |
 
 #### options 的属性描述
 
