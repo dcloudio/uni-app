@@ -7,7 +7,7 @@ import { getTabBar } from './app/tabBar'
 import { parsePageStyle } from './page/register'
 import { initRouteOptions } from '../../service/framework/page/routeOptions'
 import { fixBorderStyle } from './app/utils'
-import type { UTSJSONObject } from '@dcloudio/uni-shared'
+import { UTSJSONObject } from '@dcloudio/uni-shared'
 import { getNativeApp } from './app/app'
 import type { IApp } from '@dcloudio/uni-app-x/types/native'
 
@@ -100,8 +100,12 @@ export const onThemeChange = function (themeMode: IThemeMode) {
       const routeOptions = initRouteOptions(basePage.path, '')
       routeOptions.meta.isQuit = basePage.meta.isQuit
       const style = parsePageStyle(routeOptions)
-
+      // #if _VAPOR_
       ;(page.$page as UniPage).setPageStyle(style)
+      // #endif
+      // #if !_VAPOR_
+      ;(page.$page as UniPage).setPageStyle(new UTSJSONObject(style))
+      // #endif
     })
   }
 
