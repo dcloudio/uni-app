@@ -55,4 +55,3 @@
 * [UTS App插件开发](../plugin/uts-plugin.md)
 * [UTS与TS的差异](uts_diff_ts.md)
 * [UTS2JS](uts2js.md)
-<!-- * [学习资料](learning.md) -->
