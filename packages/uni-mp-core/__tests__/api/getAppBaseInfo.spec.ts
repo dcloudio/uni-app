@@ -25,13 +25,17 @@ describe('getAppBaseInfo protocol', () => {
     return result
   }
 
-  test('平台小程序 AppID 有值时返回 packagename', () => {
-    expect(normalize('mini-program-app-id').packagename).toBe(
-      'mini-program-app-id'
-    )
+  test('平台小程序 AppID 有值时返回包名字段', () => {
+    const result = normalize('mini-program-app-id')
+
+    expect(result.packagename).toBe('mini-program-app-id')
+    expect(result.packageName).toBe('mini-program-app-id')
   })
 
-  test('平台小程序 AppID 为空时不返回 packagename', () => {
-    expect(normalize('')).not.toHaveProperty('packagename')
+  test('平台小程序 AppID 为空时不返回包名字段', () => {
+    const result = normalize('')
+
+    expect(result).not.toHaveProperty('packagename')
+    expect(result).not.toHaveProperty('packageName')
   })
 })
