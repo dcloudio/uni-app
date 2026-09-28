@@ -1,0 +1,684 @@
+::: sourceCode
+## uni.createDramaAd(options) @createdramaad
+:::
+
+创建短剧广告实例：创建即自动加载短剧模块（自动加载模式），加载结果经 onLoad / onError 上报
+
+### createDramaAd 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 |
+
+
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **CreateDramaAdOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | uni-drama 短剧插件类型定义（原 uni-ad-dom2 短剧部分独立拆分）。 依赖 uni-ad-dom2 广告插件（提供 SDK 初始化与 AAR），本文件只包含短剧 API 与组件类型。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| adpid | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧广告位标识 | 
+
+
+
+
+### 返回值 
+
+| 类型 | 描述 |
+| :- | :- |
+| [DramaAd](#dramaad-values) | 短剧广告实例：自建聚合页场景的列表/搜索/详情能力入口。<br/>创建实例（uni.createDramaAd）即自动加载短剧模块（自动加载模式），<br/>加载结果经 onLoad / onError 上报。 |
+
+#### DramaAd 的方法 @dramaad-values 
+
+#### getList(options : DramaListOptions) : void @getlist
+getList
+显式加载短剧模块（已注释：当前版本创建即自动加载，无需此方法；
+如恢复手动加载模式，放开下面声明并同步放开实现处的注释）。
+##### getList 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
+| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
+
+###### DramaListResult 的属性值 @dramalistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+#### dramas 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+
+###### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### getRecommendedList(options : DramaListOptions) : void @getrecommendedlist
+getRecommendedList
+
+##### getRecommendedList 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
+| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
+
+###### DramaListResult 的属性值 @dramalistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+#### dramas 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+
+###### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### getCollectionList(options : DramaListOptions) : void @getcollectionlist
+getCollectionList
+
+##### getCollectionList 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
+| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
+
+###### DramaListResult 的属性值 @dramalistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+#### dramas 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+
+###### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### getHistoryList(options : DramaListOptions) : void @gethistorylist
+getHistoryList
+
+##### getHistoryList 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
+| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
+
+###### DramaListResult 的属性值 @dramalistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+#### dramas 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+
+###### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### search(options : DramaSearchOptions) : void @search
+search
+
+##### search 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **DramaSearchOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索参数：isFuzzy 为 true 时模糊匹配（默认 true）；success/fail/complete 与 open(options) 形态一致。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| searchWord | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| isFuzzy | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索成功的回调函数 |
+| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索结束的回调函数（成功失败都会执行） | 
+
+###### DramaListResult 的属性值 @dramalistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+#### dramas 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+
+###### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### getInfo(options : DramaInfoOptions) : void @getinfo
+getInfo
+
+##### getInfo 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **DramaInfoOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 指定短剧信息查询参数：dramaId 与 dramaIds 二选一；success/fail/complete 与 open(options) 形态一致。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| dramaIds | Array&lt;number&gt; | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
+| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
+
+###### DramaListResult 的属性值 @dramalistresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+#### dramas 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+
+###### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### open(options : DramaOpenOptions) : void @open
+open
+
+##### open 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **DramaOpenOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 打开短剧播放页参数（含 success/fail/complete 回调）。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧 ID（与 DramaInfo.dramaId 一致，统一为 string） |
+| episode | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 起播集数，默认 1 |
+| lock | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 单次激励视频解锁的集数，默认 1 |
+| free | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 初始免费观看集数，默认 1 |
+| urlCallback | **DramaUrlCallback** | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 服务端回调透传参数：激励发放时回传服务器校验。 |
+| success | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放页打开成功的回调函数 |
+| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放页打开失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 打开结束的回调函数（成功失败都会执行） | 
+
+##### urlCallback 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| userId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+###### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### destroy() : void @destroy
+destroy
+
+##### destroy 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+
+
+
+#### onLoad(callback : DramaSimpleCallback) : void @onload
+onLoad
+
+##### onLoad 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+
+
+#### offLoad(callback : DramaSimpleCallback) : void @offload
+offLoad
+
+##### offLoad 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+
+
+#### onError(callback : DramaErrorCallback) : void @onerror
+onError
+
+##### onError 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (err: [DramaError](#dramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+##### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### offError(callback : DramaErrorCallback) : void @offerror
+offError
+
+##### offError 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (err: [DramaError](#dramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+##### DramaError 的属性值 @dramaerror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+
+
+
+#### onPlayEvent(callback : DramaEventCallback) : void @onplayevent
+onPlayEvent
+
+##### onPlayEvent 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+##### DramaEventResult 的属性值 @dramaeventresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+
+
+#### offPlayEvent(callback : DramaEventCallback) : void @offplayevent
+offPlayEvent
+
+##### offPlayEvent 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+##### DramaEventResult 的属性值 @dramaeventresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+
+
+#### onAdEvent(callback : DramaEventCallback) : void @onadevent
+onAdEvent
+
+##### onAdEvent 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+##### DramaEventResult 的属性值 @dramaeventresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+
+
+#### offAdEvent(callback : DramaEventCallback) : void @offadevent
+offAdEvent
+
+##### offAdEvent 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+##### DramaEventResult 的属性值 @dramaeventresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+
+
+
+#### onUnlockEvent(callback : DramaSimpleCallback) : void @onunlockevent
+onUnlockEvent
+
+##### onUnlockEvent 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+
+
+#### offUnlockEvent(callback : DramaSimpleCallback) : void @offunlockevent
+offUnlockEvent
+
+##### offUnlockEvent 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 |
+| :- | :- | :- |
+| x | x | x |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+
+
+ 
+
+
+<!-- UTSAPIJSON.createDramaAd.example -->
+
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ad.createDramaAd)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=createDramaAd&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createDramaAd&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createDramaAd&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createDramaAd&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=createDramaAd&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=createDramaAd)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=createDramaAd&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
+<!-- UTSAPIJSON.createDramaAd.example -->
+
+## 通用类型
+
+
+### GeneralCallbackResult @generalcallbackresult-values 
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errMsg | string | 是 | 错误信息 |
