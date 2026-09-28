@@ -1304,6 +1304,7 @@ const getAppBaseInfo = {
                 const miniProgramAppId = wx.getAccountInfoSync().miniProgram.appId;
                 if (miniProgramAppId) {
                     parameters.packagename = miniProgramAppId;
+                    parameters.packageName = miniProgramAppId;
                 }
             }
         }

@@ -1333,6 +1333,7 @@ const getAppBaseInfo$1 = {
                 const miniProgramAppId = jd.getAccountInfoSync().miniProgram.appId;
                 if (miniProgramAppId) {
                     parameters.packagename = miniProgramAppId;
+                    parameters.packageName = miniProgramAppId;
                 }
             }
         }
