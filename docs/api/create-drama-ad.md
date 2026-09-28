@@ -99,7 +99,7 @@ getList
 | pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
-| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
@@ -127,13 +127,15 @@ getList
 | duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
 | rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
 
-###### DramaError 的属性值 @dramaerror-values 
+###### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -159,7 +161,7 @@ getRecommendedList
 | pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
-| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
@@ -187,13 +189,15 @@ getRecommendedList
 | duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
 | rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
 
-###### DramaError 的属性值 @dramaerror-values 
+###### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -219,7 +223,7 @@ getCollectionList
 | pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
-| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
@@ -247,13 +251,15 @@ getCollectionList
 | duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
 | rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
 
-###### DramaError 的属性值 @dramaerror-values 
+###### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -279,7 +285,7 @@ getHistoryList
 | pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
-| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
@@ -307,13 +313,15 @@ getHistoryList
 | duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
 | rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
 
-###### DramaError 的属性值 @dramaerror-values 
+###### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -340,7 +348,7 @@ search
 | page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索成功的回调函数 |
-| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索失败的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
@@ -368,13 +376,15 @@ search
 | duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
 | rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
 
-###### DramaError 的属性值 @dramaerror-values 
+###### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -399,7 +409,7 @@ getInfo
 | dramaId | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | dramaIds | Array&lt;number&gt; | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
-| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
@@ -427,13 +437,15 @@ getInfo
 | duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
 | rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
 
-###### DramaError 的属性值 @dramaerror-values 
+###### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -461,7 +473,7 @@ open
 | free | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 初始免费观看集数，默认 1 |
 | urlCallback | **DramaUrlCallback** | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 服务端回调透传参数：激励发放时回传服务器校验。 |
 | success | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放页打开成功的回调函数 |
-| fail | (err: [DramaError](#dramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放页打开失败的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放页打开失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 打开结束的回调函数（成功失败都会执行） | 
 
 ##### urlCallback 的属性描述
@@ -471,13 +483,15 @@ open
 | userId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |
 | extra | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |
 
-###### DramaError 的属性值 @dramaerror-values 
+###### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -536,15 +550,17 @@ onError
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (err: [DramaError](#dramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
 
-##### DramaError 的属性值 @dramaerror-values 
+##### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
@@ -560,15 +576,17 @@ offError
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| callback | (err: [DramaError](#dramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
 
-##### DramaError 的属性值 @dramaerror-values 
+##### IUniDramaError 的属性值 @iunidramaerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| code | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| message | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 
 
