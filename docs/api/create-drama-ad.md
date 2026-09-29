@@ -16,33 +16,22 @@ uni-app x 内置短剧 uni-drama，提供两种接入方式：
 组件模式另见：[ad-drama 组件](../component/ad-drama.md)。
 示例Demo另见：[详见](https://gitcode.com/dcloud/uni-ad-drama)
 
-### 开通与配置
+**开通配置广告**
 
-1. 开通短剧广告位
+[开通广告步骤详情](https://uniapp.dcloud.net.cn/uni-ad/ad-open.html)
 
-   登录 [uni-ad 广告联盟](https://uniad.dcloud.net.cn/) 开通短剧广告，创建短剧广告位后获取广告位标识 `adpid`。
+**Tips**
+- 标准基座不支持测试短剧功能。
+- 使用短剧组件需要先开通穿山甲广告。开通问题请咨询：[uni-ad交流群](https://im.dcloud.net.cn/#/?joinGroup=65d85fc09847e92db03ff81a)。
+- 标准基座不包含短剧运行时，需制作自定义基座后运行，否则报错 `-5020`。
 
-2. 配置广告模块
+### 配置文件
 
-   短剧广告能力来自 uni-ad 的内容聚合模块 `gm-content`。在 `manifest.json` 的 `app -> distribute -> modules` 下添加：
+在穿山甲后台 内容输出->接入管理 找到需要接入内容SDK的应用，点击"下载SDK参数配置"，然后将SDK配置文件（例如 sdk_setting_file.json）拷贝到项目的 assets 文件夹下。
 
-   ```json
-   	modules:{
-   		"uni-ad":{
-   			"gm-content":{}
-   		}
-   	}
-   ```
+![](https://lf3-plat.pglstatp-toutiao.com/obj/union-platform/a30bc3001dff716fcf6876da15151ecf.png)
 
-   详见 [manifest uni-ad 模块配置](../collocation/manifest-modules.md#uni-ad)。
-
-3. 配置 SDK 配置文件
-
-   在穿山甲后台 `内容输出 -> 接入管理` 找到需要接入内容 SDK 的应用，点击"下载SDK参数配置"，将下载的 SDK 配置文件（例如 `sdk_setting_file.json`）重命名为 `gm_SDK_Setting.json`，然后放到项目根目录的 `nativeResources/android/assets/`、`nativeResources/ios/Resources/` 目录下。
-
-4. 制作自定义基座
-
-   标准基座不包含短剧运行时，需制作自定义基座后运行，否则报错 `-5020`（见下方错误码）。
+文件下载之后重命名为：`gm_SDK_Setting.json`，然后将文件放到项目根目录的`nativeResources->android->assets`目录下。
 
 ### 服务器回调
 
