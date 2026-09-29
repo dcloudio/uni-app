@@ -20,10 +20,10 @@ uni-app x框架因为需要也会产生一些文件在CACHE目录中，比如拍
 	+ static
 	+ uni_modules
 - 本地磁盘文件：指应用在手机端运行时可访问的磁盘文件。又分以下目录：
-	+ 应用外置沙盒目录（`uni.env.SANDBOX_PATH`）：手机应用的沙盒目录，其中包括缓存文件目录和用户文件目录。在文件管理器中可看到。
-		* 缓存文件目录（`uni.env.CACHE_PATH`）：手机运行过程中框架保存缓存文件的目录（cache），系统空间不足时会被自动清理掉
-		* 用户文件目录（`uni.env.USER_DATA_PATH`）：提供给开发者操作的本地文件目录（files）
-	+ 应用内置沙盒目录（`uni.env.ANDROID_INTERNAL_SANDBOX_PATH`）：存放框架的网络缓存（如网络图片、视频、web-view的缓存）、storage。
+	+ 应用沙盒目录`uni.env.SANDBOX_PATH`：手机应用的沙盒目录，其中包括缓存文件目录和用户文件目录。在文件管理器中可看到。
+		* 缓存文件目录`uni.env.CACHE_PATH`：手机运行过程中框架保存缓存文件的目录（cache），系统空间不足时会被自动清理掉
+		* 用户文件目录`uni.env.USER_DATA_PATH`：提供给开发者操作的本地文件目录（files）
+	+ 应用内置沙盒目录`uni.env.ANDROID_INTERNAL_SANDBOX_PATH`：存放框架的网络缓存（如网络图片、视频、web-view的缓存）、storage。
 	+ 沙盒外目录
 
 **uts插件开发**  
@@ -73,15 +73,18 @@ fileManager.copyFile({
 
 > 注意：代码包文件只读，无法动态修改或删除。修改代码包文件一般会copy到沙盒目录后再修改。
 
-### 真机运行时代码包文件目录 @packageDebug  
+### 真机运行时代码包文件目录 @packagedebug  
 
 **注意：真机运行时代码包文件目录有特殊处理**  
 
 Android/iOS端真机运行期间，为了实现动态性，将代码包文件同步到`应用沙盒目录`下的特定目录：
 - Android平台
-	保存在应用专属存储空间的外置存储空间根目录下的apps目录，通常为“/sdcard/Android/data/%应用包名%/apps/%应用AppID%/www/”
+  + VDOM模式  
+    保存在应用专属存储空间的外置存储空间根目录下的apps目录，通常为“/sdcard/Android/data/%应用包名%/apps/%应用AppID%/www/”
+  + 蒸汽（Vapor）模式  、
+    保存在应用专属存储空间的内置存储空间根目录下的apps目录，通常为“/data/data/%应用包名%/apps/%应用AppID%/www/”
 - iOS平台
-	保存在应用沙盒目录下的Documents/uni-app-x目录，通常为“/%应用沙盒目录%/Documents/uni-app-x/apps/%应用AppID%/www/”
+  保存在应用沙盒目录下的Documents/uni-app-x目录，通常为“/%应用沙盒目录%/Documents/uni-app-x/apps/%应用AppID%/www/”
 
 请开发者不要使用FileManage API操作应用代码包文件。虽然真机运行时可以访问，但打包后代码包不在沙盒中，无法再访问。
 
@@ -113,7 +116,7 @@ fs.writeFile({
 ```
 
 
-### 外置应用沙盒目录@sandbox
+### 应用沙盒目录@sandbox
 目录常量名称：`uni.env.SANDBOX_PATH`
 
 App端专有目录，为应用沙盒根目录，其下包含了`缓存文件目录`和`用户数据目录`，真机运行时还包括应用资源目录。此目录在不同平台差异较大，不建议直接使用此目录，建议直接按需使用下方的缓存目录`uni.env.CACHE_PATH`和数据目录`uni.env.USER_DATA_PATH`。
