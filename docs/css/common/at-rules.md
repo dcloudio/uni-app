@@ -27,7 +27,7 @@
 
 不支持的css功能，并不影响业务开发。因为css本质是一种编写元素的样式属性的一种描述性写法。元素的所有样式设置，都可以脱离css这种写法，由API完成。
 
-- `@keyframes关键帧动画`，在App平台，可以使用API方式实现，暂不支持通过css方式实现。详见[UniElement的animate方法](../../dom/unielement.md#animate)
+- `@keyframes关键帧动画`，App平台蒸汽模式自5.31起支持。老版本可以使用API方式实现，API详见[UniElement的animate方法](../../dom/unielement.md#animate)
 
 ## 字体 @font
 
