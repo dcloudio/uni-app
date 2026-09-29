@@ -14,6 +14,7 @@ uni-app x 内置短剧 uni-drama，提供两种接入方式：
 | 组件模式 | 使用 `<ad-drama>` 组件（native-view）| 快速接入，直接使用渠道提供的短剧首页 |
 
 组件模式另见：[ad-drama 组件](../component/ad-drama.md)。
+示例Demo另见：[详见](https://gitcode.com/dcloud/uni-ad-drama)
 
 ### 开通与配置
 

@@ -51,10 +51,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 </template>
 ```
 
-如果需要自定义底栏主体高度，请在 `uni-tab` 上使用 `tab-bar-height` 属性。使用该属性可以更快的计算布局，而不必在页面onReady后通过getBoundRect来计算布局：
+底栏主体高度默认为 `50px`。如果需要自定义，请在 `uni-tab` 上设置 `--uni-tab-bar-height` CSS 变量：
 
 ```vue
-<uni-tab style="flex: 1" :active-index="activeIndex" :tab-bar-height="40" @change="handleChange">
+<uni-tab style="flex: 1; --uni-tab-bar-height: 40px" :active-index="activeIndex" @change="handleChange">
 	...
 </uni-tab>
 ```
@@ -88,7 +88,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 2. 屏幕变化适配，Android需HBuilderX 5.09+支持。之前版本组件里无法监听页面的onResize。
 3. `uni-tab-content` 与 `uni-tab-item` 的数量必须一致，顺序也必须一一对应，否则切换后的内容会错位。
 4. `uni-tab` 默认占满页面的宽度和高度，即 `style="flex: 1"`
-5. 自定义底栏高度时，不要只改样式高度，要同步通过 `tab-bar-height` 传入 `uni-tab`，这样内容区底部留白和安全区计算才会一起更新。
+5. 自定义底栏高度时，请在 `uni-tab` 上设置带长度单位的 `--uni-tab-bar-height` CSS 变量，例如 `--uni-tab-bar-height: 40px`。底栏和需要显式计算高度的内容区会共用该变量。
 6. 如果底栏存在镂空、下凹或透明边缘，需要让底部内容透出来，请在 `uni-tab` 上开启 `tab-content-height-full`，此时内容区会延伸到 `uni-tab-bar` 下方。
 7. `uni-tab-content` 采用“首次激活再渲染”的策略；第一次切入前不会创建实例，切走后只隐藏不销毁，适合保留 tab 内部状态。
 8. `uni-tab-item` 只负责普通 tab 项注册与展示，不提供单独点击事件；请统一监听 `uni-tab` 的 `change`。
@@ -97,6 +97,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 11. `badge-text` 传空字符串时显示红点，传 `'0'` 时不显示；如果需要自定义 badge 外观，请使用 `badge-class` 覆盖样式。
 12. `uni-tab-bar`、`uni-tab-item`、`uni-tab-content` 的根节点都支持直接挂 `class` / `style`，推荐把视觉差异放在页面侧处理，不要改组件内部逻辑。
 13. 微信小程序提供了一种webview方式渲染的底部tabBar方式，来进行tabBar自定义。这种方式仅微信小程序支持，与本组件无关。
+
 
 ::: sourceCode
 ## uni-tab
@@ -109,16 +110,15 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.31 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 描述 |
 | :- | :- | :- | :- |
 | activeIndex | number |   | 当前激活的选项卡索引 |
-| tabBarHeight | number | 50 | tab-bar 的高度 |
 | tabContentHeightFull | boolean | false | tab-content 的高度是否通到tab-bar下面 |
 | @change | Event |   | 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number |
 
@@ -148,9 +148,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.31 | 5.07 | 5.07 | 5.07 |
 
 
 
@@ -1214,9 +1214,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.31 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
@@ -1251,9 +1251,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.31 | 5.07 | 5.07 | 5.07 |
 
 
 
@@ -1284,9 +1284,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.31 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 

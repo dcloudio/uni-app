@@ -422,8 +422,8 @@
 ## Bug & Tips@tips
 - 在 iOS、微信小程序、Web 平台，showToast 是和页面（包括 dialogPage）绑定的
 - 在 Android 平台
-	* 设置了 position 时，为系统 toast，此时与 App 绑定，而不是与页面绑定。没有设置 position 时仍与页面绑定
-	* 系统toast 不支持 icon 图标，仅支持文字
+	* 设置了 position 时，为系统 toast，此时与 App 绑定，而不是与页面绑定。没有设置 position 时仍与页面绑定。Android11及以上版本系统toast设置不再支持设置显示位置，仅支持显示在底部
+	* 系统toast 不支持 icon 图标，仅支持文字，Android12及以上版本文字内容通常限制为两行
 	* 部分 Android ROM，如 MIUI，调用系统 toast 时，会在 toast 行首自动加上 App 图标。此为 ROM 行为，目的是帮助用户区分该 toast 是哪个 App 弹出的
 - 在 HarmonyOS 平台
   - 5.24 及以下
