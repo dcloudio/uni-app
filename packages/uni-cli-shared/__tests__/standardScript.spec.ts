@@ -106,6 +106,17 @@ describe('uni-app x standard script', () => {
     )
   })
 
+  test('keeps plugin worker paths unchanged for web', () => {
+    const source = `uni.createWorker('uni_modules/test-worker/workers/task.uts')`
+    const result = transformUniAppXStandardScript(source, '/src/index.ts', ts, {
+      workers: { ...workers, rewriteRootDir: undefined },
+    })!
+
+    expect(result.code).toContain(
+      `uni.createWorker("uni_modules/test-worker/workers/task.js")`
+    )
+  })
+
   test('reports invalid createWorker paths', () => {
     const source = `uni.createWorker(workerPath)`
     expect(() =>
