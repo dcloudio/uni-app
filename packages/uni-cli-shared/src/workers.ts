@@ -561,7 +561,9 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
       }
     },
     generateBundle(_, bundle) {
-      const workerPaths = resolveMiniProgramWorkerPaths()
+      const workerPaths = external
+        ? resolveMiniProgramWorkerPaths()
+        : Object.keys(getWorkers()).map((key) => key.replace(/\.uts$/, '.js'))
       if (workerPaths.length) {
         Object.keys(bundle).forEach((file) => {
           if (workerPaths.includes(file)) {
