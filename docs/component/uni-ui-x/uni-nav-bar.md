@@ -32,7 +32,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 - title: 通过属性方便设置标题。如果传入mid slot，则不生效
 - navigationBarTextStyle: 返回箭头和属性设置的标题，它们的颜色均由该属性控制，可选 white|black
 
-本组件默认没有背景色，即透明，会透显页面的背景色。开发者可通过组件的class自行设置背景色
+本组件默认没有背景色，即透明，会透显页面的背景色，开发者可通过组件的class自行设置背景色。
+
+如果遇到顶部安全区避让失效的问题，可升级到 HBuilderX 5.25 版本。
 
 在小程序端，如果需要规避右上角胶囊按钮，可以参考下方代码设置 margin-right 让出胶囊按钮的宽度和右侧间距。
 
@@ -76,9 +78,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.31 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 

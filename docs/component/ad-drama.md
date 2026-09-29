@@ -10,6 +10,7 @@ ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自�
 
 与 API 模式（[uni.createDramaAd](../api/create-drama-ad.md)）的区别：组件模式直接使用渠道提供的短剧首页界面（含推荐、榜单等内容分发），无需自行搭建短剧列表页；API 模式则自行搭建列表页，可深度定制样式与业务。
 
+- 示例Demo介绍：[详见](https://gitcode.com/dcloud/uni-ad-drama)
 - uni-ad的业务介绍：[详见](https://uniapp.dcloud.net.cn/uni-ad/)
 
 ### 开通与配置

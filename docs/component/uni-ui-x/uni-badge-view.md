@@ -49,9 +49,9 @@ badge组件的badge-class和badge-style属性，直接作用在角标view上，�
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 5.07 | 5.08 | 5.07 | 5.07 | 5.07 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 5.07 | 5.08 | 5.31 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
