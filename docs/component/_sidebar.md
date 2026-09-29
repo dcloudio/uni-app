@@ -62,7 +62,6 @@
     * [canvas | 画布](canvas.md)
   * 广告
     * [ad | 信息流广告](ad.md)
-    * [ad-drama | 短剧](ad-drama.md)
   * 网页
     * [web-view](web-view.md)
   * 页面属性配置节点
