@@ -15,7 +15,7 @@ word-break 属性指定文本在内容框内溢出时的断行规则。
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| 5.30 | 5.30 | 5.30 |
+| 5.31 | 5.31 | 5.31 |
 
 
 
