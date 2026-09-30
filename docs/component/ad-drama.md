@@ -47,12 +47,36 @@ ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自�
 | free | number | 1 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 初始可免费观看的剧集数 |
 | lock | number | 1 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 单次激励视频可解锁的剧集数 |
 | urlCallback | any | null | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 服务端回调透传参数（userId/extra），激励发放时透传服务器校验 |
+| url-callback | any | null |   |   |
 | @load | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 短剧加载成功的回调 |
-| @error | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 短剧加载失败的回调 |
+| @error | (e:[UniDramaErrorEvent](#unidramaerrorevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 短剧加载失败的回调 |
 | @click | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 点击短剧的回调 |
 | @close | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: x; HarmonyOS: x | 短剧关闭的回调 |
 
 <!-- UTSCOMJSON.ad-drama.fileFormates -->
+
+
+### 事件
+#### UniDramaErrorEvent
+ad-drama 组件 error 事件的专属类型：detail 为 IUniDramaError。<br/>对齐 uni-ad 的 UniAdErrorEvent、uni-video 的 UniVideoErrorEvent 模式<br/>（class extends UniCustomEvent\<T>，编译为真实类，运行时类型安全），<br/>便于语法库与文档系统连接类型定义渲染事件详情。
+```mermaid
+graph LR
+  
+UniDramaErrorEvent -- Extends --> UniCustomEvent&ltIUniDramaError&gt
+  style UniCustomEvent&ltIUniDramaError&gt color:#42b983
+  click UniCustomEvent&ltIUniDramaError&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
+```
+##### IUniDramaError
+
+
+###### IUniDramaError 的属性值
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载<br/>- -5020 短剧运行时加载异常，请使用包含短剧运行时的自定义基座 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 
 

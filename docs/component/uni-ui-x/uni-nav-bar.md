@@ -49,7 +49,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 	</uni-nav-bar>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const rightMargin = ref(0)
 	onMounted(() => {
 		// #ifdef MP-WEIXIN

@@ -24,20 +24,20 @@
 | max | number | 100 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 最大值 |
 | step | number | 1 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 步长，取值必须大于 0，并且可被(max - min)整除 |
 | value | number | 0 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 当前取值 |
-| activeBackgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 滑块左侧已选择部分的线条颜色 (vapor 模式请使用 track-active-class) |
-| backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#e9e9e9" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 背景条的颜色 (vapor 模式请使用 track-class) |
-| block-size | number | 28 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 滑块的大小，取值范围为 12 - 28 (vapor 模式请使用 thumb-class) |
-| foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 的滑块背景颜色 (vapor 模式请使用 thumb-class) |
+| activeBackgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.18; Android(Vapor): x; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 滑块左侧已选择部分的线条颜色 (vapor 模式请使用 track-active-class) |
+| backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#e9e9e9" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 背景条的颜色 (vapor 模式请使用 track-class) |
+| block-size | number | 28 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 滑块的大小，取值范围为 12 - 28 (vapor 模式请使用 thumb-class) |
+| foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.18; Android(Vapor): x; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 的滑块背景颜色 (vapor 模式请使用 thumb-class) |
 | show-value | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否显示当前 value |
 | track-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | slider 背景条样式类名 |
 | track-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | slider 滑块左侧已选择部分的线条样式类名 |
 | thumb-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | slider 滑块样式类名 |
 | @change | (event: [UniSliderChangeEvent](#unisliderchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 完成一次拖动后触发的事件，event.detail = {value: value} |
 | @changing | (event: [UniSliderChangeEvent](#unisliderchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 拖动过程中触发的事件，event.detail = {value: value} |
-| ~~activeColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 滑块左侧已选择部分的线条颜色 |
-| ~~block-color~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 滑块颜色 (使用foreColor替代) |
-| ~~color~~ | color |   | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(color)*<br/>背景条的颜色（请使用 backgroundColor） |
-| ~~selected-color~~ | color |   | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(color)*<br/>已选择的颜色（请使用 activeBackgroundColor） |
+| ~~activeColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | slider 滑块左侧已选择部分的线条颜色 |
+| ~~block-color~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 滑块颜色 (使用foreColor替代) |
+| ~~color~~ | color |   | Web: -; 微信小程序: 4.41; 支付宝小程序: x | *(color)*<br/>背景条的颜色（请使用 backgroundColor） |
+| ~~selected-color~~ | color |   | Web: -; 微信小程序: 4.41; 支付宝小程序: x | *(color)*<br/>已选择的颜色（请使用 activeBackgroundColor） |
 
 
 ### 事件
