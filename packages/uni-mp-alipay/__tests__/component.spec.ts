@@ -450,8 +450,21 @@ describe('mp-alipay: transform component x', () => {
 
     test('single root', () => {
       assert(
-        `<teleport to="#foo" disabled defer><view/></teleport>`,
-        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page" style="height:auto"><view/></view></root-portal>`,
+        `<teleport to="#foo" disabled defer></teleport>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"></root-portal>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+        {
+          isX: true,
+          nodeTransforms: [transformTeleport],
+        }
+      )
+
+      assert(
+        `<teleport to="#foo" disabled defer><view class="content"/></teleport>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="a-page" style="height:auto"><view class="content"/></view></root-portal>`,
         `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
@@ -476,6 +489,40 @@ describe('mp-alipay: transform component x', () => {
           nodeTransforms: [transformTeleport],
         }
       )
+    })
+
+    test('mp-alipay without uni-app-x', () => {
+      const appX = process.env.UNI_APP_X
+      process.env.UNI_APP_X = 'false'
+      try {
+        assert(
+          `<teleport to="#foo" disabled defer><view/></teleport>`,
+          `<root-portal enable="{{false}}"><view/></root-portal>`,
+          `(_ctx, _cache) => {
+  return {}
+}`,
+          {
+            nodeTransforms: [transformTeleport],
+          }
+        )
+
+        assert(
+          `<teleport to="#foo" disabled defer><view/><text class="label"/></teleport>`,
+          `<root-portal enable="{{false}}"><view/><text class="label"/></root-portal>`,
+          `(_ctx, _cache) => {
+  return {}
+}`,
+          {
+            nodeTransforms: [transformTeleport],
+          }
+        )
+      } finally {
+        if (appX === undefined) {
+          delete (process.env as Record<string, string | undefined>).UNI_APP_X
+        } else {
+          process.env.UNI_APP_X = appX
+        }
+      }
     })
   })
 })
