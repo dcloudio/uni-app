@@ -47,7 +47,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-refresh-b
 </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 const listCount1 = ref(3)
 const refreshing1 = ref(false)
 const pullingDistance1 = ref(0)
