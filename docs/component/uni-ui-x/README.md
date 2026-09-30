@@ -1,4 +1,4 @@
-# 项目介绍
+## 项目介绍
 
 uni-ui x，是DCloud为 uni-app x 提供的扩展组件库。[开源库地址](https://gitcode.com/dcloud/uni-ui-x/tree/alpha)
 
@@ -6,7 +6,7 @@ uni-ui x 是全新设计的，与为uni-app做的uni-ui不同。
 
 uni-ui x 是伴随着HBuilderX 5.08发版的。5.07版本上有部分组件在部分平台有兼容性问题，详见组件详情的兼容性表格。再往前的HBuilderX版本未测试。
 
-# 特点
+## 特点
 
 - **性能优先**
 
@@ -53,7 +53,7 @@ uni-ui x 没有写死的颜色和文字:
 * 没有写死的颜色，不影响自定义主题。
 
 <!-- 组件列表开始 -->
-## uni-ui x 已支持的组件列表
+### uni-ui x 已支持的组件列表
 
 | 组件名 | 组件说明 |
 | --- | --- |
@@ -71,7 +71,7 @@ uni-ui x 没有写死的颜色和文字:
 | uni-time-format | [时间格式化](https://ext.dcloud.net.cn/plugin?name=uni-time-format) |
 <!-- 组件列表结束 -->
 
-# uni-ui的升级建议@uniuiupgrade
+## uni-ui的升级建议@uniuiupgrade
 
 为uni-app提供的uni-ui，升级到uni-app x时无法直接对照升级，因为组件名称、用法都有变化。
 
@@ -122,7 +122,7 @@ uni-ui x 没有写死的颜色和文字:
 
 标记为`无`的，大多比较简单，对于AI而言直接写相关UI比下载学习一个组件更合适。
 
-# 交流群
+## 交流群
 
 有关 uni-ui-x 组件的任何意见或建议，欢迎通过 [uni-ui-x im 交流群](https://ext.dcloud.net.cn/publisher/start-session?pluginId=27852) 沟通交流。
 
