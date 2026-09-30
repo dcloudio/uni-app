@@ -3,6 +3,7 @@ import { customElements } from '../src/compiler/options'
 import {
   transformDirection,
   transformMPBuiltInTag,
+  transformTeleport,
 } from '@dcloudio/uni-cli-shared'
 
 describe('mp-weixin: transform component', () => {
@@ -724,5 +725,90 @@ describe('mp-weixin: transform component x', () => {
         nodeTransforms: [transformMPBuiltInTag, transformDirection],
       }
     )
+  })
+
+  test('teleport', () => {
+    const originalAppX = process.env.UNI_APP_X
+    try {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+      assert(
+        `<teleport to="#foo" disabled defer><view class="content"/></teleport>`,
+        `<root-portal enable="{{false}}"><view class="content"/></root-portal>`,
+        `(_ctx, _cache) => {
+  return {}
+}`,
+        {
+          nodeTransforms: [transformTeleport],
+        }
+      )
+
+      assert(
+        `<teleport to="#foo" disabled defer></teleport>`,
+        `<root-portal enable="{{false}}"></root-portal>`,
+        `(_ctx, _cache) => {
+  return {}
+}`,
+        {
+          nodeTransforms: [transformTeleport],
+        }
+      )
+
+      assert(
+        `<teleport to="#foo" disabled defer><view/><text class="label"/></teleport>`,
+        `<root-portal enable="{{false}}"><view/><text class="label"/></root-portal>`,
+        `(_ctx, _cache) => {
+  return {}
+}`,
+        {
+          nodeTransforms: [transformTeleport],
+        }
+      )
+
+      process.env.UNI_APP_X = 'true'
+      assert(
+        `<teleport to="#foo" disabled defer><view class="content"/></teleport>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"><view class="content"/></root-portal>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+        {
+          isX: true,
+          nodeTransforms: [transformTeleport],
+        }
+      )
+
+      assert(
+        `<Teleport to="#foo" :disabled="disabled"><view/><text class="label"/></Teleport>`,
+        `<root-portal enable="{{a}}" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}"><view/><text class="label"/></root-portal>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: !_ctx.disabled, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+        {
+          isX: true,
+          nodeTransforms: [transformTeleport],
+        }
+      )
+
+      assert(
+        `<teleport to="#foo" disabled defer></teleport>`,
+        `<root-portal enable="{{false}}" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"></root-portal>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+        {
+          isX: true,
+          nodeTransforms: [transformTeleport],
+        }
+      )
+    } finally {
+      if (originalAppX === undefined) {
+        delete (process.env as Record<string, string | undefined>).UNI_APP_X
+      } else {
+        process.env.UNI_APP_X = originalAppX
+      }
+    }
   })
 })
