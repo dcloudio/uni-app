@@ -15,7 +15,7 @@ CSS 的transition-delay属性规定了在过渡效果开始作用之前需要等
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.21 | 5.11 | x |
 
 
 

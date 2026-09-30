@@ -15,7 +15,7 @@ animation-iteration-count CSS 属性设置动画序列在停止前应播放的�
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 

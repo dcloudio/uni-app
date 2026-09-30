@@ -15,7 +15,7 @@ transition-property 指定应用过渡属性的名称。
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.21 | 5.11 | x |
 
 
 

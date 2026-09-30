@@ -404,20 +404,20 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 
 | CSS 属性列表 | 兼容性 |
 | :- |  :-: |
-| [animation](animation.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation](animation.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
 | [animation-composition](animation-composition.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [animation-delay](animation-delay.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [animation-direction](animation-direction.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [animation-duration](animation-duration.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-delay](animation-delay.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
+| [animation-direction](animation-direction.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
+| [animation-duration](animation-duration.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
 | [animation-fill-mode](animation-fill-mode.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [animation-iteration-count](animation-iteration-count.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [animation-name](animation-name.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [animation-play-state](animation-play-state.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-iteration-count](animation-iteration-count.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
+| [animation-name](animation-name.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
+| [animation-play-state](animation-play-state.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
 | [animation-range](animation-range.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [animation-range-end](animation-range-end.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [animation-range-start](animation-range-start.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [animation-timeline](animation-timeline.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [animation-timing-function](animation-timing-function.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [animation-timing-function](animation-timing-function.md) | Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): x |
 | [backdrop-filter](backdrop-filter.md) |   |
 | [background-clip](background-clip.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [background-image](background-image.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
@@ -428,11 +428,11 @@ app平台由于暂不支持伪元素，字体图标需使用unicode直显方式�
 | [text-decoration-color](text-decoration-color.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
 | [text-decoration-style](text-decoration-style.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [text-decoration-thickness](text-decoration-thickness.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [transition](transition.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [transition-delay](transition-delay.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [transition-duration](transition-duration.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [transition-property](transition-property.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
-| [transition-timing-function](transition-timing-function.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition](transition.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
+| [transition-delay](transition-delay.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
+| [transition-duration](transition-duration.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
+| [transition-property](transition-property.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
+| [transition-timing-function](transition-timing-function.md) | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |
 | [visibility](visibility.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 | [z-index](z-index.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 

@@ -15,7 +15,7 @@ animation-timing-function CSS 属性设置动画在每个周期的持续时间�
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 

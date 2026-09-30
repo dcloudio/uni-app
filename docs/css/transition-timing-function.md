@@ -15,7 +15,7 @@ CSS 属性受到 transition effect的影响，会产生不断变化的中间值�
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.21 | 5.11 | x |
 
 
 

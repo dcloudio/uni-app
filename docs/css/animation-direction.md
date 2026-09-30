@@ -15,7 +15,7 @@ animation-direction CSS 属性设置动画是应正向播放、反向播放还�
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 

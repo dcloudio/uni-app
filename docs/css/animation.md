@@ -15,7 +15,7 @@ CSS animation 属性是 animation-name，animation-duration, animation-timing-fu
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 

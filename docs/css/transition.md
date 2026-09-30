@@ -15,7 +15,7 @@ transition CSS 属性是 transition-property、transition-duration、transition-
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.21 | 5.11 | x |
 
 
 

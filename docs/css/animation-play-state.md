@@ -15,7 +15,7 @@ animation-play-state CSS 属性设置动画是运行还是暂停。
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 

@@ -15,7 +15,7 @@ transition-duration 属性以秒或毫秒为单位指定过渡动画所需的时
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.21 | 5.11 | x |
 
 
 

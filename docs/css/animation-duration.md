@@ -15,7 +15,7 @@ animation-duration CSS 属性设置动画完成一个动画周期所需的时间
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 

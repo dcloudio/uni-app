@@ -15,7 +15,7 @@ animation-delay CSS 属性指定从应用动画到元素开始执行动画之前
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 
