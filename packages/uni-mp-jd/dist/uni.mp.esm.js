@@ -402,16 +402,19 @@ function parseApp(instance, parseAppOptions) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
     }
+    if (parseAppOptions) {
+        parseAppOptions.parse(appOptions);
+    }
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
-        return App(parseApp(vm));
+        return App(parseApp(vm, parseAppOptions));
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm, root) {
-        const appOptions = parseApp(vm);
+        const appOptions = parseApp(vm, parseAppOptions);
         const app = isFunction(getApp) &&
             getApp({
                 allowDefault: true,
@@ -815,6 +818,19 @@ Component = function (options) {
     return MPComponent(options);
 };
 
+function parse$1(appOptions) {
+    appOptions.restart = function restart(options = {}) {
+        wx.restartMiniProgram({
+            path: options.url || addLeadingSlash(wx.getLaunchOptionsSync().path),
+        });
+    };
+}
+
+var parseAppOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  parse: parse$1
+});
+
 // @ts-expect-error
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
@@ -916,8 +932,8 @@ var baseParseOptions = /*#__PURE__*/Object.freeze({
   mocks: mocks
 });
 
-const createApp = initCreateApp();
-const createSubpackageApp = initCreateSubpackageApp();
+const createApp = initCreateApp(parseAppOptions);
+const createSubpackageApp = initCreateSubpackageApp(parseAppOptions);
 typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== 'undefined' &&
     __UNI_MP_INDEPENDENT_RUNTIME__ === true;
 
