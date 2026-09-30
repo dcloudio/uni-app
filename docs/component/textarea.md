@@ -804,8 +804,12 @@ inputmode 兼容性：Chrome >= 66、Edge >= 79、Firefox >= 95、Chrome Android
 
 ## placeholder-style和placeholder-class说明
 - uni-app x 4.41前，App平台仅支持`color`、`font-size`、`font-weight`。
-- uni-app x 4.41后，App平台新增支持`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于textarea的`text-align`。
-- App-HarmonyOS `placeholder-class` 暂不支持 css 变量。
+- uni-app x 4.41后，App平台新增支持`font-family`、`font-style`、`text-align`。
+
+VDOM模式注意事项：
+- `text-align`仅App-Android平台支持
+- App-iOS平台的placeholder位置取决于textarea的`text-align`。
+- App-HarmonyOS VDOM模式 `placeholder-class` 不支持 css 变量。
 
 ## Tips
 
@@ -815,6 +819,5 @@ inputmode 兼容性：Chrome >= 66、Edge >= 79、Firefox >= 95、Chrome Android
 * 由于Android系统限制，textarea的键盘右下角按钮只能是`换行`，所以暂时不提供`confirm-type`属性。
 * 当软键盘右下角为 换行 时，confirm-hold 恒为 true，设置为false也不生效，即按下 换行 时，软键盘不会消失。
 * 在Android 9以下的系统版本，样式`line-height`点击键盘换行时行间距设置无效，此问题是Android系统的bug，后续解决。
-* App平台蒸汽模式样式设置暂不支持 css 变量。
 * 所有 boolean 类型的属性，只有设置为布尔类型的 false 才会关闭该属性，其他任何值（包括字符串 "false"）都会被当做 true 处理（微信小程序中空字符串会被视为 false）。
 * 支付宝小程序默认开启字数显示功能，真机上外层套用 `scroll-view` 时，点击 textarea 内容可能溢出组件范围。

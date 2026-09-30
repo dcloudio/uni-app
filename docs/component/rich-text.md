@@ -442,4 +442,3 @@ App平台从蒸汽模式开始，新增了c语言实现的 rich-text。3个App�
 - rich-text不支持video组件，如果涉及video，需拆分文本内容，在video前后各放置一个rich-text组件
 - 小程序的rich-text功能要弱一些，不支持rich-text中子内容的点击事件，如有这类需求，在小程序平台需要条件编译使用[mp-html](https://ext.dcloud.net.cn/search?q=mp-html)
 - App-Android 平台 vdom模式 且 mode=native 时，HTML String 类型的`<img/>`不支持自定义宽高，默认以 rich-text 组件宽度为基准等比缩放；节点列表类型的`<img />`支持自定义宽高。
-- App-Harmony App-iOS 平台 且 mode=native 时，暂不支持 `selectable` 属性。 

@@ -1,4 +1,4 @@
-# uni-app x 是什么？<Badge text="HBuilderX 3.9+"/>
+# uni-app x 是什么？
 
 uni-app x，是下一代 uni-app，是一个基于vue、js/ts/uts、css和原生渲染的跨平台开发框架。
 
@@ -52,6 +52,8 @@ hello uni-app x 的源码见：[https://gitcode.com/dcloud/hello-uni-app-x](http
 - iOS原生源码：[https://gitcode.com/dcloud/test4050-ios](https://gitcode.com/dcloud/test4050-ios)，开发者可以自行编译。
 - 鸿蒙原生源码：[https://gitcode.com/dcloud/test4050-harmony-arkui](https://gitcode.com/dcloud/test4050-harmony-arkui)，开发者可以自行编译。
 
+uni-app x 的长列表，帧率也是原生长列表的2~4倍。[详见](./app-vapor.md#list)
+
 本文为 uni-app x 简介，并非详细评测报告，更多内容，包括Compose UI、Swift UI等更多技术方案的对比，包括如何公平测试，包括长列表、富文本、canvas等更多组件的性能测试，详见专业的benchmark：
 - [Android benchmark](./benchmark/vapor-benchmark-android.md)
 - [iOS benchmark](./benchmark/vapor-benchmark-ios.md)
@@ -71,7 +73,7 @@ uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可
 
 考虑到AI熟悉度、易用性、生态、动态化、以及老uni用户的升级，在蒸汽模式下改用普通的ts/js。
 
-如果写成uts，Android和iOS也会通过uts2js运行在js引擎上。鸿蒙目前运行在arkts引擎上，未来为了热更新，也会提供运行在js引擎上的选项。
+如果写成uts，Android和iOS也会通过[uts2js](./uts/uts2js.md)运行在js引擎上。鸿蒙目前运行在arkts引擎上，未来为了热更新，也会提供运行在js引擎上的选项。
 
 在蒸汽模式后，uts语言的主要作用是开发uts原生插件。仅uts插件（utssdk目录）继续保留uts向kotlin、Swift、ets的编译能力。
 
@@ -151,7 +153,7 @@ uni-app x 不会限制任何原生API的调用，在每个平台都可以调用�
 - web平台：可调用浏览器的所有api，可混合使用js，可使用web生态的各种库，包括npm。
 - 小程序平台：可调用小程序的所有api，可混合使用js，小程序的自定义组件生态（如wxml组件），包括支持小程序的npm库。
 - Android平台：可调用Android os的所有api，可混合使用kotlin、java源码，可使用所有适配Android的sdk，包括so库，可使用gradle等仓储。
-- iOS平台：可调用iOS的所有api，可混合使用swift，可使用所有适配iOS的sdk，包括动态库静态库，可使用cocoaPods库管理
+- iOS平台：可调用iOS的所有api，可混合使用swift，可使用所有适配iOS的sdk，包括动态库静态库，可使用cocoaPods、swiftpm库管理
 - Harmony平台：可调用鸿蒙的所有api，可混合使用ArkTS，可使用所有适配鸿蒙的sdk，包括so库，可使用ohpm库管理。
 
 uni.的api，大多是uts开发的，在每个API文档右上角可以点击源码仓库链接查看。
@@ -180,7 +182,7 @@ uni-app x 的插件生态，以uni_modules为主。这是一种面向全端的�
 
 可以引入web和原生的各种生态库。
 
-如果不开发原生插件，仅使用纯js库，在蒸汽模式下，npm上众多库也可以直接在App平台使用，比如vue-pinia、day.js等。而vdom模式则需要uts适配库才能在App平台使用。
+如果不开发原生插件，仅使用纯js库，在蒸汽模式下，**npm上众多库也可以直接在App平台使用**，比如vue-pinia、day.js等。而vdom模式则需要uts适配库才能在App平台使用。
 
 但需注意小程序和App平台不支持window等api，对dom api的支持也有限。详见[DOM API](./api/dom/README.md)。所以尽量选用那些适配小程序的NPM库，比如[echarts-for-weixin](https://echarts.apache.org/handbook/zh/how-to/cross-platform/wechat-app/)
 
@@ -218,7 +220,7 @@ uts插件是一个大一统的插件模型，其中在不同的子平台可以�
 - [lime-UI Vapor](https://ext.dcloud.net.cn/plugin?id=28915)：即兼容uni-app又兼容uni-app x蒸汽模式。2025插件大赛一等奖。
 - [RiceUI](https://ext.dcloud.net.cn/plugin?id=24907)：支持蒸汽模式，全端组合式UI库。
 - [TuiPlus Vapor](https://ext.dcloud.net.cn/plugin?id=28497)：支持蒸汽模式，支持css原子化。
-- [TMUI4.0](https://ext.dcloud.net.cn/plugin?id=16369)：VDOM模式高品质UI库，2023插件大赛一等奖。
+- [TMUI4.0](https://ext.dcloud.net.cn/plugin?id=16369)：高品质UI库，2023插件大赛一等奖。
 
 ## 开放性
 
@@ -244,9 +246,10 @@ uni-app x 引擎仅在引擎崩溃时有数据收集以用于产品改进，且�
 ## 路线图
 
 uni-app x 在2026年会陆续完成
-- app热更新
+- [x] app热更新
+- [x] 支付宝小程序
 - web平台蒸汽模式
-- 支付宝小程序、抖音小程序
+- 抖音小程序
 
 其他计划，将根据社区的反馈意见来排优先级。
 
@@ -353,9 +356,7 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
   鸿蒙平台和小程序类似，本身就是本地打包。而iOS和Android的离线打包文档[详见](./native/README.md)
 
 - uni-app x 的App能热更新吗？\
-  App开发期间可以热刷，但打包后目前不能热更新。\
-  蒸汽模式下的3端app会推出发布后热更新，请关注更新。\
-  Android目前可以使用[uni小程序sdk](https://ext.dcloud.net.cn/plugin?id=17638)，热更新小程序。\
+  从5.31起，Android、iOS支持wgt热更新。[详见](./api/install-wgt.md)
   
 - uni-app x 能调用所有原生API吗？\
   可以。在app端，kotlin、swift、ets能调用的，uts就能调，因为uts其实就是编译成这些语言了。在浏览器、小程序端，所有js能调用的，uts也都能调。
@@ -364,8 +365,8 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
   可以，通过uts插件，[https://uniapp.dcloud.net.cn/plugin/uts-plugin.html](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html)
 
 - uni-app x 的开发只能用HBuilderX吗？\
+	除了HBuilderX，官方新推出了	HBuilderV 。这是一个类似cursor的、基于vscode的IDE。（之所以不是vscode的插件，是因为vscode的插件api不够用，只能参考cursor、trae的做法）。[详见](https://doc.dcloud.net.cn/hbuilderv/)
   官方已发布cursor/vscode的语法服务插件，运行和打包仍需要HBuilderX。[详见](tutorial/ls-plugin.md)\
-	官方已启动 HBuilderV 产品开发，这是一个类似cursor的、基于vscode的IDE。（之所以不是vscode的插件，是因为vscode的插件api不够用，只能参考cursor、trae的做法）
 
 - 不跨平台，uni-app x 有优势吗？
 	即使不跨端，`uni-app`也是更好的小程序开发框架、更好的App开发框架、更方便的Web开发框架。
@@ -386,13 +387,17 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 
 - 老 uni-app 还维护吗？\
   
-	官方已于2024年停止nvue和5+的维护。并将于2027年初停止uni-app的App平台的维护。
+	官方已于2024年停止nvue和5+的维护。并将于2027年初停止 uni-app的App平台 和 uni-app x vdom平台 的维护。
 	
 	因为 uni-app x蒸汽模式 已经兼容js/ts写法，开发者可以方便的将 老uni-app 升级到 uni-app x蒸汽模式。所以 老uni-app 的app平台的维护意义也不大了。
 	
 	不再维护不是下线，而是没有重大问题的话（如新手机不兼容）不会再更新了。
 
-  如果只开发小程序，那使用 uni-app 或 uni-app x 哪个都差不多。如果开发App，那么推荐改用 uni-app x。另外未来 uni-app x 的web平台也会升级蒸汽模式，而 老uni-app不会升级。所以后续web平台也推荐使用 uni-app x。
+  如果只开发小程序，那使用 uni-app 或 uni-app x 都可以。uni-app x 略有优势。[差异详见](./mp/README.md)。
+	
+	如果开发App，那么推荐改用 uni-app x。
+	
+	未来 uni-app x 的web平台也会升级蒸汽模式，而 老uni-app不会升级。所以后续web平台也推荐使用 uni-app x。
 
   不管 uni-app 还是 uni-app x，都支持uts插件生态，原生扩展的api插件是复用的。但原生组件插件在老uni-app 和 uni-app x 蒸汽模式之间不能复用。
 

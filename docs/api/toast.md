@@ -419,27 +419,40 @@
 | errMsg | string | 是 | 错误信息 |
 
 
-## Bug & Tips@tips
-- 在 iOS、微信小程序、Web 平台，showToast 是和页面（包括 dialogPage）绑定的
-- 在 Android 平台
-	* 设置了 position 时，为系统 toast，此时与 App 绑定，而不是与页面绑定。没有设置 position 时仍与页面绑定。Android11及以上版本系统toast设置不再支持设置显示位置，仅支持显示在底部
+## 页面级toast和应用级toast@position
+
+toast，分页面级和应用级。默认为页面级。
+
+- 页面级toast：
+	toast 和页面绑定。**页面（含 dialogPage）关闭时，toast 会跟随页面立即一起消失；新页面（含 dialogPage）出现时会遮挡之前页面弹出的 toast **。
+  + 当showToast执行时，会寻找当前页面栈顶的窗体（包括 dialogPage），找到后进行绑定，然后弹出 Toast。
+	+ 在支持 dialogPage 的平台（Web和App），[uni.showModal](./modal.md)、[uni.showActionSheet](./action-sheet.md) 也是 dialogPage 实现的，此时 toast 会绑定到这些 dialogPage 上
+	+ 在弹出 toast 后，再次打开新页面，新页面会覆盖原页面弹出的 toast。
+		+ 如需在新页面（包括 dialogPage）弹出 toast，需要再次调用 showToast
+  + 关闭页面（包括 dialogPage）时，toast 会跟随页面（包括 dialogPage）一起消失
+		+ 如需在dialogPage关闭后，仍然弹出 toast，需要在关闭dialogPage后再次调用 showToast
+- 应用级toast：
+	toast 和应用绑定。
+	弹出和关闭页面，全部 toast 都不会跟随页面被遮挡或消失。toast会按指定的时长完整显示，然后再消失。
+
+由于历史原因和平台差异，设置应用级 toast 的方式是设置 showToast 的参数 position 属性，不管 position 设为 "top"、"center"、"bottom" 均可。
+
+并非所有平台、所有版本都支持设置 position，即应用级 toast。
+- 小程序平台不支持，所以小程序平台的 toast 都是和页面绑定的。
+- web平台暂不支持。后续会补充
+- iOS平台需要5.31+ 蒸汽模式才支持。
+- Android平台设置 position 时弹出的是 Android系统的 toast，该 toast 样式受rom影响：
 	* 系统toast 不支持 icon 图标，仅支持文字，Android12及以上版本文字内容通常限制为两行
+	* Android11及以上版本，系统toast设置不支持设置显示在顶部或居中，仅支持显示在底部
+	* Android11及以上版本，应用进入后台后，调用系统 toast 不弹出。 [文档地址](https://developer.android.google.cn/about/versions/11/behavior-changes-11?hl=nb#toasts)
 	* 部分 Android ROM，如 MIUI，调用系统 toast 时，会在 toast 行首自动加上 App 图标。此为 ROM 行为，目的是帮助用户区分该 toast 是哪个 App 弹出的
-- 在 HarmonyOS 平台
+- HarmonyOS 平台
   - 5.24 及以下
     - 只有系统 toast ，和 App window 绑定
   	- 不支持 icon 图标，仅支持文字
   - 5.25 及以上：
   	* position 设为 top、center、bottom 时，为系统 toast，和页面绑定
   	* 当没有传递 position 参数时，支持 icon、mask、image 参数，和页面绑定
-- 当 Toast 和页面绑定时：
-  + 当showToast执行时，会寻找当前页面栈顶的窗体（包括 dialogPage），找到后进行绑定，然后弹出 Toast。
-	+ 在支持 dialogPage 的平台（Web和App），[uni.showModal](./modal.md)、[uni.showActionSheet](./action-sheet.md) 也是 dialogPage 实现的，此时 toast 会绑定到这些 dialogPage 上
-	+ 在弹出 Toast 后，再次打开新页面，新页面会覆盖原页面弹出的 Toast。
-		+ 如需在新页面（包括 dialogPage）弹出 Toast，需要再次调用 showToast
-  + 关闭页面（包括 dialogPage）时，Toast 会跟随页面（包括 dialogPage）一起消失
-		+ 如需在dialogPage关闭后，仍然弹出 Toast，需要在关闭dialogPage后再次调用 showToast
-- 当 Toast 和应用绑定时，也即系统 toast：
-	弹出和关闭页面，系统 toast 都不会跟随页面被遮挡或消失。
-- Android 11 及以上版本，应用进入后台后，调用系统 toast 不弹出。 [文档地址](https://developer.android.google.cn/about/versions/11/behavior-changes-11?hl=nb#toasts)
+
+## Bug & Tips@tips
 - showToast 里的 Loading，和 showLoading 的区别是，showLoading 需要手动调用 HideLoading 才会关闭。而 showToast 里的 Loading 显示指定时间后会自动关闭。一般情况都需要精准控制关闭时机，所以大多使用 showLoading 和 hideLoading

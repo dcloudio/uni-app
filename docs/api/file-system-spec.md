@@ -209,7 +209,7 @@ uni-app x框架的一些内置组件和API会涉及缓存文件，存放到本�
 FileSystemManager目前对内置应用沙盒目录为只读。如需写入，需开发uts插件。
 
 ### 沙盒外目录
-FileSystemManager API暂不支持访问沙盒外目录。
+FileSystemManager API不支持访问沙盒外目录。
 
 保存图片和视频到相册，有专门的API：[uni.saveImageToPhotosAlbum](./save-image-to-photos-album.md)、[uni.saveVideoToPhotosAlbum](./save-video-to-photos-album.md)、
 

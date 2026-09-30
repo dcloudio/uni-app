@@ -309,7 +309,7 @@ function test2(arg : boolean) { // 自动推导返回值类型为 number | null
     }
     return null
 }
-function test3(arg : boolean): any { // 暂不支持多个不同类型的返回值推导，需要主动声明为 any
+function test3(arg : boolean): any { // 不支持多个不同类型的返回值推导，需要主动声明为 any
     if (arg) {
         return 1
     }

@@ -9,7 +9,7 @@
 web版默认有页面滚动；app平台vdom模式时没有页面滚动，但蒸汽模式时已经支持页面滚动了。所以从蒸汽开始，这点平台差异不再存在。
 
 - 与老uni-app x相比，uni-app x 编译到web平台时，有几处不同：
-1. 如果使用uts代码，会走uts2js逻辑，会注入UTSJSONObject。如果使用ts/js则无法使用UTSJSONObject。
+1. 如果使用uts代码，会走[uts2js](../uts/uts2js.md)逻辑，会注入UTSJSONObject。如果使用ts/js则无法使用UTSJSONObject。
 2. 重置了css，拉齐App布局引擎，比如统一使用flex布局。详见[css重置](../css/README.md#css-reset)
 
 ## web运行失败注意事项@faq
@@ -162,15 +162,11 @@ position: fixed定位时，web端为相对于整个浏览器页面进行定位�
   height: 100px;
   background-color: #FF0000;
   left: 10px;
-  /* #ifdef WEB */
   /*
    * HBuilderX 4.52之前只能使用--window-top，不可使用--uni-safe-area-inset-top
+	 * App端蒸汽模式5.31+起支持calc
    */
   top: calc(--uni-safe-area-inset-top + 10px);
-  /* #endif */
-  /* #ifdef APP */
-  top: 10px;  /* App端暂不支持calc */
-  /* #endif */
 }
 ```
 
