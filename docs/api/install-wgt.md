@@ -62,6 +62,9 @@
 
 ### Tips
 - 使用 [升级中心](https://doc.dcloud.net.cn/uniCloud/upgrade-center.html) 进行 WGT 发布、更新，简洁高效，省去诸多开发测试的成本。
+- 真机运行时调用 uni.installWgt 成功后会直接替换当前资源。为了避免出现资源不同步的问题，请务必在uni.installWgt的成功回调中调用 `getApp().restart()` 或者重启应用让新资源生效。
+- 正式包（非真机运行环境）调用uni.installWgt成功后不存在直接替换当前资源的情况，新资源只会在app重启或者明确调用 `getApp().restart()` 后生效，在此之前不会影响当前资源包的运行使用。
+- 使用 uni.installWgt 升级应用资源的测试建议在正式包环境进行，不建议仅在真机运行环境下进行测试。
 
 ## 通用类型
 
