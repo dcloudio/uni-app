@@ -15,7 +15,7 @@ animation-name CSS 属性指定一个或多个 @keyframes at-rule 的名称，�
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| 5.31 | 5.31 | x |
 
 
 
