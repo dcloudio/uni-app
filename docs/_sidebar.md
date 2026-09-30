@@ -63,7 +63,7 @@
 * 小程序平台专题指南
   * [概述](mp/README.md)
   * [独立分包](mp/independent-subpackage.md)
-  * [组件和 WXS](mp/native-component-and-wxs.md)
+  * [组件和 WXS/SJS](mp/native-component-and-wxs.md)
   * [分包异步化](mp/miniprogram-subcontract-asynchrony.md)
   * 微信
     * [AI 开发模式接入指南](mp/mp-weixin-ai-develop.md)
