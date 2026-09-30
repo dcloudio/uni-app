@@ -32,9 +32,9 @@ color: <color>;
 
 
 ### color 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| currentcolor | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 将颜色设置为元素的 color 属性值。但是，如果设置为 color 的值，currentcolor 将被视为 inherit。 |
+| 名称 | 描述 |
+| :- | :- |
+| currentcolor | 将颜色设置为元素的 color 属性值。但是，如果设置为 color 的值，currentcolor 将被视为 inherit。 |
 
 
 ### 默认值 @default-value 

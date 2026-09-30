@@ -6,9 +6,9 @@ The animation-composition CSS property specifies the composite operation to use 
 
 
 ### uni-app x 兼容性 <Help />
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
@@ -29,11 +29,11 @@ animation-composition: <single-animation-composition>#;
 
 
 ### animation-composition 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| replace | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | The effect value overrides the underlying value of the property. This is the default value. |
-| add | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | The effect value builds on the underlying value of the property. This operation produces an additive effect. For animation types where the addition operation is not commutative, the order of the operands is the underlying value followed by the effect value. |
-| accumulate | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | The effect and underlying values are combined. For animation types where the addition operation is not commutative, the order of the operands is the underlying value followed by the effect value. |
+| 名称 | 描述 |
+| :- | :- |
+| replace | The effect value overrides the underlying value of the property. This is the default value. |
+| add | The effect value builds on the underlying value of the property. This operation produces an additive effect. For animation types where the addition operation is not commutative, the order of the operands is the underlying value followed by the effect value. |
+| accumulate | The effect and underlying values are combined. For animation types where the addition operation is not commutative, the order of the operands is the underlying value followed by the effect value. |
 
 
 ### 默认值 @default-value 

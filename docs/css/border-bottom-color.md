@@ -32,9 +32,9 @@ border-bottom-color: <'border-top-color'>;
 
 
 ### border-bottom-color 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| inherit | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 一个代表父元素底边颜色的关键字（可能和 border-bottom-color 默认值不同） |
+| 名称 | 描述 |
+| :- | :- |
+| inherit | 一个代表父元素底边颜色的关键字（可能和 border-bottom-color 默认值不同） |
 
 
 ### 默认值 @default-value 

@@ -6,9 +6,9 @@ animation-name CSS 属性指定一个或多个 @keyframes at-rule 的名称，�
 
 
 ### uni-app x 兼容性 <Help />
-| Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | 5.25 | x | 5.25 | x | 5.25 |
+| Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 5.25 | x | 5.25 | x | 5.25 |
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
@@ -29,9 +29,9 @@ animation-name: [ none | <keyframes-name> ]#;
 
 
 ### animation-name 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| none | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 一个特殊的关键字，表示没有关键帧。它可用于禁用动画，而不改变其他标识符的顺序，或禁用级联的动画。 |
+| 名称 | 描述 |
+| :- | :- |
+| none | 一个特殊的关键字，表示没有关键帧。它可用于禁用动画，而不改变其他标识符的顺序，或禁用级联的动画。 |
 
 
 ### 默认值 @default-value 

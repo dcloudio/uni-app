@@ -32,19 +32,19 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 
 
 ### font-size 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| larger | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
-| medium | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| small | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| smaller | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
-| x-large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| x-small | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| xx-large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| xx-small | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| xxx-large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| math | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用特殊的数学缩放规则来确定 font-size 属性的计算值。 |
+| 名称 | 描述 |
+| :- | :- |
+| large | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| larger | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
+| medium | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| small | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| smaller | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
+| x-large | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| x-small | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| xx-large | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| xx-small | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| xxx-large | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| math | 使用特殊的数学缩放规则来确定 font-size 属性的计算值。 |
 
 
 ### 默认值 @default-value 
