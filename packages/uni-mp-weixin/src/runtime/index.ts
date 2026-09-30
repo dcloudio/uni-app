@@ -9,16 +9,17 @@ import {
 
 import '@dcloudio/uni-mp-polyfill'
 
+import * as parseAppOptions from './parseAppOptions'
 import * as parseOptions from './parseOptions'
 import { preloadAsset } from './utils'
 
 declare const __UNI_MP_INDEPENDENT_RUNTIME__: boolean
 
-export const createApp = initCreateApp()
+export const createApp = initCreateApp(parseAppOptions)
 export const createPage = initCreatePage(parseOptions)
 export const createComponent = initCreateComponent(parseOptions)
 export const createPluginApp = initCreatePluginApp()
-export const createSubpackageApp = initCreateSubpackageApp()
+export const createSubpackageApp = initCreateSubpackageApp(parseAppOptions)
 export const createIndependentSubpackageApp =
   initCreateIndependentSubpackageApp()
 const isIndependentRuntime =

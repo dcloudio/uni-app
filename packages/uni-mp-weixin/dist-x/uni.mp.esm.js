@@ -427,16 +427,19 @@ function parseApp(instance, parseAppOptions) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
     }
+    if (parseAppOptions) {
+        parseAppOptions.parse(appOptions);
+    }
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
-        return App(parseApp(vm));
+        return App(parseApp(vm, parseAppOptions));
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm, root) {
-        const appOptions = parseApp(vm);
+        const appOptions = parseApp(vm, parseAppOptions);
         const app = isFunction(getApp) &&
             getApp({
                 allowDefault: true,
@@ -1033,7 +1036,7 @@ function updateCssVariables() {
 
 function initCreatePluginApp(parseAppOptions) {
     return function createApp(vm) {
-        initAppLifecycle(parseApp(vm), vm);
+        initAppLifecycle(parseApp(vm, parseAppOptions), vm);
         if (process.env.UNI_MP_PLUGIN) {
             wx.$vm = vm;
         }
@@ -1086,6 +1089,19 @@ Component = function (options) {
     }
     return MPComponent(options);
 };
+
+function parse(appOptions) {
+    appOptions.restart = function restart(options = {}) {
+        wx.restartMiniProgram({
+            path: options.url || addLeadingSlash(wx.getLaunchOptionsSync().path),
+        });
+    };
+}
+
+var parseAppOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  parse: parse
+});
 
 // @ts-expect-error
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
@@ -1225,11 +1241,11 @@ function preloadAsset() {
     }
 }
 
-const createApp = initCreateApp();
+const createApp = initCreateApp(parseAppOptions);
 const createPage = initCreatePage(parseOptions);
 const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
-const createSubpackageApp = initCreateSubpackageApp();
+const createSubpackageApp = initCreateSubpackageApp(parseAppOptions);
 const createIndependentSubpackageApp = initCreateIndependentSubpackageApp();
 const isIndependentRuntime = typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== 'undefined' &&
     __UNI_MP_INDEPENDENT_RUNTIME__ === true;
