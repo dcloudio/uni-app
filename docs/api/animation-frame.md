@@ -18,17 +18,9 @@
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 | x |
-
-
-**uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | x |
-
 
 
 **参见** 
@@ -55,17 +47,9 @@
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 | x |
-
-
-**uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | x |
-
 
 
 **参见** 
@@ -216,4 +200,3 @@
 - 暂未提供关闭申请高刷的设置
 
 注意无论哪个平台，最终高刷是否生效仍受手机系统策略以及用户设置影响。
-
