@@ -8,7 +8,7 @@ CSS animation 属性是 animation-name，animation-duration, animation-timing-fu
 ### uni-app x 兼容性 <Help />
 | Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 5.25 | x | 5.25 | x | 5.25 |
+| 4.0 | x | 5.31 | x | 5.31 | x | 5.31 |
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
