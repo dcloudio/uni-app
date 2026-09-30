@@ -32,16 +32,16 @@ border-color: <color>{1,4};
 
 
 ### border-color 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| color | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示四个边框的颜色，仅用于单值语法。 |
-| horizontal | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示水平（左边框和右边框）边框的颜色，仅用于双值语法。 |
-| vertical | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示垂直（上边框和下边框）边框的颜色，仅用于双值或三值语法。 |
-| top | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示上边框的颜色，仅用于三值或四值语法。 |
-| bottom | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示下边框的颜色，仅用于三值或四值语法。 |
-| right | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示右边框的颜色，仅用于四值语法。 |
-| left | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示左边框的颜色，仅用于四值语法。 |
-| inherit | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 这是一个关键词，用于指示四边的颜色值均继承自父元素的计算值。 |
+| 名称 | 描述 |
+| :- | :- |
+| color | 使用 \<color> 来表示四个边框的颜色，仅用于单值语法。 |
+| horizontal | 使用 \<color> 来表示水平（左边框和右边框）边框的颜色，仅用于双值语法。 |
+| vertical | 使用 \<color> 来表示垂直（上边框和下边框）边框的颜色，仅用于双值或三值语法。 |
+| top | 使用 \<color> 来表示上边框的颜色，仅用于三值或四值语法。 |
+| bottom | 使用 \<color> 来表示下边框的颜色，仅用于三值或四值语法。 |
+| right | 使用 \<color> 来表示右边框的颜色，仅用于四值语法。 |
+| left | 使用 \<color> 来表示左边框的颜色，仅用于四值语法。 |
+| inherit | 这是一个关键词，用于指示四边的颜色值均继承自父元素的计算值。 |
 
 
 ### 默认值 @default-value 

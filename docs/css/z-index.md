@@ -55,9 +55,9 @@ z-index: auto | <integer>;
 
 
 ### z-index 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| auto | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 盒子不会创建一个新的局部层叠上下文。盒子在当前层叠上下文的层叠等级是 0。 |
+| 名称 | 描述 |
+| :- | :- |
+| auto | 盒子不会创建一个新的局部层叠上下文。盒子在当前层叠上下文的层叠等级是 0。 |
 
 
 ### 默认值 @default-value 

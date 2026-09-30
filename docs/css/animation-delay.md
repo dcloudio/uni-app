@@ -6,9 +6,9 @@ animation-delay CSS 属性指定从应用动画到元素开始执行动画之前
 
 
 ### uni-app x 兼容性 <Help />
-| Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | 5.25 | x | 5.25 | x | 5.25 |
+| Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 5.25 | x | 5.25 | x | 5.25 |
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

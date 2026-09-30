@@ -32,9 +32,9 @@ letter-spacing: normal | <length>;
 
 
 ### letter-spacing 的属性值
-| 名称 | 兼容性 | 描述 |
-| :- | :- | :- |
-| normal | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 此间距是按照当前字体的正常间距确定的。和 0 不同的是，normal 会让用户代理调整文字之间空间来对齐文字。 |
+| 名称 | 描述 |
+| :- | :- |
+| normal | 此间距是按照当前字体的正常间距确定的。和 0 不同的是，normal 会让用户代理调整文字之间空间来对齐文字。 |
 
 
 ### 默认值 @default-value 

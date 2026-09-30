@@ -6,9 +6,9 @@ animation-duration CSS 属性设置动画完成一个动画周期所需的时间
 
 
 ### uni-app x 兼容性 <Help />
-| Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | 5.25 | x | 5.25 | x | 5.25 |
+| Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 5.25 | x | 5.25 | x | 5.25 |
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
