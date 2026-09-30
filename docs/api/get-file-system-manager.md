@@ -29,8 +29,6 @@
 
 - [ReadFileSuccessResult](./get-file-system-manager.md#readfilesuccessresult-values) 的data参数以前类型是string，Android平台4.31、iOS平台4.61起为了同时支持arraybuffer，类型改成了‘string | ArrayBuffer’，请在使用时手动as为指定类型；
 
-- app-ios平台4.11版本之前支持的api仅支持在uvue文件中使用文件管理器对象，uts插件中暂不支持； app-ios平台4.61版本后，所有api都支持在uts插件和uvue文件中使用，具体请查看兼容性；
-
 :::warning 注意
 
 ##### 为了和微信小程序保持一致，`HBuilderX 4.71+` 涉及如下API调整

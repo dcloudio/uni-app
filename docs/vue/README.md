@@ -153,12 +153,12 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 
 如果页面script未设置，则根据全局配置 manifest.json 中 蒸汽模式下 script lang 的默认值来执行。如果未改动manifest默认值，则默认为`ts`。
 
-注意：默认值是 `ts`。不是uni-app默认的`js`，也不是uni-app x VDOM模式默认的`uts`。
+注意：**默认值是 `ts`**。不是uni-app默认的`js`，也不是uni-app x VDOM模式默认的`uts`。
 默认值之所以调整，一是为了方便AI，二是为了提升编译速度。
 
 此时uts、ts、js三者将有不同的编译逻辑，见下。
 
-蒸汽模式下，使用uts、ts，实际也需要经过uts2js、ts2js的编译流程。uts、ts和js的区别：
+蒸汽模式下，使用uts、ts，实际也需要经过[uts2js](../uts/uts2js.md)、ts2js的编译流程。uts、ts和js的区别：
 - js：没有额外的编译流程。编译速度快。
 - ts：需执行ts2js的编译器，类型仅对开发阶段生效，实际运行时会擦除类型。编译速度中。
 - uts：需执行uts2js编译器。编译速度慢。为了拉齐uts编译原生强类型的跨端表现，运行时与标准js有略微差异：
@@ -168,9 +168,12 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 
 	不使用uts时，将无法再使用UTSJSONObject，UTSJSONObject变成了普通的object，type会被擦除，运行时内置API被改成`null`的会还原为`undefined`。
 	
-	如果你之前使用过UTSJSONObject的专有方法，比如getString、getNumber、getArray等方法，在5.31+运行，由于默认按ts编译，会造成控制台报警找不到相关类型和方法，此时有如下处理方案：
+	如果你之前使用过UTSJSONObject的专有方法，比如getString、getNumber、getArray等方法，在5.31+运行，由于默认按ts编译，会造成控制台报警找不到相关类型和方法：
+	`getString is not a function`、`getNumber is not a function`、`getArray is not a function`
+	
+	此时有如下处理方案：
 	1. 把相关页面的script的lang，显式指定为uts。
-	2. 把UTSJSONObject的写法，改成普通object写法。
+	2. 把UTSJSONObject的写法，改成普通object写法，即`.`点运算符。（推荐，可以获得更快的编译速度和更好的AI支持度）
 
 5.31+，不同后缀的文件，比如`*.js`、`*.ts`、`*.uts`，互相import的时，都按各自独立的编译器编译。
 

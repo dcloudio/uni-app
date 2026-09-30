@@ -5,7 +5,8 @@ Google Play 的政策要求：
 自 2025 年 11 月 1 日起，提交到 Google Play 且以 Android15（API 级别 35）及更高版本的设备为目标平台的所有新应用和现有应用更新都必须支持 16KB 的页面大小。  
 [详情](https://android-developers.googleblog.com/2025/05/prepare-play-apps-for-devices-with-16kb-page-size.html)。
 
-> HBuilderX4.81+，DCloud的自有so库已适配支持 16KB 内存页面大小
+> HBuilder 4.81+，DCloud的自研so库已适配支持 16KB 内存页面大小
+> HBuilder 5.31+，DCloud内置组件和API依赖的三方SDK统一升级，仅剩余直播和部分广告渠道的so库还未适配 16KB 。在必要时可去除相关模块。
 
 但是，某些三方sdk的so库未适配16K，见下。
 

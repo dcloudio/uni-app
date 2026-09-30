@@ -503,15 +503,11 @@ position: fixed定位时，web端为相对于整个浏览器页面进行定位�
   height: 100px;
   background-color: #FF0000;
   left: 10px;
-  /* #ifdef WEB */
   /*
-   * HBuilderX 4.52之前只能使用--window-top，不可使用--uni-safe-area-inset-top
+   * HBuilder 4.52之前只能使用--window-top，不可使用--uni-safe-area-inset-top
+	 * App平台需5.31+蒸汽模式才能使用calc
    */
   top: calc(--uni-safe-area-inset-top + 10px); 
-  /* #endif */
-  /* #ifdef APP */
-  top: 10px;  /* App端暂不支持calc */
-  /* #endif */
 }
 ```
 

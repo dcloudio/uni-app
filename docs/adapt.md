@@ -2,7 +2,7 @@
 
 uni-app-x 提供了两种宽屏适配方案，用于在不同屏幕尺寸下提供最佳的用户体验。本文档将详细介绍这两种方案的使用方法和实现思路。
 
-## 一、页面窗体级适配
+## 一、web页面窗体级适配
 
 > 只支持web端
 
@@ -30,7 +30,7 @@ uni-app-x 提供了两种宽屏适配方案，用于在不同屏幕尺寸下提�
 ### 示例代码
 
 #### 配置示例
-leftWindow等配置，在pages.json里进行。[文档见](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pages-topwindow)
+leftWindow等配置，在pages.json里进行。[文档](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pages-topwindow)
 ```json
 {
 	"leftWindow": {
@@ -69,10 +69,10 @@ uni.$on('updateData', (data) => {
 
 
 #### 完整示例
-hello uni-app使用了topWindow和leftWindow，分为上左右3栏，[详见](https://hellouniappx.dcloud.net.cn/web#/)
+hello uni-app x 使用了topWindow和leftWindow，分为上左右3栏，[详见](https://hellouniappx.dcloud.net.cn/web#/)
 
 
-## 二、组件级适配 @component-adapt
+## 二、跨端组件级适配 @component-adapt
 
 > HBuilderX 4.71+ 全平台支持
 
@@ -115,6 +115,8 @@ isWideScreen.value = windowWidth > 768
 const deviceType = uni.getDeviceInfo().deviceType
 isWideScreen.value = deviceType === 'pad' || deviceType === 'pc'
 ```
+
+也可以使用 [match-media组件](./component/match-media.md)。组件使用更简单，灵活性不如脚本编程。
 
 #### 布局实现
 宽屏窄屏模式，通过 CSS 类名动态控制布局，响应式设计适配不同屏幕尺寸
@@ -167,3 +169,4 @@ isWideScreen.value = deviceType === 'pad' || deviceType === 'pc'
 #### 完整示例
 
 完整的示例代码请参考插件：[宽屏适配示例](https://ext.dcloud.net.cn/plugin?name=uni-wide-screen)
+

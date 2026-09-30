@@ -177,3 +177,8 @@ UniNativeViewElement -- Extends --> UniElement
 
 
 <!-- CUSTOMTYPEJSON.UniNativeViewElement.example -->
+
+## tips
+
+鸿蒙有多种原生视图可以绑定，有bindHarmonyController、bindHarmonyWrappedBuilder、bindHarmonyFrameNode。
+在 uni-app x 蒸汽模式下，bindHarmonyFrameNode的性能更高一些。

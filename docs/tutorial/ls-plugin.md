@@ -91,7 +91,7 @@ uni-app x 项目有很多平台，每个平台都有大量的语法和API。尤�
 在非条件编译代码区域里，代码提示、语法校验则会以选择的平台为准（默认选择：APP-ANDROID）。
 
 #### 代码提示
-* 目前暂不支持`条件编译`的相关代码提示。
+* 目前不支持`条件编译`的相关代码提示。
 * 可以提示uni相关的API和组件，并有详细的参数提示。
 <br/> ![completion](https://web-ext-storage.dcloud.net.cn/doc/tutorial/lsp-plugin/completion.png)
 

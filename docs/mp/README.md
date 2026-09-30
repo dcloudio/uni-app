@@ -1,27 +1,52 @@
 # 编译到小程序端
 
-> HBuilder 4.41 起支持编译到微信小程序，5.31 起支持编译到支付宝小程序。
+> HBuilder 4.41 + 支持编译到微信小程序
+> HBuilder 5.31 + 支持编译到支付宝小程序
 
-uni-app x 项目在编译到小程序平台时，将部分特性对齐了 web 与 app 端，因此和非 uni-app x 项目编译到小程序端略有差异。
+## 与 uni-app 相比，uni-app x 编译到小程序有如下不同
 
-与 uni-app 相比，uni-app x 编译到小程序有 2 个显著差别：
-
-1. uni-app x 支持 Element API
+### uni-app x 的优势
+1. uni-app x 支持跨平台 Element API 来统一替代 wxs/sjs
 
    在小程序上开发高性能应用，离不开 wxs/sjs。但 wxs/sjs 难用且不跨平台。\
-   虽然小程序自身不支持 Element 操作，但 uni-app x 提供了跨平台的 Element API，并且把这些 API 映射到了小程序的 wxs/sjs 上。\
+   虽然小程序自身不支持 Element 操作，但 uni-app x 提供了全平台的 Element API，并且把这些 API 映射到了小程序的 wxs/sjs 上。\
    这样即实现了跨平台一致性，又解决了小程序下 wxs/sjs 使用麻烦的问题。
 
-2. 布局全面使用 flex
+2. 支持样式隔离策略2.0
 
-   小程序的 webview 渲染支持 flex 布局，但默认是 block 布局。\
-   uni-app x 中全平台统一使用 flex 布局。
+	老 uni-app 的全局样式、页面样式、组件样式，在不同平台的复用和隔离策略不一样。导致多端拉齐有很多坑。\
+	uni-app x 统一了[样式隔离策略2.0](../css/common/style-isolation.md)。\
+	除了多平台拉齐，[样式隔离策略2.0](../css/common/style-isolation.md)的externalClass机制对组件尤其友好，组件作者不再需要为了让开发者自定义组件样式而封装大量属性了。组件使用者也不再需要为了定制样式而改组件源码或者deep干扰了。\
+	
+3. 减少更多平台差异
+
+	各家小程序，表面规范接近，细节实现差异很大。经常要踩坑，写条件编译。\
+	老 uni-app 的测试例数量不足，很多细节差异官方并没有抹平。\
+	uni-app x 拥有大量细节测试例，为了过测，抹平了很多细节差异。\
+	对于开发者而言，坑变少了，也少写很多条件编译。
+
+整体而言，uni-app x 编写跨端小程序，可以更简单、更一致的做出高性能、代码清晰的小程序。
+
+### 差异
+1. 布局默认使用 flex
+
+小程序的 webview 渲染支持 flex 布局，但默认是 block 布局。\
+uni-app x 中全平台默认使用 flex 布局。\
+如需跨端到App，只能使用 flex 布局。\
+如果不需要App，也可以取消默认的样式重置。[见下](#resetcss)
+
+还有一些开发注意事项，详见下文。
+
+### 问题
+
+uni-app x 目前仅支持微信小程序和支付宝小程序。其他主流小程序还在陆续适配。一些自身已经停维的小程序平台可能 uni-app x 不再会支持。
+
 
 ## 基础库范围
 
-截止到 HBuilder 4.41 发版时微信的主流基础库版本是 3.7.1，已知过老的基础库版本上，scroll-view 区域大小会不准确。请开发者检查并确保基础库版本大于 3.7.1。
+截止到 HBuilder 4.41 发版时微信的主流基础库版本是 3.7.1。
 
-支付宝小程序的主流基础库版本是 2.10.38。
+截止到 HBuilder 5.31 发版时支付宝小程序的主流基础库版本是 2.10.38。
 
 uni-app x 是在上述版本库上适配的。
 
@@ -111,7 +136,7 @@ event.screenY
 
 ## css
 
-### 样式重置
+### 样式重置@resetcss
 
 App 平台的 ucss 和 webview 的标准 css 略有差异。为保证多端统一，uni-app-x 编译到小程序端时，会进行浏览器样式重置，内置组件根元素带有一些默认样式，详情参考：[uvue css 使用](../css/README.md)。
 
@@ -155,7 +180,7 @@ align-items
 
 编译到支付宝小程序时需注意以下平台差异：
 
-- 组件和 API 的支付宝平台限制请参阅对应文档
+- 组件和 API 的支付宝平台限制请参阅对应组件和API文档
 - 支付宝小程序支持暗黑模式，需要通过 `themeLocation` 指定 `theme.json`，详见[暗黑主题适配教程](../api/theme-change.md)。
 - 支付宝小程序不支持完全自定义导航栏，`navigationStyle: "custom"` 不生效，详见[pages.json 页面配置](../collocation/pagesjson.md)。
 
