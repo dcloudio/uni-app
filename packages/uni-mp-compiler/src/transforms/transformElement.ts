@@ -49,6 +49,12 @@ export const transformElement: NodeTransform = (node, context) => {
     ) {
       return
     }
+    if (context.inVPre) {
+      if (context.scopeId) {
+        addScopeId(node, context.scopeId)
+      }
+      return
+    }
     if (node.tagType === ElementTypes.COMPONENT) {
       processComponent(node, context)
     }

@@ -39,6 +39,7 @@ import { genExpr } from '../codegen'
 import { type ForElementNode, isForElementNode } from '../transforms/vFor'
 import { type IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
+import { isVPreElementNode } from '../transforms/vPre'
 import type { TransformContext } from '../transform'
 import { ATTR_ELEMENT_ID, ATTR_VUE_PROPS } from '../transforms/utils'
 
@@ -143,18 +144,33 @@ function isInVFor(node: SlotOutletNode): boolean {
 
 export function genNode(
   node: TemplateChildNode,
-  context: TemplateCodegenContext
+  context: TemplateCodegenContext,
+  inVPre = false
 ) {
+  const currentInVPre =
+    inVPre || (node.type === NodeTypes.ELEMENT && isVPreElementNode(node))
   switch (node.type) {
     case NodeTypes.IF:
       return node.branches.forEach((node) => {
         genNode(node as unknown as IfElementNode, context)
       })
     case NodeTypes.TEXT:
-      return genText(node, context)
+      return genText(node, context, currentInVPre)
     case NodeTypes.INTERPOLATION:
-      return genExpression(node.content, context)
+      return genExpression(
+        node.content,
+        context,
+        currentInVPre,
+        node.loc.source
+      )
     case NodeTypes.ELEMENT:
+      if (
+        currentInVPre &&
+        (node.tagType === ElementTypes.SLOT ||
+          node.tagType === ElementTypes.TEMPLATE)
+      ) {
+        return genElement(node, context, currentInVPre)
+      }
       if (node.tagType === ElementTypes.SLOT) {
         const isEmptyDefaultSlot =
           node.props.some(
@@ -169,7 +185,7 @@ export function genNode(
         // 当存在 <slot name="default" :xxx="xxx"><slot> 时，在后面添加 <slot></slot>，使默认插槽生效
         if (isEmptyDefaultSlot) {
           if (isInVFor(node)) {
-            return genSlot(node, context)
+            return genSlot(node, context, currentInVPre)
           }
           const isVIfSlot = isIfElementNode(node)
           if (isVIfSlot) {
@@ -178,29 +194,38 @@ export function genNode(
             context.push(`>`)
             delete (node as any).vIf
           }
-          genSlot(node, context)
+          genSlot(node, context, currentInVPre)
           genSlot(
             extend({}, node, { props: [], children: [], loc: {} }),
-            context
+            context,
+            currentInVPre
           )
           if (isVIfSlot) {
             context.push(`</block>`)
           }
           return
         }
-        return genSlot(node, context)
-      } else if (node.tagType === ElementTypes.COMPONENT) {
+        return genSlot(node, context, currentInVPre)
+      } else if (node.tagType === ElementTypes.COMPONENT && !currentInVPre) {
         return genComponent(node, context)
       } else if (node.tagType === ElementTypes.TEMPLATE) {
-        return genTemplate(node, context)
-      } else if (isLazyElement(node, context)) {
+        return genTemplate(node, context, currentInVPre)
+      } else if (isLazyElement(node, context) && !currentInVPre) {
         return genLazyElement(node, context)
       }
-      return genElement(node, context)
+      return genElement(node, context, currentInVPre)
   }
 }
 
-function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
+function genText(
+  node: TextNode,
+  { push, isX }: TemplateCodegenContext,
+  inVPre = false
+) {
+  if (inVPre) {
+    push(genVPreText(node.content, isX))
+    return
+  }
   if (isX) {
     push(mpEscapeText(node.content))
   } else {
@@ -217,8 +242,34 @@ function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
   }
 }
 
-function genExpression(node: ExpressionNode, { push }: TemplateCodegenContext) {
+function genExpression(
+  node: ExpressionNode,
+  { push, isX }: TemplateCodegenContext,
+  inVPre = false,
+  source?: string
+) {
+  if (inVPre) {
+    push(genVPreText(source || `{{${genExpr(node)}}}`, isX))
+    return
+  }
   push(`{{${genExpr(node)}}}`)
+}
+
+function genVPreText(content: string, isX = false) {
+  const escaped = isX ? mpEscapeText(content) : escapeText(content)
+  return escaped.replace(/\{\{|\}\}|[{}]/g, (braces) => {
+    return `{{'${braces}'}}`
+  })
+}
+
+function escapeText(content: string) {
+  return getEscaper(
+    /[<>]/g,
+    new Map([
+      [60, '&lt;'],
+      [62, '&gt;'],
+    ])
+  )(content)
 }
 
 function genVIf(exp: string, { push, directive }: TemplateCodegenContext) {
@@ -251,7 +302,11 @@ function genVFor(
   }
 }
 
-function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
+function genSlot(
+  node: SlotOutletNode,
+  context: TemplateCodegenContext,
+  inVPre = false
+) {
   // 移除掉所有非name属性，即移除作用域插槽的绑定指令
   node.props = node.props.filter((prop) => {
     if (isAttributeNode(prop)) {
@@ -271,7 +326,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
     (context.slot.fallbackContent && !isDefaultSlot)
   ) {
     // 无后备内容或支持后备内容
-    return genElement(node, context)
+    return genElement(node, context, inVPre)
   }
   const { push } = context
   const isVIfSlot = isIfElementNode(node)
@@ -304,7 +359,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
     genVIf(`$slots.${name}`, context)
   }
   push(`>`)
-  genElement(node, context)
+  genElement(node, context, inVPre)
   // 当存在 <slot name="default" :xxx="xxx"> fallback <slot> 时，在后面添加 <slot></slot>，使默认插槽生效
   if (isDefaultSlot) {
     push(`<slot/>`)
@@ -318,7 +373,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
     push(`<slot>`)
   }
   children.forEach((node) => {
-    genNode(node, context)
+    genNode(node, context, inVPre)
   })
   if (context.slot.fallbackContent && isDefaultSlot) {
     push(`</slot>`)
@@ -329,7 +384,11 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
   }
 }
 
-function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
+function genTemplate(
+  node: TemplateNode,
+  context: TemplateCodegenContext,
+  inVPre = false
+) {
   const slotProp = node.props.find(
     (prop) =>
       isDirectiveNode(prop) &&
@@ -371,7 +430,7 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
       if (isIfElementNode(node)) {
         ;(child as IfElementNode).vIf = (node as IfElementNode).vIf
       }
-      return genElement(child, context)
+      return genElement(child, context, inVPre)
     }
   } else if (slotProp && node.tag === 'view' && context.isX) {
     /**
@@ -386,7 +445,7 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
     node.props.push(createAttributeNode('class', 'uni__inherit_flex_box_style'))
   }
 
-  return genElement(node, context)
+  return genElement(node, context, inVPre)
 }
 
 function genComponent(node: ComponentNode, context: TemplateCodegenContext) {
@@ -489,7 +548,11 @@ function genVIfCode(node: IfElementNode, context: TemplateCodegenContext) {
   }
 }
 
-function genElement(node: ElementNode, context: TemplateCodegenContext) {
+function genElement(
+  node: ElementNode,
+  context: TemplateCodegenContext,
+  inVPre = false
+) {
   const { children, isSelfClosing, props } = node
   let tag = node.tag
   // <template slot="left"/> => <block slot="left"/>
@@ -508,7 +571,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
     !isForElementNode(node)
   ) {
     return children.forEach((node) => {
-      genNode(node, context)
+      genNode(node, context, inVPre)
     })
   }
   let virtualHost: boolean = false
@@ -542,7 +605,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
     genVFor(node, context)
   }
   if (props.length) {
-    genElementProps(node, virtualHost, context)
+    genElementProps(node, virtualHost, context, inVPre)
   }
 
   if (isSelfClosing) {
@@ -550,7 +613,7 @@ function genElement(node: ElementNode, context: TemplateCodegenContext) {
   } else {
     push(`>`)
     children.forEach((node) => {
-      genNode(node, context)
+      genNode(node, context, inVPre)
     })
     push(`</${tag}>`)
   }
@@ -580,7 +643,8 @@ function checkVirtualHostProps(name: string, virtualHost: boolean): string[] {
 export function genElementProps(
   node: ElementNode,
   virtualHost: boolean,
-  context: TemplateCodegenContext
+  context: TemplateCodegenContext,
+  inVPre = false
 ) {
   node.props.forEach((prop) => {
     if (isAttributeNode(prop)) {
@@ -592,13 +656,19 @@ export function genElementProps(
       }
       const { value } = prop
       if (value) {
+        const content = inVPre
+          ? genVPreText(value.content, context.isX)
+          : value.content
         checkVirtualHostProps(prop.name, virtualHost).forEach((name) => {
-          context.push(` ${name}="${value.content}"`)
+          context.push(` ${name}="${content}"`)
         })
       } else {
         context.push(` ${prop.name}`)
       }
     } else {
+      if (inVPre) {
+        return
+      }
       const { name } = prop
       if (
         context.checkPropName &&
