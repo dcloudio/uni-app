@@ -95,8 +95,35 @@ interface IOpenUniAppConfig {
   animationType?: AnimationType;
   animationDuration?: number;
 }
+export type ShowAnimationType =
+  'slide-in-right' |
+  'slide-in-left' |
+  'slide-in-top' |
+  'slide-in-bottom' |
+  'fade-in' |
+  'none'
+export type HideAnimationType =
+  'slide-out-right' |
+  'slide-out-left' |
+  'slide-out-top' |
+  'slide-out-bottom' |
+  'fade-out' |
+  'none'
+export interface IUniAppShowOptions {
+  animationType?: ShowAnimationType
+  animationDuration?: number
+}
+export interface IUniAppHideOptions {
+  animationType?: HideAnimationType
+  animationDuration?: number
+}
 export interface IUniAppSDK {
+  appId: string
+  hide(options?: IUniAppHideOptions): void
+  show(options?: IUniAppShowOptions): void
   close(): void
+  on(event: 'close' | 'show' | 'hide', callback: () => void): void
+  off(name: string, callback: Function): void
 }
 export declare function openUniApp(
   appID: string,
@@ -165,6 +192,43 @@ const app = openUniApp('你的APPID', {
 setTimeout(() => {
   app.close()
 }, 3000)
+```
+
+## 显示与隐藏
+
+蒸汽模式可以通过应用实例的 `show()` 和 `hide()` 方法，显示或隐藏已打开的 uni-app x 应用。
+
+```ts
+const app = openUniApp('你的APPID', {
+  animationType: 'fade-in',
+})
+
+app.hide({
+  animationType: 'slide-out-right',
+  animationDuration: 300,
+})
+
+app.show({
+  animationType: 'slide-in-right',
+  animationDuration: 300,
+})
+```
+
+## 监听实例事件
+
+蒸汽模式可以使用 `on()` 监听应用的显示、隐藏和关闭事件，使用 `off()` 移除监听。
+
+```ts
+const app = openUniApp('你的APPID')
+
+const onShow = () => {
+  console.log('uni-app x 应用已显示')
+}
+
+app.on('show', onShow)
+
+// 不再需要监听时，传入同一个回调函数移除监听
+app.off('show', onShow)
 ```
 
 ## 通信
