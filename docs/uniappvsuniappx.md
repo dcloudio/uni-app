@@ -2,11 +2,21 @@
 
 众所周知，uni-app x 的蒸汽模式在渲染性能上表现极其优异，甚至[超越了传统原生开发](./app-vapor.md#_4050)，相比 uni-app 自然有着更大的优势。
 
-但除了极致的性能之外，uni-app x 还有哪些长处？本文特对两者的差异进行全面汇总。
+也有部分开发者对性能不敏感，觉得 uni-app 也够用。想了解升级uni-app x 蒸汽模式还有哪些好处。
+
+uni-app由于预加载webview，所以在常规业务中新页面加载速度也能满足大多数场景。
+
+但App启动速度无法靠预载解决。升级 uni-app x 后体感会非常明显的感受到App的启动速度快很多。
+
+hello uni-app x 有400多个页面、众多SDK、100多M的体积，但没有splash，它就像系统应用一样在无splash的情况下迅速渲染首屏。
+
+另外uni-app中实现高性能UI交互需要使用App专属的renderjs，uni-app x 不再需要，直接操作DOM元素，全平台均可高性能操作UI。
+
+除了极致的性能之外，uni-app x 还有哪些长处？下文对两者的差异进行全面汇总。
 
 在语法层面，uni-app x 蒸汽模式与 uni-app 高度相似：支持相同的 Vue 语法、相同的 JS/TS、相同的组件和 API 命名，仅 CSS 为 Web 的子集。
 
-uni-app 毕竟是2018年设计的系统，而 uni-app x 吸取了前者的很多经验教训，拥有更优秀、很现代的设计。
+uni-app 毕竟是2018年设计的系统，而 uni-app x 吸取了前者的很多经验教训，拥有更优秀、更现代的设计。
 
 优秀的架构不像显性功能那样容易被直观感知，但当你遇到各种复杂问题时，它会展现出更优雅解决方案、合理的解耦、更小的副作用。
 
@@ -79,6 +89,19 @@ uni-app x 蒸汽模式提供了业内顶级性能的组件实现。
 - [animation-view](./component/animation-view.md) : uni-app的lottie组件仅支持nvue的Android和iOS。uni-app x全平台都支持。
 - [native-view](./component/native-view.md)：集成原生视图到uvue界面的重要纽带
 
+### 用全平台统一的Element API替代wxs/sjs/renderjs
+
+uni-app 中，高性能UI操作离不开 wxs/sjs/renderjs。\
+但这些代码不跨端，难用，AI也不熟悉。\
+uni-app x 支持跨平台 Element API来统一替代 wxs/sjs/renderjs。\
+统一对Element的style设置css属性，全平台都支持，在小程序上会编译为wxs/sjs的高性能代码。
+
+### 布尔属性规范化
+
+小程序的规范中，很多布尔属性的默认值为true，这产生很多歧义，不写这个属性、简写属性名但不赋值、值为空字符串...各种情况下到底是什么含义很混乱。\
+W3C有专门的布尔属性规范，[详见](https://developer.mozilla.org/zh-CN/docs/Glossary/Boolean/HTML)。\
+uni-app x 蒸汽模式的组件规范，统一规范化了这个行为。所有布尔属性默认值都是false，各种边界均符合W3C布尔属性规范定义。
+
 ### uni-ui x的高性能和完全自定义
 
 uni-app对应的uni ui，存在封装和抽象不合理的问题，组件属性封了太多，影响了性能、拉长了文档，也仍然无法满足开发者的所有自定义需求。
@@ -86,6 +109,7 @@ uni-app对应的uni ui，存在封装和抽象不合理的问题，组件属性�
 uni-ui x 的逻辑抽象和设计代表了业内最先进的水平。它借鉴了Headless UI的充分自定义性，同时兼顾了易用性与高性能。
 
 这种高性能不仅源于 uni-app x 蒸汽模式的底层支持，也得益于组件自身的代码优化，多重因素共同打造了一流的高性能组件库。[详见](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/)
+
 
 ## App权限和隐私管理
 
@@ -114,6 +138,7 @@ uni-app x 内置很多新API，例如[worker](./api/create-worker.md)、[getFile
 
 uni-app 中使用AI流式返回，需要通过renderjs，在webview操作。
 uni-app x 的request API内置支持AI流式返回。
+
 
 ## 错误码规范
 
@@ -182,7 +207,20 @@ uni-app x 不支持已经被淘汰数年的App原生插件机制。插件市场�
 uts插件本身的interface.uts和errcode.uts机制，让不同平台原生能力封装为统一的前端API，变的更加规范和便捷。\
 uni-app x 数百个内置组件和API都是基于uts插件实现的，这套原生扩展机制成熟、高效且高性能。
 
-uni-app x 新增了uasm插件（uni assembly），可以把高性能二进制库方便引入到前端开发中。
+uni-app x 新增了[uasm插件](https://doc.dcloud.net.cn/uni-app-x/plugin/uasm-plugin.html)（uni assembly），可以把高性能二进制库方便引入到前端开发中。\
+并且App平台支持[Node-API](https://doc.dcloud.net.cn/uni-app-x/plugin/uasm-node-api.html)，可以把很多Node生态库引入到App中。
+
+## 热更新
+
+uni-app 和 uni-app x 蒸汽模式均支持wgt热更新。
+
+uni-app 的 wgt 格式是 zip。uni-app x 的 wgt 格式是 zstd。zstd 压缩率更高、解压更快、更先进的压缩格式。可以帮助开发者节省更多cdn流量，减少升级等待。
+
+uni-app x 的热更新，内置sha256验签功能，防止网络劫持，更安全。
+
+uni-app x 的热更新，从联网、下载、验签、安装升级包，全平台都是在子线程统一进行，不影响用户前台操作体验。
+
+总结下，uni-app x 的热更新，更快、更省钱、更安全。
 
 ## 离线SDK
 
@@ -219,7 +257,7 @@ uni-app x 目前仅支持微信小程序和支付宝小程序。接下来会适�
 
 3. 云打包方面
 
-uni-app x 还不支持安心打包和js加密。js加密，开发者也可以使用[uni加固](https://doc.dcloud.net.cn/uni-app-x/tutorial/app-security.html)或其他加固方案解决。
+uni-app x 还不支持安心打包和js加密。js加密，开发者可以使用[uni加固](https://doc.dcloud.net.cn/uni-app-x/tutorial/app-security.html)或其他加固方案解决。
 
 4. API方面
 
@@ -238,4 +276,4 @@ uni-app x 还不支持安心打包和js加密。js加密，开发者也可以使
 
 综合优势和不足，可以看出，uni-app x 虽然比 uni-app 少了一些能力，但多了更多能力。所以并非 uni-app x 不如 uni-app 完善，而是相反，uni-app x 更完善、更现代。
 
-随着时间的推移，uni-app x会更加完善。从2027年起，uni-app的app平台将不再升级。
+随着时间的推移，uni-app x 会更加完善。从2027年起，uni-app 的app平台将不再升级。

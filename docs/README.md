@@ -365,9 +365,8 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
   可以，通过uts插件，[https://uniapp.dcloud.net.cn/plugin/uts-plugin.html](https://uniapp.dcloud.net.cn/plugin/uts-plugin.html)
 
 - uni-app x 的开发只能用HBuilderX吗？\
-	除了HBuilderX，官方新推出了	HBuilderV 。这是一个类似cursor的、基于vscode的IDE。（之所以不是vscode的插件，是因为vscode的插件api不够用，只能参考cursor、trae的做法）。[详见](https://doc.dcloud.net.cn/hbuilderv/)
-  官方已发布cursor/vscode的语法服务插件，运行和打包仍需要HBuilderX。[详见](tutorial/ls-plugin.md)\
-
+	除了HBuilderX，官方新推出了	[HBuilderV](https://doc.dcloud.net.cn/hbuilderv/) 。这是一个类似cursor的、基于vscode的IDE。（之所以不是vscode的插件，是因为vscode的插件api不够用，只能参考cursor、trae的做法）。[详见](https://doc.dcloud.net.cn/hbuilderv/)
+  
 - 不跨平台，uni-app x 有优势吗？
 	即使不跨端，`uni-app`也是更好的小程序开发框架、更好的App开发框架、更方便的Web开发框架。
 	* 更好的小程序框架：vue的通用性、生态，比小程序厂商自定语法要好的多。
@@ -384,6 +383,10 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
   * harmonyOS版 VDOM模式最低支持`API14`；蒸汽模式最低支持`API20`
   * Web版`发行模式`最低支持`chrome 64`、`safari 11.1`、`firefox 62`、`edge 79`、`safari on iOS 12`；
   * Web版`运行模式`最低支持`chrome 66`、`safari 11.1`、`firefox 62`、`edge 79`、`safari on iOS 12`；另外由于运行时不会对语法进行转化来兼容低版本浏览器，如果使用了一些比较新的语法可能会无法在低版本浏览器上运行。
+
+- 除了性能，uni-app x 比 uni-app 还有哪些优势？
+
+	uni-app x 拥有众多更现代、更先进的设计，详见专题文章：[uni-app x对比uni-app的优势](./uniappvsuniappx.md)
 
 - 老 uni-app 还维护吗？\
   
