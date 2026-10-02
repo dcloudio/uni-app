@@ -48,7 +48,7 @@ export function createConfig(
       esbuild: {
         include: isUniAppXStandardScriptSupported()
           ? /\.(tsx?|jsx)$/
-          : /\.(tsx?|jsx|uts)$/,
+          : /(?:\.(?:tsx?|jsx|uts)$|[?&]lang\.(?:tsx?|jsx|uts)(?:&|$))/,
         exclude: /\.js$/,
         loader: 'ts',
       },

@@ -1,3 +1,5 @@
+import { execFileSync } from 'child_process'
+import path from 'path'
 import type { UserConfig } from 'vite'
 
 jest.mock('@dcloudio/uni-cli-shared', () => ({
@@ -72,6 +74,56 @@ describe('createConfig', () => {
       expect(
         include.test('/project/pages/index.uvue?vue&type=script&lang.uts')
       ).toBe(uts)
+    }
+  )
+
+  test('builds independent SFC scripts after stripping TS types', () => {
+    process.env.UNI_APP_X = 'false'
+    const config = createConfig({ inputDir: '/project' } as any, [])!
+    const handler = typeof config === 'function' ? config : config.handler
+    const result = handler(
+      {},
+      { command: 'build', mode: 'production' }
+    ) as UserConfig
+    const esbuild = result.esbuild as {
+      include: RegExp
+      exclude: RegExp
+      loader: string
+    }
+    // 使用独立 Node 进程运行 Vite，避开 Jest 的 CommonJS 沙箱
+    const output = execFileSync(
+      process.execPath,
+      [
+        path.resolve(__dirname, 'fixtures/independent-script.mjs'),
+        JSON.stringify({
+          include: esbuild.include.source,
+          exclude: esbuild.exclude.source,
+          loader: esbuild.loader,
+        }),
+      ],
+      { encoding: 'utf8' }
+    )
+
+    expect(JSON.parse(output)).toEqual(['message', 'render'])
+  })
+
+  test.each(['meta=lang.ts', 'lang.ts-other'])(
+    'does not treat %s as a script language query',
+    (query) => {
+      process.env.UNI_APP_X = 'false'
+      const config = createConfig({ inputDir: '/project' } as any, [])!
+      const handler = typeof config === 'function' ? config : config.handler
+      const result = handler(
+        {},
+        { command: 'build', mode: 'production' }
+      ) as UserConfig
+      const include = (result.esbuild as { include: RegExp }).include
+
+      expect(
+        include.test(
+          `/project/index.vue?${query}&uni_mp_independent_root=package-a`
+        )
+      ).toBe(false)
     }
   )
 })
