@@ -1,6 +1,15 @@
 # 组件概述
 
-## 组件定义
+web的概念叫标签，比如div、input。
+这些标签都很重，div即用于布局、也用于文字显示、也用于滚动容器；input除了输入框，还承载了几乎所有表单组件的功能。
+
+uni-app x，和小程序采用了相同的组件规范。不叫标签，就叫组件。
+
+这套组件规范的语义更明确：view是布局组件、text是文字组件、scroll-view是滚动组件、input是输入框组件、checkbox/radio/slider/switch/也各自是独立组件。
+
+清晰的语义，也不容易让AI搞错。
+
+## 什么叫组件
 
 - 组件是视图层的基本组成单元。
 - 组件是一个单独且可复用的UI及配套功能模块的封装。
@@ -130,7 +139,7 @@ uni-app x文档规范中有一批标准组件，同时也支持扩展自定义�
 即开发者自己按照vue组件规范编写的uvue文件。这种组件一般由前端工程师编写。详见[uvue组件模型介绍](../vue/component.md)
 - 2.2 原生uts组件
 这是一种App平台专用的扩展机制。
-由Android或iOS的原生开发者，按照uts插件的组件规范编写，把原生的view嵌入到uvue页面上，它在编写时贴近但不完全是vue组件开发规范。\
+由Android、iOS、鸿蒙的原生开发者，按照uts插件的组件规范编写，把原生的view嵌入到uvue页面上，它在编写时贴近但不完全是vue组件开发规范。\
 不过对于组件的使用者来讲，用法就是标准的uvue组件了。详见[uts组件开发指南](../plugin/uts-component.md)\
 uts原生组件，下载组件到项目后（或自己按规范编写），在页面template里直接引用即可。无需导入注册组件。
 
@@ -159,7 +168,6 @@ easycom组件是uni-app(x)提供的一种易用方式，它通过一个路径规
 
 组件开发完毕后可发布到插件市场，插件作者指南：[详见](https://doc.dcloud.net.cn/uni-app-x/plugin/publish.html)
 
-<!-- TODO下面这段应该挪走 -->
 ## 调用组件方法@methods
 
 需要把组件分为 内置组件、easycom组件、非easycom组件，这3种组件有不同的方法调用方式。[详情](../vue/component.md#page-call-component-method)
