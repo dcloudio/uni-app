@@ -111,9 +111,9 @@ UniImageLoadEvent -- Extends --> UniEvent
 | PNG			| √										| √													| √					|																							|
 | WebP		| √										| √													| √					|iOS 14+ 为硬解码，低版本为软解码（软解性能较低）	|
 | HEIC		| √ (Android10+)			| √													| √					|																							|
-| AVIF		| √ (HBuilderX5.08+)	| √ (iOS16+)								| x					|系统支持硬解才有优势，使用三方软解还不如换用其他格式	|
+| AVIF		| √ (HBuilder5.08+)	| √ (iOS16+)								| x					|系统支持硬解才有优势，使用三方软解还不如换用其他格式	|
 | TIF			| x										| √													| x					|																							|
-| SVG			| √ (HBuilderX4.81+)	| √ (iOS13+ HBuilderX4.81+)	| ️√				|	不支持svg动画。某些场景会解成位图渲染，[详见](#svg-support)		|
+| SVG			| √ (HBuilder4.81+)	| √ (iOS13+ HBuilder4.81+)	| ️√				|	不支持svg动画。某些场景会解成位图渲染，[详见](#svg-support)		|
 
 
 如需其他图片格式，可自行开发uts组件插件或搜索插件市场，如
@@ -139,14 +139,22 @@ UniImageLoadEvent -- Extends --> UniEvent
 	* 鸿蒙平台 VDOM 模式 image 组件使用 arkUI 的 image 组件，缓存策略[另见](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-image?ha_source=Dcloud&ha_sourceId=89000448)
 	* 鸿蒙平台蒸汽模式image组件使用[imageknifepro](https://gitcode.com/openharmony-sig/imageknifepro)库(1.0.12)，自带缓存策略，内存缓存256张128MB，磁盘缓存512张128MB，超限采用LRU淘汰。
 
-### 关于svg格式的矢量能力@svg-support
+### svg注意事项@svg-support
 
-svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会把svg转成位图渲染，此时将丢失矢量能力。
+1. web平台以外的平台，均不支持svg动画。动画推荐改用基于lottie的[animation-view](./animation-view.md)，全平台均支持。
 
-- 鸿蒙平台蒸汽模式
-	* 如果启用了 `flatten` 拍平，则会转为位图。
-	* 设置部分 `mode` 属性进行图像裁剪，会转为位图进行裁剪。`mode` 设置为 `scaleToFill/aspectFit/aspectFill` 可以保持矢量能力，设置为其它值会转位图裁剪。
-	* 如果 `src` 设置了 `data:image/svg+xml;base64,...` 这种形式的 url，则会转为位图。
+2. svg图标换色注意事项：
+
+非web平台，不管小程序还是App，均不支持内联svg标签，无法像web那样通过内联标签实现svg图标换色。
+- 替代方案1：改用字体图标（推荐）。
+- 替代方案2：准备多个svg，动态设置src。可以用独立文件，也可以使用 Data URL。但此方案无法通过css变量设置，暗黑适配时需要写脚本动态修改src。
+- 替代方案3：小程序平台，可以利用 filter: drop-shadow 配合 overflow: hidden，可以将原图标的形状“投影”出新的颜色，并把原图标隐藏。App平台不支持此用法。
+
+3. 鸿蒙平台部分情况会按位图渲染，失去矢量能力
+svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情况，会把svg转成位图渲染，此时将丢失矢量能力。
+* 如果启用了 `flatten` 拍平，则会转为位图。
+* 设置部分 `mode` 属性进行图像裁剪，会转为位图进行裁剪。`mode` 设置为 `scaleToFill/aspectFit/aspectFill` 可以保持矢量能力，设置为其它值会转位图裁剪。
+* 如果 `src` 设置了 `data:image/svg+xml;base64,...` 这种形式的 url，则会转为位图。
 
 ### 子组件 @children-tags
 不可以嵌套组件
