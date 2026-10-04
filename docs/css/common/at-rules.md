@@ -54,7 +54,7 @@ web中加载字体图标，有 `unicode直显` 和 `伪元素+content` 2种方�
 
 有些字体图标网站导出代码时，默认使用`伪元素+content`方式，需要注意这个坑，改用 unicode直显。
 
-unicode直显方式的性能优于伪元素方式，但源码阅读的直观性略差。
+unicode直显方式的性能优于伪元素方式，尤其是text组件设置flatten属性拍平后性能更佳。缺点是源码阅读的直观性略差，但对于AI来说倒不是问题。
 
 注意text组件直显unicode，需要用 <code v-pre>{{'\u'}}</code> 的方式包裹。
 另外注意实体字符和unicode的区别。
