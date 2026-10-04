@@ -11,7 +11,7 @@ uni-app x 在不同平台（Android、iOS、鸿蒙、微信小程序、web）、
 
 - `√`：表示支持。尤其指从开始就支持，而不是从特定版本后才支持
 - `x`：表示不支持
-- `版本号`：从该 HBuilderX 版本号起支持
+- `版本号`：从该 HBuilder 版本号起支持。因老版红色图标的HBuilder已于2019年下线，本文档网站中的HBuilder，泛指HBuilderX和HBuilderV。并且 HBuilderX 和 HBuilderV 的版本号是一致的，IDE与uni引擎的版本号保持一致。
 - `OS系统版本号`：从该OS系统版本起支持 
 - `空白`：未标注。可能支持也可能不支持，或不需要单独说明
 
@@ -24,6 +24,7 @@ uni-app x 在不同平台（Android、iOS、鸿蒙、微信小程序、web）、
 ### 平台
 - Web
 - 微信小程序
+- 支付宝小程序
 - Android
 - iOS
 - HarmonyOS
