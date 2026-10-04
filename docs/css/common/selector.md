@@ -1,8 +1,11 @@
 # 选择器 @selector
 
-- web和小程序支持page元素选择器，以替代body元素选择器。
-- web端可以使用`html`、`body`、`:root`等选择器。由于页面的css样式隔离，且html节点并未添加data-xxx属性，`html`、`:root`写在页面style内无效，只能写在App.uvue内。
-- 深度选择器 `:deep()/::v-deep` 用法参考 [单文件 style - 深度选择器](/vue/index#scoped) 文档。
+App平台，支持的选择器比web少。这源于开发进度、性能、运行时体积、AI友好度等多方面考虑。
+
+支持过多的选择器，会引入复杂的css优先级问题，这会导致性能下降，AI也容易搞错css优先级。
+简单的class，可能多写几行代码，但对AI来说这不算什么，反而复杂的css权重让AI难以排查问题。\
+
+uni-app x 额外引入了page选择器，该选择器是小程序规范，uni-app x 中全平台均支持。
 
 | 名称 | 示例 | Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) | 描述 |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
@@ -19,14 +22,25 @@
 | 伪类选择器 | :active {} | 4.0 | x |   | x | x | x | x |  |
 | 伪元素选择器 | ::before {} | 4.0 | x |   | x | x | x | x |  |
 
-::: warning 注意
-1. 选择器声明的变化可能会导致元素重新绘制。为了减少选择器变化引起的 DOM 更新数量，**当前只支持：CSS 声明的多个选择器中最后一个规则的变更对 DOM 的更新**。
-2. :active伪类来实现点击态，很容易触发，并且滚动或滑动时点击态不会消失，体验较差。小程序平台均给view组件引入了`hover-class`，考虑到跨端兼容和体验，建议使用 `hover-class` 属性来实现点击态效果。[详见](../../component/view.md#hover-class)
-3. 不推荐使用伪元素来创建不占宽度的边框，W3C标准推荐使用 box-sizing 来控制边框是否占宽度。
-4. 关系类选择器（分组选择器、直接子代选择器、后代选择器、一般兄弟选择器、紧邻兄弟选择），无法在编译期处理，必须运行时动态计算，在App上有额外的性能损耗。推荐尽量使用简单的选择器来解决问题。
-:::
+## App平台不支持情况的替代方案
+### 伪类
+- 通过`:active`伪类来实现点击态，很容易触发，并且滚动或滑动时点击态不会消失。小程序平台均给view组件引入了`hover-class`，考虑到跨端兼容和体验，需使用 `hover-class` 属性来实现点击态效果。[详见](../../component/view.md#hover-class)
+- :first-child / :last-child / :nth-child()，需改用动态class方式，示例代码[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/CSS/border/dynamic-border.uvue)
 
-## 示例
+### 伪元素
+- 字体图标，无法使用`::before`、`::after`等伪元素，而需使用unicode直显方案。[详见](./at-rules.md#iconfont)
+- 不推荐使用伪元素来创建不占宽度的边框，W3C标准推荐使用 box-sizing 来控制边框是否占宽度。
+- `::placeholder`：在input和textarea组件中，替代方案是[placeholder-class](../../component/input.md)。
+- `::selection`：在input和textarea组件中，小程序和App平台可通过cursor-color影响选区颜色；在rich-text组件中，App平台支持selection-handle-color、selection-background-color属性来设置选区样式。
+- `::part`：小程序和App平台不支持web component。仅支持vue组件，可使用[externalClass](./style-isolation.md#external-class)来设置组件中子组件的样式。
+
+### 关系选择器
+关系类选择器（分组选择器、直接子代选择器、后代选择器、一般兄弟选择器、紧邻兄弟选择），在App平台VDOM模式曾被支持，蒸汽模式暂不支持。
+
+## App平台是后设生效
+选择器声明的变化可能会导致元素重新绘制。为了减少选择器变化引起的 DOM 更新数量，**当前只支持：CSS 声明的多个选择器中最后一个规则的变更对 DOM 的更新**。
+
+示例
 
 ```vue
 <template>
@@ -47,7 +61,7 @@
   }
 </style>
 
-<script setup lang="uts">
+<script setup>
   const rowDesc = ref('row-desc1')
   const docBody = ref('doc-body1')
 </script>
@@ -89,6 +103,6 @@ const setPagePadding = () => {
 
 ```
 
-::: warning 注意
-App端相邻选择器暂不支持动态新增或删减节点，为了优化性能减少一些重新渲染工作，示例 [https://issues.dcloud.net.cn/pages/issues/detail?id=1452](https://issues.dcloud.net.cn/pages/issues/detail?id=1452)
-:::
+## tips
+- web端可以使用`html`、`body`、`:root`等选择器。由于页面的css样式隔离，且html节点并未添加data-xxx属性，`html`、`:root`写在页面style内无效，只能写在App.uvue内。
+- 深度选择器 `:deep()/::v-deep` 用法参考 [单文件 style - 深度选择器](../../vue/README.md#scoped) 文档。
