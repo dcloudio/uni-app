@@ -304,7 +304,7 @@ uni-ui x 提供了开源的自定义下拉刷新组件，可以体验：[uni-ref
 
 VDOM模式的scroll-view嵌套滚动需要更多手工工作。而蒸汽模式已经简化。
 
-### 蒸汽模式
+#### 蒸汽模式
 
 蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
 
@@ -366,11 +366,11 @@ VDOM模式的scroll-view嵌套滚动需要更多手工工作。而蒸汽模式�
 下面的示例代码，在一个scroll-view中嵌套了一个list-view。在list-view上设置了custom-nested-scroll="true"。
 
 ```html
-<scroll-view style="height: 100%;" scroll-y="true" rebound ="false" nested-scroll-child="listview" @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
+<scroll-view style="height: 100%;" rebound ="false" nested-scroll-child="listview" @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
 	@stopnestedscroll="onStopNestedScroll">
 		...
 		<view style="height: 100px;">停靠视图</view>
-		<list-view id="listview"  class="child-scroll" scroll-y="true" custom-nested-scroll="true">
+		<list-view id="listview"  class="child-scroll" custom-nested-scroll="true">
 			...
 		</list-view>
 </scroll-view>
@@ -411,9 +411,13 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 
 ### tips
 
+小程序的规范中，通过scroll-y和scroll-x设置可滚动方向。但作为一个布尔属性，scroll-y默认为false，导致不写scroll-y就无法滚动。
+
+在 uni-app x 中，修改了这个规范，scroll-view 默认就是可垂直滚动的，替代scroll-y和scroll-x的是新属性`direction`，
+它的值域有：none、all、horizontal、vertical，并且默认值是vertical。\
+编译到小程序时，也会用`direction`来替代scroll-y和scroll-x。
+
 #### App平台通用注意事项
-+ App-Android、App-iOS平台的滚动方向不能同时横竖，如需同时水平和垂直滚动，可以套2层，一个横一个竖，来实现2个方向能滚动。
-+ App平台scroll-view组件不支持动态切换横竖滚动方向
 + App平台scroll-view组件的overflow属性不支持配置visible
 + App平台scroll-view组件默认高度取值：
 	- scroll-view组件的子元素高度之和未超过scroll-view组件的父元素高度：
@@ -428,11 +432,9 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 		
 + 横向滚动时注意关注flex方向，子内容如需横向排布需要加`flex-direction: row`。
 
-#### App平台蒸汽模式注意事项
-
-
 #### App平台VDOM模式注意事项
-
++ App-Android、App-iOS平台 在VDOM时，滚动方向不能同时横竖，如需同时水平和垂直滚动，可以套2层，一个横一个竖，来实现2个方向能滚动。
++ App平台scroll-view组件不支持动态切换横竖滚动方向
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/scroll-view/scroll-view.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/scroll-view/scroll-view.uvue) 
