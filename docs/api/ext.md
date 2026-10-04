@@ -9,15 +9,25 @@
 - NFC：[见插件市场](https://ext.dcloud.net.cn/search?q=nfc&orderBy=Relevance&cat1=8&cat2=81)
 
 ## plus api替代@plus
-uni-app x 中不再支持plus和weex的API。对于plus api中一些常用的api，在uni-app x中进行了替换增补。
-- plus.runtime.quit => [uni.exit](./exit.md)
-- plus.runtime.install => [uni.installApk](./install-apk.md)
-- plus.zip => [uni.getFileSystemManager](./get-file-system-manager.md) 中有一批 zip 相关的api。
+uni-app x 中不再支持plus和weex的API。
 
-一些plus api在插件市场有替代：
-- plus.sqlite [插件市场](https://ext.dcloud.net.cn/search?q=sqlite&uni-appx=1)
-- plus.speech [插件市场](https://ext.dcloud.net.cn/search?q=%E6%96%87%E5%AD%97%E8%BD%AC%E8%AF%AD%E9%9F%B3&orderBy=Relevance&uni-appx=1)
+本身uni的api和plus的api有一些重叠，在老uni-app中，能用uni api替代的，也应该用uni api替代。
+
+对于老uni-app中，plus api未进行uni化替代的，在uni-app x 中进行了增补或插件替代。
+
+- plus.runtime.quit 改用 [uni.exit](./exit.md)
+- plus.runtime.install 分拆成为2个API [uni.installApk](./install-apk.md) 和 [uni.installWgt](./install-wgt.md)
+- plus.runtime.restart 改用 [getApp().restart](./get-app.md#appmethods)
+- plus.runtime.setBadgeNumber 改用 [uni.setAppBadgeNumber](./uni-push.md#setappbadgenumber)
 - plus.runtime.openURL [插件市场](https://ext.dcloud.net.cn/plugin?id=17828)
+- plus.runtime.openWeb [uni-link](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-link.html)
+- plus.runtime.showPrivacyDialog 请自行调用dialogPage，弹出自己的uvue页面。
+- plus.runtime.agreePrivacy、plus.runtime.disagreePrivacy 改用 [button组件](../component/button.md)的opentype="agreePrivacyAuthorization"
+- plus.runtime.launcher、plus.runtime.arguments 改用[app.uvue](../collocation/app.md)中onLaunch、onShow生命周期中的options参数
+- plus.io、plus.zip 改用 [uni.getFileSystemManager](./get-file-system-manager.md) 中有一批文件和压缩相关的api。
+- plus.navigator 中控制顶部状态栏和底部导航栏的方法，改在 pages.json 的 [pageStyle](../collocation/pagesjson.md#pagesoptionspage-style) 中控制，也可以在 UniPage 的 [setStyle](./unipage.md#unipage-methods) 方法中控制。
+- plus.sqlite 改用 [uasm的sqlite标准插件](https://ext.dcloud.net.cn/plugin?id=29856) 或 [插件市场的其他sqlite插件](https://ext.dcloud.net.cn/search?q=sqlite&uni-appx=1)
+- plus.speech [插件市场](https://ext.dcloud.net.cn/search?q=%E6%96%87%E5%AD%97%E8%BD%AC%E8%AF%AD%E9%9F%B3&orderBy=Relevance&uni-appx=1)
 
 插件市场有一些抹平plus写法的插件，自定义了一个plus对象，方法内部再调用uni或uts的api，以兼容历史的plus写法，[详见](https://ext.dcloud.net.cn/search?q=plus&orderBy=Relevance&uni-appx=1)
 

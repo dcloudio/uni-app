@@ -1,6 +1,6 @@
 # App.uvue
 
-`App.uvue`是uni-app-x的主组件。
+`App.uvue`是 uni-app x 的主组件。
 
 所有页面都是在`App.uvue`下进行切换的，是应用入口文件。但`App.uvue`本身不是页面，这里不能编写视图元素，也就是没有`<template>`。
 

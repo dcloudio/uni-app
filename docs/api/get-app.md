@@ -89,6 +89,8 @@ restart
  
 
 
+restart，并非真正的应用整体重启，而是前端wgt应用重启。js引擎会重新初始化，onLaunch会重新触发。但开发者需注意原生插件中重复初始化问题，插件作者应该做好防护。
+
 ### 示例
 
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/get-app/get-app.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/get-app/get-app.uvue) 
