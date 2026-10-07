@@ -114,11 +114,16 @@ app平台的内置组件和API用到了一些字体，同时共享出来给开�
   </div>
 </div>
 
+- 注意：
+App内置图标，在小程序和web无法使用。在这些平台需要单独引入字体图标库。\
+内置图标中，forward、back、down、circle，这4个图标已经不再推荐使用。后续会移除。
+因为这4个图标可以通过view的边框配合transform旋转实现，view方案性能更高且全平台支持。
+
 ### Tips
 - `字体路径`支持**网络**和**本地**，本地字体请注意放在项目或uni_modules的static目录下。
 - 全平台均支持ttf和otf字体格式，其他字体格式在不同平台支持度有差异，另见[css字体](../font-family.md)
 - @font-face是不可编程的，如需编程控制，另见[uni.loadFontFace](../../api/load-font-face.md)
-- @font-face下仅支持 font-family 和 src，不支持通过font-weight 、 font-style等属性控制该字体统一样式，如果需要设置字体样式，请在具体的text组件上使用class或style定义字体样式。
+- @font-face下仅支持 font-family 和 src，不支持通过font-weight、font-style等属性控制该字体统一样式，如果需要设置字体样式，请在具体的text组件上使用class或style定义字体样式。
 
 <script>
 export default {
