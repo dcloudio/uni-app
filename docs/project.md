@@ -6,8 +6,8 @@
 
 在菜单文件>新建>项目中，选择新建项目。（或工具链左上角的新建快捷菜单，或者快捷键Ctrl+N）
 
-- HBuilderX 5.25+，新建项目默认为 uni-app x 蒸汽模式。
-- 低于5.25时，新建项目默认是uni-app，需要注意区分uni-app和uni-app x项目，在新建项目界面的底部有一个checkbox：uni-app x。**勾选后**会新建为uni-app x项目。
+- HBuilder 5.25+，新建项目默认为 uni-app x 蒸汽模式。
+- 低于5.25时，新建项目默认是uni-app，需要注意区分uni-app和uni-app x项目，在新建项目界面的底部有一个checkbox：uni-app x。**勾选后**会新建为uni-app x项目。见下图：
 
 ![](./static/newproject.png)
 
@@ -61,7 +61,7 @@ uni-app x的项目结构与[uni-app老版的项目结构](https://uniapp.dcloud.
 ├─hybrid                App端存放web-view组件使用的本地html文件的目录，<a href="./component/web-view">详见</a>
 ├─wxcomponents          微信小程序平台wxml组件专用目录
 ├─unpackage             非工程代码，一般存放运行或发行的编译结果、App自定义基座。默认应配置git忽略
-├─main.uts/ts/js        Vue初始化入口文件。HBuilderX 5.28+ 蒸汽模式支持ts/js后缀
+├─main.uts/ts/js        Vue初始化入口文件。HBuilderX 5.31+ 蒸汽模式支持ts/js后缀
 ├─App.uvue              应用配置，用来配置App全局样式以及监听 <a href="./collocation/App#应用生命周期">详见</a>
 ├─pages.json            配置页面路由、导航条、选项卡等页面类信息，<a href="./collocation/pages">详见</a>
 ├─manifest.json         配置应用名称、appid、logo、版本等打包信息，<a href="./collocation/manifest">详见</a>
@@ -71,7 +71,15 @@ uni-app x的项目结构与[uni-app老版的项目结构](https://uniapp.dcloud.
 	</code>
 </pre>
 
-> 当使用cursor等ai工具开发uni-app x时，可以在项目下放置.cursor目录，帮助AI更好的生成uni-app x代码。[链接](https://github.com/dcloudio/uni-app-x-ai-rules)
+uni-app x 目前仅支持代码在根目录、非代码在unpackage目录的项目目录结构。
+
+老uni-app同时支持node cli创建的src/dist项目结构，但双模式并存引发了很多问题：
+1. 官方和三方插件作者，都要测试双模式是否正常支持，生态成本大。
+2. src/dist模式，让uni-app版本和IDE版本解耦，经常会出现IDE提示报错、但实际能运行，或者反之。
+
+目前IDE中高频更新的是uni-agent，其他常规IDE功能已经越来越少人用。所以HBuilder采取的策略是大版本和uni-app x绑定，但uni-agent插件及部分IDE插件，可以独立升级更新，与大IDE升级解耦。
+
+uni-app x同时支持通过HBuilderX cli来创建项目、发行打包，可以在Linux的ci/cd里正常使用。[详见](https://hx.dcloud.net.cn/cli/README)
 
 ## 运行时的UniApp实例
 
@@ -147,7 +155,7 @@ uni-app x运行到浏览器时，编译基于vite，其特点是按需编译。�
 除了在菜单里点击发布，也可以通过HBuilderX的cli，实现持续集成和自动发布。[详见](https://hx.dcloud.net.cn/cli/README)
 
 如果你不希望直接发布成品应用，而希望发布成其他应用的一部分，那么
-- App平台：需参考[uni-app x 原生SDK文档](./native/README.md)，把uni-app x项目发布为kt、swift源码，集成到自己的原生项目中。
+- App平台：需参考[uni-app x 原生SDK文档](./native/README.md)，把uni-app x项目，集成到自己的原生项目中。
 - 小程序平台：可发布为分包，成为其他小程序的一个分包。[详见](https://uniapp.dcloud.net.cn/hybrid.html)
 
 如果你已经拥有了非uni-app x的成型应用，想要渐进式的引入uni-app x，那么上面的方案非常合适。可以用uni-app x开发部分页面，集成到原来的项目中。

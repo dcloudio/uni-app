@@ -139,6 +139,13 @@ uni-app x 内置很多新API，例如[worker](./api/create-worker.md)、[getFile
 uni-app 中使用AI流式返回，需要通过renderjs，在webview操作。
 uni-app x 的request API内置支持AI流式返回。
 
+## 原生扩展多端一致性
+
+uni-app 的组件和API，涉及原生扩展时，各平台一致性较弱。
+- 比如uni.showModal在不同平台样式差异很大
+- 比如uni.previewImage和image组件支持的图片格式不一致。（uni-app x中previewImage就是使用的image组件，保持了一致性）
+
+uni-app x 中通过interface.uts多平台统一约束了原生扩展API的实现，通过UI层的自举实现跨平台UI界面。
 
 ## 错误码规范
 
