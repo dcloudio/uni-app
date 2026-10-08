@@ -28,10 +28,10 @@
 | offsetWidth | number | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的布局宽度逻辑像素值，包含border、padding区域 |
 | offsetHeight | number | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的布局高度逻辑像素值，包含border、padding区域 |
 | style | [CSSStyleDeclaration](/api/dom/cssstyledeclaration.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的CSS样式对象 |
-| scrollWidth | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的可滚动内容总宽度，仅scroll-view、list-view等可滚动组件支持，其他组件返回视图宽度 |
-| scrollHeight | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素可滚动内容的总高度，仅scroll-view、list-view等可滚动组件支持，其他组件返回视图高度 |
+| scrollWidth | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的可滚动内容总宽度，仅scroll-view、list-view、waterflow等可滚动组件支持，其他组件返回视图宽度 |
+| scrollHeight | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素可滚动内容的总高度，仅scroll-view、list-view、waterflow等可滚动组件支持，其他组件返回视图高度 |
 | scrollLeft | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素横向滚动的逻辑像素值，仅scroll-view、list-view等可滚动组件支持，其他组件修改无效、获取时返回 0 |
-| scrollTop | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view可滚动组件支持，其他组件修改无效、获取时返回 0 |
+| scrollTop | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view、waterflow等可滚动组件支持，其他组件修改无效、获取时返回 0 |
 | tagName | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
 | uniPage | [UniPage](/api/unipage.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
 | innerHTML | string | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.84; Android(Vapor): x; iOS: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
@@ -1553,7 +1553,7 @@ if (view != null && view instanceof WKWebView) {
 
 #### scrollTo(x: number, y: number): void @scrollto
 
-使界面滚动到给定元素的指定坐标位置 仅scroll-view、list-view组件支持
+使界面滚动到给定元素的指定坐标位置 仅scroll-view、list-view、waterflow等可滚动组件支持
 
 ##### scrollTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
@@ -1575,7 +1575,7 @@ if (view != null && view instanceof WKWebView) {
 
 #### scrollBy(x: number, y: number): void @scrollby
 
-使得元素滚动一段特定距离 仅scroll-view、list-view组件支持
+使得元素滚动一段特定距离 仅scroll-view、list-view、waterflow等可滚动组件支持
 
 ##### scrollBy 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
