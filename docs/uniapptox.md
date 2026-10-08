@@ -37,6 +37,7 @@ uni-app迁移到uni-app x，是一个大型工程。
 * vue2的状态管理vuex，在vue3下已经改成了pinia
 * vue蒸汽模式，不再支持mixin
 * 组合式里没有this了，需要改成 [`getCurrentInstance()!.proxy!`](./vue/composition-api.md#getcurrentinstance)
+* 检查通过`getCurrentPages()`获取`page.$vm`并访问其他页面数据或方法的代码。组合式页面默认不对外暴露内部成员，建议改用pinia、[事件通信](./api/event-bus.md)等方式重构，不要简单替换为`page.vm`。
 
 做完后先在uni-app下检查是否正常。
 
@@ -70,12 +71,11 @@ uni-app x在编译时，会在控制台提示不支持的css，可以让uni-agen
 
 如涉及暗黑模式适配，需参考uni-app x的[暗黑适配文档](./api/theme-change.md)，有些部分与uni-app相同，但也有一些改动。
 
-### 7. 适配UniApp和UniPage对象重构
+### 7. 适配UniApp对象重构
 
-HBuilderX 4.31+ 重构了应用和页面对象，迁移时需要检查`getApp()`和`getCurrentPages()`的相关代码：
+HBuilderX 4.31+ 重构了应用对象，迁移时需要检查`getApp()`的相关代码：
 
 * `getApp()`改为返回[UniApp对象](./api/get-app.md)，Vue实例通过`vm`属性提供。调用`App.uvue`中定义的全局方法时，需要把`getApp().methodName()`改为`getApp().vm?.methodName()`；`globalData`仍通过`getApp().globalData`访问。`UniApp`可在uts插件和uvue页面中使用，但`vm`和`globalData`仅支持在uvue页面中使用。
-* `getCurrentPages()`改为返回[UniPage对象](./api/unipage.md)数组。页面管理能力直接通过`UniPage`调用；访问页面的Vue数据或方法时，通过`UniPage.vm`。旧代码中的`page.$vm`需要改为`page.vm`。更多页面栈说明[详见](./api/get-current-pages.md)。
 
 如果要改造为App，继续往下。
 
