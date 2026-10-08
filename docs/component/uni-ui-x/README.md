@@ -12,24 +12,25 @@ uni-ui x 是伴随着HBuilderX 5.08发版的。5.07版本上有部分组件在�
 
 uni-ui x 非常注重性能，在DOM层级控制、包体积、代码执行时间方面精益求精。
 
-它了解 uni-app x 蒸汽模式的最佳实践，尽可能利用模板和样式的预编译特性来提升性能。当然它也支持非蒸汽模式。
+它了解 uni-app x 蒸汽模式的最佳实践，尽可能利用模板和样式的预编译特性来提升性能。当然它也支持VDOM模式。
 
-- **合理的抽象**
+- **充分、合理的样式自定义**
 
-一个组件的抽象能力非常重要，如何在自定义性、易用性、性能之间尽可能三全其美。
+目前市面上流行的组件库，在样式自定义上提供的方案并不理想。
 
-很多组件为了满足使用者的需求，封装的属性越来越多，但组件使用者仍然在抱怨自定义性不足。
+- 有的把样式封装到组件属性上，封装的属性越来越多，但组件使用者仍然在抱怨自定义性不足。除非把所有css都封装到组件属性上，但这也不现实。
+- 有的对外暴露css变量，但暴露的仍然不够使用者的各种场景使用。除非把所有css都定义成css变量绑定在组件里，但这也不现实。
+- 有的把组件源码直接安装到项目下，让使用者直接改源码。这又会造成组件难以升级，以及修改源码后的组件，AI也不会用了，以后也无法再给组件作者报bug。
+- 有的放弃了样式暴露，让使用者用deep穿透，不规范且在小程序上无效。
 
-尤其是组件把样式封装在组件属性上，造成用户需要自定义样式时无限封装属性，并且这些属性的控制无法使用css变量。
-
-uni-ui x 提供了完全的样式自定义能力，所有的样式定义都可以通过class设置，组件属性只控制功能逻辑。
+uni-ui x 提供了业内目前最佳的方案，完全的样式自定义能力。不在组件属性上封装样式，所有的样式定义都可以通过class设置。
 
 * 组件的根节点样式，可以在使用组件时的组件class或style上设置。
 * 组件的子节点样式，可以通过[externalClass](https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html#external-class)设置样式。子组件开放自己的样式出来，外部可通过externalClass进行子组件的样式自定义。
 
-组件使用者完全可以通过css自己控制所有样式。无需修改组件源码。加上css变量加持，灵活度远高于其他组件库。
+依托于uni-app x全平台支持的[样式隔离策略2.0](https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html)，以及externalClass机制，组件使用者完全可以通过css自己控制所有样式。无需修改组件源码。加上css变量加持，灵活度远高于其他组件库。
 
-使用者可以通过css变量完全自定义自己的主题，而不会被组件属性上不能写css变量困扰。
+使用者可以通过css变量完全自定义自己的主题，不会被组件属性上不能写css变量困扰。
 
 - **为AI设计**
 
@@ -40,6 +41,8 @@ uni-ui x 优先代码而不是二进制文件。目前没有引入字体文件�
 如果是字体图片，AI很难理解、生成、修改。
 
 再举一个例子，uni-tab下沉midbutton，涉及一个贝塞尔曲线，此时没有使用图片，而是使用svg，同样是为了方便AI理解和修改。
+
+当然这不是反对使用字体图标，字体图标也有比svg的优势场景，按需使用即可。
 
 - **中性**
 
@@ -59,6 +62,7 @@ uni-ui x 没有写死的颜色和文字:
 | --- | --- |
 | uni-badge-view | [数字角标](https://ext.dcloud.net.cn/plugin?name=uni-badge-view) |
 | uni-collapse | [折叠面板](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x) |
+| uni-combox | [组合框](https://ext.dcloud.net.cn/plugin?name=uni-combox-x) |
 | uni-drag-cell | [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell) |
 | uni-fab-button | [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button) |
 | uni-index-bar | [uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar) |
@@ -79,19 +83,19 @@ uni-ui x 没有写死的颜色和文字:
 
 |uni-ui组件						|中文名称								|在uni-app x下的方案																	|
 |--										|--											|--																									|
-|uni-badge						|数字角标								|改用uni-badge-view																	|
+|uni-badge						|数字角标								|改用[uni-badge-view](https://ext.dcloud.net.cn/plugin?name=uni-badge-view)	|
 |uni-calendar					|日历										|见hello uni-app x里的模板中的日历页面								|
 |uni-card							|卡片										|无																									|
-|uni-collapse					|折叠面板								|改用uni-collapse																		|
-|uni-combox						|组合框									|无																									|
+|uni-collapse					|折叠面板								|改用[uni-collapse](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)		|
+|uni-combox						|组合框									|改用[uni-combox](https://ext.dcloud.net.cn/plugin?name=uni-combox-x)																										|
 |uni-countdown				|倒计时									|无																									|
 |uni-data-checkbox		|数据选择器							|无																									|
-|uni-data-picker			|数据驱动的picker选择器	|组件本身支持uni-app x																|
-|uni-dateformat				|日期格式化							|改用uni-time-format																	|
+|uni-data-picker			|数据驱动的picker选择器	|组件本身支持uni-app x vdom														|
+|uni-dateformat				|日期格式化							|改用[uni-time-format](https://ext.dcloud.net.cn/plugin?name=uni-time-format)	|
 |uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date													|
 |uni-drawer						|抽屉										|改用内置组件page-container													|
-|uni-easyinput				|增强输入框							|无																									|
-|uni-fab							|悬浮按钮								|改用uni-fab-button																	|
+|uni-easyinput				|增强输入框							|改用内置组件input																		|
+|uni-fab							|悬浮按钮								|改用[uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)									|
 |uni-fav							|收藏按钮								|无																									|
 |uni-file-picker			|文件选择上传						|无																									|
 |uni-forms						|表单										|改用内置组件form																		|
@@ -99,16 +103,16 @@ uni-ui x 没有写死的颜色和文字:
 |uni-grid							|宫格										|无																									|
 |uni-group						|分组										|无																									|
 |uni-icons						|图标										|无																									|
-|uni-indexed-list			|索引列表								|改用uni-index-bar																		|
-|uni-link							|超链接									|改用uni-link																				|
+|uni-indexed-list			|索引列表								|改用[uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar)																	|
+|uni-link							|超链接									|改用[uni-link](https://ext.dcloud.net.cn/plugin?name=uni-link-x)																		|
 |uni-list							|列表										|使用内置组件list																		|
 |uni-load-more				|加载更多								|使用内置组件loading																	|
-|uni-nav-bar					|自定义导航栏						|改用uni-nav-bar																			|
+|uni-nav-bar					|自定义导航栏						|改用[uni-nav-bar](https://ext.dcloud.net.cn/plugin?name=uni-nav-bar-x)																		|
 |uni-notice-bar				|通告栏									|无																									|
-|uni-number-box				|数字输入框							|改用uni-number-box																	|
+|uni-number-box				|数字输入框							|改用[uni-number-box](https://ext.dcloud.net.cn/plugin?name=uni-number-box-x)																|
 |uni-pagination				|分页器									|无																									|
 |uni-popup						|弹出层									|改用内置组件page-container													|
-|uni-rate							|评分										|改用uni-rate																				|
+|uni-rate							|评分										|改用[uni-rate](https://ext.dcloud.net.cn/plugin?name=uni-rate-x)																				|
 |uni-row							|布局-行									|无																									|
 |uni-search-bar				|搜索栏									|无																									|
 |uni-segmented-control|分段器									|无																									|
