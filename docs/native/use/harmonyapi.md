@@ -3,10 +3,10 @@
 打开鸿蒙项目文件 entry/src/main/ets/entryability/EntryAbility.ets，增加 uni-app sdk 初始化逻辑。
 
 ::: preview
-> VDOM模式
+> 蒸汽模式
 ```typescript
 import { window } from "@kit.ArkUI";
-import { UniEntryAbility } from "@dcloudio/uni-app-x-runtime";
+import { UniEntryAbility } from "@dcloudio/uni-app-x-vapor-runtime";
 import BuildProfile from "BuildProfile";
 
 export default class EntryAbility extends UniEntryAbility {
@@ -31,10 +31,10 @@ export default class EntryAbility extends UniEntryAbility {
   }
 }
 ```
-> 蒸汽模式
+> VDOM模式
 ```typescript
 import { window } from "@kit.ArkUI";
-import { UniEntryAbility } from "@dcloudio/uni-app-x-vapor-runtime";
+import { UniEntryAbility } from "@dcloudio/uni-app-x-runtime";
 import BuildProfile from "BuildProfile";
 
 export default class EntryAbility extends UniEntryAbility {
@@ -64,24 +64,6 @@ export default class EntryAbility extends UniEntryAbility {
 ## 启动
 
 ::: preview
-> VDOM模式
-```typescript
-export type AnimationType =
-  | "slide-in-right"
-  | "slide-in-left"
-  | "slide-in-top"
-  | "slide-in-bottom"
-  | "fade-in"
-  | "none";
-interface IOpenUniAppConfig {
-  animationType?: AnimationType;
-  animationDuration?: number;
-}
-export declare function openUniApp(
-  appID: string,
-  config?: IOpenUniAppConfig
-): void;
-```
 > 蒸汽模式
 ```typescript
 export type AnimationType =
@@ -130,32 +112,29 @@ export declare function openUniApp(
   config?: IOpenUniAppConfig
 ): IUniAppSDK;
 ```
+> VDOM模式
+```typescript
+export type AnimationType =
+  | "slide-in-right"
+  | "slide-in-left"
+  | "slide-in-top"
+  | "slide-in-bottom"
+  | "fade-in"
+  | "none";
+interface IOpenUniAppConfig {
+  animationType?: AnimationType;
+  animationDuration?: number;
+}
+export declare function openUniApp(
+  appID: string,
+  config?: IOpenUniAppConfig
+): void;
+```
 :::
 
 ### 示例代码
 
 ::: preview
-> VDOM模式
-```ts
-import { openUniApp } from '@dcloudio/uni-app-x-runtime'
-
-@Entry
-@Component
-struct Index {
-  build() {
-    RelativeContainer() {
-      Button('Open')
-        .onClick(() => {
-          openUniApp('你的APPID', {
-            animationType: 'fade-in',
-          })
-        })
-    }
-    .height('100%')
-    .width('100%')
-  }
-}
-```
 > 蒸汽模式
 ```ts
 import { openUniApp } from '@dcloudio/uni-app-x-vapor-runtime'
@@ -168,6 +147,27 @@ struct Index {
       Button('Open')
         .onClick(() => {
           const app = openUniApp('你的APPID', {
+            animationType: 'fade-in',
+          })
+        })
+    }
+    .height('100%')
+    .width('100%')
+  }
+}
+```
+> VDOM模式
+```ts
+import { openUniApp } from '@dcloudio/uni-app-x-runtime'
+
+@Entry
+@Component
+struct Index {
+  build() {
+    RelativeContainer() {
+      Button('Open')
+        .onClick(() => {
+          openUniApp('你的APPID', {
             animationType: 'fade-in',
           })
         })
