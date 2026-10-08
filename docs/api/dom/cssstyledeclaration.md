@@ -13,9 +13,9 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 对CSS指定样式设置一个新值，如有此样式已存在则更新。
 
 ##### setProperty 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.51 | 4.51 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 4.51 | 4.51 | 4.61 |
 
 
 ##### 参数 
@@ -36,9 +36,9 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 对CSS指定样式设置一个新值，如有此样式已存在则更新。  **已废弃，仅为了向下兼容保留**
 
 ##### setProperty 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
 
 
 ##### 参数 
@@ -59,9 +59,9 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 获取CSS指定的样式值，如果指定的样式不存在则返回空字符串。
 
 ##### getPropertyValue 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.51 | 4.51 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 4.51 | 4.51 | 4.61 |
 
 
 ##### 参数 

@@ -66,7 +66,7 @@
 | bundleId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.11; HarmonyOS: x | iOS的Bundle ID<br/> |
 | signature | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: x | Android: 应用签名证书的SHA1值（全部为小写，中间不包含“:”）。<br/>iOS: 应用签名证书中绑定的Bundle ID（AppleID）的md5值（全部为小写）。<br/> |
 | PCKernelVersion | string | 否 | 微信小程序: 4.41 | PC 内核版本号，仅在 PC 端存在该值<br/> |
-| SDKVersion | string | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 客户端基础库版本<br/> |
+| SDKVersion | string | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 客户端基础库版本<br/> |
 | enableDebug | boolean | 否 | 微信小程序: 4.41 |  |
 | fontSizeScaleFactor | number | 否 | 微信小程序: 4.41 | 微信字体大小缩放比例<br/> |
 | fontSizeSetting | number | 否 | 微信小程序: 4.41 | 需要基础库： `2.23.4`<br/><br/>微信字体大小，单位px<br/> |

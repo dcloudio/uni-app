@@ -38,7 +38,7 @@ CreateWorker
 ### createWorker 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | 5.25 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 |
+| 4.81 | 4.41 | 5.31 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 |
 
 
 ### 参数 
@@ -128,7 +128,7 @@ postMessage
 ##### postMessage 兼容性 <Help /> 
 | Web | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 5.25 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+| 4.81 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 ##### 参数 
 
@@ -153,7 +153,7 @@ terminate
 ##### terminate 兼容性 <Help /> 
 | Web | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 5.25 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+| 4.81 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 
 

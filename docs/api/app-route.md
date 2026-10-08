@@ -524,7 +524,7 @@ uni.offBeforeAppRoute()
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 重写后的页面路径 |
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android(VDOM): 5.31; Android(Vapor): 5.25; iOS: 5.25; HarmonyOS: 5.25 | 重写后的页面路径 |
 | preserveQuery | boolean | 否 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 是否保留原路由参数，默认 false |
 | success | (result: [RewriteRouteSuccess](#rewriteroutesuccess-values)) => void | 否 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 接口调用成功的回调函数 |
 | fail | (result: [RewriteRouteFail](#rewriteroutefail-values)) => void | 否 | Web: 5.25; 微信小程序: 5.25; 支付宝小程序: x; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25 | 接口调用失败的回调函数 |

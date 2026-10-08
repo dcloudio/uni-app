@@ -16,16 +16,16 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 ### UniPage 的属性值 @unipage-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| route | string | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 页面的路由地址 |
-| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 页面的路由参数信息 |
-| vm | **VueComponent** | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
-| pageBody | **UniPageBody** | 是 | Web: 4.51; 微信小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | UniPage 页面可使用区域信息，单位为px |
-| safeAreaInsets | **UniSafeAreaInsets** | 是 | Web: 4.51; 微信小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | UniPage 安全区域插入位置（与屏幕边界的距离）信息 |
-| fullscreenElement | [UniElement](/api/dom/unielement.md) | 否 | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 已经进入全屏状态的元素 |
-| width | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口宽度 |
-| height | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口高度 |
-| statusBarHeight | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面状态栏高度 |
-| ~~$vm~~ | [VueComponent](#vuecomponent-values) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
+| route | string | 是 | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 页面的路由地址 |
+| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 页面的路由参数信息 |
+| vm | **VueComponent** | 否 | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
+| pageBody | **UniPageBody** | 是 | Web: 4.51; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | UniPage 页面可使用区域信息，单位为px |
+| safeAreaInsets | **UniSafeAreaInsets** | 是 | Web: 4.51; 微信小程序: x; 支付宝小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | UniPage 安全区域插入位置（与屏幕边界的距离）信息 |
+| fullscreenElement | [UniElement](/api/dom/unielement.md) | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 已经进入全屏状态的元素 |
+| width | number | 是 | Web: 4.63; 微信小程序: 4.63; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口宽度 |
+| height | number | 是 | Web: 4.63; 微信小程序: 4.63; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口高度 |
+| statusBarHeight | number | 是 | Web: 4.63; 微信小程序: 4.63; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面状态栏高度 |
+| ~~$vm~~ | [VueComponent](#vuecomponent-values) | 否 | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
 
 #### vm 的属性描述
 
@@ -73,9 +73,9 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 pages.json里的页面配置，即page下的style节点的内容，可以通过本API获取。但注意这里获取的是UniPage上的最终生效值，不是pages.json里的原始配置。
 
 ##### getPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
 
 
 
@@ -97,16 +97,16 @@ pages.json里的页面配置，即page下的style节点的内容，可以通过�
 pages.json里的内容是静态的，通过本API可以动态设置UniPage的Style，但并非所有页面样式都支持动态配置，具体见下PageStyle。
 
 ##### setPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: x | 
+| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: x; 支付宝小程序: x | 
 
 
 
@@ -155,9 +155,9 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 用于 dialogPage 获取所属父页面
 
 ##### getParentPage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
 
 
 
@@ -177,9 +177,9 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 获取当前页面的 dialog 子页面集合
 
 ##### getDialogPages 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
 
 
 
@@ -202,16 +202,16 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getElementById 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | 微信小程序: x | 
+| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | 微信小程序: x; 支付宝小程序: x | 
 
 
 ##### 返回值 
@@ -230,9 +230,9 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getAndroidView 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.31 | x | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | 4.31 | x | x |
 
 
 
@@ -253,9 +253,9 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getAndroidActivity 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.61 | x | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | x | x |
 
 
 
@@ -276,9 +276,9 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getIOSView 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.33 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | x | 4.33 | x |
 
 
 
@@ -299,9 +299,9 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getHTMLElement 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | x | x | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.31 | x | x | x | x | x |
 
 
 
@@ -325,44 +325,44 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 用于逆转先前调用 [UniElement.requestFullscreen](/dom/unielement.md#requestfullscreen) 的效果。
 
 ##### exitFullscreen 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.61 | x | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | 4.61 | x | 4.61 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| options | **ExitFullscreenOptions** | 否 | Web: x; 微信小程序: x; iOS: x |
+| options | **ExitFullscreenOptions** | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| success | () => void | 否 | Web: x; 微信小程序: x; iOS: x | 成功回调 |
-| fail | (error: [IFullscreenError](#ifullscreenerror-values)) => void | 否 | Web: x; 微信小程序: x; iOS: x | 失败回调 |
-| complete | (result?: any) => void | 否 | Web: x; 微信小程序: x; iOS: x | 完成回调 | 
+| success | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 成功回调 |
+| fail | (error: [IFullscreenError](#ifullscreenerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 失败回调 |
+| complete | (result?: any) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x | 完成回调 | 
 
 ###### IFullscreenError 的属性值 @ifullscreenerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x | 错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 106600 | Web: x; 微信小程序: x | 当前页面已经有element处于全屏状态 |
-| 106601 | Web: x; 微信小程序: x | 当前element不支持全屏 |
-| 106602 | Web: x; 微信小程序: x | 当前页面没有element处于全屏状态 |
-| 106603 | Web: x; 微信小程序: x | 页面已销毁或者尚未就绪 |
-| 106604 | Web: x; 微信小程序: x | 组件未就绪 |
+| 106600 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页面已经有element处于全屏状态 |
+| 106601 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前element不支持全屏 |
+| 106602 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页面没有element处于全屏状态 |
+| 106603 | Web: x; 微信小程序: x; 支付宝小程序: x | 页面已销毁或者尚未就绪 |
+| 106604 | Web: x; 微信小程序: x; 支付宝小程序: x | 组件未就绪 |
 
 
 
@@ -377,16 +377,16 @@ createElement
 
 
 ##### createElement 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.63 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | x | 4.63 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| tagName | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x | 
+| tagName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x | 
 
 
 ##### 返回值 
@@ -627,16 +627,16 @@ querySelector
 返回页面中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项，则返回null
 
 ##### querySelector 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.0 | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 5.0 | x | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | 微信小程序: x | CSS 选择器字符串 | 
+| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | 微信小程序: x; 支付宝小程序: x | CSS 选择器字符串 | 
 
 
 ##### 返回值 
@@ -656,16 +656,16 @@ querySelectorAll
 返回页面中与指定选择器或选择器组匹配的元素列表。
 
 ##### querySelectorAll 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: x | CSS 选择器字符串 | 
+| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | CSS 选择器字符串 | 
 
 
 ##### 返回值 
@@ -683,16 +683,16 @@ querySelectorAll
 设置当前页面样式。详细属性配置请参考PageStyle  **已废弃，仅为了向下兼容保留**
 
 ##### $setPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.13 | x | 4.13 | 4.13 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.13 | x | x | 4.13 | 4.13 | 4.61 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: x | 
+| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: x; 支付宝小程序: x | 
 
 
 
@@ -704,9 +704,9 @@ querySelectorAll
 获取当前页面样式。详细属性配置请参考PageStyle  **已废弃，仅为了向下兼容保留**
 
 ##### $getPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.13 | x | 4.13 | 4.13 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.13 | x | x | 4.13 | 4.13 | 4.61 |
 
 
 
@@ -739,38 +739,38 @@ querySelectorAll
 > ② 截图高度固定为屏幕高度（不管内容多少都是一屏高）
 
 ##### takeSnapshot 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | 5.02 | 5.02 | x | 5.02 | x |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | 5.02 | 5.02 | x | 5.02 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **TakeSnapshotOptions** | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图的参数对象 |
+| options | **TakeSnapshotOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图的参数对象 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | "file" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图导出类型，目前仅支持 'file' 保存到临时文件目录 |
-| format | string | 否 | "png" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图文件格式，目前仅支持 'png' |
-| success | (res: [TakeSnapshotSuccess](#takesnapshotsuccess-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用成功的回调函数 |
-| fail | (res: [TakeSnapshotFail](#takesnapshotfail-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| type | string | 否 | "file" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图导出类型，目前仅支持 'file' 保存到临时文件目录 |
+| format | string | 否 | "png" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图文件格式，目前仅支持 'png' |
+| success | (res: [TakeSnapshotSuccess](#takesnapshotsuccess-values)) => void | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用成功的回调函数 |
+| fail | (res: [TakeSnapshotFail](#takesnapshotfail-values)) => void | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### TakeSnapshotSuccess 的属性值 @takesnapshotsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图保存的临时文件路径 |
+| tempFilePath | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图保存的临时文件路径 |
 
 ###### TakeSnapshotFail 的属性值 @takesnapshotfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图失败时的错误描述信息 |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图失败时的错误描述信息 |
 
 
 
