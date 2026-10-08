@@ -33,6 +33,10 @@ export const chooseFile = {
 export { getStorage, getStorageSync } from '@dcloudio/uni-mp-core'
 // #endif
 
+export const exit: MPProtocol = {
+  name: 'exitMiniProgram',
+}
+
 export const compressImage: MPProtocol = {
   args(
     fromArgs: UniApp.CompressImageOptions,
