@@ -412,7 +412,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
 ```uvue
 <template>
-	<view class="page-container uni-theme-root">
+	<view class="page-container">
 		<!-- #ifndef MP -->
 		<fps v-if="showFPS"></fps>
 		<!-- #endif -->
@@ -436,7 +436,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	// 打字机效果相关 - 富文本片段定义
 	type TextSegment = {
 		text : string
@@ -779,10 +779,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
-    <view class="text-page uni-theme-root">
+    <view class="text-page">
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-title">
@@ -826,6 +823,15 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         <view class="text-box">
           <text class="text" :selectable="true">{{ singleLineText }}</text>
         </view>
+
+        <template v-if="data.autoTest">
+          <view class="uni-title">
+            <text class="uni-subtitle-text">max-lines="1"（v-if 动态文本）</text>
+          </view>
+          <view class="text-box">
+            <text v-if="data.maxLinesText" id="max-lines-v-if-text" class="max-lines-text" :max-lines="1">{{ data.maxLinesText }}</text>
+          </view>
+        </template>
 
         <view class="uni-title">
           <text class="uni-subtitle-text">space属性（App平台蒸汽模式不支持，推荐改用css white-space）</text>
@@ -943,7 +949,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </text>
 
         <view class="uni-common-mb">
-          <boolean-data :defaultValue="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
+          <boolean-data :value="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
 
           <enum-data :items="hoverData.start_time_enum" title="按住后多久出现点击态" @change="radio_change_start_time_enum"></enum-data>
           <enum-data :items="hoverData.stay_time_enum" title="手指松开后点击态保留时间" @change="radio_change_stay_time_enum"></enum-data>
@@ -974,12 +980,9 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
 const decodeStr = ref('&lt; &gt; &amp; &apos;')
@@ -1021,6 +1024,7 @@ const textArr= ref(["嵌套 text 1 ","嵌套 text 2 ","嵌套 text 3 "])
 
 type DataType = {
   autoTest: boolean,
+  maxLinesText: string,
   nestedText: string,
   emptyText: string,
   heightText: string,
@@ -1032,6 +1036,7 @@ type DataType = {
 // 自动化测试
 const data = reactive({
   autoTest: false,
+  maxLinesText: '',
   nestedText: '三级节点文本',
   emptyText: '空文本',
   heightText: '设置高度文本',
@@ -1143,6 +1148,14 @@ defineExpose({
   .text-icon {
     font-family: uni-icon;
     font-size: 100px;
+  }
+
+  .max-lines-text {
+    width: 100px;
+    font-size: 40px;
+    color: var(--text-color, #353535);
+    text-overflow: ellipsis;
+    text-align: center;
   }
 
   /* #ifdef VUE3-VAPOR && APP-HARMONY */

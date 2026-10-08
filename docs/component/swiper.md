@@ -514,14 +514,6 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
     data.circularForDefault = value
   }
 
-  const autoplayForDefaultChange = (value : boolean) => {
-    data.autoplayForDefault = value
-  }
-
-  const circularForDefaultChange = (value : boolean) => {
-    data.circularForDefault = value
-  }
-
   defineExpose({
     data,
     jest_getSystemInfo
@@ -555,7 +547,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 
 ```uvue
 <template>
-  <view class="swiper-list-page uni-theme-root">
+  <view class="swiper-list-page">
     <view class="content-item">
       <text class="text">左右滑动页面，体验swiper嵌套list-view效果。</text>
     </view>
@@ -567,8 +559,10 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
             <sticky-header>
               <text class="header">上下滑动体验吸顶效果 swiper-item{{index}}</text>
             </sticky-header>
-            <list-item v-for="itemIndex in 40" :key="itemIndex" class="item">
-              <text class="item-text">item----------{{itemIndex}}</text>
+            <list-item v-for="itemIndex in 40" :key="itemIndex" >
+              <view class="item">
+                <text class="item-text">item----------{{itemIndex}}</text>
+              </view>
             </list-item>
           </sticky-section>
         </list-view>
@@ -577,7 +571,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type DataType = {
   swiperCurrentIndex: number,
@@ -655,14 +649,11 @@ defineExpose({
 
 ```uvue
 <template>
-	<!-- #ifdef APP && !VUE3-VAPOR -->
-	<scroll-view style="flex: 1;">
-	<!-- #endif -->
-	<view class="swiper-more-page uni-theme-root" style="padding: 10px;">
+	<view class="swiper-more-page" style="padding: 10px;">
 		<text style="font-size: 18px; font-weight: bold; color: var(--swiper-title-color, #333); margin-bottom: 10px;">Swiper组件演示</text>
 
 		<view style="margin-bottom: 20px;">
-			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">不等高slider测试（Auto Height）harmony 微信小程序 无效：</text>
+			<text style="color: var(--swiper-description-color, #666); margin-bottom: 10px;">不等高slider测试（Auto Height）harmony 小程序 无效：</text>
 			<text style="color: var(--swiper-note-color, #999); font-size: 12px; margin-bottom: 5px;">容器高度随当前slider内容自动调整</text>
 			<swiper auto-height>
 				<swiper-item>
@@ -1055,12 +1046,9 @@ defineExpose({
 		</view>
 		<!-- #endif -->
 	</view>
-	<!-- #ifdef APP && !VUE3-VAPOR -->
-	</scroll-view>
-	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { ref } from 'vue'
 
 	const scaleCurrentIndex1 = ref<number>(0)

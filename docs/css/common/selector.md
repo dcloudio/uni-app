@@ -78,14 +78,60 @@ uni-app x 额外引入了page选择器，该选择器是小程序规范，uni-ap
 <template>
   <view>
     默认通过page选择器设置padding: 16px
+    <text class="uni-subtitle-text">预期：page 内边距 16px、背景随主题变化；点按钮后变 20px</text>
     <!-- WEB 和 MP-WEIXIN 暂不支持动态修改 page 的 style，因此不展示切换按钮 -->
     <!-- #ifndef WEB || MP-WEIXIN -->
     <button id="setPagePaddingButton" @tap="setPagePadding">切换page padding为20px</button>
     <!-- #endif -->
+
+    <!-- 类选择器 -->
+    <view class="uni-common-mt">
+      <text class="uni-title-text">类选择器 .class {}</text>
+      <text class="uni-subtitle-text">预期：盒子边框蓝色、背景浅蓝</text>
+      <view class="selector-demo selector-class" id="selector-class">
+        <text>.selector-class 生效</text>
+      </view>
+    </view>
+
+    <!-- 多类名（复合）选择器 -->
+    <view class="uni-common-mt">
+      <text class="uni-title-text">多类名（复合）选择器 .a.b {}</text>
+      <text class="uni-subtitle-text">预期：仅 .selector-base 边框青色；再加 .selector-active 时背景和边框绿色</text>
+      <view class="selector-demo selector-base" id="selector-base">
+        <text>仅 .selector-base</text>
+      </view>
+      <view class="selector-demo selector-base selector-active" id="selector-compound">
+        <text>.selector-base.selector-active 生效</text>
+      </view>
+    </view>
+
+    <!-- 分组选择器 -->
+    <view class="uni-common-mt">
+      <text class="uni-title-text">分组选择器 .a, .b {}</text>
+      <text class="uni-subtitle-text">预期：两个盒子边框均为红色</text>
+      <view class="selector-demo selector-group-a" id="selector-group-a">
+        <text>.selector-group-a</text>
+      </view>
+      <view class="selector-demo selector-group-b" id="selector-group-b">
+        <text>.selector-group-b</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+// #ifdef APP
+const currentPage = getCurrentInstance()!.proxy!.$page
+
+const getPageBackgroundColorContent = () : string => {
+  return currentPage.getPageStyle()['backgroundColorContent'] as string
+}
+
+defineExpose({
+  getPageBackgroundColorContent,
+})
+// #endif
+
 // #ifndef WEB || MP-WEIXIN
 const setPagePadding = () => {
   const pages = getCurrentPages()
@@ -98,6 +144,37 @@ const setPagePadding = () => {
   page {
     --page-padding-change: 20px;
     padding: var(--page-padding);
+    background-color: var(--selector-page-background);
+  }
+
+  .selector-demo {
+    width: 300px;
+    padding: 10px;
+    margin-top: 8px;
+    border:#bcbcbc solid 2px;
+    background-color: #fcbf6f;
+  }
+
+  /* 类选择器 */
+  .selector-class {
+    border-color: blue;
+    background-color: #accaff;
+  }
+
+  /* 多类名（复合）选择器：.selector-base.selector-active 优先级更高，覆盖单类样式 */
+  .selector-base {
+    border-color: #00fcf9;
+  }
+
+  .selector-base.selector-active {
+    border-color: green;
+    background-color: #97d664;
+  }
+
+  /* 分组选择器 */
+  .selector-group-a,
+  .selector-group-b {
+    border-color: red;
   }
 </style>
 
