@@ -22,17 +22,6 @@
 * 蒸汽模式请改用 `@dcloudio/uni-app-x-vapor-runtime` 模块，最低版本为 5.25。
 
 ::: preview
-> VDOM模式
-```json
-{
-  "modelVersion": "5.0.4",
-  "description": "Please describe the basic information.",
-  "dependencies": {
-    // 指定 4.71 版本
-    "@dcloudio/uni-app-x-runtime": "4.71.*"
-  }
-}
-```
 > 蒸汽模式
 ```json
 {
@@ -41,6 +30,17 @@
   "dependencies": {
     // 指定 5.25 版本
     "@dcloudio/uni-app-x-vapor-runtime": "5.25.*"
+  }
+}
+```
+> VDOM模式
+```json
+{
+  "modelVersion": "5.0.4",
+  "description": "Please describe the basic information.",
+  "dependencies": {
+    // 指定 4.71 版本
+    "@dcloudio/uni-app-x-runtime": "4.71.*"
   }
 }
 ```
@@ -57,22 +57,6 @@
 编辑 entry/build-profile.json5 文件，在 buildOption 增加 arkOptions -> runtimeOnly -> sources 配置
 
 ::: preview
-> VDOM模式
-```json
-{
-  "apiType": "stageMode",
-  "buildOption": {
-    "arkOptions": {
-      "runtimeOnly": {
-        "sources": [
-          "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-config.ets",
-          "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-service.ets"
-        ]
-      }
-    }
-  }
-}
-```
 > 蒸汽模式
 ```json
 {
@@ -84,6 +68,22 @@
           "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-config.ets",
           "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-service.ets",
           "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/dynamic.ets"
+        ]
+      }
+    }
+  }
+}
+```
+> VDOM模式
+```json
+{
+  "apiType": "stageMode",
+  "buildOption": {
+    "arkOptions": {
+      "runtimeOnly": {
+        "sources": [
+          "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-config.ets",
+          "./src/main/resources/resfile/uni-app-x/apps/你的APPID/www/import/app-service.ets"
         ]
       }
     }
