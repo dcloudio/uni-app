@@ -54,12 +54,14 @@ export const ATTR_ELEMENT_TAG = 'u-t'
 
 export const ATTR_SET_ELEMENT_STYLE = 'eS' // 不能使用连字符e-s
 export const ATTR_SET_ELEMENT_ANIMATION = 'eA' // 不能使用连字符e-a
+export const ATTR_SET_ELEMENT_SCROLL = 'eR' // 不能使用连字符e-r
 
 export const FILTER_MODULE_NAME = 'uV' // uniView
 export const FILTER_MODULE_FILE_NAME = 'uniView'
 
 export const FILTER_SET_ELEMENT_STYLE = 'sS' // setStyle
 export const FILTER_SET_ELEMENT_ANIMATION = 'sA' // setAnimation
+export const FILTER_SET_ELEMENT_SCROLL = 'sR' // setScroll
 
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 

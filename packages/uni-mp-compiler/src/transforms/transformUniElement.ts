@@ -23,9 +23,11 @@ import {
   ATTR_ELEMENT_ID,
   ATTR_ELEMENT_TAG,
   ATTR_SET_ELEMENT_ANIMATION,
+  ATTR_SET_ELEMENT_SCROLL,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_REF,
   FILTER_SET_ELEMENT_ANIMATION,
+  FILTER_SET_ELEMENT_SCROLL,
   FILTER_SET_ELEMENT_STYLE,
   addUniViewAutoImportFilter,
   builtInComponents,
@@ -242,6 +244,21 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         ')',
       ])
     }
+  }
+
+  if (
+    process.env.UNI_PLATFORM === 'mp-alipay' &&
+    process.env.UNI_APP_X === 'true' &&
+    origTagName === 'scroll-view'
+  ) {
+    node.props.push(
+      createBindDirectiveNode(
+        filterObserverName(ATTR_SET_ELEMENT_SCROLL),
+        filterName(FILTER_SET_ELEMENT_SCROLL)
+      )
+    )
+    node.props.push(createBindDirectiveNode(ATTR_SET_ELEMENT_SCROLL, ''))
+    addUniViewAutoImportFilter(context)
   }
 }
 

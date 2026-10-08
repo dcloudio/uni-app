@@ -107,6 +107,18 @@ function sA (newValue, oldValue, _ownerInstance, instance) {
     handleStartAnimation(newValue, _ownerInstance, instance)
   }
 }
+function sR (newValue, oldValue, _ownerInstance, instance) {
+  if (!newValue) return
+  var info = JSON.parse(newValue)
+  var properties = {}
+  if (typeof info.top === 'number') {
+    properties.scrollTop = info.top
+  }
+  if (typeof info.left === 'number') {
+    properties.scrollLeft = info.left
+  }
+  instance.setDOMProperty(properties)
+}
 
 var CLASS_MASK_APP = 1
 var CLASS_MASK_PAGE = 1 << 1
@@ -168,6 +180,7 @@ function hoverClass (value, mask) {
 export default {
   sS,
   sA,
+  sR,
   c: cls,
   h: hoverClass,
 }
