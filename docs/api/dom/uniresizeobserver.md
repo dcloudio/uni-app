@@ -52,7 +52,7 @@
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| target | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 被监视的 UniElement | 
+| target | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 被监视的 UniElement | 
 
 
 
@@ -73,7 +73,7 @@
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| target | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 取消监视的 UniElement | 
+| target | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 取消监视的 UniElement | 
 
 
 
