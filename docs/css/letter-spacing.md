@@ -59,9 +59,6 @@ letter-spacing: normal | <length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <template v-if="autoTestData.begin">
       <view>
         <text id="testText"
@@ -121,12 +118,9 @@ letter-spacing: normal | <length>;
           <input-data :defaultValue="data.letterSpacing" title="letter-spacing 自定义值" type="text" @confirm="inputChangeLetterSpacing"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { ItemType } from '@/components/enum-data/enum-data-types'
 
 	const letterSpacingEnum: ItemType[] = [

@@ -615,17 +615,17 @@
 
 | 合法值 | 描述 |
 | :- | :- |
-| repeat | 背景图片在垂直方向和水平方向平铺 |
-| repeat-x | 背景图片在水平方向平铺，垂直方向拉伸 |
-| repeat-y | 背景图片在垂直方向平铺，水平方向拉伸 |
-| no-repeat | 背景图片在垂直方向和水平方向都拉伸 |
+| "repeat" | 背景图片在垂直方向和水平方向平铺 |
+| "repeat-x" | 背景图片在水平方向平铺，垂直方向拉伸 |
+| "repeat-y" | 背景图片在垂直方向平铺，水平方向拉伸 |
+| "no-repeat" | 背景图片在垂直方向和水平方向都拉伸 |
 
 ##### borderStyle 的属性描述
 
 | 合法值 |
 | :- |
-| black |
-| white |
+| "black" |
+| "white" |
 
 #### SetTabBarStyleSuccess 的属性值 @settabbarstylesuccess-values 
 

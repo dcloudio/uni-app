@@ -74,15 +74,15 @@ preload属性用于控制sticky-section组件的预加载行为，默认值为fa
 ```vue
 <template>
   <page-head title="sticky-section"></page-head>
-  <list-view id="list-view" ref="listViewRef" show-scrollbar=false class="page uni-theme-root" :scroll-into-view="pageData.scrollIntoView"
+  <list-view id="list-view" ref="listViewRef" show-scrollbar=false class="page" :scroll-into-view="pageData.scrollIntoView"
     @scroll="onScroll" @scrollend="onScrollEnd" bounces="false" refresher-enabled="true" :refresher-triggered="pageData.refresherTriggered" @refresherrefresh="onRefresherrefresh">
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
+    <list-item style="padding: 10px; margin: 5px 0 10px 0;align-items: center;" :type=20>
       <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
     </list-item>
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
+    <list-item style="padding: 10px; margin: 0px 0 10px 0;align-items: center;" :type=20>
       <button @click="appendSectionItem(0)" size="mini">第一组 section 新增5条内容</button>
     </list-item>
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
+    <list-item style="padding: 10px; margin: 0px 0 5px 0;align-items: center;" :type=20>
       <button @click="deleteSection()" size="mini">删除第一组 section</button>
     </list-item>
     <sticky-section class="content-section" ref="sectionRefs" style="align-items: stretch; align-content: stretch;" v-for="(section) in pageData.sectionArray" :key="section.name"
@@ -112,7 +112,7 @@ preload属性用于控制sticky-section组件的预加载行为，默认值为fa
   </list-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   export type sectionData = {
     name : string,
     list : sectionListItem[]

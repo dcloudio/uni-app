@@ -276,104 +276,104 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
 >示例
 ```vue
 <template>
-  <view class="uni-flex-item">
-    <web-view id="web-view" class="uni-flex-item" :style="webViewStyle" :src="data.src"
-      :webview-styles="{ progress: {color:data.webview_progress_color} }" :horizontalScrollBarAccess="data.horizontalScrollBarAccess" :verticalScrollBarAccess="data.verticalScrollBarAccess"
-      :bounces="data.bounces" :disable-user-select-menu="data.disableUserSelectMenu" @message="message" @error="error" @loading="loading"
-      @load="load" @download="download" @contentheightchange="contentheightchange" @touchstart="touchstart" @tap="tap">
-    </web-view>
-    <!-- #ifdef APP -->
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-btn-v">
-        <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" :maxlength="-1" />
-      </view>
-      <view class="uni-row uni-btn-v">
-        <button class="uni-flex-item" type="primary" :disabled="!data.canGoBack" @click="back">后退</button>
-        <button class="margin-left-5 uni-flex-item" type="primary" :disabled="!data.canGoForward"
-          @click="forward">前进</button>
-      </view>
-      <view class="uni-row uni-btn-v">
-        <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
-        <button class="margin-left-5 uni-flex-item" type="primary" @click="stop">停止加载</button>
-      </view>
-      <view class="uni-row uni-btn-v">
-        <button class="uni-flex-item" type="primary" @click="nativeToWeb">原生和Web通信</button>
-        <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
-        <button class="margin-left-5 uni-flex-item" type="primary" @click="getContentHeight">获取内容高度</button>
-        <!-- #endif -->
-      </view>
-      <view class="uni-row uni-btn-v">
-        <button class="uni-flex-item" type="primary" @click="loadData">加载页面内容</button>
-        <!-- 用于演示大尺寸平板中能用窄屏展示响应式内容 -->
-        <button id="half-screen-toggle" class="margin-left-5 uni-flex-item" type="primary" @click="setHalfScreen">宽窄屏切换</button>
-      </view>
-      <view class="uni-btn-v">
-        <navigator url="/pages/component/web-view/web-view-scroll">
-          <button type="primary">scroll-view嵌套web-view</button>
-        </navigator>
-      </view>
-      <!-- #ifdef APP-HARMONY || APP-ANDROID || APP-IOS -->
-      <view class="uni-btn-v">
-        <navigator url="/pages/component/web-view/web-view-associative-container">
-          <button type="primary">associative-container嵌套滚动</button>
-        </navigator>
-      </view>
-      <!-- #endif -->
-      <!-- #ifdef APP-ANDROID || APP-HARMONY || APP-IOS -->
-      <boolean-data :defaultValue="true" title="显示横向滚动条"
-        @change="changeHorizontalScrollBarAccess"></boolean-data>
-      <boolean-data :defaultValue="true" title="显示竖向滚动条"
-        @change="changeVerticalScrollBarAccess"></boolean-data>
-      <boolean-data :defaultValue="true" title="开启bounces" @change="changeBounces"></boolean-data>
-      <!-- #ifdef APP-ANDROID || APP-IOS-->
-      <boolean-data :defaultValue="false" title="禁用选择菜单"
-        @change="changeDisableUserSelectMenu"></boolean-data>
-      <!-- #endif -->
-      <!-- #endif -->
-      <!-- #ifdef APP-IOS -->
-      <view class="uni-row uni-btn-v" v-if="isProd() === false">
-        <view class="uni-row uni-flex-item align-items-center">
-          <text>前进、后退功能在Windows端需要打自定义基座，MAC端需要配置Xcode环境后进行真机运行或者打自定义基座</text>
-        </view>
-      </view>
+  <web-view id="web-view" class="uni-flex-item" :style="webViewStyle" :src="data.src"
+    :webview-styles="webViewStyles"
+    :horizontalScrollBarAccess="data.horizontalScrollBarAccess" :verticalScrollBarAccess="data.verticalScrollBarAccess"
+    :bounces="data.bounces" :disable-user-select-menu="data.disableUserSelectMenu" @message="message" @error="error"
+    @loading="loading" @load="load" @download="download" @contentheightchange="contentheightchange"
+    @touchstart="touchstart" @tap="tap">
+  </web-view>
+  <!-- #ifdef APP -->
+  <scroll-view class="uni-padding-wrap uni-common-mt" style="height: 50%;">
+    <view class="uni-btn-v">
+      <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" :maxlength="-1" />
+    </view>
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" :disabled="!data.canGoBack" @click="back">后退</button>
+      <button class="margin-left-5 uni-flex-item" type="primary" :disabled="!data.canGoForward"
+        @click="forward">前进</button>
+    </view>
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
+      <button class="margin-left-5 uni-flex-item" type="primary" @click="stop">停止加载</button>
+    </view>
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" @click="nativeToWeb">原生和Web通信</button>
+      <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
+      <button class="margin-left-5 uni-flex-item" type="primary" @click="getContentHeight">获取内容高度</button>
       <!-- #endif -->
     </view>
+    <view class="uni-row uni-btn-v">
+      <button class="uni-flex-item" type="primary" @click="loadData">加载页面内容</button>
+      <!-- 用于演示大尺寸平板中能用窄屏展示响应式内容 -->
+      <button id="half-screen-toggle" class="margin-left-5 uni-flex-item" type="primary"
+        @click="setHalfScreen">宽窄屏切换</button>
+    </view>
+    <view class="uni-btn-v">
+      <navigator url="/pages/component/web-view/web-view-scroll">
+        <button type="primary">scroll-view嵌套web-view</button>
+      </navigator>
+    </view>
+    <!-- #ifdef APP-HARMONY || APP-ANDROID || APP-IOS -->
+    <view class="uni-btn-v">
+      <navigator url="/pages/component/web-view/web-view-associative-container">
+        <button type="primary">associative-container嵌套滚动</button>
+      </navigator>
+    </view>
     <!-- #endif -->
+    <!-- #ifdef APP-ANDROID || APP-HARMONY || APP-IOS -->
+    <boolean-data :value="true" title="显示横向滚动条" @change="changeHorizontalScrollBarAccess"></boolean-data>
+    <boolean-data :value="true" title="显示竖向滚动条" @change="changeVerticalScrollBarAccess"></boolean-data>
+    <boolean-data :value="true" title="开启bounces" @change="changeBounces"></boolean-data>
+    <!-- #ifdef APP-ANDROID || APP-IOS-->
+    <boolean-data :value="false" title="禁用选择菜单" @change="changeDisableUserSelectMenu"></boolean-data>
+    <boolean-data :value="true" title="显示web-view进度条" @change="changeShowWebViewProgress"></boolean-data>
+    <!-- #endif -->
+    <!-- #endif -->
+    <!-- #ifdef APP-IOS -->
+    <view class="uni-row uni-btn-v" v-if="isProd() === false">
+      <view class="uni-row uni-flex-item align-items-center">
+        <text>前进、后退功能在Windows端需要打自定义基座，MAC端需要配置Xcode环境后进行真机运行或者打自定义基座</text>
+      </view>
+    </view>
+    <!-- #endif -->
+  </scroll-view>
+  <!-- #endif -->
 
-    <bottom-safe-area />
-  </view>
+  <bottom-safe-area />
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP
   import { canWebViewGoBack, canWebViewGoForward, hasNativeView } from '@/uni_modules/uts-get-native-view';
   // #endif
 
   type DataType = {
-    src: string;
-    webview_progress_color: string;
-    halfWindowMode: boolean;
-    webviewContext: WebviewContext | null;
-    loadError: boolean;
-    horizontalScrollBarAccess: boolean;
-    verticalScrollBarAccess: boolean;
-    bounces: boolean;
-    disableUserSelectMenu: boolean;
-    canGoBack: boolean;
-    canGoForward: boolean;
-    autoTest: boolean;
-    eventLoading: UTSJSONObject | null;
-    eventLoad: UTSJSONObject | null;
-    eventError: UTSJSONObject | null;
-    eventContentHeightChange: UTSJSONObject | null;
-    pointerEvents: string;
-    isTouchEnable: boolean;
-    loadingCount: number;
+    src : string;
+    webview_progress_color : string;
+    halfWindowMode : boolean;
+    webviewContext : WebviewContext | null;
+    loadError : boolean;
+    horizontalScrollBarAccess : boolean;
+    verticalScrollBarAccess : boolean;
+    bounces : boolean;
+    disableUserSelectMenu : boolean;
+    showWebViewProgress : boolean;
+    canGoBack : boolean;
+    canGoForward : boolean;
+    autoTest : boolean;
+    eventLoading : UTSJSONObject | null;
+    eventLoad : UTSJSONObject | null;
+    eventError : UTSJSONObject | null;
+    eventContentHeightChange : UTSJSONObject | null;
+    pointerEvents : string;
+    isTouchEnable : boolean;
+    loadingCount : number;
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
-  const data = reactive({
+  const data = reactive<DataType>({
     src: 'https://www.dcloud.io',
-    webview_progress_color:'#FF3333',
+    webview_progress_color: '#FF3333',
     halfWindowMode: false,
     webviewContext: null as WebviewContext | null,
     loadError: false,
@@ -381,6 +381,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     verticalScrollBarAccess: true,
     bounces: true,
     disableUserSelectMenu: false,
+    showWebViewProgress: true,
     canGoBack: false,
     canGoForward: false,
     autoTest: false,
@@ -391,7 +392,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     pointerEvents: 'auto',
     isTouchEnable: false,
     loadingCount: 0
-  } as DataType)
+  })
 
   let webviewElement = null as UniWebViewElement | null
   let webviewContext = null as WebViewContext | null
@@ -406,8 +407,14 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     }
   })
 
-  const getPackageName = (): string => {
-    let packageName: string = ""
+  const webViewStyles = computed(() : WebViewStyles => {
+    return {
+      progress: data.showWebViewProgress ? { color: data.webview_progress_color } : false
+    }
+  })
+
+  const getPackageName = () : string => {
+    let packageName : string = ""
 
     // #ifdef APP-IOS
     const res = uni.getAppBaseInfo();
@@ -417,7 +424,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     return packageName
   }
 
-  const isProd = (): boolean => {
+  const isProd = () : boolean => {
     if (getPackageName() == 'io.dcloud.hellouniappx') {
       return true
     }
@@ -450,7 +457,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   }
 
   // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-  const getContentHeight = (): number => {
+  const getContentHeight = () : number => {
     const height = webviewContext?.getContentHeight() ?? 0;
     console.log('contentHeight', height);
     if (!data.autoTest) {
@@ -465,7 +472,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   const loadData = () => {
     // webviewElement
 
-    const options: UniWebviewContextLoadDataOptions = {
+    const options : UniWebviewContextLoadDataOptions = {
       data: '<p><a href="https://www.dcloud.io/hbuilderx.html">HBuilderX</a><br/><img src="/unidoc/zh/uni@2x.png"></img><h1>HBuilderX，轻巧、极速，极客编辑器</h1><p style="color:red;"><small>HBuilderX，轻巧、极速，极客编辑器 </small><big>HBuilderX，轻巧、极速，极客编辑器</big><strong>HBuilderX，轻巧、极速，极客编辑器</strong><i>HBuilderX，轻巧、极速，极客编辑器 </i><u>HBuilderX，轻巧、极速，极客编辑器</u><del>HBuilderX，轻巧、极速，极客编辑器</del></p><h2>uni-app x，终极跨平台方案</h2>、<p style="background-color: yellow;"><small>uni-app x，终极跨平台方案 </small><big>uni-app x，终极跨平台方案</big><strong>uni-appx，终极跨平台方案 </strong><i>uni-app x，终极跨平台方案 </i><u>uni-app x，终极跨平台方案 </u><del>uni-appx，终极跨平台方案</del></p><h3>uniCloud，js serverless云服务</h3><p style="text-decoration: line-through;"><small>uniCloud，js serverless云服务 </small><big>uniCloud，jsserverless云服务</big><strong>uniCloud，js serverless云服务 </strong><i>uniCloud，js serverless云服务 </i><u>uniCloud，jsserverless云服务</u><del>uniCloud，js serverless云服务</del></p><h4>uts，大一统语言</h4><p style="text-align: center;"><small>uts，大一统语言 </small><big>uts，大一统语言 </big><strong>uts，大一统语言</strong><i>uts，大一统语言</i><u>uts，大一统语言 </u><del>uts，大一统语言</del></p><h5>uniMPSdk，让你的App具备小程序能力</h5><h6>uni-admin，开源、现成的全端管理后台</h6><ul><li style="color: red; text-align: left;">uni-app x，终极跨平台方案</li><li style="color: green; text-align: center;">uni-app x，终极跨平台方案</li><li style="color: blue; text-align: right;">uni-app x，终极跨平台方案</li></ul><a href="https://uniapp.dcloud.net.cn">uni-app</a><br/><img src="/unidoc/zh/uni@2x.png"></img></p>',
       baseURL: 'https://qiniu-web-assets.dcloud.net.cn'
     }
@@ -474,11 +481,11 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   }
   // #endif
 
-  const message = (event: UniWebViewMessageEvent) => {
+  const message = (event : UniWebViewMessageEvent) => {
     console.log(JSON.stringify(event.detail));
   }
 
-  const error = (event: UniWebViewErrorEvent) => {
+  const error = (event : UniWebViewErrorEvent) => {
     data.loadError = true
     console.log(JSON.stringify(event.detail));
     if (data.autoTest) {
@@ -494,24 +501,24 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     }
   }
 
-  const loading = (event: UniWebViewLoadingEvent) => {
+  const loading = (event : UniWebViewLoadingEvent) => {
     data.loadingCount++
     // console.log(JSON.stringify(event.detail));
     // #ifndef APP-HARMONY
     // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     if (data.autoTest) {
-    // #endif
+      // #endif
       data.eventLoading = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "src": event.detail.src
       };
-    // #ifndef APP-HARMONY
+      // #ifndef APP-HARMONY
     }
     // #endif
   }
 
-  const load = (event: UniWebViewLoadEvent) => {
+  const load = (event : UniWebViewLoadEvent) => {
     console.log(JSON.stringify(event.detail));
     // #ifdef APP
     data.canGoBack = canWebViewGoBack('web-view');
@@ -520,19 +527,19 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     // #ifndef APP-HARMONY
     // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     if (data.autoTest) {
-    // #endif
+      // #endif
       data.eventLoad = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "src": event.detail.src,
         "url": event.detail.url,
       };
-    // #ifndef APP-HARMONY
+      // #ifndef APP-HARMONY
     }
     // #endif
   }
 
-  const download = (event: UniWebViewDownloadEvent) => {
+  const download = (event : UniWebViewDownloadEvent) => {
     console.log(JSON.stringify(event.detail));
     uni.showModal({
       content: "下载链接: " + event.detail.url + "\n文件大小: " + event.detail.contentLength / 1024 + "KB",
@@ -540,7 +547,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     });
   }
 
-  const contentheightchange = (event: UniWebViewContentHeightChangeEvent) => {
+  const contentheightchange = (event : UniWebViewContentHeightChangeEvent) => {
     console.log(JSON.stringify(event.detail));
     data.eventContentHeightChange = {
       "tagName": event.target?.tagName,
@@ -549,7 +556,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     };
   }
 
-  const confirm = (event: UniInputConfirmEvent) => {
+  const confirm = (event : UniInputConfirmEvent) => {
     let url = event.detail.value;
     if (!url.startsWith('https://') && !url.startsWith('http://')) {
       url = 'https://' + url;
@@ -573,19 +580,23 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     data.disableUserSelectMenu = value;
   }
 
-  const touchstart = (event: UniTouchEvent) => {
+  const changeShowWebViewProgress = (value : boolean) => {
+    data.showWebViewProgress = value;
+  }
+
+  const touchstart = (event : UniTouchEvent) => {
     if (data.autoTest) {
       data.isTouchEnable = event.touches[0].clientX > 0 && event.touches[0].clientY > 0;
     }
   }
 
-  const tap = (event: UniPointerEvent) => {
+  const tap = (event : UniPointerEvent) => {
     if (data.autoTest) {
       data.isTouchEnable = event.clientX > 0 && event.clientY > 0;
     }
   }
 
-  const checkNativeWebView = (): boolean => {
+  const checkNativeWebView = () : boolean => {
     // #ifdef APP
     return hasNativeView('web-view')
     // #endif
@@ -609,10 +620,10 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     // TODO web 实现createWebviewContext
     // #ifdef APP
     webviewContext = uni.createWebViewContext('web-view', currentInstance?.proxy)
-    console.log("webviewContext:",webviewContext)
+    console.log("webviewContext:", webviewContext)
     // NOTE 绑定到 this 上会被代理导致无法调用方法
     webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
-    console.log("webviewElement:",webviewElement)
+    console.log("webviewElement:", webviewElement)
     // console.log('url: ',this.webviewContext?.getAttribute("src"));
     // this.webviewContext?.setAttribute("src","https://ext.dcloud.net.cn/")
     // #endif

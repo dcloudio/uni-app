@@ -73,47 +73,47 @@
 
 | 合法值 |
 | :- |
-| phone |
-| pad |
-| tv |
-| watch |
-| pc |
-| null |
-| car |
-| vr |
-| appliance |
+| "phone" |
+| "pad" |
+| "tv" |
+| "watch" |
+| "pc" |
+| "null" |
+| "car" |
+| "vr" |
+| "appliance" |
 
 ##### platform 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| ios |   |
-| android |   |
-| harmonyos |   |
-| mac |   |
-| windows |   |
-| linux |   |
-| ohos | 微信小程序: 4.41 |
-| ohos_pc | 微信小程序: 4.41 |
-| devtools | 微信小程序: 4.41 |
+| "ios" |   |
+| "android" |   |
+| "harmonyos" |   |
+| "mac" |   |
+| "windows" |   |
+| "linux" |   |
+| "ohos" | 微信小程序: 4.41 |
+| "ohos_pc" | 微信小程序: 4.41 |
+| "devtools" | 微信小程序: 4.41 |
 
 ##### osName 的属性描述
 
 | 合法值 |
 | :- |
-| ios |
-| android |
-| harmonyos |
-| macos |
-| windows |
-| linux |
+| "ios" |
+| "android" |
+| "harmonyos" |
+| "macos" |
+| "windows" |
+| "linux" |
 
 ##### osTheme 的属性描述
 
 | 合法值 |
 | :- |
-| light |
-| dark |
+| "light" |
+| "dark" |
 
 
 ::: warning 注意事项
@@ -142,43 +142,37 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view uni-theme-root">
-  <!-- #endif -->
-    <view class="uni-theme-root">
-      <page-head :title="title"></page-head>
-      <view class="uni-common-mt">
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <view class="uni-list">
         <view class="uni-list">
-          <view class="uni-list">
-            <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
-              <view class="uni-pd">
-                <view class="uni-label" style="width: 180px">
-                  <text class="system-info-text">
-                    {{ item.label }}
-                  </text>
-                </view>
+          <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
+            <view class="uni-pd">
+              <view class="uni-label" style="width: 180px">
+                <text class="system-info-text">
+                  {{ item.label }}
+                </text>
               </view>
-              <view class="uni-list-cell-db">
-                <text class="uni-list-cell-db-text system-info-text">{{
-                  item.value == "" ? "未获取" : item.value
-                }}</text>
-              </view>
+            </view>
+            <view class="uni-list-cell-db">
+              <text class="uni-list-cell-db-text system-info-text">{{
+                item.value == "" ? "未获取" : item.value
+              }}</text>
             </view>
           </view>
         </view>
-        <view class="uni-padding-wrap">
-          <view class="uni-btn-v">
-            <button type="primary" @tap="getDeviceInfo">获取设备信息</button>
-          </view>
+      </view>
+      <view class="uni-padding-wrap">
+        <view class="uni-btn-v">
+          <button type="primary" @tap="getDeviceInfo">获取设备信息</button>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
-<script setup lang="uts">
-  import { setDevicePixelRatio } from '@/store/index.uts'
+<script setup lang="ts">
+  import { setDevicePixelRatio } from '@/store/index.ts'
 
   type Item = {
     label : string,
@@ -200,15 +194,10 @@
     setDevicePixelRatio(res.devicePixelRatio !== null ? res.devicePixelRatio! : 1)
     data.items = [] as Item[];
 
-    const res_str = JSON.stringify(res);
-    const res_obj = JSON.parseObject(res_str);
-    const res_map = res_obj!.toMap();
-    let keys = [] as string[]
-    res_map.forEach((_, key) => {
-      keys.push(key);
-    });
+    const res_obj = JSON.parse(JSON.stringify(res));
+    const keys = Object.keys(res_obj);
     keys.sort().forEach(key => {
-      const value = res[key];
+      const value = res_obj[key];
       if (value != null) {
         const item = {
           label: key,

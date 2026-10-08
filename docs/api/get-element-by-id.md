@@ -111,7 +111,7 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const getElementByNotExistId = (): Element | null => {
     return uni.getElementById('not-exist-id')
   }

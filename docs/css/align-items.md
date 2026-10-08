@@ -68,9 +68,6 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -213,12 +210,9 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
           <enum-data :items="alignItemsEnum" title="align-items 枚举值" @change="radioChangeAlignItems" :compact="true"></enum-data>
           <input-data :defaultValue="data.alignItems" title="align-items 自定义值" type="text" @confirm="inputChangeAlignItems"></input-data>
       </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const alignItemsEnum: ItemType[] = [

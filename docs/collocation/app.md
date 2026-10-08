@@ -521,61 +521,63 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1; padding-bottom: 20px">
-  <!-- #endif -->
-    <view style="padding-bottom: 20px">
-      <page-head title="getApp"></page-head>
-      <view class="uni-padding-wrap">
-        <button @click="getGlobalData">get globalData</button>
-        <template v-if="data.originGlobalData.str.length">
-          <text class="uni-common-mt bold">初始的 globalData:</text>
-          <text class="uni-common-mt">globalData string: {{ data.originGlobalData.str }}</text>
-          <text class="uni-common-mt">globalData number: {{ data.originGlobalData.num }}</text>
-          <text class="uni-common-mt">globalData boolean: {{ data.originGlobalData.bool }}</text>
-          <text class="uni-common-mt">globalData object: {{ data.originGlobalData.obj }}</text>
-          <text class="uni-common-mt">globalData null: {{ data.originGlobalData.null }}</text>
-          <text class="uni-common-mt">globalData array: {{ data.originGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ data.originGlobalData.set }}</text>
-          <text class="uni-common-mt">globalData Map: {{ data.originGlobalData.map }}</text>
-          <text class="uni-common-mt">globalData fun 返回值: {{ data.originGlobalDataFuncRes }}</text>
-        </template>
-        <button @click="setGlobalData" class="uni-common-mt">
-          set globalData
-        </button>
-        <template v-if="data.newGlobalData.bool">
-          <text class="uni-common-mt bold">更新后的 globalData:</text>
-          <text class="uni-common-mt">globalData string: {{ data.newGlobalData.str }}</text>
-          <text class="uni-common-mt">globalData number: {{ data.newGlobalData.num }}</text>
-          <text class="uni-common-mt">globalData boolean: {{ data.newGlobalData.bool }}</text>
-          <text class="uni-common-mt">globalData object: {{ data.newGlobalData.obj }}</text>
-          <text class="uni-common-mt">globalData null: {{ data.newGlobalData.null }}</text>
-          <text class="uni-common-mt">globalData array: {{ data.newGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ data.newGlobalData.set }}</text>
-          <text class="uni-common-mt">globalData Map: {{ data.newGlobalData.map }}</text>
-          <text class="uni-common-mt">globalData fun 返回值: {{ data.newGlobalDataFuncRes }}</text>
-        </template>
-        <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
-        <text class="uni-common-mt">increaseLifeCycleNum 方法</text>
-        <button class="uni-common-mt" @click="_increaseLifeCycleNum">
-          increase lifeCycleNum
-        </button>
-        <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
-        <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
-        <button class="uni-common-mt" @click="getAndroidApplication">
-          getAndroidApplication
-        </button>
-        <text class="uni-common-mt">androidApplication is null: {{ data.androidApplication == null }}</text>
-        <!-- #endif -->
-      </view>
+  <view style="padding-bottom: 20px">
+    <page-head title="getApp"></page-head>
+    <view class="uni-padding-wrap">
+      <button @click="getGlobalData">get globalData</button>
+      <template v-if="data.originGlobalData.str.length">
+        <text class="uni-common-mt bold">初始的 globalData:</text>
+        <text class="uni-common-mt">globalData string: {{ data.originGlobalData.str }}</text>
+        <text class="uni-common-mt">globalData number: {{ data.originGlobalData.num }}</text>
+        <text class="uni-common-mt">globalData boolean: {{ data.originGlobalData.bool }}</text>
+        <text class="uni-common-mt">globalData object: {{ data.originGlobalData.obj }}</text>
+        <text class="uni-common-mt">globalData null: {{ data.originGlobalData.null }}</text>
+        <text class="uni-common-mt">globalData array: {{ data.originGlobalData.arr }}</text>
+        <text class="uni-common-mt">globalData Set: {{ data.originGlobalData.set }}</text>
+        <text class="uni-common-mt">globalData Map: {{ data.originGlobalData.map }}</text>
+        <text class="uni-common-mt">globalData fun 返回值: {{ data.originGlobalDataFuncRes }}</text>
+      </template>
+      <button @click="setGlobalData" class="uni-common-mt">
+        set globalData
+      </button>
+      <template v-if="data.newGlobalData.bool">
+        <text class="uni-common-mt bold">更新后的 globalData:</text>
+        <text class="uni-common-mt">globalData string: {{ data.newGlobalData.str }}</text>
+        <text class="uni-common-mt">globalData number: {{ data.newGlobalData.num }}</text>
+        <text class="uni-common-mt">globalData boolean: {{ data.newGlobalData.bool }}</text>
+        <text class="uni-common-mt">globalData object: {{ data.newGlobalData.obj }}</text>
+        <text class="uni-common-mt">globalData null: {{ data.newGlobalData.null }}</text>
+        <text class="uni-common-mt">globalData array: {{ data.newGlobalData.arr }}</text>
+        <text class="uni-common-mt">globalData Set: {{ data.newGlobalData.set }}</text>
+        <text class="uni-common-mt">globalData Map: {{ data.newGlobalData.map }}</text>
+        <text class="uni-common-mt">globalData fun 返回值: {{ data.newGlobalDataFuncRes }}</text>
+      </template>
+      <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
+      <text class="uni-common-mt">increaseLifeCycleNum 方法</text>
+      <button class="uni-common-mt" @click="_increaseLifeCycleNum">
+        increase lifeCycleNum
+      </button>
+      <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
+      <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
+      <button class="uni-common-mt" @click="getAndroidApplication">
+        getAndroidApplication
+      </button>
+      <text class="uni-common-mt">androidApplication is null: {{ data.androidApplication == null }}</text>
+      <!-- #endif -->
+      <!-- #ifdef (APP-ANDROID || APP-IOS) && VUE3-VAPOR -->
+      <button class="uni-common-mt" @click="_restart">
+        restart
+      </button>
+      <button class="uni-common-mt" @click="_restartToUrl">
+        restart to url
+      </button>
+      <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
-  import { state, setLifeCycleNum, updateGlobalData } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setLifeCycleNum, updateGlobalData } from '@/store/index.ts'
 
   type MyGlobalData = {
     str : string,
@@ -598,7 +600,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     androidApplication: any | null;
   }
 
-  const data = reactive({
+  const data = reactive<DataType>({
     originGlobalData: {
       str: '',
       num: 0,
@@ -633,7 +635,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     newGlobalDataFuncRes: '',
     lifeCycleNum: 0,
     androidApplication: null
-  } as DataType)
+  })
 
   const getGlobalData = () => {
     data.originGlobalData.str = state.globalData.str
@@ -702,6 +704,24 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     setLifeCycleNum(num)
   }
 
+  // #ifdef (APP-ANDROID || APP-IOS) && VUE3-VAPOR
+  const _restart = () => {
+    setTimeout(() => {
+      const app = getApp()
+      app.restart()
+    }, 100)
+  }
+
+  const _restartToUrl = () => {
+    setTimeout(() => {
+      const app = getApp()
+      app.restart({
+        url: '/pages/API/get-app/get-app-restart?from=restart'
+      })
+    }, 100)
+  }
+  // #endif
+
   // #ifdef APP-ANDROID && !VUE3-VAPOR
   const getAndroidApplication = () : boolean => {
     const app = getApp()
@@ -721,7 +741,11 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     _increaseLifeCycleNum,
     setLifeCycleNumFunc,
     // #ifdef APP-ANDROID && !VUE3-VAPOR
-    getAndroidApplication
+    getAndroidApplication,
+    // #endif
+    // #ifdef (APP-ANDROID || APP-IOS) && VUE3-VAPOR
+    _restart,
+    _restartToUrl
     // #endif
   })
 </script>

@@ -42,10 +42,10 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| image | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 图片类型 |
-| video | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 视频类型 |
-| audio | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
-| all |   |  |
+| "image" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 图片类型 |
+| "video" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 视频类型 |
+| "audio" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
+| "all" |   |  |
 
 #### ChooseFileSuccess 的属性值 @choosefilesuccess-values 
 
@@ -67,10 +67,10 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| video | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
-| image | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
-| audio | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
-| file | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 除图片和音视频类型的文件 |
+| "video" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
+| "image" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
+| "audio" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
+| "file" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 除图片和音视频类型的文件 |
 
 #### ChooseFileFail 的属性值 @choosefilefail-values 
 
@@ -112,9 +112,6 @@ Android端返回的路径是content协议。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <!-- #ifdef APP-IOS -->
@@ -145,12 +142,9 @@ Android端返回的路径是content协议。
 
       <view style="height: 4px;"></view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const log = ref('')
   const title = ref('choose-file')
   const src = ref('')

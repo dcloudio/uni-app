@@ -104,10 +104,10 @@
       </view>
       <view class="uni-btn-v">
         <text class="tips">注意：\n1. Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置\n2. 若没有关联uniCloud空间，则只能全屏地图选点，不能根据POI选择位置\n3. payload参数会原样透传给uni-map-co，可用于用户鉴权</text>
-        <boolean-data :defaultValue="false" title="是否指定位置为天安门" @change="changeLocationBoolean"></boolean-data>
-        <boolean-data :defaultValue="false" title="是否携带keyword参数" @change="changeKeywordBoolean"></boolean-data>
+        <boolean-data :value="false" title="是否指定位置为天安门" @change="changeLocationBoolean"></boolean-data>
+        <boolean-data :value="false" title="是否携带keyword参数" @change="changeKeywordBoolean"></boolean-data>
         <!-- #ifndef MP -->
-        <boolean-data :defaultValue="false" title="是否携带payload参数" @change="changePayloadBoolean"></boolean-data>
+        <boolean-data :value="false" title="是否携带payload参数" @change="changePayloadBoolean"></boolean-data>
         <!-- #endif -->
         <button class="uni-btn" type="primary" @tap="chooseLocation">选择位置</button>
         <button class="uni-btn" @tap="clear">清空</button>
@@ -118,11 +118,11 @@
     </view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   import {
     state,
     setLifeCycleNum
-  } from '@/store/index.uts'
+  } from '@/store/index.ts'
 
   type Location = {
     latitude: string[]

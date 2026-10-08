@@ -111,7 +111,7 @@
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type PageState = {
     status: string
     records: string[]

@@ -81,10 +81,7 @@ z-index: auto | <integer>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-  <view class="z-index-page uni-theme-root">
+  <view class="z-index-page">
     <view style="flex-grow: 1;">
       <view style="position:absolute;z-index:0;">
         <view class="common fixed default">
@@ -199,12 +196,9 @@ z-index: auto | <integer>;
       <!-- #endif -->
     </view>
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type DataType = {

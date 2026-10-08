@@ -143,53 +143,21 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
   <view>
     <page-head :title="data.title"></page-head>
     <page-intro content="本页演示 uni.showActionSheet：通过单选切换列表项、开关控制 titleColor/itemColor、超长与空文本 item、cancelText/cancelColor/backgroundColor 等；点击按钮弹出 actionSheet，可查看回调结果。"></page-intro>
-    <view class="uni-list">
-      <radio-group @change="radioChange">
-        <view class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in data.items" :key="item.value"
-          :class="index < data.items.length - 1 ? 'uni-list-cell-line': ''">
-          <radio :value="item.value" :checked="index === data.current" />
-          <text>{{item.name}}</text>
-        </view>
-      </radio-group>
-    </view>
-    <view class="uni-list">
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">自定义 titleColor</view>
-        <switch :checked="data.titleColorCustom" @change="titleColorChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">自定义 itemColor</view>
-        <switch :checked="data.itemColorCustom" @change="itemColorChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">超长文本和空文本 item</view>
-        <switch :checked="data.itemContentLarge" @change="itemContentLargeChange" />
-      </view>
-      <!-- #ifndef MP -->
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">超过6个 item</view>
-        <switch :checked="data.itemNumLargeSelect" @change="itemNumLargeChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">自定义 cancelText</view>
-        <switch :checked="data.cancelTextCustom" @change="cancelTextChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">自定义 cancelColor</view>
-        <switch :checked="data.cancelColorCustom" @change="cancelColorChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">自定义 backgroundColor</view>
-        <switch :checked="data.backgroundColorCustom" @change="backgroundColorChange" />
-      </view>
-      <!-- #endif -->
-    </view>
+    <enum-data :items="titleOptions" title="设置标题" @change="radioChange"></enum-data>
+    <!-- #ifndef MP-ALIPAY -->
+    <boolean-data :value="data.titleColorCustom" title="自定义 titleColor" @change="titleColorChange"></boolean-data>
+    <!-- #endif -->
+    <boolean-data :value="data.itemColorCustom" title="自定义 itemColor" @change="itemColorChange"></boolean-data>
+    <boolean-data :value="data.itemContentLarge" title="超长文本和空文本 item" @change="itemContentLargeChange"></boolean-data>
+    <!-- #ifndef MP -->
+    <boolean-data :value="data.itemNumLargeSelect" title="超过6个 item" @change="itemNumLargeChange"></boolean-data>
+    <boolean-data :value="data.cancelTextCustom" title="自定义 cancelText" @change="cancelTextChange"></boolean-data>
+    <boolean-data :value="data.cancelColorCustom" title="自定义 cancelColor" @change="cancelColorChange"></boolean-data>
+    <boolean-data :value="data.backgroundColorCustom" title="自定义 backgroundColor" @change="backgroundColorChange"></boolean-data>
+    <!-- #endif -->
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
         <button <!-- #ifndef MP-ALIPAY -->
@@ -206,14 +174,12 @@
       </view>
     </view>
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
-  import { state, setLifeCycleNum } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setLifeCycleNum } from '@/store/index.ts'
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  type ItemType = {
+  type ActionSheetItemType = {
     value: string,
     name: string,
   }
@@ -228,9 +194,10 @@
     cancelColorCustom: boolean;
     backgroundColorCustom: boolean;
     showErrorToast: boolean;
-    items: ItemType[];
+    items: ActionSheetItemType[];
     current: number;
     originTheme: string | null;
+    onReadyActionSheetCalled: boolean;
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -257,10 +224,19 @@
     }
     ],
     current: 0,
+    onReadyActionSheetCalled: false,
     // #ifdef APP
     originTheme: null,
     // #endif
   } as DataType)
+
+  const titleOptions = computed((): ItemType[] => {
+    return [
+      { value: 0, name: '有标题', checked: data.current == 0 },
+      { value: 1, name: '无标题', checked: data.current == 1 },
+      { value: 2, name: '超长标题', checked: data.current == 2 }
+    ] as ItemType[]
+  })
 
   // #ifdef APP
   const setThemeAuto = () => {
@@ -279,41 +255,36 @@
   }
   // #endif
 
-  const radioChange = (e: UniRadioGroupChangeEvent) => {
-    for (let i = 0; i < data.items.length; i++) {
-      if (data.items[i].value === e.detail.value) {
-        data.current = i;
-        break;
-      }
-    }
+  const radioChange = (value: number) => {
+    data.current = value
   }
 
-  const titleColorChange = (e: UniSwitchChangeEvent) => {
-    data.titleColorCustom = e.detail.value
+  const titleColorChange = (value: boolean) => {
+    data.titleColorCustom = value
   }
 
-  const itemContentLargeChange = (e: UniSwitchChangeEvent) => {
-    data.itemContentLarge = e.detail.value
+  const itemContentLargeChange = (value: boolean) => {
+    data.itemContentLarge = value
   }
 
-  const itemColorChange = (e: UniSwitchChangeEvent) => {
-    data.itemColorCustom = e.detail.value
+  const itemColorChange = (value: boolean) => {
+    data.itemColorCustom = value
   }
 
-  const itemNumLargeChange = (e: UniSwitchChangeEvent) => {
-    data.itemNumLargeSelect = e.detail.value
+  const itemNumLargeChange = (value: boolean) => {
+    data.itemNumLargeSelect = value
   }
 
-  const cancelTextChange = (e: UniSwitchChangeEvent) => {
-    data.cancelTextCustom = e.detail.value
+  const cancelTextChange = (value: boolean) => {
+    data.cancelTextCustom = value
   }
 
-  const cancelColorChange = (e: UniSwitchChangeEvent) => {
-    data.cancelColorCustom = e.detail.value
+  const cancelColorChange = (value: boolean) => {
+    data.cancelColorCustom = value
   }
 
-  const backgroundColorChange = (e: UniSwitchChangeEvent) => {
-    data.backgroundColorCustom = e.detail.value
+  const backgroundColorChange = (value: boolean) => {
+    data.backgroundColorCustom = value
   }
 
   const showActionSheet = () => {
@@ -432,6 +403,7 @@
         console.log('onLoad showActionSheet complete', res)
       }
     })
+    data.onReadyActionSheetCalled = true
     // #ifdef APP
     data.originTheme = uni.getSystemInfoSync().appTheme
     // #endif

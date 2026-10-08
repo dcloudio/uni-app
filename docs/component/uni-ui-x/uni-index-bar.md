@@ -143,7 +143,7 @@ const onSelect = (index: string) => {
 >示例
 ```vue
 <template>
-	<view style="flex: 1; flex-direction: column; position: relative;">
+	<view class="uni-theme-root" style="flex: 1; flex-direction: column; position: relative;">
 		<!-- 控制条 -->
 			<view class="control-bar">
 				<button class="control-btn" @click="toggleStyle">{{ data.useCustomStyle ? '默认样式' : '自定义样式' }}</button>
@@ -178,8 +178,8 @@ const onSelect = (index: string) => {
 	</view>
 </template>
 
-<script lang="uts" setup>
-	import { cityGroups } from './cities.uts'
+<script lang="ts" setup>
+	import { cityGroups } from './cities.ts'
 
 	// 默认索引列表
 	const defaultIndexs = cityGroups.map((g) : string => g.index).join('\n')

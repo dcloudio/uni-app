@@ -97,7 +97,7 @@
     </view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     disabled: boolean;
     inputValue: string;

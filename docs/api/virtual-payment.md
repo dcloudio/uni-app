@@ -92,8 +92,8 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| short_series_goods | Web: x; Android: x |
-| short_series_coin | Web: x; Android: x |
+| "short_series_goods" | Web: x; Android: x |
+| "short_series_coin" | Web: x; Android: x |
 
 ##### signData 的属性描述
 
@@ -142,6 +142,7 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
+| 700000 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 其他未知错误。 |
 | 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 正在处理中，支付结果未知 |
 | 700601 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 用户中途取消。 |
 | 700602 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 网络连接出错。 |
@@ -150,7 +151,6 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 | 700606 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销信息错误。 |
 | 700607 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 缺少支付参数。 |
 | 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 只支持iOS15以上的版本。 |
-| 700000 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 其他未知错误。 |
 
 
 
@@ -553,9 +553,6 @@ Sandbox环境：https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transact
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/virtual-payment/virtual-payment
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <page-head title="虚拟支付"></page-head>
     <view style="padding-left: 20px; padding-right: 20px;">
       <text>
@@ -586,13 +583,10 @@ Sandbox环境：https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transact
       <button style="margin-top: 20px; margin-bottom: 50px;" type="primary"
         @click="getUnfinishedTransactions">获取未结束的订单列表</button>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
 
-<script setup lang="uts">
+<script setup lang="ts">
   export type PayItem = { id : string, name : string, quantity ?: number }
 
   const productList = ref<PayItem[]>([])

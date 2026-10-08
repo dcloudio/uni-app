@@ -81,28 +81,28 @@
 
 | 合法值 |
 | :- |
-| light |
-| dark |
-| auto |
+| "light" |
+| "dark" |
+| "auto" |
 
 ##### uniPlatform 的属性描述
 
 | 合法值 |
 | :- |
-| app |
-| web |
-| mp-weixin |
-| mp-alipay |
-| mp-baidu |
-| mp-toutiao |
-| mp-lark |
-| mp-qq |
-| mp-kuaishou |
-| mp-jd |
-| mp-360 |
-| quickapp-webview |
-| quickapp-webview-union |
-| quickapp-webview-huawei |
+| "app" |
+| "web" |
+| "mp-weixin" |
+| "mp-alipay" |
+| "mp-baidu" |
+| "mp-toutiao" |
+| "mp-lark" |
+| "mp-qq" |
+| "mp-kuaishou" |
+| "mp-jd" |
+| "mp-360" |
+| "quickapp-webview" |
+| "quickapp-webview-union" |
+| "quickapp-webview-huawei" |
 
 ##### host 的属性描述
 
@@ -114,8 +114,8 @@
 
 | 合法值 |
 | :- |
-| dark |
-| light |
+| "dark" |
+| "light" |
 
 
 #### appTheme @apptheme
@@ -141,7 +141,7 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 >示例
 ```vue
 <template>
-  <view class="uni-theme-root">
+  <view>
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
       <view class="uni-list">
@@ -164,7 +164,7 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
     </view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type Item = {
     label : string,
     value : string,
@@ -181,17 +181,12 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 
   const getAppBaseInfo = () => {
     const res = uni.getAppBaseInfo();
-    const res_str = JSON.stringify(res);
-    const res_obj = JSON.parseObject(res_str);
-    const res_map = res_obj!.toMap();
-    let keys = [] as string[]
-    res_map.forEach((_, key) => {
-      keys.push(key);
-    });
+    const res_obj = JSON.parse(JSON.stringify(res));
+    const keys = Object.keys(res_obj);
 
     data.items = [] as Item[];
     keys.sort().forEach(key => {
-      const value = res[key];
+      const value = res_obj[key];
       if (value != null) {
         const item = {
           label: key,

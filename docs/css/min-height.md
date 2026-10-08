@@ -61,10 +61,7 @@ min-height: <viewport-length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="css-page uni-theme-root" style="flex-grow: 1;">
+    <view class="css-page" style="flex-grow: 1;">
       <view>
         <text class="theme-label">min-height: 150px</text>
         <view class="common" style="min-height: 150px;">
@@ -183,12 +180,9 @@ min-height: <viewport-length>;
       </view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const minHeightEnum : ItemType[] = [

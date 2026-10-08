@@ -64,9 +64,6 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <view ref="transformView" class="view" @click="changetransform"></view>
 
@@ -175,12 +172,9 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const transformView = ref(null as UniElement | null)
@@ -203,8 +197,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (count.value == 1) {
@@ -212,8 +206,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
 
@@ -228,8 +222,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (textCount.value == 1) {
@@ -237,8 +231,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -246,8 +240,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       textCount.value = -1
     }
@@ -263,8 +257,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "translate(50px, 50px) scale(2)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (imageCount.value == 1) {
@@ -272,8 +266,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -281,8 +275,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       imageCount.value = -1
     }
@@ -298,8 +292,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (scrollViewCount.value == 1) {
@@ -307,8 +301,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -316,8 +310,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       scrollViewCount.value = -1
     }
@@ -333,8 +327,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (nativeViewCount.value == 1) {
@@ -342,8 +336,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -351,8 +345,8 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       nativeViewCount.value = -1
     }

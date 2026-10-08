@@ -141,7 +141,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const title = ref('navigator')
 </script>
 

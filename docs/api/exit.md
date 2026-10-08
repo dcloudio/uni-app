@@ -111,11 +111,12 @@ iOS系统自身并没有退出应用的API。
 <template>
   <view>
     <button @tap="exitAppClick">退出应用</button>
+    <button @tap="reLaunchPage">reLaunch 重启当前页面</button>
     <text>注:iOS仅在uni-app x SDK模式中支持应用退出</text>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const exitAppClick = () => {
     uni.exit({
       success: function (res) {
@@ -124,6 +125,12 @@ iOS系统自身并没有退出应用的API。
       fail: function(error){
         console.log(error)
       }
+    })
+  }
+
+  const reLaunchPage = () => {
+    uni.reLaunch({
+      url: '/pages/API/exit/exit'
     })
   }
 </script>

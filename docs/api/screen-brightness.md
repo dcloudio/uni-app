@@ -218,9 +218,9 @@
 ```vue
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view class="page-scroll uni-theme-root">
+	<scroll-view class="page-scroll">
 	<!-- #endif -->
-		<view class="page-body uni-theme-root">
+		<view class="page-body">
 			<view class="panel">
 				<text class="panel-title">接口说明</text>
 				<text class="panel-text">`uni.setScreenBrightness`：设置当前页面亮度，示例覆盖 value、success、fail、complete。</text>
@@ -282,7 +282,7 @@
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 	const brightnessInput = ref<string>('0.66')
 	const setBrightnessSuccessText = ref<string>('尚未调用')

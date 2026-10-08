@@ -183,7 +183,7 @@
     <button class="uni-btn" @click="navigateToChild">跳转子页面测试字体生效范围</button>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     uniIcon1: string;
     uniIcon2: string;

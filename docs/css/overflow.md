@@ -61,9 +61,6 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1;">
-  <!-- #endif -->
     <page-intro content="本页演示 overflow 样式：overflow:hidden 与 overflow:visible 下子元素超出时的裁剪与显示；子元素为 view（border 圆角/边框）、text、image 等，每组均提供拍平（flatten）版本对比。"></page-intro>
     <text style="font-size: 15px;">overflow=hidden效果子元素是view border圆角</text>
     <view class="backgroundview">
@@ -273,12 +270,9 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       </view>
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 </script>
 
 <style>

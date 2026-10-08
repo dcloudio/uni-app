@@ -170,7 +170,7 @@ terminate
 >示例
 ```vue
 <template>
-  <scroll-view class="container uni-theme-root">
+  <scroll-view class="container">
     <view class="status-section">
       <text class="status-label">Worker状态: </text>
       <text class="status-text">{{statusText}}</text>
@@ -203,25 +203,40 @@ terminate
       <button @click="clearLogs" class="btn clear-btn">清空日志</button>
     </view>
 
+    <navigator url="/pages/API/create-worker/uts-worker-plugin">
+      <button type="primary">uts 插件中创建 worker 示例</button>
+    </navigator>
+
     <!-- #ifdef APP-HARMONY || WEB -->
     <view class="uni-btn-v">
       <navigator url="/pages/API/create-worker/worker-sendable-transfer">
         <button type="primary">worker sendable transfer 示例</button>
       </navigator>
+      <!-- #ifdef APP-HARMONY -->
+      <navigator url="/pages/API/create-worker/worker-sendable">
+        <button type="primary">worker 中创建 SendableObject 示例</button>
+      </navigator>
+      <!-- #endif -->
     </view>
     <!-- #endif -->
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type TaskResultType = {
     value: string
+  }
+
+  interface LogItem {
+    message: string
+    type: string
+    time: string
   }
 
   const created_boolean = ref<boolean>(false)
   const workerStatus = ref<string>('none') // none, created, destroyed
   const isListening = ref<boolean>(false)
-  const logs = ref<Array<UTSJSONObject>>([])
+  const logs = ref([] as LogItem[])
   const inputValue = ref<string>('1') // 默认值为1
   const taskResult = reactive({ value: '' } as TaskResultType)
   const worker = ref<Worker | null>(null)
@@ -239,11 +254,11 @@ terminate
   function addLog(message : string, type : string = 'info') {
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    const logItem = {
+    const logItem: LogItem = {
       message: `[${timeStr}] ${message}`,
       type: type,
       time: timeStr
-    } as UTSJSONObject;
+    }
     logs.value.unshift(logItem);
     // 限制日志数量
     if (logs.value.length > 50) {
@@ -267,8 +282,7 @@ terminate
     worker.value!.onMessage((result) => {
       // 处理Worker返回的消息
       console.log(`收到Worker消息:`, result);
-      const res = result as UTSJSONObject;
-      const resultData = res['data'] as string;
+      const resultData = result.data as string;
       taskResult.value = resultData;
       inputValue.value = taskResult.value
       addLog(`收到WorkerTask返回: ${resultData}`, 'receive');

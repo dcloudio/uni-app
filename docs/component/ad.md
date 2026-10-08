@@ -118,7 +118,7 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const tips = ref(false)
 
   // #ifndef MP-ALIPAY

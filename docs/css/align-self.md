@@ -58,10 +58,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-  <view class="css-page uni-theme-root" style="flex-grow: 1;">
+  <view class="css-page" style="flex-grow: 1;">
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
     <view>
       <text class="theme-label">align-self: auto</text>
@@ -227,12 +224,9 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
       </view>
     <!-- #endif -->
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const alignSelfEnum: ItemType[] = [

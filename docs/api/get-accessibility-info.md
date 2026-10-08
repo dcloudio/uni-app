@@ -40,9 +40,6 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/get-accessibility-info/get-accessibility-info
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <view>
       <page-head :title="'getAccessibilityInfo'"></page-head>
       <view class="uni-common-mt" >
@@ -52,12 +49,9 @@
 		      }}</text>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   const accessibilityInfo = ref("")
   accessibilityInfo.value = JSON.stringify(uni.getAccessibilityInfo())
 </script>
@@ -94,9 +88,6 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/get-accessibility-info/get-accessibility-info
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <view>
       <page-head :title="'getAccessibilityInfo'"></page-head>
       <view class="uni-common-mt" >
@@ -106,12 +97,9 @@
 		      }}</text>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   const accessibilityInfo = ref("")
   accessibilityInfo.value = JSON.stringify(uni.getAccessibilityInfo())
 </script>

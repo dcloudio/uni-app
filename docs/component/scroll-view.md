@@ -445,9 +445,6 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
     <page-head title="scroll-view,区域滚动视图"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title uni-common-mt">
@@ -466,7 +463,7 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
       <view @tap="goTop" class="uni-center uni-common-mt">
         <text class="uni-link">点击这里返回顶部</text>
       </view>
-      <boolean-data :defaultValue="false" title="是否禁用scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
+      <boolean-data :value="false" title="是否禁用scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
 
       <view class="uni-title uni-common-mt">
         <text class="uni-title-text">Horizontal Scroll</text>
@@ -522,11 +519,8 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
       <view class="uni-common-pb"></view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type ScrollEventTest = {
     type : string;
     target : UniElement | null;

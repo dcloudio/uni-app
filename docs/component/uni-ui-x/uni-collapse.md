@@ -258,7 +258,7 @@ uni-collapse-item的标题栏的自定义：
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type CategoryItem = {
     title : string
   }

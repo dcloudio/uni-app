@@ -33,12 +33,12 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| weixin | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录 |
-| qq | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
-| sinaweibo | Web: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
-| xiaomi | Web: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
-| apple | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple登录 |
-| huawei | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
+| "weixin" | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录 |
+| "qq" | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
+| "sinaweibo" | Web: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
+| "xiaomi" | Web: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
+| "apple" | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple登录 |
+| "huawei" | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
 
 #### LoginSuccess 的属性值 @loginsuccess-values 
 
@@ -91,8 +91,8 @@
 | 1310511 | Web: x | 获取用户信息请求超时 |
 | 1310512 | Web: x | iOS 没有配置对应的URL Scheme |
 | 1310513 | Web: x | iOS 没有配置对应的Universal Link |
-| 1001502040 | Web: x | 登录请求可能被跨站攻击 |
 | 1310600 | Web: x | 服务供应商获取失败 |
+| 1001502040 | Web: x | 登录请求可能被跨站攻击 |
 
 
 
@@ -254,12 +254,12 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| weixin | Web: x; Android: x; iOS: x; HarmonyOS: x | 微信登录。 - **推荐**: 使用 uniCloud 提供的云函数登录方式，避免在客户端暴露 appSecret。 1. [获取微信openid](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#获取微信openid) 2. [获取App平台微信登录用户信息](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#get-weixin-user-info) |
-| qq | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
-| sinaweibo | Web: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
-| xiaomi | Web: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
-| apple | Web: x; Android: x; iOS: x; HarmonyOS: x | Apple登录 |
-| huawei | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
+| "weixin" | Web: x; Android: x; iOS: x; HarmonyOS: x | 微信登录。 - **推荐**: 使用 uniCloud 提供的云函数登录方式，避免在客户端暴露 appSecret。 1. [获取微信openid](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#获取微信openid) 2. [获取App平台微信登录用户信息](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#get-weixin-user-info) |
+| "qq" | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
+| "sinaweibo" | Web: x; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
+| "xiaomi" | Web: x; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
+| "apple" | Web: x; Android: x; iOS: x; HarmonyOS: x | Apple登录 |
+| "huawei" | Web: x; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
 
 #### GetUserInfoSuccess 的属性值 @getuserinfosuccess-values 
 
@@ -285,9 +285,9 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web: x; Android: x; iOS: x | 男 |
-| 1 | Web: x; Android: x; iOS: x | 女 |
-| 2 | Web: x; Android: x; iOS: x | 保密 |
+| "0" | Web: x; Android: x; iOS: x | 男 |
+| "1" | Web: x; Android: x; iOS: x | 女 |
+| "2" | Web: x; Android: x; iOS: x | 保密 |
 
 #### GetUserInfoFail 的属性值 @getuserinfofail-values 
 
@@ -330,47 +330,41 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/oauth/oauth
 ```uvue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
-    <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-container">
-        <view class="uni-center">登录状态</view>
-        <view v-if="userInfo == null">
-          <template v-if="logging">
-            <view class="uni-center uni-common-mt">登录中...</view>
-          </template>
-          <template v-else>
-            <view class="uni-center uni-common-mt">未登录</view>
-            <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
-          </template>
-        </view>
-        <view v-else>
-          <view class="uni-center uni-common-mt">
-            <image :src="userInfo!.avatarUrl" style="width: 60px;height: 60px;border-radius: 30px;"></image>
-          </view>
-          <view class="uni-center uni-common-mt">Hello, {{userInfo!.nickName}}</view>
-        </view>
+  <page-head :title="title"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
+    <view class="uni-container">
+      <view class="uni-center">登录状态</view>
+      <view v-if="userInfo == null">
+        <template v-if="logging">
+          <view class="uni-center uni-common-mt">登录中...</view>
+        </template>
+        <template v-else>
+          <view class="uni-center uni-common-mt">未登录</view>
+          <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
+        </template>
       </view>
-      <view class="uni-btn-v uni-common-mt">
-        <!-- #ifdef APP-HARMONY -->
-        <button type="primary" @click="hwLogin">华为登录</button>
-        <!-- #endif -->
-        <!-- #ifdef APP-IOS -->
-        <button type="primary" @click="appleLogin">Apple 登录</button>
-        <!-- #endif -->
-        <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
-        <button class="uni-common-mt" @click="clear">清空</button>
+      <view v-else>
+        <view class="uni-center uni-common-mt">
+          <image :src="userInfo!.avatarUrl" style="width: 60px;height: 60px;border-radius: 30px;"></image>
+        </view>
+        <view class="uni-center uni-common-mt">Hello, {{userInfo!.nickName}}</view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <view class="uni-btn-v uni-common-mt">
+      <!-- #ifdef APP-HARMONY -->
+      <button type="primary" @click="hwLogin">华为登录</button>
+      <!-- #endif -->
+      <!-- #ifdef APP-IOS -->
+      <button type="primary" @click="appleLogin">Apple 登录</button>
+      <!-- #endif -->
+      <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
+      <button class="uni-common-mt" @click="clear">清空</button>
+    </view>
+  </view>
 </template>
 
-<script setup lang="uts">
-  import { state, setUserInfo, UserInfo } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setUserInfo, UserInfo } from '@/store/index.ts'
 
   const title = ref('OAuth')
   const logging = ref(false)
@@ -435,8 +429,8 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
         }).then((res : UTSJSONObject) => {
           console.log(JSON.stringify(res));
           const info : UserInfo = {
-            nickName: res.getString('nickname') ?? '',
-            avatarUrl: res.getString('headimgurl') ?? ''
+            nickName: (res.nickname as string) ?? '',
+            avatarUrl: (res.headimgurl as string) ?? ''
           };
           testUserInfo.value = info;
           setUserInfo(info);

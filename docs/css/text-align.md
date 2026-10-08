@@ -116,7 +116,7 @@ text-align: start | end | left | right | center | justify | match-parent;
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { ItemType } from '@/components/enum-data/enum-data-types'
 
 	const textAlignEnum: ItemType[] = [

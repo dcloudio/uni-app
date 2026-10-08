@@ -104,9 +104,6 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/native-view/native-view
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <page-intro content="本页演示 native-view 原生视图与 UTS 插件组件：调用组件方法、native-button 与容器、native-view 样式；可跳转 native-time-picker 等原生能力。"></page-intro>
     <view style="padding-bottom: 50px;">
       <!-- #ifndef APP-HARMONY -->
@@ -117,6 +114,11 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
       <!-- native-button 通过 native-view 绑定原生button 实现的UTS插件-标准模式组件 -->
       <native-button id="helloView" class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
         @load="onload"></native-button>
+      <!-- #ifdef APP-HARMONY -->
+      <native-button-framenode id="helloFrameNodeView" class="native-button" style="width: 200px; height: 100px;"
+        :text="frameNodeButtonText" @buttonTap="onFrameNodeTap" @load="onFrameNodeLoad"></native-button-framenode>
+      <button type="primary" @tap="testCallFrameNodeMethod">调用 FrameNode 组件方法</button>
+      <!-- #endif -->
       <native-button-container></native-button-container>
       <!-- #ifndef APP-HARMONY -->
       <button type="primary" @click="gotoTimePicker">调用native-time-picker</button>
@@ -134,19 +136,27 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 
       <test-native-view v-if="showFixedTestNativeView" id="fixed-test-native-view" class="fixed-test-native-view"></test-native-view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import { createNativeButtonContext } from "@/uni_modules/native-button";
+// #ifdef APP-HARMONY
+import { createNativeButtonFrameNodeContext } from "@/uni_modules/native-button-framenode";
+// #endif
 
 const buttonText = ref("native-button")
+// #ifdef APP-HARMONY
+const frameNodeButtonText = ref("native-button")
+// #endif
 const showFixedTestNativeView = ref(true)
 let isLoad = false
 let clickCount = 0
 let buttonTapValue = ""
+// #ifdef APP-HARMONY
+let frameNodeIsLoad = false
+let frameNodeClickCount = 0
+let frameNodeButtonTapValue = ""
+// #endif
 
 function ontap(e : UniNativeViewEvent) {
   uni.showToast({
@@ -177,6 +187,31 @@ function testCallMethod() {
   context?.updateText("test code")
 }
 
+// #ifdef APP-HARMONY
+function onFrameNodeTap(e : UniNativeViewEvent) {
+  frameNodeClickCount++
+  frameNodeButtonText.value = "native-button" + frameNodeClickCount
+  frameNodeButtonTapValue = e.detail["value"] as string
+}
+
+function onFrameNodeLoad() {
+  frameNodeIsLoad = true
+}
+
+function getFrameNodeIsLoadTest() : boolean {
+  return frameNodeIsLoad
+}
+
+function getFrameNodeButtonTapValueTest() : string {
+  return frameNodeButtonTapValue
+}
+
+function testCallFrameNodeMethod() {
+  const context = createNativeButtonFrameNodeContext("helloFrameNodeView")
+  context?.updateText("test FrameNode code")
+}
+// #endif
+
 function gotoTimePicker() {
   uni.openDialogPage({
     url: "/pages/component/native-view/native-view-time-picker-dialog",
@@ -188,7 +223,16 @@ function toggleFixedTestNativeView() {
   showFixedTestNativeView.value = !showFixedTestNativeView.value
 }
 
-defineExpose({getIsLoadTest, getButtonTapValueTest, showFixedTestNativeView, toggleFixedTestNativeView})
+defineExpose({
+  getIsLoadTest,
+  getButtonTapValueTest,
+  showFixedTestNativeView,
+  toggleFixedTestNativeView,
+  // #ifdef APP-HARMONY
+  getFrameNodeIsLoadTest,
+  getFrameNodeButtonTapValueTest,
+  // #endif
+})
 
 </script>
 
@@ -247,7 +291,7 @@ defineExpose({getIsLoadTest, getButtonTapValueTest, showFixedTestNativeView, tog
     <button style="width: 50%;margin: 10px 0px;align-self: center;">测试按钮</button>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   import { NativeButton } from "@/uni_modules/native-button";
   let button : NativeButton | null = null
 

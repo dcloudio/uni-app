@@ -61,9 +61,6 @@ App平台不支持指定多个过渡效果。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <text class="uni-title-text uni-common-mt">view 组件 transition-timing-function：linear</text>
       <view :class="classValue"></view>
@@ -144,12 +141,9 @@ App平台不支持指定多个过渡效果。
       <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const classValue = ref('box')
   const textClassValue = ref('text-box')

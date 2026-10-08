@@ -184,9 +184,9 @@ canvas相关的API较多，参考如下：
 >示例
 ```vue
 <template>
-  <view class="page" id="page-canvas">
+  <view class="page" id="page-canvas-main">
     <page-intro content="本页演示 canvas 画布组件：toDataURL、createImage、createPath2D、requestAnimationFrame 等；可跳转 CanvasContext API 子页，展示绘图与异步上下文。"></page-intro>
-    <canvas id="canvas" class="canvas-element"></canvas>
+    <canvas id="canvasMain" class="canvas-element" @ready="onCanvasReady"></canvas>
     <scroll-view class="scroll-view">
       <!-- #ifdef WEB -->
       <button class="canvas-drawing-button" @click="canvasToBlob">canvasToBlob</button>
@@ -236,16 +236,14 @@ canvas相关的API较多，参考如下：
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import CanvasChild from './canvas-child.uvue'
 
   const instance = getCurrentInstance()!.proxy
+  const CANVAS_ID = 'canvasMain'
 
   type DataType = {
     title: string;
-    canvas: UniCanvasElement | null;
-    canvasContext: CanvasContext | null;
-    renderingContext: CanvasRenderingContext2D | null;
     canvasWidth: number;
     canvasHeight: number;
     dataBase64: string;
@@ -265,9 +263,6 @@ canvas相关的API较多，参考如下：
 
   const data = reactive({
     title: 'Context2D',
-    canvas: null,
-    canvasContext: null,
-    renderingContext: null,
     canvasWidth: 0,
     canvasHeight: 0,
     dataBase64: '',
@@ -285,53 +280,71 @@ canvas相关的API较多，参考如下：
     testCounter: 0
   } as DataType)
 
+  let canvas : UniCanvasElement | null = null
+  let canvasContext : CanvasContext | null = null
+  let renderingContext : CanvasRenderingContext2D | null = null
+
   const canvasChildRef = ref<ComponentPublicInstance | null>(null)
 
   const testCanvasCtx = computed(() => {
     return data.testCanvasCtx1 && data.testCanvasCtx2
   })
 
-  // #ifdef MP
-  const testImageSrc = "../../../static/test-image/logo.png"
+  // #ifdef MP-ALIPAY
+  const testImageSrc = "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"
   // #endif
-  // #ifndef MP
+  // #ifndef MP-ALIPAY
   const testImageSrc = "/static/test-image/logo.png"
   // #endif
 
-  function hidpi(canvas : UniCanvasElement) {
-    const context = canvas.getContext("2d")!;
+  function hidpi(canvas : UniCanvasElement, context : CanvasRenderingContext2D) {
     const dpr = uni.getWindowInfo().pixelRatio;
     canvas.width = canvas.offsetWidth * dpr;
     canvas.height = canvas.offsetHeight * dpr;
     context.scale(dpr, dpr);
   }
 
+  // #ifdef MP-ALIPAY
+  function hidpiAlipay(canvas : UniCanvasElement, context : CanvasRenderingContext2D) {
+    uni.createSelectorQuery().select('#' + CANVAS_ID).boundingClientRect().exec((ret) => {
+      const rect = ret.length > 0 ? ret[0] as NodeInfo : null
+      const canvasLayoutWidth = rect != null ? rect.width : 0
+      const canvasLayoutHeight = rect != null ? rect.height : 0
+      const dpr = uni.getWindowInfo().pixelRatio
+      canvas.width = canvasLayoutWidth * dpr
+      canvas.height = canvasLayoutHeight * dpr
+      context.scale(dpr, dpr)
+      data.canvasWidth = canvas.width
+      data.canvasHeight = canvas.height
+    })
+  }
+  // #endif
+
   // #ifdef WEB
   const canvasToBlob = () => {
-    data.canvasContext!.toBlob((blob : Blob) => {
+    canvasContext!.toBlob((blob : Blob) => {
       data.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
     }, 'image/jpeg', 0.95)
   }
   // #endif
 
   const canvasToDataURL = () => {
-    data.dataBase64 = data.canvasContext!.toDataURL()
+    data.dataBase64 = canvasContext!.toDataURL()
   }
 
   const onCreateImage = () => {
-    data.renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
-    let image = data.canvasContext!.createImage();
+    renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
+    let image = canvasContext!.createImage();
     image.src = testImageSrc
     image.onload = () => {
       data.testCreateImage = true
-      data.renderingContext?.drawImage(image, 0, 0, 100, 100);
+      renderingContext!.drawImage(image, 0, 0, 100, 100);
     }
   }
 
   const onCreatePath2D = () => {
-    data.renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
-    const context = data.renderingContext!
-    let path2D = data.canvasContext!.createPath2D()
+    renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
+    let path2D = canvasContext!.createPath2D()
     data.testCreatePath2D = true
     const amplitude = 64;
     const wavelength = 64;
@@ -344,18 +357,18 @@ canvas相关的API较多，参考如下：
       const y3 = y1 + amplitude;
       const x4 = x1 + wavelength;
       const y4 = y1;
-      context.moveTo(x1, y1);
+      renderingContext!.moveTo(x1, y1);
       path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
     }
-    context.stroke(path2D);
+    renderingContext!.stroke(path2D);
   }
 
   const updateFPS = (timestamp : number) => {
     data.frameCount++
     if (timestamp - data.lastTime >= 1000) {
       const timeOfFrame = (1000 / data.frameCount)
-      data.renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
-      data.renderingContext!.fillText(`${data.frameCount} / ${timeOfFrame.toFixed(3)}ms`, 10, 18)
+      renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
+      renderingContext!.fillText(`${data.frameCount} / ${timeOfFrame.toFixed(3)}ms`, 10, 18)
       data.frameCount = 0
       data.lastTime = timestamp
     }
@@ -364,7 +377,7 @@ canvas相关的API较多，参考如下：
   type StartAnimationFrameType = () => void
   let startAnimationFrame: StartAnimationFrameType = () => {}
   startAnimationFrame = () => {
-    data.taskId = data.canvasContext!.requestAnimationFrame((timestamp : number) => {
+    data.taskId = canvasContext!.requestAnimationFrame((timestamp : number) => {
         data.testFrameCount++
         updateFPS(timestamp)
         startAnimationFrame()
@@ -372,21 +385,23 @@ canvas相关的API较多，参考如下：
   }
 
   const stopAnimationFrame = () => {
-    data.canvasContext!.cancelAnimationFrame(data.taskId)
+    canvasContext!.cancelAnimationFrame(data.taskId)
     data.taskId = 0
   }
 
   const testCreateContextAsync = () => {
     uni.createCanvasContextAsync({
-      id: 'canvas',
+      id: CANVAS_ID,
+      // #ifndef MP-ALIPAY
       component: instance!,
+      // #endif
       success: () => {
         data.testCanvasCtx1 = true
       }
     })
 
     uni.createCanvasContextAsync({
-      id: 'canvas',
+      id: CANVAS_ID,
       success: () => {
         data.testCanvasCtx2 = true
       }
@@ -398,43 +413,49 @@ canvas相关的API较多，参考如下：
     data.testCounter = count
   }
 
-  // TODO 暂时使用 onReady NativeView生命周期存在问题
+  const canvasContextOptions : CreateCanvasContextAsyncOptions = {
+    id: CANVAS_ID,
+    // #ifndef MP-ALIPAY
+    component: instance!,
+    // #endif
+    success: (context : CanvasContext) => {
+      canvasContext = context;
+      renderingContext = context.getContext('2d')!;
+      canvas = renderingContext!.canvas;
+
+      // #ifdef MP-ALIPAY
+      hidpiAlipay(canvas!, renderingContext!);
+      // #endif
+      // #ifndef MP-ALIPAY
+      hidpi(canvas!, renderingContext!);
+      data.canvasWidth = canvas!.width;
+      data.canvasHeight = canvas!.height;
+      // #endif
+
+      // #ifdef WEB
+      context.toBlob((blob : Blob) => {
+        data.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
+      }, 'image/jpeg', 0.95);
+      // #endif
+      // #ifdef APP || WEB || MP
+      setTimeout(() => {
+        data.testToDataURLResult = canvasContext!.toDataURL().startsWith('data:image/png;base64')
+      }, 50)
+      // #endif
+      data.testCanvasContext = true
+    }
+  }
+
+  function onCanvasReady() {
+    // #ifdef MP-ALIPAY
+    uni.createCanvasContextAsync(canvasContextOptions)
+    // #endif
+  }
+
   onReady(() => {
-    uni.createCanvasContextAsync({
-      id: 'canvas',
-      component: instance!,
-      success: (context : CanvasContext) => {
-        data.canvasContext = context;
-        data.renderingContext = context.getContext('2d')!;
-        data.canvas = data.renderingContext!.canvas;
-
-        hidpi(data.canvas!);
-        data.canvasWidth = data.canvas!.width;
-        data.canvasHeight = data.canvas!.height;
-
-        // #ifdef WEB
-        context.toBlob((blob : Blob) => {
-          data.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
-        }, 'image/jpeg', 0.95);
-        // #endif
-        // #ifdef APP || WEB || MP
-        setTimeout(() => {
-          data.testToDataURLResult = data.canvasContext!.toDataURL().startsWith('data:image/png;base64')
-        }, 50)
-        // #endif
-        data.testCanvasContext = true
-      }
-    })
-  })
-
-  onReady(() => {
-    // 同步调用方式，仅支持 app/web
-    // let canvas = uni.getElementById("canvas") as UniCanvasElement
-    // data.renderingContext = canvas.getContext("2d")
-    // hidpi(canvas);
-    // data.canvas = canvas;
-    // data.canvasWidth = canvas.width;
-    // data.canvasHeight = canvas.height;
+    // #ifndef MP-ALIPAY
+    uni.createCanvasContextAsync(canvasContextOptions)
+    // #endif
   })
 
   onLoad(() => {

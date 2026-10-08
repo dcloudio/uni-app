@@ -304,7 +304,7 @@ if (view != null && view instanceof UITextView) {
 
 >示例
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type DataType = {
@@ -469,10 +469,7 @@ if (view != null && view instanceof UITextView) {
 </script>
 
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="main uni-theme-root">
+    <view class="main">
       <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea themed-textarea" :auto-focus="true" :focus="data.focus_boolean"
         :confirm-hold="data.confirm_hold_boolean" :auto-height="data.auto_height_boolean" :fixed="data.fixed_boolean"
         :show-confirm-bar="data.show_confirm_bar_boolean" :adjust-position="data.adjust_position_boolean"
@@ -485,30 +482,38 @@ if (view != null && view instanceof UITextView) {
         @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus" @change="textarea_change"
         style="padding: 10px;height: 200px" />
     </view>
-    <view class="textarea-page uni-theme-root">
-      <boolean-data :defaultValue="false" title="键盘弹起时，是否自动上推页面（限非 Web 平台）"
+    <view class="textarea-page">
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data :value="false" title="键盘弹起时，是否自动上推页面（限非 Web 平台）"
         @change="change_adjust_position_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否自动增高，设置auto-height时，style.height不生效"
+      <!-- #endif -->
+      <boolean-data :value="false" title="是否自动增高，设置auto-height时，style.height不生效"
         @change="change_auto_height_boolean"></boolean-data>
-      <boolean-data :defaultValue="data.focus_boolean" title="获取焦点" @change="change_focus_boolean"></boolean-data>
-      <boolean-data :defaultValue="true" title="首次自动获取焦点" @change="change_auto_focus_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="改变光标颜色为透明" @change="change_cursor_color_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="设置禁用输入框"
+      <boolean-data :value="data.focus_boolean" title="获取焦点" @change="change_focus_boolean"></boolean-data>
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data :value="true" title="首次自动获取焦点" @change="change_auto_focus_boolean"></boolean-data>
+      <boolean-data :value="false" title="改变光标颜色为透明" @change="change_cursor_color_boolean"></boolean-data>
+      <!-- #endif -->
+      <boolean-data :value="false" title="设置禁用输入框"
         @change="change_disabled_boolean"></boolean-data>
       <!-- #ifndef MP-ALIPAY -->
       <enum-data :items="data.confirm_type_list" title="confirm-type，设置键盘右下角按钮。"
         @change="radio_change_confirm_type"></enum-data>
       <!-- #endif -->
-      <boolean-data :defaultValue="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data :value="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
         @change="change_confirm_hold_boolean"></boolean-data>
+      <!-- #endif -->
       <!-- #ifndef MP-ALIPAY -->
       <enum-data :items="data.inputmode_enum" title="input-mode，控制软键盘类型。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
         @change="radio_change_inputmode_enum"></enum-data>
       <!-- #endif -->
-      <boolean-data :defaultValue="false" title="是否显示键盘上方带有“完成”按钮那一栏（仅限小程序平台）"
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data :value="false" title="是否显示键盘上方带有“完成”按钮那一栏（仅限小程序平台）"
         @change="change_show_confirm_bar_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true（仅限小程序平台）"
+      <boolean-data :value="false" title="如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true（仅限小程序平台）"
         @change="change_fixed_boolean"></boolean-data>
+      <!-- #endif -->
 
 
       <view class="title-wrap">
@@ -519,6 +524,7 @@ if (view != null && view instanceof UITextView) {
           :maxlength="10" />
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="title-wrap">
         <view class="textarea-title-text">cursor-spacing、placeholder-class、placeholder-style例子(harmony 不支持设置 placeholder backgroundColor)</view>
       </view>
@@ -534,11 +540,12 @@ if (view != null && view instanceof UITextView) {
           :selection-start="data.selectionStart" :selection-end="data.selectionEnd" @blur="onSelectionBlurChange" />
       </view>
 
-      <boolean-data :defaultValue="data.hold_keyboard" title="设置hold-keyboard"
+      <boolean-data :value="data.hold_keyboard" title="设置hold-keyboard"
         @change="changeHoldKeyboard"></boolean-data>
       <view class="textarea-wrap">
         <textarea class="textarea-instance" :hold-keyboard="data.hold_keyboard" />
       </view>
+      <!-- #endif -->
       <view class="title-wrap">
         <view>同时存在 v-model 和 value</view>
       </view>
@@ -547,11 +554,13 @@ if (view != null && view instanceof UITextView) {
           <textarea id="both-model-value" class="textarea-instance" v-model='data.defaultModel' value='456'></textarea>
       </view>
 
-      <boolean-data :defaultValue="data.adjust_position" title="设置adjust-position"
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data :value="data.adjust_position" title="设置adjust-position"
         @change="changeAdjustPosition"></boolean-data>
       <view class="textarea-wrap">
         <textarea class="textarea-instance" :adjust-position="data.adjust_position" />
       </view>
+      <!-- #endif -->
       <view v-if="data.isAutoTest" class="textarea-wrap">
         <textarea id="test-width" class="test-width" value="123456" placeholder="" />
       </view>
@@ -591,12 +600,14 @@ if (view != null && view instanceof UITextView) {
       <view class="textarea-wrap">
         <textarea class="textarea-instance" style="height: 50px;text-align: right;" value="同时设置value与text-align"></textarea>
       </view>
+      <!-- #ifndef MP-ALIPAY -->
       <view class="title-wrap">
         <view>scroll-view嵌套textarea滚动</view>
       </view>
-      <scroll-view  style="height: 150px;" direction="vertical">
+      <scroll-view style="height: 150px;" direction="vertical">
       	<textarea class="textarea-instance" :adjust-position="false" :auto-height="true" :value="data.value2" />
       </scroll-view>
+      <!-- #endif -->
       <view class="textarea-wrap">
         <textarea class="textarea-instance" style="height: 60px;padding: 20px;" value="style padding:20px"></textarea>
       </view>
@@ -669,9 +680,6 @@ if (view != null && view instanceof UITextView) {
           :adjust-position="true" />
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
 <style>

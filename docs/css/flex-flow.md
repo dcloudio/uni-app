@@ -65,9 +65,6 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -228,12 +225,9 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
           <input-data :defaultValue="data.flexFlow" title="flex-flow 自定义值" type="text" @confirm="inputChangeFlexFlow"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const flexFlowEnum: ItemType[] = [

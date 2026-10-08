@@ -168,9 +168,9 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
 >示例
 ```vue
 <template>
-  <view class="image-page uni-theme-root">
+  <view class="image-page">
     <page-head :title="data.title"></page-head>
-    <scroll-view class="uni-theme-root" style="flex: 1">
+    <scroll-view style="flex: 1">
       <view class="uni-padding-wrap">
         <!-- image样式大合集 -->
         <text class="uni-title-text">image样式大合集</text>
@@ -189,19 +189,14 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
         <!-- 原有的基础拍平测试 -->
         <text class="uni-title-text uni-common-mt">基础（右边为拍平）</text>
         <view class="uni-center image-bg">
-            <!-- #ifndef APP-IOS -->
-            <image class="image"  :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
-            <image class="image"  :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
-            <!-- #endif -->
-            <!-- #ifdef APP-IOS -->
-            <image class="image"  mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
-            <image class="image"  mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
-            <!-- #endif -->
+          <image class="image" mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
+          <image class="image" mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
         </view>
 
         <button class="uni-btn" @tap="imageFormat">图片格式示例</button>
         <button class="uni-btn" @tap="imageMode">图片缩放模式示例</button>
         <button class="uni-btn" @tap="imagePath">图片路径示例</button>
+
         <button class="uni-btn" @tap="imageLarge">大图示例</button>
         <button class="uni-btn" @tap="imageLong">长图示例</button>
         <button class="uni-btn" @tap="imageOrientation">图片方向修正示例</button>
@@ -213,6 +208,9 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
         <navigator url="/pages/template/2000-image/2000-image-svg">
           <button class="uni-btn">组件性能测试(SVG)</button>
         </navigator>
+        <!-- #ifdef APP-ANDROID -->
+        <button class="uni-btn" @tap="imageFadeShow">fade-show 属性示例</button>
+        <!-- #endif -->
         <!-- #endif -->
       </view>
     </scroll-view>
@@ -223,17 +221,17 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
     </view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   import Child from './child.uvue'
   type DataType = {
-    title: string;
-    imageSrc: string.ImageURIString;
-    loadError: boolean;
-    autoTest: boolean;
-    setCookieImage: string;
-    verifyCookieImage: string;
-    eventLoad: UTSJSONObject | null;
-    eventError: UTSJSONObject | null;
+    title : string;
+    imageSrc : string.ImageURIString;
+    loadError : boolean;
+    autoTest : boolean;
+    setCookieImage : string;
+    verifyCookieImage : string;
+    eventLoad : UTSJSONObject | null;
+    eventError : UTSJSONObject | null;
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -248,7 +246,7 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
     eventError: null
   } as DataType)
 
-  const error = (event: ImageErrorEvent) => {
+  const error = (event : ImageErrorEvent) => {
     data.loadError = true
     console.log(event.type, event.detail);
     if (data.autoTest) {
@@ -260,7 +258,7 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
     }
   }
 
-  const load = (event: ImageLoadEvent) => {
+  const load = (event : ImageLoadEvent) => {
     console.log(event.type, event.detail);
     if (data.autoTest) {
       data.eventLoad = {
@@ -290,6 +288,12 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
     });
   }
 
+  const imageFadeShow = () => {
+    uni.navigateTo({
+      url: '/pages/component/image/image-fade-show'
+    });
+  }
+
   const imageLarge = () => {
     uni.navigateTo({
       url: '/pages/component/image/image-large'
@@ -315,6 +319,7 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
     imageFormat,
     imageMode,
     imagePath,
+    imageFadeShow,
     imageLarge,
     imageLong
   })

@@ -61,9 +61,6 @@ position: static | relative | absolute | sticky | fixed;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1">
       <view class="common-box">
         <view>
@@ -270,13 +267,9 @@ position: static | relative | absolute | sticky | fixed;
       </view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
-
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const positionEnum : ItemType[] = [

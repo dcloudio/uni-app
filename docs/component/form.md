@@ -162,10 +162,7 @@ reset在浏览器W3C的策略是还原、重置。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="scroll-view uni-theme-root">
-  <!-- #endif -->
-    <view class="page uni-theme-root">
+    <view class="page">
       <form @submit="onFormSubmit" @reset="onFormReset">
         <view class="uni-form-item">
           <text class="title">姓名</text>
@@ -262,12 +259,9 @@ reset在浏览器W3C的策略是还原、重置。
       <view class="result">提交的表单数据</view>
       <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   function getDate(type?: string): string {
     const date = new Date();
 
@@ -405,7 +399,7 @@ reset在浏览器W3C的策略是还原、重置。
   }
 
   const onDateChange = (e: UniPickerChangeEvent) => {
-    data.datePickerValue = e.detail.value as string
+    data.datePickerValue = e.detail.value.split('/').join('-')
   }
 
   const onTimeChange = (e: UniPickerChangeEvent) => {

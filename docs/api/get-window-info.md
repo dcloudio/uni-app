@@ -119,7 +119,7 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
 >示例
 ```vue
 <template>
-  <view class="uni-theme-root">
+  <view>
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
       <view class="uni-list">
@@ -147,10 +147,10 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
     </view>
   </view>
 </template>
-<script setup lang="uts">
-  import { setStatusBarHeight, setSafeArea } from '@/store/index.uts'
+<script setup lang="ts">
+  import { setStatusBarHeight, setSafeArea } from '@/store/index.ts'
   // #ifdef APP-ANDROID
-  import type { SafeArea } from '@/store/index.uts'
+  import type { SafeArea } from '@/store/index.ts'
   // #endif
 
   type Item = {
@@ -194,15 +194,10 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
     // #endif
     data.items = [] as Item[];
 
-    const res_str = JSON.stringify(res);
-    const res_obj = JSON.parseObject(res_str);
-    const res_map = res_obj!.toMap();
-    let keys = [] as string[]
-    res_map.forEach((_, key) => {
-      keys.push(key);
-    });
+    const res_obj = JSON.parse(JSON.stringify(res));
+    const keys = Object.keys(res_obj);
     keys.sort().forEach(key => {
-      const value = res[key];
+      const value = res_obj[key];
       if (value != null) {
         const item = {
           label: key,

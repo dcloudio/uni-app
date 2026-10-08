@@ -167,7 +167,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-link
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type Data = {
     lastEvent: string
   }

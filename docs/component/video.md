@@ -182,8 +182,8 @@ UniVideoFullScreenChangeEvent -- Extends --> UniVideoEvent
 
 | 合法值 | 描述 |
 | :- | :- |
-| vertical | 竖屏 |
-| horizontal | 横屏 |
+| "vertical" | 竖屏 |
+| "horizontal" | 横屏 |
 
 
 #### UniVideoErrorEvent
@@ -447,7 +447,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 >示例
 ```vue
 <template>
-  <view id="video-parent" class="video-page uni-flex-item uni-theme-root" @touchstart="onVideoParentTouchStart" @touchmove="onVideoParentTouchMove"
+  <view id="video-parent" class="video-page uni-flex-item" @touchstart="onVideoParentTouchStart" @touchmove="onVideoParentTouchMove"
     @touchend="onVideoParentTouchEnd">
     <video class="video" ref="video" id="video" :header="data.header" :src="data.src" :autoplay="data.autoplay" :loop="data.loop"
       :muted="data.muted" :initial-time="data.initialTime" :duration="data.duration" :controls="data.controls" :danmu-btn="data.danmuBtn && fullscreenShowDanmuBtn"
@@ -470,8 +470,9 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
         @keyboardheightchange="onSendDanmuKeyboardHeightChange" @blur="onSendDanmuBlur"></input>
       <!-- #endif -->
 
+      <!-- #ifndef MP -->
       <template #controls>
-        <view  v-if="data.subCompControlsShow" class="video-fullscreen_controls">
+        <view v-if="data.subCompControlsShow" class="video-fullscreen_controls">
           <view style="flex-direction: row;justify-content: center;align-items: center;">
             <view class="control-btn" @click="togglePlay">
               <text class="control-icon">{{ data.isPlaying ? ICON_PAUSH : ICON_PLAY }}</text>
@@ -491,8 +492,9 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
           </view>
         </view>
       </template>
+      <!-- #endif -->
     </video>
-    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item uni-theme-root">
+    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
       <view class="uni-btn-v">
         <navigator url="/pages/component/video/video-format">
           <button type="primary" @click="pause">视频格式示例</button>
@@ -510,15 +512,17 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
         <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
       </view>
       <!-- #endif -->
-      <boolean-data :defaultValue="data.subCompControlsEnable" title="全屏后自定义 controls"
+      <!-- #ifndef MP -->
+      <boolean-data :value="data.subCompControlsEnable" title="全屏后自定义 controls"
         @change="onSubCompControlsEnable"></boolean-data>
+      <!-- #endif -->
       <view>
         <!-- #ifndef MP-ALIPAY -->
-        <boolean-data :defaultValue="data.subCompEnable" title="子组件实现快进、快退、发送弹幕功能（全屏后显示）"
+        <boolean-data :value="data.subCompEnable" title="子组件实现快进、快退、发送弹幕功能（全屏后显示）"
           @change="onSubCompEnableChange"></boolean-data>
         <!-- #endif -->
         <!-- #ifdef MP-ALIPAY -->
-        <boolean-data :defaultValue="data.subCompEnable" title="子组件实现快进、快退功能（全屏后显示）"
+        <boolean-data :value="data.subCompEnable" title="子组件实现快进、快退功能（全屏后显示）"
           @change="onSubCompEnableChange"></boolean-data>
         <!-- #endif -->
       </view>
@@ -573,47 +577,53 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
       </view>
 
       <!-- #ifndef MP-ALIPAY -->
-      <boolean-data title="设置是否展示弹幕（播放前设置有效）" :defaultValue="data.enableDanmu" @change="onEnableDanmuChange"></boolean-data>
+      <boolean-data title="设置是否展示弹幕（播放前设置有效）" :value="data.enableDanmu" @change="onEnableDanmuChange"></boolean-data>
       <!-- #endif -->
-      <boolean-data title="设置是否自动播放（播放前设置有效）" :defaultValue="data.autoplay" @change="onAutoplayChange"></boolean-data>
-      <boolean-data title="设置是否循环播放（播放完成后生效）" :defaultValue="data.loop" @change="onLoopChange"></boolean-data>
-      <boolean-data title="设置是否静音播放" :defaultValue="data.muted" @change="onMutedChange"></boolean-data>
-      <boolean-data title="设置是否显示默认播放控件" :defaultValue="data.controls" @change="onControlsChange"></boolean-data>
+      <boolean-data title="设置是否自动播放（播放前设置有效）" :value="data.autoplay" @change="onAutoplayChange"></boolean-data>
+      <boolean-data title="设置是否循环播放（播放完成后生效）" :value="data.loop" @change="onLoopChange"></boolean-data>
+      <boolean-data title="设置是否静音播放" :value="data.muted" @change="onMutedChange"></boolean-data>
+      <boolean-data title="设置是否显示默认播放控件" :value="data.controls" @change="onControlsChange"></boolean-data>
       <!-- #ifndef MP-ALIPAY -->
-      <boolean-data title="设置是否显示弹幕按钮" :defaultValue="data.danmuBtn" @change="onDanmuBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示弹幕按钮" :value="data.danmuBtn" @change="onDanmuBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示进度条" :value="data.showProgress" @change="onShowProgressChange"></boolean-data>
       <!-- #endif -->
-      <boolean-data title="设置是否显示进度条" :defaultValue="data.showProgress" @change="onShowProgressChange"></boolean-data>
-      <boolean-data title="设置是否显示全屏按钮" :defaultValue="data.showFullscreenBtn"
+      <boolean-data title="设置是否显示全屏按钮" :value="data.showFullscreenBtn"
         @change="onShowFullscreenBtnChange"></boolean-data>
-      <boolean-data title="设置是否显示视频底部控制栏的播放按钮" :defaultValue="data.showPlayBtn" @change="onShowPlayBtnChange"></boolean-data>
-      <boolean-data title="设置是否显示静音按钮（仅限非 Web 平台）" :defaultValue="data.showMuteBtn"
+      <boolean-data title="设置是否显示视频底部控制栏的播放按钮" :value="data.showPlayBtn" @change="onShowPlayBtnChange"></boolean-data>
+      <boolean-data title="设置是否显示静音按钮（仅限非 Web 平台）" :value="data.showMuteBtn"
         @change="onShowMuteBtnChange"></boolean-data>
-      <boolean-data title="设置是否显示视频中间的播放按钮" :defaultValue="data.showCenterPlayBtn"
+      <boolean-data title="设置是否显示视频中间的播放按钮" :value="data.showCenterPlayBtn"
         @change="onShowCenterPlayBtnChange"></boolean-data>
-      <boolean-data title="设置是否显示loading控件" :defaultValue="data.showLoading" @change="onShowLoadingChange"></boolean-data>
-      <boolean-data title="设置是否开启控制进度的手势" :defaultValue="data.enableProgressGesture"
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data title="设置是否显示loading控件" :value="data.showLoading" @change="onShowLoadingChange"></boolean-data>
+      <!-- #endif -->
+      <boolean-data title="设置是否开启控制进度的手势" :value="data.enableProgressGesture"
         @change="onEnableProgressGestureChange"></boolean-data>
-      <boolean-data title="设置是否开启播放手势,双击播放暂停（仅限非 Web 平台）" :defaultValue="data.enablePlayGesture"
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data title="设置是否开启播放手势,双击播放暂停（仅限非 Web 平台）" :value="data.enablePlayGesture"
         @change="onEnablePlayGestureChange"></boolean-data>
-      <!-- #ifndef WEB -->
-      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 page-gesture" :defaultValue="data.pageGesture"
+      <!-- #endif -->
+      <!-- #ifndef WEB || MP-ALIPAY -->
+      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 page-gesture" :value="data.pageGesture"
         @change="onPageGestureChange"></boolean-data>
       <!-- #endif -->
-      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 vslide-gesture（仅限非 Web 平台）" :defaultValue="data.vslideGesture"
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 vslide-gesture（仅限非 Web 平台）" :value="data.vslideGesture"
         @change="onVslideGestureChange"></boolean-data>
-      <boolean-data title="全屏模式下，设置是否开启亮度与音量调节手势（仅限非 Web 平台）" :defaultValue="data.vslideGestureInFullscreen"
+      <boolean-data title="全屏模式下，设置是否开启亮度与音量调节手势（仅限非 Web 平台）" :value="data.vslideGestureInFullscreen"
         @change="onVslideGestureInFullscreenChange"></boolean-data>
+      <!-- #endif -->
       <enum-data title="视频与video容器大小不一致时的表现" :items="data.objectFitItemTypes"
         @change="onObjectFitChange"></enum-data>
-      <!-- #ifndef APP-HARMONY -->
-      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 Android、iOS 平台，播放前设置有效）" :defaultValue="data.httpCache"
+      <!-- #ifndef APP-HARMONY || MP-ALIPAY -->
+      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 Android、iOS 平台，播放前设置有效）" :value="data.httpCache"
         @change="onHttpCacheChange"></boolean-data>
       <!-- #endif -->
     </scroll-view>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
   type RectType = {
@@ -956,10 +966,11 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 
   const onSendDanmuKeyboardHeightChange = (event : UniInputKeyboardHeightChangeEvent) => {
     const element = uni.getElementById('input-send-danmu') as UniElement;
-    if (event.detail.height.toInt() == 0) {
+    let height = event.detail.height;
+    if (height == 0) {
       element.style.setProperty('bottom', '50px');
     } else {
-      element.style.setProperty('bottom', event.detail.height + element.getBoundingClientRect().height);
+      element.style.setProperty('bottom', height + element.getBoundingClientRect().height);
     }
   }
 

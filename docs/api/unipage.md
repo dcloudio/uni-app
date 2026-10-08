@@ -790,9 +790,9 @@ querySelectorAll
 ```vue
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view uni-theme-root">
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
-    <view id="container" class="current-pages-page uni-theme-root">
+    <view id="container" class="current-pages-page">
       <page-head title="getCurrentPages"></page-head>
       <view class="uni-padding-wrap">
         <button @click="_getCurrentPages">getCurrentPages</button>
@@ -851,11 +851,11 @@ querySelectorAll
             }}</text>
           </view>
           <view class="set-value" v-if="item.type == 'boolean'">
-            <boolean-data :defaultValue="data.currentPageStyle.getBoolean(item.key)" :title="item.key"
-              @change="switchChange(item.key, $event)"></boolean-data>
+            <boolean-data :value="(data.currentPageStyle[item.key] as boolean)" :title="item.key"
+              @change="switchChange(item.key, $event as boolean)"></boolean-data>
           </view>
           <view class="set-value" v-else-if="item.type == 'number'">
-            <slider :value="data.currentPageStyle.getNumber(item.key)" :show-value="true"
+            <slider :value="(data.currentPageStyle[item.key] as number)" :show-value="true"
               @change="sliderChange(item.key, $event as UniSliderChangeEvent)" />
           </view>
           <view class="set-value" v-else-if="item.type == 'string'">
@@ -881,9 +881,9 @@ querySelectorAll
   <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import ComponentCheckPage from './component-check-page.uvue'
-  import { PageStyleItem, PageStyleArray } from './page-style.uts';
+  import { PageStyleItem, PageStyleArray } from './page-style.ts';
 
   const currentInstance = getCurrentInstance()
 

@@ -93,22 +93,22 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
       </picker-view-column>
     </picker-view>
     <!-- #ifndef MP-ALIPAY -->
-    <boolean-data :defaultValue="false" title="设置选择器中间选中框的样式" @change="setIndicatorStyle"></boolean-data>
+    <boolean-data :value="false" title="设置选择器中间选中框的样式" @change="setIndicatorStyle"></boolean-data>
     <!-- #endif -->
     <!-- #ifdef WEB || MP-WEIXIN -->
-    <boolean-data :defaultValue="false" title="设置选择器中间选中框的类名" @change="setIndicatorClass"></boolean-data>
-    <boolean-data :defaultValue="false" title="设置蒙层的样式" @change="setMaskStyle"></boolean-data>
-    <boolean-data :defaultValue="false" title="设置蒙层的类名" @change="setMaskClass"></boolean-data>
+    <boolean-data :value="false" title="设置选择器中间选中框的类名" @change="setIndicatorClass"></boolean-data>
+    <boolean-data :value="false" title="设置蒙层的样式" @change="setMaskStyle"></boolean-data>
+    <boolean-data :value="false" title="设置蒙层的类名" @change="setMaskClass"></boolean-data>
     <!-- #endif -->
     <!-- #ifdef APP -->
-    <boolean-data :defaultValue="false" title="设置蒙层上半部分的样式" @change="setMaskTopStyle"></boolean-data>
-    <boolean-data :defaultValue="false" title="设置蒙层下半部分的样式" @change="setMaskBottomStyle"></boolean-data>
+    <boolean-data :value="false" title="设置蒙层上半部分的样式" @change="setMaskTopStyle"></boolean-data>
+    <boolean-data :value="false" title="设置蒙层下半部分的样式" @change="setMaskBottomStyle"></boolean-data>
     <!-- #endif -->
   </view>
 </template>
 
-<script setup lang="uts">
-  import { state, setEventCallbackNum } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setEventCallbackNum } from '@/store/index.ts'
 
   type DataType = {
     title: string;

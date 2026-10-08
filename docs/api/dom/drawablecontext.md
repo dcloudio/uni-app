@@ -368,26 +368,20 @@
 > 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
 ```uvue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view>
-      <page-intro content="本页演示 canvas 绘制：在 view 上绘制文本、线条、圆、虚线、图形、样式、arcto 等。"></page-intro>
-      <view class="drawing" id="draw-text-view"></view>
-      <view class="drawing" id="draw-line-view"></view>
-      <view class="drawing" id="draw-circle-view"></view>
-      <view class="drawing" id="draw-dash-line"></view>
-      <view class="drawing" id="draw-house"></view>
-      <view class="drawing" id="draw-style"></view>
-      <view class="drawing" id="draw-odd"></view>
-      <view class="drawing" id="draw-arcto"></view>
-    </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  <view>
+    <page-intro content="本页演示 canvas 绘制：在 view 上绘制文本、线条、圆、虚线、图形、样式、arcto 等。"></page-intro>
+    <view class="drawing" id="draw-text-view"></view>
+    <view class="drawing" id="draw-line-view"></view>
+    <view class="drawing" id="draw-circle-view"></view>
+    <view class="drawing" id="draw-dash-line"></view>
+    <view class="drawing" id="draw-house"></view>
+    <view class="drawing" id="draw-style"></view>
+    <view class="drawing" id="draw-odd"></view>
+    <view class="drawing" id="draw-arcto"></view>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   var y = 160
   const texts: string[] = [
     'HBuilderX，轻巧、极速，极客编辑器',

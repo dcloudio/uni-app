@@ -26,12 +26,12 @@
 
 ##### secretType 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 'request' | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |
-| response |   |
-| both |   |
-| none |   | 
+| 合法值 |
+| :- |
+| "request" |
+| "response" |
+| "both" |
+| "none" | 
 
 
 ### 返回值 

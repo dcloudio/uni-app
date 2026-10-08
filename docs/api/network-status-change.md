@@ -128,7 +128,7 @@
 >示例
 ```vue
 <template>
-  <view class="network-page uni-theme-root">
+  <view class="network-page">
   <page-head title="networkStatusChange"></page-head>
   <view class="uni-list-cell-padding status-box">
     <text class="uni-title-text">网络状态</text>
@@ -152,7 +152,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   const isConnected = ref(false)
   const networkType = ref('unknown')
   const listenStatus = ref('未监听')

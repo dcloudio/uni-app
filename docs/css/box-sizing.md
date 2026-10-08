@@ -58,10 +58,7 @@ box-sizing: content-box | border-box;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-  <view class="uni-theme-root" style="flex-grow: 1;">
+  <view style="flex-grow: 1;">
     <view>
       <text class="desc-text">content-box（标准盒模型，默认值）</text>
       <text class="help-text">width 只包括内容宽度，padding 和 border 在盒子外部向外扩展</text>
@@ -226,12 +223,9 @@ box-sizing: content-box | border-box;
       </view>
     <!-- #endif -->
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const boxSizingEnum: ItemType[] = [

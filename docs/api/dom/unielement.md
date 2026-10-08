@@ -298,7 +298,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
   </scroll-view>
   <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 
   import child from './child.uvue'
 
@@ -760,284 +760,278 @@ if(webViewElement != null) {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view uni-theme-root">
-  <!-- #endif -->
-    <view class="page uni-theme-root" id="page">
-      <page-head :title="title"></page-head>
-      <page-intro content="本页演示元素获取布局矩形：getBoundingClientRectAsync 异步接口与 getBoundingClientRect 同步方法，返回 x、y、width、height、left、top、right、bottom；对 view、text、image、scroll-view 等组件分别测试，并含拍平（flatten）对比，以及 box-shadow 导致尺寸变大的现象演示。"></page-intro>
-      <button class="uni-common-mt" @click="getBoundingClientRectAsync">getBoundingClientRectAsync</button>
-      <view id="rect-test" ref="rectTest" class="rect-test"></view>
-      <view class="rect-info" v-if="data.rectInfo != null">
-        <view class="node-info-item">
-          <text class="node-info-item-k">x: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.x}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">y: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.y}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">width: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.width}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">height: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.height}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">left: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.left}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">top: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.top}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">right: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.right}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">bottom: </text>
-          <text class="node-info-item-v">{{data.rectInfo!.bottom}}</text>
-        </view>
+  <view class="page" id="page">
+    <page-head :title="title"></page-head>
+    <page-intro content="本页演示元素获取布局矩形：getBoundingClientRectAsync 异步接口与 getBoundingClientRect 同步方法，返回 x、y、width、height、left、top、right、bottom；对 view、text、image、scroll-view 等组件分别测试，并含拍平（flatten）对比，以及 box-shadow 导致尺寸变大的现象演示。"></page-intro>
+    <button class="uni-common-mt" @click="getBoundingClientRectAsync">getBoundingClientRectAsync</button>
+    <view id="rect-test" ref="rectTest" class="rect-test"></view>
+    <view class="rect-info" v-if="data.rectInfo != null">
+      <view class="node-info-item">
+        <text class="node-info-item-k">x: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.x}}</text>
       </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">y: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.y}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">width: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.width}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">height: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.height}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">left: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.left}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">top: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.top}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">right: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.right}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">bottom: </text>
+        <text class="node-info-item-v">{{data.rectInfo!.bottom}}</text>
+      </view>
+    </view>
 
-      <!-- #ifndef MP -->
-      <!-- 新增 getBoundingClientRect 同步方法测试 -->
-      <view class="section-divider"></view>
-      <text class="section-title">getBoundingClientRect 方法测试</text>
+    <!-- #ifndef MP -->
+    <!-- 新增 getBoundingClientRect 同步方法测试 -->
+    <view class="section-divider"></view>
+    <text class="section-title">getBoundingClientRect 方法测试</text>
 
-      <!-- View 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" type="default" @click="getViewRect">View</button>
-          <button class="btn-small" @click="getViewRectFlat">View(拍平测试)</button>
-        </view>
-        <view class="test-elements">
-          <view id="rect-test-view" class="rect-test-small"></view>
-          <view id="rect-test-view-flat" class="rect-test-small" flatten></view>
-        </view>
+    <!-- View 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" type="default" @click="getViewRect">View</button>
+        <button class="btn-small" @click="getViewRectFlat">View(拍平测试)</button>
       </view>
-      <view class="rect-row"  v-if="syncData.viewRectInfo != null || syncData.viewRectInfoFlat != null">
-        <view class="rect-data-col" v-if="syncData.viewRectInfo != null">
-          <text class="rect-data-item">x: {{syncData.viewRectInfo!.x}}</text>
-          <text class="rect-data-item">y: {{syncData.viewRectInfo!.y}}</text>
-          <text class="rect-data-item">width: {{syncData.viewRectInfo!.width}}</text>
-          <text class="rect-data-item">height: {{syncData.viewRectInfo!.height}}</text>
-          <text class="rect-data-item">left: {{syncData.viewRectInfo!.left}}</text>
-          <text class="rect-data-item">top: {{syncData.viewRectInfo!.top}}</text>
-          <text class="rect-data-item">right: {{syncData.viewRectInfo!.right}}</text>
-          <text class="rect-data-item">bottom: {{syncData.viewRectInfo!.bottom}}</text>
-        </view>
-        <view class="rect-data-col" v-if="syncData.viewRectInfoFlat != null">
-          <text class="rect-data-item">x: {{syncData.viewRectInfoFlat!.x}}</text>
-          <text class="rect-data-item">y: {{syncData.viewRectInfoFlat!.y}}</text>
-          <text class="rect-data-item">width: {{syncData.viewRectInfoFlat!.width}}</text>
-          <text class="rect-data-item">height: {{syncData.viewRectInfoFlat!.height}}</text>
-          <text class="rect-data-item">left: {{syncData.viewRectInfoFlat!.left}}</text>
-          <text class="rect-data-item">top: {{syncData.viewRectInfoFlat!.top}}</text>
-          <text class="rect-data-item">right: {{syncData.viewRectInfoFlat!.right}}</text>
-          <text class="rect-data-item">bottom: {{syncData.viewRectInfoFlat!.bottom}}</text>
-        </view>
+      <view class="test-elements">
+        <view id="rect-test-view" class="rect-test-small"></view>
+        <view id="rect-test-view-flat" class="rect-test-small" flatten></view>
       </view>
+    </view>
+    <view class="rect-row"  v-if="syncData.viewRectInfo != null || syncData.viewRectInfoFlat != null">
+      <view class="rect-data-col" v-if="syncData.viewRectInfo != null">
+        <text class="rect-data-item">x: {{syncData.viewRectInfo!.x}}</text>
+        <text class="rect-data-item">y: {{syncData.viewRectInfo!.y}}</text>
+        <text class="rect-data-item">width: {{syncData.viewRectInfo!.width}}</text>
+        <text class="rect-data-item">height: {{syncData.viewRectInfo!.height}}</text>
+        <text class="rect-data-item">left: {{syncData.viewRectInfo!.left}}</text>
+        <text class="rect-data-item">top: {{syncData.viewRectInfo!.top}}</text>
+        <text class="rect-data-item">right: {{syncData.viewRectInfo!.right}}</text>
+        <text class="rect-data-item">bottom: {{syncData.viewRectInfo!.bottom}}</text>
+      </view>
+      <view class="rect-data-col" v-if="syncData.viewRectInfoFlat != null">
+        <text class="rect-data-item">x: {{syncData.viewRectInfoFlat!.x}}</text>
+        <text class="rect-data-item">y: {{syncData.viewRectInfoFlat!.y}}</text>
+        <text class="rect-data-item">width: {{syncData.viewRectInfoFlat!.width}}</text>
+        <text class="rect-data-item">height: {{syncData.viewRectInfoFlat!.height}}</text>
+        <text class="rect-data-item">left: {{syncData.viewRectInfoFlat!.left}}</text>
+        <text class="rect-data-item">top: {{syncData.viewRectInfoFlat!.top}}</text>
+        <text class="rect-data-item">right: {{syncData.viewRectInfoFlat!.right}}</text>
+        <text class="rect-data-item">bottom: {{syncData.viewRectInfoFlat!.bottom}}</text>
+      </view>
+    </view>
 
-      <!-- Text 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="getTextRect">Text</button>
-          <button class="btn-small" @click="getTextRectFlat">Text(拍平测试)</button>
-        </view>
-        <view class="test-elements">
-          <text id="rect-test-text" class="rect-test-text-small">测试文本</text>
-          <text id="rect-test-text-flat" class="rect-test-text-small" flatten>测试文本拍平</text>
-        </view>
+    <!-- Text 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="getTextRect">Text</button>
+        <button class="btn-small" @click="getTextRectFlat">Text(拍平测试)</button>
       </view>
-      <view class="rect-row" v-if="syncData.textRectInfo != null || syncData.textRectInfoFlat != null">
-        <view class="rect-data-col" v-if="syncData.textRectInfo != null">
-          <text class="rect-data-item">x: {{syncData.textRectInfo!.x}}</text>
-          <text class="rect-data-item">y: {{syncData.textRectInfo!.y}}</text>
-          <text class="rect-data-item">width: {{syncData.textRectInfo!.width}}</text>
-          <text class="rect-data-item">height: {{syncData.textRectInfo!.height}}</text>
-          <text class="rect-data-item">left: {{syncData.textRectInfo!.left}}</text>
-          <text class="rect-data-item">top: {{syncData.textRectInfo!.top}}</text>
-          <text class="rect-data-item">right: {{syncData.textRectInfo!.right}}</text>
-          <text class="rect-data-item">bottom: {{syncData.textRectInfo!.bottom}}</text>
-        </view>
-        <view class="rect-data-col" v-if="syncData.textRectInfoFlat != null">
-          <text class="rect-data-item">x: {{syncData.textRectInfoFlat!.x}}</text>
-          <text class="rect-data-item">y: {{syncData.textRectInfoFlat!.y}}</text>
-          <text class="rect-data-item">width: {{syncData.textRectInfoFlat!.width}}</text>
-          <text class="rect-data-item">height: {{syncData.textRectInfoFlat!.height}}</text>
-          <text class="rect-data-item">left: {{syncData.textRectInfoFlat!.left}}</text>
-          <text class="rect-data-item">top: {{syncData.textRectInfoFlat!.top}}</text>
-          <text class="rect-data-item">right: {{syncData.textRectInfoFlat!.right}}</text>
-          <text class="rect-data-item">bottom: {{syncData.textRectInfoFlat!.bottom}}</text>
-        </view>
+      <view class="test-elements">
+        <text id="rect-test-text" class="rect-test-text-small">测试文本</text>
+        <text id="rect-test-text-flat" class="rect-test-text-small" flatten>测试文本拍平</text>
       </view>
+    </view>
+    <view class="rect-row" v-if="syncData.textRectInfo != null || syncData.textRectInfoFlat != null">
+      <view class="rect-data-col" v-if="syncData.textRectInfo != null">
+        <text class="rect-data-item">x: {{syncData.textRectInfo!.x}}</text>
+        <text class="rect-data-item">y: {{syncData.textRectInfo!.y}}</text>
+        <text class="rect-data-item">width: {{syncData.textRectInfo!.width}}</text>
+        <text class="rect-data-item">height: {{syncData.textRectInfo!.height}}</text>
+        <text class="rect-data-item">left: {{syncData.textRectInfo!.left}}</text>
+        <text class="rect-data-item">top: {{syncData.textRectInfo!.top}}</text>
+        <text class="rect-data-item">right: {{syncData.textRectInfo!.right}}</text>
+        <text class="rect-data-item">bottom: {{syncData.textRectInfo!.bottom}}</text>
+      </view>
+      <view class="rect-data-col" v-if="syncData.textRectInfoFlat != null">
+        <text class="rect-data-item">x: {{syncData.textRectInfoFlat!.x}}</text>
+        <text class="rect-data-item">y: {{syncData.textRectInfoFlat!.y}}</text>
+        <text class="rect-data-item">width: {{syncData.textRectInfoFlat!.width}}</text>
+        <text class="rect-data-item">height: {{syncData.textRectInfoFlat!.height}}</text>
+        <text class="rect-data-item">left: {{syncData.textRectInfoFlat!.left}}</text>
+        <text class="rect-data-item">top: {{syncData.textRectInfoFlat!.top}}</text>
+        <text class="rect-data-item">right: {{syncData.textRectInfoFlat!.right}}</text>
+        <text class="rect-data-item">bottom: {{syncData.textRectInfoFlat!.bottom}}</text>
+      </view>
+    </view>
 
-      <!-- Image 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="getImageRect">Image</button>
-          <button class="btn-small" @click="getImageRectFlat">Image(拍平测试)</button>
-        </view>
-        <view class="test-elements">
-          <image id="rect-test-image" class="rect-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
-          <image id="rect-test-image-flat" class="rect-test-image-small" src="/static/test-image/logo.png" mode="aspectFit" flatten></image>
-        </view>
+    <!-- Image 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="getImageRect">Image</button>
+        <button class="btn-small" @click="getImageRectFlat">Image(拍平测试)</button>
       </view>
-      <view class="rect-row" v-if="syncData.imageRectInfo != null || syncData.imageRectInfoFlat != null" >
-        <view class="rect-data-col" v-if="syncData.imageRectInfo != null">
-          <text class="rect-data-item">x: {{syncData.imageRectInfo!.x}}</text>
-          <text class="rect-data-item">y: {{syncData.imageRectInfo!.y}}</text>
-          <text class="rect-data-item">width: {{syncData.imageRectInfo!.width}}</text>
-          <text class="rect-data-item">height: {{syncData.imageRectInfo!.height}}</text>
-          <text class="rect-data-item">left: {{syncData.imageRectInfo!.left}}</text>
-          <text class="rect-data-item">top: {{syncData.imageRectInfo!.top}}</text>
-          <text class="rect-data-item">right: {{syncData.imageRectInfo!.right}}</text>
-          <text class="rect-data-item">bottom: {{syncData.imageRectInfo!.bottom}}</text>
-        </view>
-        <view class="rect-data-col" v-if="syncData.imageRectInfoFlat != null">
-          <text class="rect-data-item">x: {{syncData.imageRectInfoFlat!.x}}</text>
-          <text class="rect-data-item">y: {{syncData.imageRectInfoFlat!.y}}</text>
-          <text class="rect-data-item">width: {{syncData.imageRectInfoFlat!.width}}</text>
-          <text class="rect-data-item">height: {{syncData.imageRectInfoFlat!.height}}</text>
-          <text class="rect-data-item">left: {{syncData.imageRectInfoFlat!.left}}</text>
-          <text class="rect-data-item">top: {{syncData.imageRectInfoFlat!.top}}</text>
-          <text class="rect-data-item">right: {{syncData.imageRectInfoFlat!.right}}</text>
-          <text class="rect-data-item">bottom: {{syncData.imageRectInfoFlat!.bottom}}</text>
-        </view>
+      <view class="test-elements">
+        <image id="rect-test-image" class="rect-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
+        <image id="rect-test-image-flat" class="rect-test-image-small" src="/static/test-image/logo.png" mode="aspectFit" flatten></image>
       </view>
+    </view>
+    <view class="rect-row" v-if="syncData.imageRectInfo != null || syncData.imageRectInfoFlat != null" >
+      <view class="rect-data-col" v-if="syncData.imageRectInfo != null">
+        <text class="rect-data-item">x: {{syncData.imageRectInfo!.x}}</text>
+        <text class="rect-data-item">y: {{syncData.imageRectInfo!.y}}</text>
+        <text class="rect-data-item">width: {{syncData.imageRectInfo!.width}}</text>
+        <text class="rect-data-item">height: {{syncData.imageRectInfo!.height}}</text>
+        <text class="rect-data-item">left: {{syncData.imageRectInfo!.left}}</text>
+        <text class="rect-data-item">top: {{syncData.imageRectInfo!.top}}</text>
+        <text class="rect-data-item">right: {{syncData.imageRectInfo!.right}}</text>
+        <text class="rect-data-item">bottom: {{syncData.imageRectInfo!.bottom}}</text>
+      </view>
+      <view class="rect-data-col" v-if="syncData.imageRectInfoFlat != null">
+        <text class="rect-data-item">x: {{syncData.imageRectInfoFlat!.x}}</text>
+        <text class="rect-data-item">y: {{syncData.imageRectInfoFlat!.y}}</text>
+        <text class="rect-data-item">width: {{syncData.imageRectInfoFlat!.width}}</text>
+        <text class="rect-data-item">height: {{syncData.imageRectInfoFlat!.height}}</text>
+        <text class="rect-data-item">left: {{syncData.imageRectInfoFlat!.left}}</text>
+        <text class="rect-data-item">top: {{syncData.imageRectInfoFlat!.top}}</text>
+        <text class="rect-data-item">right: {{syncData.imageRectInfoFlat!.right}}</text>
+        <text class="rect-data-item">bottom: {{syncData.imageRectInfoFlat!.bottom}}</text>
+      </view>
+    </view>
 
-      <!-- ScrollView 元素测试 -->
-      <button class="uni-common-mt" @click="getScrollViewRect">getBoundingClientRect - ScrollView</button>
-      <scroll-view id="rect-test-scrollview" class="rect-test-scrollview">
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容1</text>
-        </view>
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容2</text>
-        </view>
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容2</text>
-        </view>
-      </scroll-view>
-      <view class="rect-info" v-if="syncData.scrollViewRectInfo != null">
-        <view class="node-info-item">
-          <text class="node-info-item-k">x: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.x}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">y: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.y}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">width: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.width}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">height: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.height}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">left: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.left}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">top: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.top}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">right: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.right}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">bottom: </text>
-          <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.bottom}}</text>
-        </view>
+    <!-- ScrollView 元素测试 -->
+    <button class="uni-common-mt" @click="getScrollViewRect">getBoundingClientRect - ScrollView</button>
+    <scroll-view id="rect-test-scrollview" class="rect-test-scrollview">
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容1</text>
       </view>
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容2</text>
+      </view>
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容2</text>
+      </view>
+    </scroll-view>
+    <view class="rect-info" v-if="syncData.scrollViewRectInfo != null">
+      <view class="node-info-item">
+        <text class="node-info-item-k">x: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.x}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">y: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.y}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">width: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.width}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">height: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.height}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">left: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.left}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">top: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.top}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">right: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.right}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">bottom: </text>
+        <text class="node-info-item-v">{{syncData.scrollViewRectInfo!.bottom}}</text>
+      </view>
+    </view>
 
-      <!-- 自定义组件测试 -->
-      <button class="uni-common-mt" @click="getCustomComponentRect">getBoundingClientRect - 自定义组件</button>
-      <child id="rect-test-component" class="uni-common-mt"></child>
-      <view class="rect-info" v-if="syncData.customComponentRectInfo != null">
-        <view class="node-info-item">
-          <text class="node-info-item-k">x: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.x}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">y: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.y}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">width: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.width}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">height: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.height}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">left: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.left}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">top: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.top}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">right: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.right}}</text>
-        </view>
-        <view class="node-info-item">
-          <text class="node-info-item-k">bottom: </text>
-          <text class="node-info-item-v">{{syncData.customComponentRectInfo!.bottom}}</text>
-        </view>
+    <!-- 自定义组件测试 -->
+    <button class="uni-common-mt" @click="getCustomComponentRect">getBoundingClientRect - 自定义组件</button>
+    <child id="rect-test-component" class="uni-common-mt"></child>
+    <view class="rect-info" v-if="syncData.customComponentRectInfo != null">
+      <view class="node-info-item">
+        <text class="node-info-item-k">x: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.x}}</text>
       </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">y: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.y}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">width: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.width}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">height: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.height}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">left: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.left}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">top: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.top}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">right: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.right}}</text>
+      </view>
+      <view class="node-info-item">
+        <text class="node-info-item-k">bottom: </text>
+        <text class="node-info-item-v">{{syncData.customComponentRectInfo!.bottom}}</text>
+      </view>
+    </view>
 
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="getShadowBaseRect">View(无阴影)</button>
-          <button class="btn-small" @click="getShadowBugRect">View(box-shadow)</button>
-        </view>
-        <text class="test-tip">两个元素样式尺寸一致，右侧仅增加 box-shadow，用于演示获取到的宽高可能变大。</text>
-        <view class="test-elements">
-          <view id="rect-test-shadow-base" class="shadow-demo-box"></view>
-          <view id="rect-test-shadow-bug" class="shadow-demo-box shadow-demo-box-bug"></view>
-        </view>
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="getShadowBaseRect">View(无阴影)</button>
+        <button class="btn-small" @click="getShadowBugRect">View(box-shadow)</button>
       </view>
-      <view class="rect-row" v-if="syncData.shadowBaseRectInfo != null || syncData.shadowBugRectInfo != null">
-        <view class="rect-data-col" v-if="syncData.shadowBaseRectInfo != null">
-          <text class="rect-data-item">无阴影 x: {{syncData.shadowBaseRectInfo!.x}}</text>
-          <text class="rect-data-item">无阴影 y: {{syncData.shadowBaseRectInfo!.y}}</text>
-          <text class="rect-data-item">无阴影 width: {{syncData.shadowBaseRectInfo!.width}}</text>
-          <text class="rect-data-item">无阴影 height: {{syncData.shadowBaseRectInfo!.height}}</text>
-          <text class="rect-data-item">无阴影 left: {{syncData.shadowBaseRectInfo!.left}}</text>
-          <text class="rect-data-item">无阴影 top: {{syncData.shadowBaseRectInfo!.top}}</text>
-          <text class="rect-data-item">无阴影 right: {{syncData.shadowBaseRectInfo!.right}}</text>
-          <text class="rect-data-item">无阴影 bottom: {{syncData.shadowBaseRectInfo!.bottom}}</text>
-        </view>
-        <view class="rect-data-col" v-if="syncData.shadowBugRectInfo != null">
-          <text class="rect-data-item">阴影 x: {{syncData.shadowBugRectInfo!.x}}</text>
-          <text class="rect-data-item">阴影 y: {{syncData.shadowBugRectInfo!.y}}</text>
-          <text class="rect-data-item">阴影 width: {{syncData.shadowBugRectInfo!.width}}</text>
-          <text class="rect-data-item">阴影 height: {{syncData.shadowBugRectInfo!.height}}</text>
-          <text class="rect-data-item">阴影 left: {{syncData.shadowBugRectInfo!.left}}</text>
-          <text class="rect-data-item">阴影 top: {{syncData.shadowBugRectInfo!.top}}</text>
-          <text class="rect-data-item">阴影 right: {{syncData.shadowBugRectInfo!.right}}</text>
-          <text class="rect-data-item">阴影 bottom: {{syncData.shadowBugRectInfo!.bottom}}</text>
-        </view>
+      <text class="test-tip">两个元素样式尺寸一致，右侧仅增加 box-shadow，用于演示获取到的宽高可能变大。</text>
+      <view class="test-elements">
+        <view id="rect-test-shadow-base" class="shadow-demo-box"></view>
+        <view id="rect-test-shadow-bug" class="shadow-demo-box shadow-demo-box-bug"></view>
       </view>
+    </view>
+    <view class="rect-row" v-if="syncData.shadowBaseRectInfo != null || syncData.shadowBugRectInfo != null">
+      <view class="rect-data-col" v-if="syncData.shadowBaseRectInfo != null">
+        <text class="rect-data-item">无阴影 x: {{syncData.shadowBaseRectInfo!.x}}</text>
+        <text class="rect-data-item">无阴影 y: {{syncData.shadowBaseRectInfo!.y}}</text>
+        <text class="rect-data-item">无阴影 width: {{syncData.shadowBaseRectInfo!.width}}</text>
+        <text class="rect-data-item">无阴影 height: {{syncData.shadowBaseRectInfo!.height}}</text>
+        <text class="rect-data-item">无阴影 left: {{syncData.shadowBaseRectInfo!.left}}</text>
+        <text class="rect-data-item">无阴影 top: {{syncData.shadowBaseRectInfo!.top}}</text>
+        <text class="rect-data-item">无阴影 right: {{syncData.shadowBaseRectInfo!.right}}</text>
+        <text class="rect-data-item">无阴影 bottom: {{syncData.shadowBaseRectInfo!.bottom}}</text>
+      </view>
+      <view class="rect-data-col" v-if="syncData.shadowBugRectInfo != null">
+        <text class="rect-data-item">阴影 x: {{syncData.shadowBugRectInfo!.x}}</text>
+        <text class="rect-data-item">阴影 y: {{syncData.shadowBugRectInfo!.y}}</text>
+        <text class="rect-data-item">阴影 width: {{syncData.shadowBugRectInfo!.width}}</text>
+        <text class="rect-data-item">阴影 height: {{syncData.shadowBugRectInfo!.height}}</text>
+        <text class="rect-data-item">阴影 left: {{syncData.shadowBugRectInfo!.left}}</text>
+        <text class="rect-data-item">阴影 top: {{syncData.shadowBugRectInfo!.top}}</text>
+        <text class="rect-data-item">阴影 right: {{syncData.shadowBugRectInfo!.right}}</text>
+        <text class="rect-data-item">阴影 bottom: {{syncData.shadowBugRectInfo!.bottom}}</text>
+      </view>
+    </view>
 
-      <!-- #endif -->
-   </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <!-- #endif -->
+ </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import Child from './child.uvue'
 
   type DomRectType = {
@@ -1743,102 +1737,96 @@ if (view != null && view instanceof WKWebView) {
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/element-takesnapshot/element-takesnapshot
 ```uvue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view uni-theme-root">
-  <!-- #endif -->
-    <view id="snapshot-content" class="snapshot-content uni-theme-root">
-      <page-head title="对本页面根view截图"></page-head>
-      <view class="uni-padding-wrap">
-        <text>this is text</text>
-      </view>
-      <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
-        点击截图并替换显示下方图片
-      </button>
-      <image class="snapshot-original-image" :src="data.snapImage" :mode="mode" @longpress="saveToAlbum"></image>
-
-      <!-- 新增 takeSnapshot 测试 -->
-      <view class="section-divider"></view>
-      <text class="section-title">takeSnapshot 测试</text>
-
-      <!-- View 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="takeViewSnapshot">View</button>
-        </view>
-        <view class="test-elements">
-          <view id="snapshot-test-view" class="snapshot-test-small"></view>
-        </view>
-      </view>
-      <!-- View 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.viewSnapshot != null">
-        <view class="snapshot-data-col">
-          <text class="snapshot-data-subtitle">截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.viewSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-      </view>
-
-      <!-- Text 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="takeTextSnapshot">Text</button>
-        </view>
-        <view class="test-elements">
-          <text id="snapshot-test-text" class="snapshot-test-text-small">测试文本</text>
-        </view>
-      </view>
-      <!-- Text 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.textSnapshot != null">
-        <view class="snapshot-data-col">
-          <text class="snapshot-data-subtitle">截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.textSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-      </view>
-
-      <!-- Image 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="takeImageSnapshot">Image</button>
-        </view>
-        <view class="test-elements">
-          <image id="snapshot-test-image" class="snapshot-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
-        </view>
-      </view>
-      <!-- Image 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.imageSnapshot != null">
-        <view class="snapshot-data-col">
-          <text class="snapshot-data-subtitle">截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.imageSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-      </view>
-
-      <!-- ScrollView 元素测试 -->
-      <button class="btn uni-common-mt" type="default" @click="takeScrollViewSnapshot">takeSnapshot - ScrollView</button>
-      <scroll-view id="snapshot-test-scrollview" class="snapshot-test-scrollview">
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容1</text>
-        </view>
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容2</text>
-        </view>
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容3</text>
-        </view>
-      </scroll-view>
-      <image v-if="snapshotData.scrollViewSnapshot" class="snapshot-result-image" :src="snapshotData.scrollViewSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
-      <text v-else class="snapshot-placeholder-center">暂无截图</text>
-
-      <!-- 自定义组件测试 -->
-      <button class="btn uni-common-mt" type="default" @click="takeCustomComponentSnapshot">takeSnapshot - 自定义组件</button>
-      <child id="snapshot-test-component" class="snapshot-test-component"></child>
-      <image v-if="snapshotData.customComponentSnapshot" class="snapshot-result-image uni-common-mb" :src="snapshotData.customComponentSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
-      <text v-else class="snapshot-placeholder-center">暂无截图</text>
+  <view id="snapshot-content" class="snapshot-content">
+    <page-head title="对本页面根view截图"></page-head>
+    <view class="uni-padding-wrap">
+      <text>this is text</text>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
+      点击截图并替换显示下方图片
+    </button>
+    <image class="snapshot-original-image" :src="data.snapImage" :mode="mode" @longpress="saveToAlbum"></image>
+
+    <!-- 新增 takeSnapshot 测试 -->
+    <view class="section-divider"></view>
+    <text class="section-title">takeSnapshot 测试</text>
+
+    <!-- View 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="takeViewSnapshot">View</button>
+      </view>
+      <view class="test-elements">
+        <view id="snapshot-test-view" class="snapshot-test-small"></view>
+      </view>
+    </view>
+    <!-- View 截图展示 -->
+    <view class="snapshot-row" v-if="snapshotData.viewSnapshot != null">
+      <view class="snapshot-data-col">
+        <text class="snapshot-data-subtitle">截图结果</text>
+        <image class="snapshot-preview" :src="snapshotData.viewSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+      </view>
+    </view>
+
+    <!-- Text 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="takeTextSnapshot">Text</button>
+      </view>
+      <view class="test-elements">
+        <text id="snapshot-test-text" class="snapshot-test-text-small">测试文本</text>
+      </view>
+    </view>
+    <!-- Text 截图展示 -->
+    <view class="snapshot-row" v-if="snapshotData.textSnapshot != null">
+      <view class="snapshot-data-col">
+        <text class="snapshot-data-subtitle">截图结果</text>
+        <image class="snapshot-preview" :src="snapshotData.textSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+      </view>
+    </view>
+
+    <!-- Image 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="takeImageSnapshot">Image</button>
+      </view>
+      <view class="test-elements">
+        <image id="snapshot-test-image" class="snapshot-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
+      </view>
+    </view>
+    <!-- Image 截图展示 -->
+    <view class="snapshot-row" v-if="snapshotData.imageSnapshot != null">
+      <view class="snapshot-data-col">
+        <text class="snapshot-data-subtitle">截图结果</text>
+        <image class="snapshot-preview" :src="snapshotData.imageSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+      </view>
+    </view>
+
+    <!-- ScrollView 元素测试 -->
+    <button class="btn uni-common-mt" type="default" @click="takeScrollViewSnapshot">takeSnapshot - ScrollView</button>
+    <scroll-view id="snapshot-test-scrollview" class="snapshot-test-scrollview">
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容1</text>
+      </view>
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容2</text>
+      </view>
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容3</text>
+      </view>
+    </scroll-view>
+    <image v-if="snapshotData.scrollViewSnapshot" class="snapshot-result-image" :src="snapshotData.scrollViewSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
+    <text v-else class="snapshot-placeholder-center">暂无截图</text>
+
+    <!-- 自定义组件测试 -->
+    <button class="btn uni-common-mt" type="default" @click="takeCustomComponentSnapshot">takeSnapshot - 自定义组件</button>
+    <child id="snapshot-test-component" class="snapshot-test-component"></child>
+    <image v-if="snapshotData.customComponentSnapshot" class="snapshot-result-image uni-common-mb" :src="snapshotData.customComponentSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
+    <text v-else class="snapshot-placeholder-center">暂无截图</text>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import Child from './child.uvue'
 
   type DataType = {
@@ -2243,30 +2231,30 @@ if (view != null && view instanceof WKWebView) {
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| normal | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 正向运行 |
-| reverse | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 反向运行 |
-| alternate | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 每次迭代后切换方向 |
-| alternate-reverse | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 反向运行并在每次迭代后切换方向 |
+| "normal" | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 正向运行 |
+| "reverse" | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 反向运行 |
+| "alternate" | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 每次迭代后切换方向 |
+| "alternate-reverse" | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 反向运行并在每次迭代后切换方向 |
 
 ##### easing 的属性描述
 
 | 合法值 |
 | :- |
-| ease |
-| ease-in |
-| ease-out |
-| ease-in-out |
-| linear |
-| cubic-bezier |
+| "ease" |
+| "ease-in" |
+| "ease-out" |
+| "ease-in-out" |
+| "linear" |
+| "cubic-bezier" |
 
 ##### fill 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| backwards | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后恢复初始状态 |
-| forwards | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 动画播放完毕后保留状态 |
-| both | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后保留状态 |
-| none | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后恢复初始状态 |
+| "backwards" | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后恢复初始状态 |
+| "forwards" | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 动画播放完毕后保留状态 |
+| "both" | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后保留状态 |
+| "none" | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后恢复初始状态 |
 
 
 - keyframes 支持的属性值
@@ -2429,10 +2417,7 @@ play
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex:1">
-  <!-- #endif -->
-  <view class="animate-page uni-theme-root">
+  <view class="animate-page">
     <page-intro content="本页演示 uni.createAnimation 与 uni.createAnimateContext：点击开始/暂停/恢复/取消动画，可点击各 view 修改宽度、高度、margin、padding 等属性动画。"></page-intro>
     <view id="main" style="width: 100px;height: 100px; background-color: brown; transform: scale(1);"></view>
 
@@ -2448,80 +2433,59 @@ play
     <image src="/static/test-image/logo.png" id="roll" style="width: 100px; height: 100px;margin: 10px;"></image>
 
 
-   <view class="animation-item">
-     <text class="animation-label">修改宽度</text>
-     <view id="widthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="widthProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改高度</text>
-     <view id="height1" style="width: 100px;height: 100px;background-color: brown;" @click="heightProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改margin</text>
-     <view id="marginProperty" style="width: 100px;height: 100px;background-color: brown;" @click="marginProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改padding</text>
-     <view id="paddingProperty" style="width: 100px;height: 100px;background-color: brown;" @click="paddingProperty">
-       <view style="width: 50px;height: 50px;background-color: black;"></view>
-     </view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改border颜色</text>
-     <view id="borderProperty"
-       style="width: 100px;height: 100px;background-color: brown;border-width: 10px;border-color: black;border-style: solid;"
-       @click="borderProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改transform</text>
-     <view id="transformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="transformProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改position</text>
-     <view id="positionProperty" style="width: 100px;height: 100px;background-color: brown;" @click="positionProperty"></view>
-   </view>
-   <!-- #ifndef MP-WEIXIN -->
-   <view class="animation-item">
-     <text class="animation-label">修改背景色和宽度</text>
-     <view id="backgroundAndWidthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndWidthProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">执行的动画只有一个值1</text>
-     <view id="oneProperty1" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty1"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">执行的动画只有一个值2</text>
-     <view id="oneProperty2" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty2"></view>
-   </view>
-   <!-- #endif -->
-   <view class="animation-item">
-     <text class="animation-label">修改背景色和margin-left(关键帧)</text>
-     <view id="backgroundAndMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndMarginLeftProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改背景色和transform(关键帧)</text>
-     <view id="backgroundAndTransformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndTransformProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改背景色(关键帧)</text>
-     <view id="backgroundProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改opacity(关键帧)</text>
-     <view id="opacityProperty" style="width: 100px;height: 100px;background-color: brown;" @click="opacityProperty"></view>
-   </view>
-   <view class="animation-item">
-     <text class="animation-label">修改border-color和margin-left(关键帧)</text>
-     <view id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
-       @click="borderColorMarginLeftProperty"></view>
-   </view>
+    <text class="animation-label">修改宽度</text>
+    <view class="animation-target" id="widthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="widthProperty"></view>
+
+    <text class="animation-label">修改高度</text>
+    <view class="animation-target" id="height1" style="width: 100px;height: 100px;background-color: brown;" @click="heightProperty"></view>
+
+    <text class="animation-label">修改margin</text>
+    <view class="animation-target" id="marginProperty" style="width: 100px;height: 100px;background-color: brown;" @click="marginProperty"></view>
+
+    <text class="animation-label">修改padding</text>
+    <view class="animation-target" id="paddingProperty" style="width: 100px;height: 100px;background-color: brown;" @click="paddingProperty">
+      <view style="width: 50px;height: 50px;background-color: black;"></view>
+    </view>
+
+    <text class="animation-label">修改border颜色</text>
+    <view class="animation-target" id="borderProperty"
+      style="width: 100px;height: 100px;background-color: brown;border-width: 10px;border-color: black;border-style: solid;"
+      @click="borderProperty"></view>
+
+    <text class="animation-label">修改transform</text>
+    <view class="animation-target" id="transformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="transformProperty"></view>
+
+    <text class="animation-label">修改position</text>
+    <view class="animation-target" id="positionProperty" style="width: 100px;height: 100px;background-color: brown;" @click="positionProperty"></view>
+
+    <text class="animation-label">修改背景色和宽度</text>
+    <view class="animation-target" id="backgroundAndWidthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndWidthProperty"></view>
+
+    <text class="animation-label">执行的动画只有一个值1</text>
+    <view class="animation-target" id="oneProperty1" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty1"></view>
+
+    <text class="animation-label">执行的动画只有一个值2</text>
+    <view class="animation-target" id="oneProperty2" style="width: 100px;height: 100px;background-color: brown;" @click="oneProperty2"></view>
+
+    <text class="animation-label">修改背景色和margin-left(关键帧)</text>
+    <view class="animation-target" id="backgroundAndMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndMarginLeftProperty"></view>
+
+    <text class="animation-label">修改背景色和transform(关键帧)</text>
+    <view class="animation-target" id="backgroundAndTransformProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndTransformProperty"></view>
+
+    <text class="animation-label">修改背景色(关键帧)</text>
+    <view class="animation-target" id="backgroundProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundProperty"></view>
+
+    <text class="animation-label">修改opacity(关键帧)</text>
+    <view class="animation-target" id="opacityProperty" style="width: 100px;height: 100px;background-color: brown;" @click="opacityProperty"></view>
+
+    <text class="animation-label">修改border-color和margin-left(关键帧)</text>
+    <view class="animation-target" id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
+      @click="borderColorMarginLeftProperty"></view>
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   let mainView : UniElement | null = null
   let animation : UniAnimation | null = null
 
@@ -2812,18 +2776,23 @@ play
 </script>
 
 <style>
-  .animation-item {
-    border-radius: 5px;
-    margin: 4px;
-    padding: 4px;
+  .animation-label {
+    margin: 4px 4px 0;
+    padding: 4px 4px 0;
     border-style: solid;
+    border-width: 1px 1px 0;
     background-color: var(--list-background-color, #eeeeee);
     border-color: var(--border-color, #eeeeee);
+    color: var(--text-color, #333333);
+    border-radius: 5px 5px 0 0;
   }
 
-  .animation-label {
-    margin-bottom: 4px;
-    color: var(--text-color, #333333);
+  .animation-target {
+    margin: 0 4px 4px;
+    border-style: solid;
+    border-width: 0 1px 1px;
+    border-color: var(--border-color, #eeeeee);
+    border-radius: 0 0 5px 5px;
   }
 
   .view-margin {
@@ -2920,19 +2889,19 @@ play
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| hide | Web: x; 微信小程序: x | 隐藏所有系统状态栏和底部导航栏 |
-| show | Web: x; 微信小程序: x | 隐藏顶部系统状态栏，显示底部系统导航栏 |
-| auto | Web: x; 微信小程序: x | 系统默认行为 |
+| "hide" | Web: x; 微信小程序: x | 隐藏所有系统状态栏和底部导航栏 |
+| "show" | Web: x; 微信小程序: x | 隐藏顶部系统状态栏，显示底部系统导航栏 |
+| "auto" | Web: x; 微信小程序: x | 系统默认行为 |
 
 ##### orientation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序: x | 根据重力感应自动调整 |
-| landscape | Web: x; 微信小程序: x | 固定为横屏，会根据重力调整方向 |
-| landscape-secondary | Web: x; 微信小程序: x | 固定为反向横屏 |
-| landscape-primary | Web: x; 微信小程序: x | 固定为正向横屏 |
-| portrait | Web: x; 微信小程序: x | 固定为竖屏 |
+| "auto" | Web: x; 微信小程序: x | 根据重力感应自动调整 |
+| "landscape" | Web: x; 微信小程序: x | 固定为横屏，会根据重力调整方向 |
+| "landscape-secondary" | Web: x; 微信小程序: x | 固定为反向横屏 |
+| "landscape-primary" | Web: x; 微信小程序: x | 固定为正向横屏 |
+| "portrait" | Web: x; 微信小程序: x | 固定为竖屏 |
 
 ###### IFullscreenError 的属性值 @ifullscreenerror-values 
 
@@ -2966,7 +2935,7 @@ play
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/element-request-fullscreen/element-request-fullscreen
 ```uvue
 <template>
-  <scroll-view class="content uni-theme-root" direction="vertical">
+  <scroll-view class="content" direction="vertical">
     <view id="fullscreen" class="view1" @click="fullscreen" @fullscreenchange="fullscreenchange" @fullscreenerror="fullscreenerror">
       <text style="color: white;">{{ text }}</text>
     </view>
@@ -2975,7 +2944,7 @@ play
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
@@ -3080,13 +3049,6 @@ play
 <style>
   .content {
     flex: 1;
-    background-color: #f0f0f0;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .content {
-      background-color: var(--background-color, #1a1a1a);
-    }
   }
 
   .view1 {

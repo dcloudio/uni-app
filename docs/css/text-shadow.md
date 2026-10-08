@@ -58,9 +58,6 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view class="container">
       <text class="text" style="text-shadow: 1px 1px 2px pink;">text-shadow: 1px 1px 2px pink</text>
       <!-- <text class="text" style="text-shadow: #fc0 1px 0 10px;">text-shadow: #fc0 1px 0 10px</text> -->
@@ -115,12 +112,9 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <input-data :defaultValue="data.textShadow" title="text-shadow 自定义值" type="text" @confirm="inputChangeTextShadow"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const textShadowEnum: ItemType[] = [

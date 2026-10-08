@@ -99,7 +99,7 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const outTradeNo = ref<string>("")
   const disabled = ref<boolean>(true)
   const openid = ref<string>("")

@@ -120,7 +120,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	type DataType = {
 		arrayBufferToBase64Res: string;
 		base64ToArrayBufferRes: string;

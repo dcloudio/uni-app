@@ -162,7 +162,7 @@
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
       <text class="uni-title">截屏状态：{{ captureStatus }}</text>
-      <boolean-data :defaultValue="allowCapture" title="是否允许截屏"
+      <boolean-data :value="allowCapture" title="是否允许截屏"
         @change="toggleCaptureScreen"></boolean-data>
 
       <view class="uni-btn">
@@ -173,8 +173,8 @@
   </view>
 </template>
 
-<script setup lang="uts">
-import { state, setAllowCapture } from '@/store/index.uts'
+<script setup lang="ts">
+import { state, setAllowCapture } from '@/store/index.ts'
 const title = '截屏监听'
 const allowCapture = ref(state.allowCapture)
 const captureStatus = ref('未监听')

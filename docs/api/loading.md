@@ -187,7 +187,7 @@
 		</view>
 	</view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 	import { ItemType as EnumItemType } from '@/components/enum-data/enum-data-types'
 
 	type ItemType = {

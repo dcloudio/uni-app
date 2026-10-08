@@ -53,9 +53,6 @@ background-image: <bg-image>#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <view>
       <!-- 测试iOS平台宽高为0时，设置渐变色会不会导致闪退 -->
       <view style="width: 0px; height: 0px; background-image: linear-gradient(to bottom,#f5f5f5,#eff2f5);"></view>
@@ -86,6 +83,10 @@ background-image: <bg-image>#;
         </scroll-view>
       </view>
 
+      <text class="uni-title-text uni-common-mt">text 组件</text>
+      <text class="uni-subtitle-text">text 设置 background-image: linear-gradient(to right, #fd4365, #fe747a);</text>
+      <text id="text-gradient-background" class="text-gradient-background">text 渐变背景测试</text>
+
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 background-image </text>
         <text>background-image: {{backgroundImage}}</text>
@@ -101,12 +102,9 @@ background-image: <bg-image>#;
         <input-data :defaultValue="backgroundImage" title="background-image 自定义值" type="text" @confirm="inputChangeBackgroundImage"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const backgroundSelect = ref(true)
@@ -200,6 +198,18 @@ background-image: <bg-image>#;
   .common-text {
     font-size: 12px;
     color: white;
+  }
+
+  .text-gradient-background {
+    margin-top: 50px;
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    font-size: 17px;
+    color: #fff;
+    border-radius: 31px;
+    background-image: linear-gradient(to right, #fd4365, #fe747a);
   }
 
   .native-view-bg {

@@ -583,7 +583,7 @@ onMessage
 ```vue
 <template>
   <page-head title="websocket通讯示例"></page-head>
-  <view class="uni-padding-wrap websocket-page uni-theme-root">
+  <view class="uni-padding-wrap websocket-page">
     <view class="uni-btn-v">
       <text class="websocket-msg">{{ showMsg }}</text>
       <button <!-- #ifndef MP-ALIPAY -->
@@ -619,7 +619,7 @@ onMessage
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const connected = ref(false)
   const connecting = ref(false)
   const msg = ref('')

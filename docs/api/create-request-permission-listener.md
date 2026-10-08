@@ -108,9 +108,6 @@ stop
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/create-request-permission-listener/create-request-permission-listener
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head title="权限申请监听"></page-head>
     <view class="permission-alert" id="permission-alert"
       :style="{'transform':isPermissionAlertShow ? 'translateY(0)':'translateY(-110px)'}">
@@ -119,12 +116,9 @@ stop
     </view>
     <button type="primary" style="margin: 10px;" @click="requestPermission">点击申请日历权限</button>
 
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const isPermissionAlertShow = ref(false)
   const permissionAlert = ref(null as UniElement | null)
   const timeoutId = ref(-1)

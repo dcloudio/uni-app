@@ -56,7 +56,12 @@
     :scroll-duration="2000"
     @scroll="scroll"
     @scrolldone="scrolldone"
+    <!-- #ifndef MP-ALIPAY -->
     page-style="color: green"
+    <!-- #endif -->
+    <!-- #ifdef MP-ALIPAY -->
+    page-style="color: green; font-size: 30px"
+    <!-- #endif -->
     root-font-size="30px"
   >
     <navigation-bar
@@ -76,7 +81,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     bgTextStyle: string,
     scrollTop: string,

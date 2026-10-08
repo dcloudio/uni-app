@@ -79,8 +79,8 @@ UniProgressActiveendEvent -- Extends --> UniCustomEvent&ltUniProgressActiveendEv
 
 >示例
 ```vue
-<script setup lang="uts">
-  import { state, setEventCallbackNum } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setEventCallbackNum } from '@/store/index.ts'
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type DataType = {
@@ -187,9 +187,11 @@ UniProgressActiveendEvent -- Extends --> UniCustomEvent&ltUniProgressActiveendEv
   <scroll-view style="flex: 1">
     <view class="content">
       <page-head title="组件属性"></page-head>
-      <boolean-data :defaultValue="false" title="进度条从左往右的动画" @change="change_active_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="在进度条右侧显示百分比" @change="change_show_info_boolean"></boolean-data>
+      <boolean-data :value="false" title="进度条从左往右的动画" @change="change_active_boolean"></boolean-data>
+      <boolean-data :value="false" title="在进度条右侧显示百分比" @change="change_show_info_boolean"></boolean-data>
+      <!-- #ifndef MP-ALIPAY -->
       <input-data defaultValue="30" title="进度增加1%所需毫秒数" type="number" @confirm="confirm_duration_input"></input-data>
+      <!-- #endif -->
       <input-data defaultValue="0" title="百分比0~100" type="number" @confirm="confirm_percent_input"></input-data>
       <input-data defaultValue="6" title="进度条线的宽度，单位px" type="number"
         @confirm="confirm_stroke_width_input"></input-data>
@@ -197,8 +199,10 @@ UniProgressActiveendEvent -- Extends --> UniCustomEvent&ltUniProgressActiveendEv
         @confirm="confirm_activeColor_input"></input-data>
       <input-data defaultValue="#EBEBEB" title="未选择的进度条的颜色" type="text"
         @confirm="confirm_backgroundColor_input"></input-data>
+      <!-- #ifndef MP_ALIPAY -->
       <enum-data :items="data.active_mode_enum" title="backwards: 动画从头播；forwards：动画从上次结束点接着播"
         @change="radio_change_active_mode_enum"></enum-data>
+      <!-- #endif -->
     </view>
 
     <view>
@@ -229,7 +233,7 @@ UniProgressActiveendEvent -- Extends --> UniCustomEvent&ltUniProgressActiveendEv
       </view>
     </view>
 
-    <!-- #ifndef MP-ALIPAY -->
+    <!-- #ifdef APP && VUE3-VAPOR -->
       <navigator class="uni-common-mb" url="/pages/template/progress-100/progress-100">
         <button>组件性能测试</button>
       </navigator>

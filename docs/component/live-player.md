@@ -273,9 +273,9 @@
         <text class="uni-title-text">属性示例</text>
       </view>
       <input class="input margin-10" type="string" placeholder="设置播放地址" @confirm="onSrcComfirm"></input>
-      <boolean-data title="设置是否自动播放" :defaultValue="autoplay" @change="onAutoplayChange"></boolean-data>
-      <boolean-data title="设置是否静音" :defaultValue="muted" @change="onMutedChange"></boolean-data>
-      <boolean-data title="设置进入后台时是否静音" :defaultValue="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
+      <boolean-data title="设置是否自动播放" :value="autoplay" @change="onAutoplayChange"></boolean-data>
+      <boolean-data title="设置是否静音" :value="muted" @change="onMutedChange"></boolean-data>
+      <boolean-data title="设置进入后台时是否静音" :value="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
       <enum-data title="设置填充模式" :items="objectFitItemTypes" @change="onObjectFitChange"></enum-data>
       <enum-data title="设置声音输出方式" :items="soundModeItemTypes" @change="onSoundModeChange"></enum-data>
       <enum-data title="设置画面方向" :items="orientationItemTypes" @change="onOrientationChange"></enum-data>
@@ -283,7 +283,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
   const context = ref(null as LivePlayerContext | null);

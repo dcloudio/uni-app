@@ -81,7 +81,7 @@
     <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type FileItem = {
     type : string,
     url : string
@@ -117,6 +117,7 @@
       type: 'xlsx',
       url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.xlsx'
     },
+    // #ifndef MP-ALIPAY
     {
       type: 'zip',
       url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/to.zip'
@@ -137,6 +138,7 @@
       type: 'svg',
       url: '/static/test-image/logo.svg'
     }
+    // #endif
   ])
 
   const openDocument = (item : FileItem) => {
@@ -237,7 +239,7 @@
     <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type FileItem = {
     type : string,
     url : string
@@ -273,6 +275,7 @@
       type: 'xlsx',
       url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.xlsx'
     },
+    // #ifndef MP-ALIPAY
     {
       type: 'zip',
       url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/to.zip'
@@ -293,6 +296,7 @@
       type: 'svg',
       url: '/static/test-image/logo.svg'
     }
+    // #endif
   ])
 
   const openDocument = (item : FileItem) => {

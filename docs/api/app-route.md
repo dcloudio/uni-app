@@ -137,27 +137,27 @@ onBeforeAppRoute -> onShow -> onAppRoute
 
 | 合法值 |
 | :- |
-| appLaunch |
-| navigateTo |
-| navigateBack |
-| redirectTo |
-| reLaunch |
-| switchTab |
+| "appLaunch" |
+| "navigateTo" |
+| "navigateBack" |
+| "redirectTo" |
+| "reLaunch" |
+| "switchTab" |
 
 #### pipMode 的属性描述
 
 | 合法值 |
 | :- |
-| min |
-| max |
+| "min" |
+| "max" |
 
 #### renderer 的属性描述
 
 | 合法值 |
 | :- |
-| webview |
-| skyline |
-| xr-frame |
+| "webview" |
+| "skyline" |
+| "xr-frame" |
 
 
 
@@ -237,27 +237,27 @@ uni.offAppRoute(appRouteCallback)
 
 | 合法值 |
 | :- |
-| appLaunch |
-| navigateTo |
-| navigateBack |
-| redirectTo |
-| reLaunch |
-| switchTab |
+| "appLaunch" |
+| "navigateTo" |
+| "navigateBack" |
+| "redirectTo" |
+| "reLaunch" |
+| "switchTab" |
 
 #### pipMode 的属性描述
 
 | 合法值 |
 | :- |
-| min |
-| max |
+| "min" |
+| "max" |
 
 #### renderer 的属性描述
 
 | 合法值 |
 | :- |
-| webview |
-| skyline |
-| xr-frame |
+| "webview" |
+| "skyline" |
+| "xr-frame" |
 
 
 
@@ -342,27 +342,27 @@ uni.offAppRoute()
 
 | 合法值 |
 | :- |
-| appLaunch |
-| navigateTo |
-| navigateBack |
-| redirectTo |
-| reLaunch |
-| switchTab |
+| "appLaunch" |
+| "navigateTo" |
+| "navigateBack" |
+| "redirectTo" |
+| "reLaunch" |
+| "switchTab" |
 
 #### pipMode 的属性描述
 
 | 合法值 |
 | :- |
-| min |
-| max |
+| "min" |
+| "max" |
 
 #### renderer 的属性描述
 
 | 合法值 |
 | :- |
-| webview |
-| skyline |
-| xr-frame |
+| "webview" |
+| "skyline" |
+| "xr-frame" |
 
 
 
@@ -441,27 +441,27 @@ onLaunch(() => {
 
 | 合法值 |
 | :- |
-| appLaunch |
-| navigateTo |
-| navigateBack |
-| redirectTo |
-| reLaunch |
-| switchTab |
+| "appLaunch" |
+| "navigateTo" |
+| "navigateBack" |
+| "redirectTo" |
+| "reLaunch" |
+| "switchTab" |
 
 #### pipMode 的属性描述
 
 | 合法值 |
 | :- |
-| min |
-| max |
+| "min" |
+| "max" |
 
 #### renderer 的属性描述
 
 | 合法值 |
 | :- |
-| webview |
-| skyline |
-| xr-frame |
+| "webview" |
+| "skyline" |
+| "xr-frame" |
 
 
 
@@ -645,7 +645,7 @@ C -> onAppRoute(routeEventId=3)
 >示例
 ```vue
 <template>
-  <view class="route-page uni-theme-root">
+  <view class="route-page">
     <page-head title="应用路由事件"></page-head>
     <view class="uni-padding-wrap">
       <view class="uni-list-cell-padding status-box">
@@ -687,7 +687,7 @@ C -> onAppRoute(routeEventId=3)
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const TARGET_PATH = 'pages/API/app-route/app-route-target'
   const TARGET_URL = `/${TARGET_PATH}`
 

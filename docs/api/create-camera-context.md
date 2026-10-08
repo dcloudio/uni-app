@@ -215,10 +215,10 @@ takePhoto
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| high | HarmonyOS: x |
-| normal | HarmonyOS: x |
-| low | HarmonyOS: x |
-| original | HarmonyOS: x |
+| "high" | HarmonyOS: x |
+| "normal" | HarmonyOS: x |
+| "low" | HarmonyOS: x |
+| "original" | HarmonyOS: x |
 
 ###### CameraContextTakePhotoResult 的属性值 @cameracontexttakephotoresult-values 
 

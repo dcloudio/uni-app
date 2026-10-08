@@ -110,8 +110,8 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 >示例
 ```vue
 <template>
-	<uni-nav-bar class="uni-theme-root"></uni-nav-bar>
-	<scroll-view class="page uni-theme-root" style="padding-bottom: var(--uni-safe-area-inset-bottom);">
+	<uni-nav-bar></uni-nav-bar>
+	<scroll-view class="page" style="padding-bottom: var(--uni-safe-area-inset-bottom);">
 		<!-- 正常使用场景应把uni-nav-bar放在template的根节点，本示例为了演示多种导航栏效果把导航栏组件放到了scroll-view里了 -->
 		<uni-nav-bar navigationBarTextStyle="black" title="黑色标题"></uni-nav-bar>
 		<uni-nav-bar navigationBarTextStyle="white" title="青色背景白色标题" style="background-color: cyan;"></uni-nav-bar>
@@ -162,7 +162,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
 	</scroll-view>
 </template>
 
-<script setup>
+<script setup lang="ts">
 	function clickButton() {
 		uni.showToast({
 			title: '点击了按钮'

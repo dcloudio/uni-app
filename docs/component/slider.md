@@ -97,7 +97,7 @@ show-value属性设为true后，会在横条右侧显示一个数字。
 
 >示例
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     sliderValue: number;
     sliderBlockSize: number;
@@ -242,8 +242,8 @@ show-value属性设为true后，会在横条右侧显示一个数字。
   <scroll-view style="flex: 1">
     <view class="content">
       <page-head title="组件属性"></page-head>
-      <boolean-data :defaultValue="false" title="是否显示当前 value" @change="change_show_value_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <boolean-data :value="false" title="是否显示当前 value" @change="change_show_value_boolean"></boolean-data>
+      <boolean-data :value="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
       <input-data defaultValue="0" title="最小值(min)" type="number" @confirm="confirm_min_input"></input-data>
       <input-data defaultValue="100" title="最大值(max)" type="number" @confirm="confirm_max_input"></input-data>
       <input-data defaultValue="1" title="步长(step)，取值必须大于 0，并且可被(max - min)整除" type="number"

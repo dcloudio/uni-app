@@ -152,23 +152,17 @@ complete: () => {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view uni-theme-root">
-  <!-- #endif -->
-    <view class="upload-page uni-theme-root">
-      <page-head :title="data.title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="demo">
-          <image v-if="data.imageSrc" :src="data.imageSrc" class="image" mode="widthFix"></image>
-          <text v-else class="uni-hello-addfile" @click="chooseImage">+ 选择图片</text>
-        </view>
+  <view class="upload-page">
+    <page-head :title="data.title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="demo">
+        <image v-if="data.imageSrc" :src="data.imageSrc" class="image" mode="widthFix"></image>
+        <text v-else class="uni-hello-addfile" @click="chooseImage">+ 选择图片</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
   import {
     testInovkeUploadFile,
@@ -296,8 +290,8 @@ complete: () => {
       filePath: imageSrc,
       name: 'file',
       success: (res : UploadFileSuccess) => {
-        const responseData = JSON.parseObject(res.data)
-        const errCode = responseData?.getNumber("errCode")
+        const responseData = JSON.parse(res.data)
+        const errCode = (responseData?.errCode as number)
         if (errCode != null && errCode == 1000) {
           data.jest_result = needCookie ? false : true;
         } else {
@@ -410,10 +404,10 @@ complete: () => {
         'user': 'test'
       },
       success: (res : UploadFileSuccess) => {
-        const responseData = JSON.parseObject(res.data)
-        const innerData = responseData?.getJSON("data")
-        const header = innerData?.getJSON("requestHeaders")
-        const uas = header?.getArray("user-agent")
+        const responseData = JSON.parse(res.data)
+        const innerData = (responseData?.data as UTSJSONObject)
+        const header = (innerData?.requestHeaders as UTSJSONObject)
+        const uas = (header?.["user-agent"] as Array<any>)
         if(uas != null) {
           data.jest_result = (uas.length == 1)
         }

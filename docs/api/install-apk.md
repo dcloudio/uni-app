@@ -70,9 +70,6 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/install-apk/install-apk
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-common-mt">
@@ -85,11 +82,8 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   const title = ref('installApk')
   const installApk = () => {
     uni.installApk({

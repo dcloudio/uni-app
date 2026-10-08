@@ -89,6 +89,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
         <switch class="switch-checked" :checked="data.checked" @change="switch1Change" />
         <switch @change="switch2Change" />
       </view>
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-title">暗黑样式</view>
       <view class="flex-row">
         <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
@@ -102,6 +103,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
         <switch id="dark" :class="{ 'dark-class': !data.darkChecked2 }" switch-active-class="custom-switch-active" thumb-active-class="custom-thumb-active1" thumb-class="custom-thumb1" @change="switch4Change" />
         <!-- #endif -->
       </view>
+      <!-- #endif -->
       <view class="uni-title">禁用样式</view>
       <view class="flex-row">
         <switch class="switch-checked" :checked="data.checked" :disabled="true" />
@@ -121,8 +123,8 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
       <view class="uni-title">推荐展示样式</view>
     </view>
     <view class="uni-list">
-      <boolean-data :defaultValue="true" title="开启中"></boolean-data>
-      <boolean-data :defaultValue="false" title="关闭"></boolean-data>
+      <boolean-data :value="true" title="开启中"></boolean-data>
+      <boolean-data :value="false" title="关闭"></boolean-data>
 
       <!-- #ifdef VUE3-VAPOR && !MP -->
       <view class="uni-list-cell uni-list-cell-padding">
@@ -132,7 +134,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
       <!-- #endif -->
     </view>
 
-    <!-- #ifndef MP-ALIPAY -->
+    <!-- #ifdef APP && VUE3-VAPOR -->
       <navigator class="uni-common-mb" url="/pages/template/switch-100/switch-100">
         <button>组件性能测试</button>
       </navigator>
@@ -140,7 +142,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 switch 默认样式的暗黑模�
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     title: string;
     checked: boolean;

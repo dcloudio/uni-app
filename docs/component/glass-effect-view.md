@@ -74,10 +74,12 @@
         <text class="stage-text stage-text-bottom">iOS</text>
         <glass-effect-view
           v-if="data.glassStyle == 'regular'"
+          id="clickable-glass-effect-view"
           class="glass-panel"
           glass-style="regular"
           :interactive="data.interactive"
-          :tint-color="data.tintColor">
+          :tint-color="data.tintColor"
+          @click="onGlassClick">
           <view class="glass-content">
             <text class="glass-title">regular</text>
             <text class="glass-detail">interactive: {{ data.interactive }}</text>
@@ -106,7 +108,7 @@
         @change="changeGlassStyle"></enum-data>
       <boolean-data
         title="interactive 启用交互行为"
-        :defaultValue="false"
+        :value="false"
         @change="changeInteractive"></boolean-data>
       <enum-data
         title="tint-color 玻璃效果着色"
@@ -117,13 +119,14 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type DataType = {
     glassStyle : string;
     interactive : boolean;
     tintColor : string;
+    clickCount : number;
     glassStyleItems : ItemType[];
     tintColorItems : ItemType[];
   }
@@ -132,6 +135,7 @@
     glassStyle: 'regular',
     interactive: false,
     tintColor: 'transparent',
+    clickCount: 0,
     glassStyleItems: [
       { value: 0, name: 'regular', checked: true },
       { value: 1, name: 'clear' },
@@ -169,8 +173,17 @@
     }
   }
 
+  function onGlassClick() {
+    data.clickCount++
+  }
+
+  function getGlassEffectViewRectForTest() : DOMRect | null {
+    return uni.getElementById('clickable-glass-effect-view')?.getBoundingClientRect() ?? null
+  }
+
   defineExpose({
     data,
+    getGlassEffectViewRectForTest,
   })
 </script>
 

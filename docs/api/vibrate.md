@@ -31,8 +31,8 @@
 | 合法值 | 兼容性 |
 | :- |  :-: |
 | "heavy" | Web: x; 支付宝小程序: x |
-| medium | Web: x; 支付宝小程序: x |
-| light | Web: x; 支付宝小程序: x |
+| "medium" | Web: x; 支付宝小程序: x |
+| "light" | Web: x; 支付宝小程序: x |
 
 #### VibrateShortSuccess 的属性值 @vibrateshortsuccess-values 
 
@@ -186,7 +186,7 @@
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   type ShortType = 'heavy' | 'medium' | 'light'
 

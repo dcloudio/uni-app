@@ -89,9 +89,6 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/compress-image/compress-image
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap">
@@ -122,12 +119,9 @@
     </view>
 
     <bottom-safe-area />
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   type DataType = {
     imageInfoForTest: UTSJSONObject | null,
@@ -141,7 +135,12 @@
   const afterCompressImageInfo = ref("")
   const beforeCompressPath = ref("")
   const afterCompressPath = ref("")
+  // #ifndef MP-ALIPAY
   const quality = ref(80)
+  // #endif
+  // #ifdef MP-ALIPAY
+  const quality = ref(60)
+  // #endif  
   const rotate = ref(0)
   // 自动化测试
   const data = reactive({

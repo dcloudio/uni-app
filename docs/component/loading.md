@@ -52,7 +52,7 @@
 >示例
 ```vue
 <template>
-  <scroll-view class="container uni-theme-root">
+  <scroll-view class="container">
    <page-head title="loading组件"></page-head>
    <view class="section">
       <view class="row">
@@ -168,13 +168,13 @@
       </view>
     </view>
 
-    <!-- #ifndef MP-ALIPAY -->
-      <button class="uni-common-mb" @click="navigateTo('/pages/template/loading-100/loading-100')">组件性能测试</button>
+    <!-- #ifdef APP && VUE3-VAPOR -->
+    <button class="uni-common-mb" @click="navigateTo('/pages/template/loading-100/loading-100')">组件性能测试</button>
     <!-- #endif -->
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 const widthPx = ref(100)
 const heightPx = ref(100)
 const borderColor = ref('blue')

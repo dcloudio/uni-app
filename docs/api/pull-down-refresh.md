@@ -139,24 +139,26 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1;">
-  <!-- #endif -->
     <!-- 实际开发中，长列表应该使用list-view -->
-    <view class="refresh-page uni-padding-wrap uni-common-mt uni-theme-root">
+    <view class="refresh-page uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v">
+        <button id="btn-pull-down-refresh-after-hide-loading" type="primary"
+          @click="startPullDownRefreshAfterHideLoading">隐藏 loading 后开始并停止下拉刷新</button>
+      </view>
       <text class="text" v-for="(num,index) in listData" :key="index">list - {{num}}</text>
       <view v-if="showLoadMore" class="load-more-text">{{loadMoreText}}</view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 
 
   type DataType = {
     pulldownRefreshTriggered: boolean,
-    startPullDownRefreshStaus: boolean
+    startPullDownRefreshStaus: boolean,
+    showLoadingSuccess: boolean,
+    hideLoadingSuccess: boolean,
+    stopPullDownRefreshCalled: boolean,
+    loadingAndPullDownRefreshEvents: string[]
   }
 
   const listData = ref([] as Array<number>)
@@ -165,8 +167,13 @@
   const max = ref(0)
   const data = reactive({
     pulldownRefreshTriggered: false,
-    startPullDownRefreshStaus: false
+    startPullDownRefreshStaus: false,
+    showLoadingSuccess: false,
+    hideLoadingSuccess: false,
+    stopPullDownRefreshCalled: false,
+    loadingAndPullDownRefreshEvents: [] as Array<string>
   } as DataType)
+  let isLoadingBeforeStopPullDownRefresh = false
 
   function initData() {
     setTimeout(() => {
@@ -178,7 +185,6 @@
         dataArr.push(i)
       }
       listData.value = listData.value.concat(dataArr);
-      let status = false
       uni.stopPullDownRefresh();
     }, 1000);
   }
@@ -190,6 +196,50 @@
       dataArr.push(i)
     }
     listData.value = listData.value.concat(dataArr);
+  }
+
+  function startPullDownRefreshAfterHideLoading() {
+    isLoadingBeforeStopPullDownRefresh = true
+    data.pulldownRefreshTriggered = false
+    data.startPullDownRefreshStaus = false
+    data.showLoadingSuccess = false
+    data.hideLoadingSuccess = false
+    data.stopPullDownRefreshCalled = false
+    data.loadingAndPullDownRefreshEvents = []
+
+    data.loadingAndPullDownRefreshEvents.push('showLoading')
+    uni.showLoading({
+      title: '加载中...',
+      success() {
+        data.showLoadingSuccess = true
+      }
+    })
+    setTimeout(() => {
+      data.loadingAndPullDownRefreshEvents.push('hideLoading')
+      uni.hideLoading({
+        success() {
+          data.hideLoadingSuccess = true
+        },
+        complete() {
+          data.loadingAndPullDownRefreshEvents.push('startPullDownRefresh')
+          uni.startPullDownRefresh({
+            success() {
+              data.startPullDownRefreshStaus = true
+              setTimeout(() => {
+                data.loadingAndPullDownRefreshEvents.push('stopPullDownRefresh')
+                uni.stopPullDownRefresh()
+                data.stopPullDownRefreshCalled = true
+                isLoadingBeforeStopPullDownRefresh = false
+              }, 1000)
+            },
+            fail() {
+              data.startPullDownRefreshStaus = false
+              isLoadingBeforeStopPullDownRefresh = false
+            }
+          })
+        }
+      })
+    }, 1000)
   }
 
   onReady(() => {
@@ -223,11 +273,14 @@
   onPullDownRefresh(() => {
     console.log('onPullDownRefresh');
     data.pulldownRefreshTriggered = true
-    initData();
+    if (!isLoadingBeforeStopPullDownRefresh) {
+      initData();
+    }
   })
 
   defineExpose({
-    data
+    data,
+    startPullDownRefreshAfterHideLoading
   })
 </script>
 

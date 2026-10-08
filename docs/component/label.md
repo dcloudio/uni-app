@@ -36,7 +36,7 @@ App平台可以用view加事件来替代label。
 >示例
 ```vue
 <template>
-  <view class="label-page uni-theme-root">
+  <view class="label-page">
     <page-head :title="data.title"></page-head>
     <view class="uni-common-mt">
       <view class="uni-form-item uni-column">
@@ -86,14 +86,14 @@ App平台可以用view加事件来替代label。
       </view>
     </view>
 
-    <!-- #ifndef MP-ALIPAY -->
+    <!-- #ifdef APP && VUE3-VAPOR -->
       <navigator class="uni-common-mb" url="/pages/template/label-100/label-100">
         <button>组件性能测试</button>
       </navigator>
     <!-- #endif -->
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type controlItem = {
     name : string,
     value : string,

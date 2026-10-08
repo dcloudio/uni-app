@@ -90,7 +90,7 @@ uni.report({
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type StateType = {
     message: string
   }

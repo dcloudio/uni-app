@@ -240,7 +240,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
 ::: preview
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/waterflow/waterflow
 ```uvue
-<script setup lang="uts">
+<script setup lang="ts">
   type ScrollEventTest = {
     type : string;
     target : UniElement | null;
@@ -585,15 +585,15 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
 
   <scroll-view style="flex:1" direction="vertical">
     <view class="content">
-      <boolean-data :defaultValue="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
+      <boolean-data :value="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
         @change="change_refresher_triggered_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="开启自定义样式" @change="change_refresher_style_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
+      <boolean-data :value="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
+      <boolean-data :value="false" title="开启自定义样式" @change="change_refresher_style_boolean"></boolean-data>
+      <boolean-data :value="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
         @change="change_scroll_with_animation_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
-      <boolean-data :defaultValue="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
-      <boolean-data :defaultValue="true" title="是否显示加载更多" @change="change_load_more_boolean"></boolean-data>
+      <boolean-data :value="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
+      <boolean-data :value="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
+      <boolean-data :value="true" title="是否显示加载更多" @change="change_load_more_boolean"></boolean-data>
       <input-data defaultValue="2" title="设置cross-axis-count，触发 scrolltoupper 事件" type="number"
         @confirm="handleChangeCrossAxisCount"></input-data>
       <view class="uni-slider uni-list-cell-padding">

@@ -508,7 +508,7 @@ offWaiting
 				注意：1.离开当前页面后背景音乐将保持播放；\n
 				2. 硬退出app、调用stop api、播放结束都会清理后台控制中心和锁屏信息显示
 			</text>
-			<boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
+			<boolean-data :value="false" title="是否循环播放" @change="setLoop"></boolean-data>
 			<view class="uni-common-mt">
 				<slider ref="sliderRef" :value="position" :min="0" :max="duration" @changing="onchanging"
 					@change="onchange"></slider>
@@ -532,7 +532,7 @@ offWaiting
 		</view>
 	</view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 	const title = ref("backgroundAudio")
 	const sliderRef = ref<UniSliderElement | null>(null)
 	const bgAudioMannager = ref(null as BackgroundAudioManager | null)

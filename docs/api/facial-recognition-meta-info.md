@@ -60,7 +60,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | "land" | Web: x | 横屏 |
-| port | Web: x | 竖屏 |
+| "port" | Web: x | 竖屏 |
 
 #### StartFacialRecognitionVerifySuccess 的属性值 @startfacialrecognitionverifysuccess-values 
 
@@ -85,13 +85,13 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 10010 | Web: x | 刷脸异常 |
-| 10012 | Web: x | 网络异常 |
-| 10011 | Web: x | 验证中断 |
-| 10013 | Web: x | 刷脸验证失败 |
-| 10020 | Web: x | 设备设置时间异常 |
 | 10001 | Web: x | certifyId 不能为空 |
 | 10002 | Web: x | 当前设备不支持 |
+| 10010 | Web: x | 刷脸异常 |
+| 10011 | Web: x | 验证中断 |
+| 10012 | Web: x | 网络异常 |
+| 10013 | Web: x | 刷脸验证失败 |
+| 10020 | Web: x | 设备设置时间异常 |
 
 
 
@@ -113,29 +113,23 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-btn-v uni-common-mt">
-          <input class="uni-input" type="text" v-model="realName" name="real-name" placeholder="姓名" />
-        </view>
-        <view class="uni-btn-v uni-common-mt">
-          <input class="uni-input" type="text" v-model="idCard" name="id-card" placeholder="身份证号" />
-        </view>
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @click="facialRecognition">开始人脸识别</button>
-        </view>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
+        <input class="uni-input" type="text" v-model="realName" name="real-name" placeholder="姓名" />
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <input class="uni-input" type="text" v-model="idCard" name="id-card" placeholder="身份证号" />
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="facialRecognition">开始人脸识别</button>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const title = ref('实人认证')
   const realName = ref('')
   const idCard = ref('')

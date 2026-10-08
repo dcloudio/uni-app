@@ -40,16 +40,16 @@
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 'up' | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.25; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 |
-| down |   |
-| left |   |
-| right |   |
-| up-mirrored |   |
-| down-mirrored |   |
-| left-mirrored |   |
-| right-mirrored |   |
+| 合法值 |
+| :- |
+| "up" |
+| "down" |
+| "left" |
+| "right" |
+| "up-mirrored" |
+| "down-mirrored" |
+| "left-mirrored" |
+| "right-mirrored" |
 
 #### GetVideoInfoFail 的属性值 @getvideoinfofail-values 
 
@@ -105,9 +105,6 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <!-- #ifdef MP-ALIPAY -->
     <text class="uni-tips">提示：支付宝小程序调用 getVideoInfo 需要真机运行</text>
@@ -133,12 +130,9 @@
 
     <bottom-safe-area />
     <!-- #endif -->
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type TestStateType = {
     videoInfoForTest: UTSJSONObject | null
   }

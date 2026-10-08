@@ -51,9 +51,6 @@ border-right: <line-width> || <line-style> || <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <view>
         <text>border-right: 5px solid blue</text>
@@ -157,12 +154,9 @@ border-right: <line-width> || <line-style> || <color>;
       </view>
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const borderRightEnum: ItemType[] = [

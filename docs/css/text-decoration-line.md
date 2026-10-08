@@ -58,9 +58,6 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <view class="content">
         <text style="text-decoration-line: underline;">text-decoration-line: underline 下划线 底部易重叠字符：,.9pQqyzgj;\{}[]</text>
@@ -116,12 +113,9 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 		</view> -->
 		<!-- #endif -->
 
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { ItemType } from '@/components/enum-data/enum-data-types'
 
 	const textDecorationLineEnum: ItemType[] = [

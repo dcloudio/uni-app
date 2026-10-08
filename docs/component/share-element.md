@@ -146,7 +146,7 @@
 
   <scroll-view style="flex: 1">
     <view class="content">
-      <boolean-data :defaultValue="transitionOnGesture" title="transition-on-gesture= true(仅iOS生效)"
+      <boolean-data :value="transitionOnGesture" title="transition-on-gesture= true(仅iOS生效)"
         @change="changeTransitionOnGesture"></boolean-data>
 
       <text class="uni-common-mt choose-property-title">easing-function:</text>
@@ -192,7 +192,7 @@
     </view>
   </share-element>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type ShareElementOpenAnimationType =
     'auto' |
     'none' |

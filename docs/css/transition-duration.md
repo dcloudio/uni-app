@@ -48,15 +48,19 @@ transition-duration: <time>#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <text class="uni-title-text">view 组件 transition-duration：2s </text>
       <view :class="classValue"></view>
       <view class="button-container">
         <button class="button-item" @click="start">start</button>
         <button class="button-item" @click="reset">reset</button>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">transition 简写 duration：500ms</text>
+      <view ref="durationOnlyRef" :class="durationOnlyClass" style="transition: 500ms;"></view>
+      <view class="button-container">
+        <button class="button-item" @click="durationOnlyStart">duration start</button>
+        <button class="button-item" @click="durationOnlyReset">duration reset</button>
       </view>
 
       <text class="uni-title-text uni-common-mt">text 组件 transition-duration: 2s</text>
@@ -162,13 +166,11 @@ transition-duration: <time>#;
       <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const classValue = ref('box')
+  const durationOnlyClass = ref('box')
   const textClassValue = ref('text-box')
   const imageClassValue = ref('image-box')
   const scrollViewClassValue = ref('scroll-view-box')
@@ -180,6 +182,14 @@ transition-duration: <time>#;
 
   const reset = () => {
     classValue.value = 'box'
+  }
+
+  const durationOnlyStart = () => {
+    durationOnlyClass.value = 'box duration-only-ani'
+  }
+
+  const durationOnlyReset = () => {
+    durationOnlyClass.value = 'box'
   }
 
   const textStart = () => {
@@ -216,12 +226,14 @@ transition-duration: <time>#;
 
   const jest_start = () => {
     start()
+    durationOnlyStart()
     textStart()
     imageStart()
   }
 
   const jest_reset = () => {
     reset()
+    durationOnlyReset()
     textReset()
     imageReset()
   }
@@ -244,6 +256,7 @@ transition-duration: <time>#;
   const textRefDynamicFlat = ref(null as UniTextElement | null)
   const imageRefDynamicFlat = ref(null as UniImageElement | null)
   const scrollViewRefDynamic = ref(null as UniElement | null)
+  const durationOnlyRef = ref(null as UniElement | null)
   const isExpandedDynamic = ref(false)
   const isExpandedDynamicText = ref(false)
   const isExpandedDynamicImage = ref(false)
@@ -266,6 +279,9 @@ transition-duration: <time>#;
     data.transitionDurationActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
   }
 
+  const getDurationOnlyTransition = () => {
+    return durationOnlyRef.value?.style.getPropertyValue('transition-duration') ?? ''
+  }
 
   const changeTransitionDurationDynamic = (value: string) => {
     data.transitionDurationDynamic = value
@@ -331,6 +347,7 @@ transition-duration: <time>#;
   defineExpose({
     jest_start,
     jest_reset,
+    getDurationOnlyTransition,
     data
   })
 
@@ -345,6 +362,10 @@ transition-duration: <time>#;
 
   .ani {
     transition-duration: 2s;
+    width: 300px;
+  }
+
+  .duration-only-ani {
     width: 300px;
   }
 

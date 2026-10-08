@@ -60,10 +60,7 @@ height: <viewport-length>{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="css-page uni-theme-root" style="flex-grow: 1;">
+    <view class="css-page" style="flex-grow: 1;">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text class="theme-label">height: 100px</text>
@@ -73,7 +70,7 @@ height: <viewport-length>{1,2};
         </view>
       </view>
 
-      <view >
+      <view>
         <text class="theme-label">height: 50%</text>
         <view class="demo-box" style="height: 100px;">
           <view class="common" style="height: 50%;"></view>
@@ -182,12 +179,9 @@ height: <viewport-length>{1,2};
       </view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const heightEnum: ItemType[] = [

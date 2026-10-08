@@ -405,8 +405,8 @@ onShow和onHide是成对出现的。
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| backbutton | 微信小程序: x; 支付宝小程序: x |
-| navigateBack | 微信小程序: x; 支付宝小程序: x | 
+| "backbutton" | 微信小程序: x; 支付宝小程序: x |
+| "navigateBack" | 微信小程序: x; 支付宝小程序: x | 
 
 
 #### 返回值 

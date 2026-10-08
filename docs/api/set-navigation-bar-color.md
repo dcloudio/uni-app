@@ -43,8 +43,8 @@
 
 | 合法值 |
 | :- |
-| #ffffff |
-| #000000 |
+| "#ffffff" |
+| "#000000" |
 
 #### SetNavigationBarColorSuccess 的属性值 @setnavigationbarcolorsuccess-values 
 
@@ -100,6 +100,14 @@
     <button @tap="setNavigationBarColor2" class="uni-btn">
       设置导航条背景红色，标题黑色
     </button>
+    <!-- #ifdef APP -->
+    <button @tap="hideNavigationBar" class="uni-btn">
+      隐藏导航栏
+    </button>
+    <button @tap="showNavigationBar" class="uni-btn">
+      恢复导航栏
+    </button>
+    <!-- #endif -->
     <!-- #ifndef MP-ALIPAY -->
     <button @tap="goNavbarLite" class="uni-btn">
       跳转自定义导航栏页面
@@ -108,8 +116,8 @@
   </view>
 </template>
 
-<script setup lang="uts">
-  import { state, setLifeCycleNum } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setLifeCycleNum } from '@/store/index.ts'
 
   // 自动化测试
   const getLifeCycleNum = () : number => {
@@ -159,6 +167,26 @@
     })
   }
 
+  // #ifdef APP
+  const setNavigationStyle = (navigationStyle : string) => {
+    const pages = getCurrentPages()
+    pages[pages.length - 1].setPageStyle({ navigationStyle })
+  }
+
+  const getNavigationStyle = () : string => {
+    const pages = getCurrentPages()
+    return pages[pages.length - 1].getPageStyle()['navigationStyle'] as string
+  }
+
+  const hideNavigationBar = () => {
+    setNavigationStyle('custom')
+  }
+
+  const showNavigationBar = () => {
+    setNavigationStyle('default')
+  }
+  // #endif
+
   // #ifndef MP-ALIPAY
   const goNavbarLite = () => {
     uni.navigateTo({
@@ -171,7 +199,12 @@
     getLifeCycleNum,
     setLifeCycleNum: setLifeCycleNumFunc,
     setNavigationBarColor1,
-    setNavigationBarColor2
+    setNavigationBarColor2,
+    // #ifdef APP
+    hideNavigationBar,
+    showNavigationBar,
+    getNavigationStyle
+    // #endif
   })
 </script>
 

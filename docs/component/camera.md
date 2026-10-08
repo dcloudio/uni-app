@@ -192,8 +192,11 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 ```uvue
 <template>
 	<view style="flex: 1;">
-		<camera style="width: 100%; height: 300px;" :resolution="'medium'" :device-position="devicePosition" photo-resolution="high"
-			:flash="flash" :frame-size="frameSize" @stop="handleStop" @error="handleError" @initdone="handleInitDone">
+		<camera id="camera" style="width: 100%; height: 300px;" :resolution="'medium'" :device-position="devicePosition" photo-resolution="high"
+			:flash="flash" :frame-size="frameSize" <!-- #ifdef MP-ALIPAY -->
+			@ready="onCameraReady"
+			<!-- #endif -->
+			@stop="handleStop" @error="handleError" @initdone="handleInitDone">
 		</camera>
 
 		<scroll-view style="flex: 1;">
@@ -220,15 +223,15 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 						<text class="uni-title-text">拍摄照片示例</text>
 						<button type="default" @click="handleTakePhoto">拍摄照片</button>
 						<radio-group style="flex-direction: row;" name="成像质量" @change="takePhotoQualityChange">
-							<view><radio value="normal" :checked="true" /><text>普通质量</text></view>
-							<view><radio value="low" /><text>低质量</text></view>
-							<view><radio value="high" /><text>高质量</text></view>
-							<view><radio value="original" /><text>原图</text></view>
+							<view class="radio-box"><radio value="normal" :checked="true" /><text>普通质量</text></view>
+							<view class="radio-box"><radio value="low" /><text>低质量</text></view>
+							<view class="radio-box"><radio value="high" /><text>高质量</text></view>
+							<view class="radio-box"><radio value="original" /><text>原图</text></view>
 						</radio-group>
 					</view>
 					<view class="uni-camera-wrapper">
-						<image class="uni-camera-test-host-without-flex" style="width: 150px;height: 150px;"
-							v-if="imageSrc != ''" :src="imageSrc"></image>
+						<image id="take-photo-image" class="uni-camera-test-host-without-flex" style="width: 150px;height: 150px;"
+							v-if="imageSrc != ''" :src="imageSrc" @load="onPhotoImageLoad" @error="onPhotoImageError"></image>
 					</view>
 				</view>
 
@@ -247,8 +250,8 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 						<button type="default" @click="stopRecord">停止录制</button>
 						<radio-group style="flex-direction: row;margin-top: 8px;" name="是否压缩"
 							@change="startRecordCompressChange">
-							<view><radio value="0" :checked="true" /><text>未启动视频压缩</text></view>
-							<view><radio value="1" /><text>启动视频压缩</text></view>
+							<view class="radio-box"><radio value="0" :checked="true" /><text>未启动视频压缩</text></view>
+							<view class="radio-box"><radio value="1" /><text>启动视频压缩</text></view>
 						</radio-group>
 					</view>
 					<view class="uni-camera-wrapper">
@@ -261,13 +264,19 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const devicePosition = ref("back")
 	const flash = ref("off")
 	const frameSize = ref("medium")
 	let listener: CameraContextCameraFrameListener | null = null
 	const maxZoom = ref(0)
 	const imageSrc = ref("")
+	// 自动化测试：记录拍照结果路径及预览图的加载状态
+	const photoState = reactive({
+		path: '',
+		loaded: false,
+		error: ''
+	})
 	let quality = "normal"
 	const timeout = ref(30)
 	let compressed = false
@@ -276,6 +285,7 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 	const remain = ref(0)
 	let intervalId = -1
 	let timeoutStr = '30'
+	let context = null
 
 	const handleScanCode = () => {
 		uni.navigateTo({
@@ -306,7 +316,9 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 
 	const zoomSliderChange = (event : UniSliderChangeEvent) => {
 		const value = event.detail.value
+		// #ifndef MP-ALIPAY
 		const context = uni.createCameraContext();
+		// #endif
 		context?.setZoom({
 			zoom: value,
 			success: (e : any) => {
@@ -316,18 +328,35 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 	}
 
 	const handleTakePhoto = () => {
+		// #ifndef MP-ALIPAY
 		const context = uni.createCameraContext();
+		// #endif
 		context?.takePhoto({
 			quality: quality,
 			selfieMirror: false,
 			success: (res : CameraContextTakePhotoResult) => {
 				console.log("res.tempImagePath", res.tempImagePath);
 				imageSrc.value = res.tempImagePath ?? ''
+				photoState.path = res.tempImagePath ?? ''
+				photoState.loaded = false
+				photoState.error = ''
 			},
 			fail: (e : any) => {
 				console.log("take photo", e);
+				photoState.error = `${e}`
 			}
 		} as CameraContextTakePhotoOptions)
+	}
+
+	const onPhotoImageLoad = (_event : ImageLoadEvent) => {
+		photoState.loaded = true
+		photoState.error = ''
+	}
+
+	const onPhotoImageError = (event : ImageErrorEvent) => {
+		photoState.loaded = false
+		photoState.error = event.detail.errMsg
+		console.log("拍照图片加载失败", photoState.error)
 	}
 
 	const takePhotoQualityChange = (event : UniRadioGroupChangeEvent) => {
@@ -336,7 +365,9 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 	}
 
 	const setOnFrameListener = () => {
+	    // #ifndef MP-ALIPAY
 		const context = uni.createCameraContext();
+		// #endif
 		listener = context?.onCameraFrame((frame : CameraContextOnCameraFrame) => {
 			console.log("OnFrame :", frame);
 		})
@@ -374,7 +405,9 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
   }
 
 	const startRecord = () => {
+	    // #ifndef MP-ALIPAY
 		const context = uni.createCameraContext();
+		// #endif
 		let timeoutValue = getTimeout()
 		timeout.value = timeoutValue
 		context?.startRecord({
@@ -412,7 +445,9 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 
 	const stopRecord = () => {
 		startRecordStatus.value = false
+		// #ifndef MP-ALIPAY
 		const context = uni.createCameraContext();
+		// #endif
 		context?.stopRecord({
 			compressed: compressed,
 			success: (res : CameraContextStopRecordResult) => {
@@ -435,6 +470,19 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 		timeoutStr = event.detail.value
 	}
 
+	// #ifdef MP-ALIPAY
+	const onCameraReady = (e) => {
+		context = uni.createCameraContext('camera');
+		handleInitDone(e)
+	}
+	// #endif
+
+	// 自动化测试
+	defineExpose({
+		imageSrc,
+		photoState,
+		handleTakePhoto
+	})
 </script>
 
 <style>
@@ -471,6 +519,12 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 
 	.uni-title-size {
 		font-size: 22px;
+	}
+
+	.radio-box {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
 	}
 </style>
 

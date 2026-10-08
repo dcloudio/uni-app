@@ -260,7 +260,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const title = ref('隐私信息授权')
 	const appPrivacy = ref('未获取')
 	const privacyContractName = ref("")
