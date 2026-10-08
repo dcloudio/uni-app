@@ -70,9 +70,16 @@ uni-app x在编译时，会在控制台提示不支持的css，可以让uni-agen
 
 如涉及暗黑模式适配，需参考uni-app x的[暗黑适配文档](./api/theme-change.md)，有些部分与uni-app相同，但也有一些改动。
 
+### 7. 适配UniApp和UniPage对象重构
+
+HBuilderX 4.31+ 重构了应用和页面对象，迁移时需要检查`getApp()`和`getCurrentPages()`的相关代码：
+
+* `getApp()`改为返回[UniApp对象](./api/get-app.md)，Vue实例通过`vm`属性提供。调用`App.uvue`中定义的全局方法时，需要把`getApp().methodName()`改为`getApp().vm?.methodName()`；`globalData`仍通过`getApp().globalData`访问。`UniApp`可在uts插件和uvue页面中使用，但`vm`和`globalData`仅支持在uvue页面中使用。
+* `getCurrentPages()`改为返回[UniPage对象](./api/unipage.md)数组。页面管理能力直接通过`UniPage`调用；访问页面的Vue数据或方法时，通过`UniPage.vm`。旧代码中的`page.$vm`需要改为`page.vm`。更多页面栈说明[详见](./api/get-current-pages.md)。
+
 如果要改造为App，继续往下。
 
-### 7. 改造plus
+### 8. 改造plus
 
 uni-app x不支持plus。
 
@@ -81,14 +88,14 @@ uni-app x不支持plus。
 
 另外如果项目使用了subNVue，需要改成[dialogPage](./api/dialog-page.md)
 	
-### 8. 改造组件库
+### 9. 改造组件库
 
 * 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md)
 * 如果使用其他组件库，需要咨询组件作者是否有 uni-app x 版本。如果没有的话，推荐用[uni-ui x](./component/uni-ui-x/README.md)重构。
 
 uni-app x 相比 uni-app 多了不少内置组件，比如`list-view`复用长列表、`waterflow`瀑布流、`page-container`弹框、`sticky`吸顶、`match-media`宽屏适配、loading加载中、native-view对接原生view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
 
-### 9. 改造wxs和renderjs为Element API
+### 10. 改造wxs和renderjs为Element API
 
 uni-app x的app平台不再支持wxs和renderjs。uni-app x的逻辑层和渲染层虽然还是2层，但并没有明显的通信成本。
 
@@ -96,7 +103,7 @@ uni-app x 提供了全端统一的UNIElement API，它在编译到微信小程�
 
 包括moveable组件的使用，也推荐改成UNIElement的操作。
 	
-### 10. mock掉App原生插件（非uts原生插件）的输入输出，在iOS和鸿蒙上验证
+### 11. mock掉App原生插件（非uts原生插件）的输入输出，在iOS和鸿蒙上验证
 
 如果你使用了老的App原生插件，先让uni-agent把App原生插件的输入输出mock掉，后续步骤再处理原生插件，先对前几步的工作进行验证。
 
@@ -105,7 +112,7 @@ uni-app x 提供了全端统一的UNIElement API，它在编译到微信小程�
 
 这一步要再处理一件事，检查组件库是否适配了[样式隔离策略2.0](./css/common/style-isolation.md)。uni-app x 的蒸汽模式，仅支持[样式隔离策略2.0](./css/common/style-isolation.md)。
 
-### 11. 替换App原生插件和uts兼容模式组件
+### 12. 替换App原生插件和uts兼容模式组件
 	
 如果你之前使用了uts API插件，那么可以在uni-app x下直接复用。
 
@@ -123,7 +130,7 @@ uni-agent让普通前端开发者具备了写原生插件的能力，官方的�
 
 完成后继续在iOS和鸿蒙上验证。
 
-### 12. 使用HBuilderX 5.23以上适配Android
+### 13. 使用HBuilderX 5.23以上适配Android
 
 直接打开 `uni-app x` 的蒸汽模式，该模式兼容js/ts写法。且性能比`uni-app x` Android版VDOM模式、比Android原生开发的性能都会好非常多。[详见](./app-vapor.md)
 
