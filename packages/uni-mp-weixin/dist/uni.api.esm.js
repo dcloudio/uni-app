@@ -1550,6 +1550,9 @@ var shims = /*#__PURE__*/Object.freeze({
   shareVideoMessage: shareVideoMessage
 });
 
+const exit = {
+    name: 'exitMiniProgram',
+};
 const compressImage = {
     args(fromArgs, toArgs) {
         // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
@@ -1573,6 +1576,7 @@ const request = {
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   compressImage: compressImage,
+  exit: exit,
   getAppAuthorizeSetting: getAppAuthorizeSetting,
   getAppBaseInfo: getAppBaseInfo,
   getDeviceInfo: getDeviceInfo,

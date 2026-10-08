@@ -1922,6 +1922,9 @@ function returnValue(method, res) {
 const chooseFile = {
     name: 'chooseMessageFile',
 };
+const exit = {
+    name: 'exitMiniProgram',
+};
 const compressImage = {
     args(fromArgs, toArgs) {
         // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
@@ -1955,6 +1958,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
   chooseFile: chooseFile,
   compressImage: compressImage,
+  exit: exit,
   getAppAuthorizeSetting: getAppAuthorizeSetting,
   getAppBaseInfo: getAppBaseInfo,
   getDeviceInfo: getDeviceInfo,
