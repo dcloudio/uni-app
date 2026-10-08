@@ -1806,20 +1806,10 @@ export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNeces
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/renderSlot.d.ts
 /**
- * Marks a compiler-generated slot fallback as VDOM-rendered so the vapor
- * interop fallback chain renders it through the VDOM renderer. Internal to
- * vapor interop.
- */
-declare const vdomSlotFallbackKey: unique symbol;
-type SlotFallback = {
-  (): VNodeArrayChildren;
-  [vdomSlotFallbackKey]?: boolean;
-};
-/**
  * Compiler runtime helper for rendering `<slot/>`
  * @private
  */
-export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: SlotFallback, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
+export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: () => VNodeArrayChildren, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/createSlots.d.ts
 type SSRSlot = (...args: any[]) => VNode[] | undefined;
