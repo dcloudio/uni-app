@@ -345,6 +345,21 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-convert2AbsFullPath": {
+    "uni": {
+      "convert2AbsFullPath": {
+        "app": {
+          "js": "dom2",
+          "kotlin": "dom2",
+          "swift": "dom2",
+          "arkts": "dom2"
+        }
+      }
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
   "uni-crash": {
     "uni": {
       "__onAppCrash": {
