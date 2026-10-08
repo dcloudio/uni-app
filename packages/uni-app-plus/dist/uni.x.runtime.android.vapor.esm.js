@@ -138,47 +138,55 @@ function isSystemDialogPage(page) {
 function isSystemActionSheetDialogPage(page) {
   return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
 }
-function dialogPageTriggerParentHide(dialogPage) {
-  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
+function dialogPageTriggerParentHide(dialogPage, onBeforeTrigger) {
+  var skipDialogPageCheck = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
+  return dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE, 0, onBeforeTrigger, skipDialogPageCheck);
 }
 function dialogPageTriggerParentShow(dialogPage) {
   var triggerParentHideDialogPageNum = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-  dialogPageTriggerParentLifeCycle(dialogPage, ON_SHOW, triggerParentHideDialogPageNum);
+  var skipDialogPageCheck = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
+  dialogPageTriggerParentLifeCycle(dialogPage, ON_SHOW, triggerParentHideDialogPageNum, void 0, skipDialogPageCheck);
 }
 function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
   var triggerParentHideDialogPageNum = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
+  var onBeforeTrigger = arguments.length > 3 ? arguments[3] : void 0;
+  var skipDialogPageCheck = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : false;
   if (!dialogPage.$triggerParentHide)
-    return;
+    return false;
   var pages2 = getCurrentPages();
   var currentPage = pages2[pages2.length - 1];
   if (!currentPage)
-    return;
+    return false;
   var parentPage = dialogPage.getParentPage();
   if (!parentPage)
-    return;
+    return false;
   if (parentPage !== currentPage)
-    return;
-  var dialogPages = currentPage.getDialogPages();
-  for (var i = 0; i < dialogPages.length; i++) {
-    if (!!dialogPages[i].$triggerParentHide) {
-      triggerParentHideDialogPageNum++;
-      if (triggerParentHideDialogPageNum > 1) {
-        return;
-      }
-    }
-  }
-  if (triggerParentHideDialogPageNum <= 1) {
-    var systemDialogPages = getSystemDialogPages(parentPage);
-    for (var _i = 0; _i < systemDialogPages.length; _i++) {
-      if (!!systemDialogPages[_i].$triggerParentHide) {
+    return false;
+  if (!skipDialogPageCheck) {
+    var dialogPages = currentPage.getDialogPages();
+    for (var i = 0; i < dialogPages.length; i++) {
+      if (!!dialogPages[i].$triggerParentHide) {
         triggerParentHideDialogPageNum++;
         if (triggerParentHideDialogPageNum > 1) {
-          return;
+          return false;
+        }
+      }
+    }
+    if (triggerParentHideDialogPageNum <= 1) {
+      var systemDialogPages = getSystemDialogPages(parentPage);
+      for (var _i = 0; _i < systemDialogPages.length; _i++) {
+        if (!!systemDialogPages[_i].$triggerParentHide) {
+          triggerParentHideDialogPageNum++;
+          if (triggerParentHideDialogPageNum > 1) {
+            return false;
+          }
         }
       }
     }
   }
+  onBeforeTrigger === null || onBeforeTrigger === void 0 || onBeforeTrigger();
   invokeHook(currentPage.vm, lifeCycle);
+  return true;
 }
 function getSystemDialogPages(parentPage) {
   if (!parentPage)
@@ -801,6 +809,127 @@ var ON_POP_GESTURE = "onPopGesture";
 var OPEN_DIALOG_PAGE = "openDialogPage";
 var homeDialogPages = [];
 var homeSystemDialogPages = [];
+var dialogPageNavigatorLocks = /* @__PURE__ */ new WeakMap();
+var parentHiddenDialogPages = /* @__PURE__ */ new WeakMap();
+function registerDialogPageNavigatorLock(dialogPage, release) {
+  dialogPageNavigatorLocks.set(dialogPage, {
+    release,
+    canceled: false,
+    released: false,
+    unloaded: false,
+    parentHideRegistered: false
+  });
+}
+function registerDialogPagePendingMount(dialogPage, cancel) {
+  var state = dialogPageNavigatorLocks.get(dialogPage);
+  if (!state) {
+    return;
+  }
+  if (state.canceled) {
+    cancel();
+    return;
+  }
+  state.cancelPendingMount = cancel;
+}
+function isDialogPageNavigatorLockCanceled(dialogPage) {
+  var _dialogPageNavigatorL;
+  return ((_dialogPageNavigatorL = dialogPageNavigatorLocks.get(dialogPage)) === null || _dialogPageNavigatorL === void 0 ? void 0 : _dialogPageNavigatorL.canceled) === true;
+}
+function releaseDialogPageNavigatorLock(state) {
+  if (!state.released) {
+    state.released = true;
+    state.release();
+  }
+}
+function cancelDialogPageNavigatorLock(dialogPage) {
+  var _state$cancelPendingM;
+  var state = dialogPageNavigatorLocks.get(dialogPage);
+  if (!state) {
+    return;
+  }
+  state.canceled = true;
+  (_state$cancelPendingM = state.cancelPendingMount) === null || _state$cancelPendingM === void 0 || _state$cancelPendingM.call(state);
+  state.cancelPendingMount = void 0;
+  releaseDialogPageNavigatorLock(state);
+}
+function completeDialogPageNavigatorLock(dialogPage) {
+  var state = dialogPageNavigatorLocks.get(dialogPage);
+  if (!state) {
+    return false;
+  }
+  releaseDialogPageNavigatorLock(state);
+  if (state.canceled) {
+    return false;
+  }
+  return true;
+}
+function shouldTriggerDialogPageParentHide(dialogPage) {
+  var state = dialogPageNavigatorLocks.get(dialogPage);
+  if (!state || state.canceled || !dialogPage.$triggerParentHide) {
+    return !(state !== null && state !== void 0 && state.canceled);
+  }
+  var parentPage = dialogPage.getParentPage();
+  if (!parentPage) {
+    return true;
+  }
+  var dialogPages = parentHiddenDialogPages.get(parentPage);
+  if (!(dialogPages !== null && dialogPages !== void 0 && dialogPages.size)) {
+    return true;
+  }
+  dialogPages.add(dialogPage);
+  state.parentHideRegistered = true;
+  return false;
+}
+function markDialogPageParentHidden(dialogPage) {
+  var state = dialogPageNavigatorLocks.get(dialogPage);
+  var parentPage = dialogPage.getParentPage();
+  if (!state || state.canceled || !parentPage) {
+    return;
+  }
+  var dialogPages = parentHiddenDialogPages.get(parentPage);
+  if (!dialogPages) {
+    dialogPages = /* @__PURE__ */ new Set();
+    parentHiddenDialogPages.set(parentPage, dialogPages);
+  }
+  dialogPages.add(dialogPage);
+  state.parentHideRegistered = true;
+}
+function unregisterDialogPageParentHide(dialogPage, state) {
+  if (!state.parentHideRegistered) {
+    return false;
+  }
+  state.parentHideRegistered = false;
+  var parentPage = dialogPage.getParentPage();
+  if (!parentPage) {
+    return false;
+  }
+  var dialogPages = parentHiddenDialogPages.get(parentPage);
+  if (!dialogPages) {
+    return false;
+  }
+  dialogPages.delete(dialogPage);
+  if (dialogPages.size) {
+    return false;
+  }
+  parentHiddenDialogPages.delete(parentPage);
+  return true;
+}
+function shouldTriggerDialogPageParentShow(dialogPage) {
+  var _state$cancelPendingM2;
+  var state = dialogPageNavigatorLocks.get(dialogPage);
+  if (!state) {
+    return true;
+  }
+  if (state.unloaded) {
+    return false;
+  }
+  state.unloaded = true;
+  state.canceled = true;
+  (_state$cancelPendingM2 = state.cancelPendingMount) === null || _state$cancelPendingM2 === void 0 || _state$cancelPendingM2.call(state);
+  state.cancelPendingMount = void 0;
+  releaseDialogPageNavigatorLock(state);
+  return unregisterDialogPageParentHide(dialogPage, state);
+}
 var devToolsPageChangedListener;
 function getCurrentDevToolsPage() {
   var pages2 = getCurrentPages();
@@ -1506,8 +1635,10 @@ function createAnimationProtocol(animationTypes) {
   };
 }
 var navigatorLock;
+var navigatorLockId = 0;
 function beforeRoute() {
   navigatorLock = "";
+  navigatorLockId++;
 }
 function createRouteOptions(type) {
   return {
@@ -1566,7 +1697,14 @@ function createNormalizeUrl(type) {
       return "".concat(navigatorLock, " locked");
     }
     if (!options.skipNavigatorLock && __uniConfig.ready) {
+      var _options$onNavigatorL;
       navigatorLock = url;
+      var lockId = ++navigatorLockId;
+      (_options$onNavigatorL = options.onNavigatorLock) === null || _options$onNavigatorL === void 0 || _options$onNavigatorL.call(options, () => {
+        if (lockId === navigatorLockId) {
+          beforeRoute();
+        }
+      });
     }
   };
 }
@@ -2256,11 +2394,18 @@ function setStatusBarStyle() {
   }
 }
 function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
-  var _dialogPage$vm;
-  var webview = getNativeApp().pageManager.findPageById(((_dialogPage$vm = dialogPage.vm) === null || _dialogPage$vm === void 0 ? void 0 : _dialogPage$vm.$basePage.id) + "");
+  var _dialogPage$vm$$baseP, _dialogPage$vm;
+  var pageId = (_dialogPage$vm$$baseP = (_dialogPage$vm = dialogPage.vm) === null || _dialogPage$vm === void 0 ? void 0 : _dialogPage$vm.$basePage.id) !== null && _dialogPage$vm$$baseP !== void 0 ? _dialogPage$vm$$baseP : dialogPage.__nativePageId;
+  if (pageId == null) {
+    return;
+  }
+  var webview = getNativeApp().pageManager.findPageById(pageId + "");
   if (webview) {
+    cancelDialogPageNavigatorLock(dialogPage);
     closeWebview(webview, animationType || "none", animationDuration || 0, () => {
-      getVueApp().unmountPage(dialogPage.vm);
+      if (dialogPage.vm) {
+        getVueApp().unmountPage(dialogPage.vm);
+      }
       setStatusBarStyle();
     });
   }
@@ -2678,8 +2823,8 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     url,
     pageStyle
   );
-  if (onCreated) {
-    onCreated(nativePage);
+  if (dialogPage.__nativePageId == null) {
+    dialogPage.__nativePageId = nativePage.pageId;
   }
   routeOptions.meta.id = parseInt(nativePage.pageId);
   var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
@@ -2692,28 +2837,51 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     // TODO ThemeMode
     "light"
   );
+  var pageComponentPublicInstance;
+  var nativePageUnloaded = false;
+  var pageUnloadHookInvoked = false;
+  function invokePageUnloadHook() {
+    if (nativePageUnloaded && pageComponentPublicInstance && !pageUnloadHookInvoked) {
+      pageUnloadHookInvoked = true;
+      invokeHook(pageComponentPublicInstance, ON_UNLOAD);
+    }
+  }
+  nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+    closeDialogPage({
+      dialogPage
+    });
+  });
+  nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePageUnloaded = true;
+    invokePageUnloadHook();
+    if (shouldTriggerDialogPageParentShow(dialogPage)) {
+      dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0, true);
+    }
+  });
+  if (onCreated) {
+    onCreated(nativePage);
+  }
   function fn() {
-    createVuePage(id2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
-      nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
-        closeDialogPage({
-          dialogPage
-        });
-      });
-      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-        invokeHook(pageComponentPublicInstance, ON_UNLOAD);
-        dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
-      });
+    if (isDialogPageNavigatorLockCanceled(dialogPage)) {
+      return;
+    }
+    createVuePage(id2, route, query, pageInstance, {}, nativePage, () => !isDialogPageNavigatorLockCanceled(dialogPage)).then((pageVm) => {
+      pageComponentPublicInstance = pageVm;
+      invokePageUnloadHook();
+      if (isDialogPageNavigatorLockCanceled(dialogPage)) {
+        return;
+      }
       nativePage.addPageEventListener(ON_READY, (_) => {
-        invokePageOnReady(pageComponentPublicInstance);
+        invokePageOnReady(pageVm);
       });
       nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, arg);
+        invokeHook(pageVm, ON_PAGE_SCROLL, arg);
       });
       nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
+        invokeHook(pageVm, ON_PULL_DOWN_REFRESH);
       });
       nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-        invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
+        invokeHook(pageVm, ON_REACH_BOTTOM);
       });
       nativePage.addPageEventListener(ON_RESIZE, (arg) => {
         var args = {
@@ -2725,7 +2893,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
             screenHeight: arg.size.screenHeight
           }
         };
-        invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
+        invokeHook(pageVm, ON_RESIZE, args);
       });
       nativePage.startRender();
       if (typeof __UNI_X_DEVTOOLS__ !== "undefined" && __UNI_X_DEVTOOLS__ && hasDevToolsPageChangedListener() && !isSystemDialogPage(dialogPage) && getCurrentDevToolsPage() === dialogPage) {
@@ -2734,31 +2902,50 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     });
   }
   if (delay) {
-    setTimeout(fn, delay);
+    var timer = setTimeout(fn, delay);
+    registerDialogPagePendingMount(dialogPage, () => clearTimeout(timer));
   } else {
     fn();
   }
   return nativePage;
 }
 function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
+  var shouldMount = arguments.length > 6 && arguments[6] !== void 0 ? arguments[6] : () => true;
   var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => app.mountPage(component2, extend({
-    __pageId,
-    __pagePath,
-    __pageQuery,
-    __pageInstance
-  }, __pageQuery), pageNode);
+  var mountPage = (component2) => {
+    if (!shouldMount()) {
+      return;
+    }
+    return app.mountPage(component2, extend({
+      __pageId,
+      __pagePath,
+      __pageQuery,
+      __pageInstance
+    }, __pageQuery), pageNode);
+  };
   if (isPromise(component)) {
-    return component.then((component2) => mountPage(component2)).catch((err) => {
+    var mountedPage = component.then((component2) => mountPage(component2)).catch((err) => {
       console.error(err);
       throw err;
     });
+    return {
+      then(fn) {
+        mountedPage.then((page) => {
+          if (page) {
+            fn(page);
+          }
+        });
+      }
+    };
   }
   return {
     then(fn) {
-      return fn(mountPage(component));
+      var page = mountPage(component);
+      if (page) {
+        return fn(page);
+      }
     }
   };
 }
@@ -3653,7 +3840,13 @@ var openDialogPage = (options) => {
     query
   } = parseUrl(url);
   path = normalizeRoute(path);
-  var normalizeUrl = createNormalizeUrl("navigateTo");
+  var releaseNavigatorLock = () => {
+  };
+  var normalizeUrl = createNormalizeUrl("navigateTo", {
+    onNavigatorLock(release) {
+      releaseNavigatorLock = release;
+    }
+  });
   var errMsg = normalizeUrl(url, {});
   if (errMsg) {
     triggerFailCallback(options, errMsg);
@@ -3663,6 +3856,7 @@ var openDialogPage = (options) => {
   var currentPages = getCurrentPages();
   if (parentPage) {
     if (currentPages.indexOf(parentPage) === -1) {
+      releaseNavigatorLock();
       triggerFailCallback(options, "parentPage is not a valid page");
       return null;
     }
@@ -3671,6 +3865,7 @@ var openDialogPage = (options) => {
     parentPage = currentPages[currentPages.length - 1];
   }
   var dialogPage = markRaw(new UniDialogPageImpl());
+  registerDialogPageNavigatorLock(dialogPage, releaseNavigatorLock);
   dialogPage.route = path;
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
@@ -3709,8 +3904,11 @@ var openDialogPage = (options) => {
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
-      beforeRoute();
-      dialogPageTriggerParentHide(dialogPage);
+      if (completeDialogPageNavigatorLock(dialogPage) && shouldTriggerDialogPageParentHide(dialogPage)) {
+        dialogPageTriggerParentHide(dialogPage, () => {
+          markDialogPageParentHidden(dialogPage);
+        }, true);
+      }
     });
   }
   var page = registerDialogPage(

@@ -2813,8 +2813,14 @@ const API_SWITCH_TAB = "switchTab";
 const API_PRELOAD_PAGE = "preloadPage";
 const API_UN_PRELOAD_PAGE = "unPreloadPage";
 let navigatorLock;
+let navigatorLockId = 0;
+function beforeRoute() {
+  navigatorLock = "";
+  navigatorLockId++;
+}
 function createNormalizeUrl(type, options = {}) {
   return function normalizeUrl(url, params) {
+    var _a;
     if (!url) {
       return `Missing required args: "url"`;
     }
@@ -2857,6 +2863,12 @@ function createNormalizeUrl(type, options = {}) {
     }
     if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
+      const lockId = ++navigatorLockId;
+      (_a = options.onNavigatorLock) == null ? void 0 : _a.call(options, () => {
+        if (lockId === navigatorLockId) {
+          beforeRoute();
+        }
+      });
     }
   };
 }

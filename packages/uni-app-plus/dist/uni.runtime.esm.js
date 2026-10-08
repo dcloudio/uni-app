@@ -12448,8 +12448,10 @@ function createAnimationProtocol(animationTypes) {
     };
 }
 let navigatorLock;
+let navigatorLockId = 0;
 function beforeRoute() {
     navigatorLock = '';
+    navigatorLockId++;
 }
 function createRouteOptions(type) {
     return {
@@ -12461,6 +12463,7 @@ function createRouteOptions(type) {
 }
 function createNormalizeUrl(type, options = {}) {
     return function normalizeUrl(url, params) {
+        var _a;
         if (!url) {
             return `Missing required args: "url"`;
         }
@@ -12523,6 +12526,13 @@ function createNormalizeUrl(type, options = {}) {
         // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
         if (!options.skipNavigatorLock && __uniConfig.ready) {
             navigatorLock = url;
+            const lockId = ++navigatorLockId;
+            (_a = options.onNavigatorLock) === null || _a === void 0 ? void 0 : _a.call(options, () => {
+                // 只允许释放本次调用持有的 lock，避免迟到的异步回调清除后续路由的 lock
+                if (lockId === navigatorLockId) {
+                    beforeRoute();
+                }
+            });
         }
     };
 }

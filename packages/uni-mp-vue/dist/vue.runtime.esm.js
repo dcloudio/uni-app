@@ -4129,7 +4129,8 @@ function createComponentInstance(vnode, parent, suspense) {
     $templateUniElementRefs: [],
     $templateUniElementStyles: {},
     $eS: {},
-    $eA: {}
+    $eA: {},
+    $eR: {}
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);
@@ -4729,6 +4730,7 @@ function patch(instance, data, oldData) {
   data = deepCopy(data);
   data.$eS = instance.$eS || {};
   data.$eA = instance.$eA || {};
+  data.$eR = instance.$eR || {};
   const ctx = instance.ctx;
   const mpType = ctx.mpType;
   if (mpType === "page" || mpType === "component") {

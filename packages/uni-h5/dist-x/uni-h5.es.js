@@ -1233,49 +1233,60 @@ function isSystemDialogPage(page) {
 function isSystemActionSheetDialogPage(page) {
   return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH$1);
 }
-function dialogPageTriggerParentHide(dialogPage) {
-  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
+function dialogPageTriggerParentHide(dialogPage, onBeforeTrigger, skipDialogPageCheck = false) {
+  return dialogPageTriggerParentLifeCycle(
+    dialogPage,
+    ON_HIDE,
+    0,
+    onBeforeTrigger,
+    skipDialogPageCheck
+  );
 }
-function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0) {
+function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0, skipDialogPageCheck = false) {
   dialogPageTriggerParentLifeCycle(
     dialogPage,
     ON_SHOW,
-    triggerParentHideDialogPageNum
+    triggerParentHideDialogPageNum,
+    void 0,
+    skipDialogPageCheck
   );
 }
-function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHideDialogPageNum = 0) {
+function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHideDialogPageNum = 0, onBeforeTrigger, skipDialogPageCheck = false) {
   if (!dialogPage.$triggerParentHide)
-    return;
+    return false;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
   if (!currentPage)
-    return;
+    return false;
   const parentPage = dialogPage.getParentPage();
   if (!parentPage)
-    return;
+    return false;
   if (parentPage !== currentPage)
-    return;
-  const dialogPages = currentPage.getDialogPages();
-  for (let i = 0; i < dialogPages.length; i++) {
-    if (!!dialogPages[i].$triggerParentHide) {
-      triggerParentHideDialogPageNum++;
-      if (triggerParentHideDialogPageNum > 1) {
-        return;
-      }
-    }
-  }
-  if (triggerParentHideDialogPageNum <= 1) {
-    const systemDialogPages = getSystemDialogPages(parentPage);
-    for (let i = 0; i < systemDialogPages.length; i++) {
-      if (!!systemDialogPages[i].$triggerParentHide) {
+    return false;
+  if (!skipDialogPageCheck) {
+    const dialogPages = currentPage.getDialogPages();
+    for (let i = 0; i < dialogPages.length; i++) {
+      if (!!dialogPages[i].$triggerParentHide) {
         triggerParentHideDialogPageNum++;
         if (triggerParentHideDialogPageNum > 1) {
-          return;
+          return false;
+        }
+      }
+    }
+    if (triggerParentHideDialogPageNum <= 1) {
+      const systemDialogPages = getSystemDialogPages(parentPage);
+      for (let i = 0; i < systemDialogPages.length; i++) {
+        if (!!systemDialogPages[i].$triggerParentHide) {
+          triggerParentHideDialogPageNum++;
+          if (triggerParentHideDialogPageNum > 1) {
+            return false;
+          }
         }
       }
     }
   }
   invokeHook(currentPage.vm, lifeCycle);
+  return true;
 }
 function getSystemDialogPages(parentPage) {
   if (!parentPage)
@@ -6629,8 +6640,10 @@ function createAnimationProtocol(animationTypes) {
   };
 }
 let navigatorLock;
+let navigatorLockId = 0;
 function beforeRoute() {
   navigatorLock = "";
+  navigatorLockId++;
 }
 function createRouteOptions(type) {
   return {
@@ -6642,6 +6655,7 @@ function createRouteOptions(type) {
 }
 function createNormalizeUrl(type, options = {}) {
   return function normalizeUrl(url, params) {
+    var _a;
     if (!url) {
       return `Missing required args: "url"`;
     }
@@ -6684,6 +6698,12 @@ function createNormalizeUrl(type, options = {}) {
     }
     if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url;
+      const lockId = ++navigatorLockId;
+      (_a = options.onNavigatorLock) == null ? void 0 : _a.call(options, () => {
+        if (lockId === navigatorLockId) {
+          beforeRoute();
+        }
+      });
     }
   };
 }

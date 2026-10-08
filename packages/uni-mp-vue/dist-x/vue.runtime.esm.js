@@ -4211,7 +4211,8 @@ function createComponentInstance(vnode, parent, suspense) {
     $templateUniElementRefs: [],
     $templateUniElementStyles: {},
     $eS: {},
-    $eA: {}
+    $eA: {},
+    $eR: {}
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);
@@ -4811,6 +4812,7 @@ function patch(instance, data, oldData) {
   data = deepCopy(data);
   data.$eS = instance.$eS || {};
   data.$eA = instance.$eA || {};
+  data.$eR = instance.$eR || {};
   const ctx = instance.ctx;
   const mpType = ctx.mpType;
   if (mpType === "page" || mpType === "component") {
@@ -5940,6 +5942,7 @@ function coverAnimateToStyle(keyframes, options) {
     });
 }
 
+let uniElementScrollCommandId = 0;
 /**
  * event.target、event.currentTarget也是UniElement实例，可能不含id
  */
@@ -5966,13 +5969,25 @@ class UniElement {
         this._dataset = createUniDOMStringMap(value || {});
     }
     scrollTo(options) {
-        if (this.$vm
-            .$mpPlatform !== 'mp-weixin') {
-            console.warn('scrollTo is only supported on weixin miniProgram');
-            return;
-        }
         if (!this.id) {
             console.warn(`scrollTo is only supported on elements with id`);
+            return;
+        }
+        if (this.tagName !== 'SCROLL-VIEW') {
+            console.warn(`scrollTo is only supported on scroll-view`);
+            return;
+        }
+        const { $mpPlatform, $scope } = this.$vm;
+        if ($mpPlatform === 'mp-alipay') {
+            const { top, left } = (options || {});
+            const command = {
+                commandId: ++uniElementScrollCommandId,
+                top,
+                left,
+            };
+            $scope === null || $scope === void 0 ? void 0 : $scope.setData({
+                [`$eR.${this.id}`]: JSON.stringify(command),
+            });
             return;
         }
         if (this.$node) {
