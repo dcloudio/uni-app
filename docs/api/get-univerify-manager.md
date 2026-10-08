@@ -352,7 +352,7 @@ isPreLoginValid
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const title = ref('一键登录')
   const uniVerifyManager = ref(null as UniVerifyManager | null)
   const phone = ref('')
@@ -382,7 +382,7 @@ isPreLoginValid
         const hasCauseMessage = (err.cause?.cause?.message ?? '').length > 0
         modalUniPage.value = uni.showModal({
           title: '预登录失败',
-          content: hasCauseMessage ? JSON.parseObject(err.cause?.cause?.message ?? '')?.getString("errorDesc") : err.errMsg,
+          content: hasCauseMessage ? (JSON.parse(err.cause?.cause?.message ?? '')?.errorDesc as string) : err.errMsg,
           showCancel: false
         });
       }
@@ -436,7 +436,7 @@ isPreLoginValid
       setTimeout(() => {
         uni.showModal({
           title: '取号成功',
-          content: res.result.getJSON("res")?.getString("phoneNumber"),
+          content: ((res.result.res as UTSJSONObject)?.phoneNumber as string),
           showCancel: false
         });
       }, 100);
@@ -470,7 +470,7 @@ isPreLoginValid
         const hasCauseMessage = (err.cause?.cause?.message ?? '').length > 0
         uni.showModal({
           title: '登录失败',
-          content: hasCauseMessage ? JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") : err.errMsg,
+          content: hasCauseMessage ? (JSON.parse(err.cause?.cause?.message ?? "")?.errorDesc as string) : err.errMsg,
           showCancel: false
         });
       }

@@ -50,7 +50,7 @@ app 端并不是在运行时实现了cover-view组件，仅仅是编译器把cov
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const showMap = ref(false)
   const latitude = ref(39.909)
   const longitude = ref(116.39742)

@@ -43,9 +43,9 @@
 
 | 合法值 | 描述 |
 | :- | :- |
-| default | 底部圆点指示器 |
-| number | 顶部数字指示器 |
-| none | 不显示指示器 |
+| "default" | 底部圆点指示器 |
+| "number" | 顶部数字指示器 |
+| "none" | 不显示指示器 |
 
 ##### longPressActions 的属性描述
 
@@ -126,10 +126,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="preview-page uni-theme-root">
+    <view class="preview-page">
       <!-- #ifndef MP-ALIPAY -->
       <view>
         <text class="text-desc">图片指示器样式</text>
@@ -180,12 +177,9 @@
         <text class="notice-text">2、Web平台不支持loop属性。</text>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type Indicator = "number" | "default" | "none"
   type ItemType = {
     value : Indicator,

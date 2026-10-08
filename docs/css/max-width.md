@@ -57,10 +57,7 @@ max-width: <viewport-length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="uni-theme-root" style="flex-grow: 1;">
+    <view style="flex-grow: 1;">
       <view>
         <text>max-width: 200px</text>
         <view class="common" style="max-width: 200px;">
@@ -180,12 +177,9 @@ max-width: <viewport-length>;
       <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const maxWidthEnum : ItemType[] = [

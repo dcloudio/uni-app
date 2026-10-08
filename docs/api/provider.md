@@ -81,10 +81,10 @@ getProvider的同步方法
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25 | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持)) |
-| share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享 (weixin) | 
+| "payment" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25 | 支付 (alipay、wxpay) |
+| "location" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25 | 定位 (system、tencent) |
+| "oauth" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持)) |
+| "share" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享 (weixin) | 
 
 
 ### 返回值 
@@ -105,10 +105,10 @@ getProvider的同步方法
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 （weixin、apple(iOS HBuilderX 5.21+支持)） |
-| share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享（weixin） |
+| "payment" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
+| "location" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 定位 (system、tencent) |
+| "oauth" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 （weixin、apple(iOS HBuilderX 5.21+支持)） |
+| "share" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享（weixin） |
 
 
 
@@ -161,28 +161,22 @@ getProvider的同步方法
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/provider/provider
 ```uvue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view class="page">
-      <page-head :title="data.title"></page-head>
-      <view class="service-item" v-for="(item, index) in data.serviceList" :key="index">
-        <text class="service-name">{{item.name}}:</text>
-        <view class="provider-list">
-          <text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
-            {{item2}}
-            {{item.providerObj.length > 0 ? ':' + JSON.stringify(item.providerObj[index2]) : '' }}
-          </text>
-        </view>
+  <view class="page">
+    <page-head :title="data.title"></page-head>
+    <view class="service-item" v-for="(item, index) in data.serviceList" :key="index">
+      <text class="service-name">{{item.name}}:</text>
+      <view class="provider-list">
+        <text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
+          {{item2}}
+          {{item.providerObj.length > 0 ? ':' + JSON.stringify(item.providerObj[index2]) : '' }}
+        </text>
       </view>
-      <button class="btn-get-provider" type="primary" @click="getProvider">getProviderSync</button>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <button class="btn-get-provider" type="primary" @click="getProvider">getProviderSync</button>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type ProviderItem = {
     service : string,
     name : string,
@@ -323,10 +317,10 @@ getProvider的同步方法
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18 | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持)) |
-| share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享 (weixin) |
+| "payment" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18 | 支付 (alipay、wxpay) |
+| "location" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18 | 定位 (system、tencent) |
+| "oauth" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持)) |
+| "share" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享 (weixin) |
 
 #### GetProviderSuccess 的属性值 @getprovidersuccess-values 
 
@@ -340,10 +334,10 @@ getProvider的同步方法
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 |
-| share | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.66 | 分享 |
+| "payment" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
+| "location" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 定位 (system、tencent) |
+| "oauth" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 |
+| "share" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.66 | 分享 |
 
 #### GetProviderFail 的属性值 @getproviderfail-values 
 
@@ -390,28 +384,22 @@ getProvider的同步方法
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/provider/provider
 ```uvue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view class="page">
-      <page-head :title="data.title"></page-head>
-      <view class="service-item" v-for="(item, index) in data.serviceList" :key="index">
-        <text class="service-name">{{item.name}}:</text>
-        <view class="provider-list">
-          <text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
-            {{item2}}
-            {{item.providerObj.length > 0 ? ':' + JSON.stringify(item.providerObj[index2]) : '' }}
-          </text>
-        </view>
+  <view class="page">
+    <page-head :title="data.title"></page-head>
+    <view class="service-item" v-for="(item, index) in data.serviceList" :key="index">
+      <text class="service-name">{{item.name}}:</text>
+      <view class="provider-list">
+        <text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
+          {{item2}}
+          {{item.providerObj.length > 0 ? ':' + JSON.stringify(item.providerObj[index2]) : '' }}
+        </text>
       </view>
-      <button class="btn-get-provider" type="primary" @click="getProvider">getProviderSync</button>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <button class="btn-get-provider" type="primary" @click="getProvider">getProviderSync</button>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type ProviderItem = {
     service : string,
     name : string,

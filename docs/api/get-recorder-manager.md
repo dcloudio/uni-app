@@ -59,11 +59,11 @@ start
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| aac | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | aac格式 |
-| mp3 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: x; HarmonyOS: 4.61 | mp3格式 |
-| pcm | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | pcm格式 |
-| wav | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | wav格式 |
-| m4a | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | m4a格式 |
+| "aac" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | aac格式 |
+| "mp3" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: x; HarmonyOS: 4.61 | mp3格式 |
+| "pcm" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | pcm格式 |
+| "wav" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | wav格式 |
+| "m4a" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | m4a格式 |
 
 
 
@@ -400,8 +400,8 @@ offInterruptionEnd
       <button class="btnstyle" size="default" @click="registeronInterruptionEnd">注册onInterruptionEnd</button>
       <view class="uni-list">
         <text style="margin-bottom: 10px"> 请选择录音格式：</text>
-        <radio-group class="uni-row" @change="radioChange" style="flex-wrap: wrap">
-          <view class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in items" :key="item.value">
+        <radio-group class="record-format-group" @change="radioChange">
+          <view class="record-format-item" v-for="(item, index) in items" :key="item.value">
             <radio :value="item.value" :checked="index === current" />
             <text>{{ item.name }}</text>
           </view>
@@ -419,7 +419,7 @@ offInterruptionEnd
     <bottom-safe-area />
   </scroll-view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   export type ItemType = { value : string, name : string }
 
 	type DataType = {
@@ -784,6 +784,19 @@ offInterruptionEnd
     margin-right: 30px;
     margin-top: 10px;
     margin-bottom: 10px;
+  }
+
+  .record-format-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .record-format-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 15px;
   }
 </style>
 

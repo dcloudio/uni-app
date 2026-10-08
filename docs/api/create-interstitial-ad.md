@@ -250,7 +250,7 @@ onAdClicked
   <view v-for="(item,index) in errorDetails">{{item}}</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const errorDetails = ref([] as string[])
   const btnText = ref("")
   const btnType = ref("primary")

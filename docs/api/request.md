@@ -49,12 +49,12 @@
 | 合法值 | 描述 |
 | :- | :- |
 | "GET" | GET方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据。 |
-| POST | POST方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用。 |
-| PUT | PUT方法用有效载荷请求替换目标资源的所有当前表示。 |
-| PATCH | PATCH方法用于对资源应用部分修改。 |
-| DELETE | DELETE方法删除指定的资源。 |
-| HEAD | HEAD方法请求一个与GET请求的响应相同的响应，但没有响应体。 |
-| OPTIONS | OPTIONS 方法用于描述目标资源的通信选项。 |
+| "POST" | POST方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用。 |
+| "PUT" | PUT方法用有效载荷请求替换目标资源的所有当前表示。 |
+| "PATCH" | PATCH方法用于对资源应用部分修改。 |
+| "DELETE" | DELETE方法删除指定的资源。 |
+| "HEAD" | HEAD方法请求一个与GET请求的响应相同的响应，但没有响应体。 |
+| "OPTIONS" | OPTIONS 方法用于描述目标资源的通信选项。 |
 
 #### RequestSuccess 的属性值 @requestsuccess-values 
 
@@ -277,42 +277,27 @@ offHeadersReceived
             <!-- #endif -->
             type="primary" size="mini"
             @click="changeMethod('POST')">POST</button>
-          <button <!-- #ifndef MP-ALIPAY -->
+          <!-- #ifndef MP-ALIPAY -->
+          <button
             style="padding: 5px; margin-right: 10px; "
-            <!-- #endif -->
-            <!-- #ifdef MP-ALIPAY -->
-            style="margin-right: 10px;"
-            <!-- #endif -->
             type="primary" size="mini"
             @click="changeMethod('PUT')">PUT</button>
-          <button <!-- #ifndef MP-ALIPAY -->
+          <button
             style="padding: 5px; margin-right: 10px;"
-            <!-- #endif -->
-            <!-- #ifdef MP-ALIPAY -->
-            style="margin-right: 10px;"
-            <!-- #endif -->
             type="primary" size="mini"
             @click="changeMethod('DELETE')">DELETE</button>
-          <button <!-- #ifndef MP-ALIPAY -->
+          <button
             style="padding: 5px; margin-right: 10px; "
-            <!-- #endif -->
-            <!-- #ifdef MP-ALIPAY -->
-            style="margin-right: 10px;"
-            <!-- #endif -->
             type="primary" size="mini"
             @click="changeMethod('PATCH')">PATCH</button>
-          <button <!-- #ifndef MP-ALIPAY -->
+          <button
             style="padding: 5px;margin-right: 10px;"
-            <!-- #endif -->
-            <!-- #ifdef MP-ALIPAY -->
-            style="margin-right: 10px;"
-            <!-- #endif -->
             type="primary" size="mini"
             @click="changeMethod('OPTIONS')">OPTIONS</button>
-          <button <!-- #ifndef MP-ALIPAY -->
+          <button
             style="padding: 5px;"
-            <!-- #endif -->
             type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
+          <!-- #endif -->
         </view>
       </view>
       <view style="padding: 20px;">
@@ -386,17 +371,21 @@ offHeadersReceived
       </view>
       <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view style="padding: 20px;">
         <text>RequestTask 测试</text>
         <view class="uni-common-pb"></view>
         <button type="primary" @click="sendChunkRequest">流式请求</button>
       </view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view style="padding: 20px;">
         <text>enableQuic 测试</text>
         <view class="uni-common-pb"></view>
         <button type="primary" @click="sendH3Request">http3请求</button>
       </view>
+      <!-- #endif -->
 
       <view style="padding: 20px;">
         <text>Accept-Encoding:'gzip'测试</text>
@@ -415,7 +404,7 @@ offHeadersReceived
     </scroll-view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
   import {
     testInovkeRequest,
@@ -423,8 +412,12 @@ offHeadersReceived
   } from '@/uni_modules/test-invoke-network-api'
   // #endif
 
+  type PlainObject = {
+    [key: string]: any;
+  }
+
   class GETDataType {
-    data : UTSJSONObject | null = null
+    data : PlainObject | null = null
   }
 
   const duration = 2000
@@ -448,7 +441,7 @@ offHeadersReceived
     url: string;
     method: RequestMethod | null;
     data: any | null;
-    header: UTSJSONObject | null;
+    header: PlainObject | null;
     errorCodeUrls: string[];
     headerUrls: string[];
     contentTypeUrls: string[];
@@ -629,15 +622,15 @@ offHeadersReceived
     }
   }
 
-  function getResponseHeaderObject(header : any): UTSJSONObject {
-    return JSON.parse(JSON.stringify(header)) as UTSJSONObject
+  function getResponseHeaderObject(header : any): PlainObject {
+    return JSON.parse(JSON.stringify(header)) as PlainObject
   }
 
   const checkHeaderLowerCase = () => {
     uni.showLoading({
       title: "请求中..."
     })
-    uni.request<UTSJSONObject>({
+    uni.request<PlainObject>({
       url: data.host + "/api/http/contentType/json",
       method: "POST",
       header: {
@@ -650,10 +643,10 @@ offHeadersReceived
       sslVerify: false,
       withCredentials: false,
       firstIpv4: false,
-      success: (res : RequestSuccess<UTSJSONObject>) => {
+      success: (res : RequestSuccess<PlainObject>) => {
         const responseHeader = getResponseHeaderObject(res.header)
-        const lowerCaseValue = responseHeader.getString("content-type") ?? ""
-        const upperCaseValue = responseHeader.getString("Content-Type")
+        const lowerCaseValue = responseHeader["content-type"] ?? ""
+        const upperCaseValue = responseHeader["Content-Type"]
         data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
         data.res = '请求结果 : ' + JSON.stringify(res.data)
         uni.showToast({
@@ -877,12 +870,15 @@ offHeadersReceived
       withCredentials: false,
       firstIpv4: false,
       success: (res) => {
-        const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
+        const responseData = JSON.parse(JSON.stringify(res.data)) as PlainObject
+        const requestCookie = responseData["data"]?.["requestCookie"]
         data.jest_result_data = JSON.stringify(requestCookie)
         if (requestCookie instanceof Array) {
           data.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
         } else {
-          data.jest_result = needCookie ? (requestCookie as UTSJSONObject).toMap().size > 0 : (requestCookie as UTSJSONObject).toMap().size == 0
+          const requestCookieObject = requestCookie as PlainObject
+          const requestCookieSize = Object.keys(requestCookieObject).length
+          data.jest_result = needCookie ? requestCookieSize > 0 : requestCookieSize == 0
         }
       },
       fail: () => {
@@ -999,10 +995,10 @@ offHeadersReceived
   }
 
   const jest_get_array = () => {
-    uni.request<UTSJSONObject[]>({
+    uni.request<PlainObject[]>({
       url: 'https://unidemo.dcloud.net.cn/api/news?column=title,author_name,cover,published_at',
       method: "GET",
-      success: (res : RequestSuccess<UTSJSONObject[]>) => {
+      success: (res : RequestSuccess<PlainObject[]>) => {
         if (res.statusCode == 200 && Array.isArray(res.data)) {
           data.jest_result = true
         } else {
@@ -1101,7 +1097,7 @@ offHeadersReceived
   }
 
   const jest_check_header_lowercase = () => {
-    uni.request<UTSJSONObject>({
+    uni.request<PlainObject>({
       url: data.host + "/api/http/contentType/json",
       method: "POST",
       header: {
@@ -1114,10 +1110,10 @@ offHeadersReceived
       sslVerify: false,
       withCredentials: false,
       firstIpv4: false,
-      success: (res : RequestSuccess<UTSJSONObject>) => {
+      success: (res : RequestSuccess<PlainObject>) => {
         const responseHeader = getResponseHeaderObject(res.header)
-        const lowerCaseValue = responseHeader.getString("content-type") ?? ""
-        const upperCaseValue = responseHeader.getString("Content-Type")
+        const lowerCaseValue = responseHeader["content-type"] ?? ""
+        const upperCaseValue = responseHeader["Content-Type"]
         data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
       },
       fail: () => {

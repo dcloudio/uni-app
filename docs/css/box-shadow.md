@@ -55,10 +55,7 @@ box-shadow: none | <shadow>#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="box-shadow-page uni-theme-root" style="flex-grow: 1">
+    <view class="box-shadow-page" style="flex-grow: 1">
       <view style="margin-bottom: 10px;">
         <text class="box-shadow-label" style="font-weight: bold;">说明：左边是正常版本，右边是拍平版本</text>
       </view>
@@ -710,12 +707,9 @@ box-shadow: none | <shadow>#;
       </view>
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const data = reactive({

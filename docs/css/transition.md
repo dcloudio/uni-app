@@ -59,10 +59,7 @@ transition暂不支持结束属性值为百分比。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-  <view class="transition-page uni-theme-root">
+  <view class="transition-page">
     <view class="container">
       <text class="text">点击修改宽度</text>
       <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
@@ -235,6 +232,7 @@ transition暂不支持结束属性值为百分比。
       <view class="base-style transition-border-background" id="borderAndBackgroundColor" @click="changeBorderAndBackgroundColor"></view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
     <text class="text">点击 scroll-view 查看 transition 效果</text>
 
@@ -246,6 +244,7 @@ transition暂不支持结束属性值为百分比。
         <text class="colored-box-text">transition: width 2s ease-in-out</text>
       </scroll-view>
     </view>
+    <!-- #endif -->
 
     <view class="uni-common-mt">
       <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
@@ -336,12 +335,9 @@ transition暂不支持结束属性值为百分比。
 			</navigator>
 		</view>
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   let isTranstionWidthOrHeight = false

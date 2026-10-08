@@ -41,8 +41,8 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| portrait | Web: x | 纵向 |
-| landscape | Web: x | 横向 | 
+| "portrait" | Web: x | 纵向 |
+| "landscape" | Web: x | 横向 | 
 
 
 ## 注意事项
@@ -59,42 +59,44 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/get-system-setting/get-system-setting
 ```uvue
 <template>
-  <view class="uni-theme-root">
+  <view>
   <page-head :title="title"></page-head>
   <view class="uni-common-mt">
     <view class="uni-list">
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">蓝牙的系统开关</text></view>
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">蓝牙的系统开关</text>
         </view>
-        <view class="uni-list-cell-db">
+        <view class="system-setting-value">
           <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothEnabled" />
         </view>
       </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">地理位置的系统开关</text></view>
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">地理位置的系统开关</text>
         </view>
-        <view class="uni-list-cell-db">
+        <view class="system-setting-value">
           <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationEnabled" />
         </view>
       </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">Wi-Fi 的系统开关</text></view>
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">Wi-Fi 的系统开关</text>
         </view>
-        <view class="uni-list-cell-db">
+        <view class="system-setting-value">
           <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.wifiEnabled" />
         </view>
       </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">设备方向</text></view>
+      <!-- #ifndef MP-ALIPAY -->
+      <view class="uni-list-cell system-setting-cell">
+        <view class="system-setting-label">
+          <text class="system-info-text">设备方向</text>
         </view>
-        <view class="uni-list-cell-db">
+        <view class="system-setting-value">
           <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.deviceOrientation" />
         </view>
       </view>
+      <!-- #endif -->
     </view>
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
@@ -105,7 +107,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     bluetoothEnabled: string;
     locationEnabled: string;
@@ -140,13 +142,34 @@
 </script>
 
 <style>
-  .uni-pd {
+  .system-setting-cell {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .system-setting-label {
+    width: 180px;
     padding-left: 15px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .system-setting-value {
+    flex: 1;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .system-info-text,
   .system-info-input {
     color: var(--text-color, #333333);
+  }
+
+  .system-info-input {
+    height: 24px;
+    padding: 0;
+    border-width: 0;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .system-info-placeholder {

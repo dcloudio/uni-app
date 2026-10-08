@@ -505,16 +505,16 @@ addMarkers
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| BYCLICK | 支付宝小程序: x |
-| ALWAYS | 支付宝小程序: x |
+| "BYCLICK" | 支付宝小程序: x |
+| "ALWAYS" | 支付宝小程序: x |
 
 ####### textAlign 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| left | 支付宝小程序: x |
-| center | 支付宝小程序: x |
-| right | 支付宝小程序: x |
+| "left" | 支付宝小程序: x |
+| "center" | 支付宝小程序: x |
+| "right" | 支付宝小程序: x |
 
 ###### label 的属性描述
 
@@ -539,9 +539,9 @@ addMarkers
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| left | 支付宝小程序: x |
-| center | 支付宝小程序: x |
-| right | 支付宝小程序: x |
+| "left" | 支付宝小程序: x |
+| "center" | 支付宝小程序: x |
+| "right" | 支付宝小程序: x |
 
 ###### customCallout 的属性描述
 
@@ -564,16 +564,16 @@ addMarkers
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| BYCLICK | 支付宝小程序: x |
-| ALWAYS | 支付宝小程序: x |
+| "BYCLICK" | 支付宝小程序: x |
+| "ALWAYS" | 支付宝小程序: x |
 
 ####### textAlign 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| left | 支付宝小程序: x |
-| center | 支付宝小程序: x |
-| right | 支付宝小程序: x |
+| "left" | 支付宝小程序: x |
+| "center" | 支付宝小程序: x |
+| "right" | 支付宝小程序: x |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 

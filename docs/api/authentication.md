@@ -37,9 +37,9 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 'fingerPrint' | Web: x; 支付宝小程序: x | 指纹识别 |
-| facial | Web: x; 支付宝小程序: x | 人脸识别 |
-| speech | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
+| "fingerPrint" | Web: x; 支付宝小程序: x | 指纹识别 |
+| "facial" | Web: x; 支付宝小程序: x | 人脸识别 |
+| "speech" | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
 
 #### StartSoterAuthenticationSuccess 的属性值 @startsoterauthenticationsuccess-values 
 
@@ -55,9 +55,9 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 'fingerPrint' | Web: x; 支付宝小程序: x | 指纹识别 |
-| facial | Web: x; 支付宝小程序: x | 人脸识别 |
-| speech | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
+| "fingerPrint" | Web: x; 支付宝小程序: x | 指纹识别 |
+| "facial" | Web: x; 支付宝小程序: x | 人脸识别 |
+| "speech" | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
 
 #### StartSoterAuthenticationFail 的属性值 @startsoterauthenticationfail-values 
 
@@ -138,9 +138,9 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 'fingerPrint' | Web: x; 支付宝小程序: x | 指纹识别 |
-| facial | Web: x; 支付宝小程序: x | 人脸识别 |
-| speech | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
+| "fingerPrint" | Web: x; 支付宝小程序: x | 指纹识别 |
+| "facial" | Web: x; 支付宝小程序: x | 人脸识别 |
+| "speech" | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
 
 #### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
 
@@ -216,9 +216,9 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 'fingerPrint' | Web: x; 支付宝小程序: x | 指纹识别 |
-| facial | Web: x; 支付宝小程序: x | 人脸识别 |
-| speech | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
+| "fingerPrint" | Web: x; 支付宝小程序: x | 指纹识别 |
+| "facial" | Web: x; 支付宝小程序: x | 人脸识别 |
+| "speech" | Web: x; 支付宝小程序: x | 声纹识别（暂未支持） |
 
 #### CheckIsSoterEnrolledInDeviceSuccess 的属性值 @checkissoterenrolledindevicesuccess-values 
 
@@ -296,7 +296,7 @@
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type AuthMode = 'fingerPrint' | 'facial'
 

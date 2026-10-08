@@ -67,9 +67,6 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <page-head title="global-properties"></page-head>
       <page-intro content="本页演示组件通用属性：id、class、data、style 的绑定与校验，以及 ref、hover-class、hover-start-time、hover-stay-time 等点击态效果。"></page-intro>
@@ -99,12 +96,9 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const generalId = ref('general-id')
   const generalClass = ref('general-class')
   const generalData = ref('general-data')
@@ -243,6 +237,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 <template>
   <scroll-view style="flex: 1">
     <page-head title="拖拽图标测试相关事件"></page-head>
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-padding-wrap uni-common-mt" style="bottom: 20px;">
       <navigator url="/pages/component/global-events/touch-events-case" hover-class="none">
         <button type="default">
@@ -250,6 +245,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
         </button>
       </navigator>
     </view>
+    <!-- #endif -->
     <view class="container">
       <view class="view-box" @touchstart="onViewTouchStart">
         <image class="icon" id="icon" src="../image/logo.png" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
@@ -270,7 +266,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 type DataType = {
   touchTargets: string,
   touchTargetsCount: number,
@@ -445,7 +441,14 @@ App端手指按下后在组件区域内移动不会取消tap/click事件的触�
   <!-- #ifdef APP -->
   <scroll-view style="flex:1;" v-if="isShow">
   <!-- #endif -->
+    <!-- #ifdef MP-ALIPAY -->
+    <view class="transition-transform" id="transition-transform" @transitionend="onEnd">
+      <image style="width: 100%; height: 100%" src="/static/test-image/logo.png"></image>
+    </view>
+    <!-- #endif -->
+    <!-- #ifndef MP-ALIPAY -->
     <image class="transition-transform" id="transition-transform" @transitionend="onEnd" src="/static/test-image/logo.png"></image>
+    <!-- #endif -->
     <text class="adjust">对图片设置transform进行旋转，在旋转完成的transitionend事件后，继续旋转</text>
     <button class="adjust" @click="switchBtn">{{buttonValue}}</button>
   <!-- #ifdef APP -->
@@ -453,7 +456,7 @@ App端手指按下后在组件区域内移动不会取消tap/click事件的触�
   <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type DataType = {
   onTransitionEndTriggr: boolean,
@@ -577,8 +580,8 @@ DOM事件主要有三个阶段：`捕获阶段`、`目标阶段`和`冒泡阶段
 			</swiper-item>
 		</swiper>
     <view class="content">
-      <boolean-data :defaultValue="false" title="stopPropagation" @change="changeStopPropagation"></boolean-data>
-      <boolean-data :defaultValue="false" title="preventDefault" @change="changePreventDefault"></boolean-data>
+      <boolean-data :value="false" title="stopPropagation" @change="changeStopPropagation"></boolean-data>
+      <boolean-data :value="false" title="preventDefault" @change="changePreventDefault"></boolean-data>
       <text style="padding: 10px;">{{ touchResult }}</text>
       <view class="uni-padding-wrap uni-common-mt" style="bottom: 20px;">
         <navigator url="/pages/component/global-events/touch-events-preventDefault" hover-class="none">
@@ -591,7 +594,7 @@ DOM事件主要有三个阶段：`捕获阶段`、`目标阶段`和`冒泡阶段
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
 type DataType = {
@@ -744,7 +747,7 @@ defineExpose({
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   type DataType = {
     isParentPreventDefault : boolean,
     isPreventDefault : boolean,

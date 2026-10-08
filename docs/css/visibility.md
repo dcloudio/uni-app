@@ -57,10 +57,7 @@ visibility: visible | hidden | collapse;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="css-page uni-theme-root" style="flex-grow: 1;">
+    <view class="css-page" style="flex-grow: 1;">
       <text class="uni-tips">visibility: {{data.visibility}} ，说明：点击切换</text>
       <view class="demo-box">
         <view @click="changeVisibility">
@@ -149,12 +146,9 @@ visibility: visible | hidden | collapse;
       </view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   let flag = true

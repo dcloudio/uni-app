@@ -38,10 +38,10 @@
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 'barCode' | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
-| qrCode | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
-| datamatrix | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
-| pdf417 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| "barCode" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| "qrCode" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| "datamatrix" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
+| "pdf417" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 |
 
 #### ScanCodeSuccess 的属性值 @scancodesuccess-values 
 
@@ -76,7 +76,7 @@
 		</view>
 	</view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 	const title = ref('scanCode')
 	const result = ref('')
 	const scan = () => {

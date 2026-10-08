@@ -42,7 +42,7 @@ backdrop-filter: none | <filter-function-list>;
 >示例
 ```vue
 <template>
-  <view class="page-root uni-theme-root">
+  <view class="page-root">
     <fps />
 
     <view class="control-panel">
@@ -146,7 +146,7 @@ backdrop-filter: none | <filter-function-list>;
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const backgroundSections = [1, 2, 3, 4, 5, 6]
   const logoIndexes = [1, 2, 3]
   const solidColors1 = ['#ff0000', '#00ff00', '#ff0000', '#00ff00', '#ff0000', '#00ff00']

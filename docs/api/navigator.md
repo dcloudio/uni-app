@@ -35,16 +35,16 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
-| none | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
-| slide-in-right | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从右侧横向滑动效果 |
-| slide-in-left | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从左侧横向滑动效果 |
-| slide-in-top | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从上侧竖向滑动效果 |
-| slide-in-bottom | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从下侧竖向滑动效果 |
-| fade-in | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从完全透明到不透明逐渐显示 |
-| zoom-out | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 在屏幕中间从小到大逐渐放大显示 |
-| zoom-fade-out | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-in | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
+| "auto" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
+| "none" | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
+| "slide-in-right" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从右侧横向滑动效果 |
+| "slide-in-left" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从左侧横向滑动效果 |
+| "slide-in-top" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从上侧竖向滑动效果 |
+| "slide-in-bottom" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从下侧竖向滑动效果 |
+| "fade-in" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从完全透明到不透明逐渐显示 |
+| "zoom-out" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 在屏幕中间从小到大逐渐放大显示 |
+| "zoom-fade-out" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| "pop-in" | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateToSuccess 的属性值 @navigatetosuccess-values 
 
@@ -372,16 +372,16 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
-| none | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
-| slide-out-right | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向右侧滑出屏幕动画 |
-| slide-out-left | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向左侧滑出屏幕动画 |
-| slide-out-top | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向下侧滑出屏幕动画 |
-| fade-out | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-out | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
+| "auto" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
+| "none" | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
+| "slide-out-right" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向右侧滑出屏幕动画 |
+| "slide-out-left" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向左侧滑出屏幕动画 |
+| "slide-out-top" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向上侧滑出屏幕动画 |
+| "slide-out-bottom" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向下侧滑出屏幕动画 |
+| "fade-out" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从不透明到透明逐渐隐藏动画 |
+| "zoom-in" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小关闭动画 |
+| "zoom-fade-in" | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| "pop-out" | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateBackSuccess 的属性值 @navigatebacksuccess-values 
 
@@ -447,14 +447,11 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <page-head title="navigate"></page-head>
       <page-intro content="本页演示页面路由：展示 onLoad/onShow/onReady 等生命周期时间戳；通过按钮跳转新页、返回、redirect 等，可传递参数。"></page-intro>
       <!-- #ifdef APP && !VUE3-VAPOR -->
-      <boolean-data :defaultValue="false" title="是否启用共享元素动画" @change="onChange"></boolean-data>
+      <boolean-data :value="false" title="是否启用共享元素动画" @change="onChange"></boolean-data>
       <share-element :share-key="data.shareElementKey">
         <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
       </share-element>
@@ -501,19 +498,18 @@
           <button @tap="navigateToErrorPage" class="uni-btn">
             打开不存在的页面
           </button>
+          <!-- #ifndef MP-ALIPAY -->
           <button v-for="(item, _) in data.animationTypeList" @tap="navigateToAnimationType(item)"
             class="uni-btn">navigateTo动画({{item}})</button>
+          <!-- #endif -->
           <button class="uni-btn" @click="goOnLoadCallAPI">测试 onLoad 调用 API</button>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
-  import { state, setLifeCycleNum } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setLifeCycleNum } from '@/store/index.ts'
   type AnimationType = "slide-in-right" | "slide-in-left" | "slide-in-top" | "slide-in-bottom" | "pop-in" | "fade-in" | "zoom-out" | "zoom-fade-out" | "none" | "auto"
 
   type DataType = {

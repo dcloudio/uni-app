@@ -106,7 +106,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP-HARMONY
   const DEFAULT_PERMISSION = 'ohos.permission.ACCELEROMETER'
   const ACCELEROMETER_PERMISSION = 'ohos.permission.ACCELEROMETER'
@@ -328,7 +328,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP-HARMONY
   const DEFAULT_PERMISSION = 'ohos.permission.ACCELEROMETER'
   const ACCELEROMETER_PERMISSION = 'ohos.permission.ACCELEROMETER'

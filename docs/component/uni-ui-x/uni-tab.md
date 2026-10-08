@@ -223,7 +223,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	</uni-tab>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import tabContent1 from './tab-content1.uvue'
 	import tabContent2 from './tab-content-api.uvue'
 	// import tabContent2 from './tab-content2.uvue'
@@ -465,7 +465,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	</uni-tab>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import tabContent1 from './tab-content1.uvue'
 	import tabContent2 from './tab-content2.uvue'
 	import tabContent3 from './tab-content3.uvue'
@@ -525,7 +525,11 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	}
 </script>
 
-<style>
+	<style>
+		page {
+			background-color: #0f172a;
+		}
+
 	.first-tab-button {
 		width: 100%;
 		height: 100%;
@@ -640,7 +644,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 >示例
 ```vue
 <template>
-	<uni-tab class="uni-theme-root" style="flex: 1" :active-index="activeIndex" :tab-bar-height="40" @change="handleChange">
+	<uni-tab style="flex: 1; --uni-tab-bar-height: 40px" :active-index="activeIndex" @change="handleChange">
 		<uni-tab-content>
 			<view class="custom-panel custom-panel-emerald">
 				<text class="custom-panel-kicker">自定义 tab-bar</text>
@@ -683,7 +687,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	</uni-tab>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const activeIndex = ref<number>(0)
 
 	function isDarkTheme() : boolean {
@@ -735,7 +739,11 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	})
 </script>
 
-<style>
+	<style>
+		page {
+			background-color: #dff3e8;
+		}
+
 	.custom-panel {
 		flex: 1;
 		padding-top: 28px;
@@ -782,7 +790,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 	.custom-tab-list-root {
 		background: linear-gradient(to right, #f7d9a8, #c6ece3);
-		height: 40px;
 		border-top-width: 0px;
 	}
 
@@ -834,7 +841,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 >示例
 ```vue
 <template>
-	<uni-tab class="uni-theme-root" style="flex: 1" :active-index="activeIndex" :tab-bar-height="TAB_BAR_HEIGHT" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+	<uni-tab style="flex: 1; --uni-tab-bar-height: 64px" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
 		<uni-tab-content :style="tabContentStyle">
 			<scroll-view class="blur-scroll blur-scene-morning" direction="vertical">
 				<view class="blur-content-inner">
@@ -976,15 +983,14 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	</uni-tab>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const TAB_BAR_MARGIN = 24
 	const TAB_BAR_BOTTOM = 40
-	const TAB_BAR_HEIGHT = 64
 
 	function buildTabBarStyle() : string {
 		const windowInfo = uni.getWindowInfo()
 		const tabBarWidth = Math.max(0, windowInfo.windowWidth - TAB_BAR_MARGIN * 2)
-		return 'left: ' + TAB_BAR_MARGIN + 'px; bottom: ' + TAB_BAR_BOTTOM + 'px; width: ' + tabBarWidth + 'px; height: ' + TAB_BAR_HEIGHT + 'px; padding-bottom: 0px; align-items: center; border-radius: 22px; overflow: hidden; border-top-width: 0px; background-color: rgba(255, 255, 255, 0.12);'
+		return 'left: ' + TAB_BAR_MARGIN + 'px; bottom: ' + TAB_BAR_BOTTOM + 'px; width: ' + tabBarWidth + 'px; padding-bottom: 0px; align-items: center; border-radius: 22px; overflow: hidden; border-top-width: 0px; background-color: rgba(255, 255, 255, 0.12);'
 	}
 
 	const activeIndex = ref<number>(0)
@@ -1054,7 +1060,11 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	})
 </script>
 
-<style>
+	<style>
+		page {
+			background-color: #f4f8ff;
+		}
+
 	.blur-scroll {
 		position: relative;
 		width: 100%;
@@ -1358,7 +1368,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	</uni-tab>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import tabContent1 from './tab-content1.uvue'
 	import tabContent2 from './tab-content2.uvue'
 	import tabContent3 from './tab-content3.uvue'
@@ -1482,7 +1492,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 			<tabContent4 />
 		</uni-tab-content>
 
-		<uni-tab-bar style="border-top: 0px;background-color: rgba(0, 0, 0, 0);">
+		<uni-tab-bar :style="tabBarStyle">
 			<uni-tab-item class="tab-bg">
 				<!-- <image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image"></image> -->
 				<text :class="activeIndex == 0 ? 'tab-label-active' : ''">🏠</text>
@@ -1515,7 +1525,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	</uni-tab>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import tabContent1 from './tab-content1.uvue'
 	import tabContent2 from './tab-content2.uvue'
 	import tabContent3 from './tab-content3.uvue'
@@ -1523,11 +1533,13 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 	const activeIndex = ref<number>(0)
 	const midButtonClickCount = ref<number>(0)
+	let tabBarStyle = 'border-top: 0px;background-color: rgba(0, 0, 0, 0);'
 	let tabContentHeightFull = true
 	let tabContentStyle = ''
 	// #ifdef MP-ALIPAY
 	tabContentHeightFull = false
 	tabContentStyle = 'flex: 1; min-height: 0px;'
+    tabBarStyle = 'border-top: 0px;background-color: #f5f5f5;'
 	// #endif
 
 	function handleChange(index : number) : void {

@@ -380,10 +380,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 ```vue
 <template>
 	<!-- #ifdef APP -->
-	<scroll-view class="page uni-theme-root" style="padding: 15px;">
+	<scroll-view class="page" style="padding: 15px;">
 	<!-- #endif -->
 		<!-- #ifndef APP -->
-		<view class="uni-theme-root" style="padding: 15px;">
+		<view style="padding: 15px;">
 		<!-- #endif -->
 			<text class="page-title">drag-cell 拖拽排序组件</text>
 
@@ -526,7 +526,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const maxImageCount = 9
 
 	type Data = {

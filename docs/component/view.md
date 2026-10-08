@@ -106,7 +106,7 @@ if (view != null && view instanceof UIView) {
 ```vue
 <template>
   <page-head title="view"></page-head>
-  <scroll-view class="uni-theme-root" style="flex: 1">
+  <scroll-view style="flex: 1">
     <view class="uni-padding-wrap uni-common-mt">
       <!-- view样式大合集 -->
       <text class="uni-title-text">view样式大合集</text>
@@ -133,8 +133,8 @@ if (view != null && view instanceof UIView) {
       </view>
 
       <view class="content">
-        <boolean-data :defaultValue="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
-        <boolean-data :defaultValue="false" title="是否阻止本节点的祖先节点出现点击态"
+        <boolean-data :value="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
+        <boolean-data :value="false" title="是否阻止本节点的祖先节点出现点击态"
           @change="change_stop_propagation_boolean"></boolean-data>
         <enum-data :items="data.start_time_enum" title="按住后多久出现点击态" @change="radio_change_start_time_enum"></enum-data>
         <enum-data :items="data.stay_time_enum" title="手指松开后点击态保留时间" @change="radio_change_stay_time_enum"></enum-data>
@@ -149,7 +149,7 @@ if (view != null && view instanceof UIView) {
   </scroll-view>
 
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
   import Child from './child.uvue'
 

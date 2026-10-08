@@ -234,12 +234,12 @@
     <unicloud-db ref="udbRef" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
       loadtime="manual">
       <list-view v-if="data.length>0" ref="listViewRef" class="list" :scroll-y="true" @scrolltolower="loadMore()">
-        <list-item class="list-item" v-for="(item, _) in data" :key="item.getString('_id')">
+        <list-item class="list-item" v-for="(item, _) in data" :key="(item._id as string)">
           <view class="list-item-fill">
             <text>{{item}}</text>
           </view>
           <view>
-            <text class="list-item-remove" @click="remove(item.getString('_id')!)">❌</text>
+            <text class="list-item-remove" @click="remove((item._id as string)!)">❌</text>
           </view>
         </list-item>
       </list-view>
@@ -256,7 +256,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 const db = uniCloud.databaseForJQL()
 

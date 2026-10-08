@@ -152,9 +152,6 @@ task = uni.downloadFile({
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <page-head :title="data.title"></page-head>
       <view>
@@ -167,11 +164,8 @@ task = uni.downloadFile({
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
   import {
     testInovkeDownloadFile,

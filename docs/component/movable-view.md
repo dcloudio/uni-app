@@ -127,7 +127,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const x = ref(0)
   const y = ref(0)
   const scale = ref(2)

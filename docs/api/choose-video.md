@@ -44,22 +44,22 @@
 | 合法值 | 描述 |
 | :- | :- |
 | "auto" | 自动 |
-| portrait | 竖屏显示 |
-| landscape | 横屏显示 |
+| "portrait" | 竖屏显示 |
+| "landscape" | 横屏显示 |
 
 ##### camera 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
-| front | 前置摄像头 |
-| back | 后置摄像头 |
+| "front" | 前置摄像头 |
+| "back" | 后置摄像头 |
 
 ##### albumMode 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
 | "custom" | 自定义媒体选择器 |
-| system | 系统媒体选择器 |
+| "system" | 系统媒体选择器 |
 
 #### ChooseVideoSuccess 的属性值 @choosevideosuccess-values 
 
@@ -125,9 +125,6 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
       <video class="video" :src="src" :controls="true" :poster="videoCoverImage"></video>
@@ -150,15 +147,12 @@
     <input-data title="最长拍摄时间，单位秒" defaultValue="60" type="number" @confirm="onMaxDurationConfirm"></input-data>
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap">
-      <boolean-data title="是否压缩（HamonyOS 不支持，推荐使用 uni.compressVideo 进行压缩）" :defaultValue="true" @change="onCompressedChange"></boolean-data>
+      <boolean-data title="是否压缩（HamonyOS 不支持，推荐使用 uni.compressVideo 进行压缩）" :value="true" @change="onCompressedChange"></boolean-data>
     </view>
     <!-- #endif -->
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types';
   type Camera = "back" | "front"
   type Source = "album" | "camera"

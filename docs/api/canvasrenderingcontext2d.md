@@ -40,108 +40,108 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ltr | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向为从左到右 |
-| rtl | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向为从右到左 |
-| inherit | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向从相应的 \<canvas> 元素或 Document 继承 |
+| "ltr" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向为从左到右 |
+| "rtl" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向为从右到左 |
+| "inherit" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向从相应的 \<canvas> 元素或 Document 继承 |
 
 #### fontStretch 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ultra-condensed | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为50% |
-| extra-condensed | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为62.5% |
-| condensed | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为75% |
-| semi-condensed | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为87.5% |
-| normal | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 普通字体外观 |
-| semi-expanded | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为112.5% |
-| expanded | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为125% |
-| extra-expanded | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为150% |
-| ultra-expanded | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为200% |
+| "ultra-condensed" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为50% |
+| "extra-condensed" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为62.5% |
+| "condensed" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为75% |
+| "semi-condensed" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为87.5% |
+| "normal" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 普通字体外观 |
+| "semi-expanded" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为112.5% |
+| "expanded" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为125% |
+| "extra-expanded" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为150% |
+| "ultra-expanded" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为200% |
 
 #### globalCompositeOperation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| source-over | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在现有画布上下文之上绘制新图形 |
-| source-in | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 新图形只在新图形和目标画布重叠的地方绘制。其他的都是透明的 |
-| source-out | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 在不与现有画布内容重叠的地方绘制新图形 |
-| source-atop | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 新图形只在与现有画布内容重叠的地方绘制。 |
-| destination-over | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在现有的画布内容后面绘制新的图形。 |
-| destination-atop | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 现有的画布只保留与新图形重叠的部分，新的图形是在画布内容后面绘制的。 |
-| destination-in | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 现有的画布内容保持在新图形和现有画布内容重叠的位置。其他的都是透明的。 |
-| destination-out | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 现有内容保持在新图形不重叠的地方。 |
-| lighter | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 两个重叠图形的颜色是通过颜色值相加来确定的。 |
-| copy | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 只显示新图形。 |
-| xor | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 图像中，那些重叠和正常绘制之外的其他地方是透明的。 |
-| multiply | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 将顶层像素与底层相应像素相乘，结果是一幅更黑暗的图片。 |
-| screen | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 像素被倒转，相乘，再倒转，结果是一幅更明亮的图片。 |
-| overlay | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | multiply 和 screen 的结合，原本暗的地方更暗，原本亮的地方更亮。 |
-| darken | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留两个图层中最暗的像素 |
-| lighten | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留两个图层中最亮的像素。 |
-| color-dodge | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 将底层除以顶层的反置。 |
-| color-burn | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 将反置的底层除以顶层，然后将结果反过来。 |
-| hard-light | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | multiply 和 screen 的结合，类似于叠加，但上下图层互换了。 |
-| soft-light | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 用顶层减去底层或者相反来得到一个正值。 |
-| difference | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 一个柔和版本的 hard-light。纯黑或纯白不会导致纯黑或纯白。 |
-| exclusion | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 和 difference 相似，但对比度较低。 |
-| hue | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留了底层的亮度和色度，同时采用了顶层的色调。 |
-| saturation | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留底层的亮度和色调，同时采用顶层的色度。 |
-| color | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留了底层的亮度，同时采用了顶层的色调和色度。 |
-| luminosity | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保持底层的色调和色度，同时采用顶层的亮度。 |
+| "source-over" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在现有画布上下文之上绘制新图形 |
+| "source-in" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 新图形只在新图形和目标画布重叠的地方绘制。其他的都是透明的 |
+| "source-out" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 在不与现有画布内容重叠的地方绘制新图形 |
+| "source-atop" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 新图形只在与现有画布内容重叠的地方绘制。 |
+| "destination-over" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在现有的画布内容后面绘制新的图形。 |
+| "destination-atop" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 现有的画布只保留与新图形重叠的部分，新的图形是在画布内容后面绘制的。 |
+| "destination-in" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 现有的画布内容保持在新图形和现有画布内容重叠的位置。其他的都是透明的。 |
+| "destination-out" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 现有内容保持在新图形不重叠的地方。 |
+| "lighter" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 两个重叠图形的颜色是通过颜色值相加来确定的。 |
+| "copy" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 只显示新图形。 |
+| "xor" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 图像中，那些重叠和正常绘制之外的其他地方是透明的。 |
+| "multiply" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 将顶层像素与底层相应像素相乘，结果是一幅更黑暗的图片。 |
+| "screen" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 像素被倒转，相乘，再倒转，结果是一幅更明亮的图片。 |
+| "overlay" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | multiply 和 screen 的结合，原本暗的地方更暗，原本亮的地方更亮。 |
+| "darken" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留两个图层中最暗的像素 |
+| "lighten" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留两个图层中最亮的像素。 |
+| "color-dodge" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 将底层除以顶层的反置。 |
+| "color-burn" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 将反置的底层除以顶层，然后将结果反过来。 |
+| "hard-light" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | multiply 和 screen 的结合，类似于叠加，但上下图层互换了。 |
+| "soft-light" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 用顶层减去底层或者相反来得到一个正值。 |
+| "difference" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 一个柔和版本的 hard-light。纯黑或纯白不会导致纯黑或纯白。 |
+| "exclusion" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 和 difference 相似，但对比度较低。 |
+| "hue" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留了底层的亮度和色度，同时采用了顶层的色调。 |
+| "saturation" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留底层的亮度和色调，同时采用顶层的色度。 |
+| "color" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保留了底层的亮度，同时采用了顶层的色调和色度。 |
+| "luminosity" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 保持底层的色调和色度，同时采用顶层的亮度。 |
 
 #### imageSmoothingQuality 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| low | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 低质量。 |
-| medium | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 中等质量。 |
-| high | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 高质量。 |
+| "low" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 低质量。 |
+| "medium" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 中等质量。 |
+| "high" | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 高质量。 |
 
 #### lineCap 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| butt | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `butt`线段末端以方形结束； |
-| round | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `round`线段末端以圆形结束； |
-| square | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `square`线段末端以方形结束，但是会增加一个一半宽度的矩形区域。 |
+| "butt" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `butt`线段末端以方形结束； |
+| "round" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `round`线段末端以圆形结束； |
+| "square" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `square`线段末端以方形结束，但是会增加一个一半宽度的矩形区域。 |
 
 #### lineJoin 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| round | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。圆角的半径是线段的宽度。 |
-| bevel | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 在相连部分的末端填充一个额外的以三角形为底的区域，每个部分都有各自独立的矩形拐角。 |
-| miter | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。这个设置受到 miterLimit 属性的影响。默认值。 |
+| "round" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。圆角的半径是线段的宽度。 |
+| "bevel" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 在相连部分的末端填充一个额外的以三角形为底的区域，每个部分都有各自独立的矩形拐角。 |
+| "miter" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。这个设置受到 miterLimit 属性的影响。默认值。 |
 
 #### textAlign 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| left | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本左对齐。 |
-| right | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本右对齐。 |
-| center | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本居中对齐。 |
-| start | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本对齐界线开始的地方（左对齐指本地从左向右，右对齐指本地从右向左）。 |
-| end | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本对齐界线结束的地方（左对齐指本地从左向右，右对齐指本地从右向左）。 |
+| "left" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本左对齐。 |
+| "right" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本右对齐。 |
+| "center" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本居中对齐。 |
+| "start" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本对齐界线开始的地方（左对齐指本地从左向右，右对齐指本地从右向左）。 |
+| "end" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本对齐界线结束的地方（左对齐指本地从左向右，右对齐指本地从右向左）。 |
 
 #### textBaseline 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| top | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线在文本块的顶部。 |
-| hanging | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线是悬挂基线。 |
-| middle | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线在文本块的中间。 |
-| alphabetic | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线是标准的字母基线。默认值。 |
-| ideographic | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文字基线是表意字基线；如果字符本身超出了 alphabetic 基线，那么 ideograhpic 基线位置在字符本身的底部。（用于中文、日文和韩文。） |
-| bottom | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线在文本块的底部。与 ideographic 基线的区别在于 ideographic 基线不需要考虑下行字母。 |
+| "top" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线在文本块的顶部。 |
+| "hanging" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线是悬挂基线。 |
+| "middle" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线在文本块的中间。 |
+| "alphabetic" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线是标准的字母基线。默认值。 |
+| "ideographic" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文字基线是表意字基线；如果字符本身超出了 alphabetic 基线，那么 ideograhpic 基线位置在字符本身的底部。（用于中文、日文和韩文。） |
+| "bottom" | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线在文本块的底部。与 ideographic 基线的区别在于 ideographic 基线不需要考虑下行字母。 |
 
 #### textRendering 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时根据情况对速度、易读性和几何精确性进行优化。 |
-| optimizeSpeed | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑渲染速度，而不是易读性和几何精确性。它禁用字距调整和连字。 |
-| optimizeLegibility | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑易读性，而不是渲染速度和几何精确性。这启用了字距调整和可选连字。 |
-| geometricPrecision | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑几何精确性，而不是渲染速度和易读性。字体的某些方面（例如字距调整）不会线性缩放。对于大的缩放比例，你可能会看到不太美观的文本渲染，但大小是你所期望的（不会被向上或向下舍入到底层操作系统支持的最接近的字体大小）。 |
+| "auto" | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时根据情况对速度、易读性和几何精确性进行优化。 |
+| "optimizeSpeed" | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑渲染速度，而不是易读性和几何精确性。它禁用字距调整和连字。 |
+| "optimizeLegibility" | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑易读性，而不是渲染速度和几何精确性。这启用了字距调整和可选连字。 |
+| "geometricPrecision" | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑几何精确性，而不是渲染速度和易读性。字体的某些方面（例如字距调整）不会线性缩放。对于大的缩放比例，你可能会看到不太美观的文本渲染，但大小是你所期望的（不会被向上或向下舍入到底层操作系统支持的最接近的字体大小）。 |
 
 
 
@@ -675,8 +675,8 @@ addColorStop
 
 | 合法值 |
 | :- |
-| nonzero |
-| evenodd | 
+| "nonzero" |
+| "evenodd" | 
 
 
 
@@ -725,8 +725,8 @@ addColorStop
 
 | 合法值 |
 | :- |
-| nonzero |
-| evenodd | 
+| "nonzero" |
+| "evenodd" | 
 
 
 

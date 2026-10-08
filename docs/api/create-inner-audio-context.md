@@ -526,9 +526,6 @@ offSeeked
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <view class="uni-padding-wrap">
       <page-head title="audio"></page-head>
       <view class="uni-common-mt">
@@ -549,10 +546,10 @@ offSeeked
       <text class="uni-subtitle-text uni-title">开始播放的位置（单位：s）</text>
       <input :value="data.startTime" type="number" placeholder="开始播放的位置（单位：s）" class="uni-input"
         @input="startTimeInput"></input>
-      <boolean-data :defaultValue="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
+      <boolean-data :value="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
+      <boolean-data :value="false" title="是否循环播放" @change="setLoop"></boolean-data>
 			<!-- #ifdef APP-IOS -->
-			<boolean-data :defaultValue="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
+			<boolean-data :value="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
 			<!-- #endif -->
 
       <text class="uni-subtitle-text uni-title"
@@ -598,11 +595,8 @@ offSeeked
     </view>
 
     <bottom-safe-area />
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   const audioUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
 
   type DataType = {
@@ -661,11 +655,6 @@ offSeeked
 
   const stop = () => {
     console.log('stop');
-    data._audioContext!.onStop(() => {
-      // 第一次点停止时，不触发
-      data.isPaused = true;
-      console.log('音频停止事件');
-    });
     data._audioContext!.stop();
     data.isPlaying = false;
     console.log('stop', data.isPaused);
@@ -722,15 +711,11 @@ offSeeked
   const onchange = (e : UniSliderChangeEvent) => {
     let pos = e.detail.value;
     console.log('pos', pos);
-    onSeeking()
-    onSeeked()
     data._audioContext!.seek(pos);
     data._isChanging = false;
   }
 
   const onchangeValue = (pos : number) => {
-    onSeeking()
-    onSeeked()
     data._audioContext!.seek(pos);
     data._isChanging = false;
   }
@@ -842,10 +827,18 @@ offSeeked
     data._audioContext!.src = audioUrl;
     updateVolumeFromAudioContext()
     onCanplay()
+    onSeeking()
+    onSeeked()
     data._audioContext!.onPlay(() => {
       data.isPaused = false;
       data.isPlaying = true;
       console.log('开始播放', data.isPaused);
+    });
+
+    data._audioContext!.onStop(() => {
+      // 第一次点停止时，不触发
+      data.isPaused = true;
+      console.log('音频停止事件');
     });
 
     onTimeUpdateCb.value = (res : any) => {
@@ -861,9 +854,11 @@ offSeeked
         data.duration = data._audioContext!.duration
       }
       // #endif
+      // #ifndef APP-HARMONY
       if (data.currentTime > data.buffered) {
         console.log('缓冲不足');
       }
+      // #endif
     };
 
     onWaitingCb.value = (res : any) => {
@@ -1016,9 +1011,6 @@ offSeeked
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head title="setInnerAudioOption"></page-head>
     <text class="labelText">是否允许与其他音频同时播放</text>
     <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'mixWithOther')">
@@ -1055,12 +1047,9 @@ offSeeked
       <text>3. speakerOn参数：Android不支持在播放音频的过程中切换为扬声器播放，iOS支持播放状态时动态切换 \n</text>
       <text>4. obeyMuteSwitch参数：仅支持iOS</text>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     isBackgroundAudioPaused: boolean,
     mixWithOther: boolean,

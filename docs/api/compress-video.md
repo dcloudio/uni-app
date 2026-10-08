@@ -89,9 +89,6 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/compress-video/compress-video
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view>
       <view class="uni-padding-wrap">
@@ -118,12 +115,9 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types';
   type VideoInfoForTest = {
     width: number;

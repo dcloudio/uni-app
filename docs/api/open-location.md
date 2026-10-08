@@ -65,7 +65,7 @@
 >示例
 ```vue
 <template>
-  <view class="open-location-page uni-theme-root">
+  <view class="open-location-page">
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
       <view class="uni-list">
@@ -111,8 +111,8 @@
     </view>
   </view>
 </template>
-<script lang="uts" setup>
-  import { state, setLifeCycleNum } from '@/store/index.uts';
+<script lang="ts" setup>
+  import { state, setLifeCycleNum } from '@/store/index.ts';
 
   type DataType = {
     dialogPagesNum: number;

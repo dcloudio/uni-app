@@ -607,9 +607,6 @@ uni.clearStorageSync函数定义
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
     <view>
       <page-head :title="data.title"></page-head>
       <view class="uni-common-mt">
@@ -709,12 +706,23 @@ uni.clearStorageSync函数定义
       <button type="primary" @click="goto">前往storage管理器</button>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+  type ComplexStorageData = {
+    age: number
+  }
+
+  type NestedStorageData = {
+    a: {
+      b: number
+    }
+  }
+
+  type ArrayStorageData = {
+    a: number
+  }
+
   type DataType = {
     title: string
     key: string
@@ -722,9 +730,9 @@ uni.clearStorageSync函数定义
     apiGetData: any | null
     storageInfo: string
     staticComplexRet: boolean
-    jest_saveUTSJSONObjectSyncResult: number
-    jest_saveUTSJSONObjectAsyncResult: number
-    jest_saveUTSJSONObjectArraySyncResult: number
+    jest_saveObjectSyncResult: number
+    jest_saveObjectAsyncResult: number
+    jest_saveObjectArraySyncResult: number
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -734,9 +742,9 @@ uni.clearStorageSync函数定义
     apiGetData: '',
     storageInfo: '',
     staticComplexRet: false,
-    jest_saveUTSJSONObjectSyncResult: 0,
-    jest_saveUTSJSONObjectAsyncResult: 0,
-    jest_saveUTSJSONObjectArraySyncResult: 0
+    jest_saveObjectSyncResult: 0,
+    jest_saveObjectAsyncResult: 0,
+    jest_saveObjectArraySyncResult: 0
   } as DataType)
 
   const getStorageInfo = () => {
@@ -793,10 +801,11 @@ uni.clearStorageSync函数定义
       name: "张三",
       age: 12
     })
-    let savedData = uni.getStorageSync("key_complexStaticMock")
+    const savedData = uni.getStorageSync("key_complexStaticMock")
     data.staticComplexRet = false
-    if (savedData instanceof UTSJSONObject) {
-      if ((savedData as UTSJSONObject).getNumber('age') == 12) {
+    if (savedData != null && typeof savedData == 'object' && !Array.isArray(savedData)) {
+      const savedDataObject = JSON.parse(JSON.stringify(savedData)) as ComplexStorageData
+      if (savedDataObject.age == 12) {
         data.staticComplexRet = true
         uni.showToast({
           icon: 'success',
@@ -1087,35 +1096,33 @@ uni.clearStorageSync函数定义
     })
   }
 
-  const jest_saveUTSJSONObject = () => {
-    const key = 'test_key_saveUTSJSONObject'
+  const jest_saveObject = () => {
+    const key = 'test_key_saveObject'
     uni.setStorageSync(key, {
       a: {
         b: 1
       }
     })
-    const dataSync = uni.getStorageSync(key) as UTSJSONObject
-    const dataSyncA = dataSync['a'] as UTSJSONObject
-    data.jest_saveUTSJSONObjectSyncResult = dataSyncA.get('b') as number
+    const dataSync = JSON.parse(JSON.stringify(uni.getStorageSync(key))) as NestedStorageData
+    data.jest_saveObjectSyncResult = dataSync.a.b
     uni.getStorage({
       key,
       success: (res) => {
-        const dataAsync = res.data as UTSJSONObject
-        const dataAsyncA = dataAsync['a'] as UTSJSONObject
-        data.jest_saveUTSJSONObjectAsyncResult = dataAsyncA.get('b') as number
-        console.log('data.jest_saveUTSJSONObjectSyncResult: ' + data.jest_saveUTSJSONObjectSyncResult)
-        console.log('data.jest_saveUTSJSONObjectAsyncResult: ' + data.jest_saveUTSJSONObjectAsyncResult)
+        const dataAsync = JSON.parse(JSON.stringify(res.data)) as NestedStorageData
+        data.jest_saveObjectAsyncResult = dataAsync.a.b
+        console.log('data.jest_saveObjectSyncResult: ' + data.jest_saveObjectSyncResult)
+        console.log('data.jest_saveObjectAsyncResult: ' + data.jest_saveObjectAsyncResult)
       }
     })
   }
 
-  const jest_saveUTSJSONObjectArray = () => {
-    const key = 'test_key_saveUTSJSONObjectArray'
+  const jest_saveObjectArray = () => {
+    const key = 'test_key_saveObjectArray'
     uni.setStorageSync(key, [{
       a: 1
-    }] as UTSJSONObject[])
-    const dataSync = uni.getStorageSync(key) as UTSJSONObject[]
-    data.jest_saveUTSJSONObjectArraySyncResult = dataSync[0].get('a') as number
+    }])
+    const dataSync = JSON.parse(JSON.stringify(uni.getStorageSync(key))) as ArrayStorageData[]
+    data.jest_saveObjectArraySyncResult = dataSync[0].a
   }
 
   // #ifndef MP-ALIPAY
@@ -1128,8 +1135,8 @@ uni.clearStorageSync函数定义
 
   defineExpose({
     data,
-    jest_saveUTSJSONObject,
-    jest_saveUTSJSONObjectArray
+    jest_saveObject,
+    jest_saveObjectArray
   })
 </script>
 

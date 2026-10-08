@@ -194,11 +194,8 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
-    <view class="text-page uni-padding-wrap uni-common-mt uni-theme-root">
+    <view class="text-page uni-padding-wrap uni-common-mt">
       <!-- 单行文本测试 -->
       <text class="uni-title-text">单行文本</text>
       <view class="text-box">
@@ -268,12 +265,9 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
       </navigator>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import Child from './child.uvue'
   const title = ref('text')
 

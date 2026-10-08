@@ -152,10 +152,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="page-scroll-view uni-theme-root">
-  <!-- #endif -->
-    <view class="swiper-page uni-common-mb uni-common-pb uni-theme-root">
+    <view class="swiper-page uni-common-mb uni-common-pb">
       <page-head title="swiper,可滑动视图"></page-head>
       <view>
         <!-- 微信小程序自身Bug，autoplay为false时更新interval会导致swiper启用自动播放 -->
@@ -185,15 +182,15 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         </swiper>
       </view>
       <view class="uni-list">
-        <boolean-data :defaultValue="data.dotsSelect" title="显示面板指示点" @change="dotsChange"></boolean-data>
-        <boolean-data :defaultValue="data.indicatorColorSelect" title="定制指示器颜色"
-            <!-- #ifndef (APP && VUE3-VAPOR) -->
+        <boolean-data :value="data.dotsSelect" title="显示面板指示点" @change="dotsChange"></boolean-data>
+        <boolean-data :value="data.indicatorColorSelect" title="定制指示器颜色"
+            <!-- #ifndef (APP && VUE3-VAPOR) || MP-ALIPAY -->
             :disabled="true"
             <!-- #endif -->
             @change="indicatorColorChange"></boolean-data>
-        <boolean-data :defaultValue="data.disableTouchSelect" title="禁止 touch 操作" @change="disableTouchChange"></boolean-data>
-        <boolean-data :defaultValue="data.autoplaySelect" title="是否自动切换" @change="autoplayChange"></boolean-data>
-        <boolean-data :defaultValue="data.circularSelect" title="是否衔接滑动" @change="circularChange"></boolean-data>
+        <boolean-data :value="data.disableTouchSelect" title="禁止 touch 操作" @change="disableTouchChange"></boolean-data>
+        <boolean-data :value="data.autoplaySelect" title="是否自动切换" @change="autoplayChange"></boolean-data>
+        <boolean-data :value="data.circularSelect" title="是否衔接滑动" @change="circularChange"></boolean-data>
         <view class="uni-title uni-list-cell-padding"><text class="uni-theme-text">间隔时间(毫秒)</text></view>
         <view class="uni-padding-wrap">
           <slider @change="sliderChange" :value="2000" :min="500" :max="5000" :show-value="true" />
@@ -202,21 +199,21 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         <view class="uni-padding-wrap">
           <slider @change="durationSliderChange" :value="500" :min="50" :max="2000" :show-value="true" />
         </view>
-        <boolean-data :defaultValue="data.verticalSelect" title="是否纵向滑动" @change="verticalChange"></boolean-data>
+        <boolean-data :value="data.verticalSelect" title="是否纵向滑动" @change="verticalChange"></boolean-data>
         <!-- #ifndef MP-ALIPAY -->
         <!-- 仅 android ios harmony 支持，web 微信小程序 bounces 为 true -->
-        <boolean-data :defaultValue="data.disableBounceSelect" title="是否禁用回弹效果"
+        <boolean-data :value="data.disableBounceSelect" title="是否禁用回弹效果"
           @change="disableBounceSelectChange"></boolean-data>
         <!-- #endif -->
-        <boolean-data :defaultValue="data.currentSelect" title="指定current为最后一个元素" @change="currentChange"></boolean-data>
+        <boolean-data :value="data.currentSelect" title="指定current为最后一个元素" @change="currentChange"></boolean-data>
         <!-- #ifndef MP-ALIPAY -->
-        <boolean-data :defaultValue="data.currentItemIdSelect" title="指定current-item-id为最后一个元素"
+        <boolean-data :value="data.currentItemIdSelect" title="指定current-item-id为最后一个元素"
           @change="currentItemIdChange"></boolean-data>
         <!-- #endif -->
-        <boolean-data :defaultValue="data.swiperChangeSelect" title="打印 swiperChange 日志" @change="swiperChangeChange"></boolean-data>
-        <boolean-data :defaultValue="data.swiperTransitionSelect" title="1打印 swiperTransition 日志"
+        <boolean-data :value="data.swiperChangeSelect" title="打印 swiperChange 日志" @change="swiperChangeChange"></boolean-data>
+        <boolean-data :value="data.swiperTransitionSelect" title="1打印 swiperTransition 日志"
           @change="swiperTransitionChange"></boolean-data>
-        <boolean-data :defaultValue="data.swiperAnimationfinishSelect" title="打印 swiperAnimationfinish 日志"
+        <boolean-data :value="data.swiperAnimationfinishSelect" title="打印 swiperAnimationfinish 日志"
           @change="swiperAnimationfinishChange"></boolean-data>
 
         <view class="uni-list-cell-padding"><text class="uni-theme-text">测试 swiper 默认行为</text></view>
@@ -231,9 +228,9 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
             <view class="swiper-item uni-bg-blue"><text class="swiper-item-Text">C</text></view>
           </swiper-item>
         </swiper>
-        <boolean-data :defaultValue="data.autoplayForDefault" title="是否自动切换"
+        <boolean-data :value="data.autoplayForDefault" title="是否自动切换"
           @change="autoplayForDefaultChange"></boolean-data>
-        <boolean-data :defaultValue="data.circularForDefault" title="是否衔接滑动"
+        <boolean-data :value="data.circularForDefault" title="是否衔接滑动"
           @change="circularForDefaultChange"></boolean-data>
         <!-- #ifndef MP -->
         <navigator url="/pages/component/swiper/swiper-list-view">
@@ -264,12 +261,9 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         <!-- #endif -->
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type SwiperEventTest = {
     type : string;
     target : UniElement | null;
@@ -510,6 +504,14 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
       data.indicatorColor = ""
       data.indicatorColorActive = ""
     }
+  }
+
+  const autoplayForDefaultChange = (value : boolean) => {
+    data.autoplayForDefault = value
+  }
+
+  const circularForDefaultChange = (value : boolean) => {
+    data.circularForDefault = value
   }
 
   const autoplayForDefaultChange = (value : boolean) => {

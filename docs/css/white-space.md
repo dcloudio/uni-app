@@ -95,9 +95,6 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
         <text class="text" :style="{ whiteSpace: data.whiteSpace }">{{data.multiLineText}}</text>
@@ -141,12 +138,9 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
         </view>
       </scroll-view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const whiteSpaceEnum: ItemType[] = [

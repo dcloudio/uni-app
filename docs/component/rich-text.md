@@ -143,10 +143,7 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1;">
-  <!-- #endif -->
-		<view class="rich-text-page uni-padding-wrap uni-common-mt uni-theme-root">
+		<view class="rich-text-page uni-padding-wrap uni-common-mt">
       <navigator url="/pages/component/rich-text/rich-text-tags" class="uni-btn-v">
         <button>rich-text渲染单个HTML标签示例</button>
       </navigator>
@@ -191,12 +188,9 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 				<rich-text id="user-select-rich-text" class="rich-text-content" style="height: 80px;" :user-select="data.userSelect" :nodes="data.text"></rich-text>
 			</view>
 		</view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	type DataType = {
 		text : string;
 		richTextHeight : number;

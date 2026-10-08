@@ -46,11 +46,11 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| text | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | text类型 |
-| image | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | image类型 |
-| video | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | video类型 |
-| audio | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | audio类型 |
-| file | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | file类型 |
+| "text" | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | text类型 |
+| "image" | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | image类型 |
+| "video" | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | video类型 |
+| "audio" | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | audio类型 |
+| "file" | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | file类型 |
 
 #### ShareWithSystemFail 的属性值 @sharewithsystemfail-values 
 
@@ -118,7 +118,7 @@
 	</scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const summary = '欢迎使用hello uniapp-x'
 
 	const sharePrivateErrorAudios = () => {
@@ -451,20 +451,18 @@
 
 	const sharePrivateImgs = () => {
 		uni.hideToast()
-		const errorImageSrc1 : string = "/static/test-image/logo.gif";
 		const errorImageSrc2 : string = "/static/test-image/logo.png";
 		const imageSrc : string = "/static/test-image/logo.jpg";
 		let imageUrlList : string[] = new Array()
 		imageUrlList.push(errorImageSrc2)
 		imageUrlList.push(imageSrc)
-		// imageUrlList.push(errorImageSrc1)
 
 		uni.shareWithSystem({
 			imagePaths: imageUrlList,
 			type:'image',
 			success(_) {
-				console.log('Shared----------------------------success')
 				// 分享完成，请注意此时不一定是成功分享
+				console.log('shareWithSystem success')
 			},
 			fail(res) {
 				console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)

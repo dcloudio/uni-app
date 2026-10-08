@@ -54,7 +54,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 radio 默认样式的暗黑模式
 
 >示例
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   type ItemType = {
     value: string
     name: string
@@ -213,7 +213,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 radio 默认样式的暗黑模式
 </script>
 
 <template>
-  <view class="main uni-theme-root">
+  <view class="main">
     <view class="control-row">
       <radio :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
         :backgroundColor="data.backgroundColor_input" :borderColor="data.borderColor_input"
@@ -224,11 +224,11 @@ App平台蒸汽模式从 5.25+ 起内置适配 radio 默认样式的暗黑模式
     </view>
   </view>
 
-  <scroll-view class="uni-theme-root" style="flex: 1">
+  <scroll-view style="flex: 1">
     <view class="content">
       <page-head title="组件属性"></page-head>
-      <boolean-data :defaultValue="false" title="<radio/> 当前是否选中" @change="change_checked_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <boolean-data :value="false" title="<radio/> 当前是否选中" @change="change_checked_boolean"></boolean-data>
+      <boolean-data :value="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
     </view>
 
     <view>
@@ -240,11 +240,22 @@ App平台蒸汽模式从 5.25+ 起内置适配 radio 默认样式的暗黑模式
         <radio-group class="uni-row radio-group" @change="testChange" style="flex-wrap: wrap">
           <view style="margin-right: 15px" class="radio">
             <radio class="r" id="trigger-change" value="r" :checked="data.checked" :color="data.color">选中</radio>
+            <!-- #ifdef MP-ALIPAY -->
+            <text>选中</text>
+            <!-- #endif -->
           </view>
           <view style="margin-right: 15px" class="radio">
             <radio class="r1" value="r1">{{ data.text }}</radio>
+            <!-- #ifdef MP-ALIPAY -->
+            <text>{{ data.text }}</text>
+            <!-- #endif -->
           </view>
-          <view class="radio"><radio class="r2" value="r2" :disabled="data.disabled">禁用</radio></view>
+          <view class="radio">
+            <radio class="r2" value="r2" :disabled="data.disabled">禁用</radio>
+            <!-- #ifdef MP-ALIPAY -->
+            <text>禁用</text>
+            <!-- #endif -->
+          </view>
           <view class="radio r3" style="margin-top: 10px">
             <radio value="r3" />
             <text>{{ data.wrapText }}</text>
@@ -300,6 +311,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 radio 默认样式的暗黑模式
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
     <view>
       <input-data defaultValue="#007AFF" title="radio的颜色" type="text" @confirm="confirm_color_input"></input-data>
@@ -314,8 +326,9 @@ App平台蒸汽模式从 5.25+ 起内置适配 radio 默认样式的暗黑模式
       <input-data defaultValue="#ffffff" title="radio的图标颜色" type="text" @confirm="confirm_iconColor_input"></input-data>
     </view>
     <!-- #endif -->
+    <!-- #endif -->
 
-    <!-- #ifndef MP-ALIPAY -->
+    <!-- #ifdef APP && VUE3-VAPOR -->
       <navigator class="uni-common-mb" url="/pages/template/radio-200/radio-200">
         <button class="uni-common-mt">组件性能测试</button>
       </navigator>

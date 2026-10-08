@@ -62,9 +62,9 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 'WXSceneSession' | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到聊天界面 |
-| WXSceneTimeline | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到朋友圈 |
-| WXSceneFavorite | Web: x; Android: x; iOS: x; HarmonyOS: x | 分享微信收藏 |
+| "WXSceneSession" | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到聊天界面 |
+| "WXSceneTimeline" | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到朋友圈 |
+| "WXSceneFavorite" | Web: x; Android: x; iOS: x; HarmonyOS: x | 分享微信收藏 |
 
 ##### miniProgram 的属性描述
 
@@ -123,10 +123,7 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/share/share
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex:1">
-  <!-- #endif -->
-    <view class="uni-theme-root">
+    <view>
     <page-head :title="title"></page-head>
     <view class="uni-list-cell-padding status-box">
       <view class="uni-title uni-common-mt">
@@ -170,12 +167,9 @@
       <button type="primary" @click="share">分享</button>
     </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   const scene = ref('WXSceneSession')
   const type = ref(0)
 

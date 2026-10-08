@@ -117,8 +117,8 @@
   </view>
 </template>
 
-<script setup lang="uts">
-  import { state, setLifeCycleNum } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setLifeCycleNum } from '@/store/index.ts'
 
   const newTitle = ref('new title')
   const longTitle = ref('long title long title long title long title long title long title long title long title long title long title')

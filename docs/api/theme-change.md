@@ -323,9 +323,9 @@ uni-app x的UI相关的API（比如showModal），也会响应setAppTheme。
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
-| auto | Web: x; 微信小程序: x; 支付宝小程序: x | 跟随系统模式 |
+| "light" | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
+| "dark" | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
+| "auto" | Web: x; 微信小程序: x; 支付宝小程序: x | 跟随系统模式 |
 
 #### SetAppThemeSuccessResult 的属性值 @setappthemesuccessresult-values 
 
@@ -347,7 +347,7 @@ uni-app x的UI相关的API（比如showModal），也会响应setAppTheme。
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 702001 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.71 | 参数错误 |
+| 702001 | Web: x; 微信小程序: x; 支付宝小程序: x | 参数错误 |
 | 2002000 | Web: x; 微信小程序: x; 支付宝小程序: x | 未知错误 |
 
 
@@ -409,8 +409,8 @@ uni.setAppTheme({
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
+| "light" | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
+| "dark" | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
 
 
 ### 返回值 
@@ -511,8 +511,8 @@ uni.offAppThemeChange(this.appThemeChangeId)
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
+| "light" | Web: x; 微信小程序: x; 支付宝小程序: x | 亮色模式 |
+| "dark" | Web: x; 微信小程序: x; 支付宝小程序: x | 深色模式 |
 
 
 ### 返回值 
@@ -619,8 +619,8 @@ uni.offOsThemeChange(callbackId)
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Android: x; iOS: x | 亮色模式 |
-| dark | Android: x; iOS: x | 深色模式 |
+| "light" | Android: x; iOS: x | 亮色模式 |
+| "dark" | Android: x; iOS: x | 深色模式 |
 
 
 ### 返回值 
@@ -730,8 +730,8 @@ uni.offOsThemeChange(callbackId)
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Android: x; iOS: x | 亮色模式 |
-| dark | Android: x; iOS: x | 深色模式 |
+| "light" | Android: x; iOS: x | 亮色模式 |
+| "dark" | Android: x; iOS: x | 深色模式 |
 
 
 
@@ -788,8 +788,8 @@ uni.offOsThemeChange(callbackId)
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Android: x; iOS: x | 亮色模式 |
-| dark | Android: x; iOS: x | 深色模式 |
+| "light" | Android: x; iOS: x | 亮色模式 |
+| "dark" | Android: x; iOS: x | 深色模式 |
 
 
 
@@ -846,7 +846,7 @@ uni.offOsThemeChange(callbackId)
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type Data = {

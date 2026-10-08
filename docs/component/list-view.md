@@ -235,7 +235,7 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
 
 >示例
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   type ScrollEventTest = {
     type : string;
     target : UniElement | null;
@@ -527,20 +527,20 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
   <scroll-view style="flex:1" direction="vertical">
     <view class="content">
       <!-- #ifdef APP -->
-      <boolean-data :defaultValue="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
+      <boolean-data :value="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
         @change="change_refresher_triggered_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="开启自定义样式" @change="change_refresher_style_boolean"></boolean-data>
+      <boolean-data :value="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
+      <boolean-data :value="false" title="开启自定义样式" @change="change_refresher_style_boolean"></boolean-data>
       <!-- #endif -->
-      <boolean-data :defaultValue="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
+      <boolean-data :value="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
         @change="change_scroll_with_animation_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
+      <boolean-data :value="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
       <!-- #ifdef APP -->
-      <boolean-data :defaultValue="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
+      <boolean-data :value="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
       <!-- #endif -->
-      <boolean-data :defaultValue="true" title="允许纵向滚动" @change="change_scroll_y_boolean"></boolean-data>
+      <boolean-data :value="true" title="允许纵向滚动" @change="change_scroll_y_boolean"></boolean-data>
       <!-- #ifdef APP -->
-      <boolean-data :defaultValue="false" title="允许横向滚动" @change="change_scroll_x_boolean"></boolean-data>
+      <boolean-data :value="false" title="允许横向滚动" @change="change_scroll_x_boolean"></boolean-data>
       <!-- #endif -->
       <input-data defaultValue="50" title="距顶部/左边多远时（单位px），触发 scrolltoupper 事件" type="number"
         @confirm="confirm_upper_threshold_input"></input-data>
@@ -601,6 +601,28 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
           list-item 上使用 type 属性测试
         </button>
       </navigator>
+      <!-- #ifdef APP && VUE3-VAPOR -->
+      <navigator url="/pages/component/list-view/initial-scroll-bottom">
+        <button type="primary" class="button">
+          initial-scroll-bottom 属性测试
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/scroll-anchoring">
+        <button type="primary" class="button">
+          scroll-anchoring 属性测试
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/scroll-into-item">
+        <button type="primary" class="button">
+          scroll-into-view 滚动到 item
+        </button>
+      </navigator>
+      <navigator url="/pages/component/list-view/scroll-into-section">
+        <button type="primary" class="button">
+          scroll-into-view 滚动到 section
+        </button>
+      </navigator>
+      <!-- #endif -->
     </view>
   </scroll-view>
 </template>

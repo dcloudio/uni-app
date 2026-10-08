@@ -56,7 +56,7 @@ uni.env提供了一些环境变量，主要是App和小程序文件系统相关�
     <!-- #ifdef APP-ANDROID -->
    <button class="button" type="primary" @tap="getDirInfo(data.androidInternalSandboxPath)">ANDROID_INTERNAL_SANDBOX_PATH</button>
     <!-- #endif -->
-    <boolean-data :defaultValue="false" title="是否递归获取" @change="switchRecursive"></boolean-data>
+    <boolean-data :value="false" title="是否递归获取" @change="switchRecursive"></boolean-data>
   </view>
   <scroll-view style="flex: 1; padding: 16px 0px;">
     <text class="result">{{data.result}}</text>
@@ -68,7 +68,7 @@ uni.env提供了一些环境变量，主要是App和小程序文件系统相关�
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type StatInfo = {
     path : string;
     size : string;

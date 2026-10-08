@@ -143,29 +143,22 @@ close
   <page-head :title="data.title"></page-head>
 	<button class="button" type="primary" @click="connect">连接</button>
 	<button class="button" type="primary" @click="close">关闭</button>
-
-	<!-- #ifdef APP -->
-	<scroll-view style="flex:1">
-	<!-- #endif -->
-		<view>
-			<text style="width: 100%; text-align: center; margin-bottom: 5px;">
-			  显示简易操作日志(可滚动查看)
-			</text>
-			<button size="mini" @click="data.logList = []">清空日志</button>
-			<view style="margin-top: 10px;">
-				<view v-for="(item, index) in data.logList" :key="index">
-					<text style="margin-left: 20px; margin-right: 20px;">
-						{{ item }}
-					</text>
-				</view>
-			</view>
-		</view>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+  <view>
+    <text style="width: 100%; text-align: center; margin-bottom: 5px;">
+      显示简易操作日志(可滚动查看)
+    </text>
+    <button size="mini" @click="data.logList = []">清空日志</button>
+    <view style="margin-top: 10px;">
+      <view v-for="(item, index) in data.logList" :key="index">
+        <text style="margin-left: 20px; margin-right: 20px;">
+          {{ item }}
+        </text>
+      </view>
+    </view>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	type DataType = {
 		logList: string[];
 		title: string;
@@ -197,9 +190,10 @@ close
 			mask: true
 		})
 		data.eventSource?.close()
-		let headers : UTSJSONObject = new UTSJSONObject()
-		headers.set("header1", "value1")
-		headers.set("header2", "value3")
+		const headers = {
+			header1: "value1",
+			header2: "value3"
+		}
 		data.eventSource = uni.connectEventSource({
 			url: data.url,
 			header: headers
@@ -274,29 +268,22 @@ close
   <page-head :title="data.title"></page-head>
 	<button class="button" type="primary" @click="connect">连接</button>
 	<button class="button" type="primary" @click="close">关闭</button>
-
-	<!-- #ifdef APP -->
-	<scroll-view style="flex:1">
-	<!-- #endif -->
-		<view>
-			<text style="width: 100%; text-align: center; margin-bottom: 5px;">
-			  显示简易操作日志(可滚动查看)
-			</text>
-			<button size="mini" @click="data.logList = []">清空日志</button>
-			<view style="margin-top: 10px;">
-				<view v-for="(item, index) in data.logList" :key="index">
-					<text style="margin-left: 20px; margin-right: 20px;">
-						{{ item }}
-					</text>
-				</view>
-			</view>
-		</view>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+  <view>
+    <text style="width: 100%; text-align: center; margin-bottom: 5px;">
+      显示简易操作日志(可滚动查看)
+    </text>
+    <button size="mini" @click="data.logList = []">清空日志</button>
+    <view style="margin-top: 10px;">
+      <view v-for="(item, index) in data.logList" :key="index">
+        <text style="margin-left: 20px; margin-right: 20px;">
+          {{ item }}
+        </text>
+      </view>
+    </view>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	type DataType = {
 		logList: string[];
 		title: string;
@@ -328,9 +315,10 @@ close
 			mask: true
 		})
 		data.eventSource?.close()
-		let headers : UTSJSONObject = new UTSJSONObject()
-		headers.set("header1", "value1")
-		headers.set("header2", "value3")
+		const headers = {
+			header1: "value1",
+			header2: "value3"
+		}
 		data.eventSource = uni.connectEventSource({
 			url: data.url,
 			header: headers

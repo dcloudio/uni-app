@@ -254,7 +254,7 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
       </View>
       <input-data defaultValue="13" title="scale: 缩放级别，取值范围为5-18" type="number"
         @confirm="confirm_scale_input"></input-data>
-      <boolean-data :defaultValue="showLocation" title="开启显示带有方向的当前定位点" @change="change_show_location"></boolean-data>
+      <boolean-data :value="showLocation" title="开启显示带有方向的当前定位点" @change="change_show_location"></boolean-data>
       <boolean-data :default-value="enable3D" :disabled="enableSatellite" title="3D效果(放大缩放级别才能看到建筑物3D效果)" @change="change_enable_3d"></boolean-data>
       <boolean-data :default-value="showCompass" title="显示指南针" @change="change_show_campass"></boolean-data>
       <boolean-data :default-value="enableOverlooking" title="俯视支持" @change="change_enable_overlooking"></boolean-data>
@@ -290,7 +290,7 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type TypeJestResult = {
     translateMarkerMsg : string,
     animationEnd : boolean,
@@ -844,8 +844,10 @@ map组件的操作api为[uni.createMapContext()](../api/create-map-context.md)�
   // showModal - 操作结束后是否显示 Modal 弹框，默认为 true。在自动化或内部调用时可设为 false。
   function handleMoveToLocation(showModal: boolean = true) {
       mapContext.value?.moveToLocation({
-        latitude: 39.909,
-        longitude: 116.39742,
+        // 注意：目标坐标需在初始视野（location 默认坐标）之外，否则视野没有实际变化，
+        // 只会触发 detail 不完整的 regionchange，无法用于校验事件数据
+        latitude: 39.989631,
+        longitude: 116.481018,
         success: res => {
           // console.log('moveToLocation',res);
           const result = res as UTSJSONObject

@@ -257,7 +257,7 @@ function onRefresherabort1() {
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 type Data = {
   listCount1: number
   refreshing1: boolean

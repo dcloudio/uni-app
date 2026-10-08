@@ -44,15 +44,15 @@
 | 合法值 | 描述 |
 | :- | :- |
 | "auto" | 自动 |
-| portrait | 竖屏显示 |
-| landscape | 横屏显示 |
+| "portrait" | 竖屏显示 |
+| "landscape" | 横屏显示 |
 
 ##### albumMode 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
 | "custom" | 自定义媒体选择器 |
-| system | 系统媒体选择器 |
+| "system" | 系统媒体选择器 |
 
 ##### crop 的属性描述
 
@@ -135,112 +135,106 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view uni-theme-root">
-  <!-- #endif -->
-    <page-head :title="title"></page-head>
-    <view class="uni-common-mt uni-theme-root">
-      <view class="uni-list">
-        <view class="uni-list-cell cell-pd">
-          <text class="uni-list-cell-left uni-label">
-            图片来源
-          </text>
-          <view class="uni-list-cell-right" @click="chooseImageSource">
-            <text class="click-t">{{sourceType[sourceTypeIndex]}}</text>
-          </view>
-        </view>
-
-        <view class="uni-list-cell cell-pd">
-          <text class="uni-list-cell-left uni-label">
-            图片质量
-          </text>
-          <view class="uni-list-cell-right" @click="chooseImageType">
-            <text class="click-t">{{sizeType[sizeTypeIndex]}}</text>
-          </view>
-        </view>
-
-        <view class="uni-list-cell cell-pd">
-          <text class="uni-list-cell-left uni-label">
-            数量限制
-          </text>
-          <view class="uni-list-cell-right">
-            <input class="click-t" :value="count" type="number" :maxlength="1" @blur="chooseImageCount" />
-          </view>
-        </view>
-        <!-- #ifdef APP-ANDROID || APP-IOS -->
-        <view class="uni-list-cell cell-pd">
-          <text class="uni-list-cell-left uni-label">
-            屏幕方向
-          </text>
-          <view class="uni-list-cell-right" @click="chooseOrientationType">
-            <text class="click-t">{{orientationType[orientationTypeIndex]}}</text>
-          </view>
-        </view>
-        <!-- #endif -->
-        <!-- #ifdef APP-ANDROID -->
-        <view class="uni-list-cell cell-pd">
-          <text class="uni-list-cell-left uni-label">
-            相册模式
-          </text>
-          <view class="uni-list-cell-right" @click="albumModeChange">
-            <text class="click-t">{{albumModeType[albumModeTypeIndex]}}</text>
-          </view>
-        </view>
-        <!-- #endif -->
-        <boolean-data :defaultValue="isCrop" title="图像裁剪" @change="switchCrop"></boolean-data>
-        <view ref="cropOptionNode" class="crop-option"
-          :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width crop-option-label">
-              图片质量(%)
-            </view>
-            <view class="uni-list-cell-right">
-              <input class="crop-option-input" :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
-            </view>
-          </view>
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width crop-option-label">
-              裁剪宽度(px)
-            </view>
-            <view class="uni-list-cell-right">
-              <input class="crop-option-input" :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
-            </view>
-          </view>
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left item_width crop-option-label">
-              裁剪高度(px)
-            </view>
-            <view class="uni-list-cell-right">
-              <input class="crop-option-input" :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
-            </view>
-          </view>
-          <boolean-data :defaultValue="cropResize" title="保留原宽高" @change="cropResizeChange"></boolean-data>
+  <page-head :title="title"></page-head>
+  <view class="uni-common-mt">
+    <view class="uni-list">
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
+          图片来源
+        </text>
+        <view class="uni-list-cell-right" @click="chooseImageSource">
+          <text class="click-t">{{sourceType[sourceTypeIndex]}}</text>
         </view>
       </view>
 
-      <view class="uni-list list-pd" style="padding: 15px;">
-        <view class="uni-row" style="margin-bottom: 10px;">
-          <view class="uni-list-cell-left">点击可预览选好的图片</view>
-          <view style="margin-left: auto;">
-            <text class="click-t">{{imageList.length}}/{{count}}</text>
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
+          图片质量
+        </text>
+        <view class="uni-list-cell-right" @click="chooseImageType">
+          <text class="click-t">{{sizeType[sizeTypeIndex]}}</text>
+        </view>
+      </view>
+
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
+          数量限制
+        </text>
+        <view class="uni-list-cell-right">
+          <input class="click-t" :value="count" type="number" :maxlength="1" @blur="chooseImageCount" />
+        </view>
+      </view>
+      <!-- #ifdef APP-ANDROID || APP-IOS -->
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
+          屏幕方向
+        </text>
+        <view class="uni-list-cell-right" @click="chooseOrientationType">
+          <text class="click-t">{{orientationType[orientationTypeIndex]}}</text>
+        </view>
+      </view>
+      <!-- #endif -->
+      <!-- #ifdef APP-ANDROID -->
+      <view class="uni-list-cell cell-pd">
+        <text class="uni-list-cell-left uni-label">
+          相册模式
+        </text>
+        <view class="uni-list-cell-right" @click="albumModeChange">
+          <text class="click-t">{{albumModeType[albumModeTypeIndex]}}</text>
+        </view>
+      </view>
+      <!-- #endif -->
+      <boolean-data :value="isCrop" title="图像裁剪" @change="switchCrop"></boolean-data>
+      <view ref="cropOptionNode" class="crop-option"
+        :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left item_width crop-option-label">
+            图片质量(%)
+          </view>
+          <view class="uni-list-cell-right">
+            <input class="crop-option-input" :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
           </view>
         </view>
-        <view class="uni-row" style="flex-wrap: wrap;">
-          <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0;">
-            <image style="width: 104px; height: 104px;" :src="image" @tap="previewImage(index)">
-            </image>
-            <image src="/static/plus.png" class="image-remove" @click="removeImage(index)"></image>
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left item_width crop-option-label">
+            裁剪宽度(px)
           </view>
-          <image class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
+          <view class="uni-list-cell-right">
+            <input class="crop-option-input" :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
+          </view>
         </view>
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left item_width crop-option-label">
+            裁剪高度(px)
+          </view>
+          <view class="uni-list-cell-right">
+            <input class="crop-option-input" :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
+          </view>
+        </view>
+        <boolean-data :value="cropResize" title="保留原宽高" @change="cropResizeChange"></boolean-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+
+    <view class="uni-list list-pd" style="padding: 15px;">
+      <view class="uni-row" style="margin-bottom: 10px;">
+        <view class="uni-list-cell-left">点击可预览选好的图片</view>
+        <view style="margin-left: auto;">
+          <text class="click-t">{{imageList.length}}/{{count}}</text>
+        </view>
+      </view>
+      <view class="uni-row" style="flex-wrap: wrap;">
+        <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0;">
+          <image style="width: 104px; height: 104px;" :src="image" @tap="previewImage(index)">
+          </image>
+          <image src="/static/plus.png" class="image-remove" @click="removeImage(index)"></image>
+        </view>
+        <image class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
+      </view>
+    </view>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 const sourceTypeArray = [
   ['camera'],
@@ -357,7 +351,9 @@ const chooseImageSource = () => {
   uni.showActionSheet({
     itemList: ['拍照', '相册', '拍照或相册'],
     success: (e) => {
-      sourceTypeIndex.value = e.tapIndex
+      if (e.tapIndex > 0) {
+        sourceTypeIndex.value = e.tapIndex
+      }
     }
   })
 }
@@ -366,7 +362,9 @@ const chooseImageType = () => {
   uni.showActionSheet({
     itemList: ['压缩', '原图', '压缩或原图'],
     success: (e) => {
-      sizeTypeIndex.value = e.tapIndex
+      if (e.tapIndex > 0) {
+        sizeTypeIndex.value = e.tapIndex
+      }
     }
   })
 }

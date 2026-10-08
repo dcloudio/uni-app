@@ -94,8 +94,8 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| "click" | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 |
-| receive | 支付宝小程序: x |
+| "click" | 支付宝小程序: x |
+| "receive" | 支付宝小程序: x |
 
 
 
@@ -136,8 +136,8 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| "click" | Web: 4.27; 支付宝小程序: x; Android: 3.98; iOS: 4.18 |
-| receive | 支付宝小程序: x |
+| "click" | 支付宝小程序: x |
+| "receive" | 支付宝小程序: x |
 
 
 
@@ -424,9 +424,6 @@ getAllChannels
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
   <view>
     <!-- #ifdef APP-ANDROID -->
     <button class="normal-button" type="default" @click="handleCreateChannel(true)">
@@ -460,20 +457,17 @@ getAllChannels
       获取cid | getPushClientId
     </button>
     <button class="normal-button" type="default" @click="handleOnPushMessage">
-      注册回调（默认申请通知权限） | onPushMessage
+      注册回调（默认不申请通知权限） | onPushMessage
     </button>
     <!-- #ifdef APP-ANDROID -->
-    <button class="normal-button" type="default" @click="handleOnPushMessageWithoutPermission">
-      注册回调（不申请通知权限） | onPushMessage
+    <button class="normal-button" type="default" @click="handleOnPushMessageWithPermission">
+      注册回调（申请通知权限） | onPushMessage
     </button>
     <!-- #endif -->
     <button class="normal-button" type="default" @click="handleOffPushMessage">
       注销回调 | offPushMessage
     </button>
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
 <script setup>
@@ -549,7 +543,7 @@ getAllChannels
     })
   }
 
-  const handleOnPushMessageWithoutPermission = () => {
+  const handleOnPushMessageWithPermission = () => {
     if (isRegister.state) {
       uni.showToast({
         icon: "error",
@@ -558,7 +552,7 @@ getAllChannels
       return
     }
     uni.onPushMessage(onPushMessageCallback, {
-      requestPermission: false
+      requestPermission: true
     })
     isRegister.state = true
     uni.showToast({
@@ -661,7 +655,7 @@ getAllChannels
 
   async function getPushClientId(): Promise<string>{
     let pushClientId = '';
-    let res:void = await new Promise<void>(resolve => {
+    await new Promise<void>(resolve => {
       uni.getPushClientId({
         success: (res: GetPushClientIdSuccess) => {
           console.log(res.cid)
@@ -793,6 +787,17 @@ getAllChannels
     handleGetClientId,
     handleOnPushMessage,
     handleOffPushMessage
+  })
+
+  onUnload(() => {
+    // 页面销毁时注销推送回调，避免全局回调持有页面引用导致内存泄漏
+    if (isRegister.state) {
+      uni.offPushMessage(onPushMessageCallback)
+      isRegister.state = false
+    }
+    // 兜底关闭可能与页面绑定、尚未关闭的弹窗，避免窗口/弹窗在页面销毁后残留
+    uni.hideLoading()
+    uni.hideToast()
   })
 </script>
 

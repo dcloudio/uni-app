@@ -130,40 +130,40 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 合法值 |
 | :- |
-| phone |
-| pad |
-| tv |
-| watch |
-| pc |
-| undefined |
-| car |
-| vr |
-| appliance |
+| "phone" |
+| "pad" |
+| "tv" |
+| "watch" |
+| "pc" |
+| "undefined" |
+| "car" |
+| "vr" |
+| "appliance" |
 
 #### deviceOrientation 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
-| portrait | 纵向 |
-| landscape | 横向 |
+| "portrait" | 纵向 |
+| "landscape" | 横向 |
 
 #### osName 的属性描述
 
 | 合法值 |
 | :- |
-| ios |
-| android |
-| harmonyos |
-| macos |
-| windows |
-| linux |
+| "ios" |
+| "android" |
+| "harmonyos" |
+| "macos" |
+| "windows" |
+| "linux" |
 
 #### osTheme 的属性描述
 
 | 合法值 |
 | :- |
-| light |
-| dark |
+| "light" |
+| "dark" |
 
 #### safeArea 的属性描述
 
@@ -189,35 +189,35 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 合法值 |
 | :- |
-| app |
-| web |
-| mp-weixin |
-| mp-alipay |
-| mp-baidu |
-| mp-toutiao |
-| mp-lark |
-| mp-qq |
-| mp-kuaishou |
-| mp-jd |
-| mp-360 |
-| quickapp-webview |
-| quickapp-webview-union |
-| quickapp-webview-huawei |
+| "app" |
+| "web" |
+| "mp-weixin" |
+| "mp-alipay" |
+| "mp-baidu" |
+| "mp-toutiao" |
+| "mp-lark" |
+| "mp-qq" |
+| "mp-kuaishou" |
+| "mp-jd" |
+| "mp-360" |
+| "quickapp-webview" |
+| "quickapp-webview-union" |
+| "quickapp-webview-huawei" |
 
 #### appTheme 的属性描述
 
 | 合法值 |
 | :- |
-| light |
-| dark |
-| auto |
+| "light" |
+| "dark" |
+| "auto" |
 
 #### hostTheme 的属性描述
 
 | 合法值 |
 | :- |
-| light |
-| dark |
+| "light" |
+| "dark" |
 
 #### host 的属性描述
 
@@ -229,22 +229,22 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 合法值 |
 | :- |
-| dark |
-| light |
+| "dark" |
+| "light" |
 
 #### platform 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| ios |   |
-| android |   |
-| harmonyos |   |
-| mac |   |
-| windows |   |
-| linux |   |
-| ohos | 微信小程序: 4.41 |
-| ohos_pc | 微信小程序: 4.41 |
-| devtools | 微信小程序: 4.41 |
+| "ios" |   |
+| "android" |   |
+| "harmonyos" |   |
+| "mac" |   |
+| "windows" |   |
+| "linux" |   |
+| "ohos" | 微信小程序: 4.41 |
+| "ohos_pc" | 微信小程序: 4.41 |
+| "devtools" | 微信小程序: 4.41 |
 
 
 
@@ -305,10 +305,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="uni-theme-root">
+    <view>
       <page-head :title="data.title"></page-head>
       <view class="uni-common-mt">
         <view class="uni-list">
@@ -337,11 +334,8 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type Item = {
     label : string,
     value : string,
@@ -378,15 +372,10 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
     uni.getSystemInfo({
       success: (res) => {
         data.items = [] as Item[];
-        const res_str = JSON.stringify(res);
-        const res_obj = JSON.parseObject(res_str);
-        const res_map = res_obj!.toMap();
-        let keys = [] as string[]
-        res_map.forEach((_, key) => {
-          keys.push(key);
-        });
+        const res_obj = JSON.parse(JSON.stringify(res));
+        const keys = Object.keys(res_obj);
         keys.sort().forEach(key => {
-          const value = res[key];
+          const value = res_obj[key];
           if (value != null) {
             const item = {
               label: key,
@@ -402,15 +391,10 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
   const getSystemInfoSync = () => {
     data.items = [] as Item[];
     const res = uni.getSystemInfoSync()
-    const res_str = JSON.stringify(res);
-    const res_obj = JSON.parseObject(res_str);
-    const res_map = res_obj!.toMap();
-    let keys = [] as string[]
-    res_map.forEach((_, key) => {
-      keys.push(key);
-    });
+    const res_obj = JSON.parse(JSON.stringify(res));
+    const keys = Object.keys(res_obj);
     keys.sort().forEach(key => {
-      const value = res[key];
+      const value = res_obj[key];
       if (value != null) {
         const item = {
           label: key,
@@ -580,40 +564,40 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 合法值 |
 | :- |
-| phone |
-| pad |
-| tv |
-| watch |
-| pc |
-| null |
-| car |
-| vr |
-| appliance |
+| "phone" |
+| "pad" |
+| "tv" |
+| "watch" |
+| "pc" |
+| "null" |
+| "car" |
+| "vr" |
+| "appliance" |
 
 ##### deviceOrientation 的属性描述
 
 | 合法值 | 描述 |
 | :- | :- |
-| portrait | 纵向 |
-| landscape | 横向 |
+| "portrait" | 纵向 |
+| "landscape" | 横向 |
 
 ##### osName 的属性描述
 
 | 合法值 |
 | :- |
-| ios |
-| android |
-| harmonyos |
-| macos |
-| windows |
-| linux |
+| "ios" |
+| "android" |
+| "harmonyos" |
+| "macos" |
+| "windows" |
+| "linux" |
 
 ##### osTheme 的属性描述
 
 | 合法值 |
 | :- |
-| light |
-| dark |
+| "light" |
+| "dark" |
 
 ##### safeArea 的属性描述
 
@@ -639,35 +623,35 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 合法值 |
 | :- |
-| app |
-| web |
-| mp-weixin |
-| mp-alipay |
-| mp-baidu |
-| mp-toutiao |
-| mp-lark |
-| mp-qq |
-| mp-kuaishou |
-| mp-jd |
-| mp-360 |
-| quickapp-webview |
-| quickapp-webview-union |
-| quickapp-webview-huawei |
+| "app" |
+| "web" |
+| "mp-weixin" |
+| "mp-alipay" |
+| "mp-baidu" |
+| "mp-toutiao" |
+| "mp-lark" |
+| "mp-qq" |
+| "mp-kuaishou" |
+| "mp-jd" |
+| "mp-360" |
+| "quickapp-webview" |
+| "quickapp-webview-union" |
+| "quickapp-webview-huawei" |
 
 ##### appTheme 的属性描述
 
 | 合法值 |
 | :- |
-| light |
-| dark |
-| auto |
+| "light" |
+| "dark" |
+| "auto" |
 
 ##### hostTheme 的属性描述
 
 | 合法值 |
 | :- |
-| light |
-| dark |
+| "light" |
+| "dark" |
 
 ##### host 的属性描述
 
@@ -679,22 +663,22 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 合法值 |
 | :- |
-| dark |
-| light |
+| "dark" |
+| "light" |
 
 ##### platform 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| ios |   |
-| android |   |
-| harmonyos |   |
-| mac |   |
-| windows |   |
-| linux |   |
-| ohos | 微信小程序: 4.41 |
-| ohos_pc | 微信小程序: 4.41 |
-| devtools | 微信小程序: 4.41 |
+| "ios" |   |
+| "android" |   |
+| "harmonyos" |   |
+| "mac" |   |
+| "windows" |   |
+| "linux" |   |
+| "ohos" | 微信小程序: 4.41 |
+| "ohos_pc" | 微信小程序: 4.41 |
+| "devtools" | 微信小程序: 4.41 |
 
 
 <!-- UTSAPIJSON.getSystemInfoSync.example -->

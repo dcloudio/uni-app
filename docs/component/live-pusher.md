@@ -349,12 +349,12 @@
         <text>美白, 取值范围0-9(iOS取值范围为1), 0表示关闭</text>
         <slider :min="0" :max="9" @change="onWhitenessChange" />
       </view>
-      <boolean-data title="设置是否静音" :defaultValue="muted" @change="onMutedChange"></boolean-data>
-      <!-- <boolean-data title="设置是否开启摄像头" :defaultValue="enableCamera" @change="onEnableCameraChange"></boolean-data> -->
-      <!-- <boolean-data title="设置是否开启麦克风" :defaultValue="enableMic" @change="onEnableMicChange"></boolean-data> -->
-      <boolean-data title="设置是否自动聚焦" :defaultValue="autoFocus" @change="onAutoFocusChange"></boolean-data>
-      <boolean-data title="设置进入后台时是否静音" :defaultValue="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
-      <boolean-data title="设置推流画面是否镜像" :defaultValue="remoteMirror" @change="onRemoteMirrorChange"></boolean-data>
+      <boolean-data title="设置是否静音" :value="muted" @change="onMutedChange"></boolean-data>
+      <!-- <boolean-data title="设置是否开启摄像头" :value="enableCamera" @change="onEnableCameraChange"></boolean-data> -->
+      <!-- <boolean-data title="设置是否开启麦克风" :value="enableMic" @change="onEnableMicChange"></boolean-data> -->
+      <boolean-data title="设置是否自动聚焦" :value="autoFocus" @change="onAutoFocusChange"></boolean-data>
+      <boolean-data title="设置进入后台时是否静音" :value="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
+      <boolean-data title="设置推流画面是否镜像" :value="remoteMirror" @change="onRemoteMirrorChange"></boolean-data>
       <enum-data title="设置本地预览画面是否镜像" :items="localMirrorItemTypes" @change="onLocalMirrorChange"></enum-data>
       <enum-data title="设置使用前置或后置摄像头" :items="devicePositionItemTypes" @change="onDevicePositionChange"></enum-data>
       <enum-data title="设置推流视频模式" :items="modeItemTypes" @change="onModeChange"></enum-data>
@@ -365,7 +365,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
   const context = ref(null as LivePusherContext | null);

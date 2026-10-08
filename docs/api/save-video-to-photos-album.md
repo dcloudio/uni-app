@@ -77,26 +77,25 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/save-video-to-photos-album/save-video-to-photos-album
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
       <video class="video" :src="src" :controls="true"></video>
       <button type="primary" class="margin-top-10" @click="saveVideo">将视频保存到手机相册</button>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type TestStateType = {
     success: boolean
   }
 
   const title = ref('saveVideoToPhotosAlbum')
+  // #ifdef MP-ALIPAY
+  const src = ref('https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4')
+  // #endif
+  // #ifndef MP-ALIPAY
   const src = ref('/static/test-video/10second-demo.mp4')
+  // #endif
   // 使用reactive避免ref数据在自动化测试中无法访问
   const testState = reactive({
     success: false

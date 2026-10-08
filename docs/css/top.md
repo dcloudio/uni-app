@@ -54,10 +54,7 @@ top: <length> | <percentage> | auto;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="css-page uni-theme-root" style="flex-grow: 1;">
+    <view class="css-page" style="flex-grow: 1;">
       <view class="uni-common-mb">
         <text class="uni-title-text">top: 20px (距离顶部 20px) - 右侧：拍平</text>
         <view class="test-container">
@@ -206,12 +203,9 @@ top: <length> | <percentage> | auto;
       </view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const topEnum : ItemType[] = [

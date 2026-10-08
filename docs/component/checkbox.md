@@ -54,7 +54,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
 
 >示例
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   type ItemType = {
     value: string
     name: string
@@ -244,8 +244,8 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
   <scroll-view class="uni-theme-root" style="flex: 1">
     <view class="content">
       <page-head title="组件属性"></page-head>
-      <boolean-data :defaultValue="false" title="当前是否选中，可用来设置默认选中" @change="change_checked_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <boolean-data :value="false" title="当前是否选中，可用来设置默认选中" @change="change_checked_boolean"></boolean-data>
+      <boolean-data :value="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
     </view>
 
     <view>
@@ -259,12 +259,21 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
             <view style="margin-right: 15px" class="checkbox">
               <checkbox class="cb" value="cb" :checked="data.checked" :color="data.color" :iconColor="data.iconColor"
                 :foreColor="data.foreColor">选中</checkbox>
+              <!-- #ifdef MP-ALIPAY -->
+              <text>选中</text>
+              <!-- #endif -->
             </view>
             <view style="margin-right: 15px" class="checkbox">
               <checkbox class="cb1" value="cb1">{{ data.text }}</checkbox>
+              <!-- #ifdef MP-ALIPAY -->
+              <text>{{ data.text }}</text>
+              <!-- #endif -->
             </view>
             <view class="checkbox">
               <checkbox class="cb2" value="cb2" :disabled="data.disabled">禁用</checkbox>
+              <!-- #ifdef MP_ALIPAY -->
+              <text>禁用</text>
+              <!-- #endif -->
             </view>
             <view style="margin-top: 10px" class="checkbox cb3">
               <checkbox value="cb3" />
@@ -342,6 +351,7 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
     <view>
       <input-data defaultValue="#007aff" title="checkbox的颜色" type="text" @confirm="confirm_color_input"></input-data>
@@ -359,8 +369,9 @@ App平台蒸汽模式从 5.25+ 起内置适配 checkbox 默认样式的暗黑模
         @confirm="confirm_foreColor_input"></input-data>
     </view>
     <!-- #endif -->
+    <!-- #endif -->
 
-    <!-- #ifndef MP-ALIPAY -->
+    <!-- #ifdef APP && VUE3-VAPOR -->
       <navigator class="uni-common-mb" url="/pages/template/checkbox-200/checkbox-200">
         <button class="uni-common-mt">组件性能测试</button>
       </navigator>

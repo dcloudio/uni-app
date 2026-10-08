@@ -43,19 +43,19 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | "success" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示成功图标 |
-| error | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示错误图标 |
-| fail | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
-| exception | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
-| loading | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示加载图标 |
-| none | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 不显示图标 |
+| "error" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示错误图标 |
+| "fail" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
+| "exception" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
+| "loading" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 显示加载图标 |
+| "none" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 不显示图标 |
 
 ##### position 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | "top" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居上显示 |
-| center | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居中显示 |
-| bottom | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居底显示 |
+| "center" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居中显示 |
+| "bottom" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居底显示 |
 
 #### ShowToastFail 的属性值 @showtoastfail-values 
 
@@ -185,39 +185,39 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view direction="vertical" style="flex:1">
-  <!-- #endif -->
-    <page-head :title="data.title"></page-head>
-    <view class="uni-padding-wrap">
-      <enum-data :items="iconOptions" title="设置icon" item-class="radio-icon"
-        @change="radioChangeIcon"></enum-data>
-      <boolean-data :defaultValue="data.imageSelect" title="是否显示自定义图标"
-        @change="change_image_boolean"></boolean-data>
-      <boolean-data :defaultValue="data.maskSelect" title="是否显示透明蒙层-屏蔽点击事件"
-        @change="change_mask_boolean"></boolean-data>
-      <view class="uni-title uni-list-cell-padding">提示的延迟时间，默认：1500（单位毫秒）</view>
-      <view class="uni-list-cell-padding">
-        <slider @change="sliderChange" foreColor="#007AFF" :value="data.intervalSelect" :min="1500" :max="5000"
-          :show-value="true" />
-      </view>
-      <view class="uni-btn-v">
-        <button type="default" @tap="toast1Tap" id="btn-toast-default">点击弹出toast</button>
-        <button type="default" @tap="hideToast" id="btn-toast-hide">点击隐藏toast</button>
-      </view>
-      <!-- #ifdef APP -->
-      <enum-data :items="positionOptions" title="设置position，仅App生效" item-class="radio-position"
-        @change="radioChangePosition"></enum-data>
-      <button class="uni-btn uni-common-mb" type="default" @tap="toast2Tap">点击弹出设置position的toast</button>
-      <!-- #endif -->
-      <text>{{data.exeRet}}</text>
+  <page-head :title="data.title"></page-head>
+  <view class="uni-padding-wrap">
+    <enum-data :items="iconOptions" title="设置icon" item-class="radio-icon"
+      @change="radioChangeIcon"></enum-data>
+    <boolean-data :value="data.imageSelect" title="是否显示自定义图标"
+      @change="change_image_boolean"></boolean-data>
+    <boolean-data :value="data.maskSelect" title="是否显示透明蒙层-屏蔽点击事件"
+      @change="change_mask_boolean"></boolean-data>
+    <view class="uni-title uni-list-cell-padding">提示的延迟时间，默认：1500（单位毫秒）</view>
+    <view class="uni-list-cell-padding">
+      <slider @change="sliderChange" foreColor="#007AFF" :value="data.intervalSelect" :min="1500" :max="5000"
+        :show-value="true" />
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <view class="uni-btn-v">
+      <button type="default" @tap="toast1Tap" id="btn-toast-default">点击弹出toast</button>
+      <button type="default" @tap="hideToast" id="btn-toast-hide">点击隐藏toast</button>
+    </view>
+    <!-- #ifdef APP -->
+    <enum-data :items="positionOptions" title="设置position，仅App生效" item-class="radio-position"
+      @change="radioChangePosition"></enum-data>
+    <button class="uni-btn uni-common-mb" type="default" @tap="toast2Tap">点击弹出设置position的toast</button>
+    <!-- #endif -->
+    <!-- #ifdef APP-HARMONY || APP-ANDROID -->
+    <button class="uni-btn uni-common-mb" type="default" @tap="toast4Tap">显示系统toast和原生toast</button>
+    <!-- #endif -->
+    <!-- #ifdef APP-HARMONY -->
+    <button class="uni-btn uni-common-mb" type="default" @tap="hideSystemToast">关闭所有toast</button>
+    <!-- #endif -->
+    <text>{{data.exeRet}}</text>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type IconItemType = {
@@ -239,6 +239,7 @@
     position_enum: PositionItemType[];
     icon_current: number;
     icon_enum: IconItemType[];
+    onMountedToastShown: boolean;
   }
 
   // 使用reactive包装数据，避免ref数据在自动化测试中无法获取
@@ -260,10 +261,18 @@
         value: 'success',
         name: '显示成功图标',
       },
+      // #ifdef MP-ALIPAY
+      {
+        value: 'fail',
+        name: '显示错误图标',
+      },
+      // #endif
+      // #ifndef MP-ALIPAY
       {
         value: 'error',
         name: '显示错误图标',
       },
+      // #endif
       {
         value: 'loading',
         name: '显示加载图标',
@@ -273,6 +282,7 @@
         name: '不显示图标',
       },
     ],
+    onMountedToastShown: false,
   } as DataType)
 
   const iconOptions = computed(() : ItemType[] => {
@@ -305,7 +315,10 @@
     const duration = isAutoTest ? 10000 : 3000
     uni.showToast({
       title: 'onMounted 调用示例,3秒后消失',
-      duration: duration
+      duration: duration,
+      success: () => {
+        data.onMountedToastShown = true
+      }
     })
     if (!isAutoTest) {
       setTimeout(function () {
@@ -373,6 +386,45 @@
     })
   }
 
+  // #ifdef APP-HARMONY || APP-ANDROID
+  const toast4Tap = () => {
+    uni.showToast({
+      title: '系统toast',
+      position: 'bottom',
+      duration: 5000
+    })
+    uni.showToast({
+      title: '原生toast',
+      icon: 'none',
+      duration: 5000,
+      success: (res) => {
+        data.exeRet = "success:" + JSON.stringify(res)
+      },
+      fail: (res) => {
+        data.exeRet = "fail:" + JSON.stringify(res)
+      }
+    })
+  }
+  // #endif
+
+  // #ifdef APP-HARMONY
+  // 目前只有 APP-HARMONY 支持关闭系统 toast
+  const hideSystemToast = () => {
+    uni.hideToast({
+      allType: true,
+      success: (res) => {
+        data.exeRet = "success:" + JSON.stringify(res)
+      },
+      fail: (res) => {
+        data.exeRet = "fail:" + JSON.stringify(res)
+      },
+      complete: (res) => {
+        data.exeRet = "complete:" + JSON.stringify(res)
+      }
+    })
+  }
+  // #endif
+
   // #ifdef APP
   const toast2Tap = () => {
     let positionValue = data.position_enum[data.position_current].value
@@ -398,6 +450,12 @@
     data,
     toast1Tap,
     toast3Tap,
+    // #ifdef APP-HARMONY || APP-ANDROID
+    toast4Tap,
+    // #endif
+    // #ifdef APP-HARMONY
+    hideSystemToast,
+    // #endif
     // #ifdef APP
     toast2Tap,
     // #endif

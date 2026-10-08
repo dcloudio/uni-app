@@ -302,11 +302,8 @@ if (view != null && view instanceof UITextField) {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
     <page-head :title="data.title"></page-head>
-    <view class="input-page uni-common-mt uni-padding-wrap uni-theme-root" style="padding-bottom: 30px;">
+    <view class="input-page uni-common-mt uni-padding-wrap" style="padding-bottom: 30px;">
       <view>
         <view class="uni-title">
           <text class="uni-title-text">设置输入框的初始内容</text>
@@ -333,9 +330,11 @@ if (view != null && view instanceof UITextField) {
         <view class="input-wrapper">
           <input id="uni-input-type-digit" class="uni-input" type="digit" placeholder="带小数点的数字输入键盘" />
         </view>
+        <!-- #ifndef MP-ALIPAY -->
         <view class="input-wrapper">
           <input id="uni-input-type-tel" class="uni-input" :type="data.inputTypeTel" placeholder="电话输入键盘" />
         </view>
+        <!-- #endif -->
         <!-- #ifndef MP -->
         <view class="input-wrapper">
           <input id="uni-input-type-search" class="uni-input" type="search" placeholder="搜索输入键盘" />
@@ -419,6 +418,7 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title">
           <text class="uni-title-text">设置光标与键盘的距离</text>
@@ -427,6 +427,7 @@ if (view != null && view instanceof UITextField) {
           <input class="uni-input" :cursor-spacing="1000" placeholder="光标与键盘的距离为1000px" />
         </view>
       </view>
+      <!-- #endif -->
 
       <view>
         <view class="uni-title">
@@ -438,6 +439,7 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title">
           <text class="uni-title-text">confirm-type取值（不同输入法表现可能不一致）</text>
@@ -458,7 +460,9 @@ if (view != null && view instanceof UITextField) {
           <input id="uni-input-confirm-done" class="uni-input" confirmType="done" placeholder="键盘右下角按钮显示为完成" />
         </view>
       </view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title">
           <text class="uni-title-text">点击键盘右下角按钮时保持键盘不收起</text>
@@ -467,6 +471,7 @@ if (view != null && view instanceof UITextField) {
           <input class="uni-input" :confirm-hold="true" />
         </view>
       </view>
+      <!-- #endif -->
 
       <view>
         <view class="uni-title" @click="setCursor(4)">
@@ -477,6 +482,7 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title" @click="setSelection(0, 4)">
           <text class="uni-title-text">设置输入框聚焦时光标的起始位置和结束位置（点这里）</text>
@@ -486,15 +492,19 @@ if (view != null && view instanceof UITextField) {
             :selection-end="data.selectionEnd" :focus="data.selectionInputFocus" @blur="onSelectionBlurChange" />
         </view>
       </view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
-        <boolean-data :defaultValue="data.cursor_color == '#FF0000'" title="设置光标颜色为红色（Android的微信小程序非skyline下仅支持黑和绿）"
+        <boolean-data :value="data.cursor_color == '#FF0000'" title="设置光标颜色为红色（Android的微信小程序非skyline下仅支持黑和绿）"
           @change="changeCursorColor"></boolean-data>
         <view class="input-wrapper">
           <input id="uni-input-cursor-color" class="uni-input" :cursor-color="data.cursor_color" :focus="data.cursorColorInputFocus" @blur="cursorColorInputBlur" value="光标颜色" />
         </view>
       </view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title">
           <text class="uni-title-text">键盘弹起时，自动上推页面</text>
@@ -503,14 +513,17 @@ if (view != null && view instanceof UITextField) {
           <input class="uni-input" :adjust-position="true" />
         </view>
       </view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
-        <boolean-data :defaultValue="data.holdKeyboard" title="设置hold-keyboard"
+        <boolean-data :value="data.holdKeyboard" title="设置hold-keyboard"
           @change="changeHoldKeyboard"></boolean-data>
         <view class="input-wrapper">
           <input class="uni-input" :hold-keyboard="data.holdKeyboard" value="hold keyboard " />
         </view>
       </view>
+      <!-- #endif -->
 
       <view>
         <view class="uni-title">
@@ -557,6 +570,7 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title">
           <text class="uni-title-text">change事件</text>
@@ -568,6 +582,7 @@ if (view != null && view instanceof UITextField) {
           <input class="uni-input" @change="onChange" />
         </view>
       </view>
+      <!-- #endif -->
 
       <view>
         <view class="uni-title">
@@ -602,6 +617,7 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title">
           <text class="uni-title-text">同时存在 v-model 和 change事件</text>
@@ -610,14 +626,17 @@ if (view != null && view instanceof UITextField) {
           <input class="uni-input" v-model="data.demoValue2" value="123" @change="onChange" />
         </view>
       </view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
-        <boolean-data :defaultValue="data.adjustPosition" title="设置adjust-position"
+        <boolean-data :value="data.adjustPosition" title="设置adjust-position"
           @change="changeAdjustPosition"></boolean-data>
         <view class="input-wrapper">
           <input class="uni-input" :adjust-position="data.adjustPosition" />
         </view>
       </view>
+      <!-- #endif -->
 
       <view>
         <view class="uni-title">
@@ -638,15 +657,17 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view>
         <view class="uni-title">
           <text class="uni-title-text">focus时type是none，键盘是否弹出</text>
-          <boolean-data :defaultValue="false" title="显示<input />示例" @change="changeCheckedTypeNoneAndFocusCase"></boolean-data>
+          <boolean-data :value="false" title="显示<input />示例" @change="changeCheckedTypeNoneAndFocusCase"></boolean-data>
         </view>
         <view v-if="data.showTypeNoneAndFocusCase" class="input-wrapper">
           <input class="uni-input" focus="true" type="none"/>
         </view>
       </view>
+      <!-- #endif -->
 
       <view>
         <view class="uni-title">
@@ -712,6 +733,7 @@ if (view != null && view instanceof UITextField) {
         </view>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <!-- 保证这个示例在页面底部，添加新的示例时请放在上面 -->
       <view>
         <view class="uni-title">
@@ -733,6 +755,8 @@ if (view != null && view instanceof UITextField) {
             :focus="data.keyboardAdjustTargetFocus" />
         </view>
       </view>
+
+      <!-- #endif -->
 
       <text class="uni-title-text">input样式大合集</text>
       <view class="input-wrap">
@@ -766,11 +790,8 @@ if (view != null && view instanceof UITextField) {
         </navigator>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     title: string;
     firstInputFocus: boolean;

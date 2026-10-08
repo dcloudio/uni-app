@@ -61,10 +61,7 @@ min-width: <viewport-length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="uni-theme-root" style="flex-grow: 1;">
+    <view style="flex-grow: 1;">
       <view>
         <text>min-width: 250px</text>
         <view class="common" style="min-width: 250px;">
@@ -183,12 +180,9 @@ min-width: <viewport-length>;
       </view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const minWidthEnum : ItemType[] = [

@@ -61,9 +61,6 @@ font-family: <family-name>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view class="uni-padding-wrap">
       <text class="common" style="font-family: monospace">font-family: monospace</text>
 
@@ -114,12 +111,9 @@ font-family: <family-name>;
       <button type="default" @click="openUniIcon">内置字体图标uni-icon示例</button>
     </view>
     <!-- #endif -->
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const uniIcon = ref('\ue100')

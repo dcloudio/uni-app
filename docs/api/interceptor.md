@@ -75,7 +75,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const navigateToInterceptor = {
     invoke: function (options : NavigateToOptions) {
       console.log('拦截 navigateTo 接口传入参数为：', options)

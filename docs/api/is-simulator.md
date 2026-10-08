@@ -46,9 +46,6 @@ iOS平台请暂时继续使用[uni.getDeviceInfo](./get-device-info.md)
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/is-simulator/is-simulator
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <view>
       <page-head :title="'isSimulator'"></page-head>
       <view class="uni-common-mt" style="justify-content: center;align-items: center;">
@@ -58,12 +55,9 @@ iOS平台请暂时继续使用[uni.getDeviceInfo](./get-device-info.md)
         <text>\n注：有些模拟器会故意伪装为真机，此时识别可能会不准确</text>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   const isSimulator = ref(false)
   isSimulator.value = uni.isSimulator()
 </script>
@@ -101,9 +95,6 @@ iOS平台请暂时继续使用[uni.getDeviceInfo](./get-device-info.md)
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/is-simulator/is-simulator
 ```uvue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <view>
       <page-head :title="'isSimulator'"></page-head>
       <view class="uni-common-mt" style="justify-content: center;align-items: center;">
@@ -113,12 +104,9 @@ iOS平台请暂时继续使用[uni.getDeviceInfo](./get-device-info.md)
         <text>\n注：有些模拟器会故意伪装为真机，此时识别可能会不准确</text>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   const isSimulator = ref(false)
   isSimulator.value = uni.isSimulator()
 </script>

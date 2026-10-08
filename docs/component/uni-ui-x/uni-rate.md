@@ -135,7 +135,7 @@ rate组件有onChange事件，事件回调中会给出点击触发的新评分�
 	</view>
 	<!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 	type Data = {
 		vModelRateValue: number
 		rateValue: number

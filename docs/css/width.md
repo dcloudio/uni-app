@@ -60,10 +60,7 @@ width: <viewport-length>{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-  <view class="uni-theme-root" style="flex-grow: 1;">
+  <view style="flex-grow: 1;">
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
     <view>
       <text>width: 100px</text>
@@ -215,7 +212,7 @@ width: <viewport-length>{1,2};
       </view>
     </view>
 
-    <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-common-mb">
       <text>空 native-view - 无宽高，有背景色</text>
       <text class="uni-info">getPropertyValue: width={{emptyElementValues.emptyNativeViewWidth}}, height={{emptyElementValues.emptyNativeViewHeight}}</text>
@@ -244,12 +241,9 @@ width: <viewport-length>{1,2};
     </view>
     <!-- #endif -->
   </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import childWidthUvue from "./child-width.uvue"
   import { ItemType } from '@/components/enum-data/enum-data-types'
 

@@ -47,11 +47,11 @@
 
 | 合法值 |
 | :- |
-| default |
-| nativeFunctionalized |
-| browseOnly |
-| embedded |
-| chatTool |
+| "default" |
+| "nativeFunctionalized" |
+| "browseOnly" |
+| "embedded" |
+| "chatTool" |
 
 ##### hostExtraData 的属性描述
 
@@ -102,8 +102,8 @@
   </view>
 </template>
 
-<script setup lang="uts">
-  import { state } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state } from '@/store/index.ts'
 
   type DataType = {
     checked: boolean;
@@ -222,11 +222,11 @@ uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用
 
 | 合法值 |
 | :- |
-| default |
-| nativeFunctionalized |
-| browseOnly |
-| embedded |
-| chatTool |
+| "default" |
+| "nativeFunctionalized" |
+| "browseOnly" |
+| "embedded" |
+| "chatTool" |
 
 ##### hostExtraData 的属性描述
 
@@ -272,8 +272,8 @@ uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用
   </view>
 </template>
 
-<script setup lang="uts">
-import { state } from '@/store/index.uts'
+<script setup lang="ts">
+import { state } from '@/store/index.ts'
 
 type DataType = {
   enterOptionsString: string,

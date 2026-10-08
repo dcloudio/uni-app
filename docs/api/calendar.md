@@ -46,10 +46,10 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 'day' | Web: x; 微信小程序: √; 支付宝小程序: x; Android: 5.09; iOS: 5.09; HarmonyOS: 5.09 | 每天重复 |
-| week | Web: x; 支付宝小程序: x | 每周重复 |
-| month | Web: x; 支付宝小程序: x | 每月重复。该模式日期不能大于 28 日 |
-| year | Web: x; 支付宝小程序: x | 每年重复 |
+| "day" | Web: x; 支付宝小程序: x | 每天重复 |
+| "week" | Web: x; 支付宝小程序: x | 每周重复 |
+| "month" | Web: x; 支付宝小程序: x | 每月重复。该模式日期不能大于 28 日 |
+| "year" | Web: x; 支付宝小程序: x | 每年重复 |
 
 #### AddPhoneRepeatCalendarSuccess 的属性值 @addphonerepeatcalendarsuccess-values 
 
@@ -246,7 +246,7 @@
 			</view>
 
 			<view class="field-group">
-				<boolean-data :defaultValue="allDay" title="全天 allDay" @change="handleAllDayChange"></boolean-data>
+				<boolean-data :value="allDay" title="全天 allDay" @change="handleAllDayChange"></boolean-data>
 			</view>
 
 			<view class="field-group">
@@ -276,7 +276,7 @@
 			</view>
 
 			<view class="field-group">
-				<boolean-data :defaultValue="alarm" title="提醒 alarm" @change="handleAlarmChange"></boolean-data>
+				<boolean-data :value="alarm" title="提醒 alarm" @change="handleAlarmChange"></boolean-data>
 			</view>
 
 			<view class="field-group">
@@ -330,7 +330,7 @@
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	type RepeatOptionValue = 'none' | CalendarRepeatInterval
 
 	const lastAction = ref<string>('等待调用')

@@ -135,9 +135,6 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <page-head :title="data.title"></page-head>
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">普通选择器</text>
@@ -282,13 +279,10 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       </view>
     </view>
 
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifndef MP-WEIXIN || MP-ALIPAY
-  import { cityData } from './city.uts'
+  import { cityData } from './city.ts'
   // #endif
 
   type DataType = {
@@ -546,11 +540,11 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
   // #endif
 
   const bindDayDateChange = (e : UniPickerChangeEvent) => {
-    data.dayDate = e.detail.value as string
+    data.dayDate = e.detail.value.split('/').join('-')
   }
 
   const bindMonthDateChange = (e : UniPickerChangeEvent) => {
-    data.monthDate = e.detail.value as string
+    data.monthDate = e.detail.value.split('/').join('-')
   }
 
   const bindYearDateChange = (e : UniPickerChangeEvent) => {

@@ -58,7 +58,7 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
 >示例
 ```vue
 <template>
-  <view class="page-root uni-theme-root">
+  <view class="page-root">
     <view class="preview-panel">
       <view class="preview-header">
         <text class="uni-title-text">editor 属性示例</text>
@@ -135,7 +135,7 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
           <text class="uni-title-text">可动态修改属性</text>
         </view>
       </view>
-      <boolean-data :defaultValue="data.readOnly" title="read-only：设置编辑器为只读，可动态修改" @change="onReadOnlyChange"></boolean-data>
+      <boolean-data :value="data.readOnly" title="read-only：设置编辑器为只读，可动态修改" @change="onReadOnlyChange"></boolean-data>
       <!-- #ifndef MP -->
       <enum-data :items="data.typeItems" title="type：null | none，控制聚焦时是否弹出键盘" @change="onTypeChange"></enum-data>
       <!-- #endif -->
@@ -147,9 +147,9 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
         <text class="uni-subtitle-text">placeholder 与 show-img-* 调整后不会直接作用到当前 editor，请点击下方按钮重建后查看。</text>
       </view>
       <input-data :defaultValue="data.draftPlaceholder" title="placeholder：提示信息，不可动态修改" type="text" @confirm="onPlaceholderChange"></input-data>
-      <boolean-data :defaultValue="data.draftShowImgSize" title="show-img-size：点击图片时显示图片大小控件，不可动态修改" @change="onDraftShowImgSizeChange"></boolean-data>
-      <boolean-data :defaultValue="data.draftShowImgToolbar" title="show-img-toolbar：点击图片时显示工具栏控件，不可动态修改" @change="onDraftShowImgToolbarChange"></boolean-data>
-      <boolean-data :defaultValue="data.draftShowImgResize" title="show-img-resize：点击图片时显示修改尺寸控件，不可动态修改" @change="onDraftShowImgResizeChange"></boolean-data>
+      <boolean-data :value="data.draftShowImgSize" title="show-img-size：点击图片时显示图片大小控件，不可动态修改" @change="onDraftShowImgSizeChange"></boolean-data>
+      <boolean-data :value="data.draftShowImgToolbar" title="show-img-toolbar：点击图片时显示工具栏控件，不可动态修改" @change="onDraftShowImgToolbarChange"></boolean-data>
+      <boolean-data :value="data.draftShowImgResize" title="show-img-resize：点击图片时显示修改尺寸控件，不可动态修改" @change="onDraftShowImgResizeChange"></boolean-data>
 
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-title">
@@ -194,7 +194,7 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import { ItemType } from '@/components/enum-data/enum-data-types'
 
 type EditorPropsPageData = {

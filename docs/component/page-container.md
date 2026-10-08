@@ -79,7 +79,7 @@ page-container 的特点：
 >示例
 ```vue
 <template>
-  <scroll-view class="uni-theme-root" style="flex: 1">
+  <scroll-view style="flex: 1">
     <page-intro
       content="本页演示 page-container 页面容器，用于在页面内创建弹出层效果，支持拦截返回操作：顶部/底部/左侧/右侧/居中弹出、圆角、遮罩与透明蒙层、下滑关闭等能力，通过按钮触发不同展示。"></page-intro>
     <view class="uni-padding-wrap uni-common-mt">
@@ -162,17 +162,21 @@ page-container 的特点：
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title uni-common-mt">
         <text class="uni-title-text"> 其他方向滑动关闭 </text>
       </view>
       <view>
+        <!-- #ifndef MP -->
         <button @click="showSlideClose('left')">左滑关闭</button>
+        <!-- #endif -->
         <button class="mt-5" @click="showSlideClose('right')">右滑关闭</button>
         <button class="mt-5" @click="showSlideClose('top')">上滑关闭</button>
         <text class="slider-down-info">提示: close-on-slide-down=true 时，关闭方向由 position 决定</text>
       </view>
     </view>
+    <!-- #endif -->
 
     <!-- #ifndef MP -->
     <view class="uni-padding-wrap uni-common-mt" style="margin-bottom: 30px;">
@@ -264,7 +268,7 @@ page-container 的特点：
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const containerShow = ref<boolean>(false)
   const containerRound = ref<boolean>(false)
   const containerPosition = ref<string>('bottom')
@@ -300,6 +304,9 @@ page-container 的特点：
     containerOverlay.value = true
     containerCloseOnSlideDown.value = false
     containerOverlayStyle.value = ''
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value = 'z-index: 0;'
+    // #endif
     containerCustomStyle.value = ''
     enableScrollThrough.value = false
   }
@@ -340,6 +347,9 @@ page-container 的特点：
     resetConfig()
     containerOverlay.value = true
     containerOverlayStyle.value = 'background-color: rgba(0, 0, 0, 0);'
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value += ' z-index: 0;'
+    // #endif
     containerTitle.value = '透明蒙层'
     containerContent.value = '蒙层开启但完全透明，可以点击蒙层区域关闭'
     containerShow.value = true
@@ -350,6 +360,9 @@ page-container 的特点：
     containerOverlay.value = true
     containerPosition.value = 'bottom'
     containerOverlayStyle.value = 'background-color: rgba(76, 175, 80, 0.3);'
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value += ' z-index: 0;'
+    // #endif
     containerTitle.value = '绿色半透明蒙层'
     containerContent.value = '蒙层开启但为绿色半透明，可以点击蒙层区域关闭'
     containerShow.value = true
@@ -360,6 +373,9 @@ page-container 的特点：
     containerOverlay.value = true
     containerPosition.value = 'bottom'
     containerOverlayStyle.value = 'background-color: rgba(0, 0, 0, 0.3); pointer-events: none;'
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value += ' z-index: 0;'
+    // #endif
     containerTitle.value = 'overlay-style: pointer-events: none'
     containerContent.value = '蒙层已开启并设置 pointer-events: none，点击蒙层区域不会关闭容器'
     containerShow.value = true

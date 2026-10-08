@@ -172,9 +172,6 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <page-head :title="data.title"></page-head>
       <page-intro content="uni.showModal 用于弹出模态对话框，可配置标题、内容、是否显示取消/确认按钮及文案、是否带输入框等。本页演示单次/多次弹出、延迟关闭、标题样式、长文案、非法颜色与超长按钮文案等能力，并展示 success/fail/complete 回调结果。"></page-intro>
@@ -188,15 +185,15 @@
         </radio-group>
       </view>
       <view class="uni-list">
-        <boolean-data :defaultValue="data.emptyContent" title="提示内容为空" @change="emptyContentChange"></boolean-data>
-        <boolean-data :defaultValue="data.showLongContent" title="是否显示过长文字" @change="showLongContentChange"></boolean-data>
-        <boolean-data :defaultValue="data.showCancelSelect" title="是否显示取消按钮" @change="showCancelChange"></boolean-data>
-        <boolean-data :defaultValue="data.cancelTextSelect" title="定制取消文案" @change="cancelTextChange"></boolean-data>
-        <boolean-data :defaultValue="data.confirmTextSelect" title="定制确认文案" @change="confirmTextChange"></boolean-data>
-        <boolean-data :defaultValue="data.illegalColorSelect" title="测试非法的颜色" @change="illegalColorChange"></boolean-data>
-        <boolean-data :defaultValue="data.illegalButtonTextSelect" title="测试超长的按钮文本" @change="illegalButtonTextChange"></boolean-data>
-        <boolean-data :defaultValue="data.editableSelect" title="是否显示输入框" @change="editableChange"></boolean-data>
-        <boolean-data :defaultValue="data.placeholderTextSelect" title="是否定制输入提示词" @change="placeholderTextChange"></boolean-data>
+        <boolean-data :value="data.emptyContent" title="提示内容为空" @change="emptyContentChange"></boolean-data>
+        <boolean-data :value="data.showLongContent" title="是否显示过长文字" @change="showLongContentChange"></boolean-data>
+        <boolean-data :value="data.showCancelSelect" title="是否显示取消按钮" @change="showCancelChange"></boolean-data>
+        <boolean-data :value="data.cancelTextSelect" title="定制取消文案" @change="cancelTextChange"></boolean-data>
+        <boolean-data :value="data.confirmTextSelect" title="定制确认文案" @change="confirmTextChange"></boolean-data>
+        <boolean-data :value="data.illegalColorSelect" title="测试非法的颜色" @change="illegalColorChange"></boolean-data>
+        <boolean-data :value="data.illegalButtonTextSelect" title="测试超长的按钮文本" @change="illegalButtonTextChange"></boolean-data>
+        <boolean-data :value="data.editableSelect" title="是否显示输入框" @change="editableChange"></boolean-data>
+        <boolean-data :value="data.placeholderTextSelect" title="是否定制输入提示词" @change="placeholderTextChange"></boolean-data>
       </view>
       <view class="uni-padding-wrap uni-common-mt">
         <text>complete 执行结果：{{ data.timesShowRet }}</text>
@@ -234,12 +231,9 @@
     </view>
 
     <bottom-safe-area />
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type ItemType = {
     value : string,
     name : string,

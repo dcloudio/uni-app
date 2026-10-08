@@ -38,8 +38,8 @@ App平台暂未提供全局的uni监听API，而是需要在页面生命周期on
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| landscape | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| portrait | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| "landscape" | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| "portrait" | 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 
 

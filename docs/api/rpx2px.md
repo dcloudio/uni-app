@@ -43,30 +43,24 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view class="page">
-      <page-head :title="data.title"></page-head>
-      <view>
-        <view class="item">
-          <text class="item-k">输入:</text>
-          <text class="item-v">{{data.rpxValue}}rpx</text>
-        </view>
-        <view class="item">
-          <text class="item-k">返回:</text>
-          <text class="item-v">{{data.pxValue}}px</text>
-        </view>
+  <view class="page">
+    <page-head :title="data.title"></page-head>
+    <view>
+      <view class="item">
+        <text class="item-k">输入:</text>
+        <text class="item-v">{{data.rpxValue}}rpx</text>
       </view>
-      <view>
-        <button id="convert" @click="rpx2px">转换</button>
+      <view class="item">
+        <text class="item-k">返回:</text>
+        <text class="item-v">{{data.pxValue}}px</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <view>
+      <button id="convert" @click="rpx2px">转换</button>
+    </view>
+  </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     title: string;
     rpxValue: number;

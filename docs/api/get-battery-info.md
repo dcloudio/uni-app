@@ -53,7 +53,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     level: number;
     isCharging: boolean;

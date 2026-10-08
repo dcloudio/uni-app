@@ -45,15 +45,15 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | "auto" | Web: x | 自动 |
-| portrait | Web: x | 竖屏显示 |
-| landscape | Web: x | 横屏显示 |
+| "portrait" | Web: x | 竖屏显示 |
+| "landscape" | Web: x | 横屏显示 |
 
 ##### camera 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| front | Web: x | 前置摄像头 |
-| back | Web: x | 后置摄像头 |
+| "front" | Web: x | 前置摄像头 |
+| "back" | Web: x | 后置摄像头 |
 
 #### ChooseMediaSuccess 的属性值 @choosemediasuccess-values 
 
@@ -79,16 +79,16 @@
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| 'image' | Web: x |
-| video | Web: x |
+| "image" | Web: x |
+| "video" | Web: x |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| image | Web: x |
-| video | Web: x |
-| mix | Web: x |
+| "image" | Web: x |
+| "video" | Web: x |
+| "mix" | Web: x |
 
 #### ChooseMediaFail 的属性值 @choosemediafail-values 
 
@@ -141,90 +141,84 @@ Android端返回的路径是content协议。
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/choose-media/choose-media
 ```uvue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view uni-theme-root">
-  <!-- #endif -->
-    <view class="uni-theme-root">
-      <page-head :title="title"></page-head>
-      <view class="uni-common-mt">
-        <view class="uni-list">
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <view class="uni-list">
 
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left uni-label">
-              <text class="media-label">来源</text>
-            </view>
-            <view class="uni-list-cell-right" @click="chooseMediaSource">
-              <text class="click-t">{{sourceTypes[sourceTypeIndex].title}}</text>
-            </view>
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left uni-label">
+            <text class="media-label">来源</text>
           </view>
-
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left uni-label">
-              <text class="media-label">方式</text>
-            </view>
-            <view class="uni-list-cell-right" @click="chooseMediaType">
-              <text class="click-t">{{(mediaTypes[mediaTypeIndex] as ChooseSource).title}}</text>
-            </view>
-          </view>
-
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left uni-label">
-              <text class="media-label">数量限制</text>
-            </view>
-            <view class="uni-list-cell-right">
-              <input class="click-t" ref="refCountInput" :value="count" type="number" :maxlength="1" @blur="chooseMediaCount"/>
-            </view>
-          </view>
-
-          <!-- #ifdef APP-ANDROID -->
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left uni-label">
-              <text class="media-label">屏幕方向</text>
-            </view>
-            <view class="uni-list-cell-right" @click="chooseOrientationType">
-              <text class="click-t">{{orientationTypes[orientationTypeIndex].title}}</text>
-            </view>
-          </view>
-          <!-- #endif -->
-
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left uni-label">
-              <text class="media-label">摄像头</text>
-            </view>
-            <view class="uni-list-cell-right" @click="chooseCameraType">
-              <text class="click-t">{{cameraTypes[cameraTypeIndex].title}}</text>
-            </view>
+          <view class="uni-list-cell-right" @click="chooseMediaSource">
+            <text class="click-t">{{sourceTypes[sourceTypeIndex].title}}</text>
           </view>
         </view>
-        <!-- #ifdef APP-IOS -->
-        <input-data title="最长拍摄时间，单位秒" defaultValue="10" type="number" @confirm="onMaxDurationConfirm"></input-data>
-        <!-- #endif -->
-        <view class="uni-list list-pd" style="padding: 15px;">
-          <view class="uni-row" style="margin-bottom: 10px;">
-            <view class="uni-list-cell-left">
-              <text class="media-label">点击预览</text>
-            </view>
-            <view style="margin-left: auto;">
-              <text class="click-t">{{mediaList.length}}/{{count}}</text>
-            </view>
+
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left uni-label">
+            <text class="media-label">方式</text>
           </view>
-          <view class="uni-row" style="flex-wrap: wrap;">
-            <view v-for="(file,index) in mediaList" :key="index" class="uni-uploader__input-box" style="border: 0;">
-              <image style="width: 104px; height: 104px;" :src="file.imagePath" @tap="previewMedia(index)">
-              </image>
-              <image src="/static/plus.png" class="image-remove" @click="removeMedia(index)"></image>
-            </view>
-            <image class="uni-uploader__input-box" @tap="chooseMedia" src="/static/plus.png"></image>
+          <view class="uni-list-cell-right" @click="chooseMediaType">
+            <text class="click-t">{{(mediaTypes[mediaTypeIndex] as ChooseSource).title}}</text>
+          </view>
+        </view>
+
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left uni-label">
+            <text class="media-label">数量限制</text>
+          </view>
+          <view class="uni-list-cell-right">
+            <input class="click-t" ref="refCountInput" :value="count" type="number" :maxlength="1" @blur="chooseMediaCount"/>
+          </view>
+        </view>
+
+        <!-- #ifdef APP-ANDROID -->
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left uni-label">
+            <text class="media-label">屏幕方向</text>
+          </view>
+          <view class="uni-list-cell-right" @click="chooseOrientationType">
+            <text class="click-t">{{orientationTypes[orientationTypeIndex].title}}</text>
+          </view>
+        </view>
+        <!-- #endif -->
+
+        <view class="uni-list-cell cell-pd">
+          <view class="uni-list-cell-left uni-label">
+            <text class="media-label">摄像头</text>
+          </view>
+          <view class="uni-list-cell-right" @click="chooseCameraType">
+            <text class="click-t">{{cameraTypes[cameraTypeIndex].title}}</text>
           </view>
         </view>
       </view>
+      <!-- #ifdef APP-IOS -->
+      <input-data title="最长拍摄时间，单位秒" defaultValue="10" type="number" @confirm="onMaxDurationConfirm"></input-data>
+      <!-- #endif -->
+      <view class="uni-list list-pd" style="padding: 15px;">
+        <view class="uni-row" style="margin-bottom: 10px;">
+          <view class="uni-list-cell-left">
+            <text class="media-label">点击预览</text>
+          </view>
+          <view style="margin-left: auto;">
+            <text class="click-t">{{mediaList.length}}/{{count}}</text>
+          </view>
+        </view>
+        <view class="uni-row" style="flex-wrap: wrap;">
+          <view v-for="(file,index) in mediaList" :key="index" class="uni-uploader__input-box" style="border: 0;">
+            <image style="width: 104px; height: 104px;" :src="file.imagePath" @tap="previewMedia(index)">
+            </image>
+            <image src="/static/plus.png" class="image-remove" @click="removeMedia(index)"></image>
+          </view>
+          <image class="uni-uploader__input-box" @tap="chooseMedia" src="/static/plus.png"></image>
+        </view>
+      </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type FileSource = {
     imagePath : string;
     filePath : string;

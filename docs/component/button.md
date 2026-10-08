@@ -138,7 +138,7 @@
 
 >示例
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type DataType = {
@@ -270,10 +270,10 @@
   </view>
   <scroll-view style="flex: 1">
     <view class="content">
-      <boolean-data :defaultValue="false" title="按钮是否镂空，背景色透明" @change="change_plain_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="修改默认样式和点击效果(高优先)" @change="change_default_style"></boolean-data>
-      <boolean-data :defaultValue="false" title="显示loading（限小程序和蒸汽模式的App）" @change="change_loading"></boolean-data>
+      <boolean-data :value="false" title="按钮是否镂空，背景色透明" @change="change_plain_boolean"></boolean-data>
+      <boolean-data :value="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <boolean-data :value="false" title="修改默认样式和点击效果(高优先)" @change="change_default_style"></boolean-data>
+      <boolean-data :value="false" title="显示loading（限小程序和蒸汽模式的App）" @change="change_loading"></boolean-data>
       <enum-data :items="data.size_enum" title="按钮的大小" @change="radio_change_size_enum"></enum-data>
       <enum-data :items="data.type_enum" title="按钮的类型" @change="radio_change_type_enum"></enum-data>
       <input-data :defaultValue="data.text" title="按钮的文案" type="text" @confirm="confirm_text_input"></input-data>
@@ -286,7 +286,7 @@
       <!-- #endif -->
     </view>
 
-    <!-- #ifndef MP-ALIPAY -->
+    <!-- #ifdef APP && VUE3-VAPOR -->
       <navigator url="/pages/template/button-100/button-100">
         <button>组件性能测试</button>
       </navigator>

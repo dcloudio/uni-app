@@ -57,10 +57,7 @@ max-height: <viewport-length>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="css-page uni-theme-root" style="flex-grow: 1;">
+    <view class="css-page" style="flex-grow: 1;">
       <view>
         <text class="theme-label">max-height: 100px</text>
         <view class="common" style="max-height: 100px;">
@@ -179,12 +176,9 @@ max-height: <viewport-length>;
       </view>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const maxHeightEnum : ItemType[] = [

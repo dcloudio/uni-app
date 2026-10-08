@@ -35,16 +35,16 @@
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| 'up' | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.18; iOS: 4.25 |
-| down |   |
-| left |   |
-| right |   |
-| up-mirrored |   |
-| down-mirrored |   |
-| left-mirrored |   |
-| right-mirrored |   |
+| 合法值 |
+| :- |
+| "up" |
+| "down" |
+| "left" |
+| "right" |
+| "up-mirrored" |
+| "down-mirrored" |
+| "left-mirrored" |
+| "right-mirrored" |
 
 #### GetImageInfoFail 的属性值 @getimageinfofail-values 
 
@@ -105,9 +105,6 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
       <view class="uni-title">
@@ -129,12 +126,9 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
         <button type="primary" @click="chooseImage">拍摄照片或从相册中选择照片</button>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type TestStateType = {
     imageInfoForTest: UTSJSONObject | null,
     autoTest: boolean

@@ -55,9 +55,9 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| MD5 | Web: x |
-| HMAC-SHA256 | Web: x |
-| RSA | Web: x | 
+| "MD5" | Web: x |
+| "HMAC-SHA256" | Web: x |
+| "RSA" | Web: x | 
 
 #### RequestPaymentSuccess 的属性值 @requestpaymentsuccess-values 
 
@@ -79,19 +79,19 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
+| 700000 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 其它支付错误。 |
 | 700600 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 正在处理中，支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态 |
-| 701100 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单支付失败。 |
-| 701110 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 重复请求。 |
 | 700601 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 用户中途取消。 |
 | 700602 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 网络连接出错。 |
 | 700603 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态。 |
-| 700000 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 其它支付错误。 |
 | 700604 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 微信没有安装。 |
 | 700605 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 服务供应商获取失败。 |
 | 700607 | Web: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 支付未完成。 |
 | 700608 | Web: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 服务商返回参数错误。 |
 | 700800 | Web: x; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的URL Scheme。 |
 | 700801 | Web: x; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的Universal Link。 |
+| 701100 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单支付失败。 |
+| 701110 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 重复请求。 |
 
 
 ### orderInfo参数说明
@@ -251,7 +251,7 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   export type PayItem = { id: string; name: string; provider?: UniProvider };
 
   type DataType = {

@@ -74,9 +74,6 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <template v-if="autoTestData.begin">
       <view>
         <text id="testText"
@@ -138,12 +135,9 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
         <enum-data :items="lineHeightEnum" title="line-height 枚举值" @change="radioChangeLineHeight" :compact="true"></enum-data>
         <input-data :defaultValue="data.lineHeight" title="line-height 自定义值" type="text" @confirm="inputChangeLineHeight"></input-data>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const lineHeightEnum: ItemType[] = [

@@ -68,7 +68,7 @@
 >示例
 ```vue
 <template>
-  <list-view :scroll-y="true" class="page uni-theme-root" bounces="false" show-scrollbar=false :scroll-top="data.scroll_top_input"
+  <list-view :scroll-y="true" class="page" bounces="false" show-scrollbar=false :scroll-top="data.scroll_top_input"
     :refresher-enabled="data.refresher_enabled_boolean" :refresher-triggered="data.refresher_triggered_boolean"
     @refresherrefresh="list_view_refresherrefresh">
     <list-item type=1>
@@ -101,7 +101,7 @@
   </list-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
     sift_item: string[];
     list_item: string[];

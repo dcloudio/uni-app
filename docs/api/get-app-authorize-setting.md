@@ -50,124 +50,124 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | Android平台：表示没有配置[相册相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相册权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | Android平台：表示没有配置[相册相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相册权限描述 |
 
 ##### bluetoothAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请蓝牙相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | Android平台：表示没有配置[蓝牙相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置蓝牙权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请蓝牙相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | Android平台：表示没有配置[蓝牙相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置蓝牙权限描述 |
 
 ##### cameraAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请摄像头相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | Android平台：表示没有配置 `android.permission.CAMERA` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相机权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请摄像头相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | Android平台：表示没有配置 `android.permission.CAMERA` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相机权限描述 |
 
 ##### locationAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请定位相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | Android平台：表示没有配置 `android.permission.ACCESS_COARSE_LOCATION` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置定位权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请定位相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | Android平台：表示没有配置 `android.permission.ACCESS_COARSE_LOCATION` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置定位权限描述 |
 
 ##### locationAccuracy 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| reduced | Web: x | 模糊定位 |
-| full | Web: x | 精准定位 |
-| unsupported | Web: x | 不支持（包括用户拒绝定位权限和没有包含定位权限描述） |
+| "reduced" | Web: x | 模糊定位 |
+| "full" | Web: x | 精准定位 |
+| "unsupported" | Web: x | 不支持（包括用户拒绝定位权限和没有包含定位权限描述） |
 
 ##### microphoneAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请麦克风相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | Android平台：表示没有配置 `android.permission.RECORD_AUDIO` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置麦克风权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请麦克风相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | Android平台：表示没有配置 `android.permission.RECORD_AUDIO` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置麦克风权限描述 |
 
 ##### notificationAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请通知相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | Android平台没有该值；iOS平台：没有包含推送权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请通知相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | Android平台没有该值；iOS平台：没有包含推送权限描述 |
 
 ##### notificationAlertAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | 当前应用没有配置推送权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | 当前应用没有配置推送权限描述 |
 
 ##### notificationBadgeAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | 当前应用没有配置推送权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | 当前应用没有配置推送权限描述 |
 
 ##### notificationSoundAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
-| config error | Web: x | 当前应用没有配置推送权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
+| "config error" | Web: x | 当前应用没有配置推送权限描述 |
 
 ##### phoneCalendarAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
-| config error | Web: x | 当前应用没有配置读写日历权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
+| "config error" | Web: x | 当前应用没有配置读写日历权限描述 |
 
 ##### readPhoneCalendarAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权。 |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
-| config error | Web: x | 当前应用没有配置读日历权限描述 |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权。 |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
+| "config error" | Web: x | 当前应用没有配置读日历权限描述 |
 
 ##### writePhoneCalendarAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
 
 ##### pasteboardAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| authorized | Web: x | 已经获得授权，无需再次请求授权 |
-| denied | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
-| not determined | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； | 
+| "authorized" | Web: x | 已经获得授权，无需再次请求授权 |
+| "denied" | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
+| "not determined" | Web: x | 尚未请求授权，会在App下一次调用系统相应权限时请求； | 
 
 
 ### 示例
@@ -180,115 +180,125 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/get-app-authorize-setting/get-app-authorize-setting
 ```uvue
 <template>
-  <view class="uni-theme-root">
-  <page-head :title="title"></page-head>
-  <view class="uni-common-mt">
-    <view class="uni-list">
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用相册</text></view>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <view class="uni-list">
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用相册</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.albumAuthorized" />
+          </view>
         </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.albumAuthorized" />
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用蓝牙</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.bluetoothAuthorized" />
+          </view>
         </view>
-      </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用蓝牙</text></view>
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用摄像头</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.cameraAuthorized" />
+          </view>
         </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothAuthorized" />
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用定位</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.locationAuthorized" />
+          </view>
         </view>
-      </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用摄像头</text></view>
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">定位准确度</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.locationAccuracy" />
+          </view>
         </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.cameraAuthorized" />
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用麦克风</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.microphoneAuthorized" />
+          </view>
         </view>
-      </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用定位</text></view>
-        </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationAuthorized" />
-        </view>
-      </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">定位准确度</text></view>
-        </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.locationAccuracy" />
-        </view>
-      </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权使用麦克风</text></view>
-        </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.microphoneAuthorized" />
-        </view>
-      </view>
 
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权通知</text></view>
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否授权通知</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.notificationAuthorized" />
+          </view>
         </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationAuthorized" />
+        <!-- #ifdef APP-IOS -->
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有提醒</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.notificationAlertAuthorized" />
+          </view>
         </view>
-      </view>
-      <!-- #ifdef APP-IOS -->
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有提醒</text></view>
-        </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationAlertAuthorized" />
-        </view>
-      </view>
 
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有标记</text></view>
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有标记</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.notificationBadgeAuthorized" />
+          </view>
         </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationBadgeAuthorized" />
+        <view class="uni-list-cell">
+          <view class="uni-pd">
+            <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有声音</text></view>
+          </view>
+          <view class="uni-list-cell-db">
+            <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true"
+              placeholder="未获取" :value="data.notificationSoundAuthorized" />
+          </view>
+        </view>
+        <!-- #endif -->
+      </view>
+      <view class="uni-padding-wrap">
+        <view class="uni-btn-v">
+          <button type="primary" @tap="getAppAuthorizeSetting">获取App授权设置</button>
         </view>
       </view>
-      <view class="uni-list-cell">
-        <view class="uni-pd">
-          <view class="uni-label" style="width:180px;"><text class="system-info-text">是否允许通知带有声音</text></view>
-        </view>
-        <view class="uni-list-cell-db">
-          <input class="system-info-input" placeholder-class="system-info-placeholder" type="text" :disabled="true" placeholder="未获取" :value="data.notificationSoundAuthorized" />
-        </view>
-      </view>
-      <!-- #endif -->
     </view>
-    <view class="uni-padding-wrap">
-      <view class="uni-btn-v">
-        <button type="primary" @tap="getAppAuthorizeSetting">获取App授权设置</button>
-      </view>
-    </view>
-  </view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   type DataType = {
-    cameraAuthorized: string;
-    albumAuthorized: string;
-    locationAuthorized: string;
-    locationAccuracy: string;
-    microphoneAuthorized: string;
-    bluetoothAuthorized: string;
-    notificationAuthorized: string;
-    notificationAlertAuthorized: string;
-    notificationBadgeAuthorized: string;
-    notificationSoundAuthorized: string;
+    cameraAuthorized : string;
+    albumAuthorized : string;
+    locationAuthorized : string;
+    locationAccuracy : string;
+    microphoneAuthorized : string;
+    bluetoothAuthorized : string;
+    notificationAuthorized : string;
+    notificationAlertAuthorized : string;
+    notificationBadgeAuthorized : string;
+    notificationSoundAuthorized : string;
   }
 
   const title = ref('getAppAuthorizeSetting')
@@ -320,7 +330,6 @@
     data.notificationSoundAuthorized = res.notificationSoundAuthorized;
     // #endif
   }
-
 </script>
 
 <style>
@@ -328,9 +337,24 @@
     padding-left: 15px;
   }
 
+  .uni-list-cell {
+    justify-content: flex-start;
+  }
+
+  .uni-list-cell-db {
+    flex: 1;
+  }
+
   .system-info-text,
   .system-info-input {
     color: var(--text-color, #333333);
+  }
+
+  .system-info-input {
+    height: 24px;
+    padding: 0;
+    border-width: 0;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .system-info-placeholder {

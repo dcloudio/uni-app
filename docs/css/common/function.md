@@ -54,7 +54,7 @@ App平台 VDOM模式注意事项：
 >示例
 ```vue
 <template>
-  <view class="page uni-theme-root">
+  <view class="page">
     <view class="status-bar-height">
       <text class="light-label">通过var(--status-bar-height)获取状态栏高度</text>
     </view>
@@ -89,7 +89,7 @@ App平台 VDOM模式注意事项：
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const statusBarHeight = ref(0)
   const statusBarHeight2 = ref(0)
@@ -98,9 +98,7 @@ App平台 VDOM模式注意事项：
 
   onReady(() => {
     statusBarHeight.value = uni.getWindowInfo().statusBarHeight
-    // #ifndef MP-WEIXIN
     statusBarHeight2.value = instance?.proxy?.$page?.statusBarHeight ?? 0
-    // #endif
   })
 </script>
 
@@ -260,7 +258,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 	const safeareaInsetTop = ref(0)
 	const safeareaInsetLeft = ref(0)
@@ -722,9 +720,12 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/function/calc.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/function/calc.uvue) 
 >
 > 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+
+::: preview
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/CSS/function/calc
 ```uvue
 <template>
-  <view ref="pageRef" class="page uni-theme-root">
+  <view ref="pageRef" class="page">
     <view class="calc-style-test">
       <text class="calc-test-label">width: {{ calcMode ? 'calc(50% / 2 + 24px)' : '375rpx' }}; height: calc((12px + 8px) * 2);</text>
       <view class="track ">
@@ -835,10 +836,63 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
         <text class="case-text">opacity</text>
       </view>
     </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">hover-class: width/height/opacity 使用 calc()</text>
+      <view class="calc-hover-box" hover-class="calc-hover-class" :hover-stay-time="1000">
+        <text class="case-text">hover</text>
+      </view>
+    </view>
+
+    <view v-if="jestCalcTestVisible" class="jest-calc-test-suite">
+      <view class="jest-calc-test-stage">
+        <view class="jest-calc-target" :style="{
+          width: jestCalcTestWidth,
+          height: 'calc((12px + 8px) * 2)',
+          paddingTop: 'calc(6px + 4px)',
+          paddingRight: 'calc(5px * 2)',
+          paddingBottom: 'calc(20px / 2)',
+          paddingLeft: 'calc(var(--calc-jest-base) - 2px)',
+          marginTop: 'calc(var(--calc-jest-base) + 2px)',
+          marginRight: 'calc(8px + 4px)',
+          marginBottom: 'calc(24px / 2)',
+          marginLeft: 'calc((4px + 8px))'
+        }">
+          <text class="jest-calc-test-text">calc</text>
+        </view>
+        <view class="jest-calc-flex-row">
+          <view ref="jestFlexBasisRef" class="jest-calc-flex-basis"></view>
+        </view>
+        <view ref="jestBorderRef" class="jest-calc-test-box jest-calc-border"></view>
+        <view ref="jestBorderTopRef" class="jest-calc-test-box jest-calc-border-top"></view>
+        <view ref="jestBorderRightRef" class="jest-calc-test-box jest-calc-border-right"></view>
+        <view ref="jestBorderBottomRef" class="jest-calc-test-box jest-calc-border-bottom"></view>
+        <view ref="jestBorderLeftRef" class="jest-calc-test-box jest-calc-border-left"></view>
+        <view ref="jestBorderWidthRef" class="jest-calc-test-box jest-calc-border-width"></view>
+        <view ref="jestBorderTopWidthRef" class="jest-calc-test-box jest-calc-border-top-width"></view>
+        <view ref="jestBorderRightWidthRef" class="jest-calc-test-box jest-calc-border-right-width"></view>
+        <view ref="jestBorderBottomWidthRef" class="jest-calc-test-box jest-calc-border-bottom-width"></view>
+        <view ref="jestBorderLeftWidthRef" class="jest-calc-test-box jest-calc-border-left-width"></view>
+        <view ref="jestBorderRadiusRef" class="jest-calc-test-box jest-calc-border-radius"></view>
+        <view ref="jestBorderTopLeftRadiusRef" class="jest-calc-test-box jest-calc-border-top-left-radius"></view>
+        <view ref="jestBorderTopRightRadiusRef" class="jest-calc-test-box jest-calc-border-top-right-radius"></view>
+        <view ref="jestBorderBottomRightRadiusRef" class="jest-calc-test-box jest-calc-border-bottom-right-radius"></view>
+        <view ref="jestBorderBottomLeftRadiusRef" class="jest-calc-test-box jest-calc-border-bottom-left-radius"></view>
+        <view ref="jestTransformRef" class="jest-calc-test-box jest-calc-transform"></view>
+        <view ref="jestTransformOriginRef" class="jest-calc-test-box jest-calc-transform-origin"></view>
+        <view ref="jestBoxShadowRef" class="jest-calc-test-box jest-calc-box-shadow"></view>
+        <text ref="jestTextShadowRef" class="jest-calc-text-shadow">text shadow</text>
+        <view class="jest-calc-backdrop-stage">
+          <view class="jest-calc-backdrop-color"></view>
+          <view ref="jestBackdropFilterRef" class="jest-calc-backdrop-filter"></view>
+        </view>
+        <view ref="jestOpacityRef" class="jest-calc-test-box jest-calc-opacity"></view>
+      </view>
+    </view>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const pageRef = ref(null as UniElement | null)
   const switchRef = ref(null as UniElement | null)
   const borderBottomLeftRadiusRef = ref(null as UniElement | null)
@@ -850,7 +904,31 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
   const transformOriginRef = ref(null as UniElement | null)
   const boxShadowRef = ref(null as UniElement | null)
   const opacityRef = ref(null as UniElement | null)
+  const jestFlexBasisRef = ref(null as UniElement | null)
+  const jestBorderRef = ref(null as UniElement | null)
+  const jestBorderTopRef = ref(null as UniElement | null)
+  const jestBorderRightRef = ref(null as UniElement | null)
+  const jestBorderBottomRef = ref(null as UniElement | null)
+  const jestBorderLeftRef = ref(null as UniElement | null)
+  const jestBorderWidthRef = ref(null as UniElement | null)
+  const jestBorderTopWidthRef = ref(null as UniElement | null)
+  const jestBorderRightWidthRef = ref(null as UniElement | null)
+  const jestBorderBottomWidthRef = ref(null as UniElement | null)
+  const jestBorderLeftWidthRef = ref(null as UniElement | null)
+  const jestBorderRadiusRef = ref(null as UniElement | null)
+  const jestBorderTopLeftRadiusRef = ref(null as UniElement | null)
+  const jestBorderTopRightRadiusRef = ref(null as UniElement | null)
+  const jestBorderBottomRightRadiusRef = ref(null as UniElement | null)
+  const jestBorderBottomLeftRadiusRef = ref(null as UniElement | null)
+  const jestTransformRef = ref(null as UniElement | null)
+  const jestTransformOriginRef = ref(null as UniElement | null)
+  const jestBoxShadowRef = ref(null as UniElement | null)
+  const jestTextShadowRef = ref(null as UniElement | null)
+  const jestBackdropFilterRef = ref(null as UniElement | null)
+  const jestOpacityRef = ref(null as UniElement | null)
   const calcMode = ref(true)
+  const jestCalcTestVisible = ref(false)
+  const jestCalcTestWidth = ref('calc(50% + 20px)')
   let expanded = false
 
 
@@ -879,6 +957,60 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
     expanded = !expanded
     pageRef.value?.style.setProperty('--calc-base', expanded ? '48px' : '28px')
   }
+
+  const jest_applyCalcTestStyles = () => {
+    jestFlexBasisRef.value?.style.setProperty('flex-basis', 'calc(80px + 20px)')
+
+    jestBorderRef.value?.style.setProperty('border', 'calc(1px + 1px) solid blue')
+    jestBorderTopRef.value?.style.setProperty('border-top', 'calc(1px + 2px) solid blue')
+    jestBorderRightRef.value?.style.setProperty('border-right', 'calc(2px + 2px) solid blue')
+    jestBorderBottomRef.value?.style.setProperty('border-bottom', 'calc(2px + 3px) solid blue')
+    jestBorderLeftRef.value?.style.setProperty('border-left', 'calc(3px + 3px) solid blue')
+
+    jestBorderWidthRef.value?.style.setProperty('border-style', 'solid')
+    jestBorderWidthRef.value?.style.setProperty('border-color', 'blue')
+    jestBorderWidthRef.value?.style.setProperty('border-width', 'calc(2px + 2px)')
+    jestBorderTopWidthRef.value?.style.setProperty('border-top-style', 'solid')
+    jestBorderTopWidthRef.value?.style.setProperty('border-top-color', 'blue')
+    jestBorderTopWidthRef.value?.style.setProperty('border-top-width', 'calc(2px + 3px)')
+    jestBorderRightWidthRef.value?.style.setProperty('border-right-style', 'solid')
+    jestBorderRightWidthRef.value?.style.setProperty('border-right-color', 'blue')
+    jestBorderRightWidthRef.value?.style.setProperty('border-right-width', 'calc(3px + 3px)')
+    jestBorderBottomWidthRef.value?.style.setProperty('border-bottom-style', 'solid')
+    jestBorderBottomWidthRef.value?.style.setProperty('border-bottom-color', 'blue')
+    jestBorderBottomWidthRef.value?.style.setProperty('border-bottom-width', 'calc(4px + 3px)')
+    jestBorderLeftWidthRef.value?.style.setProperty('border-left-style', 'solid')
+    jestBorderLeftWidthRef.value?.style.setProperty('border-left-color', 'blue')
+    jestBorderLeftWidthRef.value?.style.setProperty('border-left-width', 'calc(4px + 4px)')
+
+    jestBorderRadiusRef.value?.style.setProperty('border-radius', 'calc(20px + 10px)')
+    jestBorderTopLeftRadiusRef.value?.style.setProperty('border-top-left-radius', 'calc(10px + 8px)')
+    jestBorderTopRightRadiusRef.value?.style.setProperty('border-top-right-radius', 'calc(10px + 9px)')
+    jestBorderBottomRightRadiusRef.value?.style.setProperty('border-bottom-right-radius', 'calc(10px + 10px)')
+    jestBorderBottomLeftRadiusRef.value?.style.setProperty('border-bottom-left-radius', 'calc(10px + 11px)')
+
+    jestTransformRef.value?.style.setProperty('transform', 'translateX(calc(10px + 20px))')
+    jestTransformOriginRef.value?.style.setProperty('transform-origin', 'calc(20px + 10px) calc(10px + 5px)')
+    jestTransformOriginRef.value?.style.setProperty('transform', 'rotate(0deg)')
+    jestBoxShadowRef.value?.style.setProperty('box-shadow', 'calc(2px + 3px) calc(4px + 1px) calc(5px + 1px) black')
+    jestTextShadowRef.value?.style.setProperty('text-shadow', 'calc(2px + 3px) calc(1px + 4px) #558abb')
+    jestBackdropFilterRef.value?.style.setProperty('backdrop-filter', 'blur(calc(2px + 4px))')
+    jestOpacityRef.value?.style.setProperty('opacity', 'calc(0.35 + 0.35)')
+  }
+
+  const jest_showCalcTestElements = () => {
+    jestCalcTestVisible.value = true
+    jestCalcTestWidth.value = 'calc(50% + 20px)'
+    nextTick(() => {
+      jest_applyCalcTestStyles()
+    })
+  }
+
+  const jest_setCalcTestWidth = (width : number) => {
+    jestCalcTestWidth.value = width + 'px'
+  }
+
+  defineExpose({ jest_showCalcTestElements, jest_setCalcTestWidth })
 </script>
 
 <style>
@@ -892,7 +1024,7 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
   }
 
   @media (prefers-color-scheme: dark) {
-    .page.uni-theme-root {
+    .page {
       --calc-surface-color: #3b3b3b;
       --calc-text-color: #ffffff;
     }
@@ -998,9 +1130,107 @@ calc() 函数允许在声明 CSS 属性值时执行计算。
     justify-content: center;
     background-color: #2878d0;
   }
+
+  .calc-hover-box {
+    width: 120px;
+    height: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .calc-hover-class {
+    width: calc(50% + 20px);
+    height: calc(var(--calc-base) + 36px);
+    opacity: calc(0.75 - 0.35);
+    background-color: #1f9d68;
+  }
+
+  .jest-calc-test-suite {
+    --calc-jest-base: 12px;
+    width: 200px;
+    height: 120px;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .jest-calc-test-stage {
+    width: 200px;
+    height: 100px;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .jest-calc-target {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .jest-calc-test-text {
+    font-size: 12px;
+    color: #ffffff;
+  }
+
+  .jest-calc-flex-row {
+    width: 160px;
+    height: 28px;
+    flex-direction: row;
+    margin-top: 4px;
+    background-color: #dfe3e8;
+  }
+
+  .jest-calc-flex-basis {
+    height: 28px;
+    flex-direction: column;
+    flex-shrink: 0;
+    background-color: #1f9d68;
+  }
+
+  .jest-calc-test-box {
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+    background-color: #2878d0;
+  }
+
+  .jest-calc-text-shadow {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #202124;
+  }
+
+  .jest-calc-backdrop-stage {
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    margin-top: 4px;
+    overflow: visible;
+  }
+
+  .jest-calc-backdrop-color {
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    background-color: #1f9d68;
+  }
+
+  .jest-calc-backdrop-filter {
+    position: absolute;
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 </style>
 
 ```
+:::
 
 **注意：**
 App平台相比web平台，calc有以下差异：

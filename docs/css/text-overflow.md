@@ -56,9 +56,6 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <view style="padding: 0 10px; background-color: gray;justify-content: center;">
         <view class="margin-bottom-10">
@@ -144,12 +141,9 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
         </view>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const data = reactive({

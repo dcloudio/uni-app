@@ -145,7 +145,7 @@ disconnect
 >示例
 ```vue
 <template>
-	<view class="observer-page uni-theme-root">
+	<view class="observer-page">
 		<page-head :title="data.title"></page-head>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-title uni-common-mt">
@@ -160,7 +160,7 @@ disconnect
 		</view>
 	</view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   let observer: IntersectionObserver | null = null;
 
   type DataType = {

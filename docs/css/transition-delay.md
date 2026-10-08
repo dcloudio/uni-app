@@ -55,9 +55,6 @@ transition-delay: <time>#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <text class="uni-title-text">view 组件 transition-delay：1s</text>
       <view :class="classValue"></view>
@@ -138,12 +135,9 @@ transition-delay: <time>#;
       <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const classValue = ref('box')
   const textClassValue = ref('text-box')

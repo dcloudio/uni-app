@@ -54,43 +54,37 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view class="uni-theme-root" style="flex: 1">
-  <!-- #endif -->
-    <view class="pointer-page uni-theme-root">
+    <view class="pointer-page">
       <page-intro content="本页演示 pointer-events：通过开关控制父 view、遮罩层、text、image 的 pointer-events（auto/none），观察点击是否穿透或响应；点击可修改 view/text/image 宽度，用于验证事件是否命中目标。"></page-intro>
-      <boolean-data :defaultValue="true" title="控制父视图pointer-events打开时可以点击"
+      <boolean-data :value="true" title="控制父视图pointer-events打开时可以点击"
         @change="onChange1"></boolean-data>
       <view class="container" :style="{ 'pointer-events': pointerEvents1 }">
         <text class="text">点击修改宽度</text>
         <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
       </view>
-      <boolean-data :defaultValue="true" title="控制遮罩层pointer-events关闭时可以点击"
+      <boolean-data :value="true" title="控制遮罩层pointer-events关闭时可以点击"
         @change="onChange2"></boolean-data>
       <view class="container">
         <text class="text">点击修改宽度(递增)</text>
         <view class="width-progress transition-width" id="widthProgress" @click="changeWidthProgress"></view>
         <view class="mask" :style="{ 'pointer-events': pointerEvents2 }"></view>
       </view>
-      <boolean-data :defaultValue="true" title="控制text组件pointer-events打开时可以点击"
+      <boolean-data :value="true" title="控制text组件pointer-events打开时可以点击"
         @change="onChange3"></boolean-data>
       <view class="container" :style="{ 'pointer-events': pointerEvents3 }">
         <text class="text">点击修改宽度</text>
         <text class="text-pointer transition-width" id="textPointer" @click="changeTextWidth">测试文本</text>
       </view>
-      <boolean-data :defaultValue="true" title="控制image组件pointer-events打开时可以点击"
+      <boolean-data :value="true" title="控制image组件pointer-events打开时可以点击"
         @change="onChange4"></boolean-data>
       <view class="container" :style="{ 'pointer-events': pointerEvents4 }">
         <text class="text">点击修改宽度</text>
         <image class="image-pointer transition-width" id="imagePointer" @click="changeImageWidth" src="/static/test-image/logo.png"></image>
       </view>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   let isTranstionWidthOrHeight = false
   let widthOrHeight: UniElement | null = null
