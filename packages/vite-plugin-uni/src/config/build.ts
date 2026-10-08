@@ -21,6 +21,18 @@ export function createBuild(
     process.env.UNI_APP_SOURCEMAP === 'true'
       ? 'hidden'
       : config.build?.sourcemap
+  /**
+   * arkts编译器处理字符串模板内使用逗号操作符时有问题，禁用 reduce_vars 减少产出此类代码
+   * 如下代码在 arkts 内编译报错，Error Message: Unexpected token, expected '}'.
+   * function test () {
+   *   return 0
+   * }
+   * let n: number = 0
+   * console.log(`${n = test(), n === 0 ? 0 : 1}px`)
+   */
+  const isHarmonyArkTs =
+    process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
+    process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE !== 'jsvm'
   return {
     sourcemap,
     cssTarget,
@@ -33,7 +45,9 @@ export function createBuild(
         : false,
     terserOptions:
       process.env.NODE_ENV !== 'production'
-        ? { compress: { drop_console: false } }
+        ? { compress: { drop_console: false, reduce_vars: !isHarmonyArkTs } }
+        : isHarmonyArkTs
+        ? { compress: { reduce_vars: false } }
         : undefined,
     rollupOptions: {
       onwarn(warning, warn) {
