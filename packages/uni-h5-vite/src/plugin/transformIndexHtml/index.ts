@@ -1,11 +1,16 @@
-import type { HtmlTagDescriptor, Plugin } from 'vite'
+import type { HtmlTagDescriptor, Plugin, ResolvedConfig } from 'vite'
 
 import {
   getPlatformManifestJson,
+  isSsr,
+  isUniAppXWebVapor,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
+import { isSsrManifest } from '../../utils'
 
-export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
+export function createTransformIndexHtml(options: {
+  resolvedConfig: ResolvedConfig | null
+}): Plugin['transformIndexHtml'] {
   let warned = false
   return async function (html) {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
@@ -32,6 +37,16 @@ export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
           )
         }
       }
+    }
+
+    const config = options.resolvedConfig
+    if (
+      isUniAppXWebVapor() &&
+      config &&
+      !isSsr(config.command, config) &&
+      !isSsrManifest(config.command, config)
+    ) {
+      html = html.replace('<!--app-html-->', '')
     }
 
     const tags: HtmlTagDescriptor[] = []
