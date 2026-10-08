@@ -20,7 +20,7 @@
 
 ### 5.31.2026093020-alpha
 
-[点击下载蒸汽模式SDK-5.26](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS-Vapor/UniAppXSDK-iOS-Vapor@5.26.zip)
+[点击下载蒸汽模式SDK-5.31](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS-Vapor/UniAppXSDK-iOS-Vapor@5.31.zip)
 
 [点击下载 VDOM 模式SDK-5.31](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS/UniAppX-iOS%405.31.zip)
 
