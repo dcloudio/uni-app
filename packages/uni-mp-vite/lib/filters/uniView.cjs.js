@@ -9,6 +9,18 @@ module.exports = {
       handleStartAnimation(newValue, _ownerInstance, instance)
     }
   },
+  sR: function (newValue, oldValue, _ownerInstance, instance) {
+    if (!newValue) return
+    var info = JSON.parse(newValue)
+    var properties = {}
+    if (typeof info.top === 'number') {
+      properties.scrollTop = info.top
+    }
+    if (typeof info.left === 'number') {
+      properties.scrollLeft = info.left
+    }
+    instance.setDOMProperty(properties)
+  },
   c: cls,
   h: hoverClass,
 }

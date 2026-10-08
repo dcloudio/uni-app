@@ -54,6 +54,25 @@ describe('uni-mp-vue: UniElement', () => {
     delete element.dataset.baz
     expect(element.dataset.has('baz')).toBe(false)
   })
+  it('scrollTo on alipay', () => {
+    const setData = jest.fn()
+    const element = new UniElement('scroll', 'scroll-view')
+    element.$vm = {
+      $mpPlatform: 'mp-alipay',
+      $scope: { setData },
+    } as any
+
+    element.scrollTo({ top: 10, left: 20 })
+    element.scrollTo({ top: 10 })
+
+    expect(setData).toHaveBeenCalledTimes(2)
+    const first = JSON.parse(setData.mock.calls[0][0]['$eR.scroll'])
+    const second = JSON.parse(setData.mock.calls[1][0]['$eR.scroll'])
+    expect(first).toMatchObject({ top: 10, left: 20 })
+    expect(second).toMatchObject({ top: 10 })
+    expect(second).not.toHaveProperty('left')
+    expect(second.commandId).toBe(first.commandId + 1)
+  })
   it('event target dataset', () => {
     const target = createEventTarget({
       dataset: {

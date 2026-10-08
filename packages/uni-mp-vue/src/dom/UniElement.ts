@@ -12,6 +12,8 @@ export interface UniElementConstructor {
   $vm: ComponentPublicInstance
 }
 
+let uniElementScrollCommandId = 0
+
 /**
  * event.target、event.currentTarget也是UniElement实例，可能不含id
  */
@@ -50,15 +52,31 @@ export class UniElement {
   }
 
   scrollTo(options: unknown) {
-    if (
-      (this.$vm as ComponentPublicInstance & { $mpPlatform: string })
-        .$mpPlatform !== 'mp-weixin'
-    ) {
-      console.warn('scrollTo is only supported on weixin miniProgram')
-      return
-    }
     if (!this.id) {
       console.warn(`scrollTo is only supported on elements with id`)
+      return
+    }
+    if (this.tagName !== 'SCROLL-VIEW') {
+      console.warn(`scrollTo is only supported on scroll-view`)
+      return
+    }
+    const { $mpPlatform, $scope } = this.$vm as ComponentPublicInstance & {
+      $mpPlatform: string
+      $scope: { setData: (data: Record<string, unknown>) => void }
+    }
+    if ($mpPlatform === 'mp-alipay') {
+      const { top, left } = (options || {}) as {
+        top?: number
+        left?: number
+      }
+      const command = {
+        commandId: ++uniElementScrollCommandId,
+        top,
+        left,
+      }
+      $scope?.setData({
+        [`$eR.${this.id}`]: JSON.stringify(command),
+      })
       return
     }
     if (this.$node) {

@@ -135,6 +135,37 @@ describe('mp-alipay: transform component', () => {
 })
 
 describe('mp-alipay: transform component x', () => {
+  test(`scroll-view`, () => {
+    const platform = process.env.UNI_PLATFORM
+    const appX = process.env.UNI_APP_X
+    process.env.UNI_PLATFORM = 'mp-alipay'
+    process.env.UNI_APP_X = 'true'
+    try {
+      assert(
+        `<scroll-view id="scroll"/>`,
+        `<scroll-view id="scroll" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}" change:eR="{{uV.sR}}" eR="{{$eR[a]}}"/>`,
+        `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _sei('scroll', 'scroll-view'), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+        {
+          isX: true,
+        }
+      )
+    } finally {
+      if (platform === undefined) {
+        delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
+      } else {
+        process.env.UNI_PLATFORM = platform
+      }
+      if (appX === undefined) {
+        delete (process.env as Record<string, string | undefined>).UNI_APP_X
+      } else {
+        process.env.UNI_APP_X = appX
+      }
+    }
+  })
+
   test(`canvas`, () => {
     assert(
       `<canvas/>`,

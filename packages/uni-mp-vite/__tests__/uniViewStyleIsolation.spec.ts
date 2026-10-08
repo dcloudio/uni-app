@@ -3,6 +3,28 @@ const uniView = require('../lib/filters/uniView.cjs.js')
 export {}
 
 describe('uniView styleIsolation class helper', () => {
+  test('设置滚动位置', () => {
+    const instance = {
+      setDOMProperty: jest.fn(),
+    }
+
+    uniView.sR(
+      JSON.stringify({ top: 10, left: 20, commandId: 1 }),
+      null,
+      null,
+      instance
+    )
+    uniView.sR(JSON.stringify({ left: 30, commandId: 2 }), null, null, instance)
+
+    expect(instance.setDOMProperty).toHaveBeenNthCalledWith(1, {
+      scrollTop: 10,
+      scrollLeft: 20,
+    })
+    expect(instance.setDOMProperty).toHaveBeenNthCalledWith(2, {
+      scrollLeft: 30,
+    })
+  })
+
   test('按 mask 展开 class 并处理空白', () => {
     expect(uniView.c(' foo\tbar\nbaz\rqux\f ', 3)).toBe(
       'foo -a-foo -p-foo bar -a-bar -p-bar baz -a-baz -p-baz qux -a-qux -p-qux'

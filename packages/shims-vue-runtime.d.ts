@@ -101,6 +101,8 @@ declare module '@vue/runtime-core' {
     $templateUniElementStyles: Record<string, string>
     // 元素 style ，key 为 elementId，值为 style 字符串
     $eS: Record<string, string>
+    // 元素滚动命令，key 为 elementId，值为序列化后的滚动参数
+    $eR: Record<string, string>
   }
 
   export const onBeforeActivate: (fn: () => void) => void
