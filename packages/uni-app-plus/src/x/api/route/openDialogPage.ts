@@ -13,12 +13,16 @@ import {
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
-import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
+import { createNormalizeUrl } from '@dcloudio/uni-api'
 import {
+  completeDialogPageNavigatorLock,
   homeDialogPages,
   homeSystemDialogPages,
+  markDialogPageParentHidden,
+  registerDialogPageNavigatorLock,
   setCurrentNormalDialogPage,
   setCurrentSystemDialogPage,
+  shouldTriggerDialogPageParentHide,
 } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -37,7 +41,12 @@ export const openDialogPage = (
   }
   let { path, query } = parseUrl(url)
   path = normalizeRoute(path)
-  const normalizeUrl = createNormalizeUrl('navigateTo')
+  let releaseNavigatorLock = () => {}
+  const normalizeUrl = createNormalizeUrl('navigateTo', {
+    onNavigatorLock(release) {
+      releaseNavigatorLock = release
+    },
+  })
   const errMsg = normalizeUrl(url, {})
   if (errMsg) {
     triggerFailCallback(options, errMsg)
@@ -48,6 +57,7 @@ export const openDialogPage = (
   const currentPages = getCurrentPages() as UniPage[]
   if (parentPage) {
     if (currentPages.indexOf(parentPage) === -1) {
+      releaseNavigatorLock()
       triggerFailCallback(options, 'parentPage is not a valid page')
       return null
     }
@@ -57,6 +67,7 @@ export const openDialogPage = (
   }
 
   const dialogPage = markRaw(new UniDialogPageImpl())
+  registerDialogPageNavigatorLock(dialogPage, releaseNavigatorLock)
   dialogPage.route = path
   dialogPage.getParentPage = () => parentPage
   dialogPage.$component = null
@@ -102,8 +113,18 @@ export const openDialogPage = (
   const noAnimation = aniType === 'none' || aniDuration === 0
   function callback(page: IPage) {
     showWebview(page, aniType, aniDuration, () => {
-      beforeRoute()
-      dialogPageTriggerParentHide(dialogPage)
+      if (
+        completeDialogPageNavigatorLock(dialogPage) &&
+        shouldTriggerDialogPageParentHide(dialogPage)
+      ) {
+        dialogPageTriggerParentHide(
+          dialogPage,
+          () => {
+            markDialogPageParentHidden(dialogPage)
+          },
+          true
+        )
+      }
     })
   }
   // 有动画时先执行 show

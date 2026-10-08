@@ -14,54 +14,73 @@ export function isSystemActionSheetDialogPage(page: UniDialogPage) {
   return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH)
 }
 
-export function dialogPageTriggerParentHide(dialogPage: UniDialogPage) {
-  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE)
+export function dialogPageTriggerParentHide(
+  dialogPage: UniDialogPage,
+  onBeforeTrigger?: () => void,
+  skipDialogPageCheck = false
+) {
+  return dialogPageTriggerParentLifeCycle(
+    dialogPage,
+    ON_HIDE,
+    0,
+    onBeforeTrigger,
+    skipDialogPageCheck
+  )
 }
 
 export function dialogPageTriggerParentShow(
   dialogPage: UniDialogPage,
-  triggerParentHideDialogPageNum = 0
+  triggerParentHideDialogPageNum = 0,
+  skipDialogPageCheck = false
 ) {
   dialogPageTriggerParentLifeCycle(
     dialogPage,
     ON_SHOW,
-    triggerParentHideDialogPageNum
+    triggerParentHideDialogPageNum,
+    undefined,
+    skipDialogPageCheck
   )
 }
 
 function dialogPageTriggerParentLifeCycle(
   dialogPage: UniDialogPage,
   lifeCycle: string,
-  triggerParentHideDialogPageNum = 0
+  triggerParentHideDialogPageNum = 0,
+  onBeforeTrigger?: () => void,
+  skipDialogPageCheck = false
 ) {
-  if (!dialogPage.$triggerParentHide) return
+  if (!dialogPage.$triggerParentHide) return false
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1] as unknown as UniPage
-  if (!currentPage) return
+  if (!currentPage) return false
   const parentPage = dialogPage.getParentPage()
-  if (!parentPage) return
-  if (parentPage !== currentPage) return
-  const dialogPages = currentPage.getDialogPages() as UniDialogPage[]
-  for (let i = 0; i < dialogPages.length; i++) {
-    if (!!dialogPages[i].$triggerParentHide) {
-      triggerParentHideDialogPageNum++
-      if (triggerParentHideDialogPageNum > 1) {
-        return
-      }
-    }
-  }
-  if (triggerParentHideDialogPageNum <= 1) {
-    const systemDialogPages = getSystemDialogPages(parentPage)
-    for (let i = 0; i < systemDialogPages.length; i++) {
-      if (!!systemDialogPages[i].$triggerParentHide) {
+  if (!parentPage) return false
+  if (parentPage !== currentPage) return false
+  if (!skipDialogPageCheck) {
+    const dialogPages = currentPage.getDialogPages() as UniDialogPage[]
+    for (let i = 0; i < dialogPages.length; i++) {
+      if (!!dialogPages[i].$triggerParentHide) {
         triggerParentHideDialogPageNum++
         if (triggerParentHideDialogPageNum > 1) {
-          return
+          return false
+        }
+      }
+    }
+    if (triggerParentHideDialogPageNum <= 1) {
+      const systemDialogPages = getSystemDialogPages(parentPage)
+      for (let i = 0; i < systemDialogPages.length; i++) {
+        if (!!systemDialogPages[i].$triggerParentHide) {
+          triggerParentHideDialogPageNum++
+          if (triggerParentHideDialogPageNum > 1) {
+            return false
+          }
         }
       }
     }
   }
+  onBeforeTrigger?.()
   invokeHook(currentPage.vm, lifeCycle)
+  return true
 }
 
 export function getSystemDialogPages(

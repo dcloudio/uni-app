@@ -121,9 +121,11 @@ function createAnimationProtocol(animationTypes: string[]) {
 }
 
 let navigatorLock: string
+let navigatorLockId = 0
 
 export function beforeRoute() {
   navigatorLock = ''
+  navigatorLockId++
 }
 
 function createRouteOptions(type: string): ApiOptions<API_TYPE_NAVIGATE_TO> {
@@ -137,6 +139,7 @@ function createRouteOptions(type: string): ApiOptions<API_TYPE_NAVIGATE_TO> {
 
 export interface CreateNormalizeUrlOptions {
   skipNavigatorLock?: boolean
+  onNavigatorLock?: (release: () => void) => void
 }
 
 export function createNormalizeUrl(
@@ -214,6 +217,13 @@ export function createNormalizeUrl(
     // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
     if (!options.skipNavigatorLock && __uniConfig.ready) {
       navigatorLock = url
+      const lockId = ++navigatorLockId
+      options.onNavigatorLock?.(() => {
+        // 只允许释放本次调用持有的 lock，避免迟到的异步回调清除后续路由的 lock
+        if (lockId === navigatorLockId) {
+          beforeRoute()
+        }
+      })
     }
   }
 }
