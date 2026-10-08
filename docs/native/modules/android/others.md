@@ -1382,6 +1382,13 @@ dependencies {
   <tr><td>依赖的模块</td><td>uni-fileSystemManager<br/>uni-zstd-decompress</td></tr>
 </table>
 
+### uni-zstd-decompress
+
+<table>
+  <tr><th>属性</th><th>内容</th></tr>
+  <tr><td>本地依赖库</td><td>uni-zstd-decompress-release.aar</td></tr>
+</table>
+
 <!--
 ### uni-uasm
 
