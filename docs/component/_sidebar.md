@@ -73,6 +73,7 @@
 * [uni-ui x 扩展组件](./uni-ui-x/README.md)
   * [uni-badge-view | 数字角标](./uni-ui-x/uni-badge-view.md)
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
+  * [uni-combox | 组合框](./uni-ui-x/uni-combox.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
   * [uni-index-bar | 索引条](./uni-ui-x/uni-index-bar.md)
@@ -83,7 +84,6 @@
   * [uni-time-format | 时间格式化](./uni-ui-x/uni-time-format.md)
   * [uni-tab-bar | 选项卡容器](./uni-ui-x/uni-tab.md)
   * [uni-refresh-box | 自定义下拉刷新](./uni-ui-x/uni-refresh-box.md)
-  * [uni-combox | 组合框](./uni-ui-x/uni-combox.md)
 * 微信专用组件
   * Skyline
     * 手势系统
