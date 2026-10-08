@@ -44,7 +44,10 @@ function createTsConfigPaths(
     'vue-i18n': [path.resolve(cliVitePath, 'node_modules/vue-i18n')],
     ...virtualPaths,
   }
-  if (process.env.UNI_APP_X_DOM2 === 'true') {
+  if (
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM !== 'web'
+  ) {
     const uniXTypesDir = path.resolve(__dirname, '../../../lib/uts/types/uni-x')
     return {
       '@vue/shared': [

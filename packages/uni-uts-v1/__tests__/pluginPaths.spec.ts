@@ -12,6 +12,7 @@ describe('UTS HBuilderX plugin paths', () => {
   const originalPluginPaths = process.env.HX_PLUGIN_PATHS
   const originalPluginsRoot = process.env.UNI_HBUILDERX_PLUGINS
   const originalUtsPlatform = process.env.UNI_UTS_PLATFORM
+  const originalAppXDom2 = process.env.UNI_APP_X_DOM2
   const originalHxAppRoot = process.env.HX_APP_ROOT
 
   afterEach(() => {
@@ -29,6 +30,11 @@ describe('UTS HBuilderX plugin paths', () => {
       Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
     } else {
       process.env.UNI_UTS_PLATFORM = originalUtsPlatform
+    }
+    if (originalAppXDom2 === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    } else {
+      process.env.UNI_APP_X_DOM2 = originalAppXDom2
     }
     if (originalHxAppRoot === undefined) {
       Reflect.deleteProperty(process.env, 'HX_APP_ROOT')
@@ -113,6 +119,36 @@ describe('UTS HBuilderX plugin paths', () => {
       ).toEqual([
         path.resolve(languageServicesPath, 'builtin-dts/common/HBuilderX.d.ts'),
       ])
+    })
+  })
+
+  test('Web Vapor 不使用 App DOM2 的 Vue 类型', () => {
+    process.env.HX_PLUGIN_PATHS = JSON.stringify({
+      'uniapp-cli-vite': path.resolve('/plugins/cli-vite'),
+      'hbuilderx-language-services': path.resolve('/plugins/language-services'),
+    })
+    process.env.UNI_UTS_PLATFORM = 'web'
+    process.env.UNI_APP_X_DOM2 = 'true'
+
+    jest.isolateModules(() => {
+      const { createBasicUtsOptions } = require('../src/tsc/utils/options')
+      const getPaths = () =>
+        createBasicUtsOptions(path.resolve('/project'), false).tsconfigOverride
+          .compilerOptions.paths
+
+      const webVaporPaths = getPaths()
+      expect(webVaporPaths.vue).toEqual([
+        path.resolve('/plugins/cli-vite/node_modules/@vue/runtime-core'),
+      ])
+      expect(webVaporPaths['@vue/runtime-vapor-dom2']).toBeUndefined()
+
+      delete process.env.UNI_APP_X_DOM2
+      expect(getPaths().vue).toEqual(webVaporPaths.vue)
+
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      expect(getPaths().vue[0]).toContain('/lib/uts/types/uni-x/@vue/vue/')
+      expect(getPaths()['@vue/runtime-vapor-dom2']).toBeDefined()
     })
   })
 })
