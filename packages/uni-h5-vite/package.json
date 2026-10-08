@@ -28,6 +28,7 @@
     "@vue/server-renderer": "catalog:",
     "@vue/shared": "catalog:",
     "debug": "catalog:",
+    "estree-walker": "catalog:",
     "fs-extra": "catalog:",
     "mime": "catalog:",
     "module-alias": "catalog:"

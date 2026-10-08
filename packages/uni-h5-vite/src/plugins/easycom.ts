@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import type { Plugin } from 'vite'
 import { type FilterPattern, createFilter } from '@rollup/pluginutils'
+import { walk } from 'estree-walker'
 import { camelize, capitalize } from '@vue/shared'
 
 import { COMPONENT_PREFIX, isWebBuiltInComponent } from '@dcloudio/uni-shared'
@@ -15,12 +16,15 @@ import {
   buildInCssSet,
   genResolveEasycomCode,
   isCombineBuiltInCss,
+  isUniAppXWebVapor,
   matchEasycom,
   normalizePath,
   parseVueRequest,
 } from '@dcloudio/uni-cli-shared'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
+const VAPOR_EASYCOM_IMPORT =
+  "import { createComponent as __createEasycomComponent } from 'vue';"
 
 const xBaseComponents = ['slider', 'switch', 'loading', 'page-container']
 const baseComponents = [
@@ -74,6 +78,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const isDevX =
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
+  const isWebVapor = isUniAppXWebVapor()
   return {
     name: 'uni:h5-easycom',
     configResolved(config) {
@@ -87,11 +92,28 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       if (!EXTNAME_VUE_TEMPLATE.includes(path.extname(filename))) {
         return
       }
-      if (!code.includes('_resolveComponent')) {
+      if (
+        !code.includes('_resolveComponent') &&
+        !(isWebVapor && code.includes('_createAssetComponent'))
+      ) {
         return
       }
       let i = 0
       const importDeclarations: string[] = []
+      if (isWebVapor && code.includes('_createAssetComponent')) {
+        const transformed = replaceVaporAssetComponents(
+          code,
+          this.parse(code),
+          isDevX
+        )
+        if (transformed !== code) {
+          code = transformed
+          importDeclarations.push(VAPOR_EASYCOM_IMPORT)
+        }
+      }
+      if (!code.includes('_resolveComponent')) {
+        return
+      }
       code = code.replace(
         /_resolveComponent\("(.+?)"(, true)?\)/g,
         (str, name) => {
@@ -180,6 +202,52 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       }
     },
   }
+}
+
+// 只处理真实调用，并移除 createAssetComponent 独有的尾部参数。
+function replaceVaporAssetComponents(
+  code: string,
+  ast: Parameters<typeof walk>[0],
+  isDevX: boolean
+) {
+  const edits: [number, number, string][] = []
+  walk(ast, {
+    enter(node) {
+      const call = node as any
+      if (
+        call.type === 'CallExpression' &&
+        call.callee.type === 'Identifier' &&
+        call.callee.name === '_createAssetComponent' &&
+        call.arguments[0]?.type === 'Literal' &&
+        typeof call.arguments[0].value === 'string'
+      ) {
+        const first = call.arguments[0]
+        const name = first.value as string
+        const easycomName =
+          isDevX && name.startsWith('v-uni-') ? name.slice(6) : name
+        if (
+          !name.startsWith('_') &&
+          (isWebBuiltInComponent(name) || matchEasycom(easycomName))
+        ) {
+          edits.push([
+            call.start,
+            first.end,
+            `__createEasycomComponent(_resolveComponent(${code.slice(
+              first.start,
+              first.end
+            )})`,
+          ])
+          if (call.arguments.length > 5) {
+            edits.push([call.arguments[4].end, call.end - 1, ''])
+          }
+        }
+      }
+    },
+  })
+  for (const [start, end, replacement] of edits.sort((a, b) => b[0] - a[0])) {
+    code = code.slice(0, start) + replacement + code.slice(end)
+  }
+  return code
 }
 
 function resolveBuiltInCssImport(name: string) {
