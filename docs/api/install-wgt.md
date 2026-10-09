@@ -78,7 +78,60 @@ uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率更高的zstd格式
 
 
 
-<!-- UTSAPIJSON.installWgt.example -->
+### 示例
+
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/install-wgt/install-wgt.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/install-wgt/install-wgt.uvue) 
+>
+> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+
+::: preview
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/install-wgt/install-wgt
+```uvue
+<template>
+  <view style="margin:12px">
+    <page-head title="安装应用资源"></page-head>
+    <page-intro content="本页演示 uni.installWgt 安装应用资源的错误示例：点击更新资源按钮后因为传递资源路径不存在而报错。仅蒸汽模式支持"></page-intro>
+    <!-- #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS) -->
+    <button class="button" type="primary" @click="update">升级wgt</button>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="ts">
+
+  // #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS)
+  function update() {
+    uni.installWgt({
+      filePath: "/static/__UNI__HelloUniAppX.wgt",
+      success: (res) => {
+        console.log(res);
+      },
+      fail: (error) => {
+        console.log(error);
+        uni.showToast({
+          title: error.errMsg,
+          icon: 'error'
+        })
+      },
+      complete: (res) => {
+        console.log(res);
+      }
+    })
+  }
+  // #endif
+
+</script>
+
+<style>
+  .button {
+    margin-bottom: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>
+
+```
+:::
 
 
 ### 参见
@@ -95,7 +148,60 @@ uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率更高的zstd格式
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-<!-- UTSAPIJSON.installWgt.example -->
+### 示例
+
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/install-wgt/install-wgt.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/install-wgt/install-wgt.uvue) 
+>
+> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+
+::: preview
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/install-wgt/install-wgt
+```uvue
+<template>
+  <view style="margin:12px">
+    <page-head title="安装应用资源"></page-head>
+    <page-intro content="本页演示 uni.installWgt 安装应用资源的错误示例：点击更新资源按钮后因为传递资源路径不存在而报错。仅蒸汽模式支持"></page-intro>
+    <!-- #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS) -->
+    <button class="button" type="primary" @click="update">升级wgt</button>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="ts">
+
+  // #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS)
+  function update() {
+    uni.installWgt({
+      filePath: "/static/__UNI__HelloUniAppX.wgt",
+      success: (res) => {
+        console.log(res);
+      },
+      fail: (error) => {
+        console.log(error);
+        uni.showToast({
+          title: error.errMsg,
+          icon: 'error'
+        })
+      },
+      complete: (res) => {
+        console.log(res);
+      }
+    })
+  }
+  // #endif
+
+</script>
+
+<style>
+  .button {
+    margin-bottom: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>
+
+```
+:::
 
 ### 热更新与应用商店
 
