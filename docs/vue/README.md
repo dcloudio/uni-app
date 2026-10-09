@@ -166,7 +166,7 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 	+ type没有擦除而是编译成了class
 	+ 把部分js内置API返回值从undefined改为null
 
-	不使用uts时，将无法再使用UTSJSONObject，UTSJSONObject变成了普通的object，type会被擦除，运行时内置API被改成`null`的会还原为`undefined`。
+	不使用uts时，将无法再使用UTSJSONObject，UTSJSONObject变成了普通的object，type会被擦除，运行时内置API被改成`null`的会还原为`undefined`。。
 	
 	如果你之前使用过UTSJSONObject的专有方法，比如getString、getNumber、getArray等方法，在5.31+运行，由于默认按ts编译，会造成控制台报警找不到相关类型和方法：
 	`getString is not a function`、`getNumber is not a function`、`getArray is not a function`
@@ -174,6 +174,8 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 	此时有如下处理方案：
 	1. 把相关页面的script的lang，显式指定为uts。
 	2. 把UTSJSONObject的写法，改成普通object写法，即`.`点运算符。（推荐，可以获得更快的编译速度和更好的AI支持度）
+
+	`JSON.parseArray`、`JSON.parseObject`在非uts环境下也无法使用，使用`JSON.parse`方法代替即可。
 
 5.31+，不同后缀的文件，比如`*.js`、`*.ts`、`*.uts`，互相import的时，都按各自独立的编译器编译。
 
