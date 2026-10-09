@@ -38,7 +38,7 @@ CreateWorker
 ### createWorker 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | 5.25 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 |
+| 4.81 | 4.41 | 5.31 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 |
 
 
 ### 参数 
@@ -71,9 +71,9 @@ CreateWorker
 onMessage
 监听 主线程/Worker线程 向当前线程发送的消息的事件。
 ##### onMessage 兼容性 <Help /> 
-| Web | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.41 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 ##### 参数 
 
@@ -87,9 +87,9 @@ onMessage
 onError
 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
 ##### onError 兼容性 <Help /> 
-| Web | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.41 | x | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 ##### 参数 
 
@@ -126,9 +126,9 @@ onError
 postMessage
 向 主线程/Worker线程 发送的消息。
 ##### postMessage 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 5.25 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.41 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 ##### 参数 
 
@@ -151,9 +151,9 @@ terminate
 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
 
 ##### terminate 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 5.25 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.81 | 4.41 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
 
 
 
