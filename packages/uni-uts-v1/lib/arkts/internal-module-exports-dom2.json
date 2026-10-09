@@ -502,6 +502,9 @@
       "ConnectSocketSuccess"
     ],
     [
+      "Convert2AbsFullPath"
+    ],
+    [
       "CopyFileOptions"
     ],
     [
