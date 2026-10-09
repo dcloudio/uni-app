@@ -1,5 +1,6 @@
 {
   "uni.app.quit": "Press back button again to exit",
+  "uni.appVm.methodWarning": "Method \"{methodName}\" should not be called directly on UniApp. Use \"{methodCall}\" instead.",
   "uni.async.error": "The connection timed out, click the screen to try again.",
   "uni.showActionSheet.cancel": "Cancel",
   "uni.showToast.unpaired": "Please note showToast must be paired with hideToast",

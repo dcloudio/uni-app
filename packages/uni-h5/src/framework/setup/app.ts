@@ -1,11 +1,17 @@
-import type { ComponentPublicInstance } from 'vue'
+import {
+  type ComponentPublicInstance,
+  onBeforeMount,
+  onServerPrefetch,
+} from 'vue'
 import AsyncLoadingComponent from '../components/async-loading/asyncLoading.vue'
 import AsyncErrorComponent from '../components/async-error/asyncError.vue'
 import {
   defineGlobalData,
   initAppVm,
   initService,
+  initUniAppVmMethodWarnings,
   initView,
+  warnUniAppVmMethod,
 } from '@dcloudio/uni-core'
 import { getCurrentBasePages } from './page'
 import { getScopeId } from './utils'
@@ -13,6 +19,7 @@ import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 
 let appVm: ComponentPublicInstance
 let $uniApp: UniApp
+let uniAppVmMethodNames = new Set<string>()
 if (__X__) {
   class UniAppImpl implements UniApp {
     get vm() {
@@ -31,7 +38,22 @@ if (__X__) {
       return null
     }
   }
-  $uniApp = new UniAppImpl()
+  const uniApp = new UniAppImpl()
+  $uniApp = __DEV__
+    ? new Proxy(uniApp, {
+        get(target, key, receiver) {
+          const value = Reflect.get(target, key, receiver)
+          if (
+            typeof key === 'string' &&
+            value === undefined &&
+            uniAppVmMethodNames.has(key)
+          ) {
+            warnUniAppVmMethod(key)
+          }
+          return value
+        },
+      })
+    : uniApp
 }
 
 export function getApp() {
@@ -44,6 +66,13 @@ export function getApp() {
 
 export function initApp(vm: ComponentPublicInstance) {
   appVm = vm
+  if (__X__ && __DEV__) {
+    const initVmMethodWarnings = () => {
+      uniAppVmMethodNames = initUniAppVmMethodWarnings($uniApp)
+    }
+    onBeforeMount(initVmMethodWarnings)
+    onServerPrefetch(initVmMethodWarnings)
+  }
 
   // 定制 App 的 $children 为 devtools 服务 __VUE_PROD_DEVTOOLS__
   Object.defineProperty((appVm.$ as any).ctx, '$children', {

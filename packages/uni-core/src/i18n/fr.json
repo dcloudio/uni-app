@@ -1,5 +1,6 @@
 {
   "uni.app.quit": "Appuyez à nouveau pour quitter l'application",
+  "uni.appVm.methodWarning": "La méthode \"{methodName}\" ne doit pas être appelée directement sur UniApp. Utilisez \"{methodCall}\" à la place.",
   "uni.async.error": "La connexion a expiré, cliquez sur l'écran pour réessayer.",
   "uni.showActionSheet.cancel": "Annuler",
   "uni.showToast.unpaired": "Veuillez noter que showToast doit être associé à hideToast",

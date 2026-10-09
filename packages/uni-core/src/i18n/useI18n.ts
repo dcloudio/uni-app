@@ -99,7 +99,10 @@ export function useI18n() {
           navigator.language) as BuiltInLocale
       }
     } else if (__PLATFORM__ === 'app') {
-      if (typeof getApp === 'function') {
+      if (__X__) {
+        const { appLanguage, language } = uni.getAppBaseInfo()
+        locale = (appLanguage || language) as BuiltInLocale
+      } else if (typeof getApp === 'function') {
         locale = weex.requireModule('plus').getLanguage() as BuiltInLocale
       } else {
         locale = (
