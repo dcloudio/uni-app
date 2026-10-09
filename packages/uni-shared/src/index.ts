@@ -18,6 +18,7 @@ export * from './theme'
 
 export * from './dom2/tags'
 export * from './dom2/dataset'
+export * from './dom2/vue'
 
 export * from './node/locale'
 export * from './polyfill'

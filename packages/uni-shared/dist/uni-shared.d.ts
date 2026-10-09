@@ -431,6 +431,10 @@ export declare function normalizeTarget(el: HTMLElement): {
 
 export declare function normalizeTitleColor(titleColor: string): "#000000" | "#ffffff";
 
+export declare function normalizeVaporProps(props: Record<string, any> | null): Record<string, any> | null;
+
+export declare function normalizeVaporStyle(value: unknown): NormalizedStyle | undefined;
+
 export declare interface NVue {
     config: NVueConfigAPI;
     document: NVueDocument;

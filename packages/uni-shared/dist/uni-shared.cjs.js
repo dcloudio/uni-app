@@ -2727,6 +2727,53 @@ function createUniDOMStringMap(source, options) {
     });
 }
 
+// class 沿用 Vue 标准解析；dom2 的 style 需要对象，供 sharedData 逐项转换原生样式，
+// 因此字符串不能像 Vue normalizeStyle 一样原样返回。Map 转换保留已发布的兼容行为。
+// 普通对象（包括 UTSJSONObject）直接返回，旧值快照由 setSharedDataStyle 按需保存。
+function normalizeVaporStyle(value) {
+    if (typeof value === 'string') {
+        return shared.parseStringStyle(value);
+    }
+    if (value === null || typeof value !== 'object') {
+        return;
+    }
+    if (shared.isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = shared.isString(item)
+                ? shared.parseStringStyle(item)
+                : normalizeVaporStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else if (value instanceof Map) {
+        const res = {};
+        value.forEach((value, key) => {
+            res[key] = value;
+        });
+        return res;
+    }
+    return value;
+}
+function normalizeVaporProps(props) {
+    if (!props)
+        return null;
+    const { class: klass, style } = props;
+    if (klass && !shared.isString(klass)) {
+        props.class = shared.normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeVaporStyle(style);
+    }
+    return props;
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -2958,6 +3005,8 @@ exports.normalizeStyles = normalizeStyles;
 exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;
 exports.normalizeTitleColor = normalizeTitleColor;
+exports.normalizeVaporProps = normalizeVaporProps;
+exports.normalizeVaporStyle = normalizeVaporStyle;
 exports.onCreateVueApp = onCreateVueApp;
 exports.once = once;
 exports.parseEventName = parseEventName;
