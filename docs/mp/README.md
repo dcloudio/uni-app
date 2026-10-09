@@ -94,6 +94,27 @@ c1 组件的代码如下：
 
 vue 组件的方法调用不受影响，ref 取到组件后，可以直接调用组件的方法。
 
+### v-bind="$attrs" 属性透传@v-bind-attrs
+
+在 `view` 等内置组件上，可以通过 `v-bind="$attrs"` 将 `$attrs` 中的属性和事件显式绑定到该内置组件。
+
+```vue
+<template>
+  <view v-bind="$attrs"></view>
+</template>
+```
+
+小程序目前仅支持向内置组件透传以下内容：
+
+- `id`
+- `class`
+- `style`
+- `click` 事件
+
+其他属性和事件不会通过 `v-bind="$attrs"` 透传。上述转换仅作用于内置组件节点，将 `v-bind="$attrs"` 写在自定义组件节点上不会进行上述展开。
+
+当内置组件同时声明了 `class`、`style` 或 `@click` 时，透传内容会与本地声明合并，并按照模板中的声明顺序生效。
+
 ### refs@refs
 
 非 uni-app x 项目使用 refs 取内置组件引用时会获取到 undefined，而 uni-app x 项目会获取到对应的 UniElement。

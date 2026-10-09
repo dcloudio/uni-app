@@ -2321,6 +2321,8 @@ defineOptions({
 ```
 这个 `$attrs` 对象包含了除组件所声明的 `props` 和 `emits` 之外的所有其他 attribute，例如 `class`，`style`，`v-on` 监听器等等。
 
+uni-app x 编译到小程序时，`v-bind="$attrs"` 的显式透传范围存在限制，详见[文档](../mp/README.md#v-bind-attrs)。
+
 有几点需要注意：
 
 - 和 `props` 有所不同，透传 attributes 在 JavaScript 中保留了它们原始的大小写，所以像 `foo-bar` 这样的一个 attribute 需要通过 `$attrs['foo-bar']` 来访问。
