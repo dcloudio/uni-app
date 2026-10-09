@@ -46,6 +46,10 @@ uni-app迁移到uni-app x，是一个大型工程。
 新建`uni-app x`项目，选择蒸汽模式。
 可以保留之前的appid和包名，在manifest.json源码视图里改成之前的appid。
 
+manifest的结构，在uni-app x中与uni-app略有不同。需要把原来manifest的信息按新的规范填一遍。关于三方sdk的key信息，只要包名和签名不变，key可以复用。[详见](./collocation/manifest.md)
+
+如果使用云端证书打包，只要appid、账户不变，证书可以复用。
+
 把老项目的页面、组件、uni_modules、静态资源复制到新项目中。
 之前如果有`nativeplugins`目录，就不用带来过了，uni-app x只支持uni_modules下的uts插件。
 原本的插件需要换新，或者临时mock掉。
@@ -55,6 +59,8 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 在HBuilder 5.31以前，推荐把独立的js/ts文件的后缀名改成uts（蒸汽模式页面引用的uts文件也是弱类型，可以写js/ts语法）。
 5.31起不需要改文件后缀了。
+
+老项目的pages.json可以直接挪过来使用。结构没有差别，只是uni-app x的pages.json中不再支持plus，多支持了一些新的页面style和tabbar的属性。[详见](./collocation/pagesjson.md)
 
 老项目的`main.js`和`app.vue`，挑选内容复制到新项目中对应的新文件中。
 
@@ -73,7 +79,9 @@ uni-app x 的app.uvue对比老 uni-app 有2个变化：
 如果你之前有web版和微信小程序，那么改造后首先运行到 `uni-app x` 的web和微信小程序上，看看是否正常。
 
 同时注意uni-app x的 [web开发注意](./web/README.md) 和 [小程序开发注意](./mp/README.md)
-	
+
+uni-app x 的 app.uvue 文档[详见](./collocation/app.md)
+
 ### 6. 再次适配css
 
 之前在uni-app中适配过一次css，但[css样式重置](./css/README.md#css-reset)、[样式隔离策略2.0](./css/common/style-isolation.md)，这2个在uni-app下没有，还得在uni-app x环境中再次适配。
@@ -100,6 +108,8 @@ uni-app x不支持plus。
 * 如果在pages.json里使用了plus，推荐改用 uni-ui x 的 [uni-nav-bar 自定义导航栏组件](./component/uni-ui-x/uni-nav-bar.md) 和 [uni-tab-bar自定义tabbar组件](./component/uni-ui-x/uni-tab.md) 来替代。
 
 另外如果项目使用了subNVue，需要改成[dialogPage](./api/dialog-page.md)
+
+页面中如果有 app-plus 的条件编译，建议改为 app 。uni-app x 中也支持独立的 app-android、app-ios、app-harmony 的条件编译。
 	
 ### 9. 升级或改造前端库
 
