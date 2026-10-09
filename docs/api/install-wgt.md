@@ -45,11 +45,33 @@ uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率更高的zstd格式
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | InstallWgtErrorCode | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误码 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 安装应用错误码 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 103600 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 安装应用成功 |
+| 103602 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | staging 目录操作失败。 |
+| 103603 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 资源目录结构不合法。 |
+| 103604 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 资源放置到正式目录失败。 |
+| 103605 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 资源安装失败。 |
+| 103606 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | Zstandard 解压失败。 |
+| 103607 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | ZIP 解压失败。 |
+| 103608 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | manifest 文件缺失。 |
+| 103609 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 必需启动资源缺失。 |
+| 103610 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | manifest 字段不合法。 |
+| 103611 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 版本低于或等于 Runtime 版本。 |
+| 103612 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 内部错误。 |
+| 103613 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | manifest JSON 解析失败。 |
+| 103614 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT manifest appId 与 Runtime appId 不一致。 |
+| 103615 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 要求的最低 Runtime 版本高于当前 Runtime 版本。 |
+| 103617 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | manifest 缺少 uni-app-x.minRuntimeVersion。 |
+| 1030601 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | filePath 参数为空或对应文件不存在。 |
 
 
 

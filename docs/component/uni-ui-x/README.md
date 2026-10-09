@@ -77,9 +77,15 @@ uni-ui x 没有写死的颜色和文字:
 
 ## uni-ui的升级建议@uniuiupgrade
 
-为uni-app提供的uni-ui，升级到uni-app x时无法直接对照升级，因为组件名称、用法都有变化。
+为 uni-app 提供的 uni-ui，为了兼容vue2，是选项式的。
 
-但升级时，老版uni-ui组件在uni-app x下同等功能的新组件是什么，这里说明下功能映射关系：
+而 uni-app x 蒸汽模式只支持组合式，所以老的 uni-ui 是无法在蒸汽模式下使用的。
+
+uni-app x 新提供了 uni-ui x，它是组合式的，且支持样式隔离策略2.0、支持无头理念。
+
+uni-ui 无法直接升级 uni-ui x，组件名称、用法都有变化。
+
+但升级时，老版 uni-ui 组件在 uni-app x 下的平替方案是什么，可以在这里说明功能映射关系：
 
 |uni-ui组件						|中文名称								|在uni-app x下的方案																	|
 |--										|--											|--																									|
@@ -124,7 +130,9 @@ uni-ui x 没有写死的颜色和文字:
 |uni-title						|章节标题								|无																									|
 |uni-transition				|过渡动画								|无																									|
 
-标记为`无`的，大多比较简单，对于AI而言直接写相关UI比下载学习一个组件更合适。
+标记为`无`的，大多比较简单，让AI直接写相关UI比下载学习一个组件更合适。
+
+uni-ui x 也新增一些 uni-ui 没有的复杂组件，比如：uni-drag-cell、uni-refresh-box、
 
 ## 交流群
 

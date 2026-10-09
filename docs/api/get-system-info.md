@@ -98,23 +98,23 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
 | hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
 | hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
-| albumAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
+| albumAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
 | benchmarkLevel | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
-| bluetoothEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
-| cameraAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
+| bluetoothEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
+| cameraAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
 | enableDebug | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
-| fontSizeSetting | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
+| fontSizeSetting | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
 | host | **GetSystemInfoResultHost** | 否 | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
-| locationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
-| locationEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
+| locationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
+| locationEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
 | locationReducedAccuracy | boolean | 否 | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
-| microphoneAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
-| notificationAlertAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
-| notificationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
-| notificationBadgeAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
-| notificationSoundAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
+| microphoneAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
+| notificationAlertAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
+| notificationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
+| notificationBadgeAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
+| notificationSoundAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
 | phoneCalendarAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
-| wifiEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
+| wifiEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
 | theme | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
 | ~~brand~~ | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
 | ~~language~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
@@ -532,23 +532,23 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
 | hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
 | hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
-| albumAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
+| albumAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
 | benchmarkLevel | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
-| bluetoothEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
-| cameraAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
+| bluetoothEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
+| cameraAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
 | enableDebug | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
-| fontSizeSetting | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
+| fontSizeSetting | number | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
 | host | **GetSystemInfoResultHost** | 否 | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
-| locationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
-| locationEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
+| locationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
+| locationEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
 | locationReducedAccuracy | boolean | 否 | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
-| microphoneAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
-| notificationAlertAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
-| notificationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
-| notificationBadgeAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
-| notificationSoundAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
+| microphoneAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
+| notificationAlertAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
+| notificationAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
+| notificationBadgeAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
+| notificationSoundAuthorized | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
 | phoneCalendarAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
-| wifiEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
+| wifiEnabled | boolean | 否 | 微信小程序: 4.41; 支付宝小程序: 5.25 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
 | theme | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
 | ~~brand~~ | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
 | ~~language~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
