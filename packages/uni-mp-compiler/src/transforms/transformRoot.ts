@@ -2,6 +2,7 @@ import {
   type DirectiveNode,
   type ElementNode,
   NodeTypes,
+  findDir,
   findProp,
 } from '@vue/compiler-core'
 import {
@@ -15,6 +16,7 @@ import {
   UNI_STATUS_BAR_HEIGHT,
 } from '@dcloudio/uni-shared'
 import type { NodeTransform, TransformContext } from '../transform'
+import { V_PRE_DIRECTIVE } from './vPre'
 import { parseExpr } from '../ast'
 import {
   type Expression,
@@ -44,7 +46,9 @@ export const transformRoot: NodeTransform = (node, context) => {
       return
     }
     hasBindingCssVars && addCssVars(child, context)
-    context.isX && traverseChildren(child, context)
+    context.isX &&
+      !findDir(child, V_PRE_DIRECTIVE, true) &&
+      traverseChildren(child, context)
   })
 }
 

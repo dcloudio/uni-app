@@ -26,6 +26,7 @@ import { transformText } from './transforms/vText'
 import { transformAttr } from './transforms/transformAttr'
 import { transformVBindAttrs } from './transforms/transformVBindAttrs'
 import { FILTER_MODULE_NAME } from './transforms/utils'
+import { preprocessVPre, transformVPre } from './transforms/vPre'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -42,6 +43,7 @@ export function getBaseTransformPreset({
   // order is important
   const nodeTransforms = [
     transformRoot,
+    transformVPre,
     transformVBindAttrs,
     transformAttr,
     transformTag,
@@ -70,7 +72,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
     options.prefixIdentifiers === true || options.mode === 'module'
   const ast = (
     isString(template)
-      ? baseParse(template, { ...options, parseMode: 'html' })
+      ? baseParse(preprocessVPre(template), { ...options, parseMode: 'html' })
       : template
   ) as CodegenRootNode
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset({
