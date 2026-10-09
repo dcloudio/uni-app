@@ -19,7 +19,7 @@ uts在编译运行目标为js时，会通过uts2js来编译。
 如果开发者写了js，可能会在编译器或IDE静态校验时提示类型错误，但不影响实际运行时表现。
 
 1. 为了拉齐uts编译原生强类型的跨端表现，uts编译后的js，与标准js有略微差异：
-	+ 支持UTSJSONObject。尤其是UTSJSONObject有几个方法，在标准js object中不存在，包括getString、getNumber、getArray。
+	+ 支持UTSJSONObject。尤其是UTSJSONObject有几个方法，在标准js object中不存在，包括`parse`,`get`,`set`,`getAny`,`getBoolean`,`getNumber`,`getString`,`getArray`,`getJSON`,`toMap`。
 	+ type没有擦除而是编译成了class。这也是为了保持和uts2kt、uts2swift一致。
 	+ 把部分js内置API返回值从undefined改为null。因为kt、swift等强类型语言没有undefined概念，为拉齐而反向修改了js端逻辑。以下js内置API在uts2js编译后，会将返回值从undefined改为null：
 		* Array.prototype.pop
