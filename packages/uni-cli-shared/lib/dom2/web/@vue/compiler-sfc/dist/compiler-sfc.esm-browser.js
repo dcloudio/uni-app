@@ -30808,6 +30808,14 @@ function createTextTransform() {
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformImage.ts
+function genImageExpression(expression, context) {
+	if (!expression.isStatic && expression.ast === void 0) return [[
+		expression.content,
+		-3,
+		expression.loc
+	]];
+	return genExpression(expression, context);
+}
 function transformImage(node) {
 	if (node.type !== 1 || node.tag !== "image" || node.ns !== 0) return;
 	node.tag = "img";
@@ -30866,7 +30874,7 @@ function createImageTransform() {
 			if (operation.type !== 3) return;
 			const key = operations.get(operation);
 			if (!key) return;
-			return [NEWLINE, ...genCall(context.helper(key === "src" ? "setImageSrc" : "setImageMode"), `n${operation.element}`, genExpression(operation.prop.values[0], context))];
+			return [NEWLINE, ...genCall(context.helper(key === "src" ? "setImageSrc" : "setImageMode"), `n${operation.element}`, genImageExpression(operation.prop.values[0], context))];
 		},
 		genEventHandler(operation, context, handler) {
 			if (!imageElements.has(operation.element) || !operation.key.isStatic) return;
@@ -40662,7 +40670,7 @@ function getEscapedPropName(key) {
 	return propNameEscapeSymbolsRE.test(key) ? JSON.stringify(key) : key;
 }
 const isJS = (...langs) => langs.some((lang) => lang === "js" || lang === "jsx");
-const isTS = (...langs) => langs.some((lang) => lang === "ts" || lang === "tsx");
+const isTS = (...langs) => langs.some((lang) => lang === "ts" || lang === "tsx" || lang === "uts");
 //#endregion
 //#region packages/compiler-sfc/src/script/analyzeScriptBindings.ts
 /**
@@ -41791,9 +41799,12 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
 	if (!userPlugins || !userPlugins.some((p) => p === "importAssertions" || p === "importAttributes" || isArray$3(p) && p[0] === "importAttributes")) plugins.push("importAttributes");
 	if (lang === "jsx" || lang === "tsx" || lang === "mtsx") plugins.push("jsx");
 	else if (userPlugins) userPlugins = userPlugins.filter((p) => p !== "jsx");
-	if (lang === "ts" || lang === "mts" || lang === "tsx" || lang === "cts" || lang === "mtsx") {
+	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "cts" || lang === "mtsx") {
 		plugins.push(["typescript", { dts }], "explicitResourceManagement");
-		if (!userPlugins || !userPlugins.includes("decorators")) plugins.push("decorators-legacy");
+		if (!(lang === "uts" ? userPlugins === null || userPlugins === void 0 ? void 0 : userPlugins.some((plugin) => {
+			const name = isArray$3(plugin) ? plugin[0] : plugin;
+			return name === "decorators" || name === "decorators-legacy";
+		}) : userPlugins === null || userPlugins === void 0 ? void 0 : userPlugins.includes("decorators"))) plugins.push(lang === "uts" ? "decorators" : "decorators-legacy");
 	}
 	if (userPlugins) plugins.push(...userPlugins);
 	return plugins;
@@ -42319,10 +42330,10 @@ function resolveExt(filename, fs) {
 	const tryResolve = (filename) => {
 		if (fs.fileExists(filename)) return filename;
 	};
-	const resolveTs = () => tryResolve(filename + `.ts`) || tryResolve(filename + `.tsx`) || tryResolve(filename + `.d.ts`);
+	const resolveTs = () => tryResolve(filename + `.ts`) || tryResolve(filename + `.tsx`) || tryResolve(filename + `.d.ts`) || tryResolve(filename + `.uts`);
 	const resolveMts = () => tryResolve(filename + `.mts`) || tryResolve(filename + `.d.mts`);
 	const resolveCts = () => tryResolve(filename + `.cts`) || tryResolve(filename + `.d.cts`);
-	return tryResolve(filename) || (moduleType === "m" ? resolveMts() || resolveTs() : moduleType === "c" ? resolveCts() || resolveTs() : resolveTs() || resolveMts() || resolveCts()) || tryResolve(joinPaths(filename, `index.ts`)) || tryResolve(joinPaths(filename, `index.tsx`)) || tryResolve(joinPaths(filename, `index.d.ts`));
+	return tryResolve(filename) || (moduleType === "m" ? resolveMts() || resolveTs() : moduleType === "c" ? resolveCts() || resolveTs() : resolveTs() || resolveMts() || resolveCts()) || tryResolve(joinPaths(filename, `index.ts`)) || tryResolve(joinPaths(filename, `index.tsx`)) || tryResolve(joinPaths(filename, `index.d.ts`)) || tryResolve(joinPaths(filename, `index.uts`));
 }
 const tsConfigCache = createCache();
 const tsConfigRefMap = /* @__PURE__ */ new Map();
@@ -42358,7 +42369,7 @@ function fileToScope(ctx, filename, asGlobal = false) {
 }
 function parseFile(filename, content, fs, parserPlugins) {
 	const ext = extname(filename);
-	if (ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".cts" || ext === ".mtsx") return (0, import_lib.parse)(content, {
+	if (ext === ".uts" || ext === ".ts" || ext === ".mts" || ext === ".tsx" || ext === ".cts" || ext === ".mtsx") return (0, import_lib.parse)(content, {
 		plugins: resolveParserPlugins(ext.slice(1), parserPlugins, /\.d\.[cm]?ts$/.test(filename)),
 		sourceType: "module"
 	}).program.body;
