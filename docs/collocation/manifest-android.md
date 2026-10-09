@@ -798,7 +798,7 @@ Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针�
       }
     }
   }
-```
+  ```
 
 启用该裁剪后，所有与国际化（i18n）、本地化格式化以及复杂 Unicode 字符处理相关的 API 与特性将被限制或禁用，具体影响如下：  
 + [Intl](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Intl) 全局对象不可用  
