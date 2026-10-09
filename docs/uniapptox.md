@@ -43,9 +43,22 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 ### 5. 构造uni-app x项目
 
-新建`uni-app x`项目，勾选`manifest.json`中的蒸汽模式。把老项目的页面、组件、uni_modules、静态资源复制过来。所有`vue`或`nvue`页面组件文件，批量重命名为`uvue`。`main.js`改名为`main.uts`（蒸汽模式下，`main.uts`里也支持`js/ts`写法）。可以保留之前的appid和包名。
+新建`uni-app x`项目，选择蒸汽模式。
+可以保留之前的appid和包名，在manifest.json源码视图里改成之前的appid。
 
-之前如果有`nativeplugins`目录，就不用带来过了，uni-app x只支持uni_modules下的uts插件。原本的插件需要换新，或者临时mock掉。如果插件市场没有同款uts插件替代，可以让uni-agent重新封装一个uts原生插件，不懂原生也可以指挥ai完成（别选智商低的模型）。对于app.vue，不建议整体文件改名替换uni-app x的app.uvue。而是挑选部分代码复制过来。因为uni-app x 的app.uvue有2个变化：
+把老项目的页面、组件、uni_modules、静态资源复制到新项目中。
+之前如果有`nativeplugins`目录，就不用带来过了，uni-app x只支持uni_modules下的uts插件。
+原本的插件需要换新，或者临时mock掉。
+如果插件市场没有同款uts插件替代，可以让uni-agent重新封装一个uts原生插件，不懂原生也可以指挥ai完成（别选智商低的模型）。
+
+所有`vue`或`nvue`页面组件文件，批量重命名为`uvue`。
+
+在HBuilder 5.31以前，推荐把独立的js/ts文件的后缀名改成uts（蒸汽模式页面引用的uts文件也是弱类型，可以写js/ts语法）。
+5.31起不需要改文件后缀了。
+
+老项目的`main.js`和`app.vue`，挑选内容复制到新项目中对应的新文件中。
+
+uni-app x 的app.uvue对比老 uni-app 有2个变化：
 	
 #### 5.1 应用退出方式
 
@@ -88,27 +101,26 @@ uni-app x不支持plus。
 
 另外如果项目使用了subNVue，需要改成[dialogPage](./api/dialog-page.md)
 	
-### 9. 改造组件库
+### 9. 升级或改造前端库
 
-* 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md)
+* 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md#uniuiupgrade)
 * 如果使用其他组件库，需要咨询组件作者是否有 uni-app x 版本。如果没有的话，推荐用[uni-ui x](./component/uni-ui-x/README.md)重构。
 
-uni-app x 相比 uni-app 多了不少内置组件，比如`list-view`复用长列表、`waterflow`瀑布流、`page-container`弹框、`sticky`吸顶、`match-media`宽屏适配、loading加载中、native-view对接原生view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
+uni-app x 相比 uni-app 多了不少内置组件，比如`list-view`复用长列表、`waterflow`瀑布流、`page-container`弹框、`sticky`吸顶、`match-media`宽屏适配、loading加载、native-view对接原生view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
+
+* 升级uni_modules，比如官方的uni-id-pages、uni-starter、uni-pay、升级中心等库，需要升级到支持蒸汽模式的最新版本。
 
 ### 10. 改造wxs和renderjs为Element API
 
-uni-app x的app平台不再支持wxs和renderjs。uni-app x的逻辑层和渲染层虽然还是2层，但并没有明显的通信成本。
+uni-app x的app平台不再支持wxs和renderjs。
 
-uni-app x 提供了全端统一的UNIElement API，它在编译到微信小程序时会自动编译成wxs。写法跨端且高性能。[详见](./api/dom/README.md)
+uni-app x 提供了全端统一的UNIElement API，它在编译到微信/支付宝小程序时会自动编译成wxs/ajs。写法跨端且高性能。[详见](./api/dom/README.md)
 
 包括moveable组件的使用，也推荐改成UNIElement的操作。
 	
-### 11. mock掉App原生插件（非uts原生插件）的输入输出，在iOS和鸿蒙上验证
+### 11. mock掉App原生插件（非uts原生插件）的输入输出
 
 如果你使用了老的App原生插件，先让uni-agent把App原生插件的输入输出mock掉，后续步骤再处理原生插件，先对前几步的工作进行验证。
-
-- iOS和鸿蒙，使用的是js驱动，arkts是js的强化版，可以运行标准的js。
-- Android的vdom模式是uts驱动，需要强类型。对于uni-app开发者而言，推荐改用没有强类型约束的蒸汽模式，并且性能比vdom更高。
 
 这一步要再处理一件事，检查组件库是否适配了[样式隔离策略2.0](./css/common/style-isolation.md)。uni-app x 的蒸汽模式，仅支持[样式隔离策略2.0](./css/common/style-isolation.md)。
 
@@ -130,11 +142,18 @@ uni-agent让普通前端开发者具备了写原生插件的能力，官方的�
 
 完成后继续在iOS和鸿蒙上验证。
 
-### 13. 使用HBuilderX 5.23以上适配Android
+注意部分uts插件使用了uni-app的特性，导致没有适配uni-app x，这种情况需要插件作者升级适配。
 
-直接打开 `uni-app x` 的蒸汽模式，该模式兼容js/ts写法。且性能比`uni-app x` Android版VDOM模式、比Android原生开发的性能都会好非常多。[详见](./app-vapor.md)
+uni-app 的 Android平台整个应用只有一个activity，每个page是view。而uni-app x 的 Android 平台，每个页面都是一个activity。有的uts插件可能未区别这种差异。
 
-js驱动将避免开发者改造uts代码，并且兼容广泛的npm js生态。
+### 13. 处理uts/js/ts的差异
+
+在 HBuilder 5.31以前，蒸汽模式下uts/js/ts都是按uts2js编译。此时script中的lang不能设置，需要置空。同时外部文件后缀需要为uts。
+但此时的uts，不编译为强类型的kt、swift，可以在里面写普通的js/ts代码。
+
+从 5.31+ ，蒸汽模式下支持独立设置uts/js/ts。[详见](./vue/README.md#lang)。
+
+推荐uni-app的老应用升级时选择5.31+。
 	
 ### 小结
 
