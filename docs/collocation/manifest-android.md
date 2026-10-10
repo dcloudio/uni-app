@@ -784,9 +784,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。
 蒸汽模式下 Android 平台业务逻辑代码运行在Google V8 JS 引擎中。  
 Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针对多种 CPU 架构（如 armeabi-v7a、arm64-v8a 等）分别打包。为严格控制 APK 的安装包体积，构建时默认禁用了 ICU 模块（编译参数 v8_enable_i18n_support = false）。  
 
-在uni-app x项目中使用包含 ICU 功能的 V8 引擎，需在manifest.json中配置：
+在uni-app x项目中使用包含 ICU 功能的 V8 引擎，需在manifest.json中配置：  
 
-- HBuilderX 5.32 及以上版本
+- HBuilderX 5.32 及以上版本  
   需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "v8-icu" 节点，如下示例：  
   ```json
   {
