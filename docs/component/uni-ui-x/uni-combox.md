@@ -35,13 +35,22 @@ uni-combox 组合框组件。
 <uni-combox :options="cityOptions" placeholder="这里展示 placeholder" v-model="value" />
 ```
 
+### disabled
+
+```html
+<uni-combox :options="cityOptions" v-model="city" disabled />
+```
+
+禁用后不可输入、展开或选择候选项。
+
 ### 组合模式
 
 ```html
 <uni-combox :options="options" v-model="city">
-  <template #input="{ value, input }">
+  <template #input="{ value, input, disabled }">
     <input
       :value="value"
+      :disabled="disabled"
       placeholder="选择或输入城市"
       @input="input"
     />
@@ -109,6 +118,7 @@ uni-combox 组合框组件。
 | options | Array\<String\> | [] | 候选字符串数组 |
 | modelValue | String | '' | 当前值，支持 v-model |
 | placeholder | String | '' | 占位文字 |
+| disabled | Boolean | false | 是否禁用 |
 | arrowClass | String | '' | 右侧箭头自定义样式类 |
 | optionsViewClass | String | '' | 候选浮层外层自定义样式类 |
 | optionTextClass | String | '' | 候选项文字自定义样式类 |
@@ -144,6 +154,7 @@ uni-combox 组合框组件。
 | options | string\[\] |   |
 | modelValue | string |   |
 | placeholder | string |   |
+| disabled | boolean |   |
 | arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
 | optionsViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
 | optionTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
