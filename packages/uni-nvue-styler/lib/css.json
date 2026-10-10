@@ -1013,6 +1013,159 @@
       "defaultValue": "auto"
     },
     {
+      "name": "gap",
+      "restrictions": [
+        "length",
+        "percentage"
+      ],
+      "syntax": "<length> | <percentage>",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          },
+          "ios": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          },
+          "harmony": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "5.32"
+          },
+          "ios": {
+            "unixVaporVer": "5.32"
+          },
+          "harmony": {
+            "unixVaporVer": "5.32"
+          }
+        }
+      },
+      "defaultValue": "0"
+    },
+    {
+      "name": "column-gap",
+      "restrictions": [
+        "length",
+        "percentage"
+      ],
+      "syntax": "<length> | <percentage>",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          },
+          "ios": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          },
+          "harmony": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "5.32"
+          },
+          "ios": {
+            "unixVaporVer": "5.32"
+          },
+          "harmony": {
+            "unixVaporVer": "5.32"
+          }
+        }
+      },
+      "defaultValue": "0"
+    },
+    {
+      "name": "row-gap",
+      "restrictions": [
+        "length",
+        "percentage"
+      ],
+      "syntax": "<length> | <percentage>",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          },
+          "ios": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          },
+          "harmony": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.32"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "5.32"
+          },
+          "ios": {
+            "unixVaporVer": "5.32"
+          },
+          "harmony": {
+            "unixVaporVer": "5.32"
+          }
+        }
+      },
+      "defaultValue": "0"
+    },
+    {
       "name": "min-height",
       "restrictions": [
         "length"
