@@ -60,7 +60,7 @@ import {
   field
 } from 'uni-mixins'
 import { kebabCase, once } from 'uni-shared'
-const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
+const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel', 'search', 'email']
 const NUMBER_TYPES = ['number', 'digit']
 const AUTOCOMPLETES = ['off', 'one-time-code']
 const INPUT_MODES = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
@@ -223,7 +223,11 @@ export default {
   },
   watch: {
     maxlength (value) {
-      const realValue = this.valueSync.slice(0, parseInt(value, 10))
+      const maxlength = Number(value)
+      if (!(maxlength >= 0)) {
+        return
+      }
+      const realValue = this.valueSync.slice(0, maxlength)
       realValue !== this.valueSync && (this.valueSync = realValue)
     },
     valueSync (value) {
