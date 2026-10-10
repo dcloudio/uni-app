@@ -77,14 +77,11 @@ declare module 'vue' {
   export declare function mergeModels(a: string[], b: string[]): string[]
   export declare function mergeModels(a : ComponentPropsOptions | EmitsOptions, b : ComponentPropsOptions | EmitsOptions) : string[] | ObjectEmitsOptions | ComponentObjectPropsOptions<Data>;
   export declare function createPropsRestProxy(props : any, excludedKeys : string[]) : Record<string, any>;
-  export declare function withAsyncContext(getAwaitable : () => any) : any[];
+  export declare function withAsyncContext(getAwaitable : () => any) : [any, () => void];
 
   export {
     createApp as createVueApp,
     createApp as createSSRApp,
-    // TODO: Web 端升级到 Vue 3.6 的完整 d.ts 后移除这两个临时类型别名。
-    createApp as createVaporApp,
-    createApp as createVaporSSRApp,
     defineComponent as defineApp,
     useCssVars
   }

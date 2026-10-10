@@ -10,6 +10,7 @@ import {
   isAppVue,
   isEnableConsole,
   isNormalCompileTarget,
+  isUniAppXWebVapor,
   isVueSfcFile,
   resolveUTSCompiler,
   uniAppXStandardScriptPlugin,
@@ -77,6 +78,7 @@ export default () => {
           }),
           resolveUTSCompiler().uts2js({
             platform: 'web',
+            dom2: isUniAppXWebVapor(),
             excludeStandardTypeScript: true,
             inputDir: process.env.UNI_INPUT_DIR,
             version: process.env.UNI_COMPILER_VERSION,

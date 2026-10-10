@@ -1,4 +1,3 @@
-import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
 import type { ElementNode } from '@vue/compiler-core'
@@ -18,6 +17,7 @@ import {
   type UniVitePlugin,
   createResolveStaticAsset,
   createUniVueTransformAssetUrls,
+  createVueCompilerFs,
   getBaseNodeTransforms,
   getUniAppXVaporScriptLang,
   initVueTemplateCompilerExtraOptions,
@@ -28,7 +28,6 @@ import {
   isUniPageFile,
   matchEasycom,
   normalizePath,
-  preJs,
   requireUniHelpers,
   resolveAppVue,
   resolveUniTypeScript,
@@ -286,25 +285,7 @@ export function initPluginVueOptions(
   })
 
   if (!vueOptions.script.fs) {
-    function resolveFile(file: string) {
-      if (file.startsWith('@/')) {
-        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
-      }
-      return file
-    }
-    vueOptions.script.fs = {
-      fileExists(file) {
-        return fsExtra.existsSync(resolveFile(file))
-      },
-      readFile(file) {
-        const filename = resolveFile(file)
-        // 需要走条件编译
-        return preJs(fsExtra.readFileSync(filename, 'utf-8'), filename)
-      },
-      realpath(file) {
-        return resolveFile(file)
-      },
-    }
+    vueOptions.script.fs = createVueCompilerFs()
   }
 
   if (isX) {

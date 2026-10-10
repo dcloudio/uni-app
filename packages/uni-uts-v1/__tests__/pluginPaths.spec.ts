@@ -138,12 +138,16 @@ describe('UTS HBuilderX plugin paths', () => {
 
       const webVaporPaths = getPaths()
       expect(webVaporPaths.vue).toEqual([
-        path.resolve('/plugins/cli-vite/node_modules/@vue/runtime-core'),
+        path.resolve(__dirname, '../lib/uts/types/uni-x/web/vue/dist/vue.d.ts'),
       ])
+      expect(webVaporPaths['@vue/runtime-vapor']).toBeDefined()
       expect(webVaporPaths['@vue/runtime-vapor-dom2']).toBeUndefined()
 
       delete process.env.UNI_APP_X_DOM2
-      expect(getPaths().vue).toEqual(webVaporPaths.vue)
+      expect(getPaths().vue).toEqual([
+        path.resolve('/plugins/cli-vite/node_modules/@vue/runtime-core'),
+      ])
+      expect(getPaths()['@vue/runtime-vapor']).toBeUndefined()
 
       process.env.UNI_UTS_PLATFORM = 'app-android'
       process.env.UNI_APP_X_DOM2 = 'true'

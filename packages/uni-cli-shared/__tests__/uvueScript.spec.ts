@@ -78,6 +78,33 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     )
   })
 
+  test.each(['vue', 'uvue'])(
+    'Web Vapor 不额外标记 setup（.%s）',
+    (extension) => {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_PLATFORM = 'h5'
+      process.env.UNI_UTS_PLATFORM = 'web'
+      const transform = getTransform(uniUTSUVueJavaScriptPlugin())
+      for (const setup of ['const value = 1', '  ']) {
+        const source = `<script lang="uts">export default {}</script><script setup lang="uts">${setup}</script>`
+        expect(
+          transform.call({} as any, source, `/pages/index/index.${extension}`)
+        ).toBeUndefined()
+      }
+      expect(
+        transform.call(
+          {} as any,
+          '<script setup>const value = 1</script>',
+          `/pages/index/index.${extension}`
+        )
+      ).toEqual(
+        expect.objectContaining({
+          code: '<script setup lang="ts">const value = 1</script>',
+        })
+      )
+    }
+  )
+
   test('skips SFC text transforms when App DOM2 uses descriptor preprocessing', () => {
     process.env.UNI_APP_X_DOM2 = 'true'
     process.env.UNI_PLATFORM = 'app-harmony'

@@ -177,13 +177,11 @@ function isVaporMode(descriptor, options) {
 	return false;
 }
 /**
-* `features.vapor` can force template-only SFCs, `<script setup>` SFCs, and
-* non-`.vue` transformed SFCs into Vapor mode. It cannot force `.vue` SFCs
-* with only a normal `<script>` because Vapor SFC support requires
-* `<script setup>`.
+* fixed by uts：.uvue 与 .vue 使用相同规则，普通 script 不强制为 Vapor。
+* 其他类型的转换文件仍保留官方行为。
 */
 function canForceVaporMode(descriptor) {
-	if (descriptor.filename.endsWith(".vue")) {
+	if (/\.u?vue$/.test(descriptor.filename)) {
 		if (descriptor.scriptSetup) return true;
 		if (descriptor.script) return false;
 	}
@@ -1526,7 +1524,7 @@ async function genScriptCode(descriptor, options, pluginContext, ssr, customElem
 		const src = script.src || descriptor.filename;
 		const langFallback = script.src && node_path.default.extname(src).slice(1) || "js";
 		const attrsQuery = attrsToQuery(script.attrs, langFallback);
-		const query = `?vue&type=script${script.src ? `&src=true` : ``}${attrsQuery}`;
+		const query = `?vue&type=script${script.src ? `&src=true` : ``}${isVaporMode(descriptor, options) && script.attrs.vapor !== true ? "&vapor=true" : ""}${attrsQuery}`;
 		const request = JSON.stringify(src + query);
 		scriptCode = `import _sfc_main from ${request}\nexport * from ${request}`;
 	}
