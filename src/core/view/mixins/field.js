@@ -224,14 +224,14 @@ export default {
     },
     _checkSelection () {
       const field = this._field
-      if (this.focusSync && this.selectionStartNumber > -1 && this.selectionEndNumber > -1 && field.type !== 'number') {
+      if (this.focusSync && this.selectionStartNumber > -1 && this.selectionEndNumber > -1 && typeof field.selectionStart === 'number') {
         field.selectionStart = this.selectionStartNumber
         field.selectionEnd = this.selectionEndNumber
       }
     },
     _checkCursor () {
       const field = this._field
-      if (this.focusSync && this.selectionStartNumber < 0 && this.selectionEndNumber < 0 && this.cursorNumber > -1 && field.type !== 'number') {
+      if (this.focusSync && this.selectionStartNumber < 0 && this.selectionEndNumber < 0 && this.cursorNumber > -1 && typeof field.selectionStart === 'number') {
         field.selectionEnd = field.selectionStart = this.cursorNumber
       }
     }
