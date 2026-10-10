@@ -2,6 +2,10 @@ import { validateThemeValue } from '@dcloudio/uni-cli-shared'
 import { normalizeManifestJson } from '../src/plugins/utils'
 import { MIN_RUNTIME_VERSION } from '../src/plugins/minRuntimeVersion'
 
+jest.mock('../src/plugins/compilerRuleVersion', () => ({
+  getUniCompilerRuleVersion: () => 7,
+}))
+
 describe('x-ios x-harmony manifestJson', () => {
   beforeEach(() => {
     process.env.UNI_INPUT_DIR = '/mock/input/dir'
@@ -112,25 +116,43 @@ describe('x-ios x-harmony manifestJson', () => {
   })
 
   describe('runtime compatibility version', () => {
-    test('should write the compiler maintained minimum runtime version in vapor mode', () => {
-      process.env.UNI_APP_X_DOM2 = 'true'
-      const manifest = normalizeManifestJson('app-ios', {
-        ...mockManifestJson,
-        'uni-app-x': { minRuntimeVersion: '0.1', bytecodeVersion: 999 },
-      }) as any
+    test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+      'should write compiler versions for %s in vapor mode',
+      (platform) => {
+        process.env.UNI_APP_X_DOM2 = 'true'
+        const manifest = normalizeManifestJson(platform, {
+          ...mockManifestJson,
+          'uni-app-x': {
+            minRuntimeVersion: '0.1',
+            bytecodeVersion: 999,
+            uniCompilerRuleVersion: 999,
+            uniComplierRuleVersion: 999,
+          },
+        }) as any
 
-      expect(manifest['uni-app-x'].minRuntimeVersion).toBe(MIN_RUNTIME_VERSION)
-      expect(MIN_RUNTIME_VERSION).toMatch(/^\d+\.\d+$/)
-      expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
-    })
+        expect(manifest['uni-app-x'].minRuntimeVersion).toBe(
+          MIN_RUNTIME_VERSION
+        )
+        expect(manifest['uni-app-x'].uniCompilerRuleVersion).toBe(7)
+        expect(MIN_RUNTIME_VERSION).toMatch(/^\d+\.\d+$/)
+        expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
+        expect(manifest['uni-app-x'].uniComplierRuleVersion).toBeUndefined()
+      }
+    )
 
     test('should omit minimum runtime version outside vapor mode', () => {
       const manifest = normalizeManifestJson('app-ios', {
         ...mockManifestJson,
-        'uni-app-x': { minRuntimeVersion: MIN_RUNTIME_VERSION },
+        'uni-app-x': {
+          minRuntimeVersion: MIN_RUNTIME_VERSION,
+          uniCompilerRuleVersion: 999,
+          uniComplierRuleVersion: 999,
+        },
       }) as any
 
       expect(manifest['uni-app-x'].minRuntimeVersion).toBeUndefined()
+      expect(manifest['uni-app-x'].uniCompilerRuleVersion).toBeUndefined()
+      expect(manifest['uni-app-x'].uniComplierRuleVersion).toBeUndefined()
     })
   })
 

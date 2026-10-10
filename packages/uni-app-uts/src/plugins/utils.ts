@@ -31,6 +31,7 @@ import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 import { MIN_RUNTIME_VERSION } from './minRuntimeVersion'
+import { getUniCompilerRuleVersion } from './compilerRuleVersion'
 
 export const SHARED_DATA_LIB_IMPORT_SOURCE = 'libentry.so'
 export const SHARED_DATA_LIB_GLOBAL_NAME = '__uniSharedDataLib'
@@ -213,9 +214,12 @@ export function normalizeManifestJson(
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     x.minRuntimeVersion = MIN_RUNTIME_VERSION
+    x.uniCompilerRuleVersion = getUniCompilerRuleVersion()
   } else {
     delete x.minRuntimeVersion
+    delete x.uniCompilerRuleVersion
   }
+  delete x.uniComplierRuleVersion
   delete x.bytecodeVersion
   const pageOrientation = getGlobalPageOrientation()
 
