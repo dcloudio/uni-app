@@ -13,9 +13,9 @@
 2. 在长列表掉帧测试中，uni-app x 的长列表帧率，在Android、iOS、鸿蒙 3个App平台，是原生的2~4倍。
 
 除了view、text、list，还有更多评测内容，详见benchmark目录下的3个平台的评测报告。
-- [uni-app x Android平台性能评测报告](https://github.com/dcloudio/uni-app/benchmark/vapor-benchmark-android.md)
-- [uni-app x iOS平台性能评测报告](https://github.com/dcloudio/uni-app/benchmark/vapor-benchmark-ios.md)
-- [uni-app x 鸿蒙平台性能评测报告](https://github.com/dcloudio/uni-app/benchmark/vapor-benchmark-harmony.md)
+- [uni-app x Android平台性能评测报告](./benchmark/vapor-benchmark-android.md)
+- [uni-app x iOS平台性能评测报告](./benchmark/vapor-benchmark-ios.md)
+- [uni-app x 鸿蒙平台性能评测报告](./benchmark/vapor-benchmark-harmony.md)
 
 uts是一门类ts的、跨平台的语言。uts在Android平台编译为kotlin、在iOS平台编译为swift、在鸿蒙next平台上编译为ArkTS、在Web和小程序平台编译为js。uts语言主要用于原生插件扩展。
 
