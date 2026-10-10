@@ -87,7 +87,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   //#endif
   setup(props, { emit, expose }) {
-    const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
+    const INPUT_TYPES = [
+      'text',
+      'number',
+      'idcard',
+      'digit',
+      'password',
+      'tel',
+      'search',
+      'email',
+    ]
     const AUTOCOMPLETES = ['off', 'one-time-code']
     const type = computed(() => {
       let type = ''
@@ -233,6 +242,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       () => props.maxlength,
       (length) => {
         length = parseInt(length as any, 10)
+        if (!(length >= 0)) {
+          return
+        }
         const realValue = state.value.slice(0, length)
         realValue !== state.value && (state.value = realValue)
       }
@@ -362,6 +374,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             {props.confirmType === 'search' ? (
               <form
                 action=""
+                novalidate
                 onSubmit={(event) => event.preventDefault()}
                 class="uni-input-form"
               >
