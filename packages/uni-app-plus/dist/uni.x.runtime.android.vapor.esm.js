@@ -4978,7 +4978,7 @@ function initUTSProxyInterface(instanceId, options) {
   }
   var instanceProxy = new Proxy({}, {
     get(target, prop, receiver) {
-      if (typeof prop !== "string") {
+      if (typeof prop !== "string" || hasOwn(target, prop)) {
         return Reflect.get(target, prop, receiver);
       }
       if (prop === "__v_skip") {
@@ -5082,7 +5082,7 @@ function initUTSProxyClass(options) {
           if (prop === "__v_skip") {
             return true;
           }
-          if (typeof prop !== "string") {
+          if (typeof prop !== "string" || hasOwn(target, prop)) {
             return Reflect.get(target, prop, receiver);
           }
           if (hasOwn(methods, prop)) {
@@ -5127,6 +5127,9 @@ function initUTSProxyClass(options) {
   };
   return new Proxy(ProxyClass, {
     get(target, prop, receiver) {
+      if (typeof prop !== "string" || hasOwn(target, prop)) {
+        return Reflect.get(target, prop, receiver);
+      }
       if (hasOwn(staticMethods, prop)) {
         var _method2 = staticMethods[prop];
         if (_method2 === FUNCTION_PLACEHOLDER) {
@@ -5219,7 +5222,7 @@ function initUTSElementProxyClass(options) {
           if (prop === "__element_class_id__") {
             return classId;
           }
-          if (typeof prop !== "string") {
+          if (typeof prop !== "string" || hasOwn(target, prop)) {
             return Reflect.get(target, prop, receiver);
           }
           if (UNIELEMENT_PRIORITY_METHODS.includes(prop) && prop in target) {
@@ -5259,6 +5262,9 @@ function initUTSElementProxyClass(options) {
   };
   return new Proxy(ProxyClass, {
     get(target, prop, receiver) {
+      if (typeof prop !== "string" || hasOwn(target, prop)) {
+        return Reflect.get(target, prop, receiver);
+      }
       if (hasOwn(staticMethods, prop)) {
         var _method4 = staticMethods[prop];
         if (_method4 === FUNCTION_PLACEHOLDER) {

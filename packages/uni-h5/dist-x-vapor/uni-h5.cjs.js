@@ -112,6 +112,55 @@ function normalizeMessages(module2, keys, values) {
     return res;
   }, {});
 }
+const initI18nAppVmMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
+  const name = "uni.appVm.";
+  const keys = ["methodWarning"];
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(
+      uniI18n.LOCALE_EN,
+      normalizeMessages(name, keys, [
+        'Method "{methodName}" should not be called directly on UniApp. Use "{methodCall}" instead.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(
+      uniI18n.LOCALE_ES,
+      normalizeMessages(name, keys, [
+        'El método "{methodName}" no debe llamarse directamente en UniApp. Use "{methodCall}" en su lugar.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(
+      uniI18n.LOCALE_FR,
+      normalizeMessages(name, keys, [
+        'La méthode "{methodName}" ne doit pas être appelée directement sur UniApp. Utilisez "{methodCall}" à la place.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, [
+        "不应直接通过 UniApp 调用方法“{methodName}”，请改用“{methodCall}”。"
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      uniI18n.LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, [
+        "不應直接透過 UniApp 呼叫方法「{methodName}」，請改用「{methodCall}」。"
+      ]),
+      false
+    );
+  }
+});
 const initI18nAsyncMsgsOnce = /* @__PURE__ */ uniShared.once(() => {
   const name = "uni.async.";
   const keys = ["error"];
@@ -756,6 +805,148 @@ function isNormalDialogPageInstance(vm) {
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
+function warnUniAppVmMethod(methodName) {
+  initI18nAppVmMsgsOnce();
+  const methodCall = `getApp().vm?.${methodName}()`;
+  Vue.warn(
+    useI18n().t("uni.appVm.methodWarning", {
+      methodName,
+      methodCall
+    })
+  );
+}
+function createInitUniAppVmMethodWarnings() {
+  const VM_METHOD_WARNING_GETTER = Symbol.for(
+    "uni-app.vm-method-warning-getter"
+  );
+  const UNI_APP_METHODS = /* @__PURE__ */ new Set([
+    "$vm",
+    "globalData",
+    "getAndroidApplication",
+    "getHarmonyAbility",
+    "restart",
+    "vm"
+  ]);
+  function getMethodSources(vm) {
+    var _a;
+    const instance = vm.$;
+    if (instance.exposed) {
+      return [instance.exposed];
+    }
+    return [
+      instance.ctx,
+      ((_a = instance.setupState) == null ? void 0 : _a.__isScriptSetup) ? void 0 : instance.setupState
+    ];
+  }
+  function getVmMethodNames(vm) {
+    const methodNames = /* @__PURE__ */ new Set();
+    getMethodSources(vm).forEach((source) => {
+      if (!source) {
+        return;
+      }
+      Object.getOwnPropertyNames(source).forEach((name) => {
+        const descriptor = Object.getOwnPropertyDescriptor(source, name);
+        if (typeof Vue.unref(descriptor == null ? void 0 : descriptor.value) === "function") {
+          methodNames.add(name);
+        }
+      });
+    });
+    return methodNames;
+  }
+  function createWarningGetter(methodName, getter) {
+    const warningGetter = function() {
+      warnUniAppVmMethod(methodName);
+      return Reflect.apply(getter, this, []);
+    };
+    Object.defineProperty(warningGetter, VM_METHOD_WARNING_GETTER, {
+      value: { methodName }
+    });
+    return warningGetter;
+  }
+  function findPropertyDescriptor(target, methodName) {
+    try {
+      let owner = target;
+      while (owner) {
+        const descriptor = Object.getOwnPropertyDescriptor(owner, methodName);
+        if (descriptor) {
+          return { descriptor, own: owner === target };
+        }
+        owner = Object.getPrototypeOf(owner);
+      }
+    } catch {
+      return;
+    }
+  }
+  function defineProperty(target, methodName, descriptor) {
+    try {
+      Object.defineProperty(target, methodName, descriptor);
+    } catch {
+    }
+  }
+  function wrapAccessor(uniApp, methodName, descriptor, own) {
+    var _a;
+    const getter = descriptor.get;
+    if (!getter || ((_a = getter[VM_METHOD_WARNING_GETTER]) == null ? void 0 : _a.methodName) === methodName || own && !descriptor.configurable) {
+      return;
+    }
+    defineProperty(uniApp, methodName, {
+      configurable: own ? descriptor.configurable : true,
+      enumerable: descriptor.enumerable,
+      get: createWarningGetter(methodName, getter),
+      set: descriptor.set
+    });
+  }
+  function wrapDataProperty(uniApp, methodName, value, descriptor, own = false) {
+    if (own && !(descriptor == null ? void 0 : descriptor.configurable)) {
+      return;
+    }
+    let currentValue = value;
+    defineProperty(uniApp, methodName, {
+      configurable: own ? descriptor == null ? void 0 : descriptor.configurable : true,
+      enumerable: (descriptor == null ? void 0 : descriptor.enumerable) ?? false,
+      get: createWarningGetter(methodName, () => currentValue),
+      set: (descriptor == null ? void 0 : descriptor.writable) === false ? void 0 : (value2) => {
+        currentValue = value2;
+      }
+    });
+  }
+  function wrapUniAppMethod(uniApp, methodName, wrapMissingProperty = false) {
+    if (UNI_APP_METHODS.has(methodName)) {
+      return;
+    }
+    const property = findPropertyDescriptor(uniApp, methodName);
+    if (property) {
+      const { descriptor, own } = property;
+      if (descriptor.get) {
+        wrapAccessor(uniApp, methodName, descriptor, own);
+      } else if (typeof descriptor.value === "function") {
+        wrapDataProperty(uniApp, methodName, descriptor.value, descriptor, own);
+      }
+      return;
+    }
+    let method;
+    try {
+      method = uniApp[methodName];
+    } catch {
+      return;
+    }
+    if (typeof method === "function" || wrapMissingProperty) {
+      wrapDataProperty(uniApp, methodName, method);
+    }
+  }
+  return function initUniAppVmMethodWarnings2(uniApp) {
+    if (!uniApp.vm) {
+      return /* @__PURE__ */ new Set();
+    }
+    const methodNames = getVmMethodNames(uniApp.vm);
+    UNI_APP_METHODS.forEach((methodName) => methodNames.delete(methodName));
+    methodNames.forEach((methodName) => {
+      wrapUniAppMethod(uniApp, methodName, false);
+    });
+    return methodNames;
+  };
+}
+const initUniAppVmMethodWarnings = process.env.NODE_ENV !== "production" ? createInitUniAppVmMethodWarnings() : () => /* @__PURE__ */ new Set();
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
 function publishViewMethodName(pageId) {
@@ -3604,6 +3795,7 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 let appVm;
 let $uniApp;
+let uniAppVmMethodNames = /* @__PURE__ */ new Set();
 {
   class UniAppImpl {
     get vm() {
@@ -3622,7 +3814,16 @@ let $uniApp;
       return null;
     }
   }
-  $uniApp = new UniAppImpl();
+  const uniApp = new UniAppImpl();
+  $uniApp = process.env.NODE_ENV !== "production" ? new Proxy(uniApp, {
+    get(target, key, receiver) {
+      const value = Reflect.get(target, key, receiver);
+      if (typeof key === "string" && value === void 0 && uniAppVmMethodNames.has(key)) {
+        warnUniAppVmMethod(key);
+      }
+      return value;
+    }
+  }) : uniApp;
 }
 function getApp$1() {
   {
@@ -3631,6 +3832,12 @@ function getApp$1() {
 }
 function initApp$1(vm) {
   appVm = vm;
+  if (process.env.NODE_ENV !== "production") {
+    const initVmMethodWarnings = () => {
+      uniAppVmMethodNames = initUniAppVmMethodWarnings($uniApp);
+    };
+    Vue.onServerPrefetch(initVmMethodWarnings);
+  }
   Object.defineProperty(appVm.$.ctx, "$children", {
     get() {
       return getCurrentBasePages().map((page) => page.$vm);

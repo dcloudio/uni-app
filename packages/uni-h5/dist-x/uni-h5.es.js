@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, formatDateTime, onCreateVueApp, RESPONSIVE_MIN_WIDTH } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createElementVNode, toDisplayString, unref, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, normalizeClass, normalizeStyle, createCommentVNode, Fragment, renderList, createTextVNode, renderSlot, withCtx, withDirectives, vShow, shallowRef, isVNode, Comment, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, warn, unref, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, markRaw, watchEffect, nextTick, createElementVNode, toDisplayString, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, createBlock, onActivated, normalizeClass, normalizeStyle, createCommentVNode, Fragment, renderList, createTextVNode, renderSlot, withCtx, withDirectives, vShow, shallowRef, isVNode, Comment, h, isInSSRComponentSetup, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -100,6 +100,55 @@ function normalizeMessages(module, keys, values) {
     return res;
   }, {});
 }
+const initI18nAppVmMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.appVm.";
+  const keys = ["methodWarning"];
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(
+      LOCALE_EN,
+      normalizeMessages(name, keys, [
+        'Method "{methodName}" should not be called directly on UniApp. Use "{methodCall}" instead.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(
+      LOCALE_ES,
+      normalizeMessages(name, keys, [
+        'El método "{methodName}" no debe llamarse directamente en UniApp. Use "{methodCall}" en su lugar.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(
+      LOCALE_FR,
+      normalizeMessages(name, keys, [
+        'La méthode "{methodName}" ne doit pas être appelée directement sur UniApp. Utilisez "{methodCall}" à la place.'
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, [
+        "不应直接通过 UniApp 调用方法“{methodName}”，请改用“{methodCall}”。"
+      ]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, [
+        "不應直接透過 UniApp 呼叫方法「{methodName}」，請改用「{methodCall}」。"
+      ]),
+      false
+    );
+  }
+});
 const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
   const name = "uni.async.";
   const keys = ["error"];
@@ -1362,6 +1411,148 @@ function isNormalDialogPageInstance(vm) {
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
+function warnUniAppVmMethod(methodName) {
+  initI18nAppVmMsgsOnce();
+  const methodCall = `getApp().vm?.${methodName}()`;
+  warn(
+    useI18n().t("uni.appVm.methodWarning", {
+      methodName,
+      methodCall
+    })
+  );
+}
+function createInitUniAppVmMethodWarnings() {
+  const VM_METHOD_WARNING_GETTER = Symbol.for(
+    "uni-app.vm-method-warning-getter"
+  );
+  const UNI_APP_METHODS = /* @__PURE__ */ new Set([
+    "$vm",
+    "globalData",
+    "getAndroidApplication",
+    "getHarmonyAbility",
+    "restart",
+    "vm"
+  ]);
+  function getMethodSources(vm) {
+    var _a;
+    const instance2 = vm.$;
+    if (instance2.exposed) {
+      return [instance2.exposed];
+    }
+    return [
+      instance2.ctx,
+      ((_a = instance2.setupState) == null ? void 0 : _a.__isScriptSetup) ? void 0 : instance2.setupState
+    ];
+  }
+  function getVmMethodNames(vm) {
+    const methodNames = /* @__PURE__ */ new Set();
+    getMethodSources(vm).forEach((source) => {
+      if (!source) {
+        return;
+      }
+      Object.getOwnPropertyNames(source).forEach((name) => {
+        const descriptor = Object.getOwnPropertyDescriptor(source, name);
+        if (typeof unref(descriptor == null ? void 0 : descriptor.value) === "function") {
+          methodNames.add(name);
+        }
+      });
+    });
+    return methodNames;
+  }
+  function createWarningGetter(methodName, getter) {
+    const warningGetter = function() {
+      warnUniAppVmMethod(methodName);
+      return Reflect.apply(getter, this, []);
+    };
+    Object.defineProperty(warningGetter, VM_METHOD_WARNING_GETTER, {
+      value: { methodName }
+    });
+    return warningGetter;
+  }
+  function findPropertyDescriptor(target, methodName) {
+    try {
+      let owner = target;
+      while (owner) {
+        const descriptor = Object.getOwnPropertyDescriptor(owner, methodName);
+        if (descriptor) {
+          return { descriptor, own: owner === target };
+        }
+        owner = Object.getPrototypeOf(owner);
+      }
+    } catch {
+      return;
+    }
+  }
+  function defineProperty(target, methodName, descriptor) {
+    try {
+      Object.defineProperty(target, methodName, descriptor);
+    } catch {
+    }
+  }
+  function wrapAccessor(uniApp, methodName, descriptor, own) {
+    var _a;
+    const getter = descriptor.get;
+    if (!getter || ((_a = getter[VM_METHOD_WARNING_GETTER]) == null ? void 0 : _a.methodName) === methodName || own && !descriptor.configurable) {
+      return;
+    }
+    defineProperty(uniApp, methodName, {
+      configurable: own ? descriptor.configurable : true,
+      enumerable: descriptor.enumerable,
+      get: createWarningGetter(methodName, getter),
+      set: descriptor.set
+    });
+  }
+  function wrapDataProperty(uniApp, methodName, value, descriptor, own = false) {
+    if (own && !(descriptor == null ? void 0 : descriptor.configurable)) {
+      return;
+    }
+    let currentValue = value;
+    defineProperty(uniApp, methodName, {
+      configurable: own ? descriptor == null ? void 0 : descriptor.configurable : true,
+      enumerable: (descriptor == null ? void 0 : descriptor.enumerable) ?? false,
+      get: createWarningGetter(methodName, () => currentValue),
+      set: (descriptor == null ? void 0 : descriptor.writable) === false ? void 0 : (value2) => {
+        currentValue = value2;
+      }
+    });
+  }
+  function wrapUniAppMethod(uniApp, methodName, wrapMissingProperty = false) {
+    if (UNI_APP_METHODS.has(methodName)) {
+      return;
+    }
+    const property = findPropertyDescriptor(uniApp, methodName);
+    if (property) {
+      const { descriptor, own } = property;
+      if (descriptor.get) {
+        wrapAccessor(uniApp, methodName, descriptor, own);
+      } else if (typeof descriptor.value === "function") {
+        wrapDataProperty(uniApp, methodName, descriptor.value, descriptor, own);
+      }
+      return;
+    }
+    let method;
+    try {
+      method = uniApp[methodName];
+    } catch {
+      return;
+    }
+    if (typeof method === "function" || wrapMissingProperty) {
+      wrapDataProperty(uniApp, methodName, method);
+    }
+  }
+  return function initUniAppVmMethodWarnings2(uniApp) {
+    if (!uniApp.vm) {
+      return /* @__PURE__ */ new Set();
+    }
+    const methodNames = getVmMethodNames(uniApp.vm);
+    UNI_APP_METHODS.forEach((methodName) => methodNames.delete(methodName));
+    methodNames.forEach((methodName) => {
+      wrapUniAppMethod(uniApp, methodName, false);
+    });
+    return methodNames;
+  };
+}
+const initUniAppVmMethodWarnings = process.env.NODE_ENV !== "production" ? createInitUniAppVmMethodWarnings() : () => /* @__PURE__ */ new Set();
 function initView() {
   useRem();
   initCustomDatasetOnce(isBuiltInElement);
@@ -9794,6 +9985,7 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent({
 });
 let appVm;
 let $uniApp;
+let uniAppVmMethodNames = /* @__PURE__ */ new Set();
 {
   class UniAppImpl {
     get vm() {
@@ -9812,7 +10004,16 @@ let $uniApp;
       return null;
     }
   }
-  $uniApp = new UniAppImpl();
+  const uniApp = new UniAppImpl();
+  $uniApp = process.env.NODE_ENV !== "production" ? new Proxy(uniApp, {
+    get(target, key, receiver) {
+      const value = Reflect.get(target, key, receiver);
+      if (typeof key === "string" && value === void 0 && uniAppVmMethodNames.has(key)) {
+        warnUniAppVmMethod(key);
+      }
+      return value;
+    }
+  }) : uniApp;
 }
 function getApp$1() {
   {
@@ -9821,6 +10022,13 @@ function getApp$1() {
 }
 function initApp$1(vm) {
   appVm = vm;
+  if (process.env.NODE_ENV !== "production") {
+    const initVmMethodWarnings = () => {
+      uniAppVmMethodNames = initUniAppVmMethodWarnings($uniApp);
+    };
+    onBeforeMount(initVmMethodWarnings);
+    onServerPrefetch(initVmMethodWarnings);
+  }
   Object.defineProperty(appVm.$.ctx, "$children", {
     get() {
       return getCurrentBasePages().map((page) => page.$vm);
