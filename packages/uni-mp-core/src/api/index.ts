@@ -36,6 +36,10 @@ import { initWrapper } from './wrapper'
 import { type MPProtocols, getEventChannel } from './protocols'
 import { getLocale, onLocaleChange, setLocale } from './locale'
 
+declare const my: {
+  canIUse(api: string): boolean
+}
+
 const baseApis = {
   $on,
   $off,

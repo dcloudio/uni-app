@@ -69,7 +69,9 @@ describe('Web Vapor UTS 类型', () => {
       )
       expect(paths['@vue/runtime-vapor-dom2']).toBeUndefined()
       for (const name of ['vue', '@vue/runtime-vapor', 'csstype']) {
-        expect(paths[name][0]).toContain('/lib/uts/types/uni-x/web/')
+        expect(paths[name][0].replace(/\\/g, '/')).toContain(
+          '/lib/uts/types/uni-x/web/'
+        )
         expect(fs.existsSync(paths[name][0])).toBe(true)
       }
     }
@@ -383,7 +385,7 @@ restore(123)
       const host = ts.createCompilerHost(compilerOptions)
       const originalGetSourceFile = host.getSourceFile.bind(host)
       host.getSourceFile = (file, languageVersion, ...args) =>
-        file === filename
+        path.normalize(file) === filename
           ? ts.createSourceFile(file, source, languageVersion, true)
           : originalGetSourceFile(file, languageVersion, ...args)
       const program = ts.createProgram([filename], compilerOptions, host)
@@ -491,9 +493,9 @@ setImageSrc(document.createElement('img'), '/static/logo.png')
       const host = ts.createCompilerHost(compilerOptions)
       const originalGetSourceFile = host.getSourceFile.bind(host)
       host.getSourceFile = (file, languageVersion, ...args) =>
-        file === filename
+        path.normalize(file) === filename
           ? ts.createSourceFile(file, source, languageVersion, true)
-          : file === compiledFilename
+          : path.normalize(file) === compiledFilename
           ? ts.createSourceFile(file, compiled.content, languageVersion, true)
           : originalGetSourceFile(file, languageVersion, ...args)
       const program = ts.createProgram(

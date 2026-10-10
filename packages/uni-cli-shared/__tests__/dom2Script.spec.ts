@@ -121,7 +121,7 @@ describe('uniVaporScriptPlugin', () => {
     )
   })
 
-  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+  test.each(['app-android', 'app-ios'] as const)(
     'skips Ext API collection for %s development builds',
     (platform) => {
       process.env.NODE_ENV = 'development'
@@ -136,7 +136,7 @@ describe('uniVaporScriptPlugin', () => {
     }
   )
 
-  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+  test.each(['app-android', 'app-ios'] as const)(
     'uses UNI_NODE_ENV for %s before Vite restores NODE_ENV',
     (platform) => {
       process.env.NODE_ENV = 'production'
@@ -148,6 +148,22 @@ describe('uniVaporScriptPlugin', () => {
 
       expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
         expect.objectContaining({ extApi: undefined })
+      )
+    }
+  )
+
+  test.each(['NODE_ENV', 'UNI_NODE_ENV'] as const)(
+    'collects Ext API usage for app-harmony development builds using %s',
+    (env) => {
+      process.env.NODE_ENV = 'production'
+      process.env[env] = 'development'
+      process.env.UNI_UTS_PLATFORM = 'app-harmony'
+      Reflect.deleteProperty(process.env, 'UNI_COMPILE_TARGET')
+
+      uniVaporScriptPlugin()
+
+      expect(mockDom2ScriptPlugin).toHaveBeenCalledWith(
+        expect.objectContaining({ extApi: { collectExtApiUsageAst } })
       )
     }
   )

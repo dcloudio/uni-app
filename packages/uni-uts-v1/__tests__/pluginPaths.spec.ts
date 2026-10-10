@@ -151,7 +151,12 @@ describe('UTS HBuilderX plugin paths', () => {
 
       process.env.UNI_UTS_PLATFORM = 'app-android'
       process.env.UNI_APP_X_DOM2 = 'true'
-      expect(getPaths().vue[0]).toContain('/lib/uts/types/uni-x/@vue/vue/')
+      expect(getPaths().vue).toEqual([
+        path.resolve(
+          __dirname,
+          '../lib/uts/types/uni-x/@vue/vue/dist/vue.d.ts'
+        ),
+      ])
       expect(getPaths()['@vue/runtime-vapor-dom2']).toBeDefined()
     })
   })

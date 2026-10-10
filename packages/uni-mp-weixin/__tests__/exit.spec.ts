@@ -2,23 +2,17 @@ import { initUni } from '@dcloudio/uni-mp-core'
 
 import * as protocols from '../src/api/protocols'
 
-declare global {
-  var my: any
-}
-
 const testGlobal = global as any
 
 describe('mp-weixin exit', () => {
   const originalGlobal = testGlobal.__GLOBAL__
   const originalPlatform = testGlobal.__PLATFORM__
   const originalX = global.__X__
-  const originalMy = testGlobal.my
 
   afterEach(() => {
     testGlobal.__GLOBAL__ = originalGlobal
     testGlobal.__PLATFORM__ = originalPlatform
     global.__X__ = originalX
-    testGlobal.my = originalMy
   })
 
   function createUniApi(exitMiniProgram: jest.Mock) {
@@ -26,7 +20,6 @@ describe('mp-weixin exit', () => {
     testGlobal.__GLOBAL__ = platform
     testGlobal.__PLATFORM__ = 'mp-weixin'
     global.__X__ = true
-    testGlobal.my = { canIUse: () => false }
     return initUni({}, protocols, platform)
   }
 
