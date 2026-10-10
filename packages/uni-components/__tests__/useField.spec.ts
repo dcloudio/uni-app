@@ -1,9 +1,19 @@
 global.__PLATFORM__ = 'h5'
 global.__APP_VIEW__ = false
 global.__X__ = true
-import { useField } from '../src/helpers/useField'
+import { props as fieldProps, useField } from '../src/helpers/useField'
 
-import { ref } from 'vue'
+import { effectScope, nextTick, reactive, ref } from 'vue'
+
+jest.mock('../src/helpers/useKeyboard', () => ({
+  useKeyboard: jest.fn(),
+  props: {},
+  emit: [],
+}))
+
+jest.mock('../src/helpers/useEvent', () => ({
+  useCustomEvent: () => jest.fn(),
+}))
 
 jest.mock('vue', () => {
   return {
@@ -31,6 +41,96 @@ jest.mock('@dcloudio/uni-core', () => {
 })
 
 describe('test: helpers/useField.ts', () => {
+  const scopes: ReturnType<typeof effectScope>[] = []
+
+  function createField(overrides: Record<string, unknown>) {
+    const props = reactive({
+      ...Object.fromEntries(
+        Object.entries(fieldProps).map(([key, prop]) => [
+          key,
+          (prop as { default?: unknown }).default,
+        ])
+      ),
+      ...overrides,
+    }) as Parameters<typeof useField>[0]
+    const scope = effectScope()
+    scopes.push(scope)
+    const field = scope.run(() => useField(props, ref(null), jest.fn()))!
+    return { props, ...field }
+  }
+
+  afterEach(() => {
+    scopes.splice(0).forEach((scope) => scope.stop())
+    global.__X__ = true
+  })
+
+  test.each([false, true])('dynamic maxlength (__X__=%s)', async (isX) => {
+    global.__X__ = isX
+    const { props, state } = createField({ value: '12345', maxlength: 5 })
+    props.maxlength = -1
+    await nextTick()
+    expect(state.value).toBe('12345')
+
+    props.maxlength = -0.5
+    await nextTick()
+    expect(state.value).toBe('12345')
+
+    props.maxlength = 3
+    await nextTick()
+    expect(state.value).toBe('123')
+
+    props.maxlength = 0
+    await nextTick()
+    expect(state.value).toBe('')
+  })
+
+  test.each([
+    'email',
+    'number',
+    'text',
+    'search',
+    'password',
+    'tel',
+    'textarea',
+  ])('cursor and selection for %s', async (type) => {
+    const supported = type !== 'email' && type !== 'number'
+    const handlers: Record<string, Function> = {}
+    let start: number | null = supported ? 0 : null
+    let end: number | null = supported ? 0 : null
+    const input = {
+      type,
+      addEventListener: (name: string, handler: Function) => {
+        handlers[name] = handler
+      },
+      get selectionStart() {
+        return start
+      },
+      set selectionStart(value: number | null) {
+        if (!supported) throw new Error('InvalidStateError')
+        start = value
+      },
+      get selectionEnd() {
+        return end
+      },
+      set selectionEnd(value: number | null) {
+        if (!supported) throw new Error('InvalidStateError')
+        end = value
+      },
+    }
+    const { props, fieldRef } = createField({ type, cursor: 2 })
+    fieldRef.value = input as unknown as HTMLInputElement
+    await nextTick()
+    expect(() => handlers.focus({})).not.toThrow()
+    expect(start).toBe(supported ? 2 : null)
+    expect(end).toBe(supported ? 2 : null)
+
+    props.selectionStart = 1
+    props.selectionEnd = 3
+    await nextTick()
+    expect(start).toBe(supported ? 1 : null)
+    expect(end).toBe(supported ? 3 : null)
+  })
+
   it('test useBase', () => {
     expect(useField).toBeDefined()
 
