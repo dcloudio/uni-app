@@ -5310,7 +5310,11 @@ function useBase(props2, rootRef, emit2) {
   );
   Vue.watch(
     () => state.maxlength,
-    (val) => state.value = state.value.slice(0, val),
+    (val) => {
+      if (val >= 0) {
+        state.value = state.value.slice(0, val);
+      }
+    },
     {
       immediate: true
     }
@@ -5385,14 +5389,14 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
       field.selectionStart = state.selectionStart;
       field.selectionEnd = state.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && field.type !== "number") {
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && typeof field.selectionStart === "number") {
       field.selectionEnd = field.selectionStart = state.cursor;
     }
   }
@@ -5495,7 +5499,7 @@ uniShared.once(() => {
 });
 const _t0$k = Vue.template("<input tabindex=-1 class=uni-input-input>", 1);
 const _t1$b = Vue.template("<input class=uni-input-input>", 1);
-const _t2$5 = Vue.template("<form action class=uni-input-form> ");
+const _t2$5 = Vue.template("<form action novalidate class=uni-input-form> ");
 const _t3$5 = Vue.template("<div class=uni-input-wrapper><div> </div>");
 const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
   placeholderClass: {
@@ -5536,7 +5540,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       "idcard",
       "digit",
       "password",
-      "tel"
+      "tel",
+      "search",
+      "email"
     ];
     const AUTOCOMPLETES = ["off", "one-time-code"];
     const type = Vue.computed(() => {
@@ -5600,6 +5606,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     });
     Vue.watch(() => props2.maxlength, (length) => {
       length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
       const realValue = state.value.slice(0, length);
       realValue !== state.value && (state.value = realValue);
     });

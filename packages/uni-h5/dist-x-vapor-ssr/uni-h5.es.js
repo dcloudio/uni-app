@@ -5728,7 +5728,11 @@ function useBase(props2, rootRef, emit2) {
   );
   watch(
     () => state.maxlength,
-    (val) => state.value = state.value.slice(0, val),
+    (val) => {
+      if (val >= 0) {
+        state.value = state.value.slice(0, val);
+      }
+    },
     {
       immediate: true
     }
@@ -5812,14 +5816,14 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
       field.selectionStart = state.selectionStart;
       field.selectionEnd = state.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && field.type !== "number") {
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && typeof field.selectionStart === "number") {
       field.selectionEnd = field.selectionStart = state.cursor;
     }
   }
@@ -5957,7 +5961,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       "idcard",
       "digit",
       "password",
-      "tel"
+      "tel",
+      "search",
+      "email"
     ];
     const AUTOCOMPLETES = ["off", "one-time-code"];
     const type = computed(() => {
@@ -6021,6 +6027,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     });
     watch(() => props2.maxlength, (length) => {
       length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
       const realValue = state.value.slice(0, length);
       realValue !== state.value && (state.value = realValue);
     });
@@ -6065,6 +6074,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? (openBlock(), createBlock("form", {
         key: 0,
         action: "",
+        novalidate: true,
         class: "uni-input-form"
       }, [normalizeVNode(() => inputNode)])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => inputNode)], 64))])], 512);
     };

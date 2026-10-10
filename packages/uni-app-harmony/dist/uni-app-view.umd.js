@@ -16228,7 +16228,11 @@
       cursor
     });
     watch(() => state.focus, (val) => emit2("update:focus", val));
-    watch(() => state.maxlength, (val) => state.value = state.value.slice(0, val), {
+    watch(() => state.maxlength, (val) => {
+      if (val >= 0) {
+        state.value = state.value.slice(0, val);
+      }
+    }, {
       immediate: false
     });
     return {
@@ -16334,14 +16338,14 @@
   function useEvent(fieldRef, state, props2, trigger2, triggerInput, beforeInput) {
     function checkSelection() {
       var field = fieldRef.value;
-      if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
+      if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
         field.selectionStart = state.selectionStart;
         field.selectionEnd = state.selectionEnd;
       }
     }
     function checkCursor() {
       var field = fieldRef.value;
-      if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && field.type !== "number") {
+      if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && typeof field.selectionStart === "number") {
         field.selectionEnd = field.selectionStart = state.cursor;
       }
     }
@@ -16514,7 +16518,7 @@
         emit: emit2,
         expose
       } = _ref;
-      var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
+      var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email"];
       var AUTOCOMPLETES = ["off", "one-time-code"];
       var type = computed(() => {
         var type2 = "";
@@ -16613,6 +16617,9 @@
       });
       watch(() => props2.maxlength, (length) => {
         length = parseInt(length, 10);
+        if (!(length >= 0)) {
+          return;
+        }
         var realValue = state.value.slice(0, length);
         realValue !== state.value && (state.value = realValue);
       });
@@ -16692,9 +16699,10 @@
           "class": ["uni-input-placeholder", props2.placeholderClass]
         }), [props2.placeholder], 16), [[vShow, !(state.value.length || cache2.value === "-" || cache2.value.includes("."))]]), props2.confirmType === "search" ? createVNode("form", {
           "action": "",
+          "novalidate": true,
           "onSubmit": (event) => event.preventDefault(),
           "class": "uni-input-form"
-        }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
+        }, [inputNode], 40, ["novalidate", "onSubmit"]) : inputNode])], 512);
       };
     }
   });

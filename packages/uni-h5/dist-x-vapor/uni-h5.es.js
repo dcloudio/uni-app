@@ -13034,7 +13034,11 @@ function useBase(props2, rootRef, emit2) {
   );
   watch(
     () => state2.maxlength,
-    (val) => state2.value = state2.value.slice(0, val),
+    (val) => {
+      if (val >= 0) {
+        state2.value = state2.value.slice(0, val);
+      }
+    },
     {
       immediate: true
     }
@@ -13118,14 +13122,14 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && field.type !== "number") {
+    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && typeof field.selectionStart === "number") {
       field.selectionStart = state2.selectionStart;
       field.selectionEnd = state2.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && field.type !== "number") {
+    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && typeof field.selectionStart === "number") {
       field.selectionEnd = field.selectionStart = state2.cursor;
     }
   }
@@ -13242,7 +13246,7 @@ once(() => {
 });
 const _t0$m = template("<input tabindex=-1 class=uni-input-input>", 1);
 const _t1$d = template("<input class=uni-input-input>", 1);
-const _t2$6 = template("<form action class=uni-input-form> ");
+const _t2$6 = template("<form action novalidate class=uni-input-form> ");
 const _t3$6 = template("<div class=uni-input-wrapper><div> </div>");
 const props$m = /* @__PURE__ */ extend({}, props$n, {
   placeholderClass: {
@@ -13293,7 +13297,9 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
       "idcard",
       "digit",
       "password",
-      "tel"
+      "tel",
+      "search",
+      "email"
     ];
     const AUTOCOMPLETES = ["off", "one-time-code"];
     const type = computed(() => {
@@ -13357,6 +13363,9 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     });
     watch(() => props2.maxlength, (length) => {
       length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
       const realValue = state2.value.slice(0, length);
       realValue !== state2.value && (state2.value = realValue);
     });

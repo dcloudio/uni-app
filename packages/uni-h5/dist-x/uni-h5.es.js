@@ -13150,7 +13150,11 @@ function useBase(props2, rootRef, emit2) {
   );
   watch(
     () => state2.maxlength,
-    (val) => state2.value = state2.value.slice(0, val),
+    (val) => {
+      if (val >= 0) {
+        state2.value = state2.value.slice(0, val);
+      }
+    },
     {
       immediate: true
     }
@@ -13234,14 +13238,14 @@ function useAutoFocus(props2, fieldRef) {
 function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && field.type !== "number") {
+    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && typeof field.selectionStart === "number") {
       field.selectionStart = state2.selectionStart;
       field.selectionEnd = state2.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && field.type !== "number") {
+    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && typeof field.selectionStart === "number") {
       field.selectionEnd = field.selectionStart = state2.cursor;
     }
   }
@@ -13402,7 +13406,7 @@ const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
     emit: emit2,
     expose
   }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
+    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email"];
     const AUTOCOMPLETES = ["off", "one-time-code"];
     const type = computed(() => {
       let type2 = "";
@@ -13471,6 +13475,9 @@ const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
     });
     watch(() => props2.maxlength, (length) => {
       length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
       const realValue = state2.value.slice(0, length);
       realValue !== state2.value && (state2.value = realValue);
     });
@@ -13562,9 +13569,10 @@ const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
         "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vShow, !(state2.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? createVNode("form", {
         "action": "",
+        "novalidate": true,
         "onSubmit": (event) => event.preventDefault(),
         "class": "uni-input-form"
-      }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
+      }, [inputNode], 40, ["novalidate", "onSubmit"]) : inputNode])], 512);
     };
   }
 });
