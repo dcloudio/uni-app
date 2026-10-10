@@ -52,11 +52,8 @@ export function initUts2jsSharedDataOptions() {
       throw new Error('DOM2 requires the SharedData transformer (CSDT)')
     }
     return {
-      resolveFieldMeta(name: string): { fieldId: number } {
-        return require('@dcloudio/compiler-vapor-dom2').resolveSharedDataFieldMeta(
-          name
-        )
-      },
+      resolveFieldMeta: require('@dcloudio/compiler-vapor-dom2')
+        .resolveSharedDataFieldMeta,
       createSharedDataTransformer: uniHelpers.CSDT,
     }
   }
