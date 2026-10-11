@@ -10,8 +10,6 @@ uni-app由于预加载webview，所以在常规业务中新页面加载速度也
 
 hello uni-app x 有400多个页面、众多SDK、100多M的体积，但没有splash，它就像系统应用一样在无splash的情况下迅速渲染首屏。
 
-另外uni-app中实现高性能UI交互需要使用App专属的renderjs，uni-app x 不再需要，直接操作DOM元素，全平台均可高性能操作UI。
-
 除了极致的性能之外，uni-app x 还有哪些长处？下文对两者的差异进行全面汇总。
 
 在语法层面，uni-app x 蒸汽模式与 uni-app 高度相似：支持相同的 Vue 语法、相同的 JS/TS、相同的组件和 API 命名，仅 CSS 为 Web 的子集。
@@ -21,11 +19,59 @@ uni-app 毕竟是2018年设计的系统，而 uni-app x 吸取了前者的很多
 优秀的架构不像显性功能那样容易被直观感知，但当你遇到各种复杂问题时，它会展现出更优雅解决方案、合理的解耦、更小的副作用。
 
 ## UI系统
+
+### 支持高刷
+
+iOS等系统限制了webview的滚动外的其他常见如动画，刷新率只能到60帧，无法在高刷屏上跑满120帧。
+
+uni-app x 的原生渲染没有限制，并且也提供了申请高刷相关的配置和api。
+
+### 内置更多UI组件
+
+针对那些常用且对性能要求极高（或如液态玻璃般必须原生实现）的场景，uni-app x 蒸汽模式提供了业内顶级性能的组件实现：
+
+uni-app x 蒸汽模式提供了业内顶级性能的组件实现。
+
+- 液态玻璃组件 [glass-effect-view](./component/glass-effect-view.md)
+- [list-view](./component/list-view.md)：比原生recyclerView性能更高的长列表组件，还支持滚动锚定。[benchmark](./app-vapor.md#list)
+- [waterflow](./component/waterflow.md)
+- 嵌套滚动组件 [nested-scroll-header](./component/nested-scroll-header.md)、[nested-scroll-body](./component/nested-scroll-body.md)
+- 吸顶组件 [sticky-header](./component/sticky-header.md)、[sticky-section](./component/sticky-section.md)
+- [page-container](https://doc.dcloud.net.cn/uni-app-x/component/page-container.html)：页内弹层
+- [rich-text](./component/rich-text.md)：原生模式的rich-text，富文本渲染速度远超webview。业内公开可用的方案中没有能达到同级别性能的方案 [benchmark](./app-vapor.md#rich-text)
+- [loaing](./component/loading.md)：高性能加载圈，同屏渲染数百个loading转圈也不卡UI。Android和iOS不占用主线程。
+- [camera](./component/camera.md)：摄像头组件，视频帧数据共享内存方式传给js，零拷贝高性能
+- [animation-view](./component/animation-view.md) : uni-app的lottie组件仅支持nvue的Android和iOS。uni-app x全平台都支持。
+- [native-view](./component/native-view.md)：集成原生视图到uvue界面的重要纽带
+
+iOS和鸿蒙，分别有液态玻璃和沉浸光感，这并非webview可以模拟的。uni-app x 蒸汽模式下均支持，包括pages.json中配置的tabbar，也支持液态玻璃和沉浸光感。
+
+<video id="video" preload="none" controls="controls" width="90%" poster="https://web-ext-storage.dcloud.net.cn/doc/app/ios/tabbar-glass-effec-poster.png" src="https://web-ext-storage.dcloud.net.cn/doc/app/ios/tabbar-glass-effect.mp4"></video>
+
+### 原有组件的强化
+- swiper 增加了 3D 轮播支持和自动高度
+- canvas 的性能超过webview中的canvas
+- image组件支持AVIF等先进格式
+- scroll-view 支持Element API指定滚动位置，可跳过响应式数据更新直接快速操作滚动条位置
+- scroll-view Android 可拖动滚动条，在较长内容中快速定位
+- 页面和滚动容器统一了bounce和下拉刷新逻辑和样式。即页面本身就是一个scroll-view。而老uni-app中页面是原生view，scroll-view则是div，bounce和下拉刷新样式都不统一。
+- Android 的页面和滚动容器bounce提供了拉伸和弹簧2种效果选项。下拉刷新和bounce统一了视觉逻辑，在拉伸和弹簧中，分别对应原生circle和下拉loading圈。
+- input和textarea是原生输入控件，没有iOS webview上的输入附件；键盘上推时取消了性能不佳的resize，改为平顺的自动上推和手动控制；光标颜色可以自定义；新增hold-keyboard保持键盘不收起
+- editor组件，支持插入链接和可整块删除的 @ 提及
+- map组件，新增了更多细节功能
+
+### 用全平台统一的Element API替代wxs/sjs/renderjs
+
+uni-app 中，高性能UI操作离不开 wxs/sjs/renderjs。\
+但这些代码不跨端，难用，AI也不熟悉。\
+uni-app x 支持跨平台 Element API来统一替代 wxs/sjs/renderjs。\
+统一对Element的style设置css属性，全平台都支持，在小程序上会编译为wxs/sjs的高性能代码。
+
 ### UI的全自定义能力
 
 uni-app 的 UI 不具备全面定制能力，许多UI定制需求开发者难以实现。
 
-1. 小程序的组件规范缺少足够的自定义性
+1. 小程序的组件规范缺少足够的自定义性。uni-app x全面开放
 
 例如swiper的指示器，小程序的规范中仅能通过3个属性来定义：是否显示、指示点的颜色、以及高亮指示点的颜色。
 但在实际业务中，指示器的形态丰富多样，有时需要横线，有时需要显示数字。
@@ -34,15 +80,25 @@ uni-app 中，开发者只能隐藏默认指示器并自行绘制（即 uni ui �
 
 uni-app x 中，swiper组件提供了`indicator-class`、`indicator-active-class`和指示器插槽，可以完全自定义所有指示器ui。
 
-类似的情况还有很多，slider、switch等很多组件，小程序规范只能提供有限属性定义样式，但 uni-app x 中提供了各种externalClass，支持所有样式的自定义。
+类似的情况还有很多，见下表，小程序规范只能提供有限属性定义样式，但 uni-app x 中支持所有样式的自定义。
+
+| 组件 | 新增可定制部分 |
+| --- | --- |
+| [swiper](https://doc.dcloud.net.cn/uni-app-x/component/swiper.html) | 指示器大小、形状、间距，以及自定义指示器内容 |
+| [slider](https://doc.dcloud.net.cn/uni-app-x/component/slider.html) | 背景轨道、已选轨道和滑块 |
+| [switch](https://doc.dcloud.net.cn/uni-app-x/component/switch.html) | 滑块及选中状态 |
+| [radio](https://doc.dcloud.net.cn/uni-app-x/component/radio.html)、[checkbox](https://doc.dcloud.net.cn/uni-app-x/component/checkbox.html) | 图标、未选中和选中状态 |
+| [button](https://doc.dcloud.net.cn/uni-app-x/component/button.html) | 加载图标、加载文字和部分平台的加载形态 |
+| [picker-view](https://doc.dcloud.net.cn/uni-app-x/component/picker-view.html) | App 蒸汽模式通过 class 定制滚动选择器的遮罩 |
 
 此外，小程序规范中，暗黑时很多组件样式是写死的。但在uni-app x下，都可以完全自定义。
 
-2. 原生UI无法自定义
+2. 原生UI的全面自定义性
 
 uni-app中，出于性能考虑，很多UI界面是各平台原生语言实现的，比如showModal、showActionSheet、showLoading、扫码、一键登录、previewImage、chooseLocation、openLocation、video组件的操作视图...
 
 这些原生UI无法方便的自定义，只能提供有限的属性，例如一键登陆提供了一批json定义方式。
+
 这些UI界面的国际化、暗黑适配也不统一。
 由于不同平台代码不同，这些UI的细节也不同。
 
@@ -72,35 +128,17 @@ uni-app x 蒸汽模式支持的"样式隔离系统2.0"，从根本上彻底的�
 
 "样式隔离系统2.0"，是跨端生态里非常重要的基建，它深刻影响整个组件生态，是孕育优秀组件库的坚实地基。
 
-### 内置更多UI组件
-
-针对那些常用且对性能要求极高（或如液态玻璃般必须原生实现）的场景，uni-app x 蒸汽模式提供了业内顶级性能的组件实现：
-
-uni-app x 蒸汽模式提供了业内顶级性能的组件实现。
-
-- 液态玻璃组件 [glass-effect-view](./component/glass-effect-view.md)
-- [list-view](./component/list-view.md)：比原生recyclerView性能更高的长列表组件。[benchmark](./app-vapor.md#list)
-- [waterflow](./component/waterflow.md)
-- 嵌套滚动组件 [nested-scroll-header](./component/nested-scroll-header.md)、[nested-scroll-body](./component/nested-scroll-body.md)
-- 吸顶组件 [sticky-header](./component/sticky-header.md)、[sticky-section](./component/sticky-section.md)
-- [page-container](https://doc.dcloud.net.cn/uni-app-x/component/page-container.html)
-- [rich-text](./component/rich-text.md)：原生模式的rich-text，提供了业内顶尖的富文本渲染性能。[benchmark](./app-vapor.md#rich-text)
-- [camera](./component/camera.md)
-- [animation-view](./component/animation-view.md) : uni-app的lottie组件仅支持nvue的Android和iOS。uni-app x全平台都支持。
-- [native-view](./component/native-view.md)：集成原生视图到uvue界面的重要纽带
-
-### 用全平台统一的Element API替代wxs/sjs/renderjs
-
-uni-app 中，高性能UI操作离不开 wxs/sjs/renderjs。\
-但这些代码不跨端，难用，AI也不熟悉。\
-uni-app x 支持跨平台 Element API来统一替代 wxs/sjs/renderjs。\
-统一对Element的style设置css属性，全平台都支持，在小程序上会编译为wxs/sjs的高性能代码。
-
 ### 布尔属性规范化
 
 小程序的规范中，很多布尔属性的默认值为true，这产生很多歧义，不写这个属性、简写属性名但不赋值、值为空字符串...各种情况下到底是什么含义很混乱。\
 W3C有专门的布尔属性规范，[详见](https://developer.mozilla.org/zh-CN/docs/Glossary/Boolean/HTML)。\
 uni-app x 蒸汽模式的组件规范，统一规范化了这个行为。所有布尔属性默认值都是false，各种边界均符合W3C布尔属性规范定义。
+
+### 原生组件的开放获取
+
+uni-app x的原生组件，可以通过Element的getAndroidView、getIOSView、getHarmonyController方法来获取到其原生原本的view。进而二次操作。
+
+比如web-view、scroll-view、map、video等组件，uni-app x的内置组件封装了常见功能，OS还有一些能力未封装，开发者可以在uts插件中获取到这些组件对应的原生view，自行操作和扩展所有原生能力。
 
 ### uni-ui x的高性能和完全自定义
 
@@ -115,37 +153,97 @@ uni-ui x 的逻辑抽象和设计代表了业内最先进的水平。它借鉴�
 
 uni-app 诞生于隐私和权限管控并不严格的时代。很多相关功能没有内置，需要依赖插件实现。
 
-uni-app x 内置了众多权限相关的API：[uni.getAppAuthorizeSetting](./api/get-app-authorize-setting.md)、[uni.openAppAuthorizeSetting](./api/open-app-authorize-setting.md)、[uni.getSystemSetting](./api/get-system-setting.md)、[uni.createRequestPermissionListener](./api/create-request-permission-listener.md)、[uni.requestSystemPermission](./api/request-system-permission.md) 
+uni-app x 内置了众多权限相关的API：
+- [uni.getAppAuthorizeSetting](./api/get-app-authorize-setting.md)
+- [uni.openAppAuthorizeSetting](./api/open-app-authorize-setting.md)
+- [uni.getSystemSetting](./api/get-system-setting.md)
+- [uni.createRequestPermissionListener](./api/create-request-permission-listener.md)
+- [uni.requestSystemPermission](./api/request-system-permission.md) 
 
 uni-app的隐私政策弹窗，是原生提供的一个无法完全自定义的弹窗。\
 而在 uni-app x 中，不再依赖这种受限的原生弹框，开发者完全可以在前端使用 uvue 自主绘制任意隐私政策弹窗界面。
 
-同时uni-app x新增了多项隐私政策的相关API、组件和配置：uni.getPrivacySetting、uni.resetPrivacyAuthorization、uni.onPrivacyAuthorizationChange、uni.offPrivacyAuthorizationChange，同时button组件中提供了属性open-type="agreePrivacyAuthorization"，manifest.json中app节点下提供了initPrivacyAuthorization。[详见](./api/privacy.md)
+同时uni-app x新增了多项隐私政策的相关API、组件和配置：
+- uni.getPrivacySetting
+- uni.resetPrivacyAuthorization
+- uni.onPrivacyAuthorizationChange
+- uni.offPrivacyAuthorizationChange
+- button组件中提供了属性open-type="agreePrivacyAuthorization"
+- manifest.json中app节点下提供了initPrivacyAuthorization。[详见](./api/privacy.md)
 
 uni-app x 的内置组件和API，都遵循统一的隐私管理规范，避免隐私政策同意前发生违规的数据访问。
 
+uni-app x 让插件和应用共享隐私授权状态，插件也可以查询授权状态、监听授权状态变化。
+
 uni-app中集成的一些三方SDK版本较老，这些SDK的新版已符合监管规范。仅在uni-app x中使用的是新版SDK。
 
-应用商店的隐私管理经常升级，uni-app的做法是发现开发者报哪个SDK有问题，才升级哪个。而uni-app x从源头就没有这类问题。
+uni-app 中还留有 plus.device.imei 等新版Android无法再使用的API，呼叫电话、读写通讯录等API使用的也是现在已经难以获得权限的老方式。
+在uni-app x 中，读写联系人、呼叫电话、选择相册，这些API的实现内部都使用了新的权限管理策略，不再要求高敏感权限。
 
-uni-app 中还留有 plus.device.imei 等新版Android无法再使用的API，呼叫电话、读写通讯录等API使用的也是现在已经难以获得权限的老方式。在uni-app x 中，读写联系人、呼叫电话、选择相册，这些API的实现内部都使用了新的权限管理策略，不再要求高敏感权限。
+uni-app 中有启动打点，uni-app x 蒸汽模式没有。uni-app x 蒸汽模式的隐私协议与 uni-app 不同，仅在 uni-app x 引擎报错崩溃时才有数据采集，以便于DCloud改进产品，且这部分数据采集不涉及用户隐私。
 
 ## 内置API的新增和优化
 
-uni-app x 内置很多新API，例如[worker](./api/create-worker.md)、[getFileSystemManager](./api/get-file-system-manager.md)、[日历](./api/calendar.md)、[陀螺仪](./api/gyroscope.md)。
+### uni-app x 新增很多内置API
 
-尤其是worker多线程，是提高性能的利器。
+- [worker](./api/create-worker.md)：多线程，提高性能的利器。
+- [getFileSystemManager](./api/get-file-system-manager.md)
+- [日历](./api/calendar.md)
+- [陀螺仪](./api/gyroscope.md)
 
+新增了DOM概念，提供了大量Element的API，比如
+- [截图takeSnapshot](./api/dom/unielement.md#takesnapshot)
+- [requestFullscreen](./api/dom/unielement.md#requestFullscreen)
+- [UniResizeObserver](./api/dom/uniresizeobserver.md)
+
+新增了UniApp应用对象、UniPage页面对象、requestAnimationFrame。
+
+### 老API也有诸多强化
+
+- request
 uni-app 中使用AI流式返回，需要通过renderjs，在webview操作。
 uni-app x 的request API内置支持AI流式返回。
 
-## 原生扩展多端一致性
+uni-app x 提供了 HTTP/3 / QUIC 网络模块，支持更快的网络。
+
+访问在线图片、音频、字体，缓存统一在uni-cache沙盒目录。
+
+- getDeviceInfo、getWindowInfo、getAppBaseInfo，提供了更多内容
+
+- actionsheet、showModal新增了主动关闭API
+
+- 扫码，从 ZXing 升级为 Google MLKit。不再需要引入三方插件。
+扫码页面是前端页面，开源可定制。
+
+- 背景音频遵循OS系统规范，不会被后台节电杀掉，通知栏有控制条
+
+## 原生扩展优化
+
+### 多端一致性
 
 uni-app 的组件和API，涉及原生扩展时，各平台一致性较弱。
 - 比如uni.showModal在不同平台样式差异很大
 - 比如uni.previewImage和image组件支持的图片格式不一致。（uni-app x中previewImage就是使用的image组件，保持了一致性）
 
 uni-app x 中通过interface.uts多平台统一约束了原生扩展API的实现，通过UI层的自举实现跨平台UI界面。
+
+### 原生组件扩展优化
+
+uni-app中集成原生组件，有2个麻烦：
+1. 无法同层渲染
+2. 原生组件的属性、事件、方法定义逻辑不统一
+
+uni-app x 自身是原生渲染，集成原生组件没有分层问题，可以自由设置层级和透明度，高性能同层合成。
+
+uni-app x 提供了 [native-view](./component/native-view.md) 组件，把原生组件的开发，变成了vue组件的开发。通过标准的vue组件开发方式来开发原生组件，且保障了跨平台的组件定义一致性。原生对接逻辑简单，只需调用 native-view 组件的 bind 方法，绑定一个原生视图即可。其余逻辑，与开发API插件相同。
+
+### 支持arraybuffer共享内存
+
+原生和js前端可通过arraybuffer共享内存，在request、fileManager、camera等操作时，零拷贝数据，性能大幅提升
+
+### uts插件通道性能优化
+
+在原生数据和js交换时，支持通过codegen技术，免除序列化。大幅提升原生和js的通信性能，
 
 ## 错误码规范
 
@@ -197,9 +295,13 @@ uni-app x 的内置UI，包括导航栏、tabbar、video全屏、各种弹窗，
 
 uni-app 和 uni-app x 都支持uts插件。尤其是API插件，可以同时在 uni-app 和 uni-app x 中使用。
 
-不过uni-app的uts插件，在js和原生通信时采用的是序列化方案，跨语言通信性能欠佳。
+- 通信性能
+
+uni-app的uts插件，在js和原生通信时采用的是序列化方案，跨语言通信性能欠佳。
 
 uni-app x 基于codegen技术，免除序列化，通信性能更优秀。
+
+- native-view原生组件扩展
 
 在原生组件集成方面，uni-app 和 uni-app x 差异很大。
 
@@ -211,11 +313,22 @@ uni-app x 内置native-view组件，可以绑定任意原生view，理解和使�
 
 uni-app x 不支持已经被淘汰数年的App原生插件机制。插件市场在2024年已经不再受理新增的App原生插件了。
 
+- 跨平台一致性约束
+
 uts插件本身的interface.uts和errcode.uts机制，让不同平台原生能力封装为统一的前端API，变的更加规范和便捷。\
 uni-app x 数百个内置组件和API都是基于uts插件实现的，这套原生扩展机制成熟、高效且高性能。
 
+uts插件同时也兼容uni Error错误码规范。
+
+- uasm插件
+
 uni-app x 新增了[uasm插件](https://doc.dcloud.net.cn/uni-app-x/plugin/uasm-plugin.html)（uni assembly），可以把高性能二进制库方便引入到前端开发中。\
 并且App平台支持[Node-API](https://doc.dcloud.net.cn/uni-app-x/plugin/uasm-node-api.html)，可以把很多Node生态库引入到App中。
+
+- provider扩展机制
+
+登录、支付、分享、定位、地图，很多组件和API可以选择多个供应商。uni-app x 有完善的provider机制，内置API也基于该机制开发，且该机制开放，外部插件作者也可以注册为内置组件和API的provider。[详见](https://doc.dcloud.net.cn/uni-app-x/api/provider.html)
+
 
 ## 热更新
 
@@ -234,6 +347,14 @@ uni-app x 的热更新，从联网、下载、验签、安装升级包，全平�
 uni-app 的离线sdk，仅限于离线打包。对于一个已经存在的原生应用，无法方便嵌入，需改用uni小程序SDK。
 
 uni-app x 的离线sdk，支持离线打包，也支持一个已经存在的原生应用方便的嵌入，实现渐进式使用 uni-app x。[详情](./native/README.md)
+
+## devtools
+
+蒸汽模式 DevTools 可以查看页面与组件树、计算样式、盒模型，以及网络和Storage管理面板。[详见](https://doc.dcloud.net.cn/uni-app-x/tutorial/debug/devtools.html)
+
+## 模块管理和摇树机制
+
+uni-app x的模块管理更清晰，统一都是uni_modules。自带摇树机制，减少打包体积，也可以手动配置。[详见](./collocation/manifest-modules.md)
 
 ## 质量
 
@@ -266,8 +387,9 @@ uni-app x 目前仅支持微信小程序和支付宝小程序。接下来会适�
 
 uni-app x 还不支持安心打包和js加密。js加密，开发者可以使用[uni加固](https://doc.dcloud.net.cn/uni-app-x/tutorial/app-security.html)或其他加固方案解决。
 
-4. API方面
+4. 组件和API方面
 
+- image组件不支持svg动画
 - 暂未内置蓝牙（已在开发中）。目前需要在插件市场寻找蓝牙相关插件。
 - 登录支付海外sdk未集成。目前需要在插件市场寻找相关插件。
 - canvas的API，没有web的丰富。不影响图表等常见功能。[详见](./api/canvasrenderingcontext2d.md)
