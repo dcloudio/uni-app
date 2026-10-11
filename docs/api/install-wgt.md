@@ -4,11 +4,13 @@
 
 安装wgt包   
 
-wgt，是 uni-app x 的前端资源包。包括uvue、脚本、静态资源。不包括原生插件。
+wgt，是 uni-app x 蒸汽模式的前端资源包。包括uvue、脚本、静态资源。不包括原生插件。
 
 通过在线下载和安装wgt，可以实现相同appid应用的资源替换。
 
-uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率更高的zstd格式。可以大幅降低热更新带来的cdn成本。
+wgt热更新后，运行性能不变。也就是动态化方案的渲染性能超过了原生。[详见评测](../app-vapor.md)
+
+uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率和解压速度更优秀的zstd格式。可以大幅降低热更新带来的cdn成本。
 
 在HBuilder 5.31+ 中对 uni-app x 项目点发行，可看到生成wgt的菜单。由于条件编译的存在，uni-app x 不同平台的 wgt 包是不同的。
 

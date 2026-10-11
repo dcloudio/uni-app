@@ -94,9 +94,10 @@ uni-app x在编译时，会在控制台提示不支持的css，可以让uni-agen
 
 ### 7. 适配UniApp对象重构
 
-HBuilderX 4.31+ 重构了应用对象，迁移时需要检查`getApp()`的相关代码：
-
-* `getApp()`改为返回[UniApp对象](./api/get-app.md)，Vue实例通过`vm`属性提供。调用`App.uvue`中定义的全局方法时，需要把`getApp().methodName()`改为`getApp().vm?.methodName()`；`globalData`仍通过`getApp().globalData`访问。`UniApp`可在uts插件和uvue页面中使用，但`vm`和`globalData`仅支持在uvue页面中使用。
+uni-app x 的 `getApp()` 改为返回[UniApp对象](./api/get-app.md)。
+Vue实例需通过`vm`属性提供。
+调用`App.uvue`中定义的全局方法时，需要把`getApp().methodName()`改为`getApp().vm?.methodName()`（ts需要?，js去掉?）。
+`globalData`仍通过`getApp().globalData`访问。
 
 如果要改造为App，继续往下。
 
@@ -172,6 +173,7 @@ uni-app 的 Android平台整个应用只有一个activity，每个page是view。
 这十几步的每一步都应该新起一个会话。有必要传给下一个会话的内容，让AI总结到md里，让下一个会话在有必要时读取这个md。
 
 **一个AI使用经验：**
+
 AI很擅长从0到60，这一步很快。但再往上，要不投入更多优秀人力review、要不投入更多和更高智商的AI算力做交叉验证和自动化测试。
 
 高智商的AI算力虽然贵，但在代码翻译这件事上，其实性价比是远超过投入优秀的人时的。
