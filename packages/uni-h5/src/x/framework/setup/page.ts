@@ -436,7 +436,7 @@ export function initXPage(
     // fix dialogPage $basePage.fullPath
     vm.$basePage.fullPath = vm.$basePage.path
   }
-  const pageElement = pageInstance.subTree.el
+  const pageElement = pageInstance.proxy?.$el
   if (!__NODE_JS__ && pageElement instanceof Element) {
     setUniElementPage(pageElement, vm.$.page)
   }
