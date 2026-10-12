@@ -52,9 +52,9 @@ export function uts2ts({ target, platform }: Options): Plugin {
   if (target === 'uni-h5' && process.env.UNI_APP_X_VAPOR === 'true') {
     // Web Vapor 组件已在构建前同步；编译时只复用副本，不重复复制或检查原生类型。
     for (const name of new Set(
-      [
-        ...resolveWebVaporComponents(process.env.UNI_APP_EXT_API_DIR!).values(),
-      ].map((component) => component.source.split('/')[0])
+      [...resolveWebVaporComponents(resolveExtApiTempDir(target)).values()].map(
+        (component) => component.source.split('/')[0]
+      )
     )) {
       if (!fs.existsSync(path.resolve(resolveExtApiTempDir(target), name))) {
         throw new Error(

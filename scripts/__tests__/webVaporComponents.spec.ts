@@ -113,6 +113,188 @@ describe('Web Vapor 组件生成', () => {
     }
   })
 
+  test('无外部源码时，读取已同步副本的组件、元素和排除配置', () => {
+    const componentsDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'web-vapor-cached-')
+    )
+    try {
+      fs.outputJsonSync(path.join(componentsDir, 'uni-form/package.json'), {
+        uni_modules: {
+          components: { web: { exclude: ['button', 'input', 'textarea'] } },
+        },
+      })
+      for (const name of ['button', 'input', 'textarea', 'progress']) {
+        fs.outputFileSync(
+          path.join(componentsDir, `uni-form/components/${name}/${name}.vue`),
+          '<template /><style>.component { color: red; }</style>'
+        )
+      }
+      fs.outputFileSync(
+        path.join(componentsDir, 'uni-form/components/progress/global.uts.ts'),
+        'export class UniProgressElement {}'
+      )
+      const components = resolveWebVaporComponents(componentsDir)
+      expect([...components]).toEqual([
+        [
+          'progress',
+          {
+            source: 'uni-form/components/progress/progress.vue',
+            elementSource: 'uni-form/components/progress/global.uts.ts',
+          },
+        ],
+      ])
+      expect(
+        [...resolveWebVaporComponents(componentsDir, true).keys()].filter(
+          (name) => !components.has(name)
+        )
+      ).toEqual(['button', 'input', 'textarea'])
+    } finally {
+      fs.removeSync(componentsDir)
+    }
+  })
+
+  test.each(
+    [false, { include: [] }, { exclude: ['progress'] }].flatMap((web) => [
+      [web, false],
+      [web, true],
+    ])
+  )(
+    '模块禁用为 %j 后，入口和排除名单一致（首次即禁用=%s）',
+    async (web, initiallyDisabled) => {
+      const tempDir = fs.mkdtempSync(
+        path.join(os.tmpdir(), 'web-vapor-disable-')
+      )
+      try {
+        const extApiDir = path.join(tempDir, 'source')
+        const componentsDir = path.join(tempDir, 'compiled')
+        const packageFile = 'uni-progress/package.json'
+        const componentFile = 'uni-progress/components/progress/progress.uvue'
+        const options = {
+          extApiDir,
+          componentsDir,
+          componentsEntryOutput: path.join(tempDir, 'index.ts'),
+          styleDir: path.join(tempDir, 'style'),
+          context: {
+            ...initScopedPreContext('h5', {}, 'web', true).preUVueContext,
+            VUE3_VAPOR: true,
+          },
+        }
+        fs.outputJsonSync(path.join(extApiDir, packageFile), {
+          uni_modules: {
+            components: { web: initiallyDisabled ? web : 'dom2' },
+          },
+        })
+        fs.outputFileSync(
+          path.join(extApiDir, componentFile),
+          '<template /><style>.progress { color: red; }</style>'
+        )
+        await prepareWebVaporComponents(options)
+        expect([...resolveWebVaporComponents(componentsDir).keys()]).toEqual(
+          initiallyDisabled ? [] : ['progress']
+        )
+
+        const apiFile = path.join(componentsDir, 'uni-progress/api/index.ts')
+        fs.outputFileSync(apiFile, 'export const preserved = true')
+        fs.outputJsonSync(path.join(extApiDir, packageFile), {
+          uni_modules: { components: { web } },
+        })
+        await prepareWebVaporComponents(options)
+
+        expect(fs.readJsonSync(path.join(componentsDir, packageFile))).toEqual(
+          fs.readJsonSync(path.join(extApiDir, packageFile))
+        )
+        expect([...resolveWebVaporComponents(componentsDir).keys()]).toEqual([])
+        expect([
+          ...resolveWebVaporComponents(componentsDir, true).keys(),
+        ]).toEqual(['progress'])
+        expect([...resolveWebVaporComponents(extApiDir, true).keys()]).toEqual([
+          'progress',
+        ])
+        expect(
+          fs.readFileSync(options.componentsEntryOutput, 'utf8')
+        ).not.toContain('default as Progress')
+        expect(fs.existsSync(path.join(options.styleDir, 'progress.css'))).toBe(
+          false
+        )
+        expect(fs.readFileSync(apiFile, 'utf8')).toBe(
+          'export const preserved = true'
+        )
+        expect(
+          fs.existsSync(
+            path.join(componentsDir, componentFile.replace(/\.uvue$/, '.vue'))
+          )
+        ).toBe(true)
+      } finally {
+        fs.removeSync(tempDir)
+      }
+    }
+  )
+
+  test.each(['file', 'directory', 'module'])(
+    '源码移除最后一个组件（%s）后，清理组件副本但保留 API 和页面',
+    async (removed) => {
+      const tempDir = fs.mkdtempSync(
+        path.join(os.tmpdir(), 'web-vapor-removed-')
+      )
+      try {
+        const extApiDir = path.join(tempDir, 'source')
+        const componentsDir = path.join(tempDir, 'compiled')
+        const sourceModule = path.join(extApiDir, 'uni-progress')
+        const cachedModule = path.join(componentsDir, 'uni-progress')
+        const options = {
+          extApiDir,
+          componentsDir,
+          componentsEntryOutput: path.join(tempDir, 'index.ts'),
+          styleDir: path.join(tempDir, 'style'),
+          context: {},
+        }
+        fs.outputJsonSync(path.join(sourceModule, 'package.json'), {
+          uni_modules: { components: { web: 'dom2' } },
+        })
+        fs.outputFileSync(
+          path.join(sourceModule, 'components/progress/progress.uvue'),
+          '<template /><style>.progress { color: red; }</style>'
+        )
+        await prepareWebVaporComponents(options)
+        const apiFile = path.join(cachedModule, 'utssdk/web/index.uts.ts')
+        const pageFile = path.join(cachedModule, 'pages/index.vue')
+        fs.outputFileSync(apiFile, 'export const preserved = true')
+        fs.outputFileSync(pageFile, '<template />')
+        fs.removeSync(
+          removed === 'module'
+            ? sourceModule
+            : path.join(
+                sourceModule,
+                removed === 'directory'
+                  ? 'components'
+                  : 'components/progress/progress.uvue'
+              )
+        )
+        await prepareWebVaporComponents(options)
+
+        expect([...resolveWebVaporComponents(componentsDir).keys()]).toEqual([])
+        expect([
+          ...resolveWebVaporComponents(componentsDir, true).keys(),
+        ]).toEqual([])
+        expect(
+          fs.existsSync(
+            path.join(cachedModule, 'components/progress/progress.vue')
+          )
+        ).toBe(false)
+        expect(
+          fs.readFileSync(options.componentsEntryOutput, 'utf8')
+        ).not.toContain('default as Progress')
+        expect(fs.readdirSync(options.styleDir)).toEqual([])
+        expect(fs.readFileSync(apiFile, 'utf8')).toBe(
+          'export const preserved = true'
+        )
+        expect(fs.readFileSync(pageFile, 'utf8')).toBe('<template />')
+      } finally {
+        fs.removeSync(tempDir)
+      }
+    }
+  )
+
   test('入口和样式遵循同一筛选结果，样式提取复用完整编译上下文', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-style-'))
     const originalExtApiDir = process.env.UNI_APP_EXT_API_DIR
@@ -208,10 +390,10 @@ const enabled = true
         '// #ifdef APP || WEB'
       )
       expect(fs.readFileSync(sourceFile, 'utf8')).toContain('<style>')
-      const plugin = webVaporComponentStylesPlugin(
-        extApiDir,
-        componentsDir
-      ) as any
+      expect([...resolveWebVaporComponents(componentsDir).keys()]).toEqual([
+        'progress',
+      ])
+      const plugin = webVaporComponentStylesPlugin(componentsDir) as any
       expect(plugin.transform(source, sourceFile).code).not.toContain('<style>')
       expect(
         plugin.transform(source, path.join(tempDir, 'other.vue'))

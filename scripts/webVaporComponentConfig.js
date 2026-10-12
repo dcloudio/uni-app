@@ -2,27 +2,39 @@ const fs = require('fs-extra')
 const path = require('path')
 const { sync } = require('fast-glob')
 
-function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
-  const components = new Map()
+function resolveWebVaporComponentModules(extApiDir, includeExcluded = false) {
+  const modules = new Map()
   for (const packageJson of sync('uni-*/package.json', {
     absolute: true,
     cwd: extApiDir,
   }).sort()) {
     const json = fs.readJsonSync(packageJson)
-    // 对象形式是 DOM2 组件的筛选配置；true、false 保持原有语义。
+    // 启用名单仅接受 DOM2 配置；web: false 只进入完整名单，供框架排除静态导入。
     const options = json.uni_modules?.components?.web
     if (
+      !(includeExcluded && options === false) &&
       options !== 'dom2' &&
       (!options || typeof options !== 'object' || Array.isArray(options))
     ) {
       continue
     }
-    const moduleDir = path.dirname(packageJson)
+    modules.set(path.dirname(packageJson), options)
+  }
+  return modules
+}
+
+function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
+  const components = new Map()
+  for (const [moduleDir, options] of resolveWebVaporComponentModules(
+    extApiDir,
+    includeExcluded
+  )) {
     const moduleName = path.basename(moduleDir)
-    for (const fileName of sync('components/**/*.uvue', {
+    // 同步前为 .uvue，框架编译读取的副本为 .vue。
+    for (const fileName of sync('components/**/*.{uvue,vue}', {
       cwd: moduleDir,
     }).sort()) {
-      const componentName = path.basename(fileName, '.uvue')
+      const componentName = path.basename(fileName, path.extname(fileName))
       if (path.basename(path.dirname(fileName)) !== componentName) continue
       // 与 customElements 的筛选规则一致，include 优先于 exclude。
       if (
@@ -39,9 +51,12 @@ function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
       }
       const source = path.posix.join(moduleName, fileName.replace(/\\/g, '/'))
       const componentDir = path.dirname(path.resolve(moduleDir, fileName))
-      const elementFile = ['global.uts', 'index.uts'].find((file) =>
-        fs.existsSync(path.resolve(componentDir, file))
-      )
+      const elementFile = [
+        'global.uts',
+        'global.uts.ts',
+        'index.uts',
+        'index.uts.ts',
+      ].find((file) => fs.existsSync(path.resolve(componentDir, file)))
       components.set(componentName, {
         source,
         elementSource: elementFile
@@ -54,3 +69,4 @@ function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
 }
 
 exports.resolveWebVaporComponents = resolveWebVaporComponents
+exports.resolveWebVaporComponentModules = resolveWebVaporComponentModules

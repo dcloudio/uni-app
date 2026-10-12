@@ -140,16 +140,15 @@ if (isX_VAPOR && extApiPlugin) {
   // Web Vapor 内置组件的元素基类必须优先从 uni-components 导入，避免 CJS 框架构建自引用 uni-h5。
   extApiPlugin.enforce = 'pre'
 }
+// 编译只读取已同步副本，CI 没有外部组件仓库时也使用同一份配置。
+const vaporComponentsDir = resolve('../../uni-ext-api/uni_modules')
 const vaporComponents = isX_VAPOR
-  ? resolveWebVaporComponents(process.env.UNI_APP_EXT_API_DIR!)
+  ? resolveWebVaporComponents(vaporComponentsDir)
   : undefined
 const excludedVaporComponents = vaporComponents
-  ? [
-      ...resolveWebVaporComponents(
-        process.env.UNI_APP_EXT_API_DIR!,
-        true
-      ).keys(),
-    ].filter((name) => !vaporComponents.has(name))
+  ? [...resolveWebVaporComponents(vaporComponentsDir, true).keys()].filter(
+      (name) => !vaporComponents.has(name)
+    )
   : undefined
 
 export default defineConfig(async () => {
@@ -214,12 +213,7 @@ export default defineConfig(async () => {
             uniUVueTypeScriptPlugin(),
             prePlugin,
             ...(isX_VAPOR
-              ? [
-                  webVaporComponentStylesPlugin(
-                    process.env.UNI_APP_EXT_API_DIR!,
-                    resolve('../../uni-ext-api/uni_modules')
-                  ),
-                ]
+              ? [webVaporComponentStylesPlugin(vaporComponentsDir)]
               : []),
             AutoImport(autoImportOptions),
             extApiPlugin!,

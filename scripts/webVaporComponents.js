@@ -8,7 +8,10 @@ const {
   removeSfcStyles,
   syncExtApiDir,
 } = require('./syncExtComponentFile')
-const { resolveWebVaporComponents } = require('./webVaporComponentConfig')
+const {
+  resolveWebVaporComponents,
+  resolveWebVaporComponentModules,
+} = require('./webVaporComponentConfig')
 
 async function prepareWebVaporComponents({
   extApiDir,
@@ -20,13 +23,39 @@ async function prepareWebVaporComponents({
   const components = [...resolveWebVaporComponents(extApiDir)].sort(
     ([a], [b]) => a.localeCompare(b)
   )
-  for (const name of new Set(
+  const enabledModules = new Set(
     components.map(([, component]) => component.source.split('/')[0])
-  )) {
-    syncExtApiDir(
-      path.resolve(extApiDir, name),
-      path.resolve(componentsDir, name)
-    )
+  )
+  // 同步完整配置而非仅启用组件；已有副本也参与，以清理源码移除后的失效组件。
+  const moduleNames = new Set(
+    [
+      ...resolveWebVaporComponentModules(extApiDir, true).keys(),
+      ...resolveWebVaporComponentModules(componentsDir, true).keys(),
+    ].map((moduleDir) => path.basename(moduleDir))
+  )
+  for (const name of moduleNames) {
+    const sourceDir = path.resolve(extApiDir, name)
+    const outputDir = path.resolve(componentsDir, name)
+    const sourcePackage = path.join(sourceDir, 'package.json')
+    if (
+      fs.existsSync(sourcePackage) &&
+      (enabledModules.has(name) ||
+        !fs.existsSync(path.join(outputDir, 'package.json')))
+    ) {
+      syncExtApiDir(sourceDir, outputDir)
+    } else {
+      // 禁用或移除组件时只更新组件目录和配置，不清空已有 API、页面副本。
+      const sourceComponents = path.join(sourceDir, 'components')
+      const outputComponents = path.join(outputDir, 'components')
+      if (fs.existsSync(sourceComponents)) {
+        syncExtApiDir(sourceComponents, outputComponents)
+      } else {
+        fs.removeSync(outputComponents)
+      }
+      if (fs.existsSync(sourcePackage)) {
+        fs.copyFileSync(sourcePackage, path.join(outputDir, 'package.json'))
+      }
+    }
   }
 
   const prettierConfig = await resolveConfig(styleDir)
@@ -128,9 +157,9 @@ async function syncWebVaporComponents() {
 }
 
 /** @returns {import('vite').Plugin} */
-function webVaporComponentStylesPlugin(extApiDir, componentsDir) {
+function webVaporComponentStylesPlugin(componentsDir) {
   const files = new Set(
-    [...resolveWebVaporComponents(extApiDir).values()].map((component) =>
+    [...resolveWebVaporComponents(componentsDir).values()].map((component) =>
       path
         .resolve(componentsDir, component.source.replace(/\.uvue$/, '.vue'))
         .replace(/\\/g, '/')

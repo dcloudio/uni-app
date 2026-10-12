@@ -3,6 +3,8 @@ import os from 'os'
 import path from 'path'
 import { initEasycoms, normalizePath } from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '../src/plugins/easycom'
+import { resolveWebVaporComponents } from '../../../scripts/webVaporComponentConfig'
+import { prepareWebVaporComponents } from '../../../scripts/webVaporComponents'
 
 const { parseAst } = require('rollup/parseAst')
 
@@ -112,6 +114,48 @@ describe('h5 easycom', () => {
           `${inputDir}/pages/index/index.uvue?vue&type=template`
         )?.code ?? source
       ).toBe(source)
+    }
+  )
+
+  test.each([false, { include: [] }, { exclude: ['progress'] }])(
+    '框架读取副本配置 %j 后，不导入禁用的组件和样式',
+    async (web) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      const extApiDir = path.join(inputDir, 'source')
+      const componentsDir = path.join(inputDir, 'compiled')
+      fs.outputJsonSync(path.join(extApiDir, 'uni-progress/package.json'), {
+        uni_modules: { components: { web } },
+      })
+      fs.outputFileSync(
+        path.join(extApiDir, 'uni-progress/components/progress/progress.uvue'),
+        '<template />'
+      )
+      await prepareWebVaporComponents({
+        extApiDir,
+        componentsDir,
+        componentsEntryOutput: path.join(inputDir, 'index.ts'),
+        styleDir: path.join(inputDir, 'style'),
+        context: {},
+      })
+      const enabled = resolveWebVaporComponents(componentsDir)
+      const excluded = [
+        ...resolveWebVaporComponents(componentsDir, true).keys(),
+      ].filter((name) => !enabled.has(name))
+      expect(excluded).toEqual(['progress'])
+      const plugin = uniEasycomPlugin({
+        excludeBuiltInComponents: excluded,
+      }) as any
+      for (const source of [
+        'const n0 = _createAssetComponent("v-uni-progress")',
+        'const n0 = _resolveComponent("v-uni-progress")',
+      ]) {
+        const result = plugin.transform.call(
+          { parse: parseAst },
+          source,
+          `${inputDir}/pages/index/index.uvue?vue&type=template`
+        )
+        expect(result?.code ?? source).toBe(source)
+      }
     }
   )
 
