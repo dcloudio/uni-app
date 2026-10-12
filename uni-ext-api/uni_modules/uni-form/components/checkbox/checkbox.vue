@@ -1,0 +1,364 @@
+<template>
+  <text
+    v-if="!hasDefaultSlot"
+    class="uni-checkbox-view uni-checkbox-icon"
+    :class="classes(
+      [disabled, 'uni-checkbox-disabled'],
+      [!disabled && isChecked, checkboxActiveClass],
+      [!disabled && !isChecked, checkboxClass],
+      [!disabled, iconClass]
+    )"
+    :style="activeStyle"
+    @click.stop="handleTap"
+  >
+    {{ isChecked ? fontUnicode : '' }}
+  </text>
+  <view v-else class="uni-checkbox" @click.stop="handleTap">
+    <text
+      class="uni-checkbox-view uni-checkbox-icon"
+      :class="classes(
+        [disabled, 'uni-checkbox-disabled'],
+        [!disabled && isChecked, checkboxActiveClass],
+        [!disabled && !isChecked, checkboxClass],
+        [!disabled, iconClass]
+      )"
+      :style="activeStyle"
+    >{{ isChecked ? fontUnicode : '' }}</text>
+    <text v-if="isStringSlot">
+      <slot></slot>
+    </text>
+    <slot v-else></slot>
+  </view>
+</template>
+
+<script lang="uts" setup>
+  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, buildPointerEvent, classes, toStringOrEmpty } from '../common.uts'
+  import { UniCheckboxElement } from './global.uts'
+  import { LabelContext, CheckboxGroupContext } from '../types.uts'
+
+  interface CheckboxProps {
+    /**
+     * checkbox 的颜色，同css的color
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.32"
+         },
+         "android": {
+           "unixVaporVer": "5.32"
+         },
+         "harmony": {
+           "unixVaporVer": "5.32"
+         }
+       }
+     }
+     */
+    color?: string;
+    /**
+     * 是否禁用
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    disabled?: boolean;
+    /**
+     * 当前是否选中，可用来设置默认选中
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    checked?: boolean;
+    /**
+     * 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    value?: string;
+    /**
+     * 复选框选中图标的类名
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       }
+     }
+     */
+    iconClass?: string.ClassString;
+    /**
+     * 复选框未选中的类名
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       }
+     }
+     */
+    checkboxClass?: string.ClassString;
+    /**
+     * 复选框选中的类名
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       }
+     }
+     */
+    checkboxActiveClass?: string.ClassString;
+  }
+
+  const props = withDefaults(defineProps<CheckboxProps>(), {
+    color: '',
+    disabled: false,
+    checked: false,
+    value: '',
+    iconClass: '',
+    checkboxClass: '',
+    checkboxActiveClass: ''
+  })
+
+  defineOptions({
+    name: 'checkbox',
+    // @ts-ignore
+    rootElement: {
+      class: UniCheckboxElement
+    },
+    externalClasses: ['icon-class', 'checkbox-class', 'checkbox-active-class'],
+  })
+
+  const attrs = useAttrs()
+  const id = attrs.id
+
+  const slots = useSlots()
+  const isStringSlot = slots['default']?.['returnType'] == 'string'
+  const hasDefaultSlot = slots['default'] != null
+
+  const proxy = getCurrentInstance()?.proxy
+
+  const isChecked = ref(props.checked)
+
+  const activeStyle = computed(() => {
+    if (isChecked.value && !props.disabled && props.color) {
+      return { color: props.color }
+    }
+    return {}
+  })
+
+  // TODO 需编译器修复
+  const fontUnicode = '\ueA08'
+
+  const group = inject<CheckboxGroupContext | null>(CHECKBOX_GROUP_KEY, null)
+  const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+
+  const setChecked = (checked : boolean, syncGroup : boolean) => {
+    if (isChecked.value == checked) {
+      return
+    }
+    isChecked.value = checked
+    if (syncGroup && group != null) {
+      group.toggle(toStringOrEmpty(props.value), checked, false)
+    }
+  }
+
+  watch(() => props.checked, (value : boolean) => {
+    setChecked(value, true)
+  })
+
+  onMounted(() => {
+    // If inside a group, prefer group's current state
+    if (group != null) {
+      const value = toStringOrEmpty(props.value)
+      const current = group.isChecked(value)
+      // if group has no opinion yet, fall back to prop
+      const initial = current ? true : props.checked
+      isChecked.value = initial
+      group.register(value, isChecked.value, (checked: boolean) => {
+        setChecked(checked, false)
+      })
+    }
+    // Register with enclosing label if any
+    if (labelCtx != null) {
+      labelCtx.register({
+        id: id || toStringOrEmpty(props.value),
+        activate: (event: UniPointerEvent) => {
+          proxy?.$el?.dispatchEvent('click', buildPointerEvent(event))
+        },
+        getDisabled: () => props.disabled
+      })
+    }
+  })
+
+  onUnmounted(() => {
+    if (group != null) {
+      group.unregister(toStringOrEmpty(props.value))
+    }
+    if (labelCtx != null) {
+      labelCtx.unregister(id || toStringOrEmpty(props.value))
+    }
+  })
+
+  const handleTap = () => {
+    if (props.disabled) {
+      return
+    }
+    isChecked.value = !isChecked.value
+    if (group != null) {
+      group.toggle(toStringOrEmpty(props.value), isChecked.value, true)
+    }
+  }
+
+  defineExpose({
+    getCheckboxChecked : () => {
+      return isChecked.value
+    },
+    setCheckboxChecked : (checked : boolean) => {
+      setChecked(checked, true)
+    }
+  })
+</script>
+
+<style>
+  .uni-checkbox {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .uni-checkbox-view {
+    width: 22px;
+    height: 22px;
+    border: 1px solid #d1d1d1;
+    background-color: #ffffff;
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    /* #ifndef WEB */
+    text-align: center;
+    line-height: 22px;
+    /* #endif */
+  }
+
+  .uni-checkbox-icon {
+    font-size: 16px;
+    color: #007aff;
+    font-family: uni-icon;
+  }
+
+  .uni-checkbox-disabled {
+    background-color: #e1e1e1;
+    border-color: #d1d1d1;
+    color: #adadad;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-checkbox-view,
+    .uni-checkbox-disabled {
+      background-color: #2c2c2c;
+      border-color: #656565;
+    }
+
+    .uni-checkbox-disabled {
+      border-color: #373737;
+      color: #656565;
+    }
+  }
+</style>

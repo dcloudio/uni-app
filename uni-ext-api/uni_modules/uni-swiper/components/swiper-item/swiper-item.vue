@@ -1,0 +1,77 @@
+<template>
+	<view class="uni-swiper-item" style="position: absolute; visibility: hidden;" ref="swiperItem">
+		<view v-if="autoHeight" class="uni-swiper-item-content">
+			<slot></slot>
+		</view>
+		<slot v-else></slot>
+	</view>
+</template>
+
+<script setup lang="uts">
+import {
+	UniSwiperItemElement,
+} from "./index.uts";
+
+defineOptions({
+	name: 'swiper-item',
+	rootElement: {
+		class: UniSwiperItemElement
+	}
+})
+
+const swiperItem = ref(null)
+
+type UniSwiperItemProps = {
+	/**
+	* @uniPlatform {
+		"app": {
+			"ios": {
+				"unixVaporVer": "5.11"
+			},
+			"android": {
+				"unixVaporVer": "5.21"
+			},
+			"harmony": {
+				"unixVaporVer": "5.0"
+			}
+		}
+	}
+	*/
+	itemId?: string
+}
+
+const props = withDefaults(defineProps<UniSwiperItemProps>(), {
+	itemId: null
+})
+
+const autoHeight = inject('autoHeight', false)
+const handleMounted = inject('handleSwiperItemMounted') as () => void
+const handleUnMounted = inject('handleSwiperItemUnMounted') as () => void
+
+onMounted(() => {
+	swiperItem.value.itemId = props.itemId
+	handleMounted()
+})
+onUnmounted(() => {
+	// TODO 触发时机过早，因调整框架生命周期影响范围较大，当前版本暂时在组件内部通过nextTick规避，待框架修复后移除
+	nextTick(() => {
+		handleUnMounted()
+	})
+})
+</script>
+
+<style>
+.uni-swiper-item {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.uni-swiper-item-content {
+	width: 100%;
+	height: auto;
+	flex-direction: column;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+</style>
