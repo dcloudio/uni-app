@@ -35,6 +35,7 @@ export const customElements = [
   'match-media',
   'mask',
   'video-player',
+  'page-container',
   ...getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ]
 
