@@ -2530,7 +2530,6 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'ad',
     'camera',
     'canvas',
-    'ad-drama',
     'editor',
     'button',
     'checkbox',
