@@ -7046,6 +7046,14 @@ function createNormalizeUrl(type, options = {}) {
   };
 }
 const API_HIDE_TOAST = "hideToast";
+const HideToastProtocol = {
+  allType: Boolean
+};
+const HideToastOptions = {
+  formatArgs: {
+    allType: false
+  }
+};
 const API_LOAD_FONT_FACE = "loadFontFace";
 const LoadFontFaceProtocol = {
   family: {
@@ -7124,6 +7132,7 @@ const ShowToastProtocol = {
   icon: String,
   image: String,
   duration: Number,
+  position: String,
   mask: Boolean
 };
 const ShowToastOptions = {
@@ -8674,9 +8683,6 @@ function onThemeChange$2(callback) {
     UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
   }
 }
-function offThemeChange$1(callback) {
-  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
-}
 function parseTheme(pageStyle) {
   let parsedStyle = {};
   if (__uniConfig.darkmode) {
@@ -9331,6 +9337,11 @@ function pruneCurrentPages() {
 function getCurrentPagesMap() {
   return currentPagesMap;
 }
+const pageUnloadCallbacks = /* @__PURE__ */ new Set();
+function onPageUnload(callback) {
+  pageUnloadCallbacks.add(callback);
+  return () => pageUnloadCallbacks.delete(callback);
+}
 function getCurrentPages$1() {
   const curPages = getCurrentBasePages();
   {
@@ -9360,11 +9371,16 @@ function removeRouteCache(routeKey) {
 }
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
+  if (!pageVm) {
+    return;
+  }
+  const pageId = getPage$BasePage(pageVm).id;
   {
     clearDialogPages(pageVm.$page);
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
+  pageUnloadCallbacks.forEach((callback) => callback(pageId));
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
   {
@@ -25325,10 +25341,11 @@ if (process.env.NODE_ENV !== "production" && !process.env.UNI_AUTOMATOR_WS_ENDPO
   });
 }
 const _t0$5 = template('<div class=uni-mask style="background: transparent;">');
-const _t1$4 = template("<div class=uni-sample-toast><p class=uni-simple-toast__text> ");
+const _t1$4 = template("<div><p class=uni-simple-toast__text> ");
 const _t2$1 = template("<img>");
-const _t3$1 = template("<div class=uni-toast><!><p class=uni-toast__content> ");
-const _t4$1 = template("<i>", 1);
+const _t3$1 = template("<p class=uni-toast__content> ");
+const _t4$1 = template("<div class=uni-toast>");
+const _t5$1 = template("<i>", 1);
 const props$4 = {
   title: {
     type: String,
@@ -25348,6 +25365,7 @@ const props$4 = {
     type: Number,
     default: 1500
   },
+  position: { type: String },
   mask: {
     type: Boolean,
     default: false
@@ -25355,11 +25373,6 @@ const props$4 = {
   visible: { type: Boolean }
 };
 const ToastIconClassName = "uni-toast__icon";
-const ICONCOLOR = {
-  light: "#fff",
-  dark: "rgba(255,255,255,0.9)"
-};
-const getIconColor = (theme) => ICONCOLOR[theme];
 const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
   props: props$4,
@@ -25369,14 +25382,16 @@ const Toast = /* @__PURE__ */ defineComponent({
     const { Icon } = useToastIcon(props2);
     const visible = usePopup(props2, {});
     return () => {
-      const { mask, duration, title, image: image2 } = props2;
+      const { mask, duration, title, image: image2, position } = props2;
+      const positionClass = position ? `uni-toast--${position}` : "";
+      const simpleToast = !!position || !image2 && !Icon.value;
       return (() => {
-        const _n19 = createComponent(Transition, {
+        const _n22 = createComponent(Transition, {
           name: "uni-fade",
           persisted: true
         }, () => {
           const _n0 = createPlainElement("uni-toast", { "data-duration": () => duration }, extend$1(() => {
-            const _n1 = createIf(() => mask, () => {
+            const _n1 = createIf(() => mask && !position, () => {
               const _n3 = _t0$5();
               on$1(_n3, "touchmove", onEventPrevent);
               return _n3;
@@ -25384,17 +25399,16 @@ const Toast = /* @__PURE__ */ defineComponent({
               const _n5 = createNodes("");
               return _n5;
             }, 393);
-            const _n6 = createIf(() => !image2 && !Icon.value, () => {
+            const _n6 = createIf(() => simpleToast, () => {
               const _n9 = _t1$4();
               const _n8 = child(_n9);
               const _x8 = txt(_n8);
               setNodes(_x8, () => title);
+              renderEffect(() => setClass(_n9, ["uni-sample-toast", positionClass]));
               return _n9;
             }, () => {
-              const _n18 = _t3$1();
-              const _n17 = child(_n18);
-              const _n16 = next(_n17);
-              setInsertionState(_n18, _n17);
+              const _n21 = _t4$1();
+              setInsertionState(_n21);
               createIf(() => image2, () => {
                 const _n13 = _t2$1();
                 renderEffect(() => {
@@ -25406,39 +25420,38 @@ const Toast = /* @__PURE__ */ defineComponent({
                 const _n15 = createNodes(() => Icon.value);
                 return _n15;
               }, 777);
-              const _x16 = txt(_n16);
-              setNodes(_x16, () => title);
-              return _n18;
+              setInsertionState(_n21, 1);
+              createIf(() => title, () => {
+                const _n18 = _t3$1();
+                const _x18 = txt(_n18);
+                setNodes(_x18, () => title);
+                return _n18;
+              }, () => {
+                const _n20 = createNodes("");
+                return _n20;
+              }, 1033);
+              return _n21;
             }, 645);
             return [_n1, _n6];
           }, { _: 1 }));
           applyVShow(_n0, () => visible.value);
           return _n0;
         }, true);
-        return _n19;
+        return _n22;
       })();
     };
   }
 });
 function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme() ?? "light"));
-  const _onThemeChange = ({ theme }) => iconColor.value = getIconColor(theme);
-  watchEffect(() => {
-    if (props2.visible) {
-      onThemeChange$2(_onThemeChange);
-    } else {
-      offThemeChange$1(_onThemeChange);
-    }
-  });
   const Icon = computed(() => {
     switch (props2.icon) {
       case "success":
-        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), { class: ToastIconClassName });
+        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 36), { class: ToastIconClassName });
       case "error":
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), { class: ToastIconClassName });
+        return createVNode(createSvgIconVNode(ICON_PATH_WARN, "#fff", 36), { class: ToastIconClassName });
       case "loading":
         return (() => {
-          const _n0 = _t4$1();
+          const _n0 = _t5$1();
           renderEffect(() => setClass(_n0, [ToastIconClassName, "uni-loading"]));
           return _n0;
         })();
@@ -25448,50 +25461,81 @@ function useToastIcon(props2) {
   });
   return { Icon };
 }
-let showToastState;
-let showType = "";
-let timeoutId;
+const pageToast = { type: "", token: 0 };
+const appToast = { type: "", token: 0 };
 const scope = /* @__PURE__ */ effectScope();
-function watchVisible() {
+function resetToastTimeout(controller) {
+  clearTimeout(controller.timeoutId);
+  if (controller.type !== "onShowToast") {
+    return;
+  }
+  controller.timeoutId = setTimeout(
+    () => hidePopup("onHideToast", controller),
+    controller.state.duration
+  );
+}
+function watchVisible(controller) {
   scope.run(() => {
     watch(
-      [() => showToastState.visible, () => showToastState.duration],
-      ([visible, duration]) => {
+      () => controller.state.visible,
+      (visible) => {
         if (visible) {
-          timeoutId && clearTimeout(timeoutId);
-          if (showType === "onShowLoading")
-            return;
-          timeoutId = setTimeout(() => {
-            hidePopup("onHideToast");
-          }, duration);
+          resetToastTimeout(controller);
         } else {
-          timeoutId && clearTimeout(timeoutId);
+          clearTimeout(controller.timeoutId);
         }
       }
     );
   });
 }
-function createToast(args) {
-  if (!showToastState) {
-    showToastState = reactive(extend(args, { visible: false }));
+function createToast(controller, args, type, pageId) {
+  var _a;
+  clearTimeout(controller.timeoutId);
+  clearTimeout(controller.showTimerId);
+  controller.type = type;
+  controller.pageId = pageId;
+  controller.token++;
+  if (!controller.state) {
+    controller.state = reactive(extend({}, args, { visible: false }));
     nextTick(() => {
-      watchVisible();
-      UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
-      createRootApp(Toast, showToastState, () => {
-      }).mount(ensureRoot("u-a-t"));
+      watchVisible(controller);
+      if (controller === pageToast) {
+        UniServiceJSBridge.on(
+          "onHidePopup",
+          () => hidePopup("onHidePopup", pageToast)
+        );
+      }
+      createRootApp(Toast, controller.state, () => {
+      }).mount(
+        ensureRoot(controller === pageToast ? "u-a-t" : "u-a-at")
+      );
     });
   } else {
-    extend(showToastState, args);
+    extend(controller.state, args);
   }
-  setTimeout(() => {
-    showToastState.visible = true;
+  const token = controller.token;
+  controller.showTimerId = setTimeout(() => {
+    if (token === controller.token) {
+      controller.state.visible = true;
+    }
   }, 10);
+  if ((_a = controller.state) == null ? void 0 : _a.visible) {
+    resetToastTimeout(controller);
+  }
 }
 const showToast = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_TOAST,
   (args, { resolve, reject }) => {
-    createToast(args);
-    showType = "onShowToast";
+    if (args.position !== void 0 && !["top", "center", "bottom"].includes(args.position)) {
+      args.position = "center";
+    }
+    const controller = args.position === void 0 ? pageToast : appToast;
+    createToast(
+      controller,
+      args,
+      "onShowToast",
+      controller === pageToast ? getCurrentPageId() : void 0
+    );
     resolve();
   },
   ShowToastProtocol,
@@ -25500,29 +25544,45 @@ const showToast = /* @__PURE__ */ defineAsyncApi(
 const hideToast = /* @__PURE__ */ defineAsyncApi(
   API_HIDE_TOAST,
   (args, { resolve, reject }) => {
-    hidePopup("onHideToast");
+    hidePopup("onHideToast", pageToast);
+    if (args == null ? void 0 : args.allType) {
+      hidePopup("onHideToast", appToast);
+    }
     resolve();
-  }
+  },
+  HideToastProtocol,
+  HideToastOptions
 );
-function hidePopup(type) {
+function hidePopup(type, controller) {
   const { t: t11 } = useI18n();
-  if (!showType) {
+  if (!controller.type) {
     return;
   }
   let warnMsg = "";
-  if (type === "onHideToast" && showType !== "onShowToast") {
+  if (type === "onHideToast" && controller.type !== "onShowToast") {
     warnMsg = t11("uni.showToast.unpaired");
-  } else if (type === "onHideLoading" && showType !== "onShowLoading") {
+  } else if (type === "onHideLoading" && controller.type !== "onShowLoading") {
     warnMsg = t11("uni.showLoading.unpaired");
   }
   if (warnMsg) {
     return console.warn(warnMsg);
   }
-  showType = "";
+  controller.type = "";
+  controller.pageId = void 0;
+  clearTimeout(controller.timeoutId);
+  clearTimeout(controller.showTimerId);
+  const token = ++controller.token;
   setTimeout(() => {
-    showToastState.visible = false;
+    if (token === controller.token) {
+      controller.state.visible = false;
+    }
   }, 10);
 }
+onPageUnload((pageId) => {
+  if (pageToast.pageId === pageId && pageToast.type === "onShowToast") {
+    hidePopup("onHideToast", pageToast);
+  }
+});
 const POPUP_EDGE = 6;
 function usePopupStyle(props2, triangleColor = "#fcfcfd") {
   const popupWidth = ref(0);

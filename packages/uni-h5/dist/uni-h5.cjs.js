@@ -2022,6 +2022,7 @@ function pruneCurrentPages() {
 function getCurrentPagesMap() {
   return currentPagesMap;
 }
+const pageUnloadCallbacks = /* @__PURE__ */ new Set();
 function getCurrentPages$1() {
   const curPages = getCurrentBasePages();
   return curPages;
@@ -2049,8 +2050,13 @@ function removeRouteCache(routeKey) {
 }
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
+  if (!pageVm) {
+    return;
+  }
+  const pageId = getPage$BasePage(pageVm).id;
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, uniShared.ON_UNLOAD);
+  pageUnloadCallbacks.forEach((callback) => callback(pageId));
   currentPagesMap.delete(routeKey);
   removeRouteCaches && removeRouteCache(routeKey);
 }
