@@ -4,6 +4,7 @@ import {
   createRpx2Unit,
   createUniDOMStringMap,
   defaultRpx2Unit,
+  getUniElementPage,
 } from '@dcloudio/uni-shared'
 
 const rpx2Unit = createRpx2Unit(
@@ -48,8 +49,7 @@ export class UniElement extends HTMLElement {
   }
   //#if _X_
   getPage() {
-    // @ts-expect-error
-    return this.__vnode?.ctx?.page || null
+    return getUniElementPage<UniPage>(this)
   }
   get uniPage() {
     return this.getPage()
