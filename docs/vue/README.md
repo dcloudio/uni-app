@@ -178,15 +178,18 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 	`JSON.parseArray`、`JSON.parseObject`在非uts环境下也无法使用，使用`JSON.parse`方法代替即可。
 
 	undefined转null的js内置API：
-		* Array.prototype.pop
-		* Array.prototype.shift
-		* Array.prototype.find
-		* Array.prototype.findLast
-		* Array.prototype.at
-		* Map.prototype.get
-		* WeakMap.prototype.get
-		* String.prototype.at
-		* String.prototype.codePointAt
+	
+		```js
+		Array.prototype.pop
+		Array.prototype.shift
+		Array.prototype.find
+		Array.prototype.findLast
+		Array.prototype.at
+		Map.prototype.get
+		WeakMap.prototype.get
+		String.prototype.at
+		String.prototype.codePointAt
+		```
 
 5.31+，不同后缀的文件，比如`*.js`、`*.ts`、`*.uts`，互相import的时，都按各自独立的编译器编译。
 
