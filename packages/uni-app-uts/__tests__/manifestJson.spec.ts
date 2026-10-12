@@ -125,18 +125,16 @@ describe('x-ios x-harmony manifestJson', () => {
           'uni-app-x': {
             minRuntimeVersion: '0.1',
             bytecodeVersion: 999,
-            uniCompilerRuleVersion: 999,
-            uniComplierRuleVersion: 999,
+            compilerRuleVersion: 999,
           },
         }) as any
 
         expect(manifest['uni-app-x'].minRuntimeVersion).toBe(
           MIN_RUNTIME_VERSION
         )
-        expect(manifest['uni-app-x'].uniCompilerRuleVersion).toBe(7)
+        expect(manifest['uni-app-x'].compilerRuleVersion).toBe(7)
         expect(MIN_RUNTIME_VERSION).toMatch(/^\d+\.\d+$/)
         expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
-        expect(manifest['uni-app-x'].uniComplierRuleVersion).toBeUndefined()
       }
     )
 
@@ -145,14 +143,12 @@ describe('x-ios x-harmony manifestJson', () => {
         ...mockManifestJson,
         'uni-app-x': {
           minRuntimeVersion: MIN_RUNTIME_VERSION,
-          uniCompilerRuleVersion: 999,
-          uniComplierRuleVersion: 999,
+          compilerRuleVersion: 999,
         },
       }) as any
 
       expect(manifest['uni-app-x'].minRuntimeVersion).toBeUndefined()
-      expect(manifest['uni-app-x'].uniCompilerRuleVersion).toBeUndefined()
-      expect(manifest['uni-app-x'].uniComplierRuleVersion).toBeUndefined()
+      expect(manifest['uni-app-x'].compilerRuleVersion).toBeUndefined()
     })
   })
 
