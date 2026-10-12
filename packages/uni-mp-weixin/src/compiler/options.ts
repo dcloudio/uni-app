@@ -76,9 +76,12 @@ const nodeTransforms: NodeTransform[] = [
   transformAd,
   transformTeleport,
 ]
+
+if (process.env.UNI_APP_X_VAPOR === 'true') {
+  nodeTransforms.push(transformWaterflow)
+}
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
-    transformWaterflow,
     transformMPBuiltInTag,
     transformDirection,
     transformLoading
