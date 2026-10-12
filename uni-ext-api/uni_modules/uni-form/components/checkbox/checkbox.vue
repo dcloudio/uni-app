@@ -42,13 +42,13 @@
      * @uniPlatform {
        "app": {
          "ios": {
-           "unixVaporVer": "5.32"
+           "unixVaporVer": "5.33"
          },
          "android": {
-           "unixVaporVer": "5.32"
+           "unixVaporVer": "5.33"
          },
          "harmony": {
-           "unixVaporVer": "5.32"
+           "unixVaporVer": "5.33"
          }
        }
      }
