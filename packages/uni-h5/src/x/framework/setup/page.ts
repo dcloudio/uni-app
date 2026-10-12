@@ -12,6 +12,7 @@ import {
   UTSJSONObject,
   normalizeTitleColor,
   removeLeadingSlash,
+  setUniElementPage,
 } from '@dcloudio/uni-shared'
 import { handleBeforeEntryPageRoutes } from '../../../service/api/route/utils'
 
@@ -434,6 +435,10 @@ export function initXPage(
     pageInstance.$dialogPage!.$vm = vm
     // fix dialogPage $basePage.fullPath
     vm.$basePage.fullPath = vm.$basePage.path
+  }
+  const pageElement = pageInstance.subTree.el
+  if (!__NODE_JS__ && pageElement instanceof Element) {
+    setUniElementPage(pageElement, vm.$.page)
   }
 }
 
