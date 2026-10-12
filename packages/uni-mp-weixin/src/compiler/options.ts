@@ -20,6 +20,7 @@ import {
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 import { transformLoading } from '../x/compiler/transforms/transformLoading'
+import { transformWaterflow } from '../x/compiler/transforms/transformWaterflow'
 import { getMiniProgramAIPaths } from './utils'
 
 import source from './project.config.json'
@@ -77,6 +78,7 @@ const nodeTransforms: NodeTransform[] = [
 ]
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
+    transformWaterflow,
     transformMPBuiltInTag,
     transformDirection,
     transformLoading
