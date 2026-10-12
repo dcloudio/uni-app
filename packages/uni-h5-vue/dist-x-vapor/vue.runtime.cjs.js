@@ -18934,6 +18934,7 @@ const getRefValue = (el) => {
 			if (inner === void 0) return null;
 			return getRefValue(inner);
 		}
+		if (el.type.rootElement) return getRootElement(el.block) || null;
 		return getExposed(el) || el;
 	} else if (isTeleportEnabled && isTeleportFragment(el)) return null;
 	else if (isDynamicFragment(el)) {
