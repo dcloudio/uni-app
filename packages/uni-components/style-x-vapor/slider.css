@@ -1,0 +1,47 @@
+.slider-track {
+  position: relative;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+
+  cursor: pointer;
+}
+
+.slider-track-bg {
+  width: 100%;
+  border-radius: 2px;
+  height: 2px;
+  position: absolute;
+  z-index: 0;
+  background-color: #e9e9e9;
+}
+
+.slider-track-fill {
+  width: 100%;
+  height: 2px;
+  background-color: #007aff;
+  position: absolute;
+  transform-origin: left center;
+  z-index: 1;
+  border-radius: 2px;
+
+  will-change: transform;
+}
+
+.slider-handle {
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  background-color: #ffffff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+
+  will-change: transform;
+  cursor: grab;
+}
+
+@media (prefers-color-scheme: dark) {
+  .slider-track-bg {
+    background-color: #393939;
+  }
+}

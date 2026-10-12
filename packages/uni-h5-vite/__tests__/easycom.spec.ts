@@ -97,6 +97,24 @@ describe('h5 easycom', () => {
     expect(transform(source)).toBe(source)
   })
 
+  test.each(['button', 'input', 'textarea'])(
+    '框架编译时被排除的 %s 保留按名解析，不回退旧组件',
+    (name) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      const plugin = uniEasycomPlugin({
+        excludeBuiltInComponents: ['button', 'input', 'textarea'],
+      }) as any
+      const source = `const n0 = _createAssetComponent("v-uni-${name}")`
+      expect(
+        plugin.transform.call(
+          { parse: parseAst },
+          source,
+          `${inputDir}/pages/index/index.uvue?vue&type=template`
+        )?.code ?? source
+      ).toBe(source)
+    }
+  )
+
   test('不改写字符串中的组件调用文本', () => {
     const source = 'const text = \'_createAssetComponent("Example")\''
 
@@ -126,6 +144,90 @@ describe('h5 easycom', () => {
     expect(code).toContain('__createEasycomComponent(__syscom_0)')
     expect(code).not.toContain(
       'uni_modules/uni-form/components/button/button.uvue'
+    )
+  })
+
+  test('Web Vapor 为迁移后的 progress 加载独立样式', () => {
+    delete process.env.UNI_HX_VERSION_DEV
+    const code = transform('const n0 = _createAssetComponent("v-uni-progress")')
+
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style-x-vapor/progress.css';"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-components/style/progress.css';"
+    )
+  })
+
+  test('Web Vapor 为 package.json 声明的 checkbox 加载独立样式', () => {
+    delete process.env.UNI_HX_VERSION_DEV
+    const code = transform('const n0 = _createAssetComponent("v-uni-checkbox")')
+
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style-x-vapor/checkbox.css';"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-components/style/checkbox.css';"
+    )
+  })
+
+  test.each(['swiper', 'swiper-item'])(
+    'Web Vapor 为 %s 加载新组件样式',
+    (name) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      const code = transform(
+        `const n0 = _createAssetComponent("v-uni-${name}")`
+      )
+
+      expect(code).toContain(
+        `import '@dcloudio/uni-components/style-x-vapor/${name}.css';`
+      )
+      expect(code).not.toContain(
+        `import '@dcloudio/uni-components/style/${name}.css';`
+      )
+    }
+  )
+
+  test.each(['input', 'textarea'])(
+    'Web Vapor 暂不接入新的 %s 组件和样式',
+    (name) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      const code = transform(
+        `const n0 = _createAssetComponent("v-uni-${name}")`
+      )
+
+      expect(code).toContain(
+        `import '@dcloudio/uni-components/style/${name}.css';`
+      )
+      expect(code).not.toContain(
+        `import '@dcloudio/uni-components/style-x-vapor/${name}.css';`
+      )
+    }
+  )
+
+  test('Web Vapor 的 picker 依赖只加载新 picker-view 样式', () => {
+    delete process.env.UNI_HX_VERSION_DEV
+    const code = transform('const n0 = _createAssetComponent("v-uni-picker")')
+    for (const name of ['picker', 'picker-view', 'picker-view-column']) {
+      expect(code).toContain(
+        `import '@dcloudio/uni-components/style-x-vapor/${name}.css';`
+      )
+      expect(code).not.toContain(
+        `import '@dcloudio/uni-components/style/${name}.css';`
+      )
+    }
+  })
+
+  test('非 Vapor 继续为 progress 加载原有样式', () => {
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_HX_VERSION_DEV
+    const code = transform('const n0 = _resolveComponent("v-uni-progress")')
+
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style/progress.css';"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-components/style-x-vapor/progress.css';"
     )
   })
 

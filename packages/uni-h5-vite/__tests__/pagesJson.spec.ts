@@ -70,6 +70,11 @@ describe('h5 pages.json page route', () => {
   test('Web VDOM 保持原有 VNode 页面包装', () => {
     const code = transform(false)
 
+    expect(code).toContain("import '@dcloudio/uni-components/style/swiper.css'")
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style/swiper-item.css'"
+    )
+    expect(code).not.toContain('style-x-vapor/swiper')
     expect(code).not.toContain(
       "import '@dcloudio/uni-h5/style/framework/uvue-vapor.css'"
     )
@@ -100,6 +105,18 @@ describe('h5 pages.json page route', () => {
   test('Web Vapor 生成路由专属 Page 组件', () => {
     const code = transform(true)
 
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style-x-vapor/swiper.css'"
+    )
+    expect(code).toContain(
+      "import '@dcloudio/uni-components/style-x-vapor/swiper-item.css'"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-components/style/swiper.css'"
+    )
+    expect(code).not.toContain(
+      "import '@dcloudio/uni-components/style/swiper-item.css'"
+    )
     expect(code).toContain(
       "import '@dcloudio/uni-h5/style/framework/uvue-vapor.css'"
     )

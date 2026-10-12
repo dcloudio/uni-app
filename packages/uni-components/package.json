@@ -6,6 +6,7 @@
   "files": [
     "style",
     "style-x",
+    "style-x-vapor",
     "lib",
     "lib-x",
     "lib-x-vapor"

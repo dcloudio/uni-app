@@ -1,0 +1,48 @@
+.uni-switch {
+  width: 52px;
+  height: 32px;
+  border-radius: 16px;
+  padding: 2px 0;
+  background-color: #e9e9ea;
+}
+
+.uni-switch.transition-enabled {
+  transition-duration: 0.1s;
+  transition-property: background-color;
+}
+
+.uni-switch-disabled {
+  opacity: 0.7;
+}
+
+.uni-switch-active {
+  background-color: #007aff;
+}
+
+.uni-switch-thumb {
+  width: 28px;
+  height: 28px;
+  margin-left: 2px;
+  border-radius: 50%;
+  transform: translate(0);
+  background-color: #ffffff;
+}
+
+.uni-switch-thumb.thumb-transition-enabled {
+  transition-duration: 0.15s;
+  transition-property: transform;
+}
+
+.uni-switch-active-thumb {
+  transform: translateX(20px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .uni-switch {
+    background-color: #3b3b3f;
+  }
+
+  .uni-switch-active {
+    background-color: #007aff;
+  }
+}

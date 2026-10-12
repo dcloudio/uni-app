@@ -1,0 +1,24 @@
+.uni-progress {
+  flex-direction: row;
+  align-items: center;
+}
+
+.uni-progress-background {
+  flex: 1;
+  flex-direction: row;
+}
+
+.uni-progress-fill {
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+
+  will-change: transform;
+}
+
+.uni-progress-value {
+  color: #000000;
+  margin-left: 10px;
+  text-align: right;
+}

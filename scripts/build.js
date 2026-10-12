@@ -148,6 +148,11 @@ async function build (target) {
 
   const env = devOnly ? 'development' : 'production'
 
+  if (target === 'uni-h5') {
+    // 名单由 ext-api 阶段统一生成；此处仅在依赖包构建完成后同步组件源码、入口和 CSS。
+    await require('./webVaporComponents').syncWebVaporComponents()
+  }
+
   if (hasViteBundler) {
     const env = {}
     if (target === 'size-check') {

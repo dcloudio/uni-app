@@ -182,7 +182,10 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
+// #ifndef VUE3_VAPOR
 import { Input } from '@dcloudio/uni-components'
+// #endif
+// TODO：接入新 Input 后恢复静态导入；当前允许未注册告警，不回退旧组件。
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   ICON_PATH_BACK,

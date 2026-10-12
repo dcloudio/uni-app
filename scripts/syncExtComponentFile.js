@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncExtComponentFile = void 0;
+exports.syncExtComponentFile = exports.syncExtApiDir = exports.normalizeTrailingNewline = exports.removeSfcStyles = exports.parseSfc = void 0;
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const compiler_sfc_1 = require("@vue/compiler-sfc");
@@ -57,6 +57,37 @@ const components = [
         targetName: 'uniloading',
     },
 ];
+function parseSfc(code, filename) {
+    return (0, compiler_sfc_1.parse)(code, { filename });
+}
+exports.parseSfc = parseSfc;
+function removeSfcStyles(code) {
+    return normalizeTrailingNewline(code.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ''));
+}
+exports.removeSfcStyles = removeSfcStyles;
+function normalizeTrailingNewline(code) {
+    const newline = code.includes('\r\n') ? '\r\n' : '\n';
+    return code.replace(/(?:\r?\n)+$/, newline);
+}
+exports.normalizeTrailingNewline = normalizeTrailingNewline;
+function syncExtApiDir(sourceDir, outputDir) {
+    if (fs_extra_1.default.existsSync(outputDir)) {
+        fs_extra_1.default.emptyDirSync(outputDir);
+    }
+    fs_extra_1.default.copySync(sourceDir, outputDir);
+    (0, fast_glob_1.sync)('**/*.uts', { absolute: true, cwd: outputDir }).forEach((file) => {
+        fs_extra_1.default.renameSync(file, file + '.ts');
+    });
+    (0, fast_glob_1.sync)('**/*.uvue', { absolute: true, cwd: outputDir }).forEach((file) => {
+        const newFile = file.replace('.uvue', '.vue');
+        fs_extra_1.default.renameSync(file, newFile);
+        const content = fs_extra_1.default.readFileSync(newFile, 'utf8');
+        if (content.includes('.uvue')) {
+            fs_extra_1.default.writeFileSync(newFile, content.replace(/\.uvue(['"])/g, '.vue$1'));
+        }
+    });
+}
+exports.syncExtApiDir = syncExtApiDir;
 function syncExtComponentFile(apiDirs) {
     try {
         const { preprocess } = require('../packages/uni-preprocess');
@@ -84,9 +115,7 @@ function syncComponent(componentsDir, component, preprocess, targets) {
         : componentsDir;
     const files = (0, fast_glob_1.sync)(path_1.default.join(componentRoot, '**/*'), { onlyFiles: true });
     const originComponentPath = ['.vue', '.uvue']
-        .flatMap((ext) => [
-        path_1.default.join(componentRoot, `${component.originName}${ext}`),
-    ])
+        .map((ext) => path_1.default.join(componentRoot, `${component.originName}${ext}`))
         .find((filePath) => files.includes(filePath));
     targets.forEach((target) => {
         files.forEach((filePath) => {
@@ -106,16 +135,14 @@ function syncComponent(componentsDir, component, preprocess, targets) {
                 const targetName = isMainComponent ? target.componentName : name;
                 const targetCode = normalizeScriptLang(preprocessedCode, target.scriptLang);
                 const targetFilePath = path_1.default.resolve(target.path, dir, `${targetName}.vue`);
-                const { descriptor, errors } = (0, compiler_sfc_1.parse)(targetCode, {
-                    filename: filePath,
-                });
+                const { descriptor, errors } = parseSfc(targetCode, filePath);
                 if (errors.length) {
                     console.error(`[syncExtComponentFile] parse ${filePath} error:`, errors);
                     return;
                 }
                 if (target.stylePath) {
                     fs_extra_1.default.outputFileSync(target.stylePath, normalizeTrailingNewline(descriptor.styles.map((style) => style.content).join('\n')));
-                    fs_extra_1.default.outputFileSync(targetFilePath, removeStyles(targetCode));
+                    fs_extra_1.default.outputFileSync(targetFilePath, removeSfcStyles(targetCode));
                 }
                 else {
                     fs_extra_1.default.outputFileSync(targetFilePath, targetCode);
@@ -123,7 +150,7 @@ function syncComponent(componentsDir, component, preprocess, targets) {
                 return;
             }
             if (ext === '.ts' || ext === '.js' || ext === '.uts') {
-                fs_extra_1.default.outputFileSync(path_1.default.resolve(target.path, `${name}.${target.scriptLang}`), preprocessedCode);
+                fs_extra_1.default.outputFileSync(path_1.default.resolve(target.path, dir, `${name}.${target.scriptLang}`), preprocessedCode);
             }
         });
     });
@@ -136,11 +163,4 @@ function normalizeScriptLang(code, scriptLang) {
             : `${attrs} lang="${scriptLang}"`;
         return `<script${normalizedAttrs}>`;
     });
-}
-function removeStyles(code) {
-    return normalizeTrailingNewline(code.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ''));
-}
-function normalizeTrailingNewline(code) {
-    const newline = code.includes('\r\n') ? '\r\n' : '\n';
-    return code.replace(/(?:\r?\n)+$/, newline);
 }

@@ -1,0 +1,21 @@
+{
+  "name": "web-vapor-playground",
+  "private": true,
+  "scripts": {
+    "dev:e2e:web": "uni --port 5188 --strictPort",
+    "test:e2e:web": "cypress run --config-file cypress.config.js"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "../../uni-app",
+    "@dcloudio/uni-h5": "../../uni-h5",
+    "@dcloudio/uni-components": "../../uni-components",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-uts-v1": "../../uni-uts-v1",
+    "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
+    "cypress": "catalog:",
+    "vite": "catalog:"
+  }
+}

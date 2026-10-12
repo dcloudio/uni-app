@@ -325,6 +325,8 @@ export declare function isDom2AppVueComponentTag(tag: string): boolean;
 
 export declare function isDom2VueComponentTag(tag: string): boolean;
 
+export declare function isDom2WebVueComponentTag(tag: string): boolean;
+
 export declare const isGloballyAllowed: (key: string) => boolean;
 
 export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;

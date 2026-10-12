@@ -1,0 +1,99 @@
+<template>
+  <view class="page">
+    <text id="page-ready">web-vapor-components-ready</text>
+    <form
+      id="test-form"
+      ref="form"
+      @submit="formValue = JSON.stringify($event.detail.value)"
+    >
+      <!-- Button 暂未接入，测试控制项使用原生 view，不回退到旧组件。 -->
+      <view id="test-increment" @click="count++">更新 {{ count }}</view>
+      <checkbox-group
+        id="test-checkbox-group"
+        name="choices"
+        @change="checkboxValue = $event.detail.value.join(',')"
+      >
+        <label id="test-label"
+          ><checkbox id="test-checkbox" value="one" />选项一</label
+        >
+      </checkbox-group>
+      <radio-group
+        id="test-radio-group"
+        name="choice"
+        @change="radioValue = $event.detail.value"
+      >
+        <radio id="test-radio" value="one" />选项一
+      </radio-group>
+      <switch
+        id="test-switch"
+        name="enabled"
+        @change="switchValue = String($event.detail.value)"
+      />
+      <slider id="test-slider" name="amount" :value="25" />
+      <view id="test-submit" @click="form?.submit()">提交</view>
+    </form>
+    <progress id="test-progress" :percent="count * 10" :show-info="true" />
+    <match-media id="test-match-media" :min-width="0"
+      ><text>匹配媒体查询</text></match-media
+    >
+    <navigator id="test-navigator" url="/pages/index/index">当前页面</navigator>
+    <picker id="test-picker" :range="['一', '二']" :disabled="true"
+      ><text>选择器</text></picker
+    >
+    <picker-view id="test-picker-view" :value="[0]" class="picker-view">
+      <picker-view-column id="test-picker-view-column">
+        <view class="picker-item">一</view><view class="picker-item">二</view>
+      </picker-view-column>
+    </picker-view>
+    <swiper
+      id="test-swiper"
+      class="swiper"
+      :current="current"
+      :indicator-dots="true"
+      @change="swiperValue = String($event.detail.current)"
+    >
+      <swiper-item id="test-swiper-item"><view>第一页</view></swiper-item>
+      <swiper-item><view>第二页</view></swiper-item>
+    </swiper>
+    <view id="test-next" @click="current = current === 0 ? 1 : 0">
+      切换 swiper
+    </view>
+    <text id="test-count">{{ count }}</text>
+    <text id="test-checkbox-value">{{ checkboxValue }}</text>
+    <text id="test-radio-value">{{ radioValue }}</text>
+    <text id="test-switch-value">{{ switchValue }}</text>
+    <text id="test-swiper-value">{{ swiperValue }}</text>
+    <text id="test-form-value">{{ formValue }}</text>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const count = ref(0)
+const current = ref(0)
+const checkboxValue = ref('')
+const radioValue = ref('')
+const switchValue = ref('')
+const swiperValue = ref('')
+const formValue = ref('')
+const form = ref<{ submit(): void } | null>(null)
+</script>
+
+<style>
+.page {
+  padding: 16px;
+  gap: 12px;
+}
+.picker-view {
+  height: 150px;
+  width: 240px;
+}
+.picker-item {
+  height: 50px;
+}
+.swiper {
+  height: 150px;
+  width: 240px;
+}
+</style>

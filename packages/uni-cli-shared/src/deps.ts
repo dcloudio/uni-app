@@ -3,20 +3,33 @@ import {
   H5_API_STYLE_PATH,
   H5_COMPONENTS_STYLE_PATH,
   X_BASE_COMPONENTS_STYLE_PATH,
+  X_VAPOR_BASE_COMPONENTS_STYLE_PATH,
 } from './constants'
+import { isUniAppXWebVapor } from './x'
+import { isDom2WebVueComponentTag } from '@dcloudio/uni-shared'
 
 const RESIZE_SENSOR_CSS = BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'
 const REFRESHER_CSS = BASE_COMPONENTS_STYLE_PATH + 'refresher.css'
 
+function componentCss(name: string, isWebVapor: boolean) {
+  const stylePath =
+    isWebVapor && isDom2WebVueComponentTag(name)
+      ? X_VAPOR_BASE_COMPONENTS_STYLE_PATH
+      : BASE_COMPONENTS_STYLE_PATH
+  return stylePath + name + '.css'
+}
+
 export const API_DEPS_CSS = (isX: boolean) => {
+  // API 内部直接使用框架组件，不经过 Easycom，也需加载对应渲染模式的样式。
+  const isWebVapor = isX && isUniAppXWebVapor()
   const deps_css = {
     showModal: [] as string[],
     showToast: [`${H5_API_STYLE_PATH}toast.css`],
     showActionSheet: [] as string[],
     previewImage: [
       RESIZE_SENSOR_CSS,
-      `${BASE_COMPONENTS_STYLE_PATH}swiper.css`,
-      `${BASE_COMPONENTS_STYLE_PATH}swiper-item.css`,
+      componentCss('swiper', isWebVapor),
+      componentCss('swiper-item', isWebVapor),
       `${BASE_COMPONENTS_STYLE_PATH}movable-area.css`,
       `${BASE_COMPONENTS_STYLE_PATH}movable-view.css`,
     ],
@@ -48,6 +61,7 @@ export const API_DEPS_CSS = (isX: boolean) => {
   return deps_css
 }
 export const COMPONENT_DEPS_CSS = (isX: boolean) => {
+  const isWebVapor = isX && isUniAppXWebVapor()
   return {
     canvas: [RESIZE_SENSOR_CSS],
     image: [RESIZE_SENSOR_CSS],
@@ -59,8 +73,8 @@ export const COMPONENT_DEPS_CSS = (isX: boolean) => {
     'web-view': [RESIZE_SENSOR_CSS],
     picker: [
       RESIZE_SENSOR_CSS,
-      `${BASE_COMPONENTS_STYLE_PATH}picker-view.css`,
-      `${BASE_COMPONENTS_STYLE_PATH}picker-view-column.css`,
+      componentCss('picker-view', isWebVapor),
+      componentCss('picker-view-column', isWebVapor),
     ],
     'scroll-view': [REFRESHER_CSS],
     'list-view': [RESIZE_SENSOR_CSS, REFRESHER_CSS],

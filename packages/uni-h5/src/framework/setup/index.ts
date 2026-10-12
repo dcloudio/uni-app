@@ -62,7 +62,11 @@ import {
   subscribeViewMethod,
   unsubscribeViewMethod,
 } from '@dcloudio/uni-core'
+//#if _X_VAPOR_
+import LayoutComponent from '../components/layout/index-vapor.vue'
+//#else
 import { LayoutComponent } from '../..'
+//#endif
 import { initApp } from './app'
 import {
   getPage$BasePage,

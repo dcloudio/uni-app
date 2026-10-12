@@ -28,8 +28,6 @@ export {
   defineUnsupportedComponent,
 } from './helpers/component'
 export { flatVNode } from './helpers/flatVNode'
-export { uniFormKey } from './vue/form'
-export type { UniFormCtx } from './vue/form'
 export type { DecodeOptions } from './helpers/text'
 export { useRebuild } from './helpers/useRebuild'
 export { default as animation } from './helpers/animation'

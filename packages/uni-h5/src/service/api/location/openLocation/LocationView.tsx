@@ -10,7 +10,11 @@ import {
   type Point,
   getMapInfo,
 } from '../../../../helpers/location'
+//#if _X_VAPOR_
+import Map from '../../../../view/components/map'
+//#else
 import { Map } from '../../../../view/components'
+//#endif
 import { getLocation } from '../../location/getLocation'
 
 const ICON_PATH_NAV =

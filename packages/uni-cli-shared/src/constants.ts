@@ -55,6 +55,8 @@ export const H5_FRAMEWORK_STYLE_PATH = '@dcloudio/uni-h5/style/framework/'
 export const H5_COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
 export const BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style/'
 export const X_BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style-x/'
+export const X_VAPOR_BASE_COMPONENTS_STYLE_PATH =
+  '@dcloudio/uni-components/style-x-vapor/'
 
 export const COMMON_EXCLUDE = [
   /\/pages\.json\.js$/,

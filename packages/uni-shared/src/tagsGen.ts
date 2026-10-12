@@ -291,3 +291,22 @@ export const UVUE_APP_EASYCOMS = [
   'match-media',
   'page-container'
 ]
+
+export const UVUE_VAPOR_WEB_EASYCOMS = [
+  'checkbox',
+  'checkbox-group',
+  'form',
+  'label',
+  'match-media',
+  'navigator',
+  'picker',
+  'picker-view',
+  'picker-view-column',
+  'progress',
+  'radio',
+  'radio-group',
+  'slider',
+  'swiper',
+  'swiper-item',
+  'switch'
+]

@@ -1,0 +1,61 @@
+.uni-swiper-wrapper {
+  position: relative;
+  width: 100%;
+
+  display: block;
+  height: 150px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.uni-swiper-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.uni-swiper-container {
+  position: relative;
+  overflow: visible;
+}
+
+.uni-swiper-container_horizontal {
+  height: 100%;
+}
+
+.uni-swiper-container_vertical {
+  width: 100%;
+}
+
+.uni-swiper-indicator {
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  background-color: transparent;
+  bottom: 0px;
+  right: 0px;
+}
+
+.uni-swiper-indicator_horizontal {
+  flex-direction: row;
+  left: 0px;
+  height: 40px;
+}
+
+.uni-swiper-indicator_vertical {
+  flex-direction: column;
+  top: 0px;
+  width: 40px;
+}
+.uni-swiper-indicator-item {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 0.1px solid rgba(230, 230, 230, 0.3);
+  margin: 2px 4px;
+}
+
+.uni-swiper-indicator-item.active {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 0.1px solid rgba(225, 225, 225, 0.9);
+}

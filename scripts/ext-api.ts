@@ -5,6 +5,8 @@ import execa from 'execa'
 import { sync } from 'fast-glob'
 import { camelize, capitalize } from '@vue/shared'
 import type { OutputChunk } from 'rollup'
+import { syncExtApiDir } from './syncExtComponentFile'
+import { resolveWebVaporComponents } from './webVaporComponentConfig'
 
 type Target = 'uni-h5' | 'uni-app-plus'
 
@@ -18,7 +20,14 @@ interface Options {
 }
 
 if (!process.env.UNI_APP_EXT_API_DIR) {
-  const extApiDir = path.resolve(__dirname, '..', '..', 'uni-app', 'src', 'uni_modules')
+  const extApiDir = path.resolve(
+    __dirname,
+    '..',
+    '..',
+    'uni-app',
+    'src',
+    'uni_modules'
+  )
   if (fs.existsSync(extApiDir)) {
     process.env.UNI_APP_EXT_API_DIR = extApiDir
     console.log('UNI_APP_EXT_API_DIR', extApiDir)
@@ -40,6 +49,21 @@ if (!process.env.UNI_APP_EXT_API_DIR) {
 // }
 
 export function uts2ts({ target, platform }: Options): Plugin {
+  if (target === 'uni-h5' && process.env.UNI_APP_X_VAPOR === 'true') {
+    // Web Vapor 组件已在构建前同步；编译时只复用副本，不重复复制或检查原生类型。
+    for (const name of new Set(
+      [
+        ...resolveWebVaporComponents(process.env.UNI_APP_EXT_API_DIR!).values(),
+      ].map((component) => component.source.split('/')[0])
+    )) {
+      if (!fs.existsSync(path.resolve(resolveExtApiTempDir(target), name))) {
+        throw new Error(
+          'Web Vapor 组件尚未同步，请通过 scripts/build.js 构建框架'
+        )
+      }
+      extApiChecked.add(name)
+    }
+  }
   return {
     name: 'uts2ts',
     config() {
@@ -62,13 +86,26 @@ export function uts2ts({ target, platform }: Options): Plugin {
             },
             {
               find: '@dcloudio/uni-h5',
-              replacement: resolve('../packages/uni-h5/src/index.ts'),
+              replacement: resolve(
+                target === 'uni-h5' && process.env.UNI_APP_X_VAPOR === 'true'
+                  ? '../packages/uni-h5/src/index-vapor.ts'
+                  : '../packages/uni-h5/src/index.ts'
+              ),
             },
             {
               find: /^@dcloudio\/uni-ext-api\/(.*)/,
               replacement: '$1',
               async customResolver(source) {
                 return resolveExtApi(target, platform, source).then(
+                  (fileName) => fileName.replace(/\\/g, '/')
+                )
+              },
+            },
+            {
+              find: /^@dcloudio\/uni-ext-component\/(.*)/,
+              replacement: '$1',
+              async customResolver(source) {
+                return resolveExtComponent(target, platform, source).then(
                   (fileName) => fileName.replace(/\\/g, '/')
                 )
               },
@@ -135,6 +172,21 @@ async function resolveExtApi(
     : path.resolve(extApiTempDir, name, 'utssdk', 'index.uts.ts')
 }
 
+async function resolveExtComponent(
+  target: Target,
+  platform: Options['platform'],
+  source: string
+) {
+  const fileName = await resolveExtApi(target, platform, source)
+  if (fileName.endsWith('.uvue')) {
+    return fileName.slice(0, -'.uvue'.length) + '.vue'
+  }
+  if (fileName.endsWith('.uts')) {
+    return fileName + '.ts'
+  }
+  return fileName
+}
+
 const extApiChecked = new Set<string>()
 
 async function checkExtApiDir(target: Target, name: string) {
@@ -147,9 +199,6 @@ async function checkExtApiDir(target: Target, name: string) {
   }
   extApiChecked.add(name)
   const currentExtApiDir = path.resolve(extApiTempDir, name)
-  if (fs.existsSync(currentExtApiDir)) {
-    fs.emptyDirSync(currentExtApiDir)
-  }
   let extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
   // if (
   //   process.env.UNI_APP_EXT_COMPONENT_DIR &&
@@ -163,27 +212,7 @@ async function checkExtApiDir(target: Target, name: string) {
   ) {
     extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DCLOUD_DIR!)
   }
-  // 拷贝到临时目录
-  fs.copySync(path.resolve(extApiDir, name), currentExtApiDir)
-  // 重命名后缀
-  sync('**/*.uts', {
-    absolute: true,
-    cwd: currentExtApiDir,
-  }).forEach((file) => {
-    fs.renameSync(file, file + '.ts')
-  })
-  sync('**/*.uvue', {
-    absolute: true,
-    cwd: currentExtApiDir,
-  }).forEach((file) => {
-    // 当前 next 仓库编译仅支持 vue 后缀
-    const newFile = file.replace('.uvue', '.vue')
-    fs.renameSync(file, newFile)
-    const content = fs.readFileSync(newFile, 'utf-8')
-    if (content.includes('.uvue')) {
-      fs.writeFileSync(newFile, content.replace(/\.uvue(['"])/g, '.vue$1'))
-    }
-  })
+  syncExtApiDir(path.resolve(extApiDir, name), currentExtApiDir)
 
   await checkExtApiTypes(target)
 }

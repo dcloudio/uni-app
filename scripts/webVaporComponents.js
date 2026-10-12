@@ -1,0 +1,161 @@
+const fs = require('fs-extra')
+const path = require('path')
+const { format, resolveConfig } = require('prettier')
+const { camelize, capitalize } = require('@vue/shared')
+const { preprocess } = require('../packages/uni-cli-shared/lib/preprocess')
+const {
+  parseSfc,
+  removeSfcStyles,
+  syncExtApiDir,
+} = require('./syncExtComponentFile')
+const { resolveWebVaporComponents } = require('./webVaporComponentConfig')
+
+async function prepareWebVaporComponents({
+  extApiDir,
+  componentsDir,
+  componentsEntryOutput,
+  styleDir,
+  context,
+}) {
+  const components = [...resolveWebVaporComponents(extApiDir)].sort(
+    ([a], [b]) => a.localeCompare(b)
+  )
+  for (const name of new Set(
+    components.map(([, component]) => component.source.split('/')[0])
+  )) {
+    syncExtApiDir(
+      path.resolve(extApiDir, name),
+      path.resolve(componentsDir, name)
+    )
+  }
+
+  const prettierConfig = await resolveConfig(styleDir)
+  const componentNames = new Set(components.map(([name]) => name))
+  if (fs.existsSync(styleDir)) {
+    for (const file of fs.readdirSync(styleDir)) {
+      if (
+        path.extname(file) === '.css' &&
+        !componentNames.has(path.basename(file, '.css'))
+      ) {
+        fs.removeSync(path.resolve(styleDir, file))
+      }
+    }
+  }
+  for (const [componentName, component] of components) {
+    const fileName = path.resolve(
+      componentsDir,
+      component.source.replace(/\.uvue$/, '.vue')
+    )
+    const sourceCode = fs.readFileSync(fileName, 'utf8')
+    // 与框架编译采用同一预处理器和完整上下文，依次处理模板、脚本和样式条件。
+    const code = preprocess(
+      preprocess(sourceCode, context, { type: 'html' }),
+      context,
+      { type: 'js' }
+    )
+    const { descriptor, errors } = parseSfc(code, fileName)
+    if (errors.length) throw errors[0]
+    const unsupportedStyle = descriptor.styles.find(
+      (style) => Object.keys(style.attrs).length
+    )
+    if (unsupportedStyle) {
+      throw new Error(
+        `${fileName} 仅支持不带属性的 <style>，不支持以下属性：${Object.keys(
+          unsupportedStyle.attrs
+        ).join(', ')}`
+      )
+    }
+    const styleOutput = path.resolve(styleDir, `${componentName}.css`)
+    fs.outputFileSync(
+      styleOutput,
+      format(descriptor.styles.map((style) => style.content).join('\n'), {
+        ...(prettierConfig || {}),
+        filepath: styleOutput,
+      })
+    )
+  }
+
+  await writeFormattedFile(
+    componentsEntryOutput,
+    [
+      '// 此文件由 Web Vapor 框架构建前同步脚本自动生成，请勿手动修改。',
+      '',
+      "export * from '../../../../../uni-components/src/vue/index-x-vapor'",
+      "export { UniElement, UniElement as UniElementImpl } from '../../../../../uni-components/src/helpers/UniElement'",
+      '',
+      ...components.flatMap(([name, component]) => {
+        const exportName = capitalize(camelize(name))
+        const exports = [
+          `export { default as ${exportName} } from '@dcloudio/uni-ext-component/${component.source}'`,
+        ]
+        if (component.elementSource) {
+          const elementName = `Uni${exportName}Element`
+          exports.push(
+            `export { ${elementName}, ${elementName} as ${elementName}Impl } from '@dcloudio/uni-ext-component/${component.elementSource}'`
+          )
+        }
+        return exports
+      }),
+      '',
+    ].join('\n')
+  )
+}
+
+async function syncWebVaporComponents() {
+  const extApiDir =
+    process.env.UNI_APP_EXT_API_DIR ||
+    path.resolve(__dirname, '../../uni-app/src/uni_modules')
+  // 没有外部源码时沿用仓库中的生成文件，普通包构建不强制依赖外部仓库。
+  if (!fs.existsSync(extApiDir)) return
+  const {
+    initScopedPreContext,
+  } = require('../packages/uni-cli-shared/dist/preprocess/context')
+  const context = initScopedPreContext('h5', {}, 'web', true).preUVueContext
+  context.VUE3_VAPOR = true
+  await prepareWebVaporComponents({
+    extApiDir,
+    componentsDir: path.resolve(__dirname, '../uni-ext-api/uni_modules'),
+    componentsEntryOutput: path.resolve(
+      __dirname,
+      '../packages/uni-h5/src/x/view/components/index-vapor.ts'
+    ),
+    styleDir: path.resolve(
+      __dirname,
+      '../packages/uni-components/style-x-vapor'
+    ),
+    context,
+  })
+}
+
+/** @returns {import('vite').Plugin} */
+function webVaporComponentStylesPlugin(extApiDir, componentsDir) {
+  const files = new Set(
+    [...resolveWebVaporComponents(extApiDir).values()].map((component) =>
+      path
+        .resolve(componentsDir, component.source.replace(/\.uvue$/, '.vue'))
+        .replace(/\\/g, '/')
+    )
+  )
+  return {
+    name: 'uni:web-vapor-component-styles',
+    enforce: 'pre',
+    transform(code, id) {
+      // CSS 已单独生成，编译时移除组件样式；共享源码副本保留样式供其他模式使用。
+      if (files.has(id.replace(/\\/g, '/')))
+        return { code: removeSfcStyles(code), map: null }
+    },
+  }
+}
+
+async function writeFormattedFile(output, code) {
+  const formatted = format(code, {
+    ...(await resolveConfig(output)),
+    filepath: output,
+  })
+  if (!fs.existsSync(output) || fs.readFileSync(output, 'utf8') !== formatted)
+    fs.outputFileSync(output, formatted)
+}
+
+exports.prepareWebVaporComponents = prepareWebVaporComponents
+exports.syncWebVaporComponents = syncWebVaporComponents
+exports.webVaporComponentStylesPlugin = webVaporComponentStylesPlugin

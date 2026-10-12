@@ -974,6 +974,37 @@ importers:
         specifier: 'catalog:'
         version: 5.2.8(@types/node@18.19.50)(sass@1.87.0)(terser@5.32.0)
 
+  packages/playground/web-vapor:
+    dependencies:
+      '@dcloudio/uni-app':
+        specifier: ../../uni-app
+        version: link:../../uni-app
+      '@dcloudio/uni-components':
+        specifier: ../../uni-components
+        version: link:../../uni-components
+      '@dcloudio/uni-h5':
+        specifier: ../../uni-h5
+        version: link:../../uni-h5
+      vue:
+        specifier: 'catalog:'
+        version: 3.4.21(typescript@5.4.2)
+      vue-router:
+        specifier: 'catalog:'
+        version: 4.4.4(vue@3.4.21(typescript@5.4.2))
+    devDependencies:
+      '@dcloudio/uni-uts-v1':
+        specifier: ../../uni-uts-v1
+        version: link:../../uni-uts-v1
+      '@dcloudio/vite-plugin-uni':
+        specifier: ../../vite-plugin-uni
+        version: link:../../vite-plugin-uni
+      cypress:
+        specifier: 'catalog:'
+        version: 10.11.0
+      vite:
+        specifier: 'catalog:'
+        version: 5.2.8(@types/node@18.19.50)(sass@1.87.0)(terser@5.32.0)
+
   packages/size-check:
     dependencies:
       '@dcloudio/uni-app':

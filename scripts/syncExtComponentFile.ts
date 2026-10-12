@@ -73,6 +73,39 @@ const components = [
   },
 ]
 
+export function parseSfc(code: string, filename: string) {
+  return parse(code, { filename })
+}
+
+export function removeSfcStyles(code: string) {
+  return normalizeTrailingNewline(
+    code.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+  )
+}
+
+export function normalizeTrailingNewline(code: string) {
+  const newline = code.includes('\r\n') ? '\r\n' : '\n'
+  return code.replace(/(?:\r?\n)+$/, newline)
+}
+
+export function syncExtApiDir(sourceDir: string, outputDir: string) {
+  if (fs.existsSync(outputDir)) {
+    fs.emptyDirSync(outputDir)
+  }
+  fs.copySync(sourceDir, outputDir)
+  sync('**/*.uts', { absolute: true, cwd: outputDir }).forEach((file) => {
+    fs.renameSync(file, file + '.ts')
+  })
+  sync('**/*.uvue', { absolute: true, cwd: outputDir }).forEach((file) => {
+    const newFile = file.replace('.uvue', '.vue')
+    fs.renameSync(file, newFile)
+    const content = fs.readFileSync(newFile, 'utf8')
+    if (content.includes('.uvue')) {
+      fs.writeFileSync(newFile, content.replace(/\.uvue(['"])/g, '.vue$1'))
+    }
+  })
+}
+
 export function syncExtComponentFile(apiDirs: string[]) {
   try {
     const { preprocess } = require('../packages/uni-preprocess')
@@ -82,18 +115,16 @@ export function syncExtComponentFile(apiDirs: string[]) {
         sync(path.join(apiDir, `./${componentDir}/package.json`)).forEach(
           (packageJsonPath) => {
             const componentsDir = path.resolve(packageJsonPath, '../components')
-            syncComponent(
-              componentsDir,
-              component,
-              preprocess,
-              syncTargets
-            )
+            syncComponent(componentsDir, component, preprocess, syncTargets)
           }
         )
       })
     })
   } catch (error) {
-    console.error('[syncExtComponentFile] sync ext component file error:', error)
+    console.error(
+      '[syncExtComponentFile] sync ext component file error:',
+      error
+    )
   }
 }
 
@@ -144,9 +175,7 @@ function syncComponent(
           dir,
           `${targetName}.vue`
         )
-        const { descriptor, errors } = parse(targetCode, {
-          filename: filePath,
-        })
+        const { descriptor, errors } = parseSfc(targetCode, filePath)
         if (errors.length) {
           console.error(
             `[syncExtComponentFile] parse ${filePath} error:`,
@@ -162,10 +191,7 @@ function syncComponent(
               descriptor.styles.map((style) => style.content).join('\n')
             )
           )
-          fs.outputFileSync(
-            targetFilePath,
-            removeStyles(targetCode)
-          )
+          fs.outputFileSync(targetFilePath, removeSfcStyles(targetCode))
         } else {
           fs.outputFileSync(targetFilePath, targetCode)
         }
@@ -190,15 +216,4 @@ function normalizeScriptLang(code: string, scriptLang: ScriptLang) {
       : `${attrs} lang="${scriptLang}"`
     return `<script${normalizedAttrs}>`
   })
-}
-
-function removeStyles(code: string) {
-  return normalizeTrailingNewline(
-    code.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
-  )
-}
-
-function normalizeTrailingNewline(code: string) {
-  const newline = code.includes('\r\n') ? '\r\n' : '\n'
-  return code.replace(/(?:\r?\n)+$/, newline)
 }

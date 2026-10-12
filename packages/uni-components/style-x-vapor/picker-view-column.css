@@ -1,0 +1,51 @@
+.picker-view-column {
+  flex: 1;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.picker-view-scroll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  z-index: 2;
+}
+
+.uni-picker-view-mask {
+  flex: 1;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.uni-picker-view-mask-bottom {
+  bottom: 0;
+  background-image: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.6)
+  );
+}
+
+.uni-picker-view-mask-top {
+  top: 0;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.6)
+  );
+}
+
+.uni-picker-view-indicator {
+  height: 50px;
+  border-top-width: 0.5px;
+  border-bottom-width: 0.5px;
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-color: #ddd;
+  background-color: #efeff480;
+  z-index: 1;
+}

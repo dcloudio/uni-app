@@ -1,0 +1,5 @@
+.uni-picker-view {
+  position: relative;
+  flex-direction: row;
+  overflow: hidden;
+}

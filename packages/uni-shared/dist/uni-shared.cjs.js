@@ -2568,6 +2568,24 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'waterflow',
     'web-view'
 ];
+const UVUE_VAPOR_WEB_EASYCOMS = [
+    'checkbox',
+    'checkbox-group',
+    'form',
+    'label',
+    'match-media',
+    'navigator',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'switch'
+];
 
 const APP_NATIVE_TAGS = [
     'view',
@@ -2598,6 +2616,9 @@ function isDom2VueComponentTag(tag) {
 }
 function isDom2AppVueComponentTag(tag) {
     return UVUE_VAPOR_APP_EASYCOMS.includes(tag);
+}
+function isDom2WebVueComponentTag(tag) {
+    return UVUE_VAPOR_WEB_EASYCOMS.includes(tag);
 }
 function isDom2AppUserVueComponentTag(tag) {
     return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
@@ -2982,6 +3003,7 @@ exports.isDom2AppNativeTag = isDom2AppNativeTag;
 exports.isDom2AppUserVueComponentTag = isDom2AppUserVueComponentTag;
 exports.isDom2AppVueComponentTag = isDom2AppVueComponentTag;
 exports.isDom2VueComponentTag = isDom2VueComponentTag;
+exports.isDom2WebVueComponentTag = isDom2WebVueComponentTag;
 exports.isGloballyAllowed = isGloballyAllowed;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
