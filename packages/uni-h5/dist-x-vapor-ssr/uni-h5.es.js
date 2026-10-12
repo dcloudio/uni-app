@@ -3030,7 +3030,7 @@ class UniNormalPageImpl extends UniPageImpl {
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b;
+  var _a, _b, _c;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -3087,7 +3087,7 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
   }
-  pageInstance.subTree.el;
+  (_c = pageInstance.proxy) == null ? void 0 : _c.$el;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();

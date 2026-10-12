@@ -8966,7 +8966,7 @@ class UniDialogPageImpl extends UniPageImpl {
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b;
+  var _a, _b, _c;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -9023,7 +9023,7 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
   }
-  const pageElement = pageInstance.subTree.el;
+  const pageElement = (_c = pageInstance.proxy) == null ? void 0 : _c.$el;
   if (pageElement instanceof Element) {
     setUniElementPage(pageElement, vm.$.page);
   }
