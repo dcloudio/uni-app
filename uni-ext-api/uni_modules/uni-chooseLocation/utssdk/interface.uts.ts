@@ -95,6 +95,18 @@ export type ChooseLocationOptions = {
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
+     *    },
+     *    "mp": {
+     *      "weixin": {
+     *        "hostVer": "2.9.0",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *      },
+     *      "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
+     *      }
      *    }
      * }
      */
@@ -120,6 +132,18 @@ export type ChooseLocationOptions = {
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
+     *    },
+     *    "mp": {
+     *      "weixin": {
+     *        "hostVer": "2.9.0",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *      },
+     *      "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
+     *      }
      *    }
      * }
      */
@@ -195,6 +219,18 @@ export type ChooseLocationOptions = {
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
+     *    },
+     *    "mp": {
+     *      "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *      },
+     *      "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
+     *      }
      *    }
      * }
      */
@@ -220,6 +256,18 @@ export type ChooseLocationOptions = {
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
+     *    },
+     *    "mp": {
+     *      "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *      },
+     *      "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
+     *      }
      *    }
      * }
      */
@@ -245,6 +293,18 @@ export type ChooseLocationOptions = {
      *    "web": {
      *      "uniVer": "√",
      *      "unixVer": "4.0"
+     *    },
+     *    "mp": {
+     *      "weixin": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "4.41"
+     *      },
+     *      "alipay": {
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
+     *      }
      *    }
      * }
      */
