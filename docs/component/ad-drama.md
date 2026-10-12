@@ -46,8 +46,15 @@ ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自�
 | adpid | string | "" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧广告位id，在uniAD官网申请广告位 |
 | free | number | 1 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 初始可免费观看的剧集数 |
 | lock | number | 1 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 单次激励视频可解锁的剧集数 |
-| urlCallback | any | null | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 服务端回调透传参数（userId/extra），激励发放时透传服务器校验 |
-| url-callback | any | null |   |   |
+| url-callback | **DramaUrlCallback** \| null | null | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 服务端回调透传参数（userId/extra），激励发放时透传服务器校验 |
+
+#### url-callback 的属性描述
+
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| userId | string | 否 |
+| extra | string | 否 |
+@
 | @load | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧加载成功的回调 |
 | @error | (e:[UniDramaErrorEvent](#unidramaerrorevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧加载失败的回调 |
 | @click | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 点击短剧的回调 |
