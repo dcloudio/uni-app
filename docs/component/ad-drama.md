@@ -104,6 +104,7 @@ ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自�
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=component.ad.ad-drama)
+- [插件市场](https://ext.dcloud.net.cn/plugin?id=30115)
 - [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=ad-drama&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=ad-drama&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=ad-drama&scope=devdocs&source=docs)
