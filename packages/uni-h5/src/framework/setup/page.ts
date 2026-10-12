@@ -91,6 +91,13 @@ export function getCurrentPagesMap() {
   return currentPagesMap
 }
 
+const pageUnloadCallbacks = new Set<(pageId: number) => void>()
+
+export function onPageUnload(callback: (pageId: number) => void) {
+  pageUnloadCallbacks.add(callback)
+  return () => pageUnloadCallbacks.delete(callback)
+}
+
 export function getCurrentPages() {
   const curPages = getCurrentBasePages()
   if (__X__) {
@@ -127,12 +134,19 @@ function removeRouteCache(routeKey: string) {
 }
 
 export function removePage(routeKey: string, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+  const pageVm = currentPagesMap.get(routeKey) as
+    | ComponentPublicInstance
+    | undefined
+  if (!pageVm) {
+    return
+  }
+  const pageId = getPage$BasePage(pageVm).id
   if (__X__ && !__NODE_JS__) {
     clearDialogPages(pageVm.$page as UniPage)
   }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)
+  pageUnloadCallbacks.forEach((callback) => callback(pageId))
   currentPagesMap.delete(routeKey)
   removeRouteCaches && removeRouteCache(routeKey)
   if (__X__ && !__NODE_JS__) {

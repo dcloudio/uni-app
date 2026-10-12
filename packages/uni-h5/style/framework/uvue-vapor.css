@@ -351,8 +351,8 @@ uni-app .uni-video-cover {
  * 界面相关api样式
  */
 body .uni-toast {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -361,14 +361,14 @@ body .uni-toast {
 }
 
 body .uni-toast__icon {
-  margin: 8px 0px;
+  margin: 0;
 }
 
 body .uni-toast__content {
-  margin: 0px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8)
+  margin: 16px 0 0;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
 }
 
 body .uni-modal {

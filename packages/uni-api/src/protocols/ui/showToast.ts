@@ -16,6 +16,7 @@ export const ShowToastProtocol: ApiProtocol<API_TYPE_SHOW_TOAST> = {
   icon: String as any,
   image: String,
   duration: Number,
+  position: String as any,
   mask: Boolean,
 }
 export const ShowToastOptions: ApiOptions<API_TYPE_SHOW_TOAST> = {
