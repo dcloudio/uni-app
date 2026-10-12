@@ -33,7 +33,7 @@
 | image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 自定义图标的本地路径（app-android/app-ios端暂不支持gif） |
 | mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.25 | 是否显示透明蒙层，防止触摸穿透 |
 | duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
-| position | string | 否 |  | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
+| position | string | 否 |  | Web: 5.32; 微信小程序: x; 支付宝小程序: x; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
 | success | (res: ShowToastSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast成功回调函数定义 |
 | fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast失败回调函数定义 |
 | complete | (res: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni.showToast完成回调函数定义 | 
@@ -53,9 +53,9 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| "top" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居上显示 |
-| "center" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居中显示 |
-| "bottom" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居底显示 |
+| "top" | Web: 5.32; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居上显示 |
+| "center" | Web: 5.32; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居中显示 |
+| "bottom" | Web: 5.32; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 居底显示 |
 
 #### ShowToastFail 的属性值 @showtoastfail-values 
 
@@ -125,7 +125,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| allType | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 是否关闭所有类型的 toast，默认不关闭。仅鸿蒙平台支持。 |
+| allType | boolean | 否 | Web: 5.32; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 是否关闭所有类型的 toast，默认不关闭。仅鸿蒙平台支持。 |
 | success | (res: [HideToastSuccess](#hidetoastsuccess-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 成功回调函数定义 |
 | fail | (res: [HideToastFail](#hidetoastfail-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 失败回调函数定义 |
 | complete | (res: any) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS: 5.31 | 完成回调函数定义 |

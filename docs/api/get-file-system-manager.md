@@ -1782,7 +1782,7 @@ saveFile
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | [string.URIString](/uts/data-type.md#ide-string) | 是 | Web: x | 临时存储文件路径 (本地路径) |
-| filePath | [string.URIString](/uts/data-type.md#ide-string) | 否 | Web: x | - 传入nil：默认保存到 uni.env.CACHE_PATH/uni-store/ 目录<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>- 传入filePath是目录路径且已存在，则返回错误码1300021<br/>- 传入filePath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
+| filePath | [string.URIString](/uts/data-type.md#ide-string) | 否 | Web: x | - 传入null：默认保存到 uni.env.CACHE_PATH/uni-store/ 目录<br/>- 传入错误路径：比如无权限的路径，返回 error<br/>- 传入文件路径：如果上一级目录存在，保存到传入的路径，如存在则覆盖；如果上一级目录不存在，上上级目录也不存在，则先递归创建再保存<br/>- 传入filePath是目录路径且已存在，则返回错误码1300021<br/>- 传入filePath是文件路径且已存在，则覆盖写入<br/>- 判断传入路径尾部是否带斜线，如xxx/path、 xxx/path/，直接视为写入到path文件，如xxx/path/sub.txt 具体的是写入到具体的文件，path是目录 |
 | success | (res: [SaveFileSuccessResult](#savefilesuccessresult-values)) => void | 否 | Web: x | 接口调用的回调函数 |
 | fail | (res: [FileSystemManagerFail](#filesystemmanagerfail-values)) => void | 否 | Web: x | 通用的错误返回结果回调 |
 | complete | (res: any) => void | 否 | Web: x | 通用的结束返回结果回调 | 
@@ -1791,7 +1791,7 @@ saveFile
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| savedFilePath | string | 是 | Web: x | 存储后的文件路径 (本地路径)。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>参数filePath=nil, savedFilePath= unifile://cache/uni-store/xxx<br/>否则savedFilePath= unifile://cache/xxx/unifile://usr/xxx/unifile://sandbox/xxx |
+| savedFilePath | string | 是 | Web: x | 存储后的文件路径 (本地路径)。自 `4.71` 起，返回 `unifile://` 协议的路径<br/>参数filePath=null, savedFilePath= unifile://cache/uni-store/xxx<br/>否则savedFilePath= unifile://cache/xxx/unifile://usr/xxx/unifile://sandbox/xxx |
 
 ###### FileSystemManagerFail 的属性值 @filesystemmanagerfail-values 
 
