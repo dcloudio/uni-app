@@ -29,6 +29,20 @@
 
 <!-- UTSAPIJSON.convert2AbsFullPath.example -->
 
+以下为转换结果示例，实际路径因平台、系统版本不同而有所差异
+
+```js
+uni.convert2AbsFullPath('/static/logo.png')
+```
+
+返回值为绝对路径，各平台结果如下：
+
+| 平台 | 返回值 |
+| --- | --- |
+| Android | `/data/data/<package-name>/apps/<appid>/www/static/logo.png` |
+| iOS | `/var/mobile/Containers/.../Documents/uni-app-x/apps/<appid>/www/static/logo.png` |
+| Harmony | `/data/storage/el1/bundle/.../resfile/uni-app-x/apps/<appid>/www/static/logo.png` |
+
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.file.convert2AbsFullPath)
