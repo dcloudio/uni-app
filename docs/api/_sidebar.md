@@ -101,6 +101,7 @@
   * [获取文件管理器](get-file-system-manager.md)
   * [打开文档](open-document.md)
   * [选择文件](choose-file.md)
+  * [转换为绝对路径](convert2-abs-full-path.md)
 * 数据存储
   * [key-value本地数据存储](storage.md)
 * 画布
