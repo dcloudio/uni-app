@@ -1297,8 +1297,7 @@ class UniElement extends Object {
     return attr2 === void 0 ? null : attr2;
   }
   getPage() {
-    var _a, _b;
-    return ((_b = (_a = this.__vnode) == null ? void 0 : _a.ctx) == null ? void 0 : _b.page) || null;
+    return uniShared.getUniElementPage(this);
   }
   get uniPage() {
     return this.getPage();
@@ -3410,6 +3409,7 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
   }
+  pageInstance.subTree.el;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();

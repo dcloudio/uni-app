@@ -1,0 +1,39 @@
+<template>
+    <view :section-id="sectionId satisfies number" change:section-id="recycleListItemCpp.setSectionId"
+        :list-view-id="listViewId satisfies number" change:list-view-id="recycleListItemCpp.setListViewId"
+        :item-key="('' + props.itemKey) satisfies string" change:item-key="recycleListItemCpp.updateKey"
+        :ref="recycleListItemCpp.setElement" class="uni-list-item" style="position: absolute; width: 100%">
+        <slot></slot>
+    </view>
+</template>
+<script module="recycleListItemCpp" lang="cpp" class-name="RecycleListItem" src="../../cppsdk/recycle_list.h"
+    namespace="recycle_list"></script>
+<script setup>
+import { UniListItemElement } from '../../common/element'
+
+defineOptions({
+    name: 'list-item',
+    rootElement: {
+        class: UniListItemElement
+    }
+})
+
+const props = defineProps({
+    itemKey: {
+        type: [String, Number],
+        required: true,
+    }
+});
+const listViewId = inject<number>("__uni_recycle_view_id", 0);
+const sectionId = inject<number>('__uni_recycle_section_id', 0);
+const itemKeyRef = computed(() => `${sectionId.value}:${props.itemKey}`);
+provide('__uni_recycle_state_key_ref', itemKeyRef);
+
+const recycleHooks = new Map<string, () => void>();
+provide('__uni_recycle_hooks', recycleHooks);
+
+defineExpose({
+    recycleHooks
+});
+</script>
+<style></style>

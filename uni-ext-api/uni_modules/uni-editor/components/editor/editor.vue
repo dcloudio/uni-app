@@ -1,0 +1,915 @@
+<template>
+  <!-- #ifndef VUE3-VAPOR -->
+  <uni-editor-element class="container" ref="rootEl">
+  <!-- #endif -->
+  <!-- #ifdef VUE3-VAPOR -->
+  <!-- 外层需要 view 包裹，否则 getElementById 获取到的是 UniWebViewElement -->
+  <view class="container">
+  <!-- #endif -->
+    <web-view ref="webviewElement" src="/uni_modules/uni-editor/static/editor.html" :bounces="false"
+    :verticalScrollBarAccess="false" :horizontalScrollBarAccess="false" :webview-styles="{progress: false}" @message="onMessage"
+      @load="onLoad"></web-view>
+  <!-- #ifdef VUE3-VAPOR -->
+  </view>
+  <!-- #endif -->
+  <!-- #ifndef VUE3-VAPOR -->
+  </uni-editor-element>
+  <!-- #endif -->
+</template>
+<script setup lang="uts">
+  /**
+   * 富文本编辑器，可以对图片、文字进行编辑。
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "osVer": "7.1.1",
+   *       "uniVer": "√",
+   *       "unixVer": "5.08"
+   *     },
+   *     "ios": {
+   *       "uniVer": "√",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "osVer": "√",
+   *       "uniVer": "4.23",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.08"
+   *     }
+   *   }
+   * }
+   */
+
+  import { UniEditorBlurEvent, UniEditorFocusEvent, UniEditorInputEvent, UniEditorStatusChangeEvent, UniEditorStatusChangeEventDetail } from './global.uts'
+  // #ifdef VUE3-VAPOR
+  import { UniEditorElement } from './global.uts'
+  // #endif
+  // #ifndef VUE3-VAPOR
+  import { UniEditorElement, NativeEditor } from '@/uni_modules/uni-editor'
+
+  function createEditorEventName(name: string, id: string) {
+    return `__UNIEDITOR_${name}_${id}`
+  }
+  const rootEl = ref<UniEditorElement | null>(null)
+  let nativeEditor : NativeEditor | null = null
+  // #endif
+  const instance = getCurrentInstance();
+  const eventSeed = `${instance?.uid ?? `${Date.now()}-${Math.floor(Math.random() * 1000000)}`}`;
+
+  // #ifdef VUE3-VAPOR
+  // 不依赖form组件内部的变量，因editor组件是可选且依赖可选的webview组件
+  const FORM_KEY = 'UNI_FORM_CTX'
+  type UnRegisterField = (name : string) => void
+  type EditorInFormContextField = {
+    name : string,
+    getValue : () => string,
+    reset ?: () => void
+  }
+  type EditorInFormContext = {
+    registerField : (field : EditorInFormContextField) => void,
+    unregisterField : UnRegisterField
+  }
+  // #endif
+
+  defineOptions({
+    name: 'editor',
+    rootElement: {
+      name: 'uni-editor-element',
+      class: UniEditorElement
+    }
+  })
+
+  const props = withDefaults(defineProps<{
+    /**
+     * 设置编辑器为只读
+     * @defaultValue false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "7.1.1",
+     *       "uniVer": "√",
+     *       "unixVer": "5.08"
+     *     },
+     *     "ios": {
+     *       "uniVer": "√",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "osVer": "√",
+     *       "uniVer": "4.23",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.08"
+     *     }
+     *   }
+     * }
+     */
+    readOnly ?: boolean,
+    /**
+     * 提示信息
+     * @defaultValue ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "7.1.1",
+     *       "uniVer": "√",
+     *       "unixVer": "5.08"
+     *     },
+     *     "ios": {
+     *       "uniVer": "√",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "osVer": "√",
+     *       "uniVer": "4.23",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.08"
+     *     }
+     *   }
+     * }
+     */
+    placeholder ?: string,
+    /**
+     * 点击图片时显示图片大小控件
+     * @defaultValue false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "7.1.1",
+     *       "uniVer": "√",
+     *       "unixVer": "5.08"
+     *     },
+     *     "ios": {
+     *       "uniVer": "√",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "osVer": "√",
+     *       "uniVer": "4.23",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.08"
+     *     }
+     *   }
+     * }
+     */
+    showImgSize ?: boolean,
+    /**
+     * 点击图片时显示工具栏控件
+     * @defaultValue false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "7.1.1",
+     *       "uniVer": "√",
+     *       "unixVer": "5.08"
+     *     },
+     *     "ios": {
+     *       "uniVer": "√",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "osVer": "√",
+     *       "uniVer": "4.23",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.08"
+     *     }
+     *   }
+     * }
+     */
+    showImgToolbar ?: boolean,
+    /**
+     * 点击图片时显示修改尺寸控件
+     * @defaultValue false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "7.1.1",
+     *       "uniVer": "√",
+     *       "unixVer": "5.08"
+     *     },
+     *     "ios": {
+     *       "uniVer": "√",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "osVer": "√",
+     *       "uniVer": "4.23",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.08"
+     *     }
+     *   }
+     * }
+     */
+    showImgResize ?: boolean,
+    /**
+     * 输入类型，暂只支持
+     *   "none": 聚焦时不弹出键盘
+     * @defaultValue null
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "osVer": "8.0.0",
+     *       "uniVer": "x",
+     *       "unixVer": "5.08"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "osVer": "√",
+     *       "uniVer": "x",
+     *       "unixVer": "5.08",
+     *       "unixVaporVer": "5.08"
+     *     }
+     *   }
+     * }
+     */
+    type?: "none" | null,
+    /**
+     * 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交
+     */
+    name?: string
+  }>(), {
+    readOnly: false,
+    placeholder: '',
+    showImgSize: false,
+    showImgToolbar: false,
+    showImgResize: false,
+    type: null
+  })
+
+  const emit = defineEmits<{
+    /**
+     * 编辑器初始化完成时触发
+     */
+    'ready' : () => void
+    /**
+     * 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式
+     */
+    'statuschange' : [event: UniEditorStatusChangeEvent]
+    /**
+     * 编辑器聚焦时触发
+     */
+    'focus' : [event: UniEditorFocusEvent],
+    /**
+     * 编辑器内容改变时触发
+     */
+    'input' : [event: UniEditorInputEvent],
+    /**
+     * 编辑器失去焦点时触发
+     */
+    'blur' : [event: UniEditorBlurEvent]
+  }>()
+
+  let webviewElement = ref<UniWebViewElement | null>(null)
+  let isReady = false
+  let callbackId = 0
+  const callbackMap = new Map<number, UTSJSONObject>()
+
+  // #ifdef VUE3-VAPOR
+  let formValue = ''
+  const formCtx = inject<EditorInFormContext | null>(FORM_KEY, null)
+  // #endif
+
+  function LOG(...args : string[]) {
+    // 此处供开发时调试
+    // console.log(`${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} [Editor LOG]`, ...args)
+  }
+
+  /**
+   * 生成唯一的回调 ID
+   */
+  function generateCallbackId() : number {
+    return ++callbackId
+  }
+
+  /**
+   * 处理回调
+   */
+  function handleCallback(cbId : number, result : UTSJSONObject) {
+    let callbacks = callbackMap.get(cbId)
+    // #ifdef APP-ANDROID
+    // TODO 安卓 map bug
+    if (callbacks == null) {
+      callbacks = callbackMap.get(cbId.toInt())
+    }
+    // #endif
+    if (callbacks == null) {
+      LOG('Callback not found for id:', cbId.toString())
+      return
+    }
+
+    // 移除回调
+    callbackMap.delete(cbId)
+
+    // #ifndef VUE3-VAPOR
+    uni.$emit(createEditorEventName('callback', eventSeed), cbId, result)
+    // #endif
+
+    // #ifdef VUE3-VAPOR
+    const errMsg = result['errMsg'] as string | null
+    const isSuccess = errMsg != null && errMsg.indexOf(':ok') > -1
+
+    // 调用相应的回调函数
+    if (isSuccess) {
+      const success = callbacks['success'] as ((res : UTSJSONObject) => void) | null
+      if (success != null) {
+        success(result)
+      }
+    } else {
+      const fail = callbacks['fail'] as ((res : UTSJSONObject) => void) | null
+      if (fail != null) {
+        fail(result)
+      }
+    }
+
+    // 总是调用 complete
+    const complete = callbacks['complete'] as ((res : UTSJSONObject) => void) | null
+    if (complete != null) {
+      complete(result)
+    }
+    // #endif
+  }
+
+  /**
+   * 处理来自 HTML 的消息
+   */
+  function onMessage(event : UniWebViewMessageEvent) {
+    let data = event.detail.data[0] as UTSJSONObject | null
+    if (data == null) {
+      LOG('Received null data from webview')
+      return
+    }
+
+    LOG('Received message:', JSON.stringify(data))
+
+    const eventType = data['event'] as string | null
+    if (eventType == null) {
+      return
+    }
+
+    // 处理不同类型的消息
+    switch (eventType) {
+      case 'ready':
+        // 编辑器初始化完成
+        isReady = true
+        emit('ready')
+        break
+
+      case 'focus':
+        // 编辑器获得焦点
+        const focusDetail = data['detail'] as UTSJSONObject | null
+        if (focusDetail != null) {
+          const html = focusDetail['html'] as string
+          const text = focusDetail['text'] as string
+          const delta = focusDetail['delta']!
+          emit('focus', new UniEditorFocusEvent(html, text, delta))
+          // #ifdef VUE3-VAPOR
+          updateFormValue(html)
+          // #endif
+        }
+        break
+
+      case 'blur':
+        // 编辑器失去焦点
+        const blurDetail = data['detail'] as UTSJSONObject | null
+        if (blurDetail != null) {
+          const html = blurDetail['html'] as string
+          const text = blurDetail['text'] as string
+          const delta = blurDetail['delta']!
+          emit('blur', new UniEditorBlurEvent(html, text, delta))
+          // #ifdef VUE3-VAPOR
+          updateFormValue(html)
+          // #endif
+        }
+        break
+
+      case 'input':
+        // 编辑器内容改变
+        const inputDetail = data['detail'] as UTSJSONObject | null
+        if (inputDetail != null) {
+          const html = inputDetail['html'] as string
+          const text = inputDetail['text'] as string
+          const delta = inputDetail['delta']!
+          emit('input', new UniEditorInputEvent(html, text, delta))
+          // #ifdef VUE3-VAPOR
+          updateFormValue(html)
+          // #endif
+        }
+        break
+
+      case 'statuschange':
+        // 编辑器状态改变
+        const statusDetail = data['detail'] as UTSJSONObject | null
+        if (statusDetail != null) {
+          emit('statuschange', new UniEditorStatusChangeEvent({
+            bold: statusDetail['bold'] as boolean | null,
+            italic: statusDetail['italic'] as boolean | null,
+            underline: statusDetail['underline'] as boolean | null,
+            strike: statusDetail['strike'] as boolean | null,
+            blockquote: statusDetail['blockquote'] as boolean | null,
+            align: statusDetail['align'] as string | null,
+            lineHeight: statusDetail['lineHeight'] as string | null,
+            letterSpacing: statusDetail['letterSpacing'] as string | null,
+            marginTop: statusDetail['marginTop'] as string | null,
+            marginBottom: statusDetail['marginBottom'] as string | null,
+            fontFamily: statusDetail['fontFamily'] as string | null,
+            fontSize: statusDetail['fontSize'] as string | null,
+            color: statusDetail['color'] as string | null,
+            backgroundColor: statusDetail['backgroundColor'] as string | null,
+            list: statusDetail['list'] as string | null,
+            header: statusDetail['header'] as number | null,
+            script: statusDetail['script'] as string | null,
+            direction: statusDetail['direction'] as string | null,
+            link: statusDetail['link'] as string | null,
+            codeBlock: statusDetail['codeBlock'] as boolean | null
+          } as UniEditorStatusChangeEventDetail))
+        }
+        break
+
+      case 'callback':
+        // 处理回调结果
+        const callbackDetail = data['detail'] as UTSJSONObject | null
+        if (callbackDetail == null) {
+          LOG('Received null callback detail')
+          return
+        }
+        const cbId = callbackDetail['callbackId'] as number | null
+        const result = callbackDetail['data'] as UTSJSONObject | null
+        if (cbId != null && result != null) {
+          handleCallback(cbId, result)
+        }
+        break
+
+      default:
+        LOG('Unknown message type:', eventType)
+        break
+    }
+  }
+
+  /**
+   * 执行 JS 代码
+   */
+  function evalJS(js : string) {
+    if (webviewElement.value == null) {
+      LOG('WebView element not ready')
+      return
+    }
+    LOG('Eval JS:', js)
+    webviewElement.value!.evalJS(js)
+  }
+
+  // #ifdef VUE3-VAPOR
+  /**
+   * 同步表单value到editor
+   */
+  function syncFormValue() {
+    if (isReady == false) {
+      return
+    }
+    const syncCallbackId = generateCallbackId()
+    const syncOptions = new UTSJSONObject()
+    syncOptions['success'] = (res : UTSJSONObject) => {
+      updateFormValue(res['html'] as string | null)
+    }
+    callbackMap.set(syncCallbackId, syncOptions)
+    evalJS(`editorGetContents(${syncCallbackId})`)
+  }
+
+  /**
+   * 更新表单value
+   */
+  function updateFormValue(html : string | null) {
+    formValue = html != null ? html : ''
+  }
+  // #endif
+
+  /**
+   * 初始化编辑器配置
+   */
+  function initEditorConfig() {
+    if (webviewElement.value == null) {
+      return
+    }
+
+    // 重新初始化编辑器以应用配置
+    const config = {
+      placeholder: props.placeholder,
+      showImgSize: props.showImgSize,
+      showImgToolbar: props.showImgToolbar,
+      showImgResize: props.showImgResize,
+      readOnly: props.readOnly,
+      type: props.type
+    }
+
+    evalJS(`editorInit(${JSON.stringify(config)})`)
+  }
+
+  /**
+   * WebView 加载完成
+   */
+  function onLoad() {
+    LOG('WebView loaded')
+    // 初始化编辑器配置
+    initEditorConfig()
+  }
+
+  /**
+   * 转义字符串中的特殊字符
+   */
+  function escapeString(str : string) : string {
+    return str.replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+  }
+
+  // ==================== 对外暴露的方法 ====================
+
+  /**
+   * 格式化文本
+   */
+  function format(name: string, value: string | number | null = null) {
+    const params = {
+      name,
+      value
+    }
+    evalJS(`editorFormat(${JSON.stringify(params)})`)
+  }
+
+  /**
+   * 插入分割线
+   */
+  function insertDivider(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorInsertDivider(${cbId})`)
+  }
+
+  /**
+   * 插入图片
+   */
+  function insertImage(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    const params = {
+      src: options['src'],
+      alt: options['alt'],
+      width: options['width'],
+      height: options['height'],
+      extClass: options['extClass'],
+      data: options['data']
+    }
+    evalJS(`editorInsertImage(${JSON.stringify(params)}, ${cbId})`)
+  }
+
+  /**
+   * 插入文本
+   */
+  function insertText(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    const params = {
+      text: options['text']
+    }
+    evalJS(`editorInsertText(${JSON.stringify(params)}, ${cbId})`)
+  }
+
+  /**
+   * 插入文本
+   */
+  function insertLink(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    const params = {
+      text: options['text'],
+      href: options['href']
+    }
+    evalJS(`editorInsertLink(${JSON.stringify(params)}, ${cbId})`)
+  }
+
+
+  /**
+   * 插入 HTML
+   */
+  function insertMention(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    const params = new UTSJSONObject()
+
+    params['id'] = options?.id ?? null
+    params['name'] = options?.name ?? null
+    params['color'] = options?.color ?? null
+    params['background'] = options?.background ?? null
+    params['radius'] = options?.radius ?? null
+    evalJS(`editorInsertMention(${JSON.stringify(params)}, ${cbId})`)
+  }
+
+  /**
+   * 设置内容
+   */
+  function setContents(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ??  generateCallbackId()
+    callbackMap.set(cbId, options)
+    const params = {
+      delta: options['delta'],
+      html: options['html']
+    }
+    evalJS(`editorSetContents(${JSON.stringify(params)}, ${cbId})`)
+    // #ifdef VUE3-VAPOR
+    const html = options['html'] as string | null
+    if (html != null) {
+      updateFormValue(html)
+    } else {
+      syncFormValue()
+    }
+    // #endif
+  }
+
+  /**
+   * 获取内容
+   */
+  function getContents(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId =  _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorGetContents(${cbId})`)
+  }
+
+  /**
+   * 清空内容
+   */
+  function clear(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorClear(${cbId})`)
+    // #ifdef VUE3-VAPOR
+    updateFormValue('')
+    // #endif
+  }
+
+  /**
+   * 移除格式
+   */
+  function removeFormat(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorRemoveFormat(${cbId})`)
+  }
+
+  /**
+   * 撤销
+   */
+  function undo(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorUndo(${cbId})`)
+  }
+
+  /**
+   * 重做
+   */
+  function redo(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorRedo(${cbId})`)
+  }
+
+  /**
+   * 失去焦点
+   */
+  function blur(options : UTSJSONObject | null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorBlur(${cbId})`)
+  }
+
+  /**
+   * 获取选中文本
+   */
+  function getSelectionText(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorGetSelectionText(${cbId})`)
+  }
+
+  /**
+   * 滚动到可视区域
+   */
+  function scrollIntoView(options : UTSJSONObject | null, _cbId : number | null = null) {
+    if (options == null) {
+      options = {}
+    }
+    const cbId = _cbId ?? generateCallbackId()
+    callbackMap.set(cbId, options)
+    evalJS(`editorScrollIntoView(${cbId})`)
+  }
+
+  // 暴露方法供外部调用
+  defineExpose({
+    format,
+    insertDivider,
+    insertImage,
+    insertText,
+    insertMention,
+    insertLink,
+    setContents,
+    getContents,
+    clear,
+    removeFormat,
+    undo,
+    redo,
+    blur,
+    getSelectionText,
+    scrollIntoView
+  })
+
+  onMounted(() => {
+    // #ifndef VUE3-VAPOR
+    nativeEditor = new NativeEditor(eventSeed, rootEl.value!)
+    // #endif
+
+    // #ifdef VUE3-VAPOR
+    if (formCtx != null && props.name.length > 0) {
+      formCtx.registerField({
+        name: props.name,
+        getValue: () => formValue,
+        reset: () => {
+          updateFormValue('')
+          clear(new UTSJSONObject())
+        }
+      })
+    }
+    // #endif
+  })
+
+  // #ifdef VUE3-VAPOR
+  onUnmounted(() => {
+    if (formCtx != null && props.name.length > 0) {
+      formCtx.unregisterField(props.name)
+    }
+  })
+  // #endif
+
+  // 监听 props 变化
+  watch((): boolean => props.readOnly, (newVal: boolean) => {
+    if (isReady) {
+      evalJS(`editorSetReadOnly({readOnly: ${newVal}})`)
+    }
+  })
+
+  // 监听 type 变化
+  watch((): string | null => props.type, (newVal: string | null) => {
+    if (isReady) {
+      evalJS(`editorSetType({type: '${newVal != null ? escapeString(newVal!) : ''}'})`)
+    }
+  })
+
+  watch((): string => props.placeholder, (newVal: string) => {
+    if (isReady) {
+      evalJS(`editorSetPlaceholder({placeholder: '${escapeString(newVal)}'})`)
+    }
+  })
+
+  // #ifndef VUE3-VAPOR
+  const __UNIEDITOR_FORMAT_EVENT_NAME__ = createEditorEventName('format', eventSeed)
+  const __UNIEDITOR_INSERT_DIVIDER_EVENT_NAME__ = createEditorEventName('insertDivider', eventSeed)
+  const __UNIEDITOR_INSERT_IMAGE_EVENT_NAME__ = createEditorEventName('insertImage', eventSeed)
+  const __UNIEDITOR_INSERT_TEXT_EVENT_NAME__ = createEditorEventName('insertText', eventSeed)
+  const __UNIEDITOR_INSERT_LINK_EVENT_NAME__ = createEditorEventName('insertLink', eventSeed)
+  const __UNIEDITOR_INSERT_MENTION_EVENT_NAME__ = createEditorEventName('insertMention', eventSeed)
+  const __UNIEDITOR_SET_CONTENTS_EVENT_NAME__ = createEditorEventName('setContents', eventSeed)
+  const __UNIEDITOR_GET_CONTENTS_EVENT_NAME__ = createEditorEventName('getContents', eventSeed)
+  const __UNIEDITOR_CLEAR_EVENT_NAME__ = createEditorEventName('clear', eventSeed)
+  const __UNIEDITOR_REMOVE_FORMAT_EVENT_NAME__ = createEditorEventName('removeFormat', eventSeed)
+  const __UNIEDITOR_UNDO_EVENT_NAME__ = createEditorEventName('undo', eventSeed)
+  const __UNIEDITOR_REDO_EVENT_NAME__ = createEditorEventName('redo', eventSeed)
+  const __UNIEDITOR_BLUR_EVENT_NAME__ = createEditorEventName('blur', eventSeed)
+  const __UNIEDITOR_GET_SELECTION_TEXT_EVENT_NAME__ = createEditorEventName('getSelectionText', eventSeed)
+  const __UNIEDITOR_SCROLL_INTO_VIEW_EVENT_NAME__ = createEditorEventName('scrollIntoView', eventSeed)
+
+  uni.$on(__UNIEDITOR_FORMAT_EVENT_NAME__, (name: string, value : string | number | null) => {
+    format(name, value)
+  })
+  uni.$on(__UNIEDITOR_INSERT_DIVIDER_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    insertDivider(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_INSERT_IMAGE_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    insertImage(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_INSERT_TEXT_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    insertText(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_INSERT_MENTION_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    insertMention(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_INSERT_LINK_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    insertLink(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_SET_CONTENTS_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    setContents(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_GET_CONTENTS_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    getContents(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_CLEAR_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    clear(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_REMOVE_FORMAT_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    removeFormat(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_UNDO_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    undo(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_REDO_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    redo(options, cbId)
+  })
+  /**
+   * TODO 和基类冲突，不支持 success 等回调
+   */
+  uni.$on(__UNIEDITOR_BLUR_EVENT_NAME__, (options: UTSJSONObject | null) => {
+    blur(options)
+  })
+  uni.$on(__UNIEDITOR_GET_SELECTION_TEXT_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    getSelectionText(options, cbId)
+  })
+  uni.$on(__UNIEDITOR_SCROLL_INTO_VIEW_EVENT_NAME__, (options: UTSJSONObject | null, cbId: number) => {
+    scrollIntoView(options, cbId)
+  })
+
+  onBeforeUnmount(() => {
+    nativeEditor?.dispose()
+    nativeEditor = null
+    uni.$off(__UNIEDITOR_FORMAT_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_INSERT_DIVIDER_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_INSERT_IMAGE_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_INSERT_TEXT_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_SET_CONTENTS_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_GET_CONTENTS_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_CLEAR_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_REMOVE_FORMAT_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_UNDO_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_REDO_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_BLUR_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_GET_SELECTION_TEXT_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_SCROLL_INTO_VIEW_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_INSERT_MENTION_EVENT_NAME__)
+    uni.$off(__UNIEDITOR_INSERT_LINK_EVENT_NAME__)
+  })
+  // #endif
+</script>
+
+<style>
+  .container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    min-height: 200px;
+  }
+</style>

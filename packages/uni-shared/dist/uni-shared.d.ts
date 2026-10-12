@@ -253,6 +253,8 @@ export declare function getLen(str?: string): number;
 
 export declare function getPartClass(partName: string): string;
 
+export declare function getUniElementPage<T>(element: Element): T | null;
+
 export declare function getValueByDataPath(obj: any, path: string): unknown;
 
 export declare const H5_BUILT_IN_TAG_NAMES: string[];
@@ -785,6 +787,8 @@ export declare const enum SetUniElementIdTagType {
     BuiltInComponent = 1,// 如：unicloud-db
     BuiltInRootElement = 2
 }
+
+export declare function setUniElementPage(pageElement: Element, page: unknown): void;
 
 export declare const SLOT_DEFAULT_NAME = "d";
 

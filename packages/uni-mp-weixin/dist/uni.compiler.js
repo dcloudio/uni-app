@@ -57,6 +57,90 @@ function transformLoading(node, context) {
 !!(process.env.NODE_ENV !== "production") ? Object.freeze({}) : {};
 !!(process.env.NODE_ENV !== "production") ? Object.freeze([]) : [];
 const isArray = Array.isArray;
+const cacheStringFunction = (fn) => {
+  const cache = /* @__PURE__ */ Object.create(null);
+  return (str) => {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+};
+const camelizeRE = /-(\w)/g;
+const camelize = cacheStringFunction((str) => {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
+});
+const hyphenateRE = /\B([A-Z])/g;
+const hyphenate = cacheStringFunction(
+  (str) => str.replace(hyphenateRE, "-$1").toLowerCase()
+);
+
+const gridViewProps = [
+    'crossAxisCount',
+    'maxCrossAxisExtent',
+    'mainAxisGap',
+    'crossAxisGap',
+    'padding',
+];
+const transformWaterflow = (node) => {
+    if (node.type !== compilerCore.NodeTypes.ROOT) {
+        return;
+    }
+    // 在子节点的 v-for、v-if 和属性表达式被处理前调整结构，避免重复处理表达式。
+    node.children.forEach(transformChild);
+};
+function transformChild(node) {
+    if (!uniCliShared.isElementNode(node)) {
+        return;
+    }
+    if (node.tag === 'waterflow') {
+        transformWaterflowElement(node);
+    }
+    else if (node.tag === 'flow-item') {
+        node.tag = 'view';
+        node.tagType = compilerCore.ElementTypes.ELEMENT;
+    }
+    node.children.forEach(transformChild);
+}
+function transformWaterflowElement(node) {
+    const props = [uniCliShared.createAttributeNode('type', 'masonry')];
+    node.props = node.props.filter((prop) => {
+        const name = prop.type === compilerCore.NodeTypes.ATTRIBUTE
+            ? prop.name
+            : prop.name === 'bind' && prop.arg && compilerCore.isStaticExp(prop.arg)
+                ? prop.arg.content
+                : '';
+        if (!gridViewProps.includes(camelize(name))) {
+            return true;
+        }
+        uniCliShared.renameProp(hyphenate(name), prop);
+        props.push(prop);
+        return false;
+    });
+    const index = node.children.findIndex((child) => uniCliShared.isElementNode(child) &&
+        child.tag === 'flow-item' &&
+        compilerCore.findDir(child, 'for') &&
+        compilerCore.findProp(child, 'key'));
+    const gridView = {
+        type: compilerCore.NodeTypes.ELEMENT,
+        tag: 'grid-view',
+        tagType: compilerCore.ElementTypes.ELEMENT,
+        ns: node.ns,
+        props,
+        children: index === -1 ? [] : [node.children[index]],
+        loc: node.loc,
+        isSelfClosing: false,
+        codegenNode: undefined,
+    };
+    if (index === -1) {
+        node.children.push(gridView);
+    }
+    else {
+        node.children.splice(index, 1, gridView);
+    }
+    node.tag = 'scroll-view';
+    node.tagType = compilerCore.ElementTypes.ELEMENT;
+    node.isSelfClosing = false;
+    node.props.push(uniCliShared.createAttributeNode('type', 'custom'));
+}
 
 function getMiniProgramAIPaths(inputDir, platform) {
     if (!inputDir || !platform) {
@@ -184,6 +268,9 @@ const nodeTransforms = [
     transformAd,
     uniCliShared.transformTeleport,
 ];
+if (process.env.UNI_APP_X_VAPOR === 'true') {
+    nodeTransforms.push(transformWaterflow);
+}
 if (process.env.UNI_APP_X === 'true') {
     nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
 }

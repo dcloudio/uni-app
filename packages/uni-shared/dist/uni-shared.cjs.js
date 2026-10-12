@@ -2567,24 +2567,7 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'waterflow',
     'web-view'
 ];
-const UVUE_VAPOR_WEB_EASYCOMS = [
-    'checkbox',
-    'checkbox-group',
-    'form',
-    'label',
-    'match-media',
-    'navigator',
-    'picker',
-    'picker-view',
-    'picker-view-column',
-    'progress',
-    'radio',
-    'radio-group',
-    'slider',
-    'swiper',
-    'swiper-item',
-    'switch'
-];
+const UVUE_VAPOR_WEB_EASYCOMS = [];
 
 const APP_NATIVE_TAGS = [
     'view',
@@ -2745,6 +2728,18 @@ function createUniDOMStringMap(source, options) {
             return Reflect.getOwnPropertyDescriptor(target, key);
         },
     });
+}
+
+const uniElementPageMap = new WeakMap();
+function setUniElementPage(pageElement, page) {
+    uniElementPageMap.set(pageElement, page);
+}
+function getUniElementPage(element) {
+    var _a;
+    const pageElement = element.closest('uni-page');
+    return pageElement
+        ? (_a = uniElementPageMap.get(pageElement)) !== null && _a !== void 0 ? _a : null
+        : null;
 }
 
 // class 沿用 Vue 标准解析；dom2 的 style 需要对象，供 sharedData 逐项转换原生样式，
@@ -2982,6 +2977,7 @@ exports.getEnvLocale = getEnvLocale;
 exports.getGlobal = getGlobal;
 exports.getLen = getLen;
 exports.getPartClass = getPartClass;
+exports.getUniElementPage = getUniElementPage;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
@@ -3042,6 +3038,7 @@ exports.resolveOwnerEl = resolveOwnerEl;
 exports.resolveOwnerVm = resolveOwnerVm;
 exports.sanitise = sanitise;
 exports.scrollTo = scrollTo;
+exports.setUniElementPage = setUniElementPage;
 exports.sortObject = sortObject;
 exports.stringifyQuery = stringifyQuery;
 exports.updateElementStyle = updateElementStyle;
