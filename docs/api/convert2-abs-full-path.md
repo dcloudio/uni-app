@@ -2,8 +2,12 @@
 ## uni.convert2AbsFullPath(inputPath) @convert2absfullpath
 :::
 
+将文件的项目相对地址转换为 运行期对应的绝对地址
 
-
+### convert2AbsFullPath 兼容性 <Help /> 
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 5.32 | 5.32 | 5.32 |
 
 
 ### 参数 
