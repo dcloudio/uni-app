@@ -8,7 +8,6 @@ export const UVUE_VAPOR_APP_ANDROID_EASYCOMS = [
   'ad',
   'camera',
   'canvas',
-  'ad-drama',
   'editor',
   'button',
   'checkbox',
@@ -137,7 +136,6 @@ export const UVUE_VAPOR_APP_EASYCOMS = [
   'ad',
   'camera',
   'canvas',
-  'ad-drama',
   'editor',
   'button',
   'checkbox',
@@ -184,7 +182,6 @@ export const UVUE_APP_ANDROID_COMPONENTS = [
 
 export const UVUE_APP_ANDROID_EASYCOMS = [
   'camera',
-  'ad-drama',
   'editor',
   'live-player',
   'live-pusher',
@@ -282,7 +279,6 @@ export const UVUE_APP_COMPONENTS = [
 
 export const UVUE_APP_EASYCOMS = [
   'camera',
-  'ad-drama',
   'editor',
   'live-player',
   'live-pusher',
