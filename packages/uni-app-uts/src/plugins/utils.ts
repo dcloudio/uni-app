@@ -214,12 +214,11 @@ export function normalizeManifestJson(
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
   if (process.env.UNI_APP_X_DOM2 === 'true') {
     x.minRuntimeVersion = MIN_RUNTIME_VERSION
-    x.uniCompilerRuleVersion = getUniCompilerRuleVersion()
+    x.compilerRuleVersion = getUniCompilerRuleVersion()
   } else {
     delete x.minRuntimeVersion
-    delete x.uniCompilerRuleVersion
+    delete x.compilerRuleVersion
   }
-  delete x.uniComplierRuleVersion
   delete x.bytecodeVersion
   const pageOrientation = getGlobalPageOrientation()
 
