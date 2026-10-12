@@ -11,44 +11,69 @@ uni-toast {
   font-size: 16px;
 }
 
-.uni-sample-toast {
+uni-toast .uni-sample-toast {
   position: fixed;
   z-index: 999;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  width: max-content;
   max-width: 80%;
+  max-width: min(200px, 80%);
+  box-sizing: border-box;
+  padding: 12px 20px;
+  background-color: rgba(76, 76, 76, 0.95);
+  border-radius: 10px;
 }
 
-.uni-simple-toast__text {
-  display: inline-block;
-  vertical-align: middle;
+uni-toast .uni-simple-toast__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin: 0;
   color: #ffffff;
-  background-color: rgba(17, 17, 17, 0.7);
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 13px;
+  font-size: 16px;
+  line-height: 1.4;
   text-align: center;
   max-width: 100%;
   word-break: break-word;
   white-space: normal;
 }
 
+uni-toast .uni-sample-toast.uni-toast--top {
+  top: 12px;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  transform: translateX(-50%);
+}
+
+uni-toast .uni-sample-toast.uni-toast--bottom {
+  top: auto;
+  bottom: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+}
+
 uni-toast .uni-mask {
   pointer-events: auto;
 }
 
-.uni-toast {
+uni-toast .uni-toast {
   position: fixed;
   z-index: 999;
-  width: 8em;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(17, 17, 17, 0.7);
+  background: rgba(76, 76, 76, 0.95);
   text-align: center;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #ffffff;
 }
 
@@ -56,10 +81,12 @@ uni-toast .uni-mask {
   box-sizing: border-box;
 }
 
-.uni-toast__icon {
-  margin: 20px 0 0;
-  width: 38px!important;
-  height: 38px!important;
+uni-toast .uni-toast__icon {
+  margin: 0;
+  flex-shrink: 0;
+  width: 36px!important;
+  height: 36px!important;
+  object-fit: contain;
   vertical-align: baseline!important;
 }
 
@@ -79,16 +106,17 @@ uni-toast .uni-mask {
   vertical-align: baseline;
 }
 
-.uni-toast__content {
-  margin: 0 auto 15px;
-	width: 86%;
-	overflow: hidden;
-	white-space: nowrap;
-}
-
-@media (prefers-color-scheme: dark) {
-  .uni-toast {
-    background-color: #606060;
-    color: var(--UI-FG-0);
-  }
+uni-toast .uni-toast__content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 16px 0 0;
+  padding: 0 8px;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  word-break: break-word;
+  white-space: normal;
 }

@@ -6,6 +6,8 @@ import {
   API_HIDE_TOAST,
   API_SHOW_LOADING,
   API_SHOW_TOAST,
+  HideToastOptions,
+  HideToastProtocol,
   ShowLoadingOptions,
   ShowLoadingProtocol,
   ShowToastOptions,
@@ -14,7 +16,8 @@ import {
 } from '@dcloudio/uni-api'
 import Toast, { type ToastProps } from './toast'
 import { createRootApp, ensureRoot } from './utils'
-import { useI18n } from '@dcloudio/uni-core'
+import { getCurrentPageId, useI18n } from '@dcloudio/uni-core'
+import { onPageUnload } from '../../../../framework/setup/page'
 //#endregion
 
 //#region Type
@@ -26,55 +29,105 @@ import type {
 } from '@dcloudio/uni-api'
 //#endregion
 
-let showToastState: ToastProps
-let showType: 'onShowToast' | 'onShowLoading' | '' = ''
-let timeoutId: ReturnType<typeof setTimeout>
+type ToastType = 'onShowToast' | 'onShowLoading'
+
+interface ToastController {
+  state?: ToastProps
+  type: ToastType | ''
+  pageId?: number
+  timeoutId?: ReturnType<typeof setTimeout>
+  showTimerId?: ReturnType<typeof setTimeout>
+  token: number
+}
+
+const pageToast: ToastController = { type: '', token: 0 }
+const appToast: ToastController = { type: '', token: 0 }
 
 const scope = /*#__PURE__*/ effectScope()
 
-function watchVisible() {
+function resetToastTimeout(controller: ToastController) {
+  clearTimeout(controller.timeoutId)
+  if (controller.type !== 'onShowToast') {
+    return
+  }
+  controller.timeoutId = setTimeout(
+    () => hidePopup('onHideToast', controller),
+    controller.state!.duration
+  )
+}
+
+function watchVisible(controller: ToastController) {
   scope.run(() => {
     watch(
-      [() => showToastState.visible, () => showToastState.duration],
-      ([visible, duration]) => {
+      () => controller.state!.visible,
+      (visible) => {
         if (visible) {
-          timeoutId && clearTimeout(timeoutId)
-          if (showType === 'onShowLoading') return
-          timeoutId = setTimeout(() => {
-            hidePopup('onHideToast')
-          }, duration)
+          resetToastTimeout(controller)
         } else {
-          timeoutId && clearTimeout(timeoutId)
+          clearTimeout(controller.timeoutId)
         }
       }
     )
   })
 }
 
-function createToast(args: ToastProps) {
-  if (!showToastState) {
-    showToastState = reactive(extend(args, { visible: false }))
+function createToast(
+  controller: ToastController,
+  args: ToastProps,
+  type: ToastType,
+  pageId?: number
+) {
+  clearTimeout(controller.timeoutId)
+  clearTimeout(controller.showTimerId)
+  controller.type = type
+  controller.pageId = pageId
+  controller.token++
+  if (!controller.state) {
+    controller.state = reactive(extend({}, args, { visible: false }))
     // 异步执行，避免干扰 getCurrentInstance
     nextTick(() => {
-      watchVisible()
-      UniServiceJSBridge.on('onHidePopup', () => hidePopup('onHidePopup'))
-      createRootApp(Toast, showToastState, () => {}).mount(ensureRoot('u-a-t'))
+      watchVisible(controller)
+      if (controller === pageToast) {
+        UniServiceJSBridge.on('onHidePopup', () =>
+          hidePopup('onHidePopup', pageToast)
+        )
+      }
+      createRootApp(Toast, controller.state!, () => {}).mount(
+        ensureRoot(controller === pageToast ? 'u-a-t' : 'u-a-at')
+      )
     })
   } else {
-    extend(showToastState, args)
+    extend(controller.state, args)
   }
 
-  setTimeout(() => {
+  const token = controller.token
+  controller.showTimerId = setTimeout(() => {
     // 延迟一下 show 可解决窗口打开前调用 showToast 在 onHidePopup 之后触发
-    showToastState.visible = true
+    if (token === controller.token) {
+      controller.state!.visible = true
+    }
   }, 10)
+  if (controller.state?.visible) {
+    resetToastTimeout(controller)
+  }
 }
 
 export const showToast = defineAsyncApi<API_TYPE_SHOW_TOAST>(
   API_SHOW_TOAST,
   (args, { resolve, reject }) => {
-    createToast(args as ToastProps)
-    showType = 'onShowToast'
+    if (
+      args.position !== undefined &&
+      !['top', 'center', 'bottom'].includes(args.position)
+    ) {
+      args.position = 'center'
+    }
+    const controller = args.position === undefined ? pageToast : appToast
+    createToast(
+      controller,
+      args as ToastProps,
+      'onShowToast',
+      controller === pageToast ? getCurrentPageId() : undefined
+    )
     resolve()
   },
   ShowToastProtocol,
@@ -91,8 +144,7 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
   API_SHOW_LOADING,
   (args, { resolve, reject }) => {
     extend(args, showLoadingDefaultState)
-    createToast(args as ToastProps)
-    showType = 'onShowLoading'
+    createToast(pageToast, args as ToastProps, 'onShowLoading')
     resolve()
   },
   ShowLoadingProtocol,
@@ -103,38 +155,58 @@ export const showLoading = defineAsyncApi<API_TYPE_SHOW_LOADING>(
 export const hideToast = defineAsyncApi<API_TYPE_HIDE_TOAST>(
   API_HIDE_TOAST,
   (args, { resolve, reject }) => {
-    hidePopup('onHideToast')
+    hidePopup('onHideToast', pageToast)
+    if (args?.allType) {
+      hidePopup('onHideToast', appToast)
+    }
     resolve()
-  }
+  },
+  HideToastProtocol,
+  HideToastOptions
 )
 
 //#if !_X_
 export const hideLoading = defineAsyncApi<API_TYPE_HIDE_LOADING>(
   API_HIDE_LOADING,
   (args, { resolve, reject }) => {
-    hidePopup('onHideLoading')
+    hidePopup('onHideLoading', pageToast)
     resolve()
   }
 )
 //#endif
 
-function hidePopup(type: 'onHideToast' | 'onHideLoading' | 'onHidePopup') {
+function hidePopup(
+  type: 'onHideToast' | 'onHideLoading' | 'onHidePopup',
+  controller: ToastController
+) {
   const { t } = useI18n()
-  if (!showType) {
+  if (!controller.type) {
     return
   }
   let warnMsg = ''
-  if (type === 'onHideToast' && showType !== 'onShowToast') {
+  if (type === 'onHideToast' && controller.type !== 'onShowToast') {
     warnMsg = t('uni.showToast.unpaired')
-  } else if (type === 'onHideLoading' && showType !== 'onShowLoading') {
+  } else if (type === 'onHideLoading' && controller.type !== 'onShowLoading') {
     warnMsg = t('uni.showLoading.unpaired')
   }
   if (warnMsg) {
     return console.warn(warnMsg)
   }
-  showType = ''
+  controller.type = ''
+  controller.pageId = undefined
+  clearTimeout(controller.timeoutId)
+  clearTimeout(controller.showTimerId)
+  const token = ++controller.token
   setTimeout(() => {
     // 与 show 对应延迟10ms，避免快速调用 show，hide 导致无法关闭
-    showToastState.visible = false
+    if (token === controller.token) {
+      controller.state!.visible = false
+    }
   }, 10)
 }
+
+onPageUnload((pageId) => {
+  if (pageToast.pageId === pageId && pageToast.type === 'onShowToast') {
+    hidePopup('onHideToast', pageToast)
+  }
+})
