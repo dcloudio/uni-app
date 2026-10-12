@@ -1024,17 +1024,17 @@
           "android": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "ios": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "harmony": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           }
         },
         "mp": {
@@ -1051,13 +1051,13 @@
       "flatten": {
         "app": {
           "android": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "ios": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "harmony": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           }
         }
       },
@@ -1102,13 +1102,13 @@
       "flatten": {
         "app": {
           "android": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "ios": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "harmony": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           }
         }
       },
@@ -1126,17 +1126,17 @@
           "android": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "ios": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "harmony": {
             "uniVer": "x",
             "unixVer": "x",
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           }
         },
         "mp": {
@@ -1153,13 +1153,13 @@
       "flatten": {
         "app": {
           "android": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "ios": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           },
           "harmony": {
-            "unixVaporVer": "5.32"
+            "unixVaporVer": "5.33"
           }
         }
       },
