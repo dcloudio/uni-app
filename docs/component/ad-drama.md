@@ -56,7 +56,7 @@ ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自�
 | extra | string | 否 |
 @
 | @load | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧加载成功的回调 |
-| @error | (e:[UniDramaErrorEvent](#unidramaerrorevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧加载失败的回调 |
+| @error | (event:[UniDramaErrorEvent](#unidramaerrorevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧加载失败的回调 |
 | @click | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 点击短剧的回调 |
 | @close | (event: [UniNativeViewEvent](/component/common.md#uninativeviewevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧关闭的回调 |
 
