@@ -184,6 +184,12 @@
 		externalClasses: ['placeholder-class']
 	})
 
+	interface ModelModifiers {
+		lazy ?: boolean;
+		number ?: boolean;
+		trim ?: boolean;
+	}
+
 	interface TextareaProps {
 		/**
 	 * @uniPlatform {
@@ -215,6 +221,7 @@
 	 }
 	 */
 		value ?: string;
+		valueModifiers ?: ModelModifiers;
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -517,6 +524,19 @@
 	const initialValue = ref<string>(getInitValue())
 	const textareaValue = ref<string>(initialValue.value)
 
+	function emitModelValueOnInput(value : string) {
+		if (props.valueModifiers?.lazy != true) {
+			emit('update:value', value)
+		}
+	}
+
+	function emitModelValueOnChange(value : string) {
+		if (props.valueModifiers?.lazy == true) {
+			textareaValue.value = value
+			emit('update:value', value)
+		}
+	}
+
 	const showPlaceholder = ref<boolean>(initialValue.value == '' && props.placeholder != '')
 
 	// #ifdef APP-ANDROID
@@ -802,7 +822,7 @@
 		const newValue = e.detail.value ?? ""
 		if (newValue !== textareaValue.value) {
 			textareaValue.value = newValue
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -824,6 +844,7 @@
 	}
 
 	function onChange(e : UniNativeViewEvent) {
+		emitModelValueOnChange(e.detail.value ?? textareaValue.value)
 		emit('change', e)
 	}
 
@@ -844,7 +865,7 @@
 		const newValue = e.detail.value;
 		if (newValue !== textareaValue.value) {
 			textareaValue.value = e.detail.value;
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -866,6 +887,7 @@
 	}
 
 	function onChange(e : UniNativeViewEvent) {
+		emitModelValueOnChange(e.detail.value ?? textareaValue.value)
 		emit('change', e)
 	}
 
@@ -882,7 +904,7 @@
 		const newValue = e.detail.value
 		if (newValue !== textareaValue.value) {
 			textareaValue.value = newValue;
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -903,6 +925,7 @@
 	}
 
 	function onChange(e : UniInputChangeEvent) {
+		emitModelValueOnChange(e.detail.value)
 		emit('change', e)
 	}
 

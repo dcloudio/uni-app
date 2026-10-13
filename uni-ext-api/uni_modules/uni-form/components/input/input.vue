@@ -272,6 +272,11 @@
 		externalClasses: ['placeholder-class']
 	})
 
+	interface ModelModifiers {
+		lazy ?: boolean;
+		number ?: boolean;
+		trim ?: boolean;
+	}
 
 	interface InputProps {
 		/**
@@ -304,6 +309,7 @@
 	 }
 	 */
 		value ?: string | number;
+		valueModifiers ?: ModelModifiers;
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -541,6 +547,19 @@
 
 	const initialValue = ref<string>(getInitValue())
 	const inputValue = ref<string>(initialValue.value)
+
+	function emitModelValueOnInput(value : string) {
+		if (props.valueModifiers?.lazy != true) {
+			emit('update:value', value)
+		}
+	}
+
+	function emitModelValueOnChange(value : string) {
+		if (props.valueModifiers?.lazy == true) {
+			inputValue.value = value
+			emit('update:value', value)
+		}
+	}
 
 	// #ifdef APP-HARMONY
 	// Placeholder visibility is derived entirely from existing reactive state.
@@ -901,7 +920,7 @@
 		const newValue = e.detail.value ?? ""
 		if (newValue !== inputValue.value) {
 			inputValue.value = newValue
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -923,6 +942,7 @@
 	}
 
 	function onChange(e : UniNativeViewEvent) {
+		emitModelValueOnChange(e.detail.value ?? inputValue.value)
 		emit('change', e)
 	}
 
@@ -939,7 +959,7 @@
 		const newValue = e.detail.value;
 		if (newValue !== inputValue.value) {
 			inputValue.value = e.detail.value;
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 
@@ -959,6 +979,7 @@
 	}
 
 	function onChange(e : UniNativeViewEvent) {
+		emitModelValueOnChange(e.detail.value ?? inputValue.value)
 		emit('change', e)
 	}
 
@@ -975,7 +996,7 @@
 		if (newValue !== inputValue.value) {
 			inputValue.value = newValue;
 			inputElement?.updateValue(newValue);
-			emit('update:value', newValue)
+			emitModelValueOnInput(newValue)
 			emit('input', e)
 		}
 	}
@@ -1011,6 +1032,7 @@
 	}
 
 	function onChange(e : UniInputChangeEvent) {
+		emitModelValueOnChange(e.detail.value)
 		emit('change', e)
 	}
 

@@ -730,7 +730,8 @@ function updateCssVariables() {
         return;
     }
     const windowInfo = my.getWindowInfo();
-    const screenBottom = windowInfo.screenHeight - windowInfo.screenTop - windowInfo.windowHeight;
+    // iOS 页面切换期间窗口指标可能短暂不一致，页面底部到屏幕底部的距离不应为负数
+    const screenBottom = Math.max(0, windowInfo.screenHeight - windowInfo.screenTop - windowInfo.windowHeight);
     const safeAreaBottom = windowInfo.screenHeight - windowInfo.safeArea.bottom;
     globalProperties[UNI_STATUS_BAR_HEIGHT] = windowInfo.statusBarHeight;
     globalProperties[UNI_SAFE_AREA_INSET_BOTTOM] = Math.max(0, safeAreaBottom - screenBottom);

@@ -7060,6 +7060,19 @@
   function isBuiltInElement(target) {
     return target.tagName.indexOf("UNI-") === 0;
   }
+  function createSvgIcon(path) {
+    var color = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "#000";
+    var size2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 27;
+    return createVNode("svg", {
+      width: size2,
+      height: size2,
+      viewBox: "0 0 32 32"
+    }, [createVNode("path", {
+      d: path,
+      fill: color
+    }, null, 8, ["d", "fill"])], 8, ["width", "height"]);
+  }
+  var createSvgIconVNode = createSvgIcon;
   var ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
   var ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
   var ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -7072,18 +7085,6 @@
   var ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
   var ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
   var ICON_PATH_CONFIRM = "M31.562 4.9966666659375q0.435 0.399 0.435 0.87 0.036 0.58-0.399 0.98l-18.61 19.917q-0.145 0.145-0.327 0.217-0.073 0.037-0.145 0.11-0.254 0.035-0.472 0.035-0.29 0-0.544-0.036l-0.145-0.072q-0.109-0.073-0.217-0.182l-0.11-0.072L0.363 16.2786666659375q-0.327-0.399-0.363-0.907 0-0.544 0.363-1.016 0.435-0.326 0.961-0.362 0.527-0.036 0.962 0.362l9.722 9.542L29.712 5.0326666659375q0.399-0.363 0.943-0.363 0.544-0.036 0.907 0.327z";
-  function createSvgIconVNode(path) {
-    var color = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "#000";
-    var size2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 27;
-    return createVNode("svg", {
-      width: size2,
-      height: size2,
-      viewBox: "0 0 32 32"
-    }, [createVNode("path", {
-      d: path,
-      fill: color
-    }, null, 8, ["d", "fill"])], 8, ["width", "height"]);
-  }
   function useCurrentPageId() {
     {
       return getCurrentPageId();
@@ -13212,6 +13213,7 @@
       startAnimation(this);
     }
   };
+  var defineRuntimeComponent = defineComponent;
   var defineBuiltInComponent = (options) => {
     options.__reserved = true;
     var {
@@ -13229,7 +13231,7 @@
       MODE: 3
       // 标记为vue3
     };
-    return /* @__PURE__ */ defineComponent(options);
+    return defineRuntimeComponent(options);
   };
   function withWebEvent(fn) {
     return fn.__wwe = true, fn;
@@ -15723,12 +15725,9 @@
       var rootRef = ref(null);
       var path = computed(() => ICONS[props2.type]);
       return () => {
-        var {
-          value
-        } = path;
         return createVNode("uni-icon", {
           "ref": rootRef
-        }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
+        }, [path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size))], 512);
       };
     }
   });
@@ -19726,6 +19725,115 @@
       field
     };
   }
+  function removeDOCTYPE(html) {
+    return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+  }
+  function parseAttrs(attrs2) {
+    return attrs2.reduce(function(pre, attr2) {
+      var value = attr2.value;
+      var name = attr2.name;
+      if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
+        value = value.split(" ");
+      }
+      if (pre[name]) {
+        if (Array.isArray(pre[name])) {
+          pre[name].push(value);
+        } else {
+          pre[name] = [pre[name], value];
+        }
+      } else {
+        pre[name] = value;
+      }
+      return pre;
+    }, {});
+  }
+  function parseHtml(html) {
+    html = removeDOCTYPE(html);
+    var stacks = [];
+    var results = {
+      node: "root",
+      children: []
+    };
+    HTMLParser(html, {
+      start: function(tag, attrs2, unary) {
+        var node = {
+          name: tag
+        };
+        if (attrs2.length !== 0) {
+          node.attrs = parseAttrs(attrs2);
+        }
+        if (unary) {
+          var parent = stacks[0] || results;
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        } else {
+          stacks.unshift(node);
+        }
+      },
+      end: function(tag) {
+        var node = stacks.shift();
+        if (node.name !== tag)
+          console.error("invalid state: mismatch end tag");
+        if (stacks.length === 0) {
+          results.children.push(node);
+        } else {
+          var parent = stacks[0];
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        }
+      },
+      chars: function(text2) {
+        var node = {
+          type: "text",
+          text: text2
+        };
+        if (stacks.length === 0) {
+          results.children.push(node);
+        } else {
+          var parent = stacks[0];
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        }
+      },
+      comment: function(text2) {
+        var node = {
+          node: "comment",
+          text: text2
+        };
+        var parent = stacks[0];
+        if (parent) {
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        }
+      }
+    });
+    return results.children;
+  }
+  var props$k = {
+    nodes: {
+      type: [Array, String],
+      default: function() {
+        return [];
+      }
+    },
+    /** @deprecated 请使用 user-select */
+    selectable: {
+      type: [Boolean, String],
+      default: false
+    },
+    userSelect: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
   var TAGS = {
     a: "",
     abbr: "",
@@ -19880,115 +19988,27 @@
       }
     });
   };
-  function removeDOCTYPE(html) {
-    return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
-  }
-  function parseAttrs(attrs2) {
-    return attrs2.reduce(function(pre, attr2) {
-      var value = attr2.value;
-      var name = attr2.name;
-      if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
-        value = value.split(" ");
+  function renderRichText$1(props2, rootRef, triggerItemClick) {
+    var vm = getCurrentInstance();
+    var scopeId = vm && vm.vnode.scopeId || "";
+    var vnode = shallowRef([]);
+    function renderVNode() {
+      var nodeList = props2.nodes;
+      if (isString(nodeList)) {
+        nodeList = parseHtml(props2.nodes);
       }
-      if (pre[name]) {
-        if (Array.isArray(pre[name])) {
-          pre[name].push(value);
-        } else {
-          pre[name] = [pre[name], value];
-        }
-      } else {
-        pre[name] = value;
-      }
-      return pre;
-    }, {});
-  }
-  function parseHtml(html) {
-    html = removeDOCTYPE(html);
-    var stacks = [];
-    var results = {
-      node: "root",
-      children: []
-    };
-    HTMLParser(html, {
-      start: function(tag, attrs2, unary) {
-        var node = {
-          name: tag
-        };
-        if (attrs2.length !== 0) {
-          node.attrs = parseAttrs(attrs2);
-        }
-        if (unary) {
-          var parent = stacks[0] || results;
-          if (!parent.children) {
-            parent.children = [];
-          }
-          parent.children.push(node);
-        } else {
-          stacks.unshift(node);
-        }
-      },
-      end: function(tag) {
-        var node = stacks.shift();
-        if (node.name !== tag)
-          console.error("invalid state: mismatch end tag");
-        if (stacks.length === 0) {
-          results.children.push(node);
-        } else {
-          var parent = stacks[0];
-          if (!parent.children) {
-            parent.children = [];
-          }
-          parent.children.push(node);
-        }
-      },
-      chars: function(text2) {
-        var node = {
-          type: "text",
-          text: text2
-        };
-        if (stacks.length === 0) {
-          results.children.push(node);
-        } else {
-          var parent = stacks[0];
-          if (!parent.children) {
-            parent.children = [];
-          }
-          parent.children.push(node);
-        }
-      },
-      comment: function(text2) {
-        var node = {
-          node: "comment",
-          text: text2
-        };
-        var parent = stacks[0];
-        if (parent) {
-          if (!parent.children) {
-            parent.children = [];
-          }
-          parent.children.push(node);
-        }
-      }
-    });
-    return results.children;
-  }
-  var props$k = {
-    nodes: {
-      type: [Array, String],
-      default: function() {
-        return [];
-      }
-    },
-    /** @deprecated 请使用 user-select */
-    selectable: {
-      type: [Boolean, String],
-      default: false
-    },
-    userSelect: {
-      type: [Boolean, String],
-      default: false
+      vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
     }
-  };
+    watch(() => props2.nodes, renderVNode, {
+      immediate: true,
+      deep: true
+    });
+    return () => h("uni-rich-text", {
+      ref: rootRef,
+      selectable: props2.userSelect || props2.selectable ? true : null
+    }, h("div", {}, vnode.value));
+  }
+  var renderRichText = renderRichText$1;
   const RichText = /* @__PURE__ */ defineBuiltInComponent({
     name: "RichText",
     compatConfig: {
@@ -20000,30 +20020,14 @@
       var {
         emit: emit2
       } = _ref;
-      var vm = getCurrentInstance();
-      var scopeId = vm && vm.vnode.scopeId || "";
       var rootRef = ref(null);
-      var _vnode = shallowRef([]);
       var trigger2 = useCustomEvent(rootRef, emit2);
       function triggerItemClick(e2) {
         var detail = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
         trigger2("itemclick", e2, detail);
       }
-      function renderVNode() {
-        var nodeList = props2.nodes;
-        if (isString(nodeList)) {
-          nodeList = parseHtml(props2.nodes);
-        }
-        _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
-      }
-      watch(() => props2.nodes, renderVNode, {
-        immediate: true,
-        deep: true
-      });
-      return () => h("uni-rich-text", {
-        ref: rootRef,
-        selectable: props2.userSelect || props2.selectable ? true : null
-      }, h("div", {}, _vnode.value));
+      var result = renderRichText(props2, rootRef, triggerItemClick);
+      return result;
     }
   });
   const Refresher = /* @__PURE__ */ defineBuiltInComponent({

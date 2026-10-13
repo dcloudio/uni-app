@@ -5784,6 +5784,7 @@ const animation = {
     startAnimation(this);
   }
 };
+var defineRuntimeComponent = defineComponent;
 var defineBuiltInComponent = (options) => {
   options.__reserved = true;
   var {
@@ -5807,7 +5808,7 @@ var defineSystemComponent = (options) => {
     MODE: 3
     // 标记为vue3
   };
-  return defineComponent(options);
+  return defineRuntimeComponent(options);
 };
 var UniNavigatorElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
