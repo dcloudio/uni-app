@@ -21,12 +21,14 @@ import { updateCssVariables } from '@dcloudio/uni-mp-core'
 import {
   $createComponent,
   $destroyComponent,
+  findVmByVueId,
   initComponentInstance,
   initMocks,
   initRefs,
   initVueIds,
 } from '@dcloudio/uni-mp-core'
 import { ON_READY } from '@dcloudio/uni-shared'
+import { instances } from './parseComponentOptions'
 
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
@@ -61,6 +63,30 @@ export function initLifetimes({
     }
     if (__X__ && mpType === 'page') {
       updateCssVariables()
+    }
+
+    if (__PLATFORM__ === 'mp-toutiao') {
+      // 在创建 Vue 组件实例之前，先查找父组件，以支持组合式 API 的 inject
+      if (mpType === 'component') {
+        const webviewId = mpInstance.__webviewId__ + ''
+        const vuePid = relationOptions.vuePid
+
+        let parentVm
+        if (vuePid) {
+          // 尝试从页面查找父组件
+          const pageVm = instances[webviewId + '_0'] as ComponentPublicInstance
+          if (pageVm) {
+            parentVm = findVmByVueId(pageVm, vuePid)
+          }
+        } else {
+          // 如果 vuePid 不存在，则认为当前组件的父是页面
+          parentVm = instances[webviewId + '_0']
+        }
+
+        if (parentVm) {
+          relationOptions.parent = parentVm
+        }
+      }
     }
 
     const props = findPropsData(properties, mpType === 'page')
