@@ -152,8 +152,11 @@ export function updateCssVariables() {
   }
 
   const windowInfo = __GLOBAL__.getWindowInfo()
-  const screenBottom =
+  // iOS 页面切换期间窗口指标可能短暂不一致，页面底部到屏幕底部的距离不应为负数
+  const screenBottom = Math.max(
+    0,
     windowInfo.screenHeight - windowInfo.screenTop - windowInfo.windowHeight
+  )
   const safeAreaBottom = windowInfo.screenHeight - windowInfo.safeArea.bottom
 
   globalProperties[UNI_STATUS_BAR_HEIGHT] = windowInfo.statusBarHeight
