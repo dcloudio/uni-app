@@ -1,8 +1,12 @@
-import { VaporSlot } from "@vue/runtime-vapor";
+import { VaporComponentInstance, VaporSlot } from "@vue/runtime-vapor";
 import { normalizeUniText } from "@vue/shared";
 import { withAsyncContext } from "@vue/runtime-core";
 export * from "@vue/runtime-dom";
 export * from "@vue/runtime-vapor";
+//#region temp/packages/runtime-vapor-web/src/selectorQuery.d.ts
+export declare function querySelectorInComponent(instance: VaporComponentInstance, selector: string): Element | null;
+export declare function querySelectorAllInComponent(instance: VaporComponentInstance, selector: string): Element[];
+//#endregion
 //#region temp/packages/runtime-vapor-web/src/hover.d.ts
 export declare function setHover(el: HTMLElement, hoverClass: unknown, stopPropagation?: unknown, startTime?: unknown, stayTime?: unknown, baseClass?: string): void;
 //#endregion

@@ -178,6 +178,10 @@ export type Block = Node | VaporFragment | DynamicFragment | VaporComponentInsta
 type BlockFn = (...args: any[]) => Block;
 export declare function insert(block: Block, parent: ParentNode, anchor?: Node | null, parentSuspense?: any): void;
 export declare function remove(block: Block, parent?: ParentNode): void;
+export declare function findBlockBoundary(block: Block): {
+  parentNode: Node | null;
+  nextNode: Node | null;
+};
 //#endregion
 //#region temp/packages/runtime-vapor/src/apiDefineComponent.d.ts
 export type VaporPublicProps = ReservedProps & AllowedComponentProps & ComponentCustomProps;

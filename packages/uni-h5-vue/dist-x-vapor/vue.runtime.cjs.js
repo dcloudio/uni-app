@@ -14146,8 +14146,13 @@ function findBlockBoundary(block) {
 }
 function findLastChild(node) {
 	if (node && node instanceof Node) return node;
-	else if (isArray(node)) return findLastChild(node[node.length - 1]);
-	else if (isVaporComponent(node)) return findLastChild(getComponentPhysicalBlock(node));
+	else if (isArray(node)) {
+		for (let i = node.length - 1; i >= 0; i--) {
+			const child = findLastChild(node[i]);
+			if (child) return child;
+		}
+		return;
+	} else if (isVaporComponent(node)) return findLastChild(getComponentPhysicalBlock(node));
 	else {
 		if (node.anchor) return node.anchor;
 		return findLastChild(node.nodes);
@@ -20537,6 +20542,37 @@ function withComponentId(rawCid, create, recycleItem = false) {
 	}
 }
 //#endregion
+//#region packages/runtime-vapor-web/src/selectorQuery.ts
+function querySelectorInComponent(instance, selector) {
+	return query(instance, selector);
+}
+function querySelectorAllInComponent(instance, selector) {
+	const results = [];
+	query(instance, selector, results);
+	return results;
+}
+function query(instance, selector, results) {
+	if (instance.isUnmounted || !instance.block) return null;
+	let node = getBlockFirstNode(instance);
+	if (!node || !node.parentNode) return null;
+	const end = findBlockBoundary(instance).nextNode;
+	while (node && node !== end) {
+		if (node instanceof Element) {
+			const matches = node.matches(selector);
+			if (results) {
+				if (matches) results.push(node);
+				const children = node.querySelectorAll(selector);
+				for (let i = 0; i < children.length; i++) results.push(children[i]);
+			} else {
+				const result = matches ? node : node.querySelector(selector);
+				if (result) return result;
+			}
+		}
+		node = node.nextSibling || void 0;
+	}
+	return null;
+}
+//#endregion
 //#region packages/runtime-vapor-web/src/hover.ts
 const states = /* @__PURE__ */ new WeakMap();
 const controllers = /* @__PURE__ */ new WeakMap();
@@ -21674,6 +21710,7 @@ exports.expose = expose;
 exports.extend = extend;
 exports.filterModelListeners = filterModelListeners;
 exports.filterSingleRoot = filterSingleRoot;
+exports.findBlockBoundary = findBlockBoundary;
 exports.finishBlockCreation = finishBlockCreation;
 exports.flushOnAppMount = flushOnAppMount;
 exports.forceReflow = forceReflow;
@@ -21852,6 +21889,8 @@ exports.provide = provide;
 exports.proxyRefs = proxyRefs;
 exports.pushScopeId = pushScopeId;
 exports.pushWarningContext = pushWarningContext;
+exports.querySelectorAllInComponent = querySelectorAllInComponent;
+exports.querySelectorInComponent = querySelectorInComponent;
 exports.queueJob = queueJob;
 exports.queuePostFlushCb = queuePostFlushCb;
 exports.queuePostRenderEffect = queuePostRenderEffect;
