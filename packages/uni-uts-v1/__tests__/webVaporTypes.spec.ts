@@ -254,14 +254,17 @@ describe('Web Vapor UTS 类型', () => {
       const mainFile = ${JSON.stringify(path.resolve(inputDir, 'main.uts'))}
       const appFile = ${JSON.stringify(path.resolve(inputDir, filename))}
       const childFile = ${JSON.stringify(path.resolve(inputDir, 'B.uvue'))}
+      // 两种分隔符统一比较，避免 Windows 上编译器的正斜杠路径绕过虚拟文件。
+      const normalizeFile = file => require('path').win32.normalize(file)
+      const isFile = (file, expected) => normalizeFile(file) === normalizeFile(expected)
       const readFile = ts.sys.readFile
       const fileExists = ts.sys.fileExists
-      ts.sys.fileExists = file => file === appFile || file === childFile || fileExists(file)
+      ts.sys.fileExists = file => isFile(file, appFile) || isFile(file, childFile) || fileExists(file)
       ts.sys.readFile = (file, ...args) => {
-        if (file === appFile) return ${JSON.stringify(source)}
-        if (file === childFile) return '<script setup lang="uts">const value: number = 1; defineExpose({ value })</script>'
-        const content = readFile(file, ...args)
-        return file === mainFile
+        if (isFile(file, appFile)) return ${JSON.stringify(source)}
+        if (isFile(file, childFile)) return '<script setup lang="uts">const value: number = 1; defineExpose({ value })</script>'
+        const content = readFile(isFile(file, mainFile) ? mainFile : file, ...args)
+        return isFile(file, mainFile)
           ? content.replace('./App.uvue', ${JSON.stringify('./' + filename)})
               .replace('createVaporApp as createSSRApp', ${JSON.stringify(
                 factory === 'defineVaporComponent'
@@ -270,6 +273,14 @@ describe('Web Vapor UTS 类型', () => {
               )})
           : content
       }
+      const assert = require('assert/strict')
+      for (const file of [appFile, childFile]) {
+        for (const alternateFile of [normalizeFile(file), normalizeFile(file).split(String.fromCharCode(92)).join('/')]) {
+        assert.equal(ts.sys.fileExists(alternateFile), true)
+        assert.equal(ts.sys.readFile(alternateFile), ts.sys.readFile(file))
+        }
+      }
+      assert.equal(ts.sys.readFile(normalizeFile(mainFile)), ts.sys.readFile(mainFile))
       const compiler = require(${JSON.stringify(
         require.resolve('@vue/compiler-dom', {
           paths: [path.resolve(__dirname, '../../uni-cli-shared')],
@@ -294,7 +305,7 @@ describe('Web Vapor UTS 类型', () => {
       rollup({
         input: mainFile,
         plugins: [{ name: 'test-main', load(file) {
-          if (file === mainFile) return ts.sys.readFile(file)
+          if (isFile(file, mainFile)) return ts.sys.readFile(file)
         } }, ...plugins],
         external: id => id === 'vue' || /\\.u?vue$/.test(id),
         onwarn: warning => warnings.push(warning.message),
