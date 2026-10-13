@@ -599,7 +599,10 @@ const theme = {
 9. 在组合式 API 下，子组件方法不会自动暴露给父组件，只有通过 `defineExpose` 显式暴露的方法，父组件才能通过 ref 调用，避免父组件无法访问子组件方法。
 10. 在测试例页面用到页面中的数据或方法时，必须通过 `defineExpose` 显式暴露数据和方法，避免测试无法访问。
 11. 在页面生命周期中，`onPullDownRefresh` 应作为页面生命周期函数处理，而不是写成普通方法。
-12. 检查控制台的编译报错，如果有报错自行修复，并再次检查编译报错，直到无报错编译通过。
+12. 组合式写法不支持 `mixins` 选项：
+- 选项中若使用了 `mixins: [...]`，必须去掉，把 mixin 提供的 data、computed、watch、methods 和生命周期合并进当前组件的组合式代码，或抽成普通 composable 函数；
+- 若使用了 `uniCloud.mixinDatacom`，改用其对应的组合式 API：用 `const props = defineProps({ ...uniCloud.datacomProps })` 展开内置 props，再 `const datacom = uniCloud.useDatacom(props)` 创建实例并调用 `datacom.easyGet({})`，模板改用 `datacom.resData`/`datacom.loading`/`datacom.errorMessage`（不用 `.value`），不要手动拷贝其内部实现；注意：`uniCloud.useDatacom` 从 HBuilderX 5.32 版本起才支持，且仅在项目已关联 uniCloud 服务空间时可用，使用前需先关联服务空间。
+13. 检查控制台的编译报错，如果有报错自行修复，并再次检查编译报错，直到无报错编译通过。
 
 ## 利用 AI 适配蒸汽模式@ai-vapor
 
@@ -616,7 +619,9 @@ const theme = {
 7. 选项式 API 中的 `beforeUnmount`、`mounted`、`unmounted`，改为组合式 API 时分别使用 `onBeforeUnmount`、`onMounted`、`onUnmounted`；`created` 的逻辑放到 `<script setup>` 顶层执行。
 8. 页面生命周期 `onPullDownRefresh` 不要当作普通方法处理；如果蒸汽模式当前平台不支持页面下拉刷新，改为使用页面内 `scroll-view` 等可兼容方案，并保持交互等价。
 9. 子组件方法、页面测试入口或外部需要访问的数据和方法，必须通过 `defineExpose` 显式暴露，避免父组件、测试用例或外部调用失效。
-10. 不要继续使用 `mixin`，将其中的数据、计算逻辑、方法和生命周期合并到当前组件的组合式代码中，或抽成普通 composable 函数。
+10. 不要继续使用 `mixin`：
+- 普通 `mixins: [...]` 必须去掉，把 mixin 提供的 data、computed、watch、methods 和生命周期合并进当前组件的组合式代码，或抽成普通 composable 函数；
+- 若使用了 `uniCloud.mixinDatacom`，改用其对应的组合式 API：用 `const props = defineProps({ ...uniCloud.datacomProps })` 展开内置 props，再 `const datacom = uniCloud.useDatacom(props)` 创建实例并调用 `datacom.easyGet({})`，模板改用 `datacom.resData`/`datacom.loading`/`datacom.errorMessage`（不用 `.value`），不要手动拷贝其内部实现；注意：`uniCloud.useDatacom` 从 HBuilderX 5.32 版本起才支持，且仅在项目已关联 uniCloud 服务空间时可用，使用前需先关联服务空间。
 11. 检查模板中蒸汽模式不支持或行为变化的写法，按项目现有规范改成兼容写法，保持页面结构和交互不变。
 12. 检查 `scroll-view`、`swiper` 等组件的布尔属性；不要依赖旧默认值，按页面实际需要显式补齐 `true` 或 `false`，避免行为变化。
 13. 检查 `list-view` / `list-item`：用于复用的 `list-item` 循环必须有稳定 `:key`；`list-view` 和需要复用的 `list-item` 应在同一个 uvue 文件内；`list-item` 内文本必须使用 `text` 包裹；不要依赖横向滚动、`margin` 等不兼容能力。
