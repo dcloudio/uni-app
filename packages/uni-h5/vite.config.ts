@@ -33,6 +33,7 @@ import {
 } from '../../scripts/ext-api'
 import { webVaporComponentStylesPlugin } from '../../scripts/webVaporComponents'
 import { resolveWebVaporComponents } from '../../scripts/webVaporComponentConfig'
+import { checkWebVaporVNodes } from '../../scripts/checkWebVaporVNodes'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -257,6 +258,7 @@ export default defineConfig(async () => {
           ]
         : []),
       ...(isX ? [replacePagePaths(systemPagePaths)] : []),
+      ...(isX_VAPOR && !isX_VAPOR_SSR_BUILD ? [checkWebVaporVNodes()] : []),
     ],
     esbuild: {
       // 模块阶段只剥离 TypeScript，不做语法降级；最终产物由 build.target 统一处理。
