@@ -15,13 +15,18 @@ UTS 短剧插件：提供 `uni.createDramaAd`（API 模式，自建聚合页）�
 
 短剧剧集的集合页面，用户可以通过该页面点击进入短剧播放页：
 
-<img src="https://web-ext-storage.dcloud.net.cn/uniad/ad-drama.jpg" style="max-width: 300px; max-height: 50vh;" />
+<img src="https://web-ext-storage.dcloud.net.cn/uniad/ad-drama.jpg" width="300" />
 
 ### 使用前提
 
 1. 在 [uni-ad 后台](https://uniad.dcloud.net.cn/)开通短剧广告位，获取 `adpid`；
 2. 从穿山甲后台下载 SDK 配置文件，重命名为 `gm_SDK_Setting.json` 放到项目根目录 `nativeResources/android/assets/` 下；
 3. **必须使用自定义基座**（标准基座不含短剧运行时，报 `-5020`）：HBuilderX 菜单【发行 → 原生App-云打包】→ 勾选"制作自定义调试基座"。
+
+   打包自定义基座配置示例：
+
+   <img src="https://web-ext-storage.dcloud.net.cn/uniad/ad-drama-pkg-base.png" width="600" />
+4. **Android 包名必须与 `gm_SDK_Setting.json` 中 `license_config` 的 `PackageName`（当前为 `com.bytedance.djxdemo`）保持一致，否则短剧播放会崩溃**。详见 [gm_SDK_Setting.json 配置说明](./docs/gm-sdk-setting.md)。
 
 > 本插件独立运行，无需安装其他插件，也**无需手动导入任何 AAR**——原生库由云打包按 `manifest.json` 的 uni-ad 模块配置自动引入。
 
@@ -68,7 +73,7 @@ dramaAd.getRecommendedList({
 ### 注意事项
 
 - 类型统一从 `@/uni_modules/uni-drama` 导入，勿 import 编译产物包名 `uts.sdk.modules.DCloudUniDrama`（云打包服务器无此包，会导致云打包失败）。
-- 短剧解锁的激励视频由 SDK 内部完成，无需接入广告插件；`urlCallback`（userId/extra）用于激励发放的服务器回调校验。
+- 短剧解锁的激励视频由 SDK 内部完成，无需接入广告插件；`url-callback`（userId/extra）用于激励发放的服务器回调校验。
 - API 模式请在页面 `onUnmounted` 时调用 `destroy()` 释放实例。
 
 
@@ -114,13 +119,13 @@ uni-app x 内置短剧 uni-drama，提供两种接入方式：
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **CreateDramaAdOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | uni-drama 短剧插件类型定义（原 uni-ad-dom2 短剧部分独立拆分）。 依赖 uni-ad-dom2 广告插件（提供 SDK 初始化与 AAR），本文件只包含短剧 API 与组件类型。 |
+| options | **CreateDramaAdOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 用于创建短剧广告（DramaAd）实例时传入的配置项类型，目前仅包含必填的 adpid |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| adpid | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧广告位标识 | 
+| adpid | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧广告位标识<br/>必填；在 uni-ad 平台申请短剧广告位获取的 adpid。<br/>adpid 为空、无效或广告位未开通时，创建后经 onError 上报 -5001 / -5002 / -5003。 | 
 
 
 
@@ -145,49 +150,49 @@ getList
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
 | fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -207,49 +212,49 @@ getRecommendedList
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
 | fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -269,49 +274,49 @@ getCollectionList
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
 | fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -331,49 +336,49 @@ getHistoryList
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数：page 从 1 开始；success/fail/complete 与 open(options) 形态一致。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
 | fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -393,50 +398,50 @@ search
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaSearchOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索参数：isFuzzy 为 true 时模糊匹配（默认 true）；success/fail/complete 与 open(options) 形态一致。 |
+| options | **DramaSearchOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | search 搜索参数 searchWord 必填；isFuzzy 默认 true（模糊匹配）；搜索结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| searchWord | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| isFuzzy | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| searchWord | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索关键词，必填 |
+| isFuzzy | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 是否模糊匹配；不传默认 true（模糊匹配） |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 每页短剧数量；不传默认 20 |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索成功的回调函数 |
 | fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 搜索结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -456,48 +461,48 @@ getInfo
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaInfoOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 指定短剧信息查询参数：dramaId 与 dramaIds 二选一；success/fail/complete 与 open(options) 形态一致。 |
+| options | **DramaInfoOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | getInfo 查询参数 dramaId / dramaIds 二选一，同时传入时优先 dramaIds；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
-| dramaIds | Array&lt;number&gt; | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |  |
+| dramaId | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 单个短剧 ID；与 dramaIds 二选一，两者同时传入时优先使用 dramaIds |
+| dramaIds | Array&lt;number&gt; | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 批量短剧 ID 列表；与 dramaId 二选一，两者同时传入时优先使用 dramaIds |
 | success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询成功的回调函数 |
 | fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询失败的回调函数 |
 | complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -517,7 +522,7 @@ open
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaOpenOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 打开短剧播放页参数（含 success/fail/complete 回调）。 |
+| options | **DramaOpenOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | open 打开短剧播放页参数 free 初始免费观看集数、lock 单次激励视频可解锁的集数；打开结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
@@ -534,16 +539,16 @@ open
 
 ##### urlCallback 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| userId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| extra | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| userId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 用户唯一标识：激励视频解锁发放时，用于服务端回调校验；不传则不透传 |
+| extra | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 服务端回调透传的附加参数（业务自定义，回调时原样回传）；不传则不透传 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -572,9 +577,9 @@ onLoad
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
 
@@ -588,9 +593,9 @@ offLoad
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
 
@@ -604,15 +609,15 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误回调，err 为 IUniDramaError（errCode 错误码 / errMsg 错误描述） | 
 
 ##### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -630,15 +635,15 @@ offError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误回调，err 为 IUniDramaError（errCode 错误码 / errMsg 错误描述） | 
 
 ##### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误对象。 |
+| errCode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 短剧错误码类型（number），取值见 IUniDramaError.errCode 的错误码列表。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -656,16 +661,16 @@ onPlayEvent
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -679,16 +684,16 @@ offPlayEvent
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -702,16 +707,16 @@ onAdEvent
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -725,16 +730,16 @@ offAdEvent
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
-| :- | :- | :- |  :-: |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -748,9 +753,9 @@ onUnlockEvent
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
 
@@ -764,9 +769,9 @@ offUnlockEvent
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
  
