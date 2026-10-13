@@ -24,7 +24,7 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 | :- | :- | :- |  :-: | :- |
 | config | **UniCloudInitOptions** | 是 |   |  |
 | mixinDatacom | any | 是 |   |  |
-| datacomProps | \[{ localdata: { type: PropType\<UTSJSONObject\[]>; default: () => UTSJSONObject\[]; }; options: { type: PropType\<any\[] \| UTSJSONObject>; default: () => UTSJSONObject; }; collection: { type: PropType\<string>; default: string; }; action: { type: PropType\<string>; default: string; }; field: { type: PropType\<string>; default: string; }; orderby: { type: PropType\<string>; default: string; }; where: { type: PropType\<string \| UTSJSONObject>; default: string; }; pageData: { type: PropType\<string>; default: string; }; pageCurrent: { type: PropType\<number>; default: number; }; pageSize: { type: PropType\<number>; default: number; }; getcount: { type: PropType\<string \| boolean>; default: boolean; }; gettree: { type: PropType\<string \| boolean>; default: boolean; }; gettreepath: { type: PropType\<string \| boolean>; default: boolean; }; startwith: { type: PropType\<string>; default: string; }; limitlevel: { type: PropType\<number>; default: number; }; groupby: { type: PropType\<string>; default: string; }; groupField: { type: PropType\<string>; default: string; }; distinct: { type: PropType\<string \| boolean>; default: boolean; }; manual: { type: PropType\<boolean>; default: boolean; }; }](#localdata-values) | 是 |   | datacom 属性定义，供页面/组件 defineProps 展开使用 |
+| datacomProps | **DatacomPropsType** | 是 |   | datacom 属性定义，供页面/组件 defineProps 展开使用 |
 | SSEChannel | [SSEChannel](#ssechannel-values) | 是 | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 | 
 
 #### config 的属性描述
