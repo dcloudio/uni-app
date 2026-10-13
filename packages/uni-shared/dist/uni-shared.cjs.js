@@ -2565,25 +2565,20 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'video',
     'flow-item',
     'waterflow',
-    'web-view',
+    'web-view'
 ];
 const UVUE_VAPOR_WEB_EASYCOMS = [
     'checkbox',
     'checkbox-group',
     'form',
     'label',
-    'match-media',
-    'navigator',
     'picker',
     'picker-view',
     'picker-view-column',
-    'progress',
     'radio',
     'radio-group',
     'slider',
-    'swiper',
-    'swiper-item',
-    'switch',
+    'switch'
 ];
 
 const APP_NATIVE_TAGS = [

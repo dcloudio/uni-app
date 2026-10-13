@@ -1,7 +1,7 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, resolveOwnerEl, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, LINEFEED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, resolveOwnerEl, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, LINEFEED, PRIMARY_COLOR, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
 import { isArray, isString, extend, isFunction, capitalize, camelize, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, hyphenate, Namespaces } from "@vue/shared";
-import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, isVNode, Fragment, openBlock, createBlock, createVNode, computed, inject, provide, isReactive, nextTick, defineComponent as defineComponent$2, mergeProps, useSSRContext, resolveDynamicComponent, onBeforeMount, onServerPrefetch, onActivated, ssrContextKey, resolveComponent, withCtx, createElementBlock, createElementVNode, Comment, Text, cloneVNode, renderList, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, withDirectives, vShow, logError } from "vue";
+import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, computed, inject, provide, isReactive, nextTick, defineComponent as defineComponent$2, mergeProps, useSSRContext, resolveDynamicComponent, onBeforeMount, onServerPrefetch, onActivated, ssrContextKey, resolveComponent, withCtx, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, withDirectives, vShow, logError } from "vue";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderVNode, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -839,13 +839,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$k = 0;
+let index$g = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance = getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$k++}`;
+  const id2 = vm.id || `context${index$g++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -1252,23 +1252,6 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
-function flatVNode(nodes) {
-  const array = [];
-  if (isArray(nodes)) {
-    nodes.forEach((vnode) => {
-      if (isVNode(vnode)) {
-        if (vnode.type === Fragment) {
-          array.push(...flatVNode(vnode.children));
-        } else {
-          array.push(vnode);
-        }
-      } else if (isArray(vnode)) {
-        array.push(...flatVNode(vnode));
-      }
-    });
-  }
-  return array;
-}
 const rpx2Unit = createRpx2Unit(
   defaultRpx2Unit.unit,
   defaultRpx2Unit.unitRatio,
@@ -1366,7 +1349,7 @@ class UniElement extends Object {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const props$e = { disableScroll: {
+const props$d = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
@@ -1398,7 +1381,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: { MODE: 3 },
-  props: props$e,
+  props: props$d,
   setup(props2, {}) {
     const rootRef = ref(null);
     const canvas = ref(null);
@@ -1417,7 +1400,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$d = {
+const props$c = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5818,7 +5801,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$c = /* @__PURE__ */ extend({}, props$d, {
+const props$b = /* @__PURE__ */ extend({}, props$c, {
   id: {
     type: String,
     default: ""
@@ -5850,9 +5833,9 @@ const props$c = /* @__PURE__ */ extend({}, props$d, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$c,
+  props: props$b,
   emit: [
     "ready",
     "focus",
@@ -5969,7 +5952,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -6052,15 +6035,35 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
+function useMovableAreaChildren$1(rootRef, slots, setContexts) {
+  const contexts = [];
+  setContexts(contexts);
+  const add = (context) => {
+    var _a;
+    if (((_a = context.rootRef.value) == null ? void 0 : _a.parentElement) === rootRef.value) {
+      contexts.push(markRaw(context));
+    }
+  };
+  const remove2 = (context) => {
+    const index2 = contexts.indexOf(context);
+    if (index2 >= 0) {
+      contexts.splice(index2, 1);
+    }
+  };
+  provide("addMovableViewContext", add);
+  provide("removeMovableViewContext", remove2);
+  return () => slots.default && slots.default();
+}
 const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
+const useMovableAreaChildren = useMovableAreaChildren$1;
 class UniMovableAreaElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -6084,42 +6087,11 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       movableAreaEvents._resize();
       _isMounted.value = true;
     });
-    let movableViewItems = [];
-    const originMovableViewContexts = [];
-    function updateMovableViewContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        let movableViewItem = movableViewItems[index2];
-        {
-          movableViewItem = movableViewItem.el;
-        }
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
-        if (movableViewContext) {
-          contexts.push(markRaw(movableViewContext));
-        }
-      }
-      setContexts(contexts);
-    }
-    const addMovableViewContext = (movableViewContext) => {
-      originMovableViewContexts.push(movableViewContext);
-      updateMovableViewContexts();
-    };
-    const removeMovableViewContext = (movableViewContext) => {
-      const index2 = originMovableViewContexts.indexOf(movableViewContext);
-      if (index2 >= 0) {
-        originMovableViewContexts.splice(index2, 1);
-        updateMovableViewContexts();
-      }
-    };
+    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
     provide("_isMounted", _isMounted);
     provide("movableAreaRootRef", rootRef);
-    provide("addMovableViewContext", addMovableViewContext);
-    provide("removeMovableViewContext", removeMovableViewContext);
     return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        movableViewItems = flatVNode(defaultSlots);
-      }
+      const movableViewItems = renderChildren();
       return openBlock(), createBlock("uni-movable-area", mergeProps({ ref: rootRef }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor), normalizeVNode(() => movableViewItems)], 16);
     };
   }
@@ -6254,6 +6226,37 @@ function useMovableAreaState(props2, rootRef) {
       _onTouchend,
       _resize
     }
+  };
+}
+function useMovableViewFrame() {
+  let frame;
+  let pending;
+  function run() {
+    const callback = pending;
+    frame = void 0;
+    pending = void 0;
+    callback == null ? void 0 : callback();
+  }
+  function cancel() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    frame = void 0;
+    pending = void 0;
+  }
+  function flush() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    run();
+  }
+  onBeforeUnmount(cancel);
+  return {
+    request(callback) {
+      pending = callback;
+      if (frame === void 0)
+        frame = requestAnimationFrame(run);
+    },
+    flush,
+    cancel
   };
 }
 function e(e2, t2, n) {
@@ -6610,7 +6613,7 @@ function v(a, b) {
 }
 class UniMovableViewElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6623,16 +6626,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let requesting = false;
-function _requestAnimationFrame(e2) {
-  if (!requesting) {
-    requesting = true;
-    requestAnimationFrame(function() {
-      e2();
-      requesting = false;
-    });
-  }
-}
 function p(t2, n) {
   if (t2 === n) {
     return 0;
@@ -6741,6 +6734,7 @@ function useMovableViewLayout(rootRef, _scale, _adjustScale) {
   };
 }
 function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger) {
+  const frame = useMovableViewFrame();
   const dampingNumber = computed(() => {
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
@@ -6789,6 +6783,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
+    frame.cancel();
     if (_FA) {
       _FA.cancel();
     }
@@ -6908,6 +6903,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     return val;
   }
   return {
+    frame,
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -6944,7 +6940,8 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     scaleValueSync.value = Number(val) || 0;
   });
   const { _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY } = useMovableViewLayout(rootRef, _scale, _adjustScale);
-  const { FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  const { frame, FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  const _requestAnimationFrame2 = frame.request;
   function _updateScale(scale, animat) {
     if (props2.scale) {
       scale = _adjustScale(scale);
@@ -6956,7 +6953,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
       if (animat) {
         _animationTo(x, y, scale, "", true, true);
       } else {
-        _requestAnimationFrame(function() {
+        _requestAnimationFrame2(function() {
           _setTransform(x, y, scale, "", true, true);
         });
       }
@@ -6990,6 +6987,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     return scale;
   }
   function _endScale() {
+    frame.flush();
     _isScaling.value = false;
     _updateOldScale(_scale.value);
   }
@@ -7006,6 +7004,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _endScale,
     _setScale,
     scaleValueSync,
+    frame,
     // layout
     _updateBoundary,
     _updateOffset,
@@ -7062,7 +7061,8 @@ function useMovableViewState(props2, trigger, rootRef) {
   watch(() => props2.disabled, () => {
     __handleTouchStart();
   });
-  const { _updateOldScale, _endScale, _setScale, scaleValueSync, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  const { _updateOldScale, _endScale, _setScale, scaleValueSync, frame, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  const _requestAnimationFrame2 = frame.request;
   function __handleTouchStart() {
     if (!_isScaling.value) {
       if (!props2.disabled) {
@@ -7143,13 +7143,14 @@ function useMovableViewState(props2, trigger, rootRef) {
             }
           }
         }
-        _requestAnimationFrame(function() {
+        _requestAnimationFrame2(function() {
           _setTransform(x, y, _scale.value, source);
         });
       }
     }
   }
   function __handleTouchEnd() {
+    frame.flush();
     if (!_isScaling.value && !props2.disabled && _isTouching) {
       rootRef.value.style.willChange = "auto";
       _isTouching = false;
@@ -7337,7 +7338,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$b = {
+const props$a = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -7615,10 +7616,10 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
 const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$b,
+  props: props$a,
   emits: ["itemclick"],
   setup(props2, { emit: emit2 }) {
     const rootRef = ref(null);
@@ -7630,7 +7631,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const _hoisted_1$5 = { class: "uni-scroll-view-refresh-inner" };
+const _hoisted_1$4 = { class: "uni-scroll-view-refresh-inner" };
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -7691,7 +7692,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         }, [refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", {
           key: 0,
           class: "uni-scroll-view-refresh"
-        }, [createVNode("div", _hoisted_1$5, [refreshState == "pulling" ? (openBlock(), createBlock("svg", {
+        }, [createVNode("div", _hoisted_1$4, [refreshState == "pulling" ? (openBlock(), createBlock("svg", {
           key: "refresh__icon",
           style: { transform: "rotate(" + refreshRotate.value + "deg)" },
           fill: "#2BD009",
@@ -7725,7 +7726,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$a = {
+const props$9 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -7796,7 +7797,7 @@ class UniScrollViewElement extends UniElement {
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: { MODE: 3 },
-  props: props$a,
+  props: props$9,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -8219,801 +8220,6 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
-function ssrRegisterHelper(comp, filename) {
-  if (typeof comp === "function") {
-    comp.__setup = () => {
-      const ssrContext = useSSRContext();
-      (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add(filename);
-    };
-  } else {
-    const setup = comp.setup;
-    comp.setup = (props2, ctx) => {
-      const ssrContext = useSSRContext();
-      (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add(filename);
-      if (setup) {
-        return setup(props2, ctx);
-      }
-    };
-  }
-}
-const _hoisted_1$4 = { class: "uni-list-view-content" };
-const __moduleId = "packages/uni-components/src/vue/list-view/index.tsx";
-function isHTMlElement(node) {
-  return !!(node && node.nodeType === 1);
-}
-function getChildren(root) {
-  const children = [];
-  if (root) {
-    walk(root, children);
-  }
-  return children;
-}
-const ChildType = [
-  "ListItem",
-  "StickySection",
-  "StickyHeader"
-];
-function walk(vnode, children) {
-  if (vnode.component && vnode.component.type && vnode.component.type.name && ChildType.includes(vnode.component.type.name)) {
-    children.push(vnode);
-  } else if (vnode.component) {
-    walk(vnode.component.subTree, children);
-  } else if (vnode.shapeFlag & 16) {
-    const vnodes = vnode.children;
-    for (let i = 0; i < vnodes.length; i++) {
-      walk(vnodes[i], children);
-    }
-  }
-}
-function traverseListView(visibleVNode, callback) {
-  const children = getChildren(visibleVNode);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
-  }
-}
-function traverseStickySection(stickySectionVNode, callback) {
-  const children = getChildren(stickySectionVNode.component.subTree);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
-  }
-}
-const props$9 = {
-  direction: {
-    type: String,
-    default: "vertical",
-    validator: (val) => {
-      return [
-        "none",
-        "vertical",
-        "horizontal"
-      ].includes(val);
-    }
-  },
-  showScrollbar: {
-    type: [Boolean, String],
-    default: true
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    default: "black"
-  },
-  refresherBackground: {
-    type: String,
-    default: "transparent"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-class UniListViewElement extends UniElement {
-}
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ListView",
-  props: props$9,
-  emits: [
-    "scroll",
-    "scrolltoupper",
-    "scrolltolower",
-    "refresherrefresh",
-    "refresherrestore",
-    "refresherpulling",
-    "refresherabort",
-    "update:refresherTriggered"
-  ],
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = ref(null);
-    const containerRef = ref(null);
-    const visibleRef = ref(null);
-    const { isVertical, state } = useListViewState(props2);
-    provide("__listViewIsVertical", isVertical);
-    provide("__listViewDefaultItemSize", state.defaultItemSize);
-    provide("__listViewDefaultHeaderSize", state.defaultHeaderSize);
-    const rearrangeDebounce = debounce(() => {
-      nextTick(() => {
-        _rearrange();
-      });
-    }, 5, {
-      clearTimeout,
-      setTimeout
-    });
-    const childStatus = [];
-    provide("__listViewRegisterItem", (status) => {
-      childStatus.push(status);
-      rearrangeDebounce();
-    });
-    provide("__listViewUnregisterItem", (status) => {
-      const index2 = childStatus.indexOf(status);
-      childStatus.splice(index2, 1);
-      rearrangeDebounce();
-    });
-    watch(() => {
-      return state.defaultHeaderSize;
-    }, (value) => {
-      rearrangeDebounce();
-    });
-    watch(() => {
-      return state.defaultItemSize;
-    }, () => {
-      childStatus.forEach((status) => {
-        if (status.cachedSizeUpdated) {
-          return;
-        }
-        status.cachedSize = state.defaultItemSize;
-      });
-      rearrangeDebounce();
-    });
-    const trigger = useCustomEvent(rootRef, emit2);
-    handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2);
-    function getOffset() {
-      return isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
-    }
-    function resetContainerSize() {
-      const containerEl = containerRef.value;
-      state.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
-      rearrangeDebounce();
-    }
-    watch(isVertical, () => {
-      resetContainerSize();
-    });
-    const upperThresholdNumber = computed(() => {
-      const val = Number(props2.upperThreshold);
-      return isNaN(val) ? 50 : val;
-    });
-    const lowerThresholdNumber = computed(() => {
-      const val = Number(props2.lowerThreshold);
-      return isNaN(val) ? 50 : val;
-    });
-    const scrollTopNumber = computed(() => {
-      return Number(props2.scrollTop) || 0;
-    });
-    const scrollLeftNumber = computed(() => {
-      return Number(props2.scrollLeft) || 0;
-    });
-    watch(scrollTopNumber, (val) => {
-      if (containerRef.value) {
-        containerRef.value.scrollTop = val;
-      }
-    });
-    watch(scrollLeftNumber, (val) => {
-      if (containerRef.value) {
-        containerRef.value.scrollLeft = val;
-      }
-    });
-    watch(() => props2.scrollIntoView, (val) => {
-      _scrollIntoViewChanged(val);
-    });
-    function _scrollIntoViewChanged(val) {
-      if (val) {
-        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.error(`id error: scroll-into-view=${val}`);
-          return;
-        }
-        let element = containerRef.value.querySelector("#" + val);
-        if (element) {
-          let mainRect = containerRef.value.getBoundingClientRect();
-          let elRect = element.getBoundingClientRect();
-          if (!isVertical.value) {
-            let left = elRect.left - mainRect.left;
-            let scrollLeft = containerRef.value.scrollLeft;
-            let x = scrollLeft + left;
-            containerRef.value.scrollLeft = x;
-          }
-          if (isVertical.value) {
-            let top = elRect.top - mainRect.top;
-            let scrollTop = containerRef.value.scrollTop;
-            let y = scrollTop + top;
-            containerRef.value.scrollTop = y;
-          }
-        }
-      }
-    }
-    let lastScrollLeft = 0;
-    let lastScrollTop = 0;
-    onActivated(() => {
-      if (containerRef.value) {
-        containerRef.value.scrollLeft = lastScrollLeft;
-        containerRef.value.scrollTop = lastScrollTop;
-        resetContainerSize();
-      }
-    });
-    onMounted(() => {
-      resetContainerSize();
-      let lastScrollOffset = 0;
-      containerRef.value.addEventListener("scroll", function($event) {
-        const target = $event.target;
-        if (isHTMlElement(target)) {
-          lastScrollLeft = target.scrollLeft;
-          lastScrollTop = target.scrollTop;
-        }
-        trigger("scroll", $event, {
-          scrollLeft: target.scrollLeft,
-          scrollTop: target.scrollTop,
-          scrollHeight: target.scrollHeight,
-          scrollWidth: target.scrollWidth,
-          deltaX: isVertical.value ? 0 : lastScrollOffset - target.scrollLeft,
-          deltaY: isVertical.value ? lastScrollOffset - target.scrollTop : 0
-        });
-        const currentOffset = getOffset();
-        const upperOffset = upperThresholdNumber.value;
-        if (currentOffset <= upperOffset && lastScrollOffset > upperOffset) {
-          trigger("scrolltoupper", $event, { direction: isVertical.value ? "top" : "left" });
-        }
-        const realTotalSize = isVertical.value ? target.scrollHeight : target.scrollWidth;
-        const realRootSize = isVertical.value ? target.clientHeight : target.clientWidth;
-        const lowerOffset = realTotalSize - realRootSize - lowerThresholdNumber.value;
-        if (currentOffset >= lowerOffset && lastScrollOffset < lowerOffset) {
-          trigger("scrolltolower", $event, { direction: isVertical.value ? "bottom" : "right" });
-        }
-        lastScrollOffset = currentOffset;
-        if (_shouldRearrange()) {
-          _rearrange();
-        }
-      });
-    });
-    function _rearrange() {
-      rearrange(visibleVNode, containerRef, isVertical, state);
-    }
-    function _shouldRearrange() {
-      return shouldRearrange(containerRef, isVertical, state);
-    }
-    const containerStyle = computed(() => {
-      return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
-    });
-    const visibleStyle = computed(() => {
-      return `${isVertical.value ? "width" : "height"}: 100%;`;
-    });
-    const placeholderHeadStyle = computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.headPlaceholderSize}px;`;
-    });
-    const placeholderTailStyle = computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.tailPlaceholderSize}px;`;
-    });
-    let visibleVNode = null;
-    return () => {
-      const { refresherEnabled, refresherBackground, refresherDefaultStyle, refresherThreshold } = props2;
-      const { refresherHeight, refreshState } = state;
-      const defaultSlot = slots.default && slots.default();
-      visibleVNode = ((visibleVNode2) => {
-        return openBlock(), createBlock("div", {
-          ref: visibleRef,
-          class: "uni-list-view-visible",
-          style: visibleStyle.value
-        }, [normalizeVNode(() => defaultSlot)], 512);
-      })();
-      return openBlock(), createBlock("uni-list-view", {
-        ref: rootRef,
-        class: "uni-list-view"
-      }, [createVNode("div", {
-        ref: containerRef,
-        class: `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`,
-        style: containerStyle.value
-      }, [refresherEnabled ? (openBlock(), createBlock(Refresher, {
-        key: 0,
-        refreshState,
-        refresherHeight,
-        refresherThreshold,
-        refresherDefaultStyle,
-        refresherBackground
-      }, {
-        default: withCtx(() => [refresherDefaultStyle == "none" ? (openBlock(), createBlock(Fragment, { key: 0 }, [normalizeVNode(() => slots.refresher && slots.refresher())], 64)) : normalizeVNode(() => null)]),
-        _: 2
-      }, 1024)) : normalizeVNode(() => null), createVNode("div", _hoisted_1$4, [
-        createVNode("div", { style: placeholderHeadStyle.value }),
-        normalizeVNode(() => visibleVNode),
-        createVNode("div", { style: placeholderTailStyle.value })
-      ])], 512), createVNode(ResizeSensor, { initial: true })], 512);
-    };
-  }
-});
-function useListViewState(props2) {
-  const isVertical = computed(() => {
-    return props2.direction !== "horizontal";
-  });
-  const state = reactive({
-    defaultItemSize: 40,
-    defaultItemSizeUpdated: false,
-    defaultHeaderSize: 40,
-    defaultHeaderSizeUpdated: false,
-    totalSize: 0,
-    headPlaceholderSize: 0,
-    tailPlaceholderSize: 0,
-    visibleSize: 0,
-    containerSize: 0,
-    cacheScreenCount: 10,
-    loadScreenThreshold: 8,
-    refresherHeight: 0,
-    refreshState: "",
-    lastRenderOffsetMin: 0,
-    lastRenderOffsetMax: 0
-  });
-  return {
-    state,
-    isVertical
-  };
-}
-function shouldRearrange(containerRef, isVertical, state) {
-  const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
-  const loadScreenThresholdSize = state.containerSize * state.loadScreenThreshold;
-  const rearrangeOffsetMin = state.lastRenderOffsetMin + loadScreenThresholdSize;
-  const rearrangeOffsetMax = state.lastRenderOffsetMax - loadScreenThresholdSize;
-  return offset < rearrangeOffsetMin || offset > rearrangeOffsetMax;
-}
-function rearrange(visibleVNode, containerRef, isVertical, state) {
-  if (!visibleVNode) {
-    return;
-  }
-  const containerEl = containerRef.value;
-  if (!containerEl) {
-    return;
-  }
-  const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
-  const offsetMin = Math.max(offset - state.containerSize * state.cacheScreenCount, 0);
-  const offsetMax = Math.max(offset + state.containerSize * (state.cacheScreenCount + 1), offsetMin + 1);
-  state.lastRenderOffsetMin = offsetMin;
-  state.lastRenderOffsetMax = offsetMax;
-  let tempTotalSize = 0;
-  let tempVisibleSize = 0;
-  let tempHeadPlaceholderSize = 0;
-  let tempTailPlaceholderSize = 0;
-  let start = false, end = false;
-  function callback(child) {
-    var _a, _b, _c;
-    const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-    const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
-    if (childType === "StickySection") {
-      const { headSize, tailSize, headPlaceholderSize, tailPlaceholderSize } = status;
-      tempTotalSize += headSize.value;
-      let tempTailPlaceholderSizeOfSection = 0;
-      let tempHeadPlaceholderSizeOfSection = 0;
-      traverseStickySection(child, (child2) => {
-        var _a2, _b2, _c2;
-        const childType2 = (_a2 = child2.component) == null ? void 0 : _a2.type.name;
-        const status2 = (_c2 = (_b2 = child2.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
-        if (childType2 === "StickyHeader") {
-          const { cachedSize, cachedSizeUpdated } = status2;
-          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
-            state.defaultHeaderSize = cachedSize;
-            state.defaultHeaderSizeUpdated = true;
-          }
-          tempTotalSize += cachedSize || state.defaultHeaderSize;
-          tempVisibleSize += cachedSize;
-        } else if (childType2 === "ListItem") {
-          const { cachedSize, cachedSizeUpdated } = status2;
-          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
-            state.defaultItemSize = cachedSize;
-            state.defaultItemSizeUpdated = true;
-          }
-          const itemSize = cachedSize || state.defaultItemSize;
-          tempTotalSize += itemSize;
-          if (!start && tempTotalSize > offsetMin) {
-            start = true;
-          }
-          if (start && !end) {
-            tempVisibleSize += itemSize;
-            status2.visible.value = true;
-          } else if (start && end) {
-            status2.visible.value = false;
-            tempTailPlaceholderSizeOfSection += itemSize;
-          } else {
-            status2.visible.value = false;
-            tempHeadPlaceholderSizeOfSection += itemSize;
-          }
-          if (!end && tempTotalSize >= offsetMax) {
-            end = true;
-          }
-        }
-      });
-      tempVisibleSize += tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection;
-      tempTotalSize += tailSize.value;
-      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection;
-      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection;
-    } else if (childType === "ListItem") {
-      const { cachedSize, cachedSizeUpdated } = status;
-      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
-        state.defaultItemSize = cachedSize;
-        state.defaultItemSizeUpdated = true;
-      }
-      const itemSize = cachedSize || state.defaultItemSize;
-      tempTotalSize += itemSize;
-      if (!start && tempTotalSize > offsetMin) {
-        start = true;
-      }
-      if (!start) {
-        tempHeadPlaceholderSize += itemSize;
-      } else if (start && end) {
-        tempTailPlaceholderSize += itemSize;
-      }
-      if (start && !end) {
-        tempVisibleSize += itemSize;
-        status.visible.value = true;
-      } else {
-        status.visible.value = false;
-      }
-      if (!end && tempTotalSize >= offsetMax) {
-        end = true;
-      }
-    } else if (childType === "StickyHeader") {
-      const { cachedSize, cachedSizeUpdated } = status;
-      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
-        state.defaultHeaderSize = cachedSize;
-        state.defaultHeaderSizeUpdated = true;
-      }
-      tempTotalSize += cachedSize || state.defaultHeaderSize;
-      tempVisibleSize += cachedSize;
-    }
-  }
-  traverseListView(visibleVNode, callback);
-  state.totalSize = tempTotalSize;
-  state.visibleSize = tempVisibleSize;
-  state.headPlaceholderSize = tempHeadPlaceholderSize;
-  state.tailPlaceholderSize = tempTailPlaceholderSize;
-}
-function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2) {
-  let beforeRefreshing = false;
-  let triggerAbort = false;
-  let toUpperNumber = 0;
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, { dy: touchEnd.y - touchStart.y });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = toUpperNumber = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
-    }
-  });
-  function __handleTouchStart(event) {
-    if (event.touches.length === 1) {
-      touchStart = {
-        x: event.touches[0].pageX,
-        y: event.touches[0].pageY
-      };
-    }
-  }
-  function __handleTouchMove(event) {
-    const containerEl = containerRef.value;
-    if (touchStart === null)
-      return;
-    let x = event.touches[0].pageX;
-    let y = event.touches[0].pageY;
-    if (!isVertical.value) {
-      return;
-    }
-    let needStop = false;
-    if (Math.abs(touchStart.y - y) < Math.abs(touchStart.x - x)) {
-      needStop = false;
-    } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
-      needStop = false;
-      if (props2.refresherEnabled && event.cancelable !== false)
-        event.preventDefault();
-    } else if (containerEl.scrollHeight === containerEl.offsetHeight + containerEl.scrollTop && y < touchStart.y) {
-      needStop = false;
-      return;
-    } else {
-      needStop = true;
-    }
-    if (needStop) {
-      event.stopPropagation();
-    }
-    if (!props2.refresherEnabled) {
-      return;
-    }
-    if (containerEl.scrollTop === 0 && event.touches.length === 1) {
-      _setRefreshState("pulling");
-    }
-    if (props2.refresherEnabled && state.refreshState === "pulling") {
-      const dy = y - touchStart.y;
-      if (toUpperNumber === 0) {
-        toUpperNumber = y;
-      }
-      if (!beforeRefreshing) {
-        state.refresherHeight = y - toUpperNumber;
-        if (state.refresherHeight > 0) {
-          triggerAbort = true;
-          trigger("refresherpulling", event, {
-            deltaY: dy,
-            dy
-          });
-        }
-      } else {
-        state.refresherHeight = dy + props2.refresherThreshold;
-        triggerAbort = false;
-      }
-    }
-  }
-  function __handleTouchEnd(event) {
-    touchEnd = {
-      x: event.changedTouches[0].pageX,
-      y: event.changedTouches[0].pageY
-    };
-    if (state.refresherHeight >= props2.refresherThreshold) {
-      _setRefreshState("refreshing");
-    } else {
-      _setRefreshState("refresherabort");
-    }
-    touchStart = {
-      x: 0,
-      y: 0
-    };
-    touchEnd = {
-      x: 0,
-      y: props2.refresherThreshold
-    };
-  }
-  onMounted(() => {
-    const containerEl = containerRef.value;
-    containerEl.addEventListener("touchstart", __handleTouchStart);
-    containerEl.addEventListener("touchmove", __handleTouchMove, { passive: false });
-    containerEl.addEventListener("touchend", __handleTouchEnd);
-  });
-  onBeforeUnmount(() => {
-    const containerEl = containerRef.value;
-    containerEl.removeEventListener("touchstart", __handleTouchStart);
-    containerEl.removeEventListener("touchmove", __handleTouchMove);
-    containerEl.removeEventListener("touchend", __handleTouchEnd);
-  });
-}
-ssrRegisterHelper(isHTMlElement, __moduleId);
-function getSize(isVertical, el) {
-  var style = window.getComputedStyle(el);
-  if (isVertical) {
-    return parseFloat(style.marginTop) + el.getBoundingClientRect().height + parseFloat(style.marginBottom);
-  } else {
-    return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
-  }
-}
-class UniListItemElement extends UniElement {
-}
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ListItem",
-  props: {},
-  setup(props2, { slots, expose, attrs }) {
-    if (attrs.slot === "refresher") {
-      return () => {
-        return openBlock(), createBlock("uni-list-item", null, [normalizeVNode(() => slots.default && slots.default())]);
-      };
-    }
-    const rootRef = ref(null);
-    const isVertical = inject("__listViewIsVertical");
-    const visible = ref(false);
-    const status = {
-      type: "ListItem",
-      visible,
-      cachedSize: inject("__listViewDefaultItemSize"),
-      cachedSizeUpdated: false
-    };
-    expose({ __listViewChildStatus: status });
-    const registerItem = inject("__listViewRegisterItem");
-    const unregisterItem = inject("__listViewUnregisterItem");
-    onMounted(() => {
-      registerItem(status);
-    });
-    onBeforeUnmount(() => {
-      unregisterItem(status);
-    });
-    function updateSize() {
-      if (!visible.value || status.cachedSizeUpdated) {
-        return;
-      }
-      const rootNode = rootRef.value;
-      if (isHTMlElement(rootNode)) {
-        const size = getSize(isVertical.value, rootNode);
-        if (isNaN(size)) {
-          return;
-        }
-        status.cachedSize = getSize(isVertical.value, rootNode);
-        status.cachedSizeUpdated = true;
-      }
-    }
-    watch(visible, (value) => {
-      nextTick(() => {
-        updateSize();
-      });
-    });
-    return () => {
-      if (!visible.value) {
-        return null;
-      }
-      return openBlock(), createBlock("uni-list-item", { ref: rootRef }, [normalizeVNode(() => slots.default && slots.default())], 512);
-    };
-  }
-});
-class UniStickySectionElement extends UniElement {
-}
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "StickySection",
-  props: { padding: {
-    type: Array,
-    default: [
-      0,
-      0,
-      0,
-      0
-    ]
-  } },
-  setup(props2, { slots, expose }) {
-    const rootRef = ref(null);
-    const isVertical = inject("__listViewIsVertical");
-    const headPlaceholderSize = ref(0);
-    const tailPlaceholderSize = ref(0);
-    const style = computed(() => {
-      const padding = props2.padding;
-      const paddingTop = padding[0];
-      const paddingRight = padding[1];
-      const paddingBottom = padding[2];
-      const paddingLeft = padding[3];
-      return {
-        paddingTop: (isVertical.value ? paddingTop + headPlaceholderSize.value : paddingTop) + "px",
-        paddingRight: (isVertical.value ? paddingRight : paddingRight + tailPlaceholderSize.value) + "px",
-        paddingBottom: (isVertical.value ? paddingBottom + tailPlaceholderSize.value : paddingBottom) + "px",
-        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + headPlaceholderSize.value) + "px"
-      };
-    });
-    const headSize = computed(() => {
-      return isVertical ? props2.padding[0] : props2.padding[3];
-    });
-    const tailSize = computed(() => {
-      return isVertical ? props2.padding[2] : props2.padding[1];
-    });
-    const status = {
-      type: "StickySection",
-      headSize,
-      tailSize,
-      headPlaceholderSize,
-      tailPlaceholderSize
-    };
-    expose({ __listViewChildStatus: status });
-    return () => {
-      return openBlock(), createBlock("uni-sticky-section", {
-        ref: rootRef,
-        style: style.value
-      }, [normalizeVNode(() => {
-        var _a;
-        return (_a = slots.default) == null ? void 0 : _a.call(slots);
-      })], 512);
-    };
-  }
-});
-class UniStickyHeaderElement extends UniElement {
-}
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
-  name: "StickyHeader",
-  props: { padding: {
-    type: Array,
-    default: [
-      0,
-      0,
-      0,
-      0
-    ]
-  } },
-  setup(props2, { slots, expose }) {
-    const rootRef = ref(null);
-    const isVertical = inject("__listViewIsVertical");
-    const style = computed(() => {
-      return {
-        paddingTop: props2.padding[0] + "px",
-        paddingRight: props2.padding[1] + "px",
-        paddingBottom: props2.padding[2] + "px",
-        paddingLeft: props2.padding[3] + "px",
-        top: 0 - props2.padding[0] + "px"
-      };
-    });
-    const status = {
-      type: "StickyHeader",
-      cachedSize: inject("__listViewDefaultHeaderSize"),
-      cachedSizeUpdated: false
-    };
-    expose({ __listViewChildStatus: status });
-    onMounted(() => {
-      const rootEl = rootRef.value;
-      const rect = rootEl.getBoundingClientRect();
-      status.cachedSize = isVertical ? rect.height : rect.width;
-      status.cachedSizeUpdated = true;
-    });
-    return () => {
-      return openBlock(), createBlock("uni-sticky-header", {
-        ref: rootRef,
-        style: style.value
-      }, [normalizeVNode(() => {
-        var _a;
-        return (_a = slots.default) == null ? void 0 : _a.call(slots);
-      })], 512);
-    };
-  }
-});
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
   if (isInSSRComponentSetup)
     return;
@@ -16360,20 +15566,18 @@ export {
   _sfc_main$e as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$j as Editor,
+  index$f as Editor,
   _sfc_main$d as Form,
-  index$i as Icon,
+  index$e as Icon,
   _sfc_main$c as Label,
   _sfc_main$o as LayoutComponent,
-  index$d as ListItem,
-  index$e as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
   _sfc_main$g as Loading,
   index$9 as Map,
   _sfc_main$b as MatchMedia,
-  index$h as MovableArea,
-  index$g as MovableView,
+  index$d as MovableArea,
+  index$c as MovableView,
   _sfc_main$a as Navigator,
   _sfc_main$i as PageComponent,
   _sfc_main$h as PageContainer,
@@ -16384,11 +15588,9 @@ export {
   _sfc_main$5 as Radio,
   _sfc_main$4 as RadioGroup,
   ResizeSensor,
-  index$f as RichText,
+  index$b as RichText,
   __syscom_0 as ScrollView,
   _sfc_main$3 as Slider,
-  index$b as StickyHeader,
-  index$c as StickySection,
   _sfc_main$2 as Swiper,
   _sfc_main$1 as SwiperItem,
   _sfc_main as Switch,
@@ -16414,10 +15616,6 @@ export {
   UniImageElement as UniImageElementImpl,
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
-  UniListItemElement,
-  UniListItemElement as UniListItemElementImpl,
-  UniListViewElement,
-  UniListViewElement as UniListViewElementImpl,
   UniMatchMediaElement,
   UniMatchMediaElement as UniMatchMediaElementImpl,
   UniMovableAreaElement,
@@ -16447,10 +15645,6 @@ export {
   UniServiceJSBridge$1 as UniServiceJSBridge,
   UniSliderElement,
   UniSliderElement as UniSliderElementImpl,
-  UniStickyHeaderElement,
-  UniStickyHeaderElement as UniStickyHeaderElementImpl,
-  UniStickySectionElement,
-  UniStickySectionElement as UniStickySectionElementImpl,
   UniSwiperElement,
   UniSwiperElement as UniSwiperElementImpl,
   UniSwiperItemElement,

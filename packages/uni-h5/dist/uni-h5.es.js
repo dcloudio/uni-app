@@ -11325,12 +11325,53 @@ function flatVNode(nodes) {
   }
   return array;
 }
+function useMovableAreaChildren$1(rootRef, slots, setContexts) {
+  let movableViewItems = [];
+  const originMovableViewContexts = [];
+  function updateMovableViewContexts() {
+    const contexts = [];
+    for (let index2 = 0; index2 < movableViewItems.length; index2++) {
+      let movableViewItem = movableViewItems[index2];
+      {
+        movableViewItem = movableViewItem.el;
+      }
+      const movableViewContext = originMovableViewContexts.find(
+        (context) => movableViewItem === context.rootRef.value
+      );
+      if (movableViewContext) {
+        contexts.push(markRaw(movableViewContext));
+      }
+    }
+    setContexts(contexts);
+  }
+  const addMovableViewContext = (movableViewContext) => {
+    originMovableViewContexts.push(movableViewContext);
+    updateMovableViewContexts();
+  };
+  const removeMovableViewContext = (movableViewContext) => {
+    const index2 = originMovableViewContexts.indexOf(movableViewContext);
+    if (index2 >= 0) {
+      originMovableViewContexts.splice(index2, 1);
+      updateMovableViewContexts();
+    }
+  };
+  provide("addMovableViewContext", addMovableViewContext);
+  provide("removeMovableViewContext", removeMovableViewContext);
+  return () => {
+    const defaultSlots = slots.default && slots.default();
+    {
+      movableViewItems = flatVNode(defaultSlots);
+    }
+    return movableViewItems;
+  };
+}
 const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
+const useMovableAreaChildren = useMovableAreaChildren$1;
 const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -11360,42 +11401,11 @@ const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
       movableAreaEvents._resize();
       _isMounted.value = true;
     });
-    let movableViewItems = [];
-    const originMovableViewContexts = [];
-    function updateMovableViewContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        let movableViewItem = movableViewItems[index2];
-        {
-          movableViewItem = movableViewItem.el;
-        }
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
-        if (movableViewContext) {
-          contexts.push(markRaw(movableViewContext));
-        }
-      }
-      setContexts(contexts);
-    }
-    const addMovableViewContext = (movableViewContext) => {
-      originMovableViewContexts.push(movableViewContext);
-      updateMovableViewContexts();
-    };
-    const removeMovableViewContext = (movableViewContext) => {
-      const index2 = originMovableViewContexts.indexOf(movableViewContext);
-      if (index2 >= 0) {
-        originMovableViewContexts.splice(index2, 1);
-        updateMovableViewContexts();
-      }
-    };
+    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
     provide("_isMounted", _isMounted);
     provide("movableAreaRootRef", rootRef);
-    provide("addMovableViewContext", addMovableViewContext);
-    provide("removeMovableViewContext", removeMovableViewContext);
     return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        movableViewItems = flatVNode(defaultSlots);
-      }
+      const movableViewItems = renderChildren();
       return createVNode("uni-movable-area", mergeProps({
         "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {

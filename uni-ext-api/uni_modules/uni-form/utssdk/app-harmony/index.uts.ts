@@ -6,9 +6,14 @@ import { deviceInfo } from '@kit.BasicServicesKit';
 
 let harmonyInputPositionOwnerSeed = 0
 let harmonyInputPositionOwner = 0
-let harmonyInputPositionReset: (() => void) | null = null
-let harmonyInputInheritedPositionReset: (() => void) | null = null
+type HarmonyInputPositionResetRecord = {
+	owner: number,
+	reset: () => void
+}
+let harmonyInputPositionResetRecords: HarmonyInputPositionResetRecord[] = []
 let harmonyInputKeyboardHeight = 0
+let harmonyInputKeyboardAvoidPendingOwner = 0
+let harmonyInputKeyboardAvoidActiveOwner = 0
 
 export function createHarmonyInputPositionOwner(): number {
 	harmonyInputPositionOwnerSeed++
@@ -17,39 +22,39 @@ export function createHarmonyInputPositionOwner(): number {
 
 export function activateHarmonyInputPositionOwner(owner: number) {
 	if (harmonyInputPositionOwner == owner) return
-	// Keep the previous input's automatic scroll while focus moves between
-	// inputs with the keyboard open. The new owner adopts the reset callback
-	// and restores the whole chain only after the keyboard closes.
-	const previousReset = harmonyInputPositionReset
-	if (previousReset != null) {
-		const inheritedReset = harmonyInputInheritedPositionReset
-		harmonyInputInheritedPositionReset = inheritedReset == null
-			? previousReset
-			: () => {
-				previousReset()
-				inheritedReset()
-			}
-	}
-	harmonyInputPositionReset = null
 	harmonyInputPositionOwner = owner
 }
 
 export function registerHarmonyInputPositionReset(owner: number, reset: (() => void) | null) {
 	if (harmonyInputPositionOwner != owner) return
-	// Keep the inherited reset separate. Recalculating the current input's
-	// position must not undo the scroll still owned by the previous input.
-	harmonyInputPositionReset = reset
+	for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
+		if (harmonyInputPositionResetRecords[i].owner == owner) {
+			harmonyInputPositionResetRecords.splice(i, 1)
+		}
+	}
+	if (reset != null) {
+		harmonyInputPositionResetRecords.push({ owner, reset: reset! } as HarmonyInputPositionResetRecord)
+	}
 }
 
 export function resetHarmonyInputPositionOwner(owner: number, release: boolean = false) {
-	if (harmonyInputPositionOwner != owner) return
-	harmonyInputPositionReset?.()
-	harmonyInputPositionReset = null
-	if (release) {
-		harmonyInputInheritedPositionReset?.()
-		harmonyInputInheritedPositionReset = null
-		harmonyInputPositionOwner = 0
+	// An input can be unmounted after focus has moved to another input. Remove
+	// its own reset record even when it is no longer the active owner.
+	for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
+		const record = harmonyInputPositionResetRecords[i]
+		if (record.owner == owner) {
+			harmonyInputPositionResetRecords.splice(i, 1)
+			record.reset()
+		}
 	}
+	if (harmonyInputPositionOwner != owner || !release) return
+	// Position changes are applied in focus order and must be unwound in the
+	// opposite order when the keyboard session ends.
+	for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
+		harmonyInputPositionResetRecords[i].reset()
+	}
+	harmonyInputPositionResetRecords.length = 0
+	harmonyInputPositionOwner = 0
 }
 
 export function isHarmonyInputPositionOwner(owner: number): boolean {
@@ -74,7 +79,47 @@ export function setHarmonyInputDefaultKeyboardAvoidEnabled(enabled: boolean) {
 			enabled ? KeyboardAvoidMode.OFFSET : KeyboardAvoidMode.NONE
 		)
 	} catch (e) {
-		console.error(e.message)
+		// Harmony destroys the native Window before Vue finishes unmounting its
+		// component tree when the application exits. That teardown race is an
+		// expected no-op; keep reporting unrelated window errors.
+		const message : string = e.message
+		if (message.indexOf('Window is nullptr') < 0) {
+			console.error(message)
+		}
+	}
+}
+
+export function beginHarmonyInputKeyboardAvoid(owner: number) {
+	harmonyInputKeyboardAvoidPendingOwner = owner
+	setHarmonyInputDefaultKeyboardAvoidEnabled(false)
+}
+
+export function activateHarmonyInputKeyboardAvoid(owner: number) {
+	harmonyInputKeyboardAvoidPendingOwner = 0
+	harmonyInputKeyboardAvoidActiveOwner = owner
+	setHarmonyInputDefaultKeyboardAvoidEnabled(false)
+}
+
+export function cancelHarmonyInputKeyboardAvoid(owner: number) {
+	if (harmonyInputKeyboardAvoidPendingOwner != owner) return
+	harmonyInputKeyboardAvoidPendingOwner = 0
+	if (harmonyInputKeyboardAvoidPendingOwner == 0 && harmonyInputKeyboardAvoidActiveOwner == 0) {
+		setHarmonyInputDefaultKeyboardAvoidEnabled(true)
+	}
+}
+
+export function releaseHarmonyInputKeyboardAvoid(owner: number) {
+	const ownedPending = harmonyInputKeyboardAvoidPendingOwner == owner
+	const ownedActive = harmonyInputKeyboardAvoidActiveOwner == owner
+	if (!ownedPending && !ownedActive) return
+	if (ownedPending) {
+		harmonyInputKeyboardAvoidPendingOwner = 0
+	}
+	if (ownedActive) {
+		harmonyInputKeyboardAvoidActiveOwner = 0
+	}
+	if (harmonyInputKeyboardAvoidPendingOwner == 0 && harmonyInputKeyboardAvoidActiveOwner == 0) {
+		setHarmonyInputDefaultKeyboardAvoidEnabled(true)
 	}
 }
 

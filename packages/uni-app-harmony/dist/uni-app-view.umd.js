@@ -16781,12 +16781,59 @@
     var instance = getCurrentInstance();
     instance.rebuild = callback;
   }
+  function useMovableAreaChildren$1(rootRef, slots, setContexts) {
+    var movableViewItems = [];
+    var originMovableViewContexts = [];
+    function updateMovableViewContexts() {
+      var contexts = [];
+      var _loop = function(index3) {
+        var movableViewItem = movableViewItems[index3];
+        if (!(movableViewItem instanceof Element)) {
+          movableViewItem = movableViewItem.el;
+        }
+        var movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
+        if (movableViewContext) {
+          contexts.push(markRaw(movableViewContext));
+        }
+      };
+      for (var index2 = 0; index2 < movableViewItems.length; index2++) {
+        _loop(index2);
+      }
+      setContexts(contexts);
+    }
+    {
+      useRebuild(() => {
+        if (rootRef.value) {
+          movableViewItems = rootRef.value.children;
+        }
+        updateMovableViewContexts();
+      });
+    }
+    var addMovableViewContext = (movableViewContext) => {
+      originMovableViewContexts.push(movableViewContext);
+      updateMovableViewContexts();
+    };
+    var removeMovableViewContext = (movableViewContext) => {
+      var index2 = originMovableViewContexts.indexOf(movableViewContext);
+      if (index2 >= 0) {
+        originMovableViewContexts.splice(index2, 1);
+        updateMovableViewContexts();
+      }
+    };
+    provide("addMovableViewContext", addMovableViewContext);
+    provide("removeMovableViewContext", removeMovableViewContext);
+    return () => {
+      slots.default && slots.default();
+      return movableViewItems;
+    };
+  }
   var movableAreaProps = {
     scaleArea: {
       type: Boolean,
       default: false
     }
   };
+  var useMovableAreaChildren = useMovableAreaChildren$1;
   const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
     inheritAttrs: false,
     name: "MovableArea",
@@ -16818,50 +16865,11 @@
         initScrollBounce();
         _isMounted.value = true;
       });
-      var movableViewItems = [];
-      var originMovableViewContexts = [];
-      function updateMovableViewContexts() {
-        var contexts = [];
-        var _loop = function(index3) {
-          var movableViewItem = movableViewItems[index3];
-          if (!(movableViewItem instanceof Element)) {
-            movableViewItem = movableViewItem.el;
-          }
-          var movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
-          if (movableViewContext) {
-            contexts.push(markRaw(movableViewContext));
-          }
-        };
-        for (var index2 = 0; index2 < movableViewItems.length; index2++) {
-          _loop(index2);
-        }
-        setContexts(contexts);
-      }
-      {
-        useRebuild(() => {
-          if (rootRef.value) {
-            movableViewItems = rootRef.value.children;
-          }
-          updateMovableViewContexts();
-        });
-      }
-      var addMovableViewContext = (movableViewContext) => {
-        originMovableViewContexts.push(movableViewContext);
-        updateMovableViewContexts();
-      };
-      var removeMovableViewContext = (movableViewContext) => {
-        var index2 = originMovableViewContexts.indexOf(movableViewContext);
-        if (index2 >= 0) {
-          originMovableViewContexts.splice(index2, 1);
-          updateMovableViewContexts();
-        }
-      };
+      var renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
       provide("_isMounted", _isMounted);
       provide("movableAreaRootRef", rootRef);
-      provide("addMovableViewContext", addMovableViewContext);
-      provide("removeMovableViewContext", removeMovableViewContext);
       return () => {
-        slots.default && slots.default();
+        var movableViewItems = renderChildren();
         return createVNode("uni-movable-area", mergeProps({
           "ref": rootRef
         }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {

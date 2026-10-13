@@ -5781,12 +5781,53 @@ function flatVNode(nodes) {
   }
   return array;
 }
+function useMovableAreaChildren$1(rootRef, slots, setContexts) {
+  let movableViewItems = [];
+  const originMovableViewContexts = [];
+  function updateMovableViewContexts() {
+    const contexts = [];
+    for (let index2 = 0; index2 < movableViewItems.length; index2++) {
+      let movableViewItem = movableViewItems[index2];
+      {
+        movableViewItem = movableViewItem.el;
+      }
+      const movableViewContext = originMovableViewContexts.find(
+        (context) => movableViewItem === context.rootRef.value
+      );
+      if (movableViewContext) {
+        contexts.push(vue.markRaw(movableViewContext));
+      }
+    }
+    setContexts(contexts);
+  }
+  const addMovableViewContext = (movableViewContext) => {
+    originMovableViewContexts.push(movableViewContext);
+    updateMovableViewContexts();
+  };
+  const removeMovableViewContext = (movableViewContext) => {
+    const index2 = originMovableViewContexts.indexOf(movableViewContext);
+    if (index2 >= 0) {
+      originMovableViewContexts.splice(index2, 1);
+      updateMovableViewContexts();
+    }
+  };
+  vue.provide("addMovableViewContext", addMovableViewContext);
+  vue.provide("removeMovableViewContext", removeMovableViewContext);
+  return () => {
+    const defaultSlots = slots.default && slots.default();
+    {
+      movableViewItems = flatVNode(defaultSlots);
+    }
+    return movableViewItems;
+  };
+}
 const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
+const useMovableAreaChildren = useMovableAreaChildren$1;
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -5812,42 +5853,11 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
       let ours = movableAreaEvents[`_${event}`];
       _listeners[event] = existing ? [].concat(existing, ours) : ours;
     });
-    let movableViewItems = [];
-    const originMovableViewContexts = [];
-    function updateMovableViewContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        let movableViewItem = movableViewItems[index2];
-        {
-          movableViewItem = movableViewItem.el;
-        }
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
-        if (movableViewContext) {
-          contexts.push(vue.markRaw(movableViewContext));
-        }
-      }
-      setContexts(contexts);
-    }
-    const addMovableViewContext = (movableViewContext) => {
-      originMovableViewContexts.push(movableViewContext);
-      updateMovableViewContexts();
-    };
-    const removeMovableViewContext = (movableViewContext) => {
-      const index2 = originMovableViewContexts.indexOf(movableViewContext);
-      if (index2 >= 0) {
-        originMovableViewContexts.splice(index2, 1);
-        updateMovableViewContexts();
-      }
-    };
+    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
     vue.provide("_isMounted", _isMounted);
     vue.provide("movableAreaRootRef", rootRef);
-    vue.provide("addMovableViewContext", addMovableViewContext);
-    vue.provide("removeMovableViewContext", removeMovableViewContext);
     return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        movableViewItems = flatVNode(defaultSlots);
-      }
+      const movableViewItems = renderChildren();
       return vue.createVNode("uni-movable-area", vue.mergeProps({
         "ref": rootRef
       }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {

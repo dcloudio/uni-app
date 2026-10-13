@@ -1,6 +1,10 @@
 <template>
 	<!-- #ifdef APP -->
-	<view class='uni-input-wrapper' @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+	<view class='uni-input-wrapper' @touchstart="handleTouchStart" @touchend="handleTouchEnd"
+		<!-- #ifdef APP-HARMONY -->
+		@touchcancel="handleTouchCancel"
+		<!-- #endif -->
+	>
 
     <view class="uni-input-container"
 		 <!-- #ifndef APP-ANDROID -->
@@ -71,12 +75,15 @@
 		// #ifdef APP-HARMONY
 		UniInputElement,
 		activateHarmonyInputPositionOwner,
+		activateHarmonyInputKeyboardAvoid,
+		beginHarmonyInputKeyboardAvoid,
+		cancelHarmonyInputKeyboardAvoid,
 		createHarmonyInputPositionOwner,
 		getHarmonyInputKeyboardHeight,
 		isHarmonyInputPositionOwner,
 		registerHarmonyInputPositionReset,
+		releaseHarmonyInputKeyboardAvoid,
 		resetHarmonyInputPositionOwner,
-		setHarmonyInputDefaultKeyboardAvoidEnabled,
 		setHarmonyInputKeyboardHeight,
 		// #endif
 	} from "@/uni_modules/uni-form";
@@ -99,6 +106,7 @@
 	let harmonyKeyboardHeightChangeId : number | null = null
 	let harmonyPositionReset : (() => void) | null = null
 	let harmonyMounted = false
+	let harmonyFocusAttemptTimer : number | null = null
 	const harmonyPositionOwner = createHarmonyInputPositionOwner()
 	const harmonyFocusRequest = ref(false)
 	const harmonyAutoFocusRequest = ref(false)
@@ -121,11 +129,6 @@
 
 	// #ifdef APP-ANDROID || APP-IOS
 	let inputView : NativeInputView | null = null
-	// #endif
-	// #ifdef APP-HARMONY
-	// Harmony input is owned by the C++ native-view module. Keep this
-	// compatibility slot for shared lifecycle code; it is never instantiated.
-	let inputView : any | null = null
 	// #endif
 	const style = useComputedStyle({
 		properties: [
@@ -157,34 +160,35 @@
 		const value = style.get(property)
 		return typeof value == 'string' ? value : ''
 	}
+
+	const getHarmonyPixelValue = (property: string): number | null => {
+		const value = rpx2px(getStyleValue(property))
+		if (!value.endsWith('px')) return null
+		const result = parseFloat(value)
+		return isNaN(result) ? null : result
+	}
 	// #endif
 
 	const nativeViewHeight = computed(() => {
 		let res = 24
 		// #ifdef APP-HARMONY
-		let explicitHeight = 0
-		const styleHeight = rpx2px(getStyleValue('height'))
-		if (styleHeight.endsWith('px')) {
-			explicitHeight = Math.ceil(parseFloat(styleHeight))
+		const explicitHeight = getHarmonyPixelValue('height')
+		// An explicit CSS height is authoritative, including height: 0. Font and
+		// line-height may clip inside that box but must not resize it implicitly.
+		if (explicitHeight != null) {
+			return Math.max(0, explicitHeight!)
 		}
-		let styleFontSize = style.get('font-size') as string
-		if (styleFontSize) {
-			styleFontSize = rpx2px(styleFontSize)
-			if (styleFontSize.endsWith('px')) {
-				res = Math.max(res, Math.ceil(parseFloat(styleFontSize)))
-			}
+		const fontSize = getHarmonyPixelValue('font-size')
+		if (fontSize != null) {
+			res = Math.max(res, Math.ceil(fontSize!))
 		}
-
-		let styleLineHeight = style.get('line-height') as string
-		if (styleLineHeight) {
-			styleLineHeight = rpx2px(styleLineHeight)
-			if (styleLineHeight.endsWith('px')) {
-				res = Math.max(res, Math.ceil(parseFloat(styleLineHeight)))
-			}
+		const lineHeight = getHarmonyPixelValue('line-height')
+		if (lineHeight != null) {
+			res = Math.max(res, Math.ceil(lineHeight!))
 		}
-		if (explicitHeight > 0) {
-			return Math.max(res, explicitHeight)
-		}
+		const paddingTop = Math.max(0, getHarmonyPixelValue('padding-top') ?? 0)
+		const paddingBottom = Math.max(0, getHarmonyPixelValue('padding-bottom') ?? 0)
+		return Math.ceil(res + paddingTop + paddingBottom)
 		// #endif
 		// #ifndef APP-HARMONY
 		let styleFontSize = style.get('font-size') as string
@@ -577,17 +581,22 @@
 	// escaped payloads. This keeps initial rendering to two C++ tasks without
 	// making value changes rebuild the larger style configuration. Record
 	// Separator escapes itself and Unit Separator, keeping arbitrary text lossless.
-	const encodeHarmonyConfigurationField = (value : string) : string => {
-		if (value.indexOf('\u001e') < 0 && value.indexOf('\u001f') < 0) {
-			return value
-		}
+	const encodeHarmonyFields = (fields : string[]) : string => {
 		let result = ''
-		for (let index = 0; index < value.length; index++) {
-			const character = value.substring(index, index + 1)
-			if (character == '\u001e' || character == '\u001f') {
-				result += '\u001e'
+		for (let index = 0; index < fields.length; index++) {
+			if (index > 0) result += '\u001f'
+			const value = fields[index]
+			if (value.indexOf('\u001e') < 0 && value.indexOf('\u001f') < 0) {
+				result += value
+				continue
 			}
-			result += character
+			for (let characterIndex = 0; characterIndex < value.length; characterIndex++) {
+				const character = value.substring(characterIndex, characterIndex + 1)
+				if (character == '\u001e' || character == '\u001f') {
+					result += '\u001e'
+				}
+				result += character
+			}
 		}
 		return result
 	}
@@ -620,12 +629,7 @@
 			rpx2px(getStyleValue('padding-left')),
 			props.cursorColor
 		]
-		let result = ''
-		for (let index = 0; index < fields.length; index++) {
-			if (index > 0) result += '\u001f'
-			result += encodeHarmonyConfigurationField(fields[index])
-		}
-		return result
+		return encodeHarmonyFields(fields)
 	})
 	const harmonyInputRuntimeState = computed(() : string => {
 		const fields : string[] = [
@@ -636,12 +640,7 @@
 			harmonyFocusRequestVersion.value.toString(),
 			pageTouchEndVersion.value.toString()
 		]
-		let result = ''
-		for (let index = 0; index < fields.length; index++) {
-			if (index > 0) result += '\u001f'
-			result += encodeHarmonyConfigurationField(fields[index])
-		}
-		return result
+		return encodeHarmonyFields(fields)
 	})
 	// #endif
 
@@ -735,10 +734,44 @@
 	const instance = getCurrentInstance()
 	// #endif
 	// #ifdef APP-HARMONY
+	function clearHarmonyFocusAttemptTimer() {
+		if (harmonyFocusAttemptTimer != null) {
+			clearTimeout(harmonyFocusAttemptTimer!)
+			harmonyFocusAttemptTimer = null
+		}
+	}
+
+	function beginHarmonyFocusAttempt() {
+		const harmonyDisabled = props.disabled === true || props.disabled === 'true'
+		if (harmonyDisabled) return
+		ensureHarmonyKeyboardHeightListener()
+		beginHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+		clearHarmonyFocusAttemptTimer()
+		// NativeNode focus has no failure callback. Restore the window-level
+		// avoid mode if a focus event does not arrive after the request.
+		harmonyFocusAttemptTimer = setTimeout(() => {
+			harmonyFocusAttemptTimer = null
+			if (!isFocusing.value) {
+				cancelHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+			}
+		}, 1000)
+	}
+
+	function completeHarmonyFocusAttempt() {
+		clearHarmonyFocusAttemptTimer()
+		activateHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+	}
+
+	function cancelHarmonyFocusAttempt() {
+		clearHarmonyFocusAttemptTimer()
+		cancelHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+	}
+
 	function replayHarmonyFocus() {
 		const shouldFocus = props.focus === true || props.focus === 'true'
 		const shouldAutoFocus = props.autoFocus === true || props.autoFocus === 'true'
 		if (shouldFocus || shouldAutoFocus) {
+			beginHarmonyFocusAttempt()
 			// Apply focus before auto-focus so auto-focus wins when both props
 			// are present during initial rendering.
 			harmonyFocusRequest.value = shouldFocus
@@ -758,6 +791,24 @@
 		})
 	}
 
+	function removeHarmonyKeyboardHeightListener() {
+		if (harmonyKeyboardHeightChangeId == null) return
+		const listenerId = harmonyKeyboardHeightChangeId!
+		// Clear local state first so an exception from a Window that has already
+		// been destroyed cannot leave this component looking registered.
+		harmonyKeyboardHeightChangeId = null
+		try {
+			uni.offKeyboardHeightChange(listenerId)
+		} catch (e) {
+			// On application exit Harmony can destroy Window before component
+			// beforeUnmount hooks run. Ignore only that expected teardown race.
+			const message : string = e.message
+			if (message.indexOf('Window is nullptr') < 0) {
+				console.error(message)
+			}
+		}
+	}
+
 	function ensureHarmonyPageTouchEndListener() {
 		if (pageTouchEndId != null) return
 		pageTouchEndId = proxy?.$page.onTouchEnd(() => {
@@ -766,6 +817,12 @@
 				pageTouchEndVersion.value++
 			}
 		})
+	}
+
+	function removeHarmonyPageTouchEndListener() {
+		if (pageTouchEndId == null) return
+		proxy?.$page.offTouchEnd(pageTouchEndId!)
+		pageTouchEndId = null
 	}
 	// #endif
 
@@ -908,8 +965,7 @@
 	function onHarmonyNativeViewInit(e : UniNativeViewInitEvent) {
 		harmonyNativeViewElement = e.detail.element
 		// Initial focus must wait until onMounted has registered the keyboard
-		// height listener. Otherwise the first keyboardHeightChange is lost and
-		// an auto-focused input cannot move above the keyboard.
+		// listener. Otherwise the first keyboardHeightChange can be lost.
 		if (harmonyMounted) {
 			replayHarmonyFocus()
 		}
@@ -1006,7 +1062,7 @@
 		ensureHarmonyPageTouchEndListener()
 		isFocusing.value = true
 		activateHarmonyInputPositionOwner(harmonyPositionOwner)
-		setHarmonyInputDefaultKeyboardAvoidEnabled(false)
+		completeHarmonyFocusAttempt()
 		const currentKeyboardHeight = getHarmonyInputKeyboardHeight()
 		keyboardHeight.value = currentKeyboardHeight
 		const detail = e.detail as unknown as HarmonyInputFocusEventDetail
@@ -1024,10 +1080,15 @@
 	function onBlur(e : UniInputBlurEvent) {
 		isFocusing.value = false
 		isComposing.value = false
-		if (getHarmonyInputKeyboardHeight() <= 0 && isHarmonyInputPositionOwner(harmonyPositionOwner)) {
+		const currentKeyboardHeight = getHarmonyInputKeyboardHeight()
+		if (currentKeyboardHeight <= 0 && isHarmonyInputPositionOwner(harmonyPositionOwner)) {
 			resetHarmonyInputPosition(true)
-			setHarmonyInputDefaultKeyboardAvoidEnabled(true)
+			releaseHarmonyInputKeyboardAvoid(harmonyPositionOwner)
 		}
+		if (currentKeyboardHeight <= 0) {
+			removeHarmonyKeyboardHeightListener()
+		}
+		removeHarmonyPageTouchEndListener()
 		emit('blur', e)
 	}
 
@@ -1077,11 +1138,14 @@
 			const ownedHarmonyPosition = isHarmonyInputPositionOwner(harmonyPositionOwner)
 			resetHarmonyInputPosition(!isFocusing.value)
 			if (!isFocusing.value && ownedHarmonyPosition) {
-				setHarmonyInputDefaultKeyboardAvoidEnabled(true)
+				releaseHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+			}
+			if (!isFocusing.value) {
+				removeHarmonyKeyboardHeightListener()
 			}
 			return
 		}
-		setHarmonyInputDefaultKeyboardAvoidEnabled(false)
+		activateHarmonyInputKeyboardAvoid(harmonyPositionOwner)
 		adjustHarmonyInputPosition(height)
 	}
 
@@ -1200,7 +1264,9 @@
 						adjustedTransform
 					)
 					harmonyPositionReset = () => {
-						pageRootElement.style.setProperty('transform', originalTransform)
+						if (pageRootElement.isConnected !== false) {
+							pageRootElement.style.setProperty('transform', originalTransform)
+						}
 					}
 				}
 			}
@@ -1228,13 +1294,10 @@
 		markEditorTouchStart()
 		// #endif
 		// #ifdef APP-HARMONY
-		ensureHarmonyKeyboardHeightListener()
-		// Disable the system keyboard offset before the native node receives
-		// focus, so it cannot race with the component-bottom adjustment.
-		const harmonyDisabled = props.disabled === true || props.disabled === 'true'
-		if (!harmonyDisabled) {
-			setHarmonyInputDefaultKeyboardAvoidEnabled(false)
-		}
+		// Disable the system offset before NativeNode focus to avoid racing the
+		// component adjustment. A tokenized timeout/cancel path restores it when
+		// the gesture does not result in focus.
+		beginHarmonyFocusAttempt()
 		// #endif
 		isTouching = true
 	}
@@ -1247,15 +1310,22 @@
 		isTouching = false
 	}
 
+	// #ifdef APP-HARMONY
+	const handleTouchCancel = () => {
+		isTouching = false
+		if (!isFocusing.value) {
+			cancelHarmonyFocusAttempt()
+		}
+	}
+	// #endif
+
 	onMounted(() => {
 		// #ifdef APP-HARMONY
 		harmonyMounted = true
 		const shouldFocusOnMount = props.focus === true || props.focus === 'true'
 			|| props.autoFocus === true || props.autoFocus === 'true'
 		if (shouldFocusOnMount) {
-			ensureHarmonyKeyboardHeightListener()
-			activateHarmonyInputPositionOwner(harmonyPositionOwner)
-			setHarmonyInputDefaultKeyboardAvoidEnabled(false)
+			beginHarmonyFocusAttempt()
 		}
 		// The C++ native node receives its initial attributes before the page
 		// is attached. Trigger focus only after the keyboard listener is ready.
@@ -1289,7 +1359,9 @@
 			if (newValue == inputValue.value) return
 			const value = newValue != null ? newValue : ''
 			inputValue.value = normalizeByMaxLength(value.toString())
+			// #ifdef APP-IOS
 			inputView?.updateValue(inputValue.value)
+			// #endif
 			// #ifdef APP-HARMONY
 			inputElement?.updateValue(inputValue.value);
 			// #endif
@@ -1348,16 +1420,22 @@
 			const oldValue = inputValue.value
 			inputValue.value = normalizeByMaxLength(inputValue.value)
 			if (inputValue.value != oldValue) {
+				// #ifdef APP-IOS
 				inputView?.updateValue(inputValue.value)
+				// #endif
 				// #ifdef APP-HARMONY
 				inputElement?.updateValue(inputValue.value);
 				// #endif
 			}
+			// #ifdef APP-IOS
 			inputView?.updateMaxLength(getMaxLength(newValue))
+			// #endif
 		})
 		// input 光标与键盘的距离，单位 px 。实际生效值会受可视区域高度限制
 		watch(() => props.cursorSpacing, (newValue : number) => {
+			// #ifdef APP-IOS
 			inputView?.updateCursorSpacing(newValue)
+			// #endif
 			// #ifdef APP-HARMONY
 			if (isFocusing.value && keyboardHeight.value > 0) {
 				adjustHarmonyInputPosition(keyboardHeight.value)
@@ -1373,11 +1451,15 @@
 		watch(() => props.focus, (newValue : boolean) => {
 			// #ifdef APP-HARMONY
 			if (newValue === true || newValue === 'true') {
-				ensureHarmonyKeyboardHeightListener()
+				beginHarmonyFocusAttempt()
+			} else if (!isFocusing.value) {
+				cancelHarmonyFocusAttempt()
 			}
 			harmonyFocusRequest.value = newValue === true || newValue === 'true'
 			// #endif
+			// #ifdef APP-IOS
 			inputView?.updateFocus(newValue)
+			// #endif
 		})
 
 		// Harmony 的 native input 需要在节点挂载完成后重新应用 auto-focus。
@@ -1385,7 +1467,9 @@
 		// #ifdef APP-HARMONY
 		watch(() => props.autoFocus, (newValue : boolean | string) => {
 			if (newValue === true || newValue === 'true') {
-				ensureHarmonyKeyboardHeightListener()
+				beginHarmonyFocusAttempt()
+			} else if (!isFocusing.value) {
+				cancelHarmonyFocusAttempt()
 			}
 			harmonyAutoFocusRequest.value = newValue === true || newValue === 'true'
 		})
@@ -1443,7 +1527,9 @@
 				getValue: () => inputValue.value,
 				reset: () => {
 					inputValue.value = normalizeByMaxLength(initialValue.value)
+					// #ifdef APP-ANDROID || APP-IOS
 					inputView?.updateValue(inputValue.value)
+					// #endif
 					// #ifdef APP-HARMONY
 					inputElement?.updateValue(inputValue.value)
 					// #endif
@@ -1478,16 +1564,14 @@
 	onBeforeUnmount(() => {
 		// #ifdef APP-HARMONY
 		harmonyMounted = false
+		clearHarmonyFocusAttemptTimer()
 		const ownedHarmonyPosition = isHarmonyInputPositionOwner(harmonyPositionOwner)
 		resetHarmonyInputPosition(true)
 		if (ownedHarmonyPosition) {
 			setHarmonyInputKeyboardHeight(0)
-			setHarmonyInputDefaultKeyboardAvoidEnabled(true)
 		}
-		if (harmonyKeyboardHeightChangeId != null) {
-			uni.offKeyboardHeightChange(harmonyKeyboardHeightChangeId!)
-		}
-		harmonyKeyboardHeightChangeId = null
+		releaseHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+		removeHarmonyKeyboardHeightListener()
 		inputElement = null
 		// #endif
 		if (pageTouchEndId != null) {
@@ -1498,8 +1582,10 @@
 		if (formCtx && props.name) {
 			formCtx.unregisterField(props.name)
 		}
-		// iOS平台需要主动释放 uts 实例
+		// Android/iOS 平台需要主动释放 UTS 原生实例。
+		// #ifdef APP-ANDROID || APP-IOS
 		inputView?.destroy()
+		// #endif
 	})
 </script>
 
