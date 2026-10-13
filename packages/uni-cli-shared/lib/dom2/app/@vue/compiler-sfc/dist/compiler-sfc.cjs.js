@@ -247,7 +247,7 @@ const cssVarsPlugin = (opts) => {
 	};
 };
 cssVarsPlugin.postcss = true;
-function genCssVarsCode(vars, bindings, id, isProd, vapor) {
+function genCssVarsCode(vars, bindings, id, isProd, helper = CSS_VARS_HELPER) {
 	const varsExp = genCssVarsFromList(vars, id, isProd);
 	const exp = (0, _vue_compiler_dom.createSimpleExpression)(varsExp, false);
 	const context = (0, _vue_compiler_dom.createTransformContext)((0, _vue_compiler_dom.createRoot)([]), {
@@ -256,10 +256,9 @@ function genCssVarsCode(vars, bindings, id, isProd, vapor) {
 		bindingMetadata: bindings.__isScriptSetup === false ? void 0 : bindings
 	});
 	const transformed = (0, _vue_compiler_dom.processExpression)(exp, context);
-	const transformedString = transformed.type === 4 ? transformed.content : transformed.children.map((c) => {
+	return `_${helper}(_ctx => (${transformed.type === 4 ? transformed.content : transformed.children.map((c) => {
 		return typeof c === "string" ? c : c.content;
-	}).join("");
-	return `_${getCssVarsHelper(vapor)}(_ctx => (${transformedString}))`;
+	}).join("")}))`;
 }
 function genNormalScriptCssVarsCode(cssVars, bindings, id, isProd, defaultVar) {
 	return `\nimport { ${CSS_VARS_HELPER} as _${CSS_VARS_HELPER} } from 'vue'\nconst __injectCSSVars__ = () => {\n${genCssVarsCode(cssVars, bindings, id, isProd)}}\nconst __setup__ = ${defaultVar}.setup\n${defaultVar}.setup = __setup__\n  ? (props, ctx) => { __injectCSSVars__();return __setup__(props, ctx) }\n  : __injectCSSVars__\n`;
@@ -16207,9 +16206,10 @@ function compileScript(sfc, options) {
 		}
 	}
 	if (sfc.cssVars.length && !ssr) {
-		ctx.helperImports.add(getCssVarsHelper(vapor));
+		const cssVarsHelper = vapor && options.className ? "useSharedDataCssVars" : getCssVarsHelper(vapor);
+		ctx.helperImports.add(cssVarsHelper);
 		ctx.helperImports.add("unref");
-		ctx.s.prependLeft(startOffset, `\n${genCssVarsCode(sfc.cssVars, ctx.bindingMetadata, scopeId, !!options.isProd, vapor)}\n`);
+		ctx.s.prependLeft(startOffset, `\n${genCssVarsCode(sfc.cssVars, ctx.bindingMetadata, scopeId, !!options.isProd, cssVarsHelper)}\n`);
 	}
 	let args = `__props`;
 	if (ctx.propsTypeDecl) args += `: any`;

@@ -80,6 +80,7 @@
 		cancelHarmonyInputKeyboardAvoid,
 		createHarmonyInputPositionOwner,
 		getHarmonyInputKeyboardHeight,
+		getHarmonyInputErrorMessage,
 		isHarmonyInputPositionOwner,
 		registerHarmonyInputPositionReset,
 		releaseHarmonyInputKeyboardAvoid,
@@ -752,7 +753,7 @@
 		harmonyFocusAttemptTimer = setTimeout(() => {
 			harmonyFocusAttemptTimer = null
 			if (!isFocusing.value) {
-				cancelHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+				cancelHarmonyFocusAttempt()
 			}
 		}, 1000)
 	}
@@ -765,6 +766,12 @@
 	function cancelHarmonyFocusAttempt() {
 		clearHarmonyFocusAttemptTimer()
 		cancelHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+		// A failed attempt owns only this component's listener ID. Preserve a
+		// previous successful focus's listener while its keyboard is closing.
+		if (!isFocusing.value
+			&& (!isHarmonyInputPositionOwner(harmonyPositionOwner) || keyboardHeight.value <= 0)) {
+			removeHarmonyKeyboardHeightListener()
+		}
 	}
 
 	function replayHarmonyFocus() {
@@ -802,7 +809,7 @@
 		} catch (e) {
 			// On application exit Harmony can destroy Window before component
 			// beforeUnmount hooks run. Ignore only that expected teardown race.
-			const message : string = e.message
+			const message : string = getHarmonyInputErrorMessage(e)
 			if (message.indexOf('Window is nullptr') < 0) {
 				console.error(message)
 			}

@@ -352,8 +352,11 @@ type UseComputedStyleOptions = {
 };
 export declare function useComputedStyle(options: UseComputedStyleOptions): Map<string, any | null>;
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/helpers/useCssVars.d.ts
+export declare function useSharedDataCssVars(getter: (ctx: any) => Record<string, unknown>): void;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/renderEffect.d.ts
-export declare function renderSharedDataEffect(fn: () => void, noLifecycle?: boolean): void;
+export declare function renderSharedDataEffect(fn: () => unknown, noLifecycle?: boolean): void;
 export declare function nextSharedDataTick(fn: () => void): Promise<void>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/index.d.ts

@@ -38,23 +38,31 @@ export function registerHarmonyInputPositionReset(owner: number, reset: (() => v
 }
 
 export function resetHarmonyInputPositionOwner(owner: number, release: boolean = false) {
-	// An input can be unmounted after focus has moved to another input. Remove
-	// its own reset record even when it is no longer the active owner.
-	for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
-		const record = harmonyInputPositionResetRecords[i]
-		if (record.owner == owner) {
-			harmonyInputPositionResetRecords.splice(i, 1)
-			record.reset()
+	// An inactive input's offset can be the baseline of a newer input. Keep
+	// that record until the active owner unwinds the session in reverse order.
+	if (harmonyInputPositionOwner != owner) return
+	let firstResetIndex = 0
+	if (!release) {
+		firstResetIndex = -1
+		for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
+			if (harmonyInputPositionResetRecords[i].owner == owner) {
+				firstResetIndex = i
+				break
+			}
 		}
+		if (firstResetIndex < 0) return
 	}
-	if (harmonyInputPositionOwner != owner || !release) return
-	// Position changes are applied in focus order and must be unwound in the
-	// opposite order when the keyboard session ends.
-	for (let i = harmonyInputPositionResetRecords.length - 1; i >= 0; i--) {
-		harmonyInputPositionResetRecords[i].reset()
+	// Refocusing an earlier input can put its record below newer records.
+	// Unwind the entire dependent suffix, never a middle layer on its own.
+	while (harmonyInputPositionResetRecords.length > firstResetIndex) {
+		const index = harmonyInputPositionResetRecords.length - 1
+		const record = harmonyInputPositionResetRecords[index]
+		harmonyInputPositionResetRecords.splice(index, 1)
+		record.reset()
 	}
-	harmonyInputPositionResetRecords.length = 0
-	harmonyInputPositionOwner = 0
+	if (release) {
+		harmonyInputPositionOwner = 0
+	}
 }
 
 export function isHarmonyInputPositionOwner(owner: number): boolean {
@@ -67,6 +75,13 @@ export function setHarmonyInputKeyboardHeight(height: number) {
 
 export function getHarmonyInputKeyboardHeight(): number {
 	return harmonyInputKeyboardHeight
+}
+
+export function getHarmonyInputErrorMessage(error: Error | string | null): string {
+	if (error == null) return ''
+	if (typeof error == 'string') return error
+	const message: string = (error.message ?? '').toString()
+	return message != '' ? message : `${error}`
 }
 
 export function setHarmonyInputDefaultKeyboardAvoidEnabled(enabled: boolean) {
@@ -82,7 +97,7 @@ export function setHarmonyInputDefaultKeyboardAvoidEnabled(enabled: boolean) {
 		// Harmony destroys the native Window before Vue finishes unmounting its
 		// component tree when the application exits. That teardown race is an
 		// expected no-op; keep reporting unrelated window errors.
-		const message : string = e.message
+		const message : string = getHarmonyInputErrorMessage(e)
 		if (message.indexOf('Window is nullptr') < 0) {
 			console.error(message)
 		}

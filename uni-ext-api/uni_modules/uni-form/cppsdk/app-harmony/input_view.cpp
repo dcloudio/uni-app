@@ -259,9 +259,8 @@ bool parseConfiguration(const std::string &configuration,
   if (!splitConfiguration(configuration, fields)) {
     return false;
   }
-  // Stage 7 originally used the unversioned 25-field format. Keep accepting it
-  // so the diagnostic component remains useful while production uses the
-  // escaped, versioned format.
+  // Accept the legacy unversioned format as well as the escaped, versioned
+  // configuration payload.
   size_t index = 0;
   if (fields.size() == 26 && fields[0] == "1") {
     index = 1;
@@ -585,7 +584,9 @@ void NativeInputView::ensureInputNode() {
   // Keep the native node visually neutral. The UVUE wrapper owns the box style
   // and placeholder, while this node owns text editing and selection.
   setColorAttribute(NODE_BACKGROUND_COLOR, "#00000000");
-  setStringAttribute(NODE_TEXT_INPUT_PLACEHOLDER, placeholder_);
+  // Match the legacy Harmony input: UVUE owns the visible placeholder,
+  // while the native TextInput always has an empty placeholder.
+  setStringAttribute(NODE_TEXT_INPUT_PLACEHOLDER, "");
   setColorAttribute(NODE_TEXT_INPUT_PLACEHOLDER_COLOR, "#00000000");
   setBoolAttribute(NODE_TEXT_INPUT_SHOW_UNDERLINE, false);
   setFourFloatAttribute(NODE_PADDING, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -786,10 +787,9 @@ void NativeInputView::setValue(const std::string &value) {
 void NativeInputView::setPlaceholder(const std::string &placeholder) {
   placeholder_ = placeholder;
   ensureInputNode();
-  // Placeholder is rendered by the UVUE text node so placeholder-style and
-  // placeholder-class keep the same behavior as other platforms. Keep a
-  // transparent native placeholder for input semantics and accessibility.
-  setStringAttribute(NODE_TEXT_INPUT_PLACEHOLDER, placeholder_);
+  // Keep the prop cache for configuration diffing, but never send its text
+  // to ArkUI. The UVUE text node handles placeholder changes and styling.
+  setStringAttribute(NODE_TEXT_INPUT_PLACEHOLDER, "");
   setColorAttribute(NODE_TEXT_INPUT_PLACEHOLDER_COLOR, "#00000000");
 }
 
