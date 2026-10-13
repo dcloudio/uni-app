@@ -88,6 +88,9 @@ describe('Web 框架组件入口', () => {
     expect(components).not.toMatch(
       /\b(?:Input|Textarea|UniInputElement|UniTextareaElement)\b/
     )
+    expect(components).not.toMatch(
+      /\b(?:ListView|ListItem|StickySection|StickyHeader|UniListViewElement|UniListItemElement|UniStickySectionElement|UniStickyHeaderElement)\b/
+    )
   })
 
   test('Vapor 公开入口只包含配置启用的组件，不导出内部辅助方法', () => {

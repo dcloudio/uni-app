@@ -146,9 +146,16 @@ const vaporComponents = isX_VAPOR
   ? resolveWebVaporComponents(vaporComponentsDir)
   : undefined
 const excludedVaporComponents = vaporComponents
-  ? [...resolveWebVaporComponents(vaporComponentsDir, true).keys()].filter(
-      (name) => !vaporComponents.has(name)
-    )
+  ? [
+      ...[...resolveWebVaporComponents(vaporComponentsDir, true).keys()].filter(
+        (name) => !vaporComponents.has(name)
+      ),
+      // TODO 仅框架构建排除尚未适配的 list-view 系列，项目内 easycom 开发不受影响。
+      'list-view',
+      'list-item',
+      'sticky-section',
+      'sticky-header',
+    ]
   : undefined
 
 export default defineConfig(async () => {

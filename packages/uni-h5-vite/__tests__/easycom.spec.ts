@@ -99,6 +99,59 @@ describe('h5 easycom', () => {
     expect(transform(source)).toBe(source)
   })
 
+  test.each(['list-view', 'list-item', 'sticky-section', 'sticky-header'])(
+    '框架构建显式排除 %s，项目编译不使用该名单',
+    (name) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      const plugin = uniEasycomPlugin({
+        excludeBuiltInComponents: [name],
+      }) as any
+      for (const source of [
+        `const n0 = _createAssetComponent("v-uni-${name}")`,
+        `_resolveComponent("v-uni-${name}")`,
+      ]) {
+        expect(
+          plugin.transform.call(
+            { parse: parseAst },
+            source,
+            `${inputDir}/pages/index/index.uvue?vue&type=template`
+          )?.code ?? source
+        ).toBe(source)
+      }
+      const resolve = `_resolveComponent("v-uni-${name}")`
+      for (const vapor of [true, false]) {
+        if (vapor) process.env.UNI_APP_X_DOM2 = 'true'
+        else delete process.env.UNI_APP_X_DOM2
+        const code = transform(resolve)
+        expect(code).toContain("from '@dcloudio/uni-h5'")
+        expect(code).not.toContain('_resolveComponent')
+      }
+    }
+  )
+
+  test.each(['list-view', 'list-item', 'sticky-section', 'sticky-header'])(
+    'HBuilderX dev Web Vapor 使用项目内的 %s，不导入框架组件或样式',
+    (name) => {
+      const component = path.join(
+        inputDir,
+        `uni_modules/uni-list-view/components/${name}/${name}.uvue`
+      )
+      fs.outputFileSync(component, '<template><view /></template>')
+      initEasycoms(inputDir, { dirs: [], platform: 'h5', isX: true })
+      for (const source of [
+        `const n0 = _createAssetComponent("v-uni-${name}")`,
+        `_resolveComponent("v-uni-${name}")`,
+      ]) {
+        const code = transform(source)
+        expect(code).toContain(
+          `import __easycom_0 from '${normalizePath(component)}';`
+        )
+        expect(code).not.toContain("from '@dcloudio/uni-h5'")
+        expect(code).not.toContain('@dcloudio/uni-components/style')
+      }
+    }
+  )
+
   test.each(['button', 'input', 'textarea'])(
     '框架编译时被排除的 %s 保留按名解析，不回退旧组件',
     (name) => {

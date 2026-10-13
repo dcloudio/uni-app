@@ -1,21 +1,24 @@
-import {
-  type Ref,
-  type VNode,
-  markRaw,
-  onMounted,
-  provide,
-  reactive,
-  ref,
-} from 'vue'
+import { type Ref, onMounted, provide, reactive, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { withWebEvent } from '../../helpers/useEvent'
 import { useAttrs } from '../../helpers/useAttrs'
 import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
 import { UniElement } from '../../helpers/UniElement'
 import ResizeSensor from '../resize-sensor/index'
-import { flatVNode } from '../../helpers/flatVNode'
-import { useRebuild } from '../../helpers/useRebuild'
+//#if _X_VAPOR_
+import { useMovableAreaChildren as useVaporChildren } from './children-vapor'
+//#else
+import { useMovableAreaChildren as useVDomChildren } from './children-vdom'
+//#endif
 import { type Props, movableAreaProps } from '../../components/movableArea'
+
+// prettier-ignore
+const useMovableAreaChildren =
+//#if _X_VAPOR_
+  useVaporChildren
+//#else
+useVDomChildren
+//#endif
 
 type _TouchEvent = '_onTouchstart' | '_onTouchmove' | '_onTouchend'
 export interface MovableViewContext {
@@ -62,51 +65,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _isMounted.value = true
     })
 
-    let movableViewItems: VNode[] | HTMLCollection = []
-    const originMovableViewContexts: MovableViewContext[] = []
-    function updateMovableViewContexts() {
-      const contexts: MovableViewContext[] = []
-      for (let index = 0; index < movableViewItems.length; index++) {
-        let movableViewItem: VNode | Element = movableViewItems[index]
-        if (!(__PLATFORM__ === 'app' && movableViewItem instanceof Element)) {
-          movableViewItem = (movableViewItem as VNode).el as HTMLElement
-        }
-        const movableViewContext = originMovableViewContexts.find(
-          (context) => movableViewItem === context.rootRef.value
-        )
-        if (movableViewContext) {
-          contexts.push(markRaw(movableViewContext))
-        }
-      }
-      setContexts(contexts)
-    }
-    if (__PLATFORM__ === 'app') {
-      useRebuild(() => {
-        if (rootRef.value) {
-          movableViewItems = (rootRef.value as HTMLElement).children
-        }
-        updateMovableViewContexts()
-      })
-    }
-    const addMovableViewContext: AddMovableViewContext = (
-      movableViewContext
-    ) => {
-      originMovableViewContexts.push(movableViewContext)
-      updateMovableViewContexts()
-    }
-    const removeMovableViewContext: RemoveMovableViewContext = (
-      movableViewContext
-    ) => {
-      const index = originMovableViewContexts.indexOf(movableViewContext)
-      if (index >= 0) {
-        originMovableViewContexts.splice(index, 1)
-        updateMovableViewContexts()
-      }
-    }
+    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts)
     provide('_isMounted', _isMounted)
     provide('movableAreaRootRef', rootRef)
-    provide('addMovableViewContext', addMovableViewContext)
-    provide('removeMovableViewContext', removeMovableViewContext)
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
@@ -116,10 +77,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#endif
 
     return () => {
-      const defaultSlots = slots.default && slots.default()
-      if (__PLATFORM__ !== 'app') {
-        movableViewItems = flatVNode(defaultSlots)
-      }
+      const movableViewItems = renderChildren()
 
       return (
         <uni-movable-area

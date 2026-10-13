@@ -955,13 +955,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$l = 0;
+let index$h = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$l++}`;
+  const id2 = vm.id || `context${index$h++}`;
   return `${type}.${id2}`;
 }
 function withWebEvent(fn) {
@@ -1187,23 +1187,6 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
-function flatVNode(nodes) {
-  const array = [];
-  if (shared.isArray(nodes)) {
-    nodes.forEach((vnode) => {
-      if (Vue.isVNode(vnode)) {
-        if (vnode.type === Vue.Fragment) {
-          array.push(...flatVNode(vnode.children));
-        } else {
-          array.push(vnode);
-        }
-      } else if (shared.isArray(vnode)) {
-        array.push(...flatVNode(vnode));
-      }
-    });
-  }
-  return array;
-}
 const rpx2Unit = uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
@@ -1301,8 +1284,8 @@ class UniElement extends Object {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const _t0$a = Vue.template("<canvas class=uni-canvas-canvas>");
-const props$e = { disableScroll: {
+const _t0$9 = Vue.template("<canvas class=uni-canvas-canvas>");
+const props$d = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
@@ -1334,7 +1317,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: { MODE: 3 },
-  props: props$e,
+  props: props$d,
   setup(props2, {}) {
     const rootRef = Vue.ref(null);
     const canvas = Vue.ref(null);
@@ -1342,7 +1325,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$a();
+          const _n0 = _t0$9();
           Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -1355,7 +1338,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$d = {
+const props$c = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5135,7 +5118,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$c = /* @__PURE__ */ shared.extend({}, props$d, {
+const props$b = /* @__PURE__ */ shared.extend({}, props$c, {
   id: {
     type: String,
     default: ""
@@ -5167,9 +5150,9 @@ const props$c = /* @__PURE__ */ shared.extend({}, props$d, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$c,
+  props: props$b,
   emit: [
     "ready",
     "focus",
@@ -5366,7 +5349,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -5399,8 +5382,8 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$9 = Vue.template("<div><div></div></div>");
-const _t1$6 = Vue.template("<div><div>");
+const _t0$8 = Vue.template("<div><div></div></div>");
+const _t1$5 = Vue.template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: { initial: {
@@ -5415,8 +5398,8 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n2 = Vue.createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$9();
-        const _n1 = _t1$6();
+        const _n0 = _t0$8();
+        const _n1 = _t1$5();
         Vue.on(_n0, "scroll", update);
         Vue.on(_n1, "scroll", update);
         return [_n0, _n1];
@@ -5451,15 +5434,35 @@ function useResizeSensorReset(rootRef) {
     lastElementChild.scrollTop = 1e5;
   };
 }
+function useMovableAreaChildren$1(rootRef, slots, setContexts) {
+  const contexts = [];
+  setContexts(contexts);
+  const add = (context) => {
+    var _a;
+    if (((_a = context.rootRef.value) == null ? void 0 : _a.parentElement) === rootRef.value) {
+      contexts.push(Vue.markRaw(context));
+    }
+  };
+  const remove = (context) => {
+    const index2 = contexts.indexOf(context);
+    if (index2 >= 0) {
+      contexts.splice(index2, 1);
+    }
+  };
+  Vue.provide("addMovableViewContext", add);
+  Vue.provide("removeMovableViewContext", remove);
+  return () => slots.default && slots.default();
+}
 const movableAreaProps = {
   scaleArea: {
     type: Boolean,
     default: false
   }
 };
+const useMovableAreaChildren = useMovableAreaChildren$1;
 class UniMovableAreaElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -5479,42 +5482,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       let ours = movableAreaEvents[`_${event}`];
       _listeners[event] = existing ? [].concat(existing, ours) : ours;
     });
-    let movableViewItems = [];
-    const originMovableViewContexts = [];
-    function updateMovableViewContexts() {
-      const contexts = [];
-      for (let index2 = 0; index2 < movableViewItems.length; index2++) {
-        let movableViewItem = movableViewItems[index2];
-        {
-          movableViewItem = movableViewItem.el;
-        }
-        const movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
-        if (movableViewContext) {
-          contexts.push(Vue.markRaw(movableViewContext));
-        }
-      }
-      setContexts(contexts);
-    }
-    const addMovableViewContext = (movableViewContext) => {
-      originMovableViewContexts.push(movableViewContext);
-      updateMovableViewContexts();
-    };
-    const removeMovableViewContext = (movableViewContext) => {
-      const index2 = originMovableViewContexts.indexOf(movableViewContext);
-      if (index2 >= 0) {
-        originMovableViewContexts.splice(index2, 1);
-        updateMovableViewContexts();
-      }
-    };
+    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
     Vue.provide("_isMounted", _isMounted);
     Vue.provide("movableAreaRootRef", rootRef);
-    Vue.provide("addMovableViewContext", addMovableViewContext);
-    Vue.provide("removeMovableViewContext", removeMovableViewContext);
     return () => {
-      const defaultSlots = slots.default && slots.default();
-      {
-        movableViewItems = flatVNode(defaultSlots);
-      }
+      const movableViewItems = renderChildren();
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n2 = Vue.createPlainElement("uni-movable-area", { $: [
@@ -5662,6 +5634,36 @@ function useMovableAreaState(props2, rootRef) {
       _onTouchend,
       _resize
     }
+  };
+}
+function useMovableViewFrame() {
+  let frame;
+  let pending;
+  function run() {
+    const callback = pending;
+    frame = void 0;
+    pending = void 0;
+    callback == null ? void 0 : callback();
+  }
+  function cancel() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    frame = void 0;
+    pending = void 0;
+  }
+  function flush() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    run();
+  }
+  return {
+    request(callback) {
+      pending = callback;
+      if (frame === void 0)
+        frame = requestAnimationFrame(run);
+    },
+    flush,
+    cancel
   };
 }
 function e(e2, t11, n) {
@@ -6013,7 +6015,7 @@ function v(a, b) {
 }
 class UniMovableViewElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6035,16 +6037,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let requesting = false;
-function _requestAnimationFrame(e2) {
-  if (!requesting) {
-    requesting = true;
-    requestAnimationFrame(function() {
-      e2();
-      requesting = false;
-    });
-  }
-}
 function p(t11, n) {
   if (t11 === n) {
     return 0;
@@ -6153,6 +6145,7 @@ function useMovableViewLayout(rootRef, _scale, _adjustScale) {
   };
 }
 function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger) {
+  const frame = useMovableViewFrame();
   const dampingNumber = Vue.computed(() => {
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
@@ -6201,6 +6194,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
+    frame.cancel();
     if (_SFA) {
       _SFA.cancel();
     }
@@ -6317,6 +6311,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     return val;
   }
   return {
+    frame,
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -6353,7 +6348,8 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     scaleValueSync.value = Number(val) || 0;
   });
   const { _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY } = useMovableViewLayout(rootRef, _scale, _adjustScale);
-  const { FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  const { frame, FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  const _requestAnimationFrame2 = frame.request;
   function _updateScale(scale, animat) {
     if (props2.scale) {
       scale = _adjustScale(scale);
@@ -6365,7 +6361,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
       if (animat) {
         _animationTo(x, y, scale, "", true, true);
       } else {
-        _requestAnimationFrame(function() {
+        _requestAnimationFrame2(function() {
           _setTransform(x, y, scale, "", true, true);
         });
       }
@@ -6399,6 +6395,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     return scale;
   }
   function _endScale() {
+    frame.flush();
     _isScaling.value = false;
     _updateOldScale(_scale.value);
   }
@@ -6415,6 +6412,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _endScale,
     _setScale,
     scaleValueSync,
+    frame,
     // layout
     _updateBoundary,
     _updateOffset,
@@ -6459,7 +6457,8 @@ function useMovableViewState(props2, trigger, rootRef) {
   Vue.watch(() => props2.disabled, () => {
     __handleTouchStart();
   });
-  const { _updateOldScale, _endScale, _setScale, scaleValueSync, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  const { _updateOldScale, _endScale, _setScale, scaleValueSync, frame, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  frame.request;
   function __handleTouchStart() {
     if (!_isScaling.value) {
       if (!props2.disabled) {
@@ -6583,7 +6582,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$b = {
+const props$a = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -6861,10 +6860,10 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
 const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$b,
+  props: props$a,
   emits: ["itemclick"],
   setup(props2, { emit: emit2 }) {
     const rootRef = Vue.ref(null);
@@ -6876,8 +6875,8 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const _t0$8 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$5 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
+const _t0$7 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t1$4 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$1 = Vue.template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
 const _t3$1 = Vue.template("<div class=uni-scroll-view-refresher-container> ");
 const _t4$1 = Vue.template("<div class=uni-scroll-view-refresher>", 1);
@@ -6942,7 +6941,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           const _n12 = Vue.child(_n13);
           Vue.setInsertionState(_n12);
           Vue.createIf(() => refreshState == "pulling", () => {
-            const _n4 = _t0$8();
+            const _n4 = _t0$7();
             Vue.setBlockKey(_n4, "refresh__icon");
             Vue.renderEffect(() => Vue.setAttr(_n4, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
             return _n4;
@@ -6952,7 +6951,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           }, 265);
           Vue.setInsertionState(_n12, 1);
           Vue.createIf(() => refreshState == "refreshing", () => {
-            const _n9 = _t1$5();
+            const _n9 = _t1$4();
             Vue.setBlockKey(_n9, "refresh__spinner");
             return _n9;
           }, () => {
@@ -6981,8 +6980,8 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$7 = Vue.template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
-const props$a = {
+const _t0$6 = Vue.template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
+const props$9 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -7050,10 +7049,10 @@ const props$a = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: { MODE: 3 },
-  props: props$a,
+  props: props$9,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -7097,7 +7096,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n14 = Vue.createPlainElement("uni-scroll-view", null, () => {
-          const _n13 = _t0$7();
+          const _n13 = _t0$6();
           const _n12 = Vue.child(_n13);
           const _n11 = Vue.child(_n12);
           const _n10 = Vue.next(_n11);
@@ -7352,686 +7351,6 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
-const _t0$6 = Vue.template("<div class=uni-list-view-visible> ", 1);
-const _t1$4 = Vue.template("<div><!><div class=uni-list-view-content><div></div> <div></div></div></div>");
-function isHTMlElement(node) {
-  return !!(node && node.nodeType === 1);
-}
-function getChildren(root) {
-  const children = [];
-  if (root) {
-    walk(root, children);
-  }
-  return children;
-}
-const ChildType = [
-  "ListItem",
-  "StickySection",
-  "StickyHeader"
-];
-function walk(vnode, children) {
-  if (vnode.component && vnode.component.type && vnode.component.type.name && ChildType.includes(vnode.component.type.name)) {
-    children.push(vnode);
-  } else if (vnode.component) {
-    walk(vnode.component.subTree, children);
-  } else if (vnode.shapeFlag & 16) {
-    const vnodes = vnode.children;
-    for (let i = 0; i < vnodes.length; i++) {
-      walk(vnodes[i], children);
-    }
-  }
-}
-function traverseListView(visibleVNode, callback) {
-  const children = getChildren(visibleVNode);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
-  }
-}
-function traverseStickySection(stickySectionVNode, callback) {
-  const children = getChildren(stickySectionVNode.component.subTree);
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    callback(child);
-  }
-}
-const props$9 = {
-  direction: {
-    type: String,
-    default: "vertical",
-    validator: (val) => {
-      return [
-        "none",
-        "vertical",
-        "horizontal"
-      ].includes(val);
-    }
-  },
-  showScrollbar: {
-    type: [Boolean, String],
-    default: true
-  },
-  upperThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  lowerThreshold: {
-    type: [Number, String],
-    default: 50
-  },
-  scrollTop: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollLeft: {
-    type: [Number, String],
-    default: 0
-  },
-  scrollIntoView: {
-    type: String,
-    default: ""
-  },
-  scrollWithAnimation: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherEnabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  refresherThreshold: {
-    type: Number,
-    default: 45
-  },
-  refresherDefaultStyle: {
-    type: String,
-    default: "black"
-  },
-  refresherBackground: {
-    type: String,
-    default: "transparent"
-  },
-  refresherTriggered: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-class UniListViewElement extends UniElement {
-}
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ListView",
-  props: props$9,
-  emits: [
-    "scroll",
-    "scrolltoupper",
-    "scrolltolower",
-    "refresherrefresh",
-    "refresherrestore",
-    "refresherpulling",
-    "refresherabort",
-    "update:refresherTriggered"
-  ],
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const containerRef = Vue.ref(null);
-    const visibleRef = Vue.ref(null);
-    const { isVertical, state } = useListViewState(props2);
-    Vue.provide("__listViewIsVertical", isVertical);
-    Vue.provide("__listViewDefaultItemSize", state.defaultItemSize);
-    Vue.provide("__listViewDefaultHeaderSize", state.defaultHeaderSize);
-    const rearrangeDebounce = uniShared.debounce(() => {
-      Vue.nextTick(() => {
-        _rearrange();
-      });
-    }, 5, {
-      clearTimeout,
-      setTimeout
-    });
-    const childStatus = [];
-    Vue.provide("__listViewRegisterItem", (status) => {
-      childStatus.push(status);
-      rearrangeDebounce();
-    });
-    Vue.provide("__listViewUnregisterItem", (status) => {
-      const index2 = childStatus.indexOf(status);
-      childStatus.splice(index2, 1);
-      rearrangeDebounce();
-    });
-    Vue.watch(() => {
-      return state.defaultHeaderSize;
-    }, (value) => {
-      rearrangeDebounce();
-    });
-    Vue.watch(() => {
-      return state.defaultItemSize;
-    }, () => {
-      childStatus.forEach((status) => {
-        if (status.cachedSizeUpdated) {
-          return;
-        }
-        status.cachedSize = state.defaultItemSize;
-      });
-      rearrangeDebounce();
-    });
-    const trigger = useCustomEvent(rootRef, emit2);
-    handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2);
-    function resetContainerSize() {
-      const containerEl = containerRef.value;
-      state.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
-      rearrangeDebounce();
-    }
-    Vue.watch(isVertical, () => {
-      resetContainerSize();
-    });
-    Vue.computed(() => {
-      const val = Number(props2.upperThreshold);
-      return isNaN(val) ? 50 : val;
-    });
-    Vue.computed(() => {
-      const val = Number(props2.lowerThreshold);
-      return isNaN(val) ? 50 : val;
-    });
-    const scrollTopNumber = Vue.computed(() => {
-      return Number(props2.scrollTop) || 0;
-    });
-    const scrollLeftNumber = Vue.computed(() => {
-      return Number(props2.scrollLeft) || 0;
-    });
-    Vue.watch(scrollTopNumber, (val) => {
-      if (containerRef.value) {
-        containerRef.value.scrollTop = val;
-      }
-    });
-    Vue.watch(scrollLeftNumber, (val) => {
-      if (containerRef.value) {
-        containerRef.value.scrollLeft = val;
-      }
-    });
-    Vue.watch(() => props2.scrollIntoView, (val) => {
-      _scrollIntoViewChanged(val);
-    });
-    function _scrollIntoViewChanged(val) {
-      if (val) {
-        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
-          console.error(`id error: scroll-into-view=${val}`);
-          return;
-        }
-        let element = containerRef.value.querySelector("#" + val);
-        if (element) {
-          let mainRect = containerRef.value.getBoundingClientRect();
-          let elRect = element.getBoundingClientRect();
-          if (!isVertical.value) {
-            let left = elRect.left - mainRect.left;
-            let scrollLeft = containerRef.value.scrollLeft;
-            let x = scrollLeft + left;
-            containerRef.value.scrollLeft = x;
-          }
-          if (isVertical.value) {
-            let top = elRect.top - mainRect.top;
-            let scrollTop = containerRef.value.scrollTop;
-            let y = scrollTop + top;
-            containerRef.value.scrollTop = y;
-          }
-        }
-      }
-    }
-    function onResize2() {
-      childStatus.forEach((status) => {
-        status.cachedSizeUpdated = false;
-      });
-      resetContainerSize();
-    }
-    function _rearrange() {
-      rearrange(visibleVNode, containerRef, isVertical, state);
-    }
-    const containerStyle = Vue.computed(() => {
-      return `${props2.direction === "none" ? "overflow: hidden;" : props2.direction === "all" ? "overflow: auto;" : isVertical.value ? "overflow: hidden auto;" : "overflow: auto hidden;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
-    });
-    const visibleStyle = Vue.computed(() => {
-      return `${isVertical.value ? "width" : "height"}: 100%;`;
-    });
-    const placeholderHeadStyle = Vue.computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.headPlaceholderSize}px;`;
-    });
-    const placeholderTailStyle = Vue.computed(() => {
-      return `${isVertical.value ? "height" : "width"}: ${state.tailPlaceholderSize}px;`;
-    });
-    let visibleVNode = null;
-    return () => {
-      const { refresherEnabled, refresherBackground, refresherDefaultStyle, refresherThreshold } = props2;
-      const { refresherHeight, refreshState } = state;
-      const defaultSlot = slots.default && slots.default();
-      visibleVNode = (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$6();
-        const _x0 = Vue.txt(_n0);
-        setNodes(_x0, () => defaultSlot);
-        Vue.renderEffect(() => {
-          Vue.setStyle(_n0, visibleStyle.value);
-          _setTemplateRef(_n0, visibleRef);
-        });
-        return _n0;
-      })();
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n16 = Vue.createPlainElement("uni-list-view", { class: "uni-list-view" }, () => {
-          const _n14 = _t1$4();
-          const _n13 = Vue.child(_n14);
-          const _n10 = Vue.child(Vue.next(_n13));
-          const _n11 = Vue.next(_n10, true);
-          const _n12 = Vue.next(_n11);
-          Vue.renderEffect(() => {
-            Vue.setClass(_n14, `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`);
-            Vue.setStyle(_n14, containerStyle.value);
-          });
-          Vue.setInsertionState(_n14, _n13);
-          Vue.createIf(() => refresherEnabled, () => {
-            const _n7 = createComponent(Refresher, {
-              refreshState: () => refreshState,
-              refresherHeight: () => refresherHeight,
-              refresherThreshold: () => refresherThreshold,
-              refresherDefaultStyle: () => refresherDefaultStyle,
-              refresherBackground: () => refresherBackground
-            }, Vue.extend(() => {
-              const _n2 = Vue.createIf(() => refresherDefaultStyle == "none", () => {
-                const _n4 = createNodes(() => slots.refresher && slots.refresher());
-                return _n4;
-              }, () => {
-                const _n6 = createNodes(null);
-                return _n6;
-              }, 394);
-              return _n2;
-            }, { _: 1 }));
-            return _n7;
-          }, () => {
-            const _n9 = createNodes(null);
-            return _n9;
-          }, 521);
-          setNodes(_n11, () => visibleVNode);
-          Vue.renderEffect(() => {
-            Vue.setStyle(_n10, placeholderHeadStyle.value);
-            Vue.setStyle(_n12, placeholderTailStyle.value);
-            _setTemplateRef(_n14, containerRef);
-          });
-          const _n15 = createComponent(ResizeSensor, {
-            initial: true,
-            onResize: () => onResize2
-          });
-          return [_n14, _n15];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n16, rootRef));
-        return _n16;
-      })();
-    };
-  }
-});
-function useListViewState(props2) {
-  const isVertical = Vue.computed(() => {
-    return props2.direction !== "horizontal";
-  });
-  const state = Vue.reactive({
-    defaultItemSize: 40,
-    defaultItemSizeUpdated: false,
-    defaultHeaderSize: 40,
-    defaultHeaderSizeUpdated: false,
-    totalSize: 0,
-    headPlaceholderSize: 0,
-    tailPlaceholderSize: 0,
-    visibleSize: 0,
-    containerSize: 0,
-    cacheScreenCount: 10,
-    loadScreenThreshold: 8,
-    refresherHeight: 0,
-    refreshState: "",
-    lastRenderOffsetMin: 0,
-    lastRenderOffsetMax: 0
-  });
-  return {
-    state,
-    isVertical
-  };
-}
-function rearrange(visibleVNode, containerRef, isVertical, state) {
-  if (!visibleVNode) {
-    return;
-  }
-  const containerEl = containerRef.value;
-  if (!containerEl) {
-    return;
-  }
-  const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
-  const offsetMin = Math.max(offset - state.containerSize * state.cacheScreenCount, 0);
-  const offsetMax = Math.max(offset + state.containerSize * (state.cacheScreenCount + 1), offsetMin + 1);
-  state.lastRenderOffsetMin = offsetMin;
-  state.lastRenderOffsetMax = offsetMax;
-  let tempTotalSize = 0;
-  let tempVisibleSize = 0;
-  let tempHeadPlaceholderSize = 0;
-  let tempTailPlaceholderSize = 0;
-  let start = false, end = false;
-  function callback(child) {
-    var _a, _b, _c;
-    const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-    const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
-    if (childType === "StickySection") {
-      const { headSize, tailSize, headPlaceholderSize, tailPlaceholderSize } = status;
-      tempTotalSize += headSize.value;
-      let tempTailPlaceholderSizeOfSection = 0;
-      let tempHeadPlaceholderSizeOfSection = 0;
-      traverseStickySection(child, (child2) => {
-        var _a2, _b2, _c2;
-        const childType2 = (_a2 = child2.component) == null ? void 0 : _a2.type.name;
-        const status2 = (_c2 = (_b2 = child2.component) == null ? void 0 : _b2.exposed) == null ? void 0 : _c2.__listViewChildStatus;
-        if (childType2 === "StickyHeader") {
-          const { cachedSize, cachedSizeUpdated } = status2;
-          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
-            state.defaultHeaderSize = cachedSize;
-            state.defaultHeaderSizeUpdated = true;
-          }
-          tempTotalSize += cachedSize || state.defaultHeaderSize;
-          tempVisibleSize += cachedSize;
-        } else if (childType2 === "ListItem") {
-          const { cachedSize, cachedSizeUpdated } = status2;
-          if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
-            state.defaultItemSize = cachedSize;
-            state.defaultItemSizeUpdated = true;
-          }
-          const itemSize = cachedSize || state.defaultItemSize;
-          tempTotalSize += itemSize;
-          if (!start && tempTotalSize > offsetMin) {
-            start = true;
-          }
-          if (start && !end) {
-            tempVisibleSize += itemSize;
-            status2.visible.value = true;
-          } else if (start && end) {
-            status2.visible.value = false;
-            tempTailPlaceholderSizeOfSection += itemSize;
-          } else {
-            status2.visible.value = false;
-            tempHeadPlaceholderSizeOfSection += itemSize;
-          }
-          if (!end && tempTotalSize >= offsetMax) {
-            end = true;
-          }
-        }
-      });
-      tempVisibleSize += tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection;
-      tempTotalSize += tailSize.value;
-      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection;
-      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection;
-    } else if (childType === "ListItem") {
-      const { cachedSize, cachedSizeUpdated } = status;
-      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
-        state.defaultItemSize = cachedSize;
-        state.defaultItemSizeUpdated = true;
-      }
-      const itemSize = cachedSize || state.defaultItemSize;
-      tempTotalSize += itemSize;
-      if (!start && tempTotalSize > offsetMin) {
-        start = true;
-      }
-      if (!start) {
-        tempHeadPlaceholderSize += itemSize;
-      } else if (start && end) {
-        tempTailPlaceholderSize += itemSize;
-      }
-      if (start && !end) {
-        tempVisibleSize += itemSize;
-        status.visible.value = true;
-      } else {
-        status.visible.value = false;
-      }
-      if (!end && tempTotalSize >= offsetMax) {
-        end = true;
-      }
-    } else if (childType === "StickyHeader") {
-      const { cachedSize, cachedSizeUpdated } = status;
-      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
-        state.defaultHeaderSize = cachedSize;
-        state.defaultHeaderSizeUpdated = true;
-      }
-      tempTotalSize += cachedSize || state.defaultHeaderSize;
-      tempVisibleSize += cachedSize;
-    }
-  }
-  traverseListView(visibleVNode, callback);
-  state.totalSize = tempTotalSize;
-  state.visibleSize = tempVisibleSize;
-  state.headPlaceholderSize = tempHeadPlaceholderSize;
-  state.tailPlaceholderSize = tempTailPlaceholderSize;
-}
-function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2) {
-  let beforeRefreshing = false;
-  let triggerAbort = false;
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
-  let touchEnd = {
-    x: 0,
-    y: props2.refresherThreshold
-  };
-  function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
-    switch (_state) {
-      case "refreshing":
-        state.refresherHeight = props2.refresherThreshold;
-        if (!beforeRefreshing) {
-          beforeRefreshing = true;
-          trigger("refresherpulling", {}, {
-            deltaY: state.refresherHeight,
-            dy: state.refresherHeight
-          });
-          trigger("refresherrefresh", {}, { dy: touchEnd.y - touchStart.y });
-          emit2("update:refresherTriggered", true);
-        }
-        break;
-      case "restore":
-      case "refresherabort":
-        beforeRefreshing = false;
-        state.refresherHeight = 0;
-        if (_state === "restore") {
-          triggerAbort = false;
-          trigger("refresherrestore", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        if (_state === "refresherabort" && triggerAbort) {
-          triggerAbort = false;
-          trigger("refresherabort", {}, { dy: touchEnd.y - touchStart.y });
-        }
-        break;
-    }
-    state.refreshState = _state;
-  }
-  Vue.watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
-    }
-  });
-}
-function getSize(isVertical, el) {
-  var style = window.getComputedStyle(el);
-  if (isVertical) {
-    return parseFloat(style.marginTop) + el.getBoundingClientRect().height + parseFloat(style.marginBottom);
-  } else {
-    return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
-  }
-}
-class UniListItemElement extends UniElement {
-}
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ListItem",
-  props: {},
-  setup(props2, { slots, expose, attrs: attrs2 }) {
-    if (attrs2.slot === "refresher") {
-      return () => {
-        return (() => {
-          const _n1 = Vue.createPlainElement("uni-list-item", null, Vue.extend(() => {
-            const _n0 = createNodes(() => slots.default && slots.default());
-            return _n0;
-          }, { _: 1 }), true);
-          return _n1;
-        })();
-      };
-    }
-    const rootRef = Vue.ref(null);
-    const isVertical = Vue.inject("__listViewIsVertical");
-    const visible = Vue.ref(false);
-    const status = {
-      type: "ListItem",
-      visible,
-      cachedSize: Vue.inject("__listViewDefaultItemSize"),
-      cachedSizeUpdated: false
-    };
-    expose({ __listViewChildStatus: status });
-    Vue.inject("__listViewRegisterItem");
-    Vue.inject("__listViewUnregisterItem");
-    function updateSize() {
-      if (!visible.value || status.cachedSizeUpdated) {
-        return;
-      }
-      const rootNode = rootRef.value;
-      if (isHTMlElement(rootNode)) {
-        const size = getSize(isVertical.value, rootNode);
-        if (isNaN(size)) {
-          return;
-        }
-        status.cachedSize = getSize(isVertical.value, rootNode);
-        status.cachedSizeUpdated = true;
-      }
-    }
-    Vue.watch(visible, (value) => {
-      Vue.nextTick(() => {
-        updateSize();
-      });
-    });
-    return () => {
-      if (!visible.value) {
-        return null;
-      }
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-list-item", null, Vue.extend(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-class UniStickySectionElement extends UniElement {
-}
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "StickySection",
-  props: { padding: {
-    type: Array,
-    default: [
-      0,
-      0,
-      0,
-      0
-    ]
-  } },
-  setup(props2, { slots, expose }) {
-    const rootRef = Vue.ref(null);
-    const isVertical = Vue.inject("__listViewIsVertical");
-    const headPlaceholderSize = Vue.ref(0);
-    const tailPlaceholderSize = Vue.ref(0);
-    const style = Vue.computed(() => {
-      const padding = props2.padding;
-      const paddingTop = padding[0];
-      const paddingRight = padding[1];
-      const paddingBottom = padding[2];
-      const paddingLeft = padding[3];
-      return {
-        paddingTop: (isVertical.value ? paddingTop + headPlaceholderSize.value : paddingTop) + "px",
-        paddingRight: (isVertical.value ? paddingRight : paddingRight + tailPlaceholderSize.value) + "px",
-        paddingBottom: (isVertical.value ? paddingBottom + tailPlaceholderSize.value : paddingBottom) + "px",
-        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + headPlaceholderSize.value) + "px"
-      };
-    });
-    const headSize = Vue.computed(() => {
-      return isVertical ? props2.padding[0] : props2.padding[3];
-    });
-    const tailSize = Vue.computed(() => {
-      return isVertical ? props2.padding[2] : props2.padding[1];
-    });
-    const status = {
-      type: "StickySection",
-      headSize,
-      tailSize,
-      headPlaceholderSize,
-      tailPlaceholderSize
-    };
-    expose({ __listViewChildStatus: status });
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-sticky-section", { style: () => style.value }, Vue.extend(() => {
-          const _n0 = createNodes(() => {
-            var _a;
-            return (_a = slots.default) == null ? void 0 : _a.call(slots);
-          });
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
-class UniStickyHeaderElement extends UniElement {
-}
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
-  name: "StickyHeader",
-  props: { padding: {
-    type: Array,
-    default: [
-      0,
-      0,
-      0,
-      0
-    ]
-  } },
-  setup(props2, { slots, expose }) {
-    const rootRef = Vue.ref(null);
-    Vue.inject("__listViewIsVertical");
-    const style = Vue.computed(() => {
-      return {
-        paddingTop: props2.padding[0] + "px",
-        paddingRight: props2.padding[1] + "px",
-        paddingBottom: props2.padding[2] + "px",
-        paddingLeft: props2.padding[3] + "px",
-        top: 0 - props2.padding[0] + "px"
-      };
-    });
-    const status = {
-      type: "StickyHeader",
-      cachedSize: Vue.inject("__listViewDefaultHeaderSize"),
-      cachedSizeUpdated: false
-    };
-    expose({ __listViewChildStatus: status });
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-sticky-header", { style: () => style.value }, Vue.extend(() => {
-          const _n0 = createNodes(() => {
-            var _a;
-            return (_a = slots.default) == null ? void 0 : _a.call(slots);
-          });
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = Vue.getCurrentInstance()) => {
   if (Vue.isInSSRComponentSetup)
     return;
@@ -14488,20 +13807,18 @@ exports.Checkbox = _sfc_main$f;
 exports.CheckboxGroup = _sfc_main$e;
 exports.CoverImage = index$7;
 exports.CoverView = index$8;
-exports.Editor = index$k;
+exports.Editor = index$g;
 exports.Form = _sfc_main$d;
-exports.Icon = index$j;
+exports.Icon = index$f;
 exports.Label = _sfc_main$c;
 exports.LayoutComponent = _sfc_main$o;
-exports.ListItem = index$d;
-exports.ListView = index$e;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Loading = _sfc_main$g;
 exports.Map = index$9;
 exports.MatchMedia = _sfc_main$b;
-exports.MovableArea = index$i;
-exports.MovableView = index$h;
+exports.MovableArea = index$e;
+exports.MovableView = index$d;
 exports.Navigator = _sfc_main$a;
 exports.PageComponent = _sfc_main$i;
 exports.PageContainer = _sfc_main$h;
@@ -14512,11 +13829,9 @@ exports.Progress = _sfc_main$6;
 exports.Radio = _sfc_main$5;
 exports.RadioGroup = _sfc_main$4;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$g;
-exports.ScrollView = index$f;
+exports.RichText = index$c;
+exports.ScrollView = index$b;
 exports.Slider = _sfc_main$3;
-exports.StickyHeader = index$b;
-exports.StickySection = index$c;
 exports.Swiper = _sfc_main$2;
 exports.SwiperItem = _sfc_main$1;
 exports.Switch = _sfc_main;
@@ -14538,10 +13853,6 @@ exports.UniImageElement = UniImageElement;
 exports.UniImageElementImpl = UniImageElement;
 exports.UniLabelElement = UniLabelElement;
 exports.UniLabelElementImpl = UniLabelElement;
-exports.UniListItemElement = UniListItemElement;
-exports.UniListItemElementImpl = UniListItemElement;
-exports.UniListViewElement = UniListViewElement;
-exports.UniListViewElementImpl = UniListViewElement;
 exports.UniMatchMediaElement = UniMatchMediaElement;
 exports.UniMatchMediaElementImpl = UniMatchMediaElement;
 exports.UniMovableAreaElement = UniMovableAreaElement;
@@ -14571,10 +13882,6 @@ exports.UniScrollViewElementImpl = UniScrollViewElement;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniSliderElement = UniSliderElement;
 exports.UniSliderElementImpl = UniSliderElement;
-exports.UniStickyHeaderElement = UniStickyHeaderElement;
-exports.UniStickyHeaderElementImpl = UniStickyHeaderElement;
-exports.UniStickySectionElement = UniStickySectionElement;
-exports.UniStickySectionElementImpl = UniStickySectionElement;
 exports.UniSwiperElement = UniSwiperElement;
 exports.UniSwiperElementImpl = UniSwiperElement;
 exports.UniSwiperItemElement = UniSwiperItemElement;

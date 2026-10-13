@@ -10,6 +10,9 @@ import {
 import { defineBuiltInComponent } from '../../helpers/component'
 import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
 import { UniElement } from '../../helpers/UniElement'
+//#if _X_VAPOR_
+import { useMovableViewFrame } from './frame-vapor'
+//#endif
 import {
   type TouchtrackEvent,
   useTouchtrack,
@@ -235,6 +238,9 @@ function useMovableViewTransform(
   _adjustScale: (scale: number) => number,
   trigger: CustomEventTrigger
 ) {
+  //#if _X_VAPOR_
+  const frame = useMovableViewFrame()
+  //#endif
   const dampingNumber = computed(() => {
     let val = Number(props.damping)
     return isNaN(val) ? 20 : val
@@ -299,6 +305,9 @@ function useMovableViewTransform(
     }
   }
   function FAandSFACancel() {
+    //#if _X_VAPOR_
+    frame.cancel()
+    //#endif
     if (_FA) {
       _FA.cancel()
     }
@@ -452,6 +461,9 @@ function useMovableViewTransform(
   }
 
   return {
+    //#if _X_VAPOR_
+    frame,
+    //#endif
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -515,6 +527,9 @@ function useMovableViewInit(
     maxY,
   } = useMovableViewLayout(rootRef, _scale, _adjustScale)
   const {
+    //#if _X_VAPOR_
+    frame,
+    //#endif
     FAandSFACancel,
     _getLimitXY,
     _animationTo,
@@ -542,6 +557,10 @@ function useMovableViewInit(
     _adjustScale,
     trigger
   )
+
+  //#if _X_VAPOR_
+  const _requestAnimationFrame = frame.request
+  //#endif
 
   function _updateScale(scale: number, animat?: boolean) {
     if (props.scale) {
@@ -588,6 +607,10 @@ function useMovableViewInit(
     return scale
   }
   function _endScale() {
+    //#if _X_VAPOR_
+    // 先落实最后一次更新，再记录下一次手势的缩放基准。
+    frame.flush()
+    //#endif
     _isScaling.value = false
     _updateOldScale(_scale.value)
   }
@@ -605,6 +628,10 @@ function useMovableViewInit(
     _endScale,
     _setScale,
     scaleValueSync,
+
+    //#if _X_VAPOR_
+    frame,
+    //#endif
 
     // layout
     _updateBoundary,
@@ -685,6 +712,10 @@ function useMovableViewState(
     _setScale,
     scaleValueSync,
 
+    //#if _X_VAPOR_
+    frame,
+    //#endif
+
     // layout
     _updateBoundary,
     _updateOffset,
@@ -718,6 +749,10 @@ function useMovableViewState(
     _SFA,
     _FA
   )
+
+  //#if _X_VAPOR_
+  const _requestAnimationFrame = frame.request
+  //#endif
 
   function __handleTouchStart() {
     if (!_isScaling.value) {
@@ -813,6 +848,10 @@ function useMovableViewState(
     }
   }
   function __handleTouchEnd() {
+    //#if _X_VAPOR_
+    // 子节点先收到 touchend，不能在区域结束缩放前取消最后一帧。
+    frame.flush()
+    //#endif
     if (!_isScaling.value && !props.disabled && _isTouching) {
       disableScrollBounce({
         disable: false,

@@ -6,10 +6,6 @@ import MovableView, { UniMovableViewElement } from './movable-view/index'
 import ResizeSensor from './resize-sensor/index'
 import RichText, { UniRichTextElement } from './rich-text'
 import ScrollView, { UniScrollViewElement } from './scroll-view/index'
-import ListView, { UniListViewElement } from './list-view/index'
-import ListItem, { UniListItemElement } from './list-item/index'
-import StickySection, { UniStickySectionElement } from './sticky-section/index'
-import StickyHeader, { UniStickyHeaderElement } from './sticky-header/index'
 import PageContainer from './page-container/index.vue'
 import { UniPageContainerElement } from './page-container/element'
 import Loading from './loading/index-x.vue'
@@ -20,6 +16,7 @@ import {
 } from './web-vapor-elements'
 
 // 这里只保留尚未替换的组件；已接入的 DOM2 组件由生成入口导出。
+// TODO list-view 系列依赖 VNode 遍历，完成 Vapor 适配后再接入，不回退旧组件。
 export {
   Loading,
   Canvas,
@@ -30,10 +27,6 @@ export {
   ResizeSensor,
   RichText,
   ScrollView,
-  ListView,
-  ListItem,
-  StickySection,
-  StickyHeader,
   PageContainer,
   UniCanvasElement,
   UniCanvasElement as UniCanvasElementImpl,
@@ -55,14 +48,6 @@ export {
   UniTextElement as UniTextElementImpl,
   UniViewElement,
   UniViewElement as UniViewElementImpl,
-  UniListViewElement,
-  UniListViewElement as UniListViewElementImpl,
-  UniListItemElement,
-  UniListItemElement as UniListItemElementImpl,
-  UniStickySectionElement,
-  UniStickySectionElement as UniStickySectionElementImpl,
-  UniStickyHeaderElement,
-  UniStickyHeaderElement as UniStickyHeaderElementImpl,
   UniPageContainerElement,
   UniPageContainerElement as UniPageContainerElementImpl,
 }
