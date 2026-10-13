@@ -18,7 +18,7 @@
 ### 属性 
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
-| id | string([string.IDString](/uts/data-type.md#ide-string)) | Web: -; 微信小程序: -; 支付宝小程序: 5.31; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 唯一标识 |
+| id | string([string.IDString](/uts/data-type.md#ide-string)) | Web: -; 微信小程序: -; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: 4.61 | 唯一标识 |
 | v-slot:default | string | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | {data, loading, hasMore, pagination, error} |
 | collection | string([string.DBCollectionString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 表名 |
 | field | string([string.DBFieldString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询字段，多个字段用 `,` 分割 |
@@ -63,15 +63,15 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| true | Web: -; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 去重 |
-| false | Web: -; 微信小程序: -; 支付宝小程序: 5.31; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 不去重 |
+| true | Web: -; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: - | 去重 |
+| false | Web: -; 微信小程序: -; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: - | 不去重 |
 
 #### page-data 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| add | Web: -; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 多次查询的集合 |
-| replace | Web: -; 微信小程序: -; 支付宝小程序: 5.31; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 当前查询的集合 |
+| add | Web: -; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: 4.61 | 多次查询的集合 |
+| replace | Web: -; 微信小程序: -; 支付宝小程序: 5.31; Android: -; iOS: -; HarmonyOS: 4.61 | 当前查询的集合 |
 
 #### loadtime 的属性描述
 

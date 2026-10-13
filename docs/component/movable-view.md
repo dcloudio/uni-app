@@ -37,8 +37,8 @@
 | scale-max | number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数最大值，默认为 10。 |
 | scale-value | number | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 定义缩放倍数，取值范围为 0.5 - 10 |
 | animation | boolean | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 是否使用动画，默认为 true。 |
-| htouchmove | eventhandle | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为横向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
-| vtouchmove | eventhandle | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为纵向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
+| htouchmove | eventhandle | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为横向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
+| vtouchmove | eventhandle | Web: -; 微信小程序: 4.41; 支付宝小程序: x; Android: -; iOS: -; HarmonyOS: - | *(eventhandle)*<br/>初次手指触摸后移动为纵向的移动时触发，如果catch此事件，则意味着touchmove事件也被catch |
 | @change | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 拖动过程中触发的事件，event.detail = {x: x, y: y, source: source}。其中source表示产生移动的原因，值可为touch（拖动）、touch-out-of-bounds（超出移动范围）、out-of-bounds（超出移动范围后的回弹）、friction（惯性）和空字符串（setData）。 |
 | @scale | (event: [UniEvent](/component/common.md#unievent)) => void | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 缩放过程中触发的事件，event.detail = {x: x, y: y, scale: scale}。 |
 
