@@ -151,10 +151,12 @@ UniImageLoadEvent -- Extends --> UniEvent
 - 替代方案3：小程序平台，可以利用 filter: drop-shadow 配合 overflow: hidden，可以将原图标的形状“投影”出新的颜色，并把原图标隐藏。App平台不支持此用法。
 
 3. 鸿蒙平台部分情况会按位图渲染，失去矢量能力
+
 svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情况，会把svg转成位图渲染，此时将丢失矢量能力。
 * 如果启用了 `flatten` 拍平，则会转为位图。
-* 设置部分 `mode` 属性进行图像裁剪，会转为位图进行裁剪。`mode` 设置为 `scaleToFill/aspectFit/aspectFill` 可以保持矢量能力，设置为其它值会转位图裁剪。
-* 如果 `src` 设置了 `data:image/svg+xml;base64,...` 这种形式的 url，则会转为位图。
+* 设置部分 `mode` 属性时会转为位图进行处理。`mode` 设置为 `scaleToFill/aspectFit/aspectFill/widthFix/heightFix` 可以保持矢量能力，设置为其它值会转位图处理。
+* 如果 `src` 设置了 `data:image/svg+xml;base64,...` 这种形式的 data url，则会转为位图。
+  （例外：鸿蒙系统 API ≥ 26 的时候不会转为位图；svg 图片中包含 `text` 内容的时候会被内部转换成 `path` 并本地缓存，实际使用不再是 data url 从而不会转换成位图）
 
 ### 子组件 @children-tags
 不可以嵌套组件
