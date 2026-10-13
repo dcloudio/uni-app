@@ -56,6 +56,7 @@
 | hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 系统当前主题，取值为light或dark。微信小程序全局配置"darkmode":true时才能获取，否则为 null （不支持小游戏）<br/> |
 | isUniAppX | boolean | 否 | Web: 4.18; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 是否 uni-app x 项目<br/> |
 | uniCompilerVersion | string | 否 | Web: 4.18; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本名称<br/> |
+| uniCompilerRuleVersion | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.32; iOS(VDOM): x; iOS(Vapor): 5.32; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.32 | uni 编译器规则版本 |
 | uniCompilerVersionCode | number | 否 | Web: 4.18; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号<br/> |
 | uniRuntimeVersion | string | 否 | Web: 4.18; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 5.0 | uni 运行时版本名称<br/> |
 | uniRuntimeVersionCode | number | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本号<br/> |
