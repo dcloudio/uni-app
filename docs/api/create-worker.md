@@ -14,7 +14,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 - 线程之间通信，可以post消息，也可以共享变量。web和小程序仅支持shareArrayBuffer数据类型的共享。App平台没有限制，引用类型都可以共享变量。但共享变量时，需要开发者注意线程安全问题，避免多线程同时写同一个变量，或一个线程读、同时另一个线程在写同一个变量，这可能引发崩溃。
 - 线程和Android的协程是不同的。Android上request api内部已经使用了协程。
 - CPU的核数有限，不要同时开太多线程。
-- worker是一个uts API，无法在js环境使用。iOS平台、Android的蒸汽模式， Worker 仅支持在[uts插件](../plugin/uts-plugin.md)中使用，不能直接在 `uvue` 页面中调用 `uni.createWorker`  
+- worker是一个uts API，无法在js环境使用。iOS平台、Android的蒸汽模式， Worker 仅支持在[uts插件](../plugin/uts-plugin.md)中使用，不能直接在 `uvue` 页面中调用 `uni.createWorker`
 
 常见场景：
 - 当你的界面掉帧时，应该检查是什么耗时任务导致不能及时渲染，是否可以剥离一些计算任务到子线程来做。
@@ -623,7 +623,7 @@ export class HelloWorkerTask extends WorkerTaskImpl {
    */
   override onMessage(message : any) {
     // 处理消息对象
-    const messageData = message as UTSJSONObject;
+    const messageData = message;
 
     // console.log('收到主线程数据:', messageData);
 
@@ -698,7 +698,7 @@ const worker = uni.createWorker('workers/HelloWorkerTask.uts');
 
 // 监听 Worker 消息
 worker.onMessage((message: any) => {
-  const messageData = message as UTSJSONObject;
+  const messageData = message;
 
   console.log('收到Worker子线程数据:', messageData);
 });
@@ -777,11 +777,10 @@ worker.terminate();
 ```
 
 ## Tips
-- `uni.createWorker` 仅支持在主线程中使用，在 Worker 子线程中使用会返回错误  
-- 各平台在 Worker 中使用全局变量或静态属性在内存管理中存在差异，Android/iOS平台可以共享内存，其它平台不能共享，为了避免这些差异带来的影响建议不要使用全局变量和静态属性  
-- Worker 子线程间暂不支持直接互相通讯，如要通讯可通过主线程中转发送消息来实现  
-- Android/iOS平台主线程与 Worker 线程传输的引用类型数据是直接共享使用（其它平台是默认为复制），需避免并发访问，暂未提供线程间安全访问机制，需通过业务逻辑控制避免并发访问这些共享的数据  
-- 鸿蒙平台主线程与 Worker 线程传输的数据默认为浅拷贝，如需传出共享对象，可在[uts插件](../plugin/uts-plugin.md)中混编开发定义[Sendable对象](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable)，调用 `Worker.postMessage` 发送这些共享对象时设置 `harmonySendable` 参数为 true  
-- Worker 中仅支持调用界面无关的API（如 uni.request、uni.getLocation 等），这些 API 触发的回调运行在 Workder 线程中  
-- Web 平台不支持在 worker 中调用 uni 上的 API  
-
+- `uni.createWorker` 仅支持在主线程中使用，在 Worker 子线程中使用会返回错误
+- 各平台在 Worker 中使用全局变量或静态属性在内存管理中存在差异，Android/iOS平台可以共享内存，其它平台不能共享，为了避免这些差异带来的影响建议不要使用全局变量和静态属性
+- Worker 子线程间暂不支持直接互相通讯，如要通讯可通过主线程中转发送消息来实现
+- Android/iOS平台主线程与 Worker 线程传输的引用类型数据是直接共享使用（其它平台是默认为复制），需避免并发访问，暂未提供线程间安全访问机制，需通过业务逻辑控制避免并发访问这些共享的数据
+- 鸿蒙平台主线程与 Worker 线程传输的数据默认为浅拷贝，如需传出共享对象，可在[uts插件](../plugin/uts-plugin.md)中混编开发定义[Sendable对象](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable)，调用 `Worker.postMessage` 发送这些共享对象时设置 `harmonySendable` 参数为 true
+- Worker 中仅支持调用界面无关的API（如 uni.request、uni.getLocation 等），这些 API 触发的回调运行在 Workder 线程中
+- Web 平台不支持在 worker 中调用 uni 上的 API
