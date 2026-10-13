@@ -14,6 +14,9 @@ import {
   resolvePropValue,
   updateComponentProps,
 } from '@dcloudio/uni-mp-core'
+// #if _X_
+import { updateCssVariables } from '@dcloudio/uni-mp-core'
+// #endif
 
 import {
   $createComponent,
@@ -55,6 +58,9 @@ export function initLifetimes({
     const mpType = isPage(mpInstance) ? 'page' : 'component'
     if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
       mpInstance.route = mpInstance.__route__
+    }
+    if (__X__ && mpType === 'page') {
+      updateCssVariables()
     }
 
     const props = findPropsData(properties, mpType === 'page')
