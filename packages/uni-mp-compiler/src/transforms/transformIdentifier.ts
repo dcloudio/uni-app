@@ -378,12 +378,20 @@ export const transformIdentifier: NodeTransform = (node, context) => {
                 arg &&
                 isSimpleExpressionNode(arg)
               ) {
+                const fallback =
+                  process.env.UNI_PLATFORM === 'mp-toutiao' ? ` || ''` : ''
                 if (arg.content === ATTR_SET_ELEMENT_STYLE) {
-                  dir.exp = createSimpleExpression(`$eS[${elementId}]`)
+                  dir.exp = createSimpleExpression(
+                    `$eS[${elementId}]${fallback}`
+                  )
                 } else if (arg.content === ATTR_SET_ELEMENT_ANIMATION) {
-                  dir.exp = createSimpleExpression(`$eA[${elementId}]`)
+                  dir.exp = createSimpleExpression(
+                    `$eA[${elementId}]${fallback}`
+                  )
                 } else if (arg.content === ATTR_SET_ELEMENT_SCROLL) {
-                  dir.exp = createSimpleExpression(`$eR[${elementId}]`)
+                  dir.exp = createSimpleExpression(
+                    `$eR[${elementId}]${fallback}`
+                  )
                 } else {
                   dir.exp = rewriteExpression(exp, context)
                 }
