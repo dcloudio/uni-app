@@ -239,28 +239,46 @@ describe('mp-weixin: waterflow', () => {
     expect(source).not.toContain('u-i=')
   })
 
-  test('registers the transform in the uni-app x compiler options', () => {
-    const previous = process.env.UNI_APP_X
-    try {
-      process.env.UNI_APP_X = 'true'
-      jest.isolateModules(() => {
-        const { compilerOptions } = require('../src/compiler/options') as {
-          compilerOptions: CompilerOptions
+  test.each([undefined, 'false', 'true'] as const)(
+    'uni-app x 根据蒸汽模式注册 waterflow 转换（UNI_APP_X_VAPOR=%s）',
+    (vapor) => {
+      const previous = {
+        UNI_APP_X: process.env.UNI_APP_X,
+        UNI_APP_X_VAPOR: process.env.UNI_APP_X_VAPOR,
+      }
+      try {
+        process.env.UNI_APP_X = 'true'
+        if (vapor === undefined) {
+          delete process.env.UNI_APP_X_VAPOR
+        } else {
+          process.env.UNI_APP_X_VAPOR = vapor
         }
-        const { node } = compileWaterflow(
-          '<waterflow><flow-item v-for="item in items" :key="item.id"/></waterflow>',
-          compilerOptions
-        )
-        expect(node.tag).toBe('scroll-view')
-        expect(children(node)[0].tag).toBe('grid-view')
-        expect(children(children(node)[0])[0].tag).toBe('view')
-      })
-    } finally {
-      if (previous === undefined) {
-        delete process.env.UNI_APP_X
-      } else {
-        process.env.UNI_APP_X = previous
+        jest.isolateModules(() => {
+          const { compilerOptions } = require('../src/compiler/options') as {
+            compilerOptions: CompilerOptions
+          }
+          const { node } = compileWaterflow(
+            '<waterflow><flow-item v-for="item in items" :key="item.id"/></waterflow>',
+            compilerOptions
+          )
+          if (vapor === 'true') {
+            expect(node.tag).toBe('scroll-view')
+            expect(children(node)[0].tag).toBe('grid-view')
+            expect(children(children(node)[0])[0].tag).toBe('view')
+          } else {
+            expect(node.tag).toBe('waterflow')
+            expect(children(node)[0].tag).toBe('flow-item')
+          }
+        })
+      } finally {
+        Object.entries(previous).forEach(([name, value]) => {
+          if (value === undefined) {
+            delete process.env[name]
+          } else {
+            process.env[name] = value
+          }
+        })
       }
     }
-  })
+  )
 })
