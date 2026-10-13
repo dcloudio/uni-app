@@ -30797,7 +30797,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
     createIf(() => !loadingFinished.value, () => {
       const n5 = t0$2();
       setInsertionState(n5);
-      withComponentId("05b3a380", () => createComponentWithFallback(_component_loading, { style: "margin: auto;width:54px;height: 54px;border-color:#d3d3d3;" }));
+      withComponentId("05b3a380", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
       return n5;
     });
     setInsertionState(n10, 3);
@@ -31067,7 +31067,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
     const _component_swiper_item = _sfc_main$8;
     const n8 = withComponentId("0e721061", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
-      style: "flex: 1;background-color: black;",
+      style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
       circular: () => unref(swiperCircular),
       current: () => unref(swiperCurrent),
@@ -31235,7 +31235,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     const _component_swiper_item = _sfc_main$8;
     const n8 = withComponentId("342d51a2", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
-      style: "flex: 1;background-color: black;",
+      style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
       circular: () => props2.loop,
       current: () => props2.current,

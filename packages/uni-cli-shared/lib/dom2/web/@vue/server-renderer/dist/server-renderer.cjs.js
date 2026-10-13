@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.10
+  * @vue/server-renderer v3.6.0-rc.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -406,9 +406,17 @@ function findVaporSlot(children) {
 }
 function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 	const ctx = vnode.ctx;
-	if (vnode.shapeFlag & 32 && ctx && ctx.type.__vapor) {
-		const slots = vnode.children;
-		for (const name in slots) if ((0, _vue_shared.isFunction)(slots[name])) slots[name][rawVaporSlotKey] = slots[name];
+	const slots = vnode.children;
+	if (vnode.shapeFlag & 32 && ctx && ctx.type.__vapor && slots._) {
+		for (const name in slots) {
+			const slot = slots[name];
+			if ((0, _vue_shared.isFunction)(slot) && !slot[rawVaporSlotKey]) {
+				const wrapped = (props, push, parent, scopeId) => push ? slot(props, push, parent, scopeId) : [(0, _vue_runtime_dom.renderSlot)({ [name]: slot }, name, props)];
+				slot[rawVaporSlotKey] = wrapped[rawVaporSlotKey] = slot;
+				wrapped._n = true;
+				slots[name] = wrapped;
+			}
+		}
 		if (!ctx.appContext.vapor) ctx.appContext.vapor = vaporInterface;
 	}
 	const instance = vnode.component = createComponentInstance(vnode, parentComponent, null);

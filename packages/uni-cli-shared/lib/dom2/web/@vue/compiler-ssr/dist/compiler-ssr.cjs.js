@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-ssr v3.6.0-rc.10
+  * @vue/compiler-ssr v3.6.0-rc.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -147,7 +147,7 @@ function ssrProcessSuspense(node, context) {
 	const { slotsExp, wipSlots } = wipEntry;
 	for (let i = 0; i < wipSlots.length; i++) {
 		const slot = wipSlots[i];
-		slot.fn.body = processChildrenAsStatement(slot, context);
+		slot.fn.body = processChildrenAsStatement(slot, context, !!context.options.vapor);
 	}
 	context.pushStatement((0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_SUSPENSE), [`_push`, slotsExp]));
 }

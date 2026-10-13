@@ -1,5 +1,5 @@
 /**
-  * @dcloudio/compiler-vapor-web v3.6.0-rc.10
+  * @dcloudio/compiler-vapor-web v3.6.0-rc.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -107,7 +107,7 @@ function createTextTransform() {
 			if (node.type === 1 && isUniTextElement(node)) textElements.add(context.reference());
 		},
 		genOperation(operation, context) {
-			if (operation.type !== 5 || !textElements.has(operation.element)) return;
+			if (operation.type !== 6 || !textElements.has(operation.element)) return;
 			const value = operation.values.flatMap((expression, index) => {
 				let result = (0, _vue_compiler_vapor.genExpression)(expression, context);
 				if (!expression.isStatic) result = (0, _vue_compiler_vapor.genCall)(context.helper("toDisplayString"), result);
@@ -184,7 +184,7 @@ function createImageTransform() {
 		},
 		genOperation(operation, context) {
 			if (operation.type === 4 && imageElements.has(operation.element)) return (0, _vue_compiler_vapor.genDynamicProps)(operation, context, "setImageDynamicProps");
-			if (operation.type === 7 && imageElements.has(operation.element)) return (0, _vue_compiler_vapor.genCall)(context.helper("setImageDynamicEvents"), `n${operation.element}`, (0, _vue_compiler_vapor.genExpression)(operation.event, context));
+			if (operation.type === 8 && imageElements.has(operation.element)) return (0, _vue_compiler_vapor.genCall)(context.helper("setImageDynamicEvents"), `n${operation.element}`, (0, _vue_compiler_vapor.genExpression)(operation.event, context));
 			if (operation.type !== 3) return;
 			const key = operations.get(operation);
 			if (!key) return;
@@ -299,7 +299,7 @@ function createRecycleForTransform() {
 		const id = (0, _vue_compiler_dom.findProp)(node, "id");
 		return () => {
 			const operation = context.dynamic.operation;
-			if (operation && operation.type === 15) {
+			if (operation && operation.type === 16) {
 				operations.add(operation);
 				if (type) types.set(operation, toExpression(type));
 				if (id) ids.set(operation, toExpression(id));
@@ -308,9 +308,9 @@ function createRecycleForTransform() {
 	};
 	return {
 		transform,
-		isRecycleFor: (operation) => operation.type === 15 && operations.has(operation),
+		isRecycleFor: (operation) => operation.type === 16 && operations.has(operation),
 		genOperation(operation, context) {
-			if (operation.type !== 15 || !operations.has(operation)) return;
+			if (operation.type !== 16 || !operations.has(operation)) return;
 			const { value, key, index, render, keyProp } = operation;
 			const valueIds = (0, _vue_compiler_vapor.parseValueDestructure)(value, context);
 			const keyIds = (0, _vue_compiler_vapor.parseValueDestructure)(key, context);
@@ -394,11 +394,11 @@ function createComponentIdTransform(recycle) {
 			if (node.type !== 1) return;
 			return () => {
 				const operation = context.dynamic.operation;
-				if (operation && operation.type === 11) positions.set(operation, node.loc.start.offset);
+				if (operation && operation.type === 12) positions.set(operation, node.loc.start.offset);
 			};
 		},
 		genOperation(operation, context) {
-			if (operation.type === 15) {
+			if (operation.type === 16) {
 				const prev = forKey;
 				forKey = recycle.isRecycleFor(operation) ? void 0 : operation.keyProp;
 				try {
@@ -407,7 +407,7 @@ function createComponentIdTransform(recycle) {
 					forKey = prev;
 				}
 			}
-			if (operation.type !== 11 || operation.useCreateElement) return;
+			if (operation.type !== 12 || operation.useCreateElement) return;
 			const baseId = JSON.stringify((0, hash_sum.default)(`${context.options.filename}:${positions.get(operation)}`));
 			const cid = forKey ? [
 				baseId,

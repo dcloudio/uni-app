@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.10
+  * @vue/server-renderer v3.6.0-rc.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -3072,6 +3072,60 @@ function invokeSlotFallback$1(fallback, owner) {
 		setCurrentRenderingInstance$1(prev);
 	}
 }
+/**
+* Compiler runtime helper for rendering `<slot/>`
+* @private
+*/
+function renderSlot(slots, name, props, fallback, noSlotted, branchKey) {
+	if (props == null) props = {};
+	let slot = slots[name];
+	const vaporSlot = slot && slot[rawVaporSlotKey$2];
+	if (vaporSlot) {
+		const ret = (openBlock(), createBlock(VaporSlot$1, props));
+		ret.vs = {
+			slot: vaporSlot,
+			outlets: fallback ? [{
+				fallback,
+				owner: currentRenderingInstance
+			}] : void 0
+		};
+		if (!noSlotted && ret.scopeId) ret.slotScopeIds = [ret.scopeId + "-s"];
+		return ret;
+	}
+	if (currentRenderingInstance && (currentRenderingInstance.ce || currentRenderingInstance.parent && isAsyncWrapper(currentRenderingInstance.parent) && currentRenderingInstance.parent.ce)) {
+		const slotProps = branchKey != null && props.key == null ? extend({}, props, { key: branchKey }) : props;
+		const hasProps = Object.keys(slotProps).length > 0;
+		if (name !== "default") slotProps.name = name;
+		return openBlock(), createBlock(Fragment, null, [createVNode("slot", slotProps, fallback && fallback())], hasProps ? -2 : 64);
+	}
+	if (slot && slot.length > 1) {
+		warn$1("SSR-optimized slot function detected in a non-SSR-optimized render function. You need to mark this component with $dynamic-slots in the parent template.");
+		slot = () => [];
+	}
+	if (slot && slot._c) slot._d = false;
+	const prevStackSize = blockStack.length;
+	openBlock();
+	let rendered;
+	try {
+		const validSlotContent = slot && ensureValidVNode$1(slot(props));
+		let attached = false;
+		if (fallback && validSlotContent && currentRenderingInstance) {
+			const interop = currentRenderingInstance.appContext.vapor;
+			if (interop) attached = interop.attachSlotOutlet(validSlotContent, fallback, currentRenderingInstance);
+		}
+		const slotKey = props.key || branchKey || validSlotContent && validSlotContent.key;
+		rendered = createBlock(Fragment, { key: (slotKey && !isSymbol(slotKey) ? slotKey : `_${name}`) + (!validSlotContent && fallback ? "_fb" : "") }, validSlotContent || (fallback ? fallback() : []), validSlotContent && slots._ === 1 ? 64 : -2);
+		if (!validSlotContent && fallback) rendered.shapeFlag |= 1024;
+		if (attached) rendered.vo = true;
+	} catch (err) {
+		for (let i = blockStack.length; i > prevStackSize; i--) closeBlock();
+		throw err;
+	} finally {
+		if (slot && slot._c) slot._d = true;
+	}
+	if (!noSlotted && rendered.scopeId) rendered.slotScopeIds = [rendered.scopeId + "-s"];
+	return rendered;
+}
 function ensureValidVNode$1(vnodes) {
 	return vnodes.some((child) => {
 		if (!isVNode$3(child)) return true;
@@ -5320,6 +5374,25 @@ const Static = Symbol.for("v-stc");
 const VaporSlot$1 = Symbol.for("v-vps");
 const blockStack = [];
 let currentBlock = null;
+/**
+* Open a block.
+* This must be called before `createBlock`. It cannot be part of `createBlock`
+* because the children of the block are evaluated before `createBlock` itself
+* is called. The generated code typically looks like this:
+*
+* ```js
+* function render() {
+*   return (openBlock(),createBlock('div', null, [...]))
+* }
+* ```
+* disableTracking is true when creating a v-for fragment block, since a v-for
+* fragment always diffs its children.
+*
+* @private
+*/
+function openBlock(disableTracking = false) {
+	blockStack.push(currentBlock = disableTracking ? null : []);
+}
 function closeBlock() {
 	blockStack.pop();
 	currentBlock = blockStack[blockStack.length - 1] || null;
@@ -5344,6 +5417,22 @@ let isBlockTreeEnabled = 1;
 function setBlockTracking(value, inVOnce = false) {
 	isBlockTreeEnabled += value;
 	if (value < 0 && currentBlock && inVOnce) currentBlock.hasOnce = true;
+}
+function setupBlock(vnode) {
+	vnode.dynamicChildren = isBlockTreeEnabled > 0 ? currentBlock || EMPTY_ARR : null;
+	closeBlock();
+	if (isBlockTreeEnabled > 0 && currentBlock) currentBlock.push(vnode);
+	return vnode;
+}
+/**
+* Create a block root vnode. Takes the same exact arguments as `createVNode`.
+* A block root keeps track of dynamic nodes within the block in the
+* `dynamicChildren` array.
+*
+* @private
+*/
+function createBlock(type, props, children, patchFlag, dynamicProps) {
+	return setupBlock(createVNode(type, props, children, patchFlag, dynamicProps, true));
 }
 function isVNode$3(value) {
 	return value ? value.__v_isVNode === true : false;
@@ -5941,7 +6030,7 @@ const computed = (getterOrOptions, debugOptions) => {
 };
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.10";
+const version = "3.6.0-rc.11";
 const warn = warn$1;
 /**
 * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.
@@ -6980,9 +7069,17 @@ function findVaporSlot(children) {
 }
 function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 	const ctx = vnode.ctx;
-	if (vnode.shapeFlag & 32 && ctx && ctx.type.__vapor) {
-		const slots = vnode.children;
-		for (const name in slots) if (isFunction(slots[name])) slots[name][rawVaporSlotKey] = slots[name];
+	const slots = vnode.children;
+	if (vnode.shapeFlag & 32 && ctx && ctx.type.__vapor && slots._) {
+		for (const name in slots) {
+			const slot = slots[name];
+			if (isFunction(slot) && !slot[rawVaporSlotKey]) {
+				const wrapped = (props, push, parent, scopeId) => push ? slot(props, push, parent, scopeId) : [renderSlot({ [name]: slot }, name, props)];
+				slot[rawVaporSlotKey] = wrapped[rawVaporSlotKey] = slot;
+				wrapped._n = true;
+				slots[name] = wrapped;
+			}
+		}
 		if (!ctx.appContext.vapor) ctx.appContext.vapor = vaporInterface;
 	}
 	const instance = vnode.component = createComponentInstance(vnode, parentComponent, null);

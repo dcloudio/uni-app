@@ -1,9 +1,9 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.10
+  * @vue/server-renderer v3.6.0-rc.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
-import { Comment, Fragment, Static, Text, createApp, createVNode, getCurrentInstance, handleError, initDirectivesForSSR, mergeProps, ssrContextKey, ssrUtils, warn } from "@vue/runtime-dom";
+import { Comment, Fragment, Static, Text, createApp, createVNode, getCurrentInstance, handleError, initDirectivesForSSR, mergeProps, renderSlot, ssrContextKey, ssrUtils, warn } from "@vue/runtime-dom";
 import { NOOP, escapeHtml, escapeHtmlComment, hasOwn, includeBooleanAttr, includeBooleanAttr as ssrIncludeBooleanAttr, isArray, isBooleanAttr, isFunction, isObject, isOn, isPromise, isRenderableAttrValue, isSSRSafeAttrName, isSVGTag, isString, isVoidTag, looseEqual, looseIndexOf, makeMap, normalizeClass, normalizeCssVarValue, normalizeStyle, normalizeUniText, propsToAttrMap, stringifyStyle, toDisplayString } from "@vue/shared";
 //#region packages/server-renderer/src/helpers/ssrRenderAttrs.ts
 const shouldIgnoreProp = /*@__PURE__*/ makeMap(`,key,ref,innerHTML,textContent,ref_key,ref_for`);
@@ -315,9 +315,17 @@ function findVaporSlot(children) {
 }
 function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 	const ctx = vnode.ctx;
-	if (vnode.shapeFlag & 32 && ctx && ctx.type.__vapor) {
-		const slots = vnode.children;
-		for (const name in slots) if (isFunction(slots[name])) slots[name][rawVaporSlotKey] = slots[name];
+	const slots = vnode.children;
+	if (vnode.shapeFlag & 32 && ctx && ctx.type.__vapor && slots._) {
+		for (const name in slots) {
+			const slot = slots[name];
+			if (isFunction(slot) && !slot[rawVaporSlotKey]) {
+				const wrapped = (props, push, parent, scopeId) => push ? slot(props, push, parent, scopeId) : [renderSlot({ [name]: slot }, name, props)];
+				slot[rawVaporSlotKey] = wrapped[rawVaporSlotKey] = slot;
+				wrapped._n = true;
+				slots[name] = wrapped;
+			}
+		}
 		if (!ctx.appContext.vapor) ctx.appContext.vapor = vaporInterface;
 	}
 	const instance = vnode.component = createComponentInstance(vnode, parentComponent, null);
