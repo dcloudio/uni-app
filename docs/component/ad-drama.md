@@ -6,29 +6,29 @@
 
 uni-app x 短剧插件：uni.createDramaAd API 与 ad-drama 组件（独立运行，不依赖其他插件）
 
-ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自动加载短剧模块，适合快速接入短剧广告。
+短剧广告：通过短剧内容生态 `穿山甲内容联盟(短剧)` 变现的高价值广告形式。将短剧内容（列表）嵌入自己的应用中，用户免费观看指定集数后，需观看激励视频解锁后续剧集，从而实现广告变现。
 
-与 API 模式（[uni.createDramaAd](../api/create-drama-ad.md)）的区别：组件模式直接使用渠道提供的短剧首页界面（含推荐、榜单等内容分发），无需自行搭建短剧列表页；API 模式则自行搭建列表页，可深度定制样式与业务。
+ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自动加载短剧列表，适合快速接入短剧。如需自定义显示短剧列表界面，请使用 API 模式（[uni.createDramaAd](../api/create-drama-ad.md)）接入。
 
-- 示例Demo介绍：[详见](https://gitcode.com/dcloud/uni-ad-drama)
 - uni-ad的业务介绍：[详见](https://uniapp.dcloud.net.cn/uni-ad/)
+- 示例Demo：[详见](https://gitcode.com/dcloud/uni-ad-drama)
 
 **开通配置广告**
 
 [开通广告步骤详情](https://uniapp.dcloud.net.cn/uni-ad/ad-open.html)
 
 **Tips**
-- 使用短剧组件需要先开通穿山甲广告。开通问题请咨询：[uni-ad交流群](https://im.dcloud.net.cn/#/?joinGroup=65d85fc09847e92db03ff81a)。
-- 标准基座不包含短剧运行时，需制作自定义基座后运行，否则报错 `-5020`。
+- HBuilder 5.32 版本 app-android 平台支持。
+- 使用短剧组件需要先开通穿山甲广告，相关问题请咨询：[uni-ad交流群](https://im.dcloud.net.cn/#/?joinGroup=65d85fc09847e92db03ff81a)。
+- 标准基座不包含短剧功能，需勾选广告联盟中的“穿山甲内容联盟(短剧)”，打包自定义基座后运行，否则报错 `-5020` 错误。
 
 ### 配置文件
 
-在穿山甲后台 内容输出->接入管理 找到需要接入内容SDK的应用，点击"下载SDK参数配置"，然后将SDK配置文件（例如 sdk_setting_file.json）拷贝到项目的 assets 文件夹下。
+短剧功能使用的“穿山甲内容联盟(短剧)”要求配置 `SDK参数配置` 文件，在穿山甲后台 "内容输出" -> "接入管理" 找到需要接入内容SDK的应用，点击"下载SDK参数配置"：
 
 ![](https://lf3-plat.pglstatp-toutiao.com/obj/union-platform/a30bc3001dff716fcf6876da15151ecf.png)
 
-文件下载之后重命名为：`gm_SDK_Setting.json`，然后将文件放到项目根目录的`nativeResources->android->assets`目录下。
-完整配置说明与错误码见 [uni.createDramaAd](../api/create-drama-ad.md)。
+配置文件下载之后重命名为 `gm_SDK_Setting.json`，然后将文件放到到 uni-app x 项目的 `nativeResources\android\assets` 文件夹中。
 
 
 
@@ -123,10 +123,6 @@ ad-drama 组件是短剧广告的组件模式接入方式：组件挂载即自�
 ### 子组件 @children-tags
 不可以嵌套组件
 
-## Tips
-
-
-+ 短剧广告仅支持 Android 平台。
 
 
 
