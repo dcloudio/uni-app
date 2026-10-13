@@ -55,6 +55,7 @@ export interface RelationOptions extends Record<string, unknown> {
 export interface CreateLifetimesOptions {
   mocks: string[]
   vueOptions: ComponentOptions
+  isVirtualHost: boolean
   isPage: (mpInstance: MPComponentInstance) => boolean
   initRelation: (
     mpInstance: MPComponentInstance,
@@ -126,7 +127,13 @@ export function parseComponent(
 
   const mpComponentOptions: MPComponentOptions = {
     options,
-    lifetimes: initLifetimes({ mocks, isPage, initRelation, vueOptions }),
+    lifetimes: initLifetimes({
+      mocks,
+      isPage,
+      isVirtualHost: !!options.virtualHost,
+      initRelation,
+      vueOptions,
+    }),
     pageLifetimes: {
       show() {
         if (__VUE_PROD_DEVTOOLS__) {
