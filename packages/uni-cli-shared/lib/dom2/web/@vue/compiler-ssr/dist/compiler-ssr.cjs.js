@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-ssr v3.6.0-rc.9
+  * @vue/compiler-ssr v3.6.0-rc.10
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -65,7 +65,7 @@ function ssrProcessIf(node, context, disableNestedFragments = false, disableComm
 		if (branch.condition) currentIf = currentIf.alternate = (0, _vue_compiler_dom.createIfStatement)(branch.condition, branchBlockStatement);
 		else currentIf.alternate = branchBlockStatement;
 	}
-	if (!currentIf.alternate && !disableComment) currentIf.alternate = (0, _vue_compiler_dom.createBlockStatement)([(0, _vue_compiler_dom.createCallExpression)(`_push`, ["`<!---->`"])]);
+	if (!currentIf.alternate && (!disableComment || context.options.vapor)) currentIf.alternate = (0, _vue_compiler_dom.createBlockStatement)([(0, _vue_compiler_dom.createCallExpression)(`_push`, ["`<!---->`"])]);
 }
 function processIfBranch(branch, context, disableNestedFragments = false) {
 	const { children } = branch;
@@ -81,52 +81,6 @@ function ssrProcessFor(node, context, disableNestedFragments = false) {
 	if (!disableNestedFragments) context.pushStringPart(`<!--[-->`);
 	context.pushStatement((0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_LIST), [node.source, renderLoop]));
 	if (!disableNestedFragments) context.pushStringPart(`<!--]-->`);
-}
-//#endregion
-//#region packages/compiler-ssr/src/transforms/ssrTransformSlotOutlet.ts
-const ssrTransformSlotOutlet = (node, context) => {
-	if ((0, _vue_compiler_dom.isSlotOutlet)(node)) {
-		const { slotName, slotProps } = (0, _vue_compiler_dom.processSlotOutlet)(node, context);
-		const args = [
-			`_ctx.$slots`,
-			slotName,
-			slotProps || `{}`,
-			`null`,
-			`_push`,
-			`_parent`
-		];
-		if (context.scopeId && context.slotted !== false) args.push(`"${context.scopeId}-s"`);
-		let method = SSR_RENDER_SLOT;
-		let parent = context.parent;
-		if (parent) {
-			const children = parent.children;
-			if (parent.type === 10) parent = context.grandParent;
-			let componentType;
-			if (parent.type === 1 && parent.tagType === 1 && ((componentType = (0, _vue_compiler_dom.resolveComponentType)(parent, context, true)) === _vue_compiler_dom.TRANSITION || componentType === _vue_compiler_dom.TRANSITION_GROUP) && children.filter((c) => c.type === 1).length === 1) {
-				method = SSR_RENDER_SLOT_INNER;
-				if (!(context.scopeId && context.slotted !== false)) args.push("null");
-				args.push("true");
-			}
-		}
-		if (node.__uniTextSlot) {
-			if (args.length === 6) args.push("null");
-			args.push("true");
-		}
-		node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(method), args);
-	}
-};
-function ssrProcessSlotOutlet(node, context) {
-	const renderCall = node.ssrCodegenNode;
-	if (node.children.length) {
-		const fallbackRenderFn = (0, _vue_compiler_dom.createFunctionExpression)([]);
-		fallbackRenderFn.body = processChildrenAsStatement(node, context);
-		renderCall.arguments[3] = fallbackRenderFn;
-	}
-	if (context.withSlotScopeId) {
-		const slotScopeId = renderCall.arguments[6];
-		renderCall.arguments[6] = slotScopeId ? `${slotScopeId} + _scopeId` : `_scopeId`;
-	}
-	context.pushStatement(node.ssrCodegenNode);
 }
 //#endregion
 //#region packages/compiler-ssr/src/errors.ts
@@ -371,6 +325,7 @@ function ssrTransformTransitionGroup(node, context) {
 }
 function ssrProcessTransitionGroup(node, context) {
 	const entry = wipMap$2.get(node);
+	const disableNestedFragments = !context.options.vapor;
 	if (entry) {
 		const { tag, propsExp, scopeId } = entry;
 		if (tag.type === 7) {
@@ -389,7 +344,7 @@ function ssrProcessTransitionGroup(node, context) {
 				* be patched using the same key map) so we need to account for that here
 				* by disabling nested fragment wrappers from being generated.
 				*/
-				true,
+				disableNestedFragments,
 				/**
 				* TransitionGroup filters out comment children at runtime and thus
 				* doesn't expect comments to be present during hydration. We need to
@@ -406,10 +361,10 @@ function ssrProcessTransitionGroup(node, context) {
 			if (propsExp) context.pushStringPart(propsExp);
 			if (scopeId) context.pushStringPart(` ${scopeId}`);
 			context.pushStringPart(`>`);
-			processChildren(node, context, false, true, true);
+			processChildren(node, context, false, disableNestedFragments, true);
 			context.pushStringPart(`</${tag.value.content}>`);
 		}
-	} else processChildren(node, context, true, true, true);
+	} else processChildren(node, context, true, disableNestedFragments, true);
 }
 //#endregion
 //#region packages/compiler-ssr/src/transforms/ssrTransformTransition.ts
@@ -588,6 +543,52 @@ function clone(v) {
 		for (const key in v) res[key] = clone(v[key]);
 		return res;
 	} else return v;
+}
+//#endregion
+//#region packages/compiler-ssr/src/transforms/ssrTransformSlotOutlet.ts
+const ssrTransformSlotOutlet = (node, context) => {
+	if ((0, _vue_compiler_dom.isSlotOutlet)(node)) {
+		const { slotName, slotProps } = (0, _vue_compiler_dom.processSlotOutlet)(node, context);
+		const args = [
+			`_ctx.$slots`,
+			slotName,
+			slotProps || `{}`,
+			`null`,
+			`_push`,
+			`_parent`
+		];
+		if (context.scopeId && context.slotted !== false) args.push(`"${context.scopeId}-s"`);
+		let method = SSR_RENDER_SLOT;
+		let parent = context.parent;
+		if (parent && !rawOptionsMap.get(context.root).vapor) {
+			const children = parent.children;
+			if (parent.type === 10) parent = context.grandParent;
+			let componentType;
+			if (parent.type === 1 && parent.tagType === 1 && ((componentType = (0, _vue_compiler_dom.resolveComponentType)(parent, context, true)) === _vue_compiler_dom.TRANSITION || componentType === _vue_compiler_dom.TRANSITION_GROUP) && children.filter((c) => c.type === 1).length === 1) {
+				method = SSR_RENDER_SLOT_INNER;
+				if (!(context.scopeId && context.slotted !== false)) args.push("null");
+				args.push("true");
+			}
+		}
+		if (node.__uniTextSlot) {
+			if (args.length === 6) args.push("null");
+			args.push("true");
+		}
+		node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(method), args);
+	}
+};
+function ssrProcessSlotOutlet(node, context) {
+	const renderCall = node.ssrCodegenNode;
+	if (node.children.length) {
+		const fallbackRenderFn = (0, _vue_compiler_dom.createFunctionExpression)([]);
+		fallbackRenderFn.body = processChildrenAsStatement(node, context);
+		renderCall.arguments[3] = fallbackRenderFn;
+	}
+	if (context.withSlotScopeId) {
+		const slotScopeId = renderCall.arguments[6];
+		renderCall.arguments[6] = slotScopeId ? `${slotScopeId} + _scopeId` : `_scopeId`;
+	}
+	context.pushStatement(node.ssrCodegenNode);
 }
 //#endregion
 //#region packages/compiler-ssr/src/ssrCodegenTransform.ts

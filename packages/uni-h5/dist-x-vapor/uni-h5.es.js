@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, createVNode, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, openBlock, createElementBlock, isVNode, Fragment, createTemplateRefSetter, createPlainElement, renderEffect, template, computed, inject, provide, injectHook, isReactive, markRaw, nextTick, insert, child, setStyle, setInsertionState, createFor, next, createIf, setProp, setClass, txt, setText, toDisplayString, on as on$1, createDynamicComponent, setStaticTemplateRef, applyVShow, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, onActivated, resolveComponent, setAttr, setHtml, createComponentWithFallback, setClassName, createSlot, extend as extend$1, EffectScope, onUnmounted, createTextVNode, h, setBlockKey, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, setDynamicProps, logError, setRealPathResolver, createApp, defineComponent, createBlock, Transition, effectScope, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, openBlock, createElementBlock, isVNode, Fragment, createTemplateRefSetter, createPlainElement, renderEffect, template, computed, inject, provide, injectHook, isReactive, markRaw, nextTick, setInsertionState, insert, child, setStyle, createFor, next, createIf, setProp, setClass, txt, setText, toDisplayString, on as on$1, withComponentId, createDynamicComponent, setStaticTemplateRef, applyVShow, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, onActivated, resolveComponent, setAttr, setHtml, createComponentWithFallback, setClassName, createSlot, extend as extend$1, EffectScope, onUnmounted, createTextVNode, h, setBlockKey, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, setDynamicProps, logError, setRealPathResolver, createApp, defineComponent, createBlock, Transition, effectScope, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, hyphenate } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -9846,6 +9846,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
       };
     }
     const n31 = createPlainElement("uni-tabbar", { class: () => "uni-tabbar-" + unref(tabBar).position }, null, true);
+    setInsertionState(n31);
     const n29 = t7$2();
     insert(n29, n31);
     const n0 = child(n29);
@@ -9952,6 +9953,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
       8
       /* IS_SINGLE_NODE */
     );
+    setInsertionState(n31, 1);
     const n30 = t8$1();
     insert(n30, n31);
     renderEffect(() => setStyle(n30, unref(placeholderStyle)));
@@ -10341,16 +10343,18 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
         setInsertionState(n33);
         createIf(() => unref(hasTopWindow) && unref(TopWindow), () => {
           const n7 = createPlainElement("uni-top-window");
+          setInsertionState(n7);
           const n5 = t0$t();
           insert(n5, n7);
           renderEffect(() => setStyle(n5, unref(layoutState).topWindowStyle));
           setInsertionState(n5);
-          const n4 = createDynamicComponent(() => unref(TopWindow), {
+          const n4 = withComponentId("9bbd592a", () => createDynamicComponent(() => unref(TopWindow), {
             "navigation-bar-title-text": () => unref(layoutState).navigationBarTitleText,
             $: [
               () => unref(windowState)
             ]
-          });
+          }));
+          setInsertionState(n7, 1);
           const n6 = t1$h();
           insert(n6, n7);
           setStaticTemplateRef(n4, topWindowRef, null, "topWindowRef");
@@ -10369,20 +10373,20 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = createComponent$1(VaporKeepAlive, {
+            const n12 = withComponentId("dbf3501c", () => createComponent$1(VaporKeepAlive, {
               "match-by": "key",
               cache: () => unref(routeCache2)
             }, () => {
               const n10 = createKeyedFragment(() => unref(routeKey), () => {
-                const n11 = createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" });
+                const n11 = withComponentId("dbf3479c", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
                 return n11;
               });
               return n10;
-            });
+            }));
             return n12;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n14 = createDynamicComponent(() => unref(firstPageComponent));
+            const n14 = withComponentId("dbf34020", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -10400,12 +10404,13 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             on$1(n20, "click", () => unref(layoutState).apiShowLeftWindow = false);
             return n20;
           });
+          setInsertionState(n23, 1);
           const n22 = t3$4();
           insert(n22, n23);
           setInsertionState(n22);
-          const n21 = createDynamicComponent(() => unref(LeftWindow), { $: [
+          const n21 = withComponentId("dbf2684e", () => createDynamicComponent(() => unref(LeftWindow), { $: [
             () => unref(windowState)
-          ] });
+          ] }));
           setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
           applyVShow(n23, () => unref(layoutState).showLeftWindow || unref(layoutState).apiShowLeftWindow);
           return n23;
@@ -10422,12 +10427,13 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             on$1(n28, "click", () => unref(layoutState).apiShowRightWindow = false);
             return n28;
           });
+          setInsertionState(n31, 1);
           const n30 = t4$4();
           insert(n30, n31);
           setInsertionState(n30);
-          const n29 = createDynamicComponent(() => unref(RightWindow), { $: [
+          const n29 = withComponentId("dbf22b8c", () => createDynamicComponent(() => unref(RightWindow), { $: [
             () => unref(windowState)
-          ] });
+          ] }));
           setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
           applyVShow(n31, () => unref(layoutState).showRightWindow || unref(layoutState).apiShowRightWindow);
           return n31;
@@ -10441,20 +10447,20 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n39 = createComponent$1(VaporKeepAlive, {
+            const n39 = withComponentId("dbf17de6", () => createComponent$1(VaporKeepAlive, {
               "match-by": "key",
               cache: () => unref(routeCache2)
             }, () => {
               const n37 = createKeyedFragment(() => unref(routeKey), () => {
-                const n38 = createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" });
+                const n38 = withComponentId("dbf170cc", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
                 return n38;
               });
               return n37;
-            });
+            }));
             return n39;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n41 = createDynamicComponent(() => unref(firstPageComponent));
+            const n41 = withComponentId("dbf16ea0", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n41;
           }),
           2309
@@ -10462,12 +10468,12 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
         );
         return n35;
       },
-      2053
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
+      2057
+      /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_7 */
     );
     setInsertionState(n46, 1);
     createIf(() => unref(hasTabBar), () => {
-      const n45 = createComponent$1(_sfc_main$w);
+      const n45 = withComponentId("dbf16798", () => createComponent$1(_sfc_main$w));
       applyVShow(n45, () => unref(showTabBar2));
       return n45;
     });
@@ -11212,6 +11218,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     }
     const _component_Input = resolveComponent("Input");
     const n64 = createPlainElement("uni-page-head", { "uni-page-head-type": () => unref(navigationBar).type || "default" }, null, true);
+    setInsertionState(n64);
     const n60 = t10();
     insert(n60, n64);
     const n19 = child(n60);
@@ -11381,14 +11388,14 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = createComponentWithFallback(_component_Input, {
+            const n39 = withComponentId("9df04238", () => createComponentWithFallback(_component_Input, {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
               class: "uni-page-head-search-input",
               "confirm-type": "search",
               onClick: () => _on_click
-            });
+            }));
             return n39;
           },
           () => {
@@ -11396,7 +11403,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = createComponentWithFallback(_component_Input, {
+            const n41 = withComponentId("9df023c4", () => createComponentWithFallback(_component_Input, {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -11406,7 +11413,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
               onBlur: () => _on_blur,
               onInput: () => _on_input,
               onConfirm: () => _on_confirm
-            });
+            }));
             return n41;
           },
           2309
@@ -11503,6 +11510,7 @@ const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
     const n3 = createPlainElement("uni-page-refresh", null, null, true);
+    setInsertionState(n3);
     const n2 = t0$p();
     insert(n2, n3);
     const n0 = child(child(n2));
@@ -11809,7 +11817,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = createComponent$1(_sfc_main$r);
+      const n2 = withComponentId("6c5ca19a", () => createComponent$1(_sfc_main$r));
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -11822,7 +11830,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
     createSlot();
     setInsertionState(n8, 1);
     createIf(() => unref(isX), () => {
-      const n7 = createComponent$1(unref(ResizeSensor), { onResize: () => resize });
+      const n7 = withComponentId("708ab3d6", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -11937,12 +11945,12 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
     }, null, true);
     setInsertionState(n8);
     createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = createComponent$1(_sfc_main$s);
+      const n2 = withComponentId("55c2f8ec", () => createComponent$1(_sfc_main$s));
       return n2;
     });
     setInsertionState(n8, 1);
-    createComponent$1(_sfc_main$q, null, extend$1(() => {
-      const n3 = createDynamicComponent(
+    withComponentId("629c11e2", () => createComponent$1(_sfc_main$q, null, extend$1(() => {
+      const n3 = withComponentId("629c1208", () => createDynamicComponent(
         () => unref(pageComponent),
         { $: [
           () => unref(pageProps)
@@ -11950,22 +11958,22 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
         null,
         4
         /* SLOT_ROOT */
-      );
+      ));
       setStaticTemplateRef(n3, "page");
       return n3;
     }, {
       _: 1
       /* NON_STABLE */
-    }));
+    })));
     setInsertionState(n8, 2);
     createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = withComponentId("629c15a4-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
-        });
+        }));
         return n7;
       },
       (dialogPage) => dialogPage.route,
@@ -16705,6 +16713,7 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
       class: "default __uni_loading_container__",
       style: "display: flex;"
     }, null, true);
+    setInsertionState(n1);
     const n0 = t0$n();
     insert(n0, n1);
     setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
@@ -17922,7 +17931,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     const n4 = next(n3);
     const n5 = next(n4);
     setInsertionState(n7, n6);
-    const n2 = createAssetComponent("scroll-view", {
+    const n2 = withComponentId("e09e2578", () => createAssetComponent("scroll-view", {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -17939,7 +17948,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       createSlot();
       setStaticTemplateRef(n1, contentRef, null, "contentRef");
       return n1;
-    });
+    }));
     setStaticTemplateRef(n2, scrollViewRef, null, "scrollViewRef");
     on$1(n7, "click", handleClick);
     setStaticTemplateRef(n7, rootRef, null, "rootRef");
@@ -28644,7 +28653,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setStyle(n6, mapBoxStyleCom.value);
     });
     setInsertionState(n6, n5);
-    createAssetComponent("map", {
+    withComponentId("ecc07898", () => createAssetComponent("map", {
       class: "uni-choose-location-map",
       id: () => mapId.value,
       latitude: () => latitude.value,
@@ -28657,7 +28666,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       "enable-poi": true,
       "show-location": true,
       onRegionchange: () => regionchange
-    });
+    }));
     const x1 = txt(n1);
     setStaticTemplateRef(n2, mapTargetRef, null, "mapTargetRef");
     const x3 = txt(n3);
@@ -28707,7 +28716,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setInsertionState(n16, 1);
       const _on_focus = () => isFocus.value = true;
       const _on_confirm = () => poiSearch("poiSearch");
-      createComponentWithFallback(_component_input, {
+      withComponentId("ab4dd086", () => createComponentWithFallback(_component_input, {
         modelValue: () => searchValue.value,
         "onUpdate:modelValue": () => (_value) => searchValue.value = _value,
         type: "text",
@@ -28716,7 +28725,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
         onFocus: () => _on_focus,
         onConfirm: () => _on_confirm,
         onInput: () => searchValueChange
-      });
+      }));
       setInsertionState(n20, 1);
       createIf(() => isFocus.value || searchValue.value != "", () => {
         const n19 = t0$5();
@@ -28726,7 +28735,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
         return n19;
       });
       setInsertionState(n50, 1);
-      const n49 = createComponentWithFallback(_component_scroll_view, {
+      const n49 = withComponentId("ab4db176", () => createComponentWithFallback(_component_scroll_view, {
         "scroll-with-animation": false,
         direction: "vertical",
         "scroll-top": () => scrollTop.value,
@@ -28763,7 +28772,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
               () => {
                 const n31 = t3$1();
                 setInsertionState(n31);
-                createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] });
+                withComponentId("ab4cd8b4", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
                 return n31;
               },
               () => {
@@ -28819,7 +28828,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
           () => {
             const n48 = t3$1();
             setInsertionState(n48);
-            createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] });
+            withComponentId("ab4bee4e", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
             return n48;
           },
           null,
@@ -28830,7 +28839,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       }, {
         _: 1
         /* NON_STABLE */
-      }));
+      })));
       setStaticTemplateRef(n49, scrollRef, null, "scrollRef");
       return n50;
     });
@@ -29470,7 +29479,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => editable.value,
       () => {
-        const n6 = createComponentWithFallback(_component_textarea, {
+        const n6 = withComponentId("d0d6a152", () => createComponentWithFallback(_component_textarea, {
           modelValue: () => content.value,
           "onUpdate:modelValue": () => (_value) => content.value = _value,
           class: "uni-modal-dialog__textarea",
@@ -29481,11 +29490,11 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
           onKeyboardheightchange: () => onInputKeyboardChange,
           "auto-height": () => isAutoHeight.value,
           placeholder: () => placeholderText.value
-        });
+        }));
         return n6;
       },
       () => createIf(() => content.value.length > 0, () => {
-        const n9 = createComponentWithFallback(_component_scroll_view, {
+        const n9 = withComponentId("d0d689d8", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-modal-dialog__scroll",
           "show-scrollbar": "true",
           style: () => ({ maxHeight: maxScrollHeight.value })
@@ -29494,7 +29503,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
           const x8 = txt(n8);
           renderEffect(() => setText(x8, normalizeUniText("\n							" + toDisplayString(content.value) + "\n						")));
           return n8;
-        });
+        }));
         return n9;
       }),
       517
@@ -29736,10 +29745,10 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    createAssetComponent("loading", {
+    withComponentId("63bf2f59", () => createAssetComponent("loading", {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
-    });
+    }));
     setInsertionState(n4, 1);
     createIf(() => title.value, () => {
       const n3 = t0$3();
@@ -30788,7 +30797,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
     createIf(() => !loadingFinished.value, () => {
       const n5 = t0$2();
       setInsertionState(n5);
-      createComponentWithFallback(_component_loading, { style: "margin: auto;width:54px;height: 54px;border-color:#d3d3d3;" });
+      withComponentId("05b3a380", () => createComponentWithFallback(_component_loading, { style: "margin: auto;width:54px;height: 54px;border-color:#d3d3d3;" }));
       return n5;
     });
     setInsertionState(n10, 3);
@@ -31056,7 +31065,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
       return false;
     });
     const _component_swiper_item = _sfc_main$8;
-    const n8 = createAssetComponent("swiper", {
+    const n8 = withComponentId("0e721061", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: "flex: 1;background-color: black;",
       "indicator-dots": false,
@@ -31072,18 +31081,18 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => unref(swiperItems),
             (_for_item0) => {
-              const n7 = createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("3a2f7039-" + _for_item0.value.slot, () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRenderItem(_for_item0.value.index),
                   () => {
-                    const n6 = createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("3a2f7439-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_item0.value.index,
                       src: () => _for_item0.value.src,
                       longPressAction: () => unref(longPressAction),
                       tips: () => unref(tips),
                       reset: () => _for_item0.value.index == unref(resetCurrent),
                       resetOnSrcChange: true
-                    });
+                    }));
                     return n6;
                   },
                   null,
@@ -31094,7 +31103,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
               }, {
                 _: 1
                 /* NON_STABLE */
-              }));
+              })));
               return n7;
             },
             (item) => item.slot,
@@ -31111,7 +31120,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
     }, {
       _: 1
       /* NON_STABLE */
-    }));
+    })));
     const n9 = createIf(() => unref(indicator) == "number", () => {
       const n12 = t0$1();
       const n11 = child(n12);
@@ -31224,7 +31233,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       emit2("previewImageFinish", e2);
     };
     const _component_swiper_item = _sfc_main$8;
-    const n8 = createAssetComponent("swiper", {
+    const n8 = withComponentId("342d51a2", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: "flex: 1;background-color: black;",
       "indicator-dots": false,
@@ -31240,17 +31249,17 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => props2.urls,
             (_for_item0, _for_key0) => {
-              const n7 = createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("43c12dce", () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRender(_for_key0.value),
                   () => {
-                    const n6 = createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("43c120c0", () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_key0.value,
                       src: () => _for_item0.value,
                       longPressAction: () => props2.longPressAction,
                       tips: () => props2.tips,
                       reset: () => _for_key0.value == props2.resetCurrent
-                    });
+                    }));
                     return n6;
                   },
                   null,
@@ -31261,7 +31270,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
               }, {
                 _: 1
                 /* NON_STABLE */
-              }));
+              })));
               return n7;
             },
             void 0,
@@ -31278,7 +31287,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     }, {
       _: 1
       /* NON_STABLE */
-    }));
+    })));
     const n9 = createIf(() => props2.indicator == "number", () => {
       const n12 = t0();
       const n11 = child(n12);

@@ -216,6 +216,7 @@ export declare enum ShapeFlags {
   SUSPENSE = 128,
   COMPONENT_SHOULD_KEEP_ALIVE = 256,
   COMPONENT_KEPT_ALIVE = 512,
+  SLOT_FALLBACK = 1024,
   COMPONENT = 6
 }
 //#endregion

@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.9
+  * @vue/server-renderer v3.6.0-rc.10
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -91,59 +91,77 @@ function ssrResetCssVars(raw) {
 	return raw;
 }
 //#endregion
-//#region packages/server-renderer/src/helpers/ssrRenderComponent.ts
-function ssrRenderComponent(comp, props = null, children = null, parentComponent = null, slotScopeId) {
-	if ((0, _vue_shared.isString)(comp)) {
-		const { getBuffer, push } = createBuffer();
-		renderVNode(push, (0, _vue_runtime_dom.createVNode)(comp, props, children), parentComponent, slotScopeId);
-		return getBuffer();
-	}
-	return renderComponentVNode((0, _vue_runtime_dom.createVNode)(comp, props, children), parentComponent, slotScopeId);
-}
-//#endregion
 //#region packages/server-renderer/src/helpers/ssrRenderSlot.ts
-const { ensureValidVNode } = _vue_runtime_dom.ssrUtils;
+const { ensureValidVNode, rawVaporSlotKey: rawVaporSlotKey$1 } = _vue_runtime_dom.ssrUtils;
+let vaporSlots = 0;
 function ssrRenderSlot(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, textMode = false) {
-	push(`<!--[-->`);
 	ssrRenderSlotInner(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, void 0, textMode);
-	push(`<!--]-->`);
 }
 function ssrRenderSlotInner(slots, slotName, slotProps, fallbackRenderFn, push, parentComponent, slotScopeId, transition, textMode = false) {
 	const slotFn = slots[slotName];
+	let fallback = false;
 	if (slotFn) {
+		if (slotFn[rawVaporSlotKey$1]) vaporSlots++;
+		const before = vaporSlots;
 		const slotBuffer = [];
 		const bufferedPush = (item) => {
 			slotBuffer.push(item);
 		};
 		const ret = slotFn(slotProps || {}, bufferedPush, parentComponent, slotScopeId ? " " + slotScopeId : "");
-		if (textMode && canNormalizeTextSlotBuffer(slotBuffer)) for (let i = 0; i < slotBuffer.length; i++) slotBuffer[i] = (0, _vue_shared.normalizeUniText)(slotBuffer[i]);
+		let vnodes;
 		if ((0, _vue_shared.isArray)(ret)) {
-			const validSlotContent = ensureValidVNode(ret);
-			if (validSlotContent) renderVNodeChildren(push, validSlotContent, parentComponent, slotScopeId);
+			vnodes = ensureValidVNode(ret);
+			if (vnodes && isVaporSlotContent(vnodes)) {
+				renderVNodeChildren(bufferedPush, vnodes, parentComponent, slotScopeId);
+				vnodes = void 0;
+			}
+		}
+		if (textMode && canNormalizeTextSlotBuffer(slotBuffer)) for (let i = 0; i < slotBuffer.length; i++) slotBuffer[i] = (0, _vue_shared.normalizeUniText)(slotBuffer[i]);
+		if (vnodes !== void 0) {
+			if (!transition) {
+				fallback = !vnodes && !!fallbackRenderFn;
+				push(fallback ? `<!--(-->` : `<!--[-->`);
+			}
+			if (vnodes) renderVNodeChildren(push, vnodes, parentComponent, slotScopeId);
 			else if (fallbackRenderFn) fallbackRenderFn();
 			else if (transition) push(`<!---->`);
 		} else {
 			let isEmptySlot = true;
-			if (transition) isEmptySlot = false;
+			const owner = (0, _vue_runtime_dom.getCurrentInstance)();
+			if (transition || !(owner && owner.type.__vapor) && !fallbackRenderFn && vaporSlots !== before) isEmptySlot = false;
 			else for (let i = 0; i < slotBuffer.length; i++) if (!isComment(slotBuffer[i])) {
 				isEmptySlot = false;
 				break;
+			}
+			if (!transition) {
+				fallback = isEmptySlot && !!fallbackRenderFn;
+				push(fallback ? `<!--(-->` : `<!--[-->`);
 			}
 			if (isEmptySlot) {
 				if (fallbackRenderFn) fallbackRenderFn();
 			} else {
 				let start = 0;
 				let end = slotBuffer.length;
-				if (transition && slotBuffer[0] === "<!--[-->" && slotBuffer[end - 1] === "<!--]-->") {
-					start++;
-					end--;
+				if (transition) {
+					const first = slotBuffer[0];
+					if ((first === "<!--[-->" || first === "<!--(-->") && slotBuffer[end - 1] === (first === "<!--(-->" ? "<!--)-->" : "<!--]-->")) {
+						start++;
+						end--;
+					}
 				}
 				if (start < end) for (let i = start; i < end; i++) push(slotBuffer[i]);
 				else if (transition) push(`<!---->`);
 			}
 		}
-	} else if (fallbackRenderFn) fallbackRenderFn();
-	else if (transition) push(`<!---->`);
+	} else {
+		if (!transition) {
+			fallback = !!fallbackRenderFn;
+			push(fallback ? `<!--(-->` : `<!--[-->`);
+		}
+		if (fallbackRenderFn) fallbackRenderFn();
+		else if (transition) push(`<!---->`);
+	}
+	if (!transition) push(fallback ? `<!--)-->` : `<!--]-->`);
 }
 function canNormalizeTextSlotBuffer(buffer) {
 	return buffer.length > 0 && buffer.every((item) => typeof item === "string" && !/<\/?[A-Za-z][^>]*>/.test(item));
@@ -154,6 +172,16 @@ function isComment(item) {
 	if (typeof item !== "string" || !commentTestRE.test(item)) return false;
 	if (item.length <= 8) return true;
 	return !item.replace(commentRE, "").trim();
+}
+//#endregion
+//#region packages/server-renderer/src/helpers/ssrRenderComponent.ts
+function ssrRenderComponent(comp, props = null, children = null, parentComponent = null, slotScopeId) {
+	if ((0, _vue_shared.isString)(comp)) {
+		const { getBuffer, push } = createBuffer();
+		renderVNode(push, (0, _vue_runtime_dom.createVNode)(comp, props, children), parentComponent, slotScopeId);
+		return getBuffer();
+	}
+	return renderComponentVNode((0, _vue_runtime_dom.createVNode)(comp, props, children), parentComponent, slotScopeId);
 }
 //#endregion
 //#region packages/server-renderer/src/helpers/ssrRenderTeleport.ts
@@ -299,7 +327,7 @@ function ssrCompile(template, instance) {
 }
 //#endregion
 //#region packages/server-renderer/src/render.ts
-const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, normalizeVNode, pushWarningContext, popWarningContext } = _vue_runtime_dom.ssrUtils;
+const { createComponentInstance, setCurrentRenderingInstance, setupComponent, renderComponentRoot, isVNode: isVNode$2, normalizeVNode, pushWarningContext, popWarningContext, VaporSlot, rawVaporSlotKey, invokeSlotFallback } = _vue_runtime_dom.ssrUtils;
 function cleanupContext(context) {
 	let firstError;
 	if (context.__watcherHandles) {
@@ -339,7 +367,41 @@ function createBuffer() {
 		}
 	};
 }
+const vaporOutlets = /* @__PURE__ */ new WeakMap();
+const vaporInterface = { attachSlotOutlet(content, fallback, owner) {
+	const lone = isVaporSlotContent(content);
+	if (lone) vaporOutlets.set(content, {
+		fallback,
+		owner
+	});
+	return lone;
+} };
+function isVaporSlotContent(children) {
+	const lone = findVaporSlot(children);
+	vaporSlot = null;
+	return lone;
+}
+let vaporSlot = null;
+function findVaporSlot(children) {
+	for (let i = 0; i < children.length; i++) {
+		const child = children[i];
+		if (!isVNode$2(child)) return false;
+		if (child.type === VaporSlot) {
+			if (vaporSlot) return false;
+			vaporSlot = child;
+		} else if (child.type === _vue_runtime_dom.Fragment) {
+			if (child.patchFlag > 0 && child.patchFlag & 384 || !findVaporSlot(child.children)) return false;
+		} else if (child.type !== _vue_runtime_dom.Comment) return false;
+	}
+	return true;
+}
 function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
+	const ctx = vnode.ctx;
+	if (vnode.shapeFlag & 32 && ctx && ctx.type.__vapor) {
+		const slots = vnode.children;
+		for (const name in slots) if ((0, _vue_shared.isFunction)(slots[name])) slots[name][rawVaporSlotKey] = slots[name];
+		if (!ctx.appContext.vapor) ctx.appContext.vapor = vaporInterface;
+	}
 	const instance = vnode.component = createComponentInstance(vnode, parentComponent, null);
 	const context = instance.appContext.provides[_vue_runtime_dom.ssrContextKey];
 	if (context) (context.__instanceScopes || (context.__instanceScopes = [])).push(instance.scope);
@@ -420,18 +482,36 @@ function renderVNode(push, vnode, parentComponent, slotScopeId) {
 		case _vue_runtime_dom.Static:
 			push(children);
 			break;
-		case _vue_runtime_dom.Fragment:
+		case _vue_runtime_dom.Fragment: {
 			if (vnode.slotScopeIds) slotScopeId = (slotScopeId ? slotScopeId + " " : "") + vnode.slotScopeIds.join(" ");
-			push(`<!--[-->`);
+			const outlet = vnode.vo && vaporOutlets.get(children);
+			if (outlet) {
+				renderVaporOutlet(push, (_, push) => renderVNodeChildren(push, children, parentComponent, slotScopeId), null, outlet, parentComponent, slotScopeId);
+				break;
+			}
+			const isFallback = shapeFlag & 1024;
+			push(isFallback ? `<!--(-->` : `<!--[-->`);
 			renderVNodeChildren(push, children, parentComponent, slotScopeId);
-			push(`<!--]-->`);
+			push(isFallback ? `<!--)-->` : `<!--]-->`);
 			break;
+		}
+		case VaporSlot: {
+			if (vnode.slotScopeIds) slotScopeId = (slotScopeId ? slotScopeId + " " : "") + vnode.slotScopeIds.join(" ");
+			const { slot, outlets } = vnode.vs;
+			renderVaporOutlet(push, slot, vnode.props, outlets && outlets[0], parentComponent, slotScopeId);
+			break;
+		}
 		default: if (shapeFlag & 1) renderElementVNode(push, vnode, parentComponent, slotScopeId);
 		else if (shapeFlag & 6) push(renderComponentVNode(vnode, parentComponent, slotScopeId));
 		else if (shapeFlag & 64) renderTeleportVNode(push, vnode, parentComponent, slotScopeId);
 		else if (shapeFlag & 128) renderVNode(push, vnode.ssContent, parentComponent, slotScopeId);
 		else (0, _vue_runtime_dom.warn)("[@vue/server-renderer] Invalid VNode type:", type, `(${typeof type})`);
 	}
+}
+function renderVaporOutlet(push, slot, props, outlet, parentComponent, slotScopeId) {
+	const prev = setCurrentRenderingInstance(parentComponent);
+	ssrRenderSlot({ default: slot }, "default", props, outlet ? () => renderVNodeChildren(push, invokeSlotFallback(outlet.fallback, outlet.owner), parentComponent, slotScopeId) : null, push, parentComponent, slotScopeId);
+	setCurrentRenderingInstance(prev);
 }
 function renderVNodeChildren(push, children, parentComponent, slotScopeId) {
 	for (let i = 0; i < children.length; i++) renderVNode(push, normalizeVNode(children[i]), parentComponent, slotScopeId);

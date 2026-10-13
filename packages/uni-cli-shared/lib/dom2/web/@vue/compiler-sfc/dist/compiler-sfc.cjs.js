@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.9
+  * @vue/compiler-sfc v3.6.0-rc.10
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -44,10 +44,10 @@ let _dcloudio_compiler_vapor_web = require("@dcloudio/compiler-vapor-web");
 _dcloudio_compiler_vapor_web = __toESM(_dcloudio_compiler_vapor_web);
 let postcss = require("postcss");
 postcss = __toESM(postcss);
+let _babel_parser = require("@babel/parser");
 let estree_walker = require("estree-walker");
 let magic_string = require("magic-string");
 magic_string = __toESM(magic_string);
-let _babel_parser = require("@babel/parser");
 let process$1 = require("process");
 process$1 = __toESM(process$1);
 //#endregion
@@ -3568,6 +3568,7 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		scopeId: scoped ? longId : void 0,
 		slotted,
 		sourceMap: true,
+		vapor: ssr && vapor,
 		...compilerOptions,
 		bindingMetadata: vapor && !ssr && compilerOptions.bindingMetadata == null ? {} : compilerOptions.bindingMetadata,
 		hmr: !isProd,
@@ -15701,6 +15702,8 @@ function compileScript(sfc, options) {
 	const vapor = sfc.vapor || options.vapor;
 	const ssr = (_options$templateOpti = options.templateOptions) === null || _options$templateOpti === void 0 ? void 0 : _options$templateOpti.ssr;
 	const setupPreambleLines = [];
+	const cssModuleBindings = [];
+	let cssModuleHelper = "_useCssModule";
 	const isJSOrTS = isJS(scriptLang, scriptSetupLang) || isTS(scriptLang, scriptSetupLang);
 	if (script && scriptSetup && scriptLang !== scriptSetupLang) throw new Error("[@vue/compiler-sfc] <script> and <script setup> must have the same language type.");
 	if (!scriptSetup) {
@@ -15771,6 +15774,32 @@ function compileScript(sfc, options) {
 		for (const [name, config] of Object.entries(builtins)) if (isUsedInTemplate(name, sfc) && !ctx.bindingMetadata[name]) {
 			config.setup();
 			ctx.bindingMetadata[name] = config.bindingType;
+		}
+	}
+	/**
+	* vapor resolves template expressions against setup scope instead of a
+	* `_ctx` render proxy, so `<style module>` names need explicit bindings.
+	*/
+	function declareTemplateCssModules() {
+		if (!sfc.template) return;
+		while (ctx.bindingMetadata[cssModuleHelper] || inlineMode && sfc.styles.some((style) => style.module === cssModuleHelper)) cssModuleHelper += "_";
+		for (const style of sfc.styles) {
+			var _options$templateOpti2;
+			if (!style.module) continue;
+			const name = style.module === true ? `$style` : style.module;
+			if (!(0, _vue_compiler_dom.isSimpleIdentifier)(name) || ctx.bindingMetadata[name] || inlineMode && sfc.template.ast && !sfc.template.lang && !((_options$templateOpti2 = options.templateOptions) === null || _options$templateOpti2 === void 0 ? void 0 : _options$templateOpti2.preprocessLang) && !isUsedInTemplate(name, sfc, options.templateOptions)) continue;
+			if (inlineMode) {
+				if (name === "__props" || name === "_useCssModule" || name[0] === "_" && ctx.helperImports.has(name.slice(1))) continue;
+				try {
+					(0, _babel_parser.parse)(`const ${name} = null`, { sourceType: "module" });
+				} catch {
+					continue;
+				}
+			}
+			ctx.helperImports.add("useCssModule");
+			const value = `${cssModuleHelper}(${JSON.stringify(name)})`;
+			cssModuleBindings.push(inlineMode ? `const ${name} = ${value}` : `${JSON.stringify(name)}: ${value}`);
+			ctx.bindingMetadata[name] = "setup-const";
 		}
 	}
 	const scriptAst = ctx.scriptAst;
@@ -15979,8 +16008,10 @@ function compileScript(sfc, options) {
 	const destructureElements = ctx.hasDefineExposeCall || !inlineMode ? [`expose: __expose`] : [];
 	if (ctx.emitDecl) destructureElements.push(`emit: __emit`);
 	if (inlineMode) buildDestructureElements();
+	if (vapor && !ssr) declareTemplateCssModules();
 	if (destructureElements.length) args += `, { ${destructureElements.join(", ")} }`;
 	let templateMap;
+	let templateCode;
 	let returned;
 	const propsDecl = genRuntimeProps(ctx);
 	if (!inlineMode || !sfc.template && ctx.hasDefaultExportRender) {
@@ -15995,6 +16026,7 @@ function compileScript(sfc, options) {
 			const setArg = key === "v" ? `_v` : `v`;
 			returned += `get ${key}() { return ${key} }, set ${key}(${setArg}) { ${key} = ${setArg} }, `;
 		} else returned += `${key}, `;
+		returned += cssModuleBindings.join(", ");
 		returned = returned.replace(/, $/, "") + ` }`;
 	} else if (options.componentType === "app") returned = "";
 	else if (sfc.template && !sfc.template.src) {
@@ -16018,6 +16050,7 @@ function compileScript(sfc, options) {
 			}
 		});
 		templateMap = map;
+		templateCode = code;
 		if (tips.length) tips.forEach(warnOnce);
 		const err = errors[0];
 		if (typeof err === "string") throw new Error(err);
@@ -16028,9 +16061,10 @@ function compileScript(sfc, options) {
 		if (preamble) ctx.s.prepend(preamble);
 		if (helpers && (helpers.has(_vue_compiler_dom.UNREF) || helpers.has("unref"))) ctx.helperImports.delete("unref");
 		returned = vapor && !ssr && hasAwait ? `return () => {${code}}` : code;
+		if (cssModuleBindings.length) returned = `{\n${cssModuleBindings.join("\n")}\n${returned}\n}`;
 	} else returned = `() => {}`;
 	if (!inlineMode && true) ctx.s.appendRight(endOffset, `\nconst __returned__ = ${returned}\nObject.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\nreturn __returned__\n}\n\n`);
-	else ctx.s.appendRight(endOffset, `\n${vapor && !ssr ? `` : `return `}${returned}\n}\n\n`);
+	else ctx.s.appendRight(endOffset, `\n${vapor && !ssr && inlineMode ? `` : `return `}${returned}\n}\n\n`);
 	const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;
 	let runtimeOptions = ``;
 	if (!ctx.hasDefaultExportName && filename && filename !== "anonymous.vue") {
@@ -16042,8 +16076,8 @@ function compileScript(sfc, options) {
 	const emitsDecl = genRuntimeEmits(ctx);
 	if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`;
 	if (vapor && !ssr && sfc.template && !sfc.template.src) {
-		var _options$templateOpti2;
-		if (isMultiRoot(sfc.template.ast, (_options$templateOpti2 = options.templateOptions) === null || _options$templateOpti2 === void 0 ? void 0 : _options$templateOpti2.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
+		var _options$templateOpti3;
+		if (isMultiRoot(sfc.template.ast, (_options$templateOpti3 = options.templateOptions) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
 	}
 	let definedOptions = "";
 	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
@@ -16065,10 +16099,10 @@ function compileScript(sfc, options) {
 		}
 	}
 	if (ctx.helperImports.size > 0) {
-		var _options$templateOpti3;
-		const runtimeModuleName = (_options$templateOpti3 = options.templateOptions) === null || _options$templateOpti3 === void 0 || (_options$templateOpti3 = _options$templateOpti3.compilerOptions) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.runtimeModuleName;
+		var _options$templateOpti4;
+		const runtimeModuleName = (_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 || (_options$templateOpti4 = _options$templateOpti4.compilerOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.runtimeModuleName;
 		const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
-		ctx.s.prepend(`import { ${[...ctx.helperImports].map((h) => `${h} as _${h}`).join(", ")} } from ${importSrc}\n`);
+		ctx.s.prepend(`import { ${[...ctx.helperImports].map((h) => `${h} as ${h === "useCssModule" ? cssModuleHelper : `_${h}`}`).join(", ")} } from ${importSrc}\n`);
 	}
 	const content = ctx.s.toString();
 	let map = options.sourceMap !== false ? ctx.s.generateMap({
@@ -16077,7 +16111,7 @@ function compileScript(sfc, options) {
 		includeContent: true
 	}) : void 0;
 	if (templateMap && map) {
-		const offset = content.indexOf(returned);
+		const offset = content.indexOf(templateCode);
 		const templateLineOffset = content.slice(0, offset).split(/\r?\n/).length - 1;
 		map = mergeSourceMaps(map, templateMap, templateLineOffset);
 	}
@@ -16205,7 +16239,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-rc.9";
+const version = "3.6.0-rc.10";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

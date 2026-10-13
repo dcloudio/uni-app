@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/compiler-vapor-web",
-  "version": "3.6.0-rc.9",
+  "version": "3.6.0-rc.10",
   "description": "uni-app x Web Vapor compiler",
   "main": "dist/compiler-vapor-web.cjs.js",
   "types": "dist/compiler-vapor-web.d.ts",
@@ -27,7 +27,8 @@
     "@vue/compiler-dom": "workspace:*",
     "@vue/compiler-ssr": "workspace:*",
     "@vue/compiler-vapor": "workspace:*",
-    "@vue/shared": "workspace:*"
+    "@vue/shared": "workspace:*",
+    "hash-sum": "^2.0.0"
   },
   "devDependencies": {
     "@dcloudio/runtime-vapor-web": "workspace:*",
