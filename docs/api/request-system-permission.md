@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.requestSystemPermission(options) @requestsystempermission
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-requestSystemPermission
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-requestSystemPermission
+
 :::
 
 申请系统权限
