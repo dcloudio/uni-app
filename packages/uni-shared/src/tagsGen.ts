@@ -41,7 +41,7 @@ export const UVUE_VAPOR_APP_ANDROID_EASYCOMS = [
   'video',
   'flow-item',
   'waterflow',
-  'web-view'
+  'web-view',
 ]
 
 export const UVUE_VAPOR_APP_IOS_CUSTOM_ELEMENTS: string[] = []
@@ -85,7 +85,7 @@ export const UVUE_VAPOR_APP_IOS_EASYCOMS = [
   'video',
   'flow-item',
   'waterflow',
-  'web-view'
+  'web-view',
 ]
 
 export const UVUE_VAPOR_APP_HARMONY_CUSTOM_ELEMENTS: string[] = []
@@ -125,7 +125,7 @@ export const UVUE_VAPOR_APP_HARMONY_EASYCOMS = [
   'video',
   'flow-item',
   'waterflow',
-  'web-view'
+  'web-view',
 ]
 
 export const UVUE_VAPOR_APP_CUSTOM_ELEMENTS: string[] = []
@@ -169,16 +169,12 @@ export const UVUE_VAPOR_APP_EASYCOMS = [
   'video',
   'flow-item',
   'waterflow',
-  'web-view'
+  'web-view',
 ]
 
-export const UVUE_APP_ANDROID_CUSTOM_ELEMENTS = [
-  'match-media'
-]
+export const UVUE_APP_ANDROID_CUSTOM_ELEMENTS = ['match-media']
 
-export const UVUE_APP_ANDROID_COMPONENTS = [
-  'ad'
-]
+export const UVUE_APP_ANDROID_COMPONENTS = ['ad']
 
 export const UVUE_APP_ANDROID_EASYCOMS = [
   'camera',
@@ -190,7 +186,7 @@ export const UVUE_APP_ANDROID_EASYCOMS = [
   'picker',
   'rich-text',
   'video',
-  'web-view'
+  'web-view',
 ]
 
 export const UVUE_APP_IOS_CUSTOM_ELEMENTS = [
@@ -202,12 +198,10 @@ export const UVUE_APP_IOS_CUSTOM_ELEMENTS = [
   'radio',
   'radio-group',
   'switch',
-  'progress'
+  'progress',
 ]
 
-export const UVUE_APP_IOS_COMPONENTS = [
-  'ad'
-]
+export const UVUE_APP_IOS_COMPONENTS = ['ad']
 
 export const UVUE_APP_IOS_EASYCOMS = [
   'camera',
@@ -221,7 +215,7 @@ export const UVUE_APP_IOS_EASYCOMS = [
   'picker',
   'rich-text',
   'video',
-  'web-view'
+  'web-view',
 ]
 
 export const UVUE_APP_HARMONY_CUSTOM_ELEMENTS = [
@@ -240,7 +234,7 @@ export const UVUE_APP_HARMONY_CUSTOM_ELEMENTS = [
   'match-media',
   'navigator',
   'picker',
-  'progress'
+  'progress',
 ]
 
 export const UVUE_APP_HARMONY_COMPONENTS: string[] = []
@@ -251,7 +245,7 @@ export const UVUE_APP_HARMONY_EASYCOMS = [
   'map',
   'page-container',
   'rich-text',
-  'video'
+  'video',
 ]
 
 export const UVUE_APP_CUSTOM_ELEMENTS = [
@@ -270,12 +264,10 @@ export const UVUE_APP_CUSTOM_ELEMENTS = [
   'label',
   'slider',
   'navigator',
-  'picker'
+  'picker',
 ]
 
-export const UVUE_APP_COMPONENTS = [
-  'ad'
-]
+export const UVUE_APP_COMPONENTS = ['ad']
 
 export const UVUE_APP_EASYCOMS = [
   'camera',
@@ -289,7 +281,7 @@ export const UVUE_APP_EASYCOMS = [
   'video',
   'web-view',
   'match-media',
-  'page-container'
+  'page-container',
 ]
 
 export const UVUE_VAPOR_WEB_EASYCOMS = [
@@ -297,11 +289,16 @@ export const UVUE_VAPOR_WEB_EASYCOMS = [
   'checkbox-group',
   'form',
   'label',
+  'match-media',
+  'navigator',
   'picker',
   'picker-view',
   'picker-view-column',
+  'progress',
   'radio',
   'radio-group',
   'slider',
-  'switch'
+  'swiper',
+  'swiper-item',
+  'switch',
 ]
