@@ -127,7 +127,7 @@ export { // 上面的写法可以自己调整，仅需保证export内包含所�
 
 用法：`obj.add<泛型类型>()`
 
-在不传泛型时云对象方法返回的类型为`Promise<UTSJSONObject>`，传入泛型后callFunction返回的类型为`Promise<泛型类型>`
+在不传泛型时云对象方法返回的类型为`Promise<any>`，传入泛型后callFunction返回的类型为`Promise<泛型类型>`
 
 **代码示例**
 

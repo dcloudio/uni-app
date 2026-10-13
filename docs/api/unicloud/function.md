@@ -86,7 +86,7 @@ type CallFunctionResult = {
 uniCloud.callFunction<CallFunctionResult>(
   {
     name: 'fn',
-    data: { a: 1 } as UTSJSONObject,
+    data: { a: 1 },
   } as UniCloudCallFunctionOptions
 ).then(function (res) {
   const result = res.result // result的类型为CallFunctionResult
