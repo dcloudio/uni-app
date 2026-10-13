@@ -366,6 +366,9 @@ importers:
       jest:
         specifier: ^29.3.1
         version: 29.7.0(@types/node@18.19.50)
+      jsdom:
+        specifier: ^16.7.0
+        version: 16.7.0
       jsonc-parser:
         specifier: 'catalog:'
         version: 3.3.1

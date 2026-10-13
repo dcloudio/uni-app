@@ -1,8 +1,8 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, createVNode, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, openBlock, createElementBlock, isVNode, Fragment, createTemplateRefSetter, createPlainElement, renderEffect, template, computed, inject, provide, injectHook, isReactive, markRaw, nextTick, setInsertionState, insert, child, setStyle, createFor, next, createIf, setProp, setClass, txt, setText, toDisplayString, on as on$1, withComponentId, createDynamicComponent, setStaticTemplateRef, applyVShow, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, onActivated, resolveComponent, setAttr, setHtml, createComponentWithFallback, setClassName, createSlot, extend as extend$1, EffectScope, onUnmounted, createTextVNode, h, setBlockKey, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, setDynamicProps, logError, setRealPathResolver, createApp, defineComponent, createBlock, Transition, effectScope, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, hyphenate } from "@vue/shared";
+import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, isVNode, Fragment, createTemplateRefSetter, renderEffect, computed, inject, provide, injectHook, isReactive, markRaw, nextTick, setInsertionState, insert, child, setStyle, createFor, next, createIf, setProp, setClass, txt, setText, toDisplayString, on as on$1, withComponentId, createDynamicComponent, setStaticTemplateRef, applyVShow, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, onActivated, resolveComponent, setHtml, createComponentWithFallback, setClassName, createSlot, extend as extend$1, EffectScope, onUnmounted, toRaw, createTextNode, remove as remove$1, setDynamicProps, effectScope, syncSelectValue, setBlockKey, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, createVaporApp, VaporTransition, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, hyphenate, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
@@ -942,6 +942,19 @@ function isBuiltInElement(target) {
     return !!target.__isUniElement;
   }
 }
+let svgIcon = () => {
+  svgIcon = template('<svg viewBox="0 0 32 32"><path></path></svg>', 0, 1);
+  return svgIcon();
+};
+function createSvgIcon(path, color = "#000", size = 27) {
+  const svg = svgIcon();
+  setAttr(svg, "width", size, true);
+  setAttr(svg, "height", size, true);
+  setAttr(svg.firstChild, "d", path, true);
+  setAttr(svg.firstChild, "fill", color, true);
+  return svg;
+}
+const createSvgIconVNode = createSvgIcon;
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -953,30 +966,6 @@ const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
-function createSvgIconVNode(path, color = "#000", size = 27) {
-  return createVNode(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 32 32"
-    },
-    [
-      createVNode(
-        "path",
-        {
-          d: path,
-          fill: color
-        },
-        null,
-        8,
-        ["d", "fill"]
-      )
-    ],
-    8,
-    ["width", "height"]
-  );
-}
 function useCurrentPageId() {
   {
     const { $pageInstance } = getCurrentInstance();
@@ -2332,6 +2321,21 @@ function useTouchtrack(element, method, useCancel) {
     }
   });
 }
+function defineComponent(options) {
+  const setup = options.setup;
+  if (setup) {
+    options.setup = (props2, context) => {
+      const result = setup(props2, context);
+      return typeof result === "function" ? result() : result;
+    };
+  }
+  return defineVaporComponent(options);
+}
+function createUnsupportedRender$1(name) {
+  const element = createPlainElement("uni-" + name, null, null, true);
+  element.textContent = name + " is unsupported";
+  return element;
+}
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
@@ -2443,6 +2447,8 @@ const animation = {
     startAnimation(this);
   }
 };
+const defineRuntimeComponent = defineComponent;
+const createUnsupportedRender = createUnsupportedRender$1;
 const defineBuiltInComponent = (options) => {
   options.__reserved = true;
   const { props: props2, mixins } = options;
@@ -2467,20 +2473,13 @@ const defineSystemComponent = (options) => {
     MODE: 3
     // 标记为vue3
   };
-  const setup = options.setup;
-  if (setup) {
-    options.setup = (props2, context) => {
-      const result = setup(props2, context);
-      return typeof result === "function" ? result() : result;
-    };
-  }
-  return defineVaporComponent(options);
+  return defineRuntimeComponent(options);
 };
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({
     name: capitalize(camelize(name)),
     setup() {
-      return () => (openBlock(), createElementBlock("uni-" + name, null, name + " is unsupported"));
+      return createUnsupportedRender(name);
     }
   });
 };
@@ -2598,7 +2597,7 @@ class UniElement extends HTMLElement {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const _t0$c = template("<canvas class=uni-canvas-canvas>");
+const _t0$d = template("<canvas class=uni-canvas-canvas>");
 const props$g = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -2647,7 +2646,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$c();
+          const _n0 = _t0$d();
           renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -9407,8 +9406,8 @@ function getNodesInfo(pageVm, component, selector, single, fields) {
   if (!parentElement) {
     return single ? null : [];
   }
-  const { nodeType } = selfElement;
-  const maybeFragment = nodeType === 3 || nodeType === 8;
+  const { nodeType: nodeType2 } = selfElement;
+  const maybeFragment = nodeType2 === 3 || nodeType2 === 8;
   if (maybeFragment)
     return QuerySelectorHelper.queryElement(
       selfElement,
@@ -10348,7 +10347,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           insert(n5, n7);
           renderEffect(() => setStyle(n5, unref(layoutState).topWindowStyle));
           setInsertionState(n5);
-          const n4 = withComponentId("42efa222", () => createDynamicComponent(() => unref(TopWindow), {
+          const n4 = withComponentId("9bbd592a", () => createDynamicComponent(() => unref(TopWindow), {
             "navigation-bar-title-text": () => unref(layoutState).navigationBarTitleText,
             $: [
               () => unref(windowState)
@@ -10373,12 +10372,12 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = withComponentId("1b0a2624", () => createComponent$1(VaporKeepAlive, {
+            const n12 = withComponentId("dbf3501c", () => createComponent$1(VaporKeepAlive, {
               "match-by": "key",
               cache: () => unref(routeCache2)
             }, () => {
               const n10 = createKeyedFragment(() => unref(routeKey), () => {
-                const n11 = withComponentId("1b0a1da4", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
+                const n11 = withComponentId("dbf3479c", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
                 return n11;
               });
               return n10;
@@ -10386,7 +10385,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return n12;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n14 = withComponentId("1b0a1628", () => createDynamicComponent(() => unref(firstPageComponent)));
+            const n14 = withComponentId("dbf34020", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -10408,7 +10407,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           const n22 = t3$4();
           insert(n22, n23);
           setInsertionState(n22);
-          const n21 = withComponentId("1b093e56", () => createDynamicComponent(() => unref(LeftWindow), { $: [
+          const n21 = withComponentId("dbf2684e", () => createDynamicComponent(() => unref(LeftWindow), { $: [
             () => unref(windowState)
           ] }));
           setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
@@ -10431,7 +10430,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           const n30 = t4$4();
           insert(n30, n31);
           setInsertionState(n30);
-          const n29 = withComponentId("1b090194", () => createDynamicComponent(() => unref(RightWindow), { $: [
+          const n29 = withComponentId("dbf22b8c", () => createDynamicComponent(() => unref(RightWindow), { $: [
             () => unref(windowState)
           ] }));
           setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
@@ -10447,12 +10446,12 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n39 = withComponentId("1b0853ee", () => createComponent$1(VaporKeepAlive, {
+            const n39 = withComponentId("dbf17de6", () => createComponent$1(VaporKeepAlive, {
               "match-by": "key",
               cache: () => unref(routeCache2)
             }, () => {
               const n37 = createKeyedFragment(() => unref(routeKey), () => {
-                const n38 = withComponentId("1b0846d4", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
+                const n38 = withComponentId("dbf170cc", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
                 return n38;
               });
               return n37;
@@ -10460,7 +10459,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return n39;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n41 = withComponentId("1b0844a8", () => createDynamicComponent(() => unref(firstPageComponent)));
+            const n41 = withComponentId("dbf16ea0", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n41;
           }),
           2309
@@ -10473,7 +10472,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
     );
     setInsertionState(n46, 1);
     createIf(() => unref(hasTabBar), () => {
-      const n45 = withComponentId("1b083da0", () => createComponent$1(_sfc_main$w));
+      const n45 = withComponentId("dbf16798", () => createComponent$1(_sfc_main$w));
       applyVShow(n45, () => unref(showTabBar2));
       return n45;
     });
@@ -11388,7 +11387,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = withComponentId("b1ddc730", () => createComponentWithFallback(_component_Input, {
+            const n39 = withComponentId("9df04238", () => createComponentWithFallback(_component_Input, {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -11403,7 +11402,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = withComponentId("b1dda8bc", () => createComponentWithFallback(_component_Input, {
+            const n41 = withComponentId("9df023c4", () => createComponentWithFallback(_component_Input, {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -11817,7 +11816,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = withComponentId("64781ad4", () => createComponent$1(_sfc_main$r));
+      const n2 = withComponentId("6c5ca19a", () => createComponent$1(_sfc_main$r));
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -11830,7 +11829,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
     createSlot();
     setInsertionState(n8, 1);
     createIf(() => unref(isX), () => {
-      const n7 = withComponentId("6c91a811", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = withComponentId("708ab3d6", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -11945,12 +11944,12 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
     }, null, true);
     setInsertionState(n8);
     createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = withComponentId("20e16be8", () => createComponent$1(_sfc_main$s));
+      const n2 = withComponentId("55c2f8ec", () => createComponent$1(_sfc_main$s));
       return n2;
     });
     setInsertionState(n8, 1);
-    withComponentId("09680334", () => createComponent$1(_sfc_main$q, null, extend$1(() => {
-      const n3 = withComponentId("096802e8", () => createDynamicComponent(
+    withComponentId("629c11e2", () => createComponent$1(_sfc_main$q, null, extend$1(() => {
+      const n3 = withComponentId("629c1208", () => createDynamicComponent(
         () => unref(pageComponent),
         { $: [
           () => unref(pageProps)
@@ -11969,7 +11968,7 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
     createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = withComponentId("0967fbb0-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = withComponentId("629c15a4-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -13212,11 +13211,10 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return () => {
-      const { value } = path;
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-icon", null, extend$1(() => {
-          const _n0 = createNodes(() => value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size)));
+          const _n0 = createNodes(() => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
           return _n0;
         }, { _: 1 }), true);
         renderEffect(() => _setTemplateRef(_n1, rootRef));
@@ -13225,7 +13223,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$b = template("<div><div></div></div>");
+const _t0$c = template("<div><div></div></div>");
 const _t1$8 = template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
@@ -13242,7 +13240,7 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$b();
+        const _n0 = _t0$c();
         const _n1 = _t1$8();
         on$1(_n0, "scroll", update);
         on$1(_n1, "scroll", update);
@@ -13635,7 +13633,7 @@ Spring.prototype._solve = function(e2, t11) {
     const c = (-n - Math.sqrt(o)) / (2 * i);
     const u = (-n + Math.sqrt(o)) / (2 * i);
     const d = (t11 - c * e2) / (u - c);
-    const h2 = e2 - d;
+    const h = e2 - d;
     return {
       x: function(e3) {
         let t12;
@@ -13651,7 +13649,7 @@ Spring.prototype._solve = function(e2, t11) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * t12 + d * n2;
+        return h * t12 + d * n2;
       },
       dx: function(e3) {
         let t12;
@@ -13667,7 +13665,7 @@ Spring.prototype._solve = function(e2, t11) {
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h2 * c * t12 + d * u * n2;
+        return h * c * t12 + d * u * n2;
       }
     };
   }
@@ -14524,98 +14522,6 @@ function useMovableViewState(props2, trigger, rootRef) {
   });
   return { setParent };
 }
-const CHARS = {
-  amp: "&",
-  gt: ">",
-  lt: "<",
-  nbsp: " ",
-  quot: '"',
-  apos: "'",
-  ldquo: "“",
-  rdquo: "”",
-  yen: "￥",
-  radic: "√",
-  lceil: "⌈",
-  rceil: "⌉",
-  lfloor: "⌊",
-  rfloor: "⌋",
-  hellip: "…"
-};
-function decodeEntities(htmlString) {
-  return htmlString.replace(
-    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
-    function(match, stage) {
-      if (hasOwn(CHARS, stage) && CHARS[stage]) {
-        return CHARS[stage];
-      }
-      if (/^#[0-9]{1,4}$/.test(stage)) {
-        return String.fromCharCode(stage.slice(1));
-      }
-      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(Number("0" + stage.slice(1)));
-      }
-      return match;
-    }
-  );
-}
-function processClickEvent(node, triggerItemClick) {
-  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
-    return {
-      onClickCapture: (e2) => {
-        if (node.name === "a") {
-          triggerItemClick(e2, { href: (node.attrs || {}).href });
-        } else {
-          triggerItemClick(e2, { src: (node.attrs || {}).src });
-        }
-        e2.stopPropagation();
-        e2.preventDefault();
-        e2.returnValue = false;
-      }
-    };
-  }
-}
-function normalizeValue(tagName, name, value) {
-  if (tagName === "img" && name === "src" && isString(value)) {
-    return getRealPath(value);
-  }
-  return value;
-}
-function normalizeAttrs(tagName, attrs2) {
-  if (!isPlainObject(attrs2))
-    return;
-  const normalizedAttrs = {};
-  Object.keys(attrs2).forEach((name) => {
-    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
-  });
-  return normalizedAttrs;
-}
-const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
-    return [];
-  return nodeList.map((node) => {
-    if (!isPlainObject(node)) {
-      return;
-    }
-    if ((!hasOwn(node, "type") || node.type === "text") && isString(node.text) && node.text !== "")
-      return createTextVNode(decodeEntities(node.text || ""));
-    if (!hasOwn(node, "type") || node.type === "node") {
-      if (!isString(node.name) || !node.name) {
-        return;
-      }
-      const tagName = node.name.toLowerCase();
-      const nodeProps = extend(
-        { [scopeId]: "" },
-        processClickEvent(node, triggerItemClick),
-        normalizeAttrs(tagName, node.attrs)
-      );
-      return h(
-        node.name,
-        nodeProps,
-        nodeList2VNode(scopeId, triggerItemClick, node.children)
-      );
-    }
-  });
-};
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -14725,6 +14631,265 @@ const props$d = {
     default: false
   }
 };
+const CHARS = {
+  amp: "&",
+  gt: ">",
+  lt: "<",
+  nbsp: " ",
+  quot: '"',
+  apos: "'",
+  ldquo: "“",
+  rdquo: "”",
+  yen: "￥",
+  radic: "√",
+  lceil: "⌈",
+  rceil: "⌉",
+  lfloor: "⌊",
+  rfloor: "⌋",
+  hellip: "…"
+};
+function decodeEntities(htmlString) {
+  return htmlString.replace(
+    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
+    function(match, stage) {
+      if (hasOwn(CHARS, stage) && CHARS[stage]) {
+        return CHARS[stage];
+      }
+      if (/^#[0-9]{1,4}$/.test(stage)) {
+        return String.fromCharCode(stage.slice(1));
+      }
+      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
+        return String.fromCharCode(Number("0" + stage.slice(1)));
+      }
+      return match;
+    }
+  );
+}
+function processClickEvent(node, triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
+    return {
+      onClickCapture: (e2) => {
+        if (node.name === "a") {
+          triggerItemClick(e2, { href: (node.attrs || {}).href });
+        } else {
+          triggerItemClick(e2, { src: (node.attrs || {}).src });
+        }
+        e2.stopPropagation();
+        e2.preventDefault();
+        e2.returnValue = false;
+      }
+    };
+  }
+}
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
+function normalizeAttrs(tagName, attrs2) {
+  if (!isPlainObject(attrs2))
+    return;
+  const normalizedAttrs = {};
+  Object.keys(attrs2).forEach((name) => {
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
+  });
+  return normalizedAttrs;
+}
+function nodeType(node) {
+  if (!isPlainObject(node))
+    return "";
+  if ((!hasOwn(node, "type") || node.type === "text") && isString(node.text) && node.text !== "") {
+    return "#text";
+  }
+  return (!hasOwn(node, "type") || node.type === "node") && isString(node.name) && node.name ? node.name : "";
+}
+function hasContent(attrs2) {
+  return attrs2 && (attrs2.innerHTML != null || attrs2.textContent != null || attrs2[".innerHTML"] != null || attrs2[".textContent"] != null);
+}
+function nodeKey(node) {
+  if (!isPlainObject(node == null ? void 0 : node.attrs))
+    return;
+  const key = node.attrs.key;
+  if (key == null || node.type === "text")
+    return;
+  if (!hasOwn(node, "type") && isString(node.text) && node.text !== "")
+    return;
+  return key;
+}
+function nodeList2Block(source, scopeId, triggerItemClick, namespace = () => Namespaces.HTML) {
+  let previous = [];
+  let hadUnkeyed = false;
+  let renderedTypes;
+  const unkeyedTypes = /* @__PURE__ */ new WeakMap();
+  function unkeyedType(node) {
+    if (!isPlainObject(node))
+      return "";
+    let type = unkeyedTypes.get(node);
+    if (!type)
+      unkeyedTypes.set(node, type = computed(() => nodeType(node)));
+    return type.value;
+  }
+  const keyedSource = computed(() => {
+    var _a;
+    const nodes = source() || [];
+    if (!nodes.length) {
+      previous = [];
+      hadUnkeyed = false;
+      renderedTypes = void 0;
+      return { nodes, keys: [] };
+    }
+    let hasUnkeyed = false;
+    const next2 = Array.from(nodes, (node) => {
+      const key = nodeKey(node);
+      if (key == null)
+        hasUnkeyed = true;
+      return {
+        key,
+        // 显式 key 的标签更新由节点分支处理，不订阅整个列表。
+        type: key != null ? hadUnkeyed ? nodeType(toRaw(node)) : "" : unkeyedType(node),
+        id: key
+      };
+    });
+    const same = (old, entry) => old.key === entry.key && ((renderedTypes == null ? void 0 : renderedTypes.get(old.id)) ?? old.type) === entry.type;
+    let start = 0;
+    let oldEnd = previous.length - 1;
+    let newEnd = next2.length - 1;
+    while (start <= oldEnd && start <= newEnd && same(previous[start], next2[start])) {
+      next2[start].id = previous[start].id;
+      start++;
+    }
+    while (start <= oldEnd && start <= newEnd && same(previous[oldEnd], next2[newEnd])) {
+      next2[newEnd--].id = previous[oldEnd--].id;
+    }
+    let unkeyed;
+    for (let i = oldEnd; i >= start; i--) {
+      const entry = previous[i];
+      if (entry.key != null)
+        continue;
+      const pool = unkeyed || (unkeyed = /* @__PURE__ */ new Map());
+      let ids = pool.get(entry.type);
+      if (!ids)
+        pool.set(entry.type, ids = []);
+      ids.push(entry.id);
+    }
+    for (let i = start; i <= newEnd; i++) {
+      const entry = next2[i];
+      if (entry.key == null)
+        entry.id = ((_a = unkeyed == null ? void 0 : unkeyed.get(entry.type)) == null ? void 0 : _a.pop()) ?? Symbol();
+    }
+    const keys = [];
+    let nextRenderedTypes;
+    for (const entry of next2) {
+      keys.push(entry.id);
+      if (entry.key != null) {
+        const types = nextRenderedTypes || (nextRenderedTypes = /* @__PURE__ */ new Map());
+        types.set(entry.id, (renderedTypes == null ? void 0 : renderedTypes.get(entry.id)) ?? entry.type);
+      }
+    }
+    renderedTypes = nextRenderedTypes;
+    previous = next2;
+    hadUnkeyed = hasUnkeyed;
+    return { nodes, keys };
+  });
+  return createFor(
+    () => keyedSource.value.nodes,
+    (item) => createKeyedFragment(
+      () => {
+        const type = nodeType(item.value);
+        const key = nodeKey(item.value);
+        if (key != null)
+          renderedTypes.set(key, type);
+        return type + ":" + namespace();
+      },
+      () => {
+        const name = nodeType(item.value);
+        if (!name)
+          return [];
+        if (name === "#text") {
+          const text2 = createTextNode();
+          renderEffect(() => setText(text2, decodeEntities(item.value.text)));
+          return text2;
+        }
+        const ns = name === "svg" ? Namespaces.SVG : name === "math" ? Namespaces.MATH_ML : namespace();
+        const element = createPlainElement(name, null, null, false, false, ns);
+        let childScope;
+        let children;
+        renderEffect(() => {
+          var _a;
+          const node = item.value;
+          const attrs2 = normalizeAttrs(name.toLowerCase(), node.attrs);
+          const content = hasContent(attrs2);
+          if (content && childScope) {
+            childScope.stop();
+            remove$1(children, element);
+            children = void 0;
+            childScope = void 0;
+          }
+          setDynamicProps(
+            element,
+            [
+              extend(
+                scopeId ? { [scopeId]: "" } : {},
+                processClickEvent(node, triggerItemClick),
+                attrs2
+              )
+            ],
+            void 0,
+            ns === Namespaces.SVG
+          );
+          if (!content && !childScope && ((_a = node.children) == null ? void 0 : _a.length)) {
+            childScope = effectScope();
+            children = childScope.run(
+              () => nodeList2Block(
+                () => item.value.children || [],
+                scopeId,
+                triggerItemClick,
+                () => {
+                  var _a2, _b;
+                  return ns === Namespaces.SVG && name === "foreignObject" || ns === Namespaces.MATH_ML && name === "annotation-xml" && ((_b = (_a2 = item.value.attrs) == null ? void 0 : _a2.encoding) == null ? void 0 : _b.includes("html")) ? Namespaces.HTML : ns;
+                }
+              )
+            );
+            insert(children, element);
+          }
+        });
+        if (element.tagName === "SELECT")
+          syncSelectValue(element);
+        return element;
+      }
+    ),
+    (_node, index2) => keyedSource.value.keys[index2]
+  );
+}
+function renderRichText$1(props2, rootRef, triggerItemClick) {
+  const vm = getCurrentInstance();
+  const nodes = computed(
+    () => isString(props2.nodes) ? parseHtml(props2.nodes) : props2.nodes
+  );
+  const root = createPlainElement(
+    "uni-rich-text",
+    {
+      selectable: () => props2.userSelect || props2.selectable ? true : null
+    },
+    {
+      default: () => createPlainElement("div", null, {
+        default: () => (
+          // 与 VDOM vnode.scopeId 对应，保留调用方的作用域样式。
+          nodeList2Block(
+            () => nodes.value,
+            vm.scopeId || "",
+            triggerItemClick
+          )
+        )
+      })
+    },
+    true
+  );
+  rootRef.value = root;
+  return root;
+}
+const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
@@ -14737,36 +14902,20 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     class: UniRichTextElement
   },
   setup(props2, { emit: emit2 }) {
-    const vm = getCurrentInstance();
-    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
-    const _vnode = shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    function renderVNode() {
-      let nodeList = props2.nodes;
-      if (isString(nodeList)) {
-        nodeList = parseHtml(props2.nodes);
-      }
-      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
-    }
-    watch(() => props2.nodes, renderVNode, {
-      immediate: true,
-      deep: true
-    });
+    const result = renderRichText(props2, rootRef, triggerItemClick);
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
-    return () => h("uni-rich-text", {
-      ref: rootRef,
-      selectable: props2.userSelect || props2.selectable ? true : null
-    }, h("div", {}, _vnode.value));
+    return result;
   }
 });
-const _t0$a = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t0$b = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
 const _t1$7 = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$2 = template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
 const _t3$2 = template("<div class=uni-scroll-view-refresher-container> ");
@@ -14832,7 +14981,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           const _n12 = child(_n13);
           setInsertionState(_n12);
           createIf(() => refreshState == "pulling", () => {
-            const _n4 = _t0$a();
+            const _n4 = _t0$b();
             setBlockKey(_n4, "refresh__icon");
             renderEffect(() => setAttr(_n4, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
             return _n4;
@@ -14871,7 +15020,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$9 = template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
+const _t0$a = template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
 const passiveOptions = /* @__PURE__ */ passive(true);
 const props$c = {
   direction: {
@@ -15026,7 +15175,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n14 = createPlainElement("uni-scroll-view", null, () => {
-          const _n13 = _t0$9();
+          const _n13 = _t0$a();
           const _n12 = child(_n13);
           const _n11 = child(_n12);
           const _n10 = next(_n11);
@@ -15430,7 +15579,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _scrollLeftChanged
   };
 }
-const _t0$8 = template("<div class=uni-list-view-visible> ", 1);
+const _t0$9 = template("<div class=uni-list-view-visible> ", 1);
 const _t1$6 = template("<div><!><div class=uni-list-view-content><div></div> <div></div></div></div>");
 function isHTMlElement(node) {
   return !!(node && node.nodeType === 1);
@@ -15764,7 +15913,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       const defaultSlot = slots.default && slots.default();
       visibleVNode = (() => {
         const _setTemplateRef = createTemplateRefSetter();
-        const _n0 = _t0$8();
+        const _n0 = _t0$9();
         const _x0 = txt(_n0);
         setNodes(_x0, () => defaultSlot);
         renderEffect(() => {
@@ -17498,7 +17647,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       }
       isOpening.value = true;
       uni.openDialogPage({
-        url: `uni:picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
+        url: `/uni_modules/uni-form/pages/picker/picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
         success() {
           setTimeout(() => {
             isOpening.value = false;
@@ -17931,7 +18080,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     const n4 = next(n3);
     const n5 = next(n4);
     setInsertionState(n7, n6);
-    const n2 = withComponentId("02a52c40", () => createAssetComponent("scroll-view", {
+    const n2 = withComponentId("e09e2578", () => createAssetComponent("scroll-view", {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -20216,17 +20365,17 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
     return n1;
   }
 });
-const _t0$7 = template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t0$8 = template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
 const _t1$5 = template("<div><!><div class=uni-video-toast-draw></div>");
 const _t2$1 = template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
 const _t3$1 = template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
 const _t4$1 = template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
-  const h2 = Math.floor(val / 3600);
+  const h = Math.floor(val / 3600);
   const m = Math.floor(val % 3600 / 60);
   const s = Math.floor(val % 3600 % 60);
-  const hStr = (h2 < 10 ? "0" : "") + h2;
+  const hStr = (h < 10 ? "0" : "") + h;
   const mStr = (m < 10 ? "0" : "") + m;
   const sStr = (s < 10 ? "0" : "") + s;
   let str = mStr + ":" + sStr;
@@ -21110,7 +21259,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
             renderEffect(() => setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
             setInsertionState(_n24, _n23);
             createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$7();
+              const _n19 = _t0$8();
               return _n19;
             }, () => {
               const _n21 = createNodes(() => !gestureState.toastThin && (() => {
@@ -21756,33 +21905,33 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
           const anchor = option.anchor || {};
           let icon;
           let w;
-          let h2;
+          let h;
           let top;
           let x = typeof anchor.x === "number" ? anchor.x : 0.5;
           let y = typeof anchor.y === "number" ? anchor.y : 1;
           if (option.iconPath && (option.width || option.height)) {
             w = option.width || img.width / img.height * option.height;
-            h2 = option.height || img.height / img.width * option.width;
+            h = option.height || img.height / img.width * option.width;
           } else {
             w = img.width / 2;
-            h2 = img.height / 2;
+            h = img.height / 2;
           }
-          imgHeight = h2;
-          top = h2 - (h2 - y * h2);
+          imgHeight = h;
+          top = h - (h - y * h);
           if ("MarkerImage" in maps2) {
-            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h), new maps2.Size(w, h));
           } else if ("Icon" in maps2) {
             icon = new maps2.Icon({
               image: img.src,
-              size: new maps2.Size(w, h2),
-              imageSize: new maps2.Size(w, h2),
-              imageOffset: new maps2.Pixel(x * w, y * h2)
+              size: new maps2.Size(w, h),
+              imageSize: new maps2.Size(w, h),
+              imageOffset: new maps2.Pixel(x * w, y * h)
             });
           } else {
             icon = {
               url: img.src,
               anchor: new maps2.Point(x, y),
-              size: new maps2.Size(w, h2)
+              size: new maps2.Size(w, h)
             };
           }
           if (getIsBMap()) {
@@ -22277,7 +22426,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const _t0$6 = template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
+const _t0$7 = template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
 const props$5 = {
   id: {
     type: [Number, String],
@@ -22322,7 +22471,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     };
     return () => {
       return (() => {
-        const _n1 = _t0$6();
+        const _n1 = _t0$7();
         const _n0 = child(_n1);
         on$1(_n0, "click", handleClick);
         renderEffect(() => {
@@ -23000,7 +23149,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
-const _t0$5 = template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
+const _t0$6 = template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
 const _t1$4 = template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
 const props$3 = {
   id: {
@@ -23450,7 +23599,7 @@ const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n8 = createPlainElement("uni-map", { id: () => props2.id }, () => {
-          const _n0 = _t0$5();
+          const _n0 = _t0$6();
           const _n7 = _t1$4();
           const _n1 = createNodes(() => props2.markers.map((item) => (() => {
             const _n02 = createKeyedFragment(() => item.id, () => {
@@ -23489,7 +23638,7 @@ const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$4 = template("<div class=uni-cover-view> ");
+const _t0$5 = template("<div class=uni-cover-view> ");
 const props$2 = { scrollTop: {
   type: [String, Number],
   default: 0
@@ -23536,7 +23685,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-cover-view", { "scroll-top": () => props2.scrollTop }, () => {
-          const _n0 = _t0$4();
+          const _n0 = _t0$5();
           const _x0 = txt(_n0);
           setNodes(_x0, () => slots.default && slots.default());
           renderEffect(() => _setTemplateRef(_n0, content));
@@ -23548,7 +23697,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$3 = template("<img>");
+const _t0$4 = template("<img>");
 const _t1$3 = template("<div class=uni-cover-image>");
 class UniCoverImageElement extends UniElement {
 }
@@ -23585,7 +23734,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
           const _n5 = _t1$3();
           setInsertionState(_n5);
           createIf(() => src, () => {
-            const _n2 = _t0$3();
+            const _n2 = _t0$4();
             on$1(_n2, "load", load);
             on$1(_n2, "error", error);
             renderEffect(() => setProp(_n2, "src", getRealPath(src)));
@@ -23602,7 +23751,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$2 = template("<div class=uni-ad-container></div>");
+const _t0$3 = template("<div class=uni-ad-container></div>");
 const _t1$2 = template("<div class=uni-ad-custom-material> ");
 const _AdConfig = class _AdConfig {
   constructor() {
@@ -24102,11 +24251,11 @@ class AdRender {
     if (!this._rootRef.value) {
       return false;
     }
-    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
-    if (hasContent) {
+    var hasContent2 = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent2) {
       this.report(40, this._currentChannel || void 0);
     }
-    return hasContent;
+    return hasContent2;
   }
   _startCheckTimer() {
     this._clearCheckTimer();
@@ -24222,7 +24371,7 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
             widescreenWidth: () => widescreenWidth
           }
         ] }, () => {
-          const _n0 = _t0$2();
+          const _n0 = _t0$3();
           on$1(_n0, "click", () => ad.report(41));
           renderEffect(() => _setTemplateRef(_n0, rootRef));
           const _n1 = createIf(() => customTuiaVisible.value && slots.default, () => {
@@ -26144,19 +26293,9 @@ function useKeyboard() {
 }
 function createRootApp(component, rootState, callback) {
   rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(
-    defineComponent({
-      setup() {
-        return () => (openBlock(), createBlock(
-          component,
-          rootState,
-          null,
-          16
-          /* FULL_PROPS */
-        ));
-      }
-    })
-  );
+  return createVaporApp(component, {
+    $: [() => rootState]
+  });
 }
 function ensureRoot(id2) {
   let rootEl = document.getElementById(id2);
@@ -26211,7 +26350,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const _t0$1 = template("<div class=map-move> ");
+const _t0$2 = template("<div class=map-move> ");
 const _t1$1 = template("<div class=uni-system-open-location><!><div class=info><div class=name> </div><div class=address> </div><div class=nav> </div></div><div class=nav-btn-back> ", 1);
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
 const props$1 = {
@@ -26325,7 +26464,7 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
           markers: () => [state2.marker, state2.location],
           onRegionchange: () => onRegionChange
         }, () => {
-          const _n0 = _t0$1();
+          const _n0 = _t0$2();
           on$1(_n0, "click", () => setCenter(state2.location));
           const _x0 = txt(_n0);
           setNodes(_x0, () => createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24));
@@ -26532,12 +26671,32 @@ if (process.env.NODE_ENV !== "production" && !process.env.UNI_AUTOMATOR_WS_ENDPO
     }, Promise.resolve());
   });
 }
+const _t0$1 = template('<i class="uni-toast__icon uni-loading">', 3);
+function createToastIcon$1(icon) {
+  switch (icon) {
+    case "success":
+    case "error": {
+      const element = createSvgIconVNode(icon === "success" ? ICON_PATH_SUCCESS_NO_CIRCLE : ICON_PATH_WARN, "#fff", 36);
+      element.setAttribute("class", "uni-toast__icon");
+      return element;
+    }
+    case "loading":
+      return (() => {
+        const _n0 = _t0$1();
+        return _n0;
+      })();
+    default:
+      return null;
+  }
+}
 const _t0 = template('<div class=uni-mask style="background: transparent;">');
 const _t1 = template("<div><p class=uni-simple-toast__text> ");
 const _t2 = template("<img>");
 const _t3 = template("<p class=uni-toast__content> ");
 const _t4 = template("<div class=uni-toast>");
-const _t5 = template("<i>", 1);
+const ToastTransition = VaporTransition;
+const defineToast = defineSystemComponent;
+const createToastIcon = createToastIcon$1;
 const props = {
   title: {
     type: String,
@@ -26565,25 +26724,19 @@ const props = {
   visible: { type: Boolean }
 };
 const ToastIconClassName = "uni-toast__icon";
-const Toast = /* @__PURE__ */ defineComponent({
+const Toast = /* @__PURE__ */ defineToast({
   name: "Toast",
   props,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
-    const { Icon } = useToastIcon(props2);
+    const Icon = computed(() => createToastIcon(props2.icon));
     const visible = usePopup(props2, {});
     return () => {
-      const { mask, duration, title, image: image2, position } = props2;
-      const positionClass = position ? `uni-toast--${position}` : "";
-      const simpleToast = !!position || !image2 && !Icon.value;
       return (() => {
-        const _n22 = createComponent(Transition, {
-          name: "uni-fade",
-          persisted: true
-        }, () => {
-          const _n0 = createPlainElement("uni-toast", { "data-duration": () => duration }, extend$1(() => {
-            const _n1 = createIf(() => mask && !position, () => {
+        const _n22 = createComponent(ToastTransition, { name: "uni-fade" }, () => {
+          const _n0 = createPlainElement("uni-toast", { "data-duration": () => props2.duration }, extend$1(() => {
+            const _n1 = createIf(() => props2.mask && !props2.position, () => {
               const _n3 = _t0();
               on$1(_n3, "touchmove", onEventPrevent);
               return _n3;
@@ -26591,20 +26744,20 @@ const Toast = /* @__PURE__ */ defineComponent({
               const _n5 = createNodes("");
               return _n5;
             }, 393);
-            const _n6 = createIf(() => simpleToast, () => {
+            const _n6 = createIf(() => !!props2.position || !props2.image && !Icon.value, () => {
               const _n9 = _t1();
               const _n8 = child(_n9);
               const _x8 = txt(_n8);
-              setNodes(_x8, () => title);
-              renderEffect(() => setClass(_n9, ["uni-sample-toast", positionClass]));
+              setNodes(_x8, () => props2.title);
+              renderEffect(() => setClass(_n9, ["uni-sample-toast", props2.position ? `uni-toast--${props2.position}` : ""]));
               return _n9;
             }, () => {
               const _n21 = _t4();
               setInsertionState(_n21);
-              createIf(() => image2, () => {
+              createIf(() => props2.image, () => {
                 const _n13 = _t2();
                 renderEffect(() => {
-                  setProp(_n13, "src", image2);
+                  setProp(_n13, "src", props2.image);
                   setClass(_n13, ToastIconClassName);
                 });
                 return _n13;
@@ -26613,10 +26766,10 @@ const Toast = /* @__PURE__ */ defineComponent({
                 return _n15;
               }, 777);
               setInsertionState(_n21, 1);
-              createIf(() => title, () => {
+              createIf(() => props2.title, () => {
                 const _n18 = _t3();
                 const _x18 = txt(_n18);
-                setNodes(_x18, () => title);
+                setNodes(_x18, () => props2.title);
                 return _n18;
               }, () => {
                 const _n20 = createNodes("");
@@ -26634,25 +26787,6 @@ const Toast = /* @__PURE__ */ defineComponent({
     };
   }
 });
-function useToastIcon(props2) {
-  const Icon = computed(() => {
-    switch (props2.icon) {
-      case "success":
-        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, "#fff", 36), { class: ToastIconClassName });
-      case "error":
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, "#fff", 36), { class: ToastIconClassName });
-      case "loading":
-        return (() => {
-          const _n0 = _t5();
-          renderEffect(() => setClass(_n0, [ToastIconClassName, "uni-loading"]));
-          return _n0;
-        })();
-      default:
-        return null;
-    }
-  });
-  return { Icon };
-}
 const pageToast = { type: "", token: 0 };
 const appToast = { type: "", token: 0 };
 const scope = /* @__PURE__ */ effectScope();
@@ -27989,7 +28123,7 @@ const showActionSheet$1 = (options) => {
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
   });
   uni.openDialogPage({
-    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     animationType: "none",
     fail(err) {
       var _a, _b;
@@ -28653,7 +28787,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setStyle(n6, mapBoxStyleCom.value);
     });
     setInsertionState(n6, n5);
-    withComponentId("294f91b0", () => createAssetComponent("map", {
+    withComponentId("ecc07898", () => createAssetComponent("map", {
       class: "uni-choose-location-map",
       id: () => mapId.value,
       latitude: () => latitude.value,
@@ -28716,7 +28850,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setInsertionState(n16, 1);
       const _on_focus = () => isFocus.value = true;
       const _on_confirm = () => poiSearch("poiSearch");
-      withComponentId("00a30941", () => createComponentWithFallback(_component_input, {
+      withComponentId("ab4dd086", () => createComponentWithFallback(_component_input, {
         modelValue: () => searchValue.value,
         "onUpdate:modelValue": () => (_value) => searchValue.value = _value,
         type: "text",
@@ -28735,7 +28869,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
         return n19;
       });
       setInsertionState(n50, 1);
-      const n49 = withComponentId("00a318c9", () => createComponentWithFallback(_component_scroll_view, {
+      const n49 = withComponentId("ab4db176", () => createComponentWithFallback(_component_scroll_view, {
         "scroll-with-animation": false,
         direction: "vertical",
         "scroll-top": () => scrollTop.value,
@@ -28772,7 +28906,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
               () => {
                 const n31 = t3$1();
                 setInsertionState(n31);
-                withComponentId("00a3852a", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
+                withComponentId("ab4cd8b4", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
                 return n31;
               },
               () => {
@@ -28828,7 +28962,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
           () => {
             const n48 = t3$1();
             setInsertionState(n48);
-            withComponentId("00a3fa5d", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
+            withComponentId("ab4bee4e", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
             return n48;
           },
           null,
@@ -29185,7 +29319,7 @@ const chooseLocation$1 = (options) => {
     (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl());
   });
   uni.openDialogPage({
-    url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `/uni_modules/uni-chooseLocation/pages/chooseLocation/chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     triggerParentHide: true,
     fail(err) {
       var _a, _b;
@@ -29479,7 +29613,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => editable.value,
       () => {
-        const n6 = withComponentId("30449bdb", () => createComponentWithFallback(_component_textarea, {
+        const n6 = withComponentId("d0d6a152", () => createComponentWithFallback(_component_textarea, {
           modelValue: () => content.value,
           "onUpdate:modelValue": () => (_value) => content.value = _value,
           class: "uni-modal-dialog__textarea",
@@ -29494,7 +29628,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
         return n6;
       },
       () => createIf(() => content.value.length > 0, () => {
-        const n9 = withComponentId("3044a798", () => createComponentWithFallback(_component_scroll_view, {
+        const n9 = withComponentId("d0d689d8", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-modal-dialog__scroll",
           "show-scrollbar": "true",
           style: () => ({ maxHeight: maxScrollHeight.value })
@@ -29601,7 +29735,7 @@ const showModal$1 = (options) => {
     (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   const openRet = uni.openDialogPage({
-    url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     animationType: "none",
     fail(err) {
       var _a2, _b2;
@@ -29745,7 +29879,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("337c75dd", () => createAssetComponent("loading", {
+    withComponentId("63bf2f59", () => createAssetComponent("loading", {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -29809,7 +29943,7 @@ const showLoading$1 = (options) => {
     (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   const openRet = uni.openDialogPage({
-    url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `/uni_modules/uni-showLoading/pages/showLoading/showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     animationType: "none",
     fail(err) {
       var _a2, _b2;
@@ -30797,7 +30931,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
     createIf(() => !loadingFinished.value, () => {
       const n5 = t0$2();
       setInsertionState(n5);
-      withComponentId("0c669e04", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
+      withComponentId("05b3a380", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
       return n5;
     });
     setInsertionState(n10, 3);
@@ -31065,7 +31199,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
       return false;
     });
     const _component_swiper_item = _sfc_main$8;
-    const n8 = withComponentId("365d9a5d", () => createAssetComponent("swiper", {
+    const n8 = withComponentId("0e721061", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -31081,11 +31215,11 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => unref(swiperItems),
             (_for_item0) => {
-              const n7 = withComponentId("15606b35-" + _for_item0.value.slot, () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("3a2f7039-" + _for_item0.value.slot, () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRenderItem(_for_item0.value.index),
                   () => {
-                    const n6 = withComponentId("15606f35-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("3a2f7439-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_item0.value.index,
                       src: () => _for_item0.value.src,
                       longPressAction: () => unref(longPressAction),
@@ -31233,7 +31367,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       emit2("previewImageFinish", e2);
     };
     const _component_swiper_item = _sfc_main$8;
-    const n8 = withComponentId("09f35926", () => createAssetComponent("swiper", {
+    const n8 = withComponentId("342d51a2", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -31249,11 +31383,11 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => props2.urls,
             (_for_item0, _for_key0) => {
-              const n7 = withComponentId("5a819f9d", () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("43c12dce", () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRender(_for_key0.value),
                   () => {
-                    const n6 = withComponentId("5a81a624", () => createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("43c120c0", () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_key0.value,
                       src: () => _for_item0.value,
                       longPressAction: () => props2.longPressAction,
@@ -31393,7 +31527,7 @@ function __previewImage(option) {
     }
   });
   uni.openDialogPage({
-    url: "uni:previewImage",
+    url: "/uni_modules/uni-previewImage/pages/previewImage/previewImage",
     animationType: "fade-in",
     success(_) {
       var _a2, _b2;

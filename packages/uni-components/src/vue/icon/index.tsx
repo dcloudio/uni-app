@@ -96,14 +96,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
     //#endif
     return () => {
-      const { value } = path
       return (
         <uni-icon ref={rootRef}>
-          {value &&
-            value.d &&
+          {path.value &&
+            path.value.d &&
             createSvgIconVNode(
-              value.d,
-              props.color || value.c,
+              path.value.d,
+              props.color || path.value.c,
               rpx2px(props.size)
             )}
         </uni-icon>

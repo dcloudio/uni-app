@@ -1,23 +1,41 @@
-import {
-  type ExtractPropTypes,
-  Transition,
-  computed,
-  createVNode,
-  defineComponent,
-} from 'vue'
+import { type ExtractPropTypes, computed } from 'vue'
+//#if _X_VAPOR_
+import * as vapor from './toast-vapor'
+//#else
+import * as vdom from './toast-vdom'
+//#endif
 import { SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 import type { API_TYPE_SHOW_TOAST_ICON } from '@dcloudio/uni-api'
 import { usePopup } from './utils'
-import {
-  ICON_PATH_SUCCESS_NO_CIRCLE,
-  ICON_PATH_WARN,
-  createSvgIconVNode,
-  onEventPrevent,
-} from '@dcloudio/uni-core'
+import { onEventPrevent } from '@dcloudio/uni-core'
 import {
   initI18nShowLoadingMsgsOnce,
   initI18nShowToastMsgsOnce,
 } from '@dcloudio/uni-core'
+
+// prettier-ignore
+const ToastTransition =
+//#if _X_VAPOR_
+  vapor.ToastTransition
+//#else
+vdom.ToastTransition
+//#endif
+
+// prettier-ignore
+const defineToast =
+//#if _X_VAPOR_
+  vapor.defineToast
+//#else
+vdom.defineToast
+//#endif
+
+// prettier-ignore
+const createToastIcon =
+//#if _X_VAPOR_
+  vapor.createToastIcon
+//#else
+vdom.createToastIcon
+//#endif
 
 const props = {
   title: {
@@ -53,23 +71,20 @@ const ToastIconClassName = 'uni-toast__icon'
 
 export type ToastProps = ExtractPropTypes<typeof props>
 
-export default /*#__PURE__*/ defineComponent({
+export default /*#__PURE__*/ defineToast({
   name: 'Toast',
   props,
   setup(props) {
     initI18nShowToastMsgsOnce()
     initI18nShowLoadingMsgsOnce()
-    const { Icon } = useToastIcon(props)
+    const Icon = computed(() => createToastIcon(props.icon))
     const visible = usePopup(props, {})
 
     return () => {
-      const { mask, duration, title, image, position } = props
-      const positionClass = position ? `uni-toast--${position}` : ''
-      const simpleToast = !!position || (!image && !Icon.value)
       return (
-        <Transition name="uni-fade">
-          <uni-toast v-show={visible.value} data-duration={duration}>
-            {mask && !position ? (
+        <ToastTransition name="uni-fade">
+          <uni-toast v-show={visible.value} data-duration={props.duration}>
+            {props.mask && !props.position ? (
               <div
                 class="uni-mask"
                 style="background: transparent;"
@@ -78,50 +93,32 @@ export default /*#__PURE__*/ defineComponent({
             ) : (
               ''
             )}
-            {simpleToast ? (
-              <div class={['uni-sample-toast', positionClass]}>
-                <p class="uni-simple-toast__text">{title}</p>
+            {!!props.position || (!props.image && !Icon.value) ? (
+              <div
+                class={[
+                  'uni-sample-toast',
+                  props.position ? `uni-toast--${props.position}` : '',
+                ]}
+              >
+                <p class="uni-simple-toast__text">{props.title}</p>
               </div>
             ) : (
               <div class="uni-toast">
-                {image ? (
-                  <img src={image} class={ToastIconClassName} />
+                {props.image ? (
+                  <img src={props.image} class={ToastIconClassName} />
                 ) : (
                   Icon.value
                 )}
-                {title ? <p class="uni-toast__content">{title}</p> : ''}
+                {props.title ? (
+                  <p class="uni-toast__content">{props.title}</p>
+                ) : (
+                  ''
+                )}
               </div>
             )}
           </uni-toast>
-        </Transition>
+        </ToastTransition>
       )
     }
   },
 })
-
-function useToastIcon(props: ToastProps) {
-  const Icon = computed(() => {
-    switch (props.icon) {
-      case 'success':
-        return createVNode(
-          createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, '#fff', 36),
-          {
-            class: ToastIconClassName,
-          }
-        )
-      case 'error':
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, '#fff', 36), {
-          class: ToastIconClassName,
-        })
-      case 'loading':
-        return <i class={[ToastIconClassName, 'uni-loading']}></i>
-
-      default:
-        return null
-    }
-  })
-
-  return {
-    Icon,
-  }
-}

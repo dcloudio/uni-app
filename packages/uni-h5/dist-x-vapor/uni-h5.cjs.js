@@ -524,6 +524,19 @@ function rpx2pxWithReplace(str) {
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
+let svgIcon = () => {
+  svgIcon = Vue.template('<svg viewBox="0 0 32 32"><path></path></svg>', 0, 1);
+  return svgIcon();
+};
+function createSvgIcon(path, color = "#000", size = 27) {
+  const svg = svgIcon();
+  Vue.setAttr(svg, "width", size, true);
+  Vue.setAttr(svg, "height", size, true);
+  Vue.setAttr(svg.firstChild, "d", path, true);
+  Vue.setAttr(svg.firstChild, "fill", color, true);
+  return svg;
+}
+const createSvgIconVNode = createSvgIcon;
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -535,30 +548,6 @@ const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
-function createSvgIconVNode(path, color = "#000", size = 27) {
-  return Vue.createVNode(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 32 32"
-    },
-    [
-      Vue.createVNode(
-        "path",
-        {
-          d: path,
-          fill: color
-        },
-        null,
-        8,
-        ["d", "fill"]
-      )
-    ],
-    8,
-    ["width", "height"]
-  );
-}
 function useCurrentPageId() {
   {
     const { $pageInstance } = Vue.getCurrentInstance();
@@ -1046,6 +1035,21 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
+function defineComponent(options) {
+  const setup = options.setup;
+  if (setup) {
+    options.setup = (props2, context) => {
+      const result = setup(props2, context);
+      return typeof result === "function" ? result() : result;
+    };
+  }
+  return Vue.defineVaporComponent(options);
+}
+function createUnsupportedRender$1(name) {
+  const element = Vue.createPlainElement("uni-" + name, null, null, true);
+  element.textContent = name + " is unsupported";
+  return element;
+}
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -1157,6 +1161,8 @@ const animation = {
     startAnimation(this);
   }
 };
+const defineRuntimeComponent = defineComponent;
+const createUnsupportedRender = createUnsupportedRender$1;
 const defineBuiltInComponent = (options) => {
   options.__reserved = true;
   const { props: props2, mixins } = options;
@@ -1171,20 +1177,13 @@ const defineSystemComponent = (options) => {
     MODE: 3
     // 标记为vue3
   };
-  const setup = options.setup;
-  if (setup) {
-    options.setup = (props2, context) => {
-      const result = setup(props2, context);
-      return typeof result === "function" ? result() : result;
-    };
-  }
-  return Vue.defineVaporComponent(options);
+  return defineRuntimeComponent(options);
 };
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({
     name: shared.capitalize(shared.camelize(name)),
     setup() {
-      return () => (Vue.openBlock(), Vue.createElementBlock("uni-" + name, null, name + " is unsupported"));
+      return createUnsupportedRender(name);
     }
   });
 };
@@ -3847,7 +3846,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.insert(n5, n7);
           Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
           Vue.setInsertionState(n5);
-          const n4 = Vue.withComponentId("42efa222", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
+          const n4 = Vue.withComponentId("9bbd592a", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
             "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
             $: [
               () => Vue.unref(windowState)
@@ -3872,12 +3871,12 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = Vue.withComponentId("1b0a2624", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n12 = Vue.withComponentId("dbf3501c", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
               const n10 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n11 = Vue.withComponentId("1b0a1da4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                const n11 = Vue.withComponentId("dbf3479c", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
                 return n11;
               });
               return n10;
@@ -3885,7 +3884,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n12;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n14 = Vue.withComponentId("1b0a1628", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n14 = Vue.withComponentId("dbf34020", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -3907,7 +3906,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           const n22 = t3$1();
           Vue.insert(n22, n23);
           Vue.setInsertionState(n22);
-          const n21 = Vue.withComponentId("1b093e56", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+          const n21 = Vue.withComponentId("dbf2684e", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
@@ -3930,7 +3929,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           const n30 = t4$1();
           Vue.insert(n30, n31);
           Vue.setInsertionState(n30);
-          const n29 = Vue.withComponentId("1b090194", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+          const n29 = Vue.withComponentId("dbf22b8c", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
@@ -3946,12 +3945,12 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n39 = Vue.withComponentId("1b0853ee", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n39 = Vue.withComponentId("dbf17de6", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
               const n37 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n38 = Vue.withComponentId("1b0846d4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                const n38 = Vue.withComponentId("dbf170cc", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
                 return n38;
               });
               return n37;
@@ -3959,7 +3958,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n39;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n41 = Vue.withComponentId("1b0844a8", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n41 = Vue.withComponentId("dbf16ea0", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n41;
           }),
           2309
@@ -3972,7 +3971,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     Vue.setInsertionState(n46, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n45 = Vue.withComponentId("1b083da0", () => Vue.createComponent(_sfc_main$p));
+      const n45 = Vue.withComponentId("dbf16798", () => Vue.createComponent(_sfc_main$p));
       Vue.applyVShow(n45, () => Vue.unref(showTabBar));
       return n45;
     });
@@ -4635,7 +4634,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
-            const n39 = Vue.withComponentId("b1ddc730", () => Vue.createComponentWithFallback(_component_Input, {
+            const n39 = Vue.withComponentId("9df04238", () => Vue.createComponentWithFallback(_component_Input, {
               disabled: true,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -4650,7 +4649,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
             const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
             const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
             const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
-            const n41 = Vue.withComponentId("b1dda8bc", () => Vue.createComponentWithFallback(_component_Input, {
+            const n41 = Vue.withComponentId("9df023c4", () => Vue.createComponentWithFallback(_component_Input, {
               focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -4802,7 +4801,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.withComponentId("64781ad4", () => Vue.createComponent(_sfc_main$k));
+      const n2 = Vue.withComponentId("6c5ca19a", () => Vue.createComponent(_sfc_main$k));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -4815,7 +4814,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createSlot();
     Vue.setInsertionState(n8, 1);
     Vue.createIf(() => Vue.unref(isX), () => {
-      const n7 = Vue.withComponentId("6c91a811", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = Vue.withComponentId("708ab3d6", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     Vue.setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -4930,12 +4929,12 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     }, null, true);
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.withComponentId("20e16be8", () => Vue.createComponent(_sfc_main$l));
+      const n2 = Vue.withComponentId("55c2f8ec", () => Vue.createComponent(_sfc_main$l));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.withComponentId("09680334", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
-      const n3 = Vue.withComponentId("096802e8", () => Vue.createDynamicComponent(
+    Vue.withComponentId("629c11e2", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
+      const n3 = Vue.withComponentId("629c1208", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
           () => Vue.unref(pageProps)
@@ -4954,7 +4953,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = Vue.withComponentId("0967fbb0-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = Vue.withComponentId("629c15a4-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -5388,11 +5387,10 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = Vue.ref(null);
     const path = Vue.computed(() => ICONS[props2.type]);
     return () => {
-      const { value } = path;
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-icon", null, Vue.extend(() => {
-          const _n0 = createNodes(() => value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size)));
+          const _n0 = createNodes(() => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
           return _n0;
         }, { _: 1 }), true);
         Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
@@ -6493,98 +6491,6 @@ function useMovableViewState(props2, trigger, rootRef) {
   }
   return { setParent };
 }
-const CHARS = {
-  amp: "&",
-  gt: ">",
-  lt: "<",
-  nbsp: " ",
-  quot: '"',
-  apos: "'",
-  ldquo: "“",
-  rdquo: "”",
-  yen: "￥",
-  radic: "√",
-  lceil: "⌈",
-  rceil: "⌉",
-  lfloor: "⌊",
-  rfloor: "⌋",
-  hellip: "…"
-};
-function decodeEntities(htmlString) {
-  return htmlString.replace(
-    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
-    function(match, stage) {
-      if (shared.hasOwn(CHARS, stage) && CHARS[stage]) {
-        return CHARS[stage];
-      }
-      if (/^#[0-9]{1,4}$/.test(stage)) {
-        return String.fromCharCode(stage.slice(1));
-      }
-      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(Number("0" + stage.slice(1)));
-      }
-      return match;
-    }
-  );
-}
-function processClickEvent(node, triggerItemClick) {
-  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
-    return {
-      onClickCapture: (e2) => {
-        if (node.name === "a") {
-          triggerItemClick(e2, { href: (node.attrs || {}).href });
-        } else {
-          triggerItemClick(e2, { src: (node.attrs || {}).src });
-        }
-        e2.stopPropagation();
-        e2.preventDefault();
-        e2.returnValue = false;
-      }
-    };
-  }
-}
-function normalizeValue(tagName, name, value) {
-  if (tagName === "img" && name === "src" && shared.isString(value)) {
-    return getRealPath(value);
-  }
-  return value;
-}
-function normalizeAttrs(tagName, attrs2) {
-  if (!shared.isPlainObject(attrs2))
-    return;
-  const normalizedAttrs = {};
-  Object.keys(attrs2).forEach((name) => {
-    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
-  });
-  return normalizedAttrs;
-}
-const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
-    return [];
-  return nodeList.map((node) => {
-    if (!shared.isPlainObject(node)) {
-      return;
-    }
-    if ((!shared.hasOwn(node, "type") || node.type === "text") && shared.isString(node.text) && node.text !== "")
-      return Vue.createTextVNode(decodeEntities(node.text || ""));
-    if (!shared.hasOwn(node, "type") || node.type === "node") {
-      if (!shared.isString(node.name) || !node.name) {
-        return;
-      }
-      const tagName = node.name.toLowerCase();
-      const nodeProps = shared.extend(
-        { [scopeId]: "" },
-        processClickEvent(node, triggerItemClick),
-        normalizeAttrs(tagName, node.attrs)
-      );
-      return Vue.h(
-        node.name,
-        nodeProps,
-        nodeList2VNode(scopeId, triggerItemClick, node.children)
-      );
-    }
-  });
-};
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -6694,6 +6600,265 @@ const props$b = {
     default: false
   }
 };
+const CHARS = {
+  amp: "&",
+  gt: ">",
+  lt: "<",
+  nbsp: " ",
+  quot: '"',
+  apos: "'",
+  ldquo: "“",
+  rdquo: "”",
+  yen: "￥",
+  radic: "√",
+  lceil: "⌈",
+  rceil: "⌉",
+  lfloor: "⌊",
+  rfloor: "⌋",
+  hellip: "…"
+};
+function decodeEntities(htmlString) {
+  return htmlString.replace(
+    /&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi,
+    function(match, stage) {
+      if (shared.hasOwn(CHARS, stage) && CHARS[stage]) {
+        return CHARS[stage];
+      }
+      if (/^#[0-9]{1,4}$/.test(stage)) {
+        return String.fromCharCode(stage.slice(1));
+      }
+      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
+        return String.fromCharCode(Number("0" + stage.slice(1)));
+      }
+      return match;
+    }
+  );
+}
+function processClickEvent(node, triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
+    return {
+      onClickCapture: (e2) => {
+        if (node.name === "a") {
+          triggerItemClick(e2, { href: (node.attrs || {}).href });
+        } else {
+          triggerItemClick(e2, { src: (node.attrs || {}).src });
+        }
+        e2.stopPropagation();
+        e2.preventDefault();
+        e2.returnValue = false;
+      }
+    };
+  }
+}
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && shared.isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
+function normalizeAttrs(tagName, attrs2) {
+  if (!shared.isPlainObject(attrs2))
+    return;
+  const normalizedAttrs = {};
+  Object.keys(attrs2).forEach((name) => {
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
+  });
+  return normalizedAttrs;
+}
+function nodeType(node) {
+  if (!shared.isPlainObject(node))
+    return "";
+  if ((!shared.hasOwn(node, "type") || node.type === "text") && shared.isString(node.text) && node.text !== "") {
+    return "#text";
+  }
+  return (!shared.hasOwn(node, "type") || node.type === "node") && shared.isString(node.name) && node.name ? node.name : "";
+}
+function hasContent(attrs2) {
+  return attrs2 && (attrs2.innerHTML != null || attrs2.textContent != null || attrs2[".innerHTML"] != null || attrs2[".textContent"] != null);
+}
+function nodeKey(node) {
+  if (!shared.isPlainObject(node == null ? void 0 : node.attrs))
+    return;
+  const key = node.attrs.key;
+  if (key == null || node.type === "text")
+    return;
+  if (!shared.hasOwn(node, "type") && shared.isString(node.text) && node.text !== "")
+    return;
+  return key;
+}
+function nodeList2Block(source, scopeId, triggerItemClick, namespace = () => shared.Namespaces.HTML) {
+  let previous = [];
+  let hadUnkeyed = false;
+  let renderedTypes;
+  const unkeyedTypes = /* @__PURE__ */ new WeakMap();
+  function unkeyedType(node) {
+    if (!shared.isPlainObject(node))
+      return "";
+    let type = unkeyedTypes.get(node);
+    if (!type)
+      unkeyedTypes.set(node, type = Vue.computed(() => nodeType(node)));
+    return type.value;
+  }
+  const keyedSource = Vue.computed(() => {
+    var _a;
+    const nodes = source() || [];
+    if (!nodes.length) {
+      previous = [];
+      hadUnkeyed = false;
+      renderedTypes = void 0;
+      return { nodes, keys: [] };
+    }
+    let hasUnkeyed = false;
+    const next = Array.from(nodes, (node) => {
+      const key = nodeKey(node);
+      if (key == null)
+        hasUnkeyed = true;
+      return {
+        key,
+        // 显式 key 的标签更新由节点分支处理，不订阅整个列表。
+        type: key != null ? hadUnkeyed ? nodeType(Vue.toRaw(node)) : "" : unkeyedType(node),
+        id: key
+      };
+    });
+    const same = (old, entry) => old.key === entry.key && ((renderedTypes == null ? void 0 : renderedTypes.get(old.id)) ?? old.type) === entry.type;
+    let start = 0;
+    let oldEnd = previous.length - 1;
+    let newEnd = next.length - 1;
+    while (start <= oldEnd && start <= newEnd && same(previous[start], next[start])) {
+      next[start].id = previous[start].id;
+      start++;
+    }
+    while (start <= oldEnd && start <= newEnd && same(previous[oldEnd], next[newEnd])) {
+      next[newEnd--].id = previous[oldEnd--].id;
+    }
+    let unkeyed;
+    for (let i = oldEnd; i >= start; i--) {
+      const entry = previous[i];
+      if (entry.key != null)
+        continue;
+      const pool = unkeyed || (unkeyed = /* @__PURE__ */ new Map());
+      let ids = pool.get(entry.type);
+      if (!ids)
+        pool.set(entry.type, ids = []);
+      ids.push(entry.id);
+    }
+    for (let i = start; i <= newEnd; i++) {
+      const entry = next[i];
+      if (entry.key == null)
+        entry.id = ((_a = unkeyed == null ? void 0 : unkeyed.get(entry.type)) == null ? void 0 : _a.pop()) ?? Symbol();
+    }
+    const keys = [];
+    let nextRenderedTypes;
+    for (const entry of next) {
+      keys.push(entry.id);
+      if (entry.key != null) {
+        const types = nextRenderedTypes || (nextRenderedTypes = /* @__PURE__ */ new Map());
+        types.set(entry.id, (renderedTypes == null ? void 0 : renderedTypes.get(entry.id)) ?? entry.type);
+      }
+    }
+    renderedTypes = nextRenderedTypes;
+    previous = next;
+    hadUnkeyed = hasUnkeyed;
+    return { nodes, keys };
+  });
+  return Vue.createFor(
+    () => keyedSource.value.nodes,
+    (item) => Vue.createKeyedFragment(
+      () => {
+        const type = nodeType(item.value);
+        const key = nodeKey(item.value);
+        if (key != null)
+          renderedTypes.set(key, type);
+        return type + ":" + namespace();
+      },
+      () => {
+        const name = nodeType(item.value);
+        if (!name)
+          return [];
+        if (name === "#text") {
+          const text = Vue.createTextNode();
+          Vue.renderEffect(() => Vue.setText(text, decodeEntities(item.value.text)));
+          return text;
+        }
+        const ns = name === "svg" ? shared.Namespaces.SVG : name === "math" ? shared.Namespaces.MATH_ML : namespace();
+        const element = Vue.createPlainElement(name, null, null, false, false, ns);
+        let childScope;
+        let children;
+        Vue.renderEffect(() => {
+          var _a;
+          const node = item.value;
+          const attrs2 = normalizeAttrs(name.toLowerCase(), node.attrs);
+          const content = hasContent(attrs2);
+          if (content && childScope) {
+            childScope.stop();
+            Vue.remove(children, element);
+            children = void 0;
+            childScope = void 0;
+          }
+          Vue.setDynamicProps(
+            element,
+            [
+              shared.extend(
+                scopeId ? { [scopeId]: "" } : {},
+                processClickEvent(node, triggerItemClick),
+                attrs2
+              )
+            ],
+            void 0,
+            ns === shared.Namespaces.SVG
+          );
+          if (!content && !childScope && ((_a = node.children) == null ? void 0 : _a.length)) {
+            childScope = Vue.effectScope();
+            children = childScope.run(
+              () => nodeList2Block(
+                () => item.value.children || [],
+                scopeId,
+                triggerItemClick,
+                () => {
+                  var _a2, _b;
+                  return ns === shared.Namespaces.SVG && name === "foreignObject" || ns === shared.Namespaces.MATH_ML && name === "annotation-xml" && ((_b = (_a2 = item.value.attrs) == null ? void 0 : _a2.encoding) == null ? void 0 : _b.includes("html")) ? shared.Namespaces.HTML : ns;
+                }
+              )
+            );
+            Vue.insert(children, element);
+          }
+        });
+        if (element.tagName === "SELECT")
+          Vue.syncSelectValue(element);
+        return element;
+      }
+    ),
+    (_node, index2) => keyedSource.value.keys[index2]
+  );
+}
+function renderRichText$1(props2, rootRef, triggerItemClick) {
+  const vm = Vue.getCurrentInstance();
+  const nodes = Vue.computed(
+    () => shared.isString(props2.nodes) ? parseHtml(props2.nodes) : props2.nodes
+  );
+  const root = Vue.createPlainElement(
+    "uni-rich-text",
+    {
+      selectable: () => props2.userSelect || props2.selectable ? true : null
+    },
+    {
+      default: () => Vue.createPlainElement("div", null, {
+        default: () => (
+          // 与 VDOM vnode.scopeId 对应，保留调用方的作用域样式。
+          nodeList2Block(
+            () => nodes.value,
+            vm.scopeId || "",
+            triggerItemClick
+          )
+        )
+      })
+    },
+    true
+  );
+  rootRef.value = root;
+  return root;
+}
+const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
@@ -6702,29 +6867,13 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
   props: props$b,
   emits: ["itemclick"],
   setup(props2, { emit: emit2 }) {
-    const vm = Vue.getCurrentInstance();
-    const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = Vue.ref(null);
-    const _vnode = Vue.shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
     }
-    function renderVNode() {
-      let nodeList = props2.nodes;
-      if (shared.isString(nodeList)) {
-        nodeList = parseHtml(props2.nodes);
-      }
-      _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
-    }
-    Vue.watch(() => props2.nodes, renderVNode, {
-      immediate: true,
-      deep: true
-    });
-    return () => Vue.h("uni-rich-text", {
-      ref: rootRef,
-      selectable: props2.userSelect || props2.selectable ? true : null
-    }, Vue.h("div", {}, _vnode.value));
+    const result = renderRichText(props2, rootRef, triggerItemClick);
+    return result;
   }
 });
 const _t0$8 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
@@ -8939,7 +9088,7 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
       isOpening.value = true;
       uni.openDialogPage({
-        url: `uni:picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
+        url: `/uni_modules/uni-form/pages/picker/picker?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&cancelEventName=${cancelEventName}&selectorChangeEventName=${selectorChangeEventName}&multiSelectorChangeEventName=${multiSelectorChangeEventName}&timeChangeEventName=${timeChangeEventName}&columnChangeEventName=${columnChangeEventName}`,
         success() {
           setTimeout(() => {
             isOpening.value = false;
@@ -9170,7 +9319,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n3);
     const n5 = Vue.next(n4);
     Vue.setInsertionState(n7, n6);
-    const n2 = Vue.withComponentId("02a52c40", () => Vue.createAssetComponent("scroll-view", {
+    const n2 = Vue.withComponentId("e09e2578", () => Vue.createAssetComponent("scroll-view", {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -13268,11 +13417,11 @@ class AdRender {
     if (!this._rootRef.value) {
       return false;
     }
-    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
-    if (hasContent) {
+    var hasContent2 = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent2) {
       this.report(40, this._currentChannel || void 0);
     }
-    return hasContent;
+    return hasContent2;
   }
   _startCheckTimer() {
     this._clearCheckTimer();
