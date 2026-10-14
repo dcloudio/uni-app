@@ -18,12 +18,12 @@
 | @page | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @page 规则用于在打印文档时修改某些 CSS 属性。 |
 | @property | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @property CSS at-rule是CSS Houdini API 的一部分，它允许开发者显式地定义他们的CSS 自定义属性, 允许进行属性类型检查、设定默认值以及定义该自定义属性是否可以被继承。 |
 | @supports | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @supports CSS at-rule 你可以指定依赖于浏览器中的一个或多个特定的 CSS 功能的支持声明。这被称为特性查询。该规则可以放在代码的顶层，也可以嵌套在任何其他条件组规则中。 |
-| @-moz-document | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Gecko-specific at-rule that restricts the style rules contained within it based on the URL of the document. |
-| @-moz-keyframes | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Defines set of animation key frames. |
-| @-ms-viewport | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Specifies the size, zoom factor, and orientation of the viewport. |
-| @-o-keyframes | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Defines set of animation key frames. |
-| @-o-viewport | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Specifies the size, zoom factor, and orientation of the viewport. |
-| @-webkit-keyframes | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Defines set of animation key frames. |
+| @-moz-document | Web: 4.0; Android: -; iOS: -; HarmonyOS: - | Gecko-specific at-rule that restricts the style rules contained within it based on the URL of the document. |
+| @-moz-keyframes | Web: 4.0; Android: -; iOS: -; HarmonyOS: - | Defines set of animation key frames. |
+| @-ms-viewport | Web: 4.0; Android: -; iOS: -; HarmonyOS: - | Specifies the size, zoom factor, and orientation of the viewport. |
+| @-o-keyframes | Web: 4.0; Android: -; iOS: -; HarmonyOS: - | Defines set of animation key frames. |
+| @-o-viewport | Web: 4.0; Android: -; iOS: -; HarmonyOS: - | Specifies the size, zoom factor, and orientation of the viewport. |
+| @-webkit-keyframes | Web: 4.0; Android: -; iOS: -; HarmonyOS: - | Defines set of animation key frames. |
 
 不支持的css功能，并不影响业务开发。因为css本质是一种编写元素的样式属性的一种描述性写法。元素的所有样式设置，都可以脱离css这种写法，由API完成。
 
