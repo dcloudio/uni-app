@@ -6,37 +6,47 @@
 
 > 本 API 是 [uni ext api](https://uniapp.dcloud.net.cn/api/extapi.html)，需下载插件：[uni-drama](https://ext.dcloud.net.cn/plugin?id=30115)
 
-短剧广告：通过短剧内容生态（穿山甲内容联盟）变现的高价值广告形式。开发者将短剧内容（列表、播放页）嵌入自己的应用，用户免费观看指定集数后，需观看激励视频解锁后续剧集，从而实现广告变现。
+短剧广告：通过短剧内容生态 `穿山甲内容联盟(短剧)` 变现的高价值广告形式。将短剧内容（列表）嵌入自己的应用中，用户免费观看指定集数后，需观看激励视频解锁后续剧集，从而实现广告变现。
 
-uni-app x 内置短剧 uni-drama，提供两种接入方式：
+通过 uni.createDramaAd 可实现 API 模式接入方式： 调用查询接口获取短剧数据，自定义实现短剧列表界面，用户点击后通过 `open` 打开短剧播放界面。如需快速接入，请使用（[ad-drama](../component/ad-drama.md)）组件模式接入。
 
-| 接入方式 | 说明 | 适用场景 |
-| :- | :- | :- |
-| API 模式 | 通过 `uni.createDramaAd` 创建实例，自行搭建短剧列表页，调用查询接口获取短剧数据，再调用 `open` 打开原生播放页 | 需要自定义短剧列表页样式、深度定制业务 |
-| 组件模式 | 使用 `<ad-drama>` 组件（native-view）| 快速接入，直接使用渠道提供的短剧首页 |
-
-组件模式另见：[ad-drama 组件](../component/ad-drama.md)。
-示例Demo另见：[详见](https://gitcode.com/dcloud/uni-ad-drama)
+- uni-ad的业务介绍：[详见](https://uniapp.dcloud.net.cn/uni-ad/)
+- 示例Demo：[详见](https://gitcode.com/dcloud/uni-ad-drama)
 
 **开通配置广告**
 
 [开通广告步骤详情](https://uniapp.dcloud.net.cn/uni-ad/ad-open.html)
 
 **Tips**
-- 使用短剧组件需要先开通穿山甲广告。开通问题请咨询：[uni-ad交流群](https://im.dcloud.net.cn/#/?joinGroup=65d85fc09847e92db03ff81a)。
-- 标准基座不包含短剧运行时，需制作自定义基座后运行，否则报错 `-5020`。
+- HBuilder 5.32 版本 app-android 平台支持。
+- 使用短剧组件需要先开通穿山甲广告，相关问题请咨询：[uni-ad交流群](https://im.dcloud.net.cn/#/?joinGroup=65d85fc09847e92db03ff81a)。
+- 标准基座不包含短剧功能，需勾选广告联盟中的“穿山甲内容联盟(短剧)”，打包自定义基座后运行，否则报错 `-5020` 错误。
 
 ### 配置文件
 
-在穿山甲后台 内容输出->接入管理 找到需要接入内容SDK的应用，点击"下载SDK参数配置"，然后将SDK配置文件（例如 sdk_setting_file.json）拷贝到项目的 assets 文件夹下。
+短剧功能使用的“穿山甲内容联盟(短剧)”要求配置 `SDK参数配置` 文件，在穿山甲后台 "内容输出" -> "接入管理" 找到需要接入内容SDK的应用，点击"下载SDK参数配置"：
 
 ![](https://lf3-plat.pglstatp-toutiao.com/obj/union-platform/a30bc3001dff716fcf6876da15151ecf.png)
 
-文件下载之后重命名为：`gm_SDK_Setting.json`，然后将文件放到项目根目录的`nativeResources->android->assets`目录下。
+配置文件下载之后重命名为 `gm_SDK_Setting.json`，然后将文件放到到 uni-app x 项目的 `nativeResources\android\assets` 文件夹中。
 
 ### 服务器回调
 
-用户观看激励视频解锁剧集后，为防止客户端伪造看完广告的凭据，解锁集数的发放由服务器回调完成，这是业内通行的安全方案。调用 `open` 时传入 `urlCallback`（userId/extra），激励发放时会透传到业务服务器参与校验。服务器回调机制详见 [激励视频广告服务器回调](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#callback)。
+短剧的变现逻辑是：用户免费看完前面几集后，需要看一段激励视频才能解锁后续剧集。这里有一个关键的安全问题——"用户到底有没有真的看完广告"，这件事不能听客户端的。
+
+客户端播放结束时的结果（如 `isEnded`）只是本地状态，很容易被黑产通过反编译、抓包伪造请求来冒充。如果直接按客户端上报来解锁，攻击者可以一次广告都不看就骗取解锁，而广告平台那边并没有真正产生广告收入，最后是开发者既赔了内容又拿不到钱。
+
+所以，解锁集数的发放必须由服务器回调来完成：用户完整看完激励视频后，广告平台会通知 uni-ad，uni-ad 再通过 uniCloud 把"这次广告确实看完了"的可信消息发送到开发者自己的业务服务器，由业务服务器来发放解锁。这条链路黑产无法伪造，是业内通行的安全方案（支付回调同理），没有配置服务器回调的解锁是不安全的。
+
+接入步骤：
+
+1. 在 uni-ad 后台为短剧广告位开启激励视频服务器回调，并选择业务所在位置：业务在 uniCloud 则选云函数/云对象；业务在传统服务器则配置回调 URL。
+2. 调用 `openPage` 时传入 `urlCallback`，用于把业务身份带给服务器：
+   - `userId`：用户唯一标识，服务器据此知道该给谁解锁；
+   - `extra`：业务自定义参数，例如本次要解锁的剧集 ID、订单号等，回调时原样回传。
+3. 业务服务器收到回调后，按 `userId` / `extra` 校验并解锁对应集数。客户端不要自行解锁，只根据服务器结果刷新界面。
+
+服务器回调的详细机制、回调参数、签名校验和完整配置流程，详见 [激励视频广告服务器回调](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#callback)。
 
 ### createDramaAd 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
