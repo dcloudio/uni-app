@@ -2572,6 +2572,7 @@ const UVUE_VAPOR_WEB_EASYCOMS = [
     'checkbox-group',
     'form',
     'label',
+    'loading',
     'match-media',
     'navigator',
     'picker',

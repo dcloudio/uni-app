@@ -9388,95 +9388,6 @@ _sfc_main$h.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/page-container/index.vue");
   return _sfc_setup$h ? _sfc_setup$h(props2, ctx) : void 0;
 };
-class UniVueElement extends Object {
-}
-class UniLoadingElement extends UniVueElement {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement
-    }
-  },
-  __name: "index-x",
-  __ssrInlineRender: true,
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  __vapor: true,
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<uni-loading-element${ssrRenderAttrs(mergeProps({
-        class: "default __uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, _attrs), "uni-loading-element")}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></uni-loading-element>`);
-    };
-  }
-});
-const _sfc_setup$g = _sfc_main$g.setup;
-_sfc_main$g.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/loading/index-x.vue");
-  return _sfc_setup$g ? _sfc_setup$g(props2, ctx) : void 0;
-};
 class UniViewElement extends UniElement {
 }
 class UniTextElement extends UniElement {
@@ -9531,7 +9442,7 @@ class UniCheckboxElement extends UniViewElement {
   }
 }
 const fontUnicode$1 = "";
-const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -9657,15 +9568,15 @@ const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$f = _sfc_main$f.setup;
-_sfc_main$f.setup = (props2, ctx) => {
+const _sfc_setup$g = _sfc_main$g.setup;
+_sfc_main$g.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/checkbox/checkbox.vue");
-  return _sfc_setup$f ? _sfc_setup$f(props2, ctx) : void 0;
+  return _sfc_setup$g ? _sfc_setup$g(props2, ctx) : void 0;
 };
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -9782,15 +9693,15 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$e = _sfc_main$e.setup;
-_sfc_main$e.setup = (props2, ctx) => {
+const _sfc_setup$f = _sfc_main$f.setup;
+_sfc_main$f.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/checkbox-group/checkbox-group.vue");
-  return _sfc_setup$e ? _sfc_setup$e(props2, ctx) : void 0;
+  return _sfc_setup$f ? _sfc_setup$f(props2, ctx) : void 0;
 };
 class UniFormElement extends UniViewElement {
 }
-const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "form",
     // @ts-ignore
@@ -9868,15 +9779,15 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$d = _sfc_main$d.setup;
-_sfc_main$d.setup = (props2, ctx) => {
+const _sfc_setup$e = _sfc_main$e.setup;
+_sfc_main$e.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/form/form.vue");
-  return _sfc_setup$d ? _sfc_setup$d(props2, ctx) : void 0;
+  return _sfc_setup$e ? _sfc_setup$e(props2, ctx) : void 0;
 };
 class UniLabelElement extends UniViewElement {
 }
-const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "label",
     // @ts-ignore
@@ -9920,10 +9831,99 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
+const _sfc_setup$d = _sfc_main$d.setup;
+_sfc_main$d.setup = (props2, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/label/label.vue");
+  return _sfc_setup$d ? _sfc_setup$d(props2, ctx) : void 0;
+};
+class UniVueElement extends Object {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
+  const calculateLoadingWidth = (element, bold2) => {
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
+  };
+  onMounted(() => {
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
+    });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
+    }
+  },
+  __name: "loading",
+  __ssrInlineRender: true,
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  __vapor: true,
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<uni-loading-element${ssrRenderAttrs(mergeProps({
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, _attrs), "uni-loading-element")}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></uni-loading-element>`);
+    };
+  }
+});
 const _sfc_setup$c = _sfc_main$c.setup;
 _sfc_main$c.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/label/label.vue");
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-loading/components/loading/loading.vue");
   return _sfc_setup$c ? _sfc_setup$c(props2, ctx) : void 0;
 };
 class UniMatchMediaElement extends UniViewElement {
@@ -16529,19 +16529,19 @@ export {
   index$i as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
-  _sfc_main$f as Checkbox,
-  _sfc_main$e as CheckboxGroup,
+  _sfc_main$g as Checkbox,
+  _sfc_main$f as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
   index$f as Editor,
-  _sfc_main$d as Form,
+  _sfc_main$e as Form,
   index$e as Icon,
   index$h as Input,
-  _sfc_main$c as Label,
+  _sfc_main$d as Label,
   _sfc_main$o as LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$g as Loading,
+  _sfc_main$c as Loading,
   index$9 as Map,
   _sfc_main$b as MatchMedia,
   index$d as MovableArea,
@@ -16589,6 +16589,8 @@ export {
   UniInputElement as UniInputElementImpl,
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
+  UniLoadingElement,
+  UniLoadingElement as UniLoadingElementImpl,
   UniMatchMediaElement,
   UniMatchMediaElement as UniMatchMediaElementImpl,
   UniMovableAreaElement,

@@ -5,10 +5,10 @@
         :lower-threshold="props.lowerThreshold" :scroll-left="props.scrollLeft"
         :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
         :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-background="props.refresherBackground"
-        :refresher-triggered="props.refresherTriggered" :custom-nested-scroll="props.customNestedScroll"
-        :nested-scroll-child="props.nestedScrollChild" :associative-container="props.associativeContainer"
+        :refresher-triggered="props.refresherTriggered" :associative-container="props.associativeContainer"
         :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
         :android-scrollbar-draggable="props.androidScrollbarDraggable" :initial-scroll-bottom="_initialScrollBottom satisfies boolean"
+        :android-refresher-color="props.androidRefresherColor"
         change:initial-scroll-bottom="recycleListCpp.setInitialScrollBottom" :scroll-anchoring="_scrollAnchoring satisfies boolean" 
         change:scroll-anchoring="recycleListCpp.setScrollAnchoring" :list-view-id="listViewId satisfies number"
         change:list-view-id="recycleListCpp.setListViewId" :list="keyList satisfies string[]"
@@ -114,20 +114,16 @@ const props = defineProps({
         type: [Boolean, String],
         default: true
     },
-    customNestedScroll: {
-        type: [Boolean, String],
-        default: false
-    },
-    nestedScrollChild: {
-        type: String,
-        default: ''
-    },
     /**
      * @internal
      */
     androidScrollbarDraggable: {
         type: [Boolean, String],
         default: false
+    },
+    androidRefresherColor: {
+        type: String,
+        default: ''
     },
     scrollAnchoring: {
         type: [Boolean, String],

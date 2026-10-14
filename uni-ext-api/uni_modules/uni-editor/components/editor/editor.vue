@@ -32,7 +32,6 @@
    *       "unixVaporVer": "5.11"
    *     },
    *     "harmony": {
-   *       "osVer": "√",
    *       "uniVer": "4.23",
    *       "unixVer": "5.08",
    *       "unixVaporVer": "5.08"
@@ -97,7 +96,6 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
-     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -122,7 +120,6 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
-     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -147,7 +144,6 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
-     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -172,7 +168,6 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
-     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -197,7 +192,6 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
-     *       "osVer": "√",
      *       "uniVer": "4.23",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
@@ -223,7 +217,6 @@
      *       "unixVaporVer": "5.11"
      *     },
      *     "harmony": {
-     *       "osVer": "√",
      *       "uniVer": "x",
      *       "unixVer": "5.08",
      *       "unixVaporVer": "5.08"
