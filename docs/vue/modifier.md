@@ -265,9 +265,9 @@
 如果你想让用户输入自动转换为数字，你可以在 `v-model` 后添加 `.number` 修饰符来管理输入
 
 **兼容性 <Help />** 
- | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | x | x |
+ | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | x | 5.11 | x | 5.0 |
 
 ### trim
 
@@ -275,6 +275,6 @@
 如果你想要默认自动去除用户输入内容中两端的空格，你可以在 `v-model` 后添加 `.trim` 修饰符
 
 **兼容性 <Help />** 
- | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | x | x |
+ | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | x | 5.11 | x | 5.0 |
