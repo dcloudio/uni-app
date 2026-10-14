@@ -51,6 +51,7 @@ describe('Web Vapor MovableArea', () => {
   const sensors = new Set<Function>()
   let frameId = 0
 
+  // 初始化需要加载真实运行时并在子进程中编译两个组件，给 CI 冷启动预留时间。
   beforeAll(async () => {
     const { JSDOM } = jest.requireActual('jsdom')
     dom = new JSDOM(
@@ -236,7 +237,7 @@ describe('Web Vapor MovableArea', () => {
         return element
       },
     })
-  })
+  }, 30000)
 
   beforeEach(() => {
     contexts.clear()
