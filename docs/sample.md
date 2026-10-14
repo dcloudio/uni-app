@@ -1,4 +1,4 @@
-# 源码和案例
+# 开源示例
 
 官方有6个开源项目比较重要
 - [hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)：uni内置组件和API的使用示例，也包括一些常见但复杂的模板示例
@@ -23,11 +23,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 
 除此之外，插件市场还有众多插件，[详见](https://ext.dcloud.net.cn/?uni-appx=1)
 
-上线的App案例：
-由于 uni-app x 没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
-希望大型开发者，能主动给本文档提交pr，贡献案例，帮助uni-app x生态发展。
-
-以下列出部分案例：
 
 # 蒸汽模式案例
 
@@ -46,6 +41,9 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 阑珊处：[Android](https://app.mi.com/details?id=cn.minisns.lanshanchu)、[iOS](https://apps.apple.com/cn/app/%E9%98%91%E7%8F%8A%E5%A4%84/id6479599905)
 - 知小融：[Android](https://appgallery.huawei.com/app/C118620299)、[iOS](https://apps.apple.com/cn/app/%E7%9F%A5%E5%B0%8F%E8%9E%8D-%E8%9E%8D%E8%B5%84%E8%B4%B7%E6%AC%BE%E5%92%A8%E8%AF%A2%E8%A7%84%E5%88%92%E5%B9%B3%E5%8F%B0/id6801014541?uo=4)
 - 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app )
+
+由于 uni-app x 没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
+希望大型开发者，能主动给本文档提交pr，贡献案例，帮助uni-app x生态发展。
 
 # VDOM模式案例
 - e线签（天津数字认证有限公司）：[Android](https://sj.qq.com/appdetail/com.tjca.elinesign)、[iOS](https://apps.apple.com/cn/app/e%E7%BA%BF%E7%AD%BE/id6743433163)
