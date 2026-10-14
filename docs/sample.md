@@ -1,4 +1,4 @@
-# 源码和示例
+# 源码和案例
 
 官方有6个开源项目比较重要
 - [hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)：uni内置组件和API的使用示例，也包括一些常见但复杂的模板示例
@@ -23,18 +23,31 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 
 除此之外，插件市场还有众多插件，[详见](https://ext.dcloud.net.cn/?uni-appx=1)
 
-目前插件市场已经有近千款适配uni-app x的插件，不管是uts还是uvue，已有大量开发者在使用。
-
 上线的App案例：
 由于 uni-app x 没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
 希望大型开发者，能主动给本文档提交pr，贡献案例，帮助uni-app x生态发展。
 
 以下列出部分案例：
 
-- uni-ai x：（蒸汽模式案例）开源、跨平台AI聊天流式markdown渲染项目。 [Android](https://web-ext-storage.dcloud.net.cn/ext/uni-ai-x/__UNI__8A096E7_0917211824.apk)、[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
+# 蒸汽模式案例
 
-- 发票匣：（蒸汽模式案例）[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
-- 仪表宝典(化工资料)：（蒸汽模式案例）[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app )
+- uni-ai x：开源、跨平台AI聊天流式markdown渲染项目。 [Android](https://web-ext-storage.dcloud.net.cn/ext/uni-ai-x/__UNI__8A096E7_0917211824.apk)、[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
+
+## 应用商店下载量千万级
+- 抱抱海心理咨询：[Android](https://appgallery.huawei.com/app/C119009491)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.dahe.psy.hmos)
+## 应用商店下载量百万级
+- 京大大回收：[Android](https://appgallery.huawei.com/app/C108165699)、[iOS](https://apps.apple.com/cn/app/%E4%BA%AC%E5%A4%A7%E5%A4%A7%E5%9B%9E%E6%94%B6-%E4%B8%93%E4%B8%9A%E8%B4%AD%E7%89%A9%E5%8D%A1%E7%A4%BC%E5%93%81%E5%8D%A1%E5%88%B8%E5%9B%9E%E6%94%B6%E5%B9%B3%E5%8F%B0/id6748420409?uo=4)
+- 尚家家：[Android](https://appgallery.huawei.com/app/C117527135)、[iOS](https://apps.apple.com/cn/app/%E5%B0%9A%E5%AE%B6%E5%AE%B6-%E8%A3%85%E4%BF%AE%E5%85%AC%E5%8F%B8%E5%B7%A5%E9%95%BF%E6%8E%A5%E5%8D%95%E6%B4%BE%E5%8D%95%E5%B9%B3%E5%8F%B0/id6796617412)、微信小程序搜索"天禅库尚家家装"
+## 应用商店下载量十万级
+- 万象八字：[Android](https://appgallery.huawei.com/app/C115905187)、[iOS](https://apps.apple.com/cn/app/%E4%B8%87%E8%B1%A1%E5%85%AB%E5%AD%97/id6746738853)
+- 金股讯：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
+## 其他
+- 发票匣：[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
+- 阑珊处：[Android](https://app.mi.com/details?id=cn.minisns.lanshanchu)、[iOS](https://apps.apple.com/cn/app/%E9%98%91%E7%8F%8A%E5%A4%84/id6479599905)
+- 知小融：[Android](https://appgallery.huawei.com/app/C118620299)、[iOS](https://apps.apple.com/cn/app/%E7%9F%A5%E5%B0%8F%E8%9E%8D-%E8%9E%8D%E8%B5%84%E8%B4%B7%E6%AC%BE%E5%92%A8%E8%AF%A2%E8%A7%84%E5%88%92%E5%B9%B3%E5%8F%B0/id6801014541?uo=4)
+- 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app )
+
+# VDOM模式案例
 - e线签（天津数字认证有限公司）：[Android](https://sj.qq.com/appdetail/com.tjca.elinesign)、[iOS](https://apps.apple.com/cn/app/e%E7%BA%BF%E7%AD%BE/id6743433163)
 - Tevau 海外应用：[Google Play](https://play.google.com/store/apps/details?id=uni.UNI2317D55&hl=zh&pli=1)、[iOS](https://apps.apple.com/cn/app/tevau/id6504911110)
 - 舆情秘书专业版：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.istarshine.yqms4harmonyos)
@@ -111,7 +124,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 知食有为（AI健康）：[Android](https://sj.qq.com/appdetail/cn.sshcn.nutrition.m)、[iOS](https://apps.apple.com/hk/app/%E7%9F%A5%E9%A3%9F%E6%9C%89%E4%B8%BA/id6739123603)
 - 智能PPT生成器（工具）：[Android](https://app.mi.com/details?id=com.pptgen.Intelligent)
 - 格式作坊（工具）：[Android](https://sj.qq.com/appdetail/com.gszf.app)、[iOS](https://apps.apple.com/cn/app/%E6%A0%BC%E5%BC%8F%E4%BD%9C%E5%9D%8A-%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2%E5%99%A8/id6472780051)
-- 金股讯（金融）：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
 - 应安联（政务）：[Android](https://sj.qq.com/appdetail/com.aky.yal)、[iOS](https://apps.apple.com/cn/app/%E5%BA%94%E5%AE%89%E8%81%94/id1566809671)
 - 智慧强安（政务）：[Android](https://sj.qq.com/appdetail/com.demlution.aatianfangyetan)、[iOS](https://apps.apple.com/cn/app/%E6%99%BA%E6%85%A7%E5%BC%BA%E5%AE%89/id6476082028)
 - 脱单吧（社交）：[Android](https://sj.qq.com/appdetail/com.liewu.desingle)、[iOS](https://apps.apple.com/cn/app/%E8%84%B1%E5%8D%95%E5%90%A7/id1560465075)
@@ -128,7 +140,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 嘟卡邦（电商）：[Android](https://sj.qq.com/appdetail/com.dukabang.app)
 - 百佣（电商）：[Android](https://app.mi.com/details?id=com.baiyong.yuehu)、[iOS](https://apps.apple.com/cn/app/%E7%99%BE%E4%BD%A3/id6451459018)
 - 华杰全优采（医药电商）：[Android](https://sj.qq.com/appdetail/com.wta.NewCloudApp.jiuwei314439)、[iOS](https://apps.apple.com/cn/app/%E5%8D%8E%E6%9D%B0%E5%85%A8%E4%BC%98%E9%87%87/id1577869835)
-- 时一助手（工具）：[App端](http://app.yuteng.vip/sy/index.html)
 - 拾用视频去水印（工具）：[Android](https://sj.qq.com/appdetail/io.video.convertApp)
 - 云旅迹：[Android](https://sj.qq.com/appdetail/com.yunlvji.trip)
 - uyultax（维吾尔族多语言应用）：[Android](https://sj.qq.com/appdetail/com.android.uyultax)
