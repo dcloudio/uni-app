@@ -83,7 +83,7 @@
 * [暗黑模式](api/theme-change.md)
 * [宽屏适配](adapt.md)
 * [国际化](i18n.md)
-* [源码和示例](sample.md)
+* [案例和开源示例](sample.md)
 * [兼容性表格导读](tutorial/compatibility.md)
 * 选型参考
 	* [一文讲透原生渲染和自渲染](./select/native-render-and-self-render.md)
