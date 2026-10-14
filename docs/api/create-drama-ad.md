@@ -6,77 +6,6 @@
 
 > 本 API 是 [uni ext api](https://uniapp.dcloud.net.cn/api/extapi.html)，需下载插件：[uni-drama](https://ext.dcloud.net.cn/plugin?id=30115)
 
-UTS 短剧插件：提供 `uni.createDramaAd`（API 模式，自建聚合页）与 `ad-drama` 组件（组件模式，内嵌短剧首页），创建实例即自动加载短剧模块。仅支持 **App-Android**（HBuilderX 5.32+）。
-
-- API 模式文档：[uni.createDramaAd](https://doc.dcloud.net.cn/uni-app-x/api/create-drama-ad.html)
-- 组件模式文档：[ad-drama 组件](https://doc.dcloud.net.cn/uni-app-x/component/ad-drama.html)
-
-### 效果预览
-
-短剧剧集的集合页面，用户可以通过该页面点击进入短剧播放页：
-
-<img src="https://web-ext-storage.dcloud.net.cn/uniad/ad-drama.jpg" width="300" />
-
-### 使用前提
-
-1. 在 [uni-ad 后台](https://uniad.dcloud.net.cn/)开通短剧广告位，获取 `adpid`；
-2. 从穿山甲后台下载 SDK 配置文件，重命名为 `gm_SDK_Setting.json` 放到项目根目录 `nativeResources/android/assets/` 下；
-3. **必须使用自定义基座**（标准基座不含短剧运行时，报 `-5020`）：HBuilderX 菜单【发行 → 原生App-云打包】→ 勾选"制作自定义调试基座"。
-
-   打包自定义基座配置示例：
-
-   <img src="https://web-ext-storage.dcloud.net.cn/uniad/ad-drama-pkg-base.png" width="600" />
-4. **Android 包名必须与 `gm_SDK_Setting.json` 中 `license_config` 的 `PackageName`（当前为 `com.bytedance.djxdemo`）保持一致，否则短剧播放会崩溃**。详见 [gm_SDK_Setting.json 配置说明](./docs/gm-sdk-setting.md)。
-
-> 本插件独立运行，无需安装其他插件，也**无需手动导入任何 AAR**——原生库由云打包按 `manifest.json` 的 uni-ad 模块配置自动引入。
-
-### 快速使用（API 模式）
-
-> 完整属性、方法、错误码说明见 [uni.createDramaAd 官方文档](https://doc.dcloud.net.cn/uni-app-x/api/create-drama-ad.html)。
-
-```uts
-import { CreateDramaAdOptions, DramaListOptions, DramaListResult, IUniDramaError } from "@/uni_modules/uni-drama"
-
-// 创建即自动加载模块；注册监听后等 onLoad 再查询（避免 -5012）
-const dramaAd = uni.createDramaAd({ adpid: '你的短剧广告位 ID' } as CreateDramaAdOptions)
-dramaAd.onError((err: IUniDramaError) => console.error(err.errMsg))
-dramaAd.onLoad((res: any) => {
-  // 模块就绪（res["providerType"] 为渠道类型），可发起查询
-})
-dramaAd.getRecommendedList({
-  page: 1,
-  pageSize: 20,
-  success: (res: DramaListResult) => { /* 渲染列表 */ },
-  fail: (err: IUniDramaError) => { /* 错误处理 */ }
-} as DramaListOptions)
-```
-
-### 快速使用（组件模式）
-
-> 完整属性、事件、错误码说明见 [ad-drama 组件官方文档](https://doc.dcloud.net.cn/uni-app-x/component/ad-drama.html)。
-
-```vue
-<template>
-  <ad-drama
-    :adpid="'1158231135'"
-    :free="2"
-    :lock="2"
-    :url-callback="{ userId: 'u001', extra: 'order-001' }"
-    @load="onLoad"
-    @error="onError"
-    @click="onClick"
-    @close="onClose"
-  ></ad-drama>
-</template>
-```
-
-### 注意事项
-
-- 类型统一从 `@/uni_modules/uni-drama` 导入，勿 import 编译产物包名 `uts.sdk.modules.DCloudUniDrama`（云打包服务器无此包，会导致云打包失败）。
-- 短剧解锁的激励视频由 SDK 内部完成，无需接入广告插件；`url-callback`（userId/extra）用于激励发放的服务器回调校验。
-- API 模式请在页面 `onUnmounted` 时调用 `destroy()` 释放实例。
-
-
 短剧广告：通过短剧内容生态（穿山甲内容联盟）变现的高价值广告形式。开发者将短剧内容（列表、播放页）嵌入自己的应用，用户免费观看指定集数后，需观看激励视频解锁后续剧集，从而实现广告变现。
 
 uni-app x 内置短剧 uni-drama，提供两种接入方式：
@@ -648,10 +577,10 @@ getInfo
 
 
 
-#### open(options : DramaOpenOptions) : void @open
-open
+#### openPage(options : DramaOpenOptions) : void @openpage
+openPage
 打开短剧播放页播放指定短剧；支持起播集数 episode、单次激励视频解锁集数 lock、初始免费观看集数 free 与服务端回调透传 urlCallback，结果经 options.success / options.fail 回调返回
-##### open 兼容性 <Help /> 
+##### openPage 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | x | x | x | 5.32 | x | x |
@@ -730,7 +659,7 @@ destroy
 
 #### onLoad(callback : DramaSimpleCallback) : void @onload
 onLoad
-短剧模块加载成功时触发（res.providerType 为渠道类型）；open() 打开的播放页就绪后会再次触发（res.type 为 "detail" 并携带 dramaId）
+短剧模块加载成功时触发（res.providerType 为渠道类型）；openPage() 打开的播放页就绪后会再次触发（res.type 为 "detail" 并携带 dramaId）
 ##### onLoad 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
