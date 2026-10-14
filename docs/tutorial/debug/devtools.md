@@ -47,7 +47,7 @@ HBuilderX 会打开独立的 DevTools 窗口。应用尚未连接时，窗口会
 - **展开所有子节点**：递归展开该节点下的所有内容。
 - **收起子级**：收起该节点下已经展开的内容。
 - **将所选节点添加到 uni-agent 聊天**：打开 uni-agent，将当前页面和节点路径添加到输入框；支持截图时还会添加所选节点的截图。
-- **在 HBuilderX 中打开**：打开页面或自定义组件对应的源码文件。该菜单只在能定位源码的页面和自定义组件节点上显示。
+- **在 HBuilder 中打开**：打开页面或自定义组件对应的源码文件。该菜单只在能定位源码的页面和自定义组件节点上显示。
 
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/devtools/devtools-elements-context-menu.png)
 
@@ -139,6 +139,6 @@ Network 只记录 DevTools 建立连接后，通过 `uni.request`、`uni.uploadF
 
 公开 uni Storage API 产生的变化会自动同步。UTS 插件绕过公开 API 包装器写入数据时，请切换到 Storage 标签并点击左上角的刷新按钮。
 
-### 节点右键菜单中没有“在 HBuilderX 中打开”
+### 节点右键菜单中没有“在 HBuilder 中打开”
 
 该菜单只对能够定位源码的页面和自定义组件显示，Element 不显示此菜单。
