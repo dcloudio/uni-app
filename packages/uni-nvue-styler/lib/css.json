@@ -1018,7 +1018,8 @@
         "length",
         "percentage"
       ],
-      "syntax": "<length> | <percentage>",
+      "shorthand": true,
+      "syntax": "[ <length> | <percentage> ]{1,2}",
       "uniPlatform": {
         "app": {
           "android": {
