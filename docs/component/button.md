@@ -19,7 +19,7 @@
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
-| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
+| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: √; 微信小程序: √; 支付宝小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
 | hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
 | hover-start-time | number | 20 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
 | hover-stay-time | number | 70 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
