@@ -18,15 +18,13 @@ defineOptions({
 })
 
 const props = defineProps({
+    /**
+     * @internal
+     */
     itemKey: {
         type: [String, Number],
         required: true,
-    },
-    itemHeight: {
-        type: Number,
-        required: false,
-        default: 0,
-    },
+    }
 });
 const waterflowId = inject<number>("__uni_recycle_view_id", 0);
 const itemKeyRef = computed(() => '' + props.itemKey);

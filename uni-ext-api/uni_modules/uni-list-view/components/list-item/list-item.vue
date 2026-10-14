@@ -19,6 +19,9 @@ defineOptions({
 })
 
 const props = defineProps({
+    /**
+     * @internal
+     */
     itemKey: {
         type: [String, Number],
         required: true,
