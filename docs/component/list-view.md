@@ -52,7 +52,6 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 | enable-back-to-top | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.11; HarmonyOS: x | iOS点击顶部状态栏滚动条返回顶部，只支持竖向 |
 | custom-nested-scroll | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
 | padding | Array |   | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
-| nested-scroll-child | string |   |   |   |
 | scroll-anchoring | boolean \| string |   | Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 是否启用滚动锚定，默认不启用 |
 | initial-scroll-bottom | boolean \| string |   | Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 是否在初始化时滚动到底部，默认不启用 |
 | @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 下拉刷新控件被下拉 |
