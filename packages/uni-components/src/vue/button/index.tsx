@@ -4,8 +4,12 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { useHover } from '../../helpers/useHover'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { withWebEvent } from '../../helpers/useEvent'
+//#if _X_VAPOR_
+import { useVaporButton } from '../../helpers/form-vapor'
+//#else
 import { type UniFormCtx, uniFormKey } from '../form'
 import { type UniLabelCtx, uniLabelKey } from '../label'
+//#endif
 import { useListeners } from '../../helpers/useListeners'
 import { buttonProps } from '../../components/button'
 import { UniElement } from '../../helpers/UniElement'
@@ -25,10 +29,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     if (__PLATFORM__ === 'app' && __PLUS__) {
       initI18nButtonMsgsOnce()
     }
-    const uniForm = inject<UniFormCtx>(
-      uniFormKey,
-      false as unknown as UniFormCtx
-    )
+    // prettier-ignore
+    const uniForm =
+    //#if _X_VAPOR_
+      useVaporButton(props, rootRef)
+    //#else
+    inject<UniFormCtx>(uniFormKey, false as unknown as UniFormCtx)
+    //#endif
     const { hovering, binding } = useHover(props)
     const { t } = /*#__PURE__*/ useI18n()
     const onClick = withWebEvent((e: Event, isLabelClick: boolean) => {
@@ -58,6 +65,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     })
 
+    //#if !_X_VAPOR_
     const uniLabel = inject<UniLabelCtx>(
       uniLabelKey,
       false as unknown as UniLabelCtx
@@ -68,6 +76,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         uniLabel.removeHandler(onClick)
       })
     }
+    //#endif
     useListeners(props, { 'label-click': onClick })
     //#if _X_ && !_NODE_JS_
     onMounted(() => {

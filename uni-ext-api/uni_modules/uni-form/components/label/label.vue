@@ -100,10 +100,22 @@
   }
 
   const handleTap = (event: UniPointerEvent) => {
+    // #ifdef WEB
+    // Web 通过 DOM 祖先识别按钮：旧 TSX 使用 uni-button 标签，新 UVue 使用 uni-button 根类。
+    // 按钮已处理自身点击，跳过 Label 联动以免激活其他控件，同时保留业务事件冒泡。
+    // Node、Element 和 closest 仅用于 Web，App 保持原有处理流程。
+    const eventTarget = event.target as Node | null
+    const element = eventTarget?.nodeType === 1
+      ? eventTarget as Element
+      : eventTarget?.parentElement
+    if (element?.closest('uni-button, .uni-button')) {
+      return
+    }
+    // #endif
     const classList: string[] = event.target?.classList ? event.target.classList : []
-    if (classList.length > 0) {
-      const shouldStopPagination = classList.some((cls) => /^uni-(checkbox|radio|switch)/.test(cls))
-      if (shouldStopPagination) {
+    // 索引遍历同时兼容 App 的数组和 Web 的 DOMTokenList，避免额外转换。
+    for (let i = 0; i < classList.length; i++) {
+      if (/^uni-(checkbox|radio|switch)/.test(classList[i])) {
         return
       }
     }

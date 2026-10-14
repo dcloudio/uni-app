@@ -69,7 +69,7 @@ describe('Web 框架组件入口', () => {
     }
   )
 
-  test('Vapor 入口不导出旧表单上下文及已排除的输入组件', () => {
+  test('Vapor 临时接入旧表单组件，不导出旧上下文或列表组件', () => {
     const componentsRoot = path.resolve(root, '../uni-components/src')
     const vapor = fs.readFileSync(
       path.join(componentsRoot, 'index-vapor.ts'),
@@ -85,9 +85,10 @@ describe('Web 框架组件入口', () => {
     )
     expect(vapor).not.toMatch(/uniFormKey|UniFormCtx|vue\/form/)
     expect(standard).toContain("export { uniFormKey } from './vue/form'")
-    expect(components).not.toMatch(
-      /\b(?:Input|Textarea|UniInputElement|UniTextareaElement)\b/
-    )
+    for (const name of ['Button', 'Input', 'Textarea']) {
+      expect(components).toContain(`  ${name},`)
+      expect(components).toContain(`  Uni${name}Element,`)
+    }
     expect(components).not.toMatch(
       /\b(?:ListView|ListItem|StickySection|StickyHeader|UniListViewElement|UniListItemElement|UniStickySectionElement|UniStickyHeaderElement)\b/
     )

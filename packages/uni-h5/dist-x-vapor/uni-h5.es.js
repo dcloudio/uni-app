@@ -1,8 +1,8 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, computed, inject, provide, injectHook, isReactive, markRaw, nextTick, querySelectorInComponent, querySelectorAllInComponent, setInsertionState, insert, child, setStyle, createFor, next, createIf, setProp, setClass, txt, setText, toDisplayString, on as on$1, withComponentId, createDynamicComponent, setStaticTemplateRef, applyVShow, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onBeforeMount, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, onActivated, resolveComponent, setHtml, createComponentWithFallback, setClassName, createSlot, extend as extend$1, Fragment, EffectScope, onUnmounted, toRaw, createTextNode, remove as remove$1, setDynamicProps, effectScope, syncSelectValue, setBlockKey, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, createVaporApp, VaporTransition, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, hyphenate, Namespaces } from "@vue/shared";
+import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, insert, createFor, setClass, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, resolveComponent, setHtml, createComponentWithFallback, createSlot, toRaw, createTextNode, remove as remove$1, effectScope, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, createVaporApp, VaporTransition, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
@@ -2056,13 +2056,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$i = 0;
+let index$j = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$i++}`;
+  const id2 = vm.id || `context${index$j++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -2191,6 +2191,17 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs2, $listeners: listeners2, $excludeAttrs: excludeAttrs };
 };
+function useBooleanAttr(props2, keys) {
+  if (isString(keys)) {
+    keys = [keys];
+  }
+  return keys.reduce((res, key) => {
+    if (props2[key]) {
+      res[key] = true;
+    }
+    return res;
+  }, /* @__PURE__ */ Object.create(null));
+}
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(
     type,
@@ -2580,8 +2591,8 @@ class UniElement extends HTMLElement {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const _t0$c = template("<canvas class=uni-canvas-canvas>");
-const props$f = { disableScroll: {
+const _t0$e = template("<canvas class=uni-canvas-canvas>");
+const props$i = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
@@ -2613,7 +2624,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: { MODE: 3 },
-  props: props$f,
+  props: props$i,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -2629,7 +2640,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$c();
+          const _n0 = _t0$e();
           renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -2639,10 +2650,458 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+function useHover(props2) {
+  const hovering = ref(false);
+  let hoverTouch = false;
+  let hoverStartTimer;
+  let hoverStayTimer;
+  function hoverReset() {
+    requestAnimationFrame(() => {
+      clearTimeout(hoverStayTimer);
+      hoverStayTimer = setTimeout(() => {
+        hovering.value = false;
+      }, parseInt(props2.hoverStayTime));
+    });
+  }
+  function onTouchstartPassive(evt) {
+    if (evt.touches.length > 1) {
+      return;
+    }
+    handleHoverStart(evt);
+  }
+  function onMousedown(evt) {
+    if (hoverTouch) {
+      return;
+    }
+    handleHoverStart(evt);
+    window.addEventListener("mouseup", handlePCHoverEnd);
+  }
+  function handleHoverStart(evt) {
+    if (evt._hoverPropagationStopped) {
+      return;
+    }
+    if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
+      return;
+    }
+    if (props2.hoverStopPropagation) {
+      evt._hoverPropagationStopped = true;
+    }
+    hoverTouch = true;
+    hoverStartTimer = setTimeout(() => {
+      hovering.value = true;
+      if (!hoverTouch) {
+        hoverReset();
+      }
+    }, parseInt(props2.hoverStartTime));
+  }
+  function onTouchend() {
+    handleHoverEnd();
+  }
+  function onMouseup() {
+    if (!hoverTouch) {
+      return;
+    }
+    handlePCHoverEnd();
+  }
+  function handleHoverEnd() {
+    hoverTouch = false;
+    if (hovering.value) {
+      hoverReset();
+    }
+  }
+  function handlePCHoverEnd() {
+    handleHoverEnd();
+    window.removeEventListener("mouseup", handlePCHoverEnd);
+  }
+  function onTouchcancel() {
+    hoverTouch = false;
+    hovering.value = false;
+    clearTimeout(hoverStartTimer);
+  }
+  return {
+    hovering,
+    binding: {
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel)
+    }
+  };
+}
+function useVaporFormField(props2, state2) {
+  const form = inject("UNI_FORM_CTX", null);
+  if (!form)
+    return;
+  const initialValue = state2.value;
+  const getValue = () => state2.value;
+  const reset = () => {
+    state2.value = initialValue;
+  };
+  watch(
+    () => props2.name,
+    (name, oldName) => {
+      if (oldName)
+        form.unregisterField(oldName);
+      if (name)
+        form.registerField({ name, getValue, reset });
+    },
+    { immediate: true, flush: "sync" }
+  );
+  onBeforeUnmount(() => {
+    if (props2.name)
+      form.unregisterField(props2.name);
+  });
+}
+function useVaporButton(props2, rootRef) {
+  const form = inject("UNI_FORM_CTX", null);
+  const label = inject("UNI_LABEL_CTX", null);
+  if (label) {
+    const fallbackId = `__uni_vapor_button_${getCurrentInstance().uid}`;
+    const child2 = {
+      // 只注册一次，读取最新 id，不因改名改变 Label 默认激活的顺序。
+      get id() {
+        return props2.id || fallbackId;
+      },
+      activate() {
+        const root = rootRef.value;
+        if (root && !props2.disabled) {
+          root.click();
+        }
+      },
+      getDisabled() {
+        return !!props2.disabled;
+      }
+    };
+    onMounted(() => label.register(child2));
+    onBeforeUnmount(() => label.unregister(child2.id));
+  }
+  return form;
+}
+function useListeners(props2, listeners2) {
+  _addListeners(props2.id, listeners2);
+  watch(
+    () => props2.id,
+    (newId, oldId) => {
+      _removeListeners(oldId, listeners2, true);
+      _addListeners(newId, listeners2, true);
+    }
+  );
+  onUnmounted(() => {
+    _removeListeners(props2.id, listeners2);
+  });
+}
+function _addListeners(id2, listeners2, watch2) {
+  const pageId = useCurrentPageId();
+  if (watch2 && !id2) {
+    return;
+  }
+  if (!isPlainObject(listeners2)) {
+    return;
+  }
+  Object.keys(listeners2).forEach((name) => {
+    if (watch2) {
+      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+      }
+    } else {
+      if (name.indexOf("uni-") === 0) {
+        UniViewJSBridge.on(name, listeners2[name]);
+      } else if (id2) {
+        UniViewJSBridge.on(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+      }
+    }
+  });
+}
+function _removeListeners(id2, listeners2, watch2) {
+  const pageId = useCurrentPageId();
+  if (watch2 && !id2) {
+    return;
+  }
+  if (!isPlainObject(listeners2)) {
+    return;
+  }
+  Object.keys(listeners2).forEach((name) => {
+    if (watch2) {
+      if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+      }
+    } else {
+      if (name.indexOf("uni-") === 0) {
+        UniViewJSBridge.off(name, listeners2[name]);
+      } else if (id2) {
+        UniViewJSBridge.off(`uni-${name}-${pageId}-${id2}`, listeners2[name]);
+      }
+    }
+  });
+}
+const buttonProps = {
+  id: {
+    type: String,
+    default: ""
+  },
+  hoverClass: {
+    type: String,
+    default: "button-hover"
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 20
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 70
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  formType: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: ""
+  },
+  loading: {
+    type: [Boolean, String],
+    default: false
+  },
+  plain: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const createComponent = (type, ...args) => {
+  if (type === Fragment) {
+    const slots = args[1];
+    return slots ? typeof slots === "function" ? slots() : typeof slots.default === "function" ? slots.default() : [] : [];
+  }
+  return Vue.createComponentWithFallback(
+    createProxyComponent(Vue.resolveDynamicComponent(type)),
+    ...args
+  );
+};
+const proxyCache = /* @__PURE__ */ new WeakMap();
+function createProxyComponent(type, normalizeNode2) {
+  if (typeof type === "function") {
+    const existing = proxyCache.get(type);
+    if (existing)
+      return existing;
+    const i = Vue.currentInstance || getCurrentInstance();
+    const proxy = new Proxy(type, {
+      apply(target, ctx, args) {
+        if (typeof target.__setup === "function") {
+          target.__setup.apply(ctx, args);
+        }
+        const node = Reflect.apply(target, ctx, args);
+        return node;
+      },
+      get(target, p2, receiver) {
+        const result = Reflect.get(target, p2, receiver);
+        if (p2 === "__vapor" && result === void 0 && i && i.appContext.vapor) {
+          return true;
+        }
+        return result;
+      }
+    });
+    proxyCache.set(type, proxy);
+    return proxy;
+  }
+  return type;
+}
+function createFragment(nodes, anchor = document.createTextNode("")) {
+  const frag = new Vue.VaporFragment(nodes);
+  frag.anchor = anchor;
+  return frag;
+}
+function normalizeBlock(node, anchor, processFunction = false) {
+  if (node instanceof Node || Vue.isFragment(node)) {
+    return node;
+  } else if (Vue.isVaporComponent(node)) {
+    return createFragment(node, anchor);
+  } else if (Array.isArray(node)) {
+    return createFragment(
+      node.map((i) => normalizeBlock(i, void 0, processFunction)),
+      anchor
+    );
+  } else if (processFunction && typeof node === "function") {
+    return resolveValues([node], anchor, true)[0];
+  } else {
+    const result = node == null || typeof node === "boolean" ? "" : String(node);
+    if (anchor) {
+      anchor.textContent = result;
+      return anchor;
+    } else {
+      return document.createTextNode(result);
+    }
+  }
+}
+function resolveValue(current, value, anchor, processFunction = false) {
+  anchor = anchor || (current instanceof Node && current.nodeType === 3 ? current : void 0);
+  const node = normalizeBlock(value, anchor, processFunction);
+  if (current) {
+    if (Vue.isFragment(current)) {
+      if (current.anchor && current.anchor.parentNode) {
+        Vue.remove(current.nodes, current.anchor.parentNode);
+        Vue.insert(node, current.anchor.parentNode, current.anchor);
+        if (!anchor)
+          current.anchor.parentNode.removeChild(current.anchor);
+        if (current.scope)
+          current.scope.stop();
+      }
+    } else if (current instanceof Node) {
+      if (current.nodeType === 3 && (!(node instanceof Node) || node.nodeType !== 3)) {
+        current.textContent = "";
+      }
+      if (Vue.isFragment(node) && current.parentNode) {
+        Vue.insert(node, current.parentNode, current);
+        if (!anchor || current.nodeType !== 3) {
+          current.parentNode.removeChild(current);
+        }
+      } else if (node instanceof Node) {
+        if (current.nodeType === 3 && node.nodeType === 3) {
+          current.textContent = node.textContent;
+          return current;
+        } else if (current.parentNode) {
+          current.parentNode.replaceChild(node, current);
+        }
+      }
+    }
+  }
+  return node;
+}
+function resolveValues(values = [], _anchor, processFunction = false) {
+  const nodes = [];
+  const scopes = [];
+  for (const [index2, value] of values.entries()) {
+    const anchor = index2 === values.length - 1 ? _anchor : void 0;
+    if (typeof value === "function") {
+      Vue.renderEffect(() => {
+        if (scopes[index2])
+          scopes[index2].stop();
+        scopes[index2] = new EffectScope();
+        nodes[index2] = scopes[index2].run(
+          () => resolveValue(nodes[index2], value(), anchor, processFunction)
+        );
+      });
+    } else {
+      nodes[index2] = resolveValue(nodes[index2], value, anchor, processFunction);
+    }
+  }
+  return nodes;
+}
+function setNodes(anchor, ...values) {
+  const resolvedValues = resolveValues(values, anchor);
+  if (anchor.parentNode)
+    Vue.insert(resolvedValues, anchor.parentNode, anchor);
+}
+function createNodes(...values) {
+  return resolveValues(values);
+}
+class UniButtonElement extends UniElement {
+}
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Button",
+  props: buttonProps,
+  rootElement: {
+    name: "uni-button",
+    class: UniButtonElement
+  },
+  setup(props2, { slots }) {
+    const rootRef = ref(null);
+    const uniForm = useVaporButton(props2, rootRef);
+    const { hovering, binding } = useHover(props2);
+    const onClick = withWebEvent((e2, isLabelClick) => {
+      if (props2.disabled) {
+        return e2.stopImmediatePropagation();
+      }
+      if (isLabelClick) {
+        rootRef.value.click();
+      }
+      const formType = props2.formType;
+      if (formType) {
+        if (!uniForm) {
+          return;
+        }
+        if (formType === "submit") {
+          uniForm.submit(e2);
+        } else if (formType === "reset") {
+          uniForm.reset(e2);
+        }
+        return;
+      }
+    });
+    useListeners(props2, { "label-click": onClick });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      const hoverClass = props2.hoverClass;
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
+      const loadingAttrs = useBooleanAttr(props2, "loading");
+      const plainAttrs = useBooleanAttr(props2, "plain");
+      const hasHoverClass = hoverClass && hoverClass !== "none";
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n1 = createPlainElement("uni-button", {
+          onClick: () => onClick,
+          id: () => props2.id,
+          class: () => hasHoverClass && hovering.value ? hoverClass : "",
+          $: [
+            () => hasHoverClass && binding,
+            () => booleanAttrs,
+            () => loadingAttrs,
+            () => plainAttrs
+          ]
+        }, extend$1(() => {
+          const _n0 = createNodes(() => slots.default && slots.default());
+          return _n0;
+        }, { _: 1 }), true);
+        renderEffect(() => _setTemplateRef(_n1, rootRef));
+        return _n1;
+      })();
+    };
+  }
+});
+function throttle(fn, wait) {
+  let last = 0;
+  let timeout;
+  let waitCallback;
+  const newFn = function(...arg) {
+    const now = Date.now();
+    clearTimeout(timeout);
+    waitCallback = () => {
+      waitCallback = null;
+      last = now;
+      fn.apply(this, arg);
+    };
+    if (now - last < wait) {
+      timeout = setTimeout(waitCallback, wait - (now - last));
+      return;
+    }
+    waitCallback();
+  };
+  newFn.cancel = function() {
+    clearTimeout(timeout);
+    waitCallback = null;
+  };
+  newFn.flush = function() {
+    clearTimeout(timeout);
+    waitCallback && waitCallback();
+  };
+  return newFn;
+}
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$e = {
+const props$h = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -2660,7 +3119,7 @@ const props$e = {
     default: false
   }
 };
-const emit = ["keyboardheightchange"];
+const emit$1 = ["keyboardheightchange"];
 function useKeyboard$1(props2, elRef, trigger) {
   function initKeyboard(el) {
     const isApple2 = computed(
@@ -2691,6 +3150,970 @@ function useKeyboard$1(props2, elRef, trigger) {
     (el) => el && initKeyboard(el)
   );
 }
+function useScopedAttrs() {
+  const state2 = reactive({
+    attrs: {}
+  });
+  onMounted(() => {
+    let instance2 = getCurrentInstance();
+    while (instance2) {
+      const scopeId = instance2.type.__scopeId;
+      if (scopeId) {
+        state2.attrs[scopeId] = "";
+      }
+      instance2 = instance2.proxy && instance2.proxy.$mpType === "page" ? null : instance2.parent;
+    }
+  });
+  return {
+    state: state2
+  };
+}
+function getSelectedTextRange$1(_, resolve) {
+  const activeElement = document.activeElement;
+  if (!activeElement) {
+    return resolve({});
+  }
+  const data = {};
+  if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
+    data.start = activeElement.selectionStart;
+    data.end = activeElement.selectionEnd;
+  }
+  resolve(data);
+}
+const UniViewJSBridgeSubscribe = function() {
+  registerViewMethod(
+    getCurrentPageId(),
+    "getSelectedTextRange",
+    getSelectedTextRange$1
+  );
+};
+function getValueString(value, type, maxlength) {
+  if (type === "number" && isNaN(Number(value))) {
+    value = "";
+  }
+  const valueStr = value === null || value === void 0 ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
+  }
+  return valueStr.slice(0, maxlength);
+}
+const INPUT_MODES = [
+  "none",
+  "text",
+  "decimal",
+  "numeric",
+  "tel",
+  "search",
+  "email",
+  "url"
+];
+const props$g = /* @__PURE__ */ extend(
+  {},
+  {
+    name: {
+      type: String,
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number]
+    },
+    value: {
+      type: [String, Number]
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
+    autoFocus: {
+      type: [Boolean, String],
+      default: false
+    },
+    focus: {
+      type: [Boolean, String],
+      default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
+    },
+    type: {
+      type: String,
+      default: "text"
+    },
+    password: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    placeholderStyle: {
+      type: String,
+      default: ""
+    },
+    placeholderClass: {
+      type: String,
+      default: ""
+    },
+    maxlength: {
+      type: [Number, String],
+      default: Infinity
+    },
+    confirmType: {
+      type: String,
+      default: "done"
+    },
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    step: {
+      type: String,
+      default: "0.000000000000000001"
+    },
+    inputmode: {
+      type: String,
+      default: void 0,
+      validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
+    }
+  },
+  props$h
+);
+const emit = [
+  "input",
+  "focus",
+  "blur",
+  "update:value",
+  "update:modelValue",
+  "update:focus",
+  "compositionstart",
+  "compositionupdate",
+  "compositionend",
+  ...emit$1
+];
+function useBase(props2, rootRef, emit2) {
+  const fieldRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const selectionStart = computed(() => {
+    const selectionStart2 = Number(props2.selectionStart);
+    return isNaN(selectionStart2) ? -1 : selectionStart2;
+  });
+  const selectionEnd = computed(() => {
+    const selectionEnd2 = Number(props2.selectionEnd);
+    return isNaN(selectionEnd2) ? -1 : selectionEnd2;
+  });
+  const cursor = computed(() => {
+    const cursor2 = Number(props2.cursor);
+    return isNaN(cursor2) ? -1 : cursor2;
+  });
+  const maxlength = computed(() => {
+    var maxlength2 = Number(props2.maxlength);
+    {
+      return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
+    }
+  });
+  let value = "";
+  {
+    const modelValueString = getValueString(
+      props2.modelValue,
+      props2.type,
+      maxlength.value
+    );
+    const valueString = getValueString(props2.value, props2.type, maxlength.value);
+    value = props2.modelValue !== void 0 ? modelValueString !== null && modelValueString !== void 0 ? modelValueString : valueString : valueString;
+  }
+  const state2 = reactive({
+    value,
+    valueOrigin: value,
+    maxlength,
+    focus: props2.focus,
+    composing: false,
+    selectionStart,
+    selectionEnd,
+    cursor
+  });
+  watch(
+    () => state2.focus,
+    (val) => emit2("update:focus", val)
+  );
+  watch(
+    () => state2.maxlength,
+    (val) => {
+      if (val >= 0) {
+        state2.value = state2.value.slice(0, val);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  return {
+    fieldRef,
+    state: state2,
+    trigger
+  };
+}
+function useValueSync(props2, state2, emit2, trigger, fieldRef) {
+  let valueChangeFn = null;
+  {
+    valueChangeFn = throttle((val) => {
+      state2.value = getValueString(val, props2.type, state2.maxlength);
+    }, 100);
+  }
+  watch(() => props2.modelValue, valueChangeFn);
+  watch(() => props2.value, valueChangeFn);
+  const triggerInputFn = throttle((event, detail) => {
+    valueChangeFn.cancel();
+    emit2("update:modelValue", detail.value);
+    emit2("update:value", detail.value);
+    trigger("input", event, detail);
+  }, 100);
+  const triggerInput = (event, detail, force) => {
+    valueChangeFn.cancel();
+    detail.value;
+    triggerInputFn(event, detail);
+    if (force) {
+      triggerInputFn.flush();
+    }
+  };
+  onBeforeMount(() => {
+    valueChangeFn.cancel();
+    triggerInputFn.cancel();
+  });
+  return {
+    trigger,
+    triggerInput
+  };
+}
+function useAutoFocus(props2, fieldRef) {
+  useUserAction();
+  const needFocus = computed(() => props2.autoFocus || props2.focus);
+  function focus() {
+    if (!needFocus.value) {
+      return;
+    }
+    const field = fieldRef.value;
+    if (!field || false) {
+      setTimeout(focus, 100);
+      return;
+    }
+    {
+      field.focus();
+    }
+  }
+  function blur() {
+    const field = fieldRef.value;
+    if (field) {
+      field.blur();
+    }
+  }
+  watch(
+    () => props2.focus,
+    (value) => {
+      if (value) {
+        focus();
+      } else {
+        blur();
+      }
+    }
+  );
+  onMounted(() => {
+    if (needFocus.value) {
+      nextTick(focus);
+    }
+  });
+}
+function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) {
+  function checkSelection() {
+    const field = fieldRef.value;
+    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && typeof field.selectionStart === "number") {
+      field.selectionStart = state2.selectionStart;
+      field.selectionEnd = state2.selectionEnd;
+    }
+  }
+  function checkCursor() {
+    const field = fieldRef.value;
+    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && typeof field.selectionStart === "number") {
+      field.selectionEnd = field.selectionStart = state2.cursor;
+    }
+  }
+  function getFieldSelectionEnd(field) {
+    if (field.type === "number") {
+      return null;
+    } else {
+      return field.selectionEnd;
+    }
+  }
+  function initField() {
+    const field = fieldRef.value;
+    if (!field)
+      return;
+    const onFocus = function(event) {
+      state2.focus = true;
+      trigger("focus", event, {
+        value: state2.value
+      });
+      checkSelection();
+      checkCursor();
+    };
+    const onInput = function(event, force) {
+      event.stopPropagation();
+      if (isFunction(beforeInput) && beforeInput(event, state2) === false) {
+        return;
+      }
+      state2.value = field.value;
+      if (!state2.composing || !props2.ignoreCompositionEvent) {
+        triggerInput(
+          event,
+          {
+            value: field.value,
+            cursor: getFieldSelectionEnd(field)
+          },
+          force
+        );
+      }
+    };
+    const onBlur = function(event) {
+      if (state2.composing) {
+        state2.composing = false;
+        onInput(event, true);
+      }
+      state2.focus = false;
+      trigger("blur", event, {
+        value: state2.value,
+        cursor: getFieldSelectionEnd(event.target)
+      });
+    };
+    field.addEventListener("change", (event) => event.stopPropagation());
+    field.addEventListener("focus", onFocus);
+    field.addEventListener("blur", onBlur);
+    field.addEventListener("input", onInput);
+    field.addEventListener("compositionstart", (event) => {
+      event.stopPropagation();
+      state2.composing = true;
+      _onComposition(event);
+    });
+    field.addEventListener("compositionend", (event) => {
+      event.stopPropagation();
+      if (state2.composing) {
+        state2.composing = false;
+        onInput(event);
+      }
+      _onComposition(event);
+    });
+    field.addEventListener("compositionupdate", _onComposition);
+    function _onComposition(event) {
+      if (!props2.ignoreCompositionEvent) {
+        trigger(event.type, event, {
+          value: event.data
+        });
+      }
+    }
+  }
+  watch([() => state2.selectionStart, () => state2.selectionEnd], checkSelection);
+  watch(() => state2.cursor, checkCursor);
+  watch(() => fieldRef.value, initField);
+}
+function useField(props2, rootRef, emit2, beforeInput) {
+  UniViewJSBridgeSubscribe();
+  const { fieldRef, state: state2, trigger } = useBase(props2, rootRef, emit2);
+  const { triggerInput } = useValueSync(props2, state2, emit2, trigger);
+  useAutoFocus(props2, fieldRef);
+  useKeyboard$1(props2, fieldRef);
+  const { state: scopedAttrsState } = useScopedAttrs();
+  useVaporFormField(props2, state2);
+  useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput);
+  const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
+  return {
+    fieldRef,
+    state: state2,
+    scopedAttrsState,
+    fixDisabledColor,
+    trigger
+  };
+}
+once(() => {
+  {
+    const ua2 = navigator.userAgent;
+    let osVersion = "";
+    const osVersionFind = ua2.match(/OS\s([\w_]+)\slike/);
+    if (osVersionFind) {
+      osVersion = osVersionFind[1].replace(/_/g, ".");
+    } else if (/Macintosh|Mac/i.test(ua2) && navigator.maxTouchPoints > 0) {
+      const versionMatched = ua2.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osVersion = versionMatched[1];
+      }
+    }
+    return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
+  }
+});
+const _t0$d = template("<input tabindex=-1 class=uni-input-input>", 1);
+const _t1$9 = template("<input class=uni-input-input>", 1);
+const _t2$4 = template("<form action novalidate class=uni-input-form> ");
+const _t3$4 = template("<div class=uni-input-wrapper><div> </div>");
+const props$f = /* @__PURE__ */ extend({}, props$g, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
+  }
+});
+function isPaste(event) {
+  return event.inputType === "insertFromPaste";
+}
+function useCache(props2, type) {
+  if (type.value === "number") {
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
+    const cache = ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
+    watch(() => props2.modelValue, (value2) => {
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+    });
+    watch(() => props2.value, (value2) => {
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+    });
+    return cache;
+  } else {
+    return ref("");
+  }
+}
+class UniInputElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+}
+const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$f,
+  emits: ["confirm", ...emit],
+  rootElement: {
+    name: "uni-input",
+    class: UniInputElement
+  },
+  setup(props2, { emit: emit2, expose }) {
+    const INPUT_TYPES = [
+      "text",
+      "number",
+      "idcard",
+      "digit",
+      "password",
+      "tel",
+      "search",
+      "email"
+    ];
+    const AUTOCOMPLETES = ["off", "one-time-code"];
+    const type = computed(() => {
+      let type2 = "";
+      switch (props2.type) {
+        case "text":
+          type2 = "text";
+          if (props2.confirmType === "search") {
+            type2 = "search";
+          }
+          break;
+        case "idcard":
+          type2 = "text";
+          break;
+        case "digit":
+          type2 = "number";
+          break;
+        case "none":
+          type2 = "text";
+          break;
+        default:
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          break;
+      }
+      return props2.password ? "password" : type2;
+    });
+    const autocomplete = computed(() => {
+      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+      const kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
+      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+      return AUTOCOMPLETES[index2];
+    });
+    const inputmode = computed(() => {
+      if (props2.inputmode !== void 0) {
+        return props2.inputmode;
+      }
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
+      }
+      let inputmodeMap = {};
+      {
+        inputmodeMap = {
+          number: "numeric",
+          digit: "decimal",
+          idcard: "text"
+        };
+      }
+      return inputmodeMap[props2.type];
+    });
+    let cache = useCache(props2, type);
+    const rootRef = ref(null);
+    const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state22) => {
+      {
+        return;
+      }
+    });
+    watch(() => state2.value, (value) => {
+      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
+        cache.value = value.toString();
+      }
+    });
+    watch(() => props2.maxlength, (length) => {
+      length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
+      const realValue = state2.value.slice(0, length);
+      realValue !== state2.value && (state2.value = realValue);
+    });
+    const NUMBER_TYPES = ["number", "digit"];
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      const input = event.target;
+      event.stopPropagation();
+      trigger("confirm", event, { value: input.value });
+      !props2.confirmHold && input.blur();
+    }
+    expose({ $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state2.value = detail.value;
+    } });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      Object.defineProperty(rootElement, "value", {
+        get() {
+          return rootElement.querySelector("input").value;
+        },
+        set(value) {
+          rootElement.querySelector("input").value = value;
+        }
+      });
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      let inputNode = props2.disabled && fixDisabledColor ? (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t0$d();
+        setBlockKey(_n0, "disabled-input");
+        on$1(
+          _n0,
+          // fix: 禁止 readonly 状态获取焦点
+          "focus",
+          (event) => event.target.blur()
+        );
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "readonly", !!props2.disabled);
+          setProp(_n0, "type", type.value);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "step", step.value);
+          setStyle(_n0, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          setProp(_n0, "inputmode", inputmode.value);
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })() : (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t1$9();
+        setBlockKey(_n0, "input");
+        on$1(_n0, "input", withModifiers((event) => {
+          const value = event.target.value.toString();
+          if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
+            if (isPaste(event)) {
+              state2.value = value.slice(0, state2.maxlength);
+            }
+            return;
+          }
+          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+            return;
+          }
+          state2.value = value;
+        }, ["stop"]));
+        on$1(_n0, "keyup", onKeyUpEnter);
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "disabled", !!props2.disabled);
+          setProp(_n0, "type", type.value);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "step", step.value);
+          setProp(_n0, "enterkeyhint", props2.confirmType);
+          setProp(_n0, "pattern", props2.type === "number" ? "[0-9]*" : void 0);
+          setStyle(_n0, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
+          setProp(_n0, "autocomplete", autocomplete.value);
+          setProp(_n0, "inputmode", inputmode.value);
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n7 = createPlainElement("uni-input", null, () => {
+          const _n6 = _t3$4();
+          const _n0 = child(_n6);
+          applyVShow(_n0, () => !(state2.value.length || cache.value === "-" || cache.value.includes(".")));
+          const _x0 = txt(_n0);
+          setNodes(_x0, () => props2.placeholder);
+          renderEffect(() => setDynamicProps(_n0, [scopedAttrsState.attrs, {
+            style: props2.placeholderStyle,
+            class: ["uni-input-placeholder", props2.placeholderClass]
+          }]));
+          setInsertionState(_n6, 1);
+          createIf(() => props2.confirmType === "search", () => {
+            const _n3 = _t2$4();
+            on$1(_n3, "submit", (event) => event.preventDefault());
+            const _x3 = txt(_n3);
+            setNodes(_x3, () => inputNode);
+            return _n3;
+          }, () => {
+            const _n5 = createNodes(() => inputNode);
+            return _n5;
+          }, 265);
+          return _n6;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n7, rootRef));
+        return _n7;
+      })();
+    };
+  }
+});
+const _t0$c = template("<div><div></div></div>");
+const _t1$8 = template("<div><div>");
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: { initial: {
+    type: Boolean,
+    default: false
+  } },
+  emits: ["resize"],
+  setup(props2, { emit: emit2 }) {
+    const rootRef = ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    useResizeSensorLifecycle(rootRef, props2, update, reset);
+    return () => (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
+        const _n0 = _t0$c();
+        const _n1 = _t1$8();
+        on$1(_n0, "scroll", update);
+        on$1(_n1, "scroll", update);
+        return [_n0, _n1];
+      }, true);
+      renderEffect(() => _setTemplateRef(_n2, rootRef));
+      return _n2;
+    })();
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = reactive({
+    width: -1,
+    height: -1
+  });
+  watch(() => extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const { firstElementChild, lastElementChild } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
+function useResizeSensorLifecycle(rootRef, props2, update, reset) {
+  onActivated(reset);
+  onMounted(() => {
+    if (props2.initial) {
+      nextTick(update);
+    }
+    const rootEl = rootRef.value;
+    if (rootEl.offsetParent !== rootEl.parentElement) {
+      rootEl.parentElement.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      reset();
+    }
+  });
+}
+const _t0$b = template("<textarea tabindex=-1>", 1);
+const _t1$7 = template("<textarea>", 1);
+const _t2$3 = template("<form action class=uni-input-form> ");
+const _t3$3 = template("<div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>");
+const _t4$3 = template("<div>", 1);
+const props$e = /* @__PURE__ */ extend({}, props$g, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  autoHeight: {
+    type: [Boolean, String],
+    default: false
+  },
+  confirmType: {
+    type: String,
+    default: "return",
+    validator(val) {
+      return ConfirmTypes.concat("return").includes(val);
+    }
+  }
+});
+let fixMargin = false;
+const ConfirmTypes = [
+  "done",
+  "go",
+  "next",
+  "search",
+  "send"
+];
+function setFixMargin() {
+  const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
+  fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
+}
+class UniTextareaElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
+  }
+}
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$e,
+  emits: [
+    "confirm",
+    "change",
+    "linechange",
+    ...emit
+  ],
+  rootElement: {
+    name: "uni-textarea",
+    class: UniTextareaElement
+  },
+  setup(props2, { emit: emit2, expose }) {
+    const rootRef = ref(null);
+    const wrapperRef = ref(null);
+    const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+    const valueCompute = computed(() => state2.value.split(LINEFEED));
+    const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
+    const heightRef = ref(0);
+    const lineRef = ref(null);
+    watch(() => heightRef.value, (height) => {
+      const el = rootRef.value;
+      const lineEl = lineRef.value;
+      const wrapper = wrapperRef.value;
+      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+      if (isNaN(lineHeight)) {
+        lineHeight = lineEl.offsetHeight;
+      }
+      var lineCount = Math.round(height / lineHeight);
+      trigger("linechange", {}, {
+        height,
+        heightRpx: 750 / window.innerWidth * height,
+        lineCount
+      });
+      if (props2.autoHeight) {
+        wrapper.style.height = height + "px";
+      }
+    });
+    watch(() => props2.autoHeight, (autoHeight) => {
+      const wrapper = wrapperRef.value;
+      if (autoHeight) {
+        wrapper.style.height = heightRef.value + "px";
+      } else {
+        wrapper.style.height = "";
+      }
+    });
+    function onResize2({ height }) {
+      heightRef.value = height;
+    }
+    function onChange2(event) {
+      {
+        trigger("change", event, { value: state2.value });
+      }
+    }
+    function confirm(event) {
+      trigger("confirm", event, { value: state2.value });
+    }
+    function onKeyDownEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        event.preventDefault();
+      }
+    }
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        confirm(event);
+        const textarea = event.target;
+        !props2.confirmHold && textarea.blur();
+      }
+    }
+    {
+      setFixMargin();
+    }
+    expose({ $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state2.value = detail.value;
+    } });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      Object.defineProperty(rootElement, "value", {
+        get() {
+          return state2.value;
+        },
+        set(value) {
+          rootElement.querySelector("textarea").value = value;
+        }
+      });
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      let textareaNode = props2.disabled && fixDisabledColor ? (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t0$b();
+        setBlockKey(_n0, "disabled-textarea");
+        on$1(
+          _n0,
+          // fix: 禁止 readonly 状态获取焦点
+          "focus",
+          (event) => event.target.blur()
+        );
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "readonly", !!props2.disabled);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setClassName(_n0, 1 | (fixMargin ? 2 : 0), [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
+          setStyle(_n0, {
+            overflowY: props2.autoHeight ? "hidden" : "auto",
+            /* eslint-disable no-restricted-syntax */
+            ...props2.cursorColor && { caretColor: props2.cursorColor }
+          });
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })() : (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n0 = _t1$7();
+        setBlockKey(_n0, "textarea");
+        on$1(_n0, "keydown", onKeyDownEnter);
+        on$1(_n0, "keyup", onKeyUpEnter);
+        on$1(_n0, "change", onChange2);
+        renderEffect(() => {
+          setValue(_n0, state2.value);
+          setProp(_n0, "disabled", !!props2.disabled);
+          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "enterkeyhint", props2.confirmType);
+          setProp(_n0, "inputmode", props2.inputmode);
+          setClassName(_n0, 1 | (fixMargin ? 2 : 0), [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
+          setStyle(_n0, {
+            overflowY: props2.autoHeight ? "hidden" : "auto",
+            /* eslint-disable no-restricted-syntax */
+            ...props2.cursorColor && { caretColor: props2.cursorColor }
+          });
+          _setTemplateRef(_n0, fieldRef);
+        });
+        return _n0;
+      })();
+      return (() => {
+        const _setTemplateRef = createTemplateRefSetter();
+        const _n11 = createPlainElement("uni-textarea", { "auto-height": () => props2.autoHeight }, () => {
+          const _n10 = _t3$3();
+          const _n0 = child(_n10);
+          const _n1 = next(_n0);
+          const _n4 = next(_n1);
+          const _n2 = child(_n4, true);
+          applyVShow(_n0, () => !state2.value.length);
+          const _x0 = txt(_n0);
+          setNodes(_x0, () => props2.placeholder);
+          setNodes(_n2, () => valueCompute.value.map((item) => (() => {
+            const _n52 = _t4$3();
+            setInsertionState(_n52);
+            createIf(() => item.trim(), () => {
+              const _n22 = createNodes(() => item);
+              return _n22;
+            }, () => {
+              const _n42 = createNodes(".");
+              return _n42;
+            }, 266);
+            return _n52;
+          })()));
+          renderEffect(() => {
+            setDynamicProps(_n0, [scopedAttrsState.attrs, {
+              style: props2.placeholderStyle,
+              class: ["uni-textarea-placeholder", props2.placeholderClass]
+            }]);
+            _setTemplateRef(_n1, lineRef);
+            setClassName(_n4, 1 | (props2.autoHeight ? 2 : 0), [" uni-textarea-compute", " uni-textarea-compute-auto-height"]);
+          });
+          setInsertionState(_n4, 1);
+          createComponent(ResizeSensor, {
+            initial: true,
+            onResize: () => onResize2
+          });
+          setInsertionState(_n10, 3);
+          createIf(() => props2.confirmType === "search", () => {
+            const _n7 = _t2$3();
+            on$1(_n7, "submit", () => false);
+            const _x7 = txt(_n7);
+            setNodes(_x7, () => textareaNode);
+            return _n7;
+          }, () => {
+            const _n9 = createNodes(() => textareaNode);
+            return _n9;
+          }, 265);
+          renderEffect(() => _setTemplateRef(_n10, wrapperRef));
+          return _n10;
+        }, true);
+        renderEffect(() => _setTemplateRef(_n11, rootRef));
+        return _n11;
+      })();
+    };
+  }
+});
 const TEMP_PATH = "";
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
@@ -6792,7 +8215,7 @@ const initIntersectionObserverPolyfill = function() {
     if (options.root && options.root.nodeType != 1 && options.root.nodeType != 9) {
       throw new Error("root must be a Document or Element");
     }
-    this._checkForIntersections = throttle(
+    this._checkForIntersections = throttle2(
       this._checkForIntersections.bind(this),
       this.THROTTLE_TIMEOUT
     );
@@ -7143,7 +8566,7 @@ const initIntersectionObserverPolyfill = function() {
   function now() {
     return window.performance && performance.now && performance.now();
   }
-  function throttle(fn, timeout) {
+  function throttle2(fn, timeout) {
     var timer = null;
     return function() {
       if (!timer) {
@@ -10153,7 +11576,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           insert(n5, n7);
           renderEffect(() => setStyle(n5, unref(layoutState).topWindowStyle));
           setInsertionState(n5);
-          const n4 = withComponentId("42efa222", () => createDynamicComponent(() => unref(TopWindow), {
+          const n4 = withComponentId("9bbd592a", () => createDynamicComponent(() => unref(TopWindow), {
             "navigation-bar-title-text": () => unref(layoutState).navigationBarTitleText,
             $: [
               () => unref(windowState)
@@ -10178,12 +11601,12 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = withComponentId("1b0a2624", () => createComponent$1(VaporKeepAlive, {
+            const n12 = withComponentId("dbf3501c", () => createComponent$1(VaporKeepAlive, {
               "match-by": "key",
               cache: () => unref(routeCache2)
             }, () => {
               const n10 = createKeyedFragment(() => unref(routeKey), () => {
-                const n11 = withComponentId("1b0a1da4", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
+                const n11 = withComponentId("dbf3479c", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
                 return n11;
               });
               return n10;
@@ -10191,7 +11614,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return n12;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n14 = withComponentId("1b0a1628", () => createDynamicComponent(() => unref(firstPageComponent)));
+            const n14 = withComponentId("dbf34020", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -10213,7 +11636,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           const n22 = t3$4();
           insert(n22, n23);
           setInsertionState(n22);
-          const n21 = withComponentId("1b093e56", () => createDynamicComponent(() => unref(LeftWindow), { $: [
+          const n21 = withComponentId("dbf2684e", () => createDynamicComponent(() => unref(LeftWindow), { $: [
             () => unref(windowState)
           ] }));
           setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
@@ -10236,7 +11659,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           const n30 = t4$4();
           insert(n30, n31);
           setInsertionState(n30);
-          const n29 = withComponentId("1b090194", () => createDynamicComponent(() => unref(RightWindow), { $: [
+          const n29 = withComponentId("dbf22b8c", () => createDynamicComponent(() => unref(RightWindow), { $: [
             () => unref(windowState)
           ] }));
           setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
@@ -10252,12 +11675,12 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n39 = withComponentId("1b0853ee", () => createComponent$1(VaporKeepAlive, {
+            const n39 = withComponentId("dbf17de6", () => createComponent$1(VaporKeepAlive, {
               "match-by": "key",
               cache: () => unref(routeCache2)
             }, () => {
               const n37 = createKeyedFragment(() => unref(routeKey), () => {
-                const n38 = withComponentId("1b0846d4", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
+                const n38 = withComponentId("dbf170cc", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }));
                 return n38;
               });
               return n37;
@@ -10265,7 +11688,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
             return n39;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n41 = withComponentId("1b0844a8", () => createDynamicComponent(() => unref(firstPageComponent)));
+            const n41 = withComponentId("dbf16ea0", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n41;
           }),
           2309
@@ -10278,7 +11701,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
     );
     setInsertionState(n46, 1);
     createIf(() => unref(hasTabBar), () => {
-      const n45 = withComponentId("1b083da0", () => createComponent$1(_sfc_main$w));
+      const n45 = withComponentId("dbf16798", () => createComponent$1(_sfc_main$w));
       applyVShow(n45, () => unref(showTabBar2));
       return n45;
     });
@@ -11193,7 +12616,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = withComponentId("b1ddc730", () => createComponentWithFallback(_component_Input, {
+            const n39 = withComponentId("9df04238", () => createComponentWithFallback(_component_Input, {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -11208,7 +12631,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = withComponentId("b1dda8bc", () => createComponentWithFallback(_component_Input, {
+            const n41 = withComponentId("9df023c4", () => createComponentWithFallback(_component_Input, {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -11622,7 +13045,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = withComponentId("64781ad4", () => createComponent$1(_sfc_main$r));
+      const n2 = withComponentId("6c5ca19a", () => createComponent$1(_sfc_main$r));
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -11635,7 +13058,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
     createSlot();
     setInsertionState(n8, 1);
     createIf(() => unref(isX), () => {
-      const n7 = withComponentId("6c91a811", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = withComponentId("708ab3d6", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -11750,12 +13173,12 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
     }, null, true);
     setInsertionState(n8);
     createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = withComponentId("20e16be8", () => createComponent$1(_sfc_main$s));
+      const n2 = withComponentId("55c2f8ec", () => createComponent$1(_sfc_main$s));
       return n2;
     });
     setInsertionState(n8, 1);
-    withComponentId("09680334", () => createComponent$1(_sfc_main$q, null, extend$1(() => {
-      const n3 = withComponentId("096802e8", () => createDynamicComponent(
+    withComponentId("629c11e2", () => createComponent$1(_sfc_main$q, null, extend$1(() => {
+      const n3 = withComponentId("629c1208", () => createDynamicComponent(
         () => unref(pageComponent),
         { $: [
           () => unref(pageProps)
@@ -11774,7 +13197,7 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
     createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = withComponentId("0967fbb0-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = withComponentId("629c15a4-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -12748,7 +14171,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$d = /* @__PURE__ */ extend({}, props$e, {
+const props$d = /* @__PURE__ */ extend({}, props$h, {
   id: {
     type: String,
     default: ""
@@ -12789,7 +14212,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     "blur",
     "input",
     "statuschange",
-    ...emit
+    ...emit$1
   ],
   rootElement: {
     name: "uni-editor",
@@ -12817,133 +14240,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const createComponent = (type, ...args) => {
-  if (type === Fragment) {
-    const slots = args[1];
-    return slots ? typeof slots === "function" ? slots() : typeof slots.default === "function" ? slots.default() : [] : [];
-  }
-  return Vue.createComponentWithFallback(
-    createProxyComponent(Vue.resolveDynamicComponent(type)),
-    ...args
-  );
-};
-const proxyCache = /* @__PURE__ */ new WeakMap();
-function createProxyComponent(type, normalizeNode2) {
-  if (typeof type === "function") {
-    const existing = proxyCache.get(type);
-    if (existing)
-      return existing;
-    const i = Vue.currentInstance || getCurrentInstance();
-    const proxy = new Proxy(type, {
-      apply(target, ctx, args) {
-        if (typeof target.__setup === "function") {
-          target.__setup.apply(ctx, args);
-        }
-        const node = Reflect.apply(target, ctx, args);
-        return node;
-      },
-      get(target, p2, receiver) {
-        const result = Reflect.get(target, p2, receiver);
-        if (p2 === "__vapor" && result === void 0 && i && i.appContext.vapor) {
-          return true;
-        }
-        return result;
-      }
-    });
-    proxyCache.set(type, proxy);
-    return proxy;
-  }
-  return type;
-}
-function createFragment(nodes, anchor = document.createTextNode("")) {
-  const frag = new Vue.VaporFragment(nodes);
-  frag.anchor = anchor;
-  return frag;
-}
-function normalizeBlock(node, anchor, processFunction = false) {
-  if (node instanceof Node || Vue.isFragment(node)) {
-    return node;
-  } else if (Vue.isVaporComponent(node)) {
-    return createFragment(node, anchor);
-  } else if (Array.isArray(node)) {
-    return createFragment(
-      node.map((i) => normalizeBlock(i, void 0, processFunction)),
-      anchor
-    );
-  } else if (processFunction && typeof node === "function") {
-    return resolveValues([node], anchor, true)[0];
-  } else {
-    const result = node == null || typeof node === "boolean" ? "" : String(node);
-    if (anchor) {
-      anchor.textContent = result;
-      return anchor;
-    } else {
-      return document.createTextNode(result);
-    }
-  }
-}
-function resolveValue(current, value, anchor, processFunction = false) {
-  anchor = anchor || (current instanceof Node && current.nodeType === 3 ? current : void 0);
-  const node = normalizeBlock(value, anchor, processFunction);
-  if (current) {
-    if (Vue.isFragment(current)) {
-      if (current.anchor && current.anchor.parentNode) {
-        Vue.remove(current.nodes, current.anchor.parentNode);
-        Vue.insert(node, current.anchor.parentNode, current.anchor);
-        if (!anchor)
-          current.anchor.parentNode.removeChild(current.anchor);
-        if (current.scope)
-          current.scope.stop();
-      }
-    } else if (current instanceof Node) {
-      if (current.nodeType === 3 && (!(node instanceof Node) || node.nodeType !== 3)) {
-        current.textContent = "";
-      }
-      if (Vue.isFragment(node) && current.parentNode) {
-        Vue.insert(node, current.parentNode, current);
-        if (!anchor || current.nodeType !== 3) {
-          current.parentNode.removeChild(current);
-        }
-      } else if (node instanceof Node) {
-        if (current.nodeType === 3 && node.nodeType === 3) {
-          current.textContent = node.textContent;
-          return current;
-        } else if (current.parentNode) {
-          current.parentNode.replaceChild(node, current);
-        }
-      }
-    }
-  }
-  return node;
-}
-function resolveValues(values = [], _anchor, processFunction = false) {
-  const nodes = [];
-  const scopes = [];
-  for (const [index2, value] of values.entries()) {
-    const anchor = index2 === values.length - 1 ? _anchor : void 0;
-    if (typeof value === "function") {
-      Vue.renderEffect(() => {
-        if (scopes[index2])
-          scopes[index2].stop();
-        scopes[index2] = new EffectScope();
-        nodes[index2] = scopes[index2].run(
-          () => resolveValue(nodes[index2], value(), anchor, processFunction)
-        );
-      });
-    } else {
-      nodes[index2] = resolveValue(nodes[index2], value, anchor, processFunction);
-    }
-  }
-  return nodes;
-}
-function setNodes(anchor, ...values) {
-  const resolvedValues = resolveValues(values, anchor);
-  if (anchor.parentNode)
-    Vue.insert(resolvedValues, anchor.parentNode, anchor);
-}
-function createNodes(...values) {
-  return resolveValues(values);
-}
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -13029,74 +14325,6 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$b = template("<div><div></div></div>");
-const _t1$7 = template("<div><div>");
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: { initial: {
-    type: Boolean,
-    default: false
-  } },
-  emits: ["resize"],
-  setup(props2, { emit: emit2 }) {
-    const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => (() => {
-      const _setTemplateRef = createTemplateRefSetter();
-      const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$b();
-        const _n1 = _t1$7();
-        on$1(_n0, "scroll", update);
-        on$1(_n1, "scroll", update);
-        return [_n0, _n1];
-      }, true);
-      renderEffect(() => _setTemplateRef(_n2, rootRef));
-      return _n2;
-    })();
-  }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({
-    width: -1,
-    height: -1
-  });
-  watch(() => extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
-    const rect = rootEl.getBoundingClientRect();
-    size.width = rect.width;
-    size.height = rect.height;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const { firstElementChild, lastElementChild } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-function useResizeSensorLifecycle(rootRef, props2, update, reset) {
-  onActivated(reset);
-  onMounted(() => {
-    if (props2.initial) {
-      nextTick(update);
-    }
-    const rootEl = rootRef.value;
-    if (rootEl.offsetParent !== rootEl.parentElement) {
-      rootEl.parentElement.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      reset();
-    }
-  });
-}
 function useMovableAreaChildren$1(rootRef, slots, setContexts) {
   const contexts = [];
   setContexts(contexts);
@@ -14914,7 +16142,7 @@ const props$b = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: { MODE: 3 },
   props: props$b,
@@ -16267,10 +17495,14 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
     }
     const handleTap = (event) => {
       var _a;
+      const eventTarget = event.target;
+      const element = (eventTarget == null ? void 0 : eventTarget.nodeType) === 1 ? eventTarget : eventTarget == null ? void 0 : eventTarget.parentElement;
+      if (element == null ? void 0 : element.closest("uni-button, .uni-button")) {
+        return;
+      }
       const classList = ((_a = event.target) == null ? void 0 : _a.classList) ? event.target.classList : [];
-      if (classList.length > 0) {
-        const shouldStopPagination = classList.some((cls) => /^uni-(checkbox|radio|switch)/.test(cls));
-        if (shouldStopPagination) {
+      for (let i = 0; i < classList.length; i++) {
+        if (/^uni-(checkbox|radio|switch)/.test(classList[i])) {
           return;
         }
       }
@@ -17011,7 +18243,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
     const n4 = next(n3);
     const n5 = next(n4);
     setInsertionState(n7, n6);
-    const n2 = withComponentId("02a52c40", () => createAssetComponent("scroll-view", {
+    const n2 = withComponentId("e09e2578", () => createAssetComponent("scroll-view", {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -27697,9 +28929,9 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
     onResize(() => {
       getSystemInfo2();
     });
-    const _component_input = resolveComponent("input");
+    const _component_input = __syscom_0$1;
     const _component_loading = _sfc_main$n;
-    const _component_scroll_view = __syscom_0;
+    const _component_scroll_view = __syscom_1;
     const n51 = t7();
     const n6 = child(n51);
     const n5 = child(n6);
@@ -27718,7 +28950,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setStyle(n6, mapBoxStyleCom.value);
     });
     setInsertionState(n6, n5);
-    withComponentId("294f91b0", () => createAssetComponent("map", {
+    withComponentId("ecc07898", () => createAssetComponent("map", {
       class: "uni-choose-location-map",
       id: () => mapId.value,
       latitude: () => latitude.value,
@@ -27781,7 +29013,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setInsertionState(n16, 1);
       const _on_focus = () => isFocus.value = true;
       const _on_confirm = () => poiSearch("poiSearch");
-      withComponentId("00a30941", () => createComponentWithFallback(_component_input, {
+      withComponentId("ab4dd086", () => createComponentWithFallback(_component_input, {
         modelValue: () => searchValue.value,
         "onUpdate:modelValue": () => (_value) => searchValue.value = _value,
         type: "text",
@@ -27800,7 +29032,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
         return n19;
       });
       setInsertionState(n50, 1);
-      const n49 = withComponentId("00a318c9", () => createComponentWithFallback(_component_scroll_view, {
+      const n49 = withComponentId("ab4db176", () => createComponentWithFallback(_component_scroll_view, {
         "scroll-with-animation": false,
         direction: "vertical",
         "scroll-top": () => scrollTop.value,
@@ -27837,7 +29069,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
               () => {
                 const n31 = t3$1();
                 setInsertionState(n31);
-                withComponentId("00a3852a", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
+                withComponentId("ab4cd8b4", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
                 return n31;
               },
               () => {
@@ -27893,7 +29125,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
           () => {
             const n48 = t3$1();
             setInsertionState(n48);
-            withComponentId("00a3fa5d", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
+            withComponentId("ab4bee4e", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
             return n48;
           },
           null,
@@ -28515,8 +29747,8 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       uni.$emit(successEventName.value, JSON.stringify(ret));
       return false;
     });
-    const _component_textarea = resolveComponent("textarea");
-    const _component_scroll_view = __syscom_0;
+    const _component_textarea = __syscom_0;
+    const _component_scroll_view = __syscom_1;
     const n24 = t4();
     const n23 = child(n24);
     let p0 = child(n23);
@@ -28544,7 +29776,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => editable.value,
       () => {
-        const n6 = withComponentId("30449bdb", () => createComponentWithFallback(_component_textarea, {
+        const n6 = withComponentId("d0d6a152", () => createComponentWithFallback(_component_textarea, {
           modelValue: () => content.value,
           "onUpdate:modelValue": () => (_value) => content.value = _value,
           class: "uni-modal-dialog__textarea",
@@ -28559,7 +29791,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
         return n6;
       },
       () => createIf(() => content.value.length > 0, () => {
-        const n9 = withComponentId("3044a798", () => createComponentWithFallback(_component_scroll_view, {
+        const n9 = withComponentId("d0d689d8", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-modal-dialog__scroll",
           "show-scrollbar": "true",
           style: () => ({ maxHeight: maxScrollHeight.value })
@@ -28810,7 +30042,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("337c75dd", () => createAssetComponent("loading", {
+    withComponentId("63bf2f59", () => createAssetComponent("loading", {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -29862,7 +31094,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
     createIf(() => !loadingFinished.value, () => {
       const n5 = t0$2();
       setInsertionState(n5);
-      withComponentId("0c669e04", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
+      withComponentId("05b3a380", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
       return n5;
     });
     setInsertionState(n10, 3);
@@ -30130,7 +31362,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
       return false;
     });
     const _component_swiper_item = _sfc_main$8;
-    const n8 = withComponentId("365d9a5d", () => createAssetComponent("swiper", {
+    const n8 = withComponentId("0e721061", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -30146,11 +31378,11 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => unref(swiperItems),
             (_for_item0) => {
-              const n7 = withComponentId("15606b35-" + _for_item0.value.slot, () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("3a2f7039-" + _for_item0.value.slot, () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRenderItem(_for_item0.value.index),
                   () => {
-                    const n6 = withComponentId("15606f35-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("3a2f7439-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_item0.value.index,
                       src: () => _for_item0.value.src,
                       longPressAction: () => unref(longPressAction),
@@ -30298,7 +31530,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       emit2("previewImageFinish", e2);
     };
     const _component_swiper_item = _sfc_main$8;
-    const n8 = withComponentId("09f35926", () => createAssetComponent("swiper", {
+    const n8 = withComponentId("342d51a2", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -30314,11 +31546,11 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => props2.urls,
             (_for_item0, _for_key0) => {
-              const n7 = withComponentId("5a819f9d", () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("43c12dce", () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRender(_for_key0.value),
                   () => {
-                    const n6 = withComponentId("5a81a624", () => createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("43c120c0", () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_key0.value,
                       src: () => _for_item0.value,
                       longPressAction: () => props2.longPressAction,
@@ -30821,6 +32053,7 @@ export {
   index$5 as AdDraw,
   _sfc_main$t as AsyncErrorComponent,
   _sfc_main$u as AsyncLoadingComponent,
+  index$i as Button,
   index$4 as Camera,
   indexX$1 as Canvas,
   _sfc_main$m as Checkbox,
@@ -30830,6 +32063,7 @@ export {
   index$g as Editor,
   _sfc_main$k as Form,
   index$f as Icon,
+  __syscom_0$1 as Input,
   _sfc_main$j as Label,
   _sfc_main$v as LayoutComponent,
   index$3 as LivePlayer,
@@ -30850,14 +32084,17 @@ export {
   _sfc_main$b as RadioGroup,
   ResizeSensor,
   index$c as RichText,
-  __syscom_0 as ScrollView,
+  __syscom_1 as ScrollView,
   _sfc_main$a as Slider,
   _sfc_main$9 as Swiper,
   _sfc_main$8 as SwiperItem,
   _sfc_main$7 as Switch,
+  __syscom_0 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
+  UniButtonElement,
+  UniButtonElement as UniButtonElementImpl,
   UniCanvasElement,
   UniCanvasElement as UniCanvasElementImpl,
   UniCheckboxElement,
@@ -30877,6 +32114,8 @@ export {
   UniIconElement as UniIconElementImpl,
   UniImageElement,
   UniImageElement as UniImageElementImpl,
+  UniInputElement,
+  UniInputElement as UniInputElementImpl,
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
   UniMapElement,
@@ -30917,6 +32156,8 @@ export {
   UniSwitchElement as UniSwitchElementImpl,
   UniTextElement,
   UniTextElement as UniTextElementImpl,
+  UniTextareaElement,
+  UniTextareaElement as UniTextareaElementImpl,
   UniVideoElement,
   UniViewElement,
   UniViewElement as UniViewElementImpl,

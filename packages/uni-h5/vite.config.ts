@@ -149,7 +149,10 @@ const vaporComponents = isX_VAPOR
 const excludedVaporComponents = vaporComponents
   ? [
       ...[...resolveWebVaporComponents(vaporComponentsDir, true).keys()].filter(
-        (name) => !vaporComponents.has(name)
+        // 这三个组件暂由旧 TSX 编译为 Vapor，新 UVue 版本仍保持排除。
+        (name) =>
+          !vaporComponents.has(name) &&
+          !['button', 'input', 'textarea'].includes(name)
       ),
       // TODO 仅框架构建排除尚未适配的 list-view 系列，项目内 easycom 开发不受影响。
       'list-view',

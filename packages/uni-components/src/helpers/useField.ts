@@ -23,7 +23,11 @@ import {
   useKeyboard,
 } from './useKeyboard'
 import { useScopedAttrs } from './useScopedAttrs'
+//#if _X_VAPOR_
+import { useVaporFormField } from './form-vapor'
+//#else
 import { useFormField } from './useFormField'
+//#endif
 
 function getSelectedTextRange(
   _: unknown,
@@ -547,7 +551,11 @@ export function useField(
   useAutoFocus(props, fieldRef)
   useKeyboard(props, fieldRef, trigger)
   const { state: scopedAttrsState } = useScopedAttrs()
+  //#if _X_VAPOR_
+  useVaporFormField(props, state)
+  //#else
   useFormField('name', state)
+  //#endif
   useEvent(fieldRef, state, props, trigger, triggerInput, beforeInput)
 
   // Safari 14 以上修正禁用状态颜色

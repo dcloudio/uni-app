@@ -31,6 +31,10 @@ jest.mock('../src/helpers/useFormField', () => {
   }
 })
 
+jest.mock('../src/helpers/form-vapor', () => ({
+  useVaporFormField: jest.fn(),
+}))
+
 jest.mock('@dcloudio/uni-core', () => {
   return {
     getCurrentPageId: jest.fn(() => {

@@ -153,6 +153,20 @@ describe('h5 easycom', () => {
   )
 
   test.each(['button', 'input', 'textarea'])(
+    'Vapor 临时启用旧 %s 时，导入框架组件并复用旧样式',
+    (name) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      const code = transform(
+        `const n0 = _createAssetComponent("v-uni-${name}")`
+      )
+      expect(code).toContain("from '@dcloudio/uni-h5'")
+      expect(code).toContain(`@dcloudio/uni-components/style/${name}.css`)
+      expect(code).not.toContain('style-x-vapor')
+      expect(code).not.toContain('uni_modules/uni-form')
+    }
+  )
+
+  test.each(['button', 'input', 'textarea'])(
     '框架编译时被排除的 %s 保留按名解析，不回退旧组件',
     (name) => {
       delete process.env.UNI_HX_VERSION_DEV
