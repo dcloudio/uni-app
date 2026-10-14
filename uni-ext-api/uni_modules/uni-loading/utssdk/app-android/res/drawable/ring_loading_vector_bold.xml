@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="16dp"
+    android:height="16dp"
+    android:viewportWidth="16"
+    android:viewportHeight="16">
+
+    <group
+        android:name="rotationGroup"
+        android:pivotX="8"
+        android:pivotY="8">
+        <path
+            android:name="loadingRing"
+            android:strokeWidth="2"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="square"
+            android:fillColor="@android:color/transparent"
+            android:pathData="M 15,8 A 7,7 0 1,1 8,1" />
+    </group>
+</vector>

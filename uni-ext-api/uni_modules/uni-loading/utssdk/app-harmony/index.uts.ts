@@ -1,0 +1,116 @@
+// #ifndef VUE3-VAPOR
+import { buildLoading } from "./builder.ets";
+// #endif
+// #ifndef VUE3-VAPOR
+import { formatColorSync } from '@dcloudio/uni-runtime'
+// #endif
+
+// #ifndef VUE3-VAPOR
+type BorderWidth = 'normal' | 'bold'
+type AnimationTimingFunction = 'ease' | 'linear'
+
+const DEFAULT_COLOR = '#000000'
+const DEFAULT_BORDER_WIDTH = 'normal'
+const DEFAULT_ANIMATION_TIMING_FUNCTION = 'linear'
+
+export interface BuilderLoadingParams {
+  // 弧的颜色。支持透明度。默认值黑色。允许使用css修改，以方便通过css变量进行主题适配。css和属性配置冲突时以css为准。
+  color?: string
+  // 弧宽是否加粗。值域：normal|bold。normal为2px，bold为4px。允许使用css修改，以方便通过css变量进行主题适配。css和属性配置冲突时以css为准。
+  borderWidth?: BorderWidth
+  degrees?: number
+  paused?: boolean
+  animationTimingFunction?: AnimationTimingFunction
+}
+
+export class NativeLoading {
+  __v_skip: boolean = true;
+  private params: BuilderLoadingParams
+  private harmonyBuilderNode: ComponentContent | null = null
+  constructor(
+    element: UniNativeViewElement,
+    params: BuilderLoadingParams = {
+      color: DEFAULT_COLOR,
+      borderWidth: DEFAULT_BORDER_WIDTH,
+      animationTimingFunction: DEFAULT_ANIMATION_TIMING_FUNCTION,
+      paused: false
+    }
+  ) {
+    this.params = params
+    // #ifndef VUE3-VAPOR
+    if (this.params.color) {
+      this.params.color = formatColorSync(this.params.color) as string
+    }
+    // #endif
+    element.bindHarmonyWrappedBuilder(wrapBuilder<[BuilderLoadingParams]>(buildLoading), this.params);
+    if (typeof element['getHarmonyComponentContent'] === 'function') {
+      // @ts-ignore
+      this.harmonyBuilderNode = (element as ESObject).getHarmonyComponentContent() as ComponentContent;
+    } else {
+      this.harmonyBuilderNode = element.getHarmonyBuilderNode()
+    }
+    // 绑定当前实例为自定义的controller，方便其他地方通过 element 获取使用
+    element.bindHarmonyController(this)
+  }
+
+  updateStyle(color: string | null = DEFAULT_COLOR, borderWidth: BorderWidth | null = DEFAULT_BORDER_WIDTH, animationTimingFunction: AnimationTimingFunction | null = DEFAULT_ANIMATION_TIMING_FUNCTION) {
+    if (color !== null) {
+      // #ifdef VUE3-VAPOR
+      // dom2 下 useComputedcolorStyle 获取到的 color 是已经处理过后的
+      this.params.color = color
+      // #endif
+      // #ifndef VUE3-VAPOR
+      if (this.params.color) {
+        this.params.color = formatColorSync(color) as string
+      }
+      // #endif
+    } else {
+      color = DEFAULT_COLOR
+    }
+
+    if (borderWidth !== null) {
+      this.params.borderWidth = borderWidth
+    } else {
+      borderWidth = DEFAULT_BORDER_WIDTH
+    }
+
+    if (animationTimingFunction !== null) {
+      this.params.animationTimingFunction = animationTimingFunction
+    } else {
+      animationTimingFunction = DEFAULT_ANIMATION_TIMING_FUNCTION
+    }
+
+    this.updateParams()
+  }
+
+  updateDegrees(degrees: number) {
+    if (degrees !== this.params.degrees) {
+      this.params.degrees = degrees
+      this.updateParams()
+    }
+  }
+
+  updatePaused(paused: boolean) {
+    if (paused !== this.params.paused) {
+      this.params.paused = paused
+      this.updateParams()
+    }
+  }
+
+  private updateParams() {
+    this.harmonyBuilderNode?.update(this.params)
+  }
+
+  destroy() {
+    this.harmonyBuilderNode?.dispose()
+  }
+}
+// #endif
+
+// #ifndef VUE3-VAPOR
+class _Element extends UniViewElementImpl { }
+// #endif
+// #ifdef VUE3-VAPOR
+class _Element extends UniViewElementImpl { }
+// #endif
+export class UniLoadingElement extends _Element { }

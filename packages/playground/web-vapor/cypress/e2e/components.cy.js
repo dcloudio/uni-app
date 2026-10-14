@@ -15,12 +15,13 @@ describe('Web Vapor 内置组件', () => {
     cy.get('@consoleError').should('not.have.been.called')
   })
 
-  it('渲染全部 16 个已启用组件，未混入旧 picker 样式', () => {
+  it('渲染全部 17 个已启用组件，未混入旧 picker 样式', () => {
     for (const name of [
       'checkbox',
       'checkbox-group',
       'form',
       'label',
+      'loading',
       'match-media',
       'navigator',
       'picker',

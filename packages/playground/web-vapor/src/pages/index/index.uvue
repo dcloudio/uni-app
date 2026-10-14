@@ -33,6 +33,7 @@
       <view id="test-submit" @click="form?.submit()">提交</view>
     </form>
     <progress id="test-progress" :percent="count * 10" :show-info="true" />
+    <loading id="test-loading" />
     <match-media id="test-match-media" :min-width="0"
       ><text>匹配媒体查询</text></match-media
     >

@@ -56,6 +56,8 @@ function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
         'global.uts.ts',
         'index.uts',
         'index.uts.ts',
+        'element.uts',
+        'element.uts.ts',
       ].find((file) => fs.existsSync(path.resolve(componentDir, file)))
       components.set(componentName, {
         source,

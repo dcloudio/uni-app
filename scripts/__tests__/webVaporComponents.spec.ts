@@ -113,6 +113,32 @@ describe('Web Vapor 组件生成', () => {
     }
   })
 
+  test.each(['element.uts', 'element.uts.ts'])(
+    '统一识别组件元素文件 %s',
+    (elementFile) => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-element-'))
+      try {
+        fs.outputJsonSync(path.join(dir, 'uni-loading/package.json'), {
+          uni_modules: { components: { web: 'dom2' } },
+        })
+        fs.outputFileSync(
+          path.join(dir, 'uni-loading/components/loading/loading.uvue'),
+          '<template />'
+        )
+        fs.outputFileSync(
+          path.join(dir, 'uni-loading/components/loading', elementFile),
+          'export class UniLoadingElement {}'
+        )
+        expect(resolveWebVaporComponents(dir).get('loading')).toEqual({
+          source: 'uni-loading/components/loading/loading.uvue',
+          elementSource: `uni-loading/components/loading/${elementFile}`,
+        })
+      } finally {
+        fs.removeSync(dir)
+      }
+    }
+  )
+
   test('无外部源码时，读取已同步副本的组件、元素和排除配置', () => {
     const componentsDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'web-vapor-cached-')

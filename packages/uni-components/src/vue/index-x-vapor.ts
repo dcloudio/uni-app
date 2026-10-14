@@ -12,7 +12,6 @@ import RichText, { UniRichTextElement } from './rich-text'
 import ScrollView, { UniScrollViewElement } from './scroll-view/index'
 import PageContainer from './page-container/index.vue'
 import { UniPageContainerElement } from './page-container/element'
-import Loading from './loading/index-x.vue'
 import {
   UniImageElement,
   UniTextElement,
@@ -31,7 +30,6 @@ export {
   UniInputElement as UniInputElementImpl,
   UniTextareaElement,
   UniTextareaElement as UniTextareaElementImpl,
-  Loading,
   Canvas,
   Editor,
   Icon,

@@ -102,6 +102,14 @@ describe('Web 框架组件入口', () => {
     expect(entry).not.toMatch(/default as (Button|Input|Textarea)\b/)
     expect(entry).toContain('default as Progress')
     expect(entry).toContain('default as Picker')
+    expect(entry).toContain('default as Loading')
+    expect(entry).toContain('UniLoadingElement as UniLoadingElementImpl')
+    expect(
+      fs.readFileSync(
+        path.resolve(root, '../uni-components/src/vue/index-x-vapor.ts'),
+        'utf8'
+      )
+    ).not.toContain('./loading/index-x.vue')
     expect(entry).not.toContain('uni-components/src/index-vapor')
   })
 })

@@ -1,0 +1,88 @@
+import { UTSiOS } from "DCloudUTSFoundation";
+import { CGRect, CGFloat } from 'CoreFoundation';
+
+export class NativeLoading {
+	element : UniNativeViewElement;
+	spinnerView : SpinnerView | null = null;
+	color : string | null = null
+	strokeWidth : string | null = null
+	animationTimingFunction : string | null = null
+
+	constructor(element : UniNativeViewElement) {
+		//接收传递过来的UniNativeViewElement
+		this.element = element;
+		super.init()
+		this.bindView();
+	}
+
+	bindView() {
+		this.spinnerView = new SpinnerView(frame = CGRect.zero)
+		if (this.spinnerView != null) {
+			this.element.bindIOSView(this.spinnerView!)
+		}
+	}
+
+
+	updateIosSpinner(iosSpinner : boolean) {
+		const iosSpinnerValue : boolean = iosSpinner ?? false
+		this.spinnerView?.updateIosSpinnerProp(iosSpinnerValue)
+	}
+
+	updatePaused(paused : boolean) {
+		const pausedValue : boolean = paused ?? false
+		this.spinnerView?.updatePausedProp(pausedValue)
+	}
+
+	updateStyle(color ?: string, strokeWidth ?: string, animationTimingFunction ?: string) {
+		this.color = color
+		this.strokeWidth = strokeWidth
+		this.animationTimingFunction = animationTimingFunction
+
+		this.updateUI()
+	}
+
+	updateUI() {
+		let color = UTSiOS.colorWithString(this.color ?? "black")
+
+		if (this.strokeWidth == null) {
+			this.strokeWidth = "medium"
+		}
+
+		this.spinnerView?.setAppearance(strokeColor = color, strokeWidth = this.strokeWidth!, animationTimingFunction = this.animationTimingFunction)
+	}
+
+	destroy() {
+		UTSiOS.destroyInstance(this)
+	}
+}
+
+export interface UniLoadingElement extends JSExport {
+
+}
+
+/**
+ * UniLoadingElement实现
+ *  非蒸汽模式：继承自UniElement实现，外面嵌套了一层uni-loading-element
+ *  蒸汽模式：继承自UniNativeViewElement实现
+ *  原则：uvue文件中template中的根几点是什么类型就继承自对应的Element实现
+ */
+export class UniLoadingElementImpl
+// #ifndef VUE3-VAPOR
+  extends UniElementImpl
+// #endif
+// #ifdef VUE3-VAPOR
+  extends UniNativeViewElementImpl
+// #endif
+  implements UniLoadingElement {
+
+// #ifndef VUE3-VAPOR
+	override getIOSView() : UIView | null {
+		const nativeElement = this.firstChild as UniNativeViewElement
+		if (nativeElement == null) {
+			return null
+		} else {
+			return nativeElement.getIOSView()
+		}
+	}
+// #endif
+}

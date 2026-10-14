@@ -26,6 +26,11 @@ export {
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
 } from '@dcloudio/uni-ext-component/uni-form/components/label/global.uts'
+export { default as Loading } from '@dcloudio/uni-ext-component/uni-loading/components/loading/loading.uvue'
+export {
+  UniLoadingElement,
+  UniLoadingElement as UniLoadingElementImpl,
+} from '@dcloudio/uni-ext-component/uni-loading/components/loading/element.uts'
 export { default as MatchMedia } from '@dcloudio/uni-ext-component/uni-match-media/components/match-media/match-media.uvue'
 export {
   UniMatchMediaElement,

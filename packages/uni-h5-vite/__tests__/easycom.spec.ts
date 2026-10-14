@@ -166,6 +166,24 @@ describe('h5 easycom', () => {
     }
   )
 
+  test.each([false, true])('loading 按模式选择样式（Vapor=%s）', (vapor) => {
+    delete process.env.UNI_HX_VERSION_DEV
+    if (vapor) process.env.UNI_APP_X_DOM2 = 'true'
+    else delete process.env.UNI_APP_X_DOM2
+    const code = transform('_resolveComponent("v-uni-loading")')
+    expect(code).toContain("from '@dcloudio/uni-h5'")
+    expect(code).toContain(
+      `@dcloudio/uni-components/${
+        vapor ? 'style-x-vapor' : 'style-x'
+      }/loading.css`
+    )
+    expect(code).not.toContain(
+      `@dcloudio/uni-components/${
+        vapor ? 'style-x' : 'style-x-vapor'
+      }/loading.css`
+    )
+  })
+
   test.each(['button', 'input', 'textarea'])(
     '框架编译时被排除的 %s 保留按名解析，不回退旧组件',
     (name) => {
