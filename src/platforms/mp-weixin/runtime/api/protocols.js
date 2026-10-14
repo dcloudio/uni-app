@@ -8,6 +8,10 @@ import getDeviceInfo from '../../helpers/get-device-info'
 import getWindowInfo from '../../helpers/get-window-info'
 import getAppAuthorizeSetting from '../../helpers/get-app-authorize-setting'
 
+const exit = {
+  name: 'exitMiniProgram'
+}
+
 const compressImage = {
   args (fromArgs) {
     // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
@@ -21,6 +25,7 @@ const compressImage = {
 }
 
 export const protocols = {
+  exit,
   redirectTo,
   // navigateTo,  // 由于在微信开发者工具的页面参数，会显示__id__参数，因此暂时关闭mp-weixin对于navigateTo的AOP
   previewImage,
