@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.10
+  * @vue/compiler-sfc v3.6.0-rc.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -264,77 +264,7 @@ function genNormalScriptCssVarsCode(cssVars, bindings, id, isProd, defaultVar) {
 	return `\nimport { ${CSS_VARS_HELPER} as _${CSS_VARS_HELPER} } from 'vue'\nconst __injectCSSVars__ = () => {\n${genCssVarsCode(cssVars, bindings, id, isProd)}}\nconst __setup__ = ${defaultVar}.setup\n${defaultVar}.setup = __setup__\n  ? (props, ctx) => { __injectCSSVars__();return __setup__(props, ctx) }\n  : __injectCSSVars__\n`;
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/typeof.js
-function _typeof(o) {
-	"@babel/helpers - typeof";
-	return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
-		return typeof o;
-	} : function(o) {
-		return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-	}, _typeof(o);
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/toPrimitive.js
-function toPrimitive(t, r) {
-	if ("object" != _typeof(t) || !t) return t;
-	var e = t[Symbol.toPrimitive];
-	if (void 0 !== e) {
-		var i = e.call(t, r || "default");
-		if ("object" != _typeof(i)) return i;
-		throw new TypeError("@@toPrimitive must return a primitive value.");
-	}
-	return ("string" === r ? String : Number)(t);
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/toPropertyKey.js
-function toPropertyKey(t) {
-	var i = toPrimitive(t, "string");
-	return "symbol" == _typeof(i) ? i : i + "";
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/defineProperty.js
-function _defineProperty(e, r, t) {
-	return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
-		value: t,
-		enumerable: !0,
-		configurable: !0,
-		writable: !0
-	}) : e[r] = t, e;
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/checkPrivateRedeclaration.js
-function _checkPrivateRedeclaration(e, t) {
-	if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object");
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateMethodInitSpec.js
-function _classPrivateMethodInitSpec(e, a) {
-	_checkPrivateRedeclaration(e, a), a.add(e);
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateFieldInitSpec.js
-function _classPrivateFieldInitSpec(e, t, a) {
-	_checkPrivateRedeclaration(e, t), t.set(e, a);
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/assertClassBrand.js
-function _assertClassBrand(e, t, n) {
-	if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n;
-	throw new TypeError("Private element is not present on this object");
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateFieldGet2.js
-function _classPrivateFieldGet2(s, a) {
-	return s.get(_assertClassBrand(s, a));
-}
-//#endregion
-//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateFieldSet2.js
-function _classPrivateFieldSet2(s, a, r) {
-	return s.set(_assertClassBrand(s, a), r), r;
-}
-//#endregion
 //#region node_modules/.pnpm/lru-cache@10.1.0/node_modules/lru-cache/dist/esm/index.js
-let _Symbol$iterator;
 /**
 * @module LRUCache
 */
@@ -350,33 +280,29 @@ let AC = globalThis.AbortController;
 let AS = globalThis.AbortSignal;
 /* c8 ignore start */
 if (typeof AC === "undefined") {
-	var _PROCESS$env;
 	AS = class AbortSignal {
-		constructor() {
-			_defineProperty(this, "onabort", void 0);
-			_defineProperty(this, "_onabort", []);
-			_defineProperty(this, "reason", void 0);
-			_defineProperty(this, "aborted", false);
-		}
+		onabort;
+		_onabort = [];
+		reason;
+		aborted = false;
 		addEventListener(_, fn) {
 			this._onabort.push(fn);
 		}
 	};
 	AC = class AbortController {
 		constructor() {
-			_defineProperty(this, "signal", new AS());
 			warnACPolyfill();
 		}
+		signal = new AS();
 		abort(reason) {
-			var _this$signal$onabort, _this$signal;
 			if (this.signal.aborted) return;
 			this.signal.reason = reason;
 			this.signal.aborted = true;
 			for (const fn of this.signal._onabort) fn(reason);
-			(_this$signal$onabort = (_this$signal = this.signal).onabort) === null || _this$signal$onabort === void 0 || _this$signal$onabort.call(_this$signal, reason);
+			this.signal.onabort?.(reason);
 		}
 	};
-	let printACPolyfillWarning = ((_PROCESS$env = PROCESS.env) === null || _PROCESS$env === void 0 ? void 0 : _PROCESS$env.LRU_CACHE_IGNORE_AC_WARNING) !== "1";
+	let printACPolyfillWarning = PROCESS.env?.LRU_CACHE_IGNORE_AC_WARNING !== "1";
 	const warnACPolyfill = () => {
 		if (!printACPolyfillWarning) return;
 		printACPolyfillWarning = false;
@@ -396,19 +322,20 @@ var ZeroArray = class extends Array {
 	}
 };
 var Stack = class Stack {
+	heap;
+	length;
+	static #constructing = false;
 	static create(max) {
 		const HeapCls = getUintArray(max);
 		if (!HeapCls) return [];
-		_constructing._ = true;
+		Stack.#constructing = true;
 		const s = new Stack(max, HeapCls);
-		_constructing._ = false;
+		Stack.#constructing = false;
 		return s;
 	}
 	constructor(max, HeapCls) {
-		_defineProperty(this, "heap", void 0);
-		_defineProperty(this, "length", void 0);
 		/* c8 ignore start */
-		if (!_constructing._) throw new TypeError("instantiate Stack using Stack.create(n)");
+		if (!Stack.#constructing) throw new TypeError("instantiate Stack using Stack.create(n)");
 		/* c8 ignore stop */
 		this.heap = new HeapCls(max);
 		this.length = 0;
@@ -420,38 +347,6 @@ var Stack = class Stack {
 		return this.heap[--this.length];
 	}
 };
-var _constructing = { _: false };
-var _max = /* @__PURE__ */ new WeakMap();
-var _maxSize = /* @__PURE__ */ new WeakMap();
-var _dispose = /* @__PURE__ */ new WeakMap();
-var _disposeAfter = /* @__PURE__ */ new WeakMap();
-var _fetchMethod = /* @__PURE__ */ new WeakMap();
-var _size = /* @__PURE__ */ new WeakMap();
-var _calculatedSize = /* @__PURE__ */ new WeakMap();
-var _keyMap = /* @__PURE__ */ new WeakMap();
-var _keyList = /* @__PURE__ */ new WeakMap();
-var _valList = /* @__PURE__ */ new WeakMap();
-var _next = /* @__PURE__ */ new WeakMap();
-var _prev = /* @__PURE__ */ new WeakMap();
-var _head = /* @__PURE__ */ new WeakMap();
-var _tail = /* @__PURE__ */ new WeakMap();
-var _free = /* @__PURE__ */ new WeakMap();
-var _disposed = /* @__PURE__ */ new WeakMap();
-var _sizes = /* @__PURE__ */ new WeakMap();
-var _starts = /* @__PURE__ */ new WeakMap();
-var _ttls = /* @__PURE__ */ new WeakMap();
-var _hasDispose = /* @__PURE__ */ new WeakMap();
-var _hasFetchMethod = /* @__PURE__ */ new WeakMap();
-var _hasDisposeAfter = /* @__PURE__ */ new WeakMap();
-var _LRUCache_brand = /* @__PURE__ */ new WeakSet();
-var _updateItemAge = /* @__PURE__ */ new WeakMap();
-var _statusTTL = /* @__PURE__ */ new WeakMap();
-var _setItemTTL = /* @__PURE__ */ new WeakMap();
-var _isStale = /* @__PURE__ */ new WeakMap();
-var _removeItemSize = /* @__PURE__ */ new WeakMap();
-var _addItemSize = /* @__PURE__ */ new WeakMap();
-var _requireSize = /* @__PURE__ */ new WeakMap();
-_Symbol$iterator = Symbol.iterator;
 /**
 * Default export, the thing you're using this module to get.
 *
@@ -462,6 +357,88 @@ _Symbol$iterator = Symbol.iterator;
 * but is otherwise safe.
 */
 var LRUCache = class LRUCache {
+	#max;
+	#maxSize;
+	#dispose;
+	#disposeAfter;
+	#fetchMethod;
+	/**
+	* {@link LRUCache.OptionsBase.ttl}
+	*/
+	ttl;
+	/**
+	* {@link LRUCache.OptionsBase.ttlResolution}
+	*/
+	ttlResolution;
+	/**
+	* {@link LRUCache.OptionsBase.ttlAutopurge}
+	*/
+	ttlAutopurge;
+	/**
+	* {@link LRUCache.OptionsBase.updateAgeOnGet}
+	*/
+	updateAgeOnGet;
+	/**
+	* {@link LRUCache.OptionsBase.updateAgeOnHas}
+	*/
+	updateAgeOnHas;
+	/**
+	* {@link LRUCache.OptionsBase.allowStale}
+	*/
+	allowStale;
+	/**
+	* {@link LRUCache.OptionsBase.noDisposeOnSet}
+	*/
+	noDisposeOnSet;
+	/**
+	* {@link LRUCache.OptionsBase.noUpdateTTL}
+	*/
+	noUpdateTTL;
+	/**
+	* {@link LRUCache.OptionsBase.maxEntrySize}
+	*/
+	maxEntrySize;
+	/**
+	* {@link LRUCache.OptionsBase.sizeCalculation}
+	*/
+	sizeCalculation;
+	/**
+	* {@link LRUCache.OptionsBase.noDeleteOnFetchRejection}
+	*/
+	noDeleteOnFetchRejection;
+	/**
+	* {@link LRUCache.OptionsBase.noDeleteOnStaleGet}
+	*/
+	noDeleteOnStaleGet;
+	/**
+	* {@link LRUCache.OptionsBase.allowStaleOnFetchAbort}
+	*/
+	allowStaleOnFetchAbort;
+	/**
+	* {@link LRUCache.OptionsBase.allowStaleOnFetchRejection}
+	*/
+	allowStaleOnFetchRejection;
+	/**
+	* {@link LRUCache.OptionsBase.ignoreFetchAbort}
+	*/
+	ignoreFetchAbort;
+	#size;
+	#calculatedSize;
+	#keyMap;
+	#keyList;
+	#valList;
+	#next;
+	#prev;
+	#head;
+	#tail;
+	#free;
+	#disposed;
+	#sizes;
+	#starts;
+	#ttls;
+	#hasDispose;
+	#hasFetchMethod;
+	#hasDisposeAfter;
 	/**
 	* Do not call this method unless you need to inspect the
 	* inner workings of the cache.  If anything returned by this
@@ -473,260 +450,107 @@ var LRUCache = class LRUCache {
 	*/
 	static unsafeExposeInternals(c) {
 		return {
-			starts: _classPrivateFieldGet2(_starts, c),
-			ttls: _classPrivateFieldGet2(_ttls, c),
-			sizes: _classPrivateFieldGet2(_sizes, c),
-			keyMap: _classPrivateFieldGet2(_keyMap, c),
-			keyList: _classPrivateFieldGet2(_keyList, c),
-			valList: _classPrivateFieldGet2(_valList, c),
-			next: _classPrivateFieldGet2(_next, c),
-			prev: _classPrivateFieldGet2(_prev, c),
+			starts: c.#starts,
+			ttls: c.#ttls,
+			sizes: c.#sizes,
+			keyMap: c.#keyMap,
+			keyList: c.#keyList,
+			valList: c.#valList,
+			next: c.#next,
+			prev: c.#prev,
 			get head() {
-				return _classPrivateFieldGet2(_head, c);
+				return c.#head;
 			},
 			get tail() {
-				return _classPrivateFieldGet2(_tail, c);
+				return c.#tail;
 			},
-			free: _classPrivateFieldGet2(_free, c),
-			isBackgroundFetch: (p) => _assertClassBrand(_LRUCache_brand, c, _isBackgroundFetch).call(c, p),
-			backgroundFetch: (k, index, options, context) => _assertClassBrand(_LRUCache_brand, c, _backgroundFetch).call(c, k, index, options, context),
-			moveToTail: (index) => _assertClassBrand(_LRUCache_brand, c, _moveToTail).call(c, index),
-			indexes: (options) => _assertClassBrand(_LRUCache_brand, c, _indexes).call(c, options),
-			rindexes: (options) => _assertClassBrand(_LRUCache_brand, c, _rindexes).call(c, options),
-			isStale: (index) => _classPrivateFieldGet2(_isStale, c).call(c, index)
+			free: c.#free,
+			isBackgroundFetch: (p) => c.#isBackgroundFetch(p),
+			backgroundFetch: (k, index, options, context) => c.#backgroundFetch(k, index, options, context),
+			moveToTail: (index) => c.#moveToTail(index),
+			indexes: (options) => c.#indexes(options),
+			rindexes: (options) => c.#rindexes(options),
+			isStale: (index) => c.#isStale(index)
 		};
 	}
 	/**
 	* {@link LRUCache.OptionsBase.max} (read-only)
 	*/
 	get max() {
-		return _classPrivateFieldGet2(_max, this);
+		return this.#max;
 	}
 	/**
 	* {@link LRUCache.OptionsBase.maxSize} (read-only)
 	*/
 	get maxSize() {
-		return _classPrivateFieldGet2(_maxSize, this);
+		return this.#maxSize;
 	}
 	/**
 	* The total computed size of items in the cache (read-only)
 	*/
 	get calculatedSize() {
-		return _classPrivateFieldGet2(_calculatedSize, this);
+		return this.#calculatedSize;
 	}
 	/**
 	* The number of items stored in the cache (read-only)
 	*/
 	get size() {
-		return _classPrivateFieldGet2(_size, this);
+		return this.#size;
 	}
 	/**
 	* {@link LRUCache.OptionsBase.fetchMethod} (read-only)
 	*/
 	get fetchMethod() {
-		return _classPrivateFieldGet2(_fetchMethod, this);
+		return this.#fetchMethod;
 	}
 	/**
 	* {@link LRUCache.OptionsBase.dispose} (read-only)
 	*/
 	get dispose() {
-		return _classPrivateFieldGet2(_dispose, this);
+		return this.#dispose;
 	}
 	/**
 	* {@link LRUCache.OptionsBase.disposeAfter} (read-only)
 	*/
 	get disposeAfter() {
-		return _classPrivateFieldGet2(_disposeAfter, this);
+		return this.#disposeAfter;
 	}
 	constructor(options) {
-		_classPrivateMethodInitSpec(this, _LRUCache_brand);
-		_classPrivateFieldInitSpec(this, _max, void 0);
-		_classPrivateFieldInitSpec(this, _maxSize, void 0);
-		_classPrivateFieldInitSpec(this, _dispose, void 0);
-		_classPrivateFieldInitSpec(this, _disposeAfter, void 0);
-		_classPrivateFieldInitSpec(this, _fetchMethod, void 0);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.ttl}
-			*/
-			"ttl",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.ttlResolution}
-			*/
-			"ttlResolution",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.ttlAutopurge}
-			*/
-			"ttlAutopurge",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.updateAgeOnGet}
-			*/
-			"updateAgeOnGet",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.updateAgeOnHas}
-			*/
-			"updateAgeOnHas",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.allowStale}
-			*/
-			"allowStale",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.noDisposeOnSet}
-			*/
-			"noDisposeOnSet",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.noUpdateTTL}
-			*/
-			"noUpdateTTL",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.maxEntrySize}
-			*/
-			"maxEntrySize",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.sizeCalculation}
-			*/
-			"sizeCalculation",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.noDeleteOnFetchRejection}
-			*/
-			"noDeleteOnFetchRejection",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.noDeleteOnStaleGet}
-			*/
-			"noDeleteOnStaleGet",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.allowStaleOnFetchAbort}
-			*/
-			"allowStaleOnFetchAbort",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.allowStaleOnFetchRejection}
-			*/
-			"allowStaleOnFetchRejection",
-			void 0
-		);
-		_defineProperty(
-			this,
-			/**
-			* {@link LRUCache.OptionsBase.ignoreFetchAbort}
-			*/
-			"ignoreFetchAbort",
-			void 0
-		);
-		_classPrivateFieldInitSpec(this, _size, void 0);
-		_classPrivateFieldInitSpec(this, _calculatedSize, void 0);
-		_classPrivateFieldInitSpec(this, _keyMap, void 0);
-		_classPrivateFieldInitSpec(this, _keyList, void 0);
-		_classPrivateFieldInitSpec(this, _valList, void 0);
-		_classPrivateFieldInitSpec(this, _next, void 0);
-		_classPrivateFieldInitSpec(this, _prev, void 0);
-		_classPrivateFieldInitSpec(this, _head, void 0);
-		_classPrivateFieldInitSpec(this, _tail, void 0);
-		_classPrivateFieldInitSpec(this, _free, void 0);
-		_classPrivateFieldInitSpec(this, _disposed, void 0);
-		_classPrivateFieldInitSpec(this, _sizes, void 0);
-		_classPrivateFieldInitSpec(this, _starts, void 0);
-		_classPrivateFieldInitSpec(this, _ttls, void 0);
-		_classPrivateFieldInitSpec(this, _hasDispose, void 0);
-		_classPrivateFieldInitSpec(this, _hasFetchMethod, void 0);
-		_classPrivateFieldInitSpec(this, _hasDisposeAfter, void 0);
-		_classPrivateFieldInitSpec(this, _updateItemAge, () => {});
-		_classPrivateFieldInitSpec(this, _statusTTL, () => {});
-		_classPrivateFieldInitSpec(this, _setItemTTL, () => {});
-		_classPrivateFieldInitSpec(this, _isStale, () => false);
-		_classPrivateFieldInitSpec(this, _removeItemSize, (_i) => {});
-		_classPrivateFieldInitSpec(this, _addItemSize, (_i, _s, _st) => {});
-		_classPrivateFieldInitSpec(this, _requireSize, (_k, _v, size, sizeCalculation) => {
-			if (size || sizeCalculation) throw new TypeError("cannot set size without setting maxSize or maxEntrySize on cache");
-			return 0;
-		});
 		const { max = 0, ttl, ttlResolution = 1, ttlAutopurge, updateAgeOnGet, updateAgeOnHas, allowStale, dispose, disposeAfter, noDisposeOnSet, noUpdateTTL, maxSize = 0, maxEntrySize = 0, sizeCalculation, fetchMethod, noDeleteOnFetchRejection, noDeleteOnStaleGet, allowStaleOnFetchRejection, allowStaleOnFetchAbort, ignoreFetchAbort } = options;
 		if (max !== 0 && !isPosInt(max)) throw new TypeError("max option must be a nonnegative integer");
 		const UintArray = max ? getUintArray(max) : Array;
 		if (!UintArray) throw new Error("invalid max value: " + max);
-		_classPrivateFieldSet2(_max, this, max);
-		_classPrivateFieldSet2(_maxSize, this, maxSize);
-		this.maxEntrySize = maxEntrySize || _classPrivateFieldGet2(_maxSize, this);
+		this.#max = max;
+		this.#maxSize = maxSize;
+		this.maxEntrySize = maxEntrySize || this.#maxSize;
 		this.sizeCalculation = sizeCalculation;
 		if (this.sizeCalculation) {
-			if (!_classPrivateFieldGet2(_maxSize, this) && !this.maxEntrySize) throw new TypeError("cannot set sizeCalculation without setting maxSize or maxEntrySize");
+			if (!this.#maxSize && !this.maxEntrySize) throw new TypeError("cannot set sizeCalculation without setting maxSize or maxEntrySize");
 			if (typeof this.sizeCalculation !== "function") throw new TypeError("sizeCalculation set to non-function");
 		}
 		if (fetchMethod !== void 0 && typeof fetchMethod !== "function") throw new TypeError("fetchMethod must be a function if specified");
-		_classPrivateFieldSet2(_fetchMethod, this, fetchMethod);
-		_classPrivateFieldSet2(_hasFetchMethod, this, !!fetchMethod);
-		_classPrivateFieldSet2(_keyMap, this, /* @__PURE__ */ new Map());
-		_classPrivateFieldSet2(_keyList, this, new Array(max).fill(void 0));
-		_classPrivateFieldSet2(_valList, this, new Array(max).fill(void 0));
-		_classPrivateFieldSet2(_next, this, new UintArray(max));
-		_classPrivateFieldSet2(_prev, this, new UintArray(max));
-		_classPrivateFieldSet2(_head, this, 0);
-		_classPrivateFieldSet2(_tail, this, 0);
-		_classPrivateFieldSet2(_free, this, Stack.create(max));
-		_classPrivateFieldSet2(_size, this, 0);
-		_classPrivateFieldSet2(_calculatedSize, this, 0);
-		if (typeof dispose === "function") _classPrivateFieldSet2(_dispose, this, dispose);
+		this.#fetchMethod = fetchMethod;
+		this.#hasFetchMethod = !!fetchMethod;
+		this.#keyMap = /* @__PURE__ */ new Map();
+		this.#keyList = new Array(max).fill(void 0);
+		this.#valList = new Array(max).fill(void 0);
+		this.#next = new UintArray(max);
+		this.#prev = new UintArray(max);
+		this.#head = 0;
+		this.#tail = 0;
+		this.#free = Stack.create(max);
+		this.#size = 0;
+		this.#calculatedSize = 0;
+		if (typeof dispose === "function") this.#dispose = dispose;
 		if (typeof disposeAfter === "function") {
-			_classPrivateFieldSet2(_disposeAfter, this, disposeAfter);
-			_classPrivateFieldSet2(_disposed, this, []);
+			this.#disposeAfter = disposeAfter;
+			this.#disposed = [];
 		} else {
-			_classPrivateFieldSet2(_disposeAfter, this, void 0);
-			_classPrivateFieldSet2(_disposed, this, void 0);
+			this.#disposeAfter = void 0;
+			this.#disposed = void 0;
 		}
-		_classPrivateFieldSet2(_hasDispose, this, !!_classPrivateFieldGet2(_dispose, this));
-		_classPrivateFieldSet2(_hasDisposeAfter, this, !!_classPrivateFieldGet2(_disposeAfter, this));
+		this.#hasDispose = !!this.#dispose;
+		this.#hasDisposeAfter = !!this.#disposeAfter;
 		this.noDisposeOnSet = !!noDisposeOnSet;
 		this.noUpdateTTL = !!noUpdateTTL;
 		this.noDeleteOnFetchRejection = !!noDeleteOnFetchRejection;
@@ -734,11 +558,11 @@ var LRUCache = class LRUCache {
 		this.allowStaleOnFetchAbort = !!allowStaleOnFetchAbort;
 		this.ignoreFetchAbort = !!ignoreFetchAbort;
 		if (this.maxEntrySize !== 0) {
-			if (_classPrivateFieldGet2(_maxSize, this) !== 0) {
-				if (!isPosInt(_classPrivateFieldGet2(_maxSize, this))) throw new TypeError("maxSize must be a positive integer if specified");
+			if (this.#maxSize !== 0) {
+				if (!isPosInt(this.#maxSize)) throw new TypeError("maxSize must be a positive integer if specified");
 			}
 			if (!isPosInt(this.maxEntrySize)) throw new TypeError("maxEntrySize must be a positive integer if specified");
-			_assertClassBrand(_LRUCache_brand, this, _initializeSizeTracking).call(this);
+			this.#initializeSizeTracking();
 		}
 		this.allowStale = !!allowStale;
 		this.noDeleteOnStaleGet = !!noDeleteOnStaleGet;
@@ -749,10 +573,10 @@ var LRUCache = class LRUCache {
 		this.ttl = ttl || 0;
 		if (this.ttl) {
 			if (!isPosInt(this.ttl)) throw new TypeError("ttl must be a positive integer if specified");
-			_assertClassBrand(_LRUCache_brand, this, _initializeTTLTracking).call(this);
+			this.#initializeTTLTracking();
 		}
-		if (_classPrivateFieldGet2(_max, this) === 0 && this.ttl === 0 && _classPrivateFieldGet2(_maxSize, this) === 0) throw new TypeError("At least one of max, maxSize, or ttl is required");
-		if (!this.ttlAutopurge && !_classPrivateFieldGet2(_max, this) && !_classPrivateFieldGet2(_maxSize, this)) {
+		if (this.#max === 0 && this.ttl === 0 && this.#maxSize === 0) throw new TypeError("At least one of max, maxSize, or ttl is required");
+		if (!this.ttlAutopurge && !this.#max && !this.#maxSize) {
 			const code = "LRU_CACHE_UNBOUNDED";
 			if (shouldWarn(code)) {
 				warned.add(code);
@@ -764,14 +588,132 @@ var LRUCache = class LRUCache {
 	* Return the remaining TTL time for a given entry key
 	*/
 	getRemainingTTL(key) {
-		return _classPrivateFieldGet2(_keyMap, this).has(key) ? Infinity : 0;
+		return this.#keyMap.has(key) ? Infinity : 0;
+	}
+	#initializeTTLTracking() {
+		const ttls = new ZeroArray(this.#max);
+		const starts = new ZeroArray(this.#max);
+		this.#ttls = ttls;
+		this.#starts = starts;
+		this.#setItemTTL = (index, ttl, start = perf.now()) => {
+			starts[index] = ttl !== 0 ? start : 0;
+			ttls[index] = ttl;
+			if (ttl !== 0 && this.ttlAutopurge) {
+				const t = setTimeout(() => {
+					if (this.#isStale(index)) this.delete(this.#keyList[index]);
+				}, ttl + 1);
+				/* c8 ignore start */
+				if (t.unref) t.unref();
+			}
+		};
+		this.#updateItemAge = (index) => {
+			starts[index] = ttls[index] !== 0 ? perf.now() : 0;
+		};
+		this.#statusTTL = (status, index) => {
+			if (ttls[index]) {
+				const ttl = ttls[index];
+				const start = starts[index];
+				/* c8 ignore next */
+				if (!ttl || !start) return;
+				status.ttl = ttl;
+				status.start = start;
+				status.now = cachedNow || getNow();
+				status.remainingTTL = ttl - (status.now - start);
+			}
+		};
+		let cachedNow = 0;
+		const getNow = () => {
+			const n = perf.now();
+			if (this.ttlResolution > 0) {
+				cachedNow = n;
+				const t = setTimeout(() => cachedNow = 0, this.ttlResolution);
+				/* c8 ignore start */
+				if (t.unref) t.unref();
+			}
+			return n;
+		};
+		this.getRemainingTTL = (key) => {
+			const index = this.#keyMap.get(key);
+			if (index === void 0) return 0;
+			const ttl = ttls[index];
+			const start = starts[index];
+			if (!ttl || !start) return Infinity;
+			return ttl - ((cachedNow || getNow()) - start);
+		};
+		this.#isStale = (index) => {
+			const s = starts[index];
+			const t = ttls[index];
+			return !!t && !!s && (cachedNow || getNow()) - s > t;
+		};
+	}
+	#updateItemAge = () => {};
+	#statusTTL = () => {};
+	#setItemTTL = () => {};
+	/* c8 ignore stop */
+	#isStale = () => false;
+	#initializeSizeTracking() {
+		const sizes = new ZeroArray(this.#max);
+		this.#calculatedSize = 0;
+		this.#sizes = sizes;
+		this.#removeItemSize = (index) => {
+			this.#calculatedSize -= sizes[index];
+			sizes[index] = 0;
+		};
+		this.#requireSize = (k, v, size, sizeCalculation) => {
+			if (this.#isBackgroundFetch(v)) return 0;
+			if (!isPosInt(size)) {
+				if (sizeCalculation) {
+					if (typeof sizeCalculation !== "function") throw new TypeError("sizeCalculation must be a function");
+					size = sizeCalculation(v, k);
+					if (!isPosInt(size)) throw new TypeError("sizeCalculation return invalid (expect positive integer)");
+				} else throw new TypeError("invalid size value (must be positive integer). When maxSize or maxEntrySize is used, sizeCalculation or size must be set.");
+			}
+			return size;
+		};
+		this.#addItemSize = (index, size, status) => {
+			sizes[index] = size;
+			if (this.#maxSize) {
+				const maxSize = this.#maxSize - sizes[index];
+				while (this.#calculatedSize > maxSize) this.#evict(true);
+			}
+			this.#calculatedSize += sizes[index];
+			if (status) {
+				status.entrySize = size;
+				status.totalCalculatedSize = this.#calculatedSize;
+			}
+		};
+	}
+	#removeItemSize = (_i) => {};
+	#addItemSize = (_i, _s, _st) => {};
+	#requireSize = (_k, _v, size, sizeCalculation) => {
+		if (size || sizeCalculation) throw new TypeError("cannot set size without setting maxSize or maxEntrySize on cache");
+		return 0;
+	};
+	*#indexes({ allowStale = this.allowStale } = {}) {
+		if (this.#size) for (let i = this.#tail;;) {
+			if (!this.#isValidIndex(i)) break;
+			if (allowStale || !this.#isStale(i)) yield i;
+			if (i === this.#head) break;
+			else i = this.#prev[i];
+		}
+	}
+	*#rindexes({ allowStale = this.allowStale } = {}) {
+		if (this.#size) for (let i = this.#head;;) {
+			if (!this.#isValidIndex(i)) break;
+			if (allowStale || !this.#isStale(i)) yield i;
+			if (i === this.#tail) break;
+			else i = this.#next[i];
+		}
+	}
+	#isValidIndex(index) {
+		return index !== void 0 && this.#keyMap.get(this.#keyList[index]) === index;
 	}
 	/**
 	* Return a generator yielding `[key, value]` pairs,
 	* in order from most recently used to least recently used.
 	*/
 	*entries() {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _indexes).call(this)) if (_classPrivateFieldGet2(_valList, this)[i] !== void 0 && _classPrivateFieldGet2(_keyList, this)[i] !== void 0 && !_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, _classPrivateFieldGet2(_valList, this)[i])) yield [_classPrivateFieldGet2(_keyList, this)[i], _classPrivateFieldGet2(_valList, this)[i]];
+		for (const i of this.#indexes()) if (this.#valList[i] !== void 0 && this.#keyList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) yield [this.#keyList[i], this.#valList[i]];
 	}
 	/**
 	* Inverse order version of {@link LRUCache.entries}
@@ -780,16 +722,16 @@ var LRUCache = class LRUCache {
 	* in order from least recently used to most recently used.
 	*/
 	*rentries() {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _rindexes).call(this)) if (_classPrivateFieldGet2(_valList, this)[i] !== void 0 && _classPrivateFieldGet2(_keyList, this)[i] !== void 0 && !_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, _classPrivateFieldGet2(_valList, this)[i])) yield [_classPrivateFieldGet2(_keyList, this)[i], _classPrivateFieldGet2(_valList, this)[i]];
+		for (const i of this.#rindexes()) if (this.#valList[i] !== void 0 && this.#keyList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) yield [this.#keyList[i], this.#valList[i]];
 	}
 	/**
 	* Return a generator yielding the keys in the cache,
 	* in order from most recently used to least recently used.
 	*/
 	*keys() {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _indexes).call(this)) {
-			const k = _classPrivateFieldGet2(_keyList, this)[i];
-			if (k !== void 0 && !_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, _classPrivateFieldGet2(_valList, this)[i])) yield k;
+		for (const i of this.#indexes()) {
+			const k = this.#keyList[i];
+			if (k !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) yield k;
 		}
 	}
 	/**
@@ -799,9 +741,9 @@ var LRUCache = class LRUCache {
 	* in order from least recently used to most recently used.
 	*/
 	*rkeys() {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _rindexes).call(this)) {
-			const k = _classPrivateFieldGet2(_keyList, this)[i];
-			if (k !== void 0 && !_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, _classPrivateFieldGet2(_valList, this)[i])) yield k;
+		for (const i of this.#rindexes()) {
+			const k = this.#keyList[i];
+			if (k !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) yield k;
 		}
 	}
 	/**
@@ -809,7 +751,7 @@ var LRUCache = class LRUCache {
 	* in order from most recently used to least recently used.
 	*/
 	*values() {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _indexes).call(this)) if (_classPrivateFieldGet2(_valList, this)[i] !== void 0 && !_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, _classPrivateFieldGet2(_valList, this)[i])) yield _classPrivateFieldGet2(_valList, this)[i];
+		for (const i of this.#indexes()) if (this.#valList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) yield this.#valList[i];
 	}
 	/**
 	* Inverse order version of {@link LRUCache.values}
@@ -818,13 +760,13 @@ var LRUCache = class LRUCache {
 	* in order from least recently used to most recently used.
 	*/
 	*rvalues() {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _rindexes).call(this)) if (_classPrivateFieldGet2(_valList, this)[i] !== void 0 && !_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, _classPrivateFieldGet2(_valList, this)[i])) yield _classPrivateFieldGet2(_valList, this)[i];
+		for (const i of this.#rindexes()) if (this.#valList[i] !== void 0 && !this.#isBackgroundFetch(this.#valList[i])) yield this.#valList[i];
 	}
 	/**
 	* Iterating over the cache itself yields the same results as
 	* {@link LRUCache.entries}
 	*/
-	[_Symbol$iterator]() {
+	[Symbol.iterator]() {
 		return this.entries();
 	}
 	/**
@@ -832,11 +774,11 @@ var LRUCache = class LRUCache {
 	* similar to Array.find().  fn is called as fn(value, key, cache).
 	*/
 	find(fn, getOptions = {}) {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _indexes).call(this)) {
-			const v = _classPrivateFieldGet2(_valList, this)[i];
-			const value = _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v) ? v.__staleWhileFetching : v;
+		for (const i of this.#indexes()) {
+			const v = this.#valList[i];
+			const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
 			if (value === void 0) continue;
-			if (fn(value, _classPrivateFieldGet2(_keyList, this)[i], this)) return this.get(_classPrivateFieldGet2(_keyList, this)[i], getOptions);
+			if (fn(value, this.#keyList[i], this)) return this.get(this.#keyList[i], getOptions);
 		}
 	}
 	/**
@@ -846,11 +788,11 @@ var LRUCache = class LRUCache {
 	* Does not iterate over stale values.
 	*/
 	forEach(fn, thisp = this) {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _indexes).call(this)) {
-			const v = _classPrivateFieldGet2(_valList, this)[i];
-			const value = _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v) ? v.__staleWhileFetching : v;
+		for (const i of this.#indexes()) {
+			const v = this.#valList[i];
+			const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
 			if (value === void 0) continue;
-			fn.call(thisp, value, _classPrivateFieldGet2(_keyList, this)[i], this);
+			fn.call(thisp, value, this.#keyList[i], this);
 		}
 	}
 	/**
@@ -858,11 +800,11 @@ var LRUCache = class LRUCache {
 	* reverse order.  (ie, less recently used items are iterated over first.)
 	*/
 	rforEach(fn, thisp = this) {
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _rindexes).call(this)) {
-			const v = _classPrivateFieldGet2(_valList, this)[i];
-			const value = _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v) ? v.__staleWhileFetching : v;
+		for (const i of this.#rindexes()) {
+			const v = this.#valList[i];
+			const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
 			if (value === void 0) continue;
-			fn.call(thisp, value, _classPrivateFieldGet2(_keyList, this)[i], this);
+			fn.call(thisp, value, this.#keyList[i], this);
 		}
 	}
 	/**
@@ -871,8 +813,8 @@ var LRUCache = class LRUCache {
 	*/
 	purgeStale() {
 		let deleted = false;
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _rindexes).call(this, { allowStale: true })) if (_classPrivateFieldGet2(_isStale, this).call(this, i)) {
-			this.delete(_classPrivateFieldGet2(_keyList, this)[i]);
+		for (const i of this.#rindexes({ allowStale: true })) if (this.#isStale(i)) {
+			this.delete(this.#keyList[i]);
 			deleted = true;
 		}
 		return deleted;
@@ -884,21 +826,21 @@ var LRUCache = class LRUCache {
 	* cache, so be sure to check for expired TTLs if relevant.
 	*/
 	info(key) {
-		const i = _classPrivateFieldGet2(_keyMap, this).get(key);
+		const i = this.#keyMap.get(key);
 		if (i === void 0) return void 0;
-		const v = _classPrivateFieldGet2(_valList, this)[i];
-		const value = _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v) ? v.__staleWhileFetching : v;
+		const v = this.#valList[i];
+		const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
 		if (value === void 0) return void 0;
 		const entry = { value };
-		if (_classPrivateFieldGet2(_ttls, this) && _classPrivateFieldGet2(_starts, this)) {
-			const ttl = _classPrivateFieldGet2(_ttls, this)[i];
-			const start = _classPrivateFieldGet2(_starts, this)[i];
+		if (this.#ttls && this.#starts) {
+			const ttl = this.#ttls[i];
+			const start = this.#starts[i];
 			if (ttl && start) {
 				entry.ttl = ttl - (perf.now() - start);
 				entry.start = Date.now();
 			}
 		}
-		if (_classPrivateFieldGet2(_sizes, this)) entry.size = _classPrivateFieldGet2(_sizes, this)[i];
+		if (this.#sizes) entry.size = this.#sizes[i];
 		return entry;
 	}
 	/**
@@ -907,18 +849,18 @@ var LRUCache = class LRUCache {
 	*/
 	dump() {
 		const arr = [];
-		for (const i of _assertClassBrand(_LRUCache_brand, this, _indexes).call(this, { allowStale: true })) {
-			const key = _classPrivateFieldGet2(_keyList, this)[i];
-			const v = _classPrivateFieldGet2(_valList, this)[i];
-			const value = _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v) ? v.__staleWhileFetching : v;
+		for (const i of this.#indexes({ allowStale: true })) {
+			const key = this.#keyList[i];
+			const v = this.#valList[i];
+			const value = this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
 			if (value === void 0 || key === void 0) continue;
 			const entry = { value };
-			if (_classPrivateFieldGet2(_ttls, this) && _classPrivateFieldGet2(_starts, this)) {
-				entry.ttl = _classPrivateFieldGet2(_ttls, this)[i];
-				const age = perf.now() - _classPrivateFieldGet2(_starts, this)[i];
+			if (this.#ttls && this.#starts) {
+				entry.ttl = this.#ttls[i];
+				const age = perf.now() - this.#starts[i];
 				entry.start = Math.floor(Date.now() - age);
 			}
-			if (_classPrivateFieldGet2(_sizes, this)) entry.size = _classPrivateFieldGet2(_sizes, this)[i];
+			if (this.#sizes) entry.size = this.#sizes[i];
 			arr.unshift([key, entry]);
 		}
 		return arr;
@@ -951,7 +893,7 @@ var LRUCache = class LRUCache {
 		}
 		const { ttl = this.ttl, start, noDisposeOnSet = this.noDisposeOnSet, sizeCalculation = this.sizeCalculation, status } = setOptions;
 		let { noUpdateTTL = this.noUpdateTTL } = setOptions;
-		const size = _classPrivateFieldGet2(_requireSize, this).call(this, k, v, setOptions.size || 0, sizeCalculation);
+		const size = this.#requireSize(k, v, setOptions.size || 0, sizeCalculation);
 		if (this.maxEntrySize && size > this.maxEntrySize) {
 			if (status) {
 				status.set = "miss";
@@ -960,77 +902,61 @@ var LRUCache = class LRUCache {
 			this.delete(k);
 			return this;
 		}
-		let index = _classPrivateFieldGet2(_size, this) === 0 ? void 0 : _classPrivateFieldGet2(_keyMap, this).get(k);
+		let index = this.#size === 0 ? void 0 : this.#keyMap.get(k);
 		if (index === void 0) {
-			var _this$size;
-			index = _classPrivateFieldGet2(_size, this) === 0 ? _classPrivateFieldGet2(_tail, this) : _classPrivateFieldGet2(_free, this).length !== 0 ? _classPrivateFieldGet2(_free, this).pop() : _classPrivateFieldGet2(_size, this) === _classPrivateFieldGet2(_max, this) ? _assertClassBrand(_LRUCache_brand, this, _evict).call(this, false) : _classPrivateFieldGet2(_size, this);
-			_classPrivateFieldGet2(_keyList, this)[index] = k;
-			_classPrivateFieldGet2(_valList, this)[index] = v;
-			_classPrivateFieldGet2(_keyMap, this).set(k, index);
-			_classPrivateFieldGet2(_next, this)[_classPrivateFieldGet2(_tail, this)] = index;
-			_classPrivateFieldGet2(_prev, this)[index] = _classPrivateFieldGet2(_tail, this);
-			_classPrivateFieldSet2(_tail, this, index);
-			_classPrivateFieldSet2(_size, this, (_this$size = _classPrivateFieldGet2(_size, this), _this$size++, _this$size));
-			_classPrivateFieldGet2(_addItemSize, this).call(this, index, size, status);
+			index = this.#size === 0 ? this.#tail : this.#free.length !== 0 ? this.#free.pop() : this.#size === this.#max ? this.#evict(false) : this.#size;
+			this.#keyList[index] = k;
+			this.#valList[index] = v;
+			this.#keyMap.set(k, index);
+			this.#next[this.#tail] = index;
+			this.#prev[index] = this.#tail;
+			this.#tail = index;
+			this.#size++;
+			this.#addItemSize(index, size, status);
 			if (status) status.set = "add";
 			noUpdateTTL = false;
 		} else {
-			_assertClassBrand(_LRUCache_brand, this, _moveToTail).call(this, index);
-			const oldVal = _classPrivateFieldGet2(_valList, this)[index];
+			this.#moveToTail(index);
+			const oldVal = this.#valList[index];
 			if (v !== oldVal) {
-				if (_classPrivateFieldGet2(_hasFetchMethod, this) && _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, oldVal)) {
+				if (this.#hasFetchMethod && this.#isBackgroundFetch(oldVal)) {
 					oldVal.__abortController.abort(/* @__PURE__ */ new Error("replaced"));
 					const { __staleWhileFetching: s } = oldVal;
 					if (s !== void 0 && !noDisposeOnSet) {
-						if (_classPrivateFieldGet2(_hasDispose, this)) {
-							var _classPrivateFieldGet2$2;
-							(_classPrivateFieldGet2$2 = _classPrivateFieldGet2(_dispose, this)) === null || _classPrivateFieldGet2$2 === void 0 || _classPrivateFieldGet2$2.call(this, s, k, "set");
-						}
-						if (_classPrivateFieldGet2(_hasDisposeAfter, this)) {
-							var _classPrivateFieldGet3;
-							(_classPrivateFieldGet3 = _classPrivateFieldGet2(_disposed, this)) === null || _classPrivateFieldGet3 === void 0 || _classPrivateFieldGet3.push([
-								s,
-								k,
-								"set"
-							]);
-						}
-					}
-				} else if (!noDisposeOnSet) {
-					if (_classPrivateFieldGet2(_hasDispose, this)) {
-						var _classPrivateFieldGet4;
-						(_classPrivateFieldGet4 = _classPrivateFieldGet2(_dispose, this)) === null || _classPrivateFieldGet4 === void 0 || _classPrivateFieldGet4.call(this, oldVal, k, "set");
-					}
-					if (_classPrivateFieldGet2(_hasDisposeAfter, this)) {
-						var _classPrivateFieldGet5;
-						(_classPrivateFieldGet5 = _classPrivateFieldGet2(_disposed, this)) === null || _classPrivateFieldGet5 === void 0 || _classPrivateFieldGet5.push([
-							oldVal,
+						if (this.#hasDispose) this.#dispose?.(s, k, "set");
+						if (this.#hasDisposeAfter) this.#disposed?.push([
+							s,
 							k,
 							"set"
 						]);
 					}
+				} else if (!noDisposeOnSet) {
+					if (this.#hasDispose) this.#dispose?.(oldVal, k, "set");
+					if (this.#hasDisposeAfter) this.#disposed?.push([
+						oldVal,
+						k,
+						"set"
+					]);
 				}
-				_classPrivateFieldGet2(_removeItemSize, this).call(this, index);
-				_classPrivateFieldGet2(_addItemSize, this).call(this, index, size, status);
-				_classPrivateFieldGet2(_valList, this)[index] = v;
+				this.#removeItemSize(index);
+				this.#addItemSize(index, size, status);
+				this.#valList[index] = v;
 				if (status) {
 					status.set = "replace";
-					const oldValue = oldVal && _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, oldVal) ? oldVal.__staleWhileFetching : oldVal;
+					const oldValue = oldVal && this.#isBackgroundFetch(oldVal) ? oldVal.__staleWhileFetching : oldVal;
 					if (oldValue !== void 0) status.oldValue = oldValue;
 				}
 			} else if (status) status.set = "update";
 		}
-		if (ttl !== 0 && !_classPrivateFieldGet2(_ttls, this)) _assertClassBrand(_LRUCache_brand, this, _initializeTTLTracking).call(this);
-		if (_classPrivateFieldGet2(_ttls, this)) {
-			if (!noUpdateTTL) _classPrivateFieldGet2(_setItemTTL, this).call(this, index, ttl, start);
-			if (status) _classPrivateFieldGet2(_statusTTL, this).call(this, status, index);
+		if (ttl !== 0 && !this.#ttls) this.#initializeTTLTracking();
+		if (this.#ttls) {
+			if (!noUpdateTTL) this.#setItemTTL(index, ttl, start);
+			if (status) this.#statusTTL(status, index);
 		}
-		if (!noDisposeOnSet && _classPrivateFieldGet2(_hasDisposeAfter, this) && _classPrivateFieldGet2(_disposed, this)) {
-			const dt = _classPrivateFieldGet2(_disposed, this);
+		if (!noDisposeOnSet && this.#hasDisposeAfter && this.#disposed) {
+			const dt = this.#disposed;
 			let task;
-			while (task = dt === null || dt === void 0 ? void 0 : dt.shift()) {
-				var _classPrivateFieldGet6;
-				(_classPrivateFieldGet6 = _classPrivateFieldGet2(_disposeAfter, this)) === null || _classPrivateFieldGet6 === void 0 || _classPrivateFieldGet6.call(this, ...task);
-			}
+			while (task = dt?.shift()) this.#disposeAfter?.(...task);
 		}
 		return this;
 	}
@@ -1040,23 +966,47 @@ var LRUCache = class LRUCache {
 	*/
 	pop() {
 		try {
-			while (_classPrivateFieldGet2(_size, this)) {
-				const val = _classPrivateFieldGet2(_valList, this)[_classPrivateFieldGet2(_head, this)];
-				_assertClassBrand(_LRUCache_brand, this, _evict).call(this, true);
-				if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, val)) {
+			while (this.#size) {
+				const val = this.#valList[this.#head];
+				this.#evict(true);
+				if (this.#isBackgroundFetch(val)) {
 					if (val.__staleWhileFetching) return val.__staleWhileFetching;
 				} else if (val !== void 0) return val;
 			}
 		} finally {
-			if (_classPrivateFieldGet2(_hasDisposeAfter, this) && _classPrivateFieldGet2(_disposed, this)) {
-				const dt = _classPrivateFieldGet2(_disposed, this);
+			if (this.#hasDisposeAfter && this.#disposed) {
+				const dt = this.#disposed;
 				let task;
-				while (task = dt === null || dt === void 0 ? void 0 : dt.shift()) {
-					var _classPrivateFieldGet7;
-					(_classPrivateFieldGet7 = _classPrivateFieldGet2(_disposeAfter, this)) === null || _classPrivateFieldGet7 === void 0 || _classPrivateFieldGet7.call(this, ...task);
-				}
+				while (task = dt?.shift()) this.#disposeAfter?.(...task);
 			}
 		}
+	}
+	#evict(free) {
+		const head = this.#head;
+		const k = this.#keyList[head];
+		const v = this.#valList[head];
+		if (this.#hasFetchMethod && this.#isBackgroundFetch(v)) v.__abortController.abort(/* @__PURE__ */ new Error("evicted"));
+		else if (this.#hasDispose || this.#hasDisposeAfter) {
+			if (this.#hasDispose) this.#dispose?.(v, k, "evict");
+			if (this.#hasDisposeAfter) this.#disposed?.push([
+				v,
+				k,
+				"evict"
+			]);
+		}
+		this.#removeItemSize(head);
+		if (free) {
+			this.#keyList[head] = void 0;
+			this.#valList[head] = void 0;
+			this.#free.push(head);
+		}
+		if (this.#size === 1) {
+			this.#head = this.#tail = 0;
+			this.#free.length = 0;
+		} else this.#head = this.#next[head];
+		this.#keyMap.delete(k);
+		this.#size--;
+		return head;
 	}
 	/**
 	* Check if a key is in the cache, without updating the recency of use.
@@ -1068,20 +1018,20 @@ var LRUCache = class LRUCache {
 	*/
 	has(k, hasOptions = {}) {
 		const { updateAgeOnHas = this.updateAgeOnHas, status } = hasOptions;
-		const index = _classPrivateFieldGet2(_keyMap, this).get(k);
+		const index = this.#keyMap.get(k);
 		if (index !== void 0) {
-			const v = _classPrivateFieldGet2(_valList, this)[index];
-			if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v) && v.__staleWhileFetching === void 0) return false;
-			if (!_classPrivateFieldGet2(_isStale, this).call(this, index)) {
-				if (updateAgeOnHas) _classPrivateFieldGet2(_updateItemAge, this).call(this, index);
+			const v = this.#valList[index];
+			if (this.#isBackgroundFetch(v) && v.__staleWhileFetching === void 0) return false;
+			if (!this.#isStale(index)) {
+				if (updateAgeOnHas) this.#updateItemAge(index);
 				if (status) {
 					status.has = "hit";
-					_classPrivateFieldGet2(_statusTTL, this).call(this, status, index);
+					this.#statusTTL(status, index);
 				}
 				return true;
 			} else if (status) {
 				status.has = "stale";
-				_classPrivateFieldGet2(_statusTTL, this).call(this, status, index);
+				this.#statusTTL(status, index);
 			}
 		} else if (status) status.has = "miss";
 		return false;
@@ -1095,14 +1045,101 @@ var LRUCache = class LRUCache {
 	*/
 	peek(k, peekOptions = {}) {
 		const { allowStale = this.allowStale } = peekOptions;
-		const index = _classPrivateFieldGet2(_keyMap, this).get(k);
-		if (index === void 0 || !allowStale && _classPrivateFieldGet2(_isStale, this).call(this, index)) return;
-		const v = _classPrivateFieldGet2(_valList, this)[index];
-		return _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v) ? v.__staleWhileFetching : v;
+		const index = this.#keyMap.get(k);
+		if (index === void 0 || !allowStale && this.#isStale(index)) return;
+		const v = this.#valList[index];
+		return this.#isBackgroundFetch(v) ? v.__staleWhileFetching : v;
+	}
+	#backgroundFetch(k, index, options, context) {
+		const v = index === void 0 ? void 0 : this.#valList[index];
+		if (this.#isBackgroundFetch(v)) return v;
+		const ac = new AC();
+		const { signal } = options;
+		signal?.addEventListener("abort", () => ac.abort(signal.reason), { signal: ac.signal });
+		const fetchOpts = {
+			signal: ac.signal,
+			options,
+			context
+		};
+		const cb = (v, updateCache = false) => {
+			const { aborted } = ac.signal;
+			const ignoreAbort = options.ignoreFetchAbort && v !== void 0;
+			if (options.status) {
+				if (aborted && !updateCache) {
+					options.status.fetchAborted = true;
+					options.status.fetchError = ac.signal.reason;
+					if (ignoreAbort) options.status.fetchAbortIgnored = true;
+				} else options.status.fetchResolved = true;
+			}
+			if (aborted && !ignoreAbort && !updateCache) return fetchFail(ac.signal.reason);
+			const bf = p;
+			if (this.#valList[index] === p) {
+				if (v === void 0) {
+					if (bf.__staleWhileFetching) this.#valList[index] = bf.__staleWhileFetching;
+					else this.delete(k);
+				} else {
+					if (options.status) options.status.fetchUpdated = true;
+					this.set(k, v, fetchOpts.options);
+				}
+			}
+			return v;
+		};
+		const eb = (er) => {
+			if (options.status) {
+				options.status.fetchRejected = true;
+				options.status.fetchError = er;
+			}
+			return fetchFail(er);
+		};
+		const fetchFail = (er) => {
+			const { aborted } = ac.signal;
+			const allowStaleAborted = aborted && options.allowStaleOnFetchAbort;
+			const allowStale = allowStaleAborted || options.allowStaleOnFetchRejection;
+			const noDelete = allowStale || options.noDeleteOnFetchRejection;
+			const bf = p;
+			if (this.#valList[index] === p) {
+				if (!noDelete || bf.__staleWhileFetching === void 0) this.delete(k);
+				else if (!allowStaleAborted) this.#valList[index] = bf.__staleWhileFetching;
+			}
+			if (allowStale) {
+				if (options.status && bf.__staleWhileFetching !== void 0) options.status.returnedStale = true;
+				return bf.__staleWhileFetching;
+			} else if (bf.__returned === bf) throw er;
+		};
+		const pcall = (res, rej) => {
+			const fmp = this.#fetchMethod?.(k, v, fetchOpts);
+			if (fmp && fmp instanceof Promise) fmp.then((v) => res(v === void 0 ? void 0 : v), rej);
+			ac.signal.addEventListener("abort", () => {
+				if (!options.ignoreFetchAbort || options.allowStaleOnFetchAbort) {
+					res(void 0);
+					if (options.allowStaleOnFetchAbort) res = (v) => cb(v, true);
+				}
+			});
+		};
+		if (options.status) options.status.fetchDispatched = true;
+		const p = new Promise(pcall).then(cb, eb);
+		const bf = Object.assign(p, {
+			__abortController: ac,
+			__staleWhileFetching: v,
+			__returned: void 0
+		});
+		if (index === void 0) {
+			this.set(k, bf, {
+				...fetchOpts.options,
+				status: void 0
+			});
+			index = this.#keyMap.get(k);
+		} else this.#valList[index] = bf;
+		return bf;
+	}
+	#isBackgroundFetch(p) {
+		if (!this.#hasFetchMethod) return false;
+		const b = p;
+		return !!b && b instanceof Promise && b.hasOwnProperty("__staleWhileFetching") && b.__abortController instanceof AC;
 	}
 	async fetch(k, fetchOptions = {}) {
 		const { allowStale = this.allowStale, updateAgeOnGet = this.updateAgeOnGet, noDeleteOnStaleGet = this.noDeleteOnStaleGet, ttl = this.ttl, noDisposeOnSet = this.noDisposeOnSet, size = 0, sizeCalculation = this.sizeCalculation, noUpdateTTL = this.noUpdateTTL, noDeleteOnFetchRejection = this.noDeleteOnFetchRejection, allowStaleOnFetchRejection = this.allowStaleOnFetchRejection, ignoreFetchAbort = this.ignoreFetchAbort, allowStaleOnFetchAbort = this.allowStaleOnFetchAbort, context, forceRefresh = false, status, signal } = fetchOptions;
-		if (!_classPrivateFieldGet2(_hasFetchMethod, this)) {
+		if (!this.#hasFetchMethod) {
 			if (status) status.fetch = "get";
 			return this.get(k, {
 				allowStale,
@@ -1127,14 +1164,14 @@ var LRUCache = class LRUCache {
 			status,
 			signal
 		};
-		let index = _classPrivateFieldGet2(_keyMap, this).get(k);
+		let index = this.#keyMap.get(k);
 		if (index === void 0) {
 			if (status) status.fetch = "miss";
-			const p = _assertClassBrand(_LRUCache_brand, this, _backgroundFetch).call(this, k, index, options, context);
+			const p = this.#backgroundFetch(k, index, options, context);
 			return p.__returned = p;
 		} else {
-			const v = _classPrivateFieldGet2(_valList, this)[index];
-			if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v)) {
+			const v = this.#valList[index];
+			if (this.#isBackgroundFetch(v)) {
 				const stale = allowStale && v.__staleWhileFetching !== void 0;
 				if (status) {
 					status.fetch = "inflight";
@@ -1142,15 +1179,15 @@ var LRUCache = class LRUCache {
 				}
 				return stale ? v.__staleWhileFetching : v.__returned = v;
 			}
-			const isStale = _classPrivateFieldGet2(_isStale, this).call(this, index);
+			const isStale = this.#isStale(index);
 			if (!forceRefresh && !isStale) {
 				if (status) status.fetch = "hit";
-				_assertClassBrand(_LRUCache_brand, this, _moveToTail).call(this, index);
-				if (updateAgeOnGet) _classPrivateFieldGet2(_updateItemAge, this).call(this, index);
-				if (status) _classPrivateFieldGet2(_statusTTL, this).call(this, status, index);
+				this.#moveToTail(index);
+				if (updateAgeOnGet) this.#updateItemAge(index);
+				if (status) this.#statusTTL(status, index);
 				return v;
 			}
-			const p = _assertClassBrand(_LRUCache_brand, this, _backgroundFetch).call(this, k, index, options, context);
+			const p = this.#backgroundFetch(k, index, options, context);
 			const staleVal = p.__staleWhileFetching !== void 0 && allowStale;
 			if (status) {
 				status.fetch = isStale ? "stale" : "refresh";
@@ -1167,12 +1204,12 @@ var LRUCache = class LRUCache {
 	*/
 	get(k, getOptions = {}) {
 		const { allowStale = this.allowStale, updateAgeOnGet = this.updateAgeOnGet, noDeleteOnStaleGet = this.noDeleteOnStaleGet, status } = getOptions;
-		const index = _classPrivateFieldGet2(_keyMap, this).get(k);
+		const index = this.#keyMap.get(k);
 		if (index !== void 0) {
-			const value = _classPrivateFieldGet2(_valList, this)[index];
-			const fetching = _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, value);
-			if (status) _classPrivateFieldGet2(_statusTTL, this).call(this, status, index);
-			if (_classPrivateFieldGet2(_isStale, this).call(this, index)) {
+			const value = this.#valList[index];
+			const fetching = this.#isBackgroundFetch(value);
+			if (status) this.#statusTTL(status, index);
+			if (this.#isStale(index)) {
 				if (status) status.get = "stale";
 				if (!fetching) {
 					if (!noDeleteOnStaleGet) this.delete(k);
@@ -1185,66 +1222,67 @@ var LRUCache = class LRUCache {
 			} else {
 				if (status) status.get = "hit";
 				if (fetching) return value.__staleWhileFetching;
-				_assertClassBrand(_LRUCache_brand, this, _moveToTail).call(this, index);
-				if (updateAgeOnGet) _classPrivateFieldGet2(_updateItemAge, this).call(this, index);
+				this.#moveToTail(index);
+				if (updateAgeOnGet) this.#updateItemAge(index);
 				return value;
 			}
 		} else if (status) status.get = "miss";
+	}
+	#connect(p, n) {
+		this.#prev[n] = p;
+		this.#next[p] = n;
+	}
+	#moveToTail(index) {
+		if (index !== this.#tail) {
+			if (index === this.#head) this.#head = this.#next[index];
+			else this.#connect(this.#prev[index], this.#next[index]);
+			this.#connect(this.#tail, index);
+			this.#tail = index;
+		}
 	}
 	/**
 	* Deletes a key out of the cache.
 	* Returns true if the key was deleted, false otherwise.
 	*/
 	delete(k) {
-		var _classPrivateFieldGet13;
 		let deleted = false;
-		if (_classPrivateFieldGet2(_size, this) !== 0) {
-			const index = _classPrivateFieldGet2(_keyMap, this).get(k);
+		if (this.#size !== 0) {
+			const index = this.#keyMap.get(k);
 			if (index !== void 0) {
 				deleted = true;
-				if (_classPrivateFieldGet2(_size, this) === 1) this.clear();
+				if (this.#size === 1) this.clear();
 				else {
-					var _this$size5;
-					_classPrivateFieldGet2(_removeItemSize, this).call(this, index);
-					const v = _classPrivateFieldGet2(_valList, this)[index];
-					if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v)) v.__abortController.abort(/* @__PURE__ */ new Error("deleted"));
-					else if (_classPrivateFieldGet2(_hasDispose, this) || _classPrivateFieldGet2(_hasDisposeAfter, this)) {
-						if (_classPrivateFieldGet2(_hasDispose, this)) {
-							var _classPrivateFieldGet11;
-							(_classPrivateFieldGet11 = _classPrivateFieldGet2(_dispose, this)) === null || _classPrivateFieldGet11 === void 0 || _classPrivateFieldGet11.call(this, v, k, "delete");
-						}
-						if (_classPrivateFieldGet2(_hasDisposeAfter, this)) {
-							var _classPrivateFieldGet12;
-							(_classPrivateFieldGet12 = _classPrivateFieldGet2(_disposed, this)) === null || _classPrivateFieldGet12 === void 0 || _classPrivateFieldGet12.push([
-								v,
-								k,
-								"delete"
-							]);
-						}
+					this.#removeItemSize(index);
+					const v = this.#valList[index];
+					if (this.#isBackgroundFetch(v)) v.__abortController.abort(/* @__PURE__ */ new Error("deleted"));
+					else if (this.#hasDispose || this.#hasDisposeAfter) {
+						if (this.#hasDispose) this.#dispose?.(v, k, "delete");
+						if (this.#hasDisposeAfter) this.#disposed?.push([
+							v,
+							k,
+							"delete"
+						]);
 					}
-					_classPrivateFieldGet2(_keyMap, this).delete(k);
-					_classPrivateFieldGet2(_keyList, this)[index] = void 0;
-					_classPrivateFieldGet2(_valList, this)[index] = void 0;
-					if (index === _classPrivateFieldGet2(_tail, this)) _classPrivateFieldSet2(_tail, this, _classPrivateFieldGet2(_prev, this)[index]);
-					else if (index === _classPrivateFieldGet2(_head, this)) _classPrivateFieldSet2(_head, this, _classPrivateFieldGet2(_next, this)[index]);
+					this.#keyMap.delete(k);
+					this.#keyList[index] = void 0;
+					this.#valList[index] = void 0;
+					if (index === this.#tail) this.#tail = this.#prev[index];
+					else if (index === this.#head) this.#head = this.#next[index];
 					else {
-						const pi = _classPrivateFieldGet2(_prev, this)[index];
-						_classPrivateFieldGet2(_next, this)[pi] = _classPrivateFieldGet2(_next, this)[index];
-						const ni = _classPrivateFieldGet2(_next, this)[index];
-						_classPrivateFieldGet2(_prev, this)[ni] = _classPrivateFieldGet2(_prev, this)[index];
+						const pi = this.#prev[index];
+						this.#next[pi] = this.#next[index];
+						const ni = this.#next[index];
+						this.#prev[ni] = this.#prev[index];
 					}
-					_classPrivateFieldSet2(_size, this, (_this$size5 = _classPrivateFieldGet2(_size, this), _this$size5--, _this$size5));
-					_classPrivateFieldGet2(_free, this).push(index);
+					this.#size--;
+					this.#free.push(index);
 				}
 			}
 		}
-		if (_classPrivateFieldGet2(_hasDisposeAfter, this) && ((_classPrivateFieldGet13 = _classPrivateFieldGet2(_disposed, this)) === null || _classPrivateFieldGet13 === void 0 ? void 0 : _classPrivateFieldGet13.length)) {
-			const dt = _classPrivateFieldGet2(_disposed, this);
+		if (this.#hasDisposeAfter && this.#disposed?.length) {
+			const dt = this.#disposed;
 			let task;
-			while (task = dt === null || dt === void 0 ? void 0 : dt.shift()) {
-				var _classPrivateFieldGet14;
-				(_classPrivateFieldGet14 = _classPrivateFieldGet2(_disposeAfter, this)) === null || _classPrivateFieldGet14 === void 0 || _classPrivateFieldGet14.call(this, ...task);
-			}
+			while (task = dt?.shift()) this.#disposeAfter?.(...task);
 		}
 		return deleted;
 	}
@@ -1252,289 +1290,39 @@ var LRUCache = class LRUCache {
 	* Clear the cache entirely, throwing away all values.
 	*/
 	clear() {
-		for (const index of _assertClassBrand(_LRUCache_brand, this, _rindexes).call(this, { allowStale: true })) {
-			const v = _classPrivateFieldGet2(_valList, this)[index];
-			if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v)) v.__abortController.abort(/* @__PURE__ */ new Error("deleted"));
+		for (const index of this.#rindexes({ allowStale: true })) {
+			const v = this.#valList[index];
+			if (this.#isBackgroundFetch(v)) v.__abortController.abort(/* @__PURE__ */ new Error("deleted"));
 			else {
-				const k = _classPrivateFieldGet2(_keyList, this)[index];
-				if (_classPrivateFieldGet2(_hasDispose, this)) {
-					var _classPrivateFieldGet15;
-					(_classPrivateFieldGet15 = _classPrivateFieldGet2(_dispose, this)) === null || _classPrivateFieldGet15 === void 0 || _classPrivateFieldGet15.call(this, v, k, "delete");
-				}
-				if (_classPrivateFieldGet2(_hasDisposeAfter, this)) {
-					var _classPrivateFieldGet16;
-					(_classPrivateFieldGet16 = _classPrivateFieldGet2(_disposed, this)) === null || _classPrivateFieldGet16 === void 0 || _classPrivateFieldGet16.push([
-						v,
-						k,
-						"delete"
-					]);
-				}
+				const k = this.#keyList[index];
+				if (this.#hasDispose) this.#dispose?.(v, k, "delete");
+				if (this.#hasDisposeAfter) this.#disposed?.push([
+					v,
+					k,
+					"delete"
+				]);
 			}
 		}
-		_classPrivateFieldGet2(_keyMap, this).clear();
-		_classPrivateFieldGet2(_valList, this).fill(void 0);
-		_classPrivateFieldGet2(_keyList, this).fill(void 0);
-		if (_classPrivateFieldGet2(_ttls, this) && _classPrivateFieldGet2(_starts, this)) {
-			_classPrivateFieldGet2(_ttls, this).fill(0);
-			_classPrivateFieldGet2(_starts, this).fill(0);
+		this.#keyMap.clear();
+		this.#valList.fill(void 0);
+		this.#keyList.fill(void 0);
+		if (this.#ttls && this.#starts) {
+			this.#ttls.fill(0);
+			this.#starts.fill(0);
 		}
-		if (_classPrivateFieldGet2(_sizes, this)) _classPrivateFieldGet2(_sizes, this).fill(0);
-		_classPrivateFieldSet2(_head, this, 0);
-		_classPrivateFieldSet2(_tail, this, 0);
-		_classPrivateFieldGet2(_free, this).length = 0;
-		_classPrivateFieldSet2(_calculatedSize, this, 0);
-		_classPrivateFieldSet2(_size, this, 0);
-		if (_classPrivateFieldGet2(_hasDisposeAfter, this) && _classPrivateFieldGet2(_disposed, this)) {
-			const dt = _classPrivateFieldGet2(_disposed, this);
+		if (this.#sizes) this.#sizes.fill(0);
+		this.#head = 0;
+		this.#tail = 0;
+		this.#free.length = 0;
+		this.#calculatedSize = 0;
+		this.#size = 0;
+		if (this.#hasDisposeAfter && this.#disposed) {
+			const dt = this.#disposed;
 			let task;
-			while (task = dt === null || dt === void 0 ? void 0 : dt.shift()) {
-				var _classPrivateFieldGet17;
-				(_classPrivateFieldGet17 = _classPrivateFieldGet2(_disposeAfter, this)) === null || _classPrivateFieldGet17 === void 0 || _classPrivateFieldGet17.call(this, ...task);
-			}
+			while (task = dt?.shift()) this.#disposeAfter?.(...task);
 		}
 	}
 };
-function _initializeTTLTracking() {
-	const ttls = new ZeroArray(_classPrivateFieldGet2(_max, this));
-	const starts = new ZeroArray(_classPrivateFieldGet2(_max, this));
-	_classPrivateFieldSet2(_ttls, this, ttls);
-	_classPrivateFieldSet2(_starts, this, starts);
-	_classPrivateFieldSet2(_setItemTTL, this, (index, ttl, start = perf.now()) => {
-		starts[index] = ttl !== 0 ? start : 0;
-		ttls[index] = ttl;
-		if (ttl !== 0 && this.ttlAutopurge) {
-			const t = setTimeout(() => {
-				if (_classPrivateFieldGet2(_isStale, this).call(this, index)) this.delete(_classPrivateFieldGet2(_keyList, this)[index]);
-			}, ttl + 1);
-			/* c8 ignore start */
-			if (t.unref) t.unref();
-		}
-	});
-	_classPrivateFieldSet2(_updateItemAge, this, (index) => {
-		starts[index] = ttls[index] !== 0 ? perf.now() : 0;
-	});
-	_classPrivateFieldSet2(_statusTTL, this, (status, index) => {
-		if (ttls[index]) {
-			const ttl = ttls[index];
-			const start = starts[index];
-			/* c8 ignore next */
-			if (!ttl || !start) return;
-			status.ttl = ttl;
-			status.start = start;
-			status.now = cachedNow || getNow();
-			status.remainingTTL = ttl - (status.now - start);
-		}
-	});
-	let cachedNow = 0;
-	const getNow = () => {
-		const n = perf.now();
-		if (this.ttlResolution > 0) {
-			cachedNow = n;
-			const t = setTimeout(() => cachedNow = 0, this.ttlResolution);
-			/* c8 ignore start */
-			if (t.unref) t.unref();
-		}
-		return n;
-	};
-	this.getRemainingTTL = (key) => {
-		const index = _classPrivateFieldGet2(_keyMap, this).get(key);
-		if (index === void 0) return 0;
-		const ttl = ttls[index];
-		const start = starts[index];
-		if (!ttl || !start) return Infinity;
-		return ttl - ((cachedNow || getNow()) - start);
-	};
-	_classPrivateFieldSet2(_isStale, this, (index) => {
-		const s = starts[index];
-		const t = ttls[index];
-		return !!t && !!s && (cachedNow || getNow()) - s > t;
-	});
-}
-function _initializeSizeTracking() {
-	const sizes = new ZeroArray(_classPrivateFieldGet2(_max, this));
-	_classPrivateFieldSet2(_calculatedSize, this, 0);
-	_classPrivateFieldSet2(_sizes, this, sizes);
-	_classPrivateFieldSet2(_removeItemSize, this, (index) => {
-		_classPrivateFieldSet2(_calculatedSize, this, _classPrivateFieldGet2(_calculatedSize, this) - sizes[index]);
-		sizes[index] = 0;
-	});
-	_classPrivateFieldSet2(_requireSize, this, (k, v, size, sizeCalculation) => {
-		if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v)) return 0;
-		if (!isPosInt(size)) {
-			if (sizeCalculation) {
-				if (typeof sizeCalculation !== "function") throw new TypeError("sizeCalculation must be a function");
-				size = sizeCalculation(v, k);
-				if (!isPosInt(size)) throw new TypeError("sizeCalculation return invalid (expect positive integer)");
-			} else throw new TypeError("invalid size value (must be positive integer). When maxSize or maxEntrySize is used, sizeCalculation or size must be set.");
-		}
-		return size;
-	});
-	_classPrivateFieldSet2(_addItemSize, this, (index, size, status) => {
-		sizes[index] = size;
-		if (_classPrivateFieldGet2(_maxSize, this)) {
-			const maxSize = _classPrivateFieldGet2(_maxSize, this) - sizes[index];
-			while (_classPrivateFieldGet2(_calculatedSize, this) > maxSize) _assertClassBrand(_LRUCache_brand, this, _evict).call(this, true);
-		}
-		_classPrivateFieldSet2(_calculatedSize, this, _classPrivateFieldGet2(_calculatedSize, this) + sizes[index]);
-		if (status) {
-			status.entrySize = size;
-			status.totalCalculatedSize = _classPrivateFieldGet2(_calculatedSize, this);
-		}
-	});
-}
-function* _indexes({ allowStale = this.allowStale } = {}) {
-	if (_classPrivateFieldGet2(_size, this)) for (let i = _classPrivateFieldGet2(_tail, this);;) {
-		if (!_assertClassBrand(_LRUCache_brand, this, _isValidIndex).call(this, i)) break;
-		if (allowStale || !_classPrivateFieldGet2(_isStale, this).call(this, i)) yield i;
-		if (i === _classPrivateFieldGet2(_head, this)) break;
-		else i = _classPrivateFieldGet2(_prev, this)[i];
-	}
-}
-function* _rindexes({ allowStale = this.allowStale } = {}) {
-	if (_classPrivateFieldGet2(_size, this)) for (let i = _classPrivateFieldGet2(_head, this);;) {
-		if (!_assertClassBrand(_LRUCache_brand, this, _isValidIndex).call(this, i)) break;
-		if (allowStale || !_classPrivateFieldGet2(_isStale, this).call(this, i)) yield i;
-		if (i === _classPrivateFieldGet2(_tail, this)) break;
-		else i = _classPrivateFieldGet2(_next, this)[i];
-	}
-}
-function _isValidIndex(index) {
-	return index !== void 0 && _classPrivateFieldGet2(_keyMap, this).get(_classPrivateFieldGet2(_keyList, this)[index]) === index;
-}
-function _evict(free) {
-	var _this$size3;
-	const head = _classPrivateFieldGet2(_head, this);
-	const k = _classPrivateFieldGet2(_keyList, this)[head];
-	const v = _classPrivateFieldGet2(_valList, this)[head];
-	if (_classPrivateFieldGet2(_hasFetchMethod, this) && _assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v)) v.__abortController.abort(/* @__PURE__ */ new Error("evicted"));
-	else if (_classPrivateFieldGet2(_hasDispose, this) || _classPrivateFieldGet2(_hasDisposeAfter, this)) {
-		if (_classPrivateFieldGet2(_hasDispose, this)) {
-			var _classPrivateFieldGet8;
-			(_classPrivateFieldGet8 = _classPrivateFieldGet2(_dispose, this)) === null || _classPrivateFieldGet8 === void 0 || _classPrivateFieldGet8.call(this, v, k, "evict");
-		}
-		if (_classPrivateFieldGet2(_hasDisposeAfter, this)) {
-			var _classPrivateFieldGet9;
-			(_classPrivateFieldGet9 = _classPrivateFieldGet2(_disposed, this)) === null || _classPrivateFieldGet9 === void 0 || _classPrivateFieldGet9.push([
-				v,
-				k,
-				"evict"
-			]);
-		}
-	}
-	_classPrivateFieldGet2(_removeItemSize, this).call(this, head);
-	if (free) {
-		_classPrivateFieldGet2(_keyList, this)[head] = void 0;
-		_classPrivateFieldGet2(_valList, this)[head] = void 0;
-		_classPrivateFieldGet2(_free, this).push(head);
-	}
-	if (_classPrivateFieldGet2(_size, this) === 1) {
-		_classPrivateFieldSet2(_head, this, _classPrivateFieldSet2(_tail, this, 0));
-		_classPrivateFieldGet2(_free, this).length = 0;
-	} else _classPrivateFieldSet2(_head, this, _classPrivateFieldGet2(_next, this)[head]);
-	_classPrivateFieldGet2(_keyMap, this).delete(k);
-	_classPrivateFieldSet2(_size, this, (_this$size3 = _classPrivateFieldGet2(_size, this), _this$size3--, _this$size3));
-	return head;
-}
-function _backgroundFetch(k, index, options, context) {
-	const v = index === void 0 ? void 0 : _classPrivateFieldGet2(_valList, this)[index];
-	if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v)) return v;
-	const ac = new AC();
-	const { signal } = options;
-	signal === null || signal === void 0 || signal.addEventListener("abort", () => ac.abort(signal.reason), { signal: ac.signal });
-	const fetchOpts = {
-		signal: ac.signal,
-		options,
-		context
-	};
-	const cb = (v, updateCache = false) => {
-		const { aborted } = ac.signal;
-		const ignoreAbort = options.ignoreFetchAbort && v !== void 0;
-		if (options.status) {
-			if (aborted && !updateCache) {
-				options.status.fetchAborted = true;
-				options.status.fetchError = ac.signal.reason;
-				if (ignoreAbort) options.status.fetchAbortIgnored = true;
-			} else options.status.fetchResolved = true;
-		}
-		if (aborted && !ignoreAbort && !updateCache) return fetchFail(ac.signal.reason);
-		const bf = p;
-		if (_classPrivateFieldGet2(_valList, this)[index] === p) {
-			if (v === void 0) {
-				if (bf.__staleWhileFetching) _classPrivateFieldGet2(_valList, this)[index] = bf.__staleWhileFetching;
-				else this.delete(k);
-			} else {
-				if (options.status) options.status.fetchUpdated = true;
-				this.set(k, v, fetchOpts.options);
-			}
-		}
-		return v;
-	};
-	const eb = (er) => {
-		if (options.status) {
-			options.status.fetchRejected = true;
-			options.status.fetchError = er;
-		}
-		return fetchFail(er);
-	};
-	const fetchFail = (er) => {
-		const { aborted } = ac.signal;
-		const allowStaleAborted = aborted && options.allowStaleOnFetchAbort;
-		const allowStale = allowStaleAborted || options.allowStaleOnFetchRejection;
-		const noDelete = allowStale || options.noDeleteOnFetchRejection;
-		const bf = p;
-		if (_classPrivateFieldGet2(_valList, this)[index] === p) {
-			if (!noDelete || bf.__staleWhileFetching === void 0) this.delete(k);
-			else if (!allowStaleAborted) _classPrivateFieldGet2(_valList, this)[index] = bf.__staleWhileFetching;
-		}
-		if (allowStale) {
-			if (options.status && bf.__staleWhileFetching !== void 0) options.status.returnedStale = true;
-			return bf.__staleWhileFetching;
-		} else if (bf.__returned === bf) throw er;
-	};
-	const pcall = (res, rej) => {
-		var _classPrivateFieldGet10;
-		const fmp = (_classPrivateFieldGet10 = _classPrivateFieldGet2(_fetchMethod, this)) === null || _classPrivateFieldGet10 === void 0 ? void 0 : _classPrivateFieldGet10.call(this, k, v, fetchOpts);
-		if (fmp && fmp instanceof Promise) fmp.then((v) => res(v === void 0 ? void 0 : v), rej);
-		ac.signal.addEventListener("abort", () => {
-			if (!options.ignoreFetchAbort || options.allowStaleOnFetchAbort) {
-				res(void 0);
-				if (options.allowStaleOnFetchAbort) res = (v) => cb(v, true);
-			}
-		});
-	};
-	if (options.status) options.status.fetchDispatched = true;
-	const p = new Promise(pcall).then(cb, eb);
-	const bf = Object.assign(p, {
-		__abortController: ac,
-		__staleWhileFetching: v,
-		__returned: void 0
-	});
-	if (index === void 0) {
-		this.set(k, bf, {
-			...fetchOpts.options,
-			status: void 0
-		});
-		index = _classPrivateFieldGet2(_keyMap, this).get(k);
-	} else _classPrivateFieldGet2(_valList, this)[index] = bf;
-	return bf;
-}
-function _isBackgroundFetch(p) {
-	if (!_classPrivateFieldGet2(_hasFetchMethod, this)) return false;
-	const b = p;
-	return !!b && b instanceof Promise && b.hasOwnProperty("__staleWhileFetching") && b.__abortController instanceof AC;
-}
-function _connect(p, n) {
-	_classPrivateFieldGet2(_prev, this)[n] = p;
-	_classPrivateFieldGet2(_next, this)[p] = n;
-}
-function _moveToTail(index) {
-	if (index !== _classPrivateFieldGet2(_tail, this)) {
-		if (index === _classPrivateFieldGet2(_head, this)) _classPrivateFieldSet2(_head, this, _classPrivateFieldGet2(_next, this)[index]);
-		else _assertClassBrand(_LRUCache_brand, this, _connect).call(this, _classPrivateFieldGet2(_prev, this)[index], _classPrivateFieldGet2(_next, this)[index]);
-		_assertClassBrand(_LRUCache_brand, this, _connect).call(this, _classPrivateFieldGet2(_tail, this), index);
-		_classPrivateFieldSet2(_tail, this, index);
-	}
-}
 //#endregion
 //#region packages/compiler-sfc/src/cache.ts
 function createCache(max = 500) {
@@ -1543,7 +1331,7 @@ function createCache(max = 500) {
 //#endregion
 //#region packages/compiler-sfc/src/template/resolveTemplateAST.ts
 function resolveTemplateAST(inAST, options) {
-	if (!(inAST === null || inAST === void 0 ? void 0 : inAST.transformed)) return inAST;
+	if (!inAST?.transformed) return inAST;
 	const { compiler = _vue_compiler_dom, compilerOptions, ssr, onError } = options;
 	const template = (ssr ? _vue_compiler_dom : compiler).parse(inAST.source, {
 		prefixIdentifiers: true,
@@ -1578,9 +1366,9 @@ function resolveTemplateAnalysisResult(sfc, collectUsedIds = true, options) {
 	const ids = collectUsedIds ? /* @__PURE__ */ new Set() : void 0;
 	const vModelIds = /* @__PURE__ */ new Set();
 	resolveTemplateAST(ast, {
-		compiler: options === null || options === void 0 ? void 0 : options.compiler,
-		compilerOptions: options === null || options === void 0 ? void 0 : options.compilerOptions,
-		ssr: options === null || options === void 0 ? void 0 : options.ssr,
+		compiler: options?.compiler,
+		compilerOptions: options?.compilerOptions,
+		ssr: options?.ssr,
 		onError: () => {}
 	}).children.forEach(walk);
 	function walk(node) {
@@ -1595,7 +1383,6 @@ function resolveTemplateAnalysisResult(sfc, collectUsedIds = true, options) {
 					}
 				}
 				for (let i = 0; i < node.props.length; i++) {
-					var _prop$value;
 					const prop = node.props[i];
 					if (prop.type === 7) {
 						if (ids) {
@@ -1615,7 +1402,7 @@ function resolveTemplateAnalysisResult(sfc, collectUsedIds = true, options) {
 							else if (prop.name === "bind" && !prop.exp) ids.add((0, _vue_shared.camelize)(prop.arg.content));
 						}
 					}
-					if (ids && prop.type === 6 && prop.name === "ref" && ((_prop$value = prop.value) === null || _prop$value === void 0 ? void 0 : _prop$value.content)) ids.add(prop.value.content);
+					if (ids && prop.type === 6 && prop.name === "ref" && prop.value?.content) ids.add(prop.value.content);
 				}
 				node.children.forEach(walk);
 				break;
@@ -1701,10 +1488,9 @@ const isTS = (...langs) => langs.some((lang) => lang === "ts" || lang === "tsx" 
 const DEFAULT_FILENAME = "anonymous.vue";
 const parseCache$1 = createCache();
 function parse(source, options = {}) {
-	var _options$compiler;
 	const sourceKey = (0, _vue_shared.genCacheKey)(source, {
 		...options,
-		compiler: { parse: (_options$compiler = options.compiler) === null || _options$compiler === void 0 ? void 0 : _options$compiler.parse }
+		compiler: { parse: options.compiler?.parse }
 	});
 	const cache = parseCache$1.get(sourceKey);
 	if (cache) return cache;
@@ -1732,6 +1518,7 @@ function parse(source, options = {}) {
 			errors.push(e);
 		}
 	});
+	let emptyScriptSetup;
 	ast.children.forEach((node) => {
 		if (node.type !== 1) return;
 		if (node.tag === "script") {
@@ -1747,14 +1534,15 @@ function parse(source, options = {}) {
 			}
 		}
 		if (ignoreEmpty && node.tag !== "template" && isEmpty(node) && !hasAttr(node, "src")) {
-			descriptor.vapor || (descriptor.vapor = hasAttr(node, "vapor"));
+			descriptor.vapor ||= hasAttr(node, "vapor");
+			if (node.tag === "script" && (hasAttr(node, "setup") || hasAttr(node, "vapor"))) emptyScriptSetup = node;
 			return;
 		}
 		switch (node.tag) {
 			case "template":
 				if (!descriptor.template) {
 					const templateBlock = descriptor.template = createBlock(node, source, false);
-					descriptor.vapor || (descriptor.vapor = !!templateBlock.attrs.vapor);
+					descriptor.vapor ||= !!templateBlock.attrs.vapor;
 					if (!templateBlock.attrs.src) templateBlock.ast = (0, _vue_compiler_core.createRoot)(node.children, source);
 					if (templateBlock.attrs.functional) {
 						const err = /* @__PURE__ */ new SyntaxError("<template functional> is no longer supported in Vue 3, since functional components no longer have significant performance difference from stateful ones. Just use a normal <template> instead.");
@@ -1765,7 +1553,7 @@ function parse(source, options = {}) {
 				break;
 			case "script":
 				const scriptBlock = createBlock(node, source, pad);
-				descriptor.vapor || (descriptor.vapor = !!scriptBlock.attrs.vapor);
+				descriptor.vapor ||= !!scriptBlock.attrs.vapor;
 				const isSetup = !!(scriptBlock.attrs.setup || scriptBlock.attrs.vapor);
 				if (isSetup && !descriptor.scriptSetup) {
 					descriptor.scriptSetup = scriptBlock;
@@ -1785,6 +1573,14 @@ function parse(source, options = {}) {
 			default: descriptor.customBlocks.push(createBlock(node, source, pad));
 		}
 	});
+	if (descriptor.vapor && descriptor.script && !descriptor.scriptSetup) {
+		if (emptyScriptSetup) descriptor.scriptSetup = createBlock(emptyScriptSetup, source, pad);
+		else {
+			const err = /* @__PURE__ */ new SyntaxError(`Vapor components with a normal <script> must also include <script setup>, <script vapor>, or <script setup vapor>.`);
+			err.loc = descriptor.script.loc;
+			errors.push(err);
+		}
+	}
 	if (!descriptor.template && !descriptor.script && !descriptor.scriptSetup) {
 		const err = /* @__PURE__ */ new SyntaxError(`At least one <template> or <script> is required in a single file component. `);
 		err.loc = ast.loc;
@@ -2007,9 +1803,8 @@ function hmrShouldReload(prevImports, next) {
 function dedent(s) {
 	const lines = s.split("\n");
 	const minIndent = lines.reduce(function(minIndent, line) {
-		var _line$match;
 		if (line.trim() === "") return minIndent;
-		const indent = ((_line$match = line.match(/^\s*/)) === null || _line$match === void 0 || (_line$match = _line$match[0]) === null || _line$match === void 0 ? void 0 : _line$match.length) || 0;
+		const indent = line.match(/^\s*/)?.[0]?.length || 0;
 		return Math.min(indent, minIndent);
 	}, Infinity);
 	if (minIndent === 0) return [s, minIndent];
@@ -2030,10 +1825,8 @@ function createCppBlock({ props, loc }, options) {
 			const attrValue = p.value && p.value.content;
 			if (attrName === "module") module = attrValue || "";
 			else if (attrName === "src") {
-				var _options$templatePars;
 				src = attrValue || "";
-				if (options.filename && ((_options$templatePars = options.templateParseOptions) === null || _options$templatePars === void 0 ? void 0 : _options$templatePars.root)) {
-					var _options$templatePars2;
+				if (options.filename && options.templateParseOptions?.root) {
 					const absSrc = joinPaths(options.filename, "..", src);
 					if (!(0, node_fs.existsSync)(absSrc)) {
 						const err = /* @__PURE__ */ new SyntaxError(`文件不存在: ${src}`);
@@ -2041,7 +1834,7 @@ function createCppBlock({ props, loc }, options) {
 						errors.push(err);
 						return;
 					}
-					src = normalizePath(absSrc).replace((_options$templatePars2 = options.templateParseOptions) === null || _options$templatePars2 === void 0 ? void 0 : _options$templatePars2.root, "").slice(1);
+					src = normalizePath(absSrc).replace(options.templateParseOptions?.root, "").slice(1);
 					if (!src.startsWith("uni_modules")) {
 						const err = /* @__PURE__ */ new SyntaxError(`<script lang="cpp"> 的 src 比如放在 uni_modules 插件 cppsdk 目录中`);
 						err.loc = loc;
@@ -2129,7 +1922,7 @@ function parseUriParts(urlString) {
 * whether the component root itself owns an outer fragment wrapper.
 */
 function isMultiRoot(template, parserOptions) {
-	const preserveComments = (parserOptions === null || parserOptions === void 0 ? void 0 : parserOptions.comments) !== false;
+	const preserveComments = parserOptions?.comments !== false;
 	if (typeof template === "string") return countRootUnits(parse(`<template>${template}</template>`, {
 		sourceMap: false,
 		ignoreEmpty: false,
@@ -2220,8 +2013,7 @@ const createAssetUrlTransformWithOptions = (options) => {
 	return (node, context) => transformAssetUrl(node, context, options);
 };
 function canTransformHashImport(tag, attrName) {
-	var _resourceUrlTagConfig;
-	return !!((_resourceUrlTagConfig = resourceUrlTagConfig[tag]) === null || _resourceUrlTagConfig === void 0 ? void 0 : _resourceUrlTagConfig.includes(attrName));
+	return !!resourceUrlTagConfig[tag]?.includes(attrName);
 }
 /**
 * A `@vue/compiler-core` plugin that transforms relative asset urls into
@@ -3808,16 +3600,13 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		if (errors.length) patchErrors(errors, source, inMap);
 		if (warnings.length && compilerOptions.onWarn) {
 			patchErrors(warnings, source, inMap);
-			warnings.forEach((w) => {
-				var _compilerOptions$onWa;
-				return (_compilerOptions$onWa = compilerOptions.onWarn) === null || _compilerOptions$onWa === void 0 ? void 0 : _compilerOptions$onWa.call(compilerOptions, w);
-			});
+			warnings.forEach((w) => compilerOptions.onWarn?.(w));
 			warnings.length = 0;
 		}
 	}
 	const tips = warnings.map((w) => {
 		let msg = w.message;
-		if (w.loc) msg += `\n${(0, _vue_shared.generateCodeFrame)((inAST === null || inAST === void 0 ? void 0 : inAST.source) || source, w.loc.start.offset, w.loc.end.offset)}`;
+		if (w.loc) msg += `\n${(0, _vue_shared.generateCodeFrame)(inAST?.source || source, w.loc.start.offset, w.loc.end.offset)}`;
 		return msg;
 	});
 	return {
@@ -7384,9 +7173,8 @@ function isSpaceCombinator(node) {
 	return node.type === "combinator" && /^\s+$/.test(node.value);
 }
 function isDeepSelector(node) {
-	var _nodes;
 	if (node.type === "pseudo" && (node.value === ":deep" || node.value === "::v-deep")) return true;
-	return !!((_nodes = node.nodes) === null || _nodes === void 0 ? void 0 : _nodes.some((child) => isDeepSelector(child)));
+	return !!node.nodes?.some((child) => isDeepSelector(child));
 }
 function isDeepContainerPseudo(node) {
 	return node.type === "pseudo" && (node.value === ":is" || node.value === ":where" || node.value === ":has" || node.value === ":not");
@@ -12551,7 +12339,6 @@ var ScriptCompileContext = class {
 		return `_${key}`;
 	}
 	constructor(descriptor, options) {
-		var _descriptor$scriptSet, _descriptor$scriptSet2;
 		this.descriptor = descriptor;
 		this.options = options;
 		this.isCE = false;
@@ -12574,8 +12361,8 @@ var ScriptCompileContext = class {
 		this.source = descriptor.source;
 		this.filename = descriptor.filename;
 		this.s = new magic_string.default(descriptor.source);
-		this.startOffset = (_descriptor$scriptSet = descriptor.scriptSetup) === null || _descriptor$scriptSet === void 0 ? void 0 : _descriptor$scriptSet.loc.start.offset;
-		this.endOffset = (_descriptor$scriptSet2 = descriptor.scriptSetup) === null || _descriptor$scriptSet2 === void 0 ? void 0 : _descriptor$scriptSet2.loc.end.offset;
+		this.startOffset = descriptor.scriptSetup?.loc.start.offset;
+		this.endOffset = descriptor.scriptSetup?.loc.end.offset;
 		this.isJS = isJS(scriptLang, scriptSetupLang);
 		this.isTS = isTS(scriptLang, scriptSetupLang);
 		this.isUTS = scriptLang === "uts" || scriptSetupLang === "uts";
@@ -12619,10 +12406,10 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
 	else if (userPlugins) userPlugins = userPlugins.filter((p) => p !== "jsx");
 	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "cts" || lang === "mtsx") {
 		plugins.push(["typescript", { dts }], "explicitResourceManagement");
-		if (!(userPlugins === null || userPlugins === void 0 ? void 0 : userPlugins.some((plugin) => {
+		if (!userPlugins?.some((plugin) => {
 			const name = (0, _vue_shared.isArray)(plugin) ? plugin[0] : plugin;
 			return name === "decorators" || name === "decorators-legacy";
-		}))) plugins.push(lang === "uts" ? "decorators" : "decorators-legacy");
+		})) plugins.push(lang === "uts" ? "decorators" : "decorators-legacy");
 	}
 	if (userPlugins) plugins.push(...userPlugins);
 	return plugins;
@@ -12708,7 +12495,6 @@ function processNormalScript(ctx, scopeId) {
 		const { cssVars } = ctx.descriptor;
 		const { genDefaultAs, isProd } = ctx.options;
 		if (cssVars.length || genDefaultAs) {
-			var _ctx$options$template;
 			const defaultVar = genDefaultAs || normalScriptDefaultVar;
 			const s = new magic_string.default(content);
 			rewriteDefaultAST(scriptAst.body, s, defaultVar);
@@ -12721,7 +12507,7 @@ function processNormalScript(ctx, scopeId) {
 				}
 			});
 			content = s.toString();
-			if (cssVars.length && !((_ctx$options$template = ctx.options.templateOptions) === null || _ctx$options$template === void 0 ? void 0 : _ctx$options$template.ssr)) content += genNormalScriptCssVarsCode(cssVars, bindings, scopeId, !!isProd, defaultVar);
+			if (cssVars.length && !ctx.options.templateOptions?.ssr) content += genNormalScriptCssVarsCode(cssVars, bindings, scopeId, !!isProd, defaultVar);
 			if (!genDefaultAs) content += `\nexport default ${defaultVar}`;
 		}
 		return {
@@ -13126,8 +12912,6 @@ const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true } = {}
 };
 //#endregion
 //#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/ast.js
-var _AST;
-let _Symbol$for;
 var _a;
 const types = /* @__PURE__ */ new Set([
 	"!",
@@ -13194,112 +12978,118 @@ const qmark = "[^/]";
 const star$1 = "[^/]*?";
 const starNoEmpty = "[^/]+?";
 let ID = 0;
-var _root = /* @__PURE__ */ new WeakMap();
-var _hasMagic2 = /* @__PURE__ */ new WeakMap();
-var _uflag = /* @__PURE__ */ new WeakMap();
-var _parts = /* @__PURE__ */ new WeakMap();
-var _parent = /* @__PURE__ */ new WeakMap();
-var _parentIndex = /* @__PURE__ */ new WeakMap();
-var _negs = /* @__PURE__ */ new WeakMap();
-var _filledNegs = /* @__PURE__ */ new WeakMap();
-var _options = /* @__PURE__ */ new WeakMap();
-var _toString = /* @__PURE__ */ new WeakMap();
-var _emptyExt = /* @__PURE__ */ new WeakMap();
-var _AST_brand = /* @__PURE__ */ new WeakSet();
-_Symbol$for = Symbol.for("nodejs.util.inspect.custom");
-var AST = class AST {
+var AST = class {
+	type;
+	#root;
+	#hasMagic;
+	#uflag = false;
+	#parts = [];
+	#parent;
+	#parentIndex;
+	#negs;
+	#filledNegs = false;
+	#options;
+	#toString;
+	#emptyExt = false;
+	id = ++ID;
 	get depth() {
-		var _this$parent$depth, _classPrivateFieldGet2$1;
-		return ((_this$parent$depth = (_classPrivateFieldGet2$1 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet2$1 === void 0 ? void 0 : _classPrivateFieldGet2$1.depth) !== null && _this$parent$depth !== void 0 ? _this$parent$depth : -1) + 1;
+		return (this.#parent?.depth ?? -1) + 1;
 	}
-	[_Symbol$for]() {
-		var _classPrivateFieldGet3;
+	[Symbol.for("nodejs.util.inspect.custom")]() {
 		return {
 			"@@type": "AST",
 			id: this.id,
 			type: this.type,
-			root: _classPrivateFieldGet2(_root, this).id,
-			parent: (_classPrivateFieldGet3 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet3 === void 0 ? void 0 : _classPrivateFieldGet3.id,
+			root: this.#root.id,
+			parent: this.#parent?.id,
 			depth: this.depth,
-			partsLength: _classPrivateFieldGet2(_parts, this).length,
-			parts: _classPrivateFieldGet2(_parts, this)
+			partsLength: this.#parts.length,
+			parts: this.#parts
 		};
 	}
 	constructor(type, parent, options = {}) {
-		_classPrivateMethodInitSpec(this, _AST_brand);
-		_defineProperty(this, "type", void 0);
-		_classPrivateFieldInitSpec(this, _root, void 0);
-		_classPrivateFieldInitSpec(this, _hasMagic2, void 0);
-		_classPrivateFieldInitSpec(this, _uflag, false);
-		_classPrivateFieldInitSpec(this, _parts, []);
-		_classPrivateFieldInitSpec(this, _parent, void 0);
-		_classPrivateFieldInitSpec(this, _parentIndex, void 0);
-		_classPrivateFieldInitSpec(this, _negs, void 0);
-		_classPrivateFieldInitSpec(this, _filledNegs, false);
-		_classPrivateFieldInitSpec(this, _options, void 0);
-		_classPrivateFieldInitSpec(this, _toString, void 0);
-		_classPrivateFieldInitSpec(this, _emptyExt, false);
-		_defineProperty(this, "id", ++ID);
 		this.type = type;
-		if (type) _classPrivateFieldSet2(_hasMagic2, this, true);
-		_classPrivateFieldSet2(_parent, this, parent);
-		_classPrivateFieldSet2(_root, this, _classPrivateFieldGet2(_parent, this) ? _classPrivateFieldGet2(_root, _classPrivateFieldGet2(_parent, this)) : this);
-		_classPrivateFieldSet2(_options, this, _classPrivateFieldGet2(_root, this) === this ? options : _classPrivateFieldGet2(_options, _classPrivateFieldGet2(_root, this)));
-		_classPrivateFieldSet2(_negs, this, _classPrivateFieldGet2(_root, this) === this ? [] : _classPrivateFieldGet2(_negs, _classPrivateFieldGet2(_root, this)));
-		if (type === "!" && !_classPrivateFieldGet2(_filledNegs, _classPrivateFieldGet2(_root, this))) _classPrivateFieldGet2(_negs, this).push(this);
-		_classPrivateFieldSet2(_parentIndex, this, _classPrivateFieldGet2(_parent, this) ? _classPrivateFieldGet2(_parts, _classPrivateFieldGet2(_parent, this)).length : 0);
+		if (type) this.#hasMagic = true;
+		this.#parent = parent;
+		this.#root = this.#parent ? this.#parent.#root : this;
+		this.#options = this.#root === this ? options : this.#root.#options;
+		this.#negs = this.#root === this ? [] : this.#root.#negs;
+		if (type === "!" && !this.#root.#filledNegs) this.#negs.push(this);
+		this.#parentIndex = this.#parent ? this.#parent.#parts.length : 0;
 	}
 	get hasMagic() {
 		/* c8 ignore start */
-		if (_classPrivateFieldGet2(_hasMagic2, this) !== void 0) return _classPrivateFieldGet2(_hasMagic2, this);
+		if (this.#hasMagic !== void 0) return this.#hasMagic;
 		/* c8 ignore stop */
-		for (const p of _classPrivateFieldGet2(_parts, this)) {
+		for (const p of this.#parts) {
 			if (typeof p === "string") continue;
-			if (p.type || p.hasMagic) return _classPrivateFieldSet2(_hasMagic2, this, true);
+			if (p.type || p.hasMagic) return this.#hasMagic = true;
 		}
-		return _classPrivateFieldGet2(_hasMagic2, this);
+		return this.#hasMagic;
 	}
 	toString() {
-		return _classPrivateFieldGet2(_toString, this) !== void 0 ? _classPrivateFieldGet2(_toString, this) : !this.type ? _classPrivateFieldSet2(_toString, this, _classPrivateFieldGet2(_parts, this).map((p) => String(p)).join("")) : _classPrivateFieldSet2(_toString, this, this.type + "(" + _classPrivateFieldGet2(_parts, this).map((p) => String(p)).join("|") + ")");
+		return this.#toString !== void 0 ? this.#toString : !this.type ? this.#toString = this.#parts.map((p) => String(p)).join("") : this.#toString = this.type + "(" + this.#parts.map((p) => String(p)).join("|") + ")";
+	}
+	#fillNegs() {
+		/* c8 ignore start */
+		if (this !== this.#root) throw new Error("should only call on root");
+		if (this.#filledNegs) return this;
+		/* c8 ignore stop */
+		this.toString();
+		this.#filledNegs = true;
+		let n;
+		while (n = this.#negs.pop()) {
+			if (n.type !== "!") continue;
+			let p = n;
+			let pp = p.#parent;
+			while (pp) {
+				for (let i = p.#parentIndex + 1; !pp.type && i < pp.#parts.length; i++) for (const part of n.#parts) {
+					/* c8 ignore start */
+					if (typeof part === "string") throw new Error("string part in extglob AST??");
+					/* c8 ignore stop */
+					part.copyIn(pp.#parts[i]);
+				}
+				p = pp;
+				pp = p.#parent;
+			}
+		}
+		return this;
 	}
 	push(...parts) {
 		for (const p of parts) {
 			if (p === "") continue;
 			/* c8 ignore start */
-			if (typeof p !== "string" && !(p instanceof _a && _classPrivateFieldGet2(_parent, p) === this)) throw new Error("invalid part: " + p);
+			if (typeof p !== "string" && !(p instanceof _a && p.#parent === this)) throw new Error("invalid part: " + p);
 			/* c8 ignore stop */
-			_classPrivateFieldGet2(_parts, this).push(p);
+			this.#parts.push(p);
 		}
 	}
 	toJSON() {
-		var _classPrivateFieldGet4;
-		const ret = this.type === null ? _classPrivateFieldGet2(_parts, this).slice().map((p) => typeof p === "string" ? p : p.toJSON()) : [this.type, ..._classPrivateFieldGet2(_parts, this).map((p) => p.toJSON())];
+		const ret = this.type === null ? this.#parts.slice().map((p) => typeof p === "string" ? p : p.toJSON()) : [this.type, ...this.#parts.map((p) => p.toJSON())];
 		if (this.isStart() && !this.type) ret.unshift([]);
-		if (this.isEnd() && (this === _classPrivateFieldGet2(_root, this) || _classPrivateFieldGet2(_filledNegs, _classPrivateFieldGet2(_root, this)) && ((_classPrivateFieldGet4 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet4 === void 0 ? void 0 : _classPrivateFieldGet4.type) === "!")) ret.push({});
+		if (this.isEnd() && (this === this.#root || this.#root.#filledNegs && this.#parent?.type === "!")) ret.push({});
 		return ret;
 	}
 	isStart() {
-		var _classPrivateFieldGet5;
-		if (_classPrivateFieldGet2(_root, this) === this) return true;
-		if (!((_classPrivateFieldGet5 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet5 === void 0 ? void 0 : _classPrivateFieldGet5.isStart())) return false;
-		if (_classPrivateFieldGet2(_parentIndex, this) === 0) return true;
-		const p = _classPrivateFieldGet2(_parent, this);
-		for (let i = 0; i < _classPrivateFieldGet2(_parentIndex, this); i++) {
-			const pp = _classPrivateFieldGet2(_parts, p)[i];
+		if (this.#root === this) return true;
+		if (!this.#parent?.isStart()) return false;
+		if (this.#parentIndex === 0) return true;
+		const p = this.#parent;
+		for (let i = 0; i < this.#parentIndex; i++) {
+			const pp = p.#parts[i];
 			if (!(pp instanceof _a && pp.type === "!")) return false;
 		}
 		return true;
 	}
 	isEnd() {
-		var _classPrivateFieldGet6, _classPrivateFieldGet7, _classPrivateFieldGet8;
-		if (_classPrivateFieldGet2(_root, this) === this) return true;
-		if (((_classPrivateFieldGet6 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet6 === void 0 ? void 0 : _classPrivateFieldGet6.type) === "!") return true;
-		if (!((_classPrivateFieldGet7 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet7 === void 0 ? void 0 : _classPrivateFieldGet7.isEnd())) return false;
-		if (!this.type) return (_classPrivateFieldGet8 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet8 === void 0 ? void 0 : _classPrivateFieldGet8.isEnd();
+		if (this.#root === this) return true;
+		if (this.#parent?.type === "!") return true;
+		if (!this.#parent?.isEnd()) return false;
+		if (!this.type) return this.#parent?.isEnd();
 		/* c8 ignore start */
-		const pl = _classPrivateFieldGet2(_parent, this) ? _classPrivateFieldGet2(_parts, _classPrivateFieldGet2(_parent, this)).length : 0;
+		const pl = this.#parent ? this.#parent.#parts.length : 0;
 		/* c8 ignore stop */
-		return _classPrivateFieldGet2(_parentIndex, this) === pl - 1;
+		return this.#parentIndex === pl - 1;
 	}
 	copyIn(part) {
 		if (typeof part === "string") this.push(part);
@@ -13307,133 +13097,54 @@ var AST = class AST {
 	}
 	clone(parent) {
 		const c = new _a(this.type, parent);
-		for (const p of _classPrivateFieldGet2(_parts, this)) c.copyIn(p);
+		for (const p of this.#parts) c.copyIn(p);
 		return c;
 	}
-	static fromGlob(pattern, options = {}) {
-		const ast = new _a(null, void 0, options);
-		_assertClassBrand(AST, _a, _parseAST).call(_a, pattern, ast, 0, options, 0);
-		return ast;
-	}
-	toMMPattern() {
-		/* c8 ignore start */
-		if (this !== _classPrivateFieldGet2(_root, this)) return _classPrivateFieldGet2(_root, this).toMMPattern();
-		/* c8 ignore stop */
-		const glob = this.toString();
-		const [re, body, hasMagic, uflag] = this.toRegExpSource();
-		if (!(hasMagic || _classPrivateFieldGet2(_hasMagic2, this) || _classPrivateFieldGet2(_options, this).nocase && !_classPrivateFieldGet2(_options, this).nocaseMagicOnly && glob.toUpperCase() !== glob.toLowerCase())) return body;
-		const flags = (_classPrivateFieldGet2(_options, this).nocase ? "i" : "") + (uflag ? "u" : "");
-		return Object.assign(new RegExp(`^${re}$`, flags), {
-			_src: re,
-			_glob: glob
-		});
-	}
-	get options() {
-		return _classPrivateFieldGet2(_options, this);
-	}
-	toRegExpSource(allowDot) {
-		const dot = allowDot !== null && allowDot !== void 0 ? allowDot : !!_classPrivateFieldGet2(_options, this).dot;
-		if (_classPrivateFieldGet2(_root, this) === this) {
-			_assertClassBrand(_AST_brand, this, _flatten).call(this);
-			_assertClassBrand(_AST_brand, this, _fillNegs).call(this);
-		}
-		if (!isExtglobAST(this)) {
-			var _classPrivateFieldGet9;
-			const noEmpty = this.isStart() && this.isEnd() && !_classPrivateFieldGet2(_parts, this).some((s) => typeof s !== "string");
-			const src = _classPrivateFieldGet2(_parts, this).map((p) => {
-				const [re, _, hasMagic, uflag] = typeof p === "string" ? _assertClassBrand(AST, _a, _parseGlob).call(_a, p, _classPrivateFieldGet2(_hasMagic2, this), noEmpty) : p.toRegExpSource(allowDot);
-				_classPrivateFieldSet2(_hasMagic2, this, _classPrivateFieldGet2(_hasMagic2, this) || hasMagic);
-				_classPrivateFieldSet2(_uflag, this, _classPrivateFieldGet2(_uflag, this) || uflag);
-				return re;
-			}).join("");
-			let start = "";
-			if (this.isStart()) {
-				if (typeof _classPrivateFieldGet2(_parts, this)[0] === "string") {
-					if (!(_classPrivateFieldGet2(_parts, this).length === 1 && justDots.has(_classPrivateFieldGet2(_parts, this)[0]))) {
-						const aps = addPatternStart;
-						const needNoTrav = dot && aps.has(src.charAt(0)) || src.startsWith("\\.") && aps.has(src.charAt(2)) || src.startsWith("\\.\\.") && aps.has(src.charAt(4));
-						const needNoDot = !dot && !allowDot && aps.has(src.charAt(0));
-						start = needNoTrav ? startNoTraversal : needNoDot ? startNoDot : "";
-					}
+	static #parseAST(str, ast, pos, opt, extDepth) {
+		const maxDepth = opt.maxExtglobRecursion ?? 2;
+		let escaping = false;
+		let inBrace = false;
+		let braceStart = -1;
+		let braceNeg = false;
+		if (ast.type === null) {
+			let i = pos;
+			let acc = "";
+			while (i < str.length) {
+				const c = str.charAt(i++);
+				if (escaping || c === "\\") {
+					escaping = !escaping;
+					acc += c;
+					continue;
 				}
+				if (inBrace) {
+					if (i === braceStart + 1) {
+						if (c === "^" || c === "!") braceNeg = true;
+					} else if (c === "]" && !(i === braceStart + 2 && braceNeg)) inBrace = false;
+					acc += c;
+					continue;
+				} else if (c === "[") {
+					inBrace = true;
+					braceStart = i;
+					braceNeg = false;
+					acc += c;
+					continue;
+				}
+				if (!opt.noext && isExtglobType(c) && str.charAt(i) === "(" && extDepth <= maxDepth) {
+					ast.push(acc);
+					acc = "";
+					const ext = new _a(c, ast);
+					i = _a.#parseAST(str, ext, i, opt, extDepth + 1);
+					ast.push(ext);
+					continue;
+				}
+				acc += c;
 			}
-			let end = "";
-			if (this.isEnd() && _classPrivateFieldGet2(_filledNegs, _classPrivateFieldGet2(_root, this)) && ((_classPrivateFieldGet9 = _classPrivateFieldGet2(_parent, this)) === null || _classPrivateFieldGet9 === void 0 ? void 0 : _classPrivateFieldGet9.type) === "!") end = "(?:$|\\/)";
-			return [
-				start + src + end,
-				unescape(src),
-				_classPrivateFieldSet2(_hasMagic2, this, !!_classPrivateFieldGet2(_hasMagic2, this)),
-				_classPrivateFieldGet2(_uflag, this)
-			];
+			ast.push(acc);
+			return i;
 		}
-		const repeated = this.type === "*" || this.type === "+";
-		const start = this.type === "!" ? "(?:(?!(?:" : "(?:";
-		let body = _assertClassBrand(_AST_brand, this, _partsToRegExp).call(this, dot);
-		if (this.isStart() && this.isEnd() && !body && this.type !== "!") {
-			const s = this.toString();
-			const me = this;
-			_classPrivateFieldSet2(_parts, me, [s]);
-			me.type = null;
-			_classPrivateFieldSet2(_hasMagic2, me, void 0);
-			return [
-				s,
-				unescape(this.toString()),
-				false,
-				false
-			];
-		}
-		let bodyDotAllowed = !repeated || allowDot || dot || false ? "" : _assertClassBrand(_AST_brand, this, _partsToRegExp).call(this, true);
-		if (bodyDotAllowed === body) bodyDotAllowed = "";
-		if (bodyDotAllowed) body = `(?:${body})(?:${bodyDotAllowed})*?`;
-		let final = "";
-		if (this.type === "!" && _classPrivateFieldGet2(_emptyExt, this)) final = (this.isStart() && !dot ? startNoDot : "") + starNoEmpty;
-		else {
-			const close = this.type === "!" ? "))" + (this.isStart() && !dot && !allowDot ? startNoDot : "") + "[^/]*?)" : this.type === "@" ? ")" : this.type === "?" ? ")?" : this.type === "+" && bodyDotAllowed ? ")" : this.type === "*" && bodyDotAllowed ? `)?` : `)${this.type}`;
-			final = start + body + close;
-		}
-		return [
-			final,
-			unescape(body),
-			_classPrivateFieldSet2(_hasMagic2, this, !!_classPrivateFieldGet2(_hasMagic2, this)),
-			_classPrivateFieldGet2(_uflag, this)
-		];
-	}
-};
-_AST = AST;
-function _fillNegs() {
-	/* c8 ignore start */
-	if (this !== _classPrivateFieldGet2(_root, this)) throw new Error("should only call on root");
-	if (_classPrivateFieldGet2(_filledNegs, this)) return this;
-	/* c8 ignore stop */
-	this.toString();
-	_classPrivateFieldSet2(_filledNegs, this, true);
-	let n;
-	while (n = _classPrivateFieldGet2(_negs, this).pop()) {
-		if (n.type !== "!") continue;
-		let p = n;
-		let pp = _classPrivateFieldGet2(_parent, p);
-		while (pp) {
-			for (let i = _classPrivateFieldGet2(_parentIndex, p) + 1; !pp.type && i < _classPrivateFieldGet2(_parts, pp).length; i++) for (const part of _classPrivateFieldGet2(_parts, n)) {
-				/* c8 ignore start */
-				if (typeof part === "string") throw new Error("string part in extglob AST??");
-				/* c8 ignore stop */
-				part.copyIn(_classPrivateFieldGet2(_parts, pp)[i]);
-			}
-			p = pp;
-			pp = _classPrivateFieldGet2(_parent, p);
-		}
-	}
-	return this;
-}
-function _parseAST(str, ast, pos, opt, extDepth) {
-	var _opt$maxExtglobRecurs;
-	const maxDepth = (_opt$maxExtglobRecurs = opt.maxExtglobRecursion) !== null && _opt$maxExtglobRecurs !== void 0 ? _opt$maxExtglobRecurs : 2;
-	let escaping = false;
-	let inBrace = false;
-	let braceStart = -1;
-	let braceNeg = false;
-	if (ast.type === null) {
-		let i = pos;
+		let i = pos + 1;
+		let part = new _a(null, ast);
+		const parts = [];
 		let acc = "";
 		while (i < str.length) {
 			const c = str.charAt(i++);
@@ -13455,209 +13166,258 @@ function _parseAST(str, ast, pos, opt, extDepth) {
 				acc += c;
 				continue;
 			}
-			if (!opt.noext && isExtglobType(c) && str.charAt(i) === "(" && extDepth <= maxDepth) {
-				ast.push(acc);
+			/* c8 ignore stop */
+			if (!opt.noext && isExtglobType(c) && str.charAt(i) === "(" && (extDepth <= maxDepth || ast && ast.#canAdoptType(c))) {
+				const depthAdd = ast && ast.#canAdoptType(c) ? 0 : 1;
+				part.push(acc);
 				acc = "";
-				const ext = new _a(c, ast);
-				i = _assertClassBrand(_AST, _a, _parseAST).call(_a, str, ext, i, opt, extDepth + 1);
-				ast.push(ext);
+				const ext = new _a(c, part);
+				part.push(ext);
+				i = _a.#parseAST(str, ext, i, opt, extDepth + depthAdd);
 				continue;
+			}
+			if (c === "|") {
+				part.push(acc);
+				acc = "";
+				parts.push(part);
+				part = new _a(null, ast);
+				continue;
+			}
+			if (c === ")") {
+				if (acc === "" && ast.#parts.length === 0) ast.#emptyExt = true;
+				part.push(acc);
+				acc = "";
+				ast.push(...parts, part);
+				return i;
 			}
 			acc += c;
 		}
-		ast.push(acc);
+		ast.type = null;
+		ast.#hasMagic = void 0;
+		ast.#parts = [str.substring(pos - 1)];
 		return i;
 	}
-	let i = pos + 1;
-	let part = new _a(null, ast);
-	const parts = [];
-	let acc = "";
-	while (i < str.length) {
-		const c = str.charAt(i++);
-		if (escaping || c === "\\") {
-			escaping = !escaping;
-			acc += c;
-			continue;
-		}
-		if (inBrace) {
-			if (i === braceStart + 1) {
-				if (c === "^" || c === "!") braceNeg = true;
-			} else if (c === "]" && !(i === braceStart + 2 && braceNeg)) inBrace = false;
-			acc += c;
-			continue;
-		} else if (c === "[") {
-			inBrace = true;
-			braceStart = i;
-			braceNeg = false;
-			acc += c;
-			continue;
-		}
-		/* c8 ignore stop */
-		if (!opt.noext && isExtglobType(c) && str.charAt(i) === "(" && (extDepth <= maxDepth || ast && _assertClassBrand(_AST_brand, ast, _canAdoptType).call(ast, c))) {
-			const depthAdd = ast && _assertClassBrand(_AST_brand, ast, _canAdoptType).call(ast, c) ? 0 : 1;
-			part.push(acc);
-			acc = "";
-			const ext = new _a(c, part);
-			part.push(ext);
-			i = _assertClassBrand(_AST, _a, _parseAST).call(_a, str, ext, i, opt, extDepth + depthAdd);
-			continue;
-		}
-		if (c === "|") {
-			part.push(acc);
-			acc = "";
-			parts.push(part);
-			part = new _a(null, ast);
-			continue;
-		}
-		if (c === ")") {
-			if (acc === "" && _classPrivateFieldGet2(_parts, ast).length === 0) _classPrivateFieldSet2(_emptyExt, ast, true);
-			part.push(acc);
-			acc = "";
-			ast.push(...parts, part);
-			return i;
-		}
-		acc += c;
+	#canAdoptWithSpace(child) {
+		return this.#canAdopt(child, adoptionWithSpaceMap);
 	}
-	ast.type = null;
-	_classPrivateFieldSet2(_hasMagic2, ast, void 0);
-	_classPrivateFieldSet2(_parts, ast, [str.substring(pos - 1)]);
-	return i;
-}
-function _canAdoptWithSpace(child) {
-	return _assertClassBrand(_AST_brand, this, _canAdopt).call(this, child, adoptionWithSpaceMap);
-}
-function _canAdopt(child, map = adoptionMap) {
-	if (!child || typeof child !== "object" || child.type !== null || _classPrivateFieldGet2(_parts, child).length !== 1 || this.type === null) return false;
-	const gc = _classPrivateFieldGet2(_parts, child)[0];
-	if (!gc || typeof gc !== "object" || gc.type === null) return false;
-	return _assertClassBrand(_AST_brand, this, _canAdoptType).call(this, gc.type, map);
-}
-function _canAdoptType(c, map = adoptionAnyMap) {
-	var _map$get;
-	return !!((_map$get = map.get(this.type)) === null || _map$get === void 0 ? void 0 : _map$get.includes(c));
-}
-function _adoptWithSpace(child, index) {
-	const gc = _classPrivateFieldGet2(_parts, child)[0];
-	const blank = new _a(null, gc, this.options);
-	_classPrivateFieldGet2(_parts, blank).push("");
-	gc.push(blank);
-	_assertClassBrand(_AST_brand, this, _adopt).call(this, child, index);
-}
-function _adopt(child, index) {
-	const gc = _classPrivateFieldGet2(_parts, child)[0];
-	_classPrivateFieldGet2(_parts, this).splice(index, 1, ..._classPrivateFieldGet2(_parts, gc));
-	for (const p of _classPrivateFieldGet2(_parts, gc)) if (typeof p === "object") _classPrivateFieldSet2(_parent, p, this);
-	_classPrivateFieldSet2(_toString, this, void 0);
-}
-function _canUsurpType(c) {
-	const m = usurpMap.get(this.type);
-	return !!(m === null || m === void 0 ? void 0 : m.has(c));
-}
-function _canUsurp(child) {
-	if (!child || typeof child !== "object" || child.type !== null || _classPrivateFieldGet2(_parts, child).length !== 1 || this.type === null || _classPrivateFieldGet2(_parts, this).length !== 1) return false;
-	const gc = _classPrivateFieldGet2(_parts, child)[0];
-	if (!gc || typeof gc !== "object" || gc.type === null) return false;
-	return _assertClassBrand(_AST_brand, this, _canUsurpType).call(this, gc.type);
-}
-function _usurp(child) {
-	const m = usurpMap.get(this.type);
-	const gc = _classPrivateFieldGet2(_parts, child)[0];
-	const nt = m === null || m === void 0 ? void 0 : m.get(gc.type);
-	/* c8 ignore start - impossible */
-	if (!nt) return false;
-	/* c8 ignore stop */
-	_classPrivateFieldSet2(_parts, this, _classPrivateFieldGet2(_parts, gc));
-	for (const p of _classPrivateFieldGet2(_parts, this)) if (typeof p === "object") _classPrivateFieldSet2(_parent, p, this);
-	this.type = nt;
-	_classPrivateFieldSet2(_toString, this, void 0);
-	_classPrivateFieldSet2(_emptyExt, this, false);
-}
-function _flatten() {
-	if (!isExtglobAST(this)) {
-		for (const p of _classPrivateFieldGet2(_parts, this)) if (typeof p === "object") _assertClassBrand(_AST_brand, p, _flatten).call(p);
-	} else {
-		let iterations = 0;
-		let done = false;
-		do {
-			done = true;
-			for (let i = 0; i < _classPrivateFieldGet2(_parts, this).length; i++) {
-				const c = _classPrivateFieldGet2(_parts, this)[i];
-				if (typeof c === "object") {
-					_assertClassBrand(_AST_brand, c, _flatten).call(c);
-					if (_assertClassBrand(_AST_brand, this, _canAdopt).call(this, c)) {
-						done = false;
-						_assertClassBrand(_AST_brand, this, _adopt).call(this, c, i);
-					} else if (_assertClassBrand(_AST_brand, this, _canAdoptWithSpace).call(this, c)) {
-						done = false;
-						_assertClassBrand(_AST_brand, this, _adoptWithSpace).call(this, c, i);
-					} else if (_assertClassBrand(_AST_brand, this, _canUsurp).call(this, c)) {
-						done = false;
-						_assertClassBrand(_AST_brand, this, _usurp).call(this, c);
+	#canAdopt(child, map = adoptionMap) {
+		if (!child || typeof child !== "object" || child.type !== null || child.#parts.length !== 1 || this.type === null) return false;
+		const gc = child.#parts[0];
+		if (!gc || typeof gc !== "object" || gc.type === null) return false;
+		return this.#canAdoptType(gc.type, map);
+	}
+	#canAdoptType(c, map = adoptionAnyMap) {
+		return !!map.get(this.type)?.includes(c);
+	}
+	#adoptWithSpace(child, index) {
+		const gc = child.#parts[0];
+		const blank = new _a(null, gc, this.options);
+		blank.#parts.push("");
+		gc.push(blank);
+		this.#adopt(child, index);
+	}
+	#adopt(child, index) {
+		const gc = child.#parts[0];
+		this.#parts.splice(index, 1, ...gc.#parts);
+		for (const p of gc.#parts) if (typeof p === "object") p.#parent = this;
+		this.#toString = void 0;
+	}
+	#canUsurpType(c) {
+		return !!usurpMap.get(this.type)?.has(c);
+	}
+	#canUsurp(child) {
+		if (!child || typeof child !== "object" || child.type !== null || child.#parts.length !== 1 || this.type === null || this.#parts.length !== 1) return false;
+		const gc = child.#parts[0];
+		if (!gc || typeof gc !== "object" || gc.type === null) return false;
+		return this.#canUsurpType(gc.type);
+	}
+	#usurp(child) {
+		const m = usurpMap.get(this.type);
+		const gc = child.#parts[0];
+		const nt = m?.get(gc.type);
+		/* c8 ignore start - impossible */
+		if (!nt) return false;
+		/* c8 ignore stop */
+		this.#parts = gc.#parts;
+		for (const p of this.#parts) if (typeof p === "object") p.#parent = this;
+		this.type = nt;
+		this.#toString = void 0;
+		this.#emptyExt = false;
+	}
+	static fromGlob(pattern, options = {}) {
+		const ast = new _a(null, void 0, options);
+		_a.#parseAST(pattern, ast, 0, options, 0);
+		return ast;
+	}
+	toMMPattern() {
+		/* c8 ignore start */
+		if (this !== this.#root) return this.#root.toMMPattern();
+		/* c8 ignore stop */
+		const glob = this.toString();
+		const [re, body, hasMagic, uflag] = this.toRegExpSource();
+		if (!(hasMagic || this.#hasMagic || this.#options.nocase && !this.#options.nocaseMagicOnly && glob.toUpperCase() !== glob.toLowerCase())) return body;
+		const flags = (this.#options.nocase ? "i" : "") + (uflag ? "u" : "");
+		return Object.assign(new RegExp(`^${re}$`, flags), {
+			_src: re,
+			_glob: glob
+		});
+	}
+	get options() {
+		return this.#options;
+	}
+	toRegExpSource(allowDot) {
+		const dot = allowDot ?? !!this.#options.dot;
+		if (this.#root === this) {
+			this.#flatten();
+			this.#fillNegs();
+		}
+		if (!isExtglobAST(this)) {
+			const noEmpty = this.isStart() && this.isEnd() && !this.#parts.some((s) => typeof s !== "string");
+			const src = this.#parts.map((p) => {
+				const [re, _, hasMagic, uflag] = typeof p === "string" ? _a.#parseGlob(p, this.#hasMagic, noEmpty) : p.toRegExpSource(allowDot);
+				this.#hasMagic = this.#hasMagic || hasMagic;
+				this.#uflag = this.#uflag || uflag;
+				return re;
+			}).join("");
+			let start = "";
+			if (this.isStart()) {
+				if (typeof this.#parts[0] === "string") {
+					if (!(this.#parts.length === 1 && justDots.has(this.#parts[0]))) {
+						const aps = addPatternStart;
+						const needNoTrav = dot && aps.has(src.charAt(0)) || src.startsWith("\\.") && aps.has(src.charAt(2)) || src.startsWith("\\.\\.") && aps.has(src.charAt(4));
+						const needNoDot = !dot && !allowDot && aps.has(src.charAt(0));
+						start = needNoTrav ? startNoTraversal : needNoDot ? startNoDot : "";
 					}
 				}
 			}
-		} while (!done && ++iterations < 10);
+			let end = "";
+			if (this.isEnd() && this.#root.#filledNegs && this.#parent?.type === "!") end = "(?:$|\\/)";
+			return [
+				start + src + end,
+				unescape(src),
+				this.#hasMagic = !!this.#hasMagic,
+				this.#uflag
+			];
+		}
+		const repeated = this.type === "*" || this.type === "+";
+		const start = this.type === "!" ? "(?:(?!(?:" : "(?:";
+		let body = this.#partsToRegExp(dot);
+		if (this.isStart() && this.isEnd() && !body && this.type !== "!") {
+			const s = this.toString();
+			const me = this;
+			me.#parts = [s];
+			me.type = null;
+			me.#hasMagic = void 0;
+			return [
+				s,
+				unescape(this.toString()),
+				false,
+				false
+			];
+		}
+		let bodyDotAllowed = !repeated || allowDot || dot || false ? "" : this.#partsToRegExp(true);
+		if (bodyDotAllowed === body) bodyDotAllowed = "";
+		if (bodyDotAllowed) body = `(?:${body})(?:${bodyDotAllowed})*?`;
+		let final = "";
+		if (this.type === "!" && this.#emptyExt) final = (this.isStart() && !dot ? startNoDot : "") + starNoEmpty;
+		else {
+			const close = this.type === "!" ? "))" + (this.isStart() && !dot && !allowDot ? startNoDot : "") + "[^/]*?)" : this.type === "@" ? ")" : this.type === "?" ? ")?" : this.type === "+" && bodyDotAllowed ? ")" : this.type === "*" && bodyDotAllowed ? `)?` : `)${this.type}`;
+			final = start + body + close;
+		}
+		return [
+			final,
+			unescape(body),
+			this.#hasMagic = !!this.#hasMagic,
+			this.#uflag
+		];
 	}
-	_classPrivateFieldSet2(_toString, this, void 0);
-}
-function _partsToRegExp(dot) {
-	return _classPrivateFieldGet2(_parts, this).map((p) => {
-		/* c8 ignore start */
-		if (typeof p === "string") throw new Error("string type in extglob ast??");
-		/* c8 ignore stop */
-		const [re, _, _hasMagic, uflag] = p.toRegExpSource(dot);
-		_classPrivateFieldSet2(_uflag, this, _classPrivateFieldGet2(_uflag, this) || uflag);
-		return re;
-	}).filter((p) => !(this.isStart() && this.isEnd()) || !!p).join("|");
-}
-function _parseGlob(glob, hasMagic, noEmpty = false) {
-	let escaping = false;
-	let re = "";
-	let uflag = false;
-	let inStar = false;
-	for (let i = 0; i < glob.length; i++) {
-		const c = glob.charAt(i);
-		if (escaping) {
-			escaping = false;
-			re += (reSpecials.has(c) ? "\\" : "") + c;
-			continue;
+	#flatten() {
+		if (!isExtglobAST(this)) {
+			for (const p of this.#parts) if (typeof p === "object") p.#flatten();
+		} else {
+			let iterations = 0;
+			let done = false;
+			do {
+				done = true;
+				for (let i = 0; i < this.#parts.length; i++) {
+					const c = this.#parts[i];
+					if (typeof c === "object") {
+						c.#flatten();
+						if (this.#canAdopt(c)) {
+							done = false;
+							this.#adopt(c, i);
+						} else if (this.#canAdoptWithSpace(c)) {
+							done = false;
+							this.#adoptWithSpace(c, i);
+						} else if (this.#canUsurp(c)) {
+							done = false;
+							this.#usurp(c);
+						}
+					}
+				}
+			} while (!done && ++iterations < 10);
 		}
-		if (c === "*") {
-			if (inStar) continue;
-			inStar = true;
-			re += noEmpty && /^[*]+$/.test(glob) ? starNoEmpty : star$1;
-			hasMagic = true;
-			continue;
-		} else inStar = false;
-		if (c === "\\") {
-			if (i === glob.length - 1) re += "\\\\";
-			else escaping = true;
-			continue;
-		}
-		if (c === "[") {
-			const [src, needUflag, consumed, magic] = parseClass(glob, i);
-			if (consumed) {
-				re += src;
-				uflag = uflag || needUflag;
-				i += consumed - 1;
-				hasMagic = hasMagic || magic;
+		this.#toString = void 0;
+	}
+	#partsToRegExp(dot) {
+		return this.#parts.map((p) => {
+			/* c8 ignore start */
+			if (typeof p === "string") throw new Error("string type in extglob ast??");
+			/* c8 ignore stop */
+			const [re, _, _hasMagic, uflag] = p.toRegExpSource(dot);
+			this.#uflag = this.#uflag || uflag;
+			return re;
+		}).filter((p) => !(this.isStart() && this.isEnd()) || !!p).join("|");
+	}
+	static #parseGlob(glob, hasMagic, noEmpty = false) {
+		let escaping = false;
+		let re = "";
+		let uflag = false;
+		let inStar = false;
+		for (let i = 0; i < glob.length; i++) {
+			const c = glob.charAt(i);
+			if (escaping) {
+				escaping = false;
+				re += (reSpecials.has(c) ? "\\" : "") + c;
 				continue;
 			}
+			if (c === "*") {
+				if (inStar) continue;
+				inStar = true;
+				re += noEmpty && /^[*]+$/.test(glob) ? starNoEmpty : star$1;
+				hasMagic = true;
+				continue;
+			} else inStar = false;
+			if (c === "\\") {
+				if (i === glob.length - 1) re += "\\\\";
+				else escaping = true;
+				continue;
+			}
+			if (c === "[") {
+				const [src, needUflag, consumed, magic] = parseClass(glob, i);
+				if (consumed) {
+					re += src;
+					uflag = uflag || needUflag;
+					i += consumed - 1;
+					hasMagic = hasMagic || magic;
+					continue;
+				}
+			}
+			if (c === "?") {
+				re += qmark;
+				hasMagic = true;
+				continue;
+			}
+			re += regExpEscape$1(c);
 		}
-		if (c === "?") {
-			re += qmark;
-			hasMagic = true;
-			continue;
-		}
-		re += regExpEscape$1(c);
+		return [
+			re,
+			unescape(glob),
+			!!hasMagic,
+			uflag
+		];
 	}
-	return [
-		re,
-		unescape(glob),
-		!!hasMagic,
-		uflag
-	];
-}
+};
 _a = AST;
 //#endregion
 //#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/escape.js
@@ -13799,33 +13559,30 @@ const match = (list, pattern, options = {}) => {
 minimatch.match = match;
 const globMagic = /[?*]|[+@!]\(.*?\)|\[|\]/;
 const regExpEscape = (s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-var _Minimatch_brand = /* @__PURE__ */ new WeakSet();
 var Minimatch = class {
+	options;
+	set;
+	pattern;
+	windowsPathsNoEscape;
+	nonegate;
+	negate;
+	comment;
+	empty;
+	preserveMultipleSlashes;
+	partial;
+	globSet;
+	globParts;
+	nocase;
+	isWindows;
+	platform;
+	windowsNoMagicRoot;
+	maxGlobstarRecursion;
+	regexp;
 	constructor(pattern, options = {}) {
-		var _options$maxGlobstarR;
-		_classPrivateMethodInitSpec(this, _Minimatch_brand);
-		_defineProperty(this, "options", void 0);
-		_defineProperty(this, "set", void 0);
-		_defineProperty(this, "pattern", void 0);
-		_defineProperty(this, "windowsPathsNoEscape", void 0);
-		_defineProperty(this, "nonegate", void 0);
-		_defineProperty(this, "negate", void 0);
-		_defineProperty(this, "comment", void 0);
-		_defineProperty(this, "empty", void 0);
-		_defineProperty(this, "preserveMultipleSlashes", void 0);
-		_defineProperty(this, "partial", void 0);
-		_defineProperty(this, "globSet", void 0);
-		_defineProperty(this, "globParts", void 0);
-		_defineProperty(this, "nocase", void 0);
-		_defineProperty(this, "isWindows", void 0);
-		_defineProperty(this, "platform", void 0);
-		_defineProperty(this, "windowsNoMagicRoot", void 0);
-		_defineProperty(this, "maxGlobstarRecursion", void 0);
-		_defineProperty(this, "regexp", void 0);
 		assertValidPattern(pattern);
 		options = options || {};
 		this.options = options;
-		this.maxGlobstarRecursion = (_options$maxGlobstarR = options.maxGlobstarRecursion) !== null && _options$maxGlobstarR !== void 0 ? _options$maxGlobstarR : 200;
+		this.maxGlobstarRecursion = options.maxGlobstarRecursion ?? 200;
 		this.pattern = pattern;
 		this.platform = options.platform || defaultPlatform;
 		this.isWindows = this.platform === "win32";
@@ -14085,8 +13842,115 @@ var Minimatch = class {
 		}
 		const { optimizationLevel = 1 } = this.options;
 		if (optimizationLevel >= 2) file = this.levelTwoFileOptimize(file);
-		if (pattern.includes(GLOBSTAR)) return _assertClassBrand(_Minimatch_brand, this, _matchGlobstar).call(this, file, pattern, partial, fileStartIndex, patternStartIndex);
-		return _assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file, pattern, partial, fileStartIndex, patternStartIndex);
+		if (pattern.includes(GLOBSTAR)) return this.#matchGlobstar(file, pattern, partial, fileStartIndex, patternStartIndex);
+		return this.#matchOne(file, pattern, partial, fileStartIndex, patternStartIndex);
+	}
+	#matchGlobstar(file, pattern, partial, fileIndex, patternIndex) {
+		const firstgs = pattern.indexOf(GLOBSTAR, patternIndex);
+		const lastgs = pattern.lastIndexOf(GLOBSTAR);
+		const [head, body, tail] = partial ? [
+			pattern.slice(patternIndex, firstgs),
+			pattern.slice(firstgs + 1),
+			[]
+		] : [
+			pattern.slice(patternIndex, firstgs),
+			pattern.slice(firstgs + 1, lastgs),
+			pattern.slice(lastgs + 1)
+		];
+		if (head.length) {
+			const fileHead = file.slice(fileIndex, fileIndex + head.length);
+			if (!this.#matchOne(fileHead, head, partial, 0, 0)) return false;
+			fileIndex += head.length;
+			patternIndex += head.length;
+		}
+		let fileTailMatch = 0;
+		if (tail.length) {
+			if (tail.length + fileIndex > file.length) return false;
+			let tailStart = file.length - tail.length;
+			if (this.#matchOne(file, tail, partial, tailStart, 0)) fileTailMatch = tail.length;
+			else {
+				if (file[file.length - 1] !== "" || fileIndex + tail.length === file.length) return false;
+				tailStart--;
+				if (!this.#matchOne(file, tail, partial, tailStart, 0)) return false;
+				fileTailMatch = tail.length + 1;
+			}
+		}
+		if (!body.length) {
+			let sawSome = !!fileTailMatch;
+			for (let i = fileIndex; i < file.length - fileTailMatch; i++) {
+				const f = String(file[i]);
+				sawSome = true;
+				if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
+			}
+			return partial || sawSome;
+		}
+		const bodySegments = [[[], 0]];
+		let currentBody = bodySegments[0];
+		let nonGsParts = 0;
+		const nonGsPartsSums = [0];
+		for (const b of body) if (b === GLOBSTAR) {
+			nonGsPartsSums.push(nonGsParts);
+			currentBody = [[], 0];
+			bodySegments.push(currentBody);
+		} else {
+			currentBody[0].push(b);
+			nonGsParts++;
+		}
+		let i = bodySegments.length - 1;
+		const fileLength = file.length - fileTailMatch;
+		for (const b of bodySegments) b[1] = fileLength - (nonGsPartsSums[i--] + b[0].length);
+		return !!this.#matchGlobStarBodySections(file, bodySegments, fileIndex, 0, partial, 0, !!fileTailMatch);
+	}
+	#matchGlobStarBodySections(file, bodySegments, fileIndex, bodyIndex, partial, globStarDepth, sawTail) {
+		const bs = bodySegments[bodyIndex];
+		if (!bs) {
+			for (let i = fileIndex; i < file.length; i++) {
+				sawTail = true;
+				const f = file[i];
+				if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
+			}
+			return sawTail;
+		}
+		const [body, after] = bs;
+		while (fileIndex <= after) {
+			if (this.#matchOne(file.slice(0, fileIndex + body.length), body, partial, fileIndex, 0) && globStarDepth < this.maxGlobstarRecursion) {
+				const sub = this.#matchGlobStarBodySections(file, bodySegments, fileIndex + body.length, bodyIndex + 1, partial, globStarDepth + 1, sawTail);
+				if (sub !== false) return sub;
+			}
+			const f = file[fileIndex];
+			if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
+			fileIndex++;
+		}
+		return partial || null;
+	}
+	#matchOne(file, pattern, partial, fileIndex, patternIndex) {
+		let fi;
+		let pi;
+		let pl;
+		let fl;
+		for (fi = fileIndex, pi = patternIndex, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
+			this.debug("matchOne loop");
+			let p = pattern[pi];
+			let f = file[fi];
+			this.debug(pattern, p, f);
+			/* c8 ignore start */
+			if (p === false || p === GLOBSTAR) return false;
+			/* c8 ignore stop */
+			let hit;
+			if (typeof p === "string") {
+				hit = f === p;
+				this.debug("string match", p, f, hit);
+			} else {
+				hit = p.test(f);
+				this.debug("pattern match", p, f, hit);
+			}
+			if (!hit) return false;
+		}
+		if (fi === fl && pi === pl) return true;
+		else if (fi === fl) return partial;
+		else if (pi === pl) return fi === fl - 1 && file[fi] === "";
+		else throw new Error("wtf?");
+		/* c8 ignore stop */
 	}
 	braceExpand() {
 		return braceExpand(this.pattern, this.options);
@@ -14188,113 +14052,6 @@ var Minimatch = class {
 		return minimatch.defaults(def).Minimatch;
 	}
 };
-function _matchGlobstar(file, pattern, partial, fileIndex, patternIndex) {
-	const firstgs = pattern.indexOf(GLOBSTAR, patternIndex);
-	const lastgs = pattern.lastIndexOf(GLOBSTAR);
-	const [head, body, tail] = partial ? [
-		pattern.slice(patternIndex, firstgs),
-		pattern.slice(firstgs + 1),
-		[]
-	] : [
-		pattern.slice(patternIndex, firstgs),
-		pattern.slice(firstgs + 1, lastgs),
-		pattern.slice(lastgs + 1)
-	];
-	if (head.length) {
-		const fileHead = file.slice(fileIndex, fileIndex + head.length);
-		if (!_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, fileHead, head, partial, 0, 0)) return false;
-		fileIndex += head.length;
-		patternIndex += head.length;
-	}
-	let fileTailMatch = 0;
-	if (tail.length) {
-		if (tail.length + fileIndex > file.length) return false;
-		let tailStart = file.length - tail.length;
-		if (_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file, tail, partial, tailStart, 0)) fileTailMatch = tail.length;
-		else {
-			if (file[file.length - 1] !== "" || fileIndex + tail.length === file.length) return false;
-			tailStart--;
-			if (!_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file, tail, partial, tailStart, 0)) return false;
-			fileTailMatch = tail.length + 1;
-		}
-	}
-	if (!body.length) {
-		let sawSome = !!fileTailMatch;
-		for (let i = fileIndex; i < file.length - fileTailMatch; i++) {
-			const f = String(file[i]);
-			sawSome = true;
-			if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
-		}
-		return partial || sawSome;
-	}
-	const bodySegments = [[[], 0]];
-	let currentBody = bodySegments[0];
-	let nonGsParts = 0;
-	const nonGsPartsSums = [0];
-	for (const b of body) if (b === GLOBSTAR) {
-		nonGsPartsSums.push(nonGsParts);
-		currentBody = [[], 0];
-		bodySegments.push(currentBody);
-	} else {
-		currentBody[0].push(b);
-		nonGsParts++;
-	}
-	let i = bodySegments.length - 1;
-	const fileLength = file.length - fileTailMatch;
-	for (const b of bodySegments) b[1] = fileLength - (nonGsPartsSums[i--] + b[0].length);
-	return !!_assertClassBrand(_Minimatch_brand, this, _matchGlobStarBodySections).call(this, file, bodySegments, fileIndex, 0, partial, 0, !!fileTailMatch);
-}
-function _matchGlobStarBodySections(file, bodySegments, fileIndex, bodyIndex, partial, globStarDepth, sawTail) {
-	const bs = bodySegments[bodyIndex];
-	if (!bs) {
-		for (let i = fileIndex; i < file.length; i++) {
-			sawTail = true;
-			const f = file[i];
-			if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
-		}
-		return sawTail;
-	}
-	const [body, after] = bs;
-	while (fileIndex <= after) {
-		if (_assertClassBrand(_Minimatch_brand, this, _matchOne).call(this, file.slice(0, fileIndex + body.length), body, partial, fileIndex, 0) && globStarDepth < this.maxGlobstarRecursion) {
-			const sub = _assertClassBrand(_Minimatch_brand, this, _matchGlobStarBodySections).call(this, file, bodySegments, fileIndex + body.length, bodyIndex + 1, partial, globStarDepth + 1, sawTail);
-			if (sub !== false) return sub;
-		}
-		const f = file[fileIndex];
-		if (f === "." || f === ".." || !this.options.dot && f.startsWith(".")) return false;
-		fileIndex++;
-	}
-	return partial || null;
-}
-function _matchOne(file, pattern, partial, fileIndex, patternIndex) {
-	let fi;
-	let pi;
-	let pl;
-	let fl;
-	for (fi = fileIndex, pi = patternIndex, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
-		this.debug("matchOne loop");
-		let p = pattern[pi];
-		let f = file[fi];
-		this.debug(pattern, p, f);
-		/* c8 ignore start */
-		if (p === false || p === GLOBSTAR) return false;
-		/* c8 ignore stop */
-		let hit;
-		if (typeof p === "string") {
-			hit = f === p;
-			this.debug("string match", p, f, hit);
-		} else {
-			hit = p.test(f);
-			this.debug("pattern match", p, f, hit);
-		}
-		if (!hit) return false;
-	}
-	if (fi === fl && pi === pl) return true;
-	else if (fi === fl) return partial;
-	else if (pi === pl) return fi === fl - 1 && file[fi] === "";
-	else throw new Error("wtf?");
-	/* c8 ignore stop */
-}
 /* c8 ignore stop */
 minimatch.AST = AST;
 minimatch.Minimatch = Minimatch;
@@ -14356,9 +14113,8 @@ function innerResolveTypeElements(ctx, node, scope, typeParameters) {
 		case "TSIndexedAccessType": return mergeElements(resolveIndexType(ctx, node, scope).map((t) => resolveTypeElements(ctx, t, t._ownerScope)), "TSUnionType");
 		case "TSExpressionWithTypeArguments":
 		case "TSTypeReference": {
-			var _scope$imports$typeNa;
 			const typeName = getReferenceName(node);
-			if ((typeName === "ExtractPropTypes" || typeName === "ExtractPublicPropTypes") && node.typeParameters && ((_scope$imports$typeNa = scope.imports[typeName]) === null || _scope$imports$typeNa === void 0 ? void 0 : _scope$imports$typeNa.source) === "vue") return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope, typeParameters), scope);
+			if ((typeName === "ExtractPropTypes" || typeName === "ExtractPublicPropTypes") && node.typeParameters && scope.imports[typeName]?.source === "vue") return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope, typeParameters), scope);
 			const resolved = resolveTypeReference(ctx, node, scope);
 			if (resolved) {
 				let typeParams;
@@ -14384,8 +14140,7 @@ function innerResolveTypeElements(ctx, node, scope, typeParameters) {
 			}
 		}
 		case "TSImportType": {
-			var _node$qualifier;
-			if (getId(node.argument) === "vue" && ((_node$qualifier = node.qualifier) === null || _node$qualifier === void 0 ? void 0 : _node$qualifier.type) === "Identifier" && node.qualifier.name === "ExtractPropTypes" && node.typeParameters) return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope), scope);
+			if (getId(node.argument) === "vue" && node.qualifier?.type === "Identifier" && node.qualifier.name === "ExtractPropTypes" && node.typeParameters) return resolveExtractPropTypes(resolveTypeElements(ctx, node.typeParameters.params[0], scope), scope);
 			const resolved = resolveTypeReference(ctx, node, importSourceToScope(ctx, node.argument, scope, node.argument.value));
 			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope);
 			break;
@@ -14485,8 +14240,7 @@ function resolveIndexType(ctx, node, scope) {
 		resolved = resolveTypeElements(ctx, objectType, scope);
 	}
 	for (const key of keys) {
-		var _resolved$props$key;
-		const targetType = (_resolved$props$key = resolved.props[key]) === null || _resolved$props$key === void 0 || (_resolved$props$key = _resolved$props$key.typeAnnotation) === null || _resolved$props$key === void 0 ? void 0 : _resolved$props$key.typeAnnotation;
+		const targetType = resolved.props[key]?.typeAnnotation?.typeAnnotation;
 		if (targetType) {
 			targetType._ownerScope = resolved.props[key]._ownerScope;
 			types.push(targetType);
@@ -14608,7 +14362,7 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 	}
 }
 function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
-	const canCache = !(scope === null || scope === void 0 ? void 0 : scope.isGenericScope);
+	const canCache = !scope?.isGenericScope;
 	if (canCache && node._resolvedReference) {
 		recordScopeDep(ctx, node._resolvedReference._ownerScope);
 		return node._resolvedReference;
@@ -14651,8 +14405,8 @@ function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 }
 function getReferenceName(node) {
 	const ref = node.type === "TSTypeReference" ? node.typeName : node.type === "TSExpressionWithTypeArguments" ? node.expression : node.type === "TSImportType" ? node.qualifier : node.exprName;
-	if ((ref === null || ref === void 0 ? void 0 : ref.type) === "Identifier") return ref.name;
-	else if ((ref === null || ref === void 0 ? void 0 : ref.type) === "TSQualifiedName") return qualifiedNameToPath(ref);
+	if (ref?.type === "Identifier") return ref.name;
+	else if (ref?.type === "TSQualifiedName") return qualifiedNameToPath(ref);
 	else return "default";
 }
 function qualifiedNameToPath(node) {
@@ -14683,7 +14437,7 @@ function registerTS(_loadTS) {
 function resolveFS(ctx) {
 	if (ctx.fs) return ctx.fs;
 	if (!ts && loadTS) ts = loadTS();
-	const fs = ctx.options.fs || (ts === null || ts === void 0 ? void 0 : ts.sys);
+	const fs = ctx.options.fs || ts?.sys;
 	if (!fs) return;
 	return ctx.fs = {
 		fileExists(file) {
@@ -14750,6 +14504,12 @@ function resolveExt(filename, fs) {
 const tsConfigCache = createCache();
 const tsConfigRefMap = /* @__PURE__ */ new Map();
 const extendedConfigCache = /* @__PURE__ */ new Map();
+const matcherCache = /* @__PURE__ */ new Map();
+function isMatch(file, pattern) {
+	let matcher = matcherCache.get(pattern);
+	if (!matcher) matcherCache.set(pattern, matcher = new Minimatch(pattern));
+	return matcher.match(file);
+}
 function resolveWithTS(containingFile, source, ts, fs) {
 	const configPath = ts.findConfigFile(containingFile, fs.fileExists);
 	let tsCompilerOptions;
@@ -14771,12 +14531,11 @@ function resolveWithTS(containingFile, source, ts, fs) {
 				return p.startsWith("${configDir}") && supportsConfigDir ? normalizePath(p.replace("${configDir}", (0, path.dirname)(configPath))) : joinPaths(base, p);
 			};
 			for (const c of configs) {
-				var _c$config$raw, _c$config$raw2;
 				const base = normalizePath(c.config.options.pathsBasePath || (0, path.dirname)(c.config.options.configFilePath));
-				const included = (_c$config$raw = c.config.raw) === null || _c$config$raw === void 0 ? void 0 : _c$config$raw.include;
-				const excluded = (_c$config$raw2 = c.config.raw) === null || _c$config$raw2 === void 0 ? void 0 : _c$config$raw2.exclude;
-				if (!included && (!base || containingFile.startsWith(base)) || (included === null || included === void 0 ? void 0 : included.some((p) => minimatch(containingFile, getPattern(base, p))))) {
-					if (excluded && excluded.some((p) => minimatch(containingFile, getPattern(base, p)))) continue;
+				const included = c.config.raw?.include;
+				const excluded = c.config.raw?.exclude;
+				if (!included && (!base || containingFile.startsWith(base)) || included?.some((p) => isMatch(containingFile, getPattern(base, p)))) {
+					if (excluded && excluded.some((p) => isMatch(containingFile, getPattern(base, p)))) continue;
 					matchedConfig = c;
 					break;
 				}
@@ -14819,6 +14578,7 @@ function invalidateTypeCache(filename) {
 	if (filename.endsWith(".json")) {
 		extendedConfigCache.clear();
 		tsConfigCache.clear();
+		matcherCache.clear();
 	}
 	const affectedConfig = tsConfigRefMap.get(filename);
 	if (affectedConfig) tsConfigCache.delete(affectedConfig);
@@ -14856,7 +14616,7 @@ function parseFile(filename, content, fs, parserPlugins) {
 		const secondBlock = scriptOffset < scriptSetupOffset ? scriptSetup : script;
 		let scriptContent = " ".repeat(Math.min(scriptOffset, scriptSetupOffset)) + firstBlock.content;
 		if (secondBlock) scriptContent += " ".repeat(secondBlock.loc.start.offset - script.loc.end.offset) + secondBlock.content;
-		const lang = (script === null || script === void 0 ? void 0 : script.lang) || (scriptSetup === null || scriptSetup === void 0 ? void 0 : scriptSetup.lang);
+		const lang = script?.lang || scriptSetup?.lang;
 		return (0, _babel_parser.parse)(scriptContent, {
 			plugins: resolveParserPlugins(lang, parserPlugins),
 			sourceType: "module"
@@ -15297,10 +15057,7 @@ function resolveReturnType(ctx, arg, scope) {
 	let resolved = arg;
 	if (arg.type === "TSTypeReference" || arg.type === "TSTypeQuery" || arg.type === "TSImportType") resolved = resolveTypeReference(ctx, arg, scope);
 	if (!resolved) return;
-	if (resolved.type === "TSFunctionType") {
-		var _resolved$typeAnnotat;
-		return (_resolved$typeAnnotat = resolved.typeAnnotation) === null || _resolved$typeAnnotat === void 0 ? void 0 : _resolved$typeAnnotat.typeAnnotation;
-	}
+	if (resolved.type === "TSFunctionType") return resolved.typeAnnotation?.typeAnnotation;
 	if (resolved.type === "TSDeclareFunction") return resolved.returnType;
 }
 function resolveUnionType(ctx, node, scope) {
@@ -15543,7 +15300,7 @@ function genDestructuredDefaultValue(ctx, key, inferredType) {
 		}
 		const needSkipFactory = !inferredType && ((0, _vue_compiler_dom.isFunctionType)(unwrapped) || unwrapped.type === "Identifier");
 		return {
-			valueString: !needSkipFactory && !isLiteralNode(unwrapped) && !(inferredType === null || inferredType === void 0 ? void 0 : inferredType.includes("Function")) ? `() => (${value})` : value,
+			valueString: !needSkipFactory && !isLiteralNode(unwrapped) && !inferredType?.includes("Function") ? `() => (${value})` : value,
 			needSkipFactory
 		};
 	}
@@ -15907,7 +15664,6 @@ const MACROS = [
 * normal `<script>` + `<script setup>` if both are present.
 */
 function compileScript(sfc, options) {
-	var _options$templateOpti;
 	if (!options.id) warnOnce("compileScript now requires passing the `id` option.\nUpgrade your vite or vue-loader version for compatibility with the latest experimental proposals.");
 	const { script, scriptSetup, source, filename } = sfc;
 	const hoistStatic = options.hoistStatic !== false && !script;
@@ -15915,7 +15671,7 @@ function compileScript(sfc, options) {
 	const scriptLang = script && script.lang;
 	const scriptSetupLang = scriptSetup && scriptSetup.lang;
 	const vapor = sfc.vapor || options.vapor;
-	const ssr = (_options$templateOpti = options.templateOptions) === null || _options$templateOpti === void 0 ? void 0 : _options$templateOpti.ssr;
+	const ssr = options.templateOptions?.ssr;
 	const setupPreambleLines = [];
 	const cssModuleBindings = [];
 	let cssModuleHelper = "_useCssModule";
@@ -15923,6 +15679,7 @@ function compileScript(sfc, options) {
 	if (script && scriptSetup && scriptLang !== scriptSetupLang) throw new Error("[@vue/compiler-sfc] <script> and <script setup> must have the same language type.");
 	if (!scriptSetup) {
 		if (!script) throw new Error(`[@vue/compiler-sfc] SFC contains no <script> tags.`);
+		if (vapor) throw new Error(`[@vue/compiler-sfc] Vapor components with a normal <script> must also include <script setup>, <script vapor>, or <script setup vapor>.`);
 		if (script.lang && !isJSOrTS) return script;
 		return processNormalScript(new ScriptCompileContext(sfc, options), scopeId);
 	}
@@ -15999,10 +15756,9 @@ function compileScript(sfc, options) {
 		if (!sfc.template) return;
 		while (ctx.bindingMetadata[cssModuleHelper] || inlineMode && sfc.styles.some((style) => style.module === cssModuleHelper)) cssModuleHelper += "_";
 		for (const style of sfc.styles) {
-			var _options$templateOpti2;
 			if (!style.module) continue;
 			const name = style.module === true ? `$style` : style.module;
-			if (!(0, _vue_compiler_dom.isSimpleIdentifier)(name) || ctx.bindingMetadata[name] || inlineMode && sfc.template.ast && !sfc.template.lang && !((_options$templateOpti2 = options.templateOptions) === null || _options$templateOpti2 === void 0 ? void 0 : _options$templateOpti2.preprocessLang) && !isUsedInTemplate(name, sfc, options.templateOptions)) continue;
+			if (!(0, _vue_compiler_dom.isSimpleIdentifier)(name) || ctx.bindingMetadata[name] || inlineMode && sfc.template.ast && !sfc.template.lang && !options.templateOptions?.preprocessLang && !isUsedInTemplate(name, sfc, options.templateOptions)) continue;
 			if (inlineMode) {
 				if (name === "__props" || name === "_useCssModule" || name[0] === "_" && ctx.helperImports.has(name.slice(1))) continue;
 				try {
@@ -16321,8 +16077,7 @@ function compileScript(sfc, options) {
 	if (options.className) {
 		const componentType = options.componentType;
 		if (componentType === "page" || componentType === "component") {
-			var _options$templateOpti3, _compilerOptions$scri, _options$templateOpti4;
-			const hasScriptCpp = ((_compilerOptions$scri = (((_options$templateOpti3 = options.templateOptions) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.compilerOptions) || {}).scriptCppBlocks) === null || _compilerOptions$scri === void 0 ? void 0 : _compilerOptions$scri.length) > 0;
+			const hasScriptCpp = (options.templateOptions?.compilerOptions || {}).scriptCppBlocks?.length > 0;
 			const optionsProps = [];
 			if (hasScriptCpp) optionsProps.push("scriptCpp: true");
 			const optionsCode = optionsProps.length ? `, { ${optionsProps.join(", ")} }` : "";
@@ -16341,7 +16096,7 @@ function compileScript(sfc, options) {
 			if (options.dynamicSharedData) runtimeOptions += `\n  __dynamicSharedData: true,`;
 			if (options.isWatch && templateHash) runtimeOptions += `\n  __hash: "${templateHash}",`;
 			runtimeOptions += `\n  __className,`;
-			runtimeOptions += `\n  __filename: '${((_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.compilerOptions).relativeFilename || ""}',`;
+			runtimeOptions += `\n  __filename: '${(options.templateOptions?.compilerOptions).relativeFilename || ""}',`;
 		}
 	}
 	if (!ctx.hasDefaultExportName && filename && filename !== "anonymous.vue") {
@@ -16353,8 +16108,7 @@ function compileScript(sfc, options) {
 	const emitsDecl = genRuntimeEmits(ctx);
 	if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`;
 	if (vapor && !ssr && sfc.template && !sfc.template.src && sfc.template.ast) {
-		var _options$templateOpti5;
-		if (isMultiRoot(sfc.template.ast, (_options$templateOpti5 = options.templateOptions) === null || _options$templateOpti5 === void 0 ? void 0 : _options$templateOpti5.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
+		if (isMultiRoot(sfc.template.ast, options.templateOptions?.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
 	}
 	let definedOptions = "";
 	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
@@ -16377,8 +16131,7 @@ function compileScript(sfc, options) {
 		}
 	}
 	if (ctx.helperImports.size > 0) {
-		var _options$templateOpti6;
-		const runtimeModuleName = (_options$templateOpti6 = options.templateOptions) === null || _options$templateOpti6 === void 0 || (_options$templateOpti6 = _options$templateOpti6.compilerOptions) === null || _options$templateOpti6 === void 0 ? void 0 : _options$templateOpti6.runtimeModuleName;
+		const runtimeModuleName = options.templateOptions?.compilerOptions?.runtimeModuleName;
 		const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
 		ctx.s.prepend(`import { ${[...ctx.helperImports].map((h) => `${h} as ${h === "useCssModule" ? cssModuleHelper : `_${h}`}`).join(", ")} } from ${importSrc}\n`);
 	}
@@ -16399,8 +16152,8 @@ function compileScript(sfc, options) {
 		imports: ctx.userImports,
 		content,
 		map,
-		scriptAst: scriptAst === null || scriptAst === void 0 ? void 0 : scriptAst.body,
-		scriptSetupAst: scriptSetupAst === null || scriptSetupAst === void 0 ? void 0 : scriptSetupAst.body,
+		scriptAst: scriptAst?.body,
+		scriptSetupAst: scriptSetupAst?.body,
 		deps: ctx.deps ? [...ctx.deps] : void 0
 	};
 }
@@ -16517,7 +16270,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-rc.10";
+const version = "3.6.0-rc.11";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

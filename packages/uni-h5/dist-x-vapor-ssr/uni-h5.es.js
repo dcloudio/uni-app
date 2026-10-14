@@ -1,7 +1,7 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, resolveOwnerEl, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, LINEFEED, PRIMARY_COLOR, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, resolveOwnerEl, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { isArray, isString, extend, isFunction, capitalize, camelize, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, hyphenate, Namespaces } from "@vue/shared";
-import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, computed, inject, provide, isReactive, nextTick, defineComponent as defineComponent$2, mergeProps, useSSRContext, resolveDynamicComponent, onBeforeMount, onServerPrefetch, onActivated, ssrContextKey, resolveComponent, withCtx, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, withDirectives, vShow, logError } from "vue";
+import { isArray, isString, extend, isFunction, capitalize, camelize, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
+import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, inject, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, defineComponent as defineComponent$2, mergeProps, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, provide, isReactive, useSSRContext, resolveDynamicComponent, onServerPrefetch, ssrContextKey, resolveComponent, withCtx, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, logError } from "vue";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderVNode, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -839,13 +839,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$g = 0;
+let index$j = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance = getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$g++}`;
+  const id2 = vm.id || `context${index$j++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -970,6 +970,17 @@ const useAttrs = (params = {}) => {
   });
   return { $attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
+function useBooleanAttr(props2, keys) {
+  if (isString(keys)) {
+    keys = [keys];
+  }
+  return keys.reduce((res, key) => {
+    if (props2[key]) {
+      res[key] = true;
+    }
+    return res;
+  }, /* @__PURE__ */ Object.create(null));
+}
 const addListenerToElement = function(element, type, callback, capture) {
   element.addEventListener(
     type,
@@ -1349,7 +1360,7 @@ class UniElement extends Object {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const props$d = { disableScroll: {
+const props$g = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
@@ -1381,7 +1392,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: { MODE: 3 },
-  props: props$d,
+  props: props$g,
   setup(props2, {}) {
     const rootRef = ref(null);
     const canvas = ref(null);
@@ -1397,10 +1408,301 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+function useHover(props2) {
+  const hovering = ref(false);
+  let hoverTouch = false;
+  let hoverStartTimer;
+  let hoverStayTimer;
+  function hoverReset() {
+    requestAnimationFrame(() => {
+      clearTimeout(hoverStayTimer);
+      hoverStayTimer = setTimeout(() => {
+        hovering.value = false;
+      }, parseInt(props2.hoverStayTime));
+    });
+  }
+  function onTouchstartPassive(evt) {
+    if (evt.touches.length > 1) {
+      return;
+    }
+    handleHoverStart(evt);
+  }
+  function onMousedown(evt) {
+    if (hoverTouch) {
+      return;
+    }
+    handleHoverStart(evt);
+    window.addEventListener("mouseup", handlePCHoverEnd);
+  }
+  function handleHoverStart(evt) {
+    if (evt._hoverPropagationStopped) {
+      return;
+    }
+    if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
+      return;
+    }
+    if (props2.hoverStopPropagation) {
+      evt._hoverPropagationStopped = true;
+    }
+    hoverTouch = true;
+    hoverStartTimer = setTimeout(() => {
+      hovering.value = true;
+      if (!hoverTouch) {
+        hoverReset();
+      }
+    }, parseInt(props2.hoverStartTime));
+  }
+  function onTouchend() {
+    handleHoverEnd();
+  }
+  function onMouseup() {
+    if (!hoverTouch) {
+      return;
+    }
+    handlePCHoverEnd();
+  }
+  function handleHoverEnd() {
+    hoverTouch = false;
+    if (hovering.value) {
+      hoverReset();
+    }
+  }
+  function handlePCHoverEnd() {
+    handleHoverEnd();
+    window.removeEventListener("mouseup", handlePCHoverEnd);
+  }
+  function onTouchcancel() {
+    hoverTouch = false;
+    hovering.value = false;
+    clearTimeout(hoverStartTimer);
+  }
+  return {
+    hovering,
+    binding: {
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel)
+    }
+  };
+}
+function useVaporFormField(props2, state) {
+  const form = inject("UNI_FORM_CTX", null);
+  if (!form)
+    return;
+  const initialValue = state.value;
+  const getValue = () => state.value;
+  const reset = () => {
+    state.value = initialValue;
+  };
+  watch(
+    () => props2.name,
+    (name, oldName) => {
+      if (oldName)
+        form.unregisterField(oldName);
+      if (name)
+        form.registerField({ name, getValue, reset });
+    },
+    { immediate: true, flush: "sync" }
+  );
+  onBeforeUnmount(() => {
+    if (props2.name)
+      form.unregisterField(props2.name);
+  });
+}
+function useVaporButton(props2, rootRef) {
+  const form = inject("UNI_FORM_CTX", null);
+  const label = inject("UNI_LABEL_CTX", null);
+  if (label) {
+    const fallbackId = `__uni_vapor_button_${getCurrentInstance().uid}`;
+    const child = {
+      // 只注册一次，读取最新 id，不因改名改变 Label 默认激活的顺序。
+      get id() {
+        return props2.id || fallbackId;
+      },
+      activate() {
+        const root = rootRef.value;
+        if (root && !props2.disabled) {
+          root.click();
+        }
+      },
+      getDisabled() {
+        return !!props2.disabled;
+      }
+    };
+    onMounted(() => label.register(child));
+    onBeforeUnmount(() => label.unregister(child.id));
+  }
+  return form;
+}
+const buttonProps = {
+  id: {
+    type: String,
+    default: ""
+  },
+  hoverClass: {
+    type: String,
+    default: "button-hover"
+  },
+  hoverStartTime: {
+    type: [Number, String],
+    default: 20
+  },
+  hoverStayTime: {
+    type: [Number, String],
+    default: 70
+  },
+  hoverStopPropagation: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  formType: {
+    type: String,
+    default: ""
+  },
+  openType: {
+    type: String,
+    default: ""
+  },
+  loading: {
+    type: [Boolean, String],
+    default: false
+  },
+  plain: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const cacheMap = /* @__PURE__ */ new WeakMap();
+function createVNodeCache(key) {
+  const i = getCurrentInstance();
+  if (i) {
+    if (!cacheMap.has(i))
+      cacheMap.set(i, {});
+    const caches = cacheMap.get(i);
+    return caches[key] || (caches[key] = []);
+  } else {
+    return [];
+  }
+}
+function normalizeVNode(value, flag = 1) {
+  let create = createVNode;
+  let isBlock = false;
+  if (typeof value === "function") {
+    isBlock = true;
+    openBlock();
+    create = createBlock;
+    value = value();
+  }
+  return isVNode(value) ? isBlock ? createBlock(cloneIfMounted(value)) : cloneIfMounted(value) : Array.isArray(value) ? isBlock ? createElementBlock(
+    Fragment,
+    null,
+    value.map((n) => normalizeVNode(() => n)),
+    -2
+  ) : createElementVNode(Fragment, null, value.slice()) : value == null || typeof value === "boolean" ? create(Comment) : create(Text, null, String(value), flag);
+}
+function cloneIfMounted(child) {
+  return child.el === null && child.patchFlag !== -1 || // @ts-ignore
+  child.memo ? child : cloneVNode(child);
+}
+const defineComponent = defineComponent$2;
+defineComponent(
+  (props2, {
+    slots
+  }) => {
+    const defaultSlot = slots.default;
+    return () => (openBlock(true), createElementBlock(
+      Fragment,
+      null,
+      renderList(props2.in, (item, key, index2) => {
+        const result = defaultSlot(item, key, index2);
+        return Array.isArray(result) ? result.length === 1 ? result[0] : normalizeVNode(result) : result;
+      }),
+      128
+    ));
+  },
+  { props: ["in"] }
+);
+class UniButtonElement extends UniElement {
+}
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Button",
+  props: buttonProps,
+  setup(props2, { slots }) {
+    const rootRef = ref(null);
+    const uniForm = useVaporButton(props2, rootRef);
+    const { hovering, binding } = useHover(props2);
+    withWebEvent((e2, isLabelClick) => {
+      if (props2.disabled) {
+        return e2.stopImmediatePropagation();
+      }
+      if (isLabelClick) {
+        rootRef.value.click();
+      }
+      const formType = props2.formType;
+      if (formType) {
+        if (!uniForm) {
+          return;
+        }
+        if (formType === "submit") {
+          uniForm.submit(e2);
+        } else if (formType === "reset") {
+          uniForm.reset(e2);
+        }
+        return;
+      }
+    });
+    return () => {
+      const hoverClass = props2.hoverClass;
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
+      const loadingAttrs = useBooleanAttr(props2, "loading");
+      const plainAttrs = useBooleanAttr(props2, "plain");
+      const hasHoverClass = hoverClass && hoverClass !== "none";
+      return openBlock(), createBlock("uni-button", mergeProps({
+        ref: rootRef,
+        id: props2.id,
+        class: hasHoverClass && hovering.value ? hoverClass : ""
+      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [normalizeVNode(() => slots.default && slots.default())], 16);
+    };
+  }
+});
+function throttle(fn, wait) {
+  let last = 0;
+  let timeout;
+  let waitCallback;
+  const newFn = function(...arg) {
+    const now = Date.now();
+    clearTimeout(timeout);
+    waitCallback = () => {
+      waitCallback = null;
+      last = now;
+      fn.apply(this, arg);
+    };
+    if (now - last < wait) {
+      timeout = setTimeout(waitCallback, wait - (now - last));
+      return;
+    }
+    waitCallback();
+  };
+  newFn.cancel = function() {
+    clearTimeout(timeout);
+    waitCallback = null;
+  };
+  newFn.flush = function() {
+    clearTimeout(timeout);
+    waitCallback && waitCallback();
+  };
+  return newFn;
+}
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$c = {
+const props$f = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -1418,7 +1720,7 @@ const props$c = {
     default: false
   }
 };
-const emit = ["keyboardheightchange"];
+const emit$1 = ["keyboardheightchange"];
 function useKeyboard(props2, elRef, trigger) {
   function initKeyboard(el) {
     const isApple2 = computed(
@@ -1449,6 +1751,778 @@ function useKeyboard(props2, elRef, trigger) {
     (el) => el && initKeyboard(el)
   );
 }
+function useScopedAttrs() {
+  const state = reactive({
+    attrs: {}
+  });
+  onMounted(() => {
+    let instance = getCurrentInstance();
+    while (instance) {
+      const scopeId = instance.type.__scopeId;
+      if (scopeId) {
+        state.attrs[scopeId] = "";
+      }
+      instance = instance.proxy && instance.proxy.$mpType === "page" ? null : instance.parent;
+    }
+  });
+  return {
+    state
+  };
+}
+function getSelectedTextRange(_, resolve) {
+  const activeElement = document.activeElement;
+  if (!activeElement) {
+    return resolve({});
+  }
+  const data = {};
+  if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
+    data.start = activeElement.selectionStart;
+    data.end = activeElement.selectionEnd;
+  }
+  resolve(data);
+}
+const UniViewJSBridgeSubscribe = function() {
+  registerViewMethod(
+    getCurrentPageId(),
+    "getSelectedTextRange",
+    getSelectedTextRange
+  );
+};
+function getValueString(value, type, maxlength) {
+  if (type === "number" && isNaN(Number(value))) {
+    value = "";
+  }
+  const valueStr = value === null || value === void 0 ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
+  }
+  return valueStr.slice(0, maxlength);
+}
+const INPUT_MODES = [
+  "none",
+  "text",
+  "decimal",
+  "numeric",
+  "tel",
+  "search",
+  "email",
+  "url"
+];
+const props$e = /* @__PURE__ */ extend(
+  {},
+  {
+    name: {
+      type: String,
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number]
+    },
+    value: {
+      type: [String, Number]
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
+    autoFocus: {
+      type: [Boolean, String],
+      default: false
+    },
+    focus: {
+      type: [Boolean, String],
+      default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
+    },
+    type: {
+      type: String,
+      default: "text"
+    },
+    password: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    placeholderStyle: {
+      type: String,
+      default: ""
+    },
+    placeholderClass: {
+      type: String,
+      default: ""
+    },
+    maxlength: {
+      type: [Number, String],
+      default: Infinity
+    },
+    confirmType: {
+      type: String,
+      default: "done"
+    },
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    step: {
+      type: String,
+      default: "0.000000000000000001"
+    },
+    inputmode: {
+      type: String,
+      default: void 0,
+      validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
+    }
+  },
+  props$f
+);
+const emit = [
+  "input",
+  "focus",
+  "blur",
+  "update:value",
+  "update:modelValue",
+  "update:focus",
+  "compositionstart",
+  "compositionupdate",
+  "compositionend",
+  ...emit$1
+];
+function useBase(props2, rootRef, emit2) {
+  const fieldRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const selectionStart = computed(() => {
+    const selectionStart2 = Number(props2.selectionStart);
+    return isNaN(selectionStart2) ? -1 : selectionStart2;
+  });
+  const selectionEnd = computed(() => {
+    const selectionEnd2 = Number(props2.selectionEnd);
+    return isNaN(selectionEnd2) ? -1 : selectionEnd2;
+  });
+  const cursor = computed(() => {
+    const cursor2 = Number(props2.cursor);
+    return isNaN(cursor2) ? -1 : cursor2;
+  });
+  const maxlength = computed(() => {
+    var maxlength2 = Number(props2.maxlength);
+    {
+      return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
+    }
+  });
+  let value = "";
+  {
+    const modelValueString = getValueString(
+      props2.modelValue,
+      props2.type,
+      maxlength.value
+    );
+    const valueString = getValueString(props2.value, props2.type, maxlength.value);
+    value = props2.modelValue !== void 0 ? modelValueString !== null && modelValueString !== void 0 ? modelValueString : valueString : valueString;
+  }
+  const state = reactive({
+    value,
+    valueOrigin: value,
+    maxlength,
+    focus: props2.focus,
+    composing: false,
+    selectionStart,
+    selectionEnd,
+    cursor
+  });
+  watch(
+    () => state.focus,
+    (val) => emit2("update:focus", val)
+  );
+  watch(
+    () => state.maxlength,
+    (val) => {
+      if (val >= 0) {
+        state.value = state.value.slice(0, val);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  return {
+    fieldRef,
+    state,
+    trigger
+  };
+}
+function useValueSync(props2, state, emit2, trigger, fieldRef) {
+  let valueChangeFn = null;
+  {
+    valueChangeFn = throttle((val) => {
+      state.value = getValueString(val, props2.type, state.maxlength);
+    }, 100);
+  }
+  watch(() => props2.modelValue, valueChangeFn);
+  watch(() => props2.value, valueChangeFn);
+  const triggerInputFn = throttle((event, detail) => {
+    valueChangeFn.cancel();
+    emit2("update:modelValue", detail.value);
+    emit2("update:value", detail.value);
+    trigger("input", event, detail);
+  }, 100);
+  const triggerInput = (event, detail, force) => {
+    valueChangeFn.cancel();
+    detail.value;
+    triggerInputFn(event, detail);
+    if (force) {
+      triggerInputFn.flush();
+    }
+  };
+  onBeforeMount(() => {
+    valueChangeFn.cancel();
+    triggerInputFn.cancel();
+  });
+  return {
+    trigger,
+    triggerInput
+  };
+}
+function useAutoFocus(props2, fieldRef) {
+  useUserAction();
+  const needFocus = computed(() => props2.autoFocus || props2.focus);
+  function focus() {
+    if (!needFocus.value) {
+      return;
+    }
+    const field = fieldRef.value;
+    if (!field || false) {
+      setTimeout(focus, 100);
+      return;
+    }
+    {
+      field.focus();
+    }
+  }
+  function blur() {
+    const field = fieldRef.value;
+    if (field) {
+      field.blur();
+    }
+  }
+  watch(
+    () => props2.focus,
+    (value) => {
+      if (value) {
+        focus();
+      } else {
+        blur();
+      }
+    }
+  );
+  onMounted(() => {
+    if (needFocus.value) {
+      nextTick(focus);
+    }
+  });
+}
+function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
+  function checkSelection() {
+    const field = fieldRef.value;
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
+      field.selectionStart = state.selectionStart;
+      field.selectionEnd = state.selectionEnd;
+    }
+  }
+  function checkCursor() {
+    const field = fieldRef.value;
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && typeof field.selectionStart === "number") {
+      field.selectionEnd = field.selectionStart = state.cursor;
+    }
+  }
+  function getFieldSelectionEnd(field) {
+    if (field.type === "number") {
+      return null;
+    } else {
+      return field.selectionEnd;
+    }
+  }
+  function initField() {
+    const field = fieldRef.value;
+    if (!field)
+      return;
+    const onFocus = function(event) {
+      state.focus = true;
+      trigger("focus", event, {
+        value: state.value
+      });
+      checkSelection();
+      checkCursor();
+    };
+    const onInput = function(event, force) {
+      event.stopPropagation();
+      if (isFunction(beforeInput) && beforeInput(event, state) === false) {
+        return;
+      }
+      state.value = field.value;
+      if (!state.composing || !props2.ignoreCompositionEvent) {
+        triggerInput(
+          event,
+          {
+            value: field.value,
+            cursor: getFieldSelectionEnd(field)
+          },
+          force
+        );
+      }
+    };
+    const onBlur = function(event) {
+      if (state.composing) {
+        state.composing = false;
+        onInput(event, true);
+      }
+      state.focus = false;
+      trigger("blur", event, {
+        value: state.value,
+        cursor: getFieldSelectionEnd(event.target)
+      });
+    };
+    field.addEventListener("change", (event) => event.stopPropagation());
+    field.addEventListener("focus", onFocus);
+    field.addEventListener("blur", onBlur);
+    field.addEventListener("input", onInput);
+    field.addEventListener("compositionstart", (event) => {
+      event.stopPropagation();
+      state.composing = true;
+      _onComposition(event);
+    });
+    field.addEventListener("compositionend", (event) => {
+      event.stopPropagation();
+      if (state.composing) {
+        state.composing = false;
+        onInput(event);
+      }
+      _onComposition(event);
+    });
+    field.addEventListener("compositionupdate", _onComposition);
+    function _onComposition(event) {
+      if (!props2.ignoreCompositionEvent) {
+        trigger(event.type, event, {
+          value: event.data
+        });
+      }
+    }
+  }
+  watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
+  watch(() => state.cursor, checkCursor);
+  watch(() => fieldRef.value, initField);
+}
+function useField(props2, rootRef, emit2, beforeInput) {
+  UniViewJSBridgeSubscribe();
+  const { fieldRef, state, trigger } = useBase(props2, rootRef, emit2);
+  const { triggerInput } = useValueSync(props2, state, emit2, trigger);
+  useAutoFocus(props2, fieldRef);
+  useKeyboard(props2, fieldRef);
+  const { state: scopedAttrsState } = useScopedAttrs();
+  useVaporFormField(props2, state);
+  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput);
+  const fixDisabledColor = false;
+  return {
+    fieldRef,
+    state,
+    scopedAttrsState,
+    fixDisabledColor,
+    trigger
+  };
+}
+once(() => {
+});
+const _hoisted_1$5 = { class: "uni-input-wrapper" };
+const props$d = /* @__PURE__ */ extend({}, props$e, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  textContentType: {
+    type: String,
+    default: ""
+  }
+});
+function useCache(props2, type) {
+  if (type.value === "number") {
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
+    const cache = ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
+    watch(() => props2.modelValue, (value2) => {
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+    });
+    watch(() => props2.value, (value2) => {
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+    });
+    return cache;
+  } else {
+    return ref("");
+  }
+}
+class UniInputElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+}
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$d,
+  emits: ["confirm", ...emit],
+  setup(props2, { emit: emit2, expose }) {
+    const INPUT_TYPES = [
+      "text",
+      "number",
+      "idcard",
+      "digit",
+      "password",
+      "tel",
+      "search",
+      "email"
+    ];
+    const AUTOCOMPLETES = ["off", "one-time-code"];
+    const type = computed(() => {
+      let type2 = "";
+      switch (props2.type) {
+        case "text":
+          type2 = "text";
+          if (props2.confirmType === "search") {
+            type2 = "search";
+          }
+          break;
+        case "idcard":
+          type2 = "text";
+          break;
+        case "digit":
+          type2 = "number";
+          break;
+        case "none":
+          type2 = "text";
+          break;
+        default:
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          break;
+      }
+      return props2.password ? "password" : type2;
+    });
+    const autocomplete = computed(() => {
+      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+      const kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
+      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+      return AUTOCOMPLETES[index2];
+    });
+    const inputmode = computed(() => {
+      if (props2.inputmode !== void 0) {
+        return props2.inputmode;
+      }
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
+      }
+      let inputmodeMap = {};
+      {
+        inputmodeMap = {
+          number: "numeric",
+          digit: "decimal",
+          idcard: "text"
+        };
+      }
+      return inputmodeMap[props2.type];
+    });
+    let cache = useCache(props2, type);
+    const rootRef = ref(null);
+    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
+      {
+        return;
+      }
+    });
+    watch(() => state.value, (value) => {
+      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
+        cache.value = value.toString();
+      }
+    });
+    watch(() => props2.maxlength, (length) => {
+      length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
+      const realValue = state.value.slice(0, length);
+      realValue !== state.value && (state.value = realValue);
+    });
+    const NUMBER_TYPES = ["number", "digit"];
+    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
+    expose({ $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
+    } });
+    return () => {
+      let inputNode = props2.disabled && fixDisabledColor ? (openBlock(), createBlock("input", {
+        key: "disabled-input",
+        ref: fieldRef,
+        value: state.value,
+        tabindex: "-1",
+        readonly: !!props2.disabled,
+        type: type.value,
+        maxlength: state.maxlength,
+        step: step.value,
+        class: "uni-input-input",
+        style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
+        inputmode: inputmode.value
+      }, null, 512)) : (openBlock(), createBlock("input", {
+        key: "input",
+        ref: fieldRef,
+        value: state.value,
+        disabled: !!props2.disabled,
+        type: type.value,
+        maxlength: state.maxlength,
+        step: step.value,
+        enterkeyhint: props2.confirmType,
+        pattern: props2.type === "number" ? "[0-9]*" : void 0,
+        class: "uni-input-input",
+        style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
+        autocomplete: autocomplete.value,
+        inputmode: inputmode.value
+      }, null, 512));
+      return openBlock(), createBlock("uni-input", { ref: rootRef }, [createVNode("div", _hoisted_1$5, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        style: props2.placeholderStyle,
+        class: ["uni-input-placeholder", props2.placeholderClass]
+      }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? (openBlock(), createBlock("form", {
+        key: 0,
+        action: "",
+        novalidate: true,
+        class: "uni-input-form"
+      }, [normalizeVNode(() => inputNode)])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => inputNode)], 64))])], 512);
+    };
+  }
+});
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: { initial: {
+    type: Boolean,
+    default: false
+  } },
+  emits: ["resize"],
+  setup(props2, { emit: emit2 }) {
+    const rootRef = ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    useResizeSensorLifecycle(rootRef, props2, update, reset);
+    return () => (() => {
+      const _cache = createVNodeCache("c61bbd7f");
+      return openBlock(), createBlock("uni-resize-sensor", { ref: rootRef }, [..._cache[0] || (_cache[0] = [createVNode("div", null, [createVNode("div")], -1), createVNode("div", null, [createVNode("div")], -1)])], 512);
+    })();
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = reactive({
+    width: -1,
+    height: -1
+  });
+  watch(() => extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const { firstElementChild, lastElementChild } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
+function useResizeSensorLifecycle(rootRef, props2, update, reset) {
+  onActivated(reset);
+  onMounted(() => {
+    if (props2.initial) {
+      nextTick(update);
+    }
+    const rootEl = rootRef.value;
+    if (rootEl.offsetParent !== rootEl.parentElement) {
+      rootEl.parentElement.style.position = "relative";
+    }
+    if (!("AnimationEvent" in window)) {
+      reset();
+    }
+  });
+}
+const props$c = /* @__PURE__ */ extend({}, props$e, {
+  placeholderClass: {
+    type: String,
+    default: "input-placeholder"
+  },
+  autoHeight: {
+    type: [Boolean, String],
+    default: false
+  },
+  confirmType: {
+    type: String,
+    default: "return",
+    validator(val) {
+      return ConfirmTypes.concat("return").includes(val);
+    }
+  }
+});
+let fixMargin = false;
+const ConfirmTypes = [
+  "done",
+  "go",
+  "next",
+  "search",
+  "send"
+];
+function setFixMargin() {
+  fixMargin = false;
+}
+class UniTextareaElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
+  }
+}
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$c,
+  emits: [
+    "confirm",
+    "change",
+    "linechange",
+    ...emit
+  ],
+  setup(props2, { emit: emit2, expose }) {
+    const rootRef = ref(null);
+    const wrapperRef = ref(null);
+    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+    const valueCompute = computed(() => state.value.split(LINEFEED));
+    computed(() => ConfirmTypes.includes(props2.confirmType));
+    const heightRef = ref(0);
+    const lineRef = ref(null);
+    watch(() => heightRef.value, (height) => {
+      const el = rootRef.value;
+      const lineEl = lineRef.value;
+      const wrapper = wrapperRef.value;
+      let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+      if (isNaN(lineHeight)) {
+        lineHeight = lineEl.offsetHeight;
+      }
+      var lineCount = Math.round(height / lineHeight);
+      trigger("linechange", {}, {
+        height,
+        heightRpx: 750 / window.innerWidth * height,
+        lineCount
+      });
+      if (props2.autoHeight) {
+        wrapper.style.height = height + "px";
+      }
+    });
+    watch(() => props2.autoHeight, (autoHeight) => {
+      const wrapper = wrapperRef.value;
+      if (autoHeight) {
+        wrapper.style.height = heightRef.value + "px";
+      } else {
+        wrapper.style.height = "";
+      }
+    });
+    {
+      onMounted(setFixMargin);
+    }
+    expose({ $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
+    } });
+    return () => {
+      let textareaNode = props2.disabled && fixDisabledColor ? (openBlock(), createBlock("textarea", {
+        key: "disabled-textarea",
+        ref: fieldRef,
+        value: state.value,
+        tabindex: "-1",
+        readonly: !!props2.disabled,
+        maxlength: state.maxlength,
+        class: {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        style: {
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && { caretColor: props2.cursorColor }
+        }
+      }, null, 512)) : (openBlock(), createBlock("textarea", {
+        key: "textarea",
+        ref: fieldRef,
+        value: state.value,
+        disabled: !!props2.disabled,
+        maxlength: state.maxlength,
+        enterkeyhint: props2.confirmType,
+        inputmode: props2.inputmode,
+        class: {
+          "uni-textarea-textarea": true,
+          "uni-textarea-textarea-fix-margin": fixMargin
+        },
+        style: {
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && { caretColor: props2.cursorColor }
+        }
+      }, null, 512));
+      return openBlock(), createBlock("uni-textarea", {
+        ref: rootRef,
+        "auto-height": props2.autoHeight
+      }, [createVNode("div", {
+        ref: wrapperRef,
+        class: "uni-textarea-wrapper"
+      }, [
+        withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          style: props2.placeholderStyle,
+          class: ["uni-textarea-placeholder", props2.placeholderClass]
+        }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !state.value.length]]),
+        createVNode("div", {
+          ref: lineRef,
+          class: "uni-textarea-line"
+        }, " ", 512),
+        createVNode("div", { class: {
+          "uni-textarea-compute": true,
+          "uni-textarea-compute-auto-height": props2.autoHeight
+        } }, [normalizeVNode(() => valueCompute.value.map((item) => (openBlock(), createBlock("div", null, [item.trim() ? (openBlock(), createBlock(Fragment, { key: 0 }, [normalizeVNode(() => item)], 64)) : normalizeVNode(() => ".")])))), createVNode(ResizeSensor, { initial: true })]),
+        props2.confirmType === "search" ? (openBlock(), createBlock("form", {
+          key: 0,
+          action: "",
+          class: "uni-input-form"
+        }, [normalizeVNode(() => textareaNode)])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => textareaNode)], 64))
+      ], 512)], 512);
+    };
+  }
+});
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
   return inject(pageMetaKey);
@@ -5801,7 +6875,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$b = /* @__PURE__ */ extend({}, props$c, {
+const props$b = /* @__PURE__ */ extend({}, props$f, {
   id: {
     type: String,
     default: ""
@@ -5842,7 +6916,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     "blur",
     "input",
     "statuschange",
-    ...emit
+    ...emit$1
   ],
   setup(props2, { emit: emit2 }) {
     const rootRef = ref(null);
@@ -5858,56 +6932,6 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const cacheMap = /* @__PURE__ */ new WeakMap();
-function createVNodeCache(key) {
-  const i = getCurrentInstance();
-  if (i) {
-    if (!cacheMap.has(i))
-      cacheMap.set(i, {});
-    const caches = cacheMap.get(i);
-    return caches[key] || (caches[key] = []);
-  } else {
-    return [];
-  }
-}
-function normalizeVNode(value, flag = 1) {
-  let create = createVNode;
-  let isBlock = false;
-  if (typeof value === "function") {
-    isBlock = true;
-    openBlock();
-    create = createBlock;
-    value = value();
-  }
-  return isVNode(value) ? isBlock ? createBlock(cloneIfMounted(value)) : cloneIfMounted(value) : Array.isArray(value) ? isBlock ? createElementBlock(
-    Fragment,
-    null,
-    value.map((n) => normalizeVNode(() => n)),
-    -2
-  ) : createElementVNode(Fragment, null, value.slice()) : value == null || typeof value === "boolean" ? create(Comment) : create(Text, null, String(value), flag);
-}
-function cloneIfMounted(child) {
-  return child.el === null && child.patchFlag !== -1 || // @ts-ignore
-  child.memo ? child : cloneVNode(child);
-}
-const defineComponent = defineComponent$2;
-defineComponent(
-  (props2, {
-    slots
-  }) => {
-    const defaultSlot = slots.default;
-    return () => (openBlock(true), createElementBlock(
-      Fragment,
-      null,
-      renderList(props2.in, (item, key, index2) => {
-        const result = defaultSlot(item, key, index2);
-        return Array.isArray(result) ? result.length === 1 ? result[0] : normalizeVNode(result) : result;
-      }),
-      128
-    ));
-  },
-  { props: ["in"] }
-);
 const INFO_COLOR = "#10aeff";
 const WARN_COLOR = "#f76260";
 const GREY_COLOR = "#b2b2b2";
@@ -5977,64 +7001,6 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: { initial: {
-    type: Boolean,
-    default: false
-  } },
-  emits: ["resize"],
-  setup(props2, { emit: emit2 }) {
-    const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => (() => {
-      const _cache = createVNodeCache("c61bbd7f");
-      return openBlock(), createBlock("uni-resize-sensor", { ref: rootRef }, [..._cache[0] || (_cache[0] = [createVNode("div", null, [createVNode("div")], -1), createVNode("div", null, [createVNode("div")], -1)])], 512);
-    })();
-  }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({
-    width: -1,
-    height: -1
-  });
-  watch(() => extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
-    const rect = rootEl.getBoundingClientRect();
-    size.width = rect.width;
-    size.height = rect.height;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const { firstElementChild, lastElementChild } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-function useResizeSensorLifecycle(rootRef, props2, update, reset) {
-  onActivated(reset);
-  onMounted(() => {
-    if (props2.initial) {
-      nextTick(update);
-    }
-    const rootEl = rootRef.value;
-    if (rootEl.offsetParent !== rootEl.parentElement) {
-      rootEl.parentElement.style.position = "relative";
-    }
-    if (!("AnimationEvent" in window)) {
-      reset();
-    }
-  });
-}
 function useMovableAreaChildren$1(rootRef, slots, setContexts) {
   const contexts = [];
   setContexts(contexts);
@@ -15560,6 +16526,7 @@ export {
   index$4 as AdDraw,
   _sfc_main$m as AsyncErrorComponent,
   _sfc_main$n as AsyncLoadingComponent,
+  index$i as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
   _sfc_main$f as Checkbox,
@@ -15569,6 +16536,7 @@ export {
   index$f as Editor,
   _sfc_main$d as Form,
   index$e as Icon,
+  index$h as Input,
   _sfc_main$c as Label,
   _sfc_main$o as LayoutComponent,
   index$2 as LivePlayer,
@@ -15594,9 +16562,12 @@ export {
   _sfc_main$2 as Swiper,
   _sfc_main$1 as SwiperItem,
   _sfc_main as Switch,
+  index$g as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
+  UniButtonElement,
+  UniButtonElement as UniButtonElementImpl,
   UniCanvasElement,
   UniCanvasElement as UniCanvasElementImpl,
   UniCheckboxElement,
@@ -15614,6 +16585,8 @@ export {
   UniIconElement as UniIconElementImpl,
   UniImageElement,
   UniImageElement as UniImageElementImpl,
+  UniInputElement,
+  UniInputElement as UniInputElementImpl,
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
   UniMatchMediaElement,
@@ -15653,6 +16626,8 @@ export {
   UniSwitchElement as UniSwitchElementImpl,
   UniTextElement,
   UniTextElement as UniTextElementImpl,
+  UniTextareaElement,
+  UniTextareaElement as UniTextareaElementImpl,
   UniViewElement,
   UniViewElement as UniViewElementImpl,
   UniViewJSBridge$1 as UniViewJSBridge,

@@ -21867,7 +21867,8 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   getTransitionType?: (this: VaporFragment) => any;
   /** @internal live transition element of the backing vnode's subtree */
   getTransitionElement?: (this: VaporFragment) => Element | undefined;
-  /** beforeMount: a fresh branch is rendered but not inserted yet */
+  /** beforeMount: a fresh branch carries its transition hooks but is not
+   * inserted yet */
   bm?: ((nodes: Block) => void)[];
   /** beforeUnmount */
   bum?: (() => void)[];
@@ -21900,6 +21901,7 @@ declare class DynamicFragment extends RenderContextFragment {
     key: any;
     noScope: boolean;
     branchKey?: any;
+    prevKey: any;
   };
   anchorLabel?: string;
   keyed?: boolean;
@@ -21922,6 +21924,7 @@ declare function isFragment(val: unknown): val is VaporFragment;
 interface VaporTransitionState extends TransitionState {
   root?: Block;
   persisted?: boolean;
+  refresh?: (hooks: VaporTransitionHooks) => void;
 }
 interface VaporTransitionHooks extends TransitionHooks {
   __vapor: true;
@@ -21930,10 +21933,15 @@ interface VaporTransitionHooks extends TransitionHooks {
   instance: VaporComponentInstance;
   applyGroup?: (block: Block, props: TransitionProps, state: TransitionState, instance: VaporComponentInstance) => void;
 }
+declare const enum VShowFlags {
+  APPLIED = 1,
+  TARGET = 2,
+  MOUNT_SHOWN = 4
+}
 interface TransitionOptions {
   $key?: any;
   $transition?: VaporTransitionHooks;
-  $vshow?: true;
+  $vshow?: VShowFlags;
 }
 type Block = Node | VaporFragment | DynamicFragment | VaporComponentInstance | Block[];
 type BlockFn = (...args: any[]) => Block;
@@ -21972,9 +21980,11 @@ declare function createSlot(name?: string | (() => string), rawProps?: LooseRawP
 declare const interopKey: unique symbol;
 //#endregion
 //#region packages/runtime-vapor/src/componentProps.d.ts
+declare const fallthroughOnlyKey: unique symbol;
 type RawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
   [interopKey]?: boolean;
+  [fallthroughOnlyKey]?: boolean;
 };
 type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, unknown>;
 //#endregion
@@ -22113,6 +22123,8 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   slotScopeIds?: string[] | null;
   applyCssVars?: (nodes: Block) => void;
   cssVarOutlets?: VaporFragment[];
+  selectUpdates?: Set<() => void>;
+  selectUpdateJob?: SchedulerJob;
   interopVNode?: VNode;
   rawSlotsRef?: ShallowRef<any>;
   emit: EmitFn<Emits>;
@@ -22162,6 +22174,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   emitsOptions?: ObjectEmitsOptions | null;
   isSingleRoot?: boolean;
   renderScope?: EffectScope;
+  hmrRootHooks?: ((block: Block) => void)[];
   /**
    * dev only flag to track whether $attrs was used during render.
    * If $attrs was used during render then the warning for failed attrs
@@ -22351,6 +22364,12 @@ type TargetElement = Element & {
   $sty?: NormalizedStyle | string | undefined;
   value?: string;
   _value?: any;
+  $valueBound?: boolean;
+  $dprops?: Record<string, any>;
+  /**
+   * @internal
+   */
+  _valueDep?: Dep;
 };
 declare function setProp(el: any, key: string, value: any): void;
 declare function setAttr(el: any, key: string, value: any, isSVG?: boolean, forceHydrate?: boolean): void;
@@ -22376,6 +22395,7 @@ declare function setElementText(el: Node & {
 }, value: unknown, forceHydrate?: boolean): void;
 declare function setHtml(el: TargetElement, value: any, forceHydrate?: boolean): void;
 declare function setDynamicProps(el: any, args: any[], staticKeys?: string[], isSVG?: boolean): void;
+declare function syncSelectValue(el: TargetElement, staticKeys?: string[]): void;
 declare function setDynamicEvents(el: HTMLElement, events: Record<string, EventHandlerValue>): void;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateIf.d.ts
@@ -22430,7 +22450,7 @@ declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
  * (`bm` hooks; `u` for vdom-owned interop content), and teleports are written
  * directly as outlets since their content leaves the chain.
  */
-declare function useVaporCssVars(getter: () => Record<string, string>): void;
+declare function useVaporCssVars(getter: (ctx: any) => Record<string, string>): void;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/setKey.d.ts
 declare function setBlockKey(block: Exclude<Block, Block[]> & {
@@ -22465,7 +22485,7 @@ declare const VaporTransition: FunctionalVaporComponent<TransitionProps>;
 //#region packages/runtime-vapor/src/components/TransitionGroup.d.ts
 declare const VaporTransitionGroup: DefineVaporComponent<{}, string, TransitionGroupProps>;
 declare namespace index_d_exports {
-  export { Block, DefineVaporComponent, DefineVaporSetupFnComponent, DynamicFragment, FunctionalVaporComponent, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createAssetComponent, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createInvoker, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, extend, getDefaultValue, getRestElement, insert, isFragment, isVaporComponent, next, nthChild, on, onBinding, remove, renderEffect, setAttr, setBlockKey, setClass, setClassName, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setListener, setProp, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setValue, template, txt, unmountComponent, useVaporCssVars, vaporInteropPlugin, withOnce, withVaporCtx, withVaporDirectives, withVaporKeys, withVaporModifiers };
+  export { Block, DefineVaporComponent, DefineVaporSetupFnComponent, DynamicFragment, FunctionalVaporComponent, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createAssetComponent, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createInvoker, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, extend, getDefaultValue, getRestElement, insert, isFragment, isVaporComponent, next, nthChild, on, onBinding, remove, renderEffect, setAttr, setBlockKey, setClass, setClassName, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setListener, setProp, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setValue, syncSelectValue, template, txt, unmountComponent, useVaporCssVars, vaporInteropPlugin, withOnce, withVaporCtx, withVaporDirectives, withVaporKeys, withVaporModifiers };
 }
 //#endregion
 //#region temp/packages/compiler-vapor/src/ir/component.d.ts
@@ -22543,21 +22563,22 @@ export declare enum IRNodeTypes {
   SET_BLOCK_KEY = 2,
   SET_PROP = 3,
   SET_DYNAMIC_PROPS = 4,
-  SET_TEXT = 5,
-  SET_EVENT = 6,
-  SET_DYNAMIC_EVENTS = 7,
-  SET_HTML = 8,
-  SET_TEMPLATE_REF = 9,
-  INSERT_NODE = 10,
-  CREATE_COMPONENT_NODE = 11,
-  SLOT_OUTLET_NODE = 12,
-  DIRECTIVE = 13,
-  IF = 14,
-  FOR = 15,
-  KEY = 16,
-  GET_TEXT_CHILD = 17,
-  GET_INSERTION_PARENT = 18,
-  SET_CHANGE_PROP = 19
+  SYNC_SELECT_VALUE = 5,
+  SET_TEXT = 6,
+  SET_EVENT = 7,
+  SET_DYNAMIC_EVENTS = 8,
+  SET_HTML = 9,
+  SET_TEMPLATE_REF = 10,
+  INSERT_NODE = 11,
+  CREATE_COMPONENT_NODE = 12,
+  SLOT_OUTLET_NODE = 13,
+  DIRECTIVE = 14,
+  IF = 15,
+  FOR = 16,
+  KEY = 17,
+  GET_TEXT_CHILD = 18,
+  GET_INSERTION_PARENT = 19,
+  SET_CHANGE_PROP = 20
 }
 export interface BaseIRNode {
   type: IRNodeTypes;
@@ -22664,6 +22685,7 @@ export interface SetPropIRNode extends BaseIRNode {
   isSVG: boolean;
   /** Whether it's in effect; only a listener key (`onXxx`) needs to know */
   effect?: boolean;
+  once?: boolean;
 }
 export interface SetDynamicPropsIRNode extends BaseIRNode {
   type: IRNodeTypes.SET_DYNAMIC_PROPS;
@@ -22681,6 +22703,12 @@ export interface SetDynamicPropsIRNode extends BaseIRNode {
   isSVG: boolean;
   /** Merged listeners deferred until after same-element v-model. */
   listeners?: boolean;
+  once?: boolean;
+}
+export interface SyncSelectValueIRNode extends BaseIRNode {
+  type: IRNodeTypes.SYNC_SELECT_VALUE;
+  element: number;
+  props: IRProps[];
 }
 export interface SetDynamicEventsIRNode extends BaseIRNode {
   type: IRNodeTypes.SET_DYNAMIC_EVENTS;
@@ -22744,6 +22772,7 @@ export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary, Inser
   type: IRNodeTypes.CREATE_COMPONENT_NODE;
   id: number;
   tag: string;
+  slotScopeNamespace?: string;
   props: IRProps[];
   slots: IRSlots[];
   asset: boolean;
@@ -22785,7 +22814,7 @@ export interface SetChangePropIRNode extends BaseIRNode {
   prop: IRProp;
 }
 export type IRNode = OperationNode | RootIRNode;
-export type OperationNode = SetBlockKeyIRNode | SetPropIRNode | SetDynamicPropsIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | KeyIRNode | CreateComponentIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode | SetChangePropIRNode;
+export type OperationNode = SetBlockKeyIRNode | SetPropIRNode | SetDynamicPropsIRNode | SyncSelectValueIRNode | SetTextIRNode | SetEventIRNode | SetDynamicEventsIRNode | SetHtmlIRNode | SetTemplateRefIRNode | InsertNodeIRNode | DirectiveIRNode | IfIRNode | ForIRNode | KeyIRNode | CreateComponentIRNode | SlotOutletIRNode | GetTextChildIRNode | GetInsertionParentIRNode | SetChangePropIRNode;
 export declare enum DynamicFlag {
   NONE = 0,
   /**
@@ -22939,7 +22968,6 @@ export declare class CodegenContext {
   expressionReplacements: Map<SimpleExpressionNode, SimpleExpressionNode>[];
   withExpressionReplacements<T>(map: Map<SimpleExpressionNode, SimpleExpressionNode>, fn: () => T): T;
   getExpressionReplacement(node: SimpleExpressionNode): SimpleExpressionNode;
-  seenInlineHandlerNames: Record<string, number>;
   block: BlockIRNode;
   withId<T>(fn: () => T, map: Record<string, string | SimpleExpressionNode | null>): T;
   enterBlock(block: BlockIRNode): () => BlockIRNode;
@@ -23009,7 +23037,9 @@ export declare function createVaporCompilerError(code: VaporErrorCodes, loc?: So
 export declare enum VaporErrorCodes {
   X_V_PLACEHOLDER = 100,
   X_DYNAMIC_FLATTEN_NOT_SUPPORTED = 101,
-  __EXTEND_POINT__ = 102
+  X_V_MEMO_NOT_SUPPORTED = 102,
+  X_VNODE_HOOKS_NOT_SUPPORTED = 103,
+  __EXTEND_POINT__ = 104
 }
 export declare const VaporErrorMessages: Record<VaporErrorCodes, string>;
 //#endregion
@@ -23066,7 +23096,7 @@ export declare const transformVSlot: NodeTransform;
 //#endregion
 //#region temp/packages/compiler-vapor/src/utils.d.ts
 export declare function propToExpression(prop: AttributeNode | VaporDirectiveNode): SimpleExpressionNode | undefined;
-export declare function isConstantExpression(exp: SimpleExpressionNode): boolean;
+export declare function isConstantExpression(exp: SimpleExpressionNode, bindings?: BindingMetadata): boolean;
 export declare function isStaticExpression(node: SimpleExpressionNode, bindings: BindingMetadata): boolean;
 export declare function parseStaticAttrBooleanExpression(exp: SimpleExpressionNode): boolean | null;
 export declare function getLiteralExpressionValue(exp: SimpleExpressionNode, excludeNumber?: boolean): string | null;
