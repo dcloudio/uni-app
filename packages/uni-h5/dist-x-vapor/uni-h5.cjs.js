@@ -965,13 +965,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$k = 0;
+let index$j = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$k++}`;
+  const id2 = vm.id || `context${index$j++}`;
   return `${type}.${id2}`;
 }
 function withWebEvent(fn) {
@@ -1634,7 +1634,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -2192,7 +2192,7 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$d,
   emits: ["confirm", ...emit],
@@ -5703,7 +5703,6 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
       };
       return { focus, text, composing, onFocus, onBlur, onInput, onConfirm };
     }
-    const _component_Input = Vue.resolveComponent("Input");
     const n64 = Vue.createPlainElement("uni-page-head", { "uni-page-head-type": () => Vue.unref(navigationBar).type || "default" }, null, true);
     Vue.setInsertionState(n64);
     const n60 = t10();
@@ -5875,7 +5874,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
-            const n39 = Vue.withComponentId("b1ddc730", () => Vue.createComponentWithFallback(_component_Input, {
+            const n39 = Vue.withComponentId("b1ddc730", () => Vue.createComponent(Vue.unref(Input), {
               disabled: true,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -5890,7 +5889,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
             const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
             const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
             const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
-            const n41 = Vue.withComponentId("b1dda8bc", () => Vue.createComponentWithFallback(_component_Input, {
+            const n41 = Vue.withComponentId("b1dda8bc", () => Vue.createComponent(Vue.unref(Input), {
               focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -14884,7 +14883,7 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$m;
 exports.AsyncLoadingComponent = _sfc_main$n;
-exports.Button = index$j;
+exports.Button = index$i;
 exports.Camera = index$3;
 exports.Canvas = indexX$1;
 exports.Checkbox = _sfc_main$g;
@@ -14894,7 +14893,7 @@ exports.CoverView = index$8;
 exports.Editor = index$g;
 exports.Form = _sfc_main$e;
 exports.Icon = index$f;
-exports.Input = index$i;
+exports.Input = Input;
 exports.Label = _sfc_main$d;
 exports.LayoutComponent = _sfc_main$o;
 exports.LivePlayer = index$2;

@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import jscc from 'rollup-plugin-jscc'
+import { compileScript, compileTemplate, parse } from '@vue/compiler-sfc'
+import { preprocess } from '../../uni-preprocess'
 
 const root = path.resolve(__dirname, '..')
 
@@ -13,6 +15,28 @@ async function compileEntry(file: string, vapor: boolean, node: boolean) {
 }
 
 describe('Web 框架组件入口', () => {
+  test.each([false, true])('PageHead 静态绑定 Input（Vapor=%s）', (vapor) => {
+    const filename = path.join(
+      root,
+      'src/framework/components/page/pageHead.vue'
+    )
+    const source = preprocess(fs.readFileSync(filename, 'utf8'), {
+      type: 'js',
+      context: { WEB: true, VUE3_VAPOR: vapor },
+    }).code
+    const { descriptor } = parse(source, { filename })
+    const script = compileScript(descriptor, { id: 'page-head' })
+    expect(script.bindings?.Input).toBeDefined()
+    const template = compileTemplate({
+      source: descriptor.template!.content,
+      filename,
+      id: 'page-head',
+      compilerOptions: { bindingMetadata: script.bindings },
+    })
+    expect(template.errors).toEqual([])
+    expect(template.code).not.toMatch(/resolveComponent\(["']Input["']\)/)
+  })
+
   test.each([false, true])(
     'Vapor 不引入旧 Picker 和 MatchMedia（Node=%s）',
     async (node) => {

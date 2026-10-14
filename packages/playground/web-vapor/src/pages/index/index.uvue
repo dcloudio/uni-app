@@ -6,7 +6,6 @@
       ref="form"
       @submit="formValue = JSON.stringify($event.detail.value)"
     >
-      <!-- Button 暂未接入，测试控制项使用原生 view，不回退到旧组件。 -->
       <view id="test-increment" @click="count++">更新 {{ count }}</view>
       <checkbox-group
         id="test-checkbox-group"

@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, insert, createFor, setClass, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, resolveComponent, setHtml, createComponentWithFallback, createSlot, toRaw, createTextNode, remove as remove$1, effectScope, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, createVaporApp, VaporTransition, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, insert, createFor, setClass, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createTextNode, remove as remove$1, effectScope, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, createVaporApp, VaporTransition, setHover, createComponentWithFallback, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -12444,7 +12444,6 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
       };
       return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
     }
-    const _component_Input = resolveComponent("Input");
     const n64 = createPlainElement("uni-page-head", { "uni-page-head-type": () => unref(navigationBar).type || "default" }, null, true);
     setInsertionState(n64);
     const n60 = t10();
@@ -12616,7 +12615,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = withComponentId("b1ddc730", () => createComponentWithFallback(_component_Input, {
+            const n39 = withComponentId("b1ddc730", () => createComponent$1(unref(__syscom_0$1), {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -12631,7 +12630,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = withComponentId("b1dda8bc", () => createComponentWithFallback(_component_Input, {
+            const n41 = withComponentId("b1dda8bc", () => createComponent$1(unref(__syscom_0$1), {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
