@@ -860,8 +860,8 @@ defineExpose({
 ### UniEvent 的属性值 @unievent-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| bubbles | boolean | 是 |   | 是否冒泡 |
-| cancelable | boolean | 是 |   | 是否可以取消 |
+| bubbles | boolean | 是 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否冒泡<br/> |
+| cancelable | boolean | 是 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否可以取消<br/> |
 | type | string | 是 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 事件类型<br/> |
 | target | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 触发事件的组件<br/> |
 | currentTarget | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前组件<br/> |
