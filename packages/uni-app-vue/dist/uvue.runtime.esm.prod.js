@@ -1396,6 +1396,8 @@ function createDecl(prop, value, important, raws, source) {
   return decl;
 }
 var NUM_REGEXP = /^[-]?\d*\.?\d+$/;
+var LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/;
+var SUPPORT_CSS_UNIT = ['px', 'pt', 'wx', 'upx', 'rpx'];
 var DOM2_CSS_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css';
 function getDom2PropertyDocsUrl(property) {
   return "".concat(DOM2_CSS_DOCS_BASE_URL, "/").concat(hyphenateStyleProperty(property), ".html#suggestion");
@@ -1430,6 +1432,9 @@ function supportedEnumReason(k, v, items) {
 }
 function supportedValueWithTipsReason(k, v, tips) {
   return 'ERROR: property value `' + v + '` is not supported for `' + hyphenateStyleProperty(k) + '` ' + tips;
+}
+function supportedUnitWithAutofixedReason(unit, v, result) {
+  return 'NOTE: unit `' + unit + '` is not supported and property value `' + v + '` is autofixed to `' + result + '`';
 }
 /**
  * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
@@ -2379,6 +2384,93 @@ function parseAnimation(value) {
     playState: animations.map(animation => animation.playState).join(',')
   };
 }
+function normalizeLengthValue(v, options, removePx, property) {
+  var match = v.match(LENGTH_REGEXP);
+  if (match) {
+    var unit = match[1];
+    var uvue = options.type === 'uvue';
+    if (uvue) {
+      if (!unit || unit === 'px' && removePx) {
+        return {
+          value: parseFloat(v)
+        };
+      } else if (unit === 'px' || unit === 'rpx' ||
+      // 只有line-height支持em单位
+      unit === 'em' && property === 'line-height') {
+        return {
+          value: v
+        };
+      }
+    } else {
+      // nvue
+      if (!unit || unit === 'px') {
+        return {
+          value: parseFloat(v)
+        };
+      }
+      if (SUPPORT_CSS_UNIT.includes(unit)) {
+        return {
+          value: v
+        };
+      } else {
+        return {
+          value: parseFloat(v),
+          reason(k, v, result) {
+            return supportedUnitWithAutofixedReason(unit, v, result);
+          }
+        };
+      }
+    }
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['number', 'pixel']);
+    }
+  };
+}
+var normalizePercent = v => {
+  v = (v || '').toString();
+  var match = v.match(LENGTH_REGEXP);
+  if (match) {
+    var unit = match[1];
+    if (unit === '%') {
+      return {
+        value: v
+      };
+    }
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['percent']);
+    }
+  };
+};
+var normalizeGap = (value, options) => {
+  var text = String(value).trim();
+  if (/^(calc|var|env)\(/i.test(text) && text.endsWith(')')) {
+    return {
+      value: text.replace(/^(calc|var|env)(?=\()/i, name => name.toLowerCase())
+    };
+  }
+  var result = normalizeLengthValue(text, options, !options.keepUnitPx);
+  if (result.value === null) {
+    result = normalizePercent(text);
+  }
+  var number = parseFloat(text);
+  if (result.value !== null && Number.isFinite(number) && number >= 0) {
+    return options.keepUnitPx ? {
+      value: text
+    } : result;
+  }
+  return {
+    value: null,
+    reason(property, value) {
+      return supportedEnumReason(property, value, ['non-negative length', 'percentage']);
+    }
+  };
+};
 var animationName = 'animationName';
 var animationDuration = 'animationDuration';
 var animationDelay = 'animationDelay';
@@ -2411,6 +2503,29 @@ function createTransformAnimation(options) {
     return [createDecl(animationName, animation.name, important, raws, source), createDecl(animationDuration, animation.duration, important, raws, source), createDecl(animationDelay, animation.delay, important, raws, source), createDecl(animationTimingFunction, animation.timingFunction, important, raws, source), createDecl(animationIterationCount, animation.iterationCount, important, raws, source), createDecl(animationDirection, animation.direction, important, raws, source), createDecl(animationFillMode, animation.fillMode, important, raws, source), createDecl(animationPlayState, animation.playState, important, raws, source)];
   };
 }
+var rowGap = 'rowGap';
+var columnGap = 'columnGap';
+var transformGap = (decl, warn) => {
+  var _values$;
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var values = (value.trim() ? splitValues(value) : ['']).map(value => value ? normalizeGap(value, {
+    type: 'uvue',
+    dom2: true,
+    keepUnitPx: true
+  }).value : '');
+  if (values.length > 2 || values.some(value => value === null)) {
+    if (warn) {
+      warn("ERROR: property value `".concat(value, "` is not supported for `gap` (expected one or two non-negative lengths or percentages)"));
+    }
+    return [];
+  }
+  return [createDecl(rowGap, String(values[0]), important, raws, source), createDecl(columnGap, String((_values$ = values[1]) !== null && _values$ !== void 0 ? _values$ : values[0]), important, raws, source)];
+};
 function getDeclTransforms(options, dom2) {
   var transformBorder = options.type === 'uvue' ? createTransformBorder(options) : createTransformBorderNvue();
   var styleMap = {
@@ -2433,6 +2548,7 @@ function getDeclTransforms(options, dom2) {
   };
   if (options.type === 'uvue' && dom2) {
     styleMap.animation = createTransformAnimation(options);
+    styleMap.gap = transformGap;
   }
   if (options.type === 'uvue') {
     styleMap.flex = createTransformFlex(dom2);

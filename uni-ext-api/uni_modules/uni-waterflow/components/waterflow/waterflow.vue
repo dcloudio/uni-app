@@ -7,7 +7,7 @@
         :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-background="props.refresherBackground"
         :refresher-triggered="props.refresherTriggered" :associative-container="props.associativeContainer"
         :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
-        :android-scrollbar-draggable="props.androidScrollbarDraggable"
+        :android-scrollbar-draggable="props.androidScrollbarDraggable" :android-refresher-color="props.androidRefresherColor"
         :waterflow-id="waterflowId satisfies number"
         change:waterflow-id="recycleWaterflowCpp.setWaterflowId" :list="keyList satisfies string[]"
         change:list="recycleWaterflowCpp.updateList" :cross-axis-count="realCrossAxisCount satisfies number"
@@ -131,6 +131,10 @@ const props = defineProps({
     androidScrollbarDraggable: {
         type: [Boolean, String],
         default: false
+    },
+    androidRefresherColor: {
+        type: String,
+        default: ''
     }
 })
 

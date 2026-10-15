@@ -8,6 +8,7 @@
         :refresher-triggered="props.refresherTriggered" :associative-container="props.associativeContainer"
         :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
         :android-scrollbar-draggable="props.androidScrollbarDraggable" :initial-scroll-bottom="_initialScrollBottom satisfies boolean"
+        :android-refresher-color="props.androidRefresherColor"
         change:initial-scroll-bottom="recycleListCpp.setInitialScrollBottom" :scroll-anchoring="_scrollAnchoring satisfies boolean" 
         change:scroll-anchoring="recycleListCpp.setScrollAnchoring" :list-view-id="listViewId satisfies number"
         change:list-view-id="recycleListCpp.setListViewId" :list="keyList satisfies string[]"
@@ -119,6 +120,10 @@ const props = defineProps({
     androidScrollbarDraggable: {
         type: [Boolean, String],
         default: false
+    },
+    androidRefresherColor: {
+        type: String,
+        default: ''
     },
     scrollAnchoring: {
         type: [Boolean, String],
