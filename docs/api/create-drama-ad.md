@@ -587,10 +587,10 @@ getInfo
 
 
 
-#### openPage(options : DramaOpenOptions) : void @openpage
-openPage
+#### open(options : DramaOpenOptions) : void @open
+open
 打开短剧播放页播放指定短剧；支持起播集数 episode、单次激励视频解锁集数 lock、初始免费观看集数 free 与服务端回调透传 urlCallback，结果经 options.success / options.fail 回调返回
-##### openPage 兼容性 <Help /> 
+##### open 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | x | x | x | 5.32 | x | x |
@@ -669,7 +669,7 @@ destroy
 
 #### onLoad(callback : DramaSimpleCallback) : void @onload
 onLoad
-短剧模块加载成功时触发（res.providerType 为渠道类型）；openPage() 打开的播放页就绪后会再次触发（res.type 为 "detail" 并携带 dramaId）
+短剧模块加载成功时触发（res.providerType 为渠道类型）；open() 打开的播放页就绪后会再次触发（res.type 为 "detail" 并携带 dramaId）
 ##### onLoad 兼容性 <Help /> 
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |

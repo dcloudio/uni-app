@@ -617,19 +617,6 @@ text
 | Promise\<string> |
  
 
-##### textStream(): ReadableStream\<string>; @textstream
-textStream
-
-
-
-
-###### 返回值 
-
-| 类型 |
-| :- |
-| ReadableStream |
- 
-
 
 **返回值**
 | 类型 | 描述 |
