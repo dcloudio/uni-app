@@ -744,6 +744,7 @@ VDOM模式的长列表性能要弱于蒸汽模式很多。推荐升级蒸汽模�
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | number | 0 | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.25; HarmonyOS: 4.61 | 对应list-item的类型 list-view 将对同类型条目进行复用，所以合理的类型拆分，可以很好地提升 list-view 性能 |
+| item-key | string \| number |   |   |   |
 
 ### list-item复用机制
 

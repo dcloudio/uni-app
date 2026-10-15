@@ -727,6 +727,7 @@ flow-item 宽度计算公式：((waterflow的width - waterflow的左右的paddin
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | number | 0 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 对应flow-item的类型 waterflow 将对同类型条目进行复用，所以合理的类型拆分，可以很好地提升 waterflow 性能 |
+| item-key | string \| number |   |   |   |
 
 ### flow-item复用机制
 
