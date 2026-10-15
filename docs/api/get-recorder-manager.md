@@ -61,7 +61,7 @@ start
 | :- |  :-: | :- |
 | "aac" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | aac格式 |
 | "mp3" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: x; HarmonyOS: 4.61 | mp3格式 |
-| "pcm" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | pcm格式 |
+| "pcm" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: x | pcm格式 |
 | "wav" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | wav格式 |
 | "m4a" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | m4a格式 |
 
