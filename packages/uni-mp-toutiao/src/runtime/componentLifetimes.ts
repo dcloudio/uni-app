@@ -24,22 +24,74 @@ import {
   initVueIds,
 } from '@dcloudio/uni-mp-core'
 import { ON_READY } from '@dcloudio/uni-shared'
-import {
-  registerPendingComponent,
-  removePendingComponent,
-} from './componentRelation'
+
+type CreateComponent = (
+  parent?: ComponentPublicInstance
+) => ComponentPublicInstance
+
+interface PendingComponent {
+  createComponent: CreateComponent
+  virtualHost: boolean
+}
+
+export const pendingRelationsKey = '__uniPendingToutiaoRelations'
+
+const pendingComponents = new WeakMap<MPComponentInstance, PendingComponent>()
+const virtualHostComponents = new WeakSet<MPComponentInstance>()
+
+export function setComponentVirtualHost(
+  mpInstance: MPComponentInstance,
+  virtualHost: boolean
+) {
+  if (virtualHost) {
+    virtualHostComponents.add(mpInstance)
+  } else {
+    virtualHostComponents.delete(mpInstance)
+  }
+}
+
+export function isComponentVirtualHost(mpInstance: MPComponentInstance) {
+  return virtualHostComponents.has(mpInstance)
+}
+
+export function registerPendingComponent(
+  mpInstance: MPComponentInstance,
+  createComponent: CreateComponent,
+  virtualHost: boolean
+) {
+  pendingComponents.set(mpInstance, { createComponent, virtualHost })
+}
+
+export function createPendingComponent(
+  mpInstance: MPComponentInstance,
+  parent?: ComponentPublicInstance
+) {
+  const pendingComponent = pendingComponents.get(mpInstance)
+  if (!pendingComponent) {
+    return
+  }
+  pendingComponents.delete(mpInstance)
+  return pendingComponent.createComponent(parent)
+}
+
+export function hasPendingComponent(mpInstance: MPComponentInstance) {
+  return pendingComponents.has(mpInstance)
+}
+
+export function isPendingVirtualHost(mpInstance: MPComponentInstance) {
+  return pendingComponents.get(mpInstance)?.virtualHost === true
+}
+
+export function removePendingComponent(mpInstance: MPComponentInstance) {
+  pendingComponents.delete(mpInstance)
+  virtualHostComponents.delete(mpInstance)
+  delete (mpInstance as any)[pendingRelationsKey]
+}
 
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
 // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
 const components: MPComponentInstance[] = []
-
-function isVirtualHost(vueOptions: CreateLifetimesOptions['vueOptions']) {
-  if (vueOptions.options?.virtualHost === true) {
-    return true
-  }
-  return vueOptions.mixins?.some((mixin) => mixin.options?.virtualHost === true)
-}
 
 export function initLifetimes({
   mocks,
@@ -72,6 +124,8 @@ export function initLifetimes({
 
     if (__PLATFORM__ === 'mp-toutiao' && mpType === 'component') {
       const createComponent = (parent?: ComponentPublicInstance) => {
+        const properties = mpInstance.properties
+        const props = findPropsData(properties, false)
         mpInstance.$vm = $createComponent(
           {
             type: vueOptions,
@@ -117,7 +171,7 @@ export function initLifetimes({
       registerPendingComponent(
         mpInstance,
         createComponent,
-        isVirtualHost(vueOptions)
+        virtualHostComponents.has(mpInstance)
       )
       initRelation(this, relationOptions)
       return

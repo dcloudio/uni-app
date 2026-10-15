@@ -11,15 +11,26 @@ import { findVmByVueId } from '@dcloudio/uni-mp-core'
 import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
 import {
-  type RelationDetail,
-  type RelationEvent,
   createPendingComponent,
+  hasPendingComponent,
   isPendingVirtualHost,
-  queueRelation,
-  takePendingRelations,
-} from './componentRelation'
+  pendingRelationsKey,
+  setComponentVirtualHost,
+} from './componentLifetimes'
 
 export { initLifetimes } from './componentLifetimes'
+
+interface RelationDetail {
+  vuePid?: string
+  nodeId: number
+  webviewId: string
+  pageVm?: ComponentPublicInstance
+}
+
+interface RelationEvent {
+  detail: RelationDetail
+  receiver?: MPComponentInstance
+}
 
 export const mocks = [
   '__route__',
@@ -38,6 +49,61 @@ export const instances: Record<
   string,
   ComponentPublicInstance | MPComponentInstance
 > = Object.create(null)
+
+const pendingRelationInstances = new Set<MPComponentInstance>()
+
+function queueRelation(
+  mpInstance: MPComponentInstance,
+  event: RelationEvent,
+  receiver: MPComponentInstance
+) {
+  const relations = (mpInstance as any)[pendingRelationsKey] as
+    | RelationEvent[]
+    | undefined
+  if (
+    relations?.some(
+      ({ detail }) =>
+        detail.nodeId === event.detail.nodeId &&
+        detail.webviewId === event.detail.webviewId &&
+        detail.vuePid === event.detail.vuePid
+    )
+  ) {
+    return
+  }
+  const pendingEvent = Object.assign({}, event, { receiver })
+  if (relations) {
+    relations.push(pendingEvent)
+  } else {
+    ;(mpInstance as any)[pendingRelationsKey] = [pendingEvent]
+  }
+  pendingRelationInstances.add(mpInstance)
+}
+
+function takePendingRelations(mpInstance: MPComponentInstance) {
+  const relations =
+    ((mpInstance as any)[pendingRelationsKey] as RelationEvent[]) || []
+  delete (mpInstance as any)[pendingRelationsKey]
+  pendingRelationInstances.delete(mpInstance)
+  return relations
+}
+
+function retryPendingRelations() {
+  const pending: Array<{
+    mpInstance: MPComponentInstance
+    relation: RelationEvent
+  }> = []
+  pendingRelationInstances.forEach((mpInstance) => {
+    const relations = (mpInstance as any)[pendingRelationsKey] as
+      | RelationEvent[]
+      | undefined
+    delete (mpInstance as any)[pendingRelationsKey]
+    pendingRelationInstances.delete(mpInstance)
+    relations?.forEach((relation) => pending.push({ mpInstance, relation }))
+  })
+  pending.forEach(({ mpInstance, relation }) => {
+    handleToutiaoLink.call(relation.receiver || mpInstance, relation)
+  })
+}
 
 export function initRelation(
   mpInstance: MPComponentInstance,
@@ -170,6 +236,31 @@ export function handleLink(
   })
 }
 
+function findVmById(
+  root: ComponentPublicInstance,
+  vuePid: string
+): ComponentPublicInstance | undefined {
+  const scope = (root as any).$scope
+  if (scope && scope._$vueId === vuePid) {
+    return root
+  }
+  return findVmByVueId(root, vuePid)
+}
+
+function findNativeWrapperOwner(
+  mpInstance: MPComponentInstance,
+  pageVm: ComponentPublicInstance | undefined,
+  webviewId: string
+) {
+  const root =
+    pageVm || (instances[webviewId + '_0'] as ComponentPublicInstance)
+  if (!root) {
+    return
+  }
+  const vuePid = mpInstance._$vuePid
+  return vuePid ? findVmById(root, vuePid) : root
+}
+
 function handleToutiaoLink(this: MPComponentInstance, event: RelationEvent) {
   const { vuePid, nodeId, webviewId, pageVm } = event.detail
   const childMPInstance = instances[
@@ -179,14 +270,26 @@ function handleToutiaoLink(this: MPComponentInstance, event: RelationEvent) {
     return
   }
 
-  const relationRoot = pageVm || this.$vm
+  const relationRoot =
+    pageVm ||
+    this.$vm ||
+    (hasPendingComponent(this)
+      ? undefined
+      : findNativeWrapperOwner(this, pageVm, webviewId))
   if (!relationRoot) {
-    queueRelation(this, event)
+    queueRelation(childMPInstance, event, this)
     return
   }
 
-  const parentVm = vuePid ? findVmByVueId(relationRoot, vuePid) : relationRoot
+  let parentVm = vuePid ? findVmById(relationRoot, vuePid) : relationRoot
+  if (!parentVm && this.$vm && !hasPendingComponent(this)) {
+    parentVm = this.$vm
+  }
+  if (!parentVm && !this.$vm && !hasPendingComponent(this)) {
+    parentVm = relationRoot
+  }
   if (!parentVm) {
+    queueRelation(childMPInstance, event, this)
     return
   }
 
@@ -198,8 +301,9 @@ function handleToutiaoLink(this: MPComponentInstance, event: RelationEvent) {
   vm.$callCreatedHook()
 
   takePendingRelations(childMPInstance).forEach((relation) => {
-    handleToutiaoLink.call(childMPInstance, relation)
+    handleToutiaoLink.call(relation.receiver || childMPInstance, relation)
   })
+  retryPendingRelations()
 
   nextSetDataTick(childMPInstance, () => {
     vm.$callHook('mounted')
@@ -211,5 +315,17 @@ export function parse(
   componentOptions: MPComponentOptions,
   { handleLink }: Partial<ParseComponentOptions>
 ) {
+  if (__PLATFORM__ === 'mp-toutiao') {
+    const attached = componentOptions.lifetimes?.attached
+    if (attached) {
+      const virtualHost = componentOptions.options?.virtualHost === true
+      componentOptions.lifetimes!.attached = function (
+        this: MPComponentInstance
+      ) {
+        setComponentVirtualHost(this, virtualHost)
+        attached.call(this)
+      }
+    }
+  }
   componentOptions.methods!.__l = handleLink!
 }

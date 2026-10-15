@@ -19,21 +19,22 @@ jest.mock('@dcloudio/uni-mp-core', () => ({
   nextSetDataTick,
 }))
 
-jest.mock('../src/runtime/componentLifetimes', () => ({
-  initLifetimes: jest.fn(),
-}))
-
 import type { ComponentPublicInstance } from 'vue'
-import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
+import type {
+  MPComponentInstance,
+  MPComponentOptions,
+} from '@dcloudio/uni-mp-core'
 import {
   createPendingComponent,
+  isComponentVirtualHost,
   registerPendingComponent,
   removePendingComponent,
-} from '../src/runtime/componentRelation'
+} from '../src/runtime/componentLifetimes'
 import {
   handleLink,
   initRelation,
   instances,
+  parse,
 } from '../src/runtime/parseComponentOptions'
 
 interface TestVm {
@@ -164,6 +165,82 @@ describe('mp-toutiao component relation', () => {
     expect(childVm.$.parent).not.toBe(pageVm.$)
   })
 
+  test('falls back to the Vue owner for a native wrapper vue id', () => {
+    const pageVm = createVm()
+    const ownerVm = createVm()
+    pageVm.descendants = { owner: ownerVm }
+    instances['1_0'] = pageVm as unknown as ComponentPublicInstance
+
+    const childMPInstance = createMPInstance(2)
+    const childVm = createVm()
+    registerComponent(childMPInstance, childVm)
+    instances['1_2'] = childMPInstance
+
+    const receiver = createMPInstance(1)
+    receiver._$vuePid = 'owner'
+    handleLink.call(receiver, {
+      detail: { vuePid: 'native-wrapper', nodeId: 2, webviewId: '1' },
+    })
+
+    expect(childVm.$.parent).toBe(ownerVm.$)
+  })
+
+  test('keeps a native wrapper relation pending while its owner is pending', () => {
+    const pageVm = createVm()
+    instances['1_0'] = pageVm as unknown as ComponentPublicInstance
+
+    const childMPInstance = createMPInstance(2)
+    const childVm = createVm()
+    registerComponent(childMPInstance, childVm)
+    instances['1_2'] = childMPInstance
+
+    const receiver = createMPInstance(1)
+    receiver._$vuePid = 'pending-owner'
+    handleLink.call(receiver, {
+      detail: { vuePid: 'native-wrapper', nodeId: 2, webviewId: '1' },
+    })
+
+    expect(childMPInstance.$vm).toBeUndefined()
+    expect(childVm.$callCreatedHook).not.toHaveBeenCalled()
+  })
+
+  test('resolves a parent when the relation id belongs to the receiver', () => {
+    const parentVm = createVm()
+    ;(parentVm as any).$scope = { _$vueId: 'parent' }
+    const parentMPInstance = createMPInstance(1)
+    parentMPInstance.$vm = parentVm as unknown as ComponentPublicInstance
+    const childMPInstance = createMPInstance(2)
+    const childVm = createVm()
+    registerComponent(childMPInstance, childVm)
+    instances['1_2'] = childMPInstance
+
+    handleLink.call(parentMPInstance, {
+      detail: { vuePid: 'parent', nodeId: 2, webviewId: '1' },
+    })
+
+    expect(childVm.$.parent).toBe(parentVm.$)
+  })
+
+  test('ignores duplicate relation events after the child is created', () => {
+    const parentVm = createVm()
+    const parentMPInstance = createMPInstance(1)
+    parentMPInstance.$vm = parentVm as unknown as ComponentPublicInstance
+    const childMPInstance = createMPInstance(2)
+    const childVm = createVm()
+    registerComponent(childMPInstance, childVm)
+    instances['1_2'] = childMPInstance
+    const event = {
+      detail: { vuePid: '', nodeId: 2, webviewId: '1' },
+    }
+
+    handleLink.call(parentMPInstance, event)
+    handleLink.call(parentMPInstance, event)
+
+    expect(childVm.$callCreatedHook).toHaveBeenCalledTimes(1)
+    expect(childVm.$callHook).toHaveBeenCalledTimes(2)
+    expect(parentVm.$children).toEqual([childVm])
+  })
+
   test('creates a queued child after its parent created hook', () => {
     const calls: string[] = []
     const pageVm = createVm()
@@ -216,6 +293,23 @@ describe('mp-toutiao component relation', () => {
 
     expect(childMPInstance.triggerEvent).not.toHaveBeenCalled()
     expect(childVm.$.parent).toBe(pageVm.$)
+  })
+
+  test('uses the effective native virtualHost option', () => {
+    const attached = jest.fn()
+    const componentOptions = {
+      options: { virtualHost: true },
+      lifetimes: { attached },
+      methods: {},
+    } as unknown as MPComponentOptions
+    const mpInstance = createMPInstance(1)
+
+    parse(componentOptions, { handleLink })
+    componentOptions.lifetimes!.attached!.call(mpInstance)
+
+    expect(attached).toHaveBeenCalledTimes(1)
+    expect(isComponentVirtualHost(mpInstance)).toBe(true)
+    removePendingComponent(mpInstance)
   })
 
   test('keeps the legacy Lark relation behavior', () => {
