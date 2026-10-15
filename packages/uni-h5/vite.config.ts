@@ -23,7 +23,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
 import { getPreUVueContext } from '@dcloudio/uni-cli-shared/dist/preprocess/context'
-import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
+import { TAGS, isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import {
   replacePagePaths,
@@ -121,8 +121,14 @@ if (FORMAT === 'es') {
   })
 }
 
+// TAGS 是未注册 Custom Element 的框架结构标签，Vapor 可直接编入模板。
+// 仅调整框架构建，真正的组件宿主和非 Vapor 模式保持原路径。
+function realIsH5NativeTag(tag: string) {
+  return (isX_VAPOR && TAGS.includes(tag)) || isH5NativeTag(tag)
+}
+
 function realIsH5CustomElement(tag: string) {
-  return isH5CustomElement(tag, isX)
+  return !(isX_VAPOR && TAGS.includes(tag)) && isH5CustomElement(tag, isX)
 }
 
 let prePlugin: any
@@ -241,7 +247,7 @@ export default defineConfig(async () => {
           : {}),
         template: {
           compilerOptions: {
-            isNativeTag: isH5NativeTag,
+            isNativeTag: realIsH5NativeTag,
             isCustomElement: realIsH5CustomElement,
             ...(isX_VAPOR
               ? {

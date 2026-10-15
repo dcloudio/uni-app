@@ -1,7 +1,15 @@
 import fs from 'fs'
 import path from 'path'
+import { execFileSync } from 'child_process'
+import ts from 'typescript'
 import jscc from 'rollup-plugin-jscc'
 import { compileScript, compileTemplate, parse } from '@vue/compiler-sfc'
+import {
+  H5_BUILT_IN_TAGS,
+  TAGS,
+  isH5CustomElement,
+  isH5NativeTag,
+} from '../../uni-shared/src/tags'
 import { preprocess } from '../../uni-preprocess'
 
 const root = path.resolve(__dirname, '..')
@@ -135,5 +143,111 @@ describe('Web 框架组件入口', () => {
       )
     ).not.toContain('./loading/index-x.vue')
     expect(entry).not.toContain('uni-components/src/index-vapor')
+  })
+})
+
+describe('框架构建的结构标签分类', () => {
+  // 直接读取构建配置中的函数，避免测试复制分类逻辑或执行配置的源码同步副作用。
+  const source = fs.readFileSync(path.join(root, 'vite.config.ts'), 'utf8')
+  const ast = ts.createSourceFile(
+    'vite.config.ts',
+    source,
+    ts.ScriptTarget.Latest,
+    true
+  )
+  const functions = ast.statements
+    .filter(
+      (node) =>
+        ts.isFunctionDeclaration(node) &&
+        ['realIsH5NativeTag', 'realIsH5CustomElement'].includes(
+          node.name?.text || ''
+        )
+    )
+    .map((node) => node.getText(ast))
+    .join('\n')
+  const code = ts.transpileModule(functions, {}).outputText
+  const getOptions = (isX: boolean, isX_VAPOR: boolean) =>
+    new Function(
+      'TAGS',
+      'isH5NativeTag',
+      'isH5CustomElement',
+      'isX',
+      'isX_VAPOR',
+      `${code}; return { isNativeTag: realIsH5NativeTag, isCustomElement: realIsH5CustomElement }`
+    )(TAGS, isH5NativeTag, isH5CustomElement, isX, isX_VAPOR)
+
+  test('SFC 构建配置使用框架专用标签判断', () => {
+    expect(source).toContain('isNativeTag: realIsH5NativeTag')
+    expect(source).toContain('isCustomElement: realIsH5CustomElement')
+  })
+
+  test.each([false, true])('非 Vapor 分类不变（X=%s）', (isX) => {
+    const options = getOptions(isX, false)
+    for (const tag of [
+      ...TAGS,
+      ...H5_BUILT_IN_TAGS,
+      'div',
+      'span',
+      'svg',
+      'UnknownComponent',
+    ]) {
+      expect(options.isNativeTag(tag)).toBe(isH5NativeTag(tag))
+      expect(options.isCustomElement(tag)).toBe(isH5CustomElement(tag, isX))
+    }
+  })
+
+  test('Vapor 仅将结构标签改为普通元素', () => {
+    const options = getOptions(true, true)
+    for (const tag of TAGS) {
+      expect(options.isNativeTag(tag)).toBe(true)
+      expect(options.isCustomElement(tag)).toBe(false)
+    }
+    for (const tag of [...H5_BUILT_IN_TAGS, 'div', 'svg', 'UnknownComponent']) {
+      expect(options.isNativeTag(tag)).toBe(isH5NativeTag(tag))
+      expect(options.isCustomElement(tag)).toBe(isH5CustomElement(tag, true))
+    }
+  })
+
+  test('实际 Vapor 编译保留 slot、ref、动态属性和真正自定义元素', () => {
+    const result = JSON.parse(
+      execFileSync(
+        process.execPath,
+        [
+          '-e',
+          `
+      const fs = require('fs');
+      const { code, tags } = JSON.parse(fs.readFileSync(0, 'utf8'));
+      require('./packages/uni-cli-shared/dist/hbx/alias').initWebVaporAliases();
+      const { compile } = require('@dcloudio/compiler-vapor-web');
+      const { isH5NativeTag, isH5CustomElement } = require('./packages/uni-shared/dist/uni-shared.cjs.js');
+      const options = new Function('TAGS', 'isH5NativeTag', 'isH5CustomElement', 'isX', 'isX_VAPOR',
+        code + '; return { isNativeTag: realIsH5NativeTag, isCustomElement: realIsH5CustomElement }'
+      )(tags, isH5NativeTag, isH5CustomElement, true, true);
+      process.stdout.write(JSON.stringify([
+        compile('<uni-page-wrapper ref="wrapper" v-bind="props"><uni-page-body><slot /></uni-page-body></uni-page-wrapper>', options).code,
+        compile('<uni-layout><uni-main v-if="visible"><div>{{msg}}</div></uni-main><uni-input :value="value" /></uni-layout>', options).code
+      ]));
+    `,
+        ],
+        {
+          cwd: path.resolve(root, '../..'),
+          input: JSON.stringify({ code, tags: TAGS }),
+          encoding: 'utf8',
+        }
+      )
+    ) as string[]
+    expect(result[0]).toContain('_template("<uni-page-wrapper')
+    expect(result[0]).toContain('<uni-page-body>')
+    expect(result[0]).not.toContain('createPlainElement')
+    expect(result[0]).toContain('createSlot')
+    expect(result[0]).toContain('setDynamicProps')
+    expect(result[0]).toContain('wrapper')
+    expect(result[1]).toContain('_template("<uni-layout')
+    expect(result[1]).toContain('_template("<uni-main')
+    expect(result[1]).toContain('_createPlainElement("uni-input"')
+    expect(result[1]).toContain('createIf')
+    for (const output of result) {
+      expect(output).not.toContain('resolveComponent')
+    }
   })
 })

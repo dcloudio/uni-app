@@ -4401,15 +4401,14 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const t0$n = Vue.template("<img>");
+const t0$p = Vue.template("<img>");
 const t1$b = Vue.template("<div class=uni-tabbar__mid>");
 const t2$4 = Vue.template("<div class=uni-tabbar__iconfont> ");
 const t3$2 = Vue.template("<div>");
 const t4$2 = Vue.template("<div class=uni-tabbar__label> ");
-const t5$1 = Vue.template("<div> ");
+const t5$2 = Vue.template("<div> ");
 const t6$1 = Vue.template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
-const t7$1 = Vue.template("<div class=uni-tabbar><div class=uni-tabbar-border></div></div>");
-const t8$1 = Vue.template("<div class=uni-placeholder>");
+const t7$1 = Vue.template("<uni-tabbar><div class=uni-tabbar><div class=uni-tabbar-border></div></div><div class=uni-placeholder>", 1);
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
@@ -4619,12 +4618,12 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
         marginTop: !item.iconPath ? "inherit" : tabBar.spacing
       };
     }
-    const n31 = Vue.createPlainElement("uni-tabbar", { class: () => "uni-tabbar-" + Vue.unref(tabBar).position }, null, true);
-    Vue.setInsertionState(n31);
-    const n29 = t7$1();
-    Vue.insert(n29, n31);
+    const n31 = t7$1();
+    const n29 = Vue.child(n31);
     const n0 = Vue.child(n29);
+    const n30 = Vue.next(n29);
     Vue.renderEffect(() => {
+      Vue.setClass(n31, "uni-tabbar-" + Vue.unref(tabBar).position);
       Vue.setStyle(n29, Vue.unref(style));
       Vue.setStyle(n0, Vue.unref(borderStyle));
     });
@@ -4642,7 +4641,7 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.renderEffect(() => Vue.setStyle(n8, getMidButtonStyle(_for_item0.value)));
           Vue.setInsertionState(n8);
           Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n7 = t0$n();
+            const n7 = t0$p();
             Vue.renderEffect(() => {
               Vue.setStyle(n7, {
                 width: getMidButton(_for_item0.value).iconWidth,
@@ -4686,7 +4685,7 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
             });
             Vue.setInsertionState(n19);
             Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n18 = t0$n();
+              const n18 = t0$p();
               Vue.renderEffect(() => Vue.setProp(n18, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
               return n18;
             });
@@ -4708,7 +4707,7 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n26, 2);
         Vue.createIf(() => _for_item0.value.redDot, () => {
-          const n25 = t5$1();
+          const n25 = t5$2();
           const x25 = Vue.txt(n25);
           Vue.renderEffect(() => {
             const _item_badge = _for_item0.value.badge;
@@ -4727,18 +4726,16 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
       8
       /* IS_SINGLE_NODE */
     );
-    Vue.setInsertionState(n31, 1);
-    const n30 = t8$1();
-    Vue.insert(n30, n31);
     Vue.renderEffect(() => Vue.setStyle(n30, Vue.unref(placeholderStyle)));
     return n31;
   }
 });
-const t0$m = Vue.template("<div class=uni-top-window></div>");
-const t1$a = Vue.template("<div class=uni-top-window--placeholder>");
-const t2$3 = Vue.template("<div class=uni-mask>");
-const t3$1 = Vue.template("<div class=uni-left-window>");
-const t4$1 = Vue.template("<div class=uni-right-window>");
+const t0$o = Vue.template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
+const t1$a = Vue.template("<div class=uni-mask>");
+const t2$3 = Vue.template("<uni-left-window><!><div class=uni-left-window>");
+const t3$1 = Vue.template("<uni-right-window><!><div class=uni-right-window>");
+const t4$1 = Vue.template("<uni-layout><!><uni-content><uni-main></uni-main>");
+const t5$1 = Vue.template("<uni-app>", 1);
 const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "Layout",
@@ -5069,42 +5066,38 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
         windowRef
       };
     }
-    const n46 = Vue.createPlainElement("uni-app", { class: () => Vue.unref(clazz) }, null, true);
-    Vue.setInsertionState(n46);
+    const n49 = t5$1();
+    Vue.renderEffect(() => Vue.setClass(n49, Vue.unref(clazz)));
+    Vue.setInsertionState(n49);
     Vue.createIf(
       () => Vue.unref(hasResponsive),
       () => {
-        const n33 = Vue.createPlainElement("uni-layout", { class: () => ({
-          "uni-app--showtopwindow": Vue.unref(hasTopWindow) && Vue.unref(layoutState).showTopWindow,
-          "uni-app--showleftwindow": Vue.unref(hasLeftWindow) && Vue.unref(layoutState).showLeftWindow,
-          "uni-app--showrightwindow": Vue.unref(hasRightWindow) && Vue.unref(layoutState).showRightWindow
-        }) });
-        Vue.setInsertionState(n33);
+        const n36 = t4$1();
+        const n35 = Vue.child(n36);
+        const n34 = Vue.next(n35);
+        const n15 = Vue.child(n34);
+        Vue.renderEffect(() => {
+          const _layoutState = Vue.unref(layoutState);
+          Vue.setClassName(n36, (Vue.unref(hasTopWindow) && _layoutState.showTopWindow ? 1 : 0) | (Vue.unref(hasLeftWindow) && _layoutState.showLeftWindow ? 2 : 0) | (Vue.unref(hasRightWindow) && _layoutState.showRightWindow ? 4 : 0), [" uni-app--showtopwindow", " uni-app--showleftwindow", " uni-app--showrightwindow"]);
+        });
+        Vue.setInsertionState(n36, n35);
         Vue.createIf(() => Vue.unref(hasTopWindow) && Vue.unref(TopWindow), () => {
-          const n7 = Vue.createPlainElement("uni-top-window");
-          Vue.setInsertionState(n7);
-          const n5 = t0$m();
-          Vue.insert(n5, n7);
+          const n7 = t0$o();
+          const n5 = Vue.child(n7);
+          const n6 = Vue.next(n5);
           Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
           Vue.setInsertionState(n5);
-          const n4 = Vue.withComponentId("42efa222", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
+          const n4 = Vue.withComponentId("9bbd592a", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
             "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
             $: [
               () => Vue.unref(windowState)
             ]
           }));
-          Vue.setInsertionState(n7, 1);
-          const n6 = t1$a();
-          Vue.insert(n6, n7);
           Vue.setStaticTemplateRef(n4, topWindowRef, null, "topWindowRef");
           Vue.applyVShow(n7, () => Vue.unref(layoutState).showTopWindow || Vue.unref(layoutState).apiShowTopWindow);
           Vue.renderEffect(() => Vue.setStyle(n6, { height: Vue.unref(layoutState).topWindowHeight + "px" }));
           return n7;
         });
-        Vue.setInsertionState(n33, 1);
-        const n32 = Vue.createPlainElement("uni-content");
-        Vue.setInsertionState(n32);
-        const n15 = Vue.createPlainElement("uni-main");
         Vue.setInsertionState(n15);
         Vue.createIf(
           () => {
@@ -5112,12 +5105,12 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = Vue.withComponentId("1b0a2624", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n12 = Vue.withComponentId("dbf3501c", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
               const n10 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n11 = Vue.withComponentId("1b0a1da4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                const n11 = Vue.withComponentId("dbf3479c", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
                 return n11;
               });
               return n10;
@@ -5125,102 +5118,104 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n12;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n14 = Vue.withComponentId("1b0a1628", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n14 = Vue.withComponentId("dbf34020", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n14;
           }),
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        Vue.setInsertionState(n32, 1);
+        Vue.setInsertionState(n34, 1);
         Vue.createIf(() => Vue.unref(hasLeftWindow) && Vue.unref(LeftWindow), () => {
-          const n23 = Vue.createPlainElement("uni-left-window", {
-            "data-show": () => Vue.unref(layoutState).apiShowLeftWindow || void 0,
-            style: () => Vue.unref(layoutState).leftWindowStyle
+          const n24 = t2$3();
+          const n23 = Vue.child(n24);
+          const n22 = Vue.next(n23);
+          Vue.renderEffect(() => {
+            const _layoutState = Vue.unref(layoutState);
+            Vue.setAttr(n24, "data-show", _layoutState.apiShowLeftWindow || void 0);
+            Vue.setStyle(n24, _layoutState.leftWindowStyle);
           });
-          Vue.setInsertionState(n23);
+          Vue.setInsertionState(n24, n23);
           Vue.createIf(() => Vue.unref(layoutState).apiShowLeftWindow, () => {
-            const n20 = t2$3();
+            const n20 = t1$a();
             Vue.on(n20, "click", () => Vue.unref(layoutState).apiShowLeftWindow = false);
             return n20;
           });
-          Vue.setInsertionState(n23, 1);
-          const n22 = t3$1();
-          Vue.insert(n22, n23);
           Vue.setInsertionState(n22);
-          const n21 = Vue.withComponentId("1b093e56", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+          const n21 = Vue.withComponentId("dbf2684e", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
-          Vue.applyVShow(n23, () => Vue.unref(layoutState).showLeftWindow || Vue.unref(layoutState).apiShowLeftWindow);
-          return n23;
+          Vue.applyVShow(n24, () => Vue.unref(layoutState).showLeftWindow || Vue.unref(layoutState).apiShowLeftWindow);
+          return n24;
         });
-        Vue.setInsertionState(n32, 2);
+        Vue.setInsertionState(n34, 2);
         Vue.createIf(() => Vue.unref(hasRightWindow) && Vue.unref(RightWindow), () => {
-          const n31 = Vue.createPlainElement("uni-right-window", {
-            "data-show": () => Vue.unref(layoutState).apiShowRightWindow || void 0,
-            style: () => Vue.unref(layoutState).rightWindowStyle
+          const n33 = t3$1();
+          const n32 = Vue.child(n33);
+          const n31 = Vue.next(n32);
+          Vue.renderEffect(() => {
+            const _layoutState = Vue.unref(layoutState);
+            Vue.setAttr(n33, "data-show", _layoutState.apiShowRightWindow || void 0);
+            Vue.setStyle(n33, _layoutState.rightWindowStyle);
+          });
+          Vue.setInsertionState(n33, n32);
+          Vue.createIf(() => Vue.unref(layoutState).apiShowRightWindow, () => {
+            const n29 = t1$a();
+            Vue.on(n29, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
+            return n29;
           });
           Vue.setInsertionState(n31);
-          Vue.createIf(() => Vue.unref(layoutState).apiShowRightWindow, () => {
-            const n28 = t2$3();
-            Vue.on(n28, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
-            return n28;
-          });
-          Vue.setInsertionState(n31, 1);
-          const n30 = t4$1();
-          Vue.insert(n30, n31);
-          Vue.setInsertionState(n30);
-          const n29 = Vue.withComponentId("1b090194", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+          const n30 = Vue.withComponentId("dbf22b8c", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
-          Vue.setStaticTemplateRef(n29, rightWindowRef, null, "rightWindowRef");
-          Vue.applyVShow(n31, () => Vue.unref(layoutState).showRightWindow || Vue.unref(layoutState).apiShowRightWindow);
-          return n31;
+          Vue.setStaticTemplateRef(n30, rightWindowRef, null, "rightWindowRef");
+          Vue.applyVShow(n33, () => Vue.unref(layoutState).showRightWindow || Vue.unref(layoutState).apiShowRightWindow);
+          return n33;
         });
-        return n33;
+        return n36;
       },
       () => {
-        const n35 = Vue.createIf(
+        const n38 = Vue.createIf(
           () => {
             var _a;
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n39 = Vue.withComponentId("1b0853ee", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n42 = Vue.withComponentId("dbf17de6", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
-              const n37 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n38 = Vue.withComponentId("1b0846d4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
-                return n38;
+              const n40 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
+                const n41 = Vue.withComponentId("dbf170cc", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                return n41;
               });
-              return n37;
+              return n40;
             }));
-            return n39;
+            return n42;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n41 = Vue.withComponentId("1b0844a8", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
-            return n41;
+            const n44 = Vue.withComponentId("dbf16ea0", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            return n44;
           }),
           2309
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
         );
-        return n35;
+        return n38;
       },
       2057
       /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_7 */
     );
-    Vue.setInsertionState(n46, 1);
+    Vue.setInsertionState(n49, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n45 = Vue.withComponentId("1b083da0", () => Vue.createComponent(_sfc_main$p));
-      Vue.applyVShow(n45, () => Vue.unref(showTabBar));
-      return n45;
+      const n48 = Vue.withComponentId("dbf16798", () => Vue.createComponent(_sfc_main$p));
+      Vue.applyVShow(n48, () => Vue.unref(showTabBar));
+      return n48;
     });
-    Vue.setStaticTemplateRef(n46, rootRef, null, "rootRef");
-    return n46;
+    Vue.setStaticTemplateRef(n49, rootRef, null, "rootRef");
+    return n49;
   }
 });
-const t0$l = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const t0$n = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
 const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
@@ -5229,11 +5224,11 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$l();
+    const n0 = t0$n();
     return n0;
   }
 });
-const t0$k = Vue.template("<div class=uni-async-error> ", 1);
+const t0$m = Vue.template("<div class=uni-async-error> ", 1);
 const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
@@ -5248,7 +5243,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$k();
+    const n0 = t0$m();
     const x0 = Vue.txt(n0);
     Vue.on(n0, "click", reload);
     Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t11)("uni.async.error"))));
@@ -5499,7 +5494,7 @@ function usePageHeadTransparent(headRef, {
 }) {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
-const t0$j = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
+const t0$l = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
 const t1$9 = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
 const t3 = Vue.template("<i class=uni-btn-icon></i>");
@@ -5509,7 +5504,7 @@ const t6 = Vue.template("<img class=uni-page-head__title_image>");
 const t7 = Vue.template(" ");
 const t8 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
 const t9 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
-const t10 = Vue.template("<div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>");
+const t10 = Vue.template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
 const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageHead",
@@ -5703,20 +5698,19 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
       };
       return { focus, text, composing, onFocus, onBlur, onInput, onConfirm };
     }
-    const n64 = Vue.createPlainElement("uni-page-head", { "uni-page-head-type": () => Vue.unref(navigationBar).type || "default" }, null, true);
-    Vue.setInsertionState(n64);
-    const n60 = t10();
-    Vue.insert(n60, n64);
+    const n64 = t10();
+    const n60 = Vue.child(n64);
     const n19 = Vue.child(n60);
     const n59 = Vue.next(n19);
     const n58 = Vue.next(n59);
     Vue.renderEffect(() => {
+      Vue.setAttr(n64, "uni-page-head-type", Vue.unref(navigationBar).type || "default");
       Vue.setClass(n60, Vue.unref(clazz));
       Vue.setStyle(n60, Vue.unref(style));
     });
     Vue.setInsertionState(n19);
     Vue.createIf(() => Vue.unref(hasPages) && !Vue.unref(pageMeta).isQuit, () => {
-      const n3 = t0$j();
+      const n3 = t0$l();
       const n2 = Vue.child(Vue.child(n3));
       Vue.on(n3, "click", onPageHeadBackButton);
       Vue.renderEffect(() => {
@@ -5874,7 +5868,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
-            const n39 = Vue.withComponentId("b1ddc730", () => Vue.createComponent(Vue.unref(Input), {
+            const n39 = Vue.withComponentId("9df04238", () => Vue.createComponent(Vue.unref(Input), {
               disabled: true,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -5889,7 +5883,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
             const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
             const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
             const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
-            const n41 = Vue.withComponentId("b1dda8bc", () => Vue.createComponent(Vue.unref(Input), {
+            const n41 = Vue.withComponentId("9df023c4", () => Vue.createComponent(Vue.unref(Input), {
               focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -5987,7 +5981,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
     return n64;
   }
 });
-const t0$i = Vue.template('<div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>');
+const t0$k = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
 const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
@@ -5995,10 +5989,8 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = Vue.createPlainElement("uni-page-refresh", null, null, true);
-    Vue.setInsertionState(n3);
-    const n2 = t0$i();
-    Vue.insert(n2, n3);
+    const n3 = t0$k();
+    const n2 = Vue.child(n3);
     const n0 = Vue.child(Vue.child(n2));
     const n1 = Vue.child(Vue.next(n0));
     Vue.renderEffect(() => {
@@ -6010,6 +6002,7 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
+const t0$j = Vue.template("<uni-page-wrapper><uni-page-body>");
 const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageBody",
@@ -6041,26 +6034,25 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.withComponentId("64781ad4", () => Vue.createComponent(_sfc_main$k));
+      const n2 = Vue.withComponentId("6c5ca19a", () => Vue.createComponent(_sfc_main$k));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
-    const n8 = Vue.createPlainElement("uni-page-wrapper", { $: [
-      () => pageRefresh.value
-    ] });
-    Vue.setInsertionState(n8);
-    const n4 = Vue.createPlainElement("uni-page-body");
+    const n8 = t0$j();
+    const n4 = Vue.child(n8);
+    Vue.renderEffect(() => Vue.setDynamicProps(n8, [pageRefresh.value]));
     Vue.setInsertionState(n4);
     Vue.createSlot();
     Vue.setInsertionState(n8, 1);
     Vue.createIf(() => Vue.unref(isX), () => {
-      const n7 = Vue.withComponentId("6c91a811", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = Vue.withComponentId("708ab3d6", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     Vue.setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
     return [n0, n8];
   }
 });
+const t0$i = Vue.template("<uni-page>", 1);
 const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "Page",
@@ -6163,18 +6155,19 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
         }
       }
     }
-    const n8 = Vue.createPlainElement("uni-page", {
-      "data-page": () => Vue.unref(pageMeta).route,
-      style: () => pageStyle
-    }, null, true);
+    const n8 = t0$i();
+    Vue.renderEffect(() => {
+      Vue.setAttr(n8, "data-page", Vue.unref(pageMeta).route);
+      Vue.setStyle(n8, pageStyle);
+    });
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.withComponentId("20e16be8", () => Vue.createComponent(_sfc_main$l));
+      const n2 = Vue.withComponentId("55c2f8ec", () => Vue.createComponent(_sfc_main$l));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.withComponentId("09680334", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
-      const n3 = Vue.withComponentId("096802e8", () => Vue.createDynamicComponent(
+    Vue.withComponentId("629c11e2", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
+      const n3 = Vue.withComponentId("629c1208", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
           () => Vue.unref(pageProps)
@@ -6193,7 +6186,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = Vue.withComponentId("0967fbb0-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = Vue.withComponentId("629c15a4-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -9720,7 +9713,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n3);
     const n5 = Vue.next(n4);
     Vue.setInsertionState(n7, n6);
-    const n2 = Vue.withComponentId("02a52c40", () => Vue.createAssetComponent("scroll-view", {
+    const n2 = Vue.withComponentId("e09e2578", () => Vue.createAssetComponent("scroll-view", {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
