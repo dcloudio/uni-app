@@ -29,7 +29,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - uni-ai x：开源、跨平台AI聊天流式markdown渲染项目。 [Android](https://web-ext-storage.dcloud.net.cn/ext/uni-ai-x/__UNI__8A096E7_0917211824.apk)、[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
 
 ## 应用商店下载量千万级
-- 抱抱海心理咨询：[Android](https://appgallery.huawei.com/app/C119009491)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.dahe.psy.hmos)
+- 抱抱海心理咨询：[Android](https://appgallery.huawei.com/app/C119009491)、[iOS](https://apps.apple.com/cn/app/%E6%8A%B1%E6%8A%B1%E6%B5%B7%E5%BF%83%E7%90%86%E5%92%A8%E8%AF%A2/id6809343318)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.dahe.psy.hmos)
 ## 应用商店下载量百万级
 - 京大大回收：[Android](https://appgallery.huawei.com/app/C108165699)、[iOS](https://apps.apple.com/cn/app/%E4%BA%AC%E5%A4%A7%E5%A4%A7%E5%9B%9E%E6%94%B6-%E4%B8%93%E4%B8%9A%E8%B4%AD%E7%89%A9%E5%8D%A1%E7%A4%BC%E5%93%81%E5%8D%A1%E5%88%B8%E5%9B%9E%E6%94%B6%E5%B9%B3%E5%8F%B0/id6748420409?uo=4)
 - 尚家家：[Android](https://appgallery.huawei.com/app/C117527135)、[iOS](https://apps.apple.com/cn/app/%E5%B0%9A%E5%AE%B6%E5%AE%B6-%E8%A3%85%E4%BF%AE%E5%85%AC%E5%8F%B8%E5%B7%A5%E9%95%BF%E6%8E%A5%E5%8D%95%E6%B4%BE%E5%8D%95%E5%B9%B3%E5%8F%B0/id6796617412)、微信小程序搜索"天禅库尚家家装"
