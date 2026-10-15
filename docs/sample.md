@@ -37,7 +37,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 万象八字：[Android](https://appgallery.huawei.com/app/C115905187)、[iOS](https://apps.apple.com/cn/app/%E4%B8%87%E8%B1%A1%E5%85%AB%E5%AD%97/id6746738853)
 - 金股讯：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
 - 四大认证备考神器：[Andoird](https://sj.qq.com/appdetail/uni.UNIB5F0C16)、[iOS](https://apps.apple.com/cn/app/%E5%9B%9B%E5%A4%A7%E8%AE%A4%E8%AF%81%E5%A4%87%E8%80%83%E7%A5%9E%E5%99%A8/id6455939352)
-- 鲸鲨记账：[Android](https://sj.qq.com/appdetail/com.cyqgxf.jingshajizhang)、[iOS](https://apps.apple.com/cn/app/%E9%B2%B8%E9%B2%A8%E8%AE%B0%E8%B4%A6-ai%E6%99%BA%E8%83%BD%E8%87%AA%E5%8A%A8%E8%AE%B0%E8%B4%A6%E5%AD%98%E9%92%B1%E5%BF%AB%E9%80%9F%E4%B8%93%E4%B8%9A%E5%8A%A9%E6%89%8B/id6751838395)
+- 鲸鲨记账：[Android](https://sj.qq.com/appdetail/com.cyqgxf.jingshajizhang)、[iOS](https://apps.apple.com/cn/app/%E9%B2%B8%E9%B2%A8%E8%AE%B0%E8%B4%A6-ai%E6%99%BA%E8%83%BD%E8%87%AA%E5%8A%A8%E8%AE%B0%E8%B4%A6%E5%AD%98%E9%92%B1%E5%BF%AB%E9%80%9F%E4%B8%93%E4%B8%9A%E5%8A%A9%E6%89%8B/id6751838395)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.cyqgxf.jingshajizhang.hm)
 ## 其他
 - 时欢：[Android](https://sj.qq.com/appdetail/com.yunyuinteractive.bts)
 - 黔警通：[Android](https://sj.qq.com/appdetail/com.qxnga.qjt)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hmos.com.qxnga.qjt)
