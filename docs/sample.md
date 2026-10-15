@@ -45,12 +45,17 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 中维商城：[Android](https://sj.qq.com/appdetail/com.wx45.app)
 - 发票匣：[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
 - 阑珊处：[Android](https://app.mi.com/details?id=cn.minisns.lanshanchu)、[iOS](https://apps.apple.com/cn/app/%E9%98%91%E7%8F%8A%E5%A4%84/id6479599905)
-- 知小融：[Android](https://appgallery.huawei.com/app/C118620299)、[iOS](https://apps.apple.com/cn/app/%E7%9F%A5%E5%B0%8F%E8%9E%8D-%E8%9E%8D%E8%B5%84%E8%B4%B7%E6%AC%BE%E5%92%A8%E8%AF%A2%E8%A7%84%E5%88%92%E5%B9%B3%E5%8F%B0/id6801014541?uo=4)
-- 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app)
 - 爬模智慧平台：[Android](https://sj.qq.com/appdetail/com.sxz.scytzh)		
 - 破壳身份验证器：[Android](https://sj.qq.com/appdetail/com.perk.auth)、[iOS](https://apps.apple.com/cn/app/%E7%A0%B4%E5%A3%B3%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/id6784588299)
 - 蜂蜂乐到：[Android](https://appgallery.huawei.com/app/C118739499)、[iOS](https://apps.apple.com/cn/app/%E8%9C%82%E8%9C%82%E4%B9%90%E5%88%B0/id6810079399)
 - WOOKU智宠：[Android](https://appgallery.huawei.com/app/C118686217)、[iOS](https://apps.apple.com/cn/app/wooku%E6%99%BA%E5%AE%A0/id6808889360)
+- 知小融：[Android](https://appgallery.huawei.com/app/C118620299)、[iOS](https://apps.apple.com/cn/app/%E7%9F%A5%E5%B0%8F%E8%9E%8D-%E8%9E%8D%E8%B5%84%E8%B4%B7%E6%AC%BE%E5%92%A8%E8%AF%A2%E8%A7%84%E5%88%92%E5%B9%B3%E5%8F%B0/id6801014541?uo=4)
+- idoido-爱豆刷不停：[Android](https://appgallery.huawei.com/app/C119003855)、[iOS](https://apps.apple.com/cn/app/idoido%E7%9F%AD%E8%A7%86%E9%A2%91/id6812587648)
+- 店盈星：[Android](https://appgallery.huawei.com/app/C108128161)
+- 汉字宫伴学：[Android](https://appgallery.huawei.com/app/C119034269)、[iOS](https://apps.apple.com/cn/app/%E6%B1%89%E5%AD%97%E5%AE%AB%E4%BC%B4%E5%AD%A6/id6811783836)
+- 天颜：[Android](https://appgallery.huawei.com/app/C118546959)
+- 推巴克：[Android](https://sj.qq.com/appdetail/com.tuibake.www)
+- 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app)
 
 由于 uni-app x 没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
 希望大型开发者，能主动给本文档提交pr，贡献案例，帮助uni-app x生态发展。
