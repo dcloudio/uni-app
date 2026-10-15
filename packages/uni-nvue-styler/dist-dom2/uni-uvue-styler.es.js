@@ -1,4 +1,4 @@
-import { hyphenate } from '@vue/shared';
+import { hyphenate, camelize } from '@vue/shared';
 
 function createDecl(prop, value, important, raws, source) {
     const decl = {
@@ -14,6 +14,7 @@ function createDecl(prop, value, important, raws, source) {
     return decl;
 }
 const NUM_REGEXP = /^[-]?\d*\.?\d+$/;
+const LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/;
 const DOM2_CSS_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css';
 function getDom2PropertyDocsUrl(property) {
     return `${DOM2_CSS_DOCS_BASE_URL}/${hyphenateStyleProperty(property)}.html#suggestion`;
@@ -1037,6 +1038,164 @@ function parseAnimation(value) {
     };
 }
 
+const DOM2_CALC_PROPERTIES = [
+    'width',
+    'height',
+    'min-width',
+    'min-height',
+    'max-width',
+    'max-height',
+    'top',
+    'right',
+    'bottom',
+    'left',
+    'margin',
+    'margin-top',
+    'margin-right',
+    'margin-bottom',
+    'margin-left',
+    'padding',
+    'padding-top',
+    'padding-right',
+    'padding-bottom',
+    'padding-left',
+    'flex-basis',
+    'gap',
+    'row-gap',
+    'column-gap',
+    'border',
+    'border-top',
+    'border-right',
+    'border-bottom',
+    'border-left',
+    'border-width',
+    'border-top-width',
+    'border-right-width',
+    'border-bottom-width',
+    'border-left-width',
+    'border-radius',
+    'border-top-left-radius',
+    'border-top-right-radius',
+    'border-bottom-right-radius',
+    'border-bottom-left-radius',
+    'transform',
+    'transform-origin',
+    'box-shadow',
+    'text-shadow',
+    'backdrop-filter',
+    'opacity',
+    'font-size',
+    'line-height',
+    'z-index',
+];
+const DOM2_CALC_PROPERTY_SET = new Set(DOM2_CALC_PROPERTIES);
+new Set(DOM2_CALC_PROPERTIES.map(camelize));
+function normalizeCalc(value, property, options) {
+    const normalizedValue = value.trim();
+    if (!/^calc\(/i.test(normalizedValue)) {
+        return;
+    }
+    const canonicalValue = `calc${normalizedValue.slice(4)}`;
+    if (options.dom2 &&
+        property &&
+        DOM2_CALC_PROPERTY_SET.has(property)) {
+        return { value: canonicalValue };
+    }
+    return {
+        value: null,
+        reason(k, v, result) {
+            return supportedEnumReason(k, v, ['number', 'pixel']);
+        },
+    };
+}
+
+function createNormalizeLength({ removePx, property, } = {}) {
+    return (v, options) => {
+        v = (v || '').toString();
+        const calcResult = normalizeCalc(v, property, options);
+        if (calcResult) {
+            return calcResult;
+        }
+        if (!v.includes('calc(') &&
+            ((/var\([^)]+\)/.test(v) &&
+                (/--uni-safe-area-inset-(top|bottom|left|right)/.test(v) ||
+                    /--status-bar-height/.test(v))) ||
+                /--window-(top|bottom)/.test(v) ||
+                /env\(([^)]+)\)/.test(v))) {
+            v = v.replace(/\s/g, '');
+            return { value: v };
+        }
+        const match = v.match(LENGTH_REGEXP);
+        if (match) {
+            var unit = match[1];
+            {
+                if (!unit || (unit === 'px' && removePx)) {
+                    return { value: parseFloat(v) };
+                }
+                else if (unit === 'px' ||
+                    unit === 'rpx' ||
+                    // 只有line-height支持em单位
+                    (unit === 'em' && property === 'line-height')) {
+                    return { value: v };
+                }
+            }
+        }
+        return {
+            value: null,
+            reason(k, v, result) {
+                return supportedEnumReason(k, v, ['number', 'pixel']);
+            },
+        };
+    };
+}
+const normalizeLength = createNormalizeLength({
+    removePx: true,
+});
+const normalizeLengthWithOptions = createNormalizeLength;
+const normalizePercent = (v) => {
+    v = (v || '').toString();
+    const match = v.match(LENGTH_REGEXP);
+    if (match) {
+        var unit = match[1];
+        if (unit === '%') {
+            return { value: v };
+        }
+    }
+    return {
+        value: null,
+        reason(k, v, result) {
+            return supportedEnumReason(k, v, ['percent']);
+        },
+    };
+};
+
+const normalizeLengthWithUnit = normalizeLengthWithOptions({ removePx: false });
+const normalizeGap = (value, options) => {
+    const text = String(value).trim();
+    if (/^(calc|var|env)\(/i.test(text) && text.endsWith(')')) {
+        return {
+            value: text.replace(/^(calc|var|env)(?=\()/i, (name) => name.toLowerCase()),
+        };
+    }
+    let result = (options.keepUnitPx ? normalizeLengthWithUnit : normalizeLength)(text, options);
+    if (result.value === null) {
+        result = normalizePercent(text);
+    }
+    const number = parseFloat(text);
+    if (result.value !== null && Number.isFinite(number) && number >= 0) {
+        return options.keepUnitPx ? { value: text } : result;
+    }
+    return {
+        value: null,
+        reason(property, value) {
+            return supportedEnumReason(property, value, [
+                'non-negative length',
+                'percentage',
+            ]);
+        },
+    };
+};
+
 const animationName = 'animation-name' ;
 const animationDuration = 'animation-duration'
     ;
@@ -1089,6 +1248,25 @@ function createTransformAnimation(options) {
     };
 }
 
+const rowGap = 'row-gap' ;
+const columnGap = 'column-gap' ;
+const transformGap = (decl, warn) => {
+    const { value, important, raws, source } = decl;
+    const values = (value.trim() ? splitValues(value) : ['']).map((value) => value
+        ? normalizeGap(value, { type: 'uvue', dom2: true, keepUnitPx: true }).value
+        : '');
+    if (values.length > 2 || values.some((value) => value === null)) {
+        if (warn) {
+            warn(`ERROR: property value \`${value}\` is not supported for \`gap\` (expected one or two non-negative lengths or percentages)`);
+        }
+        return [];
+    }
+    return [
+        createDecl(rowGap, String(values[0]), important, raws, source),
+        createDecl(columnGap, String(values[1] ?? values[0]), important, raws, source),
+    ];
+};
+
 function getDeclTransforms(options, dom2) {
     const transformBorder = createTransformBorder(options)
         ;
@@ -1113,6 +1291,7 @@ function getDeclTransforms(options, dom2) {
     };
     if (dom2) {
         styleMap.animation = createTransformAnimation(options);
+        styleMap.gap = transformGap;
     }
     {
         styleMap.flex = createTransformFlex(dom2);

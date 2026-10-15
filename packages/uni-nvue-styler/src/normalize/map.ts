@@ -30,6 +30,7 @@ import { normalizeFlexFlow } from './flexFlow'
 import { animationNormalizeFactoryMap } from './animation'
 import { normalizeBackdropFilter } from './backdropFilter'
 import { createNormalizeDom2Calc } from './calc'
+import { normalizeGap } from './gap'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -199,6 +200,11 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   transitionTimingFunction: normalizeTimingFunction,
 }
 
+const dom2NormalizeMap: Record<string, Normalize> = {
+  rowGap: normalizeGap,
+  columnGap: normalizeGap,
+}
+
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.LENGTH]: normalizeLength,
   [Restriction.PERCENTAGE]: normalizePercent,
@@ -238,7 +244,8 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
     const prop = camelize(property.name)
     let normalize: Normalize
     const dom2NormalizeFactory = dom2 && animationNormalizeFactoryMap[prop]
-    const customNormalize = uvueNormalizeMap[prop]
+    const customNormalize =
+      (dom2 && dom2NormalizeMap[prop]) || uvueNormalizeMap[prop]
     if (dom2NormalizeFactory) {
       normalize = dom2NormalizeFactory(property)
     } else if (customNormalize) {

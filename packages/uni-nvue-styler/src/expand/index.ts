@@ -22,6 +22,7 @@ import { transformPadding } from './padding'
 import { createTransformTransition } from './transition'
 import { createTransformFlex } from './flex'
 import { createTransformAnimation } from './animation'
+import { transformGap } from './gap'
 
 function getDeclTransforms(
   options: NormalizeOptions,
@@ -63,6 +64,7 @@ function getDeclTransforms(
 
   if (options.type === 'uvue' && dom2) {
     styleMap.animation = createTransformAnimation(options)
+    styleMap.gap = transformGap
   }
   if (options.type === 'uvue') {
     styleMap.flex = createTransformFlex(dom2)
