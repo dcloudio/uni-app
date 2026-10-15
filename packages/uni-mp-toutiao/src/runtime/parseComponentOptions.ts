@@ -6,7 +6,7 @@ import {
   nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 
-import { findVmByVueId } from '@dcloudio/uni-mp-core'
+import { findVmByVueId, findVmByVueIdPath } from '@dcloudio/uni-mp-core'
 
 import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
@@ -28,6 +28,7 @@ export function isPage(mpInstance: MPComponentInstance) {
 
 interface RelationOptions {
   vuePid: string
+  vuePids?: string
   nodeId: number
   webviewId: string
 }
@@ -58,6 +59,7 @@ export function initRelation(
         {
           detail: {
             vuePid: detail.vuePid,
+            vuePids: detail.vuePids,
             nodeId,
             webviewId,
             // 如果是 virtualHost，则需要找到页面 vm 传递给 handleLink，因为此时的上下文是不对的，需要从页面 vm 递归查找
@@ -70,6 +72,7 @@ export function initRelation(
   } else {
     mpInstance.triggerEvent('__l', {
       vuePid: (detail as any).vuePid,
+      vuePids: (detail as any).vuePids,
       nodeId,
       webviewId,
     })
@@ -79,7 +82,7 @@ export function initRelation(
 export function handleLink(
   this: MPComponentInstance,
   {
-    detail: { vuePid, nodeId, webviewId, pageVm },
+    detail: { vuePid, vuePids, nodeId, webviewId, pageVm },
   }: {
     detail: RelationOptions & { pageVm?: ComponentPublicInstance }
   }
@@ -90,7 +93,12 @@ export function handleLink(
   }
 
   let parentVm
-  if (vuePid) {
+  if (vuePids) {
+    pageVm = pageVm || (instances[webviewId + '_0'] as ComponentPublicInstance)
+    if (pageVm) {
+      parentVm = findVmByVueIdPath(pageVm, vuePids)
+    }
+  } else if (vuePid) {
     parentVm = findVmByVueId(pageVm || this.$vm!, vuePid)
     // fallback从页面查找，当组件嵌套关系比较复杂时，可能会需要回退到这里，比如: question/207952 开发者自定义组件里引用了uni-grid组件（该组件使用了provide/inject,强依赖父子关系）
     if (!pageVm) {

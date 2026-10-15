@@ -30,6 +30,11 @@ const builtInProps = [
   'uS',
 ]
 
+if (typeof __PLATFORM__ !== 'undefined' && __PLATFORM__ === 'mp-toutiao') {
+  // 跨 SFC 传递父组件 Vue ID，抹平抖音小程序关系事件触发较晚的差异
+  builtInProps.push('uPI')
+}
+
 function initDefaultProps(
   options: MPComponentOptions,
   isBehavior: boolean = false

@@ -10,19 +10,25 @@ import type { MPComponentInstance, MPComponentOptions } from './component'
 
 export function initVueIds(
   vueIds: string | undefined,
-  mpInstance: MPComponentInstance
+  mpInstance: MPComponentInstance,
+  parentVueIds?: string
 ) {
   if (!vueIds) {
     return
   }
-  const ids = vueIds.split(',')
-  const len = ids.length
+  const ids = vueIds.split(',').filter(Boolean)
+  if (!ids.length) {
+    return
+  }
+  mpInstance._$vueId = ids[0]
 
-  if (len === 1) {
-    mpInstance._$vueId = ids[0]
-  } else if (len === 2) {
-    mpInstance._$vueId = ids[0]
-    mpInstance._$vuePid = ids[1]
+  const vuePids = ids.slice(1)
+  if (parentVueIds) {
+    vuePids.push(...parentVueIds.split(',').filter(Boolean))
+  }
+  if (vuePids.length) {
+    mpInstance._$vuePid = vuePids[0]
+    mpInstance._$vuePids = vuePids.join(',')
   }
 }
 
@@ -140,6 +146,29 @@ export function findVmByVueId(
       return parentVm
     }
   }
+}
+
+export function findVmByVueIdPath(
+  instance: ComponentPublicInstance,
+  vuePids: string
+): ComponentPublicInstance | undefined {
+  const ids = vuePids.split(',').filter(Boolean)
+  let parentVm = instance
+  for (let i = ids.length - 1; i >= 0; i--) {
+    const $children = (parentVm as any).$children as ComponentPublicInstance[]
+    let childVm: ComponentPublicInstance | undefined
+    for (let j = $children.length - 1; j >= 0; j--) {
+      if (($children[j].$scope as MPComponentInstance)._$vueId === ids[i]) {
+        childVm = $children[j]
+        break
+      }
+    }
+    if (!childVm) {
+      return
+    }
+    parentVm = childVm
+  }
+  return parentVm
 }
 
 const EVENT_OPTS = 'eO'

@@ -18,7 +18,7 @@ import {
 import {
   $createComponent,
   $destroyComponent,
-  findVmByVueId,
+  findVmByVueIdPath,
   initComponentInstance,
   initMocks,
   initRefs,
@@ -44,9 +44,14 @@ export function initLifetimes({
   function attached(this: MPComponentInstance) {
     initSetRef(this)
     const properties = this.properties
-    initVueIds(resolvePropValue(properties.uI), this)
+    initVueIds(
+      resolvePropValue(properties.uI),
+      this,
+      resolvePropValue(properties.uPI)
+    )
     const relationOptions: RelationOptions = {
       vuePid: this._$vuePid,
+      vuePids: this._$vuePids,
     }
     if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
       // 处理父子关系
@@ -63,14 +68,13 @@ export function initLifetimes({
       // 在创建 Vue 组件实例之前，先查找父组件，以支持组合式 API 的 inject
       if (mpType === 'component') {
         const webviewId = mpInstance.__webviewId__ + ''
-        const vuePid = relationOptions.vuePid
+        const vuePids = relationOptions.vuePids
 
         let parentVm
-        if (vuePid) {
-          // 尝试从页面查找父组件
+        if (vuePids) {
           const pageVm = instances[webviewId + '_0'] as ComponentPublicInstance
           if (pageVm) {
-            parentVm = findVmByVueId(pageVm, vuePid)
+            parentVm = findVmByVueIdPath(pageVm, vuePids)
           }
         } else {
           // 如果 vuePid 不存在，则认为当前组件的父是页面
