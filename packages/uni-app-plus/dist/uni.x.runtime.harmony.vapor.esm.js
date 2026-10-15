@@ -4221,10 +4221,10 @@ class NodesRefImpl {
   /**
    * fields({node:true})
    */
-  node(_callback) {
+  node(callback) {
     this._selectorQuery._push(this._selector, this._component, this._single, {
       node: true
-    }, _callback);
+    }, callback !== null && callback !== void 0 ? callback : null);
     return this._selectorQuery;
   }
 }
@@ -4239,7 +4239,7 @@ class SelectorQueryImpl {
     {
       var _this$_component;
       (_this$_component = this._component) === null || _this$_component === void 0 || (_this$_component = _this$_component.$nativePage) === null || _this$_component === void 0 || _this$_component.waitNativeRender(() => {
-        requestComponentInfoVapor(this._component, this._queue, (res) => {
+        requestComponentInfoVapor(this._queue, (res) => {
           var queueCbs = this._queueCb;
           res.forEach((info, _index) => {
             var queueCb = queueCbs[_index];
@@ -4357,16 +4357,8 @@ class QuerySelectorHelperVapor {
     return nodeInfo;
   }
 }
-function requestComponentInfoVapor(vueComponent, queue2, callback) {
-  var result = [];
-  if (vueComponent != null) {
-    queue2.forEach((item) => {
-      var queryResult = QuerySelectorHelperVapor.queryElement(vueComponent, item.selector, !item.single, item.fields);
-      if (queryResult != null) {
-        result.push(queryResult);
-      }
-    });
-  }
+function requestComponentInfoVapor(queue2, callback) {
+  var result = queue2.map((item) => item.component ? QuerySelectorHelperVapor.queryElement(item.component, item.selector, !item.single, item.fields) : item.single ? null : []);
   callback(result);
 }
 var createSelectorQuery = function() {

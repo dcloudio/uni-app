@@ -4053,10 +4053,10 @@ class NodesRefImpl {
   /**
    * fields({node:true})
    */
-  node(_callback) {
+  node(callback) {
     this._selectorQuery._push(this._selector, this._component, this._single, {
       node: true
-    }, _callback);
+    }, callback !== null && callback !== void 0 ? callback : null);
     return this._selectorQuery;
   }
 }
