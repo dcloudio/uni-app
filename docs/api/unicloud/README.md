@@ -25,7 +25,8 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 | config | **UniCloudInitOptions** | 是 |   |  |
 | mixinDatacom | any | 是 |   |  |
 | datacomProps | **DatacomPropsType** | 是 | Android(VDOM): x; Android(Vapor): 5.32; iOS(VDOM): x; iOS(Vapor): 5.32; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.32 | datacom 属性定义，供页面/组件 defineProps 展开使用 |
-| SSEChannel | [SSEChannel](#ssechannel-values) | 是 | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 | 
+| SSEChannel | [SSEChannel](#ssechannel-values) | 是 | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 |
+| useDatacom | (props: [DatacomProps](#datacomprops-values)) => [Datacom](#datacom-values) | 是 | Android(VDOM): x; Android(Vapor): 5.32; iOS(VDOM): x; iOS(Vapor): 5.32; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.32 | datacom 组合式逻辑，替换原 mixinDatacom | 
 
 #### config 的属性描述
 
@@ -43,188 +44,27 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 
 #### datacomProps 的属性描述
 
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| localdata | \[{ type: PropType\<UTSJSONObject\[]>; default: () => UTSJSONObject\[]; }](#type-values) | 是 |
-| options | \[{ type: PropType\<any\[] \| UTSJSONObject>; default: () => UTSJSONObject; }](#type-values) | 是 |
-| collection | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| action | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| field | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| orderby | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| where | [{ type: PropType\<string \| UTSJSONObject>; default: string; }](#type-values) | 是 |
-| pageData | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| pageCurrent | [{ type: PropType\<number>; default: number; }](#type-values) | 是 |
-| pageSize | [{ type: PropType\<number>; default: number; }](#type-values) | 是 |
-| getcount | [{ type: PropType\<string \| boolean>; default: boolean; }](#type-values) | 是 |
-| gettree | [{ type: PropType\<string \| boolean>; default: boolean; }](#type-values) | 是 |
-| gettreepath | [{ type: PropType\<string \| boolean>; default: boolean; }](#type-values) | 是 |
-| startwith | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| limitlevel | [{ type: PropType\<number>; default: number; }](#type-values) | 是 |
-| groupby | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| groupField | [{ type: PropType\<string>; default: string; }](#type-values) | 是 |
-| distinct | [{ type: PropType\<string \| boolean>; default: boolean; }](#type-values) | 是 |
-| manual | [{ type: PropType\<boolean>; default: boolean; }](#type-values) | 是 |
-
-##### localdata 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<UTSJSONObject\[]> | 是 |
-
-##### options 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<any\[] \| UTSJSONObject> | 是 |
-
-##### collection 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### action 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### field 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### orderby 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### where 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string \| UTSJSONObject> | 是 |
-| default | string | 是 |
-
-##### pageData 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### pageCurrent 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<number> | 是 |
-| default | number | 是 |
-
-##### pageSize 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<number> | 是 |
-| default | number | 是 |
-
-##### getcount 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string \| boolean> | 是 |
-| default | boolean | 是 |
-
-##### gettree 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string \| boolean> | 是 |
-| default | boolean | 是 |
-
-##### gettreepath 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string \| boolean> | 是 |
-| default | boolean | 是 |
-
-##### startwith 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### limitlevel 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<number> | 是 |
-| default | number | 是 |
-
-##### groupby 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### groupField 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string> | 是 |
-| default | string | 是 |
-
-##### distinct 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<string \| boolean> | 是 |
-| default | boolean | 是 |
-
-##### manual 的属性描述
-
-| 名称 | 类型 | 必备 |
-| :- | :- | :- |
-| type | PropType\<boolean> | 是 |
-| default | boolean | 是 |
-
-#### { type: PropType\<UTSJSONObject\[]>; default: () => UTSJSONObject\[]; } 的方法 @type-values 
-
-#### default: () => Array\<UTSJSONObject> @default
-default
-
-
-
-
-##### 返回值 
-
-| 类型 |
-| :- |
-| Array&lt;[UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)&gt; |
- 
-
-#### { type: PropType\<any\[] \| UTSJSONObject>; default: () => UTSJSONObject; } 的方法 @type-values 
-
-#### default: () => UTSJSONObject @default
-default
-
-
-
-
-##### 返回值 
-
-| 类型 |
-| :- |
-| [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) |
- 
+| 名称 | 类型 | 必备 | 默认值 |
+| :- | :- | :- | :- |
+| localdata | Array&lt;[UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)&gt; | 否 | () => Array\<UTSJSONObject> |
+| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) \| Array&lt;any&gt; | 否 | () => UTSJSONObject |
+| collection | string | 否 | string |
+| action | string | 否 | string |
+| field | string | 否 | string |
+| orderby | string | 否 | string |
+| where | string \| [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | string |
+| pageData | string | 否 | string |
+| pageCurrent | number | 否 | number |
+| pageSize | number | 否 | number |
+| getcount | boolean \| string | 否 | boolean |
+| gettree | boolean \| string | 否 | boolean |
+| gettreepath | boolean \| string | 否 | boolean |
+| startwith | string | 否 | string |
+| limitlevel | number | 否 | number |
+| groupby | string | 否 | string |
+| groupField | string | 否 | string |
+| distinct | boolean \| string | 否 | boolean |
+| manual | boolean | 否 | boolean |
 
 ### SSEChannel 的方法 @ssechannel-values 
 
@@ -291,6 +131,127 @@ off
 | :- | :- | :- |
 | event | string | 是 |
 | callback | (message: string) => void | 是 | 
+
+
+
+### DatacomProps 的属性值 @datacomprops-values 
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| localdata | Array&lt;[UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)&gt; | 是 | 本地数据 |
+| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) \| Array&lt;any&gt; | 是 | 额外的查询选项 |
+| collection | string | 是 | 表名 |
+| action | string | 是 | 云端执行数据库查询的前或后，触发某个 action 函数操作，进行预处理或后处理 |
+| field | string | 是 | 查询字段，多个字段用 `,` 分割 |
+| orderby | string | 是 | 排序字段及正序倒序设置 |
+| where | string \| [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 查询条件 |
+| pageData | string | 是 | add：多次查询的集合；replace：当前查询的集合 |
+| pageCurrent | number | 是 | 当前页 |
+| pageSize | number | 是 | 每页数据数量 |
+| getcount | boolean \| string | 是 | 是否查询总数量 |
+| gettree | boolean \| string | 是 | 是否查询树状结构数据 |
+| gettreepath | boolean \| string | 是 | 是否查询树状结构数据的路径 |
+| startwith | string | 是 | gettree 的第一层级条件，不传时默认从最顶级开始查询 |
+| limitlevel | number | 是 | gettree 查询返回的树的最大层级，默认 10，最大 15，最小 1 |
+| groupby | string | 是 | 对数据进行分组 |
+| groupField | string | 是 | 对数据进行分组统计 |
+| distinct | boolean \| string | 是 | 是否对数据查询结果中重复的记录进行去重 |
+| manual | boolean | 是 | 是否手动加载数据，默认为 false，页面 onLoad 时自动联网加载数据 |
+
+### Datacom 的属性值 @datacom-values 
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| loading | Ref\<boolean> | 是 | 网络请求状态 |
+| hasMore | Ref\<boolean> | 是 | 是否有更多数据 |
+| resData | Ref\<UTSJSONObject\[]> | 是 | 请求返回的数据，调用 easyGet 后会更新 |
+| errorMessage | Ref\<any> | 是 | 请求出错时的错误消息 |
+| page | Ref\<DatacomPagination> | 是 | 分页信息 |
+
+### Datacom 的方法 @datacom-values 
+
+### easyGet(options?: DatacomEasyGetOptions): void @easyget
+easyGet
+加载数据
+
+#### 参数 
+
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **DatacomEasyGetOptions** | 否 | mixinDatacomEasyGet 参数 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| getone | boolean | 否 | 指定查询结果是否返回数组第一条数据，默认 false |
+| success | (data: Array&lt;any&gt;) => void | 否 | 成功回调 |
+| fail | (err: UniCloudError) => void | 否 | 失败回调 | 
+
+
+
+### get(options?: DatacomGetOptions): Promise\<UniCloudDBGetResult> @get
+get
+调用 uniClientDB 查询数据
+
+#### 参数 
+
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **DatacomGetOptions** | 否 | mixinDatacomGet 参数 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| action | string | 否 | action 函数名，优先级高于 props.action |
+| collection | string | 否 | 表名，优先级高于 props.collection |
+| where | string \| [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | 查询条件，优先级高于 props.where |
+| field | string | 否 | 查询字段，优先级高于 props.field |
+| groupby | string | 否 | 分组字段，优先级高于 props.groupby |
+| groupField | string | 否 | 分组统计字段，优先级高于 props.groupField |
+| distinct | boolean \| string | 否 | 是否去重，优先级高于 props.distinct |
+| orderby | string | 否 | 排序字段，优先级高于 props.orderby |
+| pageCurrent | number | 否 | 当前页，优先级高于分页信息 |
+| pageSize | number | 否 | 每页数据数量，优先级高于分页信息 |
+| getcount | boolean \| string | 否 | 是否查询总数量，优先级高于 props.getcount |
+| gettree | boolean \| string | 否 | 是否查询树状结构数据，优先级高于 props.gettree |
+| gettreepath | boolean \| string | 否 | 是否查询树状结构数据的路径，优先级高于 props.gettreepath |
+| limitlevel | number | 否 | 树的最大层级，优先级高于 props.limitlevel |
+| startwith | string | 否 | 树的起始条件，优先级高于 props.startwith | 
+
+
+#### 返回值 
+
+| 类型 |
+| :- |
+| Promise\<UniCloudDBGetResult> |
+ 
+
+### refresh(): void @refresh
+refresh
+刷新，重新加载当前数据
+
+
+
+
+### reset(): void @reset
+reset
+重置，清空已加载的数据和分页信息
+
+
+
+
+### onMixinDatacomPropsChange(needReset: boolean, changed: Array\<string>): void @onmixindatacompropschange
+onMixinDatacomPropsChange
+props 发生变化时被调用，可在组件中覆盖此方法
+
+#### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| needReset | boolean | 是 |
+| changed | Array&lt;string&gt; | 是 | 
 
 
 
