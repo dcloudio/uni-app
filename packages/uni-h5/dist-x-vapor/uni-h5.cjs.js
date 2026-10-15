@@ -9169,7 +9169,7 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$c = Vue.template("<div uni-view>");
+const t0$c = Vue.template("<div data-v-212d40c7 uni-view>", 256);
 const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "loading",

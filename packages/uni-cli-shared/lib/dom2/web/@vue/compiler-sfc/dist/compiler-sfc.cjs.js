@@ -15395,6 +15395,19 @@ function processDefineOptions(ctx, node) {
 	if (slotsOption) ctx.error(`${DEFINE_OPTIONS}() cannot be used to declare slots. Use ${DEFINE_SLOTS}() instead.`, slotsOption);
 	return true;
 }
+function resolveUniStyleIsolation(node, value) {
+	if (!node) return value;
+	node = (0, _vue_compiler_dom.unwrapTSNode)(node);
+	if (node.type === "ExportDefaultDeclaration") return resolveUniStyleIsolation(node.declaration, value);
+	if (node.type !== "ObjectExpression") return null;
+	for (const prop of node.properties) if (prop.type === "SpreadElement") value = resolveUniStyleIsolation(prop.argument, value);
+	else if (prop.computed && prop.key.type !== "StringLiteral") value = null;
+	else if (prop.key.type === "Identifier" && prop.key.name === "styleIsolation" || prop.key.type === "StringLiteral" && prop.key.value === "styleIsolation") {
+		const expression = prop.type === "ObjectProperty" && (0, _vue_compiler_dom.unwrapTSNode)(prop.value);
+		value = expression && expression.type === "StringLiteral" ? expression.value : null;
+	}
+	return value;
+}
 //#endregion
 //#region packages/compiler-sfc/src/script/topLevelAwait.ts
 /**
@@ -15754,6 +15767,10 @@ function compileScript(sfc, options) {
 		ctx.helperImports.add(getCssVarsHelper(vapor));
 		ctx.helperImports.add("unref");
 		ctx.s.prependLeft(startOffset, `\n${genCssVarsCode(sfc.cssVars, ctx.bindingMetadata, scopeId, !!options.isProd, vapor)}\n`);
+	}
+	if (vapor) {
+		const isolation = resolveUniStyleIsolation(ctx.optionsRuntimeDecl, resolveUniStyleIsolation(defaultExport));
+		if (isolation !== void 0) Object.defineProperty(ctx.bindingMetadata, "__uniStyleIsolation", { value: isolation });
 	}
 	let args = `__props`;
 	if (ctx.propsTypeDecl) args += `: any`;

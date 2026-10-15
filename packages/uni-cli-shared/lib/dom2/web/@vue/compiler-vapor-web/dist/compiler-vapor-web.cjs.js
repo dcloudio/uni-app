@@ -559,11 +559,15 @@ function createUniAppXWebTransform(options = {}) {
 //#endregion
 //#region packages/compiler-vapor-web/src/compile.ts
 function compile(source, options = {}) {
-	var _options$expressionPl;
+	var _options$bindingMetad, _options$isUniPage, _options$expressionPl;
 	const resolvedOptions = {
 		...options,
 		...resolveParserOptions(options)
 	};
+	const isolation = (_options$bindingMetad = options.bindingMetadata) === null || _options$bindingMetad === void 0 ? void 0 : _options$bindingMetad.__uniStyleIsolation;
+	const isPage = (_options$isUniPage = options.isUniPage) === null || _options$isUniPage === void 0 ? void 0 : _options$isUniPage.call(options, options.filename || "");
+	if (isolation !== null && (isPage ? isolation !== "isolated" : isolation === "app" || isolation === "app-shared" || isolation === "app-and-page")) resolvedOptions.extraScopeId = _vue_shared.UNI_APP_SCOPE_ID;
+	resolvedOptions.templateFlags = isolation === null ? 512 : !isPage && isolation === "app-and-page" ? 256 : 0;
 	if (options.isTS && !((_options$expressionPl = options.expressionPlugins) === null || _options$expressionPl === void 0 ? void 0 : _options$expressionPl.includes("typescript"))) resolvedOptions.expressionPlugins = [...options.expressionPlugins || [], "typescript"];
 	const ast = typeof source === "string" ? (0, _vue_compiler_dom.parse)(source, resolvedOptions) : source;
 	const [nodeTransforms, directiveTransforms] = (0, _vue_compiler_vapor.getBaseTransformPreset)();
@@ -599,6 +603,7 @@ function compileSSR(source, options = {}) {
 	});
 }
 //#endregion
+exports.UNI_APP_SCOPE_ID = _vue_shared.UNI_APP_SCOPE_ID;
 exports.compile = compile;
 exports.compileSSR = compileSSR;
 exports.parse = parse;

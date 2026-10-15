@@ -19,7 +19,7 @@ module.exports = {
     __VUE_PROD_DEVTOOLS__: false,
     // source-map
     __PLATFORM_WEB__: false,
-    __HARMONY__: false
+    __HARMONY__: false,
   },
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
@@ -27,6 +27,8 @@ module.exports = {
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   moduleNameMapper: {
+    '^@dcloudio/compiler-vapor-web$':
+      '<rootDir>/packages/uni-cli-shared/lib/dom2/web/@vue/compiler-vapor-web',
     '^@dcloudio/uni-api/src/(.*?)$': '<rootDir>/packages/uni-api/src/$1',
     '@dcloudio/uts-darwin-arm64': '<rootDir>/packages/uts-darwin-arm64',
     '@dcloudio/uts-darwin-x64': '<rootDir>/packages/uts-darwin-x64',

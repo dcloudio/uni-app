@@ -17486,7 +17486,7 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$j = template("<div uni-view>");
+const t0$j = template("<div data-v-212d40c7 uni-view>", 256);
 const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "loading",
@@ -27894,13 +27894,13 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const t0$6 = template("<div uni-view><span uni-text class=uni-action-sheet_dialog__title__text> </div>");
-const t1$6 = template("<div uni-view class=divider>", 2);
-const t2$5 = template("<div uni-view class=divider>");
-const t3$2 = template("<div uni-view><span uni-text class=uni-action-sheet_dialog__cell__text> ");
-const t4$2 = template("<div uni-view class=uni-action-sheet_dialog__safe-area>");
-const t5$1 = template("<div uni-view>");
-const t6$1 = template("<div uni-view><div uni-view></div><div uni-view><div uni-view><!><div uni-view></div></div><div uni-view><span uni-text class=uni-action-sheet_dialog__action__text> </div>", 1);
+const t0$6 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__title__text> </div>");
+const t1$6 = template("<div data-v-212d40c7 uni-view class=divider>", 2);
+const t2$5 = template("<div data-v-212d40c7 uni-view class=divider>");
+const t3$2 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__cell__text> ");
+const t4$2 = template("<div data-v-212d40c7 uni-view class=uni-action-sheet_dialog__safe-area>");
+const t5$1 = template("<div data-v-212d40c7 uni-view>");
+const t6$1 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><!><div data-v-212d40c7 uni-view></div></div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__action__text> </div>", 1);
 const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
   __name: "actionSheet",
   setup(__props) {
@@ -28339,14 +28339,14 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$5 = template("<span uni-text class=uni-choose-location-poi-search-cancel> ");
-const t1$5 = template("<div uni-view class=uni-choose-location-poi-search-error><span uni-text> ");
-const t2$4 = template("<div uni-view class=uni-choose-location-poi-search-loading><span uni-text> ");
-const t3$1 = template("<div uni-view class=uni-choose-location-poi-search-loading>");
-const t4$1 = template('<span uni-text class="uni-choose-location-icons uni-choose-location-poi-item-selected-icon"> ');
-const t5 = template("<div uni-view><div uni-view><div uni-view><span uni-text> </div><div uni-view><span uni-text> </div></div><!><div uni-view></div>");
-const t6 = template("<div uni-view><div uni-view><div uni-view><span uni-text> </div>");
-const t7 = template('<div uni-view><div uni-view><!><div uni-view class=uni-choose-location-map-target><span uni-text class="uni-choose-location-icons uni-choose-location-map-target-icon"> </div><div uni-view><span uni-text> </div></div><div uni-view class=uni-choose-location-nav><div uni-view><span uni-text class="uni-choose-location-nav-text uni-choose-location-nav-back-text"> </div><div uni-view><span uni-text class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text"> </div></div>', 1);
+const t0$5 = template("<span data-v-212d40c7 uni-text class=uni-choose-location-poi-search-cancel> ");
+const t1$5 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-error><span data-v-212d40c7 uni-text> ");
+const t2$4 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-loading><span data-v-212d40c7 uni-text> ");
+const t3$1 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-loading>");
+const t4$1 = template('<span data-v-212d40c7 uni-text class="uni-choose-location-icons uni-choose-location-poi-item-selected-icon"> ');
+const t5 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><!><div data-v-212d40c7 uni-view></div>");
+const t6 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div>");
+const t7 = template('<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><!><div data-v-212d40c7 uni-view class=uni-choose-location-map-target><span data-v-212d40c7 uni-text class="uni-choose-location-icons uni-choose-location-map-target-icon"> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><div data-v-212d40c7 uni-view class=uni-choose-location-nav><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-choose-location-nav-text uni-choose-location-nav-back-text"> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text"> </div></div>', 1);
 const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
   __name: "chooseLocation",
   setup(__props) {
@@ -29515,11 +29515,11 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$4 = template("<span uni-text class=uni-modal-dialog__title> ");
-const t1$4 = template("<span uni-text class=uni-modal-dialog__message> ");
-const t2$3 = template('<div uni-view class="uni-modal-dialog__action uni-modal-dialog__action--cancel"><span uni-text class=uni-modal-dialog__action-text> ');
-const t3 = template("<div uni-view class=uni-modal-dialog__split>", 2);
-const t4 = template('<div uni-view><div uni-view><div uni-view class=uni-modal-dialog__inner><div uni-view class=uni-modal-dialog__title__container></div><div uni-view></div><div uni-view class=uni-modal-dialog__divider></div><div uni-view class=uni-modal-dialog__actions><!><!><div uni-view class="uni-modal-dialog__action uni-modal-dialog__action--confirm"><span uni-text class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"> ', 1);
+const t0$4 = template("<span data-v-212d40c7 uni-text class=uni-modal-dialog__title> ");
+const t1$4 = template("<span data-v-212d40c7 uni-text class=uni-modal-dialog__message> ");
+const t2$3 = template('<div data-v-212d40c7 uni-view class="uni-modal-dialog__action uni-modal-dialog__action--cancel"><span data-v-212d40c7 uni-text class=uni-modal-dialog__action-text> ');
+const t3 = template("<div data-v-212d40c7 uni-view class=uni-modal-dialog__split>", 2);
+const t4 = template('<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view class=uni-modal-dialog__inner><div data-v-212d40c7 uni-view class=uni-modal-dialog__title__container></div><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view class=uni-modal-dialog__divider></div><div data-v-212d40c7 uni-view class=uni-modal-dialog__actions><!><!><div data-v-212d40c7 uni-view class="uni-modal-dialog__action uni-modal-dialog__action--confirm"><span data-v-212d40c7 uni-text class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"> ', 1);
 const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
   __name: "uniModal",
   setup(__props) {
@@ -29994,8 +29994,8 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$3 = template("<span uni-text class=uni-loading-dialog__title> ");
-const t1$3 = template("<div uni-view><div uni-view>", 1);
+const t0$3 = template("<span data-v-212d40c7 uni-text class=uni-loading-dialog__title> ");
+const t1$3 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view>", 1);
 const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
   __name: "showLoading",
   setup(__props) {
@@ -31110,9 +31110,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
 });
 const _style_0$2 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
 const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
-const t0$1 = template("<div uni-view class=uni-preview-image-number-indicator-layout><span uni-text class=uni-preview-image-number-indicator> ");
-const t1$1 = template("<div uni-view>");
-const t2$1 = template("<div uni-view class=uni-preview-image-default-indicator-layout>");
+const t0$1 = template("<div data-v-212d40c7 uni-view class=uni-preview-image-number-indicator-layout><span data-v-212d40c7 uni-text class=uni-preview-image-number-indicator> ");
+const t1$1 = template("<div data-v-212d40c7 uni-view>");
+const t2$1 = template("<div data-v-212d40c7 uni-view class=uni-preview-image-default-indicator-layout>");
 const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
   __name: "previewImage",
   __multiRoot: true,

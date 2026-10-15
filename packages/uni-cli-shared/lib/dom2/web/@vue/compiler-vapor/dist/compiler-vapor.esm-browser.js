@@ -19584,6 +19584,7 @@ const defaultOptions = {
 	isCustomElement: NOOP,
 	expressionPlugins: [],
 	scopeId: null,
+	extraScopeId: "",
 	slotted: true,
 	ssr: false,
 	inSSR: false,
@@ -21984,7 +21985,7 @@ function genTemplates(templates, context) {
 	const result = [];
 	templates.forEach(({ content, ns, root, static: isStatic }, i) => {
 		let args = JSON.stringify(content).replace(IMPORT_EXPR_RE, `" + $1 + "`);
-		const flags = (root ? 1 : 0) | (isStatic ? 2 : 0);
+		const flags = (root ? 1 : 0) | (isStatic ? 2 : 0) | context.options.templateFlags;
 		if (flags || ns) args += `, ${flags}`;
 		if (ns) args += `, ${ns}`;
 		result.push(`const ${context.tName(i)} = ${context.helper("template")}(${args})\n`);
@@ -22534,6 +22535,7 @@ var CodegenContext = class {
 			inSSR: false,
 			inline: false,
 			bindingMetadata: {},
+			templateFlags: 0,
 			expressionPlugins: []
 		};
 		this.options = extend(defaultOptions, options);
@@ -22943,6 +22945,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 	let template = "";
 	template += `<${tag}`;
 	if (scopeId) template += ` ${scopeId}`;
+	const extraScopeId = context.options.extraScopeId;
+	if (extraScopeId && extraScopeId !== scopeId) template += ` ${extraScopeId}`;
 	if (propsResult[0]) {
 		const [, dynamicArgs, expressions] = propsResult;
 		context.registerEffect(expressions, {

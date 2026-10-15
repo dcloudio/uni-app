@@ -1,6 +1,20 @@
 import path from 'path'
+import fs from 'fs'
 import { initPluginUniOptions } from '../src/utils/plugin'
 import { initPluginVueOptions } from '../src/vue/options'
+import {
+  isUniPageFile,
+  normalizePagesJson,
+  pagesCacheSet,
+  parsePagesJsonOnce,
+  windowsCacheSet,
+} from '@dcloudio/uni-cli-shared'
+
+// 此处仅验证 ID 策略，真实编译器接入另由开发/发行编译验证。
+jest.mock('@dcloudio/compiler-vapor-web', () => ({
+  UNI_APP_SCOPE_ID: require('../../uni-cli-shared/lib/dom2/web/@vue/shared')
+    .UNI_APP_SCOPE_ID,
+}))
 
 const inputDir = path.resolve(
   __dirname,
@@ -35,6 +49,7 @@ describe('initPluginVueOptions', () => {
     NODE_ENV: process.env.NODE_ENV,
     UNI_PLATFORM: process.env.UNI_PLATFORM,
     UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
+    VITE_ROOT_DIR: process.env.VITE_ROOT_DIR,
   }
 
   afterEach(() => {
@@ -271,4 +286,194 @@ describe('initPluginVueOptions', () => {
       ).not.toContain('decorators-legacy')
     }
   })
+
+  test.each([
+    [false, false],
+    [false, true],
+    [true, false],
+    [true, true],
+  ])(
+    '仅固定 Web Vapor 根 App ID（发行：%s，存在 App.uvue：%s）',
+    (isProduction, hasAppUVue) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR = 'true'
+      process.env.UNI_PLATFORM = 'h5'
+      process.env.UNI_INPUT_DIR = inputDir
+      process.env.NODE_ENV = isProduction ? 'production' : 'development'
+      process.env.VITE_ROOT_DIR = path.dirname(inputDir)
+      const existsSync = fs.existsSync
+      const exists = jest
+        .spyOn(fs, 'existsSync')
+        .mockImplementation((filename) =>
+          filename === path.resolve(inputDir, 'App.uvue')
+            ? hasAppUVue
+            : existsSync(filename)
+        )
+      const appName = hasAppUVue ? 'App.uvue' : 'App.vue'
+      const relativeDir = path.basename(inputDir)
+      const custom = jest.fn(() => 'custom')
+      try {
+        for (const componentIdGenerator of [
+          undefined,
+          'filepath',
+          'filepath-source',
+          custom,
+        ]) {
+          const vueOptions = initPluginVueOptions(
+            {
+              inputDir,
+              vueOptions: { features: { componentIdGenerator } },
+            } as any,
+            initPluginUniOptions([])
+          )
+          const generate = vueOptions.features!.componentIdGenerator as Function
+          const getHash = jest.fn((value: string) => 'hash:' + value)
+          exists.mockClear()
+          custom.mockClear()
+          for (const source of ['first', 'updated']) {
+            expect(
+              generate(
+                `${relativeDir}/${appName}`,
+                source,
+                isProduction,
+                getHash
+              )
+            ).toBe('212d40c7')
+          }
+          expect(getHash).not.toHaveBeenCalled()
+          expect(custom).not.toHaveBeenCalled()
+          for (const filename of [
+            `${relativeDir}/components/App.uvue`,
+            `${relativeDir}/components/App.vue`,
+            `${relativeDir}/app.uvue`,
+            `${relativeDir}/app.vue`,
+            `${relativeDir}/${hasAppUVue ? 'App.vue' : 'App.uvue'}`,
+          ]) {
+            expect(generate(filename, 'content', isProduction, getHash)).toBe(
+              typeof componentIdGenerator === 'function'
+                ? 'custom'
+                : 'hash:' +
+                    filename +
+                    (componentIdGenerator === 'filepath-source' ||
+                    (!componentIdGenerator && isProduction)
+                      ? 'content'
+                      : '')
+            )
+            if (componentIdGenerator === custom) {
+              expect(custom).toHaveBeenLastCalledWith(
+                filename,
+                'content',
+                isProduction,
+                getHash
+              )
+            }
+          }
+          expect(exists).not.toHaveBeenCalled()
+        }
+      } finally {
+        exists.mockRestore()
+      }
+    }
+  )
+
+  test('仅页面及自定义窗口默认接收 App 样式，普通组件不受影响', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_VAPOR = 'true'
+    process.env.UNI_PLATFORM = 'h5'
+    process.env.UNI_INPUT_DIR = inputDir
+    const pages = parsePagesJsonOnce(inputDir, 'h5')
+    const cachedPages = [...pagesCacheSet]
+    const cachedWindows = [...windowsCacheSet]
+    normalizePagesJson(
+      JSON.stringify({ ...pages, topWindow: { path: './windows/top.uvue' } }),
+      'h5'
+    )
+    pagesCacheSet.add('pages/index/index')
+    try {
+      const vueOptions = initPluginVueOptions(
+        { inputDir } as any,
+        initPluginUniOptions([])
+      )
+      const { isUniPage } = vueOptions.template!.compilerOptions as any
+      expect(isUniPage(path.join(inputDir, 'pages/index/index.uvue'))).toBe(
+        true
+      )
+      expect(isUniPage(path.join(inputDir, 'windows/top.uvue'))).toBe(true)
+      expect(isUniPage(path.join(inputDir, 'components/App.uvue'))).toBe(false)
+    } finally {
+      pagesCacheSet.clear()
+      cachedPages.forEach((file) => pagesCacheSet.add(file))
+      windowsCacheSet.clear()
+      cachedWindows.forEach((file) => windowsCacheSet.add(file))
+    }
+  })
+
+  test('非 Vapor 不改写 componentIdGenerator 或页面判定', () => {
+    process.env.UNI_APP_X = 'true'
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_APP_X_VAPOR
+    process.env.UNI_PLATFORM = 'h5'
+    process.env.UNI_INPUT_DIR = inputDir
+    const componentIdGenerator = () => 'custom'
+    const vueOptions = initPluginVueOptions(
+      {
+        inputDir,
+        vueOptions: { features: { componentIdGenerator } },
+      } as any,
+      initPluginUniOptions([])
+    )
+    expect(vueOptions.features!.componentIdGenerator).toBe(componentIdGenerator)
+    expect(vueOptions.template!.compilerOptions).not.toHaveProperty('isUniPage')
+  })
+
+  test.each(['topWindow', 'leftWindow', 'rightWindow'])(
+    '%s 配置更新或删除后，模板隔离判定使用新的 pages.json',
+    (name) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR = 'true'
+      process.env.UNI_PLATFORM = 'h5'
+      process.env.UNI_INPUT_DIR = inputDir
+      const pages = parsePagesJsonOnce(inputDir, 'h5')
+      const cachedPages = [...pagesCacheSet]
+      const cachedWindows = [...windowsCacheSet]
+      normalizePagesJson(
+        JSON.stringify({ ...pages, [name]: { path: 'windows/old.uvue' } }),
+        'h5'
+      )
+      try {
+        const vueOptions = initPluginVueOptions(
+          { inputDir } as any,
+          initPluginUniOptions([])
+        )
+        const { isUniPage } = vueOptions.template!.compilerOptions as any
+        expect(isUniPage(path.join(inputDir, 'windows/old.uvue'))).toBe(true)
+        // 与 pages.json 插件热更新时一致，重新标准化最新配置，而非修改旧缓存对象。
+        normalizePagesJson(
+          JSON.stringify({
+            ...pages,
+            [name]: { path: 'windows/new.uvue' },
+          }),
+          'h5'
+        )
+        expect(isUniPage(path.join(inputDir, 'windows/new.uvue'))).toBe(true)
+        expect(isUniPage(path.join(inputDir, 'windows/old.uvue'))).toBe(false)
+        expect(
+          isUniPageFile(path.join(inputDir, 'windows/new.uvue'), inputDir)
+        ).toBe(false)
+        normalizePagesJson(
+          JSON.stringify({ ...pages, [name]: undefined }),
+          'h5'
+        )
+        expect(isUniPage(path.join(inputDir, 'windows/new.uvue'))).toBe(false)
+      } finally {
+        pagesCacheSet.clear()
+        cachedPages.forEach((file) => pagesCacheSet.add(file))
+        windowsCacheSet.clear()
+        cachedWindows.forEach((file) => windowsCacheSet.add(file))
+      }
+    }
+  )
 })

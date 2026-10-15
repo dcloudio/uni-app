@@ -12,6 +12,7 @@ describe('normalizeUniAppXVaporEnv', () => {
     'UNI_APP_X_DOM2_DYNAMIC',
     'UNI_APP_X_VAPOR_RENDER_TARGET',
     'UNI_APP_X_VAPOR_BUILD',
+    'UNI_APP_STYLE_ISOLATION_VERSION',
     'UNI_INPUT_DIR',
     'UNI_PLATFORM',
     'UNI_UTS_PLATFORM',
@@ -130,6 +131,7 @@ describe('normalizeUniAppXVaporEnv', () => {
 
       expect(process.env.UNI_APP_X_VAPOR).toBe('true')
       expect(process.env.UNI_APP_X_DOM2).toBe('true')
+      expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
     }
   )
 
@@ -144,6 +146,36 @@ describe('normalizeUniAppXVaporEnv', () => {
     expect(process.env.UNI_APP_X_VAPOR).toBe('true')
     expect(process.env.UNI_APP_X_DOM2).toBe('true')
   })
+
+  test('Web Vapor 固定使用新隔离规则，不受旧隔离版本影响', () => {
+    setProjectDir(true)
+    process.env.UNI_PLATFORM = 'h5'
+    Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', '1')
+
+    normalizeUniAppXVaporEnv()
+
+    expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
+  })
+
+  test.each(['h5', 'web', 'app', 'mp-weixin'])(
+    '%s 非 Web Vapor 保留原有隔离版本',
+    (platform) => {
+      setProjectDir()
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
+      for (const version of [undefined, '1', '2']) {
+        if (version === undefined)
+          delete process.env.UNI_APP_STYLE_ISOLATION_VERSION
+        else
+          Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', version)
+        process.env.UNI_APP_X_VAPOR = 'true'
+
+        normalizeUniAppXVaporEnv()
+
+        expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe(version)
+      }
+    }
+  )
 
   test.each(['h5', 'web'])(
     '%s 平台内部 Vapor 构建可绕过 .vapor 文件检查',

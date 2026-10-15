@@ -243,6 +243,16 @@ export default defineConfig(async () => {
           compilerOptions: {
             isNativeTag: isH5NativeTag,
             isCustomElement: realIsH5CustomElement,
+            ...(isX_VAPOR
+              ? {
+                  // 同步的系统页面固定为 <模块>/pages/<页面>/<页面>.vue，默认接收 App 样式。
+                  // 直接识别已同步副本，不依赖构建机是否配置了外部源码目录。
+                  isUniPage: (filename: string) =>
+                    /^[^/]+\/pages\/([^/]+)\/\1\.vue$/.test(
+                      normalizePath(path.relative(vaporComponentsDir, filename))
+                    ),
+                }
+              : {}),
           },
         },
       }),

@@ -25693,6 +25693,10 @@ declare function removeNode(block: Node, parent?: ParentNode): void;
  * whose content lives elsewhere (a teleport target) and has no marker left.
  */
 declare function getBlockFirstNode(block: Block$1): Node | undefined;
+declare function findBlockBoundary(block: Block$1): {
+  parentNode: Node | null;
+  nextNode: Node | null;
+};
 //#endregion
 //#region packages/runtime-vapor/src/componentSlots.d.ts
 type RawSlots = Record<string, VaporSlot> & {
@@ -25867,6 +25871,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   propsDefaults: Record<string, any> | null;
   slots: Slots;
   scopeId?: string | null;
+  uniScopeOwner: GenericComponentInstance | null;
   slotScopeIds?: string[] | null;
   applyCssVars?: (nodes: Block$1) => void;
   cssVarOutlets?: VaporFragment[];
@@ -26256,7 +26261,7 @@ type ApplyTransitionHooksFn = (block: Block$1, hooks: VaporTransitionHooks, owne
 declare let applyTransitionHooks: ApplyTransitionHooksFn;
 declare let isTransitionEnabled: boolean;
 declare namespace index_d_exports {
-  export { Block$1 as Block, DefineVaporComponent, DefineVaporSetupFnComponent, DynamicFragment, ForBlock, ForFragment, FragmentClaim, FunctionalVaporComponent, HydrationCursor, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveCache, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, advanceHydrationNode, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyTransitionHooks, applyVShow, child, claimAnchor, createAssetComponent, createComment, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createFragmentClaim, createIf, createInvoker, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, currentHydrationNode, currentRenderContext, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, enterHydrationBoundary, enterHydrationCursor, extend, finishBlockCreation, getBlockFirstNode, getDefaultValue, getRestElement, insert$1 as insert, insertFragment, insertNode, insertionAnchor, insertionIndex, insertionParent, isComment, isFragment, isTransitionEnabled, isValidSlot, isVaporComponent, isHydrating as isVaporHydrating, locateClaimedEnd, move$1 as move, next, nextLogicalSibling, nthChild, on, onBinding, remove, removeNode, renderEffect, resetInsertionState, resolveFragmentAnchor, setAttr, setBlockKey, setClass, setClassName, setCurrentHydrationNode, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setLastLocatedLogicalChild, setListener, setProp, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setValue, syncSelectValue, template, txt, useVaporCssVars, vaporInteropPlugin, withOnce, withRenderContext, withVaporDirectives, withVaporKeys, withVaporModifiers };
+  export { Block$1 as Block, DefineVaporComponent, DefineVaporSetupFnComponent, DynamicFragment, ForBlock, ForFragment, FragmentClaim, FunctionalVaporComponent, HydrationCursor, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveCache, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, advanceHydrationNode, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyTransitionHooks, applyVShow, child, claimAnchor, createAssetComponent, createComment, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createFragmentClaim, createIf, createInvoker, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, currentHydrationNode, currentRenderContext, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, enterHydrationBoundary, enterHydrationCursor, extend, findBlockBoundary, finishBlockCreation, getBlockFirstNode, getDefaultValue, getRestElement, insert$1 as insert, insertFragment, insertNode, insertionAnchor, insertionIndex, insertionParent, isComment, isFragment, isTransitionEnabled, isValidSlot, isVaporComponent, isHydrating as isVaporHydrating, locateClaimedEnd, move$1 as move, next, nextLogicalSibling, nthChild, on, onBinding, remove, removeNode, renderEffect, resetInsertionState, resolveFragmentAnchor, setAttr, setBlockKey, setClass, setClassName, setCurrentHydrationNode, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setLastLocatedLogicalChild, setListener, setProp, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setValue, syncSelectValue, template, txt, useVaporCssVars, vaporInteropPlugin, withOnce, withRenderContext, withVaporDirectives, withVaporKeys, withVaporModifiers };
 }
 //#endregion
 //#region temp/packages/compiler-vapor/src/ir/component.d.ts
@@ -28482,6 +28487,7 @@ interface DirectiveTransformResult$1 {
 export type StructuralDirectiveTransform = (node: ElementNode, dir: VaporDirectiveNode, context: TransformContext<ElementNode>) => void | (() => void);
 type TransformOptions$2 = HackOptions<TransformOptions> & {
   transformElementProps?: ElementPropsTransform;
+  extraScopeId?: string;
 };
 export declare class TransformContext<T extends AllNode = AllNode> {
   ir: RootIRNode;
@@ -28559,6 +28565,7 @@ export declare function codeFragmentToString(code: CodeFragment[], context: Code
 //#endregion
 //#region temp/packages/compiler-vapor/src/generate.d.ts
 export type CodegenOptions = Omit<CodegenOptions$1, "optimizeImports"> & {
+  templateFlags?: number;
   genEventHandler?: (operation: SetEventIRNode, context: CodegenContext, handler: CodeFragment[]) => CodeFragment[] | undefined;
   genOperation?: (operation: OperationNode, context: CodegenContext) => CodeFragment[] | undefined;
 };
@@ -29006,6 +29013,7 @@ interface DirectiveTransformResult {
 }
 type TransformOptions$1 = HackOptions$1<TransformOptions> & {
   transformElementProps?: ElementPropsTransform$1;
+  extraScopeId?: string;
 };
 declare class TransformContext$1<T extends AllNode = AllNode> {
   ir: RootIRNode$1;

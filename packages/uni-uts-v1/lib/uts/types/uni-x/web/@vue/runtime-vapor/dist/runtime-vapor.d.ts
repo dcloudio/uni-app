@@ -291,6 +291,7 @@ export declare class VaporComponentInstance<Props extends Record<string, any> = 
   propsDefaults: Record<string, any> | null;
   slots: Slots;
   scopeId?: string | null;
+  uniScopeOwner: GenericComponentInstance | null;
   slotScopeIds?: string[] | null;
   applyCssVars?: (nodes: Block) => void;
   cssVarOutlets?: VaporFragment[];

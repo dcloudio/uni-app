@@ -775,8 +775,13 @@ const TemplateFlags = {
 	"ROOT": 1,
 	"1": "ROOT",
 	"STATIC": 2,
-	"2": "STATIC"
+	"2": "STATIC",
+	"UNI_PAGE_SCOPE": 256,
+	"256": "UNI_PAGE_SCOPE",
+	"UNI_RUNTIME_SCOPE": 512,
+	"512": "UNI_RUNTIME_SCOPE"
 };
+const UNI_APP_SCOPE_ID = "data-v-212d40c7";
 /**
 * Flags used by vapor slot outlets, shared between the compiler and the
 * runtime.
@@ -832,6 +837,7 @@ exports.PatchFlags = PatchFlags;
 exports.ShapeFlags = ShapeFlags;
 exports.SlotFlags = SlotFlags;
 exports.TemplateFlags = TemplateFlags;
+exports.UNI_APP_SCOPE_ID = UNI_APP_SCOPE_ID;
 exports.VaporBlockShape = VaporBlockShape;
 exports.VaporDynamicComponentFlags = VaporDynamicComponentFlags;
 exports.VaporIfFlags = VaporIfFlags;

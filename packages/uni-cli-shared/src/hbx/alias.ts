@@ -154,6 +154,8 @@ export function normalizeUniAppXVaporEnv() {
   const isWebVapor = webVaporConfigured
   if (isWebVapor) {
     process.env.UNI_APP_X = 'true'
+    // Web Vapor 固定使用新样式隔离，在加载插件前统一首次编译、HMR 和 CSS 处理规则。
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
   }
 
   if (process.env.UNI_APP_X_VAPOR === 'true' || isWebVapor) {

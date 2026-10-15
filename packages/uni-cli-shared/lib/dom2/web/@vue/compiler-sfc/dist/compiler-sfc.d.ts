@@ -357,6 +357,7 @@ type BindingMetadata$2 = {
 } & {
   __isScriptSetup?: boolean;
   __propsAliases?: Record<string, string>;
+  __uniStyleIsolation?: string | null;
 };
 //#endregion
 //#region temp/packages/compiler-sfc/src/script/context.d.ts

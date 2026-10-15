@@ -546,6 +546,9 @@ function normalizeUniText(value) {
 	return result;
 }
 //#endregion
+//#region packages/shared/src/vaporFlags.ts
+const UNI_APP_SCOPE_ID = "data-v-212d40c7";
+//#endregion
 //#region packages/compiler-core/src/runtimeHelpers.ts
 const FRAGMENT = Symbol(`Fragment`);
 const TELEPORT = Symbol(`Teleport`);
@@ -26259,6 +26262,7 @@ const defaultOptions = {
 	isCustomElement: NOOP,
 	expressionPlugins: [],
 	scopeId: null,
+	extraScopeId: "",
 	slotted: true,
 	ssr: false,
 	inSSR: false,
@@ -28659,7 +28663,7 @@ function genTemplates(templates, context) {
 	const result = [];
 	templates.forEach(({ content, ns, root, static: isStatic }, i) => {
 		let args = JSON.stringify(content).replace(IMPORT_EXPR_RE, `" + $1 + "`);
-		const flags = (root ? 1 : 0) | (isStatic ? 2 : 0);
+		const flags = (root ? 1 : 0) | (isStatic ? 2 : 0) | context.options.templateFlags;
 		if (flags || ns) args += `, ${flags}`;
 		if (ns) args += `, ${ns}`;
 		result.push(`const ${context.tName(i)} = ${context.helper("template")}(${args})\n`);
@@ -29209,6 +29213,7 @@ var CodegenContext = class {
 			inSSR: false,
 			inline: false,
 			bindingMetadata: {},
+			templateFlags: 0,
 			expressionPlugins: []
 		};
 		this.options = extend(defaultOptions, options);
@@ -29620,6 +29625,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 	let template = "";
 	template += `<${tag}`;
 	if (scopeId) template += ` ${scopeId}`;
+	const extraScopeId = context.options.extraScopeId;
+	if (extraScopeId && extraScopeId !== scopeId) template += ` ${extraScopeId}`;
 	if (propsResult[0]) {
 		const [, dynamicArgs, expressions] = propsResult;
 		context.registerEffect(expressions, {
@@ -31768,8 +31775,12 @@ init_objectSpread2();
 init_objectWithoutProperties();
 const _excluded = ["ssrPreTagTransforms", "nodeTransforms"];
 function compile(source, options = {}) {
-	var _options$expressionPl;
+	var _options$bindingMetad, _options$isUniPage, _options$expressionPl;
 	const resolvedOptions = _objectSpread2(_objectSpread2({}, options), resolveParserOptions(options));
+	const isolation = (_options$bindingMetad = options.bindingMetadata) === null || _options$bindingMetad === void 0 ? void 0 : _options$bindingMetad.__uniStyleIsolation;
+	const isPage = (_options$isUniPage = options.isUniPage) === null || _options$isUniPage === void 0 ? void 0 : _options$isUniPage.call(options, options.filename || "");
+	if (isolation !== null && (isPage ? isolation !== "isolated" : isolation === "app" || isolation === "app-shared" || isolation === "app-and-page")) resolvedOptions.extraScopeId = UNI_APP_SCOPE_ID;
+	resolvedOptions.templateFlags = isolation === null ? 512 : !isPage && isolation === "app-and-page" ? 256 : 0;
 	if (options.isTS && !((_options$expressionPl = options.expressionPlugins) === null || _options$expressionPl === void 0 ? void 0 : _options$expressionPl.includes("typescript"))) resolvedOptions.expressionPlugins = [...options.expressionPlugins || [], "typescript"];
 	const ast = typeof source === "string" ? parse$6(source, resolvedOptions) : source;
 	const [nodeTransforms, directiveTransforms] = getBaseTransformPreset();
@@ -31800,6 +31811,7 @@ function compileSSR(source, options = {}) {
 //#endregion
 //#region packages/compiler-vapor-web/src/index.ts
 var src_exports = /* @__PURE__ */ __exportAll({
+	UNI_APP_SCOPE_ID: () => UNI_APP_SCOPE_ID,
 	compile: () => compile,
 	compileSSR: () => compileSSR,
 	parse: () => parse$3
@@ -44096,6 +44108,19 @@ function processDefineOptions(ctx, node) {
 	if (slotsOption) ctx.error(`${DEFINE_OPTIONS}() cannot be used to declare slots. Use ${DEFINE_SLOTS}() instead.`, slotsOption);
 	return true;
 }
+function resolveUniStyleIsolation(node, value) {
+	if (!node) return value;
+	node = unwrapTSNode(node);
+	if (node.type === "ExportDefaultDeclaration") return resolveUniStyleIsolation(node.declaration, value);
+	if (node.type !== "ObjectExpression") return null;
+	for (const prop of node.properties) if (prop.type === "SpreadElement") value = resolveUniStyleIsolation(prop.argument, value);
+	else if (prop.computed && prop.key.type !== "StringLiteral") value = null;
+	else if (prop.key.type === "Identifier" && prop.key.name === "styleIsolation" || prop.key.type === "StringLiteral" && prop.key.value === "styleIsolation") {
+		const expression = prop.type === "ObjectProperty" && unwrapTSNode(prop.value);
+		value = expression && expression.type === "StringLiteral" ? expression.value : null;
+	}
+	return value;
+}
 //#endregion
 //#region packages/compiler-sfc/src/script/topLevelAwait.ts
 /**
@@ -44458,6 +44483,10 @@ function compileScript(sfc, options) {
 		ctx.helperImports.add(getCssVarsHelper(vapor));
 		ctx.helperImports.add("unref");
 		ctx.s.prependLeft(startOffset, `\n${genCssVarsCode(sfc.cssVars, ctx.bindingMetadata, scopeId, !!options.isProd, vapor)}\n`);
+	}
+	if (vapor) {
+		const isolation = resolveUniStyleIsolation(ctx.optionsRuntimeDecl, resolveUniStyleIsolation(defaultExport));
+		if (isolation !== void 0) Object.defineProperty(ctx.bindingMetadata, "__uniStyleIsolation", { value: isolation });
 	}
 	let args = `__props`;
 	if (ctx.propsTypeDecl) args += `: any`;

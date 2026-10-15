@@ -443,6 +443,7 @@ function normalizeCssVarValue(value) {
 }
 //#endregion
 //#region packages/shared/src/vaporFlags.ts
+const UNI_APP_SCOPE_ID = "data-v-212d40c7";
 function isForwardedSlot(flags) {
 	return !!(flags & 12);
 }
@@ -10840,7 +10841,10 @@ function setElementScopeIdsDeep(el, scopeIds) {
 */
 const stampedTemplates = /* @__PURE__ */ new WeakMap();
 function cloneStampedTemplate(prototype, scopeIds) {
-	if (prototype.nodeType !== 1) return prototype.cloneNode(true);
+	return getStampedTemplate(prototype, scopeIds).cloneNode(true);
+}
+function getStampedTemplate(prototype, scopeIds) {
+	if (prototype.nodeType !== 1) return prototype;
 	let variants = stampedTemplates.get(prototype);
 	if (!variants) stampedTemplates.set(prototype, variants = /* @__PURE__ */ new WeakMap());
 	let stamped = variants.get(scopeIds);
@@ -10849,7 +10853,7 @@ function cloneStampedTemplate(prototype, scopeIds) {
 		setElementScopeIdsDeep(stamped, scopeIds);
 		variants.set(scopeIds, stamped);
 	}
-	return stamped.cloneNode(true);
+	return stamped;
 }
 //#endregion
 //#region packages/runtime-vapor/src/dom/hydration.ts
@@ -13404,6 +13408,8 @@ function createSlot(name = "default", rawProps, fallback, flags = 0) {
 				const el = /* @__PURE__ */ createElement("slot");
 				const ownScopeId = instance.type.__scopeId;
 				if (ownScopeId) el.setAttribute(ownScopeId, "");
+				const uniScopeIds = getUniScopeIds(instance);
+				if (uniScopeIds) setElementScopeIds(el, uniScopeIds);
 				if (outerSlotScopeIds) setElementScopeIds(el, outerSlotScopeIds);
 				const setSlotProps = () => {
 					const slotName = isFunction(name) ? name() : name;
@@ -13501,14 +13507,19 @@ let publishInteropScopeIds = null;
 function setPublishInteropScopeIds(fn) {
 	publishInteropScopeIds = fn;
 }
-function pushOwnRootScopeIds(instance, ids) {
+function pushOwnRootScopeIds(instance, ids, root) {
 	const { scopeId, slotScopeIds } = instance;
 	if (scopeId) (ids || (ids = [])).push(scopeId);
+	const uniScopeIds = getUniScopeIds(instance.uniScopeOwner);
+	if (uniScopeIds) for (let i = 0; i < uniScopeIds.length; i++) {
+		const id = uniScopeIds[i];
+		if (!root || !root.hasAttribute(id)) (ids || (ids = [])).push(id);
+	}
 	if (slotScopeIds) (ids || (ids = [])).push(...slotScopeIds);
 	return ids;
 }
 function hasOwnRootScopeIds(instance) {
-	return !!(instance.parent && (instance.scopeId || instance.slotScopeIds));
+	return !!(instance.parent && (instance.scopeId || instance.slotScopeIds || getUniScopeIds(instance.uniScopeOwner)));
 }
 /**
 * The instance's root-only ids, climbing the effective-root chain so the
@@ -13516,12 +13527,12 @@ function hasOwnRootScopeIds(instance) {
 * Assigned parent blocks ground the climb: a null parent block means an
 * in-setup mount, where the mounting component is never the root.
 */
-function collectRootScopeIds(instance) {
-	let ids = pushOwnRootScopeIds(instance, null);
+function collectRootScopeIds(instance, root) {
+	let ids = pushOwnRootScopeIds(instance, null, root);
 	let current = instance;
 	while (current.parent && isVaporComponent(current.parent) && isRootChainChild(current.parent, current)) {
 		current = current.parent;
-		ids = pushOwnRootScopeIds(current, ids);
+		ids = pushOwnRootScopeIds(current, ids, root);
 	}
 	return ids;
 }
@@ -13543,7 +13554,7 @@ function applyRootScopeIds(instance) {
 		if (hasOwnRootScopeIds(nested)) delegated = true;
 	});
 	if (delegated) return;
-	const scopeIds = collectRootScopeIds(instance);
+	const scopeIds = collectRootScopeIds(instance, root);
 	if (!scopeIds) return;
 	if (root) setElementScopeIds(root, scopeIds);
 	if (isInteropEnabled && publishInteropScopeIds) publishInteropScopeIds(instance.block, scopeIds);
@@ -13564,10 +13575,48 @@ function hydrateComponentScopeIds(instance) {
 	const stampRoot = root && isRecreatedNode(root) ? root : void 0;
 	const publish = isInteropEnabled && publishInteropScopeIds;
 	if (!stampRoot && !publish) return;
-	const scopeIds = collectRootScopeIds(instance);
+	const scopeIds = collectRootScopeIds(instance, stampRoot || void 0);
 	if (!scopeIds) return;
 	if (stampRoot) setElementScopeIds(stampRoot, scopeIds);
 	if (publish) publish(instance.block, scopeIds);
+}
+const appScopeIds = [UNI_APP_SCOPE_ID];
+const emptyPageScope = {
+	ids: [],
+	inherited: appScopeIds
+};
+let pageScopeCache = /* @__PURE__ */ new WeakMap();
+function getUniScopeIds(owner = getScopeOwner()) {
+	if (!owner) return null;
+	const isolation = owner.type.styleIsolation;
+	if (isolation !== "app" && isolation !== "app-shared" && isolation !== "app-and-page") return null;
+	return isolation === "app-and-page" ? getPageScope(owner).inherited : appScopeIds;
+}
+function getPageScopeIds(owner = getScopeOwner()) {
+	if (!owner) return null;
+	const ids = getPageScope(owner).ids;
+	return ids.length ? ids : null;
+}
+function getPageScope(owner) {
+	let scope = pageScopeCache.get(owner);
+	if (scope) return scope;
+	let current = owner;
+	while (current && !current.$pageInstance) current = current.parent;
+	const page = current && current.$pageInstance;
+	const pageId = page && page.type.__scopeId;
+	scope = page && pageScopeCache.get(page) || emptyPageScope;
+	if (page && pageId && scope === emptyPageScope && pageId !== "data-v-212d40c7") {
+		scope = {
+			ids: [pageId],
+			inherited: [UNI_APP_SCOPE_ID, pageId]
+		};
+		pageScopeCache.set(page, scope);
+	}
+	pageScopeCache.set(owner, scope);
+	return scope;
+}
+function resetUniScopeIds() {
+	pageScopeCache = /* @__PURE__ */ new WeakMap();
 }
 //#endregion
 //#region packages/runtime-vapor/src/fragment.ts
@@ -14197,6 +14246,7 @@ function applyComponentCssVars(instance) {
 //#endregion
 //#region packages/runtime-vapor/src/hmr.ts
 function hmrRerender(instance) {
+	resetUniScopeIds();
 	if (instance.isUnmounted) return;
 	if (!instance.type.render) {
 		let parent = instance.parent;
@@ -14247,6 +14297,7 @@ function takeTransitionHooks(block, taken) {
 	}
 }
 function hmrReload(instance, newComp) {
+	resetUniScopeIds();
 	const parentInstance = instance.parent;
 	if (parentInstance) {
 		parentInstance.hmrRerender();
@@ -14620,6 +14671,7 @@ var VaporComponentInstance = class {
 		this.rawSlots = normalizedRawSlots || EMPTY_OBJ;
 		this.slots = normalizedRawSlots ? new Proxy(normalizedRawSlots, dynamicSlotsProxyHandlers) : EMPTY_OBJ;
 		this.scopeId = getCurrentScopeId();
+		this.uniScopeOwner = getScopeOwner();
 		this.slotScopeIds = currentRenderContext.slotScopeIds;
 		if (ce) ce(this);
 		if (this.props === this.attrs) this.accessedAttrs = true;
@@ -14694,6 +14746,8 @@ function createPlainElement(comp, rawProps, rawSlots, isSingleRoot, once, ns) {
 	if (!isHydrating$1 || isRecreatedNode(el)) {
 		const scopeId = getCurrentScopeId();
 		if (scopeId) el.setAttribute(scopeId, "");
+		const uniScopeIds = getUniScopeIds();
+		if (uniScopeIds) setElementScopeIds(el, uniScopeIds);
 		const slotScopeIds = currentRenderContext.slotScopeIds;
 		if (slotScopeIds) setElementScopeIds(el, slotScopeIds);
 	}
@@ -18978,7 +19032,12 @@ function template(html, flags = 0, ns) {
 			return adopted;
 		}
 		if (!node && html[0] !== "<") return /* @__PURE__ */ createTextNode(html);
-		const ret = cloneTemplate(node || (node = parseTemplate(html, ns)));
+		let prototype = node || (node = parseTemplate(html, ns));
+		if (flags & 768) {
+			const ids = flags & 512 ? getUniScopeIds() : getPageScopeIds();
+			if (ids) prototype = getStampedTemplate(prototype, ids);
+		}
+		const ret = cloneTemplate(prototype);
 		if (root) ret.$root = rootMeta || (rootMeta = createRootMeta());
 		return ret;
 	};
@@ -20827,7 +20886,7 @@ function setViewDynamicProps(el, args, staticKeys, isSVG) {
 //#endregion
 //#region packages/runtime-vapor-web/src/apiCreateRecycleFor.ts
 function preCreateRecycleFor(src, getKey, getId) {
-	const exposed = inject("__uni_recycle_view_instance").exposed;
+	const exposed = getCurrentInstance().provides["__uni_recycle_view_instance"].exposed;
 	const source = /* @__PURE__ */ shallowRef();
 	effect(() => {
 		const items = normalizeSource(src());
