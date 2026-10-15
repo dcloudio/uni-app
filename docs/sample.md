@@ -36,11 +36,21 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 ## 应用商店下载量十万级
 - 万象八字：[Android](https://appgallery.huawei.com/app/C115905187)、[iOS](https://apps.apple.com/cn/app/%E4%B8%87%E8%B1%A1%E5%85%AB%E5%AD%97/id6746738853)
 - 金股讯：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
+- 四大认证备考神器：[Andoird](https://sj.qq.com/appdetail/uni.UNIB5F0C16)、[iOS](https://apps.apple.com/cn/app/%E5%9B%9B%E5%A4%A7%E8%AE%A4%E8%AF%81%E5%A4%87%E8%80%83%E7%A5%9E%E5%99%A8/id6455939352)
+- 鲸鲨记账：[Android](https://sj.qq.com/appdetail/com.cyqgxf.jingshajizhang)、[iOS](https://apps.apple.com/cn/app/%E9%B2%B8%E9%B2%A8%E8%AE%B0%E8%B4%A6-ai%E6%99%BA%E8%83%BD%E8%87%AA%E5%8A%A8%E8%AE%B0%E8%B4%A6%E5%AD%98%E9%92%B1%E5%BF%AB%E9%80%9F%E4%B8%93%E4%B8%9A%E5%8A%A9%E6%89%8B/id6751838395)
 ## 其他
+- 时欢：[Android](https://sj.qq.com/appdetail/com.yunyuinteractive.bts)
+- 黔警通：[Android](https://sj.qq.com/appdetail/com.qxnga.qjt)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hmos.com.qxnga.qjt)
+- AI名车宝典：[Android](https://sj.qq.com/appdetail/com.mcbd.aimcbd.util)、[iOS](https://apps.apple.com/cn/app/ai%E5%90%8D%E8%BD%A6%E5%AE%9D%E5%85%B8/id6446267335)
+- 中维商城：[Android](https://sj.qq.com/appdetail/com.wx45.app)
 - 发票匣：[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
 - 阑珊处：[Android](https://app.mi.com/details?id=cn.minisns.lanshanchu)、[iOS](https://apps.apple.com/cn/app/%E9%98%91%E7%8F%8A%E5%A4%84/id6479599905)
 - 知小融：[Android](https://appgallery.huawei.com/app/C118620299)、[iOS](https://apps.apple.com/cn/app/%E7%9F%A5%E5%B0%8F%E8%9E%8D-%E8%9E%8D%E8%B5%84%E8%B4%B7%E6%AC%BE%E5%92%A8%E8%AF%A2%E8%A7%84%E5%88%92%E5%B9%B3%E5%8F%B0/id6801014541?uo=4)
-- 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app )
+- 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app)
+- 爬模智慧平台：[Android](https://sj.qq.com/appdetail/com.sxz.scytzh)		
+- 破壳身份验证器：[Android](https://sj.qq.com/appdetail/com.perk.auth)、[iOS](https://apps.apple.com/cn/app/%E7%A0%B4%E5%A3%B3%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8/id6784588299)
+- 蜂蜂乐到：[Android](https://appgallery.huawei.com/app/C118739499)、[iOS](https://apps.apple.com/cn/app/%E8%9C%82%E8%9C%82%E4%B9%90%E5%88%B0/id6810079399)
+- WOOKU智宠：[Android](https://appgallery.huawei.com/app/C118686217)、[iOS](https://apps.apple.com/cn/app/wooku%E6%99%BA%E5%AE%A0/id6808889360)
 
 由于 uni-app x 没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
 希望大型开发者，能主动给本文档提交pr，贡献案例，帮助uni-app x生态发展。
