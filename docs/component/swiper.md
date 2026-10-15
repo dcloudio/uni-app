@@ -1207,6 +1207,10 @@ defineExpose({
 </style>
 ```
 
+**注意事项**
+
+- swiper 滑动时会视情况阻止默认行为。如需在 swiper-item 内自定义滚动效果，需在相应容器中阻止事件冒泡，此时 swiper 将不再接收该事件，从而不触发滚动。
+
 
 ## swiper-item
 
