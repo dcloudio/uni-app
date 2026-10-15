@@ -116,7 +116,10 @@ export function handleLink(
   // }
 
   if (__VUE_OPTIONS_API__ && parentVm) {
-    ;(parentVm as any).$children.push(vm)
+    const children = (parentVm as any).$children
+    if (children.indexOf(vm) === -1) {
+      children.push(vm)
+    }
   }
   vm.$callCreatedHook()
   // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢
