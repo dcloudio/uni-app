@@ -2798,6 +2798,9 @@ const getDeviceInfo = extend({}, getDeviceInfo$1, {
         ? 'getDeviceBaseInfo'
         : 'getSystemInfoSync',
 });
+const exit = {
+    name: 'exitMiniProgram',
+};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -2810,6 +2813,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   connectSocket: connectSocket,
   createBLEConnection: createBLEConnection,
   downloadFile: downloadFile,
+  exit: exit,
   getAppBaseInfo: getAppBaseInfo,
   getBLEDeviceServices: getBLEDeviceServices,
   getClipboardData: getClipboardData,
