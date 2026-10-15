@@ -23,6 +23,17 @@ async function compileEntry(file: string, vapor: boolean, node: boolean) {
 }
 
 describe('Web 框架组件入口', () => {
+  test('Vapor 窗口直接读取公开根元素，不再使用 VNode 查找', () => {
+    const layout = fs.readFileSync(
+      path.join(root, 'src/framework/components/layout/index-vapor.vue'),
+      'utf8'
+    )
+    expect(layout).not.toContain('resolveOwnerEl')
+    expect(
+      layout.match(/const el = instance\.\$el as HTMLElement/g)
+    ).toHaveLength(3)
+  })
+
   test.each([false, true])('PageHead 静态绑定 Input（Vapor=%s）', (vapor) => {
     const filename = path.join(
       root,

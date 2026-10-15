@@ -5233,7 +5233,8 @@ const getDevRootFragmentEl = (i) => {
 	return el === void 0 ? i.vnode.el : el;
 };
 let publicPropertiesMap;
-const getPublicPropertiesMap = () => {
+let vaporPublicPropertiesMap;
+const getPublicPropertiesMap = (vapor = false) => {
 	if (!publicPropertiesMap) publicPropertiesMap = extend(Object.create(null), {
 		$: (i) => i,
 		$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
@@ -5248,15 +5249,26 @@ const getPublicPropertiesMap = () => {
 		$host: (i) => i.ce,
 		$emit: (i) => i.emit,
 		$options: (i) => resolveMergedOptions(i),
-		$forceUpdate: (i) => {
-			if (i.vapor) return;
-			return i.f || (i.f = () => {
-				queueJob(i.update);
-			});
-		},
+		$forceUpdate: (i) => i.f || (i.f = () => {
+			queueJob(i.update);
+		}),
 		$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
 		$watch: (i) => instanceWatch.bind(i)
 	});
+	if (vapor) {
+		if (!vaporPublicPropertiesMap) {
+			vaporPublicPropertiesMap = extend(Object.create(null), publicPropertiesMap, { $callMethod: (i) => (methodName, ...args) => {
+				const proxy = getComponentPublicInstance(i) || i.proxy;
+				if (!proxy) return null;
+				const method = proxy[methodName];
+				if (method) return method(...args);
+				console.error(`method ${methodName} not found`);
+				return null;
+			} });
+			delete vaporPublicPropertiesMap.$forceUpdate;
+		}
+		return vaporPublicPropertiesMap;
+	}
 	return publicPropertiesMap;
 };
 const isReservedPrefix = (key) => key === "_" || key === "$";
@@ -5288,7 +5300,7 @@ const PublicInstanceProxyHandlers = {
 				return ctx[key];
 			} else if (shouldCacheAccess) accessCache[key] = 0;
 		}
-		const publicGetter = getPublicPropertiesMap()[key];
+		const publicGetter = getPublicPropertiesMap(!!instance.vapor)[key];
 		let cssModule, globalProperties;
 		if (publicGetter) {
 			if (key === "$attrs") {
@@ -5332,9 +5344,9 @@ const PublicInstanceProxyHandlers = {
 		else ctx[key] = value;
 		return true;
 	},
-	has({ _: { data, setupState, accessCache, ctx, appContext, props, type } }, key) {
+	has({ _: { data, setupState, accessCache, ctx, appContext, props, type, vapor } }, key) {
 		let cssModules;
-		return !!(accessCache[key] || data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(getPublicPropertiesMap(), key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
+		return !!(accessCache[key] || data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(getPublicPropertiesMap(!!vapor), key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
 	},
 	defineProperty(target, key, descriptor) {
 		if (descriptor.get != null) target._.accessCache[key] = 0;
@@ -8744,13 +8756,13 @@ function getComponentPublicInstance(instance) {
 	if (instance.exposed) return instance.exposeProxy || (instance.exposeProxy = new Proxy(proxyRefs(markRaw(instance.exposed)), {
 		get(target, key) {
 			if (key in target) return target[key];
-			else if (!instance.vapor) {
-				const publicPropertiesMap = getPublicPropertiesMap();
+			else {
+				const publicPropertiesMap = getPublicPropertiesMap(!!instance.vapor);
 				if (key in publicPropertiesMap) return publicPropertiesMap[key](instance);
 			}
 		},
 		has(target, key) {
-			return key in target || !instance.vapor && key in getPublicPropertiesMap();
+			return key in target || key in getPublicPropertiesMap(!!instance.vapor);
 		}
 	}));
 	else return instance.proxy;
@@ -14935,18 +14947,24 @@ function unmountComponent(instance, parentNode, parentSuspense = instance.suspen
 	}
 }
 function getExposed(instance) {
-	if (instance.exposed) return instance.exposeProxy || (instance.exposeProxy = new Proxy(markRaw(instance.exposed), {
-		get: (target, key) => unref(target[key]),
-		set: (target, key, value, receiver) => {
-			const oldValue = target[key];
-			if (/* @__PURE__ */ isRef(oldValue) && !/* @__PURE__ */ isRef(value)) {
-				oldValue.value = value;
-				return true;
+	if (instance.exposed) {
+		const publicPropertiesMap = getPublicPropertiesMap(true);
+		return instance.exposeProxy || (instance.exposeProxy = new Proxy(markRaw(instance.exposed), {
+			get: (target, key) => {
+				if (key in target) return unref(target[key]);
+				else if (key in publicPropertiesMap) return publicPropertiesMap[key](instance);
+			},
+			has: (target, key) => key in target || key in publicPropertiesMap,
+			set: (target, key, value, receiver) => {
+				const oldValue = target[key];
+				if (/* @__PURE__ */ isRef(oldValue) && !/* @__PURE__ */ isRef(value)) {
+					oldValue.value = value;
+					return true;
+				}
+				return Reflect.set(target, key, value, receiver);
 			}
-			return Reflect.set(target, key, value, receiver);
-		}
-	}));
-	else return instance.proxy;
+		}));
+	} else return instance.proxy;
 }
 function getRootElement(block, visitor) {
 	if (block instanceof Element) return block;
@@ -21783,6 +21801,7 @@ exports.getCurrentWatcher = getCurrentWatcher;
 exports.getDefaultValue = getDefaultValue;
 exports.getFunctionalFallthrough = getFunctionalFallthrough;
 exports.getInheritedScopeIds = getInheritedScopeIds;
+exports.getPublicPropertiesMap = getPublicPropertiesMap;
 exports.getRestElement = getRestElement;
 exports.getTransitionRawChildren = getTransitionRawChildren;
 exports.guardReactiveProps = guardReactiveProps;

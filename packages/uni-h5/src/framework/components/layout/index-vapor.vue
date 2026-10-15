@@ -142,7 +142,6 @@ import {
 import {
   ON_NAVIGATION_BAR_CHANGE,
   RESPONSIVE_MIN_WIDTH,
-  resolveOwnerEl,
 } from '@dcloudio/uni-shared'
 import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
@@ -441,11 +440,11 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
-    if (!instance || !instance.$) {
+    if (!instance) {
       // 目前 top-window、left-window、right-window 是 AsyncComponent，下方的 watch 触发时 instance 可能为 null
       return
     }
-    const el = resolveOwnerEl(instance.$) as HTMLElement
+    const el = instance.$el as HTMLElement
     if (!el) {
       return
     }
@@ -486,10 +485,10 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
-    if (!instance || !instance.$) {
+    if (!instance) {
       return
     }
-    const el = resolveOwnerEl(instance.$) as HTMLElement
+    const el = instance.$el as HTMLElement
     if (!el) {
       return
     }
@@ -530,10 +529,10 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
   const windowRef: Ref<ComponentPublicInstance | null> = ref(null)
   function updateWindow() {
     const instance = windowRef.value as ComponentPublicInstance
-    if (!instance || !instance.$) {
+    if (!instance) {
       return
     }
-    const el = resolveOwnerEl(instance.$) as HTMLElement
+    const el = instance.$el as HTMLElement
     if (!el) {
       return
     }
