@@ -8498,26 +8498,37 @@ function useTheme(pageStyle, onThemeChangeCallback) {
   return reactivePageStyle;
 }
 let _tabBar;
-function useTabBar() {
-  if (!_tabBar) {
-    _tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+let _tabBarStyle;
+function updateTabBarStyle() {
+  const tabBar = _tabBarStyle;
+  const tabBarConfig = _tabBar;
+  if (!tabBar || !tabBarConfig) {
+    return;
   }
-  const tabBar = useTheme(_tabBar, () => {
-    const tabBarStyle = parseTheme(_tabBar);
-    tabBar.backgroundColor = tabBarStyle.backgroundColor;
-    tabBar.borderStyle = tabBarStyle.borderStyle;
-    tabBar.color = tabBarStyle.color;
-    tabBar.selectedColor = tabBarStyle.selectedColor;
-    tabBar.blurEffect = tabBarStyle.blurEffect;
-    tabBar.midButton = tabBarStyle.midButton;
-    if (tabBarStyle.list && tabBarStyle.list.length) {
-      tabBarStyle.list.forEach((item, index2) => {
-        tabBar.list[index2].iconPath = item.iconPath;
-        tabBar.list[index2].selectedIconPath = item.selectedIconPath;
-      });
+  const tabBarStyle = parseTheme(tabBarConfig);
+  tabBar.backgroundColor = tabBarStyle.backgroundColor;
+  tabBar.borderStyle = tabBarStyle.borderStyle;
+  tabBar.color = tabBarStyle.color;
+  tabBar.selectedColor = tabBarStyle.selectedColor;
+  tabBar.blurEffect = tabBarStyle.blurEffect;
+  tabBar.midButton = tabBarStyle.midButton;
+  if (tabBarStyle.list && tabBarStyle.list.length) {
+    tabBarStyle.list.forEach((item, index2) => {
+      tabBar.list[index2].iconPath = item.iconPath;
+      tabBar.list[index2].selectedIconPath = item.selectedIconPath;
+    });
+  }
+}
+function useTabBar() {
+  if (!_tabBarStyle) {
+    const tabBar = __uniConfig.tabBar;
+    if (!tabBar) {
+      return;
     }
-  });
-  return tabBar;
+    _tabBar = reactive(initTabBarI18n(tabBar));
+    _tabBarStyle = useTheme(_tabBar, updateTabBarStyle);
+  }
+  return _tabBarStyle;
 }
 function cssSupports(css) {
   const supports = window.CSS && window.CSS.supports;
