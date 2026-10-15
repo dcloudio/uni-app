@@ -61,67 +61,88 @@
   </uni-tabbar>
 </template>
 
-<script>
+<script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getRealPath } from '@dcloudio/uni-h5'
 import { useTabBar } from '@dcloudio/uni-h5'
 
-export default {
+defineOptions({
   name: 'CustomTabBar',
-  props: {
-    selected: {
-      type: Number,
-      default: 0
-    },
-    showIcon: {
-      type: Boolean,
-      default: true
-    },
-    direction: {
-      type: String,
-      default: 'horizontal'
-    }
-  },
-  setup(props, { emit }) {
-    const tabBar = useTabBar()
-    const route = useRoute()
-    const hasTabBar = computed(() => tabBar.list && tabBar.list.length)
-    const selectedIndex = ref(props.selected)
-    watch(() => props.selected, value => selectedIndex.value = value)
-    watch(() => selectedIndex.value, value => tabBar.selectedIndex = value)
-    watch(() => {
-      const meta = route.meta
-      return [meta.isTabBar, meta.route]
-    }, ([isTabBar, pagePath]) => {
-      if (isTabBar) {
-        const index = tabBar.list.findIndex(item => pagePath === item.pagePath)
-        if (index > -1) {
-          selectedIndex.value = index
-        }
-      }
-    })
-    function switchTab(item, index) {
-      selectedIndex.value = index
-      const detail = {
-        index,
-        text: item.text,
-        pagePath: item.pagePath,
-      }
-      emit('onTabItemTap', detail)
-    }
+})
 
-    return {
-      tabBar,
-      getRealPath,
-      selectedIndex,
-      hasTabBar,
-      showTabBar: true,
-      switchTab,
+const props = defineProps({
+  selected: {
+    type: Number,
+    default: 0,
+  },
+  showIcon: {
+    type: Boolean,
+    default: true,
+  },
+  direction: {
+    type: String,
+    default: 'horizontal',
+  },
+})
+
+const emit = defineEmits()
+const tabBar = useTabBar()!
+const route = useRoute()
+const hasTabBar = computed(() => tabBar.list && tabBar.list.length)
+const selectedIndex = ref(props.selected)
+const showTabBar = ref(true)
+watch(
+  () => props.selected,
+  (value) => (selectedIndex.value = value)
+)
+watch(
+  () => selectedIndex.value,
+  (value) => (tabBar.selectedIndex = value)
+)
+watch(
+  () => {
+    const meta = route.meta
+    return [meta.isTabBar, meta.route]
+  },
+  ([isTabBar, pagePath]) => {
+    if (isTabBar) {
+      const index = tabBar.list.findIndex((item) => pagePath === item.pagePath)
+      if (index > -1) {
+        selectedIndex.value = index
+      }
     }
   }
+)
+
+function switchTab(item: UniApp.TabBarItemOptions, index: number) {
+  selectedIndex.value = index
+  const detail = {
+    index,
+    text: item.text,
+    pagePath: item.pagePath,
+  }
+  emit('onTabItemTap', detail)
 }
+
+// 保留迁移前公开实例可访问的 props 和 setup 返回成员。
+defineExpose({
+  get selected() {
+    return props.selected
+  },
+  get showIcon() {
+    return props.showIcon
+  },
+  get direction() {
+    return props.direction
+  },
+  tabBar,
+  getRealPath,
+  selectedIndex,
+  hasTabBar,
+  showTabBar,
+  switchTab,
+})
 </script>
 
-<style>
-</style>
+<style></style>
