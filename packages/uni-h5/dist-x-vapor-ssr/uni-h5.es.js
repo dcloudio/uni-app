@@ -1,4 +1,4 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, resolveOwnerEl, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
 import { isArray, isString, extend, isFunction, capitalize, camelize, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, inject, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, defineComponent as defineComponent$2, mergeProps, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, provide, isReactive, useSSRContext, resolveDynamicComponent, onServerPrefetch, ssrContextKey, withCtx, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, logError } from "vue";
@@ -4861,10 +4861,10 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       const windowRef = ref(null);
       function updateWindow() {
         const instance = windowRef.value;
-        if (!instance || !instance.$) {
+        if (!instance) {
           return;
         }
-        const el = resolveOwnerEl(instance.$);
+        const el = instance.$el;
         if (!el) {
           return;
         }
@@ -4900,10 +4900,10 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       const windowRef = ref(null);
       function updateWindow() {
         const instance = windowRef.value;
-        if (!instance || !instance.$) {
+        if (!instance) {
           return;
         }
-        const el = resolveOwnerEl(instance.$);
+        const el = instance.$el;
         if (!el) {
           return;
         }
@@ -4939,10 +4939,10 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       const windowRef = ref(null);
       function updateWindow() {
         const instance = windowRef.value;
-        if (!instance || !instance.$) {
+        if (!instance) {
           return;
         }
-        const el = resolveOwnerEl(instance.$);
+        const el = instance.$el;
         if (!el) {
           return;
         }
