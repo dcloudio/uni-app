@@ -38,7 +38,7 @@ uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率和解压速度更�
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | filePath | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 应用资源文件（wgt）路径 |
-| ignoreVersion | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 忽略 WGT version.name 校验，默认值为 false。<br/>uniCompilerRuleVersion 仍会校验。 |
+| ignoreVersion | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 忽略 WGT version.name 校验，默认值为 false。<br/>compilerRuleVersion 仍会校验。 |
 | success | (result: InstallWgtSuccess) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 应用资源文件安装成功回调 |
 | fail | (result: [InstallWgtFail](#installwgtfail-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 应用资源文件安装失败回调 |
 | complete | (result: any) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 应用资源文件安装完成回调 | 
@@ -73,8 +73,8 @@ uni-app 的 wgt 是zip格式。uni-app x 的 wgt 是压缩率和解压速度更�
 | 103614 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT manifest appId 与 Runtime appId 不一致。 |
 | 103615 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 要求的最低 Runtime 版本高于当前 Runtime 版本。 |
 | 103617 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | manifest 缺少 uni-app-x.minRuntimeVersion。 |
-| 103618 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | manifest 缺少 uni-app-x.uniCompilerRuleVersion。 |
-| 103619 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 与 Runtime 的 uniCompilerRuleVersion 不一致。 |
+| 103618 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | manifest 缺少 uni-app-x.compilerRuleVersion。 |
+| 103619 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | WGT 与 Runtime 的 compilerRuleVersion 不一致。 |
 | 1030601 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | filePath 参数为空或对应文件不存在。 |
 
 
