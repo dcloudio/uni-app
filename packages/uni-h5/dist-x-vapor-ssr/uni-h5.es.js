@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, resolveOwnerEl, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
 import { isArray, isString, extend, isFunction, capitalize, camelize, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
-import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, inject, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, defineComponent as defineComponent$2, mergeProps, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, provide, isReactive, useSSRContext, resolveDynamicComponent, onServerPrefetch, ssrContextKey, resolveComponent, withCtx, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, logError } from "vue";
+import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, inject, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, defineComponent as defineComponent$2, mergeProps, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, provide, isReactive, useSSRContext, resolveDynamicComponent, onServerPrefetch, ssrContextKey, withCtx, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, logError } from "vue";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderVNode, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -839,13 +839,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$j = 0;
+let index$i = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance = getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$j++}`;
+  const id2 = vm.id || `context${index$i++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -1630,7 +1630,7 @@ defineComponent(
 );
 class UniButtonElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -2187,7 +2187,7 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$d,
   emits: ["confirm", ...emit],
@@ -5602,7 +5602,6 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
       return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
     }
     return (_ctx, _push, _parent, _attrs) => {
-      const _component_Input = resolveComponent("Input");
       _push(`<uni-page-head${ssrRenderAttrs(mergeProps({
         "uni-page-head-type": unref(navigationBar).type || "default"
       }, _attrs), "uni-page-head")}><div class="${ssrRenderClass(unref(clazz))}" style="${ssrRenderStyle(unref(style))}"><div class="uni-page-head-hd">`);
@@ -5660,7 +5659,7 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
         }
         _push(`</div>`);
         if (unref(navigationBar).searchInput.disabled) {
-          _push(ssrRenderComponent(_component_Input, {
+          _push(ssrRenderComponent(unref(Input), {
             disabled: true,
             style: { color: unref(navigationBar).searchInput.color },
             "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -5669,7 +5668,7 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
             onClick: ($event) => unref(searchOnClick) && unref(searchOnClick)($event)
           }, null, _parent));
         } else {
-          _push(ssrRenderComponent(_component_Input, {
+          _push(ssrRenderComponent(unref(Input), {
             focus: unref(navigationBar).searchInput.autoFocus,
             style: { color: unref(navigationBar).searchInput.color },
             "placeholder-style": "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -16526,7 +16525,7 @@ export {
   index$4 as AdDraw,
   _sfc_main$m as AsyncErrorComponent,
   _sfc_main$n as AsyncLoadingComponent,
-  index$i as Button,
+  index$h as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
   _sfc_main$g as Checkbox,
@@ -16536,7 +16535,7 @@ export {
   index$f as Editor,
   _sfc_main$e as Form,
   index$e as Icon,
-  index$h as Input,
+  Input,
   _sfc_main$d as Label,
   _sfc_main$o as LayoutComponent,
   index$2 as LivePlayer,
