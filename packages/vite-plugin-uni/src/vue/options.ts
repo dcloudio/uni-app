@@ -367,8 +367,7 @@ export function initPluginVueOptions(
             descriptor.scriptSetup?.lang ||
             descriptor.script?.lang ||
             defaultLang
-          // App DOM2 会为代码生成强制设置 plugin-vue 的 isProduction，
-          // 因此提示元信息必须依据真实运行模式生成。
+          // 语言提示元信息仅用于开发模式，发行时不生成。
           ;(
             descriptor as SFCDescriptor & {
               __uniAppXVaporSfcMeta?: {

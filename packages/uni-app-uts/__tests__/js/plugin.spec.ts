@@ -77,6 +77,67 @@ describe('uni app JS engine plugin', () => {
     expect(config.plugins.map((plugin) => plugin.name)).toContain('uni:app-js')
   })
 
+  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+    'DOM2 保留真实的开发／发行模式及现有编译设置：%s',
+    (platform) => {
+      for (const isProduction of [false, true]) {
+        const options = {
+          isProduction,
+          devToolsEnabled: true,
+          template: { transformAssetUrls: true },
+        }
+        const plugin = createUniAppJsEnginePlugin(platform)()
+        const config = {
+          plugins: [
+            { name: 'uni:app-main' },
+            { name: 'vite:vue', api: { options } },
+          ],
+        } as unknown as ResolvedConfig
+        const configResolved =
+          typeof plugin.configResolved === 'function'
+            ? plugin.configResolved
+            : plugin.configResolved!.handler
+
+        configResolved(config)
+
+        expect(options.isProduction).toBe(isProduction)
+        expect(options.devToolsEnabled).toBe(false)
+        expect(options.template.transformAssetUrls).toBe(false)
+      }
+    }
+  )
+
+  test.each([false, true])(
+    '非 DOM2 保留 Vue 插件选项（production=%s）',
+    (isProduction) => {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      const options = {
+        isProduction,
+        devToolsEnabled: true,
+        template: { transformAssetUrls: true },
+      }
+      const plugin = createUniAppJsEnginePlugin('app-android')()
+      const config = {
+        plugins: [
+          { name: 'uni:app-main' },
+          { name: 'vite:vue', api: { options } },
+        ],
+      } as unknown as ResolvedConfig
+      const configResolved =
+        typeof plugin.configResolved === 'function'
+          ? plugin.configResolved
+          : plugin.configResolved!.handler
+
+      configResolved(config)
+
+      expect(options).toEqual({
+        isProduction,
+        devToolsEnabled: true,
+        template: { transformAssetUrls: true },
+      })
+    }
+  )
+
   describe('app service manual chunks', () => {
     const inputDir = '/project'
     const builtInPinia = '/hbuilderx/lib/dom2/pinia/dist/pinia.mjs'

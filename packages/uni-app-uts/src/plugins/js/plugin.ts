@@ -321,13 +321,12 @@ export function createUniAppJsEnginePlugin(
         if (!isDom2) {
           insertBeforePlugin(uniAppJsPlugin(config), 'uni:app-main', config)
         }
-        // 如果开启了 vapor 模式，则禁用 vue 的 devtools，让 @vitejs/plugin-vue 不管是开发还是发行，均生成发行代码
-        // 理论上非 vapor 也应该禁用，但为了不引发其他问题，暂时只禁用 vapor 模式
+        // DOM2 插件已独立启用模板内联，无需强制生产模式，保留开发期的 props 校验等元信息。
+        // 仅保留 DOM2 的 devtools 禁用设置，不改变非 DOM2 行为。
         if (isDom2) {
           const plugin = config.plugins.find((p) => p.name === 'vite:vue')
           if (plugin?.api?.options) {
             plugin.api.options.devToolsEnabled = false
-            plugin.api.options.isProduction = true
             // TODO 临时禁用，目前有bug 等待 https://github.com/vuejs/core/pull/13630 合并
             // 使用内部自己定义的 transformAssetUrls
             plugin.api.options.template.transformAssetUrls = false
