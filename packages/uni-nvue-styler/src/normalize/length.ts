@@ -1,6 +1,7 @@
 import {
   LENGTH_REGEXP,
   type Normalize,
+  type NormalizeOptions,
   SUPPORT_CSS_UNIT,
   supportedEnumReason,
   supportedUnitWithAutofixedReason,
@@ -35,49 +36,58 @@ function createNormalizeLength({
       return { value: v }
     }
 
-    const match = v.match(LENGTH_REGEXP)
-    if (match) {
-      var unit = match[1]
-      const uvue = options.type === 'uvue'
-      if (uvue) {
-        if (!unit || (unit === 'px' && removePx)) {
-          return { value: parseFloat(v) }
-        } else if (
-          unit === 'px' ||
-          unit === 'rpx' ||
-          // 只有line-height支持em单位
-          (unit === 'em' && property === 'line-height')
-        ) {
-          return { value: v }
-        }
-      } else {
-        // nvue
-        if (!unit || unit === 'px') {
-          return { value: parseFloat(v) }
-        }
-        if (SUPPORT_CSS_UNIT.includes(unit)) {
-          return { value: v }
-        } else {
-          return {
-            value: parseFloat(v),
-            reason(k, v, result) {
-              return supportedUnitWithAutofixedReason(unit, v, result)
-            },
-          }
-        }
-      }
-    }
-
-    return {
-      value: null,
-      reason(k, v, result) {
-        return supportedEnumReason(k, v, ['number', 'pixel'])
-      },
-    }
+    return normalizeLengthValue(v, options, removePx, property)
   }
 }
 
-export const normalizeLength = createNormalizeLength({
+export function normalizeLengthValue(
+  v: string,
+  options: NormalizeOptions,
+  removePx?: boolean,
+  property?: string
+): ReturnType<Normalize> {
+  const match = v.match(LENGTH_REGEXP)
+  if (match) {
+    var unit = match[1]
+    const uvue = options.type === 'uvue'
+    if (uvue) {
+      if (!unit || (unit === 'px' && removePx)) {
+        return { value: parseFloat(v) }
+      } else if (
+        unit === 'px' ||
+        unit === 'rpx' ||
+        // 只有line-height支持em单位
+        (unit === 'em' && property === 'line-height')
+      ) {
+        return { value: v }
+      }
+    } else {
+      // nvue
+      if (!unit || unit === 'px') {
+        return { value: parseFloat(v) }
+      }
+      if (SUPPORT_CSS_UNIT.includes(unit)) {
+        return { value: v }
+      } else {
+        return {
+          value: parseFloat(v),
+          reason(k, v, result) {
+            return supportedUnitWithAutofixedReason(unit, v, result)
+          },
+        }
+      }
+    }
+  }
+
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['number', 'pixel'])
+    },
+  }
+}
+
+export const normalizeLength = /*#__PURE__*/ createNormalizeLength({
   removePx: true,
 })
 

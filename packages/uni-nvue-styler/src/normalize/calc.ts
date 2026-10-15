@@ -52,9 +52,11 @@ const DOM2_CALC_PROPERTIES = [
   'z-index',
 ] as const
 
-const DOM2_CALC_PROPERTY_SET = new Set<string>(DOM2_CALC_PROPERTIES)
-const DOM2_CAMELIZED_CALC_PROPERTY_SET = new Set(
-  DOM2_CALC_PROPERTIES.map(camelize)
+const DOM2_CALC_PROPERTY_SET = /*#__PURE__*/ new Set<string>(
+  DOM2_CALC_PROPERTIES
+)
+const DOM2_CAMELIZED_CALC_PROPERTY_SET = /*#__PURE__*/ new Set(
+  /*#__PURE__*/ DOM2_CALC_PROPERTIES.map(camelize)
 )
 
 export function createNormalizeDom2Calc(

@@ -1,11 +1,5 @@
 import { type Normalize, supportedEnumReason } from '../utils'
-import {
-  normalizeLength,
-  normalizeLengthWithOptions,
-  normalizePercent,
-} from './length'
-
-const normalizeLengthWithUnit = normalizeLengthWithOptions({ removePx: false })
+import { normalizeLengthValue, normalizePercent } from './length'
 
 export const normalizeGap: Normalize = (value, options) => {
   const text = String(value).trim()
@@ -16,10 +10,7 @@ export const normalizeGap: Normalize = (value, options) => {
       ),
     }
   }
-  let result = (options.keepUnitPx ? normalizeLengthWithUnit : normalizeLength)(
-    text,
-    options
-  )
+  let result = normalizeLengthValue(text, options, !options.keepUnitPx)
   if (result.value === null) {
     result = normalizePercent(text, options)
   }

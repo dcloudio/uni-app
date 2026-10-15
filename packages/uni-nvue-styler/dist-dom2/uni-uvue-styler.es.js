@@ -1,4 +1,4 @@
-import { hyphenate, camelize } from '@vue/shared';
+import { hyphenate } from '@vue/shared';
 
 function createDecl(prop, value, important, raws, source) {
     const decl = {
@@ -1038,68 +1038,21 @@ function parseAnimation(value) {
     };
 }
 
-const DOM2_CALC_PROPERTIES = [
-    'width',
-    'height',
-    'min-width',
-    'min-height',
-    'max-width',
-    'max-height',
-    'top',
-    'right',
-    'bottom',
-    'left',
-    'margin',
-    'margin-top',
-    'margin-right',
-    'margin-bottom',
-    'margin-left',
-    'padding',
-    'padding-top',
-    'padding-right',
-    'padding-bottom',
-    'padding-left',
-    'flex-basis',
-    'gap',
-    'row-gap',
-    'column-gap',
-    'border',
-    'border-top',
-    'border-right',
-    'border-bottom',
-    'border-left',
-    'border-width',
-    'border-top-width',
-    'border-right-width',
-    'border-bottom-width',
-    'border-left-width',
-    'border-radius',
-    'border-top-left-radius',
-    'border-top-right-radius',
-    'border-bottom-right-radius',
-    'border-bottom-left-radius',
-    'transform',
-    'transform-origin',
-    'box-shadow',
-    'text-shadow',
-    'backdrop-filter',
-    'opacity',
-    'font-size',
-    'line-height',
-    'z-index',
-];
-const DOM2_CALC_PROPERTY_SET = new Set(DOM2_CALC_PROPERTIES);
-new Set(DOM2_CALC_PROPERTIES.map(camelize));
-function normalizeCalc(value, property, options) {
-    const normalizedValue = value.trim();
-    if (!/^calc\(/i.test(normalizedValue)) {
-        return;
-    }
-    const canonicalValue = `calc${normalizedValue.slice(4)}`;
-    if (options.dom2 &&
-        property &&
-        DOM2_CALC_PROPERTY_SET.has(property)) {
-        return { value: canonicalValue };
+function normalizeLengthValue(v, options, removePx, property) {
+    const match = v.match(LENGTH_REGEXP);
+    if (match) {
+        var unit = match[1];
+        {
+            if (!unit || (unit === 'px' && removePx)) {
+                return { value: parseFloat(v) };
+            }
+            else if (unit === 'px' ||
+                unit === 'rpx' ||
+                // 只有line-height支持em单位
+                (unit === 'em' && property === 'line-height')) {
+                return { value: v };
+            }
+        }
     }
     return {
         value: null,
@@ -1108,50 +1061,6 @@ function normalizeCalc(value, property, options) {
         },
     };
 }
-
-function createNormalizeLength({ removePx, property, } = {}) {
-    return (v, options) => {
-        v = (v || '').toString();
-        const calcResult = normalizeCalc(v, property, options);
-        if (calcResult) {
-            return calcResult;
-        }
-        if (!v.includes('calc(') &&
-            ((/var\([^)]+\)/.test(v) &&
-                (/--uni-safe-area-inset-(top|bottom|left|right)/.test(v) ||
-                    /--status-bar-height/.test(v))) ||
-                /--window-(top|bottom)/.test(v) ||
-                /env\(([^)]+)\)/.test(v))) {
-            v = v.replace(/\s/g, '');
-            return { value: v };
-        }
-        const match = v.match(LENGTH_REGEXP);
-        if (match) {
-            var unit = match[1];
-            {
-                if (!unit || (unit === 'px' && removePx)) {
-                    return { value: parseFloat(v) };
-                }
-                else if (unit === 'px' ||
-                    unit === 'rpx' ||
-                    // 只有line-height支持em单位
-                    (unit === 'em' && property === 'line-height')) {
-                    return { value: v };
-                }
-            }
-        }
-        return {
-            value: null,
-            reason(k, v, result) {
-                return supportedEnumReason(k, v, ['number', 'pixel']);
-            },
-        };
-    };
-}
-const normalizeLength = createNormalizeLength({
-    removePx: true,
-});
-const normalizeLengthWithOptions = createNormalizeLength;
 const normalizePercent = (v) => {
     v = (v || '').toString();
     const match = v.match(LENGTH_REGEXP);
@@ -1169,7 +1078,6 @@ const normalizePercent = (v) => {
     };
 };
 
-const normalizeLengthWithUnit = normalizeLengthWithOptions({ removePx: false });
 const normalizeGap = (value, options) => {
     const text = String(value).trim();
     if (/^(calc|var|env)\(/i.test(text) && text.endsWith(')')) {
@@ -1177,7 +1085,7 @@ const normalizeGap = (value, options) => {
             value: text.replace(/^(calc|var|env)(?=\()/i, (name) => name.toLowerCase()),
         };
     }
-    let result = (options.keepUnitPx ? normalizeLengthWithUnit : normalizeLength)(text, options);
+    let result = normalizeLengthValue(text, options, !options.keepUnitPx);
     if (result.value === null) {
         result = normalizePercent(text);
     }
@@ -1253,7 +1161,8 @@ const columnGap = 'column-gap' ;
 const transformGap = (decl, warn) => {
     const { value, important, raws, source } = decl;
     const values = (value.trim() ? splitValues(value) : ['']).map((value) => value
-        ? normalizeGap(value, { type: 'uvue', dom2: true, keepUnitPx: true }).value
+        ? normalizeGap(value, { type: 'uvue', dom2: true, keepUnitPx: true })
+            .value
         : '');
     if (values.length > 2 || values.some((value) => value === null)) {
         if (warn) {
