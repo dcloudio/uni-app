@@ -640,3 +640,7 @@ export const getDeviceInfo = extend({}, _getDeviceInfo, {
     ? 'getDeviceBaseInfo'
     : 'getSystemInfoSync',
 })
+
+export const exit = {
+  name: 'exitMiniProgram',
+}
