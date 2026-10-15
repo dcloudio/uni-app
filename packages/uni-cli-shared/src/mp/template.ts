@@ -97,10 +97,6 @@ export interface MiniProgramCompilerOptions {
      * 合并虚拟化节点属性（class、style）
      */
     mergeVirtualHostAttributes?: boolean
-    /**
-     * 将当前组件的 Vue ID 传递给跨 SFC 的子组件
-     */
-    passParentVueId?: boolean
   }
   directive: string
   emitFile?: (emittedFile: EmittedAsset) => string

@@ -66,7 +66,6 @@ export const miniProgram: MiniProgramCompilerOptions = {
   component: {
     dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN_BIND,
-    passParentVueId: true,
   },
   filter: {
     lang: 'sjs',

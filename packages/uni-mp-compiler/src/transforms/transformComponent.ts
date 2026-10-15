@@ -15,7 +15,6 @@ import {
   createBindDirectiveNode,
   isAttributeNode,
   isDirectiveNode,
-  isUniPageFile,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -29,7 +28,6 @@ import {
   ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_ID,
-  ATTR_VUE_PARENT_ID,
   ATTR_VUE_PROPS,
   ATTR_VUE_REF,
   ATTR_VUE_REF_IN_FOR,
@@ -98,29 +96,19 @@ function addVueId(node: ComponentNode, context: TransformContext) {
     vueId = `'${vueId}'` + indexs.reverse().join('')
   }
 
-  const passParentVueId =
-    context.miniProgram.component?.passParentVueId &&
-    !context.isMiniProgramComponent(node.tag)
-  const parentVueIds = passParentVueId
-    ? context.vueIds.slice().reverse()
-    : currentVueId
-    ? [currentVueId]
-    : []
-
   context.vueIds.push(vueId)
 
-  if (passParentVueId && !isUniPageFile(context.filename)) {
-    node.props.push(
-      createAttributeNode(ATTR_VUE_PARENT_ID, "{{uI+(uPI?','+uPI:'')}}")
-    )
-  }
-
-  const vueIds = [vueId, ...parentVueIds]
-  let value = vueIds.join(',')
-  if (vueIds.some((id) => id.includes('+'))) {
-    value = vueIds
-      .map((id) => (id.includes('+') ? `(${id})` : `'${id}'`))
-      .join("+','+")
+  let value = vueId
+  if (currentVueId) {
+    const isParentDynamic = currentVueId.includes('+')
+    const isCurrentDynamic = vueId.includes('+')
+    if (isParentDynamic || isCurrentDynamic) {
+      value = `(${vueId})+','+(${
+        isParentDynamic ? currentVueId : `'${currentVueId}'`
+      })`
+    } else {
+      value = vueId + ',' + currentVueId
+    }
   }
   if (value.includes('+')) {
     return node.props.push(createBindDirectiveNode(ATTR_VUE_ID, value))
@@ -148,7 +136,6 @@ const builtInProps = [
   'class',
   'style',
   ATTR_VUE_ID,
-  ATTR_VUE_PARENT_ID,
   ATTR_VUE_PROPS,
   ATTR_VUE_SLOTS,
   ATTR_VUE_REF,

@@ -29,7 +29,6 @@ export interface CustomComponentInstanceProperty {
   vm?: ComponentPublicInstance
   _$vueId: string
   _$vuePid?: string
-  _$vuePids?: string
   _$setRef?: (fn: Function) => void
   _pendingUP?: string // 缓存在 attached 之前触发的 observer 的 uP 值
 }
@@ -50,7 +49,6 @@ export type MPComponentInstance = Component.Instance<
 
 export interface RelationOptions extends Record<string, unknown> {
   vuePid: string | undefined
-  vuePids?: string
   parent?: ComponentPublicInstance
 }
 

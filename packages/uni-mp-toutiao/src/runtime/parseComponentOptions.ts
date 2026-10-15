@@ -6,10 +6,18 @@ import {
   nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 
-import { findVmByVueId, findVmByVueIdPath } from '@dcloudio/uni-mp-core'
+import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
 import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
+import {
+  type RelationDetail,
+  type RelationEvent,
+  createPendingComponent,
+  isPendingVirtualHost,
+  queueRelation,
+  takePendingRelations,
+} from './componentRelation'
 
 export { initLifetimes } from './componentLifetimes'
 
@@ -26,13 +34,6 @@ export function isPage(mpInstance: MPComponentInstance) {
   )
 }
 
-interface RelationOptions {
-  vuePid: string
-  vuePids?: string
-  nodeId: number
-  webviewId: string
-}
-
 export const instances: Record<
   string,
   ComponentPublicInstance | MPComponentInstance
@@ -42,6 +43,10 @@ export function initRelation(
   mpInstance: MPComponentInstance,
   detail: Record<string, any>
 ) {
+  if (__PLATFORM__ === 'mp-toutiao') {
+    return initToutiaoRelation(mpInstance, detail)
+  }
+
   // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
   const nodeId = (hasOwn(mpInstance, '__nodeId__')
     ? mpInstance.__nodeId__
@@ -51,7 +56,7 @@ export function initRelation(
 
   // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
   if (
-    (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') &&
+    __PLATFORM__ === 'mp-lark' &&
     mpInstance?.$vm?.$options?.options?.virtualHost
   ) {
     nextSetDataTick(mpInstance, () => {
@@ -59,7 +64,6 @@ export function initRelation(
         {
           detail: {
             vuePid: detail.vuePid,
-            vuePids: detail.vuePids,
             nodeId,
             webviewId,
             // 如果是 virtualHost，则需要找到页面 vm 传递给 handleLink，因为此时的上下文是不对的，需要从页面 vm 递归查找
@@ -72,33 +76,60 @@ export function initRelation(
   } else {
     mpInstance.triggerEvent('__l', {
       vuePid: (detail as any).vuePid,
-      vuePids: (detail as any).vuePids,
       nodeId,
       webviewId,
     })
   }
 }
 
+function initToutiaoRelation(
+  mpInstance: MPComponentInstance,
+  detail: Record<string, any>
+) {
+  const nodeId = (hasOwn(mpInstance, '__nodeId__')
+    ? mpInstance.__nodeId__
+    : mpInstance.__nodeid__) as unknown as number
+  const webviewId = mpInstance.__webviewId__ + ''
+  instances[webviewId + '_' + nodeId] = mpInstance.$vm || mpInstance
+  const relationDetail: RelationDetail = {
+    vuePid: detail.vuePid,
+    nodeId,
+    webviewId,
+  }
+
+  if (isPendingVirtualHost(mpInstance)) {
+    nextSetDataTick(mpInstance, () => {
+      relationDetail.pageVm = instances[
+        webviewId + '_0'
+      ] as ComponentPublicInstance
+      handleLink.call(mpInstance, { detail: relationDetail })
+    })
+  } else {
+    mpInstance.triggerEvent('__l', relationDetail)
+  }
+}
+
 export function handleLink(
   this: MPComponentInstance,
   {
-    detail: { vuePid, vuePids, nodeId, webviewId, pageVm },
+    detail: { vuePid, nodeId, webviewId, pageVm },
   }: {
-    detail: RelationOptions & { pageVm?: ComponentPublicInstance }
+    detail: RelationDetail
   }
 ) {
+  if (__PLATFORM__ === 'mp-toutiao') {
+    return handleToutiaoLink.call(this, {
+      detail: { vuePid, nodeId, webviewId, pageVm },
+    })
+  }
+
   const vm = instances[webviewId + '_' + nodeId] as ComponentPublicInstance
   if (!vm) {
     return
   }
 
   let parentVm
-  if (vuePids) {
-    pageVm = pageVm || (instances[webviewId + '_0'] as ComponentPublicInstance)
-    if (pageVm) {
-      parentVm = findVmByVueIdPath(pageVm, vuePids)
-    }
-  } else if (vuePid) {
+  if (vuePid) {
     parentVm = findVmByVueId(pageVm || this.$vm!, vuePid)
     // fallback从页面查找，当组件嵌套关系比较复杂时，可能会需要回退到这里，比如: question/207952 开发者自定义组件里引用了uni-grid组件（该组件使用了provide/inject,强依赖父子关系）
     if (!pageVm) {
@@ -124,10 +155,7 @@ export function handleLink(
   // }
 
   if (__VUE_OPTIONS_API__ && parentVm) {
-    const children = (parentVm as any).$children
-    if (children.indexOf(vm) === -1) {
-      children.push(vm)
-    }
+    ;(parentVm as any).$children.push(vm)
   }
   vm.$callCreatedHook()
   // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢
@@ -137,6 +165,43 @@ export function handleLink(
     vm.$.update()
   }
   nextSetDataTick(this, () => {
+    vm.$callHook('mounted')
+    vm.$callHook(ON_READY)
+  })
+}
+
+function handleToutiaoLink(this: MPComponentInstance, event: RelationEvent) {
+  const { vuePid, nodeId, webviewId, pageVm } = event.detail
+  const childMPInstance = instances[
+    webviewId + '_' + nodeId
+  ] as MPComponentInstance
+  if (!childMPInstance) {
+    return
+  }
+
+  const relationRoot = pageVm || this.$vm
+  if (!relationRoot) {
+    queueRelation(this, event)
+    return
+  }
+
+  const parentVm = vuePid ? findVmByVueId(relationRoot, vuePid) : relationRoot
+  if (!parentVm) {
+    return
+  }
+
+  const vm = createPendingComponent(childMPInstance, parentVm)
+  if (!vm) {
+    return
+  }
+  instances[webviewId + '_' + nodeId] = vm
+  vm.$callCreatedHook()
+
+  takePendingRelations(childMPInstance).forEach((relation) => {
+    handleToutiaoLink.call(childMPInstance, relation)
+  })
+
+  nextSetDataTick(childMPInstance, () => {
     vm.$callHook('mounted')
     vm.$callHook(ON_READY)
   })

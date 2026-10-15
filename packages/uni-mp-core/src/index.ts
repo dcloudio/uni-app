@@ -47,7 +47,6 @@ export {
   initVueIds,
   initWxsCallMethods,
   findVmByVueId,
-  findVmByVueIdPath,
   handleEvent,
   fixProperties,
   nextSetDataTick,

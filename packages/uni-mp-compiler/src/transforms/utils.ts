@@ -43,7 +43,6 @@ import { ATTR_CHANGE_PREFIX } from '@dcloudio/uni-shared'
 
 // v-i,v-s 不能在 quickapp-webview 中使用，估计是内部处理成了指令之类的
 export const ATTR_VUE_ID = 'u-i'
-export const ATTR_VUE_PARENT_ID = 'u-p-i'
 export const ATTR_VUE_SLOTS = 'u-s'
 export const ATTR_VUE_PROPS = 'u-p'
 export const ATTR_VUE_REF = 'u-' + VUE_REF

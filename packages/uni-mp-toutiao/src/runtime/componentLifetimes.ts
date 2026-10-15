@@ -18,19 +18,28 @@ import {
 import {
   $createComponent,
   $destroyComponent,
-  findVmByVueIdPath,
   initComponentInstance,
   initMocks,
   initRefs,
   initVueIds,
 } from '@dcloudio/uni-mp-core'
 import { ON_READY } from '@dcloudio/uni-shared'
-import { instances } from './parseComponentOptions'
+import {
+  registerPendingComponent,
+  removePendingComponent,
+} from './componentRelation'
 
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
 // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
 const components: MPComponentInstance[] = []
+
+function isVirtualHost(vueOptions: CreateLifetimesOptions['vueOptions']) {
+  if (vueOptions.options?.virtualHost === true) {
+    return true
+  }
+  return vueOptions.mixins?.some((mixin) => mixin.options?.virtualHost === true)
+}
 
 export function initLifetimes({
   mocks,
@@ -44,14 +53,9 @@ export function initLifetimes({
   function attached(this: MPComponentInstance) {
     initSetRef(this)
     const properties = this.properties
-    initVueIds(
-      resolvePropValue(properties.uI),
-      this,
-      resolvePropValue(properties.uPI)
-    )
+    initVueIds(resolvePropValue(properties.uI), this)
     const relationOptions: RelationOptions = {
       vuePid: this._$vuePid,
-      vuePids: this._$vuePids,
     }
     if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
       // 处理父子关系
@@ -64,30 +68,60 @@ export function initLifetimes({
       mpInstance.route = mpInstance.__route__
     }
 
-    if (__PLATFORM__ === 'mp-toutiao') {
-      // 在创建 Vue 组件实例之前，先查找父组件，以支持组合式 API 的 inject
-      if (mpType === 'component') {
-        const webviewId = mpInstance.__webviewId__ + ''
-        const vuePids = relationOptions.vuePids
-
-        let parentVm
-        if (vuePids) {
-          const pageVm = instances[webviewId + '_0'] as ComponentPublicInstance
-          if (pageVm) {
-            parentVm = findVmByVueIdPath(pageVm, vuePids)
-          }
-        } else {
-          // 如果 vuePid 不存在，则认为当前组件的父是页面
-          parentVm = instances[webviewId + '_0']
-        }
-
-        if (parentVm) {
-          relationOptions.parent = parentVm
-        }
-      }
-    }
-
     const props = findPropsData(properties, mpType === 'page')
+
+    if (__PLATFORM__ === 'mp-toutiao' && mpType === 'component') {
+      const createComponent = (parent?: ComponentPublicInstance) => {
+        mpInstance.$vm = $createComponent(
+          {
+            type: vueOptions,
+            props,
+          },
+          {
+            mpType,
+            mpInstance,
+            slots: resolvePropValue(properties.uS) || {}, // vueSlots
+            parentComponent: parent && parent.$,
+            onBeforeSetup(
+              instance: ComponentInternalInstance,
+              options: CreateComponentOptions
+            ) {
+              initRefs(instance, mpInstance)
+              initMocks(instance, mpInstance, mocks)
+              initComponentInstance(instance, options)
+            },
+          }
+        ) as ComponentPublicInstance
+
+        if (__X__) {
+          mpInstance.vm = mpInstance.$vm
+        }
+        initPageInstance(mpInstance)
+
+        if (process.env.UNI_DEBUG) {
+          console.log(
+            'uni-app:[' +
+              Date.now() +
+              '][' +
+              (mpInstance.is || mpInstance.route) +
+              '][' +
+              mpInstance.$vm.$.uid +
+              ']attached'
+          )
+        }
+
+        initFormField(mpInstance.$vm)
+        return mpInstance.$vm
+      }
+
+      registerPendingComponent(
+        mpInstance,
+        createComponent,
+        isVirtualHost(vueOptions)
+      )
+      initRelation(this, relationOptions)
+      return
+    }
 
     this.$vm = $createComponent(
       {
@@ -138,6 +172,7 @@ export function initLifetimes({
     if (mpType === 'component') {
       initFormField(this.$vm)
     }
+
     if (
       !(__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview')
     ) {
@@ -183,6 +218,9 @@ export function initLifetimes({
   }
 
   function detached(this: MPComponentInstance) {
+    if (__PLATFORM__ === 'mp-toutiao') {
+      removePendingComponent(this)
+    }
     if (this.$vm) {
       pruneComponentPropsCache(this.$vm.$.uid)
       $destroyComponent(this.$vm)
