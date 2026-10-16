@@ -259,3 +259,42 @@ props 发生变化时被调用，可在组件中覆盖此方法
 
 
 
+
+### datacom 组件示例
+
+```html
+<template>
+  <view>
+    <view v-if="datacom.loading" class="data-city-loading">Loading...</view>
+    <view v-else-if="datacom.errorMessage" class="data-city-error">
+      请求错误：{{datacom.errorMessage}}
+    </view>
+    <view v-else class="data-city-data">
+      <!-- 需要自行处理数据及相关UI展现 -->
+      {{datacom.resData}}
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const props = defineProps({
+    ...uniCloud.datacomProps, // HBuilderX 5.32
+    multiple: {
+      type: Boolean,
+      default: false
+    }
+  })
+
+  // HBuilderX 5.32
+  const datacom = uniCloud.useDatacom(props)
+
+  // 调用 useDatacom 中的方法加载数据
+  datacom.easyGet()
+
+  defineExpose({
+    loadData: datacom.easyGet,
+    refresh: datacom.refresh,
+    clear: datacom.reset
+  })
+</script>
+```
