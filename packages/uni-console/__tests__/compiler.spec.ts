@@ -59,7 +59,7 @@ function getMainJsPlugin() {
 
 function resolveMpRuntimePath() {
   return normalizePath(
-    resolveBuiltIn(path.join('@dcloudio/uni-console', 'dist/mp.esm.js'))
+    resolveBuiltIn(path.posix.join('@dcloudio/uni-console', 'dist/mp.esm.js'))
   )
 }
 

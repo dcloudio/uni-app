@@ -24,10 +24,13 @@ export function uniResolveIdPlugin(): Plugin {
     enforce: 'pre',
     configResolved(config) {
       resolveCache[ownerModuleName] = resolveBuiltIn(
-        path.join(ownerModuleName, resolveFrameworkDistDir() + '/uni-h5.es.js')
+        path.posix.join(
+          ownerModuleName,
+          resolveFrameworkDistDir() + '/uni-h5.es.js'
+        )
       )
       resolveCache['@dcloudio/uni-h5-vue'] = resolveBuiltIn(
-        path.join(
+        path.posix.join(
           '@dcloudio/uni-h5-vue',
           resolveVueDistDir() +
             `/vue.runtime.${process.env.VITEST ? 'cjs' : 'esm'}.js`
@@ -45,7 +48,7 @@ export function uniResolveIdPlugin(): Plugin {
         if (id === ownerModuleName) {
           if (isUniAppXWebVapor()) {
             return resolveBuiltIn(
-              path.join(ownerModuleName, 'dist-x-vapor-ssr/uni-h5.es.js')
+              path.posix.join(ownerModuleName, 'dist-x-vapor-ssr/uni-h5.es.js')
             )
           }
         }
@@ -54,7 +57,11 @@ export function uniResolveIdPlugin(): Plugin {
             ? 'vue.runtime.esm.js'
             : 'vue.runtime.cjs.js'
           return resolveBuiltIn(
-            path.join('@dcloudio/uni-h5-vue', resolveVueDistDir(), runtimeFile)
+            path.posix.join(
+              '@dcloudio/uni-h5-vue',
+              resolveVueDistDir(),
+              runtimeFile
+            )
           )
         }
       }

@@ -58,7 +58,7 @@ export default () => {
         }
       }
       let uniConsolePath = resolveBuiltIn(
-        path.join(
+        path.posix.join(
           '@dcloudio/uni-console',
           `dist/${
             (process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'
@@ -68,20 +68,20 @@ export default () => {
       if (isX) {
         if (useUniAppXAndroidNative) {
           uniConsolePath = resolveBuiltIn(
-            path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
+            path.posix.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
           )
         } else if (
           process.env.UNI_UTS_PLATFORM === 'app-ios' ||
           process.env.UNI_UTS_PLATFORM === 'app-android'
         ) {
           uniConsolePath = resolveBuiltIn(
-            path.join('@dcloudio/uni-console', 'dist/app.esm.js')
+            path.posix.join('@dcloudio/uni-console', 'dist/app.esm.js')
           )
         }
       } else {
         if (process.env.UNI_PLATFORM === 'app-harmony') {
           uniConsolePath = resolveBuiltIn(
-            path.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js')
+            path.posix.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js')
           )
         }
       }
