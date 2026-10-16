@@ -193,8 +193,8 @@ UniStartNestedScrollEvent -- Extends --> UniEvent
 ##### UniStartNestedScrollEvent 的属性值
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| node | [UniElement](/api/dom/unielement.md) | 是 |   | 开始滚动子节点对象 |
-| isTouch | boolean | 是 | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
+| node | [UniElement](/api/dom/unielement.md) | 是 | Android(VDOM): 3.99; Android(Vapor): x; iOS: x | 开始滚动子节点对象 |
+| isTouch | boolean | 是 | Android(VDOM): 3.99; Android(Vapor): x; iOS: x | 是否由触摸行为发生的Event |
 
 
 #### UniNestedPreScrollEvent
@@ -209,9 +209,9 @@ UniNestedPreScrollEvent -- Extends --> UniEvent
 ##### UniNestedPreScrollEvent 的属性值
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deltaX | number | 是 |   | x轴滚动距离 |
-| deltaY | number | 是 |   | y轴滚动距离 |
-| isTouch | boolean | 是 | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
+| deltaX | number | 是 | Android(VDOM): 3.99; Android(Vapor): x; iOS: x | x轴滚动距离 |
+| deltaY | number | 是 | Android(VDOM): 3.99; Android(Vapor): x; iOS: x | y轴滚动距离 |
+| isTouch | boolean | 是 | Android(VDOM): 3.99; Android(Vapor): x; iOS: x | 是否由触摸行为发生的Event |
 
 
 ##### UniNestedPreScrollEvent 的方法
