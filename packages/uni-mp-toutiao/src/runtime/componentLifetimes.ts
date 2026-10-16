@@ -20,10 +20,10 @@ import {
   $destroyComponent,
   initComponentInstance,
   initMocks,
-  initRefs,
   initVueIds,
 } from '@dcloudio/uni-mp-core'
 import { ON_READY } from '@dcloudio/uni-shared'
+import { initRefs } from './refs'
 
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
@@ -40,7 +40,12 @@ export function initLifetimes({
     components.push(this)
   }
   function attached(this: MPComponentInstance) {
-    initSetRef(this)
+    if (__X__) {
+      // X uses component.ref callbacks; prevent Vue's selector fallback.
+      this._$setRef = () => {}
+    } else {
+      initSetRef(this)
+    }
     const properties = this.properties
     initVueIds(resolvePropValue(properties.uI), this)
     const relationOptions: RelationOptions = {
