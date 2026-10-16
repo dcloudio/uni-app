@@ -262,6 +262,8 @@ props 发生变化时被调用，可在组件中覆盖此方法
 
 ### datacom 组件示例
 
+Vue蒸汽模式不支持的`mixin`语法，使用属性展开和方法替代，[datacom组件规范](https://uniapp.dcloud.net.cn/component/datacom.html)
+
 ```html
 <template>
   <view>
