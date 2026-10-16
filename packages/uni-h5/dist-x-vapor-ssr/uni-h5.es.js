@@ -839,13 +839,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$i = 0;
+let index$g = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance = getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$i++}`;
+  const id2 = vm.id || `context${index$g++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -1360,7 +1360,7 @@ class UniElement extends Object {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const props$g = { disableScroll: {
+const props$f = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
@@ -1392,7 +1392,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: { MODE: 3 },
-  props: props$g,
+  props: props$f,
   setup(props2, {}) {
     const rootRef = ref(null);
     const canvas = ref(null);
@@ -1630,7 +1630,7 @@ defineComponent(
 );
 class UniButtonElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -1702,7 +1702,7 @@ function throttle(fn, wait) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$f = {
+const props$e = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -1808,7 +1808,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$e = /* @__PURE__ */ extend(
+const props$d = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -1898,7 +1898,7 @@ const props$e = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$f
+  props$e
 );
 const emit = [
   "input",
@@ -2155,8 +2155,8 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 once(() => {
 });
-const _hoisted_1$5 = { class: "uni-input-wrapper" };
-const props$d = /* @__PURE__ */ extend({}, props$e, {
+const _hoisted_1$4 = { class: "uni-input-wrapper" };
+const props$c = /* @__PURE__ */ extend({}, props$d, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2189,7 +2189,7 @@ class UniInputElement extends UniElement {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$d,
+  props: props$c,
   emits: ["confirm", ...emit],
   setup(props2, { emit: emit2, expose }) {
     const INPUT_TYPES = [
@@ -2305,7 +2305,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         autocomplete: autocomplete.value,
         inputmode: inputmode.value
       }, null, 512));
-      return openBlock(), createBlock("uni-input", { ref: rootRef }, [createVNode("div", _hoisted_1$5, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+      return openBlock(), createBlock("uni-input", { ref: rootRef }, [createVNode("div", _hoisted_1$4, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
         style: props2.placeholderStyle,
         class: ["uni-input-placeholder", props2.placeholderClass]
       }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? (openBlock(), createBlock("form", {
@@ -2375,7 +2375,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$c = /* @__PURE__ */ extend({}, props$e, {
+const props$b = /* @__PURE__ */ extend({}, props$d, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2409,9 +2409,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$c,
+  props: props$b,
   emits: [
     "confirm",
     "change",
@@ -6885,7 +6885,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$b = /* @__PURE__ */ extend({}, props$f, {
+const props$a = /* @__PURE__ */ extend({}, props$e, {
   id: {
     type: String,
     default: ""
@@ -6917,9 +6917,9 @@ const props$b = /* @__PURE__ */ extend({}, props$f, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$b,
+  props: props$a,
   emit: [
     "ready",
     "focus",
@@ -6986,7 +6986,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -7039,7 +7039,7 @@ const movableAreaProps = {
 const useMovableAreaChildren = useMovableAreaChildren$1;
 class UniMovableAreaElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -7589,7 +7589,7 @@ function v(a, b) {
 }
 class UniMovableViewElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -8314,7 +8314,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$a = {
+const props$9 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -8592,10 +8592,10 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
 const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$a,
+  props: props$9,
   emits: ["itemclick"],
   setup(props2, { emit: emit2 }) {
     const rootRef = ref(null);
@@ -8607,7 +8607,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const _hoisted_1$4 = { class: "uni-scroll-view-refresh-inner" };
+const _hoisted_1$3 = { class: "uni-scroll-view-refresh-inner" };
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -8668,7 +8668,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         }, [refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", {
           key: 0,
           class: "uni-scroll-view-refresh"
-        }, [createVNode("div", _hoisted_1$4, [refreshState == "pulling" ? (openBlock(), createBlock("svg", {
+        }, [createVNode("div", _hoisted_1$3, [refreshState == "pulling" ? (openBlock(), createBlock("svg", {
           key: "refresh__icon",
           style: { transform: "rotate(" + refreshRotate.value + "deg)" },
           fill: "#2BD009",
@@ -8702,7 +8702,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$9 = {
+const props$8 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -8773,7 +8773,7 @@ class UniScrollViewElement extends UniElement {
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: { MODE: 3 },
-  props: props$9,
+  props: props$8,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -12426,7 +12426,7 @@ _sfc_main.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/switch/switch.vue");
   return _sfc_setup ? _sfc_setup(props2, ctx) : void 0;
 };
-const _hoisted_1$3 = { class: "uni-video-icon uni-video-toast-icon" };
+const _hoisted_1$2 = { class: "uni-video-icon uni-video-toast-icon" };
 const _hoisted_2 = { class: "uni-video-cover" };
 const _hoisted_3 = { class: "uni-video-bar uni-video-bar-full" };
 const _hoisted_4 = { class: "uni-video-controls" };
@@ -13050,7 +13050,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$8 = {
+const props$7 = {
   id: {
     type: String,
     default: ""
@@ -13138,9 +13138,9 @@ const props$8 = {
     default: true
   }
 };
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$8,
+  props: props$7,
   emits: [
     "fullscreenchange",
     "progress",
@@ -13262,7 +13262,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
           }, [!gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume" ? (openBlock(), createBlock("text", {
             key: 0,
             class: "uni-video-icon uni-video-toast-icon"
-          }, "")) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => !gestureState.toastThin && (openBlock(), createBlock("text", _hoisted_1$3, "")))], 64)), createVNode("div", {
+          }, "")) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => !gestureState.toastThin && (openBlock(), createBlock("text", _hoisted_1$2, "")))], 64)), createVNode("div", {
             class: "uni-video-toast-draw",
             style: { width: `${gestureState.volumeNew * 100}%` }
           })])) : normalizeVNode(() => null)]),
@@ -13304,14 +13304,14 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$7 = { src: {
+const props$6 = { src: {
   type: String,
   default: ""
 } };
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$7,
+  props: props$6,
   emits: ["load"],
   setup(props2, { emit: emit2 }) {
     Invoke();
@@ -13645,7 +13645,7 @@ const getIsAMap = () => {
 const getIsBMap = () => {
   return getMapInfo().type === "BMapGL";
 };
-const props$6 = {
+const props$5 = {
   id: {
     type: [Number, String],
     default: ""
@@ -13731,7 +13731,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$6,
+  props: props$5,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -14070,7 +14070,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$5 = {
+const props$4 = {
   points: {
     type: Array,
     require: true
@@ -14116,7 +14116,7 @@ const props$5 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -14195,7 +14195,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$4 = {
+const props$3 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14227,7 +14227,7 @@ const props$4 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -14293,8 +14293,8 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const _hoisted_1$2 = { class: "uni-map-control" };
-const props$3 = {
+const _hoisted_1$1 = { class: "uni-map-control" };
+const props$2 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14318,7 +14318,7 @@ const props$3 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -14332,7 +14332,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
       return positionStyle2;
     });
     return () => {
-      return openBlock(), createBlock("div", _hoisted_1$2, [createVNode("img", {
+      return openBlock(), createBlock("div", _hoisted_1$1, [createVNode("img", {
         src: imgPath.value,
         style: positionStyle.value,
         class: "uni-map-control-icon"
@@ -14363,7 +14363,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$2 = {
+const props$1 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -14397,7 +14397,7 @@ const props$2 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$2,
+  props: props$1,
   setup(props2) {
     let polygonIns;
     const onMapReady = inject("onMapReady");
@@ -14470,8 +14470,8 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
-const _hoisted_1$1 = { style: "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;" };
-const props$1 = {
+const _hoisted_1 = { style: "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;" };
+const props = {
   id: {
     type: String,
     default: ""
@@ -14886,9 +14886,9 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$1,
+  props,
   emits: [
     "markertap",
     "labeltap",
@@ -14920,74 +14920,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
         normalizeVNode(() => props2.controls.map((item) => (openBlock(), createBlock(MapControl, mergeProps(item, { trigger }), null, 16)))),
         normalizeVNode(() => props2.showLocation && (openBlock(), createBlock(MapLocation))),
         normalizeVNode(() => props2.polygons.map((item) => (openBlock(), createBlock(MapPolygon, item, null, 16)))),
-        createVNode("div", _hoisted_1$1, [normalizeVNode(() => slots.default && slots.default())])
+        createVNode("div", _hoisted_1, [normalizeVNode(() => slots.default && slots.default())])
       ], 512);
-    };
-  }
-});
-const props = { scrollTop: {
-  type: [String, Number],
-  default: 0
-} };
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverView",
-  compatConfig: { MODE: 3 },
-  props,
-  setup(props2, { slots }) {
-    const root = ref(null);
-    const content = ref(null);
-    watch(() => props2.scrollTop, (val) => {
-      setScrollTop(val);
-    });
-    function setScrollTop(val) {
-      let _content = content.value;
-      if (getComputedStyle(_content).overflowY === "scroll") {
-        _content.scrollTop = _upx2pxNum(val);
-      }
-    }
-    function _upx2pxNum(val) {
-      let _val = String(val);
-      if (/\d+[ur]px$/i.test(_val)) {
-        _val.replace(/\d+[ur]px$/i, (text2) => {
-          return String(uni.upx2px(parseFloat(text2)));
-        });
-      }
-      return parseFloat(_val) || 0;
-    }
-    onMounted(() => {
-      setScrollTop(props2.scrollTop);
-    });
-    return () => {
-      return openBlock(), createBlock("uni-cover-view", {
-        "scroll-top": props2.scrollTop,
-        ref: root
-      }, [createVNode("div", {
-        ref: content,
-        class: "uni-cover-view"
-      }, [normalizeVNode(() => slots.default && slots.default())], 512)], 512);
-    };
-  }
-});
-const _hoisted_1 = { class: "uni-cover-image" };
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverImage",
-  compatConfig: { MODE: 3 },
-  props: { src: {
-    type: String,
-    default: ""
-  } },
-  emits: ["load", "error"],
-  setup(props2, { emit: emit2 }) {
-    const root = ref(null);
-    return () => {
-      const { src } = props2;
-      return openBlock(), createBlock("uni-cover-image", {
-        ref: root,
-        src
-      }, [createVNode("div", _hoisted_1, [src ? (openBlock(), createBlock("img", {
-        key: 0,
-        src: getRealPath(src)
-      })) : normalizeVNode(() => null)])], 512);
     };
   }
 });
@@ -16536,26 +16470,24 @@ export {
   index$4 as AdDraw,
   _sfc_main$m as AsyncErrorComponent,
   _sfc_main$n as AsyncLoadingComponent,
-  index$h as Button,
+  index$f as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
   _sfc_main$g as Checkbox,
   _sfc_main$f as CheckboxGroup,
-  index$7 as CoverImage,
-  index$8 as CoverView,
-  index$f as Editor,
+  index$d as Editor,
   _sfc_main$e as Form,
-  index$e as Icon,
+  index$c as Icon,
   Input,
   _sfc_main$d as Label,
   _sfc_main$o as LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
   _sfc_main$c as Loading,
-  index$9 as Map,
+  index$7 as Map,
   _sfc_main$b as MatchMedia,
-  index$d as MovableArea,
-  index$c as MovableView,
+  index$b as MovableArea,
+  index$a as MovableView,
   _sfc_main$a as Navigator,
   _sfc_main$i as PageComponent,
   _sfc_main$h as PageContainer,
@@ -16566,13 +16498,13 @@ export {
   _sfc_main$5 as Radio,
   _sfc_main$4 as RadioGroup,
   ResizeSensor,
-  index$b as RichText,
+  index$9 as RichText,
   __syscom_0 as ScrollView,
   _sfc_main$3 as Slider,
   _sfc_main$2 as Swiper,
   _sfc_main$1 as SwiperItem,
   _sfc_main as Switch,
-  index$g as Textarea,
+  index$e as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
@@ -16643,7 +16575,7 @@ export {
   UniViewElement,
   UniViewElement as UniViewElementImpl,
   UniViewJSBridge$1 as UniViewJSBridge,
-  index$a as Video,
+  index$8 as Video,
   indexX as WebView,
   clearStorage,
   clearStorageSync,
