@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, createVaporApp, VaporTransition, setHover, createComponentWithFallback, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -2135,20 +2135,20 @@ function removeInteractListener(vm) {
 }
 const getInteractStatus = () => !!userInteract;
 function useUserAction() {
-  const state2 = reactive({
+  const state = reactive({
     /**
      * 是否用户激活
      */
     userAction: false
   });
   onMounted(() => {
-    addInteractListener(state2);
+    addInteractListener(state);
   });
   onBeforeUnmount(() => {
-    removeInteractListener(state2);
+    removeInteractListener(state);
   });
   return {
-    state: state2
+    state
   };
 }
 function entries(obj) {
@@ -2231,7 +2231,7 @@ function useTouchtrack(element, method, useCancel) {
   let y0 = 0;
   let x1 = 0;
   let y1 = 0;
-  const fn = function($event, state2, x, y) {
+  const fn = function($event, state, x, y) {
     if (method({
       // @ts-expect-error
       cancelable: $event.cancelable,
@@ -2242,7 +2242,7 @@ function useTouchtrack(element, method, useCancel) {
       touches: $event.touches,
       changedTouches: $event.changedTouches,
       detail: {
-        state: state2,
+        state,
         x,
         y,
         dx: x - x0,
@@ -2591,8 +2591,8 @@ class UniElement extends HTMLElement {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const _t0$c = template("<canvas class=uni-canvas-canvas>");
-const props$h = { disableScroll: {
+const _t0$b = template("<canvas class=uni-canvas-canvas>");
+const props$g = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
@@ -2624,7 +2624,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: { MODE: 3 },
-  props: props$h,
+  props: props$g,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -2640,7 +2640,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$c();
+          const _n0 = _t0$b();
           renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -2729,14 +2729,14 @@ function useHover(props2) {
     }
   };
 }
-function useVaporFormField(props2, state2) {
+function useVaporFormField(props2, state) {
   const form = inject("UNI_FORM_CTX", null);
   if (!form)
     return;
-  const initialValue = state2.value;
-  const getValue = () => state2.value;
+  const initialValue = state.value;
+  const getValue = () => state.value;
   const reset = () => {
-    state2.value = initialValue;
+    state.value = initialValue;
   };
   watch(
     () => props2.name,
@@ -3101,7 +3101,7 @@ function throttle(fn, wait) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$g = {
+const props$f = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3151,7 +3151,7 @@ function useKeyboard$1(props2, elRef, trigger) {
   );
 }
 function useScopedAttrs() {
-  const state2 = reactive({
+  const state = reactive({
     attrs: {}
   });
   onMounted(() => {
@@ -3159,13 +3159,13 @@ function useScopedAttrs() {
     while (instance2) {
       const scopeId = instance2.type.__scopeId;
       if (scopeId) {
-        state2.attrs[scopeId] = "";
+        state.attrs[scopeId] = "";
       }
       instance2 = instance2.proxy && instance2.proxy.$mpType === "page" ? null : instance2.parent;
     }
   });
   return {
-    state: state2
+    state
   };
 }
 function getSelectedTextRange$1(_, resolve) {
@@ -3207,7 +3207,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$f = /* @__PURE__ */ extend(
+const props$e = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -3297,7 +3297,7 @@ const props$f = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$g
+  props$f
 );
 const emit = [
   "input",
@@ -3342,7 +3342,7 @@ function useBase(props2, rootRef, emit2) {
     const valueString = getValueString(props2.value, props2.type, maxlength.value);
     value = props2.modelValue !== void 0 ? modelValueString !== null && modelValueString !== void 0 ? modelValueString : valueString : valueString;
   }
-  const state2 = reactive({
+  const state = reactive({
     value,
     valueOrigin: value,
     maxlength,
@@ -3353,14 +3353,14 @@ function useBase(props2, rootRef, emit2) {
     cursor
   });
   watch(
-    () => state2.focus,
+    () => state.focus,
     (val) => emit2("update:focus", val)
   );
   watch(
-    () => state2.maxlength,
+    () => state.maxlength,
     (val) => {
       if (val >= 0) {
-        state2.value = state2.value.slice(0, val);
+        state.value = state.value.slice(0, val);
       }
     },
     {
@@ -3369,15 +3369,15 @@ function useBase(props2, rootRef, emit2) {
   );
   return {
     fieldRef,
-    state: state2,
+    state,
     trigger
   };
 }
-function useValueSync(props2, state2, emit2, trigger, fieldRef) {
+function useValueSync(props2, state, emit2, trigger, fieldRef) {
   let valueChangeFn = null;
   {
     valueChangeFn = throttle((val) => {
-      state2.value = getValueString(val, props2.type, state2.maxlength);
+      state.value = getValueString(val, props2.type, state.maxlength);
     }, 100);
   }
   watch(() => props2.modelValue, valueChangeFn);
@@ -3443,18 +3443,18 @@ function useAutoFocus(props2, fieldRef) {
     }
   });
 }
-function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) {
+function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   function checkSelection() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart > -1 && state2.selectionEnd > -1 && typeof field.selectionStart === "number") {
-      field.selectionStart = state2.selectionStart;
-      field.selectionEnd = state2.selectionEnd;
+    if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && typeof field.selectionStart === "number") {
+      field.selectionStart = state.selectionStart;
+      field.selectionEnd = state.selectionEnd;
     }
   }
   function checkCursor() {
     const field = fieldRef.value;
-    if (field && state2.focus && state2.selectionStart < 0 && state2.selectionEnd < 0 && state2.cursor > -1 && typeof field.selectionStart === "number") {
-      field.selectionEnd = field.selectionStart = state2.cursor;
+    if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && typeof field.selectionStart === "number") {
+      field.selectionEnd = field.selectionStart = state.cursor;
     }
   }
   function getFieldSelectionEnd(field) {
@@ -3469,20 +3469,20 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
     if (!field)
       return;
     const onFocus = function(event) {
-      state2.focus = true;
+      state.focus = true;
       trigger("focus", event, {
-        value: state2.value
+        value: state.value
       });
       checkSelection();
       checkCursor();
     };
     const onInput = function(event, force) {
       event.stopPropagation();
-      if (isFunction(beforeInput) && beforeInput(event, state2) === false) {
+      if (isFunction(beforeInput) && beforeInput(event, state) === false) {
         return;
       }
-      state2.value = field.value;
-      if (!state2.composing || !props2.ignoreCompositionEvent) {
+      state.value = field.value;
+      if (!state.composing || !props2.ignoreCompositionEvent) {
         triggerInput(
           event,
           {
@@ -3494,13 +3494,13 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
       }
     };
     const onBlur = function(event) {
-      if (state2.composing) {
-        state2.composing = false;
+      if (state.composing) {
+        state.composing = false;
         onInput(event, true);
       }
-      state2.focus = false;
+      state.focus = false;
       trigger("blur", event, {
-        value: state2.value,
+        value: state.value,
         cursor: getFieldSelectionEnd(event.target)
       });
     };
@@ -3510,13 +3510,13 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
     field.addEventListener("input", onInput);
     field.addEventListener("compositionstart", (event) => {
       event.stopPropagation();
-      state2.composing = true;
+      state.composing = true;
       _onComposition(event);
     });
     field.addEventListener("compositionend", (event) => {
       event.stopPropagation();
-      if (state2.composing) {
-        state2.composing = false;
+      if (state.composing) {
+        state.composing = false;
         onInput(event);
       }
       _onComposition(event);
@@ -3530,23 +3530,23 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
       }
     }
   }
-  watch([() => state2.selectionStart, () => state2.selectionEnd], checkSelection);
-  watch(() => state2.cursor, checkCursor);
+  watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
+  watch(() => state.cursor, checkCursor);
   watch(() => fieldRef.value, initField);
 }
 function useField(props2, rootRef, emit2, beforeInput) {
   UniViewJSBridgeSubscribe();
-  const { fieldRef, state: state2, trigger } = useBase(props2, rootRef, emit2);
-  const { triggerInput } = useValueSync(props2, state2, emit2, trigger);
+  const { fieldRef, state, trigger } = useBase(props2, rootRef, emit2);
+  const { triggerInput } = useValueSync(props2, state, emit2, trigger);
   useAutoFocus(props2, fieldRef);
   useKeyboard$1(props2, fieldRef);
   const { state: scopedAttrsState } = useScopedAttrs();
-  useVaporFormField(props2, state2);
-  useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput);
+  useVaporFormField(props2, state);
+  useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput);
   const fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
   return {
     fieldRef,
-    state: state2,
+    state,
     scopedAttrsState,
     fixDisabledColor,
     trigger
@@ -3568,11 +3568,11 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-const _t0$b = template("<input tabindex=-1 class=uni-input-input>", 1);
-const _t1$8 = template("<input class=uni-input-input>", 1);
+const _t0$a = template("<input tabindex=-1 class=uni-input-input>", 1);
+const _t1$7 = template("<input class=uni-input-input>", 1);
 const _t2$4 = template("<form action novalidate class=uni-input-form> ");
 const _t3$4 = template("<div class=uni-input-wrapper><div> </div>");
-const props$e = /* @__PURE__ */ extend({}, props$f, {
+const props$d = /* @__PURE__ */ extend({}, props$e, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3608,7 +3608,7 @@ class UniInputElement extends UniElement {
 }
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$e,
+  props: props$d,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -3675,12 +3675,12 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     });
     let cache = useCache(props2, type);
     const rootRef = ref(null);
-    const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state22) => {
+    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
       {
         return;
       }
     });
-    watch(() => state2.value, (value) => {
+    watch(() => state.value, (value) => {
       if (props2.type === "number" && !(cache.value === "-" && value === "")) {
         cache.value = value.toString();
       }
@@ -3690,8 +3690,8 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
       if (!(length >= 0)) {
         return;
       }
-      const realValue = state2.value.slice(0, length);
-      realValue !== state2.value && (state2.value = realValue);
+      const realValue = state.value.slice(0, length);
+      realValue !== state.value && (state.value = realValue);
     });
     const NUMBER_TYPES = ["number", "digit"];
     const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
@@ -3707,7 +3707,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     expose({ $triggerInput: (detail) => {
       emit2("update:modelValue", detail.value);
       emit2("update:value", detail.value);
-      state2.value = detail.value;
+      state.value = detail.value;
     } });
     onMounted(() => {
       const rootElement = rootRef.value;
@@ -3724,7 +3724,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? (() => {
         const _setTemplateRef = createTemplateRefSetter();
-        const _n0 = _t0$b();
+        const _n0 = _t0$a();
         setBlockKey(_n0, "disabled-input");
         on$1(
           _n0,
@@ -3733,10 +3733,10 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
           (event) => event.target.blur()
         );
         renderEffect(() => {
-          setValue(_n0, state2.value);
+          setValue(_n0, state.value);
           setProp(_n0, "readonly", !!props2.disabled);
           setProp(_n0, "type", type.value);
-          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "maxlength", state.maxlength);
           setProp(_n0, "step", step.value);
           setStyle(_n0, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
           setProp(_n0, "inputmode", inputmode.value);
@@ -3745,27 +3745,27 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
         return _n0;
       })() : (() => {
         const _setTemplateRef = createTemplateRefSetter();
-        const _n0 = _t1$8();
+        const _n0 = _t1$7();
         setBlockKey(_n0, "input");
         on$1(_n0, "input", withModifiers((event) => {
           const value = event.target.value.toString();
-          if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
+          if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
             if (isPaste(event)) {
-              state2.value = value.slice(0, state2.maxlength);
+              state.value = value.slice(0, state.maxlength);
             }
             return;
           }
           if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
             return;
           }
-          state2.value = value;
+          state.value = value;
         }, ["stop"]));
         on$1(_n0, "keyup", onKeyUpEnter);
         renderEffect(() => {
-          setValue(_n0, state2.value);
+          setValue(_n0, state.value);
           setProp(_n0, "disabled", !!props2.disabled);
           setProp(_n0, "type", type.value);
-          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "maxlength", state.maxlength);
           setProp(_n0, "step", step.value);
           setProp(_n0, "enterkeyhint", props2.confirmType);
           setProp(_n0, "pattern", props2.type === "number" ? "[0-9]*" : void 0);
@@ -3781,7 +3781,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
         const _n7 = createPlainElement("uni-input", null, () => {
           const _n6 = _t3$4();
           const _n0 = child(_n6);
-          applyVShow(_n0, () => !(state2.value.length || cache.value === "-" || cache.value.includes(".")));
+          applyVShow(_n0, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
           const _x0 = txt(_n0);
           setNodes(_x0, () => props2.placeholder);
           renderEffect(() => setDynamicProps(_n0, [scopedAttrsState.attrs, {
@@ -3807,8 +3807,8 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$a = template("<div><div></div></div>");
-const _t1$7 = template("<div><div>");
+const _t0$9 = template("<div><div></div></div>");
+const _t1$6 = template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: { initial: {
@@ -3824,8 +3824,8 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$a();
-        const _n1 = _t1$7();
+        const _n0 = _t0$9();
+        const _n1 = _t1$6();
         on$1(_n0, "scroll", update);
         on$1(_n1, "scroll", update);
         return [_n0, _n1];
@@ -3875,12 +3875,12 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const _t0$9 = template("<textarea tabindex=-1>", 1);
-const _t1$6 = template("<textarea>", 1);
+const _t0$8 = template("<textarea tabindex=-1>", 1);
+const _t1$5 = template("<textarea>", 1);
 const _t2$3 = template("<form action class=uni-input-form> ");
 const _t3$3 = template("<div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>");
 const _t4$3 = template("<div>", 1);
-const props$d = /* @__PURE__ */ extend({}, props$f, {
+const props$c = /* @__PURE__ */ extend({}, props$e, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3917,7 +3917,7 @@ class UniTextareaElement extends UniElement {
 }
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$d,
+  props: props$c,
   emits: [
     "confirm",
     "change",
@@ -3931,8 +3931,8 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, { emit: emit2, expose }) {
     const rootRef = ref(null);
     const wrapperRef = ref(null);
-    const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
-    const valueCompute = computed(() => state2.value.split(LINEFEED));
+    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+    const valueCompute = computed(() => state.value.split(LINEFEED));
     const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
     const heightRef = ref(0);
     const lineRef = ref(null);
@@ -3967,11 +3967,11 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     }
     function onChange2(event) {
       {
-        trigger("change", event, { value: state2.value });
+        trigger("change", event, { value: state.value });
       }
     }
     function confirm(event) {
-      trigger("confirm", event, { value: state2.value });
+      trigger("confirm", event, { value: state.value });
     }
     function onKeyDownEnter(event) {
       if (event.key !== "Enter") {
@@ -3997,13 +3997,13 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     expose({ $triggerInput: (detail) => {
       emit2("update:modelValue", detail.value);
       emit2("update:value", detail.value);
-      state2.value = detail.value;
+      state.value = detail.value;
     } });
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperty(rootElement, "value", {
         get() {
-          return state2.value;
+          return state.value;
         },
         set(value) {
           rootElement.querySelector("textarea").value = value;
@@ -4014,7 +4014,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? (() => {
         const _setTemplateRef = createTemplateRefSetter();
-        const _n0 = _t0$9();
+        const _n0 = _t0$8();
         setBlockKey(_n0, "disabled-textarea");
         on$1(
           _n0,
@@ -4023,9 +4023,9 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
           (event) => event.target.blur()
         );
         renderEffect(() => {
-          setValue(_n0, state2.value);
+          setValue(_n0, state.value);
           setProp(_n0, "readonly", !!props2.disabled);
-          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "maxlength", state.maxlength);
           setClassName(_n0, 1 | (fixMargin ? 2 : 0), [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
           setStyle(_n0, {
             overflowY: props2.autoHeight ? "hidden" : "auto",
@@ -4037,15 +4037,15 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
         return _n0;
       })() : (() => {
         const _setTemplateRef = createTemplateRefSetter();
-        const _n0 = _t1$6();
+        const _n0 = _t1$5();
         setBlockKey(_n0, "textarea");
         on$1(_n0, "keydown", onKeyDownEnter);
         on$1(_n0, "keyup", onKeyUpEnter);
         on$1(_n0, "change", onChange2);
         renderEffect(() => {
-          setValue(_n0, state2.value);
+          setValue(_n0, state.value);
           setProp(_n0, "disabled", !!props2.disabled);
-          setProp(_n0, "maxlength", state2.maxlength);
+          setProp(_n0, "maxlength", state.maxlength);
           setProp(_n0, "enterkeyhint", props2.confirmType);
           setProp(_n0, "inputmode", props2.inputmode);
           setClassName(_n0, 1 | (fixMargin ? 2 : 0), [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
@@ -4066,7 +4066,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
           const _n1 = next(_n0);
           const _n4 = next(_n1);
           const _n2 = child(_n4, true);
-          applyVShow(_n0, () => !state2.value.length);
+          applyVShow(_n0, () => !state.value.length);
           const _x0 = txt(_n0);
           setNodes(_x0, () => props2.placeholder);
           setNodes(_n2, () => valueCompute.value.map((item) => (() => {
@@ -9218,15 +9218,15 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
     }
     const { path, query } = parseUrl(routeUrl);
     const tabBarPageId = type === "switchTab" ? findTabBarPageId(routeUrl) : __id__;
-    const state2 = createPageState(type, tabBarPageId);
+    const state = createPageState(type, tabBarPageId);
     if (transaction) {
-      transaction.pageId = state2.__id__;
+      transaction.pageId = state.__id__;
       queueWebAppRouteTransaction(transaction);
     }
     const navigation = router2[type === "navigateTo" ? "push" : "replace"]({
       path,
       query,
-      state: state2,
+      state,
       force: true
     }).then((failure) => {
       if (isNavigationFailure(failure)) {
@@ -9240,7 +9240,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       if (type === "navigateTo") {
         const meta = router2.currentRoute.value.meta;
         if (!meta.eventChannel) {
-          meta.eventChannel = new EventChannel(state2.__id__, events);
+          meta.eventChannel = new EventChannel(state.__id__, events);
         } else if (events) {
           Object.keys(events).forEach((eventName) => {
             meta.eventChannel._addListener(
@@ -9252,12 +9252,12 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
           meta.eventChannel._clearCache();
         }
         return isAutomatedTesting ? resolve({
-          __id__: state2.__id__
+          __id__: state.__id__
         }) : resolve({
           eventChannel: meta.eventChannel
         });
       }
-      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
+      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
     });
     {
       navigation.catch((error) => {
@@ -10857,8 +10857,8 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   },
   LoadFontFaceProtocol
 );
-const t0$w = template("<img>");
-const t1$i = template("<div class=uni-tabbar__mid>");
+const t0$y = template("<img>");
+const t1$j = template("<div class=uni-tabbar__mid>");
 const t2$a = template("<div class=uni-tabbar__iconfont> ");
 const t3$5 = template("<div>");
 const t4$5 = template("<div class=uni-tabbar__label> ");
@@ -10869,7 +10869,7 @@ const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "TabBar",
     __reserved: true,
@@ -11102,11 +11102,11 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         renderEffect(() => setStyle(n28, getItemStyle(_for_item0.value)));
         setInsertionState(n28, n27);
         createIf(() => isRenderedMidButton(_for_item0.value), () => {
-          const n8 = t1$i();
+          const n8 = t1$j();
           renderEffect(() => setStyle(n8, getMidButtonStyle(_for_item0.value)));
           setInsertionState(n8);
           createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n7 = t0$w();
+            const n7 = t0$y();
             renderEffect(() => {
               setStyle(n7, {
                 width: getMidButton(_for_item0.value).iconWidth,
@@ -11150,7 +11150,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
             });
             setInsertionState(n19);
             createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n18 = t0$w();
+              const n18 = t0$y();
               renderEffect(() => setProp(n18, "src", unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
               return n18;
             });
@@ -11199,16 +11199,16 @@ let globalLayoutState;
 function getLayoutState() {
   return globalLayoutState;
 }
-function setLayoutState(state2) {
-  globalLayoutState = state2;
+function setLayoutState(state) {
+  globalLayoutState = state;
 }
-const t0$v = template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
-const t1$h = template("<div class=uni-mask>");
+const t0$x = template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
+const t1$i = template("<div class=uni-mask>");
 const t2$9 = template("<uni-left-window><!><div class=uni-left-window>");
 const t3$4 = template("<uni-right-window><!><div class=uni-right-window>");
 const t4$4 = template("<uni-layout><!><uni-content><uni-main></uni-main>");
 const t5$3 = template("<uni-app>", 1);
-const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "Layout",
     __reserved: true,
@@ -11231,7 +11231,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
     const isTabBar = keepAliveRoute == null ? void 0 : keepAliveRoute.isTabBar;
     const routeCache2 = keepAliveRoute == null ? void 0 : keepAliveRoute.routeCache;
     const route = hasPages ? useRoute() : void 0;
-    const { layoutState, windowState } = useState2();
+    const { layoutState, windowState } = useState();
     useMaxWidth(layoutState, rootRef);
     const topWindow = hasTopWindow && useTopWindow(layoutState);
     const leftWindow = hasLeftWindow && useLeftWindow(layoutState);
@@ -11326,7 +11326,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
         window.addEventListener("resize", checkMaxWidth2);
       });
     }
-    function useState2() {
+    function useState() {
       const route2 = usePageRoute();
       if (!hasResponsive) {
         const layoutState3 = reactive({
@@ -11582,7 +11582,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n36, n35);
         createIf(() => unref(hasTopWindow) && unref(TopWindow), () => {
-          const n7 = t0$v();
+          const n7 = t0$x();
           const n5 = child(n7);
           const n6 = next(n5);
           renderEffect(() => setStyle(n5, unref(layoutState).topWindowStyle));
@@ -11636,7 +11636,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           });
           setInsertionState(n24, n23);
           createIf(() => unref(layoutState).apiShowLeftWindow, () => {
-            const n20 = t1$h();
+            const n20 = t1$i();
             on$1(n20, "click", () => unref(layoutState).apiShowLeftWindow = false);
             return n20;
           });
@@ -11660,7 +11660,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           });
           setInsertionState(n33, n32);
           createIf(() => unref(layoutState).apiShowRightWindow, () => {
-            const n29 = t1$h();
+            const n29 = t1$i();
             on$1(n29, "click", () => unref(layoutState).apiShowRightWindow = false);
             return n29;
           });
@@ -11707,7 +11707,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
     );
     setInsertionState(n49, 1);
     createIf(() => unref(hasTabBar), () => {
-      const n48 = withComponentId("1b083da0", () => createComponent$1(_sfc_main$w));
+      const n48 = withComponentId("1b083da0", () => createComponent$1(_sfc_main$y));
       applyVShow(n48, () => unref(showTabBar2));
       return n48;
     });
@@ -11715,8 +11715,8 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
     return n49;
   }
 });
-const t0$u = template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
+const t0$w = template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -11724,12 +11724,12 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$u();
+    const n0 = t0$w();
     return n0;
   }
 });
-const t0$t = template("<div class=uni-async-error> ", 1);
-const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
+const t0$v = template("<div class=uni-async-error> ", 1);
+const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -11743,7 +11743,7 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$t();
+    const n0 = t0$v();
     const x0 = txt(n0);
     on$1(n0, "click", reload);
     renderEffect(() => setText(x0, toDisplayString(unref(t11)("uni.async.error"))));
@@ -11802,11 +11802,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$u.name)) {
-    app.component(_sfc_main$u.name, _sfc_main$u);
+  if (!app.component(_sfc_main$w.name)) {
+    app.component(_sfc_main$w.name, _sfc_main$w);
   }
-  if (!app.component(_sfc_main$t.name)) {
-    app.component(_sfc_main$t.name, _sfc_main$t);
+  if (!app.component(_sfc_main$v.name)) {
+    app.component(_sfc_main$v.name, _sfc_main$v);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -12033,7 +12033,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return createComponent$1(_sfc_main$v, null, null, true);
+        return createComponent$1(_sfc_main$x, null, null, true);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -12240,8 +12240,8 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const t0$s = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
-const t1$g = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
+const t0$u = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
+const t1$h = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$8 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
 const t3$3 = template("<i class=uni-btn-icon></i>");
 const t4$3 = template("<div>");
@@ -12251,7 +12251,7 @@ const t7$1 = template(" ");
 const t8 = template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
 const t9 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
-const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -12462,7 +12462,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n19);
     createIf(() => unref(hasPages) && !unref(pageMeta).isQuit, () => {
-      const n3 = t0$s();
+      const n3 = t0$u();
       const n2 = child(child(n3));
       on$1(n3, "click", onPageHeadBackButton);
       renderEffect(() => {
@@ -12493,7 +12493,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
           createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n11 = t1$g();
+              const n11 = t1$h();
               const n10 = child(n11);
               renderEffect(() => {
                 const _button = _for_item0.value;
@@ -12672,7 +12672,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
           createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n50 = t1$g();
+              const n50 = t1$h();
               const n49 = child(n50);
               renderEffect(() => {
                 const _button = _for_item0.value;
@@ -12733,15 +12733,15 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     return n64;
   }
 });
-const t0$r = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
+const t0$t = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$r();
+    const n3 = t0$t();
     const n2 = child(n3);
     const n0 = child(child(n2));
     const n1 = child(next(n0));
@@ -12780,8 +12780,8 @@ function usePageRefresh(refreshRef) {
       if (!pageMeta.enablePullDownRefresh) {
         return;
       }
-      if (!state2) {
-        state2 = REFRESHING;
+      if (!state) {
+        state = REFRESHING;
         addClass();
         setTimeout(() => {
           refreshing();
@@ -12797,13 +12797,13 @@ function usePageRefresh(refreshRef) {
       if (!pageMeta.enablePullDownRefresh) {
         return;
       }
-      if (state2 === REFRESHING) {
+      if (state === REFRESHING) {
         removeClass();
-        state2 = RESTORING;
+        state = RESTORING;
         addClass();
         restoring(() => {
           removeClass();
-          state2 = distance = offset = null;
+          state = distance = offset = null;
         });
       }
     },
@@ -12837,15 +12837,15 @@ function usePageRefresh(refreshRef) {
   let touchId;
   let startY;
   let canRefresh;
-  let state2;
+  let state;
   let distance = null;
   let offset = null;
   function toggleClass(type) {
-    if (!state2) {
+    if (!state) {
       return;
     }
     if (refreshContainerElem) {
-      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
+      refreshContainerElem.classList[type]("uni-page-refresh--" + state);
     }
   }
   function addClass() {
@@ -12876,7 +12876,7 @@ function usePageRefresh(refreshRef) {
     const touch = ev.changedTouches[0];
     touchId = touch.identifier;
     startY = touch.pageY;
-    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
+    if ([ABORTING, REFRESHING, RESTORING].indexOf(state) >= 0) {
       canRefresh = false;
     } else {
       canRefresh = true;
@@ -12897,7 +12897,7 @@ function usePageRefresh(refreshRef) {
       touchId = null;
       return;
     }
-    if (deltaY < 0 && !state2) {
+    if (deltaY < 0 && !state) {
       return;
     }
     if (ev.cancelable) {
@@ -12905,7 +12905,7 @@ function usePageRefresh(refreshRef) {
     }
     if (distance === null) {
       offset = deltaY;
-      state2 = PULLING;
+      state = PULLING;
       addClass();
     }
     deltaY = deltaY - offset;
@@ -12913,11 +12913,11 @@ function usePageRefresh(refreshRef) {
       deltaY = 0;
     }
     distance = deltaY;
-    const isReached = deltaY >= range && state2 !== REACHED;
-    const isPulling = deltaY < range && state2 !== PULLING;
+    const isReached = deltaY >= range && state !== REACHED;
+    const isPulling = deltaY < range && state !== PULLING;
     if (isReached || isPulling) {
       removeClass();
-      state2 = state2 === REACHED ? PULLING : REACHED;
+      state = state === REACHED ? PULLING : REACHED;
       addClass();
     }
     pulling(deltaY);
@@ -12929,20 +12929,20 @@ function usePageRefresh(refreshRef) {
     if (!processDeltaY(ev, touchId, startY)) {
       return;
     }
-    if (state2 === null) {
+    if (state === null) {
       return;
     }
-    if (state2 === PULLING) {
+    if (state === PULLING) {
       removeClass();
-      state2 = ABORTING;
+      state = ABORTING;
       addClass();
       aborting(() => {
         removeClass();
-        state2 = distance = offset = null;
+        state = distance = offset = null;
       });
-    } else if (state2 === REACHED) {
+    } else if (state === REACHED) {
       removeClass();
-      state2 = REFRESHING;
+      state = REFRESHING;
       addClass();
       refreshing();
     }
@@ -13009,8 +13009,8 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const t0$q = template("<uni-page-wrapper><uni-page-body>");
-const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
+const t0$s = template("<uni-page-wrapper><uni-page-body>");
+const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -13048,11 +13048,11 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = withComponentId("64781ad4", () => createComponent$1(_sfc_main$r));
+      const n2 = withComponentId("64781ad4", () => createComponent$1(_sfc_main$t));
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
-    const n8 = t0$q();
+    const n8 = t0$s();
     const n4 = child(n8);
     renderEffect(() => setDynamicProps(n8, [pageRefresh.value]));
     setInsertionState(n4);
@@ -13066,8 +13066,8 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
     return [n0, n8];
   }
 });
-const t0$p = template("<uni-page>", 1);
-const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
+const t0$r = template("<uni-page>", 1);
+const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "Page",
     __reserved: true,
@@ -13169,18 +13169,18 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
         }
       }
     }
-    const n8 = t0$p();
+    const n8 = t0$r();
     renderEffect(() => {
       setAttr(n8, "data-page", unref(pageMeta).route);
       setStyle(n8, pageStyle);
     });
     setInsertionState(n8);
     createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = withComponentId("20e16be8", () => createComponent$1(_sfc_main$s));
+      const n2 = withComponentId("20e16be8", () => createComponent$1(_sfc_main$u));
       return n2;
     });
     setInsertionState(n8, 1);
-    withComponentId("09680334", () => createComponent$1(_sfc_main$q, null, extend$1(() => {
+    withComponentId("09680334", () => createComponent$1(_sfc_main$s, null, extend$1(() => {
       const n3 = withComponentId("096802e8", () => createDynamicComponent(
         () => unref(pageComponent),
         { $: [
@@ -13215,7 +13215,7 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
   }
 });
 function createVaporPageRouteComponent(pageComponent, getPageProps) {
-  return Object.assign({}, _sfc_main$p, {
+  return Object.assign({}, _sfc_main$r, {
     __uniPageComponent: pageComponent,
     __uniGetPageProps: getPageProps
   });
@@ -14174,7 +14174,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$c = /* @__PURE__ */ extend({}, props$g, {
+const props$b = /* @__PURE__ */ extend({}, props$f, {
   id: {
     type: String,
     default: ""
@@ -14208,7 +14208,7 @@ class UniEditorElement extends UniElement {
 }
 const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$c,
+  props: props$b,
   emit: [
     "ready",
     "focus",
@@ -15669,7 +15669,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$b = {
+const props$a = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -15950,7 +15950,7 @@ class UniRichTextElement extends UniElement {
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$b,
+  props: props$a,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -15970,8 +15970,8 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const _t0$8 = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$5 = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
+const _t0$7 = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t1$4 = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$2 = template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
 const _t3$2 = template("<div class=uni-scroll-view-refresher-container> ");
 const _t4$2 = template("<div class=uni-scroll-view-refresher>", 1);
@@ -16036,7 +16036,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           const _n12 = child(_n13);
           setInsertionState(_n12);
           createIf(() => refreshState == "pulling", () => {
-            const _n4 = _t0$8();
+            const _n4 = _t0$7();
             setBlockKey(_n4, "refresh__icon");
             renderEffect(() => setAttr(_n4, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
             return _n4;
@@ -16046,7 +16046,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           }, 265);
           setInsertionState(_n12, 1);
           createIf(() => refreshState == "refreshing", () => {
-            const _n9 = _t1$5();
+            const _n9 = _t1$4();
             setBlockKey(_n9, "refresh__spinner");
             return _n9;
           }, () => {
@@ -16075,9 +16075,9 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$7 = template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
+const _t0$6 = template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$a = {
+const props$9 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -16148,7 +16148,7 @@ class UniScrollViewElement extends UniElement {
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: { MODE: 3 },
-  props: props$a,
+  props: props$9,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -16169,8 +16169,8 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     const wrap = ref(null);
     const content = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const { state: state2, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
-    const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
+    const { state, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
+    const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
       realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
@@ -16226,11 +16226,11 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const { refresherEnabled, refresherBackground, refresherDefaultStyle, refresherThreshold } = props2;
-      const { refresherHeight, refreshState } = state2;
+      const { refresherHeight, refreshState } = state;
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n14 = createPlainElement("uni-scroll-view", null, () => {
-          const _n13 = _t0$7();
+          const _n13 = _t0$6();
           const _n12 = child(_n13);
           const _n11 = child(_n12);
           const _n10 = next(_n11);
@@ -16283,7 +16283,7 @@ function useScrollViewState(props2) {
   const scrollLeftNumber = computed(() => {
     return Number(props2.scrollLeft) || 0;
   });
-  const state2 = reactive({
+  const state = reactive({
     lastScrollTop: scrollTopNumber.value,
     lastScrollLeft: scrollLeftNumber.value,
     lastScrollToUpperTime: 0,
@@ -16292,12 +16292,12 @@ function useScrollViewState(props2) {
     refreshState: ""
   });
   return {
-    state: state2,
+    state,
     scrollTopNumber,
     scrollLeftNumber
   };
 }
-function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
+function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2) {
   let beforeRefreshing = false;
   let toUpperNumber = 0;
   let triggerAbort = false;
@@ -16359,31 +16359,31 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       scrollTop: target.scrollTop,
       scrollHeight: target.scrollHeight,
       scrollWidth: target.scrollWidth,
-      deltaX: state2.lastScrollLeft - target.scrollLeft,
-      deltaY: state2.lastScrollTop - target.scrollTop
+      deltaX: state.lastScrollLeft - target.scrollLeft,
+      deltaY: state.lastScrollTop - target.scrollTop
     });
     if (realScrollY.value) {
-      if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+      if (target.scrollTop <= upperThresholdNumber.value && state.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
         trigger("scrolltoupper", $event, { direction: "top" });
-        state2.lastScrollToUpperTime = $event.timeStamp;
+        state.lastScrollToUpperTime = $event.timeStamp;
       }
-      if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state2.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+      if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
         trigger("scrolltolower", $event, { direction: "bottom" });
-        state2.lastScrollToLowerTime = $event.timeStamp;
+        state.lastScrollToLowerTime = $event.timeStamp;
       }
     }
     if (realScrollX.value) {
-      if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
+      if (target.scrollLeft <= upperThresholdNumber.value && state.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
         trigger("scrolltoupper", $event, { direction: "left" });
-        state2.lastScrollToUpperTime = $event.timeStamp;
+        state.lastScrollToUpperTime = $event.timeStamp;
       }
-      if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state2.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state2.lastScrollToLowerTime > 200) {
+      if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
         trigger("scrolltolower", $event, { direction: "right" });
-        state2.lastScrollToLowerTime = $event.timeStamp;
+        state.lastScrollToLowerTime = $event.timeStamp;
       }
     }
-    state2.lastScrollTop = target.scrollTop;
-    state2.lastScrollLeft = target.scrollLeft;
+    state.lastScrollTop = target.scrollTop;
+    state.lastScrollLeft = target.scrollLeft;
   }
   function _scrollTopChanged(val) {
     if (realScrollY.value) {
@@ -16461,12 +16461,12 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       return;
     switch (_state) {
       case "refreshing":
-        state2.refresherHeight = props2.refresherThreshold;
+        state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
           trigger("refresherpulling", {}, {
-            deltaY: state2.refresherHeight,
-            dy: state2.refresherHeight
+            deltaY: state.refresherHeight,
+            dy: state.refresherHeight
           });
           trigger("refresherrefresh", {}, { dy: touchEnd.y - touchStart.y });
           emit2("update:refresherTriggered", true);
@@ -16475,7 +16475,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       case "restore":
       case "refresherabort":
         beforeRefreshing = false;
-        state2.refresherHeight = toUpperNumber = 0;
+        state.refresherHeight = toUpperNumber = 0;
         if (_state === "restore") {
           triggerAbort = false;
           trigger("refresherrestore", {}, { dy: touchEnd.y - touchStart.y });
@@ -16486,7 +16486,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         }
         break;
     }
-    state2.refreshState = _state;
+    state.refreshState = _state;
   }
   let touchStart = {
     x: 0,
@@ -16549,14 +16549,14 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       if (_main.scrollTop === 0 && event.touches.length === 1) {
         _setRefreshState("pulling");
       }
-      if (props2.refresherEnabled && state2.refreshState === "pulling") {
+      if (props2.refresherEnabled && state.refreshState === "pulling") {
         const dy = y - touchStart.y;
         if (toUpperNumber === 0) {
           toUpperNumber = y;
         }
         if (!beforeRefreshing) {
-          state2.refresherHeight = y - toUpperNumber;
-          if (state2.refresherHeight > 0) {
+          state.refresherHeight = y - toUpperNumber;
+          if (state.refresherHeight > 0) {
             triggerAbort = true;
             trigger("refresherpulling", event, {
               deltaY: dy,
@@ -16564,7 +16564,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
             });
           }
         } else {
-          state2.refresherHeight = dy + props2.refresherThreshold;
+          state.refresherHeight = dy + props2.refresherThreshold;
           triggerAbort = false;
         }
       }
@@ -16582,7 +16582,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         x: event.changedTouches[0].pageX,
         y: event.changedTouches[0].pageY
       };
-      if (state2.refresherHeight >= props2.refresherThreshold) {
+      if (state.refresherHeight >= props2.refresherThreshold) {
         _setRefreshState("refreshing");
       } else {
         _setRefreshState("refresherabort");
@@ -16608,8 +16608,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     });
   });
   onActivated(() => {
-    realScrollY.value && (main.value.scrollTop = state2.lastScrollTop);
-    realScrollX.value && (main.value.scrollLeft = state2.lastScrollLeft);
+    realScrollY.value && (main.value.scrollTop = state.lastScrollTop);
+    realScrollX.value && (main.value.scrollLeft = state.lastScrollLeft);
   });
   watch(scrollTopNumber, (val) => {
     _scrollTopChanged(val);
@@ -16666,11 +16666,11 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
 );
 class UniPageContainerElement extends UniElement {
 }
-const t0$o = template("<div uni-view class=uni-page-container-overlay>");
-const t1$f = template("<div uni-view>");
+const t0$q = template("<div uni-view class=uni-page-container-overlay>");
+const t1$g = template("<div uni-view>");
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "page-container",
     rootElement: {
@@ -16924,7 +16924,7 @@ const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
       clearTransitionTimer();
     });
     const n0 = createIf(() => __props.overlay && showPageContainer.value, () => {
-      const n2 = t0$o();
+      const n2 = t0$q();
       on$1(n2, "click", onClickOverlay);
       on$1(n2, "touchmove", withModifiers(() => {
       }, ["prevent", "stop"]));
@@ -16932,7 +16932,7 @@ const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
       return n2;
     });
     const n3 = createIf(() => showPageContainer.value, () => {
-      const n6 = t1$f();
+      const n6 = t1$g();
       renderEffect(() => {
         setClass(n6, ["uni-page-container-popup", popupClasses.value]);
         setStyle(n6, [innerStyleMap.value, __props.customStyle]);
@@ -17001,11 +17001,11 @@ class UniCheckboxElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 }
-const t0$n = template("<span uni-text> ", 1);
-const t1$e = template("<span uni-text>\n      <!>\n    ");
+const t0$p = template("<span uni-text> ", 1);
+const t1$f = template("<span uni-text>\n      <!>\n    ");
 const t2$7 = template("<div uni-view class=uni-checkbox><span uni-text> </span>", 1);
 const fontUnicode$1 = "";
-const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -17103,7 +17103,7 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t0$n();
+        const n2 = t0$p();
         const x2 = txt(n2);
         on$1(n2, "click", withModifiers(handleTap, ["stop"]));
         renderEffect(() => {
@@ -17140,7 +17140,7 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => isStringSlot,
           () => {
-            const n9 = t1$e();
+            const n9 = t1$f();
             const n8 = next(child(n9));
             setInsertionState(n9, n8);
             createSlot(
@@ -17170,8 +17170,8 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
 });
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const t0$m = template("<div uni-view>", 1);
-const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
+const t0$o = template("<div uni-view>", 1);
+const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -17279,7 +17279,7 @@ const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
       elementOrderMap.clear();
       elementOrderCounter = 0;
     });
-    const n1 = t0$m();
+    const n1 = t0$o();
     setInsertionState(n1);
     createSlot();
     return n1;
@@ -17287,8 +17287,8 @@ const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
 });
 class UniFormElement extends UniViewElement {
 }
-const t0$l = template("<div uni-view class=uni-form>", 1);
-const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
+const t0$n = template("<div uni-view class=uni-form>", 1);
+const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "form",
     // @ts-ignore
@@ -17354,7 +17354,7 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
     const ctx = { registerField, unregisterField, submit, reset };
     provide(FORM_KEY, ctx);
     __expose({ submit, reset });
-    const n1 = t0$l();
+    const n1 = t0$n();
     setInsertionState(n1);
     createSlot();
     return n1;
@@ -17362,8 +17362,8 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
 });
 class UniLabelElement extends UniViewElement {
 }
-const t0$k = template("<div uni-view>", 1);
-const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
+const t0$m = template("<div uni-view>", 1);
+const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "label",
     // @ts-ignore
@@ -17432,7 +17432,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
         return;
       target.activate(event);
     };
-    const n1 = t0$k();
+    const n1 = t0$m();
     setInsertionState(n1);
     createSlot();
     on$1(n1, "click", handleTap);
@@ -17490,8 +17490,8 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$j = template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
+const t0$l = template("<div data-v-212d40c7 uni-view>", 256);
+const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -17516,7 +17516,7 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
       style: "display: flex;"
     }, null, true);
     setInsertionState(n1);
-    const n0 = t0$j();
+    const n0 = t0$l();
     insert(n0, n1);
     setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
     renderEffect(() => {
@@ -17528,8 +17528,8 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
 });
 class UniMatchMediaElement extends UniViewElement {
 }
-const t0$i = template("<div uni-view>", 1);
-const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
+const t0$k = template("<div uni-view>", 1);
+const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "match-media",
     // @ts-ignore
@@ -17608,7 +17608,7 @@ const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
         }
       });
     }
-    const n1 = t0$i();
+    const n1 = t0$k();
     setInsertionState(n1);
     createSlot();
     applyVShow(n1, () => unref(show));
@@ -17617,9 +17617,9 @@ const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
 });
 class UniNavigatorElement extends UniViewElement {
 }
-const t0$h = template("<span uni-text>\n    <!>\n  ", 1);
-const t1$d = template("<div uni-view>", 1);
-const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
+const t0$j = template("<span uni-text>\n    <!>\n  ", 1);
+const t1$e = template("<div uni-view>", 1);
+const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "navigator",
     // @ts-ignore
@@ -17689,7 +17689,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => isStringSlot,
       () => {
-        const n4 = t0$h();
+        const n4 = t0$j();
         const n3 = next(child(n4));
         setInsertionState(n4, n3);
         createSlot(
@@ -17703,7 +17703,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
         return n4;
       },
       () => {
-        const n7 = t1$d();
+        const n7 = t1$e();
         setInsertionState(n7);
         createSlot();
         on$1(n7, "click", handleTap);
@@ -17732,11 +17732,11 @@ class UniPickerElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setPickerValue(val);
   }
 }
-const t0$g = template("<div uni-view>", 1);
+const t0$i = template("<div uni-view>", 1);
 const OPEN_LOCK_DURATION = 300;
 const DEFAULT_START_YEAR = 1970;
 const DEFAULT_END_YEAR = 2099;
-const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "picker",
     // @ts-ignore
@@ -18002,7 +18002,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
         innerValue.value = value;
       }
     });
-    const n1 = t0$g();
+    const n1 = t0$i();
     setInsertionState(n1);
     createSlot();
     on$1(n1, "click", handleClick);
@@ -18011,8 +18011,8 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
 });
 class UniPickerViewElement extends UniViewElement {
 }
-const t0$f = template("<div uni-view class=uni-picker-view>", 1);
-const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
+const t0$h = template("<div uni-view class=uni-picker-view>", 1);
+const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "picker-view",
     // @ts-ignore
@@ -18127,7 +18127,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     onUnmounted(() => {
       columns.splice(0, columns.length);
     });
-    const n1 = t0$f();
+    const n1 = t0$h();
     setInsertionState(n1);
     createSlot();
     setStaticTemplateRef(n1, pickViewRef, null, "pickViewRef");
@@ -18136,10 +18136,10 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
 });
 class UniPickerViewColumnElement extends UniViewElement {
 }
-const t0$e = template("<div uni-view>");
-const t1$c = template("<div uni-view class=picker-view-column><!><div uni-view></div><div uni-view class=uni-picker-view-indicator></div><div uni-view>", 1);
+const t0$g = template("<div uni-view>");
+const t1$d = template("<div uni-view class=picker-view-column><!><div uni-view></div><div uni-view class=uni-picker-view-indicator></div><div uni-view>", 1);
 const EPSILON = 1;
-const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "picker-view-column",
     // @ts-ignore
@@ -18240,7 +18240,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
         ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, targetIndex);
       }
     }
-    const n7 = t1$c();
+    const n7 = t1$d();
     const n6 = child(n7);
     const n3 = next(n6);
     const n4 = next(n3);
@@ -18254,7 +18254,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       onScrollend: () => onScrollEnd,
       onScroll: () => onScroll
     }, () => {
-      const n1 = t0$e();
+      const n1 = t0$g();
       renderEffect(() => {
         const _containerPaddingPx = unref(containerPaddingPx);
         setStyle(n1, { "padding-top": _containerPaddingPx, "padding-bottom": _containerPaddingPx });
@@ -18280,9 +18280,9 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
 });
 class UniProgressElement extends UniViewElement {
 }
-const t0$d = template("<span uni-text class=uni-progress-value> ");
-const t1$b = template("<div uni-view class=uni-progress><div uni-view class=uni-progress-background><div uni-view class=uni-progress-fill></div></div>", 1);
-const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
+const t0$f = template("<span uni-text class=uni-progress-value> ");
+const t1$c = template("<div uni-view class=uni-progress><div uni-view class=uni-progress-background><div uni-view class=uni-progress-fill></div></div>", 1);
+const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "progress",
     // @ts-ignore
@@ -18398,7 +18398,7 @@ const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
     onUnmounted(() => {
       clearTimer();
     });
-    const n5 = t1$b();
+    const n5 = t1$c();
     const n1 = child(n5);
     const n0 = child(n1);
     setStaticTemplateRef(n0, fillRef, null, "fillRef");
@@ -18408,7 +18408,7 @@ const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n5, 1);
     createIf(() => __props.showInfo, () => {
-      const n4 = t0$d();
+      const n4 = t0$f();
       const x4 = txt(n4);
       renderEffect(() => {
         setStyle(n4, unref(fontStyle));
@@ -18436,11 +18436,11 @@ class UniRadioElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setRadioChecked(val);
   }
 }
-const t0$c = template("<span uni-text> ", 1);
-const t1$a = template("<span uni-text>\n      <!>\n    ");
+const t0$e = template("<span uni-text> ", 1);
+const t1$b = template("<span uni-text>\n      <!>\n    ");
 const t2$6 = template("<div uni-view class=uni-radio><span uni-text> </span>", 1);
 const fontUnicode = "";
-const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "radio",
     // @ts-ignore
@@ -18547,7 +18547,7 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t0$c();
+        const n2 = t0$e();
         const x2 = txt(n2);
         on$1(n2, "click", withModifiers(handleTap, ["stop"]));
         renderEffect(() => {
@@ -18586,7 +18586,7 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => isStringSlot,
           () => {
-            const n9 = t1$a();
+            const n9 = t1$b();
             const n8 = next(child(n9));
             setInsertionState(n9, n8);
             createSlot(
@@ -18616,8 +18616,8 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
 });
 class UniRadioGroupElement extends UniViewElement {
 }
-const t0$b = template("<div uni-view>", 1);
-const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
+const t0$d = template("<div uni-view>", 1);
+const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "radio-group",
     // @ts-ignore
@@ -18680,7 +18680,7 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
         formCtx.unregisterField(props2.name);
       }
     });
-    const n1 = t0$b();
+    const n1 = t0$d();
     setInsertionState(n1);
     createSlot();
     return n1;
@@ -18714,10 +18714,10 @@ class UniSliderElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.renderVisuals(val);
   }
 }
-const t0$a = template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
-const t1$9 = template('<div uni-view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;"><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view tabIndex=0 role=slider></div></div></div>', 1);
+const t0$c = template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
+const t1$a = template('<div uni-view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;"><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view tabIndex=0 role=slider></div></div></div>', 1);
 const TOUCH_THRESHOLD = 4;
-const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "slider",
     externalClasses: ["track-class", "track-active-class", "thumb-class"],
@@ -19118,7 +19118,7 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
       renderVisuals,
       getCurrentValue: () => currentValue.value
     });
-    const n8 = t1$9();
+    const n8 = t1$a();
     const n4 = child(n8);
     const n1 = child(n4);
     const n0 = child(n1);
@@ -19147,7 +19147,7 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n8, 1);
     createIf(() => props2.showValue, () => {
-      const n7 = t0$a();
+      const n7 = t0$c();
       const x7 = txt(n7);
       setStaticTemplateRef(n7, showValueRef, null, "showValueRef");
       renderEffect(() => setText(x7, normalizeUniText("\n\n      " + toDisplayString(unref(currentValue)) + "\n\n\n\n\n    ")));
@@ -19199,10 +19199,10 @@ function parsePxRpx(margin) {
 }
 class UniSwiperElement extends UniViewElement {
 }
-const t0$9 = template("<div uni-view>");
-const t1$8 = template("<div uni-view class=uni-swiper-wrapper><div uni-view></div><div uni-view>", 1);
+const t0$b = template("<div uni-view>");
+const t1$9 = template("<div uni-view class=uni-swiper-wrapper><div uni-view></div><div uni-view>", 1);
 const DIRECTION_LOCK_THRESHOLD = 5;
-const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "swiper",
     rootElement: {
@@ -20277,7 +20277,7 @@ const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
         resizeObserver.disconnect(wrapper);
       }
     });
-    const n9 = t1$8();
+    const n9 = t1$9();
     const n1 = child(n9);
     const n8 = next(n1);
     renderEffect(() => setClass(n1, ["uni-swiper-container", __props.vertical ? "uni-swiper-container_vertical" : "uni-swiper-container_horizontal"]));
@@ -20294,7 +20294,7 @@ const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
       const n5 = createFor(
         () => unref(sliderCount),
         (_for_item0) => {
-          const n7 = t0$9();
+          const n7 = t0$b();
           on$1(n7, "touchstart", (e2) => {
             e2.stopPropagation();
           });
@@ -20341,9 +20341,9 @@ class UniSwiperItemElement extends UniViewElement {
     this.itemId = null;
   }
 }
-const t0$8 = template("<div uni-view class=uni-swiper-item-content>");
-const t1$7 = template('<div uni-view class=uni-swiper-item style="position: absolute; visibility: hidden;">', 1);
-const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
+const t0$a = template("<div uni-view class=uni-swiper-item-content>");
+const t1$8 = template('<div uni-view class=uni-swiper-item style="position: absolute; visibility: hidden;">', 1);
+const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "swiper-item",
     rootElement: {
@@ -20369,12 +20369,12 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
         handleUnMounted();
       });
     });
-    const n6 = t1$7();
+    const n6 = t1$8();
     setInsertionState(n6);
     createIf(
       () => unref(autoHeight),
       () => {
-        const n3 = t0$8();
+        const n3 = t0$a();
         setInsertionState(n3);
         createSlot();
         return n3;
@@ -20407,8 +20407,8 @@ class UniSwitchElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setSwitchChecked(val);
   }
 }
-const t0$7 = template("<div uni-view><div uni-view>", 1);
-const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
+const t0$9 = template("<div uni-view><div uni-view>", 1);
+const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "switch",
     // @ts-ignore
@@ -20508,7 +20508,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
         setChecked(checked);
       }
     });
-    const n1 = t0$7();
+    const n1 = t0$9();
     const n0 = child(n1);
     on$1(n1, "click", withModifiers(handleTap, ["stop"]));
     renderEffect(() => {
@@ -20531,8 +20531,8 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
     return n1;
   }
 });
-const _t0$6 = template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
-const _t1$4 = template("<div><!><div class=uni-video-toast-draw></div>");
+const _t0$5 = template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t1$3 = template("<div><!><div class=uni-video-toast-draw></div>");
 const _t2$1 = template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
 const _t3$1 = template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
 const _t4$1 = template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
@@ -20551,7 +20551,7 @@ function formatTime(val) {
   return str;
 }
 function useGesture(props2, videoState, videoRef, fullscreenState) {
-  const state2 = reactive({
+  const state = reactive({
     seeking: false,
     gestureType: "none",
     volumeOld: 0,
@@ -20566,10 +20566,10 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   };
   let changeToastThinTimer = null;
   const changeToastThin = () => {
-    if (state2.gestureType !== "none" && changeToastThinTimer != null)
+    if (state.gestureType !== "none" && changeToastThinTimer != null)
       return;
     changeToastThinTimer = setTimeout(() => {
-      state2.toastThin = true;
+      state.toastThin = true;
     }, 500);
   };
   let showToastTimer = void 0;
@@ -20577,7 +20577,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     if (showToastTimer != void 0)
       return;
     showToastTimer = setTimeout(() => {
-      state2.toastThin = false;
+      state.toastThin = false;
       showToastTimer = void 0;
     }, 1e3);
   }
@@ -20589,8 +20589,8 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     const toucher = event.targetTouches[0];
     touchStartOrigin.x = toucher.pageX;
     touchStartOrigin.y = toucher.pageY;
-    state2.gestureType = "none";
-    state2.volumeOld = 0;
+    state.gestureType = "none";
+    state.volumeOld = 0;
     if (fullscreenState.fullscreen) {
       event.stopPropagation();
     }
@@ -20605,7 +20605,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     if (fullscreenState.fullscreen) {
       stop();
     }
-    const gestureType = state2.gestureType;
+    const gestureType = state.gestureType;
     if (gestureType === "stop") {
       return;
     }
@@ -20616,7 +20616,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     const video = videoRef.value;
     if (gestureType === "progress") {
       changeProgress(pageX - origin.x);
-      state2.seeking = true;
+      state.seeking = true;
     } else if (gestureType === "volume") {
       changeVolume(pageY - origin.y);
     }
@@ -20626,22 +20626,22 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
       if (!props2.enableProgressGesture) {
-        state2.gestureType = "stop";
+        state.gestureType = "stop";
         return;
       }
-      state2.gestureType = "progress";
-      state2.currentTimeOld = state2.currentTimeNew = video.currentTime;
+      state.gestureType = "progress";
+      state.currentTimeOld = state.currentTimeNew = video.currentTime;
       if (!fullscreenState.fullscreen) {
         stop();
       }
     } else {
       if (!props2.pageGesture && !props2.vslideGesture) {
-        state2.gestureType = "stop";
+        state.gestureType = "stop";
         return;
       }
       changeToastThin();
-      state2.gestureType = "volume";
-      state2.volumeOld = video.volume;
+      state.gestureType = "volume";
+      state.volumeOld = video.volume;
       if (!fullscreenState.fullscreen) {
         stop();
       }
@@ -20649,30 +20649,30 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   }
   function onTouchend(event) {
     const video = videoRef.value;
-    if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
+    if (state.gestureType !== "none" && state.gestureType !== "stop") {
       if (fullscreenState.fullscreen) {
         event.stopPropagation();
       }
       event.preventDefault();
     }
-    if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
-      video.currentTime = state2.currentTimeNew;
+    if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
+      video.currentTime = state.currentTimeNew;
     }
-    state2.gestureType = "none";
+    state.gestureType = "none";
   }
   function changeProgress(x) {
     const duration = videoState.currentDuration;
-    let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
+    let currentTimeNew = x / 600 * duration + state.currentTimeOld;
     if (currentTimeNew < 0) {
       currentTimeNew = 0;
     } else if (currentTimeNew > duration) {
       currentTimeNew = duration;
     }
-    state2.currentTimeNew = currentTimeNew;
+    state.currentTimeNew = currentTimeNew;
   }
   function changeVolume(y) {
     const video = videoRef.value;
-    const valueOld = state2.volumeOld;
+    const valueOld = state.volumeOld;
     let value;
     if (typeof valueOld === "number") {
       value = valueOld - y / 200;
@@ -20684,18 +20684,18 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       clearChangeShowToast();
       changeShowToast();
       video.volume = value;
-      state2.volumeNew = value;
+      state.volumeNew = value;
     }
   }
   return {
-    state: state2,
+    state,
     onTouchstart,
     onTouchmove,
     onTouchend
   };
 }
 function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef) {
-  const state2 = reactive({ fullscreen: false });
+  const state = reactive({ fullscreen: false });
   const isSafari = /^Apple/.test(navigator.vendor);
   function onFullscreenChange($event, webkit) {
     if (webkit && document.fullscreenEnabled) {
@@ -20704,7 +20704,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
     emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
   }
   function emitFullscreenChange(val) {
-    state2.fullscreen = val;
+    state.fullscreen = val;
     trigger("fullscreenchange", {}, {
       fullScreen: val,
       direction: "vertical"
@@ -20754,7 +20754,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
   }
   onBeforeUnmount(exitFullScreen);
   return {
-    state: state2,
+    state,
     onFullscreenChange,
     emitFullscreenChange,
     toggleFullscreen,
@@ -20766,7 +20766,7 @@ function useVideo(props2, attrs2, trigger) {
   const videoRef = ref(null);
   const src = computed(() => getRealPath(props2.src));
   const muted = computed(() => props2.muted === "true" || props2.muted === true);
-  const state2 = reactive({
+  const state = reactive({
     start: false,
     src,
     playing: false,
@@ -20779,23 +20779,23 @@ function useVideo(props2, attrs2, trigger) {
     pauseUpdatingCurrentTime: false
   });
   watch(() => src.value, () => {
-    state2.playing = false;
-    state2.currentTime = 0;
+    state.playing = false;
+    state.currentTime = 0;
   });
-  watch(() => state2.buffered, (buffered) => {
+  watch(() => state.buffered, (buffered) => {
     trigger("progress", {}, { buffered });
   });
   watch(() => muted.value, (muted2) => {
     const video = videoRef.value;
     video.muted = muted2;
   });
-  watch([() => state2.duration, () => props2.duration], () => {
+  watch([() => state.duration, () => props2.duration], () => {
     let _duration = Number(props2.duration);
     isNaN(_duration) && (_duration = 0);
-    state2.currentDuration = _duration > 0 ? _duration : state2.duration;
+    state.currentDuration = _duration > 0 ? _duration : state.duration;
   });
   function onDurationChange({ target }) {
-    state2.duration = target.duration;
+    state.duration = target.duration;
   }
   function onLoadedMetadata($event) {
     const initialTime = Number(props2.initialTime) || 0;
@@ -20814,33 +20814,33 @@ function useVideo(props2, attrs2, trigger) {
     const video = $event.target;
     const buffered = video.buffered;
     if (buffered.length) {
-      state2.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
+      state.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
     }
   }
   function onWaiting($event) {
     trigger("waiting", $event, {});
   }
   function onVideoError($event) {
-    state2.playing = false;
+    state.playing = false;
     trigger("error", $event, {});
   }
   function onPlay($event) {
-    state2.start = true;
-    state2.playing = true;
+    state.start = true;
+    state.playing = true;
     trigger("play", $event, {});
   }
   function onPause($event) {
-    state2.playing = false;
+    state.playing = false;
     trigger("pause", $event, {});
   }
   function onEnded($event) {
-    state2.playing = false;
+    state.playing = false;
     trigger("ended", $event, {});
   }
   function onTimeUpdate($event) {
     const video = $event.target;
-    if (!state2.pauseUpdatingCurrentTime) {
-      state2.currentTime = video.currentTime;
+    if (!state.pauseUpdatingCurrentTime) {
+      state.currentTime = video.currentTime;
     }
     const currentTime = video.currentTime;
     trigger("timeupdate", $event, {
@@ -20850,7 +20850,7 @@ function useVideo(props2, attrs2, trigger) {
   }
   function toggle() {
     const video = videoRef.value;
-    if (state2.playing) {
+    if (state.playing) {
       video.pause();
     } else {
       video.play();
@@ -20858,7 +20858,7 @@ function useVideo(props2, attrs2, trigger) {
   }
   function play() {
     const video = videoRef.value;
-    state2.start = true;
+    state.start = true;
     video.play();
   }
   function pause() {
@@ -20882,7 +20882,7 @@ function useVideo(props2, attrs2, trigger) {
   }
   return {
     videoRef,
-    state: state2,
+    state,
     play,
     pause,
     stop,
@@ -20906,7 +20906,7 @@ function useControls(props2, videoState, seek, seeking) {
   const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
   const controlsVisible = ref(true);
   const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
-  const state2 = reactive({
+  const state = reactive({
     seeking: false,
     touching: false,
     controlsTouching: false,
@@ -20930,12 +20930,12 @@ function useControls(props2, videoState, seek, seeking) {
     }
   }
   function toggleControls() {
-    state2.controlsVisible = !state2.controlsVisible;
+    state.controlsVisible = !state.controlsVisible;
   }
   let hideTiming;
   function autoHideStart() {
     hideTiming = setTimeout(() => {
-      state2.controlsVisible = false;
+      state.controlsVisible = false;
     }, 3e3);
   }
   function autoHideEnd() {
@@ -20949,7 +20949,7 @@ function useControls(props2, videoState, seek, seeking) {
       clearTimeout(hideTiming);
     }
   });
-  watch(() => state2.controlsShow && videoState.playing && !state2.controlsTouching, (val) => {
+  watch(() => state.controlsShow && videoState.playing && !state.controlsTouching, (val) => {
     if (val) {
       autoHideStart();
     } else {
@@ -20982,37 +20982,37 @@ function useControls(props2, videoState, seek, seeking) {
       }
       videoState.progress = progress;
       seeking == null ? void 0 : seeking(videoState.currentDuration * progress / 100);
-      state2.seeking = true;
+      state.seeking = true;
       event.preventDefault();
       event.stopPropagation();
     }
     function touchend(event) {
-      state2.controlsTouching = false;
-      if (state2.touching) {
+      state.controlsTouching = false;
+      if (state.touching) {
         ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
         if (!moveOnce) {
           event.preventDefault();
           event.stopPropagation();
           seek(videoState.currentDuration * videoState.progress / 100);
         }
-        state2.touching = false;
+        state.touching = false;
       }
     }
     ball.addEventListener("touchstart", (event) => {
-      state2.controlsTouching = true;
+      state.controlsTouching = true;
       const toucher = event.targetTouches[0];
       originX = toucher.pageX;
       originY = toucher.pageY;
       originProgress = videoState.progress;
       moveOnce = true;
-      state2.touching = true;
+      state.touching = true;
       ball.addEventListener("touchmove", touchmove2, passiveOptions2);
     });
     ball.addEventListener("touchend", touchend);
     ball.addEventListener("touchcancel", touchend);
   });
   return {
-    state: state2,
+    state,
     progressRef,
     ballRef,
     clickProgress,
@@ -21023,7 +21023,7 @@ function useControls(props2, videoState, seek, seeking) {
 }
 function useDanmu(props2, videoState) {
   const danmuRef = ref(null);
-  const state2 = reactive({ enable: Boolean(props2.enableDanmu) });
+  const state = reactive({ enable: Boolean(props2.enableDanmu) });
   let danmuIndex = {
     time: 0,
     index: -1
@@ -21033,7 +21033,7 @@ function useDanmu(props2, videoState) {
     return (a.time || 0) - (b.time || 0);
   });
   function toggleDanmu() {
-    state2.enable = !state2.enable;
+    state.enable = !state.enable;
   }
   function updateDanmu(event) {
     const video = event.target;
@@ -21048,7 +21048,7 @@ function useDanmu(props2, videoState) {
         const element = danmuList[index2];
         if (currentTime >= (element.time || 0)) {
           newDanmuIndex.index = index2;
-          if (videoState.playing && state2.enable) {
+          if (videoState.playing && state.enable) {
             playDanmu(element);
           }
         } else {
@@ -21091,7 +21091,7 @@ function useDanmu(props2, videoState) {
     });
   }
   return {
-    state: state2,
+    state,
     danmuRef,
     updateDanmu,
     toggleDanmu,
@@ -21150,7 +21150,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$9 = {
+const props$8 = {
   id: {
     type: String,
     default: ""
@@ -21242,7 +21242,7 @@ class UniVideoElement extends UniElement {
 }
 const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$9,
+  props: props$8,
   emits: [
     "fullscreenchange",
     "progress",
@@ -21419,13 +21419,13 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
           });
           setInsertionState(_n27);
           createIf(() => gestureState.gestureType === "volume", () => {
-            const _n24 = _t1$4();
+            const _n24 = _t1$3();
             const _n23 = child(_n24);
             const _n22 = next(_n23);
             renderEffect(() => setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
             setInsertionState(_n24, _n23);
             createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$6();
+              const _n19 = _t0$5();
               return _n19;
             }, () => {
               const _n21 = createNodes(() => !gestureState.toastThin && (() => {
@@ -21482,7 +21482,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$8 = { src: {
+const props$7 = { src: {
   type: String,
   default: ""
 } };
@@ -21491,7 +21491,7 @@ class UniWebViewElement extends UniElement {
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$8,
+  props: props$7,
   emits: ["load"],
   rootElement: {
     name: "uni-web-view",
@@ -21820,9 +21820,7 @@ function handleAMapSecurityPolicy(mapInfo) {
     serviceHost: mapInfo.serviceHost || ""
   };
 }
-const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
 const ICON_PATH_ORIGIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
-const ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACcCAMAAAC3Fl5oAAAB3VBMVEVMaXH/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/EhL/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/Dw//AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/GRn/NTX/Dw//Fhb/AAD/AAD/AAD/GRn/GRn/Y2P/AAD/AAD/ExP/Ghr/AAD/AAD/MzP/GRn/AAD/Hh7/AAD/RUX/AAD/AAD/AAD/AAD/AAD/AAD/Dg7/AAD/HR3/Dw//FRX/SUn/AAD/////kJD/DQ3/Zmb/+/v/wMD/mJj/6en/vb3/1NT//Pz/ODj/+fn/3Nz/nJz/j4//9/f/7e3/9vb/7Oz/2Nj/x8f/Ozv/+Pj/3d3/nZ3/2dn//f3/6Oj/2tr/v7//09P/vr7/mZn/l5cdSvP3AAAAe3RSTlMAAhLiZgTb/vztB/JMRhlp6lQW86g8mQ4KFPs3UCH5U8huwlesWtTYGI7RsdVeJGfTW5rxnutLsvXWF8vQNdo6qQbuz7D4hgVIx2xtw8GC1TtZaIw0i84P98tU0/fsj7PKaAgiZZxeVfo8Z52eg1P0nESrENnjXVPUgw/uuSmDAAADsUlEQVR42u3aZ3cTRxgF4GtbYleSLdnGcsENG2ODjbExEHrvhAQCIb1Bem+QdkeuuFMNBBJIfmuOckzZI8/srHYmH3Lm+QNXK632LTvQ03Tu/IWeU/tTGTKT2n+q58L5c00wpXJd47DHEt5w47pKxLbhdLdPKb/7dBYxVLxw1GcI/2h1BcpzKNFHLX2JQ4gumaiitqpEEhEdOMJI9h5AFC3feYzI+7IF2tpSLEOqDXpObPRYFm/jCWho/4Ble7MdoT7fzhhq9yHEz28wltU1UPrJZ0wd66HwicfYvEFIfePTAP8tSLTupBHvtGJFH9bSkNrNWEHzERrT34xSH9Ogr1CijkbVAUH1KRqVqkdQAw07iIAaGlcTqI+/0LjeJJ5J0IIEnkpXMdzs4sTtW9dnZq7fuj2xOMtwVWk88RHDjBYejYvnjD8qjOpfQsUqhvj7oSjxcJIhVj3pyKqpNjYvVjQ/RrXq5YABKi3MCYm5BSrtWO5v11DlmlC4RpU1WRS9SJU7QukOVbpQ9JLu549+Dd0AUOlTbkGEuk85vxLAK5QbuytC3R2j3HoAjZSbFxrmKTcCoJdSk0LLJKV6gSaPMqNTQsvUKGW8JrxKqUWhaZFSeWyh1LTQNE2pHF6mzOy40DQ+S5mLimJcENoKlOnBWsr8KbRNUGYt5LXgd6HtD3lNQIoyN4S2G5RJIUOZm0LbTcqsBqVmhLYZSlkPsP4VWf+Rrd+m1v9o9h8Vv5p42C1R5qL1x7WRglOgVN52yfwNOBu76P+lLPoYidu23KPciIHGa07ZeIW1jvcNtI7q5vexCPGYCmf+m/Y9a3sAwQ5bI9T7ukPgPcn9GToEao+xk1OixJT+GIsvNAbx6eAgPq0xiF+KtkpYKhRXCQ8eFFcJhSWGu3rZ8jJkCM8kz9K4TUnrC6mAgzTsB9tLwQ2W15qfosQ2GrQNpZr7aczbzVjBZsvLcaC1g0bsbIVEnU8DOr6H1KDH2LwtUBi0/JII6Dxm9zUXkH+XMWzfh1Dte1i2Pe3QkC77Zel7aehpO8wyHG6Dtt0NjKxhN6I4uSli/TqJiJJDUQ4NDCURXTrXRy1XcumyD24M+AzhD1RXIIZsl/LoyZmurJHDM7s8lvB2FQ/PmPJ6PseAXP5HGMYAAC7ABbgAF+ACXIALcAEuwAW4ABfgAlyAC3ABLsAFuID/d8Cx4NEt8/byOf0wLnis8zjMq9/Kp7bWw4JOj8u8TlhRl+G/Mp2wpOX48GffvvZ1CyL4B53LAS6zb08EAAAAAElFTkSuQmCC";
 var MapType = /* @__PURE__ */ ((MapType2) => {
   MapType2["QQ"] = "qq";
   MapType2["GOOGLE"] = "google";
@@ -21944,7 +21942,7 @@ function translateCoordinateSystem(type, coords, skip) {
     )
   );
 }
-const props$7 = {
+const props$6 = {
   id: {
     type: [Number, String],
     default: ""
@@ -22030,7 +22028,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$7,
+  props: props$6,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -22369,7 +22367,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$6 = {
+const props$5 = {
   points: {
     type: Array,
     require: true
@@ -22415,7 +22413,7 @@ const props$6 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$6,
+  props: props$5,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -22494,7 +22492,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$5 = {
+const props$4 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -22526,7 +22524,7 @@ const props$5 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -22592,8 +22590,8 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const _t0$5 = template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
-const props$4 = {
+const _t0$4 = template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
+const props$3 = {
   id: {
     type: [Number, String],
     default: ""
@@ -22617,7 +22615,7 @@ const props$4 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -22637,7 +22635,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     };
     return () => {
       return (() => {
-        const _n1 = _t0$5();
+        const _n1 = _t0$4();
         const _n0 = child(_n1);
         on$1(_n0, "click", handleClick);
         renderEffect(() => {
@@ -23152,20 +23150,20 @@ const CONTEXT_ID = "MAP_LOCATION";
 const MapLocation = /* @__PURE__ */ defineSystemComponent({
   name: "MapLocation",
   setup() {
-    const state2 = reactive({
+    const state = reactive({
       latitude: 0,
       longitude: 0,
       rotate: 0
     });
     {
       let compassChangeHandler = function(res) {
-        state2.rotate = res.direction;
+        state.rotate = res.direction;
       }, updateLocation = function() {
         getLocation({
           type: "gcj02",
           success: (res) => {
-            state2.latitude = res.latitude;
-            state2.longitude = res.longitude;
+            state.latitude = res.latitude;
+            state.longitude = res.longitude;
           },
           complete: () => {
             timer = setTimeout(updateLocation, 3e4);
@@ -23186,13 +23184,13 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
       const removeMapChidlContext = inject("removeMapChidlContext");
       const context = {
         id: CONTEXT_ID,
-        state: state2
+        state
       };
       addMapChidlContext(context);
       onUnmounted(() => removeMapChidlContext(context));
     }
     return () => {
-      return state2.latitude ? (() => {
+      return state.latitude ? (() => {
         const _n0 = createComponent(MapMarker, {
           anchor: {
             x: 0.5,
@@ -23201,14 +23199,14 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
           width: "44",
           height: "44",
           iconPath: () => ICON_PATH_ORIGIN,
-          $: [() => state2]
+          $: [() => state]
         }, null, true);
         return _n0;
       })() : null;
     };
   }
 });
-const props$3 = {
+const props$2 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -23242,7 +23240,7 @@ const props$3 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     let polygonIns;
     const onMapReady = inject("onMapReady");
@@ -23315,9 +23313,9 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
-const _t0$4 = template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
-const _t1$3 = template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
-const props$2 = {
+const _t0$3 = template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
+const _t1$2 = template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
+const props$1 = {
   id: {
     type: String,
     default: ""
@@ -23436,7 +23434,7 @@ function useMap(props2, rootRef, emit2) {
   const mapRef = ref(null);
   let maps2;
   let map;
-  const state2 = reactive({
+  const state = reactive({
     latitude: Number(props2.latitude),
     longitude: Number(props2.longitude),
     includePoints: getPoints(props2.includePoints)
@@ -23474,17 +23472,17 @@ function useMap(props2, rootRef, emit2) {
   watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
     const latitude = Number(latitudeVlaue);
     const longitude = Number(longitudeVlaue);
-    if (latitude !== state2.latitude || longitude !== state2.longitude) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
+    if (latitude !== state.latitude || longitude !== state.longitude) {
+      state.latitude = latitude;
+      state.longitude = longitude;
       if (map) {
-        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+        const centerPosition = getMapPosition(maps2, state.latitude, state.longitude);
         map.setCenter(centerPosition);
       }
     }
   });
   watch(() => props2.includePoints, (points) => {
-    state2.includePoints = getPoints(points);
+    state.includePoints = getPoints(points);
     if (isBoundsReady) {
       updateBounds();
     }
@@ -23505,13 +23503,13 @@ function useMap(props2, rootRef, emit2) {
     };
   }
   function updateCenter() {
-    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const centerPosition = getMapPosition(maps2, state.latitude, state.longitude);
     map.setCenter(centerPosition);
   }
   function updateBounds() {
     if (getIsAMap()) {
       const points = [];
-      state2.includePoints.forEach((point) => {
+      state.includePoints.forEach((point) => {
         points.push([point.longitude, point.latitude]);
       });
       const bounds = new maps2.Bounds(...points);
@@ -23520,7 +23518,7 @@ function useMap(props2, rootRef, emit2) {
       ;
     else {
       const bounds = new maps2.LatLngBounds();
-      state2.includePoints.forEach(({ latitude, longitude }) => {
+      state.includePoints.forEach(({ latitude, longitude }) => {
         const latLng = new maps2.LatLng(latitude, longitude);
         bounds.extend(latLng);
       });
@@ -23529,7 +23527,7 @@ function useMap(props2, rootRef, emit2) {
   }
   function initMap() {
     const mapEl = mapRef.value;
-    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const center = getMapPosition(maps2, state.latitude, state.longitude);
     const event = maps2.event || maps2.Event;
     const map2 = new maps2.Map(mapEl, {
       center,
@@ -23556,7 +23554,7 @@ function useMap(props2, rootRef, emit2) {
       map2.setZoom(Number(scale) || 16);
     });
     onBoundsReady(() => {
-      if (state2.includePoints.length) {
+      if (state.includePoints.length) {
         updateBounds();
         updateCenter();
       }
@@ -23647,8 +23645,8 @@ function useMap(props2, rootRef, emit2) {
               }
             }
             if (latitude && longitude) {
-              state2.latitude = latitude;
-              state2.longitude = longitude;
+              state.latitude = latitude;
+              state.longitude = longitude;
               if (map) {
                 const centerPosition = getMapPosition(maps2, latitude, longitude);
                 map.setCenter(centerPosition);
@@ -23677,7 +23675,7 @@ function useMap(props2, rootRef, emit2) {
           });
           break;
         case "includePoints":
-          state2.includePoints = getPoints(data.includePoints);
+          state.includePoints = getPoints(data.includePoints);
           if (isBoundsReady || getIsAMap()) {
             updateBounds();
           }
@@ -23727,16 +23725,16 @@ function useMap(props2, rootRef, emit2) {
   provide("addMapChidlContext", addMapChidlContext);
   provide("removeMapChidlContext", removeMapChidlContext);
   return {
-    state: state2,
+    state,
     mapRef,
     trigger
   };
 }
 class UniMapElement extends UniElement {
 }
-const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$2,
+  props: props$1,
   emits: [
     "markertap",
     "labeltap",
@@ -23765,8 +23763,8 @@ const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n8 = createPlainElement("uni-map", { id: () => props2.id }, () => {
-          const _n0 = _t0$4();
-          const _n7 = _t1$3();
+          const _n0 = _t0$3();
+          const _n7 = _t1$2();
           const _n1 = createNodes(() => props2.markers.map((item) => (() => {
             const _n02 = createKeyedFragment(() => item.id, () => {
               const _n2 = createComponent(MapMarker, { $: [() => item] }, null, true);
@@ -23804,8 +23802,8 @@ const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$3 = template("<div class=uni-ad-container></div>");
-const _t1$2 = template("<div class=uni-ad-custom-material> ");
+const _t0$2 = template("<div class=uni-ad-container></div>");
+const _t1$1 = template("<div class=uni-ad-custom-material> ");
 const _AdConfig = class _AdConfig {
   constructor() {
     this._adConfig = null;
@@ -24363,7 +24361,7 @@ class AdRender {
   }
 }
 const DEFAULT_WIDESCREEN_WIDTH = 750;
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Ad",
   props: {
@@ -24424,11 +24422,11 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
             widescreenWidth: () => widescreenWidth
           }
         ] }, () => {
-          const _n0 = _t0$3();
+          const _n0 = _t0$2();
           on$1(_n0, "click", () => ad.report(41));
           renderEffect(() => _setTemplateRef(_n0, rootRef));
           const _n1 = createIf(() => customTuiaVisible.value && slots.default, () => {
-            const _n3 = _t1$2();
+            const _n3 = _t1$1();
             on$1(_n3, "click", () => ad.renderTuiaFromCustomMaterial());
             const _x3 = txt(_n3);
             setNodes(_x3, () => slots.default());
@@ -24444,11 +24442,11 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$4 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$3 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 function injectLifecycleHook(name, hook, publicThis, instance2) {
   if (isFunction(hook)) {
     injectHook(name, hook.bind(publicThis), instance2);
@@ -24723,7 +24721,7 @@ function initHistory() {
   });
   return history2;
 }
-const index$1 = {
+const index = {
   install(app) {
     setRealPathResolver(getRealPath);
     initApp(app);
@@ -26306,263 +26304,6 @@ const onSocketOpen = /* @__PURE__ */ on("open");
 const onSocketError = /* @__PURE__ */ on("error");
 const onSocketMessage = /* @__PURE__ */ on("message");
 const onSocketClose = /* @__PURE__ */ on("close");
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  // tab: ['Tab'],
-  enter: ["Enter"]
-  // space: [' ', 'Spacebar'],
-  // up: ['Up', 'ArrowUp'],
-  // left: ['Left', 'ArrowLeft'],
-  // right: ['Right', 'ArrowRight'],
-  // down: ['Down', 'ArrowDown'],
-  // delete: ['Backspace', 'Delete', 'Del'],
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find(
-      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
-    );
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createVaporApp(component, {
-    $: [() => rootState]
-  });
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(
-    () => props2.visible,
-    (value) => visible.value = value
-  );
-  watch(
-    () => visible.value,
-    (value) => disable.value = !value
-  );
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
-let index = 0;
-let overflow = "";
-function preventScroll(prevent) {
-  let before = index;
-  index += prevent ? 1 : -1;
-  index = Math.max(0, index);
-  if (index > 0) {
-    if (before === 0) {
-      overflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-    }
-  } else {
-    document.body.style.overflow = overflow;
-    overflow = "";
-  }
-}
-function usePreventScroll() {
-  onMounted(() => preventScroll(true));
-  onUnmounted(() => preventScroll(false));
-}
-const _t0$2 = template("<div class=map-move> ");
-const _t1$1 = template("<div class=uni-system-open-location><!><div class=info><div class=name> </div><div class=address> </div><div class=nav> </div></div><div class=nav-btn-back> ", 1);
-const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$1 = {
-  latitude: { type: Number },
-  longitude: { type: Number },
-  scale: {
-    type: Number,
-    default: 18
-  },
-  name: {
-    type: String,
-    default: ""
-  },
-  address: {
-    type: String,
-    default: ""
-  }
-};
-function useState(props2) {
-  const state2 = reactive({
-    center: {
-      latitude: 0,
-      longitude: 0
-    },
-    marker: {
-      id: 1,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_TARGET,
-      width: 32,
-      height: 52
-    },
-    location: {
-      id: 2,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_ORIGIN,
-      width: 44,
-      height: 44
-    }
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.center.latitude = props2.latitude;
-      state2.center.longitude = props2.longitude;
-      state2.marker.latitude = props2.latitude;
-      state2.marker.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-const LocationView = /* @__PURE__ */ defineSystemComponent({
-  name: "LocationView",
-  props: props$1,
-  emits: ["close"],
-  setup(props2, { emit: emit2 }) {
-    const state2 = useState(props2);
-    usePreventScroll();
-    getLocation({
-      type: "gcj02",
-      success: ({ latitude, longitude }) => {
-        state2.location.latitude = latitude;
-        state2.location.longitude = longitude;
-      }
-    });
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        state2.center.latitude = centerLocation.latitude;
-        state2.center.longitude = centerLocation.longitude;
-      }
-    }
-    function nav() {
-      const mapInfo = getMapInfo();
-      let url = "";
-      if (mapInfo.type === MapType.GOOGLE) {
-        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
-        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
-      } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
-      } else if (mapInfo.type === MapType.AMAP) {
-        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
-        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
-      }
-      window.open(url);
-    }
-    function back() {
-      emit2("close");
-    }
-    function setCenter({ latitude, longitude }) {
-      state2.center.latitude = latitude;
-      state2.center.longitude = longitude;
-    }
-    return () => {
-      return (() => {
-        const _n7 = _t1$1();
-        const _n6 = child(_n7);
-        let _p0 = next(_n6);
-        const _n2 = child(_p0);
-        const _n3 = next(_n2);
-        const _n4 = next(_n3);
-        const _n5 = next(_p0);
-        setInsertionState(_n7, _n6);
-        createComponent(Map$1, {
-          latitude: () => state2.center.latitude,
-          longitude: () => state2.center.longitude,
-          class: "map",
-          markers: () => [state2.marker, state2.location],
-          onRegionchange: () => onRegionChange
-        }, () => {
-          const _n0 = _t0$2();
-          on$1(_n0, "click", () => setCenter(state2.location));
-          const _x0 = txt(_n0);
-          setNodes(_x0, () => createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24));
-          return _n0;
-        });
-        on$1(_n2, "click", () => setCenter(state2.marker));
-        const _x2 = txt(_n2);
-        setNodes(_x2, () => props2.name);
-        on$1(_n3, "click", () => setCenter(state2.marker));
-        const _x3 = txt(_n3);
-        setNodes(_x3, () => props2.address);
-        on$1(_n4, "click", nav);
-        const _x4 = txt(_n4);
-        setNodes(_x4, () => createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26));
-        on$1(_n5, "click", back);
-        const _x5 = txt(_n5);
-        setNodes(_x5, () => createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26));
-        return _n7;
-      })();
-    };
-  }
-});
-let state = null;
-const openLocation = /* @__PURE__ */ defineAsyncApi(
-  API_OPEN_LOCATION,
-  (args, { resolve }) => {
-    if (!state) {
-      state = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(LocationView, state, () => {
-          state = null;
-          nextTick(() => {
-            app.unmount();
-          });
-        });
-        app.mount(ensureRoot("u-a-o"));
-      });
-    } else {
-      extend(state, args);
-    }
-    resolve();
-  },
-  OpenLocationProtocol,
-  OpenLocationOptions
-);
 let started = false;
 let watchId = 0;
 const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
@@ -26741,6 +26482,83 @@ function createToastIcon$1(icon) {
     default:
       return null;
   }
+}
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  // tab: ['Tab'],
+  enter: ["Enter"]
+  // space: [' ', 'Spacebar'],
+  // up: ['Up', 'ArrowUp'],
+  // left: ['Left', 'ArrowLeft'],
+  // right: ['Right', 'ArrowRight'],
+  // down: ['Down', 'ArrowDown'],
+  // delete: ['Backspace', 'Delete', 'Del'],
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find(
+      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
+    );
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createVaporApp(component, {
+    $: [() => rootState]
+  });
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(
+    () => props2.visible,
+    (value) => visible.value = value
+  );
+  watch(
+    () => visible.value,
+    (value) => disable.value = !value
+  );
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
 }
 const _t0 = template('<div class=uni-mask style="background: transparent;">');
 const _t1 = template("<div><p class=uni-simple-toast__text> ");
@@ -27227,115 +27045,115 @@ const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
 const showTopWindow = /* @__PURE__ */ defineAsyncApi(
   "showTopWindow",
   (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
+    const state = getLayoutState();
+    if (!state) {
       reject();
       return;
     }
-    state2.apiShowTopWindow = true;
+    state.apiShowTopWindow = true;
     nextTick(resolve);
   }
 );
 const hideTopWindow = /* @__PURE__ */ defineAsyncApi(
   "hideTopWindow",
   (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
+    const state = getLayoutState();
+    if (!state) {
       reject();
       return;
     }
-    state2.apiShowTopWindow = false;
+    state.apiShowTopWindow = false;
     nextTick(resolve);
   }
 );
 const showLeftWindow = /* @__PURE__ */ defineAsyncApi(
   "showLeftWindow",
   (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
+    const state = getLayoutState();
+    if (!state) {
       reject();
       return;
     }
-    state2.apiShowLeftWindow = true;
+    state.apiShowLeftWindow = true;
     nextTick(resolve);
   }
 );
 const hideLeftWindow = /* @__PURE__ */ defineAsyncApi(
   "hideLeftWindow",
   (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
+    const state = getLayoutState();
+    if (!state) {
       reject();
       return;
     }
-    state2.apiShowLeftWindow = false;
+    state.apiShowLeftWindow = false;
     nextTick(resolve);
   }
 );
 const showRightWindow = /* @__PURE__ */ defineAsyncApi(
   "showRightWindow",
   (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
+    const state = getLayoutState();
+    if (!state) {
       reject();
       return;
     }
-    state2.apiShowRightWindow = true;
+    state.apiShowRightWindow = true;
     nextTick(resolve);
   }
 );
 const hideRightWindow = /* @__PURE__ */ defineAsyncApi(
   "hideRightWindow",
   (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
+    const state = getLayoutState();
+    if (!state) {
       reject();
       return;
     }
-    state2.apiShowRightWindow = false;
+    state.apiShowRightWindow = false;
     nextTick(resolve);
   }
 );
 const getTopWindowStyle = /* @__PURE__ */ defineSyncApi(
   "getTopWindowStyle",
   () => {
-    const state2 = getLayoutState();
-    return extend({}, state2 && state2.topWindowStyle);
+    const state = getLayoutState();
+    return extend({}, state && state.topWindowStyle);
   }
 );
 const setTopWindowStyle = /* @__PURE__ */ defineSyncApi(
   "setTopWindowStyle",
   (style) => {
-    const state2 = getLayoutState();
-    if (state2) {
-      state2.topWindowStyle = style;
+    const state = getLayoutState();
+    if (state) {
+      state.topWindowStyle = style;
     }
   }
 );
 const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
   "getLeftWindowStyle",
   () => {
-    const state2 = getLayoutState();
-    return extend({}, state2 && state2.leftWindowStyle);
+    const state = getLayoutState();
+    return extend({}, state && state.leftWindowStyle);
   }
 );
 const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
   "setLeftWindowStyle",
   (style) => {
-    const state2 = getLayoutState();
-    if (state2) {
-      state2.leftWindowStyle = style;
+    const state = getLayoutState();
+    if (state) {
+      state.leftWindowStyle = style;
     }
   }
 );
 const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
-  const state2 = getLayoutState();
-  return extend({}, state2 && state2.rightWindowStyle);
+  const state = getLayoutState();
+  return extend({}, state && state.rightWindowStyle);
 });
 const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
-  const state2 = getLayoutState();
-  if (state2) {
-    state2.rightWindowStyle = style;
+  const state = getLayoutState();
+  if (state) {
+    state.rightWindowStyle = style;
   }
 });
 const getElementById = /* @__PURE__ */ defineSyncApi(
@@ -27693,6 +27511,778 @@ const createEditorContextAsync = function(options) {
     );
   });
 };
+const t0$8 = template("<span data-v-212d40c7 uni-text> ");
+const t1$7 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </span><span data-v-212d40c7 uni-text class=uni-picker__header-btn-ok> </div><div data-v-212d40c7 uni-view class=uni-picker__view>", 1);
+const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
+  __name: "picker",
+  setup(__props) {
+    const show = ref(false);
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const cancelEventName = ref("");
+    const selectorChangeEventName = ref("");
+    const multiSelectorChangeEventName = ref("");
+    const timeChangeEventName = ref("");
+    const columnChangeEventName = ref("");
+    const mode = ref("selector");
+    const range = ref([]);
+    const rangeKey = ref("");
+    const value = ref([]);
+    const eventValue = ref([]);
+    const prevMultiValue = ref([]);
+    const selected = reactive({
+      year: (/* @__PURE__ */ new Date()).getFullYear(),
+      month: (/* @__PURE__ */ new Date()).getMonth() + 1,
+      day: (/* @__PURE__ */ new Date()).getDate()
+    });
+    const years = ref([]);
+    const months = ref(Array.from({ length: 12 }, (_, i) => i + 1));
+    const days = ref([]);
+    const hours = ref([]);
+    const minutes = ref([]);
+    const fields = ref("day");
+    const start = ref([]);
+    const end = ref([]);
+    const yearRange = ref([]);
+    const monthRange = ref([]);
+    const dayRange = ref([]);
+    const timer = ref(0);
+    const theme = ref("light");
+    const maskTopStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));");
+    const maskBottomStyle = ref("background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));");
+    const i18nText = {
+      "en": {
+        "cancel": "Cancel",
+        "confirm": "OK",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+      },
+      "es": {
+        "cancel": "Cancelar",
+        "confirm": "Aceptar",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+      },
+      "fr": {
+        "cancel": "Annuler",
+        "confirm": "Valider",
+        "year": "",
+        "month": "",
+        "day": "",
+        "months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+      },
+      "zh-Hans": {
+        "cancel": "取消",
+        "confirm": "确定",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+      },
+      "zh-Hant": {
+        "cancel": "取消",
+        "confirm": "確定",
+        "year": "年",
+        "month": "月",
+        "day": "日",
+        "months": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+      }
+    };
+    const language = ref("zh-Hans");
+    const instance2 = getCurrentInstance();
+    const selectedDate = computed(() => {
+      const { year, month, day } = selected;
+      switch (fields.value) {
+        case "year":
+          return `${year}`;
+        case "month":
+          return `${year}-${formatSingle(month)}`;
+        case "day":
+          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
+        default:
+          return `${year}-${formatSingle(month)}-${formatSingle(day)}`;
+      }
+    });
+    const indicatorStyle = computed(() => {
+      const color = theme.value == "dark" ? "#3B3B3B" : "#F5F5F5";
+      return `height:50px;background:rgba(255,255,255,0);border-top:1px ${color} solid;border-bottom:1px ${color} solid;`;
+    });
+    const cancelText = computed(() => {
+      return i18nHandle("cancel", "取消");
+    });
+    const confirmText = computed(() => {
+      return i18nHandle("confirm", "确定");
+    });
+    const yearText = computed(() => {
+      return i18nHandle("year", "年");
+    });
+    const monthText = computed(() => {
+      return i18nHandle("month", "月");
+    });
+    const dayText = computed(() => {
+      return i18nHandle("day", "日");
+    });
+    const monthsText = computed(() => {
+      let monthsList = months.value;
+      let i18months = i18nHandle("months", i18nText["zh-Hans"]["months"]);
+      let arr = [];
+      monthsList.forEach((v2) => {
+        let index2 = v2 - 1;
+        arr.push(i18months[index2].toString().padStart(2, "0"));
+      });
+      return arr;
+    });
+    const switchTheme = (themeValue) => {
+      if (themeValue == "light") {
+        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));";
+        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));";
+      } else {
+        maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 1), rgba(44, 44, 43, 0));";
+        maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 0), rgba(44, 44, 43, 1));";
+      }
+    };
+    const confirm = () => {
+      const val = eventValue.value;
+      const modeValue = mode.value;
+      switch (modeValue) {
+        case "selector":
+          uni.$emit(selectorChangeEventName.value, val[0]);
+          break;
+        case "multiSelector":
+          uni.$emit(multiSelectorChangeEventName.value, val);
+          break;
+        case "time":
+          const h = hours.value[val[0]];
+          const m = minutes.value[val[1]];
+          uni.$emit(timeChangeEventName.value, `${h}:${m}`);
+          break;
+        case "date":
+          uni.$emit(timeChangeEventName.value, selectedDate.value);
+          break;
+      }
+      closeDialog();
+    };
+    const close = () => {
+      uni.$emit(cancelEventName.value);
+      closeDialog();
+    };
+    const closeDialog = () => {
+      show.value = false;
+      clearTimeout(timer.value);
+      timer.value = setTimeout(() => {
+        var _a;
+        const dialogPages = (_a = instance2 == null ? void 0 : instance2.proxy) == null ? void 0 : _a.$page;
+        uni.closeDialogPage({
+          dialogPage: dialogPages
+        });
+      }, 250);
+    };
+    const handleChange = (e2) => {
+      const val = e2.detail.value;
+      if (mode.value == "date") {
+        let yIdx = val[0];
+        let mIdx = val[1] ?? 0;
+        let dIdx = val[2] ?? 0;
+        yIdx = Math.max(yearRange.value[0], Math.min(yearRange.value[1], yIdx));
+        const currentYear = years.value[yIdx];
+        let sy = parseInt(start.value[0]);
+        let sm = parseInt(start.value[1]);
+        let ey = parseInt(end.value[0]);
+        let em = parseInt(end.value[1]);
+        if (currentYear == sy || currentYear == ey) {
+          let newMonths = getMonths(currentYear);
+          if (months.value.length !== newMonths.length) {
+            calculateRanges();
+            const originalMonth = months.value[mIdx];
+            mIdx = newMonths.findIndex((month) => month === originalMonth);
+            mIdx = Math.max(0, mIdx);
+            months.value = newMonths;
+          }
+        } else {
+          if (months.value.length != 12) {
+            const nowMonth = months.value[mIdx];
+            months.value = getMonths(currentYear);
+            calculateRanges();
+            mIdx = nowMonth - 1;
+          }
+        }
+        mIdx = Math.max(0, Math.min(mIdx, months.value.length - 1));
+        const monthsValue = months.value[mIdx];
+        if (currentYear == sy && monthsValue == sm || currentYear == ey && monthsValue == em) {
+          let newDays = getDays(currentYear, monthsValue);
+          if (days.value.length != newDays.length) {
+            calculateRanges();
+            let dayIdx = newDays.length - 1;
+            if (currentYear == sy && monthsValue == sm) {
+              dIdx = Math.max(0, dIdx - dayIdx);
+            }
+            if (currentYear == ey && monthsValue == em) {
+              dIdx = Math.max(0, dayIdx);
+            }
+            days.value = newDays;
+          }
+        } else {
+          const nowDay = days.value[dIdx];
+          days.value = getDays(currentYear, monthsValue);
+          calculateRanges();
+          dIdx = days.value.findIndex((day) => day === nowDay);
+          dIdx = Math.max(0, dIdx);
+        }
+        if (dIdx >= days.value.length) {
+          dIdx = 0;
+        }
+        selected.year = years.value[yIdx];
+        selected.month = months.value[mIdx];
+        selected.day = days.value[dIdx];
+        const indices = fields.value == "year" ? [yIdx] : fields.value == "month" ? [yIdx, mIdx] : [yIdx, mIdx, dIdx];
+        value.value = indices;
+        eventValue.value = indices.slice();
+      } else if (mode.value == "time") {
+        let h_idx = val[0];
+        let m_idx = val[1];
+        let h = parseInt(hours.value[h_idx]);
+        let m = parseInt(minutes.value[m_idx]);
+        let sh = parseInt(start.value[0]);
+        let eh = parseInt(end.value[0]);
+        const adjusted = adjustTime(h, m);
+        h = adjusted.h;
+        m = adjusted.m;
+        const hStr = h.toString().padStart(2, "0");
+        const mStr = m.toString().padStart(2, "0");
+        const newHIdx = hours.value.findIndex((e22) => e22 == hStr);
+        let newMIdx = minutes.value.findIndex((e22) => e22 == mStr);
+        if (h == sh || h == eh) {
+          const newMinutes = getMinutes(h);
+          if (minutes.value.length !== newMinutes.length) {
+            const originalMinute = minutes.value[newMIdx];
+            newMIdx = newMinutes.findIndex((m2) => m2 === originalMinute);
+            newMIdx = Math.max(0, newMIdx);
+            minutes.value = newMinutes;
+          }
+        } else {
+          if (minutes.value.length != 60) {
+            const nowMinutes = minutes.value[newMIdx];
+            minutes.value = getMinutes(h);
+            newMIdx = parseInt(nowMinutes);
+          }
+        }
+        const indices = [newHIdx, newMIdx];
+        value.value = indices;
+        eventValue.value = indices.slice();
+      } else if (mode.value == "multiSelector") {
+        const newValue = val;
+        const oldValue = prevMultiValue.value;
+        newValue.forEach((v2, column) => {
+          if (oldValue[column] !== v2) {
+            uni.$emit(columnChangeEventName.value, column, v2);
+          }
+        });
+        prevMultiValue.value = [...newValue];
+        eventValue.value = [...newValue];
+      } else {
+        eventValue.value = val;
+      }
+    };
+    const calculateRanges = () => {
+      const startYear = parseInt(start.value[0]);
+      const endYear = parseInt(end.value[0]);
+      yearRange.value = [
+        years.value.findIndex((y) => y >= startYear),
+        years.value.findIndex((y) => y >= endYear)
+      ];
+      const startMonth = parseInt(start.value[1]);
+      const endMonth = parseInt(end.value[1]);
+      monthRange.value = [startMonth - 1, endMonth - 1];
+      const startDay = parseInt(start.value[2]);
+      const endDay = parseInt(end.value[2]);
+      dayRange.value = [startDay - 1, endDay - 1];
+    };
+    const getYears = () => {
+      const startYear = parseInt(start.value[0] || "1970");
+      const endYear = parseInt(end.value[0] || "2099");
+      return Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+    };
+    const getMonths = (year) => {
+      let startMonth = 1;
+      let endMonth = 12;
+      if (year == parseInt(start.value[0])) {
+        startMonth = parseInt(start.value[1]) ?? 1;
+      }
+      if (year == parseInt(end.value[0])) {
+        endMonth = parseInt(end.value[1]) ?? 12;
+      }
+      return Array.from({ length: endMonth - startMonth + 1 }, (_, i) => startMonth + i);
+    };
+    const getDays = (currentYear, currentMonth) => {
+      let startDay = 1;
+      let endDay = new Date(currentYear, currentMonth, 0).getDate();
+      if (currentYear == parseInt(start.value[0]) && currentMonth == parseInt(start.value[1])) {
+        startDay = parseInt(start.value[2]) || 1;
+      }
+      if (currentYear == parseInt(end.value[0]) && currentMonth == parseInt(end.value[1])) {
+        endDay = Math.min(endDay, parseInt(end.value[2]) || endDay);
+      }
+      return Array.from({ length: endDay - startDay + 1 }, (_, i) => startDay + i);
+    };
+    const updateDateColumns = () => {
+      years.value = getYears();
+      months.value = getMonths(selected.year);
+      days.value = getDays(selected.year, selected.month);
+    };
+    const getHours = () => {
+      const sH = parseInt(start.value[0] || "1");
+      const eH = parseInt(end.value[0] || "12");
+      return Array.from({ length: eH - sH + 1 }, (_, i) => String(sH + i).padStart(2, "0"));
+    };
+    const getMinutes = (hour) => {
+      let startMinute = 0;
+      let endMinute = 59;
+      if (hour == parseInt(start.value[0])) {
+        startMinute = parseInt(start.value[1]) ?? 1;
+      }
+      if (hour == parseInt(end.value[0])) {
+        endMinute = parseInt(end.value[1]) ?? 12;
+      }
+      return Array.from({ length: endMinute - startMinute + 1 }, (_, i) => String(startMinute + i).padStart(2, "0"));
+    };
+    const updateTimeColumns = (hour) => {
+      hours.value = getHours();
+      let minuteHour = hour;
+      if (minuteHour == null || isNaN(minuteHour)) {
+        minuteHour = parseInt(hours.value[0] || "00");
+      }
+      minutes.value = getMinutes(minuteHour);
+    };
+    const adjustTime = (h, m) => {
+      var _a, _b;
+      if (!((_a = start.value) == null ? void 0 : _a.length) || !((_b = end.value) == null ? void 0 : _b.length))
+        return { h, m };
+      const startHour = parseInt(start.value[0]);
+      const startMinute = parseInt(start.value[1]);
+      const endHour = parseInt(end.value[0]);
+      const endMinute = parseInt(end.value[1]);
+      const current = h * 60 + m;
+      const startTotal = startHour * 60 + startMinute;
+      const endTotal = endHour * 60 + endMinute;
+      if (current < startTotal) {
+        return { h: startHour, m: startMinute };
+      } else if (current > endTotal) {
+        return { h: endHour, m: endMinute };
+      } else {
+        if (h == startHour && m < startMinute)
+          return { h, m: startMinute };
+        if (h == endHour && m > endMinute)
+          return { h, m: endMinute };
+        return { h, m };
+      }
+    };
+    const initTimeValue = (timeValue) => {
+      let h = parseInt(timeValue[0]);
+      let m = parseInt(timeValue[1]);
+      const adjusted = adjustTime(h, m);
+      const hStr = adjusted.h.toString().padStart(2, "0");
+      const mStr = adjusted.m.toString().padStart(2, "0");
+      return [
+        hours.value.findIndex((e2) => e2 == hStr),
+        minutes.value.findIndex((e2) => e2 == mStr)
+      ];
+    };
+    const formatSingle = (num) => {
+      return num.toString().padStart(2, "0");
+    };
+    const i18nHandle = (key, defaultVal) => {
+      if (language.value.startsWith("en")) {
+        return i18nText["en"][key];
+      }
+      if (language.value.startsWith("es")) {
+        return i18nText["es"][key];
+      }
+      if (language.value.startsWith("fr")) {
+        return i18nText["fr"][key];
+      }
+      if (language.value.startsWith("zh-Hans")) {
+        return i18nText["zh-Hans"][key];
+      }
+      if (language.value.startsWith("zh-Hant")) {
+        return i18nText["zh-Hant"][key];
+      }
+      return defaultVal;
+    };
+    onLoad((options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      cancelEventName.value = options["cancelEventName"];
+      selectorChangeEventName.value = options["selectorChangeEventName"];
+      multiSelectorChangeEventName.value = options["multiSelectorChangeEventName"];
+      timeChangeEventName.value = options["timeChangeEventName"];
+      columnChangeEventName.value = options["columnChangeEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        if (data["mode"] != null) {
+          mode.value = data["mode"];
+        }
+        if (data["range"] != null) {
+          range.value = data["range"];
+        }
+        if (data["rangeKey"] != null) {
+          rangeKey.value = data["rangeKey"];
+        }
+        if (data["selectorValue"] != null) {
+          value.value = [data["selectorValue"]];
+        }
+        if (data["multiSelectorValue"] != null) {
+          value.value.length = 0;
+          const multiSelectorValue = data["multiSelectorValue"];
+          const len = range.value.length;
+          let arr = Array.from({ length: len }, () => 0);
+          arr.forEach((_, index2) => {
+            let val = multiSelectorValue[index2] ?? 0;
+            value.value.push(val);
+          });
+          prevMultiValue.value = value.value.slice();
+        }
+        if (data["timeValue"] != null) {
+          const timeVal = data["timeValue"];
+          start.value = data["start"];
+          end.value = data["end"];
+          const timeHour = parseInt(timeVal[0]);
+          const timeMinute = parseInt(timeVal[1]);
+          const adjusted = adjustTime(timeHour, timeMinute);
+          updateTimeColumns(adjusted.h);
+          value.value = initTimeValue(timeVal);
+        }
+        if (data["dateValue"] != null) {
+          const dateValue = data["dateValue"];
+          const year = dateValue[0];
+          const month = dateValue[1];
+          const day = dateValue[2];
+          fields.value = data["fields"];
+          start.value = data["start"] ?? ["1970", "01", "01"];
+          end.value = data["end"] ?? ["2099", "12", "31"];
+          selected.year = parseInt(year) ?? (/* @__PURE__ */ new Date()).getFullYear();
+          selected.month = parseInt(month) ?? 1;
+          selected.day = parseInt(day) ?? 1;
+          selected.year = Math.max(
+            parseInt(start.value[0]),
+            Math.min(parseInt(end.value[0]), selected.year)
+          );
+          selected.month = Math.max(1, Math.min(12, selected.month));
+          selected.day = Math.max(1, Math.min(
+            new Date(selected.year, selected.month, 0).getDate(),
+            selected.day
+          ));
+          updateDateColumns();
+          const yIdx = years.value.findIndex((y) => y == selected.year);
+          const mIdx = months.value.findIndex((m) => m == selected.month);
+          const dIdx = days.value.findIndex((d) => d == selected.day);
+          switch (fields.value) {
+            case "year":
+              value.value = [yIdx];
+              break;
+            case "month":
+              value.value = [yIdx, mIdx];
+              break;
+            case "day":
+              value.value = [yIdx, mIdx, dIdx];
+              break;
+          }
+        }
+        eventValue.value = value.value;
+        calculateRanges();
+      });
+      uni.$emit(readyEventName.value);
+      const systemInfo = uni.getDeviceInfo();
+      const appBaseInfo = uni.getAppBaseInfo();
+      const appLanguage = appBaseInfo.appLanguage;
+      const osLanguage = systemInfo.osLanguage;
+      if (appLanguage != null) {
+        language.value = appLanguage;
+      } else if (osLanguage != null) {
+        language.value = osLanguage;
+      }
+      const osTheme = systemInfo.osTheme;
+      const appTheme = appBaseInfo.appTheme;
+      if (appTheme != null && appTheme != "auto") {
+        theme.value = appTheme;
+      } else if (osTheme != null) {
+        theme.value = osTheme;
+      }
+      switchTheme(theme.value);
+      uni.onAppThemeChange((res) => {
+        theme.value = res.appTheme;
+        switchTheme(theme.value);
+      });
+      uni.onOsThemeChange((res) => {
+        theme.value = res.osTheme;
+        switchTheme(theme.value);
+      });
+    });
+    onReady(() => {
+      show.value = true;
+    });
+    onUnload(() => {
+      uni.$off(optionsEventName.value, null);
+      if (timer.value) {
+        clearTimeout(timer.value);
+      }
+    });
+    const _component_picker_view_column = _sfc_main$g;
+    const n49 = t1$7();
+    const n0 = child(n49);
+    const n48 = next(n0);
+    const n3 = child(n48);
+    const n1 = child(n3);
+    const n2 = next(n1);
+    const n47 = next(n3);
+    on$1(n0, "click", close);
+    const x1 = txt(n1);
+    on$1(n1, "click", close);
+    const x2 = txt(n2);
+    on$1(n2, "click", confirm);
+    on$1(n3, "click", withModifiers(() => {
+    }, ["stop"]));
+    renderEffect(() => {
+      const _theme = unref(theme);
+      const _show = unref(show);
+      setClass(n49, ["uni-picker__container", ["uni-picker-theme--" + _theme]]);
+      setClassName(n0, _show ? 1 : 0, " picker__ani-show", "uni-picker__mask");
+      setClass(n48, ["uni-picker__inner-box", [_show ? "picker__ani-box-show" : "", "inner-box--" + _theme]]);
+      setClass(n3, ["uni-picker__header-btn", ["header-btn--" + _theme]]);
+      setClass(n1, ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + _theme]]);
+      setText(x1, normalizeUniText(toDisplayString(unref(cancelText))));
+      setText(x2, normalizeUniText(toDisplayString(unref(confirmText))));
+    });
+    setInsertionState(n47);
+    withComponentId("202ebd77", () => createAssetComponent("picker-view", {
+      style: { "flex": "1" },
+      onChange: () => handleChange,
+      "mask-top-style": () => unref(maskTopStyle),
+      "mask-bottom-style": () => unref(maskBottomStyle),
+      indicatorStyle: () => unref(indicatorStyle),
+      value: () => unref(value)
+    }, extend$1(() => {
+      const n4 = createIf(
+        () => unref(mode) == "selector",
+        () => {
+          const n9 = withComponentId("202ec533", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+            const n6 = createFor(
+              () => unref(range),
+              (_for_item0, _for_key0) => {
+                const n8 = t0$8();
+                const x8 = txt(n8);
+                renderEffect(() => {
+                  const _rangeKey = unref(rangeKey);
+                  const _item = _for_item0.value;
+                  setClass(n8, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                  setText(x8, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
+                });
+                return n8;
+              },
+              (item, selectorIdx) => selectorIdx,
+              40
+              /* IS_SINGLE_NODE, SLOT_ROOT */
+            );
+            return n6;
+          }, {
+            _: 1
+            /* NON_STABLE */
+          })));
+          return n9;
+        },
+        null,
+        129
+        /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+      );
+      const n10 = createIf(
+        () => unref(mode) == "multiSelector",
+        () => {
+          const n12 = createFor(
+            () => unref(range),
+            (_for_item0, _for_key0) => {
+              const n17 = withComponentId("34b2a1ea-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n14 = createFor(
+                  () => _for_item0.value,
+                  (_for_item1, _for_key1) => {
+                    const n16 = t0$8();
+                    const x16 = txt(n16);
+                    renderEffect(() => {
+                      const _rangeKey = unref(rangeKey);
+                      const _column = _for_item1.value;
+                      setClass(n16, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x16, normalizeUniText(toDisplayString(_rangeKey ? _column[_rangeKey] : _column)));
+                    });
+                    return n16;
+                  },
+                  (column, colIdx) => colIdx,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n14;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              return n17;
+            },
+            (item, multiIdx) => multiIdx,
+            34
+            /* IS_COMPONENT, SLOT_ROOT */
+          );
+          return n12;
+        },
+        null,
+        129
+        /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+      );
+      const n18 = createIf(
+        () => unref(mode) == "time",
+        () => {
+          const n23 = withComponentId("34b28a36", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+            const n20 = createFor(
+              () => unref(hours),
+              (_for_item0, _for_key0) => {
+                const n22 = t0$8();
+                const x22 = txt(n22);
+                renderEffect(() => {
+                  setClass(n22, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                  setText(x22, normalizeUniText(toDisplayString(_for_item0.value)));
+                });
+                return n22;
+              },
+              (h, hIdx) => h,
+              40
+              /* IS_SINGLE_NODE, SLOT_ROOT */
+            );
+            return n20;
+          }, {
+            _: 1
+            /* NON_STABLE */
+          })));
+          const n27 = withComponentId("34b27ba4", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+            const n24 = createFor(
+              () => unref(minutes),
+              (_for_item0, _for_key0) => {
+                const n26 = t0$8();
+                const x26 = txt(n26);
+                renderEffect(() => {
+                  setClass(n26, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                  setText(x26, normalizeUniText(toDisplayString(_for_item0.value)));
+                });
+                return n26;
+              },
+              (m, mIdx) => m,
+              40
+              /* IS_SINGLE_NODE, SLOT_ROOT */
+            );
+            return n24;
+          }, {
+            _: 1
+            /* NON_STABLE */
+          })));
+          return [n23, n27];
+        },
+        null,
+        130
+        /* TRUE_MULTI_ROOT, SLOT_ROOT */
+      );
+      const n28 = createIf(
+        () => unref(mode) == "date",
+        () => {
+          const n33 = withComponentId("34b1c8ba", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+            const n30 = createFor(
+              () => unref(years),
+              (_for_item0) => {
+                const n32 = t0$8();
+                const x32 = txt(n32);
+                renderEffect(() => {
+                  setClass(n32, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                  setText(x32, normalizeUniText(toDisplayString(_for_item0.value) + toDisplayString(unref(yearText))));
+                });
+                return n32;
+              },
+              (year) => year,
+              40
+              /* IS_SINGLE_NODE, SLOT_ROOT */
+            );
+            return n30;
+          }, {
+            _: 1
+            /* NON_STABLE */
+          })));
+          const n34 = createIf(() => unref(fields) != "year", () => {
+            const n39 = withComponentId("34b1b9b8", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n36 = createFor(
+                () => unref(monthsText),
+                (_for_item0) => {
+                  const n38 = t0$8();
+                  const x38 = txt(n38);
+                  renderEffect(() => {
+                    setClass(n38, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                    setText(x38, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(monthText))));
+                  });
+                  return n38;
+                },
+                (month) => month,
+                40
+                /* IS_SINGLE_NODE, SLOT_ROOT */
+              );
+              return n36;
+            }, {
+              _: 1
+              /* NON_STABLE */
+            })));
+            return n39;
+          });
+          const n40 = createIf(() => unref(fields) == "day", () => {
+            const n45 = withComponentId("34b1a9b0", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n42 = createFor(
+                () => unref(days),
+                (_for_item0) => {
+                  const n44 = t0$8();
+                  const x44 = txt(n44);
+                  renderEffect(() => {
+                    setClass(n44, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                    setText(x44, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(dayText))));
+                  });
+                  return n44;
+                },
+                (day) => day,
+                40
+                /* IS_SINGLE_NODE, SLOT_ROOT */
+              );
+              return n42;
+            }, {
+              _: 1
+              /* NON_STABLE */
+            })));
+            return n45;
+          });
+          return [n33, n34, n40];
+        },
+        null,
+        130
+        /* TRUE_MULTI_ROOT, SLOT_ROOT */
+      );
+      return [n4, n10, n18, n28];
+    }, {
+      _: 1
+      /* NON_STABLE */
+    })));
+    return n49;
+  }
+});
+const _style_0$8 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #2C2C2B;\n}\n.header-btn-cannel--dark {\n		color: #fff;\n}\n.view-item--dark {\n		color: #fff;\n}\n.header-btn--dark {\n		border-color: #3B3B3B;\n}\n";
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const UniPickerPage = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["styles", [_style_0$8]]]);
 const openDialogPage = (options) => {
   var _a, _b, _c;
   if (!options.url) {
@@ -27701,6 +28291,9 @@ const openDialogPage = (options) => {
   }
   let { path, query } = parseUrl(options.url);
   path = normalizeRoute(path);
+  if (path === "uni:picker") {
+    registerSystemRoute(path, UniPickerPage);
+  }
   const normalizeUrl = createNormalizeUrl("navigateTo");
   const errMsg = normalizeUrl(options.url, {});
   if (errMsg) {
@@ -27785,14 +28378,14 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const t0$6 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__title__text> </div>");
+const t0$7 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__title__text> </div>");
 const t1$6 = template("<div data-v-212d40c7 uni-view class=divider>", 2);
 const t2$5 = template("<div data-v-212d40c7 uni-view class=divider>");
 const t3$2 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__cell__text> ");
 const t4$2 = template("<div data-v-212d40c7 uni-view class=uni-action-sheet_dialog__safe-area>");
 const t5$1 = template("<div data-v-212d40c7 uni-view>");
 const t6$1 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><!><div data-v-212d40c7 uni-view></div></div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__action__text> </div>", 1);
-const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
   __name: "actionSheet",
   setup(__props) {
     const pageInstance = getCurrentInstance().proxy;
@@ -28050,7 +28643,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => title.value,
       () => {
-        const n4 = t0$6();
+        const n4 = t0$7();
         const n3 = child(n4);
         const n5 = t1$6();
         const x3 = txt(n3);
@@ -28131,15 +28724,8 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
     return n25;
   }
 });
-const _style_0$6 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n}\n.uni-action-sheet_dialog__mask__hide {\n    animation: uni-action-sheet-mask-fade-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__mask__show {\n    animation: uni-action-sheet-mask-fade-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n\n\n\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    animation: uni-action-sheet-slide-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n    animation: uni-action-sheet-slide-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n\n    animation: none;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n    border-color: #fcfcfd transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n    border-color: transparent transparent #fcfcfd transparent;\n}\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show,\n    .uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n      transform: translate(-50%, -50%);\n      animation: none;\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n@media (prefers-color-scheme: dark) {\n.uni-action-sheet_dialog__container {\n      background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu,\n    .uni-action-sheet_dialog__action,\n    .uni-action-sheet_dialog__safe-area {\n      background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text {\n      color: #999999;\n}\n.uni-action-sheet_dialog__cell__text,\n    .uni-action-sheet_dialog__action__text {\n      color: #ffffff;\n}\n.uni-action-sheet_dialog__hover {\n      background-color: #414141;\n}\n.divider {\n      background-color: #2F3131;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n      border-color: #2C2C2C transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n      border-color: transparent transparent #2C2C2C transparent;\n}\n}\n@keyframes uni-action-sheet-mask-fade-in {\nfrom {\n      opacity: 0;\n}\nto {\n      opacity: 1;\n}\n}\n@keyframes uni-action-sheet-mask-fade-out {\nfrom {\n      opacity: 1;\n}\nto {\n      opacity: 0;\n}\n}\n@keyframes uni-action-sheet-slide-in {\nfrom {\n      transform: translate(0, 100%);\n}\nto {\n      transform: translate(0, 0);\n}\n}\n@keyframes uni-action-sheet-slide-out {\nfrom {\n      transform: translate(0, 0);\n}\nto {\n      transform: translate(0, 100%);\n}\n}\n\n";
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$6]]]);
+const _style_0$7 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n}\n.uni-action-sheet_dialog__mask__hide {\n    animation: uni-action-sheet-mask-fade-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__mask__show {\n    animation: uni-action-sheet-mask-fade-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n\n\n\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    animation: uni-action-sheet-slide-in 0.15s ease-out forwards;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n    animation: uni-action-sheet-slide-out 0.15s ease-in forwards;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action,\n  .uni-action-sheet_dialog__safe-area {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__hover {\n		background-color: #efefef;\n}\n.divider{\n    height: 1px;\n    background-color: #e5e5e5;\n    transform: scaleY(0.5);\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n\n    animation: none;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n    border-color: #fcfcfd transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n    border-color: transparent transparent #fcfcfd transparent;\n}\n\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show,\n    .uni-action-sheet_dialog__container.uni-action-sheet_dialog__hide {\n      transform: translate(-50%, -50%);\n      animation: none;\n}\n.uni-action-sheet_dialog__show {\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n@media (prefers-color-scheme: dark) {\n.uni-action-sheet_dialog__container {\n      background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu,\n    .uni-action-sheet_dialog__action,\n    .uni-action-sheet_dialog__safe-area {\n      background-color: #2C2C2C;\n}\n.uni-action-sheet_dialog__title__text {\n      color: #999999;\n}\n.uni-action-sheet_dialog__cell__text,\n    .uni-action-sheet_dialog__action__text {\n      color: #ffffff;\n}\n.uni-action-sheet_dialog__hover {\n      background-color: #414141;\n}\n.divider {\n      background-color: #2F3131;\n}\n.uni-action-sheet_dialog__triangle--bottom {\n      border-color: #2C2C2C transparent transparent transparent;\n}\n.uni-action-sheet_dialog__triangle--top {\n      border-color: transparent transparent #2C2C2C transparent;\n}\n}\n@keyframes uni-action-sheet-mask-fade-in {\nfrom {\n      opacity: 0;\n}\nto {\n      opacity: 1;\n}\n}\n@keyframes uni-action-sheet-mask-fade-out {\nfrom {\n      opacity: 1;\n}\nto {\n      opacity: 0;\n}\n}\n@keyframes uni-action-sheet-slide-in {\nfrom {\n      transform: translate(0, 100%);\n}\nto {\n      transform: translate(0, 0);\n}\n}\n@keyframes uni-action-sheet-slide-out {\nfrom {\n      transform: translate(0, 0);\n}\nto {\n      transform: translate(0, 100%);\n}\n}\n\n";
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["styles", [_style_0$7]]]);
 class ShowActionSheetSuccessImpl {
   constructor(tapIndex, errMsg = "showActionSheet:ok") {
     this.errMsg = errMsg;
@@ -28230,7 +28816,7 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$5 = template("<span data-v-212d40c7 uni-text class=uni-choose-location-poi-search-cancel> ");
+const t0$6 = template("<span data-v-212d40c7 uni-text class=uni-choose-location-poi-search-cancel> ");
 const t1$5 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-error><span data-v-212d40c7 uni-text> ");
 const t2$4 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-loading><span data-v-212d40c7 uni-text> ");
 const t3$1 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-loading>");
@@ -28238,7 +28824,7 @@ const t4$1 = template('<span data-v-212d40c7 uni-text class="uni-choose-location
 const t5 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><!><div data-v-212d40c7 uni-view></div>");
 const t6 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div>");
 const t7 = template('<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><!><div data-v-212d40c7 uni-view class=uni-choose-location-map-target><span data-v-212d40c7 uni-text class="uni-choose-location-icons uni-choose-location-map-target-icon"> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><div data-v-212d40c7 uni-view class=uni-choose-location-nav><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-choose-location-nav-text uni-choose-location-nav-back-text"> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text"> </div></div>', 1);
-const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
   __name: "chooseLocation",
   setup(__props) {
     const defaultPoi = {
@@ -28820,7 +29406,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       getSystemInfo2();
     });
     const _component_input = __syscom_0$1;
-    const _component_loading = _sfc_main$j;
+    const _component_loading = _sfc_main$l;
     const _component_scroll_view = __syscom_1;
     const n51 = t7();
     const n6 = child(n51);
@@ -28915,7 +29501,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       }));
       setInsertionState(n20, 1);
       createIf(() => isFocus.value || searchValue.value != "", () => {
-        const n19 = t0$5();
+        const n19 = t0$6();
         const x19 = txt(n19);
         on$1(n19, "click", cancelSearch);
         renderEffect(() => setText(x19, normalizeUniText(toDisplayString(languageCom.value["cancel"]))));
@@ -29033,7 +29619,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
     return n51;
   }
 });
-const _style_0$5 = `
+const _style_0$6 = `
 @font-face {
     font-family: UniChooseLocationFontFamily;
     
@@ -29343,7 +29929,7 @@ const _style_0$5 = `
   /* 暗黑模式样式结束 */
 
 `;
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["styles", [_style_0$5]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["styles", [_style_0$6]]]);
 class ChooseLocationFailImpl extends UniError {
   constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
     super();
@@ -29406,12 +29992,12 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$4 = template("<span data-v-212d40c7 uni-text class=uni-modal-dialog__title> ");
+const t0$5 = template("<span data-v-212d40c7 uni-text class=uni-modal-dialog__title> ");
 const t1$4 = template("<span data-v-212d40c7 uni-text class=uni-modal-dialog__message> ");
 const t2$3 = template('<div data-v-212d40c7 uni-view class="uni-modal-dialog__action uni-modal-dialog__action--cancel"><span data-v-212d40c7 uni-text class=uni-modal-dialog__action-text> ');
 const t3 = template("<div data-v-212d40c7 uni-view class=uni-modal-dialog__split>", 2);
 const t4 = template('<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view class=uni-modal-dialog__inner><div data-v-212d40c7 uni-view class=uni-modal-dialog__title__container></div><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view class=uni-modal-dialog__divider></div><div data-v-212d40c7 uni-view class=uni-modal-dialog__actions><!><!><div data-v-212d40c7 uni-view class="uni-modal-dialog__action uni-modal-dialog__action--confirm"><span data-v-212d40c7 uni-text class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"> ', 1);
-const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
   __name: "uniModal",
   setup(__props) {
     const language = ref("zh-Hans");
@@ -29656,7 +30242,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n3);
     createIf(() => hasTitle.value, () => {
-      const n2 = t0$4();
+      const n2 = t0$5();
       const x2 = txt(n2);
       renderEffect(() => setText(x2, normalizeUniText("\n						" + toDisplayString(title.value) + "\n					")));
       return n2;
@@ -29730,8 +30316,8 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
     return n24;
   }
 });
-const _style_0$4 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n\n\n\n\n		opacity: 0;\n}\n.uni-modal-mask--hide {\n		animation: uni-modal-mask-fade-out 0.15s ease-in forwards;\n}\n.uni-modal-mask--show {\n		animation: uni-modal-mask-fade-in 0.15s ease-out forwards;\n}\n@keyframes uni-modal-mask-fade-in {\nfrom {\n			opacity: 0;\n}\nto {\n			opacity: 1;\n}\n}\n@keyframes uni-modal-mask-fade-out {\nfrom {\n			opacity: 1;\n}\nto {\n			opacity: 0;\n}\n}\n\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog--show {\n		animation: uni-modal-dialog-scale-in 0.15s ease-out forwards;\n}\n.uni-modal-dialog--hide {\n		animation: uni-modal-dialog-scale-out 0.15s ease-in forwards;\n}\n@keyframes uni-modal-dialog-scale-in {\nfrom {\n			opacity: 0;\n			transform: scale(0.9);\n}\nto {\n			opacity: 1;\n			transform: scale(1);\n}\n}\n@keyframes uni-modal-dialog-scale-out {\nfrom {\n			opacity: 1;\n			transform: scale(1);\n}\nto {\n			opacity: 0;\n			transform: scale(0.9);\n}\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n\n\n		overflow: hidden;\n		text-overflow: ellipsis;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n@media (prefers-color-scheme: dark) {\n.uni-modal-dialog,\n		.uni-modal-dialog__inner {\n			background-color: #272727;\n}\n.uni-modal-dialog__title {\n			color: #cfcfcf;\n}\n.uni-modal-dialog__textarea {\n			background-color: #3d3d3d;\n			color: #cfcfcf;\n}\n.uni-modal-dialog__divider,\n		.uni-modal-dialog__split {\n			background-color: #303030;\n}\n.uni-modal-dialog__action--hover {\n			background-color: #414141;\n}\n.uni-modal-dialog__action-text {\n			color: #a5a5a5;\n}\n.uni-modal-dialog__action-text--confirm {\n			color: #7388a2;\n}\n}\n\n";
-const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$4]]]);
+const _style_0$5 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n\n\n\n\n		opacity: 0;\n}\n.uni-modal-mask--hide {\n		animation: uni-modal-mask-fade-out 0.15s ease-in forwards;\n}\n.uni-modal-mask--show {\n		animation: uni-modal-mask-fade-in 0.15s ease-out forwards;\n}\n@keyframes uni-modal-mask-fade-in {\nfrom {\n			opacity: 0;\n}\nto {\n			opacity: 1;\n}\n}\n@keyframes uni-modal-mask-fade-out {\nfrom {\n			opacity: 1;\n}\nto {\n			opacity: 0;\n}\n}\n\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog--show {\n		animation: uni-modal-dialog-scale-in 0.15s ease-out forwards;\n}\n.uni-modal-dialog--hide {\n		animation: uni-modal-dialog-scale-out 0.15s ease-in forwards;\n}\n@keyframes uni-modal-dialog-scale-in {\nfrom {\n			opacity: 0;\n			transform: scale(0.9);\n}\nto {\n			opacity: 1;\n			transform: scale(1);\n}\n}\n@keyframes uni-modal-dialog-scale-out {\nfrom {\n			opacity: 1;\n			transform: scale(1);\n}\nto {\n			opacity: 0;\n			transform: scale(0.9);\n}\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action-text {\n		color: #000000;\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n\n\n		overflow: hidden;\n		text-overflow: ellipsis;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n@media (prefers-color-scheme: dark) {\n.uni-modal-dialog,\n		.uni-modal-dialog__inner {\n			background-color: #272727;\n}\n.uni-modal-dialog__title {\n			color: #cfcfcf;\n}\n.uni-modal-dialog__textarea {\n			background-color: #3d3d3d;\n			color: #cfcfcf;\n}\n.uni-modal-dialog__divider,\n		.uni-modal-dialog__split {\n			background-color: #303030;\n}\n.uni-modal-dialog__action--hover {\n			background-color: #414141;\n}\n.uni-modal-dialog__action-text {\n			color: #a5a5a5;\n}\n.uni-modal-dialog__action-text--confirm {\n			color: #7388a2;\n}\n}\n\n";
+const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["styles", [_style_0$5]]]);
 class ShowModalSuccessImpl {
   constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
     this.errMsg = errMsg;
@@ -29885,9 +30471,9 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$3 = template("<span data-v-212d40c7 uni-text class=uni-loading-dialog__title> ");
+const t0$4 = template("<span data-v-212d40c7 uni-text class=uni-loading-dialog__title> ");
 const t1$3 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view>", 1);
-const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
   __name: "showLoading",
   setup(__props) {
     const readyEventName = ref("");
@@ -29938,7 +30524,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
     }));
     setInsertionState(n4, 1);
     createIf(() => title.value, () => {
-      const n3 = t0$3();
+      const n3 = t0$4();
       const x3 = txt(n3);
       renderEffect(() => setText(x3, normalizeUniText(toDisplayString(title.value))));
       return n3;
@@ -29946,8 +30532,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
     return n5;
   }
 });
-const _style_0$3 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n\n\n\n\n		max-width: 80%;\n\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 0.95);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 10px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
-const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$3]]]);
+const _style_0$4 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n\n\n\n\n		max-width: 80%;\n\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 0.95);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 10px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
+const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["styles", [_style_0$4]]]);
 class ShowLoadingSuccessImpl {
   constructor(errMsg = "showLoading:ok") {
     this.errMsg = errMsg;
@@ -30197,7 +30783,7 @@ class Friction {
     this.frictionForce = 1e3 * frictionForce;
   }
 }
-const t0$2 = template("<div uni-view class=uni-preview-image-loading>");
+const t0$3 = template("<div uni-view class=uni-preview-image-loading>");
 const t1$2 = template('<div uni-view style="align-items: center;justify-content: center;position: absolute;top: 0;bottom: 0;left: 0;right: 0;"><img uni-image mode=aspectFit style="width: 70px;height: 70px;" draggable=false>');
 const t2$2 = template("<div uni-view style=flex:1; class=uni-preview-image-item-background><img uni-image class=uni-preview-image-item draggable=false><div uni-view class=uni-preview-image-patch></div>", 1);
 const DEFAULT_DISTANCE = 4;
@@ -30206,7 +30792,7 @@ const SCALE_BOUNDARY_BUFFER = 2;
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
 const ANIMATION_DURATION = 200;
-const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
   __name: "uni-previewImageItem",
   props: {
     src: {
@@ -30961,7 +31547,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
       }, 100);
       e2.stopPropagation();
     };
-    const _component_loading = _sfc_main$j;
+    const _component_loading = _sfc_main$l;
     const n10 = t2$2();
     const n0 = child(n10);
     const n1 = next(n0);
@@ -30982,7 +31568,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n10, 2);
     createIf(() => !loadingFinished.value, () => {
-      const n5 = t0$2();
+      const n5 = t0$3();
       setInsertionState(n5);
       withComponentId("0c669e04", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
       return n5;
@@ -30999,12 +31585,12 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
     return n10;
   }
 });
-const _style_0$2 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
-const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
-const t0$1 = template("<div data-v-212d40c7 uni-view class=uni-preview-image-number-indicator-layout><span data-v-212d40c7 uni-text class=uni-preview-image-number-indicator> ");
+const _style_0$3 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
+const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$3]]]);
+const t0$2 = template("<div data-v-212d40c7 uni-view class=uni-preview-image-number-indicator-layout><span data-v-212d40c7 uni-text class=uni-preview-image-number-indicator> ");
 const t1$1 = template("<div data-v-212d40c7 uni-view>");
 const t2$1 = template("<div data-v-212d40c7 uni-view class=uni-preview-image-default-indicator-layout>");
-const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
   __name: "previewImage",
   __multiRoot: true,
   setup(__props) {
@@ -31251,7 +31837,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
     onBackPress((options) => {
       return false;
     });
-    const _component_swiper_item = _sfc_main$8;
+    const _component_swiper_item = _sfc_main$a;
     const n8 = withComponentId("365d9a5d", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
@@ -31309,7 +31895,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
       /* NON_STABLE */
     })));
     const n9 = createIf(() => unref(indicator) == "number", () => {
-      const n12 = t0$1();
+      const n12 = t0$2();
       const n11 = child(n12);
       const x11 = txt(n11);
       renderEffect(() => setText(x11, normalizeUniText(toDisplayString(unref(numberIndicator)))));
@@ -31335,12 +31921,12 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
     return [n8, n9, n13];
   }
 });
-const _style_0$1 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n\n";
-const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
-const t0 = template("<div uni-view class=uni-preview-image-number-indicator-layout><span uni-text class=uni-preview-image-number-indicator> ");
+const _style_0$2 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n\n";
+const UniPreviewImagePage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$2]]]);
+const t0$1 = template("<div uni-view class=uni-preview-image-number-indicator-layout><span uni-text class=uni-preview-image-number-indicator> ");
 const t1 = template("<div uni-view>");
 const t2 = template("<div uni-view class=uni-preview-image-default-indicator-layout>");
-const _sfc_main = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
   __name: "uni-previewImageNonVapor",
   props: {
     urls: {
@@ -31419,7 +32005,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     const handlePreviewImageFinish = (e2) => {
       emit2("previewImageFinish", e2);
     };
-    const _component_swiper_item = _sfc_main$8;
+    const _component_swiper_item = _sfc_main$a;
     const n8 = withComponentId("09f35926", () => createAssetComponent("swiper", {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
@@ -31476,7 +32062,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       /* NON_STABLE */
     })));
     const n9 = createIf(() => props2.indicator == "number", () => {
-      const n12 = t0();
+      const n12 = t0$1();
       const n11 = child(n12);
       const x11 = txt(n11);
       renderEffect(() => setText(x11, normalizeUniText(toDisplayString(props2.numberIndicator))));
@@ -31502,8 +32088,8 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     return [n8, n9, n13];
   }
 });
-const _style_0 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n";
-const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
+const _style_0$1 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n";
+const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
 const UniErrorPreviewImage$1 = "uni-previewImage";
 const PreviewImageUniErrors = /* @__PURE__ */ new Map([
   /**
@@ -31649,6 +32235,346 @@ const previewImage = /* @__PURE__ */ defineAsyncApi(
       )
     );
   }
+);
+const targetPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAABGtJREFUeF7tm0tPFEEQx7uHd8DAXsTEg8sNSSBixOgBWKImCx8Aglx2P4EeuQE3bsZPsMsBkS/AYoxhgYMmGB9EAzf2YoSLQJDIc1prZ5fXzky/agYSexJCNlMz0/Xr6n9V9/RQEuKxGY9FiWUnLEJvMWZHnUfTKCEsR6mVg1+2TScis9lsWM2iQT+o6DRlZETiWTlKaTYMGIEBAMcpPU4RQmMSjpeYUkrTQYIIBMBmX9eoZI9zGTFKxiIzC6NcQ0kDVABYve7jQ44xqycym83rBcaBBsBx3p4jhBTEDaN5rvdAhYAGYKu3c053vEsgyzVkFpok7D1NUQCE7LyTPClN18/MJ3UhaANQFbzKJ70nbbc3fhJ7Yz3/J3NgCKM2gK3eLibaaHC66mmCWI03XC85Wv5MDt+9IfBfEIa2HmgB2O7rTjHGEjwA5W138o6Xt7XzTPPnAcCfF+NCEHSHgjKAguqv8TwC52vHX/LMXM8DhIO3Gd61EAVJ1fJZA0BnglKa8mudjvPF++4kB7iRoKMFygBElP9aatpzvPO6tXgetGB3+BkHAss2ZBZ7RO951k4DgL/4VQ8lSdUQVx6E2rw/mSZ7k77BplwXKAHYjPPDv35mXsg5ESMQxd3h576mhRJZehodCABIcxD+mAdPCxhjycjsYlr2mWoAOLM9zPAvOsTLCKpCqASAl/+DAMDTAdV6QAkAr/y9DAChRsCVBBCqBnCyAEYBdFHMoBY4Wv7iqXHhiqCz+OFbBmMUQWeLIcgCfgdjVpPKSpGSBkBDeLNATB3gCSC0pyGzoOSL0kUOAP8VIKgFYBLkNfUVzddQCvN6XzUDQBuUAWzGY7HCGqCnLxhRwBv78HDVKlALgEgUgI0OBF7x45BXnwhpAxCZExQhVDyOSw0HkZ53el+tBC6GrfIQgBvIvAeA1FjxKJ5fFfLTBVgA2X+V5q4BYPS+dgScQvBPiRdFAmCUt7YTer3x5NTxt68ya4FO8CumvrPt0YqA4o1Eh4Ko8ovY6QgfOoB8JATwPtALhO64DwRAWBAwnUfRgIu9VBgOsBcA+x2h1uqvVzShaEApBGcnCN4rcr1c76cpgQA4FcdY1LLYiMjLE7dGFjZHjKlMckSENJAh4Pbg/DYZchyzLKubAyMH+4UYpfNBbIZwhSxKCtPOfUktuDC/tCHg9WA3ADozOp3OCVQDDAAPAiYCXF6rmyGAtOVFVg+MBsgSw7A3GmA0oHRvkRFBI4I4Gx9lNcpkAVliGPYmC5gsYLJAyRZbkwZNGjRpEOUDCNksZeoAWWIY9v91HTD1oDl6t7b+fWNl1bnPRjYO9tc/7W4/HPywivZJnEhnhT4EXne0pFrr6hI3q6vPte/H3h75/nsn27+0orTtXcTZK/FeYLrj9lpNWVm0xrLOtefX4SH8zg0sraB8DicKJPQImL7fMvpvX4vrh9SUsGT/0qr0jm9RZ69EBEAjpu41x8ooHWGFN8iM0Cxj9sTgx1Xp/f46zsO1fwF2PaBfXH1iLwAAAABJRU5ErkJggg==";
+const t0 = template('<div data-v-212d40c7 uni-view class=uni-open-location><div data-v-212d40c7 uni-view class=uni-open-location-map-box><!><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><div data-v-212d40c7 uni-view class=uni-open-location-nav><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view class=uni-open-location-nav-btn-bg></div><span data-v-212d40c7 uni-text class="uni-open-location-nav-text uni-open-location-nav-back-text uni-open-location-icons"> </div></div><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view class=uni-open-location-address><span data-v-212d40c7 uni-text> </span><span data-v-212d40c7 uni-text> </div><div data-v-212d40c7 uni-view class=uni-open-location-footer-icon-btns><div data-v-212d40c7 uni-view class=uni-open-location-footer-icon-btns-item><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-open-location-icons uni-open-location-navigation"> </div><span data-v-212d40c7 uni-text> ', 1);
+const _sfc_main = /* @__PURE__ */ defineVaporComponent({
+  __name: "openLocation",
+  setup(__props) {
+    const languageData = {
+      en: {
+        navigation: "navigation"
+      },
+      "zh-Hans": {
+        navigation: "导航"
+      },
+      "zh-Hant": {
+        navigation: "導航"
+      }
+    };
+    const currentInstance = getCurrentInstance().proxy;
+    const uniPage = currentInstance.$page;
+    const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
+    const readyEventName = ref("");
+    const optionsEventName = ref("");
+    const successEventName = ref("");
+    const failEventName = ref("");
+    const openLocationOptions = ref({
+      latitude: 0,
+      longitude: 0,
+      scale: 18,
+      name: "",
+      address: ""
+    });
+    const safeArea = ref({
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0
+    });
+    const icon = ref({
+      target: "",
+      position: "",
+      navigation: "",
+      back: ""
+    });
+    const language = ref("zh-Hans");
+    const isLandscape2 = ref(false);
+    const theme = ref("light");
+    const mapId = ref(id1);
+    const latitude = ref(0);
+    const longitude = ref(0);
+    const markers = ref([]);
+    const languageCom = computed(() => {
+      const textInfo = languageData[language.value] != null ? languageData[language.value] : languageData["zh-Hans"];
+      return textInfo;
+    });
+    const darkClassCom = computed(() => {
+      return theme.value == "dark" ? "uni-open-location-dark" : "uni-open-location-light";
+    });
+    const landscapeClassCom = computed(() => {
+      return isLandscape2.value ? "uni-open-location-landscape" : "";
+    });
+    const initPageOptions = (options) => {
+      readyEventName.value = options["readyEventName"];
+      optionsEventName.value = options["optionsEventName"];
+      successEventName.value = options["successEventName"];
+      failEventName.value = options["failEventName"];
+      uni.$on(optionsEventName.value, (data) => {
+        console.log("data: ", JSON.stringify(data));
+        if (data["latitude"] != null) {
+          openLocationOptions.value.latitude = data["latitude"];
+          latitude.value = openLocationOptions.value.latitude;
+        }
+        if (data["longitude"] != null) {
+          openLocationOptions.value.longitude = data["longitude"];
+          longitude.value = openLocationOptions.value.longitude;
+        }
+        if (data["scale"] != null) {
+          openLocationOptions.value.scale = data["scale"];
+        }
+        if (data["name"] != null) {
+          openLocationOptions.value.name = data["name"];
+        }
+        if (data["address"] != null) {
+          openLocationOptions.value.address = data["address"];
+        }
+        setTimeout(() => {
+          markers.value = [
+            {
+              id: 1,
+              latitude: openLocationOptions.value.latitude,
+              longitude: openLocationOptions.value.longitude,
+              iconPath: targetPath,
+              width: 50,
+              height: 50
+            }
+          ];
+        }, 300);
+        uni.$emit(successEventName.value, {});
+      });
+      uni.$emit(readyEventName.value, {});
+    };
+    const getSystemInfo2 = () => {
+      const info = uni.getWindowInfo();
+      safeArea.value.top = info.safeAreaInsets.top;
+      safeArea.value.bottom = info.safeAreaInsets.bottom;
+      safeArea.value.left = info.safeAreaInsets.left;
+      safeArea.value.right = info.safeAreaInsets.right;
+      const systemInfo = uni.getSystemInfoSync();
+      const appLanguage = systemInfo.appLanguage;
+      language.value = appLanguage;
+      const osTheme = systemInfo.osTheme;
+      const appTheme = systemInfo.appTheme;
+      if (appTheme != null && appTheme != "auto") {
+        theme.value = appTheme;
+      } else if (osTheme != null) {
+        theme.value = osTheme;
+      }
+      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        theme.value = hostTheme;
+      }
+      const locale = uni.getLocale();
+      language.value = locale;
+      uni.onLocaleChange((res) => {
+        if (res.locale) {
+          language.value = res.locale;
+        }
+      });
+      uni.onThemeChange((res) => {
+        theme.value = res.theme;
+      });
+    };
+    const closeDialogPage2 = () => {
+      uni.closeDialogPage({
+        dialogPage: uniPage
+      });
+    };
+    const back = () => {
+      closeDialogPage2();
+    };
+    const getMapContext = () => {
+      return uni.createMapContext(mapId.value, currentInstance);
+    };
+    const moveToLocation = () => {
+      const mapContext = getMapContext();
+      if (mapContext != null) {
+        mapContext.moveToLocation({});
+      }
+    };
+    const mapReset = () => {
+      moveToLocation();
+    };
+    const navigation = () => {
+      uni.getAppBaseInfo();
+      const src = "webapp.baidu.openAPIdemo";
+      const list2 = ["腾讯地图", "高德地图", "百度地图"];
+      uni.showActionSheet({
+        itemList: list2,
+        success: (res) => {
+          let index2 = res.tapIndex;
+          if (index2 >= 0) {
+            let item = list2[index2];
+            try {
+              let url = "";
+              if (item == "腾讯地图") {
+                url = `https://apis.map.qq.com/uri/v1/marker?marker=coord:${openLocationOptions.value.latitude},${openLocationOptions.value.longitude};title:${openLocationOptions.value.name};addr:${openLocationOptions.value.address}&referer=1`;
+              } else if (item == "高德地图") {
+                url = `https://uri.amap.com/navigation?to=${openLocationOptions.value.longitude},${openLocationOptions.value.latitude},${openLocationOptions.value.name},${openLocationOptions.value.address}&mode=car&policy=0&src=mypage&coordinate=gaode&callnative=1`;
+              } else if (item == "百度地图") {
+                url = `https://api.map.baidu.com/marker?coord_type=gcj02&location=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&title=${openLocationOptions.value.name}&content=${openLocationOptions.value.address}&output=html&src=${src}`;
+              } else if (item == "苹果地图") {
+              } else if (item == "华为地图") {
+              }
+              if (url != "") {
+                window.open(url);
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        }
+      });
+    };
+    onLoad((options) => {
+      initPageOptions(options);
+      getSystemInfo2();
+    });
+    onUnload(() => {
+      uni.$off(optionsEventName.value, null);
+      uni.$off(readyEventName.value, null);
+      uni.$off(successEventName.value, null);
+      uni.$off(failEventName.value, null);
+    });
+    onResize(() => {
+      const systemInfo = uni.getSystemInfoSync();
+      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+    });
+    const _setTemplateRef = createTemplateRefSetter();
+    const n15 = t0();
+    const n4 = child(n15);
+    const n3 = child(n4);
+    const n2 = next(n3);
+    const n1 = child(n2);
+    const n7 = next(n4);
+    const n6 = child(n7);
+    const n5 = next(child(n6));
+    const n14 = next(n7);
+    let p0 = child(n14);
+    const n8 = child(p0);
+    const n9 = next(n8);
+    const n13 = child(p0 = next(p0));
+    const n11 = child(n13);
+    const n10 = child(n11);
+    const n12 = next(n11);
+    setInsertionState(n4, n3);
+    const n0 = withComponentId("4a34dd69", () => createAssetComponent("map", {
+      class: "uni-open-location-map",
+      id: () => unref(mapId),
+      latitude: () => unref(latitude),
+      longitude: () => unref(longitude),
+      scale: () => unref(openLocationOptions).scale,
+      markers: () => unref(markers),
+      "layer-style": () => unref(theme) == "dark" ? "2" : "1",
+      "show-compass": false,
+      "enable-zoom": true,
+      "enable-scroll": true,
+      "enable-rotate": false,
+      "enable-poi": true,
+      "show-location": true
+    }));
+    const x1 = txt(n1);
+    on$1(n2, "click", mapReset);
+    const x5 = txt(n5);
+    on$1(n5, "click", back);
+    const x8 = txt(n8);
+    const x9 = txt(n9);
+    const x10 = txt(n10);
+    const x12 = txt(n12);
+    on$1(n13, "click", navigation);
+    renderEffect(() => {
+      const _icon = unref(icon);
+      const _safeArea = unref(safeArea);
+      const _openLocationOptions = unref(openLocationOptions);
+      const _safeArea_top = _safeArea.top;
+      const __darkClassCom = [unref(darkClassCom)];
+      _setTemplateRef(n0, mapId, null, "mapId");
+      setClass(n2, ["uni-open-location-map-reset", __darkClassCom]);
+      setClass(n1, ["uni-open-location-icons uni-open-location-map-reset-icon", __darkClassCom]);
+      setText(x1, normalizeUniText(toDisplayString(_icon.position)));
+      setStyle(n7, "height:" + (60 + _safeArea_top) + "px;");
+      setClass(n6, ["uni-open-location-nav-btn uni-open-location-nav-back-btn", [unref(landscapeClassCom)]]);
+      setStyle(n6, _safeArea_top > 0 ? "top: " + _safeArea_top + "px;" : "");
+      setText(x5, normalizeUniText(toDisplayString(_icon.back)));
+      setClass(n14, ["uni-open-location-footer", __darkClassCom]);
+      setClass(n8, ["uni-open-location-name-text", __darkClassCom]);
+      setText(x8, normalizeUniText("\n          " + toDisplayString(_openLocationOptions.name) + "\n        "));
+      setClass(n9, ["uni-open-location-address-text", __darkClassCom]);
+      setText(x9, normalizeUniText("\n          " + toDisplayString(_openLocationOptions.address) + "\n        "));
+      setClass(n11, ["uni-open-location-footer-icon-box", __darkClassCom]);
+      setText(x10, normalizeUniText(toDisplayString(_icon.navigation)));
+      setClass(n12, ["uni-open-location-footer-btn-text", __darkClassCom]);
+      setText(x12, normalizeUniText(toDisplayString(unref(languageCom)["navigation"])));
+    });
+    return n15;
+  }
+});
+const _style_0 = "\n@font-face {\n    font-family: UniOpenLocationFontFamily;\n    \n\n    src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8MUlTAAABjAAAAGBjbWFwgOWDPQAAAgQAAAHIZ2x5ZhfxkmkAAAPcAAAD3GhlYWQpzkauAAAA4AAAADZoaGVhB94DhwAAALwAAAAkaG10eBgAAAAAAAHsAAAAGGxvY2EDjAKGAAADzAAAAA5tYXhwARQAfwAAARgAAAAgbmFtZYQALlwAAAe4AAADM3Bvc3Rnid8OAAAK7AAAAGgAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAYAAQAAAAEAAP9wa2RfDzz1AAsEAAAAAADjV4FYAAAAAONXgVgAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABgBzAAQAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYc5oMDgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAEAAAAAAAABQAAAAMAAAAsAAAABAAAAXwAAQAAAAAAdgADAAEAAAAsAAMACgAAAXwABABKAAAADAAIAAIABOYc5kDmUeZT5oP//wAA5hzmQOZR5lPmg///AAAAAAAAAAAAAAABAAwADAAMAAwADAAAAAEAAwACAAQABQAAAQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAATAAAAAAAAAAFAADmHAAA5hwAAAABAADmQAAA5kAAAAADAADmUQAA5lEAAAACAADmUwAA5lMAAAAEAADmgwAA5oMAAAAFAAAAAACkAOoA+gGcAe4AAAAEAAAAAAPfAvYASQBSAGkAcgAAATQmIyIHJy4BJyYrAScmJyYrASIHBg8BIyIHBg8CJiMiBhQWOwEVBhcWFxYXFjsBMjY9ARYXFj8BFRQWOwEyNjc2NzY3Nic+AQUiJjQ2MhYUBiUGJyYvASImNTc+ATMhMhYfARQGIwcGFyImNDYyFhQGA94tIRQSOwQMBAcKXQ0EEA8S1BIPEAQNXQwIBQcFOxIUIS0tIQECEQ0KBQsIEk8QEhIPw5UhEhBPEBYECA4QCAsGHCb9GiEvL0IuLgFtJ1ZPI4kRFhMGEBABwhAQBhMWECMqbyEuLkIvLwGUFR0GqAcbBQdEDgcHBwcORAoHEQyoBh0qHgMpeVkxGQgIGBEsAgEMDAMsERgXEhY+RzdHFwMcxzBEMDBEMOgGAQEEEBgRUBYRERZQERgFB+wwRDAwRDAAAgAA/6oD1gNXABQAKQAAASIHBgcGFhcWFxYyNzY3NjQnJicmBx4BDwEXFhQPAQ4BLwEuAT8BNhYXAgB/bmo+QQFAPmpu/21qP0BAP2ptAQoCCtTTCwkCCiQL6RMDEesLJQoDVkA+am7/bmo+QEA+am7/bmo+QN8LIQvAvQkhDAMLBQnPETMU0goDCwABAAAAAAN/AwAAAwAACQEFEwN+/QQBPH4DAP7ChP7EAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAQYeAj4BLgMOAQHAJTUmJjUlagYEQAQHR3UhIiknREWiRUQnKSIhdf7lAitPXFAuAS1LW00vVBIZGSMZGQFx/ogEBgYEAXgKUz9BSVFFRCcpKSdERVFJQT9TAR0uUTACLk9cTC0CK0sAAAAAAAASAN4AAQAAAAAAAAATAAAAAQAAAAAAAQAZABMAAQAAAAAAAgAHACwAAQAAAAAAAwAZADMAAQAAAAAABAAZAEwAAQAAAAAABQALAGUAAQAAAAAABgAZAHAAAQAAAAAACgArAIkAAQAAAAAACwATALQAAwABBAkAAAAmAMcAAwABBAkAAQAyAO0AAwABBAkAAgAOAR8AAwABBAkAAwAyAS0AAwABBAkABAAyAV8AAwABBAkABQAWAZEAAwABBAkABgAyAacAAwABBAkACgBWAdkAAwABBAkACwAmAi9DcmVhdGVkIGJ5IGljb25mb250VW5pT3BlbkxvY2F0aW9uRm9udEZhbWlseVJlZ3VsYXJVbmlPcGVuTG9jYXRpb25Gb250RmFtaWx5VW5pT3BlbkxvY2F0aW9uRm9udEZhbWlseVZlcnNpb24gMS4wVW5pT3BlbkxvY2F0aW9uRm9udEZhbWlseUdlbmVyYXRlZCBieSBzdmcydHRmIGZyb20gRm9udGVsbG8gcHJvamVjdC5odHRwOi8vZm9udGVsbG8uY29tAEMAcgBlAGEAdABlAGQAIABiAHkAIABpAGMAbwBuAGYAbwBuAHQAVQBuAGkATwBwAGUAbgBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBSAGUAZwB1AGwAYQByAFUAbgBpAE8AcABlAG4ATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkATwBwAGUAbgBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBWAGUAcgBzAGkAbwBuACAAMQAuADAAVQBuAGkATwBwAGUAbgBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBHAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAHMAdgBnADIAdAB0AGYAIABmAHIAbwBtACAARgBvAG4AdABlAGwAbABvACAAcAByAG8AagBlAGMAdAAuAGgAdAB0AHAAOgAvAC8AZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AAAIAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgECAQMBBAEFAQYBBwAGZGFjaGUxE2FuZ2xlLWxlZnQtY2lyY2xlLXMHZGFvaGFuZwdkaW5nd2VpC2RpdHUtdHVkaW5nAAA=') format('truetype');\n}\n.uni-open-location-icons {\n    font-family: 'UniOpenLocationFontFamily';\n    font-size: 16px;\n    font-style: normal;\n}\n.uni-open-location {\n    position: relative;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background: #f8f8f8;\n    z-index: 999;\n    display: flex;\n    flex-direction: column;\n}\n.uni-open-location-map-box {\n    width: 100%;\n    flex: 1;\n}\n.uni-open-location-map {\n    width: 100%;\n    height: 100%;\n}\n.uni-open-location-map-reset {\n    position: absolute;\n    left: 20px;\n    bottom: 40px;\n    width: 40px;\n    height: 40px;\n    box-sizing: border-box;\n    background-color: #ffffff;\n    border-radius: 20px;\n    pointer-events: auto;\n    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 0.3);\n    z-index: 9;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.uni-open-location-map-reset-icon {\n    font-size: 26px;\n    text-align: center;\n    line-height: 40px;\n}\n.uni-open-location-nav {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 60px;\n    background-color: rgba(0, 0, 0, 0);\n    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));\n}\n.uni-open-location-nav-btn {\n    position: absolute;\n    top: 5px;\n    left: 5px;\n    width: 44px;\n    height: 44px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.uni-open-location-nav-btn-bg {\n    width: 20px;\n    height: 20px;\n    background-color: #cbcbcb;\n    border-radius: 10px;\n    overflow: hidden;\n    position: absolute;\n}\n.uni-open-location-nav-back-text.uni-open-location-icons {\n    color: #ffffff;\n    font-size: 26px;\n}\n.uni-open-location-footer {\n    height: 150px;\n    border-radius: 10px 10px 0px 0px;\n    overflow: hidden;\n    background-color: #ffffff;\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 20px;\n}\n.uni-open-location-address {\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n}\n.uni-open-location-name-text {\n    font-size: 18px;\n    font-weight: bold;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.uni-open-location-address-text {\n    font-size: 16px;\n    margin-top: 10px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.uni-open-location-footer-icon-btns {\n    width: 100px;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-end;\n}\n.uni-open-location-footer-icon-btns-item {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n.uni-open-location-footer-icon-box {\n    background-color: #f8f8f8;\n    width: 40px;\n    height: 40px;\n    border-radius: 6px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    margin-bottom: 6px;\n}\n.uni-open-location-navigation.uni-open-location-icons {\n    color: #007aff;\n    font-size: 24px;\n}\n.uni-open-location-footer-btn-text {\n    font-size: 12px;\n    text-align: center;\n}\n.uni-open-location-dark.uni-open-location-map-reset {\n    background-color: #111111;\n}\n.uni-open-location-dark.uni-open-location-map-reset-icon {\n    color: #d1d1d1;\n}\n.uni-open-location-dark.uni-open-location-footer {\n    background-color: #181818;\n}\n.uni-open-location-dark.uni-open-location-name-text {\n    color: #fafafa;\n}\n.uni-open-location-dark.uni-open-location-address-text {\n    color: #fafafa;\n}\n.uni-open-location-dark.uni-open-location-footer-icon-box {\n    background-color: #393939;\n}\n.uni-open-location-dark.uni-open-location-footer-btn-text {\n    color: #909090;\n}\n";
+const UniOpenLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
+class OpenLocationSuccessImpl {
+  constructor(errMsg = "openLocation:ok") {
+    this.errMsg = errMsg;
+  }
+}
+const UniErrorSubject = "uni-openLocation";
+const UniErrors = /* @__PURE__ */ new Map([
+  /**
+   * 框架内部错误
+   */
+  [4, "internal error"]
+]);
+class OpenLocationFailImpl extends UniError {
+  constructor(errCode) {
+    super();
+    this.errSubject = UniErrorSubject;
+    this.errCode = errCode;
+    this.errMsg = UniErrors.get(errCode) ?? "";
+  }
+}
+const openLocation$1 = function(options) {
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+  const baseEventName = `uni_open_location_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+  });
+  uni.$on(successEventName, () => {
+    var _a, _b;
+    const res = new OpenLocationSuccessImpl();
+    (_a = options.success) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+  });
+  uni.$on(failEventName, (errCode) => {
+    var _a, _b;
+    const res = new OpenLocationFailImpl(errCode);
+    (_a = options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+  });
+  uni.openDialogPage({
+    url: `uni:openLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    triggerParentHide: true,
+    fail(err) {
+      var _a, _b;
+      const res = new OpenLocationFailImpl(4);
+      (_a = options.fail) == null ? void 0 : _a.call(options, res);
+      (_b = options.complete) == null ? void 0 : _b.call(options, res);
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+};
+const registerOpenLocationOnce = /* @__PURE__ */ once(() => {
+  registerSystemRoute("uni:openLocation", UniOpenLocationPage);
+});
+const openLocation = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_LOCATION,
+  (args, { resolve, reject }) => {
+    registerOpenLocationOnce();
+    openLocation$1(
+      extend({}, args, {
+        success: (res) => resolve(res),
+        fail: (err) => reject(err.errMsg, err)
+      })
+    );
+  },
+  OpenLocationProtocol,
+  OpenLocationOptions
 );
 const API_CREATE_WORKER = "createWorker";
 const MESSAGE_EVENT = "__UNI_WEB_WORKER_MESSAGE";
@@ -31938,45 +32864,45 @@ export {
   $off,
   $on,
   $once,
-  index$7 as Ad,
-  index$6 as AdContentPage,
-  index$5 as AdDraw,
-  _sfc_main$t as AsyncErrorComponent,
-  _sfc_main$u as AsyncLoadingComponent,
+  index$6 as Ad,
+  index$5 as AdContentPage,
+  index$4 as AdDraw,
+  _sfc_main$v as AsyncErrorComponent,
+  _sfc_main$w as AsyncLoadingComponent,
   index$g as Button,
-  index$4 as Camera,
+  index$3 as Camera,
   indexX$1 as Canvas,
-  _sfc_main$n as Checkbox,
-  _sfc_main$m as CheckboxGroup,
+  _sfc_main$p as Checkbox,
+  _sfc_main$o as CheckboxGroup,
   index$e as Editor,
-  _sfc_main$l as Form,
+  _sfc_main$n as Form,
   index$d as Icon,
   __syscom_0$1 as Input,
-  _sfc_main$k as Label,
-  _sfc_main$v as LayoutComponent,
-  index$3 as LivePlayer,
-  index$2 as LivePusher,
-  _sfc_main$j as Loading,
-  Map$1 as Map,
-  _sfc_main$i as MatchMedia,
+  _sfc_main$m as Label,
+  _sfc_main$x as LayoutComponent,
+  index$2 as LivePlayer,
+  index$1 as LivePusher,
+  _sfc_main$l as Loading,
+  index$7 as Map,
+  _sfc_main$k as MatchMedia,
   index$c as MovableArea,
   index$b as MovableView,
-  _sfc_main$h as Navigator,
-  _sfc_main$p as PageComponent,
-  _sfc_main$o as PageContainer,
-  _sfc_main$g as Picker,
-  _sfc_main$f as PickerView,
-  _sfc_main$e as PickerViewColumn,
-  _sfc_main$d as Progress,
-  _sfc_main$c as Radio,
-  _sfc_main$b as RadioGroup,
+  _sfc_main$j as Navigator,
+  _sfc_main$r as PageComponent,
+  _sfc_main$q as PageContainer,
+  _sfc_main$i as Picker,
+  _sfc_main$h as PickerView,
+  _sfc_main$g as PickerViewColumn,
+  _sfc_main$f as Progress,
+  _sfc_main$e as Radio,
+  _sfc_main$d as RadioGroup,
   ResizeSensor,
   index$a as RichText,
   __syscom_1 as ScrollView,
-  _sfc_main$a as Slider,
-  _sfc_main$9 as Swiper,
-  _sfc_main$8 as SwiperItem,
-  _sfc_main$7 as Switch,
+  _sfc_main$c as Slider,
+  _sfc_main$b as Swiper,
+  _sfc_main$a as SwiperItem,
+  _sfc_main$9 as Switch,
   __syscom_0 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
@@ -32190,7 +33116,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index$1 as plugin,
+  index as plugin,
   preloadPage,
   previewImage,
   reLaunch,
