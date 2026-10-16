@@ -1,5 +1,5 @@
 ---
-source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar
+source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar-x
 ---
 
 ::: sourceCode
