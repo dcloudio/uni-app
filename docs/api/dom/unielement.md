@@ -2545,6 +2545,15 @@ play
     animation?.cancel()
   }
 
+  function getMainViewRectForTest() : DOMRect | null {
+    // #ifndef MP
+    return mainView?.getBoundingClientRect() ?? null
+    // #endif
+    // #ifdef MP
+    return null
+    // #endif
+  }
+
   function widthProperty(e : UniPointerEvent) {
     e.currentTarget?.animate({
       width: ["100px", "200px", "150px"]
@@ -2771,7 +2780,8 @@ play
   defineExpose({
     data,
     startAnimate,
-    cancelAnimate
+    cancelAnimate,
+    getMainViewRectForTest
   })
 </script>
 
