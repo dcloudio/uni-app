@@ -17002,7 +17002,7 @@ class UniCheckboxElement extends UniViewElement {
   }
 }
 const t0$p = template("<span uni-text> ", 1);
-const t1$f = template("<span uni-text>\n      <!>\n    ");
+const t1$f = template("<span uni-text>");
 const t2$7 = template("<div uni-view class=uni-checkbox><span uni-text> </span>", 1);
 const fontUnicode$1 = "";
 const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
@@ -17116,13 +17116,13 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
             [!_disabled, __props.iconClass]
           )]);
           setStyle(n2, unref(activeStyle));
-          setText(x2, normalizeUniText("\n    " + toDisplayString(_isChecked ? fontUnicode$1 : "") + "\n  "));
+          setText(x2, normalizeUniText(toDisplayString(_isChecked ? fontUnicode$1 : "")));
         });
         return n2;
       },
       () => {
-        const n12 = t2$7();
-        const n4 = child(n12);
+        const n11 = t2$7();
+        const n4 = child(n11);
         const x4 = txt(n4);
         renderEffect(() => {
           const _disabled = __props.disabled;
@@ -17136,13 +17136,12 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
           setStyle(n4, unref(activeStyle));
           setText(x4, normalizeUniText(toDisplayString(_isChecked ? fontUnicode$1 : "")));
         });
-        setInsertionState(n12, 1);
+        setInsertionState(n11, 1);
         createIf(
           () => isStringSlot,
           () => {
-            const n9 = t1$f();
-            const n8 = next(child(n9));
-            setInsertionState(n9, n8);
+            const n8 = t1$f();
+            setInsertionState(n8);
             createSlot(
               "default",
               null,
@@ -17150,17 +17149,17 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n9;
+            return n8;
           },
           () => {
-            const n11 = createSlot();
-            return n11;
+            const n10 = createSlot();
+            return n10;
           },
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        on$1(n12, "click", withModifiers(handleTap, ["stop"]));
-        return n12;
+        on$1(n11, "click", withModifiers(handleTap, ["stop"]));
+        return n11;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -17617,7 +17616,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
 });
 class UniNavigatorElement extends UniViewElement {
 }
-const t0$j = template("<span uni-text>\n    <!>\n  ", 1);
+const t0$j = template("<span uni-text>", 1);
 const t1$e = template("<div uni-view>", 1);
 const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -17689,9 +17688,8 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => isStringSlot,
       () => {
-        const n4 = t0$j();
-        const n3 = next(child(n4));
-        setInsertionState(n4, n3);
+        const n3 = t0$j();
+        setInsertionState(n3);
         createSlot(
           "default",
           null,
@@ -17699,15 +17697,15 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
           256
           /* TEXT_MODE */
         );
-        on$1(n4, "click", handleTap);
-        return n4;
+        on$1(n3, "click", handleTap);
+        return n3;
       },
       () => {
-        const n7 = t1$e();
-        setInsertionState(n7);
+        const n6 = t1$e();
+        setInsertionState(n6);
         createSlot();
-        on$1(n7, "click", handleTap);
-        return n7;
+        on$1(n6, "click", handleTap);
+        return n6;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -18437,7 +18435,7 @@ class UniRadioElement extends UniViewElement {
   }
 }
 const t0$e = template("<span uni-text> ", 1);
-const t1$b = template("<span uni-text>\n      <!>\n    ");
+const t1$b = template("<span uni-text>");
 const t2$6 = template("<div uni-view class=uni-radio><span uni-text> </span>", 1);
 const fontUnicode = "";
 const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
@@ -18561,13 +18559,13 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
             [!_disabled, __props.iconClass]
           )]);
           setStyle(n2, unref(activeStyle));
-          setText(x2, normalizeUniText("\n    " + toDisplayString(_isChecked ? fontUnicode : "") + "\n  "));
+          setText(x2, normalizeUniText(toDisplayString(_isChecked ? fontUnicode : "")));
         });
         return n2;
       },
       () => {
-        const n12 = t2$6();
-        const n4 = child(n12);
+        const n11 = t2$6();
+        const n4 = child(n11);
         const x4 = txt(n4);
         renderEffect(() => {
           const _disabled = __props.disabled;
@@ -18582,13 +18580,12 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
           setStyle(n4, unref(activeStyle));
           setText(x4, normalizeUniText(toDisplayString(_isChecked ? fontUnicode : "")));
         });
-        setInsertionState(n12, 1);
+        setInsertionState(n11, 1);
         createIf(
           () => isStringSlot,
           () => {
-            const n9 = t1$b();
-            const n8 = next(child(n9));
-            setInsertionState(n9, n8);
+            const n8 = t1$b();
+            setInsertionState(n8);
             createSlot(
               "default",
               null,
@@ -18596,17 +18593,17 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n9;
+            return n8;
           },
           () => {
-            const n11 = createSlot();
-            return n11;
+            const n10 = createSlot();
+            return n10;
           },
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        on$1(n12, "click", withModifiers(handleTap, ["stop"]));
-        return n12;
+        on$1(n11, "click", withModifiers(handleTap, ["stop"]));
+        return n11;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -19150,7 +19147,7 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
       const n7 = t0$c();
       const x7 = txt(n7);
       setStaticTemplateRef(n7, showValueRef, null, "showValueRef");
-      renderEffect(() => setText(x7, normalizeUniText("\n\n      " + toDisplayString(unref(currentValue)) + "\n\n\n\n\n    ")));
+      renderEffect(() => setText(x7, normalizeUniText(toDisplayString(unref(currentValue)))));
       return n7;
     });
     return n8;
@@ -28651,7 +28648,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
           const _titleColor = titleColor.value;
           setClassName(n4, isLandscape2.value ? 1 : 0, " uni-action-sheet_landscape__mode", "uni-action-sheet_dialog__title border-b");
           setStyle(n3, _titleColor != null ? { color: _titleColor } : {});
-          setText(x3, normalizeUniText("\n              " + toDisplayString(title.value) + "\n            "));
+          setText(x3, normalizeUniText(toDisplayString(title.value)));
         });
         return [n4, n5];
       },
@@ -28683,7 +28680,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
           const _itemColor = itemColor.value;
           setClassName(n12, (isLandscape2.value ? 1 : 0) | (_for_key0.value !== 0 ? 2 : 0), [" uni-action-sheet_landscape__mode", " border-t"], "uni-action-sheet_dialog__cell");
           setStyle(n11, _itemColor != null ? { color: _itemColor } : {});
-          setText(x11, normalizeUniText("\n                  " + toDisplayString(_for_item0.value) + "\n                "));
+          setText(x11, normalizeUniText(toDisplayString(_for_item0.value)));
         });
         return [n8, n12];
       },
@@ -28700,7 +28697,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
       setStyle(n17, _backgroundColor != null ? { backgroundColor: _backgroundColor } : {});
       setClassName(n17, isLandscape2.value ? 1 : 0, " uni-action-sheet_landscape__mode", "uni-action-sheet_dialog__action");
       setStyle(n16, _cancelColor != null ? { color: _cancelColor } : {});
-      setText(x16, normalizeUniText("\n          " + toDisplayString(cancelText.value) + "\n        "));
+      setText(x16, normalizeUniText(toDisplayString(cancelText.value)));
     });
     setInsertionState(n24, 2);
     createIf(() => !isLandscape2.value, () => {
@@ -30244,7 +30241,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
     createIf(() => hasTitle.value, () => {
       const n2 = t0$5();
       const x2 = txt(n2);
-      renderEffect(() => setText(x2, normalizeUniText("\n						" + toDisplayString(title.value) + "\n					")));
+      renderEffect(() => setText(x2, normalizeUniText(toDisplayString(title.value))));
       return n2;
     });
     renderEffect(() => setClassName(n10, !hasTitle.value ? 1 : 0, " no-title", "uni-modal-dialog__body"));
@@ -30274,7 +30271,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
         }, () => {
           const n8 = t1$4();
           const x8 = txt(n8);
-          renderEffect(() => setText(x8, normalizeUniText("\n							" + toDisplayString(content.value) + "\n						")));
+          renderEffect(() => setText(x8, normalizeUniText(toDisplayString(content.value))));
           return n8;
         }));
         return n9;
@@ -30291,7 +30288,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       setHover(n14, "uni-modal-dialog__action--hover", false, 50, 400, "uni-modal-dialog__action uni-modal-dialog__action--cancel");
       renderEffect(() => {
         setStyle(n13, cancelColorStyle.value);
-        setText(x13, normalizeUniText("\n							" + toDisplayString(cancelText.value) + "\n						"));
+        setText(x13, normalizeUniText(toDisplayString(cancelText.value)));
       });
       return n14;
     });
@@ -30311,7 +30308,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
     setHover(n19, "uni-modal-dialog__action--hover", false, 50, 400, "uni-modal-dialog__action uni-modal-dialog__action--confirm");
     renderEffect(() => {
       setStyle(n18, confirmColorStyle.value);
-      setText(x18, normalizeUniText("\n							" + toDisplayString(confirmText.value) + "\n						"));
+      setText(x18, normalizeUniText(toDisplayString(confirmText.value)));
     });
     return n24;
   }
@@ -32490,9 +32487,9 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       setText(x5, normalizeUniText(toDisplayString(_icon.back)));
       setClass(n14, ["uni-open-location-footer", __darkClassCom]);
       setClass(n8, ["uni-open-location-name-text", __darkClassCom]);
-      setText(x8, normalizeUniText("\n          " + toDisplayString(_openLocationOptions.name) + "\n        "));
+      setText(x8, normalizeUniText(toDisplayString(_openLocationOptions.name)));
       setClass(n9, ["uni-open-location-address-text", __darkClassCom]);
-      setText(x9, normalizeUniText("\n          " + toDisplayString(_openLocationOptions.address) + "\n        "));
+      setText(x9, normalizeUniText(toDisplayString(_openLocationOptions.address)));
       setClass(n11, ["uni-open-location-footer-icon-box", __darkClassCom]);
       setText(x10, normalizeUniText(toDisplayString(_icon.navigation)));
       setClass(n12, ["uni-open-location-footer-btn-text", __darkClassCom]);

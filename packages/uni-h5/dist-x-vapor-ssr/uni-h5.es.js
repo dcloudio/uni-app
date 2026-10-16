@@ -9551,9 +9551,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
             [!__props.disabled, __props.iconClass]
           )],
           style: unref(activeStyle)
-        }, _attrs))}>
-    ${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "", true)}
-  </span>`);
+        }, _attrs))}>${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "", true)}</span>`);
       } else {
         _push(`<div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
@@ -9565,11 +9563,9 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
           [!__props.disabled, __props.iconClass]
         ), "uni-checkbox-view uni-checkbox-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">${ssrInterpolate(unref(isChecked) ? fontUnicode$1 : "", true)}</span>`);
         if (isStringSlot) {
-          _push(`<span uni-text>
-      `);
+          _push(`<span uni-text>`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-          _push(`
-    </span>`);
+          _push(`</span>`);
         } else {
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
         }
@@ -10060,11 +10056,9 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
     const isStringSlot = ((_a = slots["default"]) == null ? void 0 : _a["returnType"]) === "string";
     return (_ctx, _push, _parent, _attrs) => {
       if (isStringSlot) {
-        _push(`<span${ssrRenderAttrs(mergeProps({ "uni-text": "" }, _attrs))}>
-    `);
+        _push(`<span${ssrRenderAttrs(mergeProps({ "uni-text": "" }, _attrs))}>`);
         ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-        _push(`
-  </span>`);
+        _push(`</span>`);
       } else {
         _push(`<div${ssrRenderAttrs(mergeProps({ "uni-view": "" }, _attrs))}>`);
         ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
@@ -10890,9 +10884,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent$2({
             [!__props.disabled, __props.iconClass]
           )],
           style: unref(activeStyle)
-        }, _attrs))}>
-    ${ssrInterpolate(unref(isChecked) ? fontUnicode : "", true)}
-  </span>`);
+        }, _attrs))}>${ssrInterpolate(unref(isChecked) ? fontUnicode : "", true)}</span>`);
       } else {
         _push(`<div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
@@ -10905,11 +10897,9 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent$2({
           [!__props.disabled, __props.iconClass]
         ), "uni-radio-view uni-radio-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">${ssrInterpolate(unref(isChecked) ? fontUnicode : "", true)}</span>`);
         if (isStringSlot) {
-          _push(`<span uni-text>
-      `);
+          _push(`<span uni-text>`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-          _push(`
-    </span>`);
+          _push(`</span>`);
         } else {
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
         }
@@ -11357,14 +11347,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$2({
         style: { "width": "100%", "flex-direction": "row", "box-sizing": "border-box", "overflow": "visible", "padding": "4px" }
       }, _attrs))}><div uni-view class="slider-track"><div uni-view class="${ssrRenderClass([props2.trackClass, "slider-track-bg"])}"><div uni-view class="${ssrRenderClass([props2.trackActiveClass, "slider-track-fill"])}" style="${ssrRenderStyle({ transform: `scaleX(${unref(trackActiveScaleX)})` })}"></div></div><div uni-view style="${ssrRenderStyle([{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }])}"><div uni-view tabIndex="0" role="slider"${ssrRenderAttr("aria-valuenow", unref(currentValue))}${ssrRenderAttr("aria-valuemin", __props.min)}${ssrRenderAttr("aria-valuemax", __props.max)} class="${ssrRenderClass([props2.thumbClass, "slider-handle"])}" style="${ssrRenderStyle({ transform: `translateX(-${unref(thumbTranslateX)}%)` })}"></div></div></div>`);
       if (props2.showValue) {
-        _push(`<span uni-text flatten style="${ssrRenderStyle({ "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" })}">
-
-      ${ssrInterpolate(unref(currentValue), true)}
-
-
-
-
-    </span>`);
+        _push(`<span uni-text flatten style="${ssrRenderStyle({ "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" })}">${ssrInterpolate(unref(currentValue), true)}</span>`);
       } else {
         _push(`<!---->`);
       }

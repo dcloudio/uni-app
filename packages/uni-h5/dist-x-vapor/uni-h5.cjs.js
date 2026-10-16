@@ -8774,7 +8774,7 @@ class UniCheckboxElement extends UniViewElement {
   }
 }
 const t0$g = Vue.template("<span uni-text> ", 1);
-const t1$7 = Vue.template("<span uni-text>\n      <!>\n    ");
+const t1$7 = Vue.template("<span uni-text>");
 const t2$1 = Vue.template("<div uni-view class=uni-checkbox><span uni-text> </span>", 1);
 const fontUnicode$1 = "";
 const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
@@ -8859,13 +8859,13 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
             [!_disabled, __props.iconClass]
           )]);
           Vue.setStyle(n2, Vue.unref(activeStyle));
-          Vue.setText(x2, Vue.normalizeUniText("\n    " + Vue.toDisplayString(_isChecked ? fontUnicode$1 : "") + "\n  "));
+          Vue.setText(x2, Vue.normalizeUniText(Vue.toDisplayString(_isChecked ? fontUnicode$1 : "")));
         });
         return n2;
       },
       () => {
-        const n12 = t2$1();
-        const n4 = Vue.child(n12);
+        const n11 = t2$1();
+        const n4 = Vue.child(n11);
         const x4 = Vue.txt(n4);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
@@ -8879,13 +8879,12 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.setStyle(n4, Vue.unref(activeStyle));
           Vue.setText(x4, Vue.normalizeUniText(Vue.toDisplayString(_isChecked ? fontUnicode$1 : "")));
         });
-        Vue.setInsertionState(n12, 1);
+        Vue.setInsertionState(n11, 1);
         Vue.createIf(
           () => isStringSlot,
           () => {
-            const n9 = t1$7();
-            const n8 = Vue.next(Vue.child(n9));
-            Vue.setInsertionState(n9, n8);
+            const n8 = t1$7();
+            Vue.setInsertionState(n8);
             Vue.createSlot(
               "default",
               null,
@@ -8893,17 +8892,17 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n9;
+            return n8;
           },
           () => {
-            const n11 = Vue.createSlot();
-            return n11;
+            const n10 = Vue.createSlot();
+            return n10;
           },
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        Vue.on(n12, "click", Vue.withModifiers(handleTap, ["stop"]));
-        return n12;
+        Vue.on(n11, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n11;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -9300,7 +9299,7 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniNavigatorElement extends UniViewElement {
 }
-const t0$a = Vue.template("<span uni-text>\n    <!>\n  ", 1);
+const t0$a = Vue.template("<span uni-text>", 1);
 const t1$6 = Vue.template("<div uni-view>", 1);
 const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -9372,9 +9371,8 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => isStringSlot,
       () => {
-        const n4 = t0$a();
-        const n3 = Vue.next(Vue.child(n4));
-        Vue.setInsertionState(n4, n3);
+        const n3 = t0$a();
+        Vue.setInsertionState(n3);
         Vue.createSlot(
           "default",
           null,
@@ -9382,15 +9380,15 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
           256
           /* TEXT_MODE */
         );
-        Vue.on(n4, "click", handleTap);
-        return n4;
+        Vue.on(n3, "click", handleTap);
+        return n3;
       },
       () => {
-        const n7 = t1$6();
-        Vue.setInsertionState(n7);
+        const n6 = t1$6();
+        Vue.setInsertionState(n6);
         Vue.createSlot();
-        Vue.on(n7, "click", handleTap);
-        return n7;
+        Vue.on(n6, "click", handleTap);
+        return n6;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -9909,7 +9907,7 @@ class UniRadioElement extends UniViewElement {
   }
 }
 const t0$5 = Vue.template("<span uni-text> ", 1);
-const t1$3 = Vue.template("<span uni-text>\n      <!>\n    ");
+const t1$3 = Vue.template("<span uni-text>");
 const t2 = Vue.template("<div uni-view class=uni-radio><span uni-text> </span>", 1);
 const fontUnicode = "";
 const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
@@ -10011,13 +10009,13 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
             [!_disabled, __props.iconClass]
           )]);
           Vue.setStyle(n2, Vue.unref(activeStyle));
-          Vue.setText(x2, Vue.normalizeUniText("\n    " + Vue.toDisplayString(_isChecked ? fontUnicode : "") + "\n  "));
+          Vue.setText(x2, Vue.normalizeUniText(Vue.toDisplayString(_isChecked ? fontUnicode : "")));
         });
         return n2;
       },
       () => {
-        const n12 = t2();
-        const n4 = Vue.child(n12);
+        const n11 = t2();
+        const n4 = Vue.child(n11);
         const x4 = Vue.txt(n4);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
@@ -10032,13 +10030,12 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.setStyle(n4, Vue.unref(activeStyle));
           Vue.setText(x4, Vue.normalizeUniText(Vue.toDisplayString(_isChecked ? fontUnicode : "")));
         });
-        Vue.setInsertionState(n12, 1);
+        Vue.setInsertionState(n11, 1);
         Vue.createIf(
           () => isStringSlot,
           () => {
-            const n9 = t1$3();
-            const n8 = Vue.next(Vue.child(n9));
-            Vue.setInsertionState(n9, n8);
+            const n8 = t1$3();
+            Vue.setInsertionState(n8);
             Vue.createSlot(
               "default",
               null,
@@ -10046,17 +10043,17 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n9;
+            return n8;
           },
           () => {
-            const n11 = Vue.createSlot();
-            return n11;
+            const n10 = Vue.createSlot();
+            return n10;
           },
           517
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
         );
-        Vue.on(n12, "click", Vue.withModifiers(handleTap, ["stop"]));
-        return n12;
+        Vue.on(n11, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n11;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -10411,7 +10408,7 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
       const n7 = t0$3();
       const x7 = Vue.txt(n7);
       Vue.setStaticTemplateRef(n7, showValueRef, null, "showValueRef");
-      Vue.renderEffect(() => Vue.setText(x7, Vue.normalizeUniText("\n\n      " + Vue.toDisplayString(Vue.unref(currentValue)) + "\n\n\n\n\n    ")));
+      Vue.renderEffect(() => Vue.setText(x7, Vue.normalizeUniText(Vue.toDisplayString(Vue.unref(currentValue)))));
       return n7;
     });
     return n8;
