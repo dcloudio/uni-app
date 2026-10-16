@@ -216,7 +216,11 @@ export function createConfigResolved({
                 pagesJson.globalStyle.enableUcssReset == null &&
                 (page.style as any).renderer === 'skyline')
 
-            if (!shouldNotResetStyle) {
+            // 抖音页面会在 app.ttss 之后加载此 reset，导致 App 公共样式被标签选择器覆盖。
+            if (
+              !shouldNotResetStyle &&
+              process.env.UNI_PLATFORM !== 'mp-toutiao'
+            ) {
               /**
                * 兼容发布为小程序分包模式
                */
