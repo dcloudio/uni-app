@@ -25832,16 +25832,21 @@ function compile$1(source, options = {}) {
 //#endregion
 //#region packages/compiler-vapor-web/src/parse.ts
 init_objectSpread2();
+const uniNativeTags = /* @__PURE__ */ new Set([
+	"view",
+	"text",
+	"image",
+	"cover-view",
+	"cover-image"
+]);
 function resolveParserOptions(options) {
 	const getNamespace = options.getNamespace || parserOptions.getNamespace;
 	const isNativeTag = options.isNativeTag || parserOptions.isNativeTag;
-	const isPreTag = options.isPreTag || parserOptions.isPreTag;
 	const isCustomElement = options.isCustomElement;
 	return _objectSpread2(_objectSpread2({ prefixIdentifiers: true }, options), {}, {
-		isNativeTag: (tag) => tag === "view" || tag === "text" || tag === "image" || isNativeTag(tag),
-		isCustomElement: (tag) => tag !== "view" && tag !== "text" && tag !== "image" && !!(isCustomElement === null || isCustomElement === void 0 ? void 0 : isCustomElement(tag)),
-		isPreTag: (tag) => tag === "text" || isPreTag(tag),
-		getNamespace: (tag, parent, rootNamespace) => getNamespace(tag === "view" ? "div" : tag === "text" ? "span" : tag === "image" ? "img" : tag, parent, rootNamespace)
+		isNativeTag: (tag) => uniNativeTags.has(tag) || isNativeTag(tag),
+		isCustomElement: (tag) => !uniNativeTags.has(tag) && !!(isCustomElement === null || isCustomElement === void 0 ? void 0 : isCustomElement(tag)),
+		getNamespace: (tag, parent, rootNamespace) => getNamespace(tag === "view" || tag === "cover-view" ? "div" : tag === "text" ? "span" : tag === "image" || tag === "cover-image" ? "img" : tag, parent, rootNamespace)
 	});
 }
 function parse$3(source, options = {}) {
@@ -31246,7 +31251,7 @@ function getBaseTransformPreset() {
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformView.ts
 function transformView(node) {
-	if (node.type !== 1 || node.tag !== "view" || node.ns !== 0) return;
+	if (node.type !== 1 || node.tag !== "view" && node.tag !== "cover-view" || node.ns !== 0) return;
 	node.tag = "div";
 	node.tagType = 0;
 	node.props = node.props.filter((prop) => {
@@ -31320,7 +31325,7 @@ function genImageExpression(expression, context) {
 	return genExpression(expression, context);
 }
 function transformImage(node) {
-	if (node.type !== 1 || node.tag !== "image" || node.ns !== 0) return;
+	if (node.type !== 1 || node.tag !== "image" && node.tag !== "cover-image" || node.ns !== 0) return;
 	node.tag = "img";
 	node.tagType = 0;
 	node.children = [];

@@ -46,14 +46,12 @@ const uniNativeTags = /* @__PURE__ */ new Set([
 function resolveParserOptions(options) {
 	const getNamespace = options.getNamespace || _vue_compiler_dom.parserOptions.getNamespace;
 	const isNativeTag = options.isNativeTag || _vue_compiler_dom.parserOptions.isNativeTag;
-	const isPreTag = options.isPreTag || _vue_compiler_dom.parserOptions.isPreTag;
 	const isCustomElement = options.isCustomElement;
 	return {
 		prefixIdentifiers: true,
 		...options,
 		isNativeTag: (tag) => uniNativeTags.has(tag) || isNativeTag(tag),
 		isCustomElement: (tag) => !uniNativeTags.has(tag) && !!(isCustomElement === null || isCustomElement === void 0 ? void 0 : isCustomElement(tag)),
-		isPreTag: (tag) => tag === "text" || isPreTag(tag),
 		getNamespace: (tag, parent, rootNamespace) => getNamespace(tag === "view" || tag === "cover-view" ? "div" : tag === "text" ? "span" : tag === "image" || tag === "cover-image" ? "img" : tag, parent, rootNamespace)
 	};
 }
