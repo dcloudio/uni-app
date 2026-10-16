@@ -45,19 +45,19 @@ var index = () => {
                     hasRuntimeSocket = false;
                 }
             }
-            let uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', `dist/${(process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'}.esm.js`));
+            let uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.posix.join('@dcloudio/uni-console', `dist/${(process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'}.esm.js`));
             if (isX) {
                 if (useUniAppXAndroidNative) {
-                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'src/runtime/app/index.ts'));
+                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.posix.join('@dcloudio/uni-console', 'src/runtime/app/index.ts'));
                 }
                 else if (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
                     process.env.UNI_UTS_PLATFORM === 'app-android') {
-                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/app.esm.js'));
+                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.posix.join('@dcloudio/uni-console', 'dist/app.esm.js'));
                 }
             }
             else {
                 if (process.env.UNI_PLATFORM === 'app-harmony') {
-                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js'));
+                    uniConsolePath = uniCliShared.resolveBuiltIn(path__default.default.posix.join('@dcloudio/uni-console', 'dist/harmony.jsvm.esm.js'));
                 }
             }
             return {
