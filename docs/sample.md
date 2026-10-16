@@ -40,6 +40,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 鲸鲨记账：[Android](https://sj.qq.com/appdetail/com.cyqgxf.jingshajizhang)、[iOS](https://apps.apple.com/cn/app/%E9%B2%B8%E9%B2%A8%E8%AE%B0%E8%B4%A6-ai%E6%99%BA%E8%83%BD%E8%87%AA%E5%8A%A8%E8%AE%B0%E8%B4%A6%E5%AD%98%E9%92%B1%E5%BF%AB%E9%80%9F%E4%B8%93%E4%B8%9A%E5%8A%A9%E6%89%8B/id6751838395)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.cyqgxf.jingshajizhang.hm)
 ## 其他
 - 黔警通：[Android](https://sj.qq.com/appdetail/com.qxnga.qjt)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hmos.com.qxnga.qjt)
+- 发票匣：[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
 - 时欢：[Android](https://sj.qq.com/appdetail/com.yunyuinteractive.bts)
 - AI名车宝典：[Android](https://sj.qq.com/appdetail/com.mcbd.aimcbd.util)、[iOS](https://apps.apple.com/cn/app/ai%E5%90%8D%E8%BD%A6%E5%AE%9D%E5%85%B8/id6446267335)
 - 中维商城：[Android](https://sj.qq.com/appdetail/com.wx45.app)
@@ -68,7 +69,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 旺喔：[Android](https://appgallery.huawei.com/app/C118387277)、[iOS](https://apps.apple.com/cn/app/%E6%97%BA%E5%96%94-%E6%89%93%E5%BC%80%E9%94%80%E5%86%A0wow-%E6%97%B6%E5%88%BB/id6780321741)
 - CCDCSM：[Android](https://appgallery.huawei.com/app/C111525843)
 - 碰谷：[Android](https://appgallery.huawei.com/app/C119022149)、[iOS](https://apps.apple.com/cn/app/%E7%A2%B0%E8%B0%B7/id6809301755)
-- 发票匣：[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
 - 壹盾安全：[Android](https://appgallery.huawei.com/app/C118828013)、[iOS](https://apps.apple.com/cn/app/%E5%A3%B9%E7%9B%BE%E5%AE%89%E5%85%A8/id6803099719)
 - 单词秀：[Android](https://sj.qq.com/appdetail/com.dclound.dancibiji)
 - 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app)
