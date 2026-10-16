@@ -77,6 +77,7 @@
   * [uni-combox | 组合框](./uni-ui-x/uni-combox.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
+	* [uni-icons | 字体图标](./uni-ui-x/uni-icons.md)
   * [uni-index-bar | 索引条](./uni-ui-x/uni-index-bar.md)
   * [uni-link | 链接](./uni-ui-x/uni-link.md)
   * [uni-number-box | 数字输入框](./uni-ui-x/uni-number-box.md)
