@@ -36,6 +36,13 @@ let _vue_shared = require("@vue/shared");
 let hash_sum = require("hash-sum");
 hash_sum = __toESM(hash_sum);
 //#region packages/compiler-vapor-web/src/parse.ts
+const uniNativeTags = /* @__PURE__ */ new Set([
+	"view",
+	"text",
+	"image",
+	"cover-view",
+	"cover-image"
+]);
 function resolveParserOptions(options) {
 	const getNamespace = options.getNamespace || _vue_compiler_dom.parserOptions.getNamespace;
 	const isNativeTag = options.isNativeTag || _vue_compiler_dom.parserOptions.isNativeTag;
@@ -44,10 +51,10 @@ function resolveParserOptions(options) {
 	return {
 		prefixIdentifiers: true,
 		...options,
-		isNativeTag: (tag) => tag === "view" || tag === "text" || tag === "image" || isNativeTag(tag),
-		isCustomElement: (tag) => tag !== "view" && tag !== "text" && tag !== "image" && !!(isCustomElement === null || isCustomElement === void 0 ? void 0 : isCustomElement(tag)),
+		isNativeTag: (tag) => uniNativeTags.has(tag) || isNativeTag(tag),
+		isCustomElement: (tag) => !uniNativeTags.has(tag) && !!(isCustomElement === null || isCustomElement === void 0 ? void 0 : isCustomElement(tag)),
 		isPreTag: (tag) => tag === "text" || isPreTag(tag),
-		getNamespace: (tag, parent, rootNamespace) => getNamespace(tag === "view" ? "div" : tag === "text" ? "span" : tag === "image" ? "img" : tag, parent, rootNamespace)
+		getNamespace: (tag, parent, rootNamespace) => getNamespace(tag === "view" || tag === "cover-view" ? "div" : tag === "text" ? "span" : tag === "image" || tag === "cover-image" ? "img" : tag, parent, rootNamespace)
 	};
 }
 function parse(source, options = {}) {
@@ -56,7 +63,7 @@ function parse(source, options = {}) {
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformView.ts
 function transformView(node) {
-	if (node.type !== 1 || node.tag !== "view" || node.ns !== 0) return;
+	if (node.type !== 1 || node.tag !== "view" && node.tag !== "cover-view" || node.ns !== 0) return;
 	node.tag = "div";
 	node.tagType = 0;
 	node.props = node.props.filter((prop) => {
@@ -130,7 +137,7 @@ function genImageExpression(expression, context) {
 	return (0, _vue_compiler_vapor.genExpression)(expression, context);
 }
 function transformImage(node) {
-	if (node.type !== 1 || node.tag !== "image" || node.ns !== 0) return;
+	if (node.type !== 1 || node.tag !== "image" && node.tag !== "cover-image" || node.ns !== 0) return;
 	node.tag = "img";
 	node.tagType = 0;
 	node.children = [];

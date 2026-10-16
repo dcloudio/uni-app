@@ -30,4 +30,12 @@ describe('h5: compiler', () => {
       `_createElementBlock("audio"`
     )
   })
+  test.each(['cover-view', 'cover-image'])(
+    '非 Vapor 保留旧组件解析：%s',
+    (tag) => {
+      expect(compile(`<${tag}/>`).code).toContain(
+        `_resolveComponent("v-uni-${tag}")`
+      )
+    }
+  )
 })

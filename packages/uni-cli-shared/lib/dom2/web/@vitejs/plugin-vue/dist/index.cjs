@@ -165,27 +165,12 @@ function createRollupError(id, error) {
 }
 //#endregion
 //#region src/utils/vapor.ts
-/**
-* Resolve the effective Vapor mode for an SFC handled by this plugin.
-*
-* `descriptor.vapor` is the per-file opt-in marker. `features.vapor` is the
-* plugin-level force switch for SFCs that can be forced into Vapor mode.
-*/
 function isVaporMode(descriptor, options) {
-	if (descriptor.vapor) return true;
-	if (options.features?.vapor) return canForceVaporMode(descriptor);
-	return false;
-}
-/**
-* fixed by uts：.uvue 与 .vue 使用相同规则，普通 script 不强制为 Vapor。
-* 其他类型的转换文件仍保留官方行为。
-*/
-function canForceVaporMode(descriptor) {
-	if (/\.u?vue$/.test(descriptor.filename)) {
-		if (descriptor.scriptSetup) return true;
-		if (descriptor.script) return false;
+	if (options.features?.vapor) {
+		if (/\.u?vue$/.test(descriptor.filename) && descriptor.script && !descriptor.scriptSetup) throw new Error(`${descriptor.filename}: Web Vapor 不支持仅使用普通 <script> 的组件，请改用 <script setup>。`);
+		return true;
 	}
-	return true;
+	return !!descriptor.vapor;
 }
 //#endregion
 //#region src/template.ts

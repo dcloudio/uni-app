@@ -965,13 +965,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$j = 0;
+let index$h = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$j++}`;
+  const id2 = vm.id || `context${index$h++}`;
   return `${type}.${id2}`;
 }
 function withWebEvent(fn) {
@@ -1305,8 +1305,8 @@ class UniElement extends Object {
     return super.nodeName.replace(/^UNI-/, "");
   }
 }
-const _t0$b = Vue.template("<canvas class=uni-canvas-canvas>");
-const props$g = { disableScroll: {
+const _t0$9 = Vue.template("<canvas class=uni-canvas-canvas>");
+const props$f = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
@@ -1338,7 +1338,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
   compatConfig: { MODE: 3 },
-  props: props$g,
+  props: props$f,
   setup(props2, {}) {
     const rootRef = Vue.ref(null);
     const canvas = Vue.ref(null);
@@ -1346,7 +1346,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$b();
+          const _n0 = _t0$9();
           Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -1634,7 +1634,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -1720,7 +1720,7 @@ function throttle(fn, wait) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$f = {
+const props$e = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -1816,7 +1816,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$e = /* @__PURE__ */ shared.extend(
+const props$d = /* @__PURE__ */ shared.extend(
   {},
   {
     name: {
@@ -1906,7 +1906,7 @@ const props$e = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$f
+  props$e
 );
 const emit = [
   "input",
@@ -2154,11 +2154,11 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const _t0$a = Vue.template("<input tabindex=-1 class=uni-input-input>", 1);
-const _t1$7 = Vue.template("<input class=uni-input-input>", 1);
+const _t0$8 = Vue.template("<input tabindex=-1 class=uni-input-input>", 1);
+const _t1$6 = Vue.template("<input class=uni-input-input>", 1);
 const _t2$3 = Vue.template("<form action novalidate class=uni-input-form> ");
 const _t3$3 = Vue.template("<div class=uni-input-wrapper><div> </div>");
-const props$d = /* @__PURE__ */ shared.extend({}, props$e, {
+const props$c = /* @__PURE__ */ shared.extend({}, props$d, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2194,7 +2194,7 @@ class UniInputElement extends UniElement {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$d,
+  props: props$c,
   emits: ["confirm", ...emit],
   setup(props2, { emit: emit2, expose }) {
     const INPUT_TYPES = [
@@ -2294,7 +2294,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$a();
+        const _n0 = _t0$8();
         Vue.setBlockKey(_n0, "disabled-input");
         Vue.on(
           _n0,
@@ -2315,7 +2315,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         return _n0;
       })() : (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t1$7();
+        const _n0 = _t1$6();
         Vue.setBlockKey(_n0, "input");
         Vue.on(_n0, "input", Vue.withModifiers((event) => {
           const value = event.target.value.toString();
@@ -2377,8 +2377,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$9 = Vue.template("<div><div></div></div>");
-const _t1$6 = Vue.template("<div><div>");
+const _t0$7 = Vue.template("<div><div></div></div>");
+const _t1$5 = Vue.template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: { initial: {
@@ -2393,8 +2393,8 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n2 = Vue.createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$9();
-        const _n1 = _t1$6();
+        const _n0 = _t0$7();
+        const _n1 = _t1$5();
         Vue.on(_n0, "scroll", update);
         Vue.on(_n1, "scroll", update);
         return [_n0, _n1];
@@ -2429,12 +2429,12 @@ function useResizeSensorReset(rootRef) {
     lastElementChild.scrollTop = 1e5;
   };
 }
-const _t0$8 = Vue.template("<textarea tabindex=-1>", 1);
-const _t1$5 = Vue.template("<textarea>", 1);
+const _t0$6 = Vue.template("<textarea tabindex=-1>", 1);
+const _t1$4 = Vue.template("<textarea>", 1);
 const _t2$2 = Vue.template("<form action class=uni-input-form> ");
 const _t3$2 = Vue.template("<div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>");
 const _t4$2 = Vue.template("<div>", 1);
-const props$c = /* @__PURE__ */ shared.extend({}, props$e, {
+const props$b = /* @__PURE__ */ shared.extend({}, props$d, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2465,9 +2465,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$c,
+  props: props$b,
   emits: [
     "confirm",
     "change",
@@ -2545,7 +2545,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t0$8();
+        const _n0 = _t0$6();
         Vue.setBlockKey(_n0, "disabled-textarea");
         Vue.on(
           _n0,
@@ -2568,7 +2568,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         return _n0;
       })() : (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = _t1$5();
+        const _n0 = _t1$4();
         Vue.setBlockKey(_n0, "textarea");
         Vue.on(_n0, "keydown", onKeyDownEnter);
         Vue.on(_n0, "keyup", onKeyUpEnter);
@@ -5098,7 +5098,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           const n6 = Vue.next(n5);
           Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
           Vue.setInsertionState(n5);
-          const n4 = Vue.withComponentId("42efa222", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
+          const n4 = Vue.withComponentId("9bbd592a", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
             "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
             $: [
               () => Vue.unref(windowState)
@@ -5116,12 +5116,12 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = Vue.withComponentId("1b0a2624", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n12 = Vue.withComponentId("dbf3501c", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
               const n10 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n11 = Vue.withComponentId("1b0a1da4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                const n11 = Vue.withComponentId("dbf3479c", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
                 return n11;
               });
               return n10;
@@ -5129,7 +5129,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n12;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n14 = Vue.withComponentId("1b0a1628", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n14 = Vue.withComponentId("dbf34020", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -5152,7 +5152,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n20;
           });
           Vue.setInsertionState(n22);
-          const n21 = Vue.withComponentId("1b093e56", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+          const n21 = Vue.withComponentId("dbf2684e", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
@@ -5176,7 +5176,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n29;
           });
           Vue.setInsertionState(n31);
-          const n30 = Vue.withComponentId("1b090194", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+          const n30 = Vue.withComponentId("dbf22b8c", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n30, rightWindowRef, null, "rightWindowRef");
@@ -5192,12 +5192,12 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n42 = Vue.withComponentId("1b0853ee", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n42 = Vue.withComponentId("dbf17de6", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
               const n40 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n41 = Vue.withComponentId("1b0846d4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                const n41 = Vue.withComponentId("dbf170cc", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
                 return n41;
               });
               return n40;
@@ -5205,7 +5205,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n42;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n44 = Vue.withComponentId("1b0844a8", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n44 = Vue.withComponentId("dbf16ea0", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n44;
           }),
           2309
@@ -5218,7 +5218,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     Vue.setInsertionState(n49, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n48 = Vue.withComponentId("1b083da0", () => Vue.createComponent(_sfc_main$p));
+      const n48 = Vue.withComponentId("dbf16798", () => Vue.createComponent(_sfc_main$p));
       Vue.applyVShow(n48, () => Vue.unref(showTabBar));
       return n48;
     });
@@ -5879,7 +5879,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
-            const n39 = Vue.withComponentId("b1ddc730", () => Vue.createComponent(Vue.unref(Input), {
+            const n39 = Vue.withComponentId("9df04238", () => Vue.createComponent(Vue.unref(Input), {
               disabled: true,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -5894,7 +5894,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
             const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
             const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
             const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
-            const n41 = Vue.withComponentId("b1dda8bc", () => Vue.createComponent(Vue.unref(Input), {
+            const n41 = Vue.withComponentId("9df023c4", () => Vue.createComponent(Vue.unref(Input), {
               focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -6045,7 +6045,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.withComponentId("64781ad4", () => Vue.createComponent(_sfc_main$k));
+      const n2 = Vue.withComponentId("6c5ca19a", () => Vue.createComponent(_sfc_main$k));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -6056,7 +6056,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createSlot();
     Vue.setInsertionState(n8, 1);
     Vue.createIf(() => Vue.unref(isX), () => {
-      const n7 = Vue.withComponentId("6c91a811", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = Vue.withComponentId("708ab3d6", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     Vue.setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -6173,12 +6173,12 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.withComponentId("20e16be8", () => Vue.createComponent(_sfc_main$l));
+      const n2 = Vue.withComponentId("55c2f8ec", () => Vue.createComponent(_sfc_main$l));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.withComponentId("09680334", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
-      const n3 = Vue.withComponentId("096802e8", () => Vue.createDynamicComponent(
+    Vue.withComponentId("629c11e2", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
+      const n3 = Vue.withComponentId("629c1208", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
           () => Vue.unref(pageProps)
@@ -6197,7 +6197,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = Vue.withComponentId("0967fbb0-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = Vue.withComponentId("629c15a4-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -6379,7 +6379,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$b = /* @__PURE__ */ shared.extend({}, props$f, {
+const props$a = /* @__PURE__ */ shared.extend({}, props$e, {
   id: {
     type: String,
     default: ""
@@ -6411,9 +6411,9 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$f, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$b,
+  props: props$a,
   emit: [
     "ready",
     "focus",
@@ -6483,7 +6483,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -6544,7 +6544,7 @@ const movableAreaProps = {
 const useMovableAreaChildren = useMovableAreaChildren$1;
 class UniMovableAreaElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -7097,7 +7097,7 @@ function v(a, b) {
 }
 class UniMovableViewElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -7664,7 +7664,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$a = {
+const props$9 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -7942,10 +7942,10 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
 const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$a,
+  props: props$9,
   emits: ["itemclick"],
   setup(props2, { emit: emit2 }) {
     const rootRef = Vue.ref(null);
@@ -7957,8 +7957,8 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const _t0$7 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$4 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
+const _t0$5 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t1$3 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$1 = Vue.template("<div class=uni-scroll-view-refresh><div class=uni-scroll-view-refresh-inner></div>");
 const _t3$1 = Vue.template("<div class=uni-scroll-view-refresher-container> ");
 const _t4$1 = Vue.template("<div class=uni-scroll-view-refresher>", 1);
@@ -8023,7 +8023,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           const _n12 = Vue.child(_n13);
           Vue.setInsertionState(_n12);
           Vue.createIf(() => refreshState == "pulling", () => {
-            const _n4 = _t0$7();
+            const _n4 = _t0$5();
             Vue.setBlockKey(_n4, "refresh__icon");
             Vue.renderEffect(() => Vue.setAttr(_n4, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
             return _n4;
@@ -8033,7 +8033,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           }, 265);
           Vue.setInsertionState(_n12, 1);
           Vue.createIf(() => refreshState == "refreshing", () => {
-            const _n9 = _t1$4();
+            const _n9 = _t1$3();
             Vue.setBlockKey(_n9, "refresh__spinner");
             return _n9;
           }, () => {
@@ -8062,8 +8062,8 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const _t0$6 = Vue.template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
-const props$9 = {
+const _t0$4 = Vue.template("<div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ");
+const props$8 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -8131,10 +8131,10 @@ const props$9 = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: { MODE: 3 },
-  props: props$9,
+  props: props$8,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -8178,7 +8178,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n14 = Vue.createPlainElement("uni-scroll-view", null, () => {
-          const _n13 = _t0$6();
+          const _n13 = _t0$4();
           const _n12 = Vue.child(_n13);
           const _n11 = Vue.child(_n12);
           const _n10 = Vue.next(_n11);
@@ -9724,7 +9724,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n3);
     const n5 = Vue.next(n4);
     Vue.setInsertionState(n7, n6);
-    const n2 = Vue.withComponentId("02a52c40", () => Vue.createAssetComponent("scroll-view", {
+    const n2 = Vue.withComponentId("e09e2578", () => Vue.createAssetComponent("scroll-view", {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -11161,8 +11161,8 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     return n1;
   }
 });
-const _t0$5 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
-const _t1$3 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
+const _t0$3 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t1$2 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
 const _t2 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
 const _t3 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
 const _t4 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
@@ -11693,7 +11693,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$8 = {
+const props$7 = {
   id: {
     type: String,
     default: ""
@@ -11781,9 +11781,9 @@ const props$8 = {
     default: true
   }
 };
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$8,
+  props: props$7,
   emits: [
     "fullscreenchange",
     "progress",
@@ -11940,13 +11940,13 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
           });
           Vue.setInsertionState(_n27);
           Vue.createIf(() => gestureState.gestureType === "volume", () => {
-            const _n24 = _t1$3();
+            const _n24 = _t1$2();
             const _n23 = Vue.child(_n24);
             const _n22 = Vue.next(_n23);
             Vue.renderEffect(() => Vue.setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
             Vue.setInsertionState(_n24, _n23);
             Vue.createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$5();
+              const _n19 = _t0$3();
               return _n19;
             }, () => {
               const _n21 = createNodes(() => !gestureState.toastThin && (() => {
@@ -12003,14 +12003,14 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$7 = { src: {
+const props$6 = { src: {
   type: String,
   default: ""
 } };
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$7,
+  props: props$6,
   emits: ["load"],
   setup(props2, { emit: emit2 }) {
     Invoke();
@@ -12084,7 +12084,7 @@ const getIsAMap = () => {
 const getIsBMap = () => {
   return getMapInfo().type === "BMapGL";
 };
-const props$6 = {
+const props$5 = {
   id: {
     type: [Number, String],
     default: ""
@@ -12167,7 +12167,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$6,
+  props: props$5,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = Vue.inject("onMapReady");
@@ -12493,7 +12493,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$5 = {
+const props$4 = {
   points: {
     type: Array,
     require: true
@@ -12539,7 +12539,7 @@ const props$5 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const onMapReady = Vue.inject("onMapReady");
     let polyline;
@@ -12617,7 +12617,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$4 = {
+const props$3 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -12649,7 +12649,7 @@ const props$4 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const onMapReady = Vue.inject("onMapReady");
     let circle;
@@ -12714,8 +12714,8 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const _t0$4 = Vue.template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
-const props$3 = {
+const _t0$2 = Vue.template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
+const props$2 = {
   id: {
     type: [Number, String],
     default: ""
@@ -12739,7 +12739,7 @@ const props$3 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     const imgPath = Vue.computed(() => getRealPath(props2.iconPath));
     const positionStyle = Vue.computed(() => {
@@ -12759,7 +12759,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     };
     return () => {
       return (() => {
-        const _n1 = _t0$4();
+        const _n1 = _t0$2();
         const _n0 = Vue.child(_n1);
         Vue.on(_n0, "click", handleClick);
         Vue.renderEffect(() => {
@@ -12797,7 +12797,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$2 = {
+const props$1 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -12831,7 +12831,7 @@ const props$2 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$2,
+  props: props$1,
   setup(props2) {
     let polygonIns;
     const onMapReady = Vue.inject("onMapReady");
@@ -12901,9 +12901,9 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
-const _t0$3 = Vue.template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
-const _t1$2 = Vue.template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
-const props$1 = {
+const _t0$1 = Vue.template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
+const _t1$1 = Vue.template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
+const props = {
   id: {
     type: String,
     default: ""
@@ -13170,9 +13170,9 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$1,
+  props,
   emits: [
     "markertap",
     "labeltap",
@@ -13193,8 +13193,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n8 = Vue.createPlainElement("uni-map", { id: () => props2.id }, () => {
-          const _n0 = _t0$3();
-          const _n7 = _t1$2();
+          const _n0 = _t0$1();
+          const _n7 = _t1$1();
           const _n1 = createNodes(() => props2.markers.map((item) => (() => {
             const _n02 = Vue.createKeyedFragment(() => item.id, () => {
               const _n2 = createComponent(MapMarker, { $: [() => item] }, null, true);
@@ -13228,96 +13228,6 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
         }, true);
         Vue.renderEffect(() => _setTemplateRef(_n8, rootRef));
         return _n8;
-      })();
-    };
-  }
-});
-const _t0$2 = Vue.template("<div class=uni-cover-view> ");
-const props = { scrollTop: {
-  type: [String, Number],
-  default: 0
-} };
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverView",
-  compatConfig: { MODE: 3 },
-  props,
-  setup(props2, { slots }) {
-    const root = Vue.ref(null);
-    const content = Vue.ref(null);
-    Vue.watch(() => props2.scrollTop, (val) => {
-      setScrollTop(val);
-    });
-    function setScrollTop(val) {
-      let _content = content.value;
-      if (getComputedStyle(_content).overflowY === "scroll") {
-        _content.scrollTop = _upx2pxNum(val);
-      }
-    }
-    function _upx2pxNum(val) {
-      let _val = String(val);
-      if (/\d+[ur]px$/i.test(_val)) {
-        _val.replace(/\d+[ur]px$/i, (text) => {
-          return String(uni.upx2px(parseFloat(text)));
-        });
-      }
-      return parseFloat(_val) || 0;
-    }
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-cover-view", { "scroll-top": () => props2.scrollTop }, () => {
-          const _n0 = _t0$2();
-          const _x0 = Vue.txt(_n0);
-          setNodes(_x0, () => slots.default && slots.default());
-          Vue.renderEffect(() => _setTemplateRef(_n0, content));
-          return _n0;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, root));
-        return _n1;
-      })();
-    };
-  }
-});
-const _t0$1 = Vue.template("<img>");
-const _t1$1 = Vue.template("<div class=uni-cover-image>");
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverImage",
-  compatConfig: { MODE: 3 },
-  props: { src: {
-    type: String,
-    default: ""
-  } },
-  emits: ["load", "error"],
-  setup(props2, { emit: emit2 }) {
-    const root = Vue.ref(null);
-    const trigger = useCustomEvent(root, emit2);
-    function load($event) {
-      trigger("load", $event);
-    }
-    function error($event) {
-      trigger("error", $event);
-    }
-    return () => {
-      const { src } = props2;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n6 = Vue.createPlainElement("uni-cover-image", { src: () => src }, () => {
-          const _n5 = _t1$1();
-          Vue.setInsertionState(_n5);
-          Vue.createIf(() => src, () => {
-            const _n2 = _t0$1();
-            Vue.on(_n2, "load", load);
-            Vue.on(_n2, "error", error);
-            Vue.renderEffect(() => Vue.setProp(_n2, "src", getRealPath(src)));
-            return _n2;
-          }, () => {
-            const _n4 = createNodes(null);
-            return _n4;
-          }, 265);
-          return _n5;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n6, root));
-        return _n6;
       })();
     };
   }
@@ -14887,26 +14797,24 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$m;
 exports.AsyncLoadingComponent = _sfc_main$n;
-exports.Button = index$i;
+exports.Button = index$g;
 exports.Camera = index$3;
 exports.Canvas = indexX$1;
 exports.Checkbox = _sfc_main$g;
 exports.CheckboxGroup = _sfc_main$f;
-exports.CoverImage = index$7;
-exports.CoverView = index$8;
-exports.Editor = index$g;
+exports.Editor = index$e;
 exports.Form = _sfc_main$e;
-exports.Icon = index$f;
+exports.Icon = index$d;
 exports.Input = Input;
 exports.Label = _sfc_main$d;
 exports.LayoutComponent = _sfc_main$o;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Loading = _sfc_main$c;
-exports.Map = index$9;
+exports.Map = index$7;
 exports.MatchMedia = _sfc_main$b;
-exports.MovableArea = index$e;
-exports.MovableView = index$d;
+exports.MovableArea = index$c;
+exports.MovableView = index$b;
 exports.Navigator = _sfc_main$a;
 exports.PageComponent = _sfc_main$i;
 exports.PageContainer = _sfc_main$h;
@@ -14917,13 +14825,13 @@ exports.Progress = _sfc_main$6;
 exports.Radio = _sfc_main$5;
 exports.RadioGroup = _sfc_main$4;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$c;
-exports.ScrollView = index$b;
+exports.RichText = index$a;
+exports.ScrollView = index$9;
 exports.Slider = _sfc_main$3;
 exports.Swiper = _sfc_main$2;
 exports.SwiperItem = _sfc_main$1;
 exports.Switch = _sfc_main;
-exports.Textarea = index$h;
+exports.Textarea = index$f;
 exports.UniButtonElement = UniButtonElement;
 exports.UniButtonElementImpl = UniButtonElement;
 exports.UniCanvasElement = UniCanvasElement;
@@ -14990,7 +14898,7 @@ exports.UniTextareaElementImpl = UniTextareaElement;
 exports.UniViewElement = UniViewElement;
 exports.UniViewElementImpl = UniViewElement;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$a;
+exports.Video = index$8;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
