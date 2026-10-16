@@ -5,9 +5,9 @@
 请求云函数
 
 ### callFunction 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -22,7 +22,7 @@
 | :- | :- | :- |  :-: | :- |
 | name | string ([string.CloudFunctionString](/uts/data-type.md#ide-string)) | 是 |   | 云函数名 |
 | data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 云函数参数 |
-| secretType | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 加密类型，指定加密请求、响应还是都加密 |
+| secretType | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: x | 加密类型，指定加密请求、响应还是都加密 |
 
 ##### secretType 的属性描述
 

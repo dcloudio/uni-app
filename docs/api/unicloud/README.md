@@ -25,7 +25,7 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 | config | **UniCloudInitOptions** | 是 |   |  |
 | mixinDatacom | any | 是 |   |  |
 | datacomProps | **DatacomPropsType** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.32; iOS(VDOM): x; iOS(Vapor): 5.32; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.32 | datacom 属性定义，供页面/组件 defineProps 展开使用 |
-| SSEChannel | [SSEChannel](#ssechannel-values) | 是 | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 |
+| SSEChannel | [SSEChannel](#ssechannel-values) | 是 | Web: 4.71; 微信小程序: 4.71; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 |
 | useDatacom | (props: [DatacomProps](#datacomprops-values)) => [Datacom](#datacom-values) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.32; iOS(VDOM): x; iOS(Vapor): 5.32; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.32 | datacom 组合式逻辑，替换原 mixinDatacom | 
 
 #### config 的属性描述

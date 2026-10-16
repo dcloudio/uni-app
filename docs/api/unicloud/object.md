@@ -3,9 +3,9 @@
 引用云对象
 
 ### importObject 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.31 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -22,7 +22,7 @@
 | customUI | boolean | 否 |   | 是否移除自动展示的ui |
 | loadingOptions | **UniCloudImportObjectLoadingOptions** | 否 |   | loading界面配置 |
 | errorOptions | **UniCloudImportObjectErrorOptions** | 否 |   | 错误提示配置 |
-| secretMethods | Record\<K, T> | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 指定方法的加密类型 | 
+| secretMethods | Record\<K, T> | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: x | 指定方法的加密类型 | 
 
 ##### loadingOptions 的属性描述
 
