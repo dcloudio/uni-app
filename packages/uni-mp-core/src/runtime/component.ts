@@ -131,7 +131,7 @@ export function parseComponent(
     initRelation,
     vueOptions,
   }
-  if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') {
+  if (__PLATFORM__ === 'mp-toutiao') {
     lifetimesOptions.isVirtualHost = !!options.virtualHost
   }
 

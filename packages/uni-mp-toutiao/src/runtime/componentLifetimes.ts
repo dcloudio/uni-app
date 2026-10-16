@@ -56,7 +56,9 @@ export function initLifetimes({
     initVueIds(resolvePropValue(properties.uI), this)
     const relationOptions: RelationOptions = {
       vuePid: this._$vuePid,
-      virtualHost: isVirtualHost,
+    }
+    if (__PLATFORM__ === 'mp-toutiao') {
+      relationOptions.virtualHost = isVirtualHost
     }
     if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
       // 处理父子关系
