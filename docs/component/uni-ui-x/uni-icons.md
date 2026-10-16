@@ -142,7 +142,159 @@ weixin
 
 
 
+### 示例
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/uni-ui/icons/icons.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/uni-ui/icons/icons.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/uni-ui/icons/icons
 
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/uni-ui/icons/icons
+
+>示例
+```vue
+<template>
+	<scroll-view class="page">
+		<view class="intro">
+			<text class="intro-text">图标组件可以减少小图片的使用，并支持自定义颜色和尺寸。</text>
+		</view>
+
+		<view class="section-header">
+			<text class="section-title">图标</text>
+			<view class="display-mode">
+				<text class="display-mode-text">{{ checked ? 'Unicode' : '名称' }}</text>
+				<switch class="display-mode-switch" :checked="checked" @change="change" />
+			</view>
+		</view>
+
+		<view class="icon-content">
+			<view
+				v-for="(item, index) in iconlist"
+				:key="index"
+				class="icon-item"
+				@click="switchActive(index, item)"
+			>
+				<uni-icons
+					:type="item.font_class"
+					:class="activeIndex == index ? 'icon-glyph icon-glyph-active' : 'icon-glyph'"
+				/>
+				<text
+					class="icon-label"
+					:style="{ color: activeIndex == index ? '#007aff' : '#5e6d82' }"
+				>{{ checked ? item.unicode : item.font_class }}</text>
+			</view>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="uts">
+	import { iconlist, iconType } from './icons_type'
+
+	const activeIndex = ref(-1)
+	const checked = ref(false)
+
+	const change = (event : UniSwitchChangeEvent) => {
+		checked.value = event.detail.value
+	}
+
+	const switchActive = (index : number, item : iconType) => {
+		activeIndex.value = index
+		uni.setClipboardData({
+			data: checked.value ? item.unicode : item.font_class,
+			showToast: false,
+			success: () => {
+				uni.showToast({
+					icon: 'none',
+					title: (checked.value ? 'Unicode' : '图标名称') + '复制成功'
+				})
+			}
+		})
+	}
+
+	defineExpose({
+		activeIndex,
+		checked
+	})
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		background-color: var(--background-color, #f5f5f5);
+	}
+
+	.intro {
+		padding: 16px;
+		background-color: var(--content-background-color, #ffffff);
+	}
+
+	.intro-text {
+		font-size: 14px;
+		line-height: 22px;
+		color: var(--text-color, #333333);
+	}
+
+	.section-header {
+		margin-top: 10px;
+		padding: 12px 16px;
+		background-color: var(--content-background-color, #ffffff);
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.section-title {
+		font-size: 16px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.display-mode {
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.display-mode-text {
+		margin-right: 8px;
+		font-size: 13px;
+		color: var(--secondary-text-color, #5e6d82);
+	}
+
+	.display-mode-switch {
+		transform: scale(0.7);
+	}
+
+	.icon-content {
+		padding: 8px 0 24px;
+		background-color: var(--content-background-color, #ffffff);
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.icon-item {
+		width: 25%;
+		min-height: 84px;
+		padding: 10px 4px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.icon-label {
+		margin-top: 8px;
+		font-size: 12px;
+		text-align: center;
+	}
+
+	.icon-glyph {
+		color: #5e6d82;
+		font-size: 30px;
+	}
+
+	.icon-glyph-active {
+		color: #007aff;
+	}
+</style>
+
+```
+
+:::
 
 
 ### 参见

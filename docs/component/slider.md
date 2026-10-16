@@ -249,7 +249,6 @@ show-value属性设为true后，会在横条右侧显示一个数字。
       <input-data defaultValue="1" title="步长(step)，取值必须大于 0，并且可被(max - min)整除" type="number"
         @confirm="confirm_step_input"></input-data>
       <input-data defaultValue="0" title="当前取值(value)" type="number" @confirm="confirm_value_input"></input-data>
-      <!-- #ifndef VUE3-VAPOR -->
       <input-data defaultValue="#007aff" title="滑块左侧已选择部分的线条颜色(active-color)" type="text"
         @confirm="confirm_activeColor_input"></input-data>
       <input-data defaultValue="#e9e9e9" title="背景条的颜色(background-color)" type="text"
@@ -258,6 +257,7 @@ show-value属性设为true后，会在横条右侧显示一个数字。
         @confirm="confirm_block_size_input"></input-data>
       <input-data defaultValue="#ffffff" title="滑块颜色(block-color)" type="text"
         @confirm="confirm_block_color_input"></input-data>
+      <!-- #ifndef VUE3-VAPOR -->
       <input-data defaultValue="#888888" title="Value颜色(value-color)" type="text"
         @confirm="confirm_value_color_input"></input-data>
       <!-- #endif -->
@@ -289,13 +289,15 @@ show-value属性设为true后，会在横条右侧显示一个数字。
         <slider style="padding: 5px 0;margin-left: 10px" @change="sliderChange" :value="100" :min="50" :max="200" :show-value="true" />
       </view>
 
-      <view class="uni-title">不同颜色和大小的滑块</view>
+      <view class="uni-title">不同颜色和大小的滑块（属性）</view>
       <view>
-        <!-- vapor 模式不支持 activeColor、blockColor 等属性，需要使用 track-class、track-active-class、thumb-class -->
+        <slider style="padding: 5px 0;margin-left: 10px" id="slider-color-and-size-props" @change="sliderChange"
+          :value="data.sliderValue" :backgroundColor="data.sliderBackgroundColor" :activeColor="data.sliderActiveColor"
+          :block-color="data.sliderBlockColor" :block-size="data.sliderBlockSize" />
+      </view>
+      <view class="uni-title">外部样式类（externalClass）</view>
+      <view>
         <slider style="padding: 5px 0;margin-left: 10px" id="slider-custom-color-and-size" @change="sliderChange" :value="data.sliderValue"
-          :backgroundColor="data.sliderBackgroundColor" :activeColor="data.sliderActiveColor"
-          :activeBackgroundColor="data.sliderActiveColor" :blockColor="data.sliderBlockColor" :foreColor="data.sliderBlockColor"
-          :block-size="data.sliderBlockSize"
           track-class="custom-track" track-active-class="custom-track-active" thumb-class="custom-thumb"/>
       </view>
       <view class="uni-title">暗黑模式</view>
@@ -342,10 +344,10 @@ show-value属性设为true后，会在横条右侧显示一个数字。
   }
 
   .custom-thumb {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     background-color: #8A6DE9;
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   /* 暗黑模式样式 */

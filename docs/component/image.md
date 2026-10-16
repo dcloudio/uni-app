@@ -210,6 +210,9 @@ svg 是矢量图片，可以无极缩放而不失真。但鸿蒙平台以下情�
         <navigator url="/pages/template/2000-image/2000-image-svg">
           <button class="uni-btn">组件性能测试(SVG)</button>
         </navigator>
+        <navigator url="/pages/component/image/image-mode-svg">
+          <button class="uni-btn">图片缩放模式清晰度测试(SVG)</button>
+        </navigator>
         <!-- #ifdef APP-ANDROID -->
         <button class="uni-btn" @tap="imageFadeShow">fade-show 属性示例</button>
         <!-- #endif -->

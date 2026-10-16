@@ -186,8 +186,8 @@
 
   onUnload(() => {
     // 移除 navigateTo 所有拦截器
-    uni.removeInterceptor('navigateTo')
-    uni.removeInterceptor('switchTab')
+    uni.removeInterceptor('navigateTo', navigateToInterceptor)
+    uni.removeInterceptor('switchTab', switchTabInterceptor)
   })
 
   defineExpose({

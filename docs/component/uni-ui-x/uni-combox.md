@@ -212,10 +212,11 @@ uni-combox 组合框组件。
 				placeholder="选择或输入城市"
 				@selectchange="onCityChange"
 			>
-				<template #input="{ value, input, focus }">
+				<template #input="{ value, input, focus, disabled }">
 					<input
 						class="custom-input"
 						:value="value"
+						:disabled="disabled"
 						placeholder="选择或输入城市"
 						@focus="focus"
 						@input="input"
@@ -233,6 +234,16 @@ uni-combox 组合框组件。
 				v-model="placeholderValue"
 			/>
 			<text class="result-text">未选择时展示占位文字</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">disabled：禁用状态</text>
+			<uni-combox
+				:options="gradeOptions"
+				v-model="disabledValue"
+				disabled
+			/>
+			<text class="result-text">禁用时不可展开或修改：{{ disabledValue }}</text>
 		</view>
 
 		<view class="section">
@@ -330,6 +341,7 @@ uni-combox 组合框组件。
 <script setup lang="ts">
 const optionsValue = ref<string>('')
 const placeholderValue = ref<string>('')
+const disabledValue = ref<string>('三年级')
 const arrowClassValue = ref<string>('')
 const optionsViewClassValue = ref<string>('')
 const optionTextClassValue = ref<string>('')

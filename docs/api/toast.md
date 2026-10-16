@@ -202,16 +202,23 @@
       <button type="default" @tap="toast1Tap" id="btn-toast-default">点击弹出toast</button>
       <button type="default" @tap="hideToast" id="btn-toast-hide">点击隐藏toast</button>
     </view>
-    <!-- #ifdef APP -->
-    <enum-data :items="positionOptions" title="设置position，仅App生效" item-class="radio-position"
+    <!-- #ifdef APP || WEB -->
+    <enum-data :items="positionOptions" title="设置position" item-class="radio-position"
       @change="radioChangePosition"></enum-data>
-    <button class="uni-btn uni-common-mb" type="default" @tap="toast2Tap">点击弹出设置position的toast</button>
+    <button class="uni-btn uni-common-mb" type="default" @tap="toast2Tap" id="btn-toast-position">点击弹出设置position的toast</button>
     <!-- #endif -->
-    <!-- #ifdef APP-HARMONY || APP-ANDROID -->
-    <button class="uni-btn uni-common-mb" type="default" @tap="toast4Tap">显示系统toast和原生toast</button>
+    <!-- #ifdef APP-HARMONY || APP-ANDROID || WEB -->
+    <button class="uni-btn uni-common-mb" type="default" @tap="toast4Tap">
+      <!-- #ifndef WEB -->
+      显示系统toast和原生toast
+      <!-- #endif -->
+      <!-- #ifdef WEB -->
+      同时显示页面级和应用级toast
+      <!-- #endif -->
+    </button>
     <!-- #endif -->
-    <!-- #ifdef APP-HARMONY -->
-    <button class="uni-btn uni-common-mb" type="default" @tap="hideSystemToast">关闭所有toast</button>
+    <!-- #ifdef APP-HARMONY || WEB -->
+    <button class="uni-btn uni-common-mb" type="default" @tap="hideSystemToast" id="btn-toast-hide-all">关闭所有toast</button>
     <!-- #endif -->
     <text>{{data.exeRet}}</text>
   </view>
@@ -320,11 +327,6 @@
         data.onMountedToastShown = true
       }
     })
-    if (!isAutoTest) {
-      setTimeout(function () {
-        uni.hideToast()
-      }, duration);
-    }
   })
 
   //自动化测试例专用
@@ -386,7 +388,7 @@
     })
   }
 
-  // #ifdef APP-HARMONY || APP-ANDROID
+  // #ifdef APP-HARMONY || APP-ANDROID || WEB
   const toast4Tap = () => {
     uni.showToast({
       title: '系统toast',
@@ -407,8 +409,8 @@
   }
   // #endif
 
-  // #ifdef APP-HARMONY
-  // 目前只有 APP-HARMONY 支持关闭系统 toast
+  // #ifdef APP-HARMONY || WEB
+  // Harmony 关闭系统 toast，Web 同时关闭页面级和应用级 toast。
   const hideSystemToast = () => {
     uni.hideToast({
       allType: true,
@@ -425,7 +427,7 @@
   }
   // #endif
 
-  // #ifdef APP
+  // #ifdef APP || WEB
   const toast2Tap = () => {
     let positionValue = data.position_enum[data.position_current].value
     uni.showToast({
@@ -450,13 +452,13 @@
     data,
     toast1Tap,
     toast3Tap,
-    // #ifdef APP-HARMONY || APP-ANDROID
+    // #ifdef APP-HARMONY || APP-ANDROID || WEB
     toast4Tap,
     // #endif
-    // #ifdef APP-HARMONY
+    // #ifdef APP-HARMONY || WEB
     hideSystemToast,
     // #endif
-    // #ifdef APP
+    // #ifdef APP || WEB
     toast2Tap,
     // #endif
     hideToast
