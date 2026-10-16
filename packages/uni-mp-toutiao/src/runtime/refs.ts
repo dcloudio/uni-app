@@ -14,6 +14,7 @@ import { EMPTY_OBJ } from 'vue'
 import {
   type MPComponentInstance,
   initRefs as initLegacyRefs,
+  nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 
 function findTemplateRef(
@@ -85,14 +86,27 @@ export function initRefs(
   }
 }
 
-export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
+export function handleRef(
+  this: MPComponentInstance,
+  ref: MPComponentInstance,
+  shouldWaitForReady = true
+) {
   if (!ref || !this.$vm) {
     return
   }
-  const props = (ref as any).props || (ref as any).properties
+  const props = (ref as any).properties
   const refName = props && props.uR
   const refInForName = props && props.uRIF
-  if (!refName && !refInForName) {
+  const refValue = ((ref as any).$vm ||
+    (props && props.uT === 'm' ? ref : undefined)) as
+    | ComponentPublicInstance
+    | undefined
+  if ((!refName && !refInForName) || !refValue) {
+    // tt:ref runs once during child initialization. Wait until both the
+    // dynamic ref property and the target instance are ready before binding.
+    if (shouldWaitForReady) {
+      nextSetDataTick(this, () => handleRef.call(this, ref, false))
+    }
     return
   }
   const instance = this.$vm.$
@@ -101,9 +115,6 @@ export function handleRef(this: MPComponentInstance, ref: MPComponentInstance) {
   const { setupState } = instance as ComponentInternalInstance & {
     setupState: Record<string, unknown>
   }
-  const refValue = ((ref as any).$vm ||
-    (props && props.uT === 'm' ? ref : undefined)) as ComponentPublicInstance
-
   if (refName) {
     if (isString(refName)) {
       refs[refName] = refValue
