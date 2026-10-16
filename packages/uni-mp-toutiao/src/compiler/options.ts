@@ -15,6 +15,7 @@ import {
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
 import { transformMPBuiltInTag } from './transforms/transformMPBuiltInTag'
+import { transformRef as transformXRef } from './transforms/transformRef'
 
 import source from './project.config.json'
 
@@ -42,7 +43,7 @@ export const customElements = [
 const projectConfigFilename = 'project.config.json'
 
 const nodeTransforms = [
-  transformRef,
+  process.env.UNI_APP_X === 'true' ? transformXRef : transformRef,
   // transformMatchMedia,
   transformComponentLink,
 ]

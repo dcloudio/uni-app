@@ -10,6 +10,7 @@ import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
 import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
+import { handleRef } from './refs'
 
 export { initLifetimes } from './componentLifetimes'
 
@@ -136,4 +137,7 @@ export function parse(
   { handleLink }: Partial<ParseComponentOptions>
 ) {
   componentOptions.methods!.__l = handleLink!
+  if (__X__) {
+    componentOptions.methods!.__r = handleRef
+  }
 }
