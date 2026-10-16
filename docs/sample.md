@@ -73,7 +73,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 单词秀：[Android](https://sj.qq.com/appdetail/com.dclound.dancibiji)
 - 仪表宝典(化工资料)：[Android](https://sj.qq.com/appdetail/ins.ybbd.app )、[iOS](https://apps.apple.com/us/app/absign/id6760313721 )、[鸿蒙](https://appgallery.huawei.com/app/detail?id=ins.ybbd.app)
 - 城市更新：[Android](https://sj.qq.com/appdetail/com.ykj.csgx)、[iOS](https://apps.apple.com/cn/app/%E5%9F%8E%E5%B8%82%E6%9B%B4%E6%96%B0/id1278228662)
-- 看个号审核宝：[Android](https://sj.qq.com/appdetail/com.kangehao.auditpro)
+- 看个号审核宝：[Android](https://sj.qq.com/appdetail/com.kangehao.auditpro)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.kangehao.auditpro)
 - TOPIK快学：[Android](https://sj.qq.com/appdetail/com.topik.kuaixue)、[iOS](https://apps.apple.com/cn/app/topik%E5%BF%AB%E5%AD%A6-%E9%9F%A9%E8%AF%ADtopik%E6%A8%A1%E6%8B%9F%E8%80%83%E8%AF%95%E5%B7%A5%E5%85%B7/id6789570410)
 - 融小付生活：[Android](https://sj.qq.com/appdetail/com.hbyqs.rxflife)		
 - LOSFER翻译：[Android](https://sj.qq.com/appdetail/cn.losfer.translater)
