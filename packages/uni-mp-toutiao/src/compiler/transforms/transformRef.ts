@@ -4,6 +4,7 @@ import {
   createAttributeNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
+import { ATTR_TT_REF } from '@dcloudio/uni-mp-compiler'
 import {
   type ComponentNode,
   NodeTypes,
@@ -15,7 +16,7 @@ import {
 } from '@vue/compiler-core'
 
 /**
- * component.ref is only available in uni-app x builds. Keep the original
+ * Douyin's tt:ref is only available in uni-app x builds. Keep the original
  * ref expression in u-r/u-r-i-f and let the runtime callback resolve it.
  */
 export function transformRef(
@@ -44,5 +45,10 @@ function addVueRef(node: ComponentNode, context: TransformContext) {
     ;(refProp.arg as SimpleExpressionNode).content = dataRef
   }
   const { props } = node
-  props.splice(props.indexOf(refProp), 0, createAttributeNode('ref', '__r'))
+  // Douyin's component ref API is exposed as the tt:ref attribute.
+  props.splice(
+    props.indexOf(refProp),
+    0,
+    createAttributeNode(ATTR_TT_REF, '__r')
+  )
 }

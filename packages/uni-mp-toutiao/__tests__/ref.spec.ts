@@ -10,7 +10,7 @@ describe('mp-toutiao x: transform ref', () => {
   test('uses component.ref while preserving the ref payload', () => {
     assert(
       `<custom ref="custom"/>`,
-      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0"/>`,
+      `<custom tt:ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
   return { a: () => ({ r: 'custom' }) }
 }`,
@@ -21,7 +21,7 @@ describe('mp-toutiao x: transform ref', () => {
   test('keeps ref-in-for metadata', () => {
     assert(
       `<custom v-for="item in items" ref="custom"/>`,
-      `<custom tt:for="{{a}}" tt:for-item="item" ref="__r" u-r-i-f="{{b}}" u-i="{{item.a}}"/>`,
+      `<custom tt:for="{{a}}" tt:for-item="item" tt:ref="__r" u-r-i-f="{{b}}" u-i="{{item.a}}"/>`,
       `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: '2a9ec0b0-0' + '-' + i0 }; }), b: () => ({ r: 'custom', f: 1 }) }
 }`,
@@ -32,7 +32,7 @@ describe('mp-toutiao x: transform ref', () => {
   test('keeps dynamic refs on the callback path', () => {
     assert(
       `<custom :ref="custom"/>`,
-      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0"/>`,
+      `<custom tt:ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.custom }
 }`,
@@ -43,7 +43,7 @@ describe('mp-toutiao x: transform ref', () => {
   test('keeps setup ref metadata', () => {
     assert(
       `<custom ref="custom"/>`,
-      `<custom ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0"/>`,
+      `<custom tt:ref="__r" u-r="{{a}}" u-i="2a9ec0b0-0"/>`,
       `(_ctx, _cache) => {
   return { a: () => ({ r: custom, k: 'custom' }) }
 }`,

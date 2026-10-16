@@ -47,6 +47,8 @@ export const ATTR_VUE_SLOTS = 'u-s'
 export const ATTR_VUE_PROPS = 'u-p'
 export const ATTR_VUE_REF = 'u-' + VUE_REF
 export const ATTR_VUE_REF_IN_FOR = 'u-' + VUE_REF_IN_FOR
+// 抖音自定义组件通过 tt:ref 绑定初始化回调，不能使用普通 ref 属性。
+export const ATTR_TT_REF = 'tt:ref'
 export const ATTR_COM_TYPE = 'u-t'
 export const ATTR_ELEMENT_ID = 'u-e'
 
