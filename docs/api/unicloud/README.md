@@ -262,16 +262,16 @@ props 发生变化时被调用，可在组件中覆盖此方法
 
 ### datacom 组件示例
 
-Vue蒸汽模式不支持的`mixin`语法，使用属性展开和方法替代，[datacom组件规范](https://uniapp.dcloud.net.cn/component/datacom.html)
+Vue 蒸汽模式不支持 `mixin` 语法，可使用属性展开和方法替代，详见 [datacom 组件规范](https://uniapp.dcloud.net.cn/component/datacom.html)。
 
 ```html
 <template>
   <view>
-    <view v-if="datacom.loading" class="data-city-loading">Loading...</view>
-    <view v-else-if="datacom.errorMessage" class="data-city-error">
+    <view v-if="datacom.loading">Loading...</view>
+    <view v-else-if="datacom.errorMessage">
       请求错误：{{datacom.errorMessage}}
     </view>
-    <view v-else class="data-city-data">
+    <view v-else>
       <!-- 需要自行处理数据及相关UI展现 -->
       {{datacom.resData}}
     </view>

@@ -42,20 +42,23 @@ HBuilderX 会打开独立的 DevTools 窗口。应用尚未连接时，窗口会
 
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/devtools/devtools-component-props.png)
 
-右键点击节点可以使用以下操作：
+### 节点右键菜单@elements-context-menu
 
-- **展开所有子节点**：递归展开该节点下的所有内容。
-- **收起子级**：收起该节点下已经展开的内容。
-- **将所选节点添加到 uni-agent 聊天**：打开 uni-agent，将当前页面和节点路径添加到输入框；支持截图时还会添加所选节点的截图。
-- **在 HBuilder 中打开**：打开页面或自定义组件对应的源码文件。该菜单只在能定位源码的页面和自定义组件节点上显示。
+右键点击节点可以使用以下操作：
 
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/devtools/devtools-elements-context-menu.png)
 
-> HBuilderX 5.31+、uni-agent v1.8.8.261012094+ 支持将所选节点添加到 uni-agent 聊天。
+1. **将所选节点添加到 uni-agent 聊天**：打开 uni-agent，将当前页面和节点路径添加到输入框；支持截图时还会添加所选节点的截图。
 
-选择 **将所选节点添加到 uni-agent 聊天** 后，DevTools 不会自动发送消息。请在 [uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/) 输入框中补充需要排查的问题，再手动发送。uni-agent 可以根据节点引用继续读取相关属性、组件 props、计算样式和盒模型，用于排查布局、样式或数据问题。
+   > HBuilderX 5.31+、uni-agent v1.8.8.261012094+ 支持。
 
-![](https://web-ext-storage.dcloud.net.cn/uni-app-x/devtools/devtools-uni-agent.png)
+   DevTools 不会自动发送消息。请在 [uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/) 输入框中补充需要排查的问题，再手动发送。uni-agent 可以根据节点引用继续读取相关属性、组件 props、计算样式和盒模型，用于排查布局、样式或数据问题。
+
+   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/devtools/devtools-uni-agent.png)
+
+2. **在 HBuilder 中打开**：打开页面或自定义组件对应的源码文件。该菜单只在能定位源码的页面和自定义组件节点上显示。
+3. **展开所有子节点**：递归展开该节点下的所有内容。
+4. **收起所有子节点**：收起该节点下已经展开的内容。
 
 ::: warning 当前限制
 Elements 当前使用页面快照，页面内新增、删除或修改节点后不会自动同步。请点击窗口左上角的刷新按钮查看最新内容。切换页面不需要手动刷新。
