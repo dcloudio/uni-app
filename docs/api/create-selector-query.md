@@ -294,7 +294,7 @@ exec
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const instance = getCurrentInstance()!.proxy!
   const nodeInfoList = ref<NodeInfo[]>([])
 
@@ -829,7 +829,7 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
     <button @click="query">query</button>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   const instance = getCurrentInstance()!.proxy!
 
   const query = () => {

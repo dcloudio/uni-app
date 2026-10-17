@@ -49,7 +49,7 @@ export default defineConfig({
   <text v-else>...</text>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { useStore } from 'vuex'
 
   const id = 1 // 模拟ID
@@ -152,7 +152,7 @@ export default () => {
   <text>{{ JSON.stringify(categories) }}</text>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ssrRef } from '@dcloudio/uni-app'
   import { useStore } from 'vuex'
 

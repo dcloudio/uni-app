@@ -421,7 +421,7 @@ button 组件没有 url 属性，点击后需要跳转页面时，可在 @click 
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup>
 	function gotoAbout() {
 		uni.navigateTo({
 			url: '/pages/about/about'

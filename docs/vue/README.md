@@ -423,7 +423,7 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const styleMap = ref(new Map<string, string>([['border', '2px solid red'], ['background-color', 'green']]))
   const classMap = ref(new Map<string, boolean>([['w-100', true], ['h-100', true], ['rounded', false]]))
 </script>

@@ -245,7 +245,7 @@ onLaunch(() => {
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { state } from '@/store/index.uts'
 </script>
 

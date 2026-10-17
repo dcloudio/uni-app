@@ -472,7 +472,7 @@ globalData依赖于vue和js环境，在页面里都使用，但在uts插件中�
 ### 组合式 API 示例：
 
 ```ts
-<script setup lang="uts">
+<script setup lang="ts">
   defineOptions({
     globalData: {
       str: 'global data str',
@@ -487,7 +487,7 @@ globalData依赖于vue和js环境，在页面里都使用，但在uts插件中�
 页面或组件中通过 `getApp().globalData` 访问。
 
 ```ts
-<script setup lang="uts">
+<script setup lang="ts">
   const globalDataStr = ref('')
   const globalDataNum = ref(0)
   const globalDataBool = ref(false)

@@ -151,7 +151,7 @@ this.myView?.style?.setProperty('background-color', 'red');
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const color = ref('red')
 	const myView = ref<UniElement | null>(null)
 

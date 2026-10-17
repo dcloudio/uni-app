@@ -147,7 +147,7 @@ export const setGlobalNum = (num: number) => {
 </template>
 
 // 组合式 API
-<script setup lang="uts">
+<script setup>
 	import { state, setGlobalNum } from '@/store/index.uts'
 
 	const globalNum = computed(() => state.globalNum)
