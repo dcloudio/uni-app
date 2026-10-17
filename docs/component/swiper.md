@@ -1186,7 +1186,7 @@ defineExpose({
 	</swiper>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const current = ref(0)
 
 	const handleSwiperChange = (e : UniSwiperChangeEvent) => {

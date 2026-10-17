@@ -138,7 +138,7 @@ export default {
 <!-- #ifdef MP-WEIXIN -->
 <script src="./utils.wxs" module="utils" lang="wxs"></script>
 <!-- #endif -->
-<script setup lang="uts">
+<script setup>
   const title = ref('标题')
 </script>
 

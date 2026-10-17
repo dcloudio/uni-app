@@ -92,7 +92,7 @@ VDOM 模式，考虑到向下兼容问题，目前没有废弃老版样式隔离
 使用示例：
 - 组合式示例
 ```vue
-<script setup lang="uts">
+<script setup>
 	defineOptions({
 		styleIsolation: 'isolated' //表示隔离，不受外部影响
 	})
@@ -159,7 +159,7 @@ Switch组件示例源码：
     <view class="uni-switch-thumb" :class="thumbClass"></view> <!-- 这里是圆球view -->
   </view>
 </template>
-<script lang="uts" setup>
+<script lang="ts" setup>
 const props = withDefaults(defineProps<SwitchProps>(), {
   thumbClass: '' // 定义一个thumbClass属性
 })
@@ -240,7 +240,7 @@ external-style是内联字符串，不受样式隔离策略影响，它永远生
     <view :style="thumbStyle" class="uni-switch-thumb" :class="thumbClass"></view> <!-- 这里是圆球view -->
   </view>
 </template>
-<script lang="uts" setup>
+<script lang="ts" setup>
 const props = withDefaults(defineProps<SwitchProps>(), {
   thumbClass: '' // 定义一个thumbClass属性
   thumbStyle: '' // 定义一个thumbStyle属性

@@ -2673,7 +2673,7 @@ export default {
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   // import componentA from './component-a' // 错误用法
   defineOptions({
     name: "component-a"

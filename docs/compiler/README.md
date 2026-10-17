@@ -94,7 +94,7 @@ uni-app发明了完善的条件编译，帮助开发者处理平台差异。即�
 	<image :src="imga"/> <!-- 变量的静态资源，不会被编译器打包，文件丢失。不推荐 -->
 	<image src="/static/3.png"/> <!-- static目录会整体被copy到编译产物。推荐 -->
 </template>
-<script setup lang="uts">
+<script setup>
 	import logo from './logo.png';
 
 	const imga = './2.png'

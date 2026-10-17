@@ -482,7 +482,7 @@ App一键登录为了支持“中国电信”运行商，要用到“电信（�
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP
   import { openSchema } from '@/uni_modules/uts-openSchema'
   // #endif
@@ -578,8 +578,8 @@ App一键登录为了支持“中国电信”运行商，要用到“电信（�
 在应用的 [onLaunch](../collocation/app.md#onlaunch) 生命周期中调用 [uni.getPrivacySetting](../api/privacy.md#getprivacysetting) 判断用户是否已经同意隐私政策，如果没有同意则通过 [uni.openDialogPage](../api/dialog-page.md#opendialogpage) 弹出“个人信息保护指引”（或“用户协议和隐私政策概要”）提示框，否则跳过。
 
 示例代码如下：
-```uts
-<script setup lang="uts">
+```vue
+<script setup lang="ts">
   onLaunch((res : OnLaunchOptions) => {
     // #ifdef APP
     // 获取是否同意隐私政策
@@ -625,7 +625,7 @@ App首次启动调用 [uni.openDialogPage](../api/dialog-page.md#opendialogpage)
 
 以下是 `app.uvue` 页面添加 `isAgreePrivacy` 保存状态的示例：  
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   defineOptions({
     globalData: {
       isAgreePrivacy: false
@@ -662,7 +662,7 @@ App首次启动调用 [uni.openDialogPage](../api/dialog-page.md#opendialogpage)
 
 在页面或组件中通过 `getApp().globalData` 访问 `isAgreePrivacy`：  
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   const myTestPrivacyAPI = () => {
     if(getApp().globalData.isAgreePrivacy){
       //用户已经同意隐私政策，这时可以使用涉及个人信息的功能
@@ -750,7 +750,7 @@ App首次启动调用 [uni.openDialogPage](../api/dialog-page.md#opendialogpage)
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const title = '用户“同意”《隐私政策》前不能使用涉及采集个人信息的组件（如map、camera、ad等）及API，此页面演示“同意”/“不同意”《隐私政策》后显示/隐藏相关组件、使用相关API进行提示的示例'
   const isAgreePrivacy = ref(false) //保存同意隐私政策状态
   let callbackId = 0

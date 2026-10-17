@@ -419,7 +419,7 @@ video的操作api为[uni.createVideoContext()](../api/create-video-context.md)�
 	</list-item>
 </list-view>
 
-<script setup lang="uts">
+<script setup lang="ts">
 //... 其他代码
 function _onRecycle(e: UniVideoRecycleEvent, index: number) {
   console.log(`onRecycle ${index}`, JSON.stringify(e.detail));

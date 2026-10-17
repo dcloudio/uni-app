@@ -88,9 +88,6 @@ App平台获取样式值与Web平台存在部分差异：
   如下示例，在class中设置background-color样式，App平台可通过 getPropertyValue 获取：
   ```vue
   <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement" class="element">
@@ -98,12 +95,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text>获取通过class设置的样式</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -138,9 +132,6 @@ App平台获取样式值与Web平台存在部分差异：
   如下示例，在class中设置的border-top-style样式覆盖了style中设置的border-top-style样式，App平台可通过 getPropertyValue 获取计算后生效的样式值：
   ```vue
   <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement" class="element" style="border-top-style: solid;">
@@ -148,12 +139,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text>获取通过class覆盖style的样式</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -201,9 +189,6 @@ App平台获取样式值与Web平台存在部分差异：
   如下示例，在style中设置简写样式border-color，App平台通过 getPropertyValue 获取拆解前样式 border-color 返回空字符串，获取拆解后样式 border-top-color 返回"#FFFF00"：
   ```vue
   <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement" class="element" style="border-color: #FFFF00;">
@@ -211,12 +196,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text>获取通过style/class设置的简写样式</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -259,7 +241,7 @@ App平台获取样式值与Web平台存在部分差异：
 - 通过 `setProperty` 设置的 CSS 简写样式，App平台通过 `getPropertyValue` 只能获取简写样式，获取拆解（Expansion）后的样式返回空字符串。
   如下示例，通过 setProperty 设置 border-style 简写样式为 "dotted"，App平台通过 getPropertyValue 获取 border-style 会返回设置的值"dotted"，获取 border-top-style 返回空字符串：
   ```vue
-  <!-- #endif -->
+  <template>
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement">
@@ -267,12 +249,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text>获取通过setProperty设置的样式</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -318,9 +297,6 @@ App平台获取样式值与Web平台存在部分差异：
   如下示例，没有设置 flex-direction 样式，App平台在蒸汽模式（Vapor）下通过 getPropertyValue 获取 flex-direction 返回 "column"，非蒸汽模式下返回空字符串：
   ```vue
   <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement">
@@ -328,12 +304,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text>获取没有设置过的样式</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -366,9 +339,6 @@ App平台获取样式值与Web平台存在部分差异：
   如下示例，设置 flex 为 "1"，getPropertyValue 获取 flex 返回 "1 1 0%"：
   ```vue
   <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement" style="flex: 1;">
@@ -376,12 +346,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text>获取简写的样式</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -415,9 +382,6 @@ App平台获取样式值与Web平台存在部分差异：
   如下示例，设置 background-color 为 "blue"，App平台在蒸汽模式（Vapor）下通过getPropertyValue 获取 background-color 返回 "#0000FFFF"：
   ```vue
   <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement" style="background-color: blue;">
@@ -425,12 +389,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text>获取background-color设置为blue时返回的样式值</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -465,9 +426,6 @@ App平台获取样式值与Web平台存在部分差异：
 - 通过 `setProperty` 设置布局相关的 CSS 样式，不能立即通过 `getPropertyValue` 同步获取设置的样式，此时返回的是设置前的样式，需要在 `nextTick` 异步回调中通过 `getPropertyValue` 才能获取到设置的值
   ```vue
   <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <text class="inf">{{text}}</text>
     <button @click="onClick">获取样式值</button>
     <view ref="testElement">
@@ -475,12 +433,9 @@ App平台获取样式值与Web平台存在部分差异：
         <text></text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
   </template>
 
-  <script setup lang="uts">
+  <script setup lang="ts">
   const text = ref('')
   const testElement = ref<UniElement | null>(null)
 
@@ -555,7 +510,7 @@ App平台获取样式值与Web平台存在部分差异：
 		<text>123</text>
 	</view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 	const pop = ref<UniElement | null>(null)
 
 	const showPop = () => {

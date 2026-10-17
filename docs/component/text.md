@@ -86,7 +86,7 @@ hi </text>
 <template>
   <text>{{text}}</text>
 </template>
-<script lang="uts" setup>
+<script setup>
   let text = ' a   bc def\tg\nhi '
 </script>
 ```
@@ -158,7 +158,7 @@ web的默认值preline，虽然支持\n换行，同时会合并\n以外的其他
 <template>
   <text decode="false">{{text}}</text>
 </template>
-<script lang="uts" setup>
+<script setup>
   let text = '5 &lt; 10'
 </script>
 ```
@@ -1196,7 +1196,7 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup>
   const list = ref([
     {
       show: true,
@@ -1221,7 +1221,7 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const list = ref([
     {
       show: true,

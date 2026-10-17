@@ -2966,7 +2966,7 @@ const triggerRefState = () => {
 :::
 
 ```uts
-<script setup lang="uts">
+<script setup lang="ts">
 // 通过 getCurrentInstance 获取当前 UniPage 对象
 const instance = getCurrentInstance()!.proxy!
 const currentPage = instance.$page

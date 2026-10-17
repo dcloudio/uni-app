@@ -2974,7 +2974,7 @@ export default {
 
 使用组合式 API，引用将存储在与名字匹配的 ref 里：
 ```vue
-<script setup lang="uts">
+<script setup lang="ts">
   import Foo from '@/components/Foo.uvue'
 
   // 声明一个 ref 来存放该元素的引用, 必须和模板里的 ref 同名
