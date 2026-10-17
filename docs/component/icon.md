@@ -6,6 +6,8 @@
 
 图标
 
+跨平台字体图标组件，推荐使用 uni-ui x 的[uni-icons组件](./uni-ui-x/uni-icons.md)
+
 
 ### 兼容性 <Help />
 | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
