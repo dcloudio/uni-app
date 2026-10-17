@@ -2,10 +2,10 @@
 
 官方有6个开源项目比较重要
 - [hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x)：uni内置组件和API的使用示例，也包括一些常见但复杂的模板示例
-- [hello uts](https://gitcode.com/dcloud/hello-uts)：uts的语法和内置对象的使用示例
-- [hello uvue](https://gitcode.com/dcloud/hello-uvue)：vue语法的使用示例
 - [uni-api](https://gitcode.com/dcloud/uni-api)：uni api的实现源码。大量uts API插件源码，适合uts插件作者学习
 - [uni-component](https://gitcode.com/dcloud/uni-component)：内置组件的实现源码。uts组件插件源码，适合uts插件作者学习
+- [hello uts](https://gitcode.com/dcloud/hello-uts)：uts的语法和内置对象的使用示例
+- [hello uvue](https://gitcode.com/dcloud/hello-uvue)：vue语法的使用示例
 - [uni-ai x](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)：用于快速搭建 AI 聊天类应用的开源插件，跨平台的仿deepseek客户端
 
 这些开源项目的master分支对应着HBuilderX最新正式版，alpha分支对应着最新alpha版。
@@ -20,9 +20,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 如果这些改动有助于其他开发者，欢迎给开源项目回提pr。
 
 在 uni-app x 的组件和API文档页面的右上角，也有每个组件和API的源码，都是链接到[uni-api](https://gitcode.com/dcloud/uni-api)和[uni-component](https://gitcode.com/dcloud/uni-component)项目。
-
-除此之外，插件市场还有众多插件，[详见](https://ext.dcloud.net.cn/?uni-appx=1)
-
 
 # 蒸汽模式案例
 

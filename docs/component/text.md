@@ -183,7 +183,7 @@ app平台 text 组件虽然支持嵌套，但注意限制：
 2. 子组件设置的排版相关样式（如position、display、width、height、margin、padding等）以及部分text独有样式（如text-align、lines、white-space、text-overflow）不生效
 3. 嵌套时建议将文本写在`<text></text>`标签之间，例如：`<text><text>嵌套文本1</text><text>嵌套文本2</text></text>`，避免出现预期外的效果。
 
-HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应。之前版本如有这方面需求，请改用 [rich-text](./rich-text.md)
+HBuilderX 4.51版本+ text组件嵌套时，子组件支持点击事件响应。
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/text/text.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/text/text.uvue) 
