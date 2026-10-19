@@ -20,52 +20,52 @@ CSS 长度数据类型 `<percentage>` 表述一个百分比值。许多 CSS 属�
 ### 兼容性
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |
-| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |
-| em | Web: 4.0; Android: x; iOS: x; HarmonyOS: x |   |
-| rem | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ic | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| in | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| mm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| pc | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| pt | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| q | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ric | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
 | % | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | app平台仅width、height、padding(-*)、margin(-*)、top、left、right、bottom、flex-basis等属性支持 |
-| fr | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
+| fr | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 分数单位（fraction），用于网格/布局中表示可用空间的分配比例 |
+| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 像素，屏幕上最常用的绝对长度单位 |
+| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 响应式像素，用于某些框架中根据屏幕密度动态缩放的单位 |
+| em | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 相对于当前元素字体大小的相对单位 |
+| rem | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素（html）字体大小的相对单位 |
+| cap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 基于字体大写字母高度的排版单位（用于排版相关度量） |
+| ch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 字符宽度单位，通常等于数字 '0' 的宽度 |
+| cm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 厘米，物理长度单位 |
+| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（基于容器块方向的相对度量） |
+| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（基于容器高度的相对度量） |
+| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（基于容器内联尺寸的相对度量） |
+| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位，取容器相关维度的较大值作为参考的单位 |
+| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位，取容器相关维度的较小值作为参考的单位 |
+| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（相对于容器宽度的 1% 单位） |
+| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口（dynamic viewport）在 block 方向的相对单位，用于处理视口变化 |
+| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口高度单位，表示视口当前高度的百分比 |
+| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口 inline 方向单位，表示视口当前 inline 尺寸的百分比 |
+| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口宽度单位，表示视口当前宽度的百分比 |
+| ex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | x-height 单位，等于字体中小写字母 x 的高度 |
+| ic | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 表意字符宽度单位，常用于东亚文字排版，等于一个标准表意字符的 advance width |
+| in | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 英寸，物理长度单位（1in = 96px） |
+| lh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 行高单位，等于元素的计算行高（用于与行高相关的度量） |
+| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口（large viewport）在 block 方向的相对单位 |
+| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口高度单位（large viewport height），表示在大视口下的高度比例 |
+| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口 inline 方向单位（large viewport inline size） |
+| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口宽度单位（large viewport width），表示在大视口下的宽度比例 |
+| mm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 毫米，物理长度单位 |
+| pc | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 派卡（pica），等于 12pt，印刷排版单位 |
+| pt | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 点（point），等于 1/72 英寸（常用于排版） |
+| q | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 四分之一毫米（0.25mm），印刷常用单位 |
+| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素大写字母高度的单位（root cap） |
+| rch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素字符宽度的单位（root ch） |
+| rex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素 x-height 的单位（root ex） |
+| ric | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素表意字符宽度的单位（root ic） |
+| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素行高的单位（root line-height） |
+| svb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口（small viewport）在 block 方向的相对单位 |
+| svh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口高度单位（small viewport height），表示在小视口下的高度比例 |
+| svi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口 inline 方向单位（small viewport inline size） |
+| svw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口宽度单位（small viewport width），表示在小视口下的宽度比例 |
+| vb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口的 block 方向尺寸单位（viewport block size） |
+| vh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口高度的 1% 单位（viewport height） |
+| vi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口的 inline 方向尺寸单位（viewport inline size） |
+| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽高中较大那个的 1% 单位 |
+| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽高中较小那个的 1% 单位 |
+| vw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽度的 1% 单位（viewport width） |
 
 ### rpx
 `rpx` 是一个以设备750px为基准的单位，`750rpx`即为屏幕宽度，相当于100%；`375rpx`即为屏幕一半宽度，相当于50%。
@@ -135,47 +135,47 @@ rpx仅适用于需要根据屏幕宽度变化的view或image的宽度width设置
 
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |
-| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |
+| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 像素，屏幕上最常用的绝对长度单位 |
+| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 响应式像素，用于某些框架中根据屏幕密度动态缩放的单位 |
 | em | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | app平台仅line-height属性支持 |
-| rem | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ic | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| in | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| mm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| pc | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| pt | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| q | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| ric | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| svw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
-| vw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |   |
+| rem | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素（html）字体大小的相对单位 |
+| cap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 基于字体大写字母高度的排版单位（用于排版相关度量） |
+| ch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 字符宽度单位，通常等于数字 '0' 的宽度 |
+| cm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 厘米，物理长度单位 |
+| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（基于容器块方向的相对度量） |
+| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（基于容器高度的相对度量） |
+| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（基于容器内联尺寸的相对度量） |
+| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位，取容器相关维度的较大值作为参考的单位 |
+| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位，取容器相关维度的较小值作为参考的单位 |
+| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 容器查询相关单位（相对于容器宽度的 1% 单位） |
+| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口（dynamic viewport）在 block 方向的相对单位，用于处理视口变化 |
+| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口高度单位，表示视口当前高度的百分比 |
+| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口 inline 方向单位，表示视口当前 inline 尺寸的百分比 |
+| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 动态视口宽度单位，表示视口当前宽度的百分比 |
+| ex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | x-height 单位，等于字体中小写字母 x 的高度 |
+| ic | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 表意字符宽度单位，常用于东亚文字排版，等于一个标准表意字符的 advance width |
+| in | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 英寸，物理长度单位（1in = 96px） |
+| lh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 行高单位，等于元素的计算行高（用于与行高相关的度量） |
+| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口（large viewport）在 block 方向的相对单位 |
+| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口高度单位（large viewport height），表示在大视口下的高度比例 |
+| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口 inline 方向单位（large viewport inline size） |
+| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大视口宽度单位（large viewport width），表示在大视口下的宽度比例 |
+| mm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 毫米，物理长度单位 |
+| pc | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 派卡（pica），等于 12pt，印刷排版单位 |
+| pt | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 点（point），等于 1/72 英寸（常用于排版） |
+| q | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 四分之一毫米（0.25mm），印刷常用单位 |
+| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素大写字母高度的单位（root cap） |
+| rch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素字符宽度的单位（root ch） |
+| rex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素 x-height 的单位（root ex） |
+| ric | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素表意字符宽度的单位（root ic） |
+| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素行高的单位（root line-height） |
+| svb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口（small viewport）在 block 方向的相对单位 |
+| svh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口高度单位（small viewport height），表示在小视口下的高度比例 |
+| svi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口 inline 方向单位（small viewport inline size） |
+| svw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小视口宽度单位（small viewport width），表示在小视口下的宽度比例 |
+| vb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口的 block 方向尺寸单位（viewport block size） |
+| vh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口高度的 1% 单位（viewport height） |
+| vi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口的 inline 方向尺寸单位（viewport inline size） |
+| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽高中较大那个的 1% 单位 |
+| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽高中较小那个的 1% 单位 |
+| vw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽度的 1% 单位（viewport width） |
