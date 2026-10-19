@@ -519,7 +519,6 @@ ninja: error: failed recompaction: Permission denied。
   * 拍平的元素无法支持事件（如click、touch）
   * 拍平的元素不支持截图API：takeSnapshot
   * 拍平时如下css不支持：
-    + 不支持 [visibility](css/visibility.md)
     + 不支持 [z-index](css/z-index.md)
     + 不支持 [background-image](css/background-image.md)、[background-clip](css/background-clip.md)
     + 不支持 [pointer-events](css/pointer-events.md)
@@ -528,6 +527,10 @@ ninja: error: failed recompaction: Permission denied。
     + [transition](css/transform.md) 动画不支持渲染相关（如background-color）的样式
   * image组件拍平后无法播放动画，gif、webp动画仅显示第一帧
   * view组件拍平后css属性transform、overflow、display、opacity存在缺陷，如果view存在子元素，这些样式不会对非拍平的子元素产生效果
+  * css属性[visibility](css/visibility.md)存在差异
+    + app-android平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的子元素默认仍然会显示，子元素的显示状态由其自身的visibility决定
+    + app-ios平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的非拍平子元素默认仍然会显示，非拍平子元素的显示状态由其自身的visibility决定，而拍平子元素会跟随此view不可见
+    + app-harmony平台visibility暂不支持拍平
 
   注意：当自定义组件的单根节点是（view、text、image）时，该自定义组件会自动支持flatten属性，并将其传递给它的单根节点，如果在不符合要求的自定义组件上使用flatten属性，则会被自动忽略。
 
