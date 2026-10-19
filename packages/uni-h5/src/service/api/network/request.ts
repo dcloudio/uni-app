@@ -81,7 +81,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
         const statusCode = xhr.status
         let res = responseType === 'text' ? xhr.responseText : xhr.response
         if (responseType === 'text') {
-          res = parseResponseText(res, responseType, dataType)
+          res = parseResponseText(res, responseType, dataType, isUTS)
         }
         resolve({
           data: res,
