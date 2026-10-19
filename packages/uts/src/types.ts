@@ -187,6 +187,7 @@ export interface UTSBridge {
 export interface UTSResult {
   filename?: string
   deps?: string[]
+  uni_modules?: string[]
   chunks?: string[]
   changed?: string[]
   inject_apis?: string[]

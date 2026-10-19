@@ -267,6 +267,10 @@ export function getCurrentCompiledUTSProviders() {
 
 let uniExtApiCompiler = async (providerOnly: boolean = false) => {}
 let nonTreeShakingUniModulesCompiler = async () => {}
+let utsPluginsCompiler = async (
+  plugins: string[],
+  pluginContext?: PluginContext
+) => {}
 
 function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
   const uvueOutputDir = uvueOutDir(platform)
@@ -647,6 +651,21 @@ export function uniUTSAppUniModulesPlugin(
     })
   }
 
+  utsPluginsCompiler = async (plugins, pluginContext) => {
+    for (const plugin of plugins) {
+      const pluginDir = normalizePath(path.resolve(uniModulesDir, plugin))
+      let compile = utsModuleCaches.get(pluginDir)
+      if (!compile) {
+        compile = once(() => compilePlugin(pluginDir, pluginContext))
+        utsModuleCaches.set(pluginDir, compile)
+      }
+      const result = await compile()
+      if (result) {
+        handleCompileResult(result, pluginContext)
+      }
+    }
+  }
+
   uniExtApiCompiler = async (providerOnly: boolean = false) => {
     // 此方法为兜底方法，确保uni_modules中的所有插件都会编译，目前仅用于编译provider
     // 获取 provider 扩展(编译所有uni)
@@ -705,6 +724,27 @@ export function uniUTSAppUniModulesPlugin(
     }
   }
 
+  const deferBuildCleanup =
+    isX &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony' &&
+    isNormalCompileTarget()
+
+  const cleanupBuild = async () => {
+    utsModuleCaches.clear()
+    changedFiles.clear()
+    if (process.env.NODE_ENV !== 'development' || !isNormalCompileTarget()) {
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.close()
+      }
+      if (uniXSwiftCompiler) {
+        await uniXSwiftCompiler.close()
+      }
+      if (uniXArkTSCompiler) {
+        await uniXArkTSCompiler.close()
+      }
+    }
+  }
+
   return {
     name: 'uni:uts-uni_modules',
     apply: 'build',
@@ -749,18 +789,13 @@ export function uniUTSAppUniModulesPlugin(
       }
     },
     async buildEnd() {
-      utsModuleCaches.clear()
-      changedFiles.clear()
-      if (process.env.NODE_ENV !== 'development' || !isNormalCompileTarget()) {
-        if (uniXKotlinCompiler) {
-          await uniXKotlinCompiler.close()
-        }
-        if (uniXSwiftCompiler) {
-          await uniXSwiftCompiler.close()
-        }
-        if (uniXArkTSCompiler) {
-          await uniXArkTSCompiler.close()
-        }
+      if (!deferBuildCleanup) {
+        await cleanupBuild()
+      }
+    },
+    async closeBundle() {
+      if (deferBuildCleanup) {
+        await cleanupBuild()
       }
     },
     watchChange(fileName, change) {
@@ -820,6 +855,13 @@ export function uniUTSAppUniModulesPlugin(
       }
     },
   }
+}
+
+export async function buildUTSPlugins(
+  plugins: string[],
+  pluginContext?: PluginContext
+) {
+  await utsPluginsCompiler(plugins, pluginContext)
 }
 
 export async function buildUniExtApis(providerOnly: boolean = false) {

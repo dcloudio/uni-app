@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   type UniVitePlugin,
+  buildUTSPlugins,
   buildUniExtApis,
   camelize,
   capitalize,
@@ -149,9 +150,16 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       }
     },
     async generateBundle(_, bundle) {
+      const utsPlugins = getCurrentCompiledUTSPlugins()
+      if (isX && isNormalCompileTarget()) {
+        const workerPlugins = await buildWorkers()
+        await buildUTSPlugins(
+          workerPlugins.filter((plugin) => !utsPlugins.has(plugin)),
+          this
+        )
+      }
       const utsExtApis = new Set<string>()
 
-      const utsPlugins = getCurrentCompiledUTSPlugins()
       const utsProviders = getCurrentCompiledUTSProviders()
       // utsPlugins.difference(utsProviders)
       utsPlugins.forEach((plugin) => {
@@ -181,9 +189,6 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       if (!isX) {
         // x 上暂时编译所有uni ext api，不管代码里是否调用了
         await buildUniExtApis()
-      }
-      if (isX) {
-        await buildWorkers()
       }
     },
   }
