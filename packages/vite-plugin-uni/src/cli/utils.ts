@@ -362,7 +362,12 @@ export function initEnv(
     process.env.UNI_APP_X === 'true'
   )
   const isX = isUniAppX()
-  const renderMode = isX ? (isUniAppXVapor() ? '蒸汽模式' : 'VDOM模式') : ''
+  const renderMode =
+    isX && !process.env.UNI_PLATFORM.startsWith('mp-')
+      ? isUniAppXVapor()
+        ? '蒸汽模式'
+        : 'VDOM模式'
+      : ''
   console.log(
     M['app.compiler.version'].replace(
       '{version}',
