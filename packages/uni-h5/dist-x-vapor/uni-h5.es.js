@@ -946,12 +946,17 @@ let svgIcon = () => {
   svgIcon = template('<svg viewBox="0 0 32 32"><path></path></svg>', 0, 1);
   return svgIcon();
 };
-function createSvgIcon(path, color = "#000", size = 27) {
+function createSvgIcon(path, color = "#000", size = 27, stroke = false) {
   const svg = svgIcon();
   setAttr(svg, "width", size, true);
   setAttr(svg, "height", size, true);
   setAttr(svg.firstChild, "d", path, true);
-  setAttr(svg.firstChild, "fill", color, true);
+  setAttr(svg.firstChild, "fill", stroke ? "none" : color, true);
+  if (stroke) {
+    setAttr(svg.firstChild, "stroke", color, true);
+    setAttr(svg.firstChild, "stroke-width", 2, true);
+    setAttr(svg.firstChild, "stroke-linecap", "round", true);
+  }
   return svg;
 }
 const createSvgIconVNode = createSvgIcon;
@@ -964,7 +969,7 @@ const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-
 const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
-const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+const ICON_PATH_BACK = "M20 25L11 16L20 7";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
 function useCurrentPageId() {
   {
@@ -4383,9 +4388,9 @@ function assertType(value, type) {
   let valid;
   const expectedType = getType(type);
   if (isSimpleType(expectedType)) {
-    const t11 = typeof value;
-    valid = t11 === expectedType.toLowerCase();
-    if (!valid && t11 === "object") {
+    const t12 = typeof value;
+    valid = t12 === expectedType.toLowerCase();
+    if (!valid && t12 === "object") {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
@@ -5633,39 +5638,39 @@ const predefinedColor = {
 };
 function checkColor(e2) {
   e2 = e2 || "#000000";
-  let t11 = null;
-  if ((t11 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
-    const n = parseInt(t11[1].slice(0, 2), 16);
-    const o = parseInt(t11[1].slice(2, 4), 16);
-    const r = parseInt(t11[1].slice(4), 16);
+  let t12 = null;
+  if ((t12 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
+    const n = parseInt(t12[1].slice(0, 2), 16);
+    const o = parseInt(t12[1].slice(2, 4), 16);
+    const r = parseInt(t12[1].slice(4), 16);
     return [n, o, r, 255];
   }
-  if ((t11 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
-    let n = t11[1].slice(0, 1);
-    let o = t11[1].slice(1, 2);
-    let r = t11[1].slice(2, 3);
+  if ((t12 = /^#([0-9|A-F|a-f]{3})$/.exec(e2)) != null) {
+    let n = t12[1].slice(0, 1);
+    let o = t12[1].slice(1, 2);
+    let r = t12[1].slice(2, 3);
     n = parseInt(n + n, 16);
     o = parseInt(o + o, 16);
     r = parseInt(r + r, 16);
     return [n, o, r, 255];
   }
-  if ((t11 = /^rgb\((.+)\)$/.exec(e2)) != null) {
-    return t11[1].split(",").map(function(e22) {
+  if ((t12 = /^rgb\((.+)\)$/.exec(e2)) != null) {
+    return t12[1].split(",").map(function(e22) {
       return Math.min(255, parseInt(e22.trim()));
     }).concat(255);
   }
-  if ((t11 = /^rgba\((.+)\)$/.exec(e2)) != null) {
-    return t11[1].split(",").map(function(e22, t22) {
+  if ((t12 = /^rgba\((.+)\)$/.exec(e2)) != null) {
+    return t12[1].split(",").map(function(e22, t22) {
       return t22 === 3 ? Math.floor(255 * parseFloat(e22.trim())) : Math.min(255, parseInt(e22.trim()));
     });
   }
   var i = e2.toLowerCase();
   if (hasOwn(predefinedColor, i)) {
-    t11 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
-    const n = parseInt(t11[1].slice(0, 2), 16);
-    const o = parseInt(t11[1].slice(2, 4), 16);
-    const r = parseInt(t11[1].slice(4, 6), 16);
-    let a = parseInt(t11[1].slice(6, 8), 16);
+    t12 = /^#([0-9|A-F|a-f]{6,8})$/.exec(predefinedColor[i]);
+    const n = parseInt(t12[1].slice(0, 2), 16);
+    const o = parseInt(t12[1].slice(2, 4), 16);
+    const r = parseInt(t12[1].slice(4, 6), 16);
+    let a = parseInt(t12[1].slice(6, 8), 16);
     a = a >= 0 ? a : 255;
     return [n, o, r, a];
   }
@@ -7293,8 +7298,8 @@ const SetClipboardDataOptions = {
   beforeSuccess(res, params) {
     if (!params.showToast)
       return;
-    const { t: t11 } = useI18n();
-    const title = t11("uni.setClipboardData.success");
+    const { t: t12 } = useI18n();
+    const title = t12("uni.setClipboardData.success");
     if (title) {
       uni.showToast({
         title,
@@ -8299,13 +8304,13 @@ const initIntersectionObserverPolyfill = function() {
     var threshold = opt_threshold || [0];
     if (!Array.isArray(threshold))
       threshold = [threshold];
-    return threshold.sort().filter(function(t11, i, a) {
-      if (typeof t11 != "number" || isNaN(t11) || t11 < 0 || t11 > 1) {
+    return threshold.sort().filter(function(t12, i, a) {
+      if (typeof t12 != "number" || isNaN(t12) || t12 < 0 || t12 > 1) {
         throw new Error(
           "threshold must be a number between 0 and 1 inclusively"
         );
       }
-      return t11 !== a[i - 1];
+      return t12 !== a[i - 1];
     });
   };
   IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
@@ -10649,8 +10654,8 @@ function getNodeInfo(el, fields) {
   }
   if (isArray(fields.properties)) {
     fields.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t11) {
-        return t11.toUpperCase();
+      prop = prop.replace(/-([a-z])/g, function(e2, t12) {
+        return t12.toUpperCase();
       });
     });
   }
@@ -11744,14 +11749,14 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
   props: ["error"],
   setup(__props) {
     initI18nAsyncMsgsOnce();
-    const { t: t11 } = useI18n();
+    const { t: t12 } = useI18n();
     function reload() {
       window.location.reload();
     }
     const n0 = t0$v();
     const x0 = txt(n0);
     on$1(n0, "click", reload);
-    renderEffect(() => setText(x0, toDisplayString(unref(t11)("uni.async.error"))));
+    renderEffect(() => setText(x0, toDisplayString(unref(t12)("uni.async.error"))));
     return n0;
   }
 });
@@ -12245,9 +12250,9 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const t0$u = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path>');
+const t0$u = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
 const t1$h = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
-const t2$8 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const t2$8 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
 const t3$3 = template("<i class=uni-btn-icon></i>");
 const t4$3 = template("<div>");
 const t5$2 = template("<i class=uni-loading></i>", 2);
@@ -12255,7 +12260,8 @@ const t6$2 = template("<img class=uni-page-head__title_image>");
 const t7$1 = template(" ");
 const t8 = template("<div class=uni-page-head-bd><div class=uni-page-head__title></div>");
 const t9 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
-const t10 = template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
+const t10 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
+const t11 = template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
 const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageHead",
@@ -12455,7 +12461,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
       };
       return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
     }
-    const n64 = t10();
+    const n64 = t11();
     const n60 = child(n64);
     const n19 = child(n60);
     const n59 = next(n19);
@@ -12475,7 +12481,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
         setAttr(n2, "d", unref(ICON_PATH_BACK), true);
         setAttr(
           n2,
-          "fill",
+          "stroke",
           _navigationBar.type === "transparent" ? "#fff" : _navigationBar.titleColor,
           true
         );
@@ -12625,7 +12631,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = withComponentId("b1ddc730", () => createComponent$1(unref(__syscom_0$1), {
+            const n39 = withComponentId("b1ddb6c0", () => createComponent$1(unref(__syscom_0$1), {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -12640,7 +12646,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = withComponentId("b1dda8bc", () => createComponent$1(unref(__syscom_0$1), {
+            const n41 = withComponentId("b1dcfacc", () => createComponent$1(unref(__syscom_0$1), {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -12693,7 +12699,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
             () => createIf(
               () => _for_item0.value.btnSelect,
               () => {
-                const n54 = t2$8();
+                const n54 = t10();
                 const n52 = child(n54);
                 const n53 = child(next(n52));
                 renderEffect(() => {
@@ -14457,8 +14463,8 @@ function useMovableAreaState(props2, rootRef) {
     }
     return get(target);
   }
-  const _onTouchstart = withWebEvent((t11) => {
-    let i = t11.touches;
+  const _onTouchstart = withWebEvent((t12) => {
+    let i = t12.touches;
     if (i) {
       if (i.length > 1) {
         let r = {
@@ -14476,11 +14482,11 @@ function useMovableAreaState(props2, rootRef) {
       }
     }
   });
-  const _onTouchmove = withWebEvent((t11) => {
-    let n = t11.touches;
+  const _onTouchmove = withWebEvent((t12) => {
+    let n = t12.touches;
     if (n) {
       if (n.length > 1) {
-        t11.preventDefault();
+        t12.preventDefault();
         let i = {
           x: n[1].pageX - n[0].pageX,
           y: n[1].pageY - n[0].pageY
@@ -14495,8 +14501,8 @@ function useMovableAreaState(props2, rootRef) {
     }
   });
   const _onTouchend = withWebEvent((e2) => {
-    let t11 = e2.touches;
-    if (!(t11 && t11.length)) {
+    let t12 = e2.touches;
+    if (!(t12 && t12.length)) {
       if (e2.changedTouches) {
         gapV.x = 0;
         gapV.y = 0;
@@ -14578,20 +14584,20 @@ function useMovableViewFrame() {
     cancel
   };
 }
-function e(e2, t11, n) {
-  return e2 > t11 - n && e2 < t11 + n;
+function e(e2, t12, n) {
+  return e2 > t12 - n && e2 < t12 + n;
 }
-function t(t11, n) {
-  return e(t11, 0, n);
+function t(t12, n) {
+  return e(t12, 0, n);
 }
 function Decline() {
 }
 Decline.prototype.x = function(e2) {
   return Math.sqrt(e2);
 };
-function Friction$1(e2, t11) {
+function Friction$1(e2, t12) {
   this._m = e2;
-  this._f = 1e3 * t11;
+  this._f = 1e3 * t12;
   this._startTime = 0;
   this._v = 0;
 }
@@ -14609,16 +14615,16 @@ Friction$1.prototype.setS = function(x, y) {
   this._x_s = x;
   this._y_s = y;
 };
-Friction$1.prototype.s = function(t11) {
-  if (void 0 === t11) {
-    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$1.prototype.s = function(t12) {
+  if (void 0 === t12) {
+    t12 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t11 > this._t) {
-    t11 = this._t;
-    this._lastDt = t11;
+  if (t12 > this._t) {
+    t12 = this._t;
+    this._lastDt = t12;
   }
-  let x = this._x_v * t11 + 0.5 * this._x_a * Math.pow(t11, 2) + this._x_s;
-  let y = this._y_v * t11 + 0.5 * this._y_a * Math.pow(t11, 2) + this._y_s;
+  let x = this._x_v * t12 + 0.5 * this._x_a * Math.pow(t12, 2) + this._x_s;
+  let y = this._y_v * t12 + 0.5 * this._y_a * Math.pow(t12, 2) + this._y_s;
   if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
     x = this._endPositionX;
   }
@@ -14630,16 +14636,16 @@ Friction$1.prototype.s = function(t11) {
     y
   };
 };
-Friction$1.prototype.ds = function(t11) {
-  if (void 0 === t11) {
-    t11 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+Friction$1.prototype.ds = function(t12) {
+  if (void 0 === t12) {
+    t12 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
   }
-  if (t11 > this._t) {
-    t11 = this._t;
+  if (t12 > this._t) {
+    t12 = this._t;
   }
   return {
-    dx: this._x_v + this._x_a * t11,
-    dy: this._y_v + this._y_a * t11
+    dx: this._x_v + this._x_a * t12,
+    dy: this._y_v + this._y_a * t12
   };
 };
 Friction$1.prototype.delta = function() {
@@ -14652,9 +14658,9 @@ Friction$1.prototype.dt = function() {
   return -this._x_v / this._x_a;
 };
 Friction$1.prototype.done = function() {
-  const t11 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+  const t12 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
   this._lastDt = null;
-  return t11;
+  return t12;
 };
 Friction$1.prototype.setEnd = function(x, y) {
   this._endPositionX = x;
@@ -14672,7 +14678,7 @@ function Spring(m, k, c) {
   this._endPosition = 0;
   this._startTime = 0;
 }
-Spring.prototype._solve = function(e2, t11) {
+Spring.prototype._solve = function(e2, t12) {
   const n = this._c;
   const i = this._m;
   const r = this._k;
@@ -14680,70 +14686,70 @@ Spring.prototype._solve = function(e2, t11) {
   if (o === 0) {
     const a = -n / (2 * i);
     const s = e2;
-    const l = t11 / (a * e2);
+    const l = t12 / (a * e2);
     return {
       x: function(e3) {
         return (s + l * e3) * Math.pow(Math.E, a * e3);
       },
       dx: function(e3) {
-        const t12 = Math.pow(Math.E, a * e3);
-        return a * (s + l * e3) * t12 + l * t12;
+        const t13 = Math.pow(Math.E, a * e3);
+        return a * (s + l * e3) * t13 + l * t13;
       }
     };
   }
   if (o > 0) {
     const c = (-n - Math.sqrt(o)) / (2 * i);
     const u = (-n + Math.sqrt(o)) / (2 * i);
-    const d = (t11 - c * e2) / (u - c);
+    const d = (t12 - c * e2) / (u - c);
     const h = e2 - d;
     return {
       x: function(e3) {
-        let t12;
+        let t13;
         let n2;
         if (e3 === this._t) {
-          t12 = this._powER1T;
+          t13 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t12) {
-          t12 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t13) {
+          t13 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * t12 + d * n2;
+        return h * t13 + d * n2;
       },
       dx: function(e3) {
-        let t12;
+        let t13;
         let n2;
         if (e3 === this._t) {
-          t12 = this._powER1T;
+          t13 = this._powER1T;
           n2 = this._powER2T;
         }
         this._t = e3;
-        if (!t12) {
-          t12 = this._powER1T = Math.pow(Math.E, c * e3);
+        if (!t13) {
+          t13 = this._powER1T = Math.pow(Math.E, c * e3);
         }
         if (!n2) {
           n2 = this._powER2T = Math.pow(Math.E, u * e3);
         }
-        return h * c * t12 + d * u * n2;
+        return h * c * t13 + d * u * n2;
       }
     };
   }
   const p2 = Math.sqrt(4 * i * r - n * n) / (2 * i);
   const f2 = -n / 2 * i;
   const v2 = e2;
-  const g2 = (t11 - f2 * e2) / p2;
+  const g2 = (t12 - f2 * e2) / p2;
   return {
     x: function(e3) {
       return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
     },
     dx: function(e3) {
-      const t12 = Math.pow(Math.E, f2 * e3);
+      const t13 = Math.pow(Math.E, f2 * e3);
       const n2 = Math.cos(p2 * e3);
       const i2 = Math.sin(p2 * e3);
-      return t12 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t12 * (g2 * i2 + v2 * n2);
+      return t13 * (g2 * p2 * n2 - v2 * p2 * i2) + f2 * t13 * (g2 * i2 + v2 * n2);
     }
   };
 };
@@ -14804,9 +14810,9 @@ Spring.prototype.done = function(n) {
   }
   return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
 };
-Spring.prototype.reconfigure = function(m, t11, c) {
+Spring.prototype.reconfigure = function(m, t12, c) {
   this._m = m;
-  this._k = t11;
+  this._k = t12;
   this._c = c;
   if (!this.done()) {
     this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -14820,11 +14826,11 @@ Spring.prototype.damping = function() {
   return this._c;
 };
 Spring.prototype.configuration = function() {
-  function e2(e3, t12) {
-    e3.reconfigure(1, t12, e3.damping());
+  function e2(e3, t13) {
+    e3.reconfigure(1, t13, e3.damping());
   }
-  function t11(e3, t12) {
-    e3.reconfigure(1, e3.springConstant(), t12);
+  function t12(e3, t13) {
+    e3.reconfigure(1, e3.springConstant(), t13);
   }
   return [
     {
@@ -14837,22 +14843,22 @@ Spring.prototype.configuration = function() {
     {
       label: "Damping",
       read: this.damping.bind(this),
-      write: t11.bind(this, this),
+      write: t12.bind(this, this),
       min: 1,
       max: 500
     }
   ];
 };
-function STD(e2, t11, n) {
-  this._springX = new Spring(e2, t11, n);
-  this._springY = new Spring(e2, t11, n);
-  this._springScale = new Spring(e2, t11, n);
+function STD(e2, t12, n) {
+  this._springX = new Spring(e2, t12, n);
+  this._springY = new Spring(e2, t12, n);
+  this._springScale = new Spring(e2, t12, n);
   this._startTime = 0;
 }
-STD.prototype.setEnd = function(e2, t11, n, i) {
+STD.prototype.setEnd = function(e2, t12, n, i) {
   const r = (/* @__PURE__ */ new Date()).getTime();
   this._springX.setEnd(e2, i, r);
-  this._springY.setEnd(t11, i, r);
+  this._springY.setEnd(t12, i, r);
   this._springScale.setEnd(n, i, r);
   this._startTime = r;
 };
@@ -14868,10 +14874,10 @@ STD.prototype.done = function() {
   const e2 = (/* @__PURE__ */ new Date()).getTime();
   return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
 };
-STD.prototype.reconfigure = function(e2, t11, n) {
-  this._springX.reconfigure(e2, t11, n);
-  this._springY.reconfigure(e2, t11, n);
-  this._springScale.reconfigure(e2, t11, n);
+STD.prototype.reconfigure = function(e2, t12, n) {
+  this._springX.reconfigure(e2, t12, n);
+  this._springY.reconfigure(e2, t12, n);
+  this._springScale.reconfigure(e2, t12, n);
 };
 const movableViewProps = {
   direction: {
@@ -14962,19 +14968,19 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function p(t11, n) {
-  if (t11 === n) {
+function p(t12, n) {
+  if (t12 === n) {
     return 0;
   }
-  let i = t11.offsetLeft;
-  return t11.offsetParent ? i += p(t11.offsetParent, n) : 0;
+  let i = t12.offsetLeft;
+  return t12.offsetParent ? i += p(t12.offsetParent, n) : 0;
 }
-function f(t11, n) {
-  if (t11 === n) {
+function f(t12, n) {
+  if (t12 === n) {
     return 0;
   }
-  let i = t11.offsetTop;
-  return t11.offsetParent ? i += f(t11.offsetParent, n) : 0;
+  let i = t12.offsetTop;
+  return t12.offsetParent ? i += f(t12.offsetParent, n) : 0;
 }
 function g(friction, execute, endCallback) {
   let record = {
@@ -15521,9 +15527,9 @@ function useMovableViewState(props2, trigger, rootRef) {
         }
         _friction.setEnd(x, y);
         _FA = g(_friction, function() {
-          let t11 = _friction.s();
-          let x2 = t11.x;
-          let y2 = t11.y;
+          let t12 = _friction.s();
+          let x2 = t12.x;
+          let y2 = t12.y;
           _setTransform(x2, y2, _scale.value, "friction");
         }, function() {
           _FA.cancel();
@@ -18919,8 +18925,8 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
       }
       e2.stopPropagation();
     }
-    function lerp(start, end, t11) {
-      const clampedT = Math.max(0, Math.min(1, t11));
+    function lerp(start, end, t12) {
+      const clampedT = Math.max(0, Math.min(1, t12));
       return start * (1 - clampedT) + end * clampedT;
     }
     function getDecimalPlaces(num) {
@@ -20132,12 +20138,12 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
       e2.stopPropagation();
       if (!dragging)
         return;
-      const t11 = getActiveTouch(e2);
-      if (t11 == null)
+      const t12 = getActiveTouch(e2);
+      if (t12 == null)
         return;
       touchMoving = true;
-      const dx = t11.pageX - touchStartX;
-      const dy = t11.pageY - touchStartY;
+      const dx = t12.pageX - touchStartX;
+      const dy = t12.pageY - touchStartY;
       const delta = props2.vertical ? dy : dx;
       const currentTranslate = touchStartTranslate + delta;
       const overallDelta = currentTranslate - touchStartTranslate;
@@ -25335,13 +25341,13 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
   async (_, { resolve, reject }) => {
     initI18nGetClipboardDataMsgsOnce();
-    const { t: t11 } = useI18n();
+    const { t: t12 } = useI18n();
     try {
       const data = await navigator.clipboard.readText();
       resolve({ data });
     } catch (error) {
       _getClipboardData(resolve, () => {
-        reject(`${error} ${t11("uni.getClipboardData.fail")}`);
+        reject(`${error} ${t12("uni.getClipboardData.fail")}`);
       });
     }
   }
@@ -25785,7 +25791,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t11 } = useI18n();
+    const { t: t12 } = useI18n();
     if (fileInput) {
       document.body.removeChild(fileInput);
       fileInput = null;
@@ -25828,7 +25834,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
     });
     fileInput.click();
     if (!getInteractStatus()) {
-      console.warn(t11("uni.chooseFile.notUserActivation"));
+      console.warn(t12("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseFileProtocol,
@@ -25844,7 +25850,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     extension
   }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t11 } = useI18n();
+    const { t: t12 } = useI18n();
     if (imageInput) {
       document.body.removeChild(imageInput);
       imageInput = null;
@@ -25887,7 +25893,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
     });
     imageInput.click();
     if (!getInteractStatus()) {
-      console.warn(t11("uni.chooseFile.notUserActivation"));
+      console.warn(t12("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseImageProtocol,
@@ -25898,7 +25904,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
   API_CHOOSE_VIDEO,
   ({ sourceType, extension }, { resolve, reject }) => {
     initI18nChooseFileMsgsOnce();
-    const { t: t11 } = useI18n();
+    const { t: t12 } = useI18n();
     if (videoInput) {
       document.body.removeChild(videoInput);
       videoInput = null;
@@ -25956,7 +25962,7 @@ const chooseVideo = /* @__PURE__ */ defineAsyncApi(
     });
     videoInput.click();
     if (!getInteractStatus()) {
-      console.warn(t11("uni.chooseFile.notUserActivation"));
+      console.warn(t12("uni.chooseFile.notUserActivation"));
     }
   },
   ChooseVideoProtocol,
@@ -26860,15 +26866,15 @@ const hideToast = /* @__PURE__ */ defineAsyncApi(
   HideToastOptions
 );
 function hidePopup(type, controller) {
-  const { t: t11 } = useI18n();
+  const { t: t12 } = useI18n();
   if (!controller.type) {
     return;
   }
   let warnMsg = "";
   if (type === "onHideToast" && controller.type !== "onShowToast") {
-    warnMsg = t11("uni.showToast.unpaired");
+    warnMsg = t12("uni.showToast.unpaired");
   } else if (type === "onHideLoading" && controller.type !== "onShowLoading") {
-    warnMsg = t11("uni.showLoading.unpaired");
+    warnMsg = t12("uni.showLoading.unpaired");
   }
   if (warnMsg) {
     return console.warn(warnMsg);
@@ -30816,16 +30822,16 @@ class Friction {
     this.endPosition = { x, y };
   }
   // 计算并返回物体在时间 t 时的位置
-  positionAtTime(t11) {
-    if (t11 == null) {
-      t11 = (Date.now() - this.startTime) / 1e3;
+  positionAtTime(t12) {
+    if (t12 == null) {
+      t12 = (Date.now() - this.startTime) / 1e3;
     }
-    if (t11 > this.totalTimeToStop) {
-      t11 = this.totalTimeToStop;
-      this.lastTimeElapsed = t11;
+    if (t12 > this.totalTimeToStop) {
+      t12 = this.totalTimeToStop;
+      this.lastTimeElapsed = t12;
     }
-    var x = this.velocity.x * t11 + 0.5 * this.acceleration.x * t11 * t11 + this.startPosition.x;
-    var y = this.velocity.y * t11 + 0.5 * this.acceleration.y * t11 * t11 + this.startPosition.y;
+    var x = this.velocity.x * t12 + 0.5 * this.acceleration.x * t12 * t12 + this.startPosition.x;
+    var y = this.velocity.y * t12 + 0.5 * this.acceleration.y * t12 * t12 + this.startPosition.y;
     if (this.acceleration.x > 0 && x < this.endPosition.x || this.acceleration.x < 0 && x > this.endPosition.x) {
       x = this.endPosition.x;
     }
@@ -30835,16 +30841,16 @@ class Friction {
     return { x, y };
   }
   // 计算并返回物体在时间 t 时的速度
-  velocityAtTime(t11) {
-    if (t11 == null) {
-      t11 = (Date.now() - this.startTime) / 1e3;
+  velocityAtTime(t12) {
+    if (t12 == null) {
+      t12 = (Date.now() - this.startTime) / 1e3;
     }
-    if (t11 > this.totalTimeToStop) {
-      t11 = this.totalTimeToStop;
+    if (t12 > this.totalTimeToStop) {
+      t12 = this.totalTimeToStop;
     }
     return {
-      dx: this.velocity.x + this.acceleration.x * t11,
-      dy: this.velocity.y + this.acceleration.y * t11
+      dx: this.velocity.x + this.acceleration.x * t12,
+      dy: this.velocity.y + this.acceleration.y * t12
     };
   }
   // 计算物体停止前的位移量（这里的方法名可能不准确，因为 delta 通常表示变化量）

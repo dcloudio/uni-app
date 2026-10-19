@@ -366,12 +366,17 @@ let svgIcon = () => {
   svgIcon = template('<svg viewBox="0 0 32 32"><path></path></svg>', 0, 1);
   return svgIcon();
 };
-function createSvgIcon(path, color = "#000", size = 27) {
+function createSvgIcon(path, color = "#000", size = 27, stroke = false) {
   const svg = svgIcon();
   setAttr(svg, "width", size, true);
   setAttr(svg, "height", size, true);
   setAttr(svg.firstChild, "d", path, true);
-  setAttr(svg.firstChild, "fill", color, true);
+  setAttr(svg.firstChild, "fill", stroke ? "none" : color, true);
+  if (stroke) {
+    setAttr(svg.firstChild, "stroke", color, true);
+    setAttr(svg.firstChild, "stroke-width", 2, true);
+    setAttr(svg.firstChild, "stroke-linecap", "round", true);
+  }
   return svg;
 }
 const createSvgIconVNode = createSvgIcon;
@@ -384,7 +389,7 @@ const ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-
 const ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
 const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
-const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+const ICON_PATH_BACK = "M20 25L11 16L20 7";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
 function useCurrentPageId() {
   {
@@ -5616,10 +5621,10 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
         "uni-page-head-type": unref(navigationBar).type || "default"
       }, _attrs), "uni-page-head")}><div class="${ssrRenderClass(unref(clazz))}" style="${ssrRenderStyle(unref(style))}"><div class="uni-page-head-hd">`);
       if (unref(hasPages) && !unref(pageMeta).isQuit) {
-        _push(`<div class="uni-page-head-btn"><svg width="26" height="26" viewBox="0 0 32 32"><path${ssrRenderAttr("d", unref(ICON_PATH_BACK))}${ssrRenderAttr(
-          "fill",
+        _push(`<div class="uni-page-head-btn"><svg width="26" height="26" viewBox="0 0 32 32"><path${ssrRenderAttr("d", unref(ICON_PATH_BACK))} fill="none"${ssrRenderAttr(
+          "stroke",
           unref(navigationBar).type === "transparent" ? "#fff" : unref(navigationBar).titleColor
-        )}></path></svg></div>`);
+        )} stroke-width="2" stroke-linecap="round"></path></svg></div>`);
       } else {
         _push(`<!---->`);
       }
@@ -5630,7 +5635,7 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
           if (button.btnIconPath) {
             _push(`<svg${ssrRenderAttr("width", getSvgSize(button.iconStyle.fontSize))}${ssrRenderAttr("height", getSvgSize(button.iconStyle.fontSize))} viewBox="0 0 32 32"><path${ssrRenderAttr("d", button.btnIconPath)}${ssrRenderAttr("fill", getSvgColor(button.iconStyle.color))}></path></svg>`);
           } else if (button.btnSelect) {
-            _push(`<span style="${ssrRenderStyle(button.iconStyle)}"><i class="uni-btn-icon">${button.btnText ?? ""}</i><svg width="14" height="14" viewBox="0 0 32 32"><path${ssrRenderAttr("d", ICON_PATHS.select)} fill="#000"></path></svg></span>`);
+            _push(`<span style="${ssrRenderStyle(button.iconStyle)}"><i class="uni-btn-icon">${button.btnText ?? ""}</i><svg width="14" height="14" viewBox="0 0 32 32"><path${ssrRenderAttr("d", ICON_PATHS.select)} fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"></path></svg></span>`);
           } else {
             _push(`<i class="uni-btn-icon" style="${ssrRenderStyle(button.iconStyle)}">${button.btnText ?? ""}</i>`);
           }
