@@ -158,6 +158,7 @@ uni-app uni-rich-text {
 }
 
 uni-app uni-text {
+  /* 使用display: block使text-overflow生效 */
   display: block;
   white-space: pre-line;
 }
