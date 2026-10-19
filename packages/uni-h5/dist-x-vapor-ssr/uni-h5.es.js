@@ -9441,8 +9441,17 @@ const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
 const CHECKBOX_GROUP_KEY = "UNI_CHECKBOX_GROUP_CTX";
 const PICKER_VIEW_KEY = "UNI_PICKER_VIEW_CTX";
 function buildPointerEvent(event) {
-  const { type, x, y, clientX, clientY, pageX, pageY, screenX, screenY } = event;
-  return new UniPointerEvent(type, x, y, clientX, clientY, pageX, pageY, screenX, screenY);
+  return new MouseEvent("click", {
+    bubbles: true,
+    cancelable: true,
+    clientX: event.clientX,
+    clientY: event.clientY,
+    screenX: event.screenX,
+    screenY: event.screenY
+  });
+}
+function dispatchLabelClick(element, event) {
+  element.dispatchEvent(buildPointerEvent(event));
 }
 function toStringOrEmpty(val) {
   if (val == null) {
@@ -9548,8 +9557,10 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
         labelCtx.register({
           id: id2 || toStringOrEmpty(props2.value),
           activate: (event) => {
-            var _a2;
-            (_a2 = proxy == null ? void 0 : proxy.$el) == null ? void 0 : _a2.dispatchEvent("click", buildPointerEvent(event));
+            const element = proxy == null ? void 0 : proxy.$el;
+            if (element != null) {
+              dispatchLabelClick(element, event);
+            }
           },
           getDisabled: () => props2.disabled
         });
@@ -10883,8 +10894,10 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent$2({
         labelCtx.register({
           id: id2 || toStringOrEmpty(props2.value),
           activate: (event) => {
-            var _a2;
-            (_a2 = proxy == null ? void 0 : proxy.$el) == null ? void 0 : _a2.dispatchEvent("click", buildPointerEvent(event));
+            const element = proxy == null ? void 0 : proxy.$el;
+            if (element != null) {
+              dispatchLabelClick(element, event);
+            }
           },
           getDisabled: () => props2.disabled
         });
@@ -12392,8 +12405,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
         labelCtx.register({
           id: id2 || props2.name,
           activate: (event) => {
-            var _a2;
-            (_a2 = proxy == null ? void 0 : proxy.$el) == null ? void 0 : _a2.dispatchEvent("click", buildPointerEvent(event));
+            const element = proxy == null ? void 0 : proxy.$el;
+            if (element != null) {
+              dispatchLabelClick(element, event);
+            }
           },
           getDisabled: () => props2.disabled
         });

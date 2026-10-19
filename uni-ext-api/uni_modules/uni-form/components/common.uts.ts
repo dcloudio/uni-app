@@ -16,8 +16,29 @@ export function hasRecentEditorTouch(): boolean {
 }
 
 export function buildPointerEvent(event: UniPointerEvent) {
+  // #ifdef WEB
+  return new MouseEvent('click', {
+    bubbles: true,
+    cancelable: true,
+    clientX: event.clientX,
+    clientY: event.clientY,
+    screenX: event.screenX,
+    screenY: event.screenY
+  })
+  // #endif
+  // #ifndef WEB
   const { type, x, y, clientX, clientY, pageX, pageY, screenX, screenY } = event
   return new UniPointerEvent(type, x, y, clientX, clientY, pageX, pageY, screenX, screenY)
+  // #endif
+}
+
+export function dispatchLabelClick(element: UniElement, event: UniPointerEvent) {
+  // #ifdef WEB
+  element.dispatchEvent(buildPointerEvent(event))
+  // #endif
+  // #ifndef WEB
+  element.dispatchEvent('click', buildPointerEvent(event))
+  // #endif
 }
 
 export function toStringOrEmpty(val : unknown) : string {

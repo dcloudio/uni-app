@@ -34,7 +34,7 @@
 </template>
 
 <script lang="uts" setup>
-  import { LABEL_KEY, RADIO_GROUP_KEY, buildPointerEvent, classes, toStringOrEmpty } from '../common.uts'
+  import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.uts'
   import { UniRadioElement } from './global.uts'
   import { LabelContext } from '../types.uts'
 
@@ -313,7 +313,10 @@
       labelCtx.register({
         id: id || toStringOrEmpty(props.value),
         activate: (event: UniPointerEvent) => {
-          proxy?.$el?.dispatchEvent('click', buildPointerEvent(event))
+          const element = proxy?.$el
+          if (element != null) {
+            dispatchLabelClick(element, event)
+          }
         },
         getDisabled: () => props.disabled
       })

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="uts" setup>
-  import { FORM_KEY, LABEL_KEY, buildPointerEvent, classes } from '../common.uts'
+  import { FORM_KEY, LABEL_KEY, dispatchLabelClick, classes } from '../common.uts'
   import { UniSwitchElement } from './global.uts'
   import { FormContext, LabelContext } from '../types.uts'
 
@@ -280,7 +280,10 @@
       labelCtx.register({
         id: id || props.name,
         activate: (event: UniPointerEvent) => {
-          proxy?.$el?.dispatchEvent('click', buildPointerEvent(event))
+          const element = proxy?.$el
+          if (element != null) {
+            dispatchLabelClick(element, event)
+          }
         },
         getDisabled: () => props.disabled
       })
