@@ -672,7 +672,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 ## calc @calc
 > uni-app x 5.31+ App平台 蒸汽模式支持calc方法
 
-
+Evaluates an mathematical expression. The following operators can be used: + - * /.
 
 ### 兼容性 <Help /> 
  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |

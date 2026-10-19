@@ -5,6 +5,7 @@
   * [动画帧](animation-frame.md)
   * [Path2D](path2d.md)
   * [Image](image.md)
+  * [UniResizeObserver](uniresizeobserver.md)
 * 基础
   * [环境变量](env.md)
   * [事件总线](event-bus.md)
