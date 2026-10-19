@@ -1278,9 +1278,8 @@ function transformRpx(value) {
 }
 class UniElement extends Object {
   constructor() {
-    super();
+    super(...arguments);
     this._props = {};
-    this.__isUniElement = true;
   }
   attachVmProps(props2) {
     this._props = props2;
@@ -9405,11 +9404,36 @@ _sfc_main$h.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/page-container/index.vue");
   return _sfc_setup$h ? _sfc_setup$h(props2, ctx) : void 0;
 };
-class UniViewElement extends UniElement {
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function getUniTagName(value) {
+  const el = value;
+  if (!el || el.nodeType !== 1 || el.namespaceURI !== "http://www.w3.org/1999/xhtml") {
+    return;
+  }
+  switch (el.localName) {
+    case "div":
+      return el.hasAttribute("uni-view") ? "VIEW" : void 0;
+    case "span":
+      return el.hasAttribute("uni-text") ? "TEXT" : void 0;
+    case "img":
+      return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
+  }
 }
-class UniTextElement extends UniElement {
+const NativeUniElement = UniElement;
+class UniViewElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
+  }
 }
-class UniImageElement extends UniElement {
+class UniTextElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
+  }
+}
+class UniImageElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniImageElement && getUniTagName(value) === "IMAGE" || nativeHasInstance.call(this, value);
+  }
 }
 const FORM_KEY = "UNI_FORM_CTX";
 const LABEL_KEY = "UNI_LABEL_CTX";

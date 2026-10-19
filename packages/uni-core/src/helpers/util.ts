@@ -49,8 +49,13 @@ export function get$pageByPage(
 
 export function isBuiltInElement(target: HTMLElement): boolean {
   if (__X__ && __PLATFORM__ === 'h5') {
+    //#if !_X_VAPOR_
     // @ts-expect-error use private property
     return !!target.__isUniElement
+    //#else
+    return !!(target as HTMLElement & { readonly uniTagName?: string })
+      .uniTagName
+    //#endif
   }
   return target.tagName.indexOf('UNI-') === 0
 }

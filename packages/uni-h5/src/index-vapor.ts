@@ -26,3 +26,9 @@ export { default as AsyncErrorComponent } from './framework/components/async-err
 export { default as AsyncLoadingComponent } from './framework/components/async-loading/asyncLoading.vue'
 export * from './framework/setup/state'
 export { getRealPath } from './platform'
+
+import { installWebVaporElements } from '../../uni-components/src/vue/web-vapor-elements'
+
+if (!__NODE_JS__) {
+  installWebVaporElements(window)
+}

@@ -43,6 +43,15 @@ export const defineBuiltInComponent = ((options: any) => {
     const rootElement: ComponentCustomOptions['rootElement'] | undefined =
       options.rootElement
     if (rootElement) {
+      //#if _X_VAPOR_
+      // TODO Web Vapor 旧组件的过渡适配：共享固定标签名，避免逐实例标记或反复解析 DOM 标签。
+      // 待旧组件全部替换或重构为原生宿主后，移除此补丁及 Vapor 的 Custom Element 注册路径；
+      // 新组件不得接入此注册机制，非 Vapor 保留原有行为。旧组件范围见 uni-core/src/view/init/index.ts。
+      Object.defineProperty(rootElement.class.prototype, 'uniTagName', {
+        configurable: true,
+        value: rootElement.name.slice(4).toUpperCase(),
+      })
+      //#endif
       // TODO iOS 平台不能注册 utssdk 导出的 Element 类，否则会报错
       // 仍旧判断 'function ProxyObject()' ？？
       customElements.define(

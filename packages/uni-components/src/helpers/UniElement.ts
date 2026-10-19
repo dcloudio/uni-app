@@ -29,11 +29,13 @@ export class UniElement extends HTMLElement {
   // data-* 后，已访问过的 dataset 会同步刷新；暂不支持 dataset 反写 DOM attribute。
   private __uniDatasetMap?: UniDOMStringMap
   //#endif
+  //#if !_X_VAPOR_
   public __isUniElement: boolean
   constructor() {
     super()
     this.__isUniElement = true
   }
+  //#endif
 
   attachVmProps(props: Record<string, any>) {
     this._props = props
@@ -57,6 +59,8 @@ export class UniElement extends HTMLElement {
 
   get dataset(): UniDOMStringMap {
     if (!this.__uniDatasetMap) {
+      // 首次读取依赖 initView 中安装的旧缓存，保存此前写入 data-* 的原始值。
+      // Web Vapor 沿用旧 Element 期间不能单独停用缓存；改用新机制后移除对应依赖，非 Vapor 保留。
       this.__uniDatasetMap = createUniDOMStringMap(
         (this as unknown as { __uniDataset?: Record<string, any> })
           .__uniDataset || {}
