@@ -4670,10 +4670,10 @@
       "flatten": {
         "app": {
           "android": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.21"
           },
           "ios": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.11"
           },
           "harmony": {
             "unixVaporVer": "x"
@@ -10331,7 +10331,7 @@
       "name": "line-height",
       "description": "line-height 属性用于设置多行文本的间距。",
       "restrictions": [
-        "length",
+        "line-height-length",
         "number"
       ],
       "syntax": "normal | <number> | <length> | <percentage>",
