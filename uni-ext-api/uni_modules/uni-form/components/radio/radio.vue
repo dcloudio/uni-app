@@ -351,6 +351,10 @@
     border: 1px solid #d1d1d1;
     background-color: #ffffff;
     border-radius: 50%;
+    /* #ifdef WEB */
+    /* Web 蒸汽模式下 text 的 display 默认为 block，需设为 flex 使图标居中。 */
+    display: flex;
+    /* #endif */
     align-items: center;
     justify-content: center;
     margin-right: 5px;
