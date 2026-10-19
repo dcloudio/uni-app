@@ -272,6 +272,11 @@ visibility: visible | hidden | collapse;
 #### App平台差异
 App平台设置如果元素的 visibility 设置为 hidden，其子元素将不可见，即使子元素的 visibility 设置为 visible 也不可见。
 
+**蒸汽模式拍平(flatten)**  
+- app-android平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的子元素默认仍然会显示，子元素的显示状态由其自身的visibility决定
+- app-ios平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的非拍平子元素默认仍然会显示，非拍平子元素的显示状态由其自身的visibility决定，而拍平子元素会跟随此view不可见
+- app-harmony平台visibility暂不支持拍平
+
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/visibility)
