@@ -8,6 +8,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 
 
 
+> 本 Component 是 uni ext component，需下载插件：[uni-ui-x](https://ext.dcloud.net.cn/plugin?name=uni-ui-x)
+
+
 # uni-icons 图标
 
 适用于 uni-app x 的字体图标组件。组件内部只渲染一个 `text` 根节点，通过 `type` 指定图标名称，并可直接在组件标签上设置 `class` 或 `style` 自定义颜色、字号及其他文字样式。
