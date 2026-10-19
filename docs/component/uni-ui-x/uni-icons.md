@@ -8,7 +8,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 
 
 
-> 本 Component 是 uni ext component，需下载插件：[uni-ui-x](https://ext.dcloud.net.cn/plugin?name=uni-ui-x)
+> 本 Component 是 uni ext component，需下载插件：[uni-icons](https://ext.dcloud.net.cn/plugin?id=30221)
 
 
 # uni-icons 图标
