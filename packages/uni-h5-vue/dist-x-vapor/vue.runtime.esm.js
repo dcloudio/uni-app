@@ -11461,6 +11461,8 @@ function adoptVdomOwnedEffect(effect, owner) {
 var RenderEffect = class extends ReactiveEffect {
 	constructor(render, noLifecycle = false) {
 		super(noLifecycle ? render : void 0);
+		const slotOwner = currentRenderContext.slotOwner;
+		if (slotOwner) this.slotOwner = slotOwner;
 		this.render = render;
 		const instance = currentInstance;
 		const vdomOwner = isInteropEnabled && instance && !instance.vapor ? instance : null;
@@ -11594,6 +11596,69 @@ function withCurrentCacheKey(key, fn) {
 	} finally {
 		currentCacheKey = prev;
 	}
+}
+//#endregion
+//#region packages/runtime-vapor/src/externalClasses.ts
+function normalizeExternalClasses(value, auxiliary = true) {
+	const normalized = normalizeClass(value).trim();
+	if (!normalized) return [];
+	const classes = normalized.split(/\s+/);
+	const result = auxiliary ? [] : classes;
+	for (let i = 0; i < classes.length; i++) {
+		const cls = "^" + classes[i];
+		if (auxiliary) result.push(cls, cls + "-external");
+		else result[i] = cls;
+	}
+	return result;
+}
+function resolveExternalClass(el, value) {
+	if (!value || value.indexOf("^") === -1) return value;
+	const effect = activeSub;
+	const owner = effect && effect.slotOwner || getScopeOwner();
+	const cached = el.$externalClass;
+	if (cached && cached.raw === value && cached.owner === owner) return cached.value;
+	let maxLevel = 0;
+	const classes = value.split(/\s+/);
+	let length = 0;
+	for (let i = 0; i < classes.length; i++) {
+		const cls = classes[i];
+		let level = 0;
+		while (cls.charCodeAt(level) === 94) level++;
+		if (cls.length > level) {
+			if (level > maxLevel) maxLevel = level;
+			classes[length++] = level ? cls.slice(level) : cls;
+		}
+	}
+	classes.length = length;
+	const result = classes.join(" ");
+	let current = owner && owner.uniScopeOwner;
+	let count = 0;
+	while (current && count < maxLevel) {
+		const type = current.type;
+		if (!type.__reserved && type.__scopeId) {
+			if (!el.hasAttribute(type.__scopeId)) el.setAttribute(type.__scopeId, "");
+			count++;
+		}
+		current = current.uniScopeOwner;
+	}
+	el.$externalClass = {
+		raw: value,
+		value: result,
+		owner
+	};
+	return result;
+}
+function resolveExternalClassProp(propsValues, key, value) {
+	const previous = propsValues[key];
+	if (isObject(value)) {
+		const cached = previous;
+		if (cached && cached._externalClassSource === value) return cached;
+		const result = /* @__PURE__ */ computed$1(() => normalizeExternalClasses(value));
+		result._externalClassSource = value;
+		return result;
+	}
+	const normalized = normalizeExternalClasses(value);
+	return isArray(previous) && normalized.join(" ") === normalizeClass(previous) ? previous : normalized;
 }
 //#endregion
 //#region \0@oxc-project+runtime@0.146.0/helpers/esm/typeof.js
@@ -11739,15 +11804,20 @@ function getPropsProxyHandlers(comp) {
 			return instance.propsValues[key];
 		}
 	};
+	const externalClasses = comp.__externalClasses;
+	const readProp = externalClasses ? (instance, key) => {
+		const value = getProp(instance, key);
+		return /* @__PURE__ */ isRef(value) && isString(key) && externalClasses.has(key) ? value.value : value;
+	} : getProp;
 	const propsHandlers = propsOptions ? {
-		get: getProp,
+		get: readProp,
 		has: (_, key) => isProp(key),
 		ownKeys: () => Object.keys(propsOptions),
 		getOwnPropertyDescriptor(target, key) {
 			if (isProp(key)) return {
 				configurable: true,
 				enumerable: true,
-				get: () => getProp(target, key)
+				get: () => readProp(target, key)
 			};
 		}
 	} : null;
@@ -11854,6 +11924,13 @@ function normalizePropsOptions(comp) {
 	const normalized = {};
 	const needCastKeys = [];
 	baseNormalizePropsOptions(raw, normalized, needCastKeys);
+	if (comp.externalClasses) {
+		comp.__externalClasses = new Set(comp.externalClasses.map(camelize));
+		for (const key of comp.__externalClasses) {
+			const prop = normalized[key];
+			if (prop && prop.type) prop.skipCheck = true;
+		}
+	}
 	return comp.__propsOptions = [normalized, needCastKeys];
 }
 function resolveDefault(factory, instance) {
@@ -12111,7 +12188,7 @@ function updateProps(instance, rawValues, propsToUpdate) {
 	for (let i = 0; i < keys.length; i += propsToUpdate ? 2 : 1) {
 		let key = keys[i];
 		if (isReservedProp(key)) continue;
-		const value = rawValues[key];
+		let value = rawValues[key];
 		const camelKey = camelize(key);
 		if (options && hasOwn(options, camelKey)) {
 			key = camelKey;
@@ -12121,6 +12198,7 @@ function updateProps(instance, rawValues, propsToUpdate) {
 				continue;
 			}
 		} else if (isEmitListener(emitsOptions, key)) continue;
+		else if (key === "class" && isString(value) && (instance.scopeId || value.indexOf("^") !== -1) && !instance.type.__reserved && !(instance.type.__externalClasses && instance.type.__externalClasses.has(key))) value = normalizeExternalClasses(value, false).join(" ");
 		if (present) present[key] = true;
 		setPropValue(instance, key, value, isInitial);
 	}
@@ -12128,12 +12206,12 @@ function updateProps(instance, rawValues, propsToUpdate) {
 		const key = needCastKeys[i];
 		const isAbsent = !rawCastValues || !hasOwn(rawCastValues, key);
 		if (isAbsent && propsToUpdate) continue;
-		setPropValue(instance, key, resolvePropValue(options, key, isAbsent ? void 0 : rawCastValues[key], instance, resolveDefault, isAbsent), isInitial);
+		setPropValue(instance, key, resolvePropValue(options, key, isAbsent ? void 0 : rawCastValues[key], instance, resolveDefault, isAbsent), isInitial, isAbsent);
 		if (present) present[key] = true;
 	}
 	if (!propsToUpdate) {
 		for (const key in options) if (present ? !present[key] : !hasOwn(propsValues, key)) {
-			setPropValue(instance, key, resolvePropValue(options, key, void 0, instance, resolveDefault, true), isInitial);
+			setPropValue(instance, key, resolvePropValue(options, key, void 0, instance, resolveDefault, true), isInitial, true);
 			if (present) present[key] = true;
 		}
 		if (present) {
@@ -12155,8 +12233,13 @@ function updateProps(instance, rawValues, propsToUpdate) {
 	}
 	return !!propsToUpdate || rawValues !== prevRawValues;
 }
-function setPropValue(instance, key, value, isInitial) {
+function setPropValue(instance, key, value, isInitial, isAbsent = false) {
 	const propsValues = instance.propsValues;
+	const externalClasses = instance.type.__externalClasses;
+	if (!isAbsent && externalClasses && externalClasses.has(key)) {
+		value = resolveExternalClassProp(propsValues, key, value);
+		if (value === propsValues[key]) return;
+	}
 	if (isInitial) {
 		propsValues[key] = value;
 		return;
@@ -12411,6 +12494,7 @@ function setClass(el, value, isSVG = false, isNormalized = false) {
 	if (el.$root) setClassIncremental(el, value, isNormalized);
 	else {
 		if (!isNormalized) value = normalizeClass(value);
+		if (value !== el.$cls) value = resolveExternalClass(el, value);
 		if (isHydrating$1 && !isRecreatedNode(el)) {
 			classHasMismatch(el, value, false);
 			el.$cls = value;
@@ -12436,7 +12520,7 @@ function setClassName(el, flags, cls, prefix = "", suffix = "") {
 	} else for (let i = 0, bit = 1; i < cls.length; i++, bit <<= 1) if (flags & bit) value += cls[i];
 	if (!prefix && value.charCodeAt(0) === 32) value = value.slice(1);
 	if (suffix) value = value ? `${value} ${suffix}` : suffix;
-	if (el.$root || isHydrating$1) setClass(el, value, false, true);
+	if (el.$root || isHydrating$1 || value.indexOf("^") !== -1) setClass(el, value, false, true);
 	else if (el.$hoverUpdateClass) {
 		el.$cls = value;
 		el.$hoverUpdateClass();
@@ -12448,7 +12532,8 @@ function setClassName(el, flags, cls, prefix = "", suffix = "") {
 }
 function setClassIncremental(el, value, isNormalized = false) {
 	const cacheKey = isApplyingFallthroughProps ? "$clsi$" : "$clsi";
-	const normalizedValue = isNormalized ? value : normalizeClass(value);
+	let normalizedValue = isNormalized ? value : normalizeClass(value);
+	if (normalizedValue !== el[cacheKey]) normalizedValue = resolveExternalClass(el, normalizedValue);
 	if (isHydrating$1 && !isRecreatedNode(el)) {
 		classHasMismatch(el, normalizedValue, true);
 		el[cacheKey] = normalizedValue;
@@ -20733,7 +20818,8 @@ const owners = /* @__PURE__ */ new WeakMap();
 function setHover(el, hoverClass, stopPropagation = false, startTime = 50, stayTime = 400, baseClass) {
 	let state = states.get(el);
 	if (state && state.cls === hoverClass && hoverClass !== "none" && state.stop === stopPropagation && state.start === startTime && state.stay === stayTime) return;
-	const cls = typeof hoverClass === "string" && hoverClass !== "none" ? hoverClass.trim() : "";
+	if (isArray(hoverClass)) hoverClass = normalizeClass(hoverClass);
+	const cls = typeof hoverClass === "string" && hoverClass !== "none" ? resolveExternalClass(el, hoverClass.trim()) : "";
 	if (!state && !cls) return;
 	if (!state) {
 		const controller = getController(el.ownerDocument.defaultView ? el.ownerDocument : document);
@@ -21707,4 +21793,4 @@ function setImageDynamicEvents(el, events) {
 	setDynamicEvents(el, normalized);
 }
 //#endregion
-export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, DynamicFragment, EffectScope, ErrorCodes, ErrorTypeStrings, ForBlock, ForFragment, Fragment, KeepAlive, MismatchTypes, MoveType, NULL_DYNAMIC_COMPONENT, PublicInstanceProxyHandlers, ReactiveEffect, RecycleContext, SchedulerJobFlags, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, Transition, TransitionGroup, TransitionPropsValidators, TriggerOpTypes, VaporElement, VaporFragment, VaporKeepAlive, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VueElement, VueElementBase, activate, advanceHydrationNode, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyTransitionHooks, applyVShow, assertNumber, baseApplyTranslation, baseEmit, baseNormalizePropsOptions, baseResolveTransitionHooks, callPendingCbs, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, checkTransitionMode, child, claimAnchor, cloneVNode, compatUtils, compile, computed, createApp, createAppAPI, createAssetComponent, createAsyncComponentContext, createBlock, createCanSetSetupRefChecker, createComment, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createFragmentClaim, createHydrationRenderer, createIf, createInternalObject, createInvoker, createKeyedFragment, createPlainElement, createPropsRestProxy, createRecycleContext, createRecycleFor, createRenderer, createSSRApp, createSelector, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, createVaporSSRApp, currentHydrationNode, currentInstance, currentRenderContext, customRef, deactivate, defaultPropGetter, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, devtools, devtoolsComponentAdded, effect, effectScope, endMeasure, ensureHydrationRenderer, ensureRenderer, ensureValidVNode, enterHydrationBoundary, enterHydrationCursor, expose, extend, filterModelListeners, filterSingleRoot, findBlockBoundary, finishBlockCreation, flushOnAppMount, forceReflow, getAttributeMismatch, getBlockFirstNode, getComponentName, getContainerType, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getFunctionalFallthrough, getInheritedScopeIds, getPublicPropertiesMap, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, handleMovedChildren, hasCSSTransform, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, insert, insertFragment, insertNode, insertionAnchor, insertionIndex, insertionParent, invalidateMount, invokeDirectiveHook, invokeKeepAliveHooks, invokeSlotFallback, invokeVNodeHook, isAsyncWrapper, isComment, isEmitListener, isFragment, isFunctionalFallthroughKey, isHydrating, isHydratingEnabled, isInSSRComponentSetup, isKeepAlive, isMapEqual, isMemoSame, isMismatchAllowed, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isSetEqual, isShallow, isTeleportDeferred, isTeleportDisabled, isTemplateNode, isTemplateRefKey, isTransitionEnabled, isUnchangedResourceProp, isVNode, isValidHtmlOrSvgAttribute, isValidSlot, isVaporComponent, isHydrating$1 as isVaporHydrating, knownTemplateRefs, leaveCbKey, locateClaimedEnd, logError, logMismatchError, markAsyncBoundary, markRaw, matches, mergeDefaults, mergeModels, mergeProps, move, next, nextLogicalSibling, nextTick, nextUid, nodeOps, normalizeClass, normalizeContainer, normalizeProps, normalizeRef, normalizeStyle, normalizeUniText, normalizeVNode, nthChild, on, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeRecycle, onBeforeReuse, onBeforeUnmount, onBeforeUpdate, onBinding, onDeactivated, onErrorCaptured, onMounted, onRecycle, onRecycled, onRenderTracked, onRenderTriggered, onReuse, onReused, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseEventName, patchClass, patchProp, patchStyle, performAsyncHydrate, performTransitionEnter, performTransitionLeave, popScopeId, popWarningContext, preCreateRecycleFor, prepareTransitionLeave, prepareTransitionSwitch, provide, proxyRefs, pushScopeId, pushWarningContext, querySelectorAllInComponent, querySelectorInComponent, queueJob, queuePostFlushCb, queuePostRenderEffect, rawVaporSlotKey, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, removeNode, render, renderEffect, renderList, renderSlot, resetInsertionState, resetKeepAliveHookState, resetShapeFlag, resolveComponent, resolveCssVars, resolveDirective, resolveDynamicComponent, resolveFilter, resolveFragmentAnchor, resolvePropValue, resolveTarget as resolveTeleportTarget, resolveTransitionChild, resolveTransitionHooks, resolveTransitionProps, restoreCurrentInstance, setAttr, setBlockKey, setBlockTracking, setClass, setClassName, setCurrentHydrationNode, setCurrentInstance, setCurrentRenderingInstance, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setElementText, setHover, setHtml, setImageDynamicEvents, setImageDynamicProps, setImageMode, setImageSrc, setInsertionState, setIsHydratingEnabled, setLastLocatedLogicalChild, setListener, setProp, setRealPathResolver, setRef, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setTransitionHooks, setValue, setVarsOnNode, setViewDynamicProps, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp, shouldSetAsPropForVueCE, shouldUpdateComponent, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, svgNS, syncSelectValue, template, toClassSet, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toStyleMap, toValue, transformVNodeArgs, triggerRef, txt, unref, unregisterHMR, unsafeToTrustedHTML, useAsyncComponentState, useAttrs, useCssModule, useCssVars, useHost, useId, useInstanceOption, useModel, useRecycleState, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, useVaporCssVars, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, vtcKey, warn, warnExtraneousAttributes, warnPropMismatch, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withComponentId, withCtx, withDefaults, withDirectives, withImageEventDetail, withKeys, withMemo, withModifiers, withOnce, withRenderContext, withScopeId, withVaporDirectives, withVaporKeys, withVaporModifiers, xlinkNS };
+export { BaseTransition, BaseTransitionPropsValidators, Comment$1 as Comment, DeprecationTypes, DynamicFragment, EffectScope, ErrorCodes, ErrorTypeStrings, ForBlock, ForFragment, Fragment, KeepAlive, MismatchTypes, MoveType, NULL_DYNAMIC_COMPONENT, PublicInstanceProxyHandlers, ReactiveEffect, RecycleContext, SchedulerJobFlags, Static, Suspense, Teleport, Text$1 as Text, TrackOpTypes, Transition, TransitionGroup, TransitionPropsValidators, TriggerOpTypes, VaporElement, VaporFragment, VaporKeepAlive, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VueElement, VueElementBase, activate, advanceHydrationNode, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyTransitionHooks, applyVShow, assertNumber, baseApplyTranslation, baseEmit, baseNormalizePropsOptions, baseResolveTransitionHooks, callPendingCbs, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, checkTransitionMode, child, claimAnchor, cloneVNode, compatUtils, compile, computed, createApp, createAppAPI, createAssetComponent, createAsyncComponentContext, createBlock, createCanSetSetupRefChecker, createComment, createCommentVNode, createComponent, createComponentWithFallback, createDynamicComponent, createElementBlock, createBaseVNode as createElementVNode, createFor, createForSlots, createFragmentClaim, createHydrationRenderer, createIf, createInternalObject, createInvoker, createKeyedFragment, createPlainElement, createPropsRestProxy, createRecycleContext, createRecycleFor, createRenderer, createSSRApp, createSelector, createSlot, createSlots, createStaticVNode, createTemplateRefSetter, createTextNode, createTextVNode, createVNode, createVaporApp, createVaporSSRApp, currentHydrationNode, currentInstance, currentRenderContext, customRef, deactivate, defaultPropGetter, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, devtools, devtoolsComponentAdded, effect, effectScope, endMeasure, ensureHydrationRenderer, ensureRenderer, ensureValidVNode, enterHydrationBoundary, enterHydrationCursor, expose, extend, filterModelListeners, filterSingleRoot, findBlockBoundary, finishBlockCreation, flushOnAppMount, forceReflow, getAttributeMismatch, getBlockFirstNode, getComponentName, getContainerType, getCurrentInstance, getCurrentScope, getCurrentWatcher, getDefaultValue, getFunctionalFallthrough, getInheritedScopeIds, getPublicPropertiesMap, getRestElement, getTransitionRawChildren, guardReactiveProps, h, handleError, handleMovedChildren, hasCSSTransform, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, insert, insertFragment, insertNode, insertionAnchor, insertionIndex, insertionParent, invalidateMount, invokeDirectiveHook, invokeKeepAliveHooks, invokeSlotFallback, invokeVNodeHook, isAsyncWrapper, isComment, isEmitListener, isFragment, isFunctionalFallthroughKey, isHydrating, isHydratingEnabled, isInSSRComponentSetup, isKeepAlive, isMapEqual, isMemoSame, isMismatchAllowed, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isSetEqual, isShallow, isTeleportDeferred, isTeleportDisabled, isTemplateNode, isTemplateRefKey, isTransitionEnabled, isUnchangedResourceProp, isVNode, isValidHtmlOrSvgAttribute, isValidSlot, isVaporComponent, isHydrating$1 as isVaporHydrating, knownTemplateRefs, leaveCbKey, locateClaimedEnd, logError, logMismatchError, markAsyncBoundary, markRaw, matches, mergeDefaults, mergeModels, mergeProps, move, next, nextLogicalSibling, nextTick, nextUid, nodeOps, normalizeClass, normalizeContainer, normalizeProps, normalizeRef, normalizeStyle, normalizeUniText, normalizeVNode, nthChild, on, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeRecycle, onBeforeReuse, onBeforeUnmount, onBeforeUpdate, onBinding, onDeactivated, onErrorCaptured, onMounted, onRecycle, onRecycled, onRenderTracked, onRenderTriggered, onReuse, onReused, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseEventName, patchClass, patchProp, patchStyle, performAsyncHydrate, performTransitionEnter, performTransitionLeave, popScopeId, popWarningContext, preCreateRecycleFor, prepareTransitionLeave, prepareTransitionSwitch, provide, proxyRefs, pushScopeId, pushWarningContext, querySelectorAllInComponent, querySelectorInComponent, queueJob, queuePostFlushCb, queuePostRenderEffect, rawVaporSlotKey, reactive, readonly, ref, registerHMR, registerRuntimeCompiler, remove, removeNode, render, renderEffect, renderList, renderSlot, resetInsertionState, resetKeepAliveHookState, resetShapeFlag, resolveComponent, resolveCssVars, resolveDirective, resolveDynamicComponent, resolveExternalClass, resolveFilter, resolveFragmentAnchor, resolvePropValue, resolveTarget as resolveTeleportTarget, resolveTransitionChild, resolveTransitionHooks, resolveTransitionProps, restoreCurrentInstance, setAttr, setBlockKey, setBlockTracking, setClass, setClassName, setCurrentHydrationNode, setCurrentInstance, setCurrentRenderingInstance, setDOMProp, setDevtoolsHook, setDynamicEvents, setDynamicProps, setElementText, setHover, setHtml, setImageDynamicEvents, setImageDynamicProps, setImageMode, setImageSrc, setInsertionState, setIsHydratingEnabled, setLastLocatedLogicalChild, setListener, setProp, setRealPathResolver, setRef, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setTransitionHooks, setValue, setVarsOnNode, setViewDynamicProps, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp, shouldSetAsPropForVueCE, shouldUpdateComponent, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, svgNS, syncSelectValue, template, toClassSet, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toStyleMap, toValue, transformVNodeArgs, triggerRef, txt, unref, unregisterHMR, unsafeToTrustedHTML, useAsyncComponentState, useAttrs, useCssModule, useCssVars, useHost, useId, useInstanceOption, useModel, useRecycleState, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, useVaporCssVars, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, vaporInteropPlugin, version, vtcKey, warn, warnExtraneousAttributes, warnPropMismatch, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withComponentId, withCtx, withDefaults, withDirectives, withImageEventDetail, withKeys, withMemo, withModifiers, withOnce, withRenderContext, withScopeId, withVaporDirectives, withVaporKeys, withVaporModifiers, xlinkNS };

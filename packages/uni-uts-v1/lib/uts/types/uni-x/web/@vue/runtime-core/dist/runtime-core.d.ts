@@ -493,6 +493,8 @@ export type ComponentPublicInstance<P = {}, B = {}, D = {}, C extends ComputedOp
   $nextTick: typeof nextTick;
   $watch<T extends string | ((...args: any) => any)>(source: T, cb: T extends ((...args: any) => infer R) ? (...args: [R, R, OnCleanup]) => any : (...args: [any, any, OnCleanup]) => any, options?: WatchOptions): WatchStopHandle;
 } & ExposedKeys<IfAny<P, P, Readonly<Defaults> & Omit<P, keyof ShallowUnwrapRef$1<B> | keyof Defaults>> & ShallowUnwrapRef$1<B> & UnwrapNestedRefs$1<D> & ExtractComputedReturns<C> & M & ComponentCustomProperties & InjectToObject<I>, Exposed>;
+type PublicPropertiesMap = Record<string, (i: ComponentInternalInstance) => any>;
+export declare const getPublicPropertiesMap: (vapor?: boolean) => PublicPropertiesMap;
 interface ComponentRenderContext {
   [key: string]: any;
   _: ComponentInternalInstance;
@@ -1804,20 +1806,10 @@ export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNeces
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/renderSlot.d.ts
 /**
- * Marks a compiler-generated slot fallback as VDOM-rendered so the vapor
- * interop fallback chain renders it through the VDOM renderer. Internal to
- * vapor interop.
- */
-declare const vdomSlotFallbackKey: unique symbol;
-type SlotFallback = {
-  (): VNodeArrayChildren;
-  [vdomSlotFallbackKey]?: boolean;
-};
-/**
  * Compiler runtime helper for rendering `<slot/>`
  * @private
  */
-export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: SlotFallback, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
+export declare function renderSlot(slots: Slots, name: string, props?: Data | null, fallback?: () => VNodeArrayChildren, noSlotted?: boolean, branchKey?: PropertyKey): VNode;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/createSlots.d.ts
 type SSRSlot = (...args: any[]) => VNode[] | undefined;
