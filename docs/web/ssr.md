@@ -43,18 +43,20 @@ export default defineConfig({
 
 **示例**
 
-```ts
+下面示例假设 `@/store/index.uts` 已导出 `useItemsStore`，包含按 ID 保存数据的 `items` 状态和异步 `fetchItem(id)` 方法。SSR 配置见下方 [Pinia](#pinia) 章节。
+
+```vue
 <template>
   <text v-if="item">{{ item.title }}</text>
   <text v-else>...</text>
 </template>
 
 <script setup lang="ts">
-  import { useStore } from 'vuex'
+  import { useItemsStore } from '@/store/index.uts'
 
   const id = 1 // 模拟ID
-  const store = useStore()
-  const item = computed(() => store.state.items[id])
+  const store = useItemsStore()
+  const item = computed(() => store.items[id])
 
   onMounted(() => { // 仅客户端执行的生命周期
     if (!item.value) { // 判断服务端是否已正常获取，若未获取，重新调用加载数据
@@ -67,7 +69,7 @@ export default defineConfig({
   })
 
   function fetchItem() {
-    return store.dispatch('fetchItem', id)
+    return store.fetchItem(id)
   }
 </script>
 ```
@@ -80,101 +82,35 @@ export default defineConfig({
 const categories = ssrRef(['c1', 'c2'], 'categories');
 ```
 
-#### vuex
+#### Pinia
 
-对于复杂的数据，如需保持云端客户端一致，建议使用vuex进行存储。下面是一个简单的示例：
+Pinia 的引入和 store 定义见[全局变量与状态管理](../tutorial/store.md#pinia)。SSR 时需为每次请求创建独立的 Pinia 实例，并返回以下 `store` 适配对象，以同步服务端和客户端状态：
 
 **main.uts**
 
 ```ts
 import { createSSRApp } from 'vue'
+import { createPinia } from 'pinia'
+import type { StateTree } from 'pinia'
 import App from './App.uvue'
-import createStore from './store'
+
 export function createApp() {
   const app = createSSRApp(App)
-
-  const store = createStore() // 创建 store
-  app.use(store)
+  const pinia = createPinia()
+  app.use(pinia)
 
   return {
     app,
-    store,// 必须返回 store
-  }
-}
-```
-
-**store/index.uts**
-
-```ts
-import { createStore } from 'vuex'
-
-// 模拟接口获取数据
-function fetchItem(id) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id,
-        title: 'title' + id,
-      })
-    }, 300)
-  })
-}
-
-export default () => {
-  return createStore({
-    state() {
-      return {
-        items: {},
-      }
-    },
-    actions: {
-      fetchItem({ commit }, id) {
-        return fetchItem(id).then((item) => {
-          commit('setItem', { id, item })
-        })
+    store: {
+      get state() {
+        return pinia.state.value
+      },
+      replaceState(state: Record<string, StateTree>) {
+        pinia.state.value = state
       },
     },
-    mutations: {
-      setItem(state, { id, item }) {
-        state.items[id] = item
-      },
-    },
-  })
-}
-```
-
-**pages/index/index.uvue**
-
-```vue
-<template>
-  <text v-if="item">{{ item.title }}</text>
-  <text v-else>...</text>
-  <text>{{ JSON.stringify(categories) }}</text>
-</template>
-
-<script setup lang="ts">
-  import { ssrRef } from '@dcloudio/uni-app'
-  import { useStore } from 'vuex'
-
-  const categories = ssrRef(['c1', 'c2'], 'categories')
-  const id = 1 // 模拟ID
-  const store = useStore()
-  const item = computed(() => store.state.items[id])
-
-  onMounted(() => { // 仅客户端执行的生命周期
-    if (!item.value) { // 判断服务端是否已正常获取，若未获取，重新调用加载数据
-      fetchItem()
-    }
-  })
-
-  onServerPrefetch(async () => { // 服务端预取数据的生命周期
-    await fetchItem()
-  })
-
-  function fetchItem() {
-    return store.dispatch('fetchItem', id)
   }
-</script>
+}
 ```
 
 #### page-meta
@@ -278,7 +214,7 @@ uni-app-x内page-meta仅保留了存放head的功能，page-meta内的head节点
 
 ### 注意事项
 
-- 浏览器控制台提示如下警告，说明服务器和客户端渲染的结果不一致，检查模板绑定的属性是否使用了 `ssrRef`
+- 浏览器控制台提示如下警告，说明服务器和客户端渲染的结果不一致，检查模板绑定的状态是否通过 `ssrRef` 或上述 Pinia SSR 方式同步
 
 ```
 [Vue warn]: Hydration node mismatch:
