@@ -278,8 +278,9 @@ function resolveAllUniModules() {
 async function buildWorkers() {
     const workers = uniCliShared.getWorkers();
     if (!Object.keys(workers).length) {
-        return;
+        return [];
     }
+    const uniModules = new Set();
     const rootDir = uniCliShared.uvueOutDir('app-harmony');
     const { bundleArkTS, parseUTSSyntaxError } = uniCliShared.resolveUTSCompiler();
     for (const workPath in workers) {
@@ -294,7 +295,9 @@ async function buildWorkers() {
         if (result && result.error) {
             throw parseUTSSyntaxError(result.error, process.env.UNI_INPUT_DIR);
         }
+        result?.uni_modules?.forEach((plugin) => uniModules.add(plugin));
     }
+    return [...uniModules];
 }
 
 const isX = process.env.UNI_APP_X === 'true';
@@ -387,8 +390,12 @@ function uniAppHarmonyPlugin() {
             };
         },
         async generateBundle(_, bundle) {
-            const utsExtApis = new Set();
             const utsPlugins = uniCliShared.getCurrentCompiledUTSPlugins();
+            if (isX && uniCliShared.isNormalCompileTarget()) {
+                const workerPlugins = await buildWorkers();
+                await uniCliShared.buildUTSPlugins(workerPlugins.filter((plugin) => !utsPlugins.has(plugin)), this);
+            }
+            const utsExtApis = new Set();
             const utsProviders = uniCliShared.getCurrentCompiledUTSProviders();
             // utsPlugins.difference(utsProviders)
             utsPlugins.forEach((plugin) => {
@@ -418,9 +425,6 @@ function uniAppHarmonyPlugin() {
             if (!isX) {
                 // x 上暂时编译所有uni ext api，不管代码里是否调用了
                 await uniCliShared.buildUniExtApis();
-            }
-            if (isX) {
-                await buildWorkers();
             }
         },
     };
