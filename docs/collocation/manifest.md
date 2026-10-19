@@ -48,6 +48,7 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 | vapor | boolean | false | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
 | styleIsolationVersion | '2' | "2" | Web: 5.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 样式隔离策略 |
 | vapor-render-target | 'bytecode' \| 'nativecode' | "bytecode" | Web: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.11 | 视图层编译目标 |
+| vapor-default-script-lang | 'ts' \| 'js' \| 'uts' | "ts" | Web: 5.31; 微信小程序: 5.31; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | uvue/vue 文件 script lang 默认值n |
 
 ### APP配置 @manifest-app
 
