@@ -24462,7 +24462,7 @@ const request = /* @__PURE__ */ defineTaskApi(
         const statusCode = xhr.status;
         let res = responseType === "text" ? xhr.responseText : xhr.response;
         if (responseType === "text") {
-          res = parseResponseText(res, responseType, dataType2);
+          res = parseResponseText(res, responseType, dataType2, isUTS);
         }
         resolve({
           data: res,

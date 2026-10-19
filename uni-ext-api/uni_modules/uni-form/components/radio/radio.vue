@@ -342,17 +342,6 @@
     align-items: center;
   }
 
-  .uni-radio-disabled {
-    background-color: #e1e1e1;
-    border-color: #d1d1d1;
-    color: #adadad;
-  }
-
-  .uni-radio-active {
-    background-color: #007AFF;
-    border-color: #007AFF;
-  }
-
   .uni-radio-view {
     width: 24px;
     height: 24px;
@@ -372,6 +361,17 @@
     font-size: 16px;
     font-family: uni-icon;
     color: #ffffff;
+  }
+
+  .uni-radio-disabled {
+    background-color: #e1e1e1;
+    border-color: #d1d1d1;
+    color: #adadad;
+  }
+
+  .uni-radio-active {
+    background-color: #007AFF;
+    border-color: #007AFF;
   }
 
   @media (prefers-color-scheme: dark) {
