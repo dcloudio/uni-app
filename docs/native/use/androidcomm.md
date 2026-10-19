@@ -2,9 +2,37 @@
 
 需要在打开uni-app x的地方添加如下代码，触发逻辑即可打开uni-app x。
 
+蒸汽模式（Vapor）：
+
 ```kotlin
 startActivity(Intent(this, UniAppActivity::class.java))
 ```
+
+::: details VDOM模式
+
+### UniAppXSDK.start(options: UniAppXSDKStartOptions?, activity: Activity)
+
+打开uni-app x应用
+
+|名称		|类型					|默认值	|必填	|描述						|
+|:--		|:--					|:--	|:--	|:--						|
+|options	|UniAppXSDKStartOptions	|		|否		|UniAppXSDKStartOptions		|
+|activity	|Activity				|		|是		|打开uni-app x的Activity对象	|
+
+### UniAppXSDKStartOptions
+
+|名称					|类型	|默认值	|必填	|描述			|
+|:--					|:--	|:--	|:--	|:--			|
+|appScheme				|String	|		|否		|透传scheme		|
+|animationType			|String	|		|否		|动画类型[文档](https://uniapp.dcloud.net.cn/api/router.html#animation)			|
+|enterCustomAnimation	|Number	|		|否		|进入动画资源ID	|
+|exitCustomAnimation	|Number	|		|否		|退出动画资源ID	|
+
+**Tips**
+- `animationType`优先级高于`enterCustomAnimation`和`exitCustomAnimation`，但设置了`animationType`之后，其他动画属性将不生效。
+- `enterCustomAnimation`和`exitCustomAnimation`需要同时设置才会生效。
+
+:::
 
 连接手机，点击运行按钮，可以在手机上查看效果。
 
@@ -19,9 +47,85 @@ startActivity(Intent(this, UniAppActivity::class.java))
 
 #### uni-app x项目
 
-首先需要在当前页面注册一个BroadcastReceiver接受android原生应用发送的广播信息。
+首先需要通过uts插件注册一个BroadcastReceiver接受android原生应用发送的广播信息。
 
-发送广播可以通过`UTSAndroid.getUniActivity()?.sendBroadcast(intent)`将信息传送到原生。
+发送广播可以通过`activity.sendBroadcast(intent)`将信息传送到原生。
+
+```uts
+import { RegisterBroadcast, UnregisterBroadcast, SendBroadcast, RegisterBroadcastOptions } from '../interface.uts'
+import BroadcastReceiver from 'android.content.BroadcastReceiver'
+import Context from 'android.content.Context'
+import Intent from 'android.content.Intent'
+import IntentFilter from 'android.content.IntentFilter'
+import Build from 'android.os.Build'
+
+class BroadcastDemoReceiver extends BroadcastReceiver {
+	private receiveAction : string = ""
+	private receiveCallback : ((value : string) => void) | null = null
+
+	constructor(action : string, callback : (value : string) => void) {
+		super()
+		this.receiveAction = action
+		this.receiveCallback = callback
+	}
+
+	override onReceive(context : Context, intent : Intent) {
+		const intentAction = intent.getAction()
+		if (intentAction == null) {
+			return
+		}
+		if (intentAction == this.receiveAction) {
+			const rawValue = intent.getStringExtra("key")
+			const value = rawValue != null ? rawValue : ""
+			const callback = this.receiveCallback
+			if (callback != null) {
+				callback(value)
+			}
+		}
+	}
+}
+
+let currentReceiver : BroadcastDemoReceiver | null = null
+
+export const unregisterBroadcast : UnregisterBroadcast = function () {
+	const receiver = currentReceiver
+	if (receiver != null) {
+		const activity = UTSAndroid.getUniActivity()
+		if (activity != null) {
+			activity.unregisterReceiver(receiver)
+		}
+	}
+	currentReceiver = null
+}
+
+export const registerBroadcast : RegisterBroadcast = function (options : RegisterBroadcastOptions) {
+	unregisterBroadcast()
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		return
+	}
+	const receiver = new BroadcastDemoReceiver(options.action, options.onReceive)
+	const filter = new IntentFilter(options.action)
+	if (Build.VERSION.SDK_INT >= 33) {
+		activity.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+	} else {
+		activity.registerReceiver(receiver, filter)
+	}
+	currentReceiver = receiver
+}
+
+export const sendBroadcast : SendBroadcast = function (action : string, key : string, value : string) {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		return
+	}
+	const intent = new Intent(action)
+	intent.putExtra(key, value)
+	activity.sendBroadcast(intent)
+}
+```
+
+在uvue页面中主动调用uts插件发送广播，参考示例：
 
 ```uvue
 <template>
@@ -35,59 +139,40 @@ startActivity(Intent(this, UniAppActivity::class.java))
 
 <script setup lang="uts">
 	// #ifdef APP-ANDROID
-	import BroadcastReceiver from 'android.content.BroadcastReceiver'
-	import Context from 'android.content.Context'
-	import Intent from 'android.content.Intent'
-	import IntentFilter from 'android.content.IntentFilter'
-	import Build from 'android.os.Build'
-	class MyReciver extends BroadcastReceiver {
-		constructor() {
-
-		}
-		override onReceive(context : Context, intent : Intent) {
-			var action = intent.getAction()
-			if (action.equals("ACTION_FROM_NATIVE")) {
-				var value = intent.getStringExtra("key");
-				uni.showToast({
-					title: value!!
-				})
-			}
-		}
-	}
+	import {
+		registerBroadcastReceiver,
+		sendBroadcast,
+		unregisterBroadcastReceiver,
+		BroadcastReceiverOptions
+	} from '@/uni_modules/uts-broadcast'
 	// #endif
 
 	const title = '点击图片发送广播'
-	// #ifdef APP-ANDROID
-	let receiver: BroadcastReceiver | null = null
-	// #endif
 
 	onReady(() => {
 		// #ifdef APP-ANDROID
-		const currentReceiver = new MyReciver()
-		receiver = currentReceiver
-		if (Build.VERSION.SDK_INT >= 33) {
-			UTSAndroid.getUniActivity()?.registerReceiver(currentReceiver, IntentFilter("ACTION_FROM_NATIVE"), Context.RECEIVER_EXPORTED)
-		} else {
-			UTSAndroid.getUniActivity()?.registerReceiver(currentReceiver, IntentFilter("ACTION_FROM_NATIVE"))
-		}
+		const options = {
+			action: 'ACTION_FROM_NATIVE',
+			extraKey: 'key',
+			onReceive: (value : string) => {
+				uni.showToast({
+					title: value
+				})
+			}
+		} as BroadcastReceiverOptions
+		registerBroadcastReceiver(options)
 		// #endif
 	})
 
 	onUnload(() => {
 		// #ifdef APP-ANDROID
-		const currentReceiver = receiver
-		if (currentReceiver != null) {
-			UTSAndroid.getUniActivity()?.unregisterReceiver(currentReceiver)
-			receiver = null
-		}
+		unregisterBroadcastReceiver()
 		// #endif
 	})
 
 	const send = () => {
 		// #ifdef APP-ANDROID
-		var intent = new Intent("ACTION_TO_NATIVE");
-		intent.putExtra("key", "接受到广播，三秒钟之后会接收到原生发送的广播");
-		UTSAndroid.getUniActivity()?.sendBroadcast(intent)
+		sendBroadcast('ACTION_TO_NATIVE', 'key', '接受到广播，三秒钟之后会接收到原生发送的广播')
 		// #endif
 	}
 </script>
@@ -157,8 +242,37 @@ class MainActivity : AppCompatActivity() {
 
 **注意：广播要在页面关闭的时候取消注册，避免可能出现崩溃的问题。**
 
-示例可以参考原生SDK中的`app-comm`工程。
+示例可以参考原生SDK中的工程。
 
 ## 退出
 
 退出 uni-app x 应用可以在uni-app x中调用`uni.exit()`，整体退出uni-app x。
+
+::: details VDOM模式
+
+VDOM 模式可以调用 UniAppXSDK.exit() 退出应用。
+
+:::
+
+
+### 注册
+
+::: details VDOM模式
+
+uni-app x全局注册。当前方法用在解决用户无法继承UniApplication。
+
+#### UniAppXApplication.onCreate(application: Application)
+
+Application中onCreate方法中调用
+
+#### UniAppXApplication.onTrimMemory(level: Int)
+
+Application中onTrimMemory方法中调用
+
+#### UniAppXApplication.onConfigurationChanged(newConfig: Configuration?)
+
+Application中onConfigurationChanged方法中调用
+
+示例可以参考原生SDK中的`app-comm`工程。
+
+:::
