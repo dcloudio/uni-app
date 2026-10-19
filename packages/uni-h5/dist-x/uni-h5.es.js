@@ -20444,6 +20444,11 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent({
         resetDragState();
       }
     }
+    function onKeydown(event) {
+      if (showPageContainer.value && (event.key === "Escape" || event.key === "Esc")) {
+        closeContainer();
+      }
+    }
     onBackPress(() => {
       if (showPageContainer.value) {
         closeContainer();
@@ -20452,11 +20457,13 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent({
       return false;
     });
     onMounted(() => {
+      document.addEventListener("keydown", onKeydown);
       if (props2.show) {
         openContainer();
       }
     });
     onBeforeUnmount(() => {
+      document.removeEventListener("keydown", onKeydown);
       clearTransitionTimer();
     });
     return (_ctx, _cache) => {
