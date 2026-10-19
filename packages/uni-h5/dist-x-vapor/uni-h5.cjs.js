@@ -8952,12 +8952,12 @@ const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent4 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -9045,17 +9045,17 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["submit", "reset"],
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent4 {
+    class UniFormSubmitEvent extends UniCustomEvent3 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent4 {
+    class UniFormResetEvent extends UniCustomEvent3 {
       constructor() {
         super("reset", {});
       }
@@ -9470,27 +9470,6 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
-    class UniPickerCancelEvent extends UniCustomEvent {
-      constructor() {
-        super("cancel", {
-          detail: {}
-        });
-      }
-    }
-    class UniPickerChangeEvent extends UniCustomEvent {
-      constructor(value) {
-        super("change", {
-          detail: { value }
-        });
-      }
-    }
-    class UniPickerColumnChangeEvent extends UniCustomEvent {
-      constructor(column, value) {
-        super("columnchange", {
-          detail: { value, column }
-        });
-      }
-    }
     const props2 = __props;
     Vue.inject(FORM_KEY, null);
     const innerValue = Vue.ref(props2.value);
@@ -9567,12 +9546,12 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent4 {
+    class UniPickerViewChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -9806,12 +9785,12 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["activeend"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent4 {
+    class UniProgressActiveendEvent extends UniCustomEvent3 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -10102,12 +10081,12 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   emits: ["change"],
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent4 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }
@@ -10138,12 +10117,12 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n1;
   }
 });
-let UniCustomEvent$2 = class UniCustomEvent2 {
+let UniCustomEvent$1 = class UniCustomEvent {
   constructor(type, detail) {
     this.detail = detail;
   }
 };
-class UniSliderChangeEvent extends UniCustomEvent$2 {
+class UniSliderChangeEvent extends UniCustomEvent$1 {
   constructor(value) {
     super("change", { value });
   }
@@ -10438,13 +10417,13 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n8;
   }
 });
-let UniCustomEvent$1 = class UniCustomEvent3 {
+class UniCustomEvent2 {
   constructor(type, detail) {
     this.type = type;
     this.detail = detail;
   }
-};
-class UniSwiperChangeEvent extends UniCustomEvent$1 {
+}
+class UniSwiperChangeEvent extends UniCustomEvent2 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -10453,12 +10432,12 @@ class UniSwiperChangeEvent extends UniCustomEvent$1 {
     super("change", detail);
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent$1 {
+class UniSwiperTransitionEvent extends UniCustomEvent2 {
   constructor(dx, dy) {
     super("transition", { dx, dy });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent$1 {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -11116,12 +11095,12 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
-    class UniCustomEvent4 {
+    class UniCustomEvent3 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniSwitchChangeEvent extends UniCustomEvent4 {
+    class UniSwitchChangeEvent extends UniCustomEvent3 {
       constructor(value) {
         super("change", { value });
       }

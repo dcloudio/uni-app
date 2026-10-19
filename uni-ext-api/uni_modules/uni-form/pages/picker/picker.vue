@@ -499,6 +499,33 @@
 		return defaultVal
 	}
 
+	const initLanguageAndTheme = () => {
+		const appBaseInfo = uni.getAppBaseInfo()
+
+		// #ifdef WEB
+		language.value = uni.getLocale()
+		theme.value = appBaseInfo.hostTheme == 'dark' ? 'dark' : 'light'
+		// #endif
+
+		// #ifdef APP
+		const systemInfo = uni.getDeviceInfo()
+		const appLanguage = appBaseInfo.appLanguage
+		const osLanguage = systemInfo.osLanguage
+		if (appLanguage != null) {
+			language.value = appLanguage
+		} else if (osLanguage != null) {
+			language.value = osLanguage
+		}
+		const osTheme = systemInfo.osTheme
+		const appTheme = appBaseInfo.appTheme
+		if (appTheme != null && appTheme != 'auto') {
+			theme.value = appTheme
+		} else if (osTheme != null) {
+			theme.value = osTheme
+		}
+		// #endif
+	}
+
 	onLoad((options) => {
 		readyEventName.value = options['readyEventName']!
 		optionsEventName.value = options['optionsEventName']!
@@ -590,26 +617,17 @@
 
 		uni.$emit(readyEventName.value)
 
-		const systemInfo = uni.getDeviceInfo()
-		const appBaseInfo = uni.getAppBaseInfo()
-		const appLanguage = appBaseInfo.appLanguage
-		const osLanguage = systemInfo.osLanguage
-
-		if (appLanguage != null) {
-			language.value = appLanguage
-		} else if (osLanguage != null) {
-			language.value = osLanguage
-		}
-
-		const osTheme = systemInfo.osTheme
-		const appTheme = appBaseInfo.appTheme
-		if (appTheme != null && appTheme != 'auto') {
-			theme.value = appTheme
-		} else if (osTheme != null) {
-			theme.value = osTheme
-		}
+		initLanguageAndTheme()
 		switchTheme(theme.value)
 
+		// #ifdef WEB
+		uni.onHostThemeChange((res) => {
+			theme.value = res.hostTheme == 'dark' ? 'dark' : 'light'
+			switchTheme(theme.value)
+		})
+		// #endif
+
+		// #ifdef APP
 		uni.onAppThemeChange((res: AppThemeChangeResult) => {
 			theme.value = res.appTheme
 			switchTheme(theme.value)
@@ -618,6 +636,7 @@
 			theme.value = res.osTheme
 			switchTheme(theme.value)
 		})
+		// #endif
 	})
 
 	onReady(() => {
