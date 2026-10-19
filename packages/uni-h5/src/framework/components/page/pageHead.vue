@@ -10,11 +10,14 @@
           <svg width="26" height="26" viewBox="0 0 32 32">
             <path
               :d="ICON_PATH_BACK"
-              :fill="
+              fill="none"
+              :stroke="
                 navigationBar.type === 'transparent'
                   ? '#fff'
                   : navigationBar.titleColor
               "
+              stroke-width="2"
+              stroke-linecap="round"
             />
           </svg>
         </div>
@@ -41,7 +44,13 @@
             <span v-else-if="button.btnSelect" :style="button.iconStyle">
               <i class="uni-btn-icon" v-html="button.btnText" />
               <svg width="14" height="14" viewBox="0 0 32 32">
-                <path :d="ICON_PATHS.select" fill="#000" />
+                <path
+                  :d="ICON_PATHS.select"
+                  fill="none"
+                  stroke="#000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
               </svg>
             </span>
             <i

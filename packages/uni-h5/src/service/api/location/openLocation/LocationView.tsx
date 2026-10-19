@@ -175,7 +175,7 @@ export default /*#__PURE__*/ defineSystemComponent({
             </div>
           </div>
           <div class="nav-btn-back" onClick={back}>
-            {createSvgIconVNode(ICON_PATH_BACK, '#ffffff', 26)}
+            {createSvgIconVNode(ICON_PATH_BACK, '#ffffff', 26, true)}
           </div>
         </div>
       )

@@ -14,12 +14,18 @@ let svgIcon: ReturnType<typeof template> = () => {
 export function createSvgIcon(
   path: string,
   color: string = '#000',
-  size: number = 27
+  size: number = 27,
+  stroke = false
 ) {
   const svg = svgIcon()
   setAttr(svg, 'width', size, true)
   setAttr(svg, 'height', size, true)
   setAttr(svg.firstChild, 'd', path, true)
-  setAttr(svg.firstChild, 'fill', color, true)
+  setAttr(svg.firstChild, 'fill', stroke ? 'none' : color, true)
+  if (stroke) {
+    setAttr(svg.firstChild, 'stroke', color, true)
+    setAttr(svg.firstChild, 'stroke-width', 2, true)
+    setAttr(svg.firstChild, 'stroke-linecap', 'round', true)
+  }
   return svg
 }
