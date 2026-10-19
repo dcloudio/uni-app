@@ -337,6 +337,15 @@ function onTouchCancel() {
   }
 }
 
+function onKeydown(event: KeyboardEvent) {
+  if (
+    showPageContainer.value &&
+    (event.key === 'Escape' || event.key === 'Esc')
+  ) {
+    closeContainer()
+  }
+}
+
 onBackPress(() => {
   if (showPageContainer.value) {
     closeContainer()
@@ -346,6 +355,7 @@ onBackPress(() => {
 })
 
 onMounted(() => {
+  document.addEventListener('keydown', onKeydown)
   if (props.show) {
     openContainer()
   }
@@ -353,6 +363,7 @@ onMounted(() => {
 
 // 组件卸载前清理
 onBeforeUnmount(() => {
+  document.removeEventListener('keydown', onKeydown)
   clearTransitionTimer()
 })
 </script>
