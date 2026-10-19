@@ -1466,5 +1466,5 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 - video 默认宽度为300px，高度为225px。（App平台从 uni-app x 4.0起支持该默认宽高）
 - 5.13版本以前，App平台的video默认拦截触摸事件，会导致父组件无法响应触摸事件。5.13起在非全屏时不再拦截touch，仅在全屏时拦截。
 - `HarmonyOS` 平台适配小窗需要在 `modules.json5` 中配置 `"preferMultiWindowOrientation": "landscape_auto"` [详情](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V13/module-configuration-file-V13#abilities%E6%A0%87%E7%AD%BE?ha_source=Dcloud&ha_sourceId=89000448)
-- app-iOS平台暂不支持在dialogPage中调用createVideoContext。
+- app-iOS平台VDOM模式下暂不支持`(Vapor模式支持)` 在dialogPage中调用createVideoContext（）。
 - 5.07版本起，app-android、app-iOS平台不再支持codec、play-strategy属性。
