@@ -86,6 +86,7 @@
 * [案例和开源示例](sample.md)
 * [兼容性表格导读](tutorial/compatibility.md)
 * 选型参考
+	* [AI时代还需要跨平台框架吗？](./select/crossplatform-on-ai.md)
 	* [一文讲透原生渲染和自渲染](./select/native-render-and-self-render.md)
 	* [uni-app x和uni-app的对比](./uniappvsuniappx.md)
 * [uni-app 升级 uni-app x](uniapptox.md)

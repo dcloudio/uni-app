@@ -318,7 +318,7 @@ uni-app x 蒸汽模式 提供了应该是业内最好的rich-text组件。
 
 - uni-app x 的App平台到底是自渲染还是原生渲染？
 
-答案是原生渲染。uni-app x 选择原生渲染是为了更好的和原生生态无缝融合、以及降低内存占用（无需2套渲染管线）。
+答案是原生渲染。uni-app x 选择原生渲染是为了更好的和原生生态无缝融合、以及降低内存占用（无需2套渲染管线）。自渲染在冷启动和原生混合渲染时劣势明显，参考[《一文讲透原生渲染和自渲染》](./select/native-render-and-self-render.md)
 
 - 为什么都是原生渲染，uni-app x的蒸汽模式比原生渲染更快？
 
@@ -559,6 +559,10 @@ ninja: error: failed recompaction: Permission denied。
 
 
 ## 使用uni-agent，从VDOM模式升级到蒸汽模式@vom2vapor
+
+在uni-agent中有内置的skill，可以方便的升级vdom到蒸汽。
+
+如果你需要手动处理，可以参考以下步骤：
 
 1. 在vdom模式下，要求uni-agent把复杂的组合选择器，改成 简单的class选择器或分组选择器，确认是否正常
 2. 在vdom模式下，打开manifest.json中的样式隔离策略2.0，把[文档](css/common/style-isolation.md)贴给ai，要求ai改造，确认是否正常。如涉及三方组件，核对三方组件的新版是否支持样式隔离策略2.0，尽量选择支持该策略的组件。官方的 [uni ui x](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/) 是支持的。

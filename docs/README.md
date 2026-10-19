@@ -59,6 +59,8 @@ uni-app x 的长列表，帧率也是原生长列表的2~4倍。[详见](./app-v
 - [iOS benchmark](./benchmark/vapor-benchmark-ios.md)
 - [鸿蒙benchmark](./benchmark/vapor-benchmark-harmony.md)
 
+uni-app x 未对测试例做定向优化，也未故意让原生对比写法劣化。所有测试方法和源码都已在报告中公开。
+
 ## VDOM模式和蒸汽模式
 
 uni-app x 的第一代是VDOM模式，该模式的编程语言是uts，一种可以编译为kotlin、swift、ets、js的跨平台强类型语言。
@@ -182,17 +184,27 @@ uni-app x 的插件生态，以uni_modules为主。这是一种面向全端的�
 
 可以引入web和原生的各种生态库。
 
-如果不开发原生插件，仅使用纯js库，在蒸汽模式下，**npm上众多库也可以直接在App平台使用**，比如vue-pinia、day.js等。而vdom模式则需要uts适配库才能在App平台使用。
+uni-app x 的生态，分为3部分。
 
-但需注意小程序和App平台不支持window等api，对dom api的支持也有限。详见[DOM API](./api/dom/README.md)。所以尽量选用那些适配小程序的NPM库，比如[echarts-for-weixin](https://echarts.apache.org/handbook/zh/how-to/cross-platform/wechat-app/)
+第一部分是 npm 生态。
 
-[uni插件市场](https://ext.dcloud.net.cn/)是跨端插件的聚集地，前端插件可以去npm找，但原生插件更推荐在这里找。
+纯js逻辑库如 vue-pinia、day.js 等均支持。
 
-uni-app x 的插件生态，基于[uts插件](./plugin/uts-plugin.md)。这是一种面向全端的、统一的插件管理方案。
+uni-app x 对 npm 库的支持度，高于 react native。
 
-目前已经有数千款插件支持 uni-app x，它们发布在[uni插件市场](https://ext.dcloud.net.cn/?uni-appx=1)
+一方面小程序的npm库和uni-app x是复用的；
+然后 uni-app x 还多了 element、canvas等API，以及支持更多css功能（如css变量、媒体查询、@keyframe动画）。
+echart图表小程序版也可以在uni-app x上运行。
 
-uts插件通过统一的interface，约束了所有平台的API的输入输出，甚至错误码，保障了跨平台调用的一致性。
+可以说 uni-app x 比 小程序、react native 和 flutter，更接近web，也就兼容了更多web生态。
+
+第二部分是[uts原生插件](./plugin/uts-plugin.md)。
+
+其实uni-app x 本身内置了大量原生API，与小程序一样，常见原生功能需求都内置了。
+
+在其他原生扩展部分，uni-app x的插件均在其[插件市场](https://ext.dcloud.net.cn/)，蒸汽模式支持的插件有数千款。
+
+[uts插件](https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html)。这是一种面向全端的、统一的插件管理方案。uts插件通过统一的interface，约束了所有平台的API的输入输出，甚至错误码，保障了跨平台调用的一致性。
 
 uts插件有多种开发方式：
 1. 可以使用uts语言直接调用系统API来封装插件
@@ -207,11 +219,15 @@ uts插件是一个大一统的插件模型，其中在不同的子平台可以�
 	- iOS平台支持cocoaPods和Swift PM
 	- Harmony平台支持ohpm
 
-如果你只是使用插件，那么访问插件市场，勾选`uni-app x`的checkbox就能找到所需插件。
+第三部分是[uasm插件](https://doc.dcloud.net.cn/uni-app-x/plugin/uasm-plugin.html)。
 
-如果你想开发uts插件，[参考插件开发教程](./plugin/uts-plugin.md)。
+uasm是聚合了web和小程序支持的wasm，以及App平台兼容支持的node生态的c库。
 
-推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来开发uts原生插件，它可以做到不懂原生的前端开发者开发出uts原生插件。
+uni-app x 的app平台内置了对node-api的实现，所以很多适配过node的c库可以方便在 uni-app x 中使用，比如 sqlite、zstd。
+
+uasm可以让一个c库，在uni-app x的web、小程序上以wasm方式运行，在app平台以node库方式运行。这是跨平台框架中比较独特的生态。
+
+推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来开发原生插件，它可以做到不懂原生的前端开发者开发出uni-app x原生插件。
 
 ### 推荐的优秀插件
 
@@ -302,35 +318,40 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 	AI大幅提效，削减了行业整体的开发成本。不管是原生、其他跨平台框架，还是uni，开发成本都大幅下降。\
 	由于开发成本和耗时的进一步下降，事实上催生了uni应用数量的进一步增长。\
 	但如果想交付好多端成品，使用原生技术栈时仍然需要多个平台的开发工程师各自操作AI。\
-	如果你不懂各平台原生，直接让AI写3个平台的原生代码、10个小程序平台的代码，你会很快得到一个能在主流平台跑的半成品，然后发现2个问题：AI对非主流平台不熟悉，还不如用 uni-app x 的vue方式开发；即使主流平台，从半成品变成商用成品的过程中发现不懂原生不行。\
-	AI不背锅，开发者需要背。进度延期、线上出bug，你无法甩锅给AI。只有懂AI写的代码，才能hold住，才能担起责任。
+	关于什么情况可以vibe，什么时候必须review代码，这里有专门的方法论来分析vibe可行性。[详见](./select/crossplatform-on-ai.md)\
+	AI不背锅，开发者需要背。进度延期、线上出bug，你无法甩锅给AI。只有懂AI写的代码，才能hold住，才能担起责任。\
+	AI需要工具，需要好工具。在web平台，AI熟悉原生js，但AI还是用vue、react来写代码。为什么不使用原生js？因为原生js生成的代码量太多，token消耗多、以及代码越多越容易出bug，原生js还需要自己操心写不好引发性能问题。只要框架够好，还是用框架更好。\
+	AI会淘汰一些简易、低质量的轮子。但复杂、高质量的轮子，永远都受欢迎。\
+	关于AI需要什么样的好工具，这篇文章专门进行了分析：[AI开发时代，还需要跨平台框架吗？如果需要，什么才是AI想要的好框架？](./select/crossplatform-on-ai.md)\
 	
-	* 在web平台，AI熟悉原生js，但大家还是用vue、react来写代码。为什么不使用原生js？因为原生js生成的代码量太多，token消耗多、以及代码越多越容易出bug，原生js还需要自己操心写不好引发性能问题。只要框架够好，还是用框架更好。
-	* 在pc平台，AI熟悉 windows 的 c#，也熟悉 macos 的 swift，但大家还是用 electron、tauri 这些 webview 渲染的跨平台框架。不是AI不会原生，是好的框架让开发者和AI更轻松。
-	
-	AI会淘汰一些简易、低质量的轮子。但复杂、高质量的轮子，永远都受欢迎。
-	
-	另外在App平台，uni-app x 还有2个相对于原生的优势：
+	另外在App平台，uni-app x 还有3个相对于原生的优势：
 	1. 比原生更好的渲染性能，使用 AI + 原生也达不到 uni-app x 的流畅度。
-	2. uni-app x 毕竟是vue的声明式写法，比原生的命令式写法更简单、更高效。而原生的声明式写法不跨端且性能不佳。即使不跨端，只开发一个平台，uni-app x 都能比原生开发更快、生成代码更少、成品性能更流畅。
-
-	在AI时代，自动化测试非常重要。大量的自动化测试例，可以让AI更快的迭代。\
-	但如果使用不同平台的原生代码编写，那么自动化测试例也得分平台写。\
-	比如表单验证，如果用原生写了6、7个平台的表单代码，那么验证逻辑的自动化测试，也得用6、7个平台的原生语言各自写。众多表单项交叉组合情况很多，在不同平台可能出现各种bug。\
-	而 uni-app x 提供了统一的自动化测试方案，写好一套 test.js 脚本，可以驱动全平台做自动化测试。uni的跨平台跨的不止是业务代码，也包括质量管理的跨平台。开发商节省的不止是研发人员的人月，更包括测试人员的人月。
+	2. 支持热更新
+	3. uni-app x 毕竟是vue的声明式写法，比原生的命令式写法更简单、更高效。而原生的声明式写法不跨端且性能不佳。即使不跨端，只开发一个平台，uni-app x 都能比原生开发更快、生成代码更少、成品性能更流畅。
 
 - uni-app x 支持AI开发吗？\
+	uni-app x 使用 vue、js/ts、css，组件和API同小程序规范。各家AI都很熟悉。
+	
 	官方提供的[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，是最佳的 uni-app x AI Coding工具。熟悉uni全线产品，熟悉uts语法、自动修复编译错误，还熟悉原生混编，可以写uts原生插件。\
 	官方的[uni-ui x](./component/uni-ui-x/README.md) 组件库，以及众多 组件（高德地图、lottie的animation-view）、API（陀螺仪、加速计、指南针、日历、通讯录...），都是使用 uni-agent 开发的。
 
-	uni-app x 蒸汽模式，由于支持普通的ts/js，使用vue、css等标准技术栈，AI非常熟悉。\
+	uni-agent内置了uni-app x的知识库，打通了文档、issues系统、ask论坛、插件市场、官方源码。
+	开发者在本地Agent操作时，AI掌握各种所需数据：
+	- 它可以查验当前开发中遇到的问题，是不是已存在的issues，哪个版本已解决
+	- 可以看到论坛其他人分享的某个问题的解决方案
+	- 可以直接找一个成熟的轮子快速完成需求，并减少bug
+	- 可以核对 uni-app x 源码实现，当前的问题是不是真的是官方bug，并且可以通过内置skill直接提交issues。
+	
+	AI也很熟悉原生和其他主流跨平台框架。但uni-agent这种整合型Agent是其他开发方案未提供的。
+	
 	`uni-app`还为AI模型训练提供了强化学习工具，[详见](https://doc.dcloud.net.cn/uni-app-x/ai/cli-for-aimodel.html)。已经有大模型厂商利用该工具对 uni-app (x) 进行强化学习。
 
 - uni-app x 的技术路线稳定了吗？还会换吗？\
 	从 uni-app 到 uni-app x vdom模式，直到 uni-app x 蒸汽模式，是 DCloud 一路在追求让跨平台框架达到原生性能的梦想。\
 	如今目标已经超预期实现，不止达到、还比原生快了数倍。DCloud 没有再更换技术路线的计划。\
 	而且事实证明DCloud走出了别人未走出的最佳技术路线。\
-	uni-app x 蒸汽模式支持js后，对老uni用户的升级非常友好，而VDOM模式的uts代码也可以兼容使用。
+	uni-app x 蒸汽模式支持js/ts后，对老uni用户的升级非常友好，而VDOM模式的uts代码也可以兼容使用。\
+	DCloud CEO 的访谈中，讲述了 uni-app x 蒸汽模式的立项、技术路线选型等故事，有兴趣的同学可以阅读了解。详见：[死磕四年，投资数亿，uni-app做出了比原生渲染还快的跨平台框架](https://ask.dcloud.net.cn/article/42727)
 
 - uni-app x 的插件生态和竞品相比如何？\
 	uni-app x 支持的插件生态有较多种，[见上](#plugin)。\
@@ -374,7 +395,8 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 	* 更好的App框架：
 		+ vue的模板写法，是一种AI熟悉的、简单而成熟的声明式写法。比如原生的命令式写法的开发效率高的多，而原生提供的声明式写法又性能不佳。在AI时代，由于声明式的约束，让AI犯错的机会也少的多、消耗的token也少的多。
 		+ uni-app x 支持开发期间热刷新。而原生开发，改一下代码都得等很久，非常低效。
-		+ 用 uni-app x 开发性能还比原生渲染更高，那确实没必要用原生开发了。
+		+ 用 uni-app x 开发，渲染性能还比原生更高。
+		+ uni-app x 还支持发布后的热更新。
 
 	另外，由于AI对开发成本的降低，大多数业务希望获取更多流量入口、给用户开放更多使用其业务的载体，多端需求其实会越来越强烈。
 
@@ -391,7 +413,7 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
 
 - 老 uni-app 还维护吗？\
   
-	官方已于2024年停止nvue和5+的维护。并将于2027年初停止 uni-app的App平台 和 uni-app x vdom平台 的维护。
+	官方已于2024年停止nvue和5+的维护。并将于2027年初停止 uni-app 的App平台 和 uni-app x vdom平台 的维护。
 	
 	因为 uni-app x蒸汽模式 已经兼容js/ts写法，开发者可以方便的将 老uni-app 升级到 uni-app x蒸汽模式。所以 老uni-app 的app平台的维护意义也不大了。
 	
