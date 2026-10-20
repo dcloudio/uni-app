@@ -1,5 +1,5 @@
-import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 import { isArray } from '@vue/shared'
+import { parseManifestJsonOnce } from '../manifest'
 
 interface AgentConfig {
   instruction?: string
