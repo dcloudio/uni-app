@@ -5835,7 +5835,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
     const attrs = currentInstance.attrs;
     const routeComponent = currentInstance.type;
     const pageComponent = routeComponent.__uniPageComponent;
-    const pageProps = routeComponent.__uniGetPageProps();
+    const pageProps = usePageRoute().query;
     useDocumentTitle(pageMeta);
     currentInstance.$dialogPages = ref([]);
     currentInstance.$systemDialogPages = ref([]);
@@ -5961,10 +5961,9 @@ _sfc_main$i.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/index-vapor.vue");
   return _sfc_setup$i ? _sfc_setup$i(props2, ctx) : void 0;
 };
-function createVaporPageRouteComponent(pageComponent, getPageProps) {
+function createVaporPageRouteComponent(pageComponent) {
   return Object.assign({}, _sfc_main$i, {
-    __uniPageComponent: pageComponent,
-    __uniGetPageProps: getPageProps
+    __uniPageComponent: pageComponent
   });
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;

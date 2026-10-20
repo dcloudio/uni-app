@@ -26,7 +26,7 @@ import {
 
 import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
 import { useBackgroundColorContent } from '../../../helpers/useBackgroundColorContent'
-import { providePageMeta } from '../../setup/provide'
+import { providePageMeta, usePageRoute } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
 import { stringifyQuery } from '@dcloudio/uni-shared'
 
@@ -58,7 +58,8 @@ const currentInstance = getCurrentInstance()!
 const attrs = currentInstance.attrs
 const routeComponent = currentInstance.type as VaporPageRouteComponent
 const pageComponent = routeComponent.__uniPageComponent
-const pageProps = routeComponent.__uniGetPageProps()
+// 单页面不会安装 Router，统一使用框架的路由取参逻辑。
+const pageProps = usePageRoute().query
 
 useDocumentTitle(pageMeta)
 

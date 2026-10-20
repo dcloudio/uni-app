@@ -93,12 +93,9 @@ function generatePagesJsonCode(
   const pageComponentImport = isWebVapor
     ? 'createVaporPageRouteComponent'
     : 'PageComponent'
-  const vueRouterImport = isWebVapor
-    ? "import { useRoute } from 'vue-router'\n"
-    : ''
   return `
 import { ${vueImports} } from 'vue'
-${vueRouterImport}import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
+import { ${pageComponentImport}, useI18n, setupWindow, setupPage } from '@dcloudio/uni-h5'
 import { appId, appName, appVersion, appVersionCode, debug, networkTimeout, router, async, sdkConfigs, qqMapKey, googleMapKey, aMapKey, bMapKey, aMapSecurityJsCode, aMapServiceHost, ${vueType}, locale, fallbackLocale, darkmode, themeConfig } from './${MANIFEST_JSON_JS}'
 const locales = import.meta.glob('./locale/*.json', { eager: true })
 ${importLayoutComponentsCode}
@@ -306,7 +303,7 @@ function generatePageRoute(
   if (isWebVapor) {
     return `{
   path:'/${isEntry ? '' : path}',${alias}
-  component:createVaporPageRouteComponent(${pageComponent},()=>useRoute().query),
+  component:createVaporPageRouteComponent(${pageComponent}),
   loader: ${pageComponent}Loader,
   meta: ${JSON.stringify(meta)}
 }`
