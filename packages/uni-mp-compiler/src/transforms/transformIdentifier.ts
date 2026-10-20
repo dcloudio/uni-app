@@ -122,7 +122,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       const { props, tagType } = node
       const virtualHost = !!(
         context.miniProgram.component?.mergeVirtualHostAttributes &&
-        context.rootNode === node
+        context.virtualHostRootNodes.has(node)
       )
 
       const isElement = tagType === ElementTypes.ELEMENT
@@ -472,7 +472,7 @@ function rewriteAlipayStyleIsolationClasses(
     ) ||
     !!(
       context.miniProgram.component?.mergeVirtualHostAttributes &&
-      context.rootNode === node
+      context.virtualHostRootNodes.has(node)
     )
 
   for (const prop of node.props) {

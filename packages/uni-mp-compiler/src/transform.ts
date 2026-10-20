@@ -33,7 +33,9 @@ import {
   type RootNode,
   TO_DISPLAY_STRING,
   type TemplateChildNode,
+  findDir,
   helperNameMap,
+  isSlotOutlet,
   locStub,
 } from '@vue/compiler-core'
 import {
@@ -135,7 +137,7 @@ export interface TransformContext
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
   isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
-  rootNode: TemplateChildNode | null
+  virtualHostRootNodes: Set<ElementNode>
   elementRefIndex: number
 }
 
@@ -167,7 +169,7 @@ export function isScopedSlotVFor({ source }: CodegenVForScope) {
 
 export function transform(root: CodegenRootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
-  findRootNode(root, context)
+  findVirtualHostRootNodes(root.children, context.virtualHostRootNodes)
   traverseNode(root, context)
   root.renderData = createRenderDataExpr(context.scope.properties, context)
   // finalize meta information
@@ -178,12 +180,36 @@ export function transform(root: CodegenRootNode, options: TransformOptions) {
   return context
 }
 
-function findRootNode(root: RootNode, context: TransformContext) {
-  const children = root.children.filter(
-    (node) => isElementNode(node) && node.tag !== 'template'
+function findVirtualHostRootNodes(
+  children: TemplateChildNode[],
+  rootNodes: Set<ElementNode>
+) {
+  const nodes = children.filter(
+    (node) =>
+      node.type !== NodeTypes.COMMENT &&
+      !(node.type === NodeTypes.TEXT && !node.content.trim())
   )
-  if (children.length === 1) {
-    context.rootNode = children[0]
+  // 多个顶层节点只有属于同一条 v-if 链时，才可能产生可透传属性的单根。
+  if (
+    nodes.length > 1 &&
+    !nodes.every(
+      (node, index) =>
+        isElementNode(node) &&
+        findDir(node, index === 0 ? 'if' : /^(else|else-if)$/, true)
+    )
+  ) {
+    return
+  }
+  for (const node of nodes) {
+    if (!isElementNode(node) || findDir(node, 'for', true)) {
+      continue
+    }
+    if (node.tag === 'template') {
+      // 分支之间分别判断，某个分支的 Fragment 不影响其他分支的单根。
+      findVirtualHostRootNodes(node.children, rootNodes)
+    } else if (!isSlotOutlet(node)) {
+      rootNodes.add(node)
+    }
   }
 }
 
@@ -504,7 +530,7 @@ export function createTransformContext(
     isMiniProgramComponent(name) {
       return miniProgramComponents[name]
     },
-    rootNode: null,
+    virtualHostRootNodes: new Set(),
     elementRefIndex: 0,
   }
 
