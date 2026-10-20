@@ -18,15 +18,15 @@
 
 ## alpha版
 
-### 5.31.2026093020-alpha
+### 5.32.2026101609-alpha
 
-[点击下载蒸汽模式SDK-5.31](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS-Vapor/UniAppXSDK-iOS-Vapor@5.31.zip)
+[点击下载蒸汽模式SDK-5.31](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS-Vapor/UniAppXSDK-iOS-Vapor@5.32.zip)
 
-[点击下载 VDOM 模式SDK-5.31](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS/UniAppX-iOS%405.31.zip)
+[点击下载 VDOM 模式SDK-5.31](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS/UniAppX-iOS%405.32.zip)
 
-+ [更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.31.2026093020-alpha.html)
++ [更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.32.2026101609-alpha.html)
 
 
 **[历史版本](https://pan.baidu.com/s/130Rvlh2jdsp3aJ4YtigoJQ?pwd=xy7s)**
  
-**[历史版本更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.26.2026091402-alpha.html)**
+**[历史版本更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.31.2026093020-alpha.html)**
