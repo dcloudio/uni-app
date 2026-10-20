@@ -1820,12 +1820,13 @@ function findUniTarget(target) {
   return target;
 }
 function createNativeEvent(evt, htmlElement = false) {
-  const { type, timeStamp, target, currentTarget } = evt;
+  const { target, currentTarget } = evt;
   let realTarget, realCurrentTarget;
   {
     realTarget = htmlElement ? target : findUniTarget(target);
     realCurrentTarget = currentTarget;
   }
+  const { type, timeStamp } = evt;
   const event = {
     type,
     timeStamp,

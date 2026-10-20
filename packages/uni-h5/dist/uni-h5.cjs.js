@@ -509,7 +509,7 @@ function findUniTarget(target) {
   return target;
 }
 function createNativeEvent(evt, htmlElement = false) {
-  const { type, timeStamp, target, currentTarget } = evt;
+  const { target, currentTarget } = evt;
   let realTarget, realCurrentTarget;
   {
     realTarget = uniShared.normalizeTarget(
@@ -517,6 +517,7 @@ function createNativeEvent(evt, htmlElement = false) {
     );
     realCurrentTarget = uniShared.normalizeTarget(currentTarget);
   }
+  const { type, timeStamp } = evt;
   const event = {
     type,
     timeStamp,

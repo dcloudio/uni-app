@@ -870,7 +870,7 @@
   function getCustomDataset(el) {
     return extend({}, el.dataset, el.__uniDataset);
   }
-  var unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, "g");
+  var unitRE = /* @__PURE__ */ new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, "g");
   function toFixed(number, precision) {
     var multiplier = Math.pow(10, precision + 1);
     var wholeNumber = Math.floor(number * multiplier);
@@ -1066,55 +1066,58 @@
     };
     return newFn;
   }
-  var E = function() {
-  };
-  E.prototype = {
-    _id: 1,
-    on: function(name, callback, ctx2) {
-      var e2 = this.e || (this.e = {});
-      (e2[name] || (e2[name] = [])).push({
-        fn: callback,
-        ctx: ctx2,
-        _id: this._id
-      });
-      return this._id++;
-    },
-    once: function(name, callback, ctx2) {
-      var self2 = this;
-      function listener() {
-        self2.off(name, listener);
-        callback.apply(ctx2, arguments);
-      }
-      listener._ = callback;
-      return this.on(name, listener, ctx2);
-    },
-    emit: function(name) {
-      var data = [].slice.call(arguments, 1);
-      var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-      var i2 = 0;
-      var len = evtArr.length;
-      for (i2; i2 < len; i2++) {
-        evtArr[i2].fn.apply(evtArr[i2].ctx, data);
-      }
-      return this;
-    },
-    off: function(name, event) {
-      var e2 = this.e || (this.e = {});
-      var evts = e2[name];
-      var liveEvents = [];
-      if (evts && event) {
-        for (var i2 = evts.length - 1; i2 >= 0; i2--) {
-          if (evts[i2].fn === event || evts[i2].fn._ === event || evts[i2]._id === event) {
-            evts.splice(i2, 1);
-            break;
-          }
+  var E = /* @__PURE__ */ (() => {
+    var E2 = function() {
+    };
+    E2.prototype = {
+      _id: 1,
+      on: function(name, callback, ctx2) {
+        var e2 = this.e || (this.e = {});
+        (e2[name] || (e2[name] = [])).push({
+          fn: callback,
+          ctx: ctx2,
+          _id: this._id
+        });
+        return this._id++;
+      },
+      once: function(name, callback, ctx2) {
+        var self2 = this;
+        function listener() {
+          self2.off(name, listener);
+          callback.apply(ctx2, arguments);
         }
-        liveEvents = evts;
+        listener._ = callback;
+        return this.on(name, listener, ctx2);
+      },
+      emit: function(name) {
+        var data = [].slice.call(arguments, 1);
+        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+        var i2 = 0;
+        var len = evtArr.length;
+        for (i2; i2 < len; i2++) {
+          evtArr[i2].fn.apply(evtArr[i2].ctx, data);
+        }
+        return this;
+      },
+      off: function(name, event) {
+        var e2 = this.e || (this.e = {});
+        var evts = e2[name];
+        var liveEvents = [];
+        if (evts && event) {
+          for (var i2 = evts.length - 1; i2 >= 0; i2--) {
+            if (evts[i2].fn === event || evts[i2].fn._ === event || evts[i2]._id === event) {
+              evts.splice(i2, 1);
+              break;
+            }
+          }
+          liveEvents = evts;
+        }
+        liveEvents.length ? e2[name] = liveEvents : delete e2[name];
+        return this;
       }
-      liveEvents.length ? e2[name] = liveEvents : delete e2[name];
-      return this;
-    }
-  };
+    };
+    return E2;
+  })();
   var E$1 = E;
   var isObject$1 = (val) => val !== null && typeof val === "object";
   var defaultDelimiters = ["{", "}"];
@@ -7468,8 +7471,6 @@
   function createNativeEvent(evt) {
     var htmlElement = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
     var {
-      type,
-      timeStamp,
       target,
       currentTarget
     } = evt;
@@ -7478,6 +7479,10 @@
       realTarget = normalizeTarget(htmlElement ? target : findUniTarget(target));
       realCurrentTarget = normalizeTarget(currentTarget);
     }
+    var {
+      type,
+      timeStamp
+    } = evt;
     var event = {
       type,
       timeStamp,
