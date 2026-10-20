@@ -4304,7 +4304,7 @@ function initPublicPage(route) {
 }
 function initPage(vm) {
   let route;
-  route = vueRouter.useRoute();
+  route = usePageRoute();
   const page = initPublicPage(route);
   const routeMeta = route.meta;
   Object.defineProperty(page, "eventChannel", {

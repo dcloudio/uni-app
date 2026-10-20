@@ -26,6 +26,9 @@ import {
   ON_UNLOAD,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
+//#if _X_VAPOR_
+import { usePageRoute } from './provide'
+//#endif
 import {
   type NavigateOptions,
   type NavigateType,
@@ -192,7 +195,8 @@ export function initPublicPage(route: RouteLocationNormalizedLoaded) {
 export function initPage(vm: ComponentPublicInstance) {
   let route: RouteLocationNormalizedLoaded
   //#if _X_VAPOR_
-  route = useRoute()
+  // 单页面已裁剪 Router，页面初始化复用框架的单页路由取参逻辑。
+  route = usePageRoute() as RouteLocationNormalizedLoaded
   //#endif
   //#if !_X_VAPOR_
   route = vm.$route
