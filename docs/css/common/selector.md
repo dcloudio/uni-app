@@ -2,10 +2,10 @@
 
 App平台，支持的选择器比web少。这源于开发进度、性能、运行时体积、AI友好度等多方面考虑。
 
-支持过多的选择器，会引入复杂的css优先级问题，这会导致性能下降，AI也容易搞错css优先级。
-简单的class，可能多写几行代码，但对AI来说这不算什么，反而复杂的css权重让AI难以排查问题。\
+支持过多的选择器，会引入复杂的css优先级问题，这会导致性能下降，AI也容易搞错css优先级。\
+简单的class，可能多写几行代码，但对AI来说这不算什么，反而复杂的css权重让AI难以排查问题。
 
-uni-app x 额外引入了page选择器，该选择器是小程序规范，uni-app x 中全平台均支持。
+uni-app x 额外引入了 `page` 选择器，该选择器是小程序规范，uni-app x 中全平台均支持。
 
 | 名称 | 示例 | Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) | 描述 |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
