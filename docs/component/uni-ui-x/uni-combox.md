@@ -147,25 +147,25 @@ uni-combox 组合框组件。
 
 
 ### 兼容性 <Help />
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 5.07 | 5.31 |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 5.31 | 5.31 | 5.31 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 |
 
 
 ### 属性 
 | 名称 | 类型 | 描述 |
 | :- | :- | :- |
-| options | string\[\] |   |
-| modelValue | string |   |
-| placeholder | string |   |
-| disabled | boolean |   |
-| arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| optionsViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| optionTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| optionTextHighlightClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| resultTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| @selectchange | Function | 从候选项选中时触发 |
-| @update:modelValue | Event |   |
+| options | string\[\] | 候选字符串数组 |
+| modelValue | string | 当前值，支持 v-model 双向绑定 |
+| placeholder | string | 占位文字 |
+| disabled | boolean | 是否禁用 |
+| arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 右侧箭头自定义样式类 |
+| optionsViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选浮层外层自定义样式类 |
+| optionTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选项文字自定义样式类 |
+| optionTextHighlightClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 候选项高亮自定义样式类 |
+| resultTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 单选模式结果文字自定义样式类 |
+| @selectchange | Function | 从候选项选中时触发，参数为选中的值，类型为 string |
+| @update:modelValue | Event | 值更新时触发，参数为当前值，类型为 string |
 
 <!-- UTSCOMJSON.uni-combox.fileFormates -->
 
