@@ -1,4 +1,4 @@
-const unitRE = new RegExp(
+const unitRE = /*#__PURE__*/ new RegExp(
   `"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`,
   'g'
 )

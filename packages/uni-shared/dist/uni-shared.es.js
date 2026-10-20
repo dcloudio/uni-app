@@ -47,10 +47,11 @@ const BUILT_IN_TAG_NAMES = [
     'location-picker',
     'location-view',
 ];
-const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
-const H5_BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio');
-const H5_BUILT_IN_TAGS = H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
-const TAGS = [
+// 这些纯初始化在未使用组件名单时应被移除，避免公共工具导入带入无关运行时代码。
+const BUILT_IN_TAGS = /*#__PURE__*/ BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
+const H5_BUILT_IN_TAG_NAMES = /*#__PURE__*/ BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio');
+const H5_BUILT_IN_TAGS = /*#__PURE__*/ H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
+const TAGS = /*#__PURE__*/ [
     'app',
     'layout',
     'content',
@@ -155,7 +156,7 @@ const UVUE_BUILT_IN_TAGS = [
     // 'radio',
     // 'radio-group',
 ];
-const UVUE_WEB_BUILT_IN_TAGS = [
+const UVUE_WEB_BUILT_IN_TAGS = /*#__PURE__*/ [
     'page-container',
     'list-view',
     'list-item',
@@ -165,7 +166,7 @@ const UVUE_WEB_BUILT_IN_TAGS = [
     'loading-element',
     'loading',
 ].map((tag) => 'uni-' + tag);
-const UVUE_MP_BUILT_IN_TAGS = [
+const UVUE_MP_BUILT_IN_TAGS = /*#__PURE__*/ [
     'list-view',
     'list-item',
     'sticky-section',
@@ -180,11 +181,11 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'form',
     'switch',
 ];
-const UVUE_HARMONY_BUILT_IN_TAGS = [
+const UVUE_HARMONY_BUILT_IN_TAGS = /*#__PURE__*/ (() => [
     // TODO 列出完整列表
     ...BUILT_IN_TAG_NAMES,
     'volume-panel',
-];
+])();
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
     'u-image',
@@ -198,7 +199,7 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-rich-text',
 ];
 const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media'];
-const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag);
+const UNI_UI_CONFLICT_TAGS = /*#__PURE__*/ ['list-item'].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
     if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
         return false;
@@ -292,10 +293,10 @@ function isAppUVueBuiltInEasyComponent(tag) {
     return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
 }
 // 主要是指前端实现的组件列表
-const UVUE_CUSTOM_COMPONENTS = [
+const UVUE_CUSTOM_COMPONENTS = /*#__PURE__*/ (() => [
     ...NVUE_CUSTOM_COMPONENTS,
     ...UVUE_BUILT_IN_EASY_COMPONENTS,
-];
+])();
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -1493,7 +1494,7 @@ function getCustomDataset(el) {
     return extend({}, el.dataset, el.__uniDataset);
 }
 
-const unitRE = new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
+const unitRE = /*#__PURE__*/ new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
 function toFixed(number, precision) {
     const multiplier = Math.pow(10, precision + 1);
     const wholeNumber = Math.floor(number * multiplier);
@@ -1614,6 +1615,23 @@ function scrollTo(scrollTop, duration, isH5) {
         });
     };
     scrollTo(duration);
+}
+
+// Web 样式转换沿用 createRpx2Unit 默认的 rem 比例和五位精度。
+// 跳过字符串、URL、自定义属性名及 var() 引用（含非 ASCII 和 CSS 转义），
+// 直接替换以保留 cssText 的重复声明与回退值，不解析或重建样式对象。
+const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE = /[ru]px/;
+function normalizeRpx(value) {
+    if (!hasRpxRE.test(value))
+        return value;
+    return value.replace(rpxRE, (match, number) => {
+        if (!number)
+            return match;
+        const whole = Math.floor(parseFloat(number) * (10 / 320) * 1000000);
+        const result = (Math.round(whole / 10) * 10) / 1000000;
+        return result === 0 ? '0' : `${result}rem`;
+    });
 }
 
 const encode = encodeURIComponent;
@@ -2415,62 +2433,66 @@ const invokeCreateErrorHandler = once((app, createErrorHandler) => {
     return createErrorHandler(app);
 });
 
-const E = function () {
-    // Keep this empty so it's easier to inherit from
-    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
-};
-E.prototype = {
-    _id: 1,
-    on: function (name, callback, ctx) {
-        var e = this.e || (this.e = {});
-        (e[name] || (e[name] = [])).push({
-            fn: callback,
-            ctx: ctx,
-            _id: this._id,
-        });
-        return this._id++;
-    },
-    once: function (name, callback, ctx) {
-        var self = this;
-        function listener() {
-            self.off(name, listener);
-            callback.apply(ctx, arguments);
-        }
-        listener._ = callback;
-        return this.on(name, listener, ctx);
-    },
-    emit: function (name) {
-        var data = [].slice.call(arguments, 1);
-        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
-        var i = 0;
-        var len = evtArr.length;
-        for (i; i < len; i++) {
-            evtArr[i].fn.apply(evtArr[i].ctx, data);
-        }
-        return this;
-    },
-    off: function (name, event) {
-        var e = this.e || (this.e = {});
-        var evts = e[name];
-        var liveEvents = [];
-        if (evts && event) {
-            for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === event ||
-                    evts[i].fn._ === event ||
-                    evts[i]._id === event) {
-                    evts.splice(i, 1);
-                    break;
-                }
+// 构造函数及原型作为整体初始化，未使用 Emitter 时可完整移除。
+const E = /*#__PURE__*/ (() => {
+    const E = function () {
+        // Keep this empty so it's easier to inherit from
+        // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+    };
+    E.prototype = {
+        _id: 1,
+        on: function (name, callback, ctx) {
+            var e = this.e || (this.e = {});
+            (e[name] || (e[name] = [])).push({
+                fn: callback,
+                ctx: ctx,
+                _id: this._id,
+            });
+            return this._id++;
+        },
+        once: function (name, callback, ctx) {
+            var self = this;
+            function listener() {
+                self.off(name, listener);
+                callback.apply(ctx, arguments);
             }
-            liveEvents = evts;
-        }
-        // Remove event from queue to prevent memory leak
-        // Suggested by https://github.com/lazd
-        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
-        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
-        return this;
-    },
-};
+            listener._ = callback;
+            return this.on(name, listener, ctx);
+        },
+        emit: function (name) {
+            var data = [].slice.call(arguments, 1);
+            var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+            var i = 0;
+            var len = evtArr.length;
+            for (i; i < len; i++) {
+                evtArr[i].fn.apply(evtArr[i].ctx, data);
+            }
+            return this;
+        },
+        off: function (name, event) {
+            var e = this.e || (this.e = {});
+            var evts = e[name];
+            var liveEvents = [];
+            if (evts && event) {
+                for (var i = evts.length - 1; i >= 0; i--) {
+                    if (evts[i].fn === event ||
+                        evts[i].fn._ === event ||
+                        evts[i]._id === event) {
+                        evts.splice(i, 1);
+                        break;
+                    }
+                }
+                liveEvents = evts;
+            }
+            // Remove event from queue to prevent memory leak
+            // Suggested by https://github.com/lazd
+            // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+            liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+            return this;
+        },
+    };
+    return E;
+})();
 var E$1 = E;
 
 const borderStyles = {
@@ -2833,4 +2855,4 @@ const GLOBALS_ALLOWED = 'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseI
     'uni';
 const isGloballyAllowed = /*#__PURE__*/ makeMap(GLOBALS_ALLOWED);
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, H5_BUILT_IN_TAGS, H5_BUILT_IN_TAG_NAMES, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_COPY_URL, ON_ERROR, ON_EXIT, ON_HIDE, ON_HOST_THEME_CHANGE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_LIVE_MOUNT, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_TITLE_CLICK, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_UPLOAD_DOUYIN_VIDEO, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_AD_PLUGINS, UNI_SAFE_AREA_INSET_BOTTOM, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STATUS_BAR_HEIGHT, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UTS, UTSJSONObject, UTSValueIterable, UVUE_BUILT_IN_TAGS, UVUE_HARMONY_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_MP_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniDOMStringMap, UniElement, UniError, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, VIRTUAL_HOST_ID, VIRTUAL_HOST_STYLE, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, batchGetPartClass, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniDOMStringMap, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getPartClass, getUniElementPage, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeArrayFnsWithResults, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppHarmonyUVueNativeTag, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isAppVoidTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isDom2AppNativeTag, isDom2AppUserVueComponentTag, isDom2AppVueComponentTag, isDom2VueComponentTag, isDom2WebVueComponentTag, isGloballyAllowed, isH5CustomElement, isH5NativeTag, isIntegerKey, isMPBuiltInComponent, isMiniProgramNativeTag, isMiniProgramUVueNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, isWebBuiltInComponent, normalizeClass, normalizeDataset, normalizeDatasetAttrName, normalizeDatasetKey, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, normalizeVaporProps, normalizeVaporStyle, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, setUniElementPage, sortObject, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, H5_BUILT_IN_TAGS, H5_BUILT_IN_TAG_NAMES, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_COPY_URL, ON_ERROR, ON_EXIT, ON_HIDE, ON_HOST_THEME_CHANGE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_LIVE_MOUNT, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_TITLE_CLICK, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_UPLOAD_DOUYIN_VIDEO, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_AD_PLUGINS, UNI_SAFE_AREA_INSET_BOTTOM, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STATUS_BAR_HEIGHT, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UTS, UTSJSONObject, UTSValueIterable, UVUE_BUILT_IN_TAGS, UVUE_HARMONY_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_MP_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniDOMStringMap, UniElement, UniError, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, VIRTUAL_HOST_ID, VIRTUAL_HOST_STYLE, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, batchGetPartClass, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniDOMStringMap, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getPartClass, getUniElementPage, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeArrayFnsWithResults, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppHarmonyUVueNativeTag, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isAppVoidTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isDom2AppNativeTag, isDom2AppUserVueComponentTag, isDom2AppVueComponentTag, isDom2VueComponentTag, isDom2WebVueComponentTag, isGloballyAllowed, isH5CustomElement, isH5NativeTag, isIntegerKey, isMPBuiltInComponent, isMiniProgramNativeTag, isMiniProgramUVueNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, isWebBuiltInComponent, normalizeClass, normalizeDataset, normalizeDatasetAttrName, normalizeDatasetKey, normalizeEventType, normalizeProps, normalizeRpx, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, normalizeVaporProps, normalizeVaporStyle, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, setUniElementPage, sortObject, stringifyQuery, updateElementStyle };

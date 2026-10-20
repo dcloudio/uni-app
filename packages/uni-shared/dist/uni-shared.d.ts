@@ -420,6 +420,8 @@ export declare function normalizeEventType(type: string, options?: AddEventListe
 
 export declare function normalizeProps(props: Record<string, any> | null): Record<string, any> | null;
 
+export declare function normalizeRpx(value: string): string;
+
 export declare function normalizeStyle(value: unknown): NormalizedStyle | string | undefined;
 
 export declare function normalizeStyles<T extends object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;

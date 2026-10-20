@@ -48,15 +48,20 @@ export const BUILT_IN_TAG_NAMES = [
   'location-view',
 ]
 
-export const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
+// 这些纯初始化在未使用组件名单时应被移除，避免公共工具导入带入无关运行时代码。
+export const BUILT_IN_TAGS = /*#__PURE__*/ BUILT_IN_TAG_NAMES.map(
+  (tag) => 'uni-' + tag
+)
 
-export const H5_BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES.filter(
+export const H5_BUILT_IN_TAG_NAMES = /*#__PURE__*/ BUILT_IN_TAG_NAMES.filter(
   (tag) => tag !== 'audio'
 )
 
-export const H5_BUILT_IN_TAGS = H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
+export const H5_BUILT_IN_TAGS = /*#__PURE__*/ H5_BUILT_IN_TAG_NAMES.map(
+  (tag) => 'uni-' + tag
+)
 
-export const TAGS = [
+export const TAGS = /*#__PURE__*/ [
   'app',
   'layout',
   'content',
@@ -164,7 +169,7 @@ export const UVUE_BUILT_IN_TAGS = [
   // 'radio-group',
 ]
 
-export const UVUE_WEB_BUILT_IN_TAGS = [
+export const UVUE_WEB_BUILT_IN_TAGS = /*#__PURE__*/ [
   'page-container',
   'list-view',
   'list-item',
@@ -175,7 +180,7 @@ export const UVUE_WEB_BUILT_IN_TAGS = [
   'loading',
 ].map((tag) => 'uni-' + tag)
 
-export const UVUE_MP_BUILT_IN_TAGS = [
+export const UVUE_MP_BUILT_IN_TAGS = /*#__PURE__*/ [
   'list-view',
   'list-item',
   'sticky-section',
@@ -192,11 +197,11 @@ export const UVUE_IOS_BUILT_IN_TAGS = [
   'switch',
 ]
 
-export const UVUE_HARMONY_BUILT_IN_TAGS = [
+export const UVUE_HARMONY_BUILT_IN_TAGS = /*#__PURE__*/ (() => [
   // TODO 列出完整列表
   ...BUILT_IN_TAG_NAMES,
   'volume-panel',
-]
+])()
 
 export const NVUE_U_BUILT_IN_TAGS = [
   'u-text',
@@ -213,7 +218,9 @@ export const NVUE_U_BUILT_IN_TAGS = [
 
 export const UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = ['match-media']
 
-export const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag)
+export const UNI_UI_CONFLICT_TAGS = /*#__PURE__*/ ['list-item'].map(
+  (tag) => 'uni-' + tag
+)
 
 export function isBuiltInComponent(tag: string) {
   if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
@@ -326,10 +333,10 @@ export function isAppUVueBuiltInEasyComponent(tag: string) {
   return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)
 }
 // 主要是指前端实现的组件列表
-const UVUE_CUSTOM_COMPONENTS = [
+const UVUE_CUSTOM_COMPONENTS = /*#__PURE__*/ (() => [
   ...NVUE_CUSTOM_COMPONENTS,
   ...UVUE_BUILT_IN_EASY_COMPONENTS,
-]
+])()
 
 export function isAppUVueNativeTag(tag: string) {
   // 前端实现的内置组件都会注册一个根组件

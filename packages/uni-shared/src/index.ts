@@ -1,6 +1,7 @@
 export * from './vue'
 export * from './log'
 export * from './dom'
+export * from './rpx'
 export * from './url'
 export * from './nvue'
 export * from './plus'
