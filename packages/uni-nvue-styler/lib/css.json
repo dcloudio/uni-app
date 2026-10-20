@@ -26,12 +26,6 @@
                 "unixVaporVer": "5.25"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "-"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -59,12 +53,6 @@
                 "unixVaporVer": "5.25"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "-"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -88,12 +76,6 @@
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "5.25"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "-"
           }
         },
         "web": {
@@ -130,12 +112,6 @@
                 "unixVaporVer": "5.25"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -162,12 +138,6 @@
                 "unixVaporVer": "5.25"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -191,12 +161,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "5.25"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -254,12 +218,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -284,12 +242,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -318,12 +270,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -350,12 +296,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -379,12 +319,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -434,12 +368,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -464,12 +392,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -498,12 +420,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -528,12 +444,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -562,12 +472,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -591,12 +495,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -649,12 +547,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -679,12 +571,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -713,12 +599,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -743,12 +623,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -777,12 +651,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -806,12 +674,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -859,12 +721,6 @@
                 "unixVer": "4.61"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -889,12 +745,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -923,12 +773,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -955,12 +799,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -984,12 +822,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1038,12 +870,6 @@
             "unixVaporVer": "5.33"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -1089,12 +915,6 @@
             "unixVaporVer": "5.32"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -1138,12 +958,6 @@
             "uniVer": "x",
             "unixVer": "x",
             "unixVaporVer": "5.33"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1193,12 +1007,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1223,12 +1031,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1257,12 +1059,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1287,12 +1083,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1321,12 +1111,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1350,12 +1134,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1408,12 +1186,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1438,12 +1210,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1472,12 +1238,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1502,12 +1262,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1536,12 +1290,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1565,12 +1313,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1622,12 +1364,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1653,12 +1389,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1688,12 +1418,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1718,12 +1442,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -1752,12 +1470,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1781,12 +1493,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1835,12 +1541,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1895,12 +1595,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -1924,12 +1618,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -1980,12 +1668,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2009,12 +1691,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2065,12 +1741,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2094,12 +1764,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2150,12 +1814,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2179,12 +1837,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2235,12 +1887,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2265,12 +1911,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2299,12 +1939,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2331,12 +1965,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2360,12 +1988,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2428,12 +2050,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2459,12 +2075,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2494,12 +2104,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2525,12 +2129,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2560,12 +2158,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2593,12 +2185,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2622,12 +2208,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2690,12 +2270,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2720,12 +2294,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2754,12 +2322,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2783,12 +2345,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -2848,12 +2404,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2879,12 +2429,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2914,12 +2458,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -2945,12 +2483,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -2980,12 +2512,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3009,12 +2535,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3051,7 +2571,7 @@
     },
     {
       "name": "align-self",
-       "description": "align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方向的对齐方式，覆盖父元素设置的 align-items 值。",
+      "description": "align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方向的对齐方式，覆盖父元素设置的 align-items 值。",
       "restrictions": [
         "enum"
       ],
@@ -3076,12 +2596,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3111,12 +2625,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3142,12 +2650,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3177,12 +2679,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3208,12 +2704,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3243,12 +2733,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3272,12 +2756,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3329,12 +2807,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3360,12 +2832,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3395,12 +2861,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3426,12 +2886,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3461,12 +2915,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3494,12 +2942,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3523,12 +2965,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3594,12 +3030,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3624,12 +3054,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -3658,12 +3082,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3687,12 +3105,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3743,12 +3155,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -3792,12 +3198,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3853,12 +3253,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3885,12 +3279,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -3914,12 +3302,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -3971,12 +3353,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4001,12 +3377,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4035,12 +3405,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4065,12 +3429,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4099,12 +3457,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4129,12 +3481,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4163,12 +3509,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4192,12 +3532,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4257,12 +3591,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4290,12 +3618,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4319,12 +3641,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4378,12 +3694,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4408,12 +3718,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4442,12 +3746,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4472,12 +3770,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4506,12 +3798,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4535,12 +3821,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4593,12 +3873,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4625,12 +3899,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4654,12 +3922,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4704,12 +3966,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4759,12 +4015,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4791,12 +4041,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4820,12 +4064,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -4880,12 +4118,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4910,12 +4142,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -4944,12 +4170,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -4976,12 +4196,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5005,12 +4219,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5055,12 +4263,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5112,12 +4314,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5145,12 +4341,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5174,12 +4364,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5230,12 +4414,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5261,12 +4439,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -5296,12 +4468,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5325,12 +4491,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5379,12 +4539,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -5427,12 +4581,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5480,12 +4628,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -5531,12 +4673,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -5580,12 +4716,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5637,12 +4767,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5666,12 +4790,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5722,12 +4840,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5751,12 +4863,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5807,12 +4913,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5836,12 +4936,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5892,12 +4986,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -5921,12 +5009,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -5978,12 +5060,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6007,12 +5083,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6061,12 +5131,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6118,12 +5182,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6148,12 +5206,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6182,12 +5234,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6214,12 +5260,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6243,12 +5283,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6298,12 +5332,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6328,12 +5356,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6362,12 +5384,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6394,12 +5410,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6423,12 +5433,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6478,12 +5482,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6508,12 +5506,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6542,12 +5534,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6574,12 +5560,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6603,12 +5583,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6658,12 +5632,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6688,12 +5656,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6722,12 +5684,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6754,12 +5710,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6783,12 +5733,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -6838,12 +5782,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6868,12 +5806,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -6902,12 +5834,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6934,12 +5860,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -6963,12 +5883,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7021,12 +5935,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7052,12 +5960,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7087,12 +5989,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7116,12 +6012,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7174,12 +6064,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7205,12 +6089,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7240,12 +6118,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7269,12 +6141,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7327,12 +6193,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7358,12 +6218,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7393,12 +6247,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7422,12 +6270,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7480,12 +6322,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7511,12 +6347,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7546,12 +6376,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7575,12 +6399,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7632,12 +6450,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7663,12 +6475,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -7698,12 +6504,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -7727,12 +6527,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7777,12 +6571,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7833,12 +6621,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -7885,12 +6667,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -7941,12 +6717,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -7993,12 +6763,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8050,12 +6814,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -8099,12 +6857,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8152,12 +6904,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -8203,12 +6949,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -8252,12 +6992,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8307,12 +7041,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -8358,12 +7086,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8413,12 +7135,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -8466,12 +7182,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -8515,12 +7225,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8576,12 +7280,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8641,12 +7339,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -8673,12 +7365,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -8702,12 +7388,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -8765,12 +7445,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -8795,12 +7469,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -8830,12 +7498,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -8861,12 +7523,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -8896,12 +7552,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -8926,12 +7576,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -8961,12 +7605,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -8994,12 +7632,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9024,12 +7656,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -9059,12 +7685,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9092,12 +7712,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9121,12 +7735,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -9183,12 +7791,6 @@
             "unixVaporVer": "x"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -9240,12 +7842,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9270,12 +7866,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -9304,12 +7894,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9334,12 +7918,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -9378,12 +7956,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -9433,12 +8005,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -9492,12 +8058,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9522,12 +8082,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -9556,12 +8110,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9588,12 +8136,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9617,12 +8159,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -9677,12 +8213,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "-"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9710,12 +8240,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "-"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9739,12 +8263,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -9798,12 +8316,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9830,12 +8342,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9860,12 +8366,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -9895,12 +8395,6 @@
                 "unixVaporVer": "5.25"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -9924,12 +8418,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -9990,12 +8478,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10020,12 +8502,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -10054,12 +8530,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10086,12 +8556,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10116,12 +8580,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -10176,12 +8634,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -10234,12 +8686,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10266,12 +8712,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10295,12 +8735,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -10357,12 +8791,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "-"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10386,12 +8814,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -10495,12 +8917,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -10557,12 +8973,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10588,12 +8998,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -10623,12 +9027,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10654,12 +9052,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -10689,12 +9081,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10720,12 +9106,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -10755,12 +9135,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "x"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "x"
@@ -10784,12 +9158,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -10849,12 +9217,6 @@
                 "unixVaporVer": "5.31"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "-"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10882,12 +9244,6 @@
                 "unixVaporVer": "5.31"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "-"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -10911,12 +9267,6 @@
             "uniVer": "√",
             "unixVer": "x",
             "unixVaporVer": "5.31"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "-"
           }
         },
         "web": {
@@ -10975,12 +9325,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -11004,12 +9348,6 @@
             "uniVer": "x",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -11064,12 +9402,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -11109,12 +9441,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -11151,12 +9477,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -11499,12 +9819,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12050,12 +10364,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12080,12 +10388,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12114,12 +10416,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12144,12 +10440,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12178,12 +10468,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12208,12 +10492,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12242,12 +10520,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12274,12 +10546,6 @@
                 "unixVaporVer": "x"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12304,12 +10570,6 @@
                 "uniVer": "4.23",
                 "unixVer": "x",
                 "unixVaporVer": "x"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12385,12 +10645,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12417,12 +10671,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12446,12 +10694,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -12500,12 +10742,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12530,12 +10766,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12564,12 +10794,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12594,12 +10818,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12628,12 +10846,6 @@
                 "unixVaporVer": "5.07"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12658,12 +10870,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.07"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12692,12 +10898,6 @@
                 "unixVaporVer": "5.07"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12722,12 +10922,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.07"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12756,12 +10950,6 @@
                 "unixVaporVer": "5.07"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12786,12 +10974,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12820,12 +11002,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12850,12 +11026,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12884,12 +11054,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12914,12 +11078,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.07"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -12948,12 +11106,6 @@
                 "unixVaporVer": "5.07"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -12978,12 +11130,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.07"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13012,12 +11158,6 @@
                 "unixVaporVer": "5.07"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13042,12 +11182,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.07"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13076,12 +11210,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13106,12 +11234,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13140,12 +11262,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13170,12 +11286,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13204,12 +11314,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13234,12 +11338,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13268,12 +11366,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13300,12 +11392,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13329,12 +11415,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -13385,12 +11465,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -13438,12 +11512,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13468,12 +11536,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13502,12 +11564,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13532,12 +11588,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13566,12 +11616,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13598,12 +11642,6 @@
                 "unixVaporVer": "5.14"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13627,12 +11665,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -13677,12 +11709,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -13732,12 +11758,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13762,12 +11782,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13796,12 +11810,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13826,12 +11834,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13860,12 +11862,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13890,12 +11886,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13924,12 +11914,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -13954,12 +11938,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -13988,12 +11966,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -14020,12 +11992,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -14049,12 +12015,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14106,12 +12066,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -14136,12 +12090,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -14170,12 +12118,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -14200,12 +12142,6 @@
                 "uniVer": "4.23",
                 "unixVer": "4.61",
                 "unixVaporVer": "5.0"
-              }
-            },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
               }
             },
             "web": {
@@ -14234,12 +12170,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -14263,12 +12193,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14322,12 +12246,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -14354,12 +12272,6 @@
                 "unixVaporVer": "5.0"
               }
             },
-            "mp": {
-              "weixin": {
-                "uniVer": "√",
-                "unixVer": "4.41"
-              }
-            },
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
@@ -14383,12 +12295,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14433,12 +12339,6 @@
             "unixVaporVer": "5.0"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14463,12 +12363,6 @@
             "uniVer": "4.23",
             "unixVer": "4.61",
             "unixVaporVer": "5.0"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14497,12 +12391,6 @@
             "unixVaporVer": "5.31"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14529,12 +12417,6 @@
             "unixVaporVer": "5.25"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14559,12 +12441,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14594,12 +12470,6 @@
             "unixVaporVer": "x"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14627,12 +12497,6 @@
             "unixVaporVer": "x"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14657,12 +12521,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14692,12 +12550,6 @@
             "unixVaporVer": "x"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14722,12 +12574,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14757,12 +12603,6 @@
             "unixVaporVer": "x"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14787,12 +12627,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14821,12 +12655,6 @@
             "unixVaporVer": "x"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14851,12 +12679,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
@@ -14885,12 +12707,6 @@
             "unixVaporVer": "x"
           }
         },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
-          }
-        },
         "web": {
           "uniVer": "√",
           "unixVer": "4.0"
@@ -14915,12 +12731,6 @@
             "uniVer": "4.23",
             "unixVer": "x",
             "unixVaporVer": "x"
-          }
-        },
-        "mp": {
-          "weixin": {
-            "uniVer": "√",
-            "unixVer": "4.41"
           }
         },
         "web": {
