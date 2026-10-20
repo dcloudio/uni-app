@@ -49,6 +49,7 @@ export const enum Restriction {
   IMAGE = 'image', // "图片"
   INTEGER = 'integer', // "整数"
   LENGTH = 'length', // "长度"
+  LINE_HEIGHT_LENGTH = 'line-height-length', // "行高长度，额外支持 em"
   LINE_STYLE = 'line-style', // "样式"
   LINE_WIDTH = 'line-width', // "长度"
   NUMBER = 'number', // "数字"

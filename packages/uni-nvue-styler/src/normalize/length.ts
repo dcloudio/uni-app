@@ -11,11 +11,13 @@ import { normalizeCalc } from './calc'
 interface NormalizeLengthOptions {
   removePx?: boolean
   property?: string
+  extraUnits?: readonly string[]
 }
 
 function createNormalizeLength({
   removePx,
   property,
+  extraUnits = [],
 }: NormalizeLengthOptions = {}): Normalize {
   return (v, options) => {
     v = (v || '').toString()
@@ -36,7 +38,7 @@ function createNormalizeLength({
       return { value: v }
     }
 
-    return normalizeLengthValue(v, options, removePx, property)
+    return normalizeLengthValue(v, options, removePx, extraUnits)
   }
 }
 
@@ -44,7 +46,7 @@ export function normalizeLengthValue(
   v: string,
   options: NormalizeOptions,
   removePx?: boolean,
-  property?: string
+  extraUnits: readonly string[] = []
 ): ReturnType<Normalize> {
   const match = v.match(LENGTH_REGEXP)
   if (match) {
@@ -53,12 +55,7 @@ export function normalizeLengthValue(
     if (uvue) {
       if (!unit || (unit === 'px' && removePx)) {
         return { value: parseFloat(v) }
-      } else if (
-        unit === 'px' ||
-        unit === 'rpx' ||
-        // 只有line-height支持em单位
-        (unit === 'em' && property === 'line-height')
-      ) {
+      } else if (unit === 'px' || unit === 'rpx' || extraUnits.includes(unit)) {
         return { value: v }
       }
     } else {
@@ -82,7 +79,7 @@ export function normalizeLengthValue(
   return {
     value: null,
     reason(k, v, result) {
-      return supportedEnumReason(k, v, ['number', 'pixel'])
+      return supportedEnumReason(k, v, ['number', 'pixel', ...extraUnits])
     },
   }
 }
