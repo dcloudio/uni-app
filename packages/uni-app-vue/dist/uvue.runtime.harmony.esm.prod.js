@@ -2377,7 +2377,8 @@ function parseAnimation(value) {
     playState: animations.map(animation => animation.playState).join(',')
   };
 }
-function normalizeLengthValue(v, options, removePx, property) {
+function normalizeLengthValue(v, options, removePx) {
+  var extraUnits = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
   var match = v.match(LENGTH_REGEXP);
   if (match) {
     var unit = match[1];
@@ -2387,9 +2388,7 @@ function normalizeLengthValue(v, options, removePx, property) {
         return {
           value: parseFloat(v)
         };
-      } else if (unit === 'px' || unit === 'rpx' ||
-      // 只有line-height支持em单位
-      unit === 'em' && property === 'line-height') {
+      } else if (unit === 'px' || unit === 'rpx' || extraUnits.includes(unit)) {
         return {
           value: v
         };
@@ -2418,7 +2417,7 @@ function normalizeLengthValue(v, options, removePx, property) {
   return {
     value: null,
     reason(k, v, result) {
-      return supportedEnumReason(k, v, ['number', 'pixel']);
+      return supportedEnumReason(k, v, ['number', 'pixel', ...extraUnits]);
     }
   };
 }
