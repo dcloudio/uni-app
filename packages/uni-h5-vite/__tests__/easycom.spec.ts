@@ -99,6 +99,67 @@ describe('h5 easycom', () => {
     expect(transform(source)).toBe(source)
   })
 
+  test.each(['match-media', 'v-uni-match-media'])(
+    'Web Vapor 为 %s 导入内置组件及 Vapor 样式',
+    (name) => {
+      const code = transform(`const n0 = _createAssetComponent("${name}")`)
+      expect(code).toContain(
+        "import { MatchMedia as __syscom_0 } from '@dcloudio/uni-h5';"
+      )
+      expect(code).toContain(
+        "import '@dcloudio/uni-components/style-x-vapor/match-media.css';"
+      )
+      expect(code).toContain('__createEasycomComponent(__syscom_0)')
+      expect(code).not.toContain('_createAssetComponent')
+    }
+  )
+
+  test.each([true, false])(
+    'match-media 保持项目内置组件覆盖规则（HBuilderX dev=%s）',
+    (dev) => {
+      process.env.UNI_HX_VERSION_DEV = String(dev)
+      const component = path.join(
+        inputDir,
+        'uni_modules/uni-match-media/components/match-media/match-media.uvue'
+      )
+      fs.outputFileSync(component, '<template><view /></template>')
+      initEasycoms(inputDir, { dirs: [], platform: 'h5', isX: true })
+      const code = transform('const n0 = _createAssetComponent("match-media")')
+      if (dev) {
+        expect(code).toContain(
+          `import __easycom_0 from '${normalizePath(component)}';`
+        )
+        expect(code).not.toContain("from '@dcloudio/uni-h5'")
+        expect(code).not.toContain('style-x-vapor/match-media.css')
+      } else {
+        expect(code).toContain(
+          "import { MatchMedia as __syscom_0 } from '@dcloudio/uni-h5';"
+        )
+        expect(code).not.toContain(normalizePath(component))
+      }
+    }
+  )
+
+  test('框架构建可排除仅在 Vapor 名单中的 match-media', () => {
+    const plugin = uniEasycomPlugin({
+      excludeBuiltInComponents: ['match-media'],
+    }) as any
+    const source = 'const n0 = _createAssetComponent("match-media")'
+    expect(
+      plugin.transform.call(
+        { parse: parseAst },
+        source,
+        `${inputDir}/pages/index/index.uvue?vue&type=template`
+      )?.code ?? source
+    ).toBe(source)
+  })
+
+  test('非 Vapor 不通过新组件名单接入 match-media', () => {
+    delete process.env.UNI_APP_X_DOM2
+    const source = '_resolveComponent("match-media")'
+    expect(transform(source)).toBe(source)
+  })
+
   test.each(['list-view', 'list-item', 'sticky-section', 'sticky-header'])(
     '框架构建显式排除 %s，项目编译不使用该名单',
     (name) => {

@@ -86,9 +86,14 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
     process.env.UNI_APP_X === 'true'
   const isWebVapor = isUniAppXWebVapor()
   const excludedComponents = new Set(options.excludeBuiltInComponents)
-  const isBuiltInComponent = (name: string) =>
-    isWebBuiltInComponent(name) &&
-    !excludedComponents.has(name.replace(COMPONENT_PREFIX, ''))
+  const isBuiltInComponent = (name: string) => {
+    name = name.replace(COMPONENT_PREFIX, '')
+    return (
+      !excludedComponents.has(name) &&
+      (isWebBuiltInComponent(name) ||
+        (isWebVapor && isDom2WebVueComponentTag(name)))
+    )
+  }
   return {
     name: 'uni:h5-easycom',
     configResolved(config) {
