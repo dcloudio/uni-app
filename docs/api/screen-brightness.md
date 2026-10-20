@@ -509,3 +509,9 @@
 | :- | :- | :- | :- |
 | errMsg | string | 是 | 错误信息 |
 
+
+## tips
+
+设置和获取亮度，是对页面生效。不是全局生效。
+
+在Android平台，本质是对activity生效。在老uni-app的Android平台，整个应用只有一个activity，而uni-app x中每个页面是一个activity的。
