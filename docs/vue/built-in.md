@@ -2942,14 +2942,10 @@ export default {
   export default {
     components: { Foo },
     mounted() {
-      // #ifdef APP
-      (this.$refs['input'] as UniInputElement).setAttribute('value', 'input value');
-      // #endif
-      // #ifdef WEB
-      (this.$refs['input'] as UniInputElement).value = 'input value';
-      // #endif
+      // 通过元素引用修改样式
+      (this.$refs['input'] as UniElement).style.setProperty('background-color', '#f0f0f0');
       // 当在 v-for 中使用模板引用时，this.$refs 中对应的值是一个数组
-      (this.$refs['textItems'] as UniTextElement[]).forEach((item : UniTextElement) => {
+      (this.$refs['textItems'] as UniElement[]).forEach((item : UniElement) => {
         item.style.setProperty('color', 'red')
       });
       // 调用自定义组件方法
@@ -2962,8 +2958,8 @@ export default {
 
 <template>
   <view>
-    <input ref="input" />
-    <text v-for="item in 3" ref="textItems" :key="item">{{
+    <input id="input" ref="input" />
+    <text v-for="item in 3" :id="'text-item-' + item" ref="textItems" :key="item">{{
       item
     }}</text>
     <Foo ref="foo" />
@@ -2972,45 +2968,7 @@ export default {
 ```
 `this.$refs` 也是非响应式的，因此你不应该尝试在模板中使用它来进行数据绑定。
 
-使用组合式 API，引用将存储在与名字匹配的 ref 里：
-```vue
-<script setup lang="ts">
-  import Foo from '@/components/Foo.uvue'
-
-  // 声明一个 ref 来存放该元素的引用, 必须和模板里的 ref 同名
-  const input = ref<UniInputElement | null>(null)
-  // 当在 v-for 中使用模板引用时，对应的 ref 中包含的值是一个数组
-  const textItems = ref<UniTextElement[] | null>(null)
-  // 声明一个 ref 来存放自定义组件的引用, 必须和模板里的 ref 同名
-  const foo = ref<ComponentPublicInstance | null>(null)
-
-  onMounted(() => {
-    // #ifdef APP
-    input.value!.setAttribute('value', 'input value')
-    // #endif
-    // #ifdef WEB
-    input.value!.value = 'input value'
-    // #endif
-    textItems.value!.forEach((item: UniTextElement) => {
-      item.style.setProperty('color', 'red')
-    })
-    // 调用自定义组件方法
-    foo.value!.$callMethod('updateTitle')
-    // 获取自定义组件响应式数据
-    console.log(foo.value!.$data['title']) // new title
-  })
-</script>
-
-<template>
-  <view>
-    <input ref="input" />
-    <text v-for="item in 3" ref="textItems" :key="item">{{
-      item
-    }}</text>
-    <Foo ref="foo" />
-  </view>
-</template>
-```
+对应的 `Foo` 组件（选项式 API）：
 
 ```vue
 <!-- components/Foo.uvue -->
@@ -3020,16 +2978,16 @@ export default {
   </view>
 </template>
 
-<script>
+<script lang="uts">
   export default {
-    name:"Foo",
+    name: "Foo",
     data() {
       return {
         title: 'default title'
       }
     },
     methods: {
-      updateTitle(){
+      updateTitle() {
         this.title = 'new title'
       }
     }
@@ -3037,10 +2995,79 @@ export default {
 </script>
 ```
 
+使用组合式 API，引用将存储在与名字匹配的 ref 里：
+```vue
+<script setup lang="ts">
+  import Foo from '@/components/Foo.uvue'
+
+  // 声明一个 ref 来存放该元素的引用, 必须和模板里的 ref 同名
+  // #ifndef MP
+  const input = ref<UniInputElement | null>(null)
+  // #endif
+  // #ifdef MP
+  const input = ref<UniElement | null>(null)
+  // #endif
+  // 当在 v-for 中使用模板引用时，对应的 ref 中包含的值是一个数组
+  const textItems = ref<UniElement[] | null>(null)
+  // 声明一个 ref 来存放自定义组件的引用, 必须和模板里的 ref 同名
+  const foo = ref<ComponentPublicInstance | null>(null)
+
+  onMounted(() => {
+    // 通过元素引用修改样式
+    input.value!.style.setProperty('background-color', '#f0f0f0')
+    textItems.value!.forEach((item: UniElement) => {
+      item.style.setProperty('color', 'red')
+    })
+    // 调用自定义组件方法
+    foo.value!.$callMethod('updateTitle')
+    // 通过公开方法获取自定义组件响应式数据
+    console.log(foo.value!.$callMethod('getTitle')) // new title
+  })
+</script>
+
+<template>
+  <view>
+    <input id="input" ref="input" />
+    <text v-for="item in 3" :id="'text-item-' + item" ref="textItems" :key="item">{{
+      item
+    }}</text>
+    <Foo ref="foo" />
+  </view>
+</template>
+```
+
+对应的 `Foo` 组件（组合式 API），通过 `defineExpose` 暴露供父组件调用的方法：
+
+```vue
+<!-- components/Foo.uvue -->
+<template>
+  <view>
+    <text>title: {{title}}</text>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const title = ref('default title')
+
+  const updateTitle = () => {
+    title.value = 'new title'
+  }
+
+  const getTitle = (): string => {
+    return title.value
+  }
+
+  defineExpose({
+    updateTitle,
+    getTitle
+  })
+</script>
+```
+
 #### 获取内置组件与自定义组件的区别
-- 使用 `ref` 获取内置组件实例时会获取到对应的 `Element`，例如上述代码示例中，`input` 组件获取到的是 `UniInputElement`, `text` 组件获取到的是 `UniTextElement`，可以调用 `Element` 的方法和属性。
+- App、Web 使用 `ref` 获取内置组件实例时会获取到对应的 `Element`，例如上述代码示例中，`input` 组件获取到的是 `UniInputElement`, `text` 组件获取到的是 `UniTextElement`，可以调用 `Element` 的方法和属性。
 - 使用 `ref` 获取自定义组件实例时会获取到对应的 vue 组件实例，例如上述代码示例中，`Foo` 组件获取到的是 `ComponentPublicInstance`，可以获取自定义组件的属性或调用方法，[详情](./component.md#page-call-component-method)。
-- 小程序平台如果期望使用`ref`获取到`UniElement`需要在此`UniElement`上设置id，此外小程序平台的`UniElement`使用是受限的，详情参考：[UniElement](../mp/README.md#unielement)
+- 小程序平台使用 `ref` 获取内置组件引用时，需要为节点设置 `id`，`v-for` 中各节点的 `id` 应保持唯一。小程序仅支持 `UniElement`，不支持 `UniInputElement`、`UniTextElement` 等类型，且可用的属性和方法受限，详情参考：[UniElement](../mp/README.md#unielement)。
 
 
 ### is
