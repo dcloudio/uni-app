@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.11
+  * @vue/compiler-dom v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -264,14 +264,15 @@ const transformShow = (dir, node, context) => {
 };
 //#endregion
 //#region packages/compiler-dom/src/transforms/Transition.ts
+const transformTransition = (node, context) => {
+	if (node.type === 1 && node.tagType === 1) {
+		if (context.isBuiltInComponent(node.tag) === TRANSITION) return postTransformTransition(node, context.onError);
+	}
+};
 function postTransformTransition(node, onError, hasMultipleChildren = defaultHasMultipleChildren) {
 	return () => {
 		if (!node.children.length) return;
-		if (hasMultipleChildren(node)) onError(createDOMCompilerError(63, {
-			start: node.children[0].loc.start,
-			end: node.children[node.children.length - 1].loc.end,
-			source: ""
-		}));
+		hasMultipleChildren(node);
 		const child = node.children[0];
 		if (child.type === 1 && !(0, _vue_compiler_core.findDir)(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
@@ -435,7 +436,7 @@ function stringifyNode(node, context) {
 }
 function stringifyElement(node, context) {
 	let res = `<${node.tag}`;
-	let innerHTML = "";
+	let innerHTML = void 0;
 	for (let i = 0; i < node.props.length; i++) {
 		const p = node.props[i];
 		if (p.type === 6) {
@@ -457,13 +458,15 @@ function stringifyElement(node, context) {
 					else if (arg === "style") evaluated = (0, _vue_shared.stringifyStyle)((0, _vue_shared.normalizeStyle)(evaluated));
 					res += ` ${p.arg.content}="${(0, _vue_shared.escapeHtml)(evaluated)}"`;
 				}
-			} else if (p.name === "html") innerHTML = evaluateConstant(p.exp);
-			else if (p.name === "text") innerHTML = (0, _vue_shared.escapeHtml)((0, _vue_shared.toDisplayString)(evaluateConstant(p.exp)));
+			} else if (p.name === "html") {
+				var _evaluateConstant;
+				innerHTML = (_evaluateConstant = evaluateConstant(p.exp)) !== null && _evaluateConstant !== void 0 ? _evaluateConstant : "";
+			} else if (p.name === "text") innerHTML = (0, _vue_shared.escapeHtml)((0, _vue_shared.toDisplayString)(evaluateConstant(p.exp)));
 		}
 	}
 	if (context.scopeId) res += ` ${context.scopeId}`;
 	res += `>`;
-	if (innerHTML) res += innerHTML;
+	if (innerHTML !== void 0) res += innerHTML;
 	else for (let i = 0; i < node.children.length; i++) res += stringifyNode(node.children[i], context);
 	if (!(0, _vue_shared.isVoidTag)(node.tag)) res += `</${node.tag}>`;
 	return res;
@@ -678,7 +681,11 @@ const knownInvalidParents = {
 };
 //#endregion
 //#region packages/compiler-dom/src/index.ts
-const DOMNodeTransforms = [transformStyle, ...[]];
+const DOMNodeTransforms = [
+	transformStyle,
+	transformTransition,
+	...[]
+];
 const DOMDirectiveTransforms = {
 	cloak: _vue_compiler_core.noopDirectiveTransform,
 	html: transformVHtml,

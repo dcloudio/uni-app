@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.11
+  * @vue/shared v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -421,9 +421,10 @@ const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 * - ismap -> isMap
 * - nomodule -> noModule
 * - novalidate -> noValidate
+* - playsinline -> playsInline
 * - readonly -> readOnly
 */
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly`;
 const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
@@ -793,16 +794,11 @@ const VaporSlotFlags = {
 	"2": "ONCE",
 	"FORWARDED": 4,
 	"4": "FORWARDED",
-	"SHARED_FALLBACK": 8,
-	"8": "SHARED_FALLBACK",
 	"TEXT_MODE": 256,
 	"256": "TEXT_MODE"
 };
 function isForwardedSlot(flags) {
-	return !!(flags & 12);
-}
-function slotInheritsFallback(flags) {
-	return isForwardedSlot(flags) && !(flags & 8);
+	return !!(flags & 4);
 }
 function slotNotifiesBoundary(flags) {
 	return isForwardedSlot(flags) && !(flags & 2);
@@ -916,7 +912,6 @@ exports.propsToAttrMap = propsToAttrMap;
 exports.remove = remove;
 exports.shouldSetAsAttr = shouldSetAsAttr;
 exports.slotFlagsText = slotFlagsText;
-exports.slotInheritsFallback = slotInheritsFallback;
 exports.slotNotifiesBoundary = slotNotifiesBoundary;
 exports.stringifyStyle = stringifyStyle;
 exports.toDisplayString = toDisplayString;

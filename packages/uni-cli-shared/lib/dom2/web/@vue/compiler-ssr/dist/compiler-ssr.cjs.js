@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-ssr v3.6.0-rc.11
+  * @vue/compiler-ssr v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -12,6 +12,7 @@ let _vue_shared = require("@vue/shared");
 //#region packages/compiler-ssr/src/runtimeHelpers.ts
 const SSR_INTERPOLATE = Symbol(`ssrInterpolate`);
 const SSR_RENDER_VNODE = Symbol(`ssrRenderVNode`);
+const SSR_RENDER_DYNAMIC_COMPONENT = Symbol(`ssrRenderDynamicComponent`);
 const SSR_RENDER_COMPONENT = Symbol(`ssrRenderComponent`);
 const SSR_RENDER_SLOT = Symbol(`ssrRenderSlot`);
 const SSR_RENDER_SLOT_INNER = Symbol(`ssrRenderSlotInner`);
@@ -32,6 +33,7 @@ const SSR_GET_DIRECTIVE_PROPS = Symbol(`ssrGetDirectiveProps`);
 const ssrHelpers = {
 	[SSR_INTERPOLATE]: `ssrInterpolate`,
 	[SSR_RENDER_VNODE]: `ssrRenderVNode`,
+	[SSR_RENDER_DYNAMIC_COMPONENT]: `ssrRenderDynamicComponent`,
 	[SSR_RENDER_COMPONENT]: `ssrRenderComponent`,
 	[SSR_RENDER_SLOT]: `ssrRenderSlot`,
 	[SSR_RENDER_SLOT_INNER]: `ssrRenderSlotInner`,
@@ -430,7 +432,14 @@ const ssrTransformComponent = (node, context) => {
 			return fn;
 		};
 		const slots = node.children.length ? (0, _vue_compiler_dom.buildSlots)(node, context, buildSSRSlotFn).slots : `null`;
-		if (typeof component !== "string") node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_VNODE), [
+		if (typeof component !== "string" && rawOptionsMap.get(context.root).vapor) node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_DYNAMIC_COMPONENT), [
+			`_push`,
+			component,
+			propsExp,
+			slots,
+			`_parent`
+		]);
+		else if (typeof component !== "string") node.ssrCodegenNode = (0, _vue_compiler_dom.createCallExpression)(context.helper(SSR_RENDER_VNODE), [
 			`_push`,
 			(0, _vue_compiler_dom.createCallExpression)(context.helper(_vue_compiler_dom.CREATE_VNODE), [
 				component,

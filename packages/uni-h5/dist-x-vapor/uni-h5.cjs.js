@@ -5102,7 +5102,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           const n6 = Vue.next(n5);
           Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
           Vue.setInsertionState(n5);
-          const n4 = Vue.withComponentId("42efa222", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
+          const n4 = Vue.withComponentId("9bbd592a", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
             "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
             $: [
               () => Vue.unref(windowState)
@@ -5120,12 +5120,12 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = Vue.withComponentId("1b0a2624", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n12 = Vue.withComponentId("dbf3501c", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
               const n10 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n11 = Vue.withComponentId("1b0a1da4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                const n11 = Vue.withComponentId("dbf3479c", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
                 return n11;
               });
               return n10;
@@ -5133,7 +5133,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n12;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n14 = Vue.withComponentId("1b0a1628", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n14 = Vue.withComponentId("dbf34020", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -5156,7 +5156,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n20;
           });
           Vue.setInsertionState(n22);
-          const n21 = Vue.withComponentId("1b093e56", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+          const n21 = Vue.withComponentId("dbf2684e", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
@@ -5180,7 +5180,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n29;
           });
           Vue.setInsertionState(n31);
-          const n30 = Vue.withComponentId("1b090194", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+          const n30 = Vue.withComponentId("dbf22b8c", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n30, rightWindowRef, null, "rightWindowRef");
@@ -5196,12 +5196,12 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n42 = Vue.withComponentId("1b0853ee", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n42 = Vue.withComponentId("dbf17de6", () => Vue.createComponent(Vue.VaporKeepAlive, {
               "match-by": "key",
               cache: () => Vue.unref(routeCache2)
             }, () => {
               const n40 = Vue.createKeyedFragment(() => Vue.unref(routeKey), () => {
-                const n41 = Vue.withComponentId("1b0846d4", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
+                const n41 = Vue.withComponentId("dbf170cc", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }));
                 return n41;
               });
               return n40;
@@ -5209,7 +5209,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
             return n42;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n44 = Vue.withComponentId("1b0844a8", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n44 = Vue.withComponentId("dbf16ea0", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n44;
           }),
           2309
@@ -5222,7 +5222,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     Vue.setInsertionState(n49, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n48 = Vue.withComponentId("1b083da0", () => Vue.createComponent(_sfc_main$p));
+      const n48 = Vue.withComponentId("dbf16798", () => Vue.createComponent(_sfc_main$p));
       Vue.applyVShow(n48, () => Vue.unref(showTabBar));
       return n48;
     });
@@ -5884,7 +5884,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
-            const n39 = Vue.withComponentId("b1ddb6c0", () => Vue.createComponent(Vue.unref(Input), {
+            const n39 = Vue.withComponentId("9df031c8", () => Vue.createComponent(Vue.unref(Input), {
               disabled: true,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -5899,7 +5899,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
             const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
             const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
             const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
-            const n41 = Vue.withComponentId("b1dcfacc", () => Vue.createComponent(Vue.unref(Input), {
+            const n41 = Vue.withComponentId("9def75d4", () => Vue.createComponent(Vue.unref(Input), {
               focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -6050,7 +6050,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.withComponentId("64781ad4", () => Vue.createComponent(_sfc_main$k));
+      const n2 = Vue.withComponentId("6c5ca19a", () => Vue.createComponent(_sfc_main$k));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -6061,7 +6061,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createSlot();
     Vue.setInsertionState(n8, 1);
     Vue.createIf(() => Vue.unref(isX), () => {
-      const n7 = Vue.withComponentId("6c91a811", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = Vue.withComponentId("708ab3d6", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     Vue.setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -6178,12 +6178,12 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.withComponentId("20e16be8", () => Vue.createComponent(_sfc_main$l));
+      const n2 = Vue.withComponentId("55c2f8ec", () => Vue.createComponent(_sfc_main$l));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.withComponentId("09680334", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
-      const n3 = Vue.withComponentId("096802e8", () => Vue.createDynamicComponent(
+    Vue.withComponentId("629c11e2", () => Vue.createComponent(_sfc_main$j, null, Vue.extend(() => {
+      const n3 = Vue.withComponentId("629c1208", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
           () => Vue.unref(pageProps)
@@ -6202,7 +6202,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = Vue.withComponentId("0967fbb0-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = Vue.withComponentId("629c15a4-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -8957,12 +8957,12 @@ const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -9050,17 +9050,17 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["submit", "reset"],
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent3 {
+    class UniFormSubmitEvent extends UniCustomEvent4 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent3 {
+    class UniFormResetEvent extends UniCustomEvent4 {
       constructor() {
         super("reset", {});
       }
@@ -9475,6 +9475,27 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
+    class UniPickerCancelEvent extends UniCustomEvent {
+      constructor() {
+        super("cancel", {
+          detail: {}
+        });
+      }
+    }
+    class UniPickerChangeEvent extends UniCustomEvent {
+      constructor(value) {
+        super("change", {
+          detail: { value }
+        });
+      }
+    }
+    class UniPickerColumnChangeEvent extends UniCustomEvent {
+      constructor(column, value) {
+        super("columnchange", {
+          detail: { value, column }
+        });
+      }
+    }
     const props2 = __props;
     Vue.inject(FORM_KEY, null);
     const innerValue = Vue.ref(props2.value);
@@ -9551,12 +9572,12 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["change"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent3 {
+    class UniPickerViewChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -9730,7 +9751,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n3);
     const n5 = Vue.next(n4);
     Vue.setInsertionState(n7, n6);
-    const n2 = Vue.withComponentId("02a52c40", () => Vue.createAssetComponent("scroll-view", {
+    const n2 = Vue.withComponentId("e09e2578", () => Vue.createAssetComponent("scroll-view", {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -9790,12 +9811,12 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   emits: ["activeend"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent3 {
+    class UniProgressActiveendEvent extends UniCustomEvent4 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -10086,12 +10107,12 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   emits: ["change"],
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -10122,12 +10143,12 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n1;
   }
 });
-let UniCustomEvent$1 = class UniCustomEvent {
+let UniCustomEvent$2 = class UniCustomEvent2 {
   constructor(type, detail) {
     this.detail = detail;
   }
 };
-class UniSliderChangeEvent extends UniCustomEvent$1 {
+class UniSliderChangeEvent extends UniCustomEvent$2 {
   constructor(value) {
     super("change", { value });
   }
@@ -10422,13 +10443,13 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n8;
   }
 });
-class UniCustomEvent2 {
+let UniCustomEvent$1 = class UniCustomEvent3 {
   constructor(type, detail) {
     this.type = type;
     this.detail = detail;
   }
-}
-class UniSwiperChangeEvent extends UniCustomEvent2 {
+};
+class UniSwiperChangeEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -10437,12 +10458,12 @@ class UniSwiperChangeEvent extends UniCustomEvent2 {
     super("change", detail);
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent2 {
+class UniSwiperTransitionEvent extends UniCustomEvent$1 {
   constructor(dx, dy) {
     super("transition", { dx, dy });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -11100,12 +11121,12 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniSwitchChangeEvent extends UniCustomEvent3 {
+    class UniSwitchChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }

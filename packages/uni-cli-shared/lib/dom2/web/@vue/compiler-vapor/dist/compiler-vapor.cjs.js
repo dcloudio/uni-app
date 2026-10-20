@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.11
+  * @vue/compiler-vapor v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -1636,44 +1636,46 @@ function parseValueDestructure(value, context) {
 			(0, _vue_compiler_dom.walkFunctionParams)(value.ast, (id) => bindings.add(id));
 			(0, _vue_compiler_dom.walkIdentifiers)(value.ast, (id, _, parentStack) => {
 				if (bindings.has(id)) {
-					let path = "";
+					const steps = [];
 					let isDynamic = false;
-					let helper;
-					let helperArgs;
 					for (let i = 0; i < parentStack.length; i++) {
 						const parent = parentStack[i];
 						const child = parentStack[i + 1] || id;
 						if (parent.type === "ObjectProperty" && parent.value === child) {
-							if (parent.key.type === "StringLiteral") path += `[${JSON.stringify(parent.key.value)}]`;
+							if (parent.key.type === "StringLiteral") steps.push(`[${JSON.stringify(parent.key.value)}]`);
 							else if (parent.computed) {
 								isDynamic = true;
-								path += `[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`;
-							} else path += `.${parent.key.name}`;
+								steps.push(`[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`);
+							} else steps.push(`.${parent.key.name}`);
 						} else if (parent.type === "ArrayPattern") {
 							const index = parent.elements.indexOf(child);
-							if (child.type === "RestElement") path += `.slice(${index})`;
-							else path += `[${index}]`;
+							if (child.type === "RestElement") steps.push(`.slice(${index})`);
+							else steps.push(`[${index}]`);
 						} else if (parent.type === "ObjectPattern" && child.type === "RestElement") {
-							helper = context.helper("getRestElement");
-							helperArgs = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
+							const helper = context.helper("getRestElement");
+							const args = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
 								if (p.key.type === "StringLiteral") return JSON.stringify(p.key.value);
 								else if (p.computed) {
 									isDynamic = true;
 									return rawValue.slice(p.key.start - 1, p.key.end - 1);
 								} else return JSON.stringify(p.key.name);
 							}).join(", ") + "]";
+							steps.push({
+								helper,
+								args
+							});
 						}
-						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression" && child.left === id)) {
+						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression")) {
 							isDynamic = true;
-							helper = context.helper("getDefaultValue");
-							helperArgs = `() => (${rawValue.slice(child.right.start - 1, child.right.end - 1)})`;
+							steps.push({
+								helper: context.helper("getDefaultValue"),
+								args: `() => (${rawValue.slice(child.right.start - 1, child.right.end - 1)})`
+							});
 						}
 					}
 					map.set(id.name, {
-						path,
-						dynamic: isDynamic,
-						helper,
-						helperArgs
+						steps,
+						dynamic: isDynamic
 					});
 				}
 			}, true);
@@ -1686,10 +1688,10 @@ function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
 	idToPathMap.forEach((pathInfo, id) => {
 		let path = baseAccessor;
 		if (pathInfo) {
-			path = `${baseAccessor}${pathInfo.path}`;
-			if (pathInfo.helper) {
-				idMap[pathInfo.helper] = null;
-				path = pathInfo.helperArgs ? `${pathInfo.helper}(${path}, ${pathInfo.helperArgs})` : `${pathInfo.helper}(${path})`;
+			for (const step of pathInfo.steps) if (typeof step === "string") path += step;
+			else {
+				idMap[step.helper] = null;
+				path = `${step.helper}(${path}, ${step.args})`;
 			}
 			if (pathInfo.dynamic) {
 				const node = idMap[id] = (0, _vue_compiler_dom.createSimpleExpression)(path);
@@ -2709,7 +2711,6 @@ function genSlotFlags(flags) {
 	if (flags & 1) names.push("NO_SLOTTED");
 	if (flags & 2) names.push("ONCE");
 	if (flags & 4) names.push("FORWARDED");
-	if (flags & 8) names.push("SHARED_FALLBACK");
 	if (flags & 256) names.push("TEXT_MODE");
 	return genFlags(flags, names);
 }
@@ -3161,44 +3162,32 @@ function isVModelOperation(oper) {
 function isVModelListener(oper, modelElements) {
 	return (oper.type === 7 || oper.type === 8 || oper.type === 4 && oper.listeners || oper.type === 3 && !oper.prop.modifier && (0, _vue_shared.isOn)(oper.prop.key.content)) && modelElements.has(oper.element);
 }
-function markSlotRootOperations(block, context, sharedFallback = false) {
+function markSlotRootOperations(block, context) {
 	if (hasStableSlotRoot(block, context)) return;
-	sharedFallback = sharedFallback || hasMultipleDynamicSlotRoots(block);
 	for (let i = 0; i < block.returns.length; i++) {
 		const child = findReturnedDynamic$1(block, block.returns[i]);
 		const operation = child && child.operation;
 		if (!operation) continue;
-		if (operation.type === 15) markSlotRootIf(operation, context, sharedFallback);
+		if (operation.type === 15) markSlotRootIf(operation, context);
 		else if (operation.type === 16) markSlotRootFor(operation, context);
 		else if (operation.type === 17) {
 			operation.slotRoot = true;
-			markSlotRootOperations(operation.block, context, sharedFallback);
+			markSlotRootOperations(operation.block, context);
 		} else if (operation.type === 12) markSlotRootComponent(operation);
-		else if (operation.type === 13) {
-			operation.flags |= 4;
-			if (sharedFallback) operation.flags |= 8;
-		}
+		else if (operation.type === 13) operation.flags |= 4;
 	}
 }
-function markSlotRootIf(operation, context, sharedFallback) {
+function markSlotRootIf(operation, context) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.positive, context, sharedFallback);
+	markSlotRootOperations(operation.positive, context);
 	const negative = operation.negative;
 	if (!negative) return;
-	if (negative.type === 15) markSlotRootIf(negative, context, sharedFallback);
-	else markSlotRootOperations(negative, context, sharedFallback);
+	if (negative.type === 15) markSlotRootIf(negative, context);
+	else markSlotRootOperations(negative, context);
 }
 function markSlotRootFor(operation, context) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.render, context, true);
-}
-function hasMultipleDynamicSlotRoots(block) {
-	let count = 0;
-	for (let i = 0; i < block.returns.length; i++) {
-		const child = findReturnedDynamic$1(block, block.returns[i]);
-		if (child && child.operation && ++count > 1) return true;
-	}
-	return false;
+	markSlotRootOperations(operation.render, context);
 }
 function markSlotRootComponent(operation) {
 	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;

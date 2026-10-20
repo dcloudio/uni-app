@@ -3,7 +3,7 @@ import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSVa
 import { isArray, isString, extend, isFunction, capitalize, camelize, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, inject, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, defineComponent as defineComponent$2, mergeProps, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, provide, isReactive, useSSRContext, resolveDynamicComponent, onServerPrefetch, ssrContextKey, withCtx, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, logError } from "vue";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
-import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderVNode, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
+import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderDynamicComponent, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import safeAreaInsets from "safe-area-insets";
 const realGlobal = getGlobal();
@@ -4992,11 +4992,11 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
         })}">`);
         if (unref(hasTopWindow) && unref(TopWindow)) {
           _push(`<uni-top-window style="${ssrRenderStyle(unref(layoutState).showTopWindow || unref(layoutState).apiShowTopWindow ? null : { display: "none" })}"><div class="uni-top-window" style="${ssrRenderStyle(unref(layoutState).topWindowStyle)}">`);
-          ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(TopWindow)), mergeProps({
+          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(TopWindow)), mergeProps({
             ref_key: "topWindowRef",
             ref: topWindowRef,
             "navigation-bar-title-text": unref(layoutState).navigationBarTitleText
-          }, unref(windowState)), null), _parent);
+          }, unref(windowState)), null, _parent);
           _push(`</div><div class="uni-top-window--placeholder" style="${ssrRenderStyle({ height: unref(layoutState).topWindowHeight + "px" })}"></div></uni-top-window>`);
         } else {
           _push(`<!---->`);
@@ -5008,7 +5008,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
             key: unref(routeKey)
           }, null, _parent));
         } else if (!unref(hasPages)) {
-          ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(firstPageComponent)), null, null), _parent);
+          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(firstPageComponent)), null, null, _parent);
         } else {
           _push(`<!---->`);
         }
@@ -5024,10 +5024,10 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
             _push(`<!---->`);
           }
           _push(`<div class="uni-left-window">`);
-          ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(LeftWindow)), mergeProps({
+          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(LeftWindow)), mergeProps({
             ref_key: "leftWindowRef",
             ref: leftWindowRef
-          }, unref(windowState)), null), _parent);
+          }, unref(windowState)), null, _parent);
           _push(`</div></uni-left-window>`);
         } else {
           _push(`<!---->`);
@@ -5043,10 +5043,10 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
             _push(`<!---->`);
           }
           _push(`<div class="uni-right-window">`);
-          ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(RightWindow)), mergeProps({
+          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(RightWindow)), mergeProps({
             ref_key: "rightWindowRef",
             ref: rightWindowRef
-          }, unref(windowState)), null), _parent);
+          }, unref(windowState)), null, _parent);
           _push(`</div></uni-right-window>`);
         } else {
           _push(`<!---->`);
@@ -5060,7 +5060,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
             key: unref(routeKey)
           }, null, _parent));
         } else if (!unref(hasPages)) {
-          ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(firstPageComponent)), null, null), _parent);
+          ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(firstPageComponent)), null, null, _parent);
         } else {
           _push(`<!---->`);
         }
@@ -5933,7 +5933,7 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
       _push(ssrRenderComponent(_sfc_main$j, null, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            ssrRenderVNode(_push2, createVNode(resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null), _parent2, _scopeId);
+            ssrRenderDynamicComponent(_push2, resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, _parent2, _scopeId);
           } else {
             return [
               (openBlock(), createBlock(resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, 16))
@@ -5944,12 +5944,12 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
       }, _parent));
       _push(`<!--[-->`);
       ssrRenderList(getDialogPages(), (dialogPage) => {
-        ssrRenderVNode(_push, createVNode(resolveDynamicComponent(dialogPage.component), {
+        ssrRenderDynamicComponent(_push, resolveDynamicComponent(dialogPage.component), {
           key: dialogPage.route,
           style: dialogPageStyle,
           "data-type": dialogPage.type,
           route: dialogPage.route
-        }, null), _parent);
+        }, null, _parent);
       });
       _push(`<!--]--></uni-page>`);
     };
@@ -9445,17 +9445,8 @@ const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
 const CHECKBOX_GROUP_KEY = "UNI_CHECKBOX_GROUP_CTX";
 const PICKER_VIEW_KEY = "UNI_PICKER_VIEW_CTX";
 function buildPointerEvent(event) {
-  return new MouseEvent("click", {
-    bubbles: true,
-    cancelable: true,
-    clientX: event.clientX,
-    clientY: event.clientY,
-    screenX: event.screenX,
-    screenY: event.screenY
-  });
-}
-function dispatchLabelClick(element, event) {
-  element.dispatchEvent(buildPointerEvent(event));
+  const { type, x, y, clientX, clientY, pageX, pageY, screenX, screenY } = event;
+  return new UniPointerEvent(type, x, y, clientX, clientY, pageX, pageY, screenX, screenY);
 }
 function toStringOrEmpty(val) {
   if (val == null) {
@@ -9561,10 +9552,8 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
         labelCtx.register({
           id: id2 || toStringOrEmpty(props2.value),
           activate: (event) => {
-            const element = proxy == null ? void 0 : proxy.$el;
-            if (element != null) {
-              dispatchLabelClick(element, event);
-            }
+            var _a2;
+            (_a2 = proxy == null ? void 0 : proxy.$el) == null ? void 0 : _a2.dispatchEvent("click", buildPointerEvent(event));
           },
           getDisabled: () => props2.disabled
         });
@@ -9645,12 +9634,12 @@ const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniCheckboxGroupChangeEvent extends UniCustomEvent3 {
+    class UniCheckboxGroupChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -9770,17 +9759,17 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniFormSubmitEvent extends UniCustomEvent3 {
+    class UniFormSubmitEvent extends UniCustomEvent4 {
       constructor(value) {
         super("submit", { value });
       }
     }
-    class UniFormResetEvent extends UniCustomEvent3 {
+    class UniFormResetEvent extends UniCustomEvent4 {
       constructor() {
         super("reset", {});
       }
@@ -10171,26 +10160,21 @@ const _sfc_main$9 = /* @__PURE__ */ defineComponent$2({
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
-    class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.detail = detail;
-      }
-    }
-    class UniPickerCancelEvent extends UniCustomEvent3 {
+    class UniPickerCancelEvent extends UniCustomEvent {
       constructor() {
         super("cancel", {
           detail: {}
         });
       }
     }
-    class UniPickerChangeEvent extends UniCustomEvent3 {
+    class UniPickerChangeEvent extends UniCustomEvent {
       constructor(value) {
         super("change", {
           detail: { value }
         });
       }
     }
-    class UniPickerColumnChangeEvent extends UniCustomEvent3 {
+    class UniPickerColumnChangeEvent extends UniCustomEvent {
       constructor(column, value) {
         super("columnchange", {
           detail: { value, column }
@@ -10427,12 +10411,12 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniPickerViewChangeEvent extends UniCustomEvent3 {
+    class UniPickerViewChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -10697,12 +10681,12 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniProgressActiveendEvent extends UniCustomEvent3 {
+    class UniProgressActiveendEvent extends UniCustomEvent4 {
       constructor(type, curPercent) {
         super(type, { curPercent });
       }
@@ -10903,10 +10887,8 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent$2({
         labelCtx.register({
           id: id2 || toStringOrEmpty(props2.value),
           activate: (event) => {
-            const element = proxy == null ? void 0 : proxy.$el;
-            if (element != null) {
-              dispatchLabelClick(element, event);
-            }
+            var _a2;
+            (_a2 = proxy == null ? void 0 : proxy.$el) == null ? void 0 : _a2.dispatchEvent("click", buildPointerEvent(event));
           },
           getDisabled: () => props2.disabled
         });
@@ -10985,12 +10967,12 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent$2({
   emits: ["change"],
   __vapor: true,
   setup(__props, { emit: __emit }) {
-    class UniCustomEvent3 {
+    class UniCustomEvent4 {
       constructor(type, detail) {
         this.detail = detail;
       }
     }
-    class UniRadioGroupChangeEvent extends UniCustomEvent3 {
+    class UniRadioGroupChangeEvent extends UniCustomEvent4 {
       constructor(value) {
         super("change", { value });
       }
@@ -11047,12 +11029,12 @@ _sfc_main$4.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/radio-group/radio-group.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props2, ctx) : void 0;
 };
-let UniCustomEvent$1 = class UniCustomEvent {
+let UniCustomEvent$2 = class UniCustomEvent2 {
   constructor(type, detail) {
     this.detail = detail;
   }
 };
-class UniSliderChangeEvent extends UniCustomEvent$1 {
+class UniSliderChangeEvent extends UniCustomEvent$2 {
   constructor(value) {
     super("change", { value });
   }
@@ -11414,13 +11396,13 @@ _sfc_main$3.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/slider/slider.vue");
   return _sfc_setup$3 ? _sfc_setup$3(props2, ctx) : void 0;
 };
-class UniCustomEvent2 {
+let UniCustomEvent$1 = class UniCustomEvent3 {
   constructor(type, detail) {
     this.type = type;
     this.detail = detail;
   }
-}
-class UniSwiperChangeEvent extends UniCustomEvent2 {
+};
+class UniSwiperChangeEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -11429,12 +11411,12 @@ class UniSwiperChangeEvent extends UniCustomEvent2 {
     super("change", detail);
   }
 }
-class UniSwiperTransitionEvent extends UniCustomEvent2 {
+class UniSwiperTransitionEvent extends UniCustomEvent$1 {
   constructor(dx, dy) {
     super("transition", { dx, dy });
   }
 }
-class UniSwiperAnimationFinishEvent extends UniCustomEvent2 {
+class UniSwiperAnimationFinishEvent extends UniCustomEvent$1 {
   constructor(current, source, currentItemId) {
     const detail = { current, source };
     if (currentItemId != null) {
@@ -12414,10 +12396,8 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
         labelCtx.register({
           id: id2 || props2.name,
           activate: (event) => {
-            const element = proxy == null ? void 0 : proxy.$el;
-            if (element != null) {
-              dispatchLabelClick(element, event);
-            }
+            var _a2;
+            (_a2 = proxy == null ? void 0 : proxy.$el) == null ? void 0 : _a2.dispatchEvent("click", buildPointerEvent(event));
           },
           getDisabled: () => props2.disabled
         });

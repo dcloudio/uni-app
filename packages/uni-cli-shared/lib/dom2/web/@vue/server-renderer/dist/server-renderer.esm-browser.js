@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.11
+  * @vue/server-renderer v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -210,9 +210,10 @@ const isVoidTag = /*@__PURE__*/ makeMap(VOID_TAGS);
 * - ismap -> isMap
 * - nomodule -> noModule
 * - novalidate -> noValidate
+* - playsinline -> playsInline
 * - readonly -> readOnly
 */
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly`;
 const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
@@ -954,16 +955,32 @@ const arrayInstrumentations = {
 };
 function iterator(self, method, wrapValue) {
 	const arr = shallowReadArray(self);
-	const iter = arr[method]();
+	const methodFn = arr[method];
+	const iter = methodFn.call(arr);
 	if (arr !== self && !/* @__PURE__ */ isShallow(self)) {
+		if (iter[Symbol.toStringTag] === "Array Iterator") {
+			const wrapped = Object.create(Object.getPrototypeOf(iter));
+			wrapped.next = () => wrapResult(iter.next(), wrapValue);
+			if (methodFn !== arrayProto[method]) Object.defineProperties(wrapped, {
+				return: { get() {
+					const fn = iter.return;
+					return typeof fn === "function" ? fn.bind(iter) : fn;
+				} },
+				throw: { get() {
+					const fn = iter.throw;
+					return typeof fn === "function" ? fn.bind(iter) : fn;
+				} }
+			});
+			return wrapped;
+		}
 		iter._next = iter.next;
-		iter.next = () => {
-			const result = iter._next();
-			if (!result.done) result.value = wrapValue(result.value);
-			return result;
-		};
+		iter.next = () => wrapResult(iter._next(), wrapValue);
 	}
 	return iter;
+}
+function wrapResult(result, wrapValue) {
+	if (!result.done) result.value = wrapValue(result.value);
+	return result;
 }
 const arrayProto = Array.prototype;
 function apply(self, method, fn, thisArg, wrappedRetFn, args) {
@@ -1282,6 +1299,7 @@ function createInstrumentationGetter(isReadonly, shallow) {
 	return (target, key, receiver) => {
 		if (key === "__v_isReactive") return !isReadonly;
 		else if (key === "__v_isReadonly") return isReadonly;
+		else if (key === "__v_isShallow") return shallow;
 		else if (key === "__v_raw") return target;
 		return Reflect.get(hasOwn(instrumentations, key) && key in target ? instrumentations : target, key, receiver);
 	};
@@ -1874,8 +1892,9 @@ let activeWatcher = void 0;
 function onWatcherCleanup(cleanupFn, failSilently = false, owner = activeWatcher) {
 	if (owner) {
 		const { call } = owner.options;
-		if (call) owner.cleanups[owner.cleanupsLength++] = () => call(cleanupFn, 4);
-		else owner.cleanups[owner.cleanupsLength++] = cleanupFn;
+		const cleanup = call ? () => call(cleanupFn, 4) : cleanupFn;
+		if (owner.cb) (owner.cbCleanups || (owner.cbCleanups = [])).push(cleanup);
+		else owner.cleanups[owner.cleanupsLength++] = cleanup;
 	} else if (!failSilently) warn$2("onWatcherCleanup() was called when there was no active watcher to associate with.");
 }
 var WatcherEffect = class extends ReactiveEffect {
@@ -1936,15 +1955,30 @@ var WatcherEffect = class extends ReactiveEffect {
 		if (once && cb) {
 			const _cb = cb;
 			cb = (...args) => {
-				const res = _cb(...args);
-				this.stop();
-				return res;
+				try {
+					return _cb(...args);
+				} finally {
+					this.stop();
+				}
 			};
 		}
 		this.cb = cb;
 		this.oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
 		this.onTrack = options.onTrack;
 		this.onTrigger = options.onTrigger;
+	}
+	cleanupCallback() {
+		const cleanups = this.cbCleanups;
+		if (cleanups) {
+			this.cbCleanups = void 0;
+			for (let i = 0, l = cleanups.length; i < l; i++) cleanups[i]();
+		}
+	}
+	stop() {
+		if (this.active) {
+			super.stop();
+			this.cleanupCallback();
+		}
 	}
 	run(initialRun = false) {
 		const oldValue = this.oldValue;
@@ -1953,10 +1987,11 @@ var WatcherEffect = class extends ReactiveEffect {
 		const { immediate, deep, call } = this.options;
 		if (initialRun && !immediate) return;
 		if (initialRun || deep || this.forceTrigger || (this.isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
-			cleanup(this);
 			const currentWatcher = activeWatcher;
-			activeWatcher = this;
+			const prevSub = setActiveSub();
 			try {
+				this.cleanupCallback();
+				activeWatcher = this;
 				const args = [
 					newValue,
 					oldValue === INITIAL_WATCHER_VALUE ? void 0 : this.isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue,
@@ -1965,6 +2000,7 @@ var WatcherEffect = class extends ReactiveEffect {
 				call ? call(this.cb, 3, args) : this.cb(...args);
 			} finally {
 				activeWatcher = currentWatcher;
+				setActiveSub(prevSub);
 			}
 		}
 	}
@@ -2259,15 +2295,15 @@ function queuePostFlushCb(jobs, id = Infinity) {
 	} else for (let i = 0; i < jobs.length; i++) queueJobWorker(jobs[i], id, postJobs, postJobs.length, 0);
 	queueFlush();
 }
-function flushPreFlushCbs(instance, seen) {
+function flushPreFlushCbs(instance, minUid, seen) {
 	seen = seen || /* @__PURE__ */ new Map();
 	for (let i = flushIndex; i < jobsLength; i++) {
 		const cb = jobs[i];
 		if (cb.order & 1 || cb.order === Infinity) continue;
-		if (instance && cb.order !== instance.uid * 2) continue;
+		if (instance && cb.order !== instance.uid * 2 || minUid !== void 0 && !(cb.order >= minUid * 2)) continue;
 		if (checkRecursiveUpdates(seen, cb)) continue;
 		jobs.splice(i, 1);
-		i--;
+		i = instance ? i - 1 : flushIndex - 1;
 		jobsLength--;
 		if (cb.flags & 2) cb.flags &= -2;
 		try {
@@ -2277,15 +2313,24 @@ function flushPreFlushCbs(instance, seen) {
 		}
 	}
 }
-function flushPostFlushCbs(seen) {
+function flushPostFlushCbs(seen, skip, minUid = 0) {
 	if (postJobs.length) {
+		let cbs = postJobs;
+		if (skip) {
+			cbs = [];
+			let kept = 0;
+			for (let i = 0; i < postJobs.length; i++) {
+				const cb = postJobs[i];
+				if (cb.i !== void 0 ? !cb.i || cb.i.uid < minUid : skip.has(cb)) postJobs[kept++] = cb;
+				else cbs.push(cb);
+			}
+			postJobs.length = kept;
+		} else postJobs = [];
 		if (activePostJobs) {
-			for (let i = 0; i < postJobs.length; i++) activePostJobs.push(postJobs[i]);
-			postJobs.length = 0;
+			for (let i = 0; i < cbs.length; i++) activePostJobs.push(cbs[i]);
 			return;
 		}
-		activePostJobs = postJobs;
-		postJobs = [];
+		activePostJobs = cbs;
 		seen = seen || /* @__PURE__ */ new Map();
 		try {
 			while (postFlushIndex < activePostJobs.length) {
@@ -2307,17 +2352,28 @@ function flushPostFlushCbs(seen) {
 }
 let isFlushing = false;
 /**
+* Run a root render, then flush the jobs it is responsible for. A mount or
+* unmount (`minUid` given) only flushes the jobs of the components it created
+* and the post cbs it queued, so pre watchers triggered in setup run before
+* mounted (#5721) while the jobs of other components stay in the queue and
+* keep their order (#6728). A root update keeps flushing all pending pre jobs
+* and post cbs, as the jobs of the components it re-renders may predate it.
+*
 * @internal
 */
-function flushOnAppMount(instance) {
-	if (!isFlushing) {
-		isFlushing = true;
-		try {
-			flushPreFlushCbs(instance);
-			flushPostFlushCbs();
-		} finally {
-			isFlushing = false;
-		}
+function flushOnAppMount(fn, minUid) {
+	if (isFlushing) {
+		fn();
+		return;
+	}
+	const queued = minUid === void 0 ? void 0 : new Set(postJobs);
+	fn();
+	isFlushing = true;
+	try {
+		flushPreFlushCbs(void 0, minUid);
+		flushPostFlushCbs(void 0, queued, minUid);
+	} finally {
+		isFlushing = false;
 	}
 }
 function flushJobs(seen) {
@@ -2718,7 +2774,7 @@ var RenderWatcherEffect = class extends WatcherEffect {
 			this.flags |= 128;
 			job.flags |= 2;
 		}
-		if (instance) job.i = instance;
+		job.i = instance;
 		this.job = job;
 	}
 	notify() {
@@ -2909,8 +2965,22 @@ function setTransitionHooks(vnode, hooks) {
 		const contentHooks = vnode.ssContent.transition = hooks.clone(vnode.ssContent);
 		const fallbackHooks = vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
 		return vnode.suspense && vnode.suspense.activeBranch === vnode.ssFallback ? fallbackHooks : contentHooks;
-	} else vnode.transition = hooks;
+	} else {
+		vnode.transition = hooks;
+		if (vnode.type === Fragment && isArray(vnode.children)) {
+			const child = filterSingleRoot(vnode.children, false);
+			if (child) setTransitionHooks(child, hooks);
+		}
+	}
 	return hooks;
+}
+function getTransitionRoot(vnode) {
+	if (vnode.component && !isVaporComponent(vnode.type)) return getTransitionRoot(vnode.component.subTree);
+	if (vnode.type === Fragment) {
+		const child = isArray(vnode.children) && filterSingleRoot(vnode.children, false);
+		return child ? getTransitionRoot(child) : void 0;
+	}
+	if (vnode.type !== Comment) return vnode;
 }
 //#endregion
 //#region packages/runtime-core/src/helpers/useId.ts
@@ -3171,6 +3241,11 @@ function renderSlot(slots, name, props, fallback, noSlotted, branchKey) {
 				owner: currentRenderingInstance
 			}] : void 0
 		};
+		if (branchKey != null && props.key == null) {
+			ret.vs.props = ret.props;
+			ret.props = extend({}, ret.props, { key: branchKey });
+			ret.key = branchKey;
+		}
 		if (!noSlotted && ret.scopeId) ret.slotScopeIds = [ret.scopeId + "-s"];
 		return ret;
 	}
@@ -4088,7 +4163,7 @@ function hasPropsChanged(prevProps, nextProps, emitsOptions) {
 	if (nextKeys.length !== Object.keys(prevProps).length) return true;
 	for (let i = 0; i < nextKeys.length; i++) {
 		const key = nextKeys[i];
-		if (hasPropValueChanged(nextProps, prevProps, key) && !isEmitListener(emitsOptions, key)) return true;
+		if (!hasOwn(prevProps, key) || hasPropValueChanged(nextProps, prevProps, key) && !isEmitListener(emitsOptions, key)) return true;
 	}
 	return false;
 }
@@ -4768,7 +4843,8 @@ function baseCreateRenderer(options, createHydrationFns) {
 		for (let i = 0; i < newChildren.length; i++) {
 			const oldVNode = oldChildren[i];
 			const newVNode = newChildren[i];
-			const container = oldVNode.el && (oldVNode.type === Fragment || !isSameVNodeType(oldVNode, newVNode) || oldVNode.shapeFlag & 198) ? hostParentNode(oldVNode.el) : fallbackContainer;
+			const oldEl = oldVNode.el || resolveAsyncComponentPlaceholder(oldVNode);
+			const container = oldEl && (oldVNode.type === Fragment || !isSameVNodeType(oldVNode, newVNode) || oldVNode.shapeFlag & 198) ? hostParentNode(oldEl) : fallbackContainer;
 			patch(oldVNode, newVNode, container, null, parentComponent, parentSuspense, namespace, slotScopeIds, true);
 		}
 	};
@@ -4860,6 +4936,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 			if (instance.asyncDep && !instance.asyncResolved) {
 				pushWarningContext$1(n2);
 				n2.el = n1.el;
+				n2.placeholder = n1.placeholder;
 				updateComponentPreRender(instance, n2, optimized);
 				popWarningContext$1();
 				return;
@@ -4869,6 +4946,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 			}
 		} else {
 			n2.el = n1.el;
+			n2.placeholder = n1.placeholder;
 			instance.vnode = n2;
 		}
 	};
@@ -5216,12 +5294,9 @@ function baseCreateRenderer(options, createHydrationFns) {
 	};
 	const remove = (vnode) => {
 		const { type, el, anchor, transition } = vnode;
-		if (type === Fragment) {
-			if (vnode.patchFlag > 0 && vnode.patchFlag & 2048 && transition && !transition.persisted) vnode.children.forEach((child) => {
-				if (child.type === Comment) hostRemove(child.el);
-				else remove(child);
-			});
-			else removeFragment(el, anchor);
+		const isFragment = type === Fragment;
+		if (isFragment && !transition) {
+			removeFragment(el, anchor);
 			return;
 		}
 		if (type === Static) {
@@ -5229,8 +5304,21 @@ function baseCreateRenderer(options, createHydrationFns) {
 			if (transition && !transition.persisted && transition.afterLeave) transition.afterLeave();
 			return;
 		}
-		if (transition) performTransitionLeave(el, transition, () => hostRemove(el), !!(vnode.shapeFlag & 1));
-		else hostRemove(el);
+		const leavingNode = isFragment ? getTransitionRoot(vnode) : vnode;
+		const performRemove = () => {
+			if (isFragment) {
+				if (hostParentNode(el)) removeFragment(el, anchor);
+			} else hostRemove(el);
+		};
+		if (transition) {
+			let leavingEl = leavingNode && leavingNode.el;
+			let isElement = !!(leavingNode && leavingNode.shapeFlag & 1);
+			if (isFragment && leavingNode && isVaporComponent(leavingNode.type)) {
+				leavingEl = getVaporInterface(leavingNode.component, leavingNode).getTransitionElement(leavingNode);
+				isElement = !!leavingEl;
+			}
+			performTransitionLeave(leavingEl || el, transition, performRemove, isElement);
+		} else performRemove();
 	};
 	const removeFragment = (cur, end) => {
 		let next;
@@ -5273,15 +5361,12 @@ function baseCreateRenderer(options, createHydrationFns) {
 		return teleportEnd ? hostNextSibling(teleportEnd) : el;
 	};
 	const render = (vnode, container, namespace) => {
-		let instance;
-		if (vnode == null) {
-			if (container._vnode) {
-				unmount(container._vnode, null, null, true);
-				instance = container._vnode.component;
-			}
-		} else patch(container._vnode || null, vnode, container, null, null, null, namespace);
-		container._vnode = vnode;
-		flushOnAppMount(instance);
+		flushOnAppMount(() => {
+			if (vnode == null) {
+				if (container._vnode) unmount(container._vnode, null, null, true);
+			} else patch(container._vnode || null, vnode, container, null, null, null, namespace);
+			container._vnode = vnode;
+		}, vnode && container._vnode ? void 0 : vnode && vnode.component ? vnode.component.uid : getNextUid());
 	};
 	const internals = {
 		p: patch,
@@ -5679,7 +5764,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false
 		ctx: vnode.ctx,
 		ce: vnode.ce,
 		vi: vnode.vi,
-		vs: cloneVaporSlotMeta(vnode),
+		vs: cloneVaporSlotMeta(vnode, extraProps),
 		vb: vnode.vb,
 		ibu: vnode.ibu,
 		iu: vnode.iu,
@@ -5688,13 +5773,22 @@ function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false
 	if (transition && cloneTransition) setTransitionHooks(cloned, transition.clone(cloned));
 	return cloned;
 }
-function cloneVaporSlotMeta(vnode) {
+function cloneVaporSlotMeta(vnode, extraProps) {
 	const vaporSlot = vnode.vs;
 	if (!vaporSlot) return vaporSlot;
 	const cloned = {
 		slot: vaporSlot.slot,
-		outlets: vaporSlot.outlets
+		outlets: vaporSlot.outlets,
+		props: vaporSlot.props
 	};
+	if (vaporSlot.props && extraProps) {
+		let extraSlotProps;
+		for (const key in extraProps) if (key !== "key") {
+			if (!extraSlotProps) extraSlotProps = {};
+			extraSlotProps[key] = extraProps[key];
+		}
+		if (extraSlotProps) cloned.props = mergeProps(vaporSlot.props, extraSlotProps);
+	}
 	if (vnode.el) {
 		cloned.state = vaporSlot.state;
 		cloned.ref = vaporSlot.ref;
@@ -5846,6 +5940,9 @@ const restoreCurrentInstance = (prev) => {
 //#region packages/runtime-core/src/component.ts
 const emptyAppContext = /*@__PURE__*/ createAppContext();
 let uid = 0;
+function getNextUid() {
+	return uid;
+}
 function createComponentInstance$1(vnode, parent, suspense) {
 	const type = vnode.type;
 	const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
@@ -6124,7 +6221,7 @@ const computed = (getterOrOptions, debugOptions) => {
 };
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.11";
+const version = "3.6.0-rc.12";
 const warn = warn$1;
 /**
 * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.
@@ -6295,7 +6392,7 @@ function patchStyle(el, prev, next) {
 		else el.removeAttribute("style");
 	}
 	if (vShowOriginalDisplay in el) {
-		el[vShowOriginalDisplay] = hasControlledDisplay ? style.display : "";
+		if (!isCssString || prev !== next) el[vShowOriginalDisplay] = hasControlledDisplay ? style.display : "";
 		if (el[vShowHidden]) style.display = "none";
 	}
 }
@@ -7184,15 +7281,20 @@ function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 	popWarningContext();
 	const hasAsyncSetup = isPromise(res);
 	let prefetches = instance.sp;
-	if (hasAsyncSetup || prefetches) return Promise.resolve(res).then(() => {
+	let p;
+	if (hasAsyncSetup || prefetches) p = Promise.resolve(res).then(() => {
 		if (hasAsyncSetup) prefetches = instance.sp;
-		if (prefetches) return Promise.all(prefetches.map((prefetch) => prefetch.call(instance.proxy)));
-	}).catch(NOOP).then(() => renderComponentSubTree(instance, slotScopeId));
+		if (prefetches) try {
+			return Promise.all(prefetches.map((prefetch) => prefetch.call(instance.proxy))).catch(NOOP);
+		} catch {}
+	}).then(() => renderComponentSubTree(instance, slotScopeId));
 	else try {
 		return renderComponentSubTree(instance, slotScopeId);
 	} catch (err) {
-		return Promise.reject(err);
+		p = Promise.reject(err);
 	}
+	p.catch(NOOP);
+	return p;
 }
 function renderComponentSubTree(instance, slotScopeId) {
 	pushWarningContext(instance.vnode);
@@ -7275,8 +7377,8 @@ function renderVNode(push, vnode, parentComponent, slotScopeId) {
 		}
 		case VaporSlot: {
 			if (vnode.slotScopeIds) slotScopeId = (slotScopeId ? slotScopeId + " " : "") + vnode.slotScopeIds.join(" ");
-			const { slot, outlets } = vnode.vs;
-			renderVaporOutlet(push, slot, vnode.props, outlets && outlets[0], parentComponent, slotScopeId);
+			const { slot, outlets, props } = vnode.vs;
+			renderVaporOutlet(push, slot, props || vnode.props, outlets && outlets[0], parentComponent, slotScopeId);
 			break;
 		}
 		default: if (shapeFlag & 1) renderElementVNode(push, vnode, parentComponent, slotScopeId);
@@ -7294,7 +7396,13 @@ function renderVaporOutlet(push, slot, props, outlet, parentComponent, slotScope
 function renderVNodeChildren(push, children, parentComponent, slotScopeId) {
 	for (let i = 0; i < children.length; i++) renderVNode(push, normalizeVNode(children[i]), parentComponent, slotScopeId);
 }
-function renderElementVNode(push, vnode, parentComponent, slotScopeId) {
+function renderDynamicComponent(push, type, props, slots, parentComponent, slotScopeId) {
+	if (isString(type) && type) {
+		const slot = slots && slots.default;
+		renderElementVNode(push, createVNode(type, props), parentComponent, slotScopeId, slot && (() => slot(void 0, push, parentComponent, slotScopeId || "")));
+	} else renderVNode(push, createVNode(type, props, slots), parentComponent, slotScopeId);
+}
+function renderElementVNode(push, vnode, parentComponent, slotScopeId, renderChildren) {
 	const tag = vnode.type;
 	let { props, children, shapeFlag, scopeId } = vnode;
 	let openTag = `<${tag}`;
@@ -7322,19 +7430,20 @@ function renderElementVNode(push, vnode, parentComponent, slotScopeId) {
 	if (!isVoidTag(tag)) {
 		let hasChildrenOverride = false;
 		if (props) {
-			if (props.innerHTML) {
+			if (props.innerHTML != null) {
 				hasChildrenOverride = true;
-				push(props.innerHTML);
-			} else if (props.textContent) {
+				push(String(props.innerHTML));
+			} else if (props.textContent != null) {
 				hasChildrenOverride = true;
 				push(escapeHtml(props.textContent));
-			} else if (tag === "textarea" && props.value) {
+			} else if (tag === "textarea" && props.value != null) {
 				hasChildrenOverride = true;
 				push(escapeHtml(props.value));
 			}
 		}
 		if (!hasChildrenOverride) {
-			if (shapeFlag & 8) push(escapeHtml(children));
+			if (renderChildren) renderChildren();
+			else if (shapeFlag & 8) push(escapeHtml(children));
 			else if (shapeFlag & 16) renderVNodeChildren(push, children, parentComponent, slotScopeId);
 		}
 		push(`</${tag}>`);
@@ -7409,13 +7518,41 @@ async function renderToString(input, context = {}) {
 	const vnode = createVNode(input._component, input._props);
 	vnode.appContext = input._context;
 	input.provide(ssrContextKey, context);
+	let buffer;
+	let result;
 	try {
-		const result = await unrollBuffer$1(await renderComponentVNode(vnode));
+		buffer = await renderComponentVNode(vnode);
+		result = await unrollBuffer$1(buffer);
 		await resolveTeleports(context);
-		return result;
-	} finally {
-		cleanupContext(context);
+	} catch (err) {
+		cleanupFailedRender(buffer, context);
+		throw err;
 	}
+	cleanupContext(context);
+	return result;
+}
+/**
+* Stops watchers without masking the render error. Components after the
+* failure point are still in flight and can register watchers once the render
+* has settled, so those are stopped when they finish.
+* Cleanup errors here have already been reported by the watcher.
+*/
+function cleanupFailedRender(buffer, context) {
+	try {
+		cleanupContext(context);
+	} catch {}
+	(async () => {
+		if (buffer) await settleBuffer(buffer);
+		for (const key in context.__teleportBuffers) await settleBuffer(context.__teleportBuffers[key]);
+		cleanupContext(context);
+	})().catch(NOOP);
+}
+async function settleBuffer(buffer) {
+	if (!buffer.hasAsync) return;
+	for (let item of buffer) try {
+		if (isPromise(item)) item = await item;
+		if (!isString(item)) await settleBuffer(item);
+	} catch {}
 }
 async function resolveTeleports(context) {
 	if (context.__teleportBuffers) {
@@ -7447,19 +7584,12 @@ function renderToSimpleStream(input, context, stream) {
 	const vnode = createVNode(input._component, input._props);
 	vnode.appContext = input._context;
 	input.provide(ssrContextKey, context);
-	let cleaned = false;
-	const finalize = () => {
-		if (cleaned) return;
-		cleaned = true;
+	let buffer;
+	Promise.resolve().then(() => renderComponentVNode(vnode)).then((b) => unrollBuffer(buffer = b, stream)).then(() => resolveTeleports(context)).then(() => {
 		cleanupContext(context);
-	};
-	Promise.resolve().then(() => renderComponentVNode(vnode)).then((buffer) => unrollBuffer(buffer, stream)).then(() => resolveTeleports(context)).then(() => {
-		finalize();
 		return stream.push(null);
 	}).catch((error) => {
-		try {
-			finalize();
-		} catch {}
+		cleanupFailedRender(buffer, context);
 		stream.destroy(error);
 	});
 	return stream;
@@ -7530,4 +7660,4 @@ function pipeToWebWritable(input, context = {}, writable) {
 //#region packages/server-renderer/src/index.ts
 initDirectivesForSSR();
 //#endregion
-export { pipeToNodeWritable, pipeToWebWritable, renderToNodeStream, renderToSimpleStream, renderToStream, renderToString, renderToWebStream, ssrGetDirectiveProps, ssrGetDynamicModelProps, includeBooleanAttr as ssrIncludeBooleanAttr, ssrInterpolate, ssrLooseContain, ssrLooseEqual, ssrRenderAttr, ssrRenderAttrs, ssrRenderClass, ssrRenderComponent, ssrRenderDynamicAttr, ssrRenderDynamicModel, ssrRenderList, ssrRenderSlot, ssrRenderSlotInner, ssrRenderStyle, ssrRenderSuspense, ssrRenderTeleport, renderVNode as ssrRenderVNode };
+export { pipeToNodeWritable, pipeToWebWritable, renderToNodeStream, renderToSimpleStream, renderToStream, renderToString, renderToWebStream, ssrGetDirectiveProps, ssrGetDynamicModelProps, includeBooleanAttr as ssrIncludeBooleanAttr, ssrInterpolate, ssrLooseContain, ssrLooseEqual, ssrRenderAttr, ssrRenderAttrs, ssrRenderClass, ssrRenderComponent, ssrRenderDynamicAttr, renderDynamicComponent as ssrRenderDynamicComponent, ssrRenderDynamicModel, ssrRenderList, ssrRenderSlot, ssrRenderSlotInner, ssrRenderStyle, ssrRenderSuspense, ssrRenderTeleport, renderVNode as ssrRenderVNode };

@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.11
+  * @vue/server-renderer v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -217,8 +217,10 @@ function ssrInterpolate(value, uniText = false) {
 //#region packages/server-renderer/src/helpers/ssrRenderList.ts
 function ssrRenderList(source, renderItem) {
 	if ((0, _vue_shared.isArray)(source) || (0, _vue_shared.isString)(source)) for (let i = 0, l = source.length; i < l; i++) renderItem(source[i], i);
-	else if (typeof source === "number") for (let i = 0; i < source; i++) renderItem(i + 1, i);
-	else if ((0, _vue_shared.isObject)(source)) {
+	else if (typeof source === "number") {
+		if (!Number.isInteger(source) || source < 0) return;
+		for (let i = 0; i < source; i++) renderItem(i + 1, i);
+	} else if ((0, _vue_shared.isObject)(source)) {
 		if (source[Symbol.iterator]) {
 			let i = 0;
 			for (const item of source) renderItem(item, i++);
@@ -285,6 +287,7 @@ var internal_exports = /* @__PURE__ */ __exportAll({
 	ssrRenderClass: () => ssrRenderClass,
 	ssrRenderComponent: () => ssrRenderComponent,
 	ssrRenderDynamicAttr: () => ssrRenderDynamicAttr,
+	ssrRenderDynamicComponent: () => renderDynamicComponent,
 	ssrRenderDynamicModel: () => ssrRenderDynamicModel,
 	ssrRenderList: () => ssrRenderList,
 	ssrRenderSlot: () => ssrRenderSlot,
@@ -417,15 +420,20 @@ function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 	const res = setupComponent(instance, true);
 	const hasAsyncSetup = (0, _vue_shared.isPromise)(res);
 	let prefetches = instance.sp;
-	if (hasAsyncSetup || prefetches) return Promise.resolve(res).then(() => {
+	let p;
+	if (hasAsyncSetup || prefetches) p = Promise.resolve(res).then(() => {
 		if (hasAsyncSetup) prefetches = instance.sp;
-		if (prefetches) return Promise.all(prefetches.map((prefetch) => prefetch.call(instance.proxy)));
-	}).catch(_vue_shared.NOOP).then(() => renderComponentSubTree(instance, slotScopeId));
+		if (prefetches) try {
+			return Promise.all(prefetches.map((prefetch) => prefetch.call(instance.proxy))).catch(_vue_shared.NOOP);
+		} catch {}
+	}).then(() => renderComponentSubTree(instance, slotScopeId));
 	else try {
 		return renderComponentSubTree(instance, slotScopeId);
 	} catch (err) {
-		return Promise.reject(err);
+		p = Promise.reject(err);
 	}
+	p.catch(_vue_shared.NOOP);
+	return p;
 }
 function renderComponentSubTree(instance, slotScopeId) {
 	const comp = instance.type;
@@ -506,8 +514,8 @@ function renderVNode(push, vnode, parentComponent, slotScopeId) {
 		}
 		case VaporSlot: {
 			if (vnode.slotScopeIds) slotScopeId = (slotScopeId ? slotScopeId + " " : "") + vnode.slotScopeIds.join(" ");
-			const { slot, outlets } = vnode.vs;
-			renderVaporOutlet(push, slot, vnode.props, outlets && outlets[0], parentComponent, slotScopeId);
+			const { slot, outlets, props } = vnode.vs;
+			renderVaporOutlet(push, slot, props || vnode.props, outlets && outlets[0], parentComponent, slotScopeId);
 			break;
 		}
 		default: if (shapeFlag & 1) renderElementVNode(push, vnode, parentComponent, slotScopeId);
@@ -525,7 +533,13 @@ function renderVaporOutlet(push, slot, props, outlet, parentComponent, slotScope
 function renderVNodeChildren(push, children, parentComponent, slotScopeId) {
 	for (let i = 0; i < children.length; i++) renderVNode(push, normalizeVNode(children[i]), parentComponent, slotScopeId);
 }
-function renderElementVNode(push, vnode, parentComponent, slotScopeId) {
+function renderDynamicComponent(push, type, props, slots, parentComponent, slotScopeId) {
+	if ((0, _vue_shared.isString)(type) && type) {
+		const slot = slots && slots.default;
+		renderElementVNode(push, (0, _vue_runtime_dom.createVNode)(type, props), parentComponent, slotScopeId, slot && (() => slot(void 0, push, parentComponent, slotScopeId || "")));
+	} else renderVNode(push, (0, _vue_runtime_dom.createVNode)(type, props, slots), parentComponent, slotScopeId);
+}
+function renderElementVNode(push, vnode, parentComponent, slotScopeId, renderChildren) {
 	const tag = vnode.type;
 	let { props, children, shapeFlag, scopeId } = vnode;
 	let openTag = `<${tag}`;
@@ -553,19 +567,20 @@ function renderElementVNode(push, vnode, parentComponent, slotScopeId) {
 	if (!(0, _vue_shared.isVoidTag)(tag)) {
 		let hasChildrenOverride = false;
 		if (props) {
-			if (props.innerHTML) {
+			if (props.innerHTML != null) {
 				hasChildrenOverride = true;
-				push(props.innerHTML);
-			} else if (props.textContent) {
+				push(String(props.innerHTML));
+			} else if (props.textContent != null) {
 				hasChildrenOverride = true;
 				push((0, _vue_shared.escapeHtml)(props.textContent));
-			} else if (tag === "textarea" && props.value) {
+			} else if (tag === "textarea" && props.value != null) {
 				hasChildrenOverride = true;
 				push((0, _vue_shared.escapeHtml)(props.value));
 			}
 		}
 		if (!hasChildrenOverride) {
-			if (shapeFlag & 8) push((0, _vue_shared.escapeHtml)(children));
+			if (renderChildren) renderChildren();
+			else if (shapeFlag & 8) push((0, _vue_shared.escapeHtml)(children));
 			else if (shapeFlag & 16) renderVNodeChildren(push, children, parentComponent, slotScopeId);
 		}
 		push(`</${tag}>`);
@@ -640,13 +655,41 @@ async function renderToString(input, context = {}) {
 	const vnode = (0, _vue_runtime_dom.createVNode)(input._component, input._props);
 	vnode.appContext = input._context;
 	input.provide(_vue_runtime_dom.ssrContextKey, context);
+	let buffer;
+	let result;
 	try {
-		const result = await unrollBuffer$1(await renderComponentVNode(vnode));
+		buffer = await renderComponentVNode(vnode);
+		result = await unrollBuffer$1(buffer);
 		await resolveTeleports(context);
-		return result;
-	} finally {
-		cleanupContext(context);
+	} catch (err) {
+		cleanupFailedRender(buffer, context);
+		throw err;
 	}
+	cleanupContext(context);
+	return result;
+}
+/**
+* Stops watchers without masking the render error. Components after the
+* failure point are still in flight and can register watchers once the render
+* has settled, so those are stopped when they finish.
+* Cleanup errors here have already been reported by the watcher.
+*/
+function cleanupFailedRender(buffer, context) {
+	try {
+		cleanupContext(context);
+	} catch {}
+	(async () => {
+		if (buffer) await settleBuffer(buffer);
+		for (const key in context.__teleportBuffers) await settleBuffer(context.__teleportBuffers[key]);
+		cleanupContext(context);
+	})().catch(_vue_shared.NOOP);
+}
+async function settleBuffer(buffer) {
+	if (!buffer.hasAsync) return;
+	for (let item of buffer) try {
+		if ((0, _vue_shared.isPromise)(item)) item = await item;
+		if (!(0, _vue_shared.isString)(item)) await settleBuffer(item);
+	} catch {}
 }
 async function resolveTeleports(context) {
 	if (context.__teleportBuffers) {
@@ -678,19 +721,12 @@ function renderToSimpleStream(input, context, stream) {
 	const vnode = (0, _vue_runtime_dom.createVNode)(input._component, input._props);
 	vnode.appContext = input._context;
 	input.provide(_vue_runtime_dom.ssrContextKey, context);
-	let cleaned = false;
-	const finalize = () => {
-		if (cleaned) return;
-		cleaned = true;
+	let buffer;
+	Promise.resolve().then(() => renderComponentVNode(vnode)).then((b) => unrollBuffer(buffer = b, stream)).then(() => resolveTeleports(context)).then(() => {
 		cleanupContext(context);
-	};
-	Promise.resolve().then(() => renderComponentVNode(vnode)).then((buffer) => unrollBuffer(buffer, stream)).then(() => resolveTeleports(context)).then(() => {
-		finalize();
 		return stream.push(null);
 	}).catch((error) => {
-		try {
-			finalize();
-		} catch {}
+		cleanupFailedRender(buffer, context);
 		stream.destroy(error);
 	});
 	return stream;
@@ -781,6 +817,7 @@ exports.ssrRenderAttrs = ssrRenderAttrs;
 exports.ssrRenderClass = ssrRenderClass;
 exports.ssrRenderComponent = ssrRenderComponent;
 exports.ssrRenderDynamicAttr = ssrRenderDynamicAttr;
+exports.ssrRenderDynamicComponent = renderDynamicComponent;
 exports.ssrRenderDynamicModel = ssrRenderDynamicModel;
 exports.ssrRenderList = ssrRenderList;
 exports.ssrRenderSlot = ssrRenderSlot;

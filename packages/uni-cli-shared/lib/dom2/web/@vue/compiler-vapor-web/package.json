@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/compiler-vapor-web",
-  "version": "3.6.0-rc.11",
+  "version": "3.6.0-rc.12",
   "description": "uni-app x Web Vapor compiler",
   "main": "dist/compiler-vapor-web.cjs.js",
   "types": "dist/compiler-vapor-web.d.ts",
@@ -24,6 +24,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@dcloudio/uni-shared": "catalog:",
     "@vue/compiler-dom": "workspace:*",
     "@vue/compiler-ssr": "workspace:*",
     "@vue/compiler-vapor": "workspace:*",

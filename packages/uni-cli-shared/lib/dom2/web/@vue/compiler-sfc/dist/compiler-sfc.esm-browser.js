@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.11
+  * @vue/compiler-sfc v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -405,9 +405,10 @@ const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 * - ismap -> isMap
 * - nomodule -> noModule
 * - novalidate -> noValidate
+* - playsinline -> playsInline
 * - readonly -> readOnly
 */
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly`;
 const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
@@ -3642,7 +3643,7 @@ const errorMessages$1 = {
 	[41]: `v-model is missing expression.`,
 	[42]: `v-model value must be a valid JavaScript member expression.`,
 	[43]: `v-model cannot be used on v-for or v-slot scope variables because they are not writable.`,
-	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.`,
+	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.\nFor props declared with defineModel(), assign the returned ref to a variable and use v-model on that variable.`,
 	[45]: `v-model cannot be used on a const binding because it is not writable.`,
 	[46]: `Error parsing JavaScript expression: `,
 	[47]: `<KeepAlive> expects exactly one child component.`,
@@ -3654,7 +3655,7 @@ const errorMessages$1 = {
 	[54]: ``
 };
 //#endregion
-//#region node_modules/.pnpm/@babel+parser@7.29.8/node_modules/@babel/parser/lib/index.js
+//#region node_modules/.pnpm/@babel+parser@7.29.9/node_modules/@babel/parser/lib/index.js
 var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	function _objectWithoutPropertiesLoose(r, e) {
@@ -7088,10 +7089,10 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			const arrows = [];
 			while (stack.length !== 0) {
 				const node = stack.pop();
-				if (node.type === "ArrowFunctionExpression" && node.body.type !== "BlockStatement") {
+				if (node.type === "ArrowFunctionExpression") {
 					if (node.typeParameters || !node.returnType) this.finishArrowValidation(node);
 					else arrows.push(node);
-					stack.push(node.body);
+					if (node.body.type !== "BlockStatement") stack.push(node.body);
 				} else if (node.type === "ConditionalExpression") {
 					stack.push(node.consequent);
 					stack.push(node.alternate);
@@ -12881,6 +12882,9 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		fillOptionalPropertiesForTSESLint(node) {
 			switch (node.type) {
+				case "ImportDeclaration":
+					node.phase != null || (node.phase = null);
+					return;
 				case "ExpressionStatement":
 					node.directive != null || (node.directive = void 0);
 					return;
@@ -17952,7 +17956,7 @@ function createStructuralDirectiveTransform$1(name, fn) {
 	};
 }
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/base64.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64.js
 var require_base64$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var intToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");
 	/**
@@ -17986,7 +17990,7 @@ var require_base64$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/base64-vlq.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64-vlq.js
 var require_base64_vlq$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64 = require_base64$1();
 	var VLQ_BASE_SHIFT = 5;
@@ -18051,7 +18055,7 @@ var require_base64_vlq$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/util.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/util.js
 var require_util$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	/**
 	* This is a helper function for getting values from parameter/options
@@ -18398,7 +18402,7 @@ var require_util$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.computeSourceURL = computeSourceURL;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/array-set.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/array-set.js
 var require_array_set$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util$2();
 	var has = Object.prototype.hasOwnProperty;
@@ -18492,7 +18496,7 @@ var require_array_set$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.ArraySet = ArraySet;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/mapping-list.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/mapping-list.js
 var require_mapping_list$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util$2();
 	/**
@@ -18561,7 +18565,7 @@ var require_mapping_list$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.MappingList = MappingList;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/source-map-generator.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-generator.js
 var require_source_map_generator$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64VLQ = require_base64_vlq$1();
 	var util = require_util$2();
@@ -18785,10 +18789,9 @@ var require_source_map_generator$1 = /* @__PURE__ */ __commonJSMin(((exports) =>
 			next = "";
 			if (mapping.generatedLine !== previousGeneratedLine) {
 				previousGeneratedColumn = 0;
-				while (mapping.generatedLine !== previousGeneratedLine) {
-					next += ";";
-					previousGeneratedLine++;
-				}
+				var lineDelta = mapping.generatedLine - previousGeneratedLine;
+				next += lineDelta === 1 ? ";" : ";".repeat(lineDelta);
+				previousGeneratedLine = mapping.generatedLine;
 			} else if (i > 0) {
 				if (!util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])) continue;
 				next += ",";
@@ -18845,7 +18848,7 @@ var require_source_map_generator$1 = /* @__PURE__ */ __commonJSMin(((exports) =>
 	exports.SourceMapGenerator = SourceMapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/binary-search.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/binary-search.js
 var require_binary_search$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.GREATEST_LOWER_BOUND = 1;
 	exports.LEAST_UPPER_BOUND = 2;
@@ -18906,7 +18909,7 @@ var require_binary_search$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/quick-sort.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/quick-sort.js
 var require_quick_sort$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	function SortTemplate(comparator) {
 		/**
@@ -18969,6 +18972,14 @@ var require_quick_sort$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		let template = SortTemplate.toString();
 		return new Function(`return ${template}`)()(comparator);
 	}
+	let isEvalAllowed = (function() {
+		try {
+			new Function("return 0")();
+			return true;
+		} catch (_unused) {
+			return false;
+		}
+	})();
 	/**
 	* Sort the given array in-place with the given comparator function.
 	*
@@ -18979,7 +18990,7 @@ var require_quick_sort$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	*/
 	let sortCache = /* @__PURE__ */ new WeakMap();
 	exports.quickSort = function(ary, comparator, start = 0) {
-		let doQuickSort = sortCache.get(comparator);
+		let doQuickSort = isEvalAllowed ? sortCache.get(comparator) : SortTemplate(comparator);
 		if (doQuickSort === void 0) {
 			doQuickSort = cloneSort(comparator);
 			sortCache.set(comparator, doQuickSort);
@@ -18988,13 +18999,14 @@ var require_quick_sort$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/source-map-consumer.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-consumer.js
 var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util$2();
 	var binarySearch = require_binary_search$1();
 	var ArraySet = require_array_set$1().ArraySet;
 	var base64VLQ = require_base64_vlq$1();
 	var quickSort = require_quick_sort$1().quickSort;
+	var MAX_SECTION_OFFSET_LINE = 1e7;
 	function SourceMapConsumer(aSourceMap, aSourceMapURL) {
 		var sourceMap = aSourceMap;
 		if (typeof aSourceMap === "string") sourceMap = util.parseSourceMapInput(aSourceMap);
@@ -19596,21 +19608,37 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 			line: -1,
 			column: 0
 		};
+		var maxOffsetLine = 0;
 		this._sections = sections.map(function(s) {
 			if (s.url) throw new Error("Support for url field in sections not implemented.");
 			var offset = util.getArg(s, "offset");
 			var offsetLine = util.getArg(offset, "line");
 			var offsetColumn = util.getArg(offset, "column");
+			if (!isValidOffset(offsetLine) || !isValidOffset(offsetColumn)) throw new Error("Section offset line and column must be non-negative integers.");
+			if (offsetLine > MAX_SECTION_OFFSET_LINE) throw new Error("Section offset line must not exceed " + MAX_SECTION_OFFSET_LINE + ".");
 			if (offsetLine < lastOffset.line || offsetLine === lastOffset.line && offsetColumn < lastOffset.column) throw new Error("Section offsets must be ordered and non-overlapping.");
 			lastOffset = offset;
+			var consumer = new SourceMapConsumer(util.getArg(s, "map"), aSourceMapURL);
+			var totalOffsetLine = offsetLine + (consumer._maxOffsetLine || 0);
+			if (totalOffsetLine > MAX_SECTION_OFFSET_LINE) throw new Error("Section offset line must not exceed " + MAX_SECTION_OFFSET_LINE + ", including offsets of nested sections.");
+			if (totalOffsetLine > maxOffsetLine) maxOffsetLine = totalOffsetLine;
 			return {
 				generatedOffset: {
 					generatedLine: offsetLine + 1,
 					generatedColumn: offsetColumn + 1
 				},
-				consumer: new SourceMapConsumer(util.getArg(s, "map"), aSourceMapURL)
+				consumer
 			};
 		});
+		this._maxOffsetLine = maxOffsetLine;
+	}
+	/**
+	* Section offsets come from untrusted input and are used as line/column
+	* numbers, so only accept non-negative safe integers (rejects NaN, Infinity,
+	* strings, fractions, etc).
+	*/
+	function isValidOffset(aValue) {
+		return typeof aValue === "number" && aValue >= 0 && aValue <= 9007199254740991 && Math.floor(aValue) === aValue;
 	}
 	IndexedSourceMapConsumer.prototype = Object.create(SourceMapConsumer.prototype);
 	IndexedSourceMapConsumer.prototype.constructor = SourceMapConsumer;
@@ -19623,7 +19651,10 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 	*/
 	Object.defineProperty(IndexedSourceMapConsumer.prototype, "sources", { get: function() {
 		var sources = [];
-		for (var i = 0; i < this._sections.length; i++) for (var j = 0; j < this._sections[i].consumer.sources.length; j++) sources.push(this._sections[i].consumer.sources[j]);
+		for (var i = 0; i < this._sections.length; i++) {
+			var sectionSources = this._sections[i].consumer.sources;
+			for (var j = 0; j < sectionSources.length; j++) sources.push(sectionSources[j]);
+		}
 		return sources;
 	} });
 	/**
@@ -19764,7 +19795,7 @@ var require_source_map_consumer$1 = /* @__PURE__ */ __commonJSMin(((exports) => 
 	exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/source-node.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-node.js
 var require_source_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var SourceMapGenerator = require_source_map_generator$1().SourceMapGenerator;
 	var util = require_util$2();
@@ -19830,6 +19861,10 @@ var require_source_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				}
 			}
 			while (lastGeneratedLine < mapping.generatedLine) {
+				if (remainingLinesIndex >= remainingLines.length) {
+					lastGeneratedLine = mapping.generatedLine;
+					break;
+				}
 				node.add(shiftNextLine());
 				lastGeneratedLine++;
 			}
@@ -20961,7 +20996,11 @@ const transformFor = createStructuralDirectiveTransform$1("for", (node, dir, con
 					]),
 					createCompoundExpression([
 						`if (_cached && _cached.el`,
-						...keyExp ? [` && _cached.key === `, keyExp] : [],
+						...keyExp ? [
+							` && _cached.key === (`,
+							keyExp,
+							`)`
+						] : [],
 						` && ${context.helperString(IS_MEMO_SAME)}(_cached, _memo)) return _cached`
 					]),
 					createCompoundExpression([`const _item = `, childBlock]),
@@ -22359,7 +22398,7 @@ function stringifyNode(node, context) {
 }
 function stringifyElement(node, context) {
 	let res = `<${node.tag}`;
-	let innerHTML = "";
+	let innerHTML = void 0;
 	for (let i = 0; i < node.props.length; i++) {
 		const p = node.props[i];
 		if (p.type === 6) {
@@ -22381,13 +22420,15 @@ function stringifyElement(node, context) {
 					else if (arg === "style") evaluated = stringifyStyle(normalizeStyle(evaluated));
 					res += ` ${p.arg.content}="${escapeHtml(evaluated)}"`;
 				}
-			} else if (p.name === "html") innerHTML = evaluateConstant(p.exp);
-			else if (p.name === "text") innerHTML = escapeHtml(toDisplayString(evaluateConstant(p.exp)));
+			} else if (p.name === "html") {
+				var _evaluateConstant;
+				innerHTML = (_evaluateConstant = evaluateConstant(p.exp)) !== null && _evaluateConstant !== void 0 ? _evaluateConstant : "";
+			} else if (p.name === "text") innerHTML = escapeHtml(toDisplayString(evaluateConstant(p.exp)));
 		}
 	}
 	if (context.scopeId) res += ` ${context.scopeId}`;
 	res += `>`;
-	if (innerHTML) res += innerHTML;
+	if (innerHTML !== void 0) res += innerHTML;
 	else for (let i = 0; i < node.children.length; i++) res += stringifyNode(node.children[i], context);
 	if (!isVoidTag(node.tag)) res += `</${node.tag}>`;
 	return res;
@@ -22794,7 +22835,11 @@ var src_exports$2 = /* @__PURE__ */ __exportAll({
 	walkIdentifiers: () => walkIdentifiers,
 	warnDeprecation: () => warnDeprecation
 });
-const DOMNodeTransforms = [transformStyle, ...[transformTransition$1, validateHtmlNesting]];
+const DOMNodeTransforms = [
+	transformStyle,
+	transformTransition$1,
+	...[validateHtmlNesting]
+];
 const DOMDirectiveTransforms = {
 	cloak: noopDirectiveTransform,
 	html: transformVHtml$1,
@@ -24975,6 +25020,7 @@ const transformSrcset = (node, context, options = defaultAssetUrlOptions) => {
 //#region packages/compiler-ssr/src/runtimeHelpers.ts
 const SSR_INTERPOLATE = Symbol(`ssrInterpolate`);
 const SSR_RENDER_VNODE = Symbol(`ssrRenderVNode`);
+const SSR_RENDER_DYNAMIC_COMPONENT = Symbol(`ssrRenderDynamicComponent`);
 const SSR_RENDER_COMPONENT = Symbol(`ssrRenderComponent`);
 const SSR_RENDER_SLOT = Symbol(`ssrRenderSlot`);
 const SSR_RENDER_SLOT_INNER = Symbol(`ssrRenderSlotInner`);
@@ -24995,6 +25041,7 @@ const SSR_GET_DIRECTIVE_PROPS = Symbol(`ssrGetDirectiveProps`);
 const ssrHelpers = {
 	[SSR_INTERPOLATE]: `ssrInterpolate`,
 	[SSR_RENDER_VNODE]: `ssrRenderVNode`,
+	[SSR_RENDER_DYNAMIC_COMPONENT]: `ssrRenderDynamicComponent`,
 	[SSR_RENDER_COMPONENT]: `ssrRenderComponent`,
 	[SSR_RENDER_SLOT]: `ssrRenderSlot`,
 	[SSR_RENDER_SLOT_INNER]: `ssrRenderSlotInner`,
@@ -25391,7 +25438,14 @@ const ssrTransformComponent = (node, context) => {
 			return fn;
 		};
 		const slots = node.children.length ? buildSlots(node, context, buildSSRSlotFn).slots : `null`;
-		if (typeof component !== "string") node.ssrCodegenNode = createCallExpression(context.helper(SSR_RENDER_VNODE), [
+		if (typeof component !== "string" && rawOptionsMap.get(context.root).vapor) node.ssrCodegenNode = createCallExpression(context.helper(SSR_RENDER_DYNAMIC_COMPONENT), [
+			`_push`,
+			component,
+			propsExp,
+			slots,
+			`_parent`
+		]);
+		else if (typeof component !== "string") node.ssrCodegenNode = createCallExpression(context.helper(SSR_RENDER_VNODE), [
 			`_push`,
 			createCallExpression(context.helper(CREATE_VNODE), [
 				component,
@@ -27401,44 +27455,46 @@ function parseValueDestructure(value, context) {
 			walkFunctionParams(value.ast, (id) => bindings.add(id));
 			walkIdentifiers(value.ast, (id, _, parentStack) => {
 				if (bindings.has(id)) {
-					let path = "";
+					const steps = [];
 					let isDynamic = false;
-					let helper;
-					let helperArgs;
 					for (let i = 0; i < parentStack.length; i++) {
 						const parent = parentStack[i];
 						const child = parentStack[i + 1] || id;
 						if (parent.type === "ObjectProperty" && parent.value === child) {
-							if (parent.key.type === "StringLiteral") path += `[${JSON.stringify(parent.key.value)}]`;
+							if (parent.key.type === "StringLiteral") steps.push(`[${JSON.stringify(parent.key.value)}]`);
 							else if (parent.computed) {
 								isDynamic = true;
-								path += `[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`;
-							} else path += `.${parent.key.name}`;
+								steps.push(`[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`);
+							} else steps.push(`.${parent.key.name}`);
 						} else if (parent.type === "ArrayPattern") {
 							const index = parent.elements.indexOf(child);
-							if (child.type === "RestElement") path += `.slice(${index})`;
-							else path += `[${index}]`;
+							if (child.type === "RestElement") steps.push(`.slice(${index})`);
+							else steps.push(`[${index}]`);
 						} else if (parent.type === "ObjectPattern" && child.type === "RestElement") {
-							helper = context.helper("getRestElement");
-							helperArgs = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
+							const helper = context.helper("getRestElement");
+							const args = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
 								if (p.key.type === "StringLiteral") return JSON.stringify(p.key.value);
 								else if (p.computed) {
 									isDynamic = true;
 									return rawValue.slice(p.key.start - 1, p.key.end - 1);
 								} else return JSON.stringify(p.key.name);
 							}).join(", ") + "]";
+							steps.push({
+								helper,
+								args
+							});
 						}
-						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression" && child.left === id)) {
+						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression")) {
 							isDynamic = true;
-							helper = context.helper("getDefaultValue");
-							helperArgs = `() => (${rawValue.slice(child.right.start - 1, child.right.end - 1)})`;
+							steps.push({
+								helper: context.helper("getDefaultValue"),
+								args: `() => (${rawValue.slice(child.right.start - 1, child.right.end - 1)})`
+							});
 						}
 					}
 					map.set(id.name, {
-						path,
-						dynamic: isDynamic,
-						helper,
-						helperArgs
+						steps,
+						dynamic: isDynamic
 					});
 				}
 			}, true);
@@ -27451,10 +27507,10 @@ function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
 	idToPathMap.forEach((pathInfo, id) => {
 		let path = baseAccessor;
 		if (pathInfo) {
-			path = `${baseAccessor}${pathInfo.path}`;
-			if (pathInfo.helper) {
-				idMap[pathInfo.helper] = null;
-				path = pathInfo.helperArgs ? `${pathInfo.helper}(${path}, ${pathInfo.helperArgs})` : `${pathInfo.helper}(${path})`;
+			for (const step of pathInfo.steps) if (typeof step === "string") path += step;
+			else {
+				idMap[step.helper] = null;
+				path = `${step.helper}(${path}, ${step.args})`;
 			}
 			if (pathInfo.dynamic) {
 				const node = idMap[id] = createSimpleExpression(path);
@@ -28474,7 +28530,6 @@ function genSlotFlags(flags) {
 	if (flags & 1) names.push("NO_SLOTTED");
 	if (flags & 2) names.push("ONCE");
 	if (flags & 4) names.push("FORWARDED");
-	if (flags & 8) names.push("SHARED_FALLBACK");
 	if (flags & 256) names.push("TEXT_MODE");
 	return genFlags(flags, names);
 }
@@ -28926,44 +28981,32 @@ function isVModelOperation(oper) {
 function isVModelListener(oper, modelElements) {
 	return (oper.type === 7 || oper.type === 8 || oper.type === 4 && oper.listeners || oper.type === 3 && !oper.prop.modifier && isOn(oper.prop.key.content)) && modelElements.has(oper.element);
 }
-function markSlotRootOperations(block, context, sharedFallback = false) {
+function markSlotRootOperations(block, context) {
 	if (hasStableSlotRoot(block, context)) return;
-	sharedFallback = sharedFallback || hasMultipleDynamicSlotRoots(block);
 	for (let i = 0; i < block.returns.length; i++) {
 		const child = findReturnedDynamic$1(block, block.returns[i]);
 		const operation = child && child.operation;
 		if (!operation) continue;
-		if (operation.type === 15) markSlotRootIf(operation, context, sharedFallback);
+		if (operation.type === 15) markSlotRootIf(operation, context);
 		else if (operation.type === 16) markSlotRootFor(operation, context);
 		else if (operation.type === 17) {
 			operation.slotRoot = true;
-			markSlotRootOperations(operation.block, context, sharedFallback);
+			markSlotRootOperations(operation.block, context);
 		} else if (operation.type === 12) markSlotRootComponent(operation);
-		else if (operation.type === 13) {
-			operation.flags |= 4;
-			if (sharedFallback) operation.flags |= 8;
-		}
+		else if (operation.type === 13) operation.flags |= 4;
 	}
 }
-function markSlotRootIf(operation, context, sharedFallback) {
+function markSlotRootIf(operation, context) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.positive, context, sharedFallback);
+	markSlotRootOperations(operation.positive, context);
 	const negative = operation.negative;
 	if (!negative) return;
-	if (negative.type === 15) markSlotRootIf(negative, context, sharedFallback);
-	else markSlotRootOperations(negative, context, sharedFallback);
+	if (negative.type === 15) markSlotRootIf(negative, context);
+	else markSlotRootOperations(negative, context);
 }
 function markSlotRootFor(operation, context) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperations(operation.render, context, true);
-}
-function hasMultipleDynamicSlotRoots(block) {
-	let count = 0;
-	for (let i = 0; i < block.returns.length; i++) {
-		const child = findReturnedDynamic$1(block, block.returns[i]);
-		if (child && child.operation && ++count > 1) return true;
-	}
-	return false;
+	markSlotRootOperations(operation.render, context);
 }
 function markSlotRootComponent(operation) {
 	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;
@@ -32067,10 +32110,10 @@ var require_picocolors_browser = /* @__PURE__ */ __commonJSMin(((exports, module
 	module.exports.createColors = create;
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/terminal-highlight
+//#region (ignored) node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/terminal-highlight
 var require_terminal_highlight = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/css-syntax-error.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/css-syntax-error.js
 var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let pico = require_picocolors_browser();
 	let terminalHighlight = require_terminal_highlight();
@@ -32147,16 +32190,9 @@ var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	CssSyntaxError.default = CssSyntaxError;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/stringifier.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/stringifier.js
 var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	const STYLE_TAG = /(<)(\/?style\b)/gi;
-	const COMMENT_OPEN = /(<)(!--)/g;
 	const AT_NAME_END = /[\t\n\f\r "#'()/;[\\\]{}]/;
-	function escapeHTMLInCSS(str) {
-		if (typeof str !== "string") return str;
-		if (!str.includes("<")) return str;
-		return str.replace(STYLE_TAG, "\\3c $2").replace(COMMENT_OPEN, "\\3c $2");
-	}
 	const DEFAULT_RAW = {
 		after: "\n",
 		beforeClose: "\n",
@@ -32185,7 +32221,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	function isCustomProperty(node) {
 		if (!node.prop.startsWith("--")) return false;
 		let before = node.raws.before;
-		return typeof before === "undefined" || !/\S$/.test(before);
+		return typeof before === "undefined" || !/[^\s;]$/.test(before);
 	}
 	function pushBody(str, stack, node) {
 		let nodes = node.nodes;
@@ -32209,13 +32245,13 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	}
 	function pushBlock(str, stack, node, start) {
 		let between = str.raw(node, "between", "beforeOpen");
-		str.builder(escapeHTMLInCSS(start + between) + "{", node, "start");
+		str.builder(start + between + "{", node, "start");
 		let hasNodes = node.nodes && node.nodes.length;
 		let close = () => {
 			let after = hasNodes ? str.raw(node, "after") : str.raw(node, "after", "emptyBody");
-			if (after) str.builder(escapeHTMLInCSS(after));
+			if (after) str.builder(after);
 			str.builder("}", node, "end");
-			if (node.type === "rule" && node.raws.ownSemicolon) str.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, "end");
+			if (node.type === "rule" && node.raws.ownSemicolon) str.builder(node.raws.ownSemicolon, node, "end");
 		};
 		if (hasNodes) {
 			stack.push(close);
@@ -32231,7 +32267,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (node.nodes) this.block(node, start);
 			else {
 				let end = (node.raws.between || "") + (semicolon ? ";" : "");
-				this.builder(escapeHTMLInCSS(start + end), node);
+				this.builder(start + end, node);
 			}
 		}
 		beforeAfter(node, detect) {
@@ -32254,13 +32290,13 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		block(node, start) {
 			let between = this.raw(node, "between", "beforeOpen");
-			this.builder(escapeHTMLInCSS(start + between) + "{", node, "start");
+			this.builder(start + between + "{", node, "start");
 			let after;
 			if (node.nodes && node.nodes.length) {
 				this.body(node);
 				after = this.raw(node, "after");
 			} else after = this.raw(node, "after", "emptyBody");
-			if (after) this.builder(escapeHTMLInCSS(after));
+			if (after) this.builder(after);
 			this.builder("}", node, "end");
 		}
 		body(node) {
@@ -32282,7 +32318,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				}
 				let child = entry.node;
 				let before = this.raw(child, "before");
-				if (before) this.builder(entry.document ? before : escapeHTMLInCSS(before));
+				if (before) this.builder(before);
 				if (expandable && child.type === "rule") pushBlock(this, stack, child, this.rawValue(child, "selector"));
 				else if (expandable && child.type === "atrule" && child.nodes) pushBlock(this, stack, child, atruleStart(this, child));
 				else this.stringify(child, entry.semicolon);
@@ -32291,7 +32327,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		comment(node) {
 			let left = this.raw(node, "left", "commentLeft");
 			let right = this.raw(node, "right", "commentRight");
-			this.builder(escapeHTMLInCSS("/*" + left + node.text + right + "*/"), node);
+			this.builder("/*" + left + node.text + right + "*/", node);
 		}
 		decl(node, semicolon) {
 			let raws = node.raws;
@@ -32299,7 +32335,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			let string = node.prop + between + this.rawValue(node, "value");
 			if (node.important) string += raws.important || " !important";
 			if (semicolon) string += ";";
-			this.builder(escapeHTMLInCSS(string), node);
+			this.builder(string, node);
 		}
 		document(node) {
 			this.body(node);
@@ -32450,17 +32486,13 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return value;
 		}
 		root(node) {
-			if (node.source && node.source.input.hasBOM) this.builder("﻿", node, "start");
+			if (!(node.parent && node.parent.type === "document") && node.source && node.source.input.hasBOM) this.builder("﻿", node, "start");
 			this.body(node);
-			if (node.raws.after) {
-				let after = node.raws.after;
-				let isDocument = node.parent && node.parent.type === "document";
-				this.builder(isDocument ? after : escapeHTMLInCSS(after));
-			}
+			if (node.raws.after) this.builder(node.raws.after);
 		}
 		rule(node) {
 			this.block(node, this.rawValue(node, "selector"));
-			if (node.raws.ownSemicolon) this.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, "end");
+			if (node.raws.ownSemicolon) this.builder(node.raws.ownSemicolon, node, "end");
 		}
 		stringify(node, semicolon) {
 			/* c8 ignore start */
@@ -32473,23 +32505,62 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Stringifier.default = Stringifier;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/stringify.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/stringify.js
 var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Stringifier = require_stringifier();
+	const STYLE_TAG = /(<)(\/?style\b)/gi;
+	const COMMENT_OPEN = /(<)(!--)/g;
+	function escapeHTMLInCSS(str) {
+		if (!str.includes("<")) return str;
+		return str.replace(STYLE_TAG, "\\3c $2").replace(COMMENT_OPEN, "\\3c $2");
+	}
+	var SafeStringifier = class extends Stringifier {
+		escapeHTML(node, print) {
+			let builder = this.builder;
+			let chunks, css;
+			this.builder = (str, child, type) => {
+				if (chunks) {
+					css += str;
+					chunks.push(str, child, type);
+				} else if (str.includes("<")) {
+					css = str;
+					chunks = [
+						str,
+						child,
+						type
+					];
+				} else builder(str, child, type);
+			};
+			print();
+			this.builder = builder;
+			if (!chunks) return;
+			let escaped = escapeHTMLInCSS(css);
+			if (escaped === css) for (let i = 0; i < chunks.length; i += 3) builder(chunks[i], chunks[i + 1], chunks[i + 2]);
+			else builder(escaped, node);
+		}
+		root(node) {
+			if (node.parent && node.parent.type === "document") {
+				this.escapeHTML(node, () => this.body(node));
+				if (node.raws.after) this.builder(node.raws.after);
+			} else this.escapeHTML(node, () => super.root(node));
+		}
+	};
 	function stringify(node, builder) {
-		new Stringifier(builder).stringify(node);
+		let str = new SafeStringifier(builder);
+		if (node.type === "root" || node.type === "document") str.stringify(node);
+		else str.escapeHTML(node, () => str.stringify(node));
 	}
 	module.exports = stringify;
 	stringify.default = stringify;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/symbols.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/symbols.js
 var require_symbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.isClean = Symbol("isClean");
 	module.exports.my = Symbol("my");
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/node.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/node.js
 var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let CssSyntaxError = require_css_syntax_error();
 	let Stringifier = require_stringifier();
@@ -32851,7 +32922,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Node.default = Node;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/comment.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/comment.js
 var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Node = require_node$1();
 	var Comment = class extends Node {
@@ -32864,7 +32935,7 @@ var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Comment.default = Comment;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/declaration.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/declaration.js
 var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Node = require_node$1();
@@ -32882,7 +32953,7 @@ var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Declaration.default = Declaration;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/container.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/container.js
 var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Comment = require_comment$1();
 	let Declaration = require_declaration();
@@ -33218,7 +33289,7 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 }));
 /* c8 ignore stop */
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/at-rule.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/at-rule.js
 var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	var AtRule = class extends Container {
@@ -33240,7 +33311,7 @@ var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerAtRule(AtRule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/document.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/document.js
 var require_document = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Container = require_container$1();
@@ -33288,10 +33359,10 @@ var require_non_secure = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib
+//#region (ignored) node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib
 var require_lib = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/previous-map.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/previous-map.js
 var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
 	let { existsSync, readFileSync, realpathSync } = (init__polyfill_node_fs(), __toCommonJS(_polyfill_node_fs_exports));
@@ -33405,7 +33476,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	PreviousMap.default = PreviousMap;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/input.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/input.js
 var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let { nanoid } = require_non_secure();
@@ -33605,7 +33676,7 @@ var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	if (terminalHighlight && terminalHighlight.registerInput) terminalHighlight.registerInput(Input);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/root.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/root.js
 var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let LazyResult;
@@ -33650,7 +33721,7 @@ var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRoot(Root);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/list.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/list.js
 var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let list = {
 		comma(string) {
@@ -33672,7 +33743,18 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			let inQuote = false;
 			let prevQuote = "";
 			let escape = false;
-			for (let letter of string) {
+			let inComment = false;
+			for (let i = 0; i < string.length; i++) {
+				let letter = string[i];
+				if (inComment) {
+					current += letter;
+					if (letter === "*" && string[i + 1] === "/") {
+						current += "/";
+						i += 1;
+						inComment = false;
+					}
+					continue;
+				}
 				if (escape) escape = false;
 				else if (letter === "\\") escape = true;
 				else if (inQuote) {
@@ -33680,6 +33762,11 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				} else if (letter === "\"" || letter === "'") {
 					inQuote = true;
 					prevQuote = letter;
+				} else if (letter === "/" && string[i + 1] === "*") {
+					current += "/*";
+					i += 1;
+					inComment = true;
+					continue;
 				} else if (letter === "(") func += 1;
 				else if (letter === ")") {
 					if (func > 0) func -= 1;
@@ -33702,7 +33789,7 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	list.default = list;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/rule.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/rule.js
 var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let list = require_list();
@@ -33726,7 +33813,7 @@ var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRule(Rule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/fromJSON.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/fromJSON.js
 var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	init_objectWithoutProperties();
@@ -33802,7 +33889,7 @@ var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	fromJSON.default = fromJSON;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/map-generator.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/map-generator.js
 var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
 	let { dirname, relative, resolve, sep } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
@@ -33857,13 +33944,17 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 				}
 			} else if (this.css) {
 				let annotation = "/*# sourceMappingURL=";
+				let css = "";
+				let cursor = 0;
 				let startIndex;
-				while ((startIndex = this.css.lastIndexOf(annotation)) !== -1) {
+				while ((startIndex = this.css.indexOf(annotation, cursor)) !== -1) {
 					let endIndex = this.css.indexOf("*/", startIndex + 21);
 					if (endIndex === -1) break;
-					while (startIndex > 0 && this.css[startIndex - 1] === "\n") startIndex--;
-					this.css = this.css.slice(0, startIndex) + this.css.slice(endIndex + 2);
+					while (startIndex > cursor && this.css[startIndex - 1] === "\n") startIndex--;
+					css += this.css.slice(cursor, startIndex);
+					cursor = endIndex + 2;
 				}
+				if (cursor > 0) this.css = css + this.css.slice(cursor);
 			}
 		}
 		generate() {
@@ -34074,7 +34165,7 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	module.exports = MapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/tokenize.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/tokenize.js
 var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const SINGLE_QUOTE = "'".charCodeAt(0);
 	const DOUBLE_QUOTE = "\"".charCodeAt(0);
@@ -34311,7 +34402,7 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/parser.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/parser.js
 var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let AtRule = require_at_rule();
 	let Comment = require_comment$1();
@@ -34685,6 +34776,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			let token, type;
 			let length = tokens.length;
 			let value = "";
+			let last = "";
 			let clean = true;
 			let next, prev;
 			for (let i = 0; i < length; i += 1) {
@@ -34695,10 +34787,16 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 					prev = tokens[i - 1] ? tokens[i - 1][0] : "empty";
 					next = tokens[i + 1] ? tokens[i + 1][0] : "empty";
 					if (!SAFE_COMMENT_NEIGHBOR[prev] && !SAFE_COMMENT_NEIGHBOR[next]) {
-						if (value.slice(-1) === ",") clean = false;
-						else value += token[1];
+						if (last === ",") clean = false;
+						else {
+							value += token[1];
+							last = token[1].slice(-1);
+						}
 					} else clean = false;
-				} else value += token[1];
+				} else {
+					value += token[1];
+					last = token[1].slice(-1);
+				}
 			}
 			if (!clean) {
 				let raw = tokens.reduce((all, i) => all + i[1], "");
@@ -34773,7 +34871,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = Parser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/parse.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/parse.js
 var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let Input = require_input();
@@ -34798,7 +34896,7 @@ var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerParse(parse);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/warning.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/warning.js
 var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let { my } = require_symbols();
@@ -34830,7 +34928,7 @@ var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Warning.default = Warning;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/result.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/result.js
 var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Warning = require_warning();
 	var Result = class {
@@ -34864,7 +34962,7 @@ var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Result.default = Result;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/warn-once.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/warn-once.js
 var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let printed = {};
 	module.exports = function warnOnce(message) {
@@ -34874,7 +34972,7 @@ var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/lazy-result.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/lazy-result.js
 var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	init_asyncToGenerator();
@@ -35342,7 +35440,7 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerLazyResult(LazyResult);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/no-work-result.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/no-work-result.js
 var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let MapGenerator = require_map_generator();
 	let parse = require_parse();
@@ -35439,7 +35537,7 @@ var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 	NoWorkResult.default = NoWorkResult;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/processor.js
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/processor.js
 var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Document = require_document();
 	let LazyResult = require_lazy_result();
@@ -35447,7 +35545,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Root = require_root$1();
 	var Processor = class {
 		constructor(plugins = []) {
-			this.version = "8.5.28";
+			this.version = "8.5.29";
 			this.plugins = this.normalize(plugins);
 		}
 		normalize(plugins) {
@@ -35478,7 +35576,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerProcessor(Processor);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.28/node_modules/postcss/lib/postcss.mjs
+//#region node_modules/.pnpm/postcss@8.5.29/node_modules/postcss/lib/postcss.mjs
 var import_postcss = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_process();
 	let AtRule = require_at_rule();
@@ -43913,11 +44011,14 @@ function transformDestructuredProps(ctx, vueImportAliases) {
 	const excludedIds = /* @__PURE__ */ new WeakSet();
 	const parentStack = [];
 	const propsLocalToPublicMap = Object.create(null);
+	const modelOptionNodes = /* @__PURE__ */ new Set();
+	let currentModelOption = null;
 	for (const key in ctx.propsDestructuredBindings) {
 		const { local } = ctx.propsDestructuredBindings[key];
 		rootScope[local] = true;
 		propsLocalToPublicMap[local] = key;
 	}
+	for (const { runtimeOptionNodes } of Object.values(ctx.modelDecls)) for (const node of runtimeOptionNodes) modelOptionNodes.add(node);
 	function pushScope(isFunctionScope = false) {
 		const scope = currentScope = Object.create(currentScope);
 		scopeStack.push(scope);
@@ -43958,6 +44059,10 @@ function transformDestructuredProps(ctx, vueImportAliases) {
 		} });
 	}
 	function rewriteId(id, parent, parentStack) {
+		if (currentModelOption) {
+			const isDefault = (currentModelOption.type === "ObjectProperty" || currentModelOption.type === "ObjectMethod") && resolveObjectKey(currentModelOption.key, currentModelOption.computed) === "default";
+			ctx.error(`\`${DEFINE_MODEL}()\` prop options cannot reference destructured props because they are hoisted outside of the setup() function.` + (isDefault ? ` Use the props argument of the default factory instead, e.g. default: props => props${genPropsAccessExp(propsLocalToPublicMap[id.name]).slice(`__props`.length)}` : ``), id);
+		}
 		if (parent.type === "AssignmentExpression" && id === parent.left || parent.type === "UpdateExpression") ctx.error(`Cannot assign to destructured props as they are readonly.`, id);
 		if (isStaticProperty(parent) && parent.shorthand) {
 			if (!parent.inPattern || isInDestructureAssignment(parent, parentStack)) ctx.s.appendLeft(id.end + ctx.startOffset, `: ${genPropsAccessExp(propsLocalToPublicMap[id.name])}`);
@@ -43976,6 +44081,7 @@ function transformDestructuredProps(ctx, vueImportAliases) {
 		enter(node, parent) {
 			parent && parentStack.push(parent);
 			if (parent && parent.type.startsWith("TS") && !TS_NODE_TYPES.includes(parent.type)) return this.skip();
+			if (modelOptionNodes.has(node)) currentModelOption = node;
 			checkUsage(node, "watch", vueImportAliases.watch);
 			checkUsage(node, "toRef", vueImportAliases.toRef);
 			if (isFunctionType(node)) {
@@ -44013,6 +44119,7 @@ function transformDestructuredProps(ctx, vueImportAliases) {
 		},
 		leave(node, parent) {
 			parent && parentStack.pop();
+			if (node === currentModelOption) currentModelOption = null;
 			if (isFunctionType(node)) popScope(true);
 			else if (node.type === "BlockStatement" && !isFunctionType(parent)) popScope();
 			else if (node.type === "CatchClause" || node.type === "ForOfStatement" || node.type === "ForInStatement" || node.type === "ForStatement") popScope();
@@ -44577,7 +44684,7 @@ function compileScript(sfc, options) {
 		if (cssModuleBindings.length) returned = `{\n${cssModuleBindings.join("\n")}\n${returned}\n}`;
 	} else returned = `() => {}`;
 	if (!inlineMode && true) ctx.s.appendRight(endOffset, `\nconst __returned__ = ${returned}\nObject.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\nreturn __returned__\n}\n\n`);
-	else ctx.s.appendRight(endOffset, `\n${vapor && !ssr && inlineMode ? `` : `return `}${returned}\n}\n\n`);
+	else ctx.s.appendRight(endOffset, `\n${vapor && !ssr && inlineMode && !(!sfc.template && ctx.hasDefaultExportRender) ? `` : `return `}${returned}\n}\n\n`);
 	const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;
 	let runtimeOptions = ``;
 	if (!ctx.hasDefaultExportName && filename && filename !== "anonymous.vue") {
@@ -44752,7 +44859,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-rc.11";
+const version = "3.6.0-rc.12";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

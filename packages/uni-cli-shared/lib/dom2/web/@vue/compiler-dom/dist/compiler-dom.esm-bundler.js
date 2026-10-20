@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-rc.11
+  * @vue/compiler-dom v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -290,7 +290,8 @@ const transformTransition = (node, context) => {
 function postTransformTransition(node, onError, hasMultipleChildren = defaultHasMultipleChildren) {
 	return () => {
 		if (!node.children.length) return;
-		if (hasMultipleChildren(node)) onError(createDOMCompilerError(63, {
+		const multipleChildren = hasMultipleChildren(node);
+		if (!!(process.env.NODE_ENV !== "production") && multipleChildren) onError(createDOMCompilerError(63, {
 			start: node.children[0].loc.start,
 			end: node.children[node.children.length - 1].loc.end,
 			source: ""
@@ -521,7 +522,11 @@ const validateHtmlNesting = (node, context) => {
 };
 //#endregion
 //#region packages/compiler-dom/src/index.ts
-const DOMNodeTransforms = [transformStyle, ...!!(process.env.NODE_ENV !== "production") ? [transformTransition, validateHtmlNesting] : []];
+const DOMNodeTransforms = [
+	transformStyle,
+	transformTransition,
+	...!!(process.env.NODE_ENV !== "production") ? [validateHtmlNesting] : []
+];
 const DOMDirectiveTransforms = {
 	cloak: noopDirectiveTransform,
 	html: transformVHtml,

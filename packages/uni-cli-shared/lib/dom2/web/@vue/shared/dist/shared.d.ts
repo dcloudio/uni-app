@@ -508,11 +508,9 @@ export declare enum VaporSlotFlags {
   NO_SLOTTED = 1,
   ONCE = 2,
   FORWARDED = 4,
-  SHARED_FALLBACK = 8,
   TEXT_MODE = 256
 }
 export declare function isForwardedSlot(flags: number): boolean;
-export declare function slotInheritsFallback(flags: number): boolean;
 export declare function slotNotifiesBoundary(flags: number): boolean;
 /**
  * Per-slot-function metadata attached by the compiler as `fn._`.
