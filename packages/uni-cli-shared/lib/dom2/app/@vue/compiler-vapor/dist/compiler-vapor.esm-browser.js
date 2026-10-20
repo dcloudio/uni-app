@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.11
+  * @vue/compiler-vapor v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -202,9 +202,10 @@ const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 * - ismap -> isMap
 * - nomodule -> noModule
 * - novalidate -> noValidate
+* - playsinline -> playsInline
 * - readonly -> readOnly
 */
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,playsinline,readonly`;
 const isSpecialBooleanAttr = /*@__PURE__*/ makeMap(specialBooleanAttrs);
 /**
 * The full list is needed during SSR to produce the correct initial markup.
@@ -2935,7 +2936,7 @@ const errorMessages = {
 	[41]: `v-model is missing expression.`,
 	[42]: `v-model value must be a valid JavaScript member expression.`,
 	[43]: `v-model cannot be used on v-for or v-slot scope variables because they are not writable.`,
-	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.`,
+	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.\nFor props declared with defineModel(), assign the returned ref to a variable and use v-model on that variable.`,
 	[45]: `v-model cannot be used on a const binding because it is not writable.`,
 	[46]: `Error parsing JavaScript expression: `,
 	[47]: `<KeepAlive> expects exactly one child component.`,
@@ -6381,10 +6382,10 @@ var import_lib = (/* @__PURE__ */ __commonJSMin(((exports) => {
 			const arrows = [];
 			while (stack.length !== 0) {
 				const node = stack.pop();
-				if (node.type === "ArrowFunctionExpression" && node.body.type !== "BlockStatement") {
+				if (node.type === "ArrowFunctionExpression") {
 					if (node.typeParameters || !node.returnType) this.finishArrowValidation(node);
 					else arrows.push(node);
-					stack.push(node.body);
+					if (node.body.type !== "BlockStatement") stack.push(node.body);
 				} else if (node.type === "ConditionalExpression") {
 					stack.push(node.consequent);
 					stack.push(node.alternate);
@@ -12174,6 +12175,9 @@ var import_lib = (/* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		fillOptionalPropertiesForTSESLint(node) {
 			switch (node.type) {
+				case "ImportDeclaration":
+					node.phase != null || (node.phase = null);
+					return;
 				case "ExpressionStatement":
 					node.directive != null || (node.directive = void 0);
 					return;
@@ -16596,7 +16600,7 @@ function getSelfName(filename) {
 	return nameMatch ? capitalize(camelize(nameMatch[1])) : null;
 }
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/base64.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64.js
 var require_base64 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var intToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("");
 	/**
@@ -16630,7 +16634,7 @@ var require_base64 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/base64-vlq.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/base64-vlq.js
 var require_base64_vlq = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64 = require_base64();
 	var VLQ_BASE_SHIFT = 5;
@@ -16695,7 +16699,7 @@ var require_base64_vlq = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/util.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/util.js
 var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
 	/**
 	* This is a helper function for getting values from parameter/options
@@ -17042,7 +17046,7 @@ var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.computeSourceURL = computeSourceURL;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/array-set.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/array-set.js
 var require_array_set = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util();
 	var has = Object.prototype.hasOwnProperty;
@@ -17136,7 +17140,7 @@ var require_array_set = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.ArraySet = ArraySet;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/mapping-list.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/mapping-list.js
 var require_mapping_list = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util();
 	/**
@@ -17205,7 +17209,7 @@ var require_mapping_list = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.MappingList = MappingList;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/source-map-generator.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-generator.js
 var require_source_map_generator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var base64VLQ = require_base64_vlq();
 	var util = require_util();
@@ -17429,10 +17433,9 @@ var require_source_map_generator = /* @__PURE__ */ __commonJSMin(((exports) => {
 			next = "";
 			if (mapping.generatedLine !== previousGeneratedLine) {
 				previousGeneratedColumn = 0;
-				while (mapping.generatedLine !== previousGeneratedLine) {
-					next += ";";
-					previousGeneratedLine++;
-				}
+				var lineDelta = mapping.generatedLine - previousGeneratedLine;
+				next += lineDelta === 1 ? ";" : ";".repeat(lineDelta);
+				previousGeneratedLine = mapping.generatedLine;
 			} else if (i > 0) {
 				if (!util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])) continue;
 				next += ",";
@@ -17489,7 +17492,7 @@ var require_source_map_generator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.SourceMapGenerator = SourceMapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/binary-search.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/binary-search.js
 var require_binary_search = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.GREATEST_LOWER_BOUND = 1;
 	exports.LEAST_UPPER_BOUND = 2;
@@ -17550,7 +17553,7 @@ var require_binary_search = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/quick-sort.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/quick-sort.js
 var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
 	function SortTemplate(comparator) {
 		/**
@@ -17613,6 +17616,14 @@ var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
 		let template = SortTemplate.toString();
 		return new Function(`return ${template}`)()(comparator);
 	}
+	let isEvalAllowed = (function() {
+		try {
+			new Function("return 0")();
+			return true;
+		} catch (_unused) {
+			return false;
+		}
+	})();
 	/**
 	* Sort the given array in-place with the given comparator function.
 	*
@@ -17623,7 +17634,7 @@ var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
 	*/
 	let sortCache = /* @__PURE__ */ new WeakMap();
 	exports.quickSort = function(ary, comparator, start = 0) {
-		let doQuickSort = sortCache.get(comparator);
+		let doQuickSort = isEvalAllowed ? sortCache.get(comparator) : SortTemplate(comparator);
 		if (doQuickSort === void 0) {
 			doQuickSort = cloneSort(comparator);
 			sortCache.set(comparator, doQuickSort);
@@ -17632,13 +17643,14 @@ var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/source-map-consumer.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-map-consumer.js
 var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var util = require_util();
 	var binarySearch = require_binary_search();
 	var ArraySet = require_array_set().ArraySet;
 	var base64VLQ = require_base64_vlq();
 	var quickSort = require_quick_sort().quickSort;
+	var MAX_SECTION_OFFSET_LINE = 1e7;
 	function SourceMapConsumer(aSourceMap, aSourceMapURL) {
 		var sourceMap = aSourceMap;
 		if (typeof aSourceMap === "string") sourceMap = util.parseSourceMapInput(aSourceMap);
@@ -18240,21 +18252,37 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 			line: -1,
 			column: 0
 		};
+		var maxOffsetLine = 0;
 		this._sections = sections.map(function(s) {
 			if (s.url) throw new Error("Support for url field in sections not implemented.");
 			var offset = util.getArg(s, "offset");
 			var offsetLine = util.getArg(offset, "line");
 			var offsetColumn = util.getArg(offset, "column");
+			if (!isValidOffset(offsetLine) || !isValidOffset(offsetColumn)) throw new Error("Section offset line and column must be non-negative integers.");
+			if (offsetLine > MAX_SECTION_OFFSET_LINE) throw new Error("Section offset line must not exceed " + MAX_SECTION_OFFSET_LINE + ".");
 			if (offsetLine < lastOffset.line || offsetLine === lastOffset.line && offsetColumn < lastOffset.column) throw new Error("Section offsets must be ordered and non-overlapping.");
 			lastOffset = offset;
+			var consumer = new SourceMapConsumer(util.getArg(s, "map"), aSourceMapURL);
+			var totalOffsetLine = offsetLine + (consumer._maxOffsetLine || 0);
+			if (totalOffsetLine > MAX_SECTION_OFFSET_LINE) throw new Error("Section offset line must not exceed " + MAX_SECTION_OFFSET_LINE + ", including offsets of nested sections.");
+			if (totalOffsetLine > maxOffsetLine) maxOffsetLine = totalOffsetLine;
 			return {
 				generatedOffset: {
 					generatedLine: offsetLine + 1,
 					generatedColumn: offsetColumn + 1
 				},
-				consumer: new SourceMapConsumer(util.getArg(s, "map"), aSourceMapURL)
+				consumer
 			};
 		});
+		this._maxOffsetLine = maxOffsetLine;
+	}
+	/**
+	* Section offsets come from untrusted input and are used as line/column
+	* numbers, so only accept non-negative safe integers (rejects NaN, Infinity,
+	* strings, fractions, etc).
+	*/
+	function isValidOffset(aValue) {
+		return typeof aValue === "number" && aValue >= 0 && aValue <= 9007199254740991 && Math.floor(aValue) === aValue;
 	}
 	IndexedSourceMapConsumer.prototype = Object.create(SourceMapConsumer.prototype);
 	IndexedSourceMapConsumer.prototype.constructor = SourceMapConsumer;
@@ -18267,7 +18295,10 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 	*/
 	Object.defineProperty(IndexedSourceMapConsumer.prototype, "sources", { get: function() {
 		var sources = [];
-		for (var i = 0; i < this._sections.length; i++) for (var j = 0; j < this._sections[i].consumer.sources.length; j++) sources.push(this._sections[i].consumer.sources[j]);
+		for (var i = 0; i < this._sections.length; i++) {
+			var sectionSources = this._sections[i].consumer.sources;
+			for (var j = 0; j < sectionSources.length; j++) sources.push(sectionSources[j]);
+		}
 		return sources;
 	} });
 	/**
@@ -18408,7 +18439,7 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/lib/source-node.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/lib/source-node.js
 var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var SourceMapGenerator = require_source_map_generator().SourceMapGenerator;
 	var util = require_util();
@@ -18474,6 +18505,10 @@ var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 				}
 			}
 			while (lastGeneratedLine < mapping.generatedLine) {
+				if (remainingLinesIndex >= remainingLines.length) {
+					lastGeneratedLine = mapping.generatedLine;
+					break;
+				}
 				node.add(shiftNextLine());
 				lastGeneratedLine++;
 			}
@@ -18694,7 +18729,7 @@ var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.SourceNode = SourceNode;
 }));
 //#endregion
-//#region node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js/source-map.js
+//#region node_modules/.pnpm/source-map-js@1.2.2/node_modules/source-map-js/source-map.js
 var require_source_map = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.SourceMapGenerator = require_source_map_generator().SourceMapGenerator;
 	exports.SourceMapConsumer = require_source_map_consumer().SourceMapConsumer;
@@ -20750,45 +20785,48 @@ function parseValueDestructure(value, context) {
 			walkFunctionParams(value.ast, (id) => bindings.add(id));
 			walkIdentifiers(value.ast, (id, _, parentStack) => {
 				if (bindings.has(id)) {
-					let path = "";
+					const steps = [];
 					let isDynamic = false;
-					let helper;
-					let helperArgs;
 					for (let i = 0; i < parentStack.length; i++) {
 						const parent = parentStack[i];
 						const child = parentStack[i + 1] || id;
 						if (parent.type === "ObjectProperty" && parent.value === child) {
-							if (parent.key.type === "StringLiteral") path += `[${JSON.stringify(parent.key.value)}]`;
+							if (parent.key.type === "StringLiteral") steps.push(`[${JSON.stringify(parent.key.value)}]`);
 							else if (parent.computed) {
 								isDynamic = true;
-								path += `[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`;
-							} else path += `.${parent.key.name}`;
+								steps.push(`[${rawValue.slice(parent.key.start - 1, parent.key.end - 1)}]`);
+							} else steps.push(`.${parent.key.name}`);
 						} else if (parent.type === "ArrayPattern") {
 							const index = parent.elements.indexOf(child);
-							if (child.type === "RestElement") path += `.slice(${index})`;
-							else path += `[${index}]`;
+							if (child.type === "RestElement") steps.push(`.slice(${index})`);
+							else steps.push(`[${index}]`);
 						} else if (parent.type === "ObjectPattern" && child.type === "RestElement") {
-							helper = isDom2 ? context.helper("getSharedDataRestElement") : context.helper("getRestElement");
-							helperArgs = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
+							const helper = isDom2 ? context.helper("getSharedDataRestElement") : context.helper("getRestElement");
+							const args = "[" + parent.properties.filter((p) => p.type === "ObjectProperty").map((p) => {
 								if (p.key.type === "StringLiteral") return JSON.stringify(p.key.value);
 								else if (p.computed) {
 									isDynamic = true;
 									return rawValue.slice(p.key.start - 1, p.key.end - 1);
 								} else return JSON.stringify(p.key.name);
 							}).join(", ") + "]";
+							steps.push({
+								helper,
+								args
+							});
 						}
-						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression" && child.left === id)) {
+						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern" || parent.type === "ArrowFunctionExpression")) {
 							isDynamic = true;
-							helper = isDom2 ? context.helper("getSharedDataDefaultValue") : context.helper("getDefaultValue");
+							const helper = isDom2 ? context.helper("getSharedDataDefaultValue") : context.helper("getDefaultValue");
 							const rawDefault = rawValue.slice(child.right.start - 1, child.right.end - 1);
-							helperArgs = isDom2 ? rawDefault : `() => (${rawDefault})`;
+							steps.push({
+								helper,
+								args: isDom2 ? rawDefault : `() => (${rawDefault})`
+							});
 						}
 					}
 					map.set(id.name, {
-						path,
-						dynamic: isDynamic,
-						helper,
-						helperArgs
+						steps,
+						dynamic: isDynamic
 					});
 				}
 			}, true);
@@ -20801,10 +20839,10 @@ function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
 	idToPathMap.forEach((pathInfo, id) => {
 		let path = baseAccessor;
 		if (pathInfo) {
-			path = `${baseAccessor}${pathInfo.path}`;
-			if (pathInfo.helper) {
-				idMap[pathInfo.helper] = null;
-				path = pathInfo.helperArgs ? `${pathInfo.helper}(${path}, ${pathInfo.helperArgs})` : `${pathInfo.helper}(${path})`;
+			for (const step of pathInfo.steps) if (typeof step === "string") path += step;
+			else {
+				idMap[step.helper] = null;
+				path = `${step.helper}(${path}, ${step.args})`;
 			}
 			if (pathInfo.dynamic) {
 				const node = idMap[id] = createSimpleExpression(path);
@@ -21870,7 +21908,6 @@ function genSlotFlags(flags) {
 	if (flags & 1) names.push("NO_SLOTTED");
 	if (flags & 2) names.push("ONCE");
 	if (flags & 4) names.push("FORWARDED");
-	if (flags & 8) names.push("SHARED_FALLBACK");
 	return genFlags(flags, names);
 }
 //#endregion
@@ -22320,50 +22357,38 @@ function isVModelOperation(oper) {
 function isVModelListener(oper, modelElements) {
 	return (oper.type === 7 || oper.type === 8 || oper.type === 4 && oper.listeners || oper.type === 3 && !oper.prop.modifier && isOn(oper.prop.key.content)) && modelElements.has(oper.element);
 }
-function markSlotRootOperations(block, context, sharedFallback = false) {
-	markSlotRootOperationsImpl(block, context, sharedFallback, true);
+function markSlotRootOperations(block, context) {
+	markSlotRootOperationsImpl(block, context, true);
 }
-function markSlotRootOperationsForDom2(block, context, sharedFallback = false) {
-	markSlotRootOperationsImpl(block, context, sharedFallback, false);
+function markSlotRootOperationsForDom2(block, context) {
+	markSlotRootOperationsImpl(block, context, false);
 }
-function markSlotRootOperationsImpl(block, context, sharedFallback, respectStableRoot) {
+function markSlotRootOperationsImpl(block, context, respectStableRoot) {
 	if (respectStableRoot && hasStableSlotRoot(block, context)) return;
-	sharedFallback = sharedFallback || hasMultipleDynamicSlotRoots(block);
 	for (let i = 0; i < block.returns.length; i++) {
 		const child = findReturnedDynamic$1(block, block.returns[i]);
 		const operation = child && child.operation;
 		if (!operation) continue;
-		if (operation.type === 15) markSlotRootIf(operation, context, sharedFallback, respectStableRoot);
+		if (operation.type === 15) markSlotRootIf(operation, context, respectStableRoot);
 		else if (operation.type === 16) markSlotRootFor(operation, context, respectStableRoot);
 		else if (operation.type === 17) {
 			operation.slotRoot = true;
-			markSlotRootOperationsImpl(operation.block, context, sharedFallback, respectStableRoot);
+			markSlotRootOperationsImpl(operation.block, context, respectStableRoot);
 		} else if (operation.type === 12) markSlotRootComponent(operation);
-		else if (operation.type === 13) {
-			operation.flags |= 4;
-			if (sharedFallback) operation.flags |= 8;
-		}
+		else if (operation.type === 13) operation.flags |= 4;
 	}
 }
-function markSlotRootIf(operation, context, sharedFallback, respectStableRoot) {
+function markSlotRootIf(operation, context, respectStableRoot) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperationsImpl(operation.positive, context, sharedFallback, respectStableRoot);
+	markSlotRootOperationsImpl(operation.positive, context, respectStableRoot);
 	const negative = operation.negative;
 	if (!negative) return;
-	if (negative.type === 15) markSlotRootIf(negative, context, sharedFallback, respectStableRoot);
-	else markSlotRootOperationsImpl(negative, context, sharedFallback, respectStableRoot);
+	if (negative.type === 15) markSlotRootIf(negative, context, respectStableRoot);
+	else markSlotRootOperationsImpl(negative, context, respectStableRoot);
 }
 function markSlotRootFor(operation, context, respectStableRoot) {
 	if (!operation.once) operation.slotRoot = true;
-	markSlotRootOperationsImpl(operation.render, context, true, respectStableRoot);
-}
-function hasMultipleDynamicSlotRoots(block) {
-	let count = 0;
-	for (let i = 0; i < block.returns.length; i++) {
-		const child = findReturnedDynamic$1(block, block.returns[i]);
-		if (child && child.operation && ++count > 1) return true;
-	}
-	return false;
+	markSlotRootOperationsImpl(operation.render, context, respectStableRoot);
 }
 function markSlotRootComponent(operation) {
 	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;

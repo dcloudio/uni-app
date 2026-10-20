@@ -57,8 +57,9 @@ export interface SchedulerJob extends Function {
   /**
    * Attached by renderer.ts when setting up a component's render effect
    * Used to obtain component information when reporting max recursive updates.
+   * Also set on watcher jobs: null marks a watcher without an owner component.
    */
-  i?: GenericComponentInstance;
+  i?: GenericComponentInstance | null;
 }
 type SchedulerJobs = SchedulerJob | SchedulerJob[];
 export declare function nextTick(): Promise<void>;

@@ -74,6 +74,14 @@ interface Position$1 {
   top: number;
   left: number;
 }
+interface Origin extends Position$1 {
+  item: Element;
+  willMove: () => boolean;
+}
+declare const pendingGroups: WeakMap<GenericComponentInstance, {
+  root: Node;
+  willMove: () => boolean;
+}>;
 type TransitionGroupProps$1 = Omit<TransitionProps$1, "mode"> & {
   tag?: string;
   moveClass?: string;
@@ -85,6 +93,9 @@ declare const TransitionGroup: {
 };
 declare function callPendingCbs(el: any): void;
 declare function baseApplyTranslation(oldPos: Position$1, newPos: Position$1, el: ElementWithTransition): boolean;
+declare function getPosition(el: Element, shift?: Position$1): Position$1;
+declare function getOrigins(instance: GenericComponentInstance, root: Node): Origin[] | undefined;
+declare function getOriginShift(origins: Origin[], root: Node): Position$1 | undefined;
 declare function hasCSSTransform(el: ElementWithTransition, root: Node, moveClass: string): boolean;
 declare const handleMovedChildren: (el: ElementWithTransition, moveClass: string) => void;
 //#endregion
@@ -21728,7 +21739,7 @@ declare function parseEventName(name: string): [string, EventListenerOptions | u
 //#region packages/runtime-dom/src/modules/attrs.d.ts
 declare const xlinkNS = "http://www.w3.org/1999/xlink";
 declare namespace index_d_exports$1 {
-  export { AnchorHTMLAttributes, AreaHTMLAttributes, AriaAttributes, AudioHTMLAttributes, BaseHTMLAttributes, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, CustomElementOptions$1 as CustomElementOptions, DataHTMLAttributes, DelHTMLAttributes, DetailsHTMLAttributes, DialogHTMLAttributes, ElementWithTransition, EmbedHTMLAttributes, Events, FieldsetHTMLAttributes, FormHTMLAttributes, HTMLAttributes, HtmlHTMLAttributes, IframeHTMLAttributes, ImgHTMLAttributes, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeygenHTMLAttributes, LabelHTMLAttributes, LiHTMLAttributes, LinkHTMLAttributes, MapHTMLAttributes, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, NativeElements, ObjectHTMLAttributes, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OutputHTMLAttributes, ParamHTMLAttributes, ProgressHTMLAttributes, QuoteHTMLAttributes, ReservedProps$1 as ReservedProps, SVGAttributes, ScriptHTMLAttributes, SelectHTMLAttributes, SourceHTMLAttributes, StyleHTMLAttributes, StyleValue, TableHTMLAttributes, TdHTMLAttributes, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, TrackHTMLAttributes, Transition, TransitionGroup, TransitionGroupProps$1 as TransitionGroupProps, TransitionProps$1 as TransitionProps, TransitionPropsValidators, VShowElement, VideoHTMLAttributes, VueElement, VueElementBase$1 as VueElementBase, VueElementConstructor, WebViewHTMLAttributes, baseApplyTranslation, callPendingCbs, createApp, createSSRApp, defineCustomElement, defineSSRCustomElement, ensureHydrationRenderer, ensureRenderer, forceReflow, handleMovedChildren, hasCSSTransform, hydrate, initDirectivesForSSR, nodeOps, normalizeContainer, parseEventName, patchClass, patchProp, patchStyle, render, resolveTransitionProps, setVarsOnNode, shouldSetAsProp, shouldSetAsPropForVueCE, svgNS, unsafeToTrustedHTML, useCssModule, useCssVars, useHost, useShadowRoot, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, withKeys, withModifiers, xlinkNS };
+  export { AnchorHTMLAttributes, AreaHTMLAttributes, AriaAttributes, AudioHTMLAttributes, BaseHTMLAttributes, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, CustomElementOptions$1 as CustomElementOptions, DataHTMLAttributes, DelHTMLAttributes, DetailsHTMLAttributes, DialogHTMLAttributes, ElementWithTransition, EmbedHTMLAttributes, Events, FieldsetHTMLAttributes, FormHTMLAttributes, HTMLAttributes, HtmlHTMLAttributes, IframeHTMLAttributes, ImgHTMLAttributes, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeygenHTMLAttributes, LabelHTMLAttributes, LiHTMLAttributes, LinkHTMLAttributes, MapHTMLAttributes, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, NativeElements, ObjectHTMLAttributes, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OutputHTMLAttributes, ParamHTMLAttributes, ProgressHTMLAttributes, QuoteHTMLAttributes, ReservedProps$1 as ReservedProps, SVGAttributes, ScriptHTMLAttributes, SelectHTMLAttributes, SourceHTMLAttributes, StyleHTMLAttributes, StyleValue, TableHTMLAttributes, TdHTMLAttributes, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, TrackHTMLAttributes, Transition, TransitionGroup, TransitionGroupProps$1 as TransitionGroupProps, TransitionProps$1 as TransitionProps, TransitionPropsValidators, VShowElement, VideoHTMLAttributes, VueElement, VueElementBase$1 as VueElementBase, VueElementConstructor, WebViewHTMLAttributes, baseApplyTranslation, callPendingCbs, createApp, createSSRApp, defineCustomElement, defineSSRCustomElement, ensureHydrationRenderer, ensureRenderer, forceReflow, getOrigins as getTransitionGroupOrigins, getPosition as getTransitionGroupPosition, getOriginShift as getTransitionGroupShift, handleMovedChildren, hasCSSTransform, hydrate, initDirectivesForSSR, nodeOps, normalizeContainer, parseEventName, patchClass, patchProp, patchStyle, pendingGroups as pendingTransitionGroups, render, resolveTransitionProps, setVarsOnNode, shouldSetAsProp, shouldSetAsPropForVueCE, svgNS, unsafeToTrustedHTML, useCssModule, useCssVars, useHost, useShadowRoot, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, withKeys, withModifiers, xlinkNS };
 }
 import * as import__vue_runtime_core from "@vue/runtime-core";
 /**
@@ -21808,8 +21819,9 @@ interface SlotBoundaryContext {
   adoptFallback?: (render: BlockFn) => Block;
   run<R>(fn: () => R, scope?: EffectScope$1): R;
   getScopeIds?: () => string[] | null;
-  markDirty: (force?: boolean) => void;
-  onContentInvalid?: (() => void)[];
+  markDirty: () => void;
+  isHolding: () => boolean;
+  isHeld: () => boolean;
 }
 //#endregion
 //#region packages/runtime-vapor/src/renderContext.d.ts
@@ -21842,6 +21854,9 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   vnode?: VNode | null;
   anchor?: Node;
   isBlockValid?: (componentAsValid?: boolean) => boolean;
+  getContent?(): Block;
+  awaitLeavingRoot?(cb: () => void): boolean;
+  slotName?: string;
   insert?(parent: ParentNode, anchor: Node | null, parentSuspense?: SuspenseBoundary | null, transitionHooks?: TransitionHooks): void;
   move?(parent: ParentNode, anchor: Node | null, moveType: MoveType, parentComponent?: VaporComponentInstance, parentSuspense?: SuspenseBoundary | null, transitionHooks?: TransitionHooks): void;
   remove?(parent?: ParentNode, transitionHooks?: TransitionHooks): void;
@@ -21889,7 +21904,7 @@ declare class RenderContextFragment<T extends Block = Block> extends VaporFragme
 }
 declare class ForFragment extends VaporFragment<Block[]> {
   resetListeners?: (() => void)[];
-  constructor(nodes: Block[], trackSlotBoundary: boolean, onInvalid?: () => void);
+  constructor(nodes: Block[]);
   onReset(fn: () => void): void;
 }
 declare class DynamicFragment extends RenderContextFragment {
@@ -21901,8 +21916,9 @@ declare class DynamicFragment extends RenderContextFragment {
     key: any;
     noScope: boolean;
     branchKey?: any;
-    prevKey: any;
+    prevKey?: any;
   };
+  leaving?: boolean;
   anchorLabel?: string;
   keyed?: boolean;
   branchKey?: any;
@@ -21910,11 +21926,11 @@ declare class DynamicFragment extends RenderContextFragment {
   hydrationClaim?: FragmentClaim;
   fallthrough?: (nodes: Block) => void;
   scopeIdOwners?: VaporComponentInstance[];
+  wasValid?: boolean;
   everUpdated: boolean;
-  constructor(flags?: number, anchorLabel?: string, keyed?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void, adoptAnchor?: Node);
+  constructor(flags?: number, anchorLabel?: string, keyed?: boolean, slotRoot?: boolean, adoptAnchor?: Node);
   protected get autoHydrate(): boolean;
   update(render?: BlockFn, key?: any, noScope?: boolean, branchKey?: any): void;
-  protected getBranchParent(): ParentNode | null;
   renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any, noScope: boolean, notifyUpdated: boolean, removePrevious?: () => void, branchKey?: any): void;
   private renderNodes;
 }
@@ -21925,6 +21941,7 @@ interface VaporTransitionState extends TransitionState {
   root?: Block;
   persisted?: boolean;
   refresh?: (hooks: VaporTransitionHooks) => void;
+  pendingLeave?: () => void;
 }
 interface VaporTransitionHooks extends TransitionHooks {
   __vapor: true;
@@ -23132,11 +23149,13 @@ export declare function analyzeExpressions(expressions: SimpleExpressionNode[]):
 export declare function genDirectiveModifiers(modifiers: string[]): string;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/for.d.ts
+type DestructureStep = string | {
+  helper: string;
+  args: string;
+};
 export type DestructureMapValue = {
-  path: string;
+  steps: DestructureStep[];
   dynamic: boolean;
-  helper?: string;
-  helperArgs?: string;
 };
 export type DestructureMap = Map<string, DestructureMapValue | null>;
 export declare function parseValueDestructure(value: SimpleExpressionNode | undefined, context: CodegenContext): DestructureMap;
@@ -23153,8 +23172,8 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
 type SlotRootStabilityContext = Pick<CodegenContext, "ir">;
 export declare function isVModelOperation(oper: OperationNode): oper is DirectiveIRNode;
 export declare function isVModelListener(oper: OperationNode, modelElements: Set<number>): boolean;
-export declare function markSlotRootOperations(block: BlockIRNode, context: SlotRootStabilityContext, sharedFallback?: boolean): void;
-export declare function markSlotRootOperationsForDom2(block: BlockIRNode, context: SlotRootStabilityContext, sharedFallback?: boolean): void;
+export declare function markSlotRootOperations(block: BlockIRNode, context: SlotRootStabilityContext): void;
+export declare function markSlotRootOperationsForDom2(block: BlockIRNode, context: SlotRootStabilityContext): void;
 export declare function hasStableSlotRoot(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
 export declare function collectSingleUseAssetComponents(block: BlockIRNode): Set<string>;
 //#endregion

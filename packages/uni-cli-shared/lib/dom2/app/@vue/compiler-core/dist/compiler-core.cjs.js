@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-rc.11
+  * @vue/compiler-core v3.6.0-rc.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -1846,7 +1846,7 @@ const errorMessages = {
 	[41]: `v-model is missing expression.`,
 	[42]: `v-model value must be a valid JavaScript member expression.`,
 	[43]: `v-model cannot be used on v-for or v-slot scope variables because they are not writable.`,
-	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.`,
+	[44]: `v-model cannot be used on a prop, because local prop bindings are not writable.\nUse a v-bind binding combined with a v-on listener that emits update:x event instead.\nFor props declared with defineModel(), assign the returned ref to a variable and use v-model on that variable.`,
 	[45]: `v-model cannot be used on a const binding because it is not writable.`,
 	[46]: `Error parsing JavaScript expression: `,
 	[47]: `<KeepAlive> expects exactly one child component.`,
@@ -4297,7 +4297,11 @@ const transformFor = createStructuralDirectiveTransform("for", (node, dir, conte
 					]),
 					createCompoundExpression([
 						`if (_cached && _cached.el`,
-						...keyExp ? [` && _cached.key === `, keyExp] : [],
+						...keyExp ? [
+							` && _cached.key === (`,
+							keyExp,
+							`)`
+						] : [],
 						` && ${context.helperString(IS_MEMO_SAME)}(_cached, _memo)) return _cached`
 					]),
 					createCompoundExpression([`const _item = `, childBlock]),
