@@ -2793,6 +2793,77 @@ function createPathGetter(ctx, path) {
 	};
 }
 //#endregion
+//#region node_modules/.pnpm/@dcloudio+uni-shared@3.0.0-alpha-5030220261016003/node_modules/@dcloudio/uni-shared/dist/uni-shared.es.js
+const ON_SHOW = "onShow";
+const ON_HIDE = "onHide";
+const ON_LOAD = "onLoad";
+const ON_UNLOAD = "onUnload";
+const ON_INIT = "onInit";
+const ON_SAVE_EXIT_STATE = "onSaveExitState";
+const ON_UPLOAD_DOUYIN_VIDEO = "onUploadDouyinVideo";
+const ON_LIVE_MOUNT = "onLiveMount";
+const ON_TITLE_CLICK = "onTitleClick";
+const ON_RESIZE = "onResize";
+const ON_BACK_PRESS = "onBackPress";
+const ON_PAGE_SCROLL = "onPageScroll";
+const ON_TAB_ITEM_TAP = "onTabItemTap";
+const ON_REACH_BOTTOM = "onReachBottom";
+const ON_PULL_DOWN_REFRESH = "onPullDownRefresh";
+const ON_SHARE_TIMELINE = "onShareTimeline";
+const ON_SHARE_CHAT = "onShareChat";
+const ON_COPY_URL = "onCopyUrl";
+const ON_ADD_TO_FAVORITES = "onAddToFavorites";
+const ON_SHARE_APP_MESSAGE = "onShareAppMessage";
+const ON_NAVIGATION_BAR_BUTTON_TAP = "onNavigationBarButtonTap";
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = "onNavigationBarSearchInputClicked";
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = "onNavigationBarSearchInputChanged";
+const ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = "onNavigationBarSearchInputConfirmed";
+const ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = "onNavigationBarSearchInputFocusChanged";
+const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE = /[ru]px/;
+function normalizeRpx(value) {
+	if (!hasRpxRE.test(value)) return value;
+	return value.replace(rpxRE, (match, number) => {
+		if (!number) return match;
+		const whole = Math.floor(parseFloat(number) * (10 / 320) * 1e6);
+		const result = Math.round(whole / 10) * 10 / 1e6;
+		return result === 0 ? "0" : `${result}rem`;
+	});
+}
+const PAGE_HOOKS = [
+	ON_INIT,
+	ON_LOAD,
+	ON_SHOW,
+	ON_HIDE,
+	ON_UNLOAD,
+	ON_RESIZE,
+	ON_BACK_PRESS,
+	ON_PAGE_SCROLL,
+	ON_TAB_ITEM_TAP,
+	ON_REACH_BOTTOM,
+	ON_PULL_DOWN_REFRESH,
+	ON_SHARE_TIMELINE,
+	ON_SHARE_APP_MESSAGE,
+	ON_SHARE_CHAT,
+	ON_COPY_URL,
+	ON_UPLOAD_DOUYIN_VIDEO,
+	ON_LIVE_MOUNT,
+	ON_TITLE_CLICK,
+	ON_ADD_TO_FAVORITES,
+	ON_SAVE_EXIT_STATE,
+	ON_NAVIGATION_BAR_BUTTON_TAP,
+	ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
+	ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
+	ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
+	ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED
+];
+function isRootImmediateHook(name) {
+	return [ON_LOAD, ON_SHOW].indexOf(name) > -1;
+}
+function isRootHook(name) {
+	return PAGE_HOOKS.indexOf(name) > -1;
+}
+//#endregion
 //#region packages/runtime-core/src/components/Teleport.ts
 const TeleportEndKey = Symbol("_vte");
 const isTeleport = (type) => type.__isTeleport;
@@ -3012,6 +3083,17 @@ function invokeKeepAliveHooks(hooks) {
 //#region packages/runtime-core/src/apiLifecycle.ts
 function injectHook(type, hook, target = currentInstance, prepend = false) {
 	if (target) {
+		const pageInstance = target.$pageInstance;
+		if (pageInstance && isRootHook(type)) {
+			if (target.type.__reserved) return;
+			if (target !== pageInstance) {
+				target = pageInstance;
+				if (isRootImmediateHook(type)) {
+					const proxy = target.proxy;
+					callWithAsyncErrorHandling(hook.bind(proxy), target, type, type === "onLoad" ? [proxy.$page.options] : []);
+				}
+			}
+		}
 		const hooks = target[type] || (target[type] = []);
 		const wrappedHook = hook.__weh || (hook.__weh = (...args) => {
 			const prevSub = setActiveSub();
@@ -3026,7 +3108,7 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
 		if (prepend) hooks.unshift(wrappedHook);
 		else hooks.push(wrappedHook);
 		return wrappedHook;
-	} else warn$1(`${toHandlerKey(ErrorTypeStrings[type].replace(/ hook$/, ""))} is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.`);
+	} else warn$1(`${toHandlerKey((ErrorTypeStrings[type] || type.replace(/^on/, "")).replace(/ hook$/, ""))} is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.`);
 }
 const createHook = /* @__NO_SIDE_EFFECTS__ */ (lifecycle) => (hook, target = currentInstance) => {
 	if (!isInSSRComponentSetup || lifecycle === "sp") injectHook(lifecycle, (...args) => hook(...args), target);
@@ -3175,7 +3257,8 @@ const getDevRootFragmentEl = (i) => {
 	return el === void 0 ? i.vnode.el : el;
 };
 let publicPropertiesMap;
-const getPublicPropertiesMap = () => {
+let vaporPublicPropertiesMap;
+const getPublicPropertiesMap = (vapor = false) => {
 	if (!publicPropertiesMap) publicPropertiesMap = extend(Object.create(null), {
 		$: (i) => i,
 		$el: (i) => i.vapor ? i.getRootElement() : getDevRootFragmentEl(i),
@@ -3190,15 +3273,26 @@ const getPublicPropertiesMap = () => {
 		$host: (i) => i.ce,
 		$emit: (i) => i.emit,
 		$options: (i) => resolveMergedOptions(i),
-		$forceUpdate: (i) => {
-			if (i.vapor) return;
-			return i.f || (i.f = () => {
-				queueJob(i.update);
-			});
-		},
+		$forceUpdate: (i) => i.f || (i.f = () => {
+			queueJob(i.update);
+		}),
 		$nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
 		$watch: (i) => instanceWatch.bind(i)
 	});
+	if (vapor) {
+		if (!vaporPublicPropertiesMap) {
+			vaporPublicPropertiesMap = extend(Object.create(null), publicPropertiesMap, { $callMethod: (i) => (methodName, ...args) => {
+				const proxy = getComponentPublicInstance(i) || i.proxy;
+				if (!proxy) return null;
+				const method = proxy[methodName];
+				if (method) return method(...args);
+				console.error(`method ${methodName} not found`);
+				return null;
+			} });
+			delete vaporPublicPropertiesMap.$forceUpdate;
+		}
+		return vaporPublicPropertiesMap;
+	}
 	return publicPropertiesMap;
 };
 const isReservedPrefix = (key) => key === "_" || key === "$";
@@ -3230,7 +3324,7 @@ const PublicInstanceProxyHandlers = {
 				return ctx[key];
 			} else if (shouldCacheAccess) accessCache[key] = 0;
 		}
-		const publicGetter = getPublicPropertiesMap()[key];
+		const publicGetter = getPublicPropertiesMap(!!instance.vapor)[key];
 		let cssModule, globalProperties;
 		if (publicGetter) {
 			if (key === "$attrs") {
@@ -3274,9 +3368,9 @@ const PublicInstanceProxyHandlers = {
 		else ctx[key] = value;
 		return true;
 	},
-	has({ _: { data, setupState, accessCache, ctx, appContext, props, type } }, key) {
+	has({ _: { data, setupState, accessCache, ctx, appContext, props, type, vapor } }, key) {
 		let cssModules;
-		return !!(accessCache[key] || data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(getPublicPropertiesMap(), key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
+		return !!(accessCache[key] || data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(getPublicPropertiesMap(!!vapor), key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
 	},
 	defineProperty(target, key, descriptor) {
 		if (descriptor.get != null) target._.accessCache[key] = 0;
@@ -5990,13 +6084,13 @@ function getComponentPublicInstance(instance) {
 	if (instance.exposed) return instance.exposeProxy || (instance.exposeProxy = new Proxy(proxyRefs(markRaw(instance.exposed)), {
 		get(target, key) {
 			if (key in target) return target[key];
-			else if (!instance.vapor) {
-				const publicPropertiesMap = getPublicPropertiesMap();
+			else {
+				const publicPropertiesMap = getPublicPropertiesMap(!!instance.vapor);
 				if (key in publicPropertiesMap) return publicPropertiesMap[key](instance);
 			}
 		},
 		has(target, key) {
-			return key in target || !instance.vapor && key in getPublicPropertiesMap();
+			return key in target || key in getPublicPropertiesMap(!!instance.vapor);
 		}
 	}));
 	else return instance.proxy;
@@ -6192,7 +6286,7 @@ function patchStyle(el, prev, next) {
 		if (prev !== next) {
 			const cssVarText = style[CSS_VAR_TEXT];
 			if (cssVarText) next += ";" + cssVarText;
-			style.cssText = next;
+			style.cssText = normalizeRpx(next);
 			hasControlledDisplay = displayRE.test(next);
 		}
 	} else if (prev) {
@@ -6210,7 +6304,7 @@ const importantRE = /\s*!important$/;
 function setStyle(style, name, rawVal) {
 	if (isArray(rawVal)) rawVal.forEach((v) => setStyle(style, name, v));
 	else {
-		const val = rawVal == null ? "" : String(rawVal);
+		const val = rawVal == null ? "" : normalizeRpx(String(rawVal));
 		if (semicolonRE.test(val)) warn(`Unexpected semicolon at the end of '${name}' style value: '${val}'`);
 		if (name.startsWith("--")) {
 			if (importantRE.test(val)) style.setProperty(name, val.replace(importantRE, ""), "important");
@@ -6795,8 +6889,8 @@ function ssrRenderClass(raw) {
 }
 function ssrRenderStyle(raw) {
 	if (!raw) return "";
-	if (isString(raw)) return escapeHtml(raw);
-	return escapeHtml(stringifyStyle(normalizeStyle(ssrResetCssVars(raw))));
+	if (isString(raw)) return escapeHtml(normalizeRpx(raw));
+	return escapeHtml(normalizeRpx(stringifyStyle(normalizeStyle(ssrResetCssVars(raw)))));
 }
 function ssrResetCssVars(raw) {
 	if (!isArray(raw) && isObject(raw)) {

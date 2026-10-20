@@ -23130,7 +23130,7 @@ function hrtime(previousTimestamp) {
 function uptime() {
 	return (/* @__PURE__ */ new Date() - startTime) / 1e3;
 }
-var cachedSetTimeout, cachedClearTimeout, queue, draining, currentQueue, queueIndex, title, platform, env, argv, versions, release, config, on, addListener, once, off, removeListener, removeAllListeners, emit, performance, performanceNow, startTime, browser$1;
+var cachedSetTimeout, cachedClearTimeout, queue, draining, currentQueue, queueIndex, title, platform, env, argv, versions, release, config, on, addListener, once$1, off, removeListener, removeAllListeners, emit, performance, performanceNow, startTime, browser$1;
 var init__polyfill_node_process = __esmMin((() => {
 	init__polyfill_node_global();
 	cachedSetTimeout = defaultSetTimout;
@@ -23152,7 +23152,7 @@ var init__polyfill_node_process = __esmMin((() => {
 	config = {};
 	on = noop;
 	addListener = noop;
-	once = noop;
+	once$1 = noop;
 	off = noop;
 	removeListener = noop;
 	removeAllListeners = noop;
@@ -23172,7 +23172,7 @@ var init__polyfill_node_process = __esmMin((() => {
 		versions,
 		on,
 		addListener,
-		once,
+		once: once$1,
 		off,
 		removeListener,
 		removeAllListeners,
@@ -27133,7 +27133,7 @@ function genSetEvent(oper, context) {
 		return [
 			`${helper("createInvoker")}(`,
 			...genHandler(),
-			`)`
+			`, true)`
 		];
 	}
 	function genDirectHandler() {
@@ -27241,10 +27241,10 @@ function genEventHandler(context, values, modifiers = {
 	return handlerExp;
 }
 function genWithModifiers(context, handler, nonKeys, useVaporHelper = false) {
-	return genCall(context.helper(useVaporHelper ? "withVaporModifiers" : "withModifiers"), handler, JSON.stringify(nonKeys));
+	return genCall(context.helper(useVaporHelper ? "withVaporModifiers" : "withModifiers"), handler, JSON.stringify(nonKeys), useVaporHelper ? "true" : void 0);
 }
 function genWithKeys(context, handler, keys, useVaporHelper = false) {
-	return genCall(context.helper(useVaporHelper ? "withVaporKeys" : "withKeys"), handler, JSON.stringify(keys));
+	return genCall(context.helper(useVaporHelper ? "withVaporKeys" : "withKeys"), handler, JSON.stringify(keys), useVaporHelper ? "true" : void 0);
 }
 function isConstantBinding(value, context) {
 	if (value.ast === null) {
@@ -29281,6 +29281,17 @@ function genAssetImports({ ir }) {
 	}
 	return imports;
 }
+const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE = /[ru]px/;
+function normalizeRpx(value) {
+	if (!hasRpxRE.test(value)) return value;
+	return value.replace(rpxRE, (match, number) => {
+		if (!number) return match;
+		const whole = Math.floor(parseFloat(number) * (10 / 320) * 1e6);
+		const result = Math.round(whole / 10) * 10 / 1e6;
+		return result === 0 ? "0" : `${result}rem`;
+	});
+}
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
 function normalizeBindShorthand(arg, context) {
@@ -29752,7 +29763,7 @@ function foldStyleValues(values) {
 		if (!evaluated || !isStaticStyleValue(evaluated.value)) return;
 		evaluatedValues.push(evaluated.value);
 	}
-	return stringifyStyle(normalizeStyle(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues));
+	return normalizeRpx(stringifyStyle(normalizeStyle(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues)));
 }
 function isStaticStyleValue(value) {
 	if (typeof value === "string") return true;
@@ -31715,6 +31726,7 @@ function createUniAppXWebTransform(options = {}) {
 			transformView(node);
 			transformText(node);
 			transformSSRImage(node, context);
+			transformStaticStyle(node);
 			return transformSSRHover(node, context);
 		};
 		return { transform };
@@ -31733,6 +31745,7 @@ function createUniAppXWebTransform(options = {}) {
 			transformView(node);
 			transformText(node);
 			transformImage(node);
+			transformStaticStyle(node);
 			return [exitRecycle, exitComponentId].flat().filter((exit) => !!exit);
 		},
 		transformElementProps: (props, node, context, getEffectIndex) => {
@@ -31747,6 +31760,10 @@ function createUniAppXWebTransform(options = {}) {
 		},
 		genEventHandler: image.genEventHandler
 	};
+}
+function transformStaticStyle(node) {
+	if (node.type !== 1 || node.tagType !== 0 && node.tagType !== 1) return;
+	for (const prop of node.props) if (prop.type === 6 && prop.name === "style" && prop.value) prop.value.content = normalizeRpx(prop.value.content);
 }
 //#endregion
 //#region \0@oxc-project+runtime@0.146.0/helpers/esm/objectWithoutPropertiesLoose.js

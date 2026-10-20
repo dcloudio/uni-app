@@ -5,6 +5,7 @@
   **/
 import { Comment, Fragment, Static, Text, createApp, createVNode, getCurrentInstance, handleError, initDirectivesForSSR, mergeProps, renderSlot, ssrContextKey, ssrUtils, warn } from "@vue/runtime-dom";
 import { NOOP, escapeHtml, escapeHtmlComment, hasOwn, includeBooleanAttr, includeBooleanAttr as ssrIncludeBooleanAttr, isArray, isBooleanAttr, isFunction, isObject, isOn, isPromise, isRenderableAttrValue, isSSRSafeAttrName, isSVGTag, isString, isVoidTag, looseEqual, looseIndexOf, makeMap, normalizeClass, normalizeCssVarValue, normalizeStyle, normalizeUniText, propsToAttrMap, stringifyStyle, toDisplayString } from "@vue/shared";
+import { normalizeRpx } from "@dcloudio/uni-shared";
 //#region packages/server-renderer/src/helpers/ssrRenderAttrs.ts
 const shouldIgnoreProp = /*@__PURE__*/ makeMap(`,key,ref,innerHTML,textContent,ref_key,ref_for`);
 function ssrRenderAttrs(props, tag) {
@@ -40,9 +41,9 @@ function ssrRenderClass(raw) {
 }
 function ssrRenderStyle(raw) {
 	if (!raw) return "";
-	if (isString(raw)) return escapeHtml(raw);
+	if (isString(raw)) return escapeHtml(normalizeRpx(raw));
 	const styles = normalizeStyle(ssrResetCssVars(raw));
-	return escapeHtml(stringifyStyle(styles));
+	return escapeHtml(normalizeRpx(stringifyStyle(styles)));
 }
 function ssrResetCssVars(raw) {
 	if (!isArray(raw) && isObject(raw)) {

@@ -33,6 +33,7 @@ let _vue_compiler_dom = require("@vue/compiler-dom");
 let _vue_compiler_vapor = require("@vue/compiler-vapor");
 let _vue_compiler_ssr = require("@vue/compiler-ssr");
 let _vue_shared = require("@vue/shared");
+let _dcloudio_uni_shared = require("@dcloudio/uni-shared");
 let hash_sum = require("hash-sum");
 hash_sum = __toESM(hash_sum);
 //#region packages/compiler-vapor-web/src/parse.ts
@@ -528,6 +529,7 @@ function createUniAppXWebTransform(options = {}) {
 			transformView(node);
 			transformText(node);
 			transformSSRImage(node, context);
+			transformStaticStyle(node);
 			return transformSSRHover(node, context);
 		};
 		return { transform };
@@ -546,6 +548,7 @@ function createUniAppXWebTransform(options = {}) {
 			transformView(node);
 			transformText(node);
 			transformImage(node);
+			transformStaticStyle(node);
 			return [exitRecycle, exitComponentId].flat().filter((exit) => !!exit);
 		},
 		transformElementProps: (props, node, context, getEffectIndex) => {
@@ -560,6 +563,10 @@ function createUniAppXWebTransform(options = {}) {
 		},
 		genEventHandler: image.genEventHandler
 	};
+}
+function transformStaticStyle(node) {
+	if (node.type !== 1 || node.tagType !== 0 && node.tagType !== 1) return;
+	for (const prop of node.props) if (prop.type === 6 && prop.name === "style" && prop.value) prop.value.content = (0, _dcloudio_uni_shared.normalizeRpx)(prop.value.content);
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/compile.ts

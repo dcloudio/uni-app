@@ -7,6 +7,9 @@ export {
 } from './bridge'
 export { initView } from './init'
 export { initViewPlugin } from './plugin'
+//#if _X_VAPOR_
+export { normalizeVaporNativeEvent } from './plugin/componentInstance-vapor'
+//#endif
 export {
   createNativeEvent,
   $nne as normalizeNativeEvent,

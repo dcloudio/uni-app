@@ -413,6 +413,8 @@ export declare class VaporComponentInstance<Props extends Record<string, any> = 
   slots: Slots;
   scopeId?: string | null;
   uniScopeOwner: GenericComponentInstance | null;
+  $pageInstance?: GenericComponentInstance;
+  page?: unknown;
   slotScopeIds?: string[] | null;
   applyCssVars?: (nodes: Block) => void;
   cssVarOutlets?: VaporFragment[];
@@ -635,9 +637,12 @@ export declare function next(node: Node, isText?: boolean): Node;
 export declare function setLastLocatedLogicalChild(parent: InsertionParent, child: Node, logicalIndex: number): void;
 //#endregion
 //#region temp/packages/runtime-vapor/src/dom/event.d.ts
-type EventHandler = (...args: any[]) => any;
+type EventHandler = ((...args: any[]) => any) & {
+  __wwe?: boolean;
+};
 type EventHandlerValue = EventHandler | EventHandler[];
 type MaybeEventHandlerValue = EventHandlerValue | null | undefined;
+export declare function setNativeEventNormalizer(normalize?: (event: Event) => Event): void;
 export declare function on(el: Element, event: string, handler: EventHandlerValue, options?: AddEventListenerOptions): void;
 export declare function onBinding(el: Element, event: string, handler: EventHandlerValue, options?: AddEventListenerOptions): void;
 interface Invoker {
@@ -658,9 +663,9 @@ export declare function setListener(el: Element & {
 }, key: string, value: MaybeEventHandlerValue): void;
 export declare function delegate(el: any, event: string, handler: EventHandler): void;
 export declare const delegateEvents: (...names: string[]) => void;
-export declare function withVaporModifiers<T extends (event: Event, ...args: unknown[]) => any>(fn: T | null | undefined, modifiers: string[]): T;
-export declare function withVaporKeys<T extends (event: KeyboardEvent) => any>(fn: T | null | undefined, modifiers: string[]): T;
-export declare function createInvoker(handler: MaybeEventHandlerValue): EventHandler;
+export declare function withVaporModifiers<T extends (event: Event, ...args: unknown[]) => any>(fn: T | null | undefined, modifiers: string[], native?: boolean): T;
+export declare function withVaporKeys<T extends (event: KeyboardEvent) => any>(fn: T | null | undefined, modifiers: string[], native?: boolean): T;
+export declare function createInvoker(handler: MaybeEventHandlerValue, native?: boolean): EventHandler;
 //#endregion
 //#region temp/packages/runtime-vapor/src/dom/prop.d.ts
 type TargetElement = Element & {

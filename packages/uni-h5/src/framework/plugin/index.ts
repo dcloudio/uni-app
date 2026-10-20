@@ -2,6 +2,9 @@ import type { App, ComponentPublicInstance } from 'vue'
 //#if _X_VAPOR_ && !_NODE_JS_
 // @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Web Vapor runtime 已导出该方法
 import { setRealPathResolver } from 'vue'
+// @ts-expect-error 仅 Web Vapor runtime 提供原生事件归一化入口
+import { setNativeEventNormalizer } from 'vue'
+import { normalizeVaporNativeEvent } from '@dcloudio/uni-core'
 import { getRealPath } from '../../platform'
 //#endif
 
@@ -14,6 +17,7 @@ export default {
   install(app: App) {
     //#if _X_VAPOR_ && !_NODE_JS_
     setRealPathResolver(getRealPath)
+    setNativeEventNormalizer(normalizeVaporNativeEvent)
     //#endif
 
     initApp(app)

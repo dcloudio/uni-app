@@ -41,6 +41,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 let _vue_runtime_dom = require("@vue/runtime-dom");
 _vue_runtime_dom = __toESM(_vue_runtime_dom);
 let _vue_shared = require("@vue/shared");
+let _dcloudio_uni_shared = require("@dcloudio/uni-shared");
 let _vue_compiler_ssr = require("@vue/compiler-ssr");
 //#region packages/server-renderer/src/helpers/ssrRenderAttrs.ts
 const shouldIgnoreProp = /*@__PURE__*/ (0, _vue_shared.makeMap)(`,key,ref,innerHTML,textContent,ref_key,ref_for`);
@@ -77,9 +78,9 @@ function ssrRenderClass(raw) {
 }
 function ssrRenderStyle(raw) {
 	if (!raw) return "";
-	if ((0, _vue_shared.isString)(raw)) return (0, _vue_shared.escapeHtml)(raw);
+	if ((0, _vue_shared.isString)(raw)) return (0, _vue_shared.escapeHtml)((0, _dcloudio_uni_shared.normalizeRpx)(raw));
 	const styles = (0, _vue_shared.normalizeStyle)(ssrResetCssVars(raw));
-	return (0, _vue_shared.escapeHtml)((0, _vue_shared.stringifyStyle)(styles));
+	return (0, _vue_shared.escapeHtml)((0, _dcloudio_uni_shared.normalizeRpx)((0, _vue_shared.stringifyStyle)(styles)));
 }
 function ssrResetCssVars(raw) {
 	if (!(0, _vue_shared.isArray)(raw) && (0, _vue_shared.isObject)(raw)) {

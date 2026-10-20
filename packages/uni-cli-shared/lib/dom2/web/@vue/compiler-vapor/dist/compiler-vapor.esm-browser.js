@@ -20450,7 +20450,7 @@ function genSetEvent(oper, context) {
 		return [
 			`${helper("createInvoker")}(`,
 			...genHandler(),
-			`)`
+			`, true)`
 		];
 	}
 	function genDirectHandler() {
@@ -20558,10 +20558,10 @@ function genEventHandler(context, values, modifiers = {
 	return handlerExp;
 }
 function genWithModifiers(context, handler, nonKeys, useVaporHelper = false) {
-	return genCall(context.helper(useVaporHelper ? "withVaporModifiers" : "withModifiers"), handler, JSON.stringify(nonKeys));
+	return genCall(context.helper(useVaporHelper ? "withVaporModifiers" : "withModifiers"), handler, JSON.stringify(nonKeys), useVaporHelper ? "true" : void 0);
 }
 function genWithKeys(context, handler, keys, useVaporHelper = false) {
-	return genCall(context.helper(useVaporHelper ? "withVaporKeys" : "withKeys"), handler, JSON.stringify(keys));
+	return genCall(context.helper(useVaporHelper ? "withVaporKeys" : "withKeys"), handler, JSON.stringify(keys), useVaporHelper ? "true" : void 0);
 }
 function isConstantBinding(value, context) {
 	if (value.ast === null) {
@@ -22598,6 +22598,17 @@ function genAssetImports({ ir }) {
 	}
 	return imports;
 }
+const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
+const hasRpxRE = /[ru]px/;
+function normalizeRpx(value) {
+	if (!hasRpxRE.test(value)) return value;
+	return value.replace(rpxRE, (match, number) => {
+		if (!number) return match;
+		const whole = Math.floor(parseFloat(number) * (10 / 320) * 1e6);
+		const result = Math.round(whole / 10) * 10 / 1e6;
+		return result === 0 ? "0" : `${result}rem`;
+	});
+}
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
 function normalizeBindShorthand(arg, context) {
@@ -23067,7 +23078,7 @@ function foldStyleValues(values) {
 		if (!evaluated || !isStaticStyleValue(evaluated.value)) return;
 		evaluatedValues.push(evaluated.value);
 	}
-	return stringifyStyle(normalizeStyle(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues));
+	return normalizeRpx(stringifyStyle(normalizeStyle(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues)));
 }
 function isStaticStyleValue(value) {
 	if (typeof value === "string") return true;

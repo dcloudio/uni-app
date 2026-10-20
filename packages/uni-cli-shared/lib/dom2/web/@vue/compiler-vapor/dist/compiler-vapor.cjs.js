@@ -12,6 +12,7 @@ let _vue_shared = require("@vue/shared");
 let source_map_js = require("source-map-js");
 let _babel_parser = require("@babel/parser");
 let estree_walker = require("estree-walker");
+let _dcloudio_uni_shared = require("@dcloudio/uni-shared");
 //#region packages/compiler-vapor/src/ir/component.ts
 const IRDynamicPropsKind = {
 	"EXPRESSION": 0,
@@ -1367,7 +1368,7 @@ function genSetEvent(oper, context) {
 		return [
 			`${helper("createInvoker")}(`,
 			...genHandler(),
-			`)`
+			`, true)`
 		];
 	}
 	function genDirectHandler() {
@@ -1475,10 +1476,10 @@ function genEventHandler(context, values, modifiers = {
 	return handlerExp;
 }
 function genWithModifiers(context, handler, nonKeys, useVaporHelper = false) {
-	return genCall(context.helper(useVaporHelper ? "withVaporModifiers" : "withModifiers"), handler, JSON.stringify(nonKeys));
+	return genCall(context.helper(useVaporHelper ? "withVaporModifiers" : "withModifiers"), handler, JSON.stringify(nonKeys), useVaporHelper ? "true" : void 0);
 }
 function genWithKeys(context, handler, keys, useVaporHelper = false) {
-	return genCall(context.helper(useVaporHelper ? "withVaporKeys" : "withKeys"), handler, JSON.stringify(keys));
+	return genCall(context.helper(useVaporHelper ? "withVaporKeys" : "withKeys"), handler, JSON.stringify(keys), useVaporHelper ? "true" : void 0);
 }
 function isConstantBinding(value, context) {
 	if (value.ast === null) {
@@ -3986,7 +3987,7 @@ function foldStyleValues(values) {
 		evaluatedValues.push(evaluated.value);
 	}
 	const normalized = (0, _vue_shared.normalizeStyle)(evaluatedValues.length === 1 ? evaluatedValues[0] : evaluatedValues);
-	return (0, _vue_shared.stringifyStyle)(normalized);
+	return (0, _dcloudio_uni_shared.normalizeRpx)((0, _vue_shared.stringifyStyle)(normalized));
 }
 function isStaticStyleValue(value) {
 	if (typeof value === "string") return true;
