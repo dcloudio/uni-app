@@ -7,6 +7,7 @@ import {
   createCopyComponentDirs,
   createCopyPluginTarget,
   createMiniProgramUasmCopyTarget,
+  getMiniProgramAIPaths,
   getNativeTags,
   transformComponentLink,
   transformDirection,
@@ -20,7 +21,6 @@ import {
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 import { transformLoading } from '../x/compiler/transforms/transformLoading'
-import { getMiniProgramAIPaths } from './utils'
 
 import source from './project.config.json'
 
