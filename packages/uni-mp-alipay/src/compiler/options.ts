@@ -11,6 +11,7 @@ import {
   createCopyPluginTarget,
   createMiniProgramUasmCopyTarget,
   createTransformComponentLink,
+  getMiniProgramAIPaths,
   getNativeTags,
   resolveMiniProgramUasmWorkerPaths,
   resolveMiniProgramWorkerPaths,
@@ -129,7 +130,15 @@ export const options: UniMiniProgramPluginOptions = {
           : []),
         ...(process.env.UNI_MP_PLUGIN ? [copyMiniProgramPluginJson] : []),
         {
-          src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
+          src: [
+            'customize-tab-bar',
+            'preload.json',
+            'sitemap.json',
+            ...getMiniProgramAIPaths(
+              process.env.UNI_INPUT_DIR,
+              process.env.UNI_PLATFORM
+            ),
+          ],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
