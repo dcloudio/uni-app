@@ -25,6 +25,8 @@ process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
 const { miniProgram } =
   require('../src/compiler/options') as typeof import('../src/compiler/options')
 const { assert } = require('./testUtils') as typeof import('./testUtils')
+const { compile } =
+  require('@dcloudio/uni-mp-compiler') as typeof import('@dcloudio/uni-mp-compiler')
 
 const miniProgramWithFilterImport = {
   ...miniProgram,
@@ -104,6 +106,31 @@ describe('mp-alipay: styleIsolation 2.0', () => {
 }`,
       { filename, isX: true }
     )
+  })
+
+  test('条件根节点的静态 class 在合并 virtual host 后展开', () => {
+    let templateCode = ''
+    compile('<view v-if="ok" class="foo"/><view v-else class="bar"/>', {
+      filename,
+      isX: true,
+      mode: 'module',
+      isNativeTag: (tag) => tag === 'view',
+      miniProgram: {
+        ...miniProgram,
+        component: {
+          ...miniProgram.component,
+          mergeVirtualHostAttributes: true,
+        },
+        emitFile({ source }) {
+          templateCode = source as string
+          return ''
+        },
+      },
+    })
+    expect(templateCode.match(/class="[^"]*"/g)).toEqual([
+      "class=\"{{uV.c(('foo') + ' ' + (virtualHostClass || ''),3)}}\"",
+      "class=\"{{uV.c(('bar') + ' ' + (virtualHostClass || ''),3)}}\"",
+    ])
   })
 
   test('静态 class 禁止使用内部保留前缀', () => {
