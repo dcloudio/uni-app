@@ -20,10 +20,9 @@ CSS 长度数据类型 `<percentage>` 表述一个百分比值。许多 CSS 属�
 ### 兼容性
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| % | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | app平台仅width、height、padding(-*)、margin(-*)、top、left、right、bottom、flex-basis等属性支持 |
-| fr | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 分数单位（fraction），用于网格/布局中表示可用空间的分配比例 |
 | px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 像素，屏幕上最常用的绝对长度单位 |
 | rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 响应式像素，用于某些框架中根据屏幕密度动态缩放的单位 |
+| % | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | app平台仅width、height、padding(-*)、margin(-*)、top、left、right、bottom、flex-basis等属性支持 |
 | em | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 相对于当前元素字体大小的相对单位 |
 | rem | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 相对于根元素（html）字体大小的相对单位 |
 | cap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 基于字体大写字母高度的排版单位（用于排版相关度量） |
@@ -66,6 +65,7 @@ CSS 长度数据类型 `<percentage>` 表述一个百分比值。许多 CSS 属�
 | vmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽高中较大那个的 1% 单位 |
 | vmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽高中较小那个的 1% 单位 |
 | vw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视口宽度的 1% 单位（viewport width） |
+| fr | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 分数单位（fraction），用于网格/布局中表示可用空间的分配比例 |
 
 ### rpx
 `rpx` 是一个以设备750px为基准的单位，`750rpx`即为屏幕宽度，相当于100%；`375rpx`即为屏幕一半宽度，相当于50%。
