@@ -7,6 +7,7 @@ import {
   createCopyComponentDirs,
   createCopyPluginTarget,
   createMiniProgramUasmCopyTarget,
+  getMiniProgramAIPaths,
   getNativeTags,
   transformComponentLink,
   transformDirection,
@@ -21,7 +22,6 @@ import {
 import { transformAd } from './transforms/transformAd'
 import { transformLoading } from '../x/compiler/transforms/transformLoading'
 import { transformWaterflow } from '../x/compiler/transforms/transformWaterflow'
-import { getMiniProgramAIPaths } from './utils'
 
 import source from './project.config.json'
 
