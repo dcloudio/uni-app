@@ -7,6 +7,8 @@
 | :- | :- | :- | :- | :- | :- |
 | 4.16 | x | x | 4.13 | 4.18 | 4.61 |
 
+小程序自身未提供ResizeObserver。社区有三方库可模拟实现，虽性能不及原生ResizeObserver，但在需要时也可以使用。参考[lime-resize](https://ext.dcloud.net.cn/plugin?id=14117)
+
 
 
 
