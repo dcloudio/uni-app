@@ -1038,7 +1038,7 @@ function parseAnimation(value) {
     };
 }
 
-function normalizeLengthValue(v, options, removePx, property) {
+function normalizeLengthValue(v, options, removePx, extraUnits = []) {
     const match = v.match(LENGTH_REGEXP);
     if (match) {
         var unit = match[1];
@@ -1046,10 +1046,7 @@ function normalizeLengthValue(v, options, removePx, property) {
             if (!unit || (unit === 'px' && removePx)) {
                 return { value: parseFloat(v) };
             }
-            else if (unit === 'px' ||
-                unit === 'rpx' ||
-                // 只有line-height支持em单位
-                (unit === 'em' && property === 'line-height')) {
+            else if (unit === 'px' || unit === 'rpx' || extraUnits.includes(unit)) {
                 return { value: v };
             }
         }
@@ -1057,7 +1054,7 @@ function normalizeLengthValue(v, options, removePx, property) {
     return {
         value: null,
         reason(k, v, result) {
-            return supportedEnumReason(k, v, ['number', 'pixel']);
+            return supportedEnumReason(k, v, ['number', 'pixel', ...extraUnits]);
         },
     };
 }
