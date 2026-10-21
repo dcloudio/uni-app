@@ -2,6 +2,13 @@ import path from 'path'
 import ts from 'typescript'
 import jscc from 'rollup-plugin-jscc'
 
+// Vapor runtime 与测试模块必须使用同版本 shared，避免解析到工作区的 VDOM 版本。
+jest.mock('@vue/shared', () =>
+  jest.requireActual(
+    '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+  )
+)
+
 const root = path.resolve(__dirname, '../../..')
 const file = path.join(
   root,
@@ -58,7 +65,12 @@ describe('SelectorQuery 模式兼容', () => {
       const module = { exports: {} as any }
       const imports: Record<string, any> = {
         vue,
-        '@vue/shared': { isArray: Array.isArray },
+        '@vue/shared': {
+          ...jest.requireActual(
+            '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+          ),
+          isArray: Array.isArray,
+        },
         '@dcloudio/uni-shared': {
           createUniDOMStringMap: (v: any) => v,
           getCustomDataset: (el: HTMLElement) => ({ ...el.dataset }),

@@ -5,6 +5,13 @@ import { execFileSync } from 'child_process'
 import jscc from 'rollup-plugin-jscc'
 import ts from 'typescript'
 
+// 真实 Vapor runtime 必须配套加载同版本 shared，避免使用工作区的 VDOM 版本。
+jest.mock('@vue/shared', () =>
+  jest.requireActual(
+    '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+  )
+)
+
 const root = path.resolve(__dirname, '../../..')
 const components = 'packages/uni-components/src/'
 
@@ -129,7 +136,9 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       ),
     }).default
     dom.window.customElements.define('uni-button', class extends UniElement {})
-    const shared = jest.requireActual('@vue/shared')
+    const shared = jest.requireActual(
+      '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+    )
     const fields = evaluate(await preprocess('helpers/useField.ts', true), {
       vue,
       '@vue/shared': shared,

@@ -4,6 +4,13 @@ import ts from 'typescript'
 import { rollup } from 'rollup'
 import { checkWebVaporVNodes } from '../../../scripts/checkWebVaporVNodes'
 
+// Vapor runtime 与测试模块必须使用同版本 shared，避免解析到工作区的 VDOM 版本。
+jest.mock('@vue/shared', () =>
+  jest.requireActual(
+    '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+  )
+)
+
 const root = path.resolve(__dirname, '../../..')
 
 describe('Web Vapor CustomTabBar', () => {

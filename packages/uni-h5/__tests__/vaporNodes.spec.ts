@@ -2,6 +2,13 @@ import path from 'path'
 import jscc from 'rollup-plugin-jscc'
 import ts from 'typescript'
 
+// 真实 Vapor runtime 必须配套加载同版本 shared，避免使用工作区的 VDOM 版本。
+jest.mock('@vue/shared', () =>
+  jest.requireActual(
+    '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+  )
+)
+
 const root = path.resolve(__dirname, '../../..')
 
 async function preprocess(file: string, vapor: boolean) {

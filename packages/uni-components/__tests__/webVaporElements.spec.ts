@@ -3,6 +3,13 @@ import jscc from 'rollup-plugin-jscc'
 import ts from 'typescript'
 import { hasOwn } from '@vue/shared'
 
+// Vapor runtime 与测试模块必须使用同版本 shared，避免解析到工作区的 VDOM 版本。
+jest.mock('@vue/shared', () =>
+  jest.requireActual(
+    '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+  )
+)
+
 jest.mock('@dcloudio/uni-api', () => ({
   defineSyncApi: (_name: string, implementation: Function) => implementation,
 }))
@@ -76,7 +83,9 @@ describe('Web Vapor 原生宿主 Element', () => {
           : dom.window[name]
     }
     elementImports = {
-      '@vue/shared': jest.requireActual('@vue/shared'),
+      '@vue/shared': jest.requireActual(
+        '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+      ),
       '@dcloudio/uni-shared': jest.requireActual('@dcloudio/uni-shared'),
     }
     UniElement = (
