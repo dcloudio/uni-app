@@ -4,7 +4,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   // Label that supports internal form controls (checkbox/radio/switch)
   // via provide/inject registration. Clicking the label will activate
   // the first registered control, or the one matching `for` if provided.

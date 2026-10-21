@@ -4,7 +4,7 @@
     </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
     import { FORM_KEY } from '../common.uts'
     import { UniPickerElement } from './global.uts'
     import { FormContext } from '../types.uts'

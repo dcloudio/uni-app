@@ -7,7 +7,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { UniProgressElement } from './global.uts'
 
   type ActiveModeType = 'backwards' | 'forwards'

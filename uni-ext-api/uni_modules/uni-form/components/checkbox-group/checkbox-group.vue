@@ -4,7 +4,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { CHECKBOX_GROUP_KEY, FORM_KEY } from '../common.uts'
   import { UniCheckboxGroupElement } from './global.uts'
   import { CheckboxGroupContext, FormContext } from '../types.uts'

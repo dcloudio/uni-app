@@ -41,7 +41,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import { UniSwiperChangeEventDetail, UniSwiperChangeEvent, UniSwiperTransitionEventDetail, UniSwiperTransitionEvent,  UniSwiperAnimationFinishEvent, ContainerSize } from './types.uts'
 import { parsePxRpx, getDirection } from './utils.uts'
 

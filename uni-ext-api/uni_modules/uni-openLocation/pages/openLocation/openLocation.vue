@@ -35,7 +35,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { openSchema } from '@/uni_modules/uni-openLocation';
   // #ifdef APP
   import { canOpenURL } from '@/uni_modules/uni-openLocation';

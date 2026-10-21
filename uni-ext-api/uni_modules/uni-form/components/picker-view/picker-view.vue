@@ -4,7 +4,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { FORM_KEY, PICKER_VIEW_KEY } from '../common.uts'
   import { UniPickerViewElement } from './global.uts'
   import { FormContext, PickerViewColumnApi, PickerViewContext } from '../types.uts'

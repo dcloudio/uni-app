@@ -7,7 +7,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import {
 	UniSwiperItemElement,
 } from "./index.uts";

@@ -21,7 +21,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { FORM_KEY, LABEL_KEY, dispatchLabelClick, classes } from '../common.uts'
   import { UniSwitchElement } from './global.uts'
   import { FormContext, LabelContext } from '../types.uts'

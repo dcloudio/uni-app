@@ -4,7 +4,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { FORM_KEY } from '../common.uts'
   import { UniFormElement } from './global.uts'
   import { FormField, FormContext } from '../types.uts'

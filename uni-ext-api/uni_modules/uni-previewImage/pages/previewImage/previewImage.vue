@@ -32,7 +32,7 @@
 	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	// #ifndef VUE3-VAPOR
 	import previewImageNonVaporComponent from "../../components/uni-previewImageNonVapor/uni-previewImageNonVapor.vue"
 	const urls = ref<Array<string> | null>(null)

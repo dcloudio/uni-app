@@ -61,7 +61,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { FORM_KEY, LABEL_KEY } from '../common.uts'
   import { UniSliderChangeEvent, UniSliderElement } from './global.uts'
 

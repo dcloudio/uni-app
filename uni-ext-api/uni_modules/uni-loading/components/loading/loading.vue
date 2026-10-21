@@ -39,7 +39,7 @@
   namespace="uniappx::loading"></script>
 <!-- #endif -->
 
-<script setup lang="uts">
+<script setup lang="ts">
 // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 import { UniLoadingElement } from "@/uni_modules/uni-loading";
 // #endif

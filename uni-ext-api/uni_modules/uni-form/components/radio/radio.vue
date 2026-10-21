@@ -33,7 +33,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.uts'
   import { UniRadioElement } from './global.uts'
   import { LabelContext } from '../types.uts'

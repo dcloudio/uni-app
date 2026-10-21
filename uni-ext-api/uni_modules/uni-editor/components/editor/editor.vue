@@ -16,7 +16,7 @@
   </uni-editor-element>
   <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   /**
    * 富文本编辑器，可以对图片、文字进行编辑。
    * @uniPlatform {
@@ -289,10 +289,12 @@
   function handleCallback(cbId : number, result : UTSJSONObject) {
     let callbacks = callbackMap.get(cbId)
     // #ifdef APP-ANDROID
+    // #ifndef VUE3-VAPOR
     // TODO 安卓 map bug
     if (callbacks == null) {
       callbacks = callbackMap.get(cbId.toInt())
     }
+    // #endif
     // #endif
     if (callbacks == null) {
       LOG('Callback not found for id:', cbId.toString())

@@ -61,7 +61,7 @@
 <!-- #ifdef APP-HARMONY -->
 <script module="inputCpp" lang="cpp" class-name="NativeInputView" src="../../cppsdk/app-harmony/input_view.h" namespace="uniappx::form"></script>
 <!-- #endif -->
-<script setup lang="uts">
+<script setup lang="ts">
 	import {
 		// #ifdef APP-ANDROID || APP-IOS
 		NativeInputView,

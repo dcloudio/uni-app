@@ -11,7 +11,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   import { PICKER_VIEW_KEY } from '../common.uts'
   import { UniPickerViewColumnElement } from './global.uts'
   import { PickerViewContext, PickerViewColumnApi } from '../types.uts'
