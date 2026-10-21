@@ -1,3 +1,42 @@
+#### 5.33.2026102115-alpha
+##### uni-app x
+* Web平台 修复 5.31版本引发的 API uni.request 在uts文件内调用参数 enableChunked 不为 true 时没有返回 UTSJSONObject 类型数据 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33862)
+* Android平台 蒸汽模式 修复 运行调试 云端打包运行可能报`cannot locate symbol _ZNSt6__ndk127__from_chars_floating_pointIfEENS`异常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33821)
+* 鸿蒙平台 修复 5.25版本引发的 API uni.setNavigationBarColor 在原生 SDK 中调用状态栏不变化 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33986)
+* 修复 编译器 v-if else多根节点实际渲染为单根节点时未透传部分属性及样式 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33948)
+* 小程序平台 修复 CSS page选择器设置padding时效果不符合预期 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33939)
+
+#### 5.32.2026101609-alpha
+##### uni-app x
+* Web平台 小程序平台 App平台 蒸汽模式 新增 API uniCloud 支持组合式定义datacom [文档](https://doc.dcloud.net.cn/uni-app-x/api/unicloud/) <https://issues.dcloud.net.cn/pages/issues/detail?id=33522>
+* Web平台 新增 API toast 允许设置是否与页面绑定 [文档](https://doc.dcloud.net.cn/uni-app-x/api/toast.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=33641>
+* Web平台 修复 5.31版本引发的 API setTabBar darkmode 模式时调用无效 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33706)
+* Android平台 新增 组件 ad-drama 短剧组件 [文档](https://doc.dcloud.net.cn/uni-app-x/api/create-drama-ad.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=32816>
+* Android平台 修复 组件 camera 部分情况可能引起内存泄漏 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=22660)
+* App平台 蒸汽模式 新增 API uni.convert2AbsFullPath 将相对路径转换为平台的绝对路径地址 [文档](https://doc.dcloud.net.cn/uni-app-x/api/convert2-abs-full-path.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=33471>
+* App平台 蒸汽模式 修复 组件 waterflow 超高flow-item部分情况不显示 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33511)
+* App平台 蒸汽模式 修复 组件 rich-text native mode时richtext组件选中文字时点击页面其他部分无法取消选中 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33573)
+* App平台 蒸汽模式 修复 CSS animation 使用 calc() 设置的长度值无动画效果 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33455)
+* App平台 蒸汽模式 修复 DOM API UniElement animate 方法在同一元素创建多个动画无法并行运行，创建新动画会中断正在执行的其他动画 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33577)
+* Android平台 蒸汽模式、iOS平台 蒸汽模式 修复 API uni.installWgt 安装合法 wgt 报 103610 错误 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33639)
+* Android平台 蒸汽模式、iOS平台 蒸汽模式 修复 API uni.installWgt 可能出现wgt资源与手机端SDK不兼容导致应用无法启动 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33646)
+* Android平台 蒸汽模式 修复 API uni.getFileSystemManager fstat、stat回调内的Stat实例无法调用isFile、isDirectory方法 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33568)
+* iOS平台 蒸汽模式、鸿蒙平台 蒸汽模式 修复 组件 rich-text native模式 显示不完整 切割内容导致文字无故换行 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33655&ask_id=221751)
+* iOS平台 蒸汽模式 修复 CSS animation 取消动画未恢复原有样式 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33391)
+* iOS平台 蒸汽模式 修复 手势返回页面遮罩效果无效 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33597)
+* 修复 编译器 Harmony Vapor bytecode 发行中 es2abc 拒绝合法模板字符串插值表达式 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33278)
+* 鸿蒙平台 修复 API uni.exit 回调不触发 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33510)
+* 鸿蒙平台 修复 5.31版本引发的 API themeChange 首次启动时未显式设置导致 AbilityContext colorMode 不符合预期 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33663)
+* 鸿蒙平台 修复 API uni.request 跨域重定向时不会携带目标url对应的cookie [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33604)
+* 鸿蒙平台 蒸汽模式 修复 pages.json 开启 glassEffect 后 TabBar 切换逻辑与系统不一致 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33693)
+* 鸿蒙平台 蒸汽模式 修复 组件 image 显示 SVG 图片在 mode=widthFix/heightFix 时放大显示模糊 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33688)
+* 鸿蒙平台 蒸汽模式 修复 API uni.getBoundingClientRectAsync 错把祖先元素的transform当成元素自身导致结果错误 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33463)
+* 鸿蒙平台 蒸汽模式 修复 5.31版本引发的 API uni.getSystemInfoSync 鸿蒙获取主题颜色错误 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33550)
+* 鸿蒙平台 蒸汽模式 修复 DOM API UniElement 动画取消后重播，再次取消不还原样式，且重播过程没有生命周期 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33518)
+* 鸿蒙平台 蒸汽模式 修复 DOM API UniElement fullscreenerror 事件没有触发 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33783)
+* 鸿蒙平台 蒸汽模式 修复 运行调试 过早时机获取根节点元素时导致崩溃问题 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33418)
+* uni-ui x 新增 uni-icons 适配蒸汽模式 [详情](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-icons.html)
+
 #### 5.31.2026093020-alpha
 ##### uni-app x
 * 【重要】Android平台 蒸汽模式、iOS平台 蒸汽模式 新增 应用资源热更新 [文档](https://doc.dcloud.net.cn/uni-app-x/api/install-wgt.html#tips)
