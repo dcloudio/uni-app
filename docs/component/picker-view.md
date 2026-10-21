@@ -2,6 +2,12 @@
 
 ::: sourceCode
 ## picker-view
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view
+
 :::
 
 > 组件类型：UniPickerViewElement 
@@ -316,6 +322,12 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 
 ::: sourceCode
 ## picker-view-column
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view-column
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view-column
+
 :::
 
 仅可放置于 picker-view 中，其子节点未继承 picker-view 的选中框的高度，需要自己设置高度并居中

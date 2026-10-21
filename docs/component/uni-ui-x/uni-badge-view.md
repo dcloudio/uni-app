@@ -4,6 +4,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-badge-vie
 
 ::: sourceCode
 ## uni-badge-view
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-badge-view/components/uni-badge-view
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-badge-view/components/uni-badge-view
+
 :::
 
 数字角标（徽章）组件

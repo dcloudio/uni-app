@@ -3,10 +3,10 @@
 ::: sourceCode
 ## animation-view
 
-> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-animation-view
+> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-animation-view-x/components/animation-view
 
 
-> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-animation-view
+> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-animation-view-x/components/animation-view
 
 :::
 

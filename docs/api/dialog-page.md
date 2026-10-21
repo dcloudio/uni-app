@@ -55,10 +55,10 @@ APP 蒸汽模式注意事项：
 ::: sourceCode
 ## uni.openDialogPage(options) @opendialogpage
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-dialogPage
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-dialogPage
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-dialogPage
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-dialogPage
 
 :::
 
@@ -157,10 +157,10 @@ APP 蒸汽模式注意事项：
 ::: sourceCode
 ## uni.closeDialogPage(options?) @closedialogpage
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-dialogPage
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-dialogPage
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-dialogPage
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-dialogPage
 
 :::
 

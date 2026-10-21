@@ -3,10 +3,10 @@
 ::: sourceCode
 ## list-view
 
-> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-list-view
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-list-view/components/list-view
 
 
-> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-list-view
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-list-view/components/list-view
 
 :::
 
@@ -727,6 +727,12 @@ VDOM模式的长列表性能要弱于蒸汽模式很多。推荐升级蒸汽模�
 
 ::: sourceCode
 ## list-item
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-list-view/components/list-item
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-list-view/components/list-item
+
 :::
 
 > 组件类型：UniListItemElement 

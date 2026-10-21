@@ -2,6 +2,12 @@
 
 ::: sourceCode
 ## input
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/input
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/input
+
 :::
 
 > 组件类型：[UniInputElement](/api/dom/uniinputelement.md) 

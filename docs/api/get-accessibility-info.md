@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getAccessibilityInfo() @getaccessibilityinfo
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getAccessibilityInfo
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getAccessibilityInfo
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getAccessibilityInfo
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getAccessibilityInfo
 
 :::
 

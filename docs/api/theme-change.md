@@ -280,10 +280,10 @@ uni-app x的内置组件，在App和Web平台均支持css设置所有样式，�
 ::: sourceCode
 ## uni.setAppTheme(options) @setapptheme
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -374,10 +374,10 @@ uni.setAppTheme({
 ::: sourceCode
 ## uni.onAppThemeChange(callback) @onappthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -437,10 +437,10 @@ val callbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 ::: sourceCode
 ## uni.offAppThemeChange(id) @offappthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -480,10 +480,10 @@ uni.offAppThemeChange(this.appThemeChangeId)
 ::: sourceCode
 ## uni.onOsThemeChange(callback) @onosthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -543,10 +543,10 @@ val callbackId = uni.onOsThemeChange((res: OsThemeChangeResult)=> {
 ::: sourceCode
 ## uni.offOsThemeChange(id) @offosthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -588,10 +588,10 @@ uni.offOsThemeChange(callbackId)
 ::: sourceCode
 ## uni.onHostThemeChange(callback) @onhostthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -654,10 +654,10 @@ uni.offOsThemeChange(callbackId)
 ::: sourceCode
 ## uni.offHostThemeChange(id) @offhostthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -699,10 +699,10 @@ uni.offOsThemeChange(callbackId)
 ::: sourceCode
 ## uni.~~onThemeChange(callback)~~ @onthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 
@@ -757,10 +757,10 @@ uni.offOsThemeChange(callbackId)
 ::: sourceCode
 ## uni.~~offThemeChange(callback)~~ @offthemechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-theme
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-theme
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-theme
 
 :::
 

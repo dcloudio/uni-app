@@ -2,6 +2,12 @@
 
 ::: sourceCode
 ## radio
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/radio
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/radio
+
 :::
 
 > 组件类型：UniRadioElement 

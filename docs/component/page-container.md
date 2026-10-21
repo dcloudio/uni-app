@@ -2,6 +2,12 @@
 
 ::: sourceCode
 ## page-container
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-page-container/components/page-container
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-page-container/components/page-container
+
 :::
 
 > 组件类型：UniPageContainerElement 

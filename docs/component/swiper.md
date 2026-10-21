@@ -3,10 +3,10 @@
 ::: sourceCode
 ## swiper
 
-> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-swiper
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-swiper/components/swiper
 
 
-> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-swiper
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-swiper/components/swiper
 
 :::
 
