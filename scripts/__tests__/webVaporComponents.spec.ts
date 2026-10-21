@@ -52,7 +52,7 @@ describe('Web Vapor 组件生成', () => {
         '<template />'
       )
       fs.outputFileSync(
-        path.join(extApiDir, 'uni-progress/components/progress/global.uts'),
+        path.join(extApiDir, 'uni-progress/components/progress/global.ts'),
         'export class UniProgressElement {}'
       )
       fs.outputJsonSync(path.join(extApiDir, 'uni-video/package.json'), {
@@ -75,7 +75,7 @@ describe('Web Vapor 组件生成', () => {
           'progress',
           {
             source: 'uni-progress/components/progress/progress.uvue',
-            elementSource: 'uni-progress/components/progress/global.uts',
+            elementSource: 'uni-progress/components/progress/global.ts',
           },
         ],
       ])

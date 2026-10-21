@@ -12,7 +12,7 @@ describe('Loading 平台观察器', () => {
     const source = fs.readFileSync(
       path.resolve(
         __dirname,
-        '../../../uni-ext-api/uni_modules/uni-loading/components/loading/useLoadingStyle.uts.ts'
+        '../../../uni-ext-api/uni_modules/uni-loading/components/loading/useLoadingStyle.ts'
       ),
       'utf8'
     )
