@@ -20218,9 +20218,10 @@ function createDynamicComponent(getter, rawProps, rawSlots, flags = 0, key) {
 	let lastKey;
 	let lastBranch;
 	let branchToken;
+	const needsCacheKey = !!key && !!getKeepAliveContext(currentInstance);
 	renderEffect(() => {
-		const value = getter();
 		let userKey = key ? key() : void 0;
+		const value = needsCacheKey ? withCurrentCacheKey(userKey, getter) : getter();
 		const appContext = getAppContext();
 		let resolved = resolveValue(value, appContext, scopeOwner);
 		if (resolved === NULL_DYNAMIC_COMPONENT) {

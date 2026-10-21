@@ -261,4 +261,39 @@ describe('框架构建的结构标签分类', () => {
       expect(output).not.toContain('resolveComponent')
     }
   })
+
+  test('Vapor 响应式与普通布局均缓存页面，不缓存 RouterView', () => {
+    const filename = path.join(
+      root,
+      'src/framework/components/layout/index-vapor.vue'
+    )
+    const { descriptor } = parse(fs.readFileSync(filename, 'utf8'), {
+      filename,
+    })
+    const nodes: any[] = [...descriptor.template!.ast!.children]
+    let routerViews = 0
+    while (nodes.length) {
+      const node = nodes.pop()!
+      if (node.tag === 'RouterView') {
+        routerViews++
+        expect(node.props.some((prop: any) => prop.name === 'slot')).toBe(true)
+        const keepAlive = node.children.find(
+          (child: any) => child.tag === 'KeepAlive'
+        )
+        expect(keepAlive).toBeDefined()
+        const page = keepAlive.children.find(
+          (child: any) => child.tag === 'component'
+        )
+        expect(page).toBeDefined()
+        expect(
+          page.props.some(
+            (prop: any) =>
+              prop.arg?.content === 'key' && prop.exp?.content === 'routeKey'
+          )
+        ).toBe(true)
+      }
+      if (node.children) nodes.push(...node.children)
+    }
+    expect(routerViews).toBe(2)
+  })
 })

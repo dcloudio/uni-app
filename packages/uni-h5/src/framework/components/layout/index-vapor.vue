@@ -32,13 +32,15 @@
       </uni-top-window>
       <uni-content>
         <uni-main>
-          <KeepAlive
+          <RouterView
             v-if="hasPages && route?.meta.route"
-            match-by="key"
-            :cache="routeCache"
+            v-slot="{ Component }"
+            :type="isTabBar ? 'tabBar' : ''"
           >
-            <RouterView :type="isTabBar ? 'tabBar' : ''" :key="routeKey" />
-          </KeepAlive>
+            <KeepAlive match-by="key" :cache="routeCache">
+              <component :is="Component" :key="routeKey" />
+            </KeepAlive>
+          </RouterView>
           <component v-else-if="!hasPages" :is="firstPageComponent" />
         </uni-main>
         <uni-left-window
@@ -90,13 +92,15 @@
       </uni-content>
     </uni-layout>
     <template v-else>
-      <KeepAlive
+      <RouterView
         v-if="hasPages && route?.meta.route"
-        match-by="key"
-        :cache="routeCache"
+        v-slot="{ Component }"
+        :type="isTabBar ? 'tabBar' : ''"
       >
-        <RouterView :type="isTabBar ? 'tabBar' : ''" :key="routeKey" />
-      </KeepAlive>
+        <KeepAlive match-by="key" :cache="routeCache">
+          <component :is="Component" :key="routeKey" />
+        </KeepAlive>
+      </RouterView>
       <component v-else-if="!hasPages" :is="firstPageComponent" />
     </template>
     <TabBar v-if="hasTabBar" v-show="showTabBar" />
