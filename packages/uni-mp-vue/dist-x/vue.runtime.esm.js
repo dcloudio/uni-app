@@ -1,4 +1,4 @@
-import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, createUniDOMStringMap, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
+import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, createUniDOMStringMap, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass, VIRTUAL_HOST_ID } from '@dcloudio/uni-shared';
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -6823,7 +6823,7 @@ function hasIdProp(_ctx) {
         'id' in _ctx.$.propsOptions[0]);
 }
 function getVirtualHostId(_ctx) {
-    return _ctx.virtualHostId;
+    return _ctx[VIRTUAL_HOST_ID];
 }
 function hasVirtualHostId(_ctx) {
     return !!getVirtualHostId(_ctx);

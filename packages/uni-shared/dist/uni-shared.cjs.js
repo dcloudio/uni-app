@@ -507,10 +507,17 @@ const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 // mergeVirtualHostAttributes
-const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
-const VIRTUAL_HOST_CLASS = 'virtualHostClass';
-const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
-const VIRTUAL_HOST_ID = 'virtualHostId';
+/**
+ * 微信纯数据字段Bug
+ * 字母顺序较纯数据字段靠后的字段传入undefined会触发告警
+ * uni-app存在一个纯数据字段uP（后续再看要不要把uP调整成zz开头）
+ * Setting data field "virtualHostStyle" to undefined is invalid.
+ * 现在用a替换virtualHost开头的字段，避免触发微信纯数据字段告警
+ */
+const VIRTUAL_HOST_STYLE = 'ahs';
+const VIRTUAL_HOST_CLASS = 'ahc';
+const VIRTUAL_HOST_HIDDEN = 'ahh';
+const VIRTUAL_HOST_ID = 'ahid';
 // mini program css variables
 const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h';
 const UNI_SAFE_AREA_INSET_BOTTOM = 'u_s_a_i_b';
@@ -2594,8 +2601,11 @@ const UVUE_VAPOR_APP_EASYCOMS = [
 const UVUE_VAPOR_WEB_EASYCOMS = [
     'checkbox',
     'checkbox-group',
+    'flow-item',
     'form',
     'label',
+    'list-item',
+    'list-view',
     'loading',
     'match-media',
     'navigator',
@@ -2607,9 +2617,12 @@ const UVUE_VAPOR_WEB_EASYCOMS = [
     'radio',
     'radio-group',
     'slider',
+    'sticky-header',
+    'sticky-section',
     'swiper',
     'swiper-item',
-    'switch'
+    'switch',
+    'waterflow'
 ];
 
 const APP_NATIVE_TAGS = [
