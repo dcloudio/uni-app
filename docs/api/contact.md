@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.addPhoneContact(options) @addphonecontact
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-addPhoneContact
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-addPhoneContact
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-addPhoneContact
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-addPhoneContact
 
 :::
 

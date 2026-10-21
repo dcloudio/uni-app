@@ -2,6 +2,12 @@
 
 ::: sourceCode
 ## checkbox-group
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/checkbox-group
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/checkbox-group
+
 :::
 
 > 组件类型：UniCheckboxGroupElement 

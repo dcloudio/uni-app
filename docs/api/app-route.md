@@ -101,6 +101,12 @@ onBeforeAppRoute -> onShow -> onAppRoute
 
 ::: sourceCode
 ## uni.onAppRoute(callback) @onapproute
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-route
+
 :::
 
 监听应用路由成功后的事件。
@@ -201,6 +207,12 @@ uni.offAppRoute(appRouteCallback)
 
 ::: sourceCode
 ## uni.offAppRoute(callback?) @offapproute
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-route
+
 :::
 
 取消监听应用路由事件。不传 callback 时移除全部监听器。
@@ -307,6 +319,12 @@ uni.offAppRoute()
 
 ::: sourceCode
 ## uni.onBeforeAppRoute(callback) @onbeforeapproute
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-route
+
 :::
 
 监听应用路由发生前的事件。
@@ -406,6 +424,12 @@ onLaunch(() => {
 
 ::: sourceCode
 ## uni.offBeforeAppRoute(callback?) @offbeforeapproute
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-route
+
 :::
 
 取消监听应用路由前置事件。不传 callback 时移除全部监听器。
@@ -503,6 +527,12 @@ uni.offBeforeAppRoute()
 
 ::: sourceCode
 ## uni.rewriteRoute(options) @rewriteroute
+
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-route
+
 :::
 
 在应用路由前置事件回调中重写当前路由。

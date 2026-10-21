@@ -2,6 +2,12 @@
 
 ::: sourceCode
 ## textarea
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/textarea
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/textarea
+
 :::
 
 > 组件类型：[UniTextareaElement](/api/dom/unitextareaelement.md) 
