@@ -1,10 +1,10 @@
 ::: sourceCode
 ## loading
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-loading/components/loading
+> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-loading/components/loading
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-loading/components/loading
+> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-loading/components/loading
 
 :::
 

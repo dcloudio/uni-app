@@ -170,6 +170,10 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
         age: 11
       }
 
+	    let objAs = {
+	      age: 23
+	    } as UTSJSONObject
+
       let ret1 = UTSJSONObject.keys(obj).length
       console.log(ret1) //2
 ```

@@ -4,12 +4,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 
 ::: sourceCode
 ## uni-icons
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-icons/components/uni-icons
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-icons/components/uni-icons
-
 :::
 
 
