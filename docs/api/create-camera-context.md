@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.createCameraContext() @createcameracontext
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-camera
+> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-camera
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-camera
+> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-camera
 
 :::
 

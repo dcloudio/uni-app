@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.onNetworkStatusChange(listener) @onnetworkstatuschange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getNetworkType
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getNetworkType
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getNetworkType
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getNetworkType
 
 :::
 
@@ -68,10 +68,10 @@
 ::: sourceCode
 ## uni.offNetworkStatusChange(listener?) @offnetworkstatuschange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getNetworkType
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getNetworkType
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getNetworkType
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getNetworkType
 
 :::
 

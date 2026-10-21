@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getWindowInfo() @getwindowinfo
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getSystemInfo
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getSystemInfo
 
 :::
 

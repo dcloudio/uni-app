@@ -31,10 +31,10 @@
 ::: sourceCode
 ## uni.requestVirtualPayment(options) @requestvirtualpayment
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-virtualPayment
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-virtualPayment
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-virtualPayment
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-virtualPayment
 
 :::
 
