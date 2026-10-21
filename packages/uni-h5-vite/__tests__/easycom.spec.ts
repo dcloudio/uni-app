@@ -64,6 +64,24 @@ describe('h5 easycom', () => {
     return (result?.code ?? code) as string
   }
 
+  test('框架构建未初始化项目环境时，显式启用 Vapor 组件解析', () => {
+    delete process.env.UNI_APP_X_DOM2
+    const source = 'const n0 = _createAssetComponent("scroll-view")'
+    const plugin = uniEasycomPlugin({ vapor: true }) as any
+    const code = plugin.transform.call(
+      { parse: parseAst },
+      source,
+      `${inputDir}/uni_modules/uni-form/components/picker-view-column/picker-view-column.vue?vue&type=script&setup=true&lang.ts`
+    ).code
+    expect(code).toContain(
+      "import { ScrollView as __syscom_0 } from '@dcloudio/uni-h5';"
+    )
+    expect(code).toContain('__createEasycomComponent(__syscom_0)')
+    expect(code).not.toContain('_createAssetComponent')
+    expect(transform(source)).toBe(source)
+    expect(plugin.enforce).toBeUndefined()
+  })
+
   test('Web Vapor 使用项目内的内置 easycom 组件', () => {
     const code = transform(
       'const n1 = _createAssetComponent("v-uni-button", null, () => n0, true)'

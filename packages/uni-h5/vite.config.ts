@@ -268,6 +268,9 @@ export default defineConfig(async () => {
         ? [
             uniEasycomPlugin({
               exclude: UNI_EASYCOM_EXCLUDE,
+              // 框架中的 lang="uts" 已在前面转为 ts，再由 plugin-vue 编译模板。
+              // 此处显式传入框架模式，不依赖用户项目初始化的 Vapor 环境变量。
+              vapor: isX_VAPOR,
               ...(isX_VAPOR
                 ? {
                     excludeBuiltInComponents: excludedVaporComponents,

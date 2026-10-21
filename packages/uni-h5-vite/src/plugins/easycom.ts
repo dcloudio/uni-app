@@ -71,6 +71,8 @@ const baseComponents = [
 interface UniEasycomPluginOptions {
   include?: FilterPattern
   exclude?: FilterPattern
+  // 框架构建不经过用户项目的环境初始化，需要显式传入编译模式。
+  vapor?: boolean
   // 仅框架构建使用：未接入的组件保留按名解析，不生成缺失的静态导入。
   excludeBuiltInComponents?: string[]
 }
@@ -84,7 +86,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
   const isDevX =
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
-  const isWebVapor = isUniAppXWebVapor()
+  const isWebVapor = options.vapor ?? isUniAppXWebVapor()
   const excludedComponents = new Set(options.excludeBuiltInComponents)
   const isBuiltInComponent = (name: string) => {
     name = name.replace(COMPONENT_PREFIX, '')
