@@ -97,10 +97,17 @@ export const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService'
 export const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod'
 
 // mergeVirtualHostAttributes
-export const VIRTUAL_HOST_STYLE = 'virtualHostStyle'
-export const VIRTUAL_HOST_CLASS = 'virtualHostClass'
-export const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden'
-export const VIRTUAL_HOST_ID = 'virtualHostId'
+/**
+ * 微信纯数据字段Bug
+ * 字母顺序较纯数据字段靠后的字段传入undefined会触发告警
+ * uni-app存在一个纯数据字段uP（后续再看要不要把uP调整成zz开头）
+ * Setting data field "virtualHostStyle" to undefined is invalid.
+ * 现在用a替换virtualHost开头的字段，避免触发微信纯数据字段告警
+ */
+export const VIRTUAL_HOST_STYLE = 'ahs'
+export const VIRTUAL_HOST_CLASS = 'ahc'
+export const VIRTUAL_HOST_HIDDEN = 'ahh'
+export const VIRTUAL_HOST_ID = 'ahid'
 
 // mini program css variables
 export const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h'
