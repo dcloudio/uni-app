@@ -133,8 +133,10 @@ function realIsH5CustomElement(tag: string) {
 
 let prePlugin: any
 if (isX) {
-  // 仅给vue,uts.ts增加条件编译
-  prePlugin = uniPrePlugin({} as any, { include: ['**/*.vue', '**/*.uts.ts'] })
+  // 仅给 vue、uni-ext-api 下的 ts 以及 uts.ts 增加条件编译
+  prePlugin = uniPrePlugin({} as any, {
+    include: ['**/*.vue', '**/uni-ext-api/uni_modules/**/*.ts', '**/*.uts.ts'],
+  })
   prePlugin.enforce = 'pre'
 }
 const autoImportOptions = initAutoImportOptions('web', {})
