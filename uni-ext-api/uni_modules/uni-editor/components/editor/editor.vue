@@ -470,7 +470,7 @@
       return
     }
     const syncCallbackId = generateCallbackId()
-    const syncOptions = new UTSJSONObject()
+    const syncOptions: UTSJSONObject = {}
     syncOptions['success'] = (res : UTSJSONObject) => {
       updateFormValue(res['html'] as string | null)
     }
@@ -613,7 +613,7 @@
     }
     const cbId = _cbId ?? generateCallbackId()
     callbackMap.set(cbId, options)
-    const params = new UTSJSONObject()
+    const params: UTSJSONObject = {}
 
     params['id'] = options?.id ?? null
     params['name'] = options?.name ?? null
@@ -777,7 +777,7 @@
         getValue: () => formValue,
         reset: () => {
           updateFormValue('')
-          clear(new UTSJSONObject())
+          clear({})
         }
       })
     }
