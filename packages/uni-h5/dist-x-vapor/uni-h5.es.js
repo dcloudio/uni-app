@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, createAssetComponent, logError, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, createKeyedFragment, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, logError, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -2055,13 +2055,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$h = 0;
+let index$g = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$h++}`;
+  const id2 = vm.id || `context${index$g++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -3008,7 +3008,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -3608,7 +3608,7 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$d,
   emits: ["confirm", ...emit],
@@ -3917,7 +3917,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$c,
   emits: [
@@ -6419,13 +6419,13 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
-let index$f = 0;
+let index$e = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$f++);
+    const callbackId = String(index$e++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -12623,7 +12623,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = withComponentId("b1ddb6c0", () => createComponent$1(unref(__syscom_0$1), {
+            const n39 = withComponentId("b1ddb6c0", () => createComponent$1(unref(__syscom_0$2), {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -12638,7 +12638,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = withComponentId("b1dcfacc", () => createComponent$1(unref(__syscom_0$1), {
+            const n41 = withComponentId("b1dcfacc", () => createComponent$1(unref(__syscom_0$2), {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -14206,7 +14206,7 @@ const props$b = /* @__PURE__ */ extend({}, props$f, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$b,
   emit: [
@@ -14287,7 +14287,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -14356,7 +14356,7 @@ const movableAreaProps = {
 const useMovableAreaChildren = useMovableAreaChildren$1;
 class UniMovableAreaElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -14927,7 +14927,7 @@ function v(a, b) {
 }
 class UniMovableViewElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -15947,7 +15947,7 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
 const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
   props: props$a,
@@ -18347,7 +18347,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     const n4 = next(n3);
     const n5 = next(n4);
     setInsertionState(n7, n6);
-    const n2 = withComponentId("02a52c40", () => createAssetComponent("scroll-view", {
+    const n2 = withComponentId("02a52c40", () => createComponent$1(__syscom_1, {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -21344,7 +21344,7 @@ const props$8 = {
 };
 class UniVideoElement extends UniElement {
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$8,
   emits: [
@@ -21650,11 +21650,11 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let index$8 = 0;
+let index$7 = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
   var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$8++;
+  var callbackName = "__uni_jsonp_callback_" + index$7++;
   var timeout = options.timeout || 3e4;
   var timing;
   function end() {
@@ -23836,7 +23836,7 @@ function useMap(props2, rootRef, emit2) {
 }
 class UniMapElement extends UniElement {
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$1,
   emits: [
@@ -28147,7 +28147,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       setText(x2, normalizeUniText(toDisplayString(unref(confirmText))));
     });
     setInsertionState(n47);
-    withComponentId("fcd3e31a", () => createAssetComponent("picker-view", {
+    withComponentId("fcd3e31a", () => createComponent$1(_sfc_main$h, {
       style: { "flex": "1" },
       onChange: () => handleChange,
       "mask-top-style": () => unref(maskTopStyle),
@@ -29496,7 +29496,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
     onResize(() => {
       getSystemInfo2();
     });
-    const _component_input = __syscom_0$1;
+    const _component_input = __syscom_0$2;
     const _component_loading = _sfc_main$l;
     const _component_scroll_view = __syscom_1;
     const n51 = t7();
@@ -29517,7 +29517,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
       setStyle(n6, mapBoxStyleCom.value);
     });
     setInsertionState(n6, n5);
-    withComponentId("294f91b0", () => createAssetComponent("map", {
+    withComponentId("294f91b0", () => createComponent$1(__syscom_0, {
       class: "uni-choose-location-map",
       id: () => mapId.value,
       latitude: () => latitude.value,
@@ -30314,7 +30314,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       uni.$emit(successEventName.value, JSON.stringify(ret));
       return false;
     });
-    const _component_textarea = __syscom_0;
+    const _component_textarea = __syscom_0$1;
     const _component_scroll_view = __syscom_1;
     const n24 = t4();
     const n23 = child(n24);
@@ -30609,7 +30609,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("337c75dd", () => createAssetComponent("loading", {
+    withComponentId("337c75dd", () => createComponent$1(_sfc_main$l, {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -31929,7 +31929,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
       return false;
     });
     const _component_swiper_item = _sfc_main$a;
-    const n8 = withComponentId("365d9a5d", () => createAssetComponent("swiper", {
+    const n8 = withComponentId("365d9a5d", () => createComponent$1(_sfc_main$b, {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -32097,7 +32097,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
       emit2("previewImageFinish", e2);
     };
     const _component_swiper_item = _sfc_main$a;
-    const n8 = withComponentId("09f35926", () => createAssetComponent("swiper", {
+    const n8 = withComponentId("09f35926", () => createComponent$1(_sfc_main$b, {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -32541,7 +32541,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     const n10 = child(n11);
     const n12 = next(n11);
     setInsertionState(n4, n3);
-    const n0 = withComponentId("1fba92ed", () => createAssetComponent("map", {
+    const n0 = withComponentId("1fba92ed", () => createComponent$1(__syscom_0, {
       class: "uni-open-location-map",
       id: () => unref(mapId),
       latitude: () => unref(latitude),
@@ -32963,24 +32963,24 @@ export {
   index$4 as AdDraw,
   _sfc_main$v as AsyncErrorComponent,
   _sfc_main$w as AsyncLoadingComponent,
-  index$g as Button,
+  index$f as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
   _sfc_main$p as Checkbox,
   _sfc_main$o as CheckboxGroup,
-  index$e as Editor,
+  index$d as Editor,
   _sfc_main$n as Form,
-  index$d as Icon,
-  __syscom_0$1 as Input,
+  index$c as Icon,
+  __syscom_0$2 as Input,
   _sfc_main$m as Label,
   _sfc_main$x as LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
   _sfc_main$l as Loading,
-  index$7 as Map,
+  __syscom_0 as Map,
   _sfc_main$k as MatchMedia,
-  index$c as MovableArea,
-  index$b as MovableView,
+  index$b as MovableArea,
+  index$a as MovableView,
   _sfc_main$j as Navigator,
   _sfc_main$r as PageComponent,
   _sfc_main$q as PageContainer,
@@ -32991,13 +32991,13 @@ export {
   _sfc_main$e as Radio,
   _sfc_main$d as RadioGroup,
   ResizeSensor,
-  index$a as RichText,
+  index$9 as RichText,
   __syscom_1 as ScrollView,
   _sfc_main$c as Slider,
   _sfc_main$b as Swiper,
   _sfc_main$a as SwiperItem,
   _sfc_main$9 as Switch,
-  __syscom_0 as Textarea,
+  __syscom_0$1 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
@@ -33071,7 +33071,7 @@ export {
   UniViewElement as UniViewElementImpl,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$9 as Video,
+  index$8 as Video,
   indexX as WebView,
   __f__,
   addInterceptor,

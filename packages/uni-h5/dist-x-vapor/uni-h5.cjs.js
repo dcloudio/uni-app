@@ -970,13 +970,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$h = 0;
+let index$g = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$h++}`;
+  const id2 = vm.id || `context${index$g++}`;
   return `${type}.${id2}`;
 }
 function withWebEvent(fn) {
@@ -1638,7 +1638,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -2469,7 +2469,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: [
@@ -6415,7 +6415,7 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$e, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$a,
   emit: [
@@ -6487,7 +6487,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -6548,7 +6548,7 @@ const movableAreaProps = {
 const useMovableAreaChildren = useMovableAreaChildren$1;
 class UniMovableAreaElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -7101,7 +7101,7 @@ function v(a, b) {
 }
 class UniMovableViewElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -7946,7 +7946,7 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
 const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
   props: props$9,
@@ -8135,7 +8135,7 @@ const props$8 = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: { MODE: 3 },
   props: props$8,
@@ -9730,7 +9730,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n3);
     const n5 = Vue.next(n4);
     Vue.setInsertionState(n7, n6);
-    const n2 = Vue.withComponentId("02a52c40", () => Vue.createAssetComponent("scroll-view", {
+    const n2 = Vue.withComponentId("02a52c40", () => Vue.createComponent(__syscom_0, {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -14802,14 +14802,14 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$m;
 exports.AsyncLoadingComponent = _sfc_main$n;
-exports.Button = index$g;
+exports.Button = index$f;
 exports.Camera = index$3;
 exports.Canvas = indexX$1;
 exports.Checkbox = _sfc_main$g;
 exports.CheckboxGroup = _sfc_main$f;
-exports.Editor = index$e;
+exports.Editor = index$d;
 exports.Form = _sfc_main$e;
-exports.Icon = index$d;
+exports.Icon = index$c;
 exports.Input = Input;
 exports.Label = _sfc_main$d;
 exports.LayoutComponent = _sfc_main$o;
@@ -14818,8 +14818,8 @@ exports.LivePusher = index$1;
 exports.Loading = _sfc_main$c;
 exports.Map = index$7;
 exports.MatchMedia = _sfc_main$b;
-exports.MovableArea = index$c;
-exports.MovableView = index$b;
+exports.MovableArea = index$b;
+exports.MovableView = index$a;
 exports.Navigator = _sfc_main$a;
 exports.PageComponent = _sfc_main$i;
 exports.PageContainer = _sfc_main$h;
@@ -14830,13 +14830,13 @@ exports.Progress = _sfc_main$6;
 exports.Radio = _sfc_main$5;
 exports.RadioGroup = _sfc_main$4;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$a;
-exports.ScrollView = index$9;
+exports.RichText = index$9;
+exports.ScrollView = __syscom_0;
 exports.Slider = _sfc_main$3;
 exports.Swiper = _sfc_main$2;
 exports.SwiperItem = _sfc_main$1;
 exports.Switch = _sfc_main;
-exports.Textarea = index$f;
+exports.Textarea = index$e;
 exports.UniButtonElement = UniButtonElement;
 exports.UniButtonElementImpl = UniButtonElement;
 exports.UniCanvasElement = UniCanvasElement;
