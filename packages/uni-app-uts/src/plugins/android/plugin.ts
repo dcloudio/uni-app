@@ -284,7 +284,12 @@ export function uniAppPlugin(): UniVitePlugin {
         if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
           if (uniXKotlinCompiler) {
             await uniXKotlinCompiler.addRootFile(
-              path.join(tscOutputDir, entryFileName + '.ts')
+              path.join(
+                tscOutputDir,
+                entryFileName.endsWith('.ts')
+                  ? entryFileName
+                  : `${entryFileName}.ts`
+              )
             )
             await uniXKotlinCompiler.close()
             const res = await compileApp(
@@ -323,7 +328,10 @@ export function uniAppPlugin(): UniVitePlugin {
       if (uniXKotlinCompiler) {
         // 如果 main.uts.ts 没有被添加到 uniXKotlinCompiler 中，则添加
         // 有可能首次编译失败，并没有走到这里，二次编译导致了changedFiles有内容
-        const mainFile = path.join(tscOutputDir, entryFileName + '.ts')
+        const mainFile = path.join(
+          tscOutputDir,
+          entryFileName.endsWith('.ts') ? entryFileName : `${entryFileName}.ts`
+        )
         if (!uniXKotlinCompiler.hasRootFile(mainFile)) {
           await uniXKotlinCompiler.addRootFile(mainFile)
         }
