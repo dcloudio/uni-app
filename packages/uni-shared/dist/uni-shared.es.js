@@ -508,7 +508,7 @@ const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 /**
  * 微信纯数据字段Bug
  * 字母顺序较纯数据字段靠后的字段传入undefined会触发告警
- * uni-app存在一个纯数据字段uP（后续再看要不要把uP调整成zz开头）
+ * uni-app存在一个纯数据字段uP（后续再看要不要把uP调整成zz或者_开头）
  * Setting data field "virtualHostStyle" to undefined is invalid.
  * 现在用a替换virtualHost开头的字段，避免触发微信纯数据字段告警
  */
