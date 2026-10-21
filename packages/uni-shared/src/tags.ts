@@ -178,6 +178,8 @@ export const UVUE_WEB_BUILT_IN_TAGS = /*#__PURE__*/ [
   'cloud-db-element',
   'loading-element',
   'loading',
+  'flow-item',
+  'waterflow',
 ].map((tag) => 'uni-' + tag)
 
 export const UVUE_MP_BUILT_IN_TAGS = /*#__PURE__*/ [
