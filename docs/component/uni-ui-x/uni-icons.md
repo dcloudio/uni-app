@@ -53,57 +53,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 </style>
 ```
 
-## 图标列表
-
-`type` 共支持 161 个取值：
-
-```
-arrow-down              arrow-left              arrow-right             arrow-up
-auth                    auth-filled             back                    bars
-calendar                calendar-filled         camera                  camera-filled
-cart                    cart-filled             chat                    chat-filled
-chatboxes               chatboxes-filled        chatbubble              chatbubble-filled
-checkbox                checkbox-filled         checkmarkempty          circle
-circle-filled           clear                   close                   closeempty
-cloud-download          cloud-download-filled   cloud-upload            cloud-upload-filled
-color                   color-filled            compose                 contact
-contact-filled          down                    bottom                  download
-download-filled         email                   email-filled            eye
-eye-filled              eye-slash               eye-slash-filled        fire
-fire-filled             flag                    flag-filled             folder-add
-folder-add-filled       font                    forward                 gear
-gear-filled             gift                    gift-filled             hand-down
-hand-down-filled        hand-up                 hand-up-filled          headphones
-heart                   heart-filled            help                    help-filled
-home                    home-filled             image                   image-filled
-images                  images-filled           info                    info-filled
-left                    link                    list                    location
-location-filled         locked                  locked-filled           loop
-mail-open               mail-open-filled        map                     map-filled
-map-pin                 map-pin-ellipse         medal                   medal-filled
-mic                     mic-filled              micoff                  micoff-filled
-minus                   minus-filled            more                    more-filled
-navigate                navigate-filled         notification            notification-filled
-paperclip               paperplane              paperplane-filled       person
-person-filled           personadd               personadd-filled        personadd-filled-copy
-phone                   phone-filled            plus                    plus-filled
-plusempty               pulldown                pyq                     qq
-redo                    redo-filled             refresh                 refresh-filled
-refreshempty            reload                  right                   scan
-search                  settings                settings-filled         shop
-shop-filled             smallcircle             smallcircle-filled      sound
-sound-filled            spinner-cycle           staff                   staff-filled
-star                    star-filled             starhalf                trash
-trash-filled            tune                    tune-filled             undo
-undo-filled             up                      top                     upload
-upload-filled           videocam                videocam-filled         vip
-vip-filled              wallet                  wallet-filled           weibo
-weixin
-```
-
-其中 `bottom` 与 `down`、`top` 与 `up` 为同一图标的别名。
-
-
 ## 自定义字体
 
 组件内部通过 `@font-face` 引入 `uniicons.ttf`，如需替换为自定义字体，可自行覆盖根节点的 `font-family`：
@@ -135,7 +84,179 @@ weixin
 ### 属性 
 | 名称 | 类型 | 默认值 | 描述 |
 | :- | :- | :- | :- |
-| type | keyof UTSJSONObject | "" | 图标名称，取值范围见 icons.uts 导出的 IconsType，未传入或取值不存在时不显示图标 |
+| type | IconsType | "" | 图标名称，取值范围见 icons.uts 导出的 IconsType，未传入或取值不存在时不显示图标 |
+
+#### type 的属性描述
+
+| 合法值 |
+| :- |
+| arrow-down |
+| arrow-left |
+| arrow-right |
+| arrow-up |
+| auth |
+| auth-filled |
+| back |
+| bars |
+| calendar |
+| calendar-filled |
+| camera |
+| camera-filled |
+| cart |
+| cart-filled |
+| chat |
+| chat-filled |
+| chatboxes |
+| chatboxes-filled |
+| chatbubble |
+| chatbubble-filled |
+| checkbox |
+| checkbox-filled |
+| checkmarkempty |
+| circle |
+| circle-filled |
+| clear |
+| close |
+| closeempty |
+| cloud-download |
+| cloud-download-filled |
+| cloud-upload |
+| cloud-upload-filled |
+| color |
+| color-filled |
+| compose |
+| contact |
+| contact-filled |
+| down |
+| bottom |
+| download |
+| download-filled |
+| email |
+| email-filled |
+| eye |
+| eye-filled |
+| eye-slash |
+| eye-slash-filled |
+| fire |
+| fire-filled |
+| flag |
+| flag-filled |
+| folder-add |
+| folder-add-filled |
+| font |
+| forward |
+| gear |
+| gear-filled |
+| gift |
+| gift-filled |
+| hand-down |
+| hand-down-filled |
+| hand-up |
+| hand-up-filled |
+| headphones |
+| heart |
+| heart-filled |
+| help |
+| help-filled |
+| home |
+| home-filled |
+| image |
+| image-filled |
+| images |
+| images-filled |
+| info |
+| info-filled |
+| left |
+| link |
+| list |
+| location |
+| location-filled |
+| locked |
+| locked-filled |
+| loop |
+| mail-open |
+| mail-open-filled |
+| map |
+| map-filled |
+| map-pin |
+| map-pin-ellipse |
+| medal |
+| medal-filled |
+| mic |
+| mic-filled |
+| micoff |
+| micoff-filled |
+| minus |
+| minus-filled |
+| more |
+| more-filled |
+| navigate |
+| navigate-filled |
+| notification |
+| notification-filled |
+| paperclip |
+| paperplane |
+| paperplane-filled |
+| person |
+| person-filled |
+| personadd |
+| personadd-filled |
+| personadd-filled-copy |
+| phone |
+| phone-filled |
+| plus |
+| plus-filled |
+| plusempty |
+| pulldown |
+| pyq |
+| qq |
+| redo |
+| redo-filled |
+| refresh |
+| refresh-filled |
+| refreshempty |
+| reload |
+| right |
+| scan |
+| search |
+| settings |
+| settings-filled |
+| shop |
+| shop-filled |
+| skip-back-fill |
+| skip-back-line |
+| skip-forward-fill |
+| skip-forward-line |
+| skip-left-line |
+| skip-right-line |
+| smallcircle |
+| smallcircle-filled |
+| sound |
+| sound-filled |
+| spinner-cycle |
+| staff |
+| staff-filled |
+| star |
+| star-filled |
+| starhalf |
+| trash |
+| trash-filled |
+| tune |
+| tune-filled |
+| undo |
+| undo-filled |
+| up |
+| top |
+| upload |
+| upload-filled |
+| videocam |
+| videocam-filled |
+| vip |
+| vip-filled |
+| wallet |
+| wallet-filled |
+| weibo |
+| weixin |
 
 <!-- UTSCOMJSON.uni-icons.fileFormates -->
 
