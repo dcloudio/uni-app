@@ -11,6 +11,7 @@
 | class | string(string.ClassString) \| UTSJSONObject \| Array\<string(string.ClassString) \| UTSJSONObject> | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的样式类，在对应的 css 中定义的样式类 |
 | ref | string \| Function | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | vue中组件的唯一标识，用来给子组件注册引用信息，[详见](https://doc.dcloud.net.cn/uni-app-x/vue/built-in.html#ref) |
 | data-* | any | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 自定义属性，组件上触发的事件时，会发送给事件处理函数 |
+| flatten | boolean | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 拍平元素，仅蒸汽（vapor）模式的[view](https://doc.dcloud.net.cn/uni-app-x/component/view.html)、[text](https://doc.dcloud.net.cn/uni-app-x/component/text.html)、[image](https://doc.dcloud.net.cn/uni-app-x/component/image.html) 组件支持 |
 | android-* | any | Web: x; Android: 3.9; iOS: x; HarmonyOS: x | App-Android平台专有属性，详见[App-Android平台专有属性](https://doc.dcloud.net.cn/uni-app-x/component/common.html#attribute-android)章节 |
 
 
