@@ -17,7 +17,7 @@ export interface DramaInfo {
   rawInfo: Record<string, any>
 }
 
-/** getList / getInfo 的返回结构。 */
+/** 列表类接口的返回结构。 */
 export interface DramaListResult {
   dramas: DramaInfo[]
   extra: Record<string, any>
@@ -40,6 +40,15 @@ export interface DramaNativeEvent {
   message: string
 }
 
+/** 分页短剧列表查询参数。 */
+export interface DramaPagedOptions {
+  page?: number
+  pageSize?: number
+  success?: (result: DramaListResult) => void
+  fail?: (error: DramaError) => void
+  complete?: (result: DramaListResult | DramaError) => void
+}
+
 /** 短剧列表查询参数。 */
 export interface DramaListOptions {
   page?: number
@@ -48,6 +57,16 @@ export interface DramaListOptions {
   success?: (result: DramaListResult) => void
   fail?: (error: DramaError) => void
   complete?: (result: DramaListResult | DramaError) => void
+}
+
+/** 短剧搜索参数，searchWord 也可使用兼容别名传入。 */
+export interface DramaSearchOptions extends DramaPagedOptions {
+  searchWord?: string
+  isFuzzy?: boolean
+  keyword?: string
+  keyWord?: string
+  query?: string
+  fuzzy?: boolean
 }
 
 /** 短剧信息查询参数，dramaId 与 dramaIds 二选一。 */
@@ -97,6 +116,30 @@ export interface DramaAdContext {
    */
   getList(
     options?: DramaListOptions,
+    successCallback?: DramaSuccessCallback<DramaListResult>,
+    failCallback?: DramaFailCallback
+  ): Promise<DramaListResult>
+  /** 获取推荐短剧列表，支持 Promise 与回调双模。 */
+  getRecommendedList(
+    options?: DramaPagedOptions,
+    successCallback?: DramaSuccessCallback<DramaListResult>,
+    failCallback?: DramaFailCallback
+  ): Promise<DramaListResult>
+  /** 获取用户收藏短剧列表，支持 Promise 与回调双模。 */
+  getCollectionList(
+    options?: DramaPagedOptions,
+    successCallback?: DramaSuccessCallback<DramaListResult>,
+    failCallback?: DramaFailCallback
+  ): Promise<DramaListResult>
+  /** 获取用户观看记录列表，支持 Promise 与回调双模。 */
+  getHistoryList(
+    options?: DramaPagedOptions,
+    successCallback?: DramaSuccessCallback<DramaListResult>,
+    failCallback?: DramaFailCallback
+  ): Promise<DramaListResult>
+  /** 搜索短剧，支持 Promise 与回调双模。 */
+  search(
+    options?: DramaSearchOptions,
     successCallback?: DramaSuccessCallback<DramaListResult>,
     failCallback?: DramaFailCallback
   ): Promise<DramaListResult>
