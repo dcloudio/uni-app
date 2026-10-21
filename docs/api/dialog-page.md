@@ -29,6 +29,10 @@ dialogPage和主page的区别：
 - 在web平台，dialogPage显示时，不影响URL的变化。
 - dialogPage默认没有窗体动画。如果是半屏内容，建议在页面内通过css或uts操作页面元素进行动画，灵活度更高。如果是全屏界面，可以使用窗体动画，但没有popin这种与上一个页面的联动动画。
 
+pages.json 配置注意事项：
+- dialogPage 没有导航栏，因此其 `style` 中的 `navigationBar` 相关配置无效。
+- dialogPage 的页面方向跟随所属的主页面（parentPage），因此其 `style.pageOrientation` 配置无效。
+
 dialogPage的绑定：
 - dialogPage需绑定在某个主页面上，即parentPage。parentPage页面关闭时，自动销毁相关dialogPage。
 - 在app的onLaunch调用openDialogPage，绑定到首页。
