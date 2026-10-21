@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getClipboardData(options) @getclipboarddata
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-clipboard
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-clipboard
 
 :::
 
@@ -82,10 +82,10 @@
 ::: sourceCode
 ## uni.setClipboardData(options) @setclipboarddata
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-clipboard
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-clipboard
 
 :::
 

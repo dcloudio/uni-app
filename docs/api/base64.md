@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.base64ToArrayBuffer(base64) @base64toarraybuffer
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-base64ToArrayBuffer
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-base64ToArrayBuffer
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-base64ToArrayBuffer
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-base64ToArrayBuffer
 
 :::
 
@@ -55,10 +55,10 @@
 ::: sourceCode
 ## uni.arrayBufferToBase64(arrayBuffer) @arraybuffertobase64
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-arrayBufferToBase64
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-arrayBufferToBase64
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-arrayBufferToBase64
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-arrayBufferToBase64
 
 :::
 

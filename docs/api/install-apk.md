@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.installApk(options) @installapk
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-installApk
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-installApk
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-installApk
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-installApk
 
 :::
 

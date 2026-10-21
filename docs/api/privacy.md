@@ -16,10 +16,10 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 ::: sourceCode
 ## uni.getPrivacySetting(options) @getprivacysetting
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-privacy
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-privacy
 
 :::
 
@@ -77,10 +77,10 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 ::: sourceCode
 ## uni.resetPrivacyAuthorization() @resetprivacyauthorization
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-privacy
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-privacy
 
 :::
 
@@ -120,10 +120,10 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 ::: sourceCode
 ## uni.onPrivacyAuthorizationChange(callback) @onprivacyauthorizationchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-privacy
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-privacy
 
 :::
 
@@ -178,10 +178,10 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 ::: sourceCode
 ## uni.offPrivacyAuthorizationChange(id) @offprivacyauthorizationchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-privacy
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-privacy
 
 :::
 

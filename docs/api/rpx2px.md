@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.rpx2px(number) @rpx2px
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-rpx2px
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-rpx2px
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-rpx2px
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-rpx2px
 
 :::
 

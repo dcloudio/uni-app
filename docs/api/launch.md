@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getLaunchOptionsSync() @getlaunchoptionssync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getLaunchOptionsSync
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getLaunchOptionsSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getLaunchOptionsSync
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getLaunchOptionsSync
 
 :::
 
@@ -176,10 +176,10 @@
 ::: sourceCode
 ## uni.getEnterOptionsSync() @getenteroptionssync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getEnterOptionsSync
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getEnterOptionsSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getEnterOptionsSync
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getEnterOptionsSync
 
 :::
 

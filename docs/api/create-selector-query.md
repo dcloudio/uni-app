@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.createSelectorQuery() @createselectorquery
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createSelectorQuery
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-createSelectorQuery
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createSelectorQuery
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-createSelectorQuery
 
 :::
 

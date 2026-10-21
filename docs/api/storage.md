@@ -22,10 +22,10 @@ uni-app的Storage在不同端的实现不同：
 ::: sourceCode
 ## uni.setStorage(options) @setstorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -81,10 +81,10 @@ uni.setStorage函数定义
 ::: sourceCode
 ## uni.setStorageSync(key, data) @setstoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -131,10 +131,10 @@ uni.setStorageSync函数定义
 ::: sourceCode
 ## uni.getStorage(options) @getstorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -205,10 +205,10 @@ getStorageSync的返回值类型为any。因为set的时候任意类型都可以
 ::: sourceCode
 ## uni.getStorageSync(key) @getstoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -272,10 +272,10 @@ getStorageSync的返回值类型为any。因为set的时候任意类型都可以
 ::: sourceCode
 ## uni.getStorageInfo(options) @getstorageinfo
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -337,10 +337,10 @@ uni.getStorageInfo函数定义
 ::: sourceCode
 ## uni.getStorageInfoSync() @getstorageinfosync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -394,10 +394,10 @@ uni.getStorageInfoSync函数定义
 ::: sourceCode
 ## uni.removeStorage(options) @removestorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -452,10 +452,10 @@ uni.removeStorage函数定义
 ::: sourceCode
 ## uni.removeStorageSync(key) @removestoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -501,10 +501,10 @@ uni.removeStorageSync函数定义
 ::: sourceCode
 ## uni.clearStorage(option?) @clearstorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
@@ -558,10 +558,10 @@ uni.clearStorage函数定义
 ::: sourceCode
 ## uni.clearStorageSync() @clearstoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-storage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-storage
 
 :::
 
