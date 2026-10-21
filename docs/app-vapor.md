@@ -507,46 +507,7 @@ ninja: error: failed recompaction: Permission denied。
     * 支持3D轮播
     * swiper-item的position属性的值固定为absolute
     * swiper默认高度为150px。如需根据内容高度撑开，可使用auto-height属性。
-- 新增：view、text、image这3个组件的flatten拍平属性
-
-  拍平即不创建独立元素，而是绘制在父上。在审查元素边界时无法看到红框。
-
-  `<view flatten></view>`
-
-  该属性为初始化属性，不支持动态修改。
-
-  被拍平的元素存在一些限制，因为本质上是把这拍平元素画在了它的父级上。限制具体如下：
-  * 拍平的元素无法支持事件（如click、touch）
-  * 拍平的元素不支持截图API：takeSnapshot
-  * 拍平时如下css不支持：
-    + 不支持 [z-index](css/z-index.md)
-    + 不支持 [background-image](css/background-image.md)、[background-clip](css/background-clip.md)
-    + 不支持 [pointer-events](css/pointer-events.md)
-    + [box-shadow](css/box-shadow.md) 不支持设置 inset 及 spreadRadius
-    + [display](css/display.md) 为 fixed 时显示存在缺陷，无法覆盖其它非 fixed 的元素
-    + [transition](css/transform.md) 动画不支持渲染相关（如background-color）的样式
-  * image组件拍平后无法播放动画，gif、webp动画仅显示第一帧
-  * view组件拍平后css属性transform、overflow、display、opacity存在缺陷，如果view存在子元素，这些样式不会对非拍平的子元素产生效果
-  * css属性[visibility](css/visibility.md)存在差异
-    + app-android平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的子元素默认仍然会显示，子元素的显示状态由其自身的visibility决定
-    + app-ios平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的非拍平子元素默认仍然会显示，非拍平子元素的显示状态由其自身的visibility决定，而拍平子元素会跟随此view不可见
-    + app-harmony平台visibility暂不支持拍平
-
-  注意：当自定义组件的单根节点是（view、text、image）时，该自定义组件会自动支持flatten属性，并将其传递给它的单根节点，如果在不符合要求的自定义组件上使用flatten属性，则会被自动忽略。
-
-#### 拍平（flatten）在鸿蒙平台注意事项
-支持 flatten属性的组件（如 View、Text、Image）在逻辑上均可设置为 true 以进行“拍平”，但实际性能优化效果需满足以下条件：
-`仅当存在至少两个相邻元素同时设置为拍平时，才能提升性能，否则可能导致性能下降。`
-
-相邻元素包括：
-- 兄弟节点
-  不要求直接紧挨，例如父元素 P 下有 C1、C2、C3 三个子元素，只要其中任意两个或以上设置为拍平，即可带来性能提升。
-- 父子节点
-  要求直接紧邻，例如 P → C → G 三层结构中：
-  + 对 P 和 C、C 和 G，或 P、C、G 同时拍平，可优化性能。
-  + 若仅对 P 和 G 拍平（中间隔了 C），则无法优化。
-- 混合情况
-  只要存在至少两个相邻节点（父子或兄弟）同时拍平，即可获得性能优化。
+- 新增：view、text、image这3个组件的[flatten](component/common.md#flatten)拍平属性
 
 
 ### Element API
