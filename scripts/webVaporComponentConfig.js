@@ -51,11 +51,15 @@ function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
       }
       const source = path.posix.join(moduleName, fileName.replace(/\\/g, '/'))
       const componentDir = path.dirname(path.resolve(moduleDir, fileName))
+      // 保持 global/index/element 的查找顺序，同名模块优先使用标准 TS 文件。
       const elementFile = [
+        'global.ts',
         'global.uts',
         'global.uts.ts',
+        'index.ts',
         'index.uts',
         'index.uts.ts',
+        'element.ts',
         'element.uts',
         'element.uts.ts',
       ].find((file) => fs.existsSync(path.resolve(componentDir, file)))

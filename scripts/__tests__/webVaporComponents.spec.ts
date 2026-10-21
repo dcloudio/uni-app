@@ -113,26 +113,58 @@ describe('Web Vapor 组件生成', () => {
     }
   })
 
-  test.each(['element.uts', 'element.uts.ts'])(
-    '统一识别组件元素文件 %s',
-    (elementFile) => {
-      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-element-'))
+  test.each([
+    'global.ts',
+    'global.uts',
+    'global.uts.ts',
+    'index.ts',
+    'index.uts',
+    'index.uts.ts',
+    'element.ts',
+    'element.uts',
+    'element.uts.ts',
+  ])('统一识别组件元素文件 %s', (elementFile) => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-element-'))
+    try {
+      fs.outputJsonSync(path.join(dir, 'uni-loading/package.json'), {
+        uni_modules: { components: { web: 'dom2' } },
+      })
+      fs.outputFileSync(
+        path.join(dir, 'uni-loading/components/loading/loading.uvue'),
+        '<template />'
+      )
+      fs.outputFileSync(
+        path.join(dir, 'uni-loading/components/loading', elementFile),
+        'export class UniLoadingElement {}'
+      )
+      expect(resolveWebVaporComponents(dir).get('loading')).toEqual({
+        source: 'uni-loading/components/loading/loading.uvue',
+        elementSource: `uni-loading/components/loading/${elementFile}`,
+      })
+    } finally {
+      fs.removeSync(dir)
+    }
+  })
+
+  test.each(['global', 'index', 'element'])(
+    '%s 同名文件优先选择标准 TS',
+    (name) => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-ts-'))
       try {
         fs.outputJsonSync(path.join(dir, 'uni-loading/package.json'), {
           uni_modules: { components: { web: 'dom2' } },
         })
+        const componentDir = path.join(dir, 'uni-loading/components/loading')
         fs.outputFileSync(
-          path.join(dir, 'uni-loading/components/loading/loading.uvue'),
+          path.join(componentDir, 'loading.uvue'),
           '<template />'
         )
-        fs.outputFileSync(
-          path.join(dir, 'uni-loading/components/loading', elementFile),
-          'export class UniLoadingElement {}'
-        )
-        expect(resolveWebVaporComponents(dir).get('loading')).toEqual({
-          source: 'uni-loading/components/loading/loading.uvue',
-          elementSource: `uni-loading/components/loading/${elementFile}`,
-        })
+        for (const ext of ['.ts', '.uts', '.uts.ts']) {
+          fs.outputFileSync(path.join(componentDir, name + ext), '')
+        }
+        expect(
+          resolveWebVaporComponents(dir).get('loading')?.elementSource
+        ).toBe(`uni-loading/components/loading/${name}.ts`)
       } finally {
         fs.removeSync(dir)
       }
