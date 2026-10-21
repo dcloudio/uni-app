@@ -4,12 +4,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-rate-x
 
 ::: sourceCode
 ## uni-rate
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-rate/components/uni-rate
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-rate/components/uni-rate
-
 :::
 
 评分组件

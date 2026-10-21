@@ -2,12 +2,6 @@
 
 ::: sourceCode
 ## editor
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-editor/components/editor
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-editor/components/editor
-
 :::
 
 富文本编辑器，可以对图片、文字进行编辑。

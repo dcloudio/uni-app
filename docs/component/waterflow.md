@@ -2,12 +2,6 @@
 
 ::: sourceCode
 ## waterflow
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-waterflow/components/waterflow
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-waterflow/components/waterflow
-
 :::
 
 > 组件类型：UniWaterFlowElement 
@@ -712,12 +706,6 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
 
 ::: sourceCode
 ## flow-item
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-waterflow/components/flow-item
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-waterflow/components/flow-item
-
 :::
 
 > 组件类型：UniFlowItemElement 
