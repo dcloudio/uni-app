@@ -29,7 +29,8 @@ view组件是 uni-app x 最基本的视图容器，它的作用类似于HTML中�
 #### hover-class说明@hover-class
 
 - 为什么使用`hover-class`？使用 css :active伪类来实现点击态，很容易触发，并且滚动或滑动时点击态不会消失，体验较差。小程序平台均给view引入了`hover-class`，考虑到跨端兼容和体验，建议使用 `hover-class` 属性来实现点击态效果。并且App平台目前暂不支持css伪类。
-- 目前仅 `hover-class` 支持透传，`hover-stop-propagation`、`hover-start-time`、`hover-stay-time` 暂不支持透传
+- ios/harmony 暂不支持透传属性 `hover-stop-propagation`、`hover-start-time`、`hover-stay-time`
+- 微信小程序/支付宝小程序 暂不支持透传
 
 
 
