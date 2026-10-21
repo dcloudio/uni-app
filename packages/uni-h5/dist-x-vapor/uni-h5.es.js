@@ -16664,297 +16664,8 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
   2
   /* HookFlags.PAGE */
 );
-class UniPageContainerElement extends UniElement {
-}
-const t0$q = template("<div uni-view class=uni-page-container-overlay>");
-const t1$g = template("<div uni-view>");
-const MAX_SLIDER_DISTANCE = 100;
-const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "page-container",
-    rootElement: {
-      name: "uni-page-container",
-      class: UniPageContainerElement
-    }
-  },
-  __name: "index",
-  props: {
-    show: { type: Boolean, default: false },
-    duration: { default: 300, type: Number },
-    zIndex: { default: 100, type: Number },
-    overlay: { type: Boolean, default: true },
-    round: { type: Boolean, default: false },
-    position: { default: "bottom", type: String },
-    customStyle: { default: "", type: String },
-    overlayStyle: { default: "", type: String },
-    closeOnSlideDown: { type: Boolean, default: false }
-  },
-  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
-  __multiRoot: true,
-  setup(__props, { emit: __emit }) {
-    const props2 = __props;
-    const emits = __emit;
-    const showPageContainer = ref(false);
-    const isAnimating = ref(false);
-    const transitionTimer = ref(null);
-    const isEntered = ref(false);
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchStartTime = 0;
-    let isDragging = false;
-    const translateValue = ref(0);
-    const overlayStyleMap = computed(() => {
-      const styleObj = {
-        "z-index": props2.zIndex,
-        "transition-duration": props2.duration + "ms"
-      };
-      if (isEntered.value) {
-        styleObj["opacity"] = "1";
-        styleObj["pointer-events"] = "auto";
-      }
-      return styleObj;
-    });
-    const innerStyleMap = computed(() => {
-      const styleObj = {
-        "z-index": props2.zIndex + 1,
-        "transition-duration": props2.duration + "ms"
-      };
-      if (translateValue.value != 0 && isDragging) {
-        let transformValue = "";
-        switch (props2.position) {
-          case "bottom":
-          case "top":
-            transformValue = `translateY(${translateValue.value}px)`;
-            break;
-          case "left":
-          case "right":
-            transformValue = `translateX(${translateValue.value}px)`;
-            break;
-        }
-        if (transformValue != "") {
-          styleObj["transform"] = transformValue;
-          styleObj["transition"] = "none";
-        }
-      } else if (translateValue.value != 0 && !isDragging) {
-        styleObj["transition"] = `transform ${props2.duration}ms ease`;
-      }
-      return styleObj;
-    });
-    const popupClasses = computed(() => {
-      const classes2 = [];
-      if (props2.position != null) {
-        classes2.push(`uni-page-container-popup-${props2.position}`);
-      }
-      if (props2.round) {
-        classes2.push("uni-page-container-popup-round");
-      }
-      if (isEntered.value) {
-        classes2.push("uni-page-container-popup-enter");
-      }
-      return classes2;
-    });
-    function clearTransitionTimer() {
-      if (transitionTimer.value != null) {
-        clearTimeout(transitionTimer.value);
-        transitionTimer.value = null;
-      }
-    }
-    function onAnimationEnd(type) {
-      isAnimating.value = false;
-      clearTransitionTimer();
-      if (type == "enter") {
-        emits("afterenter");
-      } else if (type == "leave") {
-        showPageContainer.value = false;
-        emits("afterleave");
-      }
-    }
-    function listenTransitionEnd(type) {
-      clearTransitionTimer();
-      transitionTimer.value = setTimeout(() => {
-        onAnimationEnd(type);
-      }, props2.duration);
-    }
-    function resetDragState() {
-      isDragging = false;
-      translateValue.value = 0;
-    }
-    function openContainer() {
-      emits("beforeenter");
-      showPageContainer.value = true;
-      isEntered.value = false;
-      resetDragState();
-      nextTick(() => {
-        emits("enter");
-        isAnimating.value = true;
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            isEntered.value = true;
-            listenTransitionEnd("enter");
-          });
-        });
-      });
-    }
-    function closeContainer() {
-      if (isAnimating.value) {
-        return;
-      }
-      emits("beforeleave");
-      isAnimating.value = true;
-      nextTick(() => {
-        isEntered.value = false;
-        emits("leave");
-        listenTransitionEnd("leave");
-      });
-    }
-    watch(
-      () => props2.show,
-      (newVal) => {
-        if (newVal && !showPageContainer.value) {
-          openContainer();
-        } else if (!newVal && showPageContainer.value) {
-          closeContainer();
-        }
-      }
-    );
-    function onClickOverlay(event) {
-      if (isAnimating.value) {
-        return;
-      }
-      emits("clickoverlay", event);
-      nextTick(() => {
-        closeContainer();
-      });
-    }
-    function onTouchStart(e2) {
-      if (!props2.closeOnSlideDown) {
-        return;
-      }
-      if (e2.touches.length > 0) {
-        const { clientX, clientY } = e2.touches[0];
-        touchStartX = clientX;
-        touchStartY = clientY;
-        touchStartTime = Date.now();
-        isDragging = false;
-      }
-    }
-    function onTouchMove(e2) {
-      if (!props2.closeOnSlideDown) {
-        e2.preventDefault();
-        e2.stopPropagation();
-        return;
-      }
-      if (e2.touches.length > 0) {
-        const { clientX, clientY } = e2.touches[0];
-        const deltaX = clientX - touchStartX;
-        const deltaY = clientY - touchStartY;
-        let shouldDrag = false;
-        let dragValue = 0;
-        switch (props2.position) {
-          case "bottom":
-            if (deltaY > 0) {
-              shouldDrag = true;
-              dragValue = deltaY;
-            }
-            break;
-          case "top":
-            if (deltaY < 0) {
-              shouldDrag = true;
-              dragValue = deltaY;
-            }
-            break;
-          case "left":
-            if (deltaX < 0) {
-              shouldDrag = true;
-              dragValue = deltaX;
-            }
-            break;
-          case "right":
-            if (deltaX > 0) {
-              shouldDrag = true;
-              dragValue = deltaX;
-            }
-            break;
-        }
-        if (shouldDrag) {
-          isDragging = true;
-          translateValue.value = dragValue;
-          e2.preventDefault();
-          e2.stopPropagation();
-        }
-      }
-    }
-    function onTouchEnd() {
-      if (!props2.closeOnSlideDown) {
-        return;
-      }
-      if (isDragging) {
-        const deltaTime = Date.now() - touchStartTime;
-        const velocity = Math.abs(translateValue.value) / deltaTime;
-        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
-          resetDragState();
-          closeContainer();
-        } else {
-          resetDragState();
-        }
-      }
-    }
-    function onTouchCancel() {
-      if (!props2.closeOnSlideDown) {
-        return;
-      }
-      if (isDragging) {
-        resetDragState();
-      }
-    }
-    function onKeydown(event) {
-      if (showPageContainer.value && (event.key === "Escape" || event.key === "Esc")) {
-        closeContainer();
-      }
-    }
-    onBackPress(() => {
-      if (showPageContainer.value) {
-        closeContainer();
-        return true;
-      }
-      return false;
-    });
-    onMounted(() => {
-      document.addEventListener("keydown", onKeydown);
-      if (props2.show) {
-        openContainer();
-      }
-    });
-    onBeforeUnmount(() => {
-      document.removeEventListener("keydown", onKeydown);
-      clearTransitionTimer();
-    });
-    const n0 = createIf(() => __props.overlay && showPageContainer.value, () => {
-      const n2 = t0$q();
-      on$1(n2, "click", onClickOverlay);
-      on$1(n2, "touchmove", withModifiers(() => {
-      }, ["prevent", "stop"]));
-      renderEffect(() => setStyle(n2, [overlayStyleMap.value, __props.overlayStyle]));
-      return n2;
-    });
-    const n3 = createIf(() => showPageContainer.value, () => {
-      const n6 = t1$g();
-      renderEffect(() => {
-        setClass(n6, ["uni-page-container-popup", popupClasses.value]);
-        setStyle(n6, [innerStyleMap.value, __props.customStyle]);
-      });
-      setInsertionState(n6);
-      createSlot();
-      on$1(n6, "touchstart", onTouchStart);
-      on$1(n6, "touchmove", onTouchMove);
-      on$1(n6, "touchend", onTouchEnd);
-      on$1(n6, "touchcancel", onTouchCancel);
-      return n6;
-    });
-    return [n0, n3];
-  }
-});
+template("<div uni-view class=uni-page-container-overlay>");
+template("<div uni-view>");
 const nativeHasInstance = Function.prototype[Symbol.hasInstance];
 function getUniTagName(value) {
   const el = value;
@@ -17097,11 +16808,11 @@ class UniCheckboxElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 }
-const t0$p = template("<span uni-text> ", 1);
-const t1$f = template("<span uni-text>");
+const t0$q = template("<span uni-text> ", 1);
+const t1$g = template("<span uni-text>");
 const t2$7 = template("<div uni-view class=uni-checkbox><span uni-text> </span>", 1);
 const fontUnicode$1 = "";
-const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -17201,7 +16912,7 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t0$p();
+        const n2 = t0$q();
         const x2 = txt(n2);
         on$1(n2, "click", withModifiers(handleTap, ["stop"]));
         renderEffect(() => {
@@ -17238,7 +16949,7 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => isStringSlot,
           () => {
-            const n8 = t1$f();
+            const n8 = t1$g();
             setInsertionState(n8);
             createSlot(
               "default",
@@ -17267,8 +16978,8 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
 });
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const t0$o = template("<div uni-view>", 1);
-const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
+const t0$p = template("<div uni-view>", 1);
+const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -17376,7 +17087,7 @@ const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
       elementOrderMap.clear();
       elementOrderCounter = 0;
     });
-    const n1 = t0$o();
+    const n1 = t0$p();
     setInsertionState(n1);
     createSlot();
     return n1;
@@ -17384,8 +17095,8 @@ const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
 });
 class UniFormElement extends UniViewElement {
 }
-const t0$n = template("<div uni-view class=uni-form>", 1);
-const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
+const t0$o = template("<div uni-view class=uni-form>", 1);
+const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "form",
     // @ts-ignore
@@ -17451,7 +17162,7 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
     const ctx = { registerField, unregisterField, submit, reset };
     provide(FORM_KEY, ctx);
     __expose({ submit, reset });
-    const n1 = t0$n();
+    const n1 = t0$o();
     setInsertionState(n1);
     createSlot();
     return n1;
@@ -17459,8 +17170,8 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
 });
 class UniLabelElement extends UniViewElement {
 }
-const t0$m = template("<div uni-view>", 1);
-const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
+const t0$n = template("<div uni-view>", 1);
+const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "label",
     // @ts-ignore
@@ -17529,16 +17240,16 @@ const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
         return;
       target.activate(event);
     };
-    const n1 = t0$m();
+    const n1 = t0$n();
     setInsertionState(n1);
     createSlot();
     on$1(n1, "click", handleTap);
     return n1;
   }
 });
-class UniVueElement extends HTMLElement {
-}
-class UniLoadingElement extends UniVueElement {
+let UniVueElement$1 = class UniVueElement extends HTMLElement {
+};
+class UniLoadingElement extends UniVueElement$1 {
 }
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = ref("16px");
@@ -17587,8 +17298,8 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$l = template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
+const t0$m = template("<div data-v-212d40c7 uni-view>", 256);
+const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -17613,7 +17324,7 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
       style: "display: flex;"
     }, null, true);
     setInsertionState(n1);
-    const n0 = t0$l();
+    const n0 = t0$m();
     insert(n0, n1);
     setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
     renderEffect(() => {
@@ -17625,8 +17336,8 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
 });
 class UniMatchMediaElement extends UniViewElement {
 }
-const t0$k = template("<div uni-view>", 1);
-const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
+const t0$l = template("<div uni-view>", 1);
+const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "match-media",
     // @ts-ignore
@@ -17705,7 +17416,7 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
         }
       });
     }
-    const n1 = t0$k();
+    const n1 = t0$l();
     setInsertionState(n1);
     createSlot();
     applyVShow(n1, () => unref(show));
@@ -17714,9 +17425,9 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
 });
 class UniNavigatorElement extends UniViewElement {
 }
-const t0$j = template("<span uni-text>", 1);
-const t1$e = template("<div uni-view>", 1);
-const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
+const t0$k = template("<span uni-text>", 1);
+const t1$f = template("<div uni-view>", 1);
+const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "navigator",
     // @ts-ignore
@@ -17786,7 +17497,7 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => isStringSlot,
       () => {
-        const n3 = t0$j();
+        const n3 = t0$k();
         setInsertionState(n3);
         createSlot(
           "default",
@@ -17799,7 +17510,7 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
         return n3;
       },
       () => {
-        const n6 = t1$e();
+        const n6 = t1$f();
         setInsertionState(n6);
         createSlot();
         on$1(n6, "click", handleTap);
@@ -17809,6 +17520,356 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
     );
     return n0;
+  }
+});
+class UniVueElement2 extends HTMLElement {
+}
+class UniPageContainerElement extends UniVueElement2 {
+}
+const t0$j = template("<div uni-view class=uni-page-container-overlay>");
+const t1$e = template("<div uni-view>");
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
+const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
+  ...{
+    name: "page-container",
+    rootElement: {
+      class: UniPageContainerElement
+    }
+  },
+  __name: "page-container",
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  __multiRoot: true,
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = ref(false);
+    const isAnimating = ref(false);
+    const transitionTimer = ref(null);
+    const isEntered = ref(false);
+    const transitionType = ref(null);
+    let transitionVersion = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = ref(0);
+    const isSlideClosing = ref(false);
+    const isSlideLeaving = ref(false);
+    const overlayStyleMap = computed(() => {
+      const styleMap = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleMap["opacity"] = "1";
+        styleMap["pointer-events"] = "auto";
+      }
+      return styleMap;
+    });
+    const innerStyleMap = computed(() => {
+      const styleMap = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && (isDragging || isSlideClosing.value)) {
+        let transformValue = "";
+        if (isSlideLeaving.value) {
+          switch (props2.position) {
+            case "bottom":
+              transformValue = "translateY(100%)";
+              break;
+            case "top":
+              transformValue = "translateY(-100%)";
+              break;
+            case "left":
+              transformValue = "translateX(-100%)";
+              break;
+            case "right":
+              transformValue = "translateX(100%)";
+              break;
+          }
+        } else {
+          switch (props2.position) {
+            case "bottom":
+            case "top":
+              transformValue = `translateY(${translateValue.value}px)`;
+              break;
+            case "left":
+            case "right":
+              transformValue = `translateX(${translateValue.value}px)`;
+              break;
+          }
+        }
+        if (transformValue != "") {
+          styleMap["transform"] = transformValue;
+          styleMap["transition"] = isDragging ? "none" : `transform ${props2.duration}ms ease`;
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleMap["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleMap;
+    });
+    const popupClasses = computed(() => {
+      const classes2 = [];
+      if (props2.position != null) {
+        classes2.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes2.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes2.push("uni-page-container-popup-enter");
+      }
+      return classes2;
+    });
+    function resetDragState() {
+      isDragging = false;
+      isSlideClosing.value = false;
+      isSlideLeaving.value = false;
+      translateValue.value = 0;
+    }
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function cancelTransition() {
+      transitionVersion++;
+      clearTransitionTimer();
+      isAnimating.value = false;
+      transitionType.value = null;
+    }
+    function onAnimationEnd(type, version) {
+      if (version != transitionVersion || transitionType.value != type) {
+        return;
+      }
+      isAnimating.value = false;
+      clearTransitionTimer();
+      transitionType.value = null;
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        isEntered.value = false;
+        resetDragState();
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type, version) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type, version);
+      }, props2.duration);
+    }
+    function closeContainer() {
+      if (!showPageContainer.value || transitionType.value == "leave") {
+        return;
+      }
+      if (transitionType.value == "enter") {
+        cancelTransition();
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      transitionType.value = "leave";
+      transitionVersion++;
+      const version = transitionVersion;
+      nextTick(() => {
+        if (version != transitionVersion || transitionType.value != "leave") {
+          return;
+        }
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave", version);
+      });
+    }
+    function openContainer() {
+      if (transitionType.value == "enter" && showPageContainer.value) {
+        return;
+      }
+      if (transitionType.value == "leave") {
+        cancelTransition();
+      }
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      isAnimating.value = true;
+      transitionType.value = "enter";
+      transitionVersion++;
+      const version = transitionVersion;
+      resetDragState();
+      nextTick(() => {
+        if (version != transitionVersion || transitionType.value != "enter") {
+          return;
+        }
+        emits("enter");
+        requestAnimationFrame(() => {
+          if (version != transitionVersion || transitionType.value != "enter") {
+            return;
+          }
+          requestAnimationFrame(() => {
+            if (version != transitionVersion || transitionType.value != "enter") {
+              return;
+            }
+            if (!props2.show) {
+              closeContainer();
+              return;
+            }
+            isEntered.value = true;
+            listenTransitionEnd("enter", version);
+          });
+        });
+      });
+    }
+    watch(() => props2.show, (newVal) => {
+      if (newVal && (!showPageContainer.value || transitionType.value == "leave")) {
+        openContainer();
+      } else if (!newVal && showPageContainer.value && transitionType.value != "leave") {
+        closeContainer();
+      }
+    });
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("clickoverlay", event);
+      nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        const shouldClose = Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY;
+        if (shouldClose) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    function onKeydown(event) {
+      if (showPageContainer.value && (event.key == "Escape" || event.key == "Esc")) {
+        closeContainer();
+      }
+    }
+    onMounted(() => {
+      document.addEventListener("keydown", onKeydown);
+      if (props2.show) {
+        openContainer();
+      }
+    });
+    onBeforeUnmount(() => {
+      document.removeEventListener("keydown", onKeydown);
+      transitionVersion++;
+      clearTransitionTimer();
+    });
+    const n0 = createIf(() => __props.overlay && unref(showPageContainer), () => {
+      const n2 = t0$j();
+      on$1(n2, "click", onClickOverlay);
+      on$1(n2, "touchmove", withModifiers(() => {
+      }, ["prevent", "stop"]));
+      renderEffect(() => setStyle(n2, [unref(overlayStyleMap), __props.overlayStyle]));
+      return n2;
+    });
+    const n3 = createIf(() => unref(showPageContainer), () => {
+      const n6 = t1$e();
+      renderEffect(() => {
+        setClass(n6, ["uni-page-container-popup", unref(popupClasses)]);
+        setStyle(n6, [unref(innerStyleMap), __props.customStyle]);
+      });
+      setInsertionState(n6);
+      createSlot();
+      on$1(n6, "touchstart", onTouchStart);
+      on$1(n6, "touchmove", onTouchMove);
+      on$1(n6, "touchend", onTouchEnd);
+      on$1(n6, "touchcancel", onTouchCancel);
+      return n6;
+    });
+    return [n0, n3];
   }
 });
 class UniPickerElement extends UniViewElement {
@@ -29497,7 +29558,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
       getSystemInfo2();
     });
     const _component_input = __syscom_0$2;
-    const _component_loading = _sfc_main$l;
+    const _component_loading = _sfc_main$m;
     const _component_scroll_view = __syscom_1;
     const n51 = t7();
     const n6 = child(n51);
@@ -30609,7 +30670,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("337c75dd", () => createComponent$1(_sfc_main$l, {
+    withComponentId("337c75dd", () => createComponent$1(_sfc_main$m, {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -31638,7 +31699,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
       }, 100);
       e2.stopPropagation();
     };
-    const _component_loading = _sfc_main$l;
+    const _component_loading = _sfc_main$m;
     const n10 = t2$2();
     const n0 = child(n10);
     const n1 = next(n0);
@@ -32966,24 +33027,24 @@ export {
   index$f as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
-  _sfc_main$p as Checkbox,
-  _sfc_main$o as CheckboxGroup,
+  _sfc_main$q as Checkbox,
+  _sfc_main$p as CheckboxGroup,
   index$d as Editor,
-  _sfc_main$n as Form,
+  _sfc_main$o as Form,
   index$c as Icon,
   __syscom_0$2 as Input,
-  _sfc_main$m as Label,
+  _sfc_main$n as Label,
   _sfc_main$x as LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$l as Loading,
+  _sfc_main$m as Loading,
   __syscom_0 as Map,
-  _sfc_main$k as MatchMedia,
+  _sfc_main$l as MatchMedia,
   index$b as MovableArea,
   index$a as MovableView,
-  _sfc_main$j as Navigator,
+  _sfc_main$k as Navigator,
   _sfc_main$r as PageComponent,
-  _sfc_main$q as PageContainer,
+  _sfc_main$j as PageContainer,
   _sfc_main$i as Picker,
   _sfc_main$h as PickerView,
   _sfc_main$g as PickerViewColumn,

@@ -41,6 +41,11 @@ export {
   UniNavigatorElement,
   UniNavigatorElement as UniNavigatorElementImpl,
 } from '@dcloudio/uni-ext-component/uni-navigator/components/navigator/global.uts'
+export { default as PageContainer } from '@dcloudio/uni-ext-component/uni-page-container/components/page-container/page-container.uvue'
+export {
+  UniPageContainerElement,
+  UniPageContainerElement as UniPageContainerElementImpl,
+} from '@dcloudio/uni-ext-component/uni-page-container/components/page-container/global.uts'
 export { default as Picker } from '@dcloudio/uni-ext-component/uni-form/components/picker/picker.uvue'
 export {
   UniPickerElement,

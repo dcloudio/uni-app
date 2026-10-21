@@ -4360,7 +4360,7 @@ const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "TabBar",
     __reserved: true,
@@ -4635,13 +4635,13 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$p = _sfc_main$p.setup;
-_sfc_main$p.setup = (props2, ctx) => {
+const _sfc_setup$q = _sfc_main$q.setup;
+_sfc_main$q.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/tabBar.vue");
-  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
+  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
 };
-const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "Layout",
     __reserved: true,
@@ -5067,7 +5067,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
         _push(`<!--]-->`);
       }
       if (unref(hasTabBar)) {
-        _push(ssrRenderComponent(_sfc_main$p, {
+        _push(ssrRenderComponent(_sfc_main$q, {
           style: unref(showTabBar) ? null : { display: "none" }
         }, null, _parent));
       } else {
@@ -5077,13 +5077,13 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$o = _sfc_main$o.setup;
-_sfc_main$o.setup = (props2, ctx) => {
+const _sfc_setup$p = _sfc_main$p.setup;
+_sfc_main$p.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/index-vapor.vue");
-  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
+  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
 };
-const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -5098,13 +5098,13 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$n = _sfc_main$n.setup;
-_sfc_main$n.setup = (props2, ctx) => {
+const _sfc_setup$o = _sfc_main$o.setup;
+_sfc_main$o.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-loading/asyncLoading.vue");
-  return _sfc_setup$n ? _sfc_setup$n(props2, ctx) : void 0;
+  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
 };
-const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -5122,11 +5122,11 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$m = _sfc_main$m.setup;
-_sfc_main$m.setup = (props2, ctx) => {
+const _sfc_setup$n = _sfc_main$n.setup;
+_sfc_main$n.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-error/asyncError.vue");
-  return _sfc_setup$m ? _sfc_setup$m(props2, ctx) : void 0;
+  return _sfc_setup$n ? _sfc_setup$n(props2, ctx) : void 0;
 };
 let appVm;
 let $uniApp;
@@ -5180,11 +5180,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$o.name)) {
+    app.component(_sfc_main$o.name, _sfc_main$o);
+  }
   if (!app.component(_sfc_main$n.name)) {
     app.component(_sfc_main$n.name, _sfc_main$n);
-  }
-  if (!app.component(_sfc_main$m.name)) {
-    app.component(_sfc_main$m.name, _sfc_main$m);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -5294,7 +5294,7 @@ function setupApp(comp) {
         return isFunction(res) ? EMPTY_OBJ : res;
       };
       comp2.ssrRender = (_ctx, push, parent) => {
-        push(ssrRenderComponent(_sfc_main$o, null, null, parent));
+        push(ssrRenderComponent(_sfc_main$p, null, null, parent));
       };
     }
   });
@@ -5429,7 +5429,7 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -5728,13 +5728,13 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$l = _sfc_main$l.setup;
-_sfc_main$l.setup = (props2, ctx) => {
+const _sfc_setup$m = _sfc_main$m.setup;
+_sfc_main$m.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageHead.vue");
-  return _sfc_setup$l ? _sfc_setup$l(props2, ctx) : void 0;
+  return _sfc_setup$m ? _sfc_setup$m(props2, ctx) : void 0;
 };
-const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   ...{ name: "PageRefresh" },
   __name: "component",
   __ssrInlineRender: true,
@@ -5748,13 +5748,13 @@ const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$k = _sfc_main$k.setup;
-_sfc_main$k.setup = (props2, ctx) => {
+const _sfc_setup$l = _sfc_main$l.setup;
+_sfc_main$l.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/page-refresh/component.vue");
-  return _sfc_setup$k ? _sfc_setup$k(props2, ctx) : void 0;
+  return _sfc_setup$l ? _sfc_setup$l(props2, ctx) : void 0;
 };
-const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -5788,7 +5788,7 @@ const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
     return (_ctx, _push, _parent, _attrs) => {
       _push(`<!--[-->`);
       if (unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh)) {
-        _push(ssrRenderComponent(_sfc_main$k, {
+        _push(ssrRenderComponent(_sfc_main$l, {
           ref_key: "refreshRef",
           ref: refreshRef
         }, null, _parent));
@@ -5810,13 +5810,13 @@ const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$j = _sfc_main$j.setup;
-_sfc_main$j.setup = (props2, ctx) => {
+const _sfc_setup$k = _sfc_main$k.setup;
+_sfc_main$k.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageBody.vue");
-  return _sfc_setup$j ? _sfc_setup$j(props2, ctx) : void 0;
+  return _sfc_setup$k ? _sfc_setup$k(props2, ctx) : void 0;
 };
-const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "Page",
     __reserved: true,
@@ -5926,11 +5926,11 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
         style: pageStyle
       }, _attrs), "uni-page")}>`);
       if (unref(hasNavigationBar) && unref(navigationBar).style !== "custom") {
-        _push(ssrRenderComponent(_sfc_main$l, null, null, _parent));
+        _push(ssrRenderComponent(_sfc_main$m, null, null, _parent));
       } else {
         _push(`<!---->`);
       }
-      _push(ssrRenderComponent(_sfc_main$j, null, {
+      _push(ssrRenderComponent(_sfc_main$k, null, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
             ssrRenderDynamicComponent(_push2, resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, _parent2, _scopeId);
@@ -5955,14 +5955,14 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$i = _sfc_main$i.setup;
-_sfc_main$i.setup = (props2, ctx) => {
+const _sfc_setup$j = _sfc_main$j.setup;
+_sfc_main$j.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/index-vapor.vue");
-  return _sfc_setup$i ? _sfc_setup$i(props2, ctx) : void 0;
+  return _sfc_setup$j ? _sfc_setup$j(props2, ctx) : void 0;
 };
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$i, {
+  return Object.assign({}, _sfc_main$j, {
     __uniPageComponent: pageComponent
   });
 }
@@ -9214,14 +9214,14 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
   2
   /* HookFlags.PAGE */
 );
-class UniPageContainerElement extends UniElement {
-}
-const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
+let UniPageContainerElement$1 = class UniPageContainerElement extends UniElement {
+};
+const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "page-container",
     rootElement: {
       name: "uni-page-container",
-      class: UniPageContainerElement
+      class: UniPageContainerElement$1
     }
   },
   __name: "index",
@@ -9402,11 +9402,11 @@ const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$h = _sfc_main$h.setup;
-_sfc_main$h.setup = (props2, ctx) => {
+const _sfc_setup$i = _sfc_main$i.setup;
+_sfc_main$i.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/page-container/index.vue");
-  return _sfc_setup$h ? _sfc_setup$h(props2, ctx) : void 0;
+  return _sfc_setup$i ? _sfc_setup$i(props2, ctx) : void 0;
 };
 const nativeHasInstance = Function.prototype[Symbol.hasInstance];
 function getUniTagName(value) {
@@ -9496,7 +9496,7 @@ class UniCheckboxElement extends UniViewElement {
   }
 }
 const fontUnicode$1 = "";
-const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -9620,15 +9620,15 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$g = _sfc_main$g.setup;
-_sfc_main$g.setup = (props2, ctx) => {
+const _sfc_setup$h = _sfc_main$h.setup;
+_sfc_main$h.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/checkbox/checkbox.vue");
-  return _sfc_setup$g ? _sfc_setup$g(props2, ctx) : void 0;
+  return _sfc_setup$h ? _sfc_setup$h(props2, ctx) : void 0;
 };
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -9745,15 +9745,15 @@ const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$f = _sfc_main$f.setup;
-_sfc_main$f.setup = (props2, ctx) => {
+const _sfc_setup$g = _sfc_main$g.setup;
+_sfc_main$g.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/checkbox-group/checkbox-group.vue");
-  return _sfc_setup$f ? _sfc_setup$f(props2, ctx) : void 0;
+  return _sfc_setup$g ? _sfc_setup$g(props2, ctx) : void 0;
 };
 class UniFormElement extends UniViewElement {
 }
-const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$f = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "form",
     // @ts-ignore
@@ -9831,15 +9831,15 @@ const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$e = _sfc_main$e.setup;
-_sfc_main$e.setup = (props2, ctx) => {
+const _sfc_setup$f = _sfc_main$f.setup;
+_sfc_main$f.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/form/form.vue");
-  return _sfc_setup$e ? _sfc_setup$e(props2, ctx) : void 0;
+  return _sfc_setup$f ? _sfc_setup$f(props2, ctx) : void 0;
 };
 class UniLabelElement extends UniViewElement {
 }
-const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$e = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "label",
     // @ts-ignore
@@ -9883,15 +9883,15 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$d = _sfc_main$d.setup;
-_sfc_main$d.setup = (props2, ctx) => {
+const _sfc_setup$e = _sfc_main$e.setup;
+_sfc_main$e.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/label/label.vue");
-  return _sfc_setup$d ? _sfc_setup$d(props2, ctx) : void 0;
+  return _sfc_setup$e ? _sfc_setup$e(props2, ctx) : void 0;
 };
-class UniVueElement extends Object {
-}
-class UniLoadingElement extends UniVueElement {
+let UniVueElement$1 = class UniVueElement extends Object {
+};
+class UniLoadingElement extends UniVueElement$1 {
 }
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = ref("16px");
@@ -9940,7 +9940,7 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -9972,15 +9972,15 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$c = _sfc_main$c.setup;
-_sfc_main$c.setup = (props2, ctx) => {
+const _sfc_setup$d = _sfc_main$d.setup;
+_sfc_main$d.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-loading/components/loading/loading.vue");
-  return _sfc_setup$c ? _sfc_setup$c(props2, ctx) : void 0;
+  return _sfc_setup$d ? _sfc_setup$d(props2, ctx) : void 0;
 };
 class UniMatchMediaElement extends UniViewElement {
 }
-const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "match-media",
     // @ts-ignore
@@ -10070,15 +10070,15 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$b = _sfc_main$b.setup;
-_sfc_main$b.setup = (props2, ctx) => {
+const _sfc_setup$c = _sfc_main$c.setup;
+_sfc_main$c.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-match-media/components/match-media/match-media.vue");
-  return _sfc_setup$b ? _sfc_setup$b(props2, ctx) : void 0;
+  return _sfc_setup$c ? _sfc_setup$c(props2, ctx) : void 0;
 };
 class UniNavigatorElement extends UniViewElement {
 }
-const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "navigator",
     // @ts-ignore
@@ -10113,10 +10113,262 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
+const _sfc_setup$b = _sfc_main$b.setup;
+_sfc_main$b.setup = (props2, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-navigator/components/navigator/navigator.vue");
+  return _sfc_setup$b ? _sfc_setup$b(props2, ctx) : void 0;
+};
+class UniVueElement2 extends Object {
+}
+class UniPageContainerElement2 extends UniVueElement2 {
+}
+const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
+  ...{
+    name: "page-container",
+    rootElement: {
+      class: UniPageContainerElement2
+    }
+  },
+  __name: "page-container",
+  __ssrInlineRender: true,
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  __vapor: true,
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = ref(false);
+    const isAnimating = ref(false);
+    const transitionTimer = ref(null);
+    const isEntered = ref(false);
+    const transitionType = ref(null);
+    let transitionVersion = 0;
+    let isDragging = false;
+    const translateValue = ref(0);
+    const isSlideClosing = ref(false);
+    const isSlideLeaving = ref(false);
+    const overlayStyleMap = computed(() => {
+      const styleMap = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleMap["opacity"] = "1";
+        styleMap["pointer-events"] = "auto";
+      }
+      return styleMap;
+    });
+    const innerStyleMap = computed(() => {
+      const styleMap = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && (isDragging || isSlideClosing.value)) {
+        let transformValue = "";
+        if (isSlideLeaving.value) {
+          switch (props2.position) {
+            case "bottom":
+              transformValue = "translateY(100%)";
+              break;
+            case "top":
+              transformValue = "translateY(-100%)";
+              break;
+            case "left":
+              transformValue = "translateX(-100%)";
+              break;
+            case "right":
+              transformValue = "translateX(100%)";
+              break;
+          }
+        } else {
+          switch (props2.position) {
+            case "bottom":
+            case "top":
+              transformValue = `translateY(${translateValue.value}px)`;
+              break;
+            case "left":
+            case "right":
+              transformValue = `translateX(${translateValue.value}px)`;
+              break;
+          }
+        }
+        if (transformValue != "") {
+          styleMap["transform"] = transformValue;
+          styleMap["transition"] = isDragging ? "none" : `transform ${props2.duration}ms ease`;
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleMap["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleMap;
+    });
+    const popupClasses = computed(() => {
+      const classes2 = [];
+      if (props2.position != null) {
+        classes2.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes2.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes2.push("uni-page-container-popup-enter");
+      }
+      return classes2;
+    });
+    function resetDragState() {
+      isDragging = false;
+      isSlideClosing.value = false;
+      isSlideLeaving.value = false;
+      translateValue.value = 0;
+    }
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function cancelTransition() {
+      transitionVersion++;
+      clearTransitionTimer();
+      isAnimating.value = false;
+      transitionType.value = null;
+    }
+    function onAnimationEnd(type, version) {
+      if (version != transitionVersion || transitionType.value != type) {
+        return;
+      }
+      isAnimating.value = false;
+      clearTransitionTimer();
+      transitionType.value = null;
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        isEntered.value = false;
+        resetDragState();
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type, version) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type, version);
+      }, props2.duration);
+    }
+    function closeContainer() {
+      if (!showPageContainer.value || transitionType.value == "leave") {
+        return;
+      }
+      if (transitionType.value == "enter") {
+        cancelTransition();
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      transitionType.value = "leave";
+      transitionVersion++;
+      const version = transitionVersion;
+      nextTick(() => {
+        if (version != transitionVersion || transitionType.value != "leave") {
+          return;
+        }
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave", version);
+      });
+    }
+    function openContainer() {
+      if (transitionType.value == "enter" && showPageContainer.value) {
+        return;
+      }
+      if (transitionType.value == "leave") {
+        cancelTransition();
+      }
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      isAnimating.value = true;
+      transitionType.value = "enter";
+      transitionVersion++;
+      const version = transitionVersion;
+      resetDragState();
+      nextTick(() => {
+        if (version != transitionVersion || transitionType.value != "enter") {
+          return;
+        }
+        emits("enter");
+        requestAnimationFrame(() => {
+          if (version != transitionVersion || transitionType.value != "enter") {
+            return;
+          }
+          requestAnimationFrame(() => {
+            if (version != transitionVersion || transitionType.value != "enter") {
+              return;
+            }
+            if (!props2.show) {
+              closeContainer();
+              return;
+            }
+            isEntered.value = true;
+            listenTransitionEnd("enter", version);
+          });
+        });
+      });
+    }
+    watch(() => props2.show, (newVal) => {
+      if (newVal && (!showPageContainer.value || transitionType.value == "leave")) {
+        openContainer();
+      } else if (!newVal && showPageContainer.value && transitionType.value != "leave") {
+        closeContainer();
+      }
+    });
+    function onKeydown(event) {
+      if (showPageContainer.value && (event.key == "Escape" || event.key == "Esc")) {
+        closeContainer();
+      }
+    }
+    onMounted(() => {
+      document.addEventListener("keydown", onKeydown);
+      if (props2.show) {
+        openContainer();
+      }
+    });
+    onBeforeUnmount(() => {
+      document.removeEventListener("keydown", onKeydown);
+      transitionVersion++;
+      clearTransitionTimer();
+    });
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<!--[-->`);
+      if (__props.overlay && unref(showPageContainer)) {
+        _push(`<div uni-view class="uni-page-container-overlay" style="${ssrRenderStyle([unref(overlayStyleMap), __props.overlayStyle])}"></div>`);
+      } else {
+        _push(`<!---->`);
+      }
+      if (unref(showPageContainer)) {
+        _push(`<div uni-view class="${ssrRenderClass([unref(popupClasses), "uni-page-container-popup"])}" style="${ssrRenderStyle([unref(innerStyleMap), __props.customStyle])}">`);
+        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
+        _push(`</div>`);
+      } else {
+        _push(`<!---->`);
+      }
+      _push(`<!--]-->`);
+    };
+  }
+});
 const _sfc_setup$a = _sfc_main$a.setup;
 _sfc_main$a.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-navigator/components/navigator/navigator.vue");
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-page-container/components/page-container/page-container.vue");
   return _sfc_setup$a ? _sfc_setup$a(props2, ctx) : void 0;
 };
 class UniPickerElement extends UniViewElement {
@@ -16506,29 +16758,29 @@ export {
   index$6 as Ad,
   index$5 as AdContentPage,
   index$4 as AdDraw,
-  _sfc_main$m as AsyncErrorComponent,
-  _sfc_main$n as AsyncLoadingComponent,
+  _sfc_main$n as AsyncErrorComponent,
+  _sfc_main$o as AsyncLoadingComponent,
   index$f as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
-  _sfc_main$g as Checkbox,
-  _sfc_main$f as CheckboxGroup,
+  _sfc_main$h as Checkbox,
+  _sfc_main$g as CheckboxGroup,
   index$d as Editor,
-  _sfc_main$e as Form,
+  _sfc_main$f as Form,
   index$c as Icon,
   Input,
-  _sfc_main$d as Label,
-  _sfc_main$o as LayoutComponent,
+  _sfc_main$e as Label,
+  _sfc_main$p as LayoutComponent,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$c as Loading,
+  _sfc_main$d as Loading,
   index$7 as Map,
-  _sfc_main$b as MatchMedia,
+  _sfc_main$c as MatchMedia,
   index$b as MovableArea,
   index$a as MovableView,
-  _sfc_main$a as Navigator,
-  _sfc_main$i as PageComponent,
-  _sfc_main$h as PageContainer,
+  _sfc_main$b as Navigator,
+  _sfc_main$j as PageComponent,
+  _sfc_main$a as PageContainer,
   _sfc_main$9 as Picker,
   _sfc_main$8 as PickerView,
   _sfc_main$7 as PickerViewColumn,
@@ -16579,8 +16831,8 @@ export {
   UniMovableViewElement as UniMovableViewElementImpl,
   UniNavigatorElement,
   UniNavigatorElement as UniNavigatorElementImpl,
-  UniPageContainerElement,
-  UniPageContainerElement as UniPageContainerElementImpl,
+  UniPageContainerElement2 as UniPageContainerElement,
+  UniPageContainerElement2 as UniPageContainerElementImpl,
   UniPickerElement,
   UniPickerElement as UniPickerElementImpl,
   UniPickerViewColumnElement,

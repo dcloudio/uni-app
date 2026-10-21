@@ -8447,287 +8447,8 @@ const onResize = /* @__PURE__ */ createLifeCycleHook(
   2
   /* HookFlags.PAGE */
 );
-const onBackPress = /* @__PURE__ */ createLifeCycleHook(
-  uniShared.ON_BACK_PRESS,
-  2
-  /* HookFlags.PAGE */
-);
-class UniPageContainerElement extends UniElement {
-}
-const t0$h = Vue.template("<div uni-view class=uni-page-container-overlay>");
-const t1$8 = Vue.template("<div uni-view>");
-const MAX_SLIDER_DISTANCE = 100;
-const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
-  ...{
-    name: "page-container",
-    rootElement: {
-      name: "uni-page-container",
-      class: UniPageContainerElement
-    }
-  },
-  __name: "index",
-  props: {
-    show: { type: Boolean, default: false },
-    duration: { default: 300, type: Number },
-    zIndex: { default: 100, type: Number },
-    overlay: { type: Boolean, default: true },
-    round: { type: Boolean, default: false },
-    position: { default: "bottom", type: String },
-    customStyle: { default: "", type: String },
-    overlayStyle: { default: "", type: String },
-    closeOnSlideDown: { type: Boolean, default: false }
-  },
-  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
-  __multiRoot: true,
-  setup(__props, { emit: __emit }) {
-    const props2 = __props;
-    const emits = __emit;
-    const showPageContainer = Vue.ref(false);
-    const isAnimating = Vue.ref(false);
-    const transitionTimer = Vue.ref(null);
-    const isEntered = Vue.ref(false);
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchStartTime = 0;
-    let isDragging = false;
-    const translateValue = Vue.ref(0);
-    const overlayStyleMap = Vue.computed(() => {
-      const styleObj = {
-        "z-index": props2.zIndex,
-        "transition-duration": props2.duration + "ms"
-      };
-      if (isEntered.value) {
-        styleObj["opacity"] = "1";
-        styleObj["pointer-events"] = "auto";
-      }
-      return styleObj;
-    });
-    const innerStyleMap = Vue.computed(() => {
-      const styleObj = {
-        "z-index": props2.zIndex + 1,
-        "transition-duration": props2.duration + "ms"
-      };
-      if (translateValue.value != 0 && isDragging) {
-        let transformValue = "";
-        switch (props2.position) {
-          case "bottom":
-          case "top":
-            transformValue = `translateY(${translateValue.value}px)`;
-            break;
-          case "left":
-          case "right":
-            transformValue = `translateX(${translateValue.value}px)`;
-            break;
-        }
-        if (transformValue != "") {
-          styleObj["transform"] = transformValue;
-          styleObj["transition"] = "none";
-        }
-      } else if (translateValue.value != 0 && !isDragging) {
-        styleObj["transition"] = `transform ${props2.duration}ms ease`;
-      }
-      return styleObj;
-    });
-    const popupClasses = Vue.computed(() => {
-      const classes2 = [];
-      if (props2.position != null) {
-        classes2.push(`uni-page-container-popup-${props2.position}`);
-      }
-      if (props2.round) {
-        classes2.push("uni-page-container-popup-round");
-      }
-      if (isEntered.value) {
-        classes2.push("uni-page-container-popup-enter");
-      }
-      return classes2;
-    });
-    function clearTransitionTimer() {
-      if (transitionTimer.value != null) {
-        clearTimeout(transitionTimer.value);
-        transitionTimer.value = null;
-      }
-    }
-    function onAnimationEnd(type) {
-      isAnimating.value = false;
-      clearTransitionTimer();
-      if (type == "enter") {
-        emits("afterenter");
-      } else if (type == "leave") {
-        showPageContainer.value = false;
-        emits("afterleave");
-      }
-    }
-    function listenTransitionEnd(type) {
-      clearTransitionTimer();
-      transitionTimer.value = setTimeout(() => {
-        onAnimationEnd(type);
-      }, props2.duration);
-    }
-    function resetDragState() {
-      isDragging = false;
-      translateValue.value = 0;
-    }
-    function openContainer() {
-      emits("beforeenter");
-      showPageContainer.value = true;
-      isEntered.value = false;
-      resetDragState();
-      Vue.nextTick(() => {
-        emits("enter");
-        isAnimating.value = true;
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            isEntered.value = true;
-            listenTransitionEnd("enter");
-          });
-        });
-      });
-    }
-    function closeContainer() {
-      if (isAnimating.value) {
-        return;
-      }
-      emits("beforeleave");
-      isAnimating.value = true;
-      Vue.nextTick(() => {
-        isEntered.value = false;
-        emits("leave");
-        listenTransitionEnd("leave");
-      });
-    }
-    Vue.watch(
-      () => props2.show,
-      (newVal) => {
-        if (newVal && !showPageContainer.value) {
-          openContainer();
-        } else if (!newVal && showPageContainer.value) {
-          closeContainer();
-        }
-      }
-    );
-    function onClickOverlay(event) {
-      if (isAnimating.value) {
-        return;
-      }
-      emits("clickoverlay", event);
-      Vue.nextTick(() => {
-        closeContainer();
-      });
-    }
-    function onTouchStart(e2) {
-      if (!props2.closeOnSlideDown) {
-        return;
-      }
-      if (e2.touches.length > 0) {
-        const { clientX, clientY } = e2.touches[0];
-        touchStartX = clientX;
-        touchStartY = clientY;
-        touchStartTime = Date.now();
-        isDragging = false;
-      }
-    }
-    function onTouchMove(e2) {
-      if (!props2.closeOnSlideDown) {
-        e2.preventDefault();
-        e2.stopPropagation();
-        return;
-      }
-      if (e2.touches.length > 0) {
-        const { clientX, clientY } = e2.touches[0];
-        const deltaX = clientX - touchStartX;
-        const deltaY = clientY - touchStartY;
-        let shouldDrag = false;
-        let dragValue = 0;
-        switch (props2.position) {
-          case "bottom":
-            if (deltaY > 0) {
-              shouldDrag = true;
-              dragValue = deltaY;
-            }
-            break;
-          case "top":
-            if (deltaY < 0) {
-              shouldDrag = true;
-              dragValue = deltaY;
-            }
-            break;
-          case "left":
-            if (deltaX < 0) {
-              shouldDrag = true;
-              dragValue = deltaX;
-            }
-            break;
-          case "right":
-            if (deltaX > 0) {
-              shouldDrag = true;
-              dragValue = deltaX;
-            }
-            break;
-        }
-        if (shouldDrag) {
-          isDragging = true;
-          translateValue.value = dragValue;
-          e2.preventDefault();
-          e2.stopPropagation();
-        }
-      }
-    }
-    function onTouchEnd() {
-      if (!props2.closeOnSlideDown) {
-        return;
-      }
-      if (isDragging) {
-        const deltaTime = Date.now() - touchStartTime;
-        const velocity = Math.abs(translateValue.value) / deltaTime;
-        if (Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY) {
-          resetDragState();
-          closeContainer();
-        } else {
-          resetDragState();
-        }
-      }
-    }
-    function onTouchCancel() {
-      if (!props2.closeOnSlideDown) {
-        return;
-      }
-      if (isDragging) {
-        resetDragState();
-      }
-    }
-    onBackPress(() => {
-      if (showPageContainer.value) {
-        closeContainer();
-        return true;
-      }
-      return false;
-    });
-    const n0 = Vue.createIf(() => __props.overlay && showPageContainer.value, () => {
-      const n2 = t0$h();
-      Vue.on(n2, "click", onClickOverlay);
-      Vue.on(n2, "touchmove", Vue.withModifiers(() => {
-      }, ["prevent", "stop"]));
-      Vue.renderEffect(() => Vue.setStyle(n2, [overlayStyleMap.value, __props.overlayStyle]));
-      return n2;
-    });
-    const n3 = Vue.createIf(() => showPageContainer.value, () => {
-      const n6 = t1$8();
-      Vue.renderEffect(() => {
-        Vue.setClass(n6, ["uni-page-container-popup", popupClasses.value]);
-        Vue.setStyle(n6, [innerStyleMap.value, __props.customStyle]);
-      });
-      Vue.setInsertionState(n6);
-      Vue.createSlot();
-      Vue.on(n6, "touchstart", onTouchStart);
-      Vue.on(n6, "touchmove", onTouchMove);
-      Vue.on(n6, "touchend", onTouchEnd);
-      Vue.on(n6, "touchcancel", onTouchCancel);
-      return n6;
-    });
-    return [n0, n3];
-  }
-});
+Vue.template("<div uni-view class=uni-page-container-overlay>");
+Vue.template("<div uni-view>");
 const nativeHasInstance = Function.prototype[Symbol.hasInstance];
 function getUniTagName(value) {
   const el = value;
@@ -8802,11 +8523,11 @@ class UniCheckboxElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 }
-const t0$g = Vue.template("<span uni-text> ", 1);
-const t1$7 = Vue.template("<span uni-text>");
+const t0$h = Vue.template("<span uni-text> ", 1);
+const t1$8 = Vue.template("<span uni-text>");
 const t2$1 = Vue.template("<div uni-view class=uni-checkbox><span uni-text> </span>", 1);
 const fontUnicode$1 = "";
-const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -8875,7 +8596,7 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t0$g();
+        const n2 = t0$h();
         const x2 = Vue.txt(n2);
         Vue.on(n2, "click", Vue.withModifiers(handleTap, ["stop"]));
         Vue.renderEffect(() => {
@@ -8912,7 +8633,7 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.createIf(
           () => isStringSlot,
           () => {
-            const n8 = t1$7();
+            const n8 = t1$8();
             Vue.setInsertionState(n8);
             Vue.createSlot(
               "default",
@@ -8941,8 +8662,8 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const t0$f = Vue.template("<div uni-view>", 1);
-const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$g = Vue.template("<div uni-view>", 1);
+const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -9026,7 +8747,7 @@ const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
     };
     Vue.provide(CHECKBOX_GROUP_KEY, ctx);
     Vue.inject(FORM_KEY, null);
-    const n1 = t0$f();
+    const n1 = t0$g();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     return n1;
@@ -9034,8 +8755,8 @@ const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniFormElement extends UniViewElement {
 }
-const t0$e = Vue.template("<div uni-view class=uni-form>", 1);
-const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$f = Vue.template("<div uni-view class=uni-form>", 1);
+const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "form",
     // @ts-ignore
@@ -9101,7 +8822,7 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
     const ctx = { registerField, unregisterField, submit, reset };
     Vue.provide(FORM_KEY, ctx);
     __expose({ submit, reset });
-    const n1 = t0$e();
+    const n1 = t0$f();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     return n1;
@@ -9109,8 +8830,8 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniLabelElement extends UniViewElement {
 }
-const t0$d = Vue.template("<div uni-view>", 1);
-const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$e = Vue.template("<div uni-view>", 1);
+const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "label",
     // @ts-ignore
@@ -9179,16 +8900,16 @@ const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
         return;
       target.activate(event);
     };
-    const n1 = t0$d();
+    const n1 = t0$e();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     Vue.on(n1, "click", handleTap);
     return n1;
   }
 });
-class UniVueElement extends Object {
-}
-class UniLoadingElement extends UniVueElement {
+let UniVueElement$1 = class UniVueElement extends Object {
+};
+class UniLoadingElement extends UniVueElement$1 {
 }
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = Vue.ref("16px");
@@ -9201,8 +8922,8 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$c = Vue.template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$d = Vue.template("<div data-v-212d40c7 uni-view>", 256);
+const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -9227,7 +8948,7 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
       style: "display: flex;"
     }, null, true);
     Vue.setInsertionState(n1);
-    const n0 = t0$c();
+    const n0 = t0$d();
     Vue.insert(n0, n1);
     Vue.setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
     Vue.renderEffect(() => {
@@ -9239,8 +8960,8 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniMatchMediaElement extends UniViewElement {
 }
-const t0$b = Vue.template("<div uni-view>", 1);
-const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$c = Vue.template("<div uni-view>", 1);
+const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "match-media",
     // @ts-ignore
@@ -9319,7 +9040,7 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
         }
       });
     }
-    const n1 = t0$b();
+    const n1 = t0$c();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     Vue.applyVShow(n1, () => Vue.unref(show));
@@ -9328,9 +9049,9 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniNavigatorElement extends UniViewElement {
 }
-const t0$a = Vue.template("<span uni-text>", 1);
-const t1$6 = Vue.template("<div uni-view>", 1);
-const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$b = Vue.template("<span uni-text>", 1);
+const t1$7 = Vue.template("<div uni-view>", 1);
+const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "navigator",
     // @ts-ignore
@@ -9400,7 +9121,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => isStringSlot,
       () => {
-        const n3 = t0$a();
+        const n3 = t0$b();
         Vue.setInsertionState(n3);
         Vue.createSlot(
           "default",
@@ -9413,7 +9134,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
         return n3;
       },
       () => {
-        const n6 = t1$6();
+        const n6 = t1$7();
         Vue.setInsertionState(n6);
         Vue.createSlot();
         Vue.on(n6, "click", handleTap);
@@ -9423,6 +9144,340 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
     );
     return n0;
+  }
+});
+class UniVueElement2 extends Object {
+}
+class UniPageContainerElement extends UniVueElement2 {
+}
+const t0$a = Vue.template("<div uni-view class=uni-page-container-overlay>");
+const t1$6 = Vue.template("<div uni-view>");
+const MAX_SLIDER_DISTANCE = 100;
+const MIN_SLIDER_VELOCITY = 0.3;
+const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "page-container",
+    rootElement: {
+      class: UniPageContainerElement
+    }
+  },
+  __name: "page-container",
+  props: {
+    show: { type: Boolean, default: false },
+    duration: { default: 300, type: Number },
+    zIndex: { default: 100, type: Number },
+    overlay: { type: Boolean, default: true },
+    round: { type: Boolean, default: false },
+    position: { default: "bottom", type: String },
+    customStyle: { default: "", type: String },
+    overlayStyle: { default: "", type: String },
+    closeOnSlideDown: { type: Boolean, default: false }
+  },
+  emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
+  __multiRoot: true,
+  setup(__props, { emit: __emit }) {
+    const props2 = __props;
+    const emits = __emit;
+    const showPageContainer = Vue.ref(false);
+    const isAnimating = Vue.ref(false);
+    const transitionTimer = Vue.ref(null);
+    const isEntered = Vue.ref(false);
+    const transitionType = Vue.ref(null);
+    let transitionVersion = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isDragging = false;
+    const translateValue = Vue.ref(0);
+    const isSlideClosing = Vue.ref(false);
+    const isSlideLeaving = Vue.ref(false);
+    const overlayStyleMap = Vue.computed(() => {
+      const styleMap = {
+        "z-index": props2.zIndex,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (isEntered.value) {
+        styleMap["opacity"] = "1";
+        styleMap["pointer-events"] = "auto";
+      }
+      return styleMap;
+    });
+    const innerStyleMap = Vue.computed(() => {
+      const styleMap = {
+        "z-index": props2.zIndex + 1,
+        "transition-duration": props2.duration + "ms"
+      };
+      if (translateValue.value != 0 && (isDragging || isSlideClosing.value)) {
+        let transformValue = "";
+        if (isSlideLeaving.value) {
+          switch (props2.position) {
+            case "bottom":
+              transformValue = "translateY(100%)";
+              break;
+            case "top":
+              transformValue = "translateY(-100%)";
+              break;
+            case "left":
+              transformValue = "translateX(-100%)";
+              break;
+            case "right":
+              transformValue = "translateX(100%)";
+              break;
+          }
+        } else {
+          switch (props2.position) {
+            case "bottom":
+            case "top":
+              transformValue = `translateY(${translateValue.value}px)`;
+              break;
+            case "left":
+            case "right":
+              transformValue = `translateX(${translateValue.value}px)`;
+              break;
+          }
+        }
+        if (transformValue != "") {
+          styleMap["transform"] = transformValue;
+          styleMap["transition"] = isDragging ? "none" : `transform ${props2.duration}ms ease`;
+        }
+      } else if (translateValue.value != 0 && !isDragging) {
+        styleMap["transition"] = `transform ${props2.duration}ms ease`;
+      }
+      return styleMap;
+    });
+    const popupClasses = Vue.computed(() => {
+      const classes2 = [];
+      if (props2.position != null) {
+        classes2.push(`uni-page-container-popup-${props2.position}`);
+      }
+      if (props2.round) {
+        classes2.push("uni-page-container-popup-round");
+      }
+      if (isEntered.value) {
+        classes2.push("uni-page-container-popup-enter");
+      }
+      return classes2;
+    });
+    function resetDragState() {
+      isDragging = false;
+      isSlideClosing.value = false;
+      isSlideLeaving.value = false;
+      translateValue.value = 0;
+    }
+    function clearTransitionTimer() {
+      if (transitionTimer.value != null) {
+        clearTimeout(transitionTimer.value);
+        transitionTimer.value = null;
+      }
+    }
+    function cancelTransition() {
+      transitionVersion++;
+      clearTransitionTimer();
+      isAnimating.value = false;
+      transitionType.value = null;
+    }
+    function onAnimationEnd(type, version) {
+      if (version != transitionVersion || transitionType.value != type) {
+        return;
+      }
+      isAnimating.value = false;
+      clearTransitionTimer();
+      transitionType.value = null;
+      if (type == "enter") {
+        emits("afterenter");
+      } else if (type == "leave") {
+        showPageContainer.value = false;
+        isEntered.value = false;
+        resetDragState();
+        emits("afterleave");
+      }
+    }
+    function listenTransitionEnd(type, version) {
+      clearTransitionTimer();
+      transitionTimer.value = setTimeout(() => {
+        onAnimationEnd(type, version);
+      }, props2.duration);
+    }
+    function closeContainer() {
+      if (!showPageContainer.value || transitionType.value == "leave") {
+        return;
+      }
+      if (transitionType.value == "enter") {
+        cancelTransition();
+      }
+      emits("beforeleave");
+      isAnimating.value = true;
+      transitionType.value = "leave";
+      transitionVersion++;
+      const version = transitionVersion;
+      Vue.nextTick(() => {
+        if (version != transitionVersion || transitionType.value != "leave") {
+          return;
+        }
+        isEntered.value = false;
+        emits("leave");
+        listenTransitionEnd("leave", version);
+      });
+    }
+    function openContainer() {
+      if (transitionType.value == "enter" && showPageContainer.value) {
+        return;
+      }
+      if (transitionType.value == "leave") {
+        cancelTransition();
+      }
+      emits("beforeenter");
+      showPageContainer.value = true;
+      isEntered.value = false;
+      isAnimating.value = true;
+      transitionType.value = "enter";
+      transitionVersion++;
+      const version = transitionVersion;
+      resetDragState();
+      Vue.nextTick(() => {
+        if (version != transitionVersion || transitionType.value != "enter") {
+          return;
+        }
+        emits("enter");
+        requestAnimationFrame(() => {
+          if (version != transitionVersion || transitionType.value != "enter") {
+            return;
+          }
+          requestAnimationFrame(() => {
+            if (version != transitionVersion || transitionType.value != "enter") {
+              return;
+            }
+            if (!props2.show) {
+              closeContainer();
+              return;
+            }
+            isEntered.value = true;
+            listenTransitionEnd("enter", version);
+          });
+        });
+      });
+    }
+    Vue.watch(() => props2.show, (newVal) => {
+      if (newVal && (!showPageContainer.value || transitionType.value == "leave")) {
+        openContainer();
+      } else if (!newVal && showPageContainer.value && transitionType.value != "leave") {
+        closeContainer();
+      }
+    });
+    function onClickOverlay(event) {
+      if (isAnimating.value) {
+        return;
+      }
+      emits("clickoverlay", event);
+      Vue.nextTick(() => {
+        closeContainer();
+      });
+    }
+    function onTouchStart(e2) {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        touchStartX = clientX;
+        touchStartY = clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      }
+    }
+    function onTouchMove(e2) {
+      if (!props2.closeOnSlideDown) {
+        e2.preventDefault();
+        e2.stopPropagation();
+        return;
+      }
+      if (e2.touches.length > 0) {
+        const { clientX, clientY } = e2.touches[0];
+        const deltaX = clientX - touchStartX;
+        const deltaY = clientY - touchStartY;
+        let shouldDrag = false;
+        let dragValue = 0;
+        switch (props2.position) {
+          case "bottom":
+            if (deltaY > 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "top":
+            if (deltaY < 0) {
+              shouldDrag = true;
+              dragValue = deltaY;
+            }
+            break;
+          case "left":
+            if (deltaX < 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+          case "right":
+            if (deltaX > 0) {
+              shouldDrag = true;
+              dragValue = deltaX;
+            }
+            break;
+        }
+        if (shouldDrag) {
+          isDragging = true;
+          translateValue.value = dragValue;
+          e2.preventDefault();
+          e2.stopPropagation();
+        }
+      }
+    }
+    function onTouchEnd() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        const deltaTime = Date.now() - touchStartTime;
+        const velocity = Math.abs(translateValue.value) / deltaTime;
+        const shouldClose = Math.abs(translateValue.value) > MAX_SLIDER_DISTANCE || velocity > MIN_SLIDER_VELOCITY;
+        if (shouldClose) {
+          resetDragState();
+          closeContainer();
+        } else {
+          resetDragState();
+        }
+      }
+    }
+    function onTouchCancel() {
+      if (!props2.closeOnSlideDown) {
+        return;
+      }
+      if (isDragging) {
+        resetDragState();
+      }
+    }
+    const n0 = Vue.createIf(() => __props.overlay && Vue.unref(showPageContainer), () => {
+      const n2 = t0$a();
+      Vue.on(n2, "click", onClickOverlay);
+      Vue.on(n2, "touchmove", Vue.withModifiers(() => {
+      }, ["prevent", "stop"]));
+      Vue.renderEffect(() => Vue.setStyle(n2, [Vue.unref(overlayStyleMap), __props.overlayStyle]));
+      return n2;
+    });
+    const n3 = Vue.createIf(() => Vue.unref(showPageContainer), () => {
+      const n6 = t1$6();
+      Vue.renderEffect(() => {
+        Vue.setClass(n6, ["uni-page-container-popup", Vue.unref(popupClasses)]);
+        Vue.setStyle(n6, [Vue.unref(innerStyleMap), __props.customStyle]);
+      });
+      Vue.setInsertionState(n6);
+      Vue.createSlot();
+      Vue.on(n6, "touchstart", onTouchStart);
+      Vue.on(n6, "touchmove", onTouchMove);
+      Vue.on(n6, "touchend", onTouchEnd);
+      Vue.on(n6, "touchcancel", onTouchCancel);
+      return n6;
+    });
+    return [n0, n3];
   }
 });
 class UniPickerElement extends UniViewElement {
@@ -14805,24 +14860,24 @@ exports.AsyncLoadingComponent = _sfc_main$n;
 exports.Button = index$f;
 exports.Camera = index$3;
 exports.Canvas = indexX$1;
-exports.Checkbox = _sfc_main$g;
-exports.CheckboxGroup = _sfc_main$f;
+exports.Checkbox = _sfc_main$h;
+exports.CheckboxGroup = _sfc_main$g;
 exports.Editor = index$d;
-exports.Form = _sfc_main$e;
+exports.Form = _sfc_main$f;
 exports.Icon = index$c;
 exports.Input = Input;
-exports.Label = _sfc_main$d;
+exports.Label = _sfc_main$e;
 exports.LayoutComponent = _sfc_main$o;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
-exports.Loading = _sfc_main$c;
+exports.Loading = _sfc_main$d;
 exports.Map = index$7;
-exports.MatchMedia = _sfc_main$b;
+exports.MatchMedia = _sfc_main$c;
 exports.MovableArea = index$b;
 exports.MovableView = index$a;
-exports.Navigator = _sfc_main$a;
+exports.Navigator = _sfc_main$b;
 exports.PageComponent = _sfc_main$i;
-exports.PageContainer = _sfc_main$h;
+exports.PageContainer = _sfc_main$a;
 exports.Picker = _sfc_main$9;
 exports.PickerView = _sfc_main$8;
 exports.PickerViewColumn = _sfc_main$7;
