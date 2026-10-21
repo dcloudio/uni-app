@@ -35,6 +35,9 @@ word-break: normal | break-all | keep-all | break-word;
 | break-all | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.31 | 对于非中日韩文本，可在任意字符间断行。 |
 
 
+#### App平台差异
+App平台 word-break 为 normal 时与 web 平台存在差异：对于 non-CJK(CJK 指中文/日文/韩文) 文本中的长单词在限制宽度时会自动换行确保显示内容不会溢出，效果与 web 平台的 break-word 效果相似。
+
 ### 默认值 @default-value 
  | 平台 | 默认值 |
 | :- | :- |
