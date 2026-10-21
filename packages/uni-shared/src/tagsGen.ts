@@ -300,6 +300,7 @@ export const UVUE_VAPOR_WEB_EASYCOMS = [
   'loading',
   'match-media',
   'navigator',
+  'page-container',
   'picker',
   'picker-view',
   'picker-view-column',
