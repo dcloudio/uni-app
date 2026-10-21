@@ -72,9 +72,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { FORM_KEY, classes } from '../common.uts'
-  import { UniButtonElement } from './global.uts'
-  import { FormContext } from '../types.uts'
+  import { FORM_KEY, classes } from '../common.ts'
+  import { UniButtonElement } from './global.ts'
+  import { FormContext } from '../types.ts'
 
   const DEFAULT_BUTTON_HOVER_CLASS_NAME = 'button-hover'
 

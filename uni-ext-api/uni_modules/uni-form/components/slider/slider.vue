@@ -62,8 +62,8 @@
 </template>
 
 <script setup lang="ts">
-  import { FORM_KEY, LABEL_KEY } from '../common.uts'
-  import { UniSliderChangeEvent, UniSliderElement } from './global.uts'
+  import { FORM_KEY, LABEL_KEY } from '../common.ts'
+  import { UniSliderChangeEvent, UniSliderElement } from './global.ts'
 
   type UnRegisterField = (name : string) => void
   type InjectForm = { unregisterField : UnRegisterField }

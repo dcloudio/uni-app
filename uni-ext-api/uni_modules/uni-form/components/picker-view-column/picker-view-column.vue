@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { PICKER_VIEW_KEY } from '../common.uts'
-  import { UniPickerViewColumnElement } from './global.uts'
-  import { PickerViewContext, PickerViewColumnApi } from '../types.uts'
+  import { PICKER_VIEW_KEY } from '../common.ts'
+  import { UniPickerViewColumnElement } from './global.ts'
+  import { PickerViewContext, PickerViewColumnApi } from '../types.ts'
 
   defineOptions({
     name: 'picker-view-column',

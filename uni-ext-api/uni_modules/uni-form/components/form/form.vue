@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { FORM_KEY } from '../common.uts'
-  import { UniFormElement } from './global.uts'
-  import { FormField, FormContext } from '../types.uts'
+  import { FORM_KEY } from '../common.ts'
+  import { UniFormElement } from './global.ts'
+  import { FormField, FormContext } from '../types.ts'
 
   type UniFormSubmitEventDetail = {
     value : UTSJSONObject

@@ -103,15 +103,15 @@
       return val;
     throw TypeError("Can't convert object to primitive value");
   };
-  var anObject$4 = _anObject;
-  var IE8_DOM_DEFINE = _ie8DomDefine;
-  var toPrimitive = _toPrimitive$1;
+  var anObject$5 = _anObject;
+  var IE8_DOM_DEFINE$1 = _ie8DomDefine;
+  var toPrimitive$1 = _toPrimitive$1;
   var dP$2 = Object.defineProperty;
   _objectDp.f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-    anObject$4(O);
-    P = toPrimitive(P, true);
-    anObject$4(Attributes);
-    if (IE8_DOM_DEFINE)
+    anObject$5(O);
+    P = toPrimitive$1(P, true);
+    anObject$5(Attributes);
+    if (IE8_DOM_DEFINE$1)
       try {
         return dP$2(O, P, Attributes);
       } catch (e2) {
@@ -131,9 +131,9 @@
     };
   };
   var dP$1 = _objectDp;
-  var createDesc = _propertyDesc;
+  var createDesc$2 = _propertyDesc;
   var _hide = _descriptors ? function(object, key2, value) {
-    return dP$1.f(object, key2, createDesc(1, value));
+    return dP$1.f(object, key2, createDesc$2(1, value));
   } : function(object, key2, value) {
     object[key2] = value;
     return object;
@@ -178,7 +178,7 @@
   var _functionToString = _sharedExports("native-function-to-string", Function.toString);
   var global$3 = _globalExports;
   var hide$3 = _hide;
-  var has$4 = _has;
+  var has$5 = _has;
   var SRC = _uid("src");
   var $toString = _functionToString;
   var TO_STRING = "toString";
@@ -189,11 +189,11 @@
   (_redefine.exports = function(O, key2, val, safe) {
     var isFunction2 = typeof val == "function";
     if (isFunction2)
-      has$4(val, "name") || hide$3(val, "name", key2);
+      has$5(val, "name") || hide$3(val, "name", key2);
     if (O[key2] === val)
       return;
     if (isFunction2)
-      has$4(val, SRC) || hide$3(val, SRC, O[key2] ? "" + O[key2] : TPL.join(String(key2)));
+      has$5(val, SRC) || hide$3(val, SRC, O[key2] ? "" + O[key2] : TPL.join(String(key2)));
     if (O === global$3) {
       O[key2] = val;
     } else if (!safe) {
@@ -242,12 +242,12 @@
   var redefine$2 = _redefineExports;
   var ctx = _ctx;
   var PROTOTYPE$1 = "prototype";
-  var $export$4 = function(type, name, source) {
-    var IS_FORCED = type & $export$4.F;
-    var IS_GLOBAL = type & $export$4.G;
-    var IS_STATIC = type & $export$4.S;
-    var IS_PROTO = type & $export$4.P;
-    var IS_BIND = type & $export$4.B;
+  var $export$5 = function(type, name, source) {
+    var IS_FORCED = type & $export$5.F;
+    var IS_GLOBAL = type & $export$5.G;
+    var IS_STATIC = type & $export$5.S;
+    var IS_PROTO = type & $export$5.P;
+    var IS_BIND = type & $export$5.B;
     var target = IS_GLOBAL ? global$2 : IS_STATIC ? global$2[name] || (global$2[name] = {}) : (global$2[name] || {})[PROTOTYPE$1];
     var exports = IS_GLOBAL ? core$1 : core$1[name] || (core$1[name] = {});
     var expProto = exports[PROTOTYPE$1] || (exports[PROTOTYPE$1] = {});
@@ -259,7 +259,7 @@
       out2 = (own ? target : source)[key2];
       exp = IS_BIND && own ? ctx(out2, global$2) : IS_PROTO && typeof out2 == "function" ? ctx(Function.call, out2) : out2;
       if (target)
-        redefine$2(target, key2, out2, type & $export$4.U);
+        redefine$2(target, key2, out2, type & $export$5.U);
       if (exports[key2] != out2)
         hide$2(exports, key2, exp);
       if (IS_PROTO && expProto[key2] != out2)
@@ -267,15 +267,15 @@
     }
   };
   global$2.core = core$1;
-  $export$4.F = 1;
-  $export$4.G = 2;
-  $export$4.S = 4;
-  $export$4.P = 8;
-  $export$4.B = 16;
-  $export$4.W = 32;
-  $export$4.U = 64;
-  $export$4.R = 128;
-  var _export = $export$4;
+  $export$5.F = 1;
+  $export$5.G = 2;
+  $export$5.S = 4;
+  $export$5.P = 8;
+  $export$5.B = 16;
+  $export$5.W = 32;
+  $export$5.U = 64;
+  $export$5.R = 128;
+  var _export = $export$5;
   var ceil = Math.ceil;
   var floor = Math.floor;
   var _toInteger = function(it) {
@@ -293,12 +293,12 @@
     index2 = toInteger(index2);
     return index2 < 0 ? max(index2 + length, 0) : min(index2, length);
   };
-  var toIObject$3 = _toIobject;
+  var toIObject$5 = _toIobject;
   var toLength = _toLength;
   var toAbsoluteIndex = _toAbsoluteIndex;
   var _arrayIncludes = function(IS_INCLUDES) {
     return function($this, el, fromIndex) {
-      var O = toIObject$3($this);
+      var O = toIObject$5($this);
       var length = toLength(O.length);
       var index2 = toAbsoluteIndex(fromIndex, length);
       var value;
@@ -323,37 +323,37 @@
   var _sharedKey = function(key2) {
     return shared[key2] || (shared[key2] = uid$2(key2));
   };
-  var has$3 = _has;
-  var toIObject$2 = _toIobject;
+  var has$4 = _has;
+  var toIObject$4 = _toIobject;
   var arrayIndexOf = _arrayIncludes(false);
   var IE_PROTO$2 = _sharedKey("IE_PROTO");
   var _objectKeysInternal = function(object, names) {
-    var O = toIObject$2(object);
+    var O = toIObject$4(object);
     var i2 = 0;
     var result = [];
     var key2;
     for (key2 in O) {
       if (key2 != IE_PROTO$2)
-        has$3(O, key2) && result.push(key2);
+        has$4(O, key2) && result.push(key2);
     }
     while (names.length > i2) {
-      if (has$3(O, key2 = names[i2++])) {
+      if (has$4(O, key2 = names[i2++])) {
         ~arrayIndexOf(result, key2) || result.push(key2);
       }
     }
     return result;
   };
   var _enumBugKeys = "constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",");
-  var $keys = _objectKeysInternal;
+  var $keys$1 = _objectKeysInternal;
   var enumBugKeys$1 = _enumBugKeys;
   var _objectKeys = Object.keys || function keys(O) {
-    return $keys(O, enumBugKeys$1);
+    return $keys$1(O, enumBugKeys$1);
   };
   var dP = _objectDp;
-  var anObject$3 = _anObject;
+  var anObject$4 = _anObject;
   var getKeys$2 = _objectKeys;
   var _objectDps = _descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
-    anObject$3(O);
+    anObject$4(O);
     var keys = getKeys$2(Properties);
     var length = keys.length;
     var i2 = 0;
@@ -373,7 +373,7 @@
     _html = document2 && document2.documentElement;
     return _html;
   }
-  var anObject$2 = _anObject;
+  var anObject$3 = _anObject;
   var dPs = _objectDps;
   var enumBugKeys = _enumBugKeys;
   var IE_PROTO$1 = _sharedKey("IE_PROTO");
@@ -402,7 +402,7 @@
   var _objectCreate = Object.create || function create2(O, Properties) {
     var result;
     if (O !== null) {
-      Empty[PROTOTYPE] = anObject$2(O);
+      Empty[PROTOTYPE] = anObject$3(O);
       result = new Empty();
       Empty[PROTOTYPE] = null;
       result[IE_PROTO$1] = O;
@@ -411,10 +411,10 @@
     return Properties === void 0 ? result : dPs(result, Properties);
   };
   var def$1 = _objectDp.f;
-  var has$2 = _has;
+  var has$3 = _has;
   var TAG = _wksExports("toStringTag");
   var _setToStringTag = function(it, tag, stat) {
-    if (it && !has$2(it = stat ? it : it.prototype, TAG))
+    if (it && !has$3(it = stat ? it : it.prototype, TAG))
       def$1(it, TAG, {
         configurable: true,
         value: tag
@@ -437,20 +437,20 @@
   var _toObject = function(it) {
     return Object(defined(it));
   };
-  var has$1 = _has;
+  var has$2 = _has;
   var toObject$1 = _toObject;
   var IE_PROTO = _sharedKey("IE_PROTO");
   var ObjectProto = Object.prototype;
   var _objectGpo = Object.getPrototypeOf || function(O) {
     O = toObject$1(O);
-    if (has$1(O, IE_PROTO))
+    if (has$2(O, IE_PROTO))
       return O[IE_PROTO];
     if (typeof O.constructor == "function" && O instanceof O.constructor) {
       return O.constructor.prototype;
     }
     return O instanceof Object ? ObjectProto : null;
   };
-  var $export$3 = _export;
+  var $export$4 = _export;
   var redefine$1 = _redefineExports;
   var hide$1 = _hide;
   var Iterators$2 = _iterators;
@@ -524,16 +524,16 @@
             redefine$1(proto2, key2, methods[key2]);
         }
       else
-        $export$3($export$3.P + $export$3.F * (BUGGY || VALUES_BUG), NAME2, methods);
+        $export$4($export$4.P + $export$4.F * (BUGGY || VALUES_BUG), NAME2, methods);
     }
     return methods;
   };
   var addToUnscopables = _addToUnscopables;
   var step = _iterStep;
   var Iterators$1 = _iterators;
-  var toIObject$1 = _toIobject;
+  var toIObject$3 = _toIobject;
   var es6_array_iterator = _iterDefine(Array, "Array", function(iterated, kind) {
-    this._t = toIObject$1(iterated);
+    this._t = toIObject$3(iterated);
     this._i = 0;
     this._k = kind;
   }, function() {
@@ -1669,13 +1669,13 @@
     };
     return _strictMethod;
   }
-  var $export$2 = _export;
+  var $export$3 = _export;
   var aFunction$2 = _aFunction;
   var toObject = _toObject;
   var fails = _fails;
   var $sort = [].sort;
   var test = [1, 2, 3];
-  $export$2($export$2.P + $export$2.F * (fails(function() {
+  $export$3($export$3.P + $export$3.F * (fails(function() {
     test.sort(void 0);
   }) || !fails(function() {
     test.sort(null);
@@ -2171,7 +2171,7 @@
       target.get(key2);
     }
   }
-  function has(key2) {
+  function has$1(key2) {
     var isReadonly2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
     var target = this["__v_raw"];
     var rawTarget = toRaw(target);
@@ -2306,7 +2306,7 @@
       get size() {
         return size(this);
       },
-      has,
+      has: has$1,
       add,
       set,
       delete: deleteEntry,
@@ -2320,7 +2320,7 @@
       get size() {
         return size(this);
       },
-      has,
+      has: has$1,
       add,
       set,
       delete: deleteEntry,
@@ -2335,7 +2335,7 @@
         return size(this, true);
       },
       has(key2) {
-        return has.call(this, key2, true);
+        return has$1.call(this, key2, true);
       },
       add: createReadonlyMethod("add"),
       set: createReadonlyMethod("set"),
@@ -2351,7 +2351,7 @@
         return size(this, true);
       },
       has(key2) {
-        return has.call(this, key2, true);
+        return has$1.call(this, key2, true);
       },
       add: createReadonlyMethod("add"),
       set: createReadonlyMethod("set"),
@@ -3054,6 +3054,7 @@
         fallthroughAttrs = Component.props ? attrs2 : getFunctionalFallthrough(attrs2);
       }
     } catch (err2) {
+      blockStack.length = 0;
       handleError(err2, instance, 1);
       result = createVNode(Comment);
     }
@@ -5719,10 +5720,30 @@
   var Text = Symbol.for("v-txt");
   var Comment = Symbol.for("v-cmt");
   var Static = Symbol.for("v-stc");
+  var blockStack = [];
   var currentBlock = null;
+  function openBlock() {
+    var disableTracking = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : false;
+    blockStack.push(currentBlock = disableTracking ? null : []);
+  }
+  function closeBlock() {
+    blockStack.pop();
+    currentBlock = blockStack[blockStack.length - 1] || null;
+  }
   var isBlockTreeEnabled = 1;
   function setBlockTracking(value) {
     isBlockTreeEnabled += value;
+  }
+  function setupBlock(vnode) {
+    vnode.dynamicChildren = isBlockTreeEnabled > 0 ? currentBlock || EMPTY_ARR : null;
+    closeBlock();
+    if (isBlockTreeEnabled > 0 && currentBlock) {
+      currentBlock.push(vnode);
+    }
+    return vnode;
+  }
+  function createBlock(type, props2, children, patchFlag, dynamicProps) {
+    return setupBlock(createVNode(type, props2, children, patchFlag, dynamicProps, true));
   }
   function isVNode(value) {
     return value ? value.__v_isVNode === true : false;
@@ -11842,11 +11863,11 @@
   _objectPie.f = {}.propertyIsEnumerable;
   var DESCRIPTORS = _descriptors;
   var getKeys = _objectKeys;
-  var toIObject = _toIobject;
+  var toIObject$2 = _toIobject;
   var isEnum = _objectPie.f;
   var _objectToArray = function(isEntries) {
     return function(it) {
-      var O = toIObject(it);
+      var O = toIObject$2(it);
       var keys = getKeys(O);
       var length = keys.length;
       var i2 = 0;
@@ -11861,9 +11882,9 @@
       return result;
     };
   };
-  var $export$1 = _export;
+  var $export$2 = _export;
   var $values = _objectToArray(false);
-  $export$1($export$1.S, "Object", {
+  $export$2($export$2.S, "Object", {
     values: function values(it) {
       return $values(it);
     }
@@ -20050,6 +20071,198 @@
       return result;
     }
   });
+  var _objectGopn = {};
+  var $keys = _objectKeysInternal;
+  var hiddenKeys = _enumBugKeys.concat("length", "prototype");
+  _objectGopn.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
+    return $keys(O, hiddenKeys);
+  };
+  var _objectGops = {};
+  _objectGops.f = Object.getOwnPropertySymbols;
+  var gOPN = _objectGopn;
+  var gOPS = _objectGops;
+  var anObject$2 = _anObject;
+  var Reflect$1 = _globalExports.Reflect;
+  var _ownKeys = Reflect$1 && Reflect$1.ownKeys || function ownKeys2(it) {
+    var keys = gOPN.f(anObject$2(it));
+    var getSymbols = gOPS.f;
+    return getSymbols ? keys.concat(getSymbols(it)) : keys;
+  };
+  var _objectGopd = {};
+  var pIE = _objectPie;
+  var createDesc$1 = _propertyDesc;
+  var toIObject$1 = _toIobject;
+  var toPrimitive = _toPrimitive$1;
+  var has = _has;
+  var IE8_DOM_DEFINE = _ie8DomDefine;
+  var gOPD$1 = Object.getOwnPropertyDescriptor;
+  _objectGopd.f = _descriptors ? gOPD$1 : function getOwnPropertyDescriptor(O, P) {
+    O = toIObject$1(O);
+    P = toPrimitive(P, true);
+    if (IE8_DOM_DEFINE)
+      try {
+        return gOPD$1(O, P);
+      } catch (e2) {
+      }
+    if (has(O, P))
+      return createDesc$1(!pIE.f.call(O, P), O[P]);
+  };
+  var $defineProperty = _objectDp;
+  var createDesc = _propertyDesc;
+  var _createProperty = function(object, index2, value) {
+    if (index2 in object)
+      $defineProperty.f(object, index2, createDesc(0, value));
+    else
+      object[index2] = value;
+  };
+  var $export$1 = _export;
+  var ownKeys$1 = _ownKeys;
+  var toIObject = _toIobject;
+  var gOPD = _objectGopd;
+  var createProperty = _createProperty;
+  $export$1($export$1.S, "Object", {
+    getOwnPropertyDescriptors: function getOwnPropertyDescriptors(object) {
+      var O = toIObject(object);
+      var getDesc = gOPD.f;
+      var keys = ownKeys$1(O);
+      var result = {};
+      var i2 = 0;
+      var key2, desc;
+      while (keys.length > i2) {
+        desc = getDesc(O, key2 = keys[i2++]);
+        if (desc !== void 0)
+          createProperty(result, key2, desc);
+      }
+      return result;
+    }
+  });
+  class UniVueElement extends HTMLElement {
+  }
+  class UniLoadingElement extends UniVueElement {
+  }
+  function useLoadingStyle(targetElement, bold) {
+    var loadingSize = ref("16px");
+    var loadingBorderWidth = ref("1px");
+    var loadingBorderRadius = ref("8px");
+    var observer = null;
+    var calculateLoadingWidth = (element, bold2) => {
+      var {
+        width,
+        height
+      } = element.getBoundingClientRect();
+      var coefficient = bold2 ? 2 : 1;
+      var minSide = Math.min(width, height);
+      var calculatedWidth = minSide / 16 * coefficient;
+      loadingSize.value = "".concat(minSide, "px");
+      loadingBorderWidth.value = "".concat(calculatedWidth, "px");
+      loadingBorderRadius.value = "".concat(minSide / 2, "px");
+    };
+    var setupObserver = (cb) => {
+      var el = targetElement.value;
+      if (!el)
+        return;
+      observer = new ResizeObserver((entries2) => {
+        cb(el);
+      });
+      observer.observe(el);
+    };
+    onMounted(() => {
+      setupObserver((el) => {
+        calculateLoadingWidth(el, bold.value);
+      });
+      watchEffect(() => {
+        var _bold = bold.value;
+        var el = targetElement.value;
+        if (el !== null) {
+          calculateLoadingWidth(el, _bold);
+        }
+      });
+    });
+    onUnmounted(() => {
+      if (observer) {
+        observer.disconnect();
+      }
+    });
+    return {
+      width: loadingSize,
+      height: loadingSize,
+      borderWidth: loadingBorderWidth
+      // borderRadius: loadingBorderRadius,
+    };
+  }
+  var __defProp = Object.defineProperty;
+  var __defProps = Object.defineProperties;
+  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __propIsEnum = Object.prototype.propertyIsEnumerable;
+  var __defNormalProp = (obj, key2, value) => key2 in obj ? __defProp(obj, key2, {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+    value
+  }) : obj[key2] = value;
+  var __spreadValues = (a2, b) => {
+    for (var prop in b || (b = {})) {
+      if (__hasOwnProp.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+    if (__getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(b)) {
+        if (__propIsEnum.call(b, prop))
+          __defNormalProp(a2, prop, b[prop]);
+      }
+    return a2;
+  };
+  var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+  /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
+    }
+  }), {
+    __name: "index-x",
+    props: {
+      paused: {
+        type: Boolean,
+        default: false
+      },
+      bold: {
+        type: Boolean,
+        default: false
+      },
+      iosSpinner: {
+        type: Boolean,
+        default: false
+      }
+    },
+    setup(__props) {
+      var props2 = __props;
+      var LoadingRef = ref(null);
+      var loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
+      return (_ctx2, _cache) => {
+        return openBlock(), createBlock(unref(UniLoadingElement), {
+          class: "default __uni_loading_container__",
+          ref_key: "LoadingRef",
+          ref: LoadingRef,
+          style: {
+            "display": "flex"
+          }
+        }, {
+          default: withCtx(() => [createBaseVNode("view", {
+            class: normalizeClass(["__uni-loading__ __loading-4-3__", {
+              "__uni-loading__paused": props2.paused
+            }]),
+            style: normalizeStyle(loadingStyle)
+          }, null, 6)]),
+          _: 1
+        }, 512);
+      };
+    }
+  }));
   const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     name: "Refresher",
     props: {

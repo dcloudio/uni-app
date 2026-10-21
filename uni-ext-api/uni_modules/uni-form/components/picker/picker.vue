@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-    import { FORM_KEY } from '../common.uts'
-    import { UniPickerElement } from './global.uts'
-    import { FormContext } from '../types.uts'
+    import { FORM_KEY } from '../common.ts'
+    import { UniPickerElement } from './global.ts'
+    import { FormContext } from '../types.ts'
 	
     const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
     const baseEventName = `uni_picker_${uuid}`

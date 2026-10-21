@@ -19504,6 +19504,58 @@ function normalizeDramaListOptions(options) {
     }
     return data;
 }
+/** 规范推荐、收藏和观看记录的分页参数。 */
+function normalizeDramaPagedOptions(options, method) {
+    if (options !== undefined && !isObject$1(options)) {
+        throw createInvalidParamError(`${method} options should be an object`);
+    }
+    const data = stripDramaCallbackKeys(Object.assign({}, (options || {})));
+    data.page = data.page === undefined ? 1 : data.page;
+    data.pageSize = data.pageSize === undefined ? 20 : data.pageSize;
+    if (!Number.isInteger(data.page) || data.page < 1) {
+        throw createInvalidParamError('page should be a positive integer');
+    }
+    if (!Number.isInteger(data.pageSize) || data.pageSize < 1) {
+        throw createInvalidParamError('pageSize should be a positive integer');
+    }
+    return data;
+}
+/** 规范搜索参数并统一兼容字段。 */
+function normalizeDramaSearchOptions(options) {
+    if (options === undefined || !isObject$1(options)) {
+        throw createInvalidParamError('search options should be an object');
+    }
+    const data = stripDramaCallbackKeys(Object.assign({}, options));
+    const searchWord = data.searchWord !== undefined
+        ? data.searchWord
+        : data.keyword !== undefined
+            ? data.keyword
+            : data.keyWord !== undefined
+                ? data.keyWord
+                : data.query;
+    if (typeof searchWord !== 'string' || searchWord.trim() === '') {
+        throw createInvalidParamError('searchWord is required');
+    }
+    data.searchWord = searchWord;
+    delete data.keyword;
+    delete data.keyWord;
+    delete data.query;
+    const isFuzzy = data.isFuzzy !== undefined ? data.isFuzzy : data.fuzzy;
+    if (isFuzzy !== undefined && typeof isFuzzy !== 'boolean') {
+        throw createInvalidParamError('isFuzzy should be a boolean');
+    }
+    data.isFuzzy = isFuzzy === undefined ? true : isFuzzy;
+    delete data.fuzzy;
+    data.page = data.page === undefined ? 1 : data.page;
+    data.pageSize = data.pageSize === undefined ? 20 : data.pageSize;
+    if (!Number.isInteger(data.page) || data.page < 1) {
+        throw createInvalidParamError('page should be a positive integer');
+    }
+    if (!Number.isInteger(data.pageSize) || data.pageSize < 1) {
+        throw createInvalidParamError('pageSize should be a positive integer');
+    }
+    return data;
+}
 /** 规范 getInfo 参数，强制 dramaId/dramaIds 二选一。 */
 function normalizeDramaInfoOptions(options) {
     if (options === undefined) {
@@ -19702,6 +19754,30 @@ class DramaAd {
         }
         return this._settle(this._invoke('getList', params), callbacks);
     }
+    /** 获取推荐短剧列表。 */
+    getRecommendedList(options, successCallback, failCallback) {
+        return this._getPagedList('getRecommendedList', options, successCallback, failCallback);
+    }
+    /** 获取用户收藏短剧列表。 */
+    getCollectionList(options, successCallback, failCallback) {
+        return this._getPagedList('getCollectionList', options, successCallback, failCallback);
+    }
+    /** 获取用户观看记录列表。 */
+    getHistoryList(options, successCallback, failCallback) {
+        return this._getPagedList('getHistoryList', options, successCallback, failCallback);
+    }
+    /** 搜索短剧。 */
+    search(options, successCallback, failCallback) {
+        const callbacks = resolveDramaCallbacks(options, successCallback, failCallback);
+        let params;
+        try {
+            params = normalizeDramaSearchOptions(options);
+        }
+        catch (error) {
+            return this._settle(Promise.reject(normalizeDramaError(error)), callbacks);
+        }
+        return this._settle(this._invoke('search', params), callbacks);
+    }
     /** 查询指定短剧信息。 */
     getInfo(options, successCallback, failCallback) {
         const callbacks = resolveDramaCallbacks(options, successCallback, failCallback);
@@ -19713,6 +19789,17 @@ class DramaAd {
             return this._settle(Promise.reject(normalizeDramaError(error)), callbacks);
         }
         return this._settle(this._invoke('getInfo', params), callbacks);
+    }
+    _getPagedList(method, options, successCallback, failCallback) {
+        const callbacks = resolveDramaCallbacks(options, successCallback, failCallback);
+        let params;
+        try {
+            params = normalizeDramaPagedOptions(options, method);
+        }
+        catch (error) {
+            return this._settle(Promise.reject(normalizeDramaError(error)), callbacks);
+        }
+        return this._settle(this._invoke(method, params), callbacks);
     }
     /** 打开短剧播放详情页。 */
     open(options, successCallback, failCallback) {

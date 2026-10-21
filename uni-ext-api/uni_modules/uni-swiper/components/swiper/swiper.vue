@@ -42,12 +42,12 @@
 </template>
 
 <script setup lang="ts">
-import { UniSwiperChangeEventDetail, UniSwiperChangeEvent, UniSwiperTransitionEventDetail, UniSwiperTransitionEvent,  UniSwiperAnimationFinishEvent, ContainerSize } from './types.uts'
-import { parsePxRpx, getDirection } from './utils.uts'
+import { UniSwiperChangeEventDetail, UniSwiperChangeEvent, UniSwiperTransitionEventDetail, UniSwiperTransitionEvent,  UniSwiperAnimationFinishEvent, ContainerSize } from './types.ts'
+import { parsePxRpx, getDirection } from './utils.ts'
 
 import {
 	UniSwiperElement,
-} from "./index.uts";
+} from "./index.ts";
 
 defineOptions({
 	name: 'swiper',

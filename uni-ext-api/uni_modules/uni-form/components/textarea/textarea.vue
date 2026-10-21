@@ -46,7 +46,7 @@
 		// #endif
 	} from "@/uni_modules/uni-form";
 	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-	import { hasRecentEditorTouch, markEditorTouchStart } from "../common.uts"
+	import { hasRecentEditorTouch, markEditorTouchStart } from "../common.ts"
 	// #endif
 
 	const keyboardHeight = ref(0)

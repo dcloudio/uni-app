@@ -1,3 +1,4 @@
+#include <utility>
 #include <chrono>
 #include <cmath>
 #include <tuple>
@@ -17,6 +18,21 @@ using namespace uniappx;
  */
 
 namespace recycle_waterflow {
+
+    template <typename A, typename B>
+    bool hasSameOwner(const std::weak_ptr<A> &a, const std::weak_ptr<B> &b) {
+        // Ownership identity remains valid after destruction and address reuse.
+        // 对象销毁及地址复用后，仍可通过控制块识别原实例。
+        return !a.owner_before(b) && !b.owner_before(a);
+    }
+
+    void queueInstanceCleanup(std::function<void()> cleanup) {
+        // Finish DOM teardown and defer erasure past any main-thread iteration.
+        // 先完成 DOM 清理，再异步注销，避免使主线程遍历的迭代器失效。
+        Instance::GetTaskExecutor().runOnDomQueueAsync([cleanup = std::move(cleanup)]() mutable {
+            Instance::GetTaskExecutor().runOnMainQueueAsync(std::move(cleanup));
+        });
+    }
     // common start
     auto waterflowInstanceCache = std::unordered_map<double, std::weak_ptr<RecycleWaterflow>>();
 
@@ -523,7 +539,8 @@ namespace recycle_waterflow {
                 current.index = static_cast<int>(i);
                 current.key = key;
                 auto instanceIt = this->itemInstanceMap.find(key);
-                current.size = instanceIt != this->itemInstanceMap.end() ? instanceIt->second->size : -1.0f;
+                auto instance = instanceIt != this->itemInstanceMap.end() ? instanceIt->second.lock() : nullptr;
+                current.size = instance ? instance->size : -1.0f;
                 current.offsetX = 0.0f;
                 current.offsetY = 0.0f;
                 current.type = 0;
@@ -637,9 +654,9 @@ namespace recycle_waterflow {
         // 遍历this->itemInstanceMap，更新所有已渲染item的offset
         for (const auto &pair: this->itemInstanceMap) {
             const auto &key = pair.first;
-            IRecycleFlowItem *itemInstance = pair.second;
+            auto itemInstance = pair.second.lock();
             auto it = this->keyItemMap.find(key);
-            if (it != this->keyItemMap.end()) {
+            if (itemInstance && it != this->keyItemMap.end()) {
                 ItemInfo *itemPtr = it->second;
                 itemInstance->updateItemOffset(itemPtr->offsetX,
                                                itemPtr->offsetY +
@@ -839,8 +856,10 @@ namespace recycle_waterflow {
         for (auto &item: this->list) {
             auto it = this->itemInstanceMap.find(item.key);
             if (it != this->itemInstanceMap.end()) {
-                IRecycleFlowItem *itemInstance = it->second;
-                itemInstance->updateItemCrossAxisSize(this->itemCrossAxisSize);
+                auto itemInstance = it->second.lock();
+                if (itemInstance) {
+                    itemInstance->updateItemCrossAxisSize(this->itemCrossAxisSize);
+                }
             }
         }
     }
@@ -892,8 +911,24 @@ namespace recycle_waterflow {
     RecycleFlowItem::RecycleFlowItem() {};
 
     RecycleFlowItem::~RecycleFlowItem() {
-        this->stopObserve();
-        this->removeInstance(this->key);
+        auto observer = std::exchange(this->resizeObserver, nullptr);
+        if (!observer && this->waterflowId < 1.0) {
+            return;
+        }
+        auto owner = this->weak_from_this();
+        queueInstanceCleanup([waterflowId = this->waterflowId, key = std::move(this->key), owner, observer]() {
+            auto cacheIt = waterflowInstanceCache.find(waterflowId);
+            if (cacheIt != waterflowInstanceCache.end()) {
+                auto waterflow = cacheIt->second.lock();
+                if (waterflow) {
+                    auto it = waterflow->itemInstanceMap.find(key);
+                    if (it != waterflow->itemInstanceMap.end() && hasSameOwner(it->second, owner)) {
+                        waterflow->itemInstanceMap.erase(it);
+                    }
+                }
+            }
+            delete observer;
+        });
     };
 
     /**
@@ -934,27 +969,20 @@ namespace recycle_waterflow {
 
     void RecycleFlowItem::startObserve() {
         this->resizeObserver = new UniResizeObserver(
-                [this](const std::vector<UniResizeObserverEntry> &entries) {
-                    if (entries.empty()) {
+                [weakThis = this->weak_from_this()](const std::vector<UniResizeObserverEntry> &entries) {
+                    auto self = weakThis.lock();
+                    if (!self || entries.empty()) {
                         return;
                     }
                     auto entry = entries[entries.size() - 1];
                     auto size = entry.borderBoxSize[0].blockSize;
                     auto crossAxisSize = entry.borderBoxSize[0].inlineSize;
                     if(crossAxisSize > 0.0f) {
-                        this->setSize(size);
+                        self->setSize(size);
                     }
                 });
         this->resizeObserver->observe(this->viewElement);
     };
-
-    void RecycleFlowItem::stopObserve() {
-        if (this->resizeObserver && this->viewElement) {
-            // this->resizeObserver->unobserve(this->viewElement);
-            delete this->resizeObserver;
-            this->resizeObserver = nullptr;
-        }
-    }
 
     float RecycleFlowItem::getSize() { return this->size; };
 
@@ -999,13 +1027,13 @@ namespace recycle_waterflow {
         this->initSize();
     };
 
-    IRecycleWaterflow *RecycleFlowItem::getRecycleWaterflow() {
+    std::shared_ptr<IRecycleWaterflow> RecycleFlowItem::getRecycleWaterflow() {
         if (this->waterflowId < 1.0) {
             return nullptr;
         }
         auto it = waterflowInstanceCache.find(this->waterflowId);
         if (it != waterflowInstanceCache.end()) {
-            return it->second.lock().get();
+            return it->second.lock();
         }
         return nullptr;
     }
@@ -1013,7 +1041,7 @@ namespace recycle_waterflow {
     void RecycleFlowItem::setInstance(std::string key) {
         auto recycleWaterflow = this->getRecycleWaterflow();
         if (recycleWaterflow) {
-            recycleWaterflow->itemInstanceMap[key] = this;
+            recycleWaterflow->itemInstanceMap[key] = this->weak_from_this();
         }
     }
 
@@ -1022,7 +1050,7 @@ namespace recycle_waterflow {
         if (recycleWaterflow) {
             auto it = recycleWaterflow->itemInstanceMap.find(key);
             if (it != recycleWaterflow->itemInstanceMap.end() &&
-                it->second == this) {
+                it->second.lock().get() == this) {
                 recycleWaterflow->itemInstanceMap.erase(it);
             }
         }

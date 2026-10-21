@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { UniProgressElement } from './global.uts'
+  import { UniProgressElement } from './global.ts'
 
   type ActiveModeType = 'backwards' | 'forwards'
 

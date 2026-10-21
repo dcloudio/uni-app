@@ -16,6 +16,7 @@ export {
   UniCheckboxGroupElement,
   UniCheckboxGroupElement as UniCheckboxGroupElementImpl,
 } from '@dcloudio/uni-ext-component/uni-form/components/checkbox-group/global.ts'
+export { default as FlowItem } from '@dcloudio/uni-ext-component/uni-waterflow/components/flow-item/flow-item.uvue'
 export { default as Form } from '@dcloudio/uni-ext-component/uni-form/components/form/form.uvue'
 export {
   UniFormElement,
@@ -26,6 +27,8 @@ export {
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
 } from '@dcloudio/uni-ext-component/uni-form/components/label/global.ts'
+export { default as ListItem } from '@dcloudio/uni-ext-component/uni-list-view/components/list-item/list-item.uvue'
+export { default as ListView } from '@dcloudio/uni-ext-component/uni-list-view/components/list-view/list-view.uvue'
 export { default as Loading } from '@dcloudio/uni-ext-component/uni-loading/components/loading/loading.uvue'
 export {
   UniLoadingElement,
@@ -81,6 +84,8 @@ export {
   UniSliderElement,
   UniSliderElement as UniSliderElementImpl,
 } from '@dcloudio/uni-ext-component/uni-form/components/slider/global.ts'
+export { default as StickyHeader } from '@dcloudio/uni-ext-component/uni-list-view/components/sticky-header/sticky-header.uvue'
+export { default as StickySection } from '@dcloudio/uni-ext-component/uni-list-view/components/sticky-section/sticky-section.uvue'
 export { default as Swiper } from '@dcloudio/uni-ext-component/uni-swiper/components/swiper/swiper.uvue'
 export {
   UniSwiperElement,
@@ -96,3 +101,4 @@ export {
   UniSwitchElement,
   UniSwitchElement as UniSwitchElementImpl,
 } from '@dcloudio/uni-ext-component/uni-form/components/switch/global.ts'
+export { default as Waterflow } from '@dcloudio/uni-ext-component/uni-waterflow/components/waterflow/waterflow.uvue'

@@ -1,3 +1,4 @@
+#include <utility>
 #include <chrono>
 #include <cmath>
 #include <limits>
@@ -17,6 +18,21 @@ using namespace uniappx;
  */
 
 namespace recycle_list {
+
+    template <typename A, typename B>
+    bool hasSameOwner(const std::weak_ptr<A> &a, const std::weak_ptr<B> &b) {
+        // Ownership identity remains valid after destruction and address reuse.
+        // 对象销毁及地址复用后，仍可通过控制块识别原实例。
+        return !a.owner_before(b) && !b.owner_before(a);
+    }
+
+    void queueInstanceCleanup(std::function<void()> cleanup) {
+        // Finish DOM teardown and defer erasure past any main-thread iteration.
+        // 先完成 DOM 清理，再异步注销，避免使主线程遍历的迭代器失效。
+        Instance::GetTaskExecutor().runOnDomQueueAsync([cleanup = std::move(cleanup)]() mutable {
+            Instance::GetTaskExecutor().runOnMainQueueAsync(std::move(cleanup));
+        });
+    }
 // common start
 /**
  * listInstanceCache、sectionInstanceCache内有所有instance
@@ -239,7 +255,8 @@ namespace recycle_list {
                 current.key = key;
                 // 优先用已存在的itemInstance的size，防止复用的instance element、key均相同时不上报尺寸
                 auto instanceIt = this->itemInstanceMap.find(key);
-                current.size = instanceIt != this->itemInstanceMap.end() ? instanceIt->second->size : -1.0f;
+                auto instance = instanceIt != this->itemInstanceMap.end() ? instanceIt->second.lock() : nullptr;
+                current.size = instance ? instance->size : -1.0f;
                 current.type = 0;
             }
             current.index = static_cast<int>(i);
@@ -327,7 +344,7 @@ namespace recycle_list {
     void RecycleListItemDataStore::updateItemOffset() {
         for (const auto &pair: this->itemInstanceMap) {
             const auto &key = pair.first;
-            IRecycleListItem *itemInstance = pair.second;
+            auto itemInstance = pair.second.lock();
             auto it = this->keyItemMap.find(key);
             if (it != this->keyItemMap.end()) {
                 ItemInfo *itemPtr = it->second;
@@ -2152,24 +2169,24 @@ namespace recycle_list {
     RecycleListHeader::RecycleListHeader() {}
 
     RecycleListHeader::~RecycleListHeader() {
-        if (!isValidSectionId(sectionId)) {
+        auto observer = std::exchange(this->resizeObserver, nullptr);
+        if (!observer && !isValidSectionId(this->sectionId)) {
             return;
         }
-        auto section = this->getSection();
-        if (section) {
-            section->bindStickyHeader(nullptr);
-        } else {
-            auto headerIt = headerInstanceCache.find(sectionId);
-            if (headerIt != headerInstanceCache.end()) {
-                headerInstanceCache.erase(headerIt);
+        auto owner = this->weak_from_this();
+        queueInstanceCleanup([sectionId = this->sectionId, owner, observer]() {
+            if (isValidSectionId(sectionId)) {
+                auto section = findRecycleSection(sectionId);
+                if (section && hasSameOwner(std::weak_ptr<RecycleListHeader>(section->stickyHeader), owner)) {
+                    section->bindStickyHeader(nullptr);
+                }
+                auto it = headerInstanceCache.find(sectionId);
+                if (it != headerInstanceCache.end() && hasSameOwner(it->second, owner)) {
+                    headerInstanceCache.erase(it);
+                }
             }
-        }
-
-        if (this->resizeObserver && this->viewElement) {
-            // this->resizeObserver->unobserve(this->viewElement);
-            delete this->resizeObserver;
-            this->resizeObserver = nullptr;
-        }
+            delete observer;
+        });
     }
 
     void RecycleListHeader::setSectionId(double sectionId) {
@@ -2204,13 +2221,14 @@ namespace recycle_list {
         }
 
         this->resizeObserver = new UniResizeObserver(
-                [this](const std::vector<UniResizeObserverEntry> &entries) {
-                    if (entries.empty()) {
+                [weakThis = this->weak_from_this()](const std::vector<UniResizeObserverEntry> &entries) {
+                    auto self = weakThis.lock();
+                    if (!self || entries.empty()) {
                         return;
                     }
                     auto entry = entries[entries.size() - 1];
                     auto size = entry.borderBoxSize[0].blockSize;
-                    this->setSize(size);
+                    self->setSize(size);
                 });
         this->resizeObserver->observe(this->viewElement);
     }
@@ -2289,10 +2307,25 @@ namespace recycle_list {
     RecycleListItem::RecycleListItem() {}
 
     RecycleListItem::~RecycleListItem() {
-        if (!this->key.empty()) {
-            this->removeInstance(this->key);
+        auto observer = std::exchange(this->resizeObserver, nullptr);
+        if (!observer && (this->key.empty() ||
+            (!isValidListViewId(this->listViewId) && !isValidSectionId(this->sectionId)))) {
+            return;
         }
-        this->stopObserve();
+        auto owner = this->weak_from_this();
+        queueInstanceCleanup([listViewId = this->listViewId, sectionId = this->sectionId,
+                              key = std::move(this->key), owner, observer]() {
+            if (!key.empty()) {
+                auto container = findRecycleContainer(listViewId, sectionId);
+                if (container) {
+                    auto it = container->itemInstanceMap.find(key);
+                    if (it != container->itemInstanceMap.end() && hasSameOwner(it->second, owner)) {
+                        container->itemInstanceMap.erase(it);
+                    }
+                }
+            }
+            delete observer;
+        });
     }
 
     void RecycleListItem::setListViewId(double listViewId) {
@@ -2327,23 +2360,16 @@ namespace recycle_list {
 
     void RecycleListItem::startObserve() {
         this->resizeObserver = new UniResizeObserver(
-                [this](const std::vector<UniResizeObserverEntry> &entries) {
-                    if (entries.empty()) {
+                [weakThis = this->weak_from_this()](const std::vector<UniResizeObserverEntry> &entries) {
+                    auto self = weakThis.lock();
+                    if (!self || entries.empty()) {
                         return;
                     }
                     auto entry = entries[entries.size() - 1];
                     auto size = entry.borderBoxSize[0].blockSize;
-                    this->setSize(size);
+                    self->setSize(size);
                 });
         this->resizeObserver->observe(this->viewElement);
-    }
-
-    void RecycleListItem::stopObserve() {
-        if (this->resizeObserver && this->viewElement) {
-            // this->resizeObserver->unobserve(this->viewElement);
-            delete this->resizeObserver;
-            this->resizeObserver = nullptr;
-        }
     }
 
     float RecycleListItem::getSize() { return this->size; }
@@ -2394,7 +2420,7 @@ namespace recycle_list {
     void RecycleListItem::setInstance(const std::string &key) {
         auto recycleList = this->getRecycleContainer();
         if (recycleList) {
-            recycleList->itemInstanceMap[key] = this;
+            recycleList->itemInstanceMap[key] = this->weak_from_this();
         }
     }
 
@@ -2403,7 +2429,7 @@ namespace recycle_list {
         if (recycleList) {
             auto it = recycleList->itemInstanceMap.find(key);
             if (it != recycleList->itemInstanceMap.end() &&
-                it->second == this) {
+                it->second.lock().get() == this) {
                 recycleList->itemInstanceMap.erase(it);
             }
         }

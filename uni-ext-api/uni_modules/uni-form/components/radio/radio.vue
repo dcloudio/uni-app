@@ -34,9 +34,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.uts'
-  import { UniRadioElement } from './global.uts'
-  import { LabelContext } from '../types.uts'
+  import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.ts'
+  import { UniRadioElement } from './global.ts'
+  import { LabelContext } from '../types.ts'
 
   interface InjectedRadioGroupContext {
     selectedValue: Ref<string | null>

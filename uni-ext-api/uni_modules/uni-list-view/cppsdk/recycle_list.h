@@ -140,7 +140,9 @@ namespace recycle_list {
         float calcToleranceLoose = 1.0f;
         float calcToleranceNormal = 0.2f;
         float calcToleranceStrict = 0.01f;
-        std::unordered_map<std::string, IRecycleListItem *> itemInstanceMap;
+        // Lock ownership while cross-thread cleanup is pending.
+        // 异步注销期间，读取方通过 lock() 保持列表项存活。
+        std::unordered_map<std::string, std::weak_ptr<IRecycleListItem>> itemInstanceMap;
 
 
         virtual void updateItemSize(const std::string &key, float size) = 0;
@@ -222,6 +224,7 @@ namespace recycle_list {
     private:
         // UniViewElement *viewElement = nullptr;
         uniappx::UniViewElement *placeholderElement = nullptr;
+        friend class RecycleListHeader;
         std::shared_ptr<RecycleListHeader> stickyHeader = nullptr;
         bool hasSyncedDefaultItemSize = false;
         float offset = 0.0f;
@@ -350,8 +353,6 @@ namespace recycle_list {
         std::shared_ptr<IRecycleContainer> getRecycleContainer();
 
         void startObserve();
-
-        void stopObserve();
 
         bool isCurrentElementAttached();
 

@@ -1,3 +1,4 @@
+<!-- #ifndef WEB -->
 <template>
     <view class="uni-sticky-section" :list-view-id="listViewId satisfies number"
         change:list-view-id="recycleListSectionCpp.setListViewId" :section-id="sectionId satisfies number"
@@ -123,3 +124,192 @@ defineExpose({
     width: 1px;
 }
 </style>
+<!-- #endif -->
+<!-- #ifdef WEB -->
+<template>
+    <view ref="element" class="uni-sticky-section" style="position: relative; overflow: visible">
+        <slot />
+        <view ref="placeholderElement" class="placeholder" />
+    </view>
+</template>
+
+<script setup lang="ts">
+    import {
+        getCurrentInstance,
+        inject,
+        onBeforeUnmount,
+        onMounted,
+        provide,
+        ref,
+        watch,
+    } from 'vue'
+    import { UniStickySectionElement } from '../../common/element'
+    import {
+        RecycleListItemDataStore,
+        type RecycleContainer,
+        type RecycleList,
+        type ScrollContext,
+        type SectionState,
+    } from '../../common/web/recycle-list'
+
+    defineOptions({
+        name: 'sticky-section',
+        rootElement: {
+            class: UniStickySectionElement,
+        },
+    })
+    const props = defineProps({
+        preload: { type: Boolean, default: false },
+    })
+    const instance = getCurrentInstance()!
+    const sectionId = instance.uid
+    const listView = inject<RecycleList>('__uni_recycle_list')!
+    const element = ref<UniViewElement | null>(null)
+    const placeholderElement = ref<UniViewElement | null>(null)
+    const renderRange = ref<[number, number]>([0, 0])
+    const store = new RecycleListItemDataStore()
+    const idKeyMap = new Map<string, string>()
+    let keys : string[] = []
+    let listIds : string[] = []
+    let hasSyncedDefaultItemSize = false
+
+    const section : SectionState = {
+        element: null,
+        headerElement: null,
+        headerSize: 0,
+        placeholderSize: 0,
+        offsetTop: 0,
+        resolveKeyById: id => idKeyMap.get(id),
+        getItemOffset,
+        onScrollContextUpdate,
+        applyDefaultItemSize,
+    }
+    listView.sectionMap.set(sectionId, section)
+    provide('__uni_recycle_view_instance', instance)
+    provide('__uni_recycle_section_id', sectionId)
+    provide('__uni_recycle_section', { section, updateHeaderSize })
+    provide<RecycleContainer>('__uni_recycle_container', {
+        store,
+        updateItemSize,
+        getItemOffset,
+    })
+
+    function updateIdKeyMap() {
+        if (listIds.length !== keys.length) return
+        idKeyMap.clear()
+        listIds.forEach((id, index) => {
+            if (id && keys[index]) idKeyMap.set(id, keys[index])
+        })
+    }
+
+    function updateList(newList : string[]) {
+        keys = newList
+        store.updateKeyList(newList)
+        updateIdKeyMap()
+        updatePlaceholderSize()
+    }
+
+    function updateListIds(ids : string[]) {
+        listIds = ids
+        updateIdKeyMap()
+        listView.queueLayout()
+    }
+
+    function updateRenderInfo(start : number, length : number) {
+        store.updateItemOffset(section.headerSize)
+        if (renderRange.value[0] !== start || renderRange.value[1] !== length) {
+            renderRange.value = [start, length]
+        }
+    }
+
+    function updatePlaceholderSize() {
+        section.placeholderSize = section.headerSize + store.contentSize
+        if (placeholderElement.value)
+            placeholderElement.value.style.height = `${store.contentSize}px`
+        listView.queueLayout()
+    }
+
+    function updateHeaderSize(height : number) {
+        if (section.headerSize === height) return
+        section.headerSize = height
+        updatePlaceholderSize()
+    }
+
+    function applyDefaultItemSize(height : number) {
+        hasSyncedDefaultItemSize = true
+        store.defaultItemSize = height
+        store.rebuildItemOffsetsFrom(0)
+        updatePlaceholderSize()
+    }
+
+    function updateItemSize(key : string, height : number) {
+        const item = store.keyItemMap.get(key)
+        if (!item || item.size === height) return
+        const wasUnknown = item.size < 0
+        item.size = height
+        if (!hasSyncedDefaultItemSize && wasUnknown && height > 0) {
+            listView.syncDefaultItemSize(height)
+        } else {
+            store.rebuildItemOffsetsFrom(item.index + 1)
+            updatePlaceholderSize()
+        }
+    }
+
+    function getItemOffset(key : string) {
+        const item = store.keyItemMap.get(key)
+        return item ? item.offset + section.headerSize : -1
+    }
+
+    function onScrollContextUpdate(context : ScrollContext) {
+        if (!section.element || context.containerSize === 0) return
+        const top = context.headerSize + section.offsetTop
+        const bottom = top + section.placeholderSize
+        if (
+            !keys.length ||
+            (!props.preload &&
+                (bottom < context.renderStartOffset || top > context.renderEndOffset))
+        ) {
+            updateRenderInfo(0, 0)
+            return
+        }
+        let min = Math.max(0, context.renderStartOffset - top - section.headerSize)
+        let max = Math.max(0, context.renderEndOffset - top - section.headerSize)
+        if (props.preload) {
+            const contentHeight = store.contentSize
+            min = Math.min(min, contentHeight)
+            max = Math.min(max, contentHeight)
+            let remaining = Math.min(contentHeight, context.containerSize) - (max - min)
+            if (remaining > 0) {
+                const prepend = Math.min(remaining, min)
+                min -= prepend
+                remaining -= prepend
+                max = Math.min(contentHeight, max + remaining)
+            }
+        }
+        if (max <= min) updateRenderInfo(0, 0)
+        else updateRenderInfo(...store.getRenderRange(min, max))
+    }
+
+    onMounted(() => {
+        section.element = element.value
+        updatePlaceholderSize()
+    })
+    watch(
+        () => props.preload,
+        () => listView.queueLayout(),
+    )
+    onBeforeUnmount(() => {
+        listView.sectionMap.delete(sectionId)
+        store.itemInstanceMap.clear()
+        listView.queueLayout()
+    })
+    defineExpose({ renderRange, updateList, updateListIds, updateRenderInfo })
+</script>
+
+<style>
+    .placeholder {
+        width: 1px;
+        flex-shrink: 0;
+    }
+</style>
+<!-- #endif -->

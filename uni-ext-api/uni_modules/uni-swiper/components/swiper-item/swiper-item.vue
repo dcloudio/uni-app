@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import {
 	UniSwiperItemElement,
-} from "./index.uts";
+} from "./index.ts";
 
 defineOptions({
 	name: 'swiper-item',

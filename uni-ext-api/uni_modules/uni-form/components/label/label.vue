@@ -8,9 +8,9 @@
   // Label that supports internal form controls (checkbox/radio/switch)
   // via provide/inject registration. Clicking the label will activate
   // the first registered control, or the one matching `for` if provided.
-  import { LABEL_KEY } from '../common.uts'
-  import { UniLabelElement } from './global.uts'
-  import { ActivatableChild, LabelContext } from '../types.uts'
+  import { LABEL_KEY } from '../common.ts'
+  import { UniLabelElement } from './global.ts'
+  import { ActivatableChild, LabelContext } from '../types.ts'
 
   interface LabelProps {
     /**

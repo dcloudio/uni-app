@@ -40,7 +40,7 @@
             "app-android": "dom2",
             "app-harmony": "dom2",
             "app-ios": "dom2",
-            "web": false,
+            "web": "dom2",
             "mp-weixin": false
         },
         "dependencies": [],

@@ -32,9 +32,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.uts'
-  import { UniCheckboxElement } from './global.uts'
-  import { LabelContext, CheckboxGroupContext } from '../types.uts'
+  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.ts'
+  import { UniCheckboxElement } from './global.ts'
+  import { LabelContext, CheckboxGroupContext } from '../types.ts'
 
   interface CheckboxProps {
     /**

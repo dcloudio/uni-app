@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { FORM_KEY, PICKER_VIEW_KEY } from '../common.uts'
-  import { UniPickerViewElement } from './global.uts'
-  import { FormContext, PickerViewColumnApi, PickerViewContext } from '../types.uts'
+  import { FORM_KEY, PICKER_VIEW_KEY } from '../common.ts'
+  import { UniPickerViewElement } from './global.ts'
+  import { FormContext, PickerViewColumnApi, PickerViewContext } from '../types.ts'
 
   interface PickerViewProps {
     /**

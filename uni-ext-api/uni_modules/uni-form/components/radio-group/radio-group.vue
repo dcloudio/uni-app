@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { FORM_KEY, RADIO_GROUP_KEY, toStringOrEmpty } from '../common.uts'
-  import { UniRadioGroupElement } from './global.uts'
-  import { FormContext } from '../types.uts'
+  import { FORM_KEY, RADIO_GROUP_KEY, toStringOrEmpty } from '../common.ts'
+  import { UniRadioGroupElement } from './global.ts'
+  import { FormContext } from '../types.ts'
 
   interface RadioGroupContext {
     selectedValue : Ref<string | null>

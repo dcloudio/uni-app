@@ -7905,6 +7905,57 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
+class UniVueElement extends Object {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = vue.ref("16px");
+  const loadingBorderWidth = vue.ref("1px");
+  vue.ref("8px");
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
+    }
+  },
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = vue.ref(null);
+    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_0;
+      return vue.openBlock(), vue.createElementBlock("uni-loading-element", {
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, [
+        vue.createVNode(_component_view, {
+          class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+          style: vue.normalizeStyle(loadingStyle)
+        }, null, 8, ["class", "style"])
+      ], 512);
+    };
+  }
+});
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -7970,37 +8021,15 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-scroll-view-refresher"
       }, [refresherDefaultStyle !== "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresh"
-      }, [vue.createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? vue.createVNode("svg", {
-        "key": "refresh__icon",
+      }, [refreshState == "pulling" || refreshState == "refreshing" ? vue.createVNode(_sfc_main$2, {
+        "key": "refresh__loading",
+        "class": "uni-scroll-view-refresh__loading",
+        "paused": refreshState == "pulling",
         "style": {
-          transform: "rotate(" + refreshRotate.value + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [vue.createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), vue.createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? vue.createVNode("svg", {
-        "key": "refresh__spinner",
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [vue.createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? vue.createVNode("div", {
+          transform: refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
+          color: refresherDefaultStyle
+        }
+      }, null, 8, ["paused", "style"]) : null]) : null, refresherDefaultStyle === "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresher-container",
         "style": {
           height: `${refresherThreshold}px`
@@ -10332,7 +10361,7 @@ class UniPageContainerElement extends UniElement {
 }
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
-const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
+const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent({
   ...{
     name: "page-container",
     rootElement: {
@@ -10602,57 +10631,6 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
           _: 3
         }, 8, ["class", "style"])) : vue.createCommentVNode("", true)
       ], 64);
-    };
-  }
-});
-class UniVueElement extends Object {
-}
-class UniLoadingElement extends UniVueElement {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = vue.ref("16px");
-  const loadingBorderWidth = vue.ref("1px");
-  vue.ref("8px");
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement
-    }
-  },
-  __name: "index-x",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = vue.ref(null);
-    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
-    return (_ctx, _cache) => {
-      const _component_view = __syscom_0;
-      return vue.openBlock(), vue.createElementBlock("uni-loading-element", {
-        class: "default __uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, [
-        vue.createVNode(_component_view, {
-          class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-          style: vue.normalizeStyle(loadingStyle)
-        }, null, 8, ["class", "style"])
-      ], 512);
     };
   }
 });
@@ -16007,13 +15985,13 @@ exports.ListItem = index$f;
 exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
-exports.Loading = _sfc_main$1;
+exports.Loading = _sfc_main$2;
 exports.Map = index$9;
 exports.MovableArea = index$r;
 exports.MovableView = index$q;
 exports.Navigator = index$p;
 exports.PageComponent = PageComponent;
-exports.PageContainer = _sfc_main$2;
+exports.PageContainer = _sfc_main$1;
 exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;

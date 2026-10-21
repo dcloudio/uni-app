@@ -40,9 +40,9 @@
    * }
    */
 
-  import { UniEditorBlurEvent, UniEditorFocusEvent, UniEditorInputEvent, UniEditorStatusChangeEvent, UniEditorStatusChangeEventDetail } from './global.uts'
+  import { UniEditorBlurEvent, UniEditorFocusEvent, UniEditorInputEvent, UniEditorStatusChangeEvent, UniEditorStatusChangeEventDetail } from './global.ts'
   // #ifdef VUE3-VAPOR
-  import { UniEditorElement } from './global.uts'
+  import { UniEditorElement } from './global.ts'
   // #endif
   // #ifndef VUE3-VAPOR
   import { UniEditorElement, NativeEditor } from '@/uni_modules/uni-editor'
