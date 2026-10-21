@@ -295,8 +295,11 @@ export const UVUE_APP_EASYCOMS = [
 export const UVUE_VAPOR_WEB_EASYCOMS = [
   'checkbox',
   'checkbox-group',
+  'flow-item',
   'form',
   'label',
+  'list-item',
+  'list-view',
   'loading',
   'match-media',
   'navigator',
@@ -308,7 +311,10 @@ export const UVUE_VAPOR_WEB_EASYCOMS = [
   'radio',
   'radio-group',
   'slider',
+  'sticky-header',
+  'sticky-section',
   'swiper',
   'swiper-item',
-  'switch'
+  'switch',
+  'waterflow'
 ]
