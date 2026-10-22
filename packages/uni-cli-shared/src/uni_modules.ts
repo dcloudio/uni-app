@@ -4,6 +4,20 @@ import fs from 'fs-extra'
 import type { UTSTargetLanguage } from './uts'
 import { isUniAppXJsEngine } from './x'
 
+const utsAppJsEntryNames = ['index.uts', 'index.ts', 'index.js'] as const
+
+/**
+ * 解析 app-js 插件入口，保持旧版 UTS 入口优先。
+ */
+export function resolveUTSAppJsEntry(appJsDir: string) {
+  for (const entryName of utsAppJsEntryNames) {
+    const entry = path.resolve(appJsDir, entryName)
+    if (fs.existsSync(entry)) {
+      return entry
+    }
+  }
+}
+
 export type DefineOptions = {
   name?: string
   app?:
@@ -318,22 +332,19 @@ export function parseInjects(
       //   source = `${source}/utssdk/index.uts`
       // }
     } else if (isUniAppXJsEngine()) {
-      if (
-        fs.existsSync(
-          path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
-        )
-      ) {
-        source = `${source}/utssdk/app-js/index.uts`
+      const appJsEntry = resolveUTSAppJsEntry(
+        path.resolve(uniModuleRootDir, 'utssdk', 'app-js')
+      )
+      if (appJsEntry) {
+        source = `${source}/utssdk/app-js/${path.basename(appJsEntry)}`
       }
     } else if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
       // 出于兼容历史项目考虑，鸿蒙优先使用app-harmony，无app-harmony的情况下再使用app-js
-      if (
-        !fs.existsSync(platformIndexFileName) &&
-        fs.existsSync(
-          path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
-        )
-      ) {
-        source = `${source}/utssdk/app-js/index.uts`
+      const appJsEntry = resolveUTSAppJsEntry(
+        path.resolve(uniModuleRootDir, 'utssdk', 'app-js')
+      )
+      if (!fs.existsSync(platformIndexFileName) && appJsEntry) {
+        source = `${source}/utssdk/app-js/${path.basename(appJsEntry)}`
       }
     }
 
