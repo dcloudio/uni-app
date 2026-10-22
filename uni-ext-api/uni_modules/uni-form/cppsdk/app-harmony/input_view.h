@@ -23,7 +23,6 @@ public:
   void applyConfiguration(const std::string &configuration);
   void applyRuntimeState(const std::string &state);
   void setValue(const std::string &value);
-  void setPlaceholder(const std::string &placeholder);
   void setEnabled(bool enabled);
   void setMaxLength(int max_length);
   void setType(const std::string &type);
@@ -71,7 +70,6 @@ private:
   ArkUI_NodeHandle input_node_ = nullptr;
   std::string value_;
   std::string focus_value_;
-  std::string placeholder_;
   std::string type_ = "text";
   bool enabled_ = true;
   bool password_ = false;

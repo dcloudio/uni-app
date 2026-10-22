@@ -563,7 +563,6 @@
 	const harmonyInputConfiguration = computed(() : string => {
 		const fields : string[] = [
 			'1',
-			props.placeholder,
 			props.disabled === true || props.disabled === 'true' ? '0' : '1',
 			getMaxLength(props.maxlength).toString(),
 			props.type,

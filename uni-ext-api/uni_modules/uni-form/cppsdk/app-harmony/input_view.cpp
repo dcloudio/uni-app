@@ -9,6 +9,7 @@
 #include <arkui/node_attributes/text_common.h>
 #include <arkui/node_attributes/text_input.h>
 #include <algorithm>
+#include <array>
 #include <cctype>
 #include <cmath>
 #include <cstdio>
@@ -16,7 +17,6 @@
 #include <memory>
 #include <string_view>
 #include <utility>
-#include <vector>
 
 namespace uniappx::form {
 
@@ -181,61 +181,122 @@ int32_t utf16Length(const std::string &value) {
   return length;
 }
 
+struct DecodedField {
+  std::string_view value;
+  std::string decoded;
+};
+
+template <size_t Capacity>
 bool splitConfiguration(const std::string &configuration,
-                        std::vector<std::string> &fields) {
+                        std::array<DecodedField, Capacity> &fields,
+                        size_t &field_count) {
   constexpr char kEscape = '\x1e';
   constexpr char kSeparator = '\x1f';
-  fields.clear();
-  fields.reserve(26);
-  std::string field;
-  bool escaped = false;
-  field.reserve(configuration.size());
-  for (const char ch : configuration) {
+  field_count = 0;
+  size_t field_start = 0;
+  bool has_escape = false;
+
+  const auto append_field = [&](size_t field_end) -> bool {
+    if (field_count >= Capacity) {
+      return false;
+    }
+    auto &field = fields[field_count++];
+    const std::string_view raw(configuration.data() + field_start,
+                               field_end - field_start);
+    if (!has_escape) {
+      field.value = raw;
+      return true;
+    }
+
+    field.decoded.clear();
+    field.decoded.reserve(raw.size());
+    bool escaped = false;
+    for (const char ch : raw) {
+      if (escaped) {
+        field.decoded.push_back(ch);
+        escaped = false;
+      } else if (ch == kEscape) {
+        escaped = true;
+      } else {
+        field.decoded.push_back(ch);
+      }
+    }
     if (escaped) {
-      field.push_back(ch);
-      escaped = false;
-    } else if (ch == kEscape) {
-      escaped = true;
+      return false;
+    }
+    field.value = field.decoded;
+    return true;
+  };
+
+  for (size_t index = 0; index < configuration.size(); index++) {
+    const char ch = configuration[index];
+    if (ch == kEscape) {
+      has_escape = true;
+      if (++index >= configuration.size()) {
+        return false;
+      }
     } else if (ch == kSeparator) {
-      fields.emplace_back(std::move(field));
-      field.clear();
-    } else {
-      field.push_back(ch);
+      if (!append_field(index)) {
+        return false;
+      }
+      field_start = index + 1;
+      has_escape = false;
     }
   }
-  if (escaped) {
-    return false;
+  return append_field(configuration.size());
+}
+
+void assignString(std::string &target, std::string_view value) {
+  target.assign(value.data(), value.size());
+}
+
+bool stringEquals(const std::string &left, std::string_view right) {
+  return left.size() == right.size() &&
+      std::equal(left.begin(), left.end(), right.begin());
+}
+
+int parseInteger(std::string_view value) {
+  size_t index = 0;
+  while (index < value.size() &&
+         std::isspace(static_cast<unsigned char>(value[index]))) {
+    index++;
   }
-  fields.emplace_back(std::move(field));
-  return true;
+  int sign = 1;
+  if (index < value.size() && (value[index] == '-' || value[index] == '+')) {
+    sign = value[index++] == '-' ? -1 : 1;
+  }
+  int result = 0;
+  while (index < value.size() && value[index] >= '0' && value[index] <= '9') {
+    result = result * 10 + value[index++] - '0';
+  }
+  return result * sign;
 }
 
 struct ParsedInputConfiguration {
-  std::string placeholder;
   bool enabled = true;
   int max_length = -1;
-  std::string type = "text";
+  std::string_view type;
   bool password = false;
   int cursor = -1;
   int selection_start = -1;
   int selection_end = -1;
-  std::string confirm_type = "done";
+  std::string_view confirm_type;
   bool confirm_hold = false;
   bool hold_keyboard = false;
-  std::string font_size;
-  std::string color;
-  std::string line_height;
-  std::string letter_spacing;
-  std::string font_weight;
-  std::string font_style;
-  std::string font_family;
-  std::string text_align;
-  std::string direction;
-  std::string cursor_color;
+  std::string_view font_size;
+  std::string_view color;
+  std::string_view line_height;
+  std::string_view letter_spacing;
+  std::string_view font_weight;
+  std::string_view font_style;
+  std::string_view font_family;
+  std::string_view text_align;
+  std::string_view direction;
+  std::string_view cursor_color;
 };
 
 struct ParsedInputRuntimeState {
-  std::string value;
+  std::string_view value;
   bool focus = false;
   bool auto_focus = false;
   int focus_request_version = 0;
@@ -243,55 +304,56 @@ struct ParsedInputRuntimeState {
 };
 
 bool parseConfiguration(const std::string &configuration,
-                        ParsedInputConfiguration &result) {
-  std::vector<std::string> fields;
-  if (!splitConfiguration(configuration, fields)) {
+                        ParsedInputConfiguration &result,
+                        std::array<DecodedField, 21> &fields) {
+  size_t field_count = 0;
+  if (!splitConfiguration(configuration, fields, field_count)) {
     return false;
   }
   // Accept the legacy unversioned format as well as the escaped, versioned
   // configuration payload.
   size_t index = 0;
-  if (fields.size() == 22 && fields[0] == "1") {
+  if (field_count == 21 && fields[0].value == "1") {
     index = 1;
-  } else if (fields.size() != 21) {
+  } else if (field_count != 20) {
     return false;
   }
-  result.placeholder = fields[index++];
-  result.enabled = fields[index++] == "1";
-  result.max_length = std::atoi(fields[index++].c_str());
-  result.type = fields[index++];
-  result.password = fields[index++] == "1";
-  result.cursor = std::atoi(fields[index++].c_str());
-  result.selection_start = std::atoi(fields[index++].c_str());
-  result.selection_end = std::atoi(fields[index++].c_str());
-  result.confirm_type = fields[index++];
-  result.confirm_hold = fields[index++] == "1";
-  result.hold_keyboard = fields[index++] == "1";
-  result.font_size = fields[index++];
-  result.color = fields[index++];
-  result.line_height = fields[index++];
-  result.letter_spacing = fields[index++];
-  result.font_weight = fields[index++];
-  result.font_style = fields[index++];
-  result.font_family = fields[index++];
-  result.text_align = fields[index++];
-  result.direction = fields[index++];
-  result.cursor_color = fields[index++];
+  result.enabled = fields[index++].value == "1";
+  result.max_length = parseInteger(fields[index++].value);
+  result.type = fields[index++].value;
+  result.password = fields[index++].value == "1";
+  result.cursor = parseInteger(fields[index++].value);
+  result.selection_start = parseInteger(fields[index++].value);
+  result.selection_end = parseInteger(fields[index++].value);
+  result.confirm_type = fields[index++].value;
+  result.confirm_hold = fields[index++].value == "1";
+  result.hold_keyboard = fields[index++].value == "1";
+  result.font_size = fields[index++].value;
+  result.color = fields[index++].value;
+  result.line_height = fields[index++].value;
+  result.letter_spacing = fields[index++].value;
+  result.font_weight = fields[index++].value;
+  result.font_style = fields[index++].value;
+  result.font_family = fields[index++].value;
+  result.text_align = fields[index++].value;
+  result.direction = fields[index++].value;
+  result.cursor_color = fields[index++].value;
   return true;
 }
 
 bool parseRuntimeState(const std::string &state,
-                       ParsedInputRuntimeState &result) {
-  std::vector<std::string> fields;
-  if (!splitConfiguration(state, fields) || fields.size() != 6 ||
-      fields[0] != "1") {
+                       ParsedInputRuntimeState &result,
+                       std::array<DecodedField, 6> &fields) {
+  size_t field_count = 0;
+  if (!splitConfiguration(state, fields, field_count) || field_count != 6 ||
+      fields[0].value != "1") {
     return false;
   }
-  result.value = std::move(fields[1]);
-  result.focus = fields[2] == "1";
-  result.auto_focus = fields[3] == "1";
-  result.focus_request_version = std::atoi(fields[4].c_str());
-  result.page_touch_end_version = std::atoi(fields[5].c_str());
+  result.value = fields[1].value;
+  result.focus = fields[2].value == "1";
+  result.auto_focus = fields[3].value == "1";
+  result.focus_request_version = parseInteger(fields[4].value);
+  result.page_touch_end_version = parseInteger(fields[5].value);
   return true;
 }
 
@@ -381,8 +443,9 @@ void NativeInputView::setRuntimeBatchedElement(Element *element) {
 }
 
 void NativeInputView::applyConfiguration(const std::string &configuration) {
+  std::array<DecodedField, 21> fields;
   ParsedInputConfiguration next;
-  if (!parseConfiguration(configuration, next)) {
+  if (!parseConfiguration(configuration, next, fields)) {
     // A malformed or newer payload must not leave the input permanently
     // blank. Fall back to the cached defaults; a later valid payload can still
     // update the live node through the normal diff path.
@@ -392,31 +455,31 @@ void NativeInputView::applyConfiguration(const std::string &configuration) {
   }
 
   const auto cache_configuration = [this, &next]() {
-    placeholder_ = next.placeholder;
     enabled_ = next.enabled;
     max_length_ = next.max_length;
-    type_ = next.type;
+    assignString(type_, next.type);
     password_ = next.password;
     cursor_ = next.cursor;
     selection_start_ = next.selection_start;
     selection_end_ = next.selection_end;
-    confirm_type_ = next.confirm_type;
+    assignString(confirm_type_, next.confirm_type);
     confirm_hold_ = next.confirm_hold;
     hold_keyboard_ = next.hold_keyboard;
-    font_size_value_ = next.font_size;
+    assignString(font_size_value_, next.font_size);
+    const std::string font_size_text(next.font_size);
     const float parsed_font_size = next.font_size.empty()
         ? 16.0f
-        : std::strtof(next.font_size.c_str(), nullptr);
+        : std::strtof(font_size_text.c_str(), nullptr);
     font_size_ = parsed_font_size > 0 ? parsed_font_size : 16.0f;
-    color_ = next.color;
-    line_height_ = next.line_height;
-    letter_spacing_ = next.letter_spacing;
-    font_weight_ = next.font_weight;
-    font_style_ = next.font_style;
-    font_family_ = next.font_family;
-    text_align_ = next.text_align;
-    direction_ = next.direction;
-    cursor_color_ = next.cursor_color;
+    assignString(color_, next.color);
+    assignString(line_height_, next.line_height);
+    assignString(letter_spacing_, next.letter_spacing);
+    assignString(font_weight_, next.font_weight);
+    assignString(font_style_, next.font_style);
+    assignString(font_family_, next.font_family);
+    assignString(text_align_, next.text_align);
+    assignString(direction_, next.direction);
+    assignString(cursor_color_, next.cursor_color);
   };
 
   // First configuration is cached before node creation, matching the old
@@ -429,13 +492,12 @@ void NativeInputView::applyConfiguration(const std::string &configuration) {
     return;
   }
 
-  if (placeholder_ != next.placeholder) setPlaceholder(next.placeholder);
   if (enabled_ != next.enabled) setEnabled(next.enabled);
   if (max_length_ != next.max_length) setMaxLength(next.max_length);
 
-  if (type_ != next.type || password_ != next.password) {
+  if (!stringEquals(type_, next.type) || password_ != next.password) {
     password_ = next.password;
-    setType(next.type);
+    setType(std::string(next.type));
   }
 
   const bool cursor_changed = cursor_ != next.cursor;
@@ -455,28 +517,47 @@ void NativeInputView::applyConfiguration(const std::string &configuration) {
     }
   }
 
-  if (confirm_type_ != next.confirm_type) updateConfirmType(next.confirm_type);
+  if (!stringEquals(confirm_type_, next.confirm_type)) {
+    updateConfirmType(std::string(next.confirm_type));
+  }
   if (confirm_hold_ != next.confirm_hold) updateConfirmHold(next.confirm_hold);
   hold_keyboard_ = next.hold_keyboard;
 
-  if (font_size_value_ != next.font_size) updateFontSize(next.font_size);
-  if (color_ != next.color) updateColor(next.color);
-  if (line_height_ != next.line_height) updateLineHeight(next.line_height);
-  if (letter_spacing_ != next.letter_spacing) {
-    updateLetterSpacing(next.letter_spacing);
+  if (!stringEquals(font_size_value_, next.font_size)) {
+    updateFontSize(std::string(next.font_size));
   }
-  if (font_weight_ != next.font_weight) updateFontWeight(next.font_weight);
-  if (font_style_ != next.font_style) updateFontStyle(next.font_style);
-  if (font_family_ != next.font_family) updateFontFamily(next.font_family);
-  if (text_align_ != next.text_align) updateTextAlign(next.text_align);
-  if (direction_ != next.direction) updateDirection(next.direction);
+  if (!stringEquals(color_, next.color)) updateColor(std::string(next.color));
+  if (!stringEquals(line_height_, next.line_height)) {
+    updateLineHeight(std::string(next.line_height));
+  }
+  if (!stringEquals(letter_spacing_, next.letter_spacing)) {
+    updateLetterSpacing(std::string(next.letter_spacing));
+  }
+  if (!stringEquals(font_weight_, next.font_weight)) {
+    updateFontWeight(std::string(next.font_weight));
+  }
+  if (!stringEquals(font_style_, next.font_style)) {
+    updateFontStyle(std::string(next.font_style));
+  }
+  if (!stringEquals(font_family_, next.font_family)) {
+    updateFontFamily(std::string(next.font_family));
+  }
+  if (!stringEquals(text_align_, next.text_align)) {
+    updateTextAlign(std::string(next.text_align));
+  }
+  if (!stringEquals(direction_, next.direction)) {
+    updateDirection(std::string(next.direction));
+  }
 
-  if (cursor_color_ != next.cursor_color) updateCursorColor(next.cursor_color);
+  if (!stringEquals(cursor_color_, next.cursor_color)) {
+    updateCursorColor(std::string(next.cursor_color));
+  }
 }
 
 void NativeInputView::applyRuntimeState(const std::string &state) {
+  std::array<DecodedField, 6> fields;
   ParsedInputRuntimeState next;
-  if (!parseRuntimeState(state, next)) {
+  if (!parseRuntimeState(state, next, fields)) {
     // Never leave the native node waiting forever when receiving an unknown
     // payload version. Defaults remain usable and a later valid state can
     // still update the live node.
@@ -486,7 +567,7 @@ void NativeInputView::applyRuntimeState(const std::string &state) {
   }
 
   if (!runtime_state_ready_) {
-    value_ = std::move(next.value);
+    assignString(value_, next.value);
     focus_requested_ = next.focus;
     is_focused_ = next.focus;
     auto_focus_ = next.auto_focus;
@@ -497,8 +578,8 @@ void NativeInputView::applyRuntimeState(const std::string &state) {
     return;
   }
 
-  if (value_ != next.value) {
-    setValue(next.value);
+  if (!stringEquals(value_, next.value)) {
+    setValue(std::string(next.value));
   }
 
   const bool focus_changed = focus_requested_ != next.focus;
@@ -752,15 +833,6 @@ void NativeInputView::setValue(const std::string &value) {
     cursor_ = std::min(previous_cursor, utf16Length(value_));
     setIntAttribute(NODE_TEXT_INPUT_CARET_OFFSET, cursor_);
   }
-}
-
-void NativeInputView::setPlaceholder(const std::string &placeholder) {
-  placeholder_ = placeholder;
-  ensureInputNode();
-  // Keep the prop cache for configuration diffing, but never send its text
-  // to ArkUI. The UVUE text node handles placeholder changes and styling.
-  setStringAttribute(NODE_TEXT_INPUT_PLACEHOLDER, "");
-  setColorAttribute(NODE_TEXT_INPUT_PLACEHOLDER_COLOR, "#00000000");
 }
 
 void NativeInputView::setEnabled(bool enabled) {
