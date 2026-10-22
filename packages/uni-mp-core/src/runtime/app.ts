@@ -6,7 +6,7 @@ import {
   ref,
 } from 'vue'
 
-import { initBaseInstance } from './componentInstance'
+import { callHook, hasHook, initBaseInstance } from './componentInstance'
 import { initHooks, initRuntimeHooks, initUnknownHooks } from './componentHooks'
 import { getLocaleLanguage } from '../runtime/util'
 import { resolveSubpackageRoot, setSubpackageAppVm } from './subpackage'
@@ -128,6 +128,8 @@ export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
       })
     if (!app) return
     ;(vm.$ as any).ctx.$scope = app
+    ;(vm.$ as any).ctx.$hasHook = hasHook
+    ;(vm.$ as any).ctx.$callHook = callHook
     const globalData = app.globalData
     if (globalData) {
       Object.keys(appOptions.globalData).forEach((name) => {
