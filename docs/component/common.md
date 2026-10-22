@@ -51,12 +51,18 @@
   + [box-shadow](../css/box-shadow.md) 不支持设置 inset 及 spreadRadius
   + [display](../css/display.md) 为 fixed 时显示存在缺陷，无法覆盖其它非 fixed 的元素
   + [transition](../css/transform.md) 动画不支持渲染相关（如background-color）的样式
-* image组件拍平后无法播放动画，gif、webp动画仅显示第一帧
-* view组件拍平后css属性transform、overflow、display、opacity存在缺陷，如果view存在子元素，这些样式不会对非拍平的子元素产生效果
-* css属性[visibility](../css/visibility.md)存在差异
+* 拍平时css样式[visibility](../css/visibility.md)存在差异
   + app-android平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的子元素默认仍然会显示，子元素的显示状态由其自身的visibility决定
   + app-ios平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的非拍平子元素默认仍然会显示，非拍平子元素的显示状态由其自身的visibility决定，而拍平子元素会跟随此view不可见
   + app-harmony平台visibility暂不支持拍平
+* view组件拍平后存在以下缺陷：
+  + css样式transform、overflow、display、opacity，如果view存在子元素，这些样式不会对非拍平的子元素产生效果
+  + hover-class、hover-stop-propagation、hover-start-time、hover-stay-time属性在拍平时无效
+* image组件拍平后存在以下缺：
+  + 无法播放动画，gif、webp动画仅显示第一帧
+* text组件拍平后存在以下缺陷：
+  + hover-class、hover-stop-propagation、hover-start-time、hover-stay-time属性在拍平时无效
+  + user-select、selectable属性在拍平时无效
 
 注意：当自定义组件的单根节点是（view、text、image）时，该自定义组件会自动支持flatten属性，并将其传递给它的单根节点，如果在不符合要求的自定义组件上使用flatten属性，则会被自动忽略。
 
