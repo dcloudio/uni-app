@@ -59,7 +59,7 @@
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| default | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 |
+| default | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 |
 | linear | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 |
 | easeInCubic | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | easeOutCubic | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 |
