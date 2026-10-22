@@ -59,16 +59,16 @@ function compileTemplate(
 }
 
 function expectInherited(attrs: Record<string, string>) {
-  expect(attrs.class).toContain('virtualHostClass')
-  expect(attrs.style).toContain('virtualHostStyle')
-  expect(attrs.hidden).toContain('virtualHostHidden')
+  expect(attrs.class).toContain('ahc')
+  expect(attrs.style).toContain('ahs')
+  expect(attrs.hidden).toContain('ahh')
   expect(attrs.id).toMatch(/^\{\{.+\}\}$/)
 }
 
 function expectNotInherited(attrs: Record<string, string>) {
-  expect(attrs.class || '').not.toContain('virtualHostClass')
-  expect(attrs.style || '').not.toContain('virtualHostStyle')
-  expect(attrs.hidden || '').not.toContain('virtualHostHidden')
+  expect(attrs.class || '').not.toContain('ahc')
+  expect(attrs.style || '').not.toContain('ahs')
+  expect(attrs.hidden || '').not.toContain('ahh')
   expect(attrs.id).toBeUndefined()
 }
 
@@ -204,10 +204,10 @@ describe.each([
     )
     for (const attrs of Object.values(elements)) {
       expectInherited(attrs)
-      expect(attrs.virtualHostClass).toContain('virtualHostClass')
-      expect(attrs.virtualHostStyle).toContain('virtualHostStyle')
-      expect(attrs.virtualHostHidden).toContain('virtualHostHidden')
-      expect(attrs.virtualHostId).toBe(attrs.id)
+      expect(attrs.ahc).toContain('ahc')
+      expect(attrs.ahs).toContain('ahs')
+      expect(attrs.ahh).toContain('ahh')
+      expect(attrs.ahid).toBe(attrs.id)
     }
   })
 

@@ -246,8 +246,8 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       ${script}
       export { ctx, handleTap, children };`,
       {
-        '../common.uts': { LABEL_KEY: 'UNI_LABEL_CTX' },
-        './global.uts': { UniLabelElement: class {} },
+        '../common.ts': { LABEL_KEY: 'UNI_LABEL_CTX' },
+        './global.ts': { UniLabelElement: class {} },
         'test-macros': {
           defineProps: () => props,
           withDefaults: (props: any) => props,

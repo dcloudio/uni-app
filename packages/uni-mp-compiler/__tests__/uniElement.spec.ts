@@ -23,7 +23,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view"/>`,
-      `<view style="{{$eS[a] + ';' + (virtualHostStyle || '')}}" id="{{a}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
+      `<view style="{{$eS[a] + ';' + (ahs || '')}}" id="{{a}}" class="{{[ahc]}}" hidden="{{ahh || false}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'), { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` })) }
   return __returned__
@@ -46,7 +46,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<custom id="custom"/>`,
-      `<custom u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{b||''}}" class=\"{{[virtualHostClass]}}\" virtualHostClass=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" virtualHostStyle=\"{{virtualHostStyle || ''}}\" hidden=\"{{virtualHostHidden || false}}\" virtualHostHidden=\"{{virtualHostHidden || false}}\"/>`,
+      `<custom u-i="2a9ec0b0-0" id="{{a}}" ahid="{{a}}" u-p="{{b||''}}" class=\"{{[ahc]}}\" ahc=\"{{[ahc]}}\" style=\"{{ahs}}\" ahs=\"{{ahs}}\" hidden=\"{{ahh || false}}\" ahh=\"{{ahh || false}}\"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _gei(_ctx, 'custom'), b: _p({ id: _gei(_ctx, 'custom') }) }
   return __returned__
@@ -93,7 +93,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view" style="color:red"/>`,
-      `<view style="{{'color:red' + ';' + $eS[a] + ';' + (virtualHostStyle || '')}}" id="{{a}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
+      `<view style="{{'color:red' + ';' + $eS[a] + ';' + (ahs || '')}}" id="{{a}}" class="{{[ahc]}}" hidden="{{ahh || false}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'), { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` })) }
   return __returned__
@@ -140,7 +140,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view :id="viewId"/>`,
-      `<view id="{{a}}" style="{{$eS[a] + ';' + (virtualHostStyle || '')}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + (ahs || '')}}\" class=\"{{[ahc]}}\" hidden=\"{{ahh || false}}"/>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _sei(_gei(_ctx, _ctx.viewId), 'view'), b: _s(_ses(_gei(_ctx, _ctx.viewId), { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` })) }
   return __returned__
