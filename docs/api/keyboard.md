@@ -97,6 +97,9 @@
  
 
 
+**注意**
+微信小程序不支持返回值。
+
 <!-- UTSAPIJSON.onKeyboardHeightChange.example -->
 
 
@@ -141,6 +144,9 @@
 | :- | :- | :- |  :-: |
 | id | number | 否 | Web: x | 
 
+
+**注意**
+微信小程序不支持 number 类型的参数，需传入 callback。
 
 
 
