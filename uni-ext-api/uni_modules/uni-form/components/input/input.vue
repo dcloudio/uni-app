@@ -138,9 +138,6 @@
 			// #endif
 			'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
 			'direction',
-			// #ifdef APP-HARMONY
-			'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'height',
-			// #endif
 		],
 		filterProperties: true
 	})
@@ -160,37 +157,10 @@
 		const value = style.get(property)
 		return typeof value == 'string' ? value : ''
 	}
-
-	const getHarmonyPixelValue = (property: string): number | null => {
-		const value = rpx2px(getStyleValue(property))
-		if (!value.endsWith('px')) return null
-		const result = parseFloat(value)
-		return isNaN(result) ? null : result
-	}
 	// #endif
 
 	const nativeViewHeight = computed(() => {
 		let res = 24
-		// #ifdef APP-HARMONY
-		const explicitHeight = getHarmonyPixelValue('height')
-		// An explicit CSS height is authoritative, including height: 0. Font and
-		// line-height may clip inside that box but must not resize it implicitly.
-		if (explicitHeight != null) {
-			return Math.max(0, explicitHeight!)
-		}
-		const fontSize = getHarmonyPixelValue('font-size')
-		if (fontSize != null) {
-			res = Math.max(res, Math.ceil(fontSize!))
-		}
-		const lineHeight = getHarmonyPixelValue('line-height')
-		if (lineHeight != null) {
-			res = Math.max(res, Math.ceil(lineHeight!))
-		}
-		const paddingTop = Math.max(0, getHarmonyPixelValue('padding-top') ?? 0)
-		const paddingBottom = Math.max(0, getHarmonyPixelValue('padding-bottom') ?? 0)
-		return Math.ceil(res + paddingTop + paddingBottom)
-		// #endif
-		// #ifndef APP-HARMONY
 		let styleFontSize = style.get('font-size') as string
 		if (styleFontSize) {
 			styleFontSize = rpx2px(styleFontSize)
@@ -206,7 +176,6 @@
 				res = Math.max(res, parseInt(styleLineHeight))
 			}
 		}
-		// #endif
 		return res
 	})
 	const placeholderStyle = computed(() => {
@@ -237,10 +206,6 @@
 		appendStyle('font-weight', getStyleValue('font-weight'))
 		appendStyle('font-style', getStyleValue('font-style'))
 		appendStyle('font-family', getStyleValue('font-family'))
-		appendStyle('padding-top', getStyleValue('padding-top'))
-		appendStyle('padding-right', getStyleValue('padding-right'))
-		appendStyle('padding-bottom', getStyleValue('padding-bottom'))
-		appendStyle('padding-left', getStyleValue('padding-left'))
 		// #endif
 		// #ifndef APP-HARMONY
 		let styleFontSize = style.get('font-size')
@@ -618,10 +583,6 @@
 			getStyleValue('font-family'),
 			getStyleValue('text-align'),
 			getStyleValue('direction'),
-			rpx2px(getStyleValue('padding-top')),
-			rpx2px(getStyleValue('padding-right')),
-			rpx2px(getStyleValue('padding-bottom')),
-			rpx2px(getStyleValue('padding-left')),
 			props.cursorColor
 		]
 		return encodeHarmonyFields(fields)

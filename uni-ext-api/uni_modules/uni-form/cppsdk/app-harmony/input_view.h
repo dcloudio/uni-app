@@ -38,10 +38,6 @@ public:
   void updateFontFamily(const std::string &value);
   void updateTextAlign(const std::string &value);
   void updateDirection(const std::string &value);
-  void updatePaddingTop(const std::string &value);
-  void updatePaddingRight(const std::string &value);
-  void updatePaddingBottom(const std::string &value);
-  void updatePaddingLeft(const std::string &value);
   void updateCursorColor(const std::string &value);
   void updateHoldKeyboard(bool hold_keyboard);
   void handlePageTouchEndFocus(int touch_end_version);
@@ -62,8 +58,6 @@ private:
                              float second, float third, float fourth);
   void setColorAttribute(ArkUI_NodeAttributeType type, const std::string &value);
   void resetAttribute(ArkUI_NodeAttributeType type);
-  void updatePadding(const std::string &top, const std::string &right,
-                     const std::string &bottom, const std::string &left);
   void setSelection(int selection_start, int selection_end);
   void applyRequestedSelection();
   int getInputType() const;
@@ -109,10 +103,6 @@ private:
   std::string text_align_;
   std::string direction_;
   std::string cursor_color_;
-  std::string padding_top_;
-  std::string padding_right_;
-  std::string padding_bottom_;
-  std::string padding_left_;
 };
 
 } // namespace uniappx::form

@@ -143,13 +143,6 @@ bool parseCssColor(const std::string &input, uint32_t &argb) {
   return true;
 }
 
-float parseDimension(const std::string &value) {
-  if (value.empty()) {
-    return 0.0f;
-  }
-  return std::max(0.0f, std::strtof(value.c_str(), nullptr));
-}
-
 int32_t utf16Length(const std::string &value) {
   int32_t length = 0;
   size_t index = 0;
@@ -238,10 +231,6 @@ struct ParsedInputConfiguration {
   std::string font_family;
   std::string text_align;
   std::string direction;
-  std::string padding_top;
-  std::string padding_right;
-  std::string padding_bottom;
-  std::string padding_left;
   std::string cursor_color;
 };
 
@@ -262,9 +251,9 @@ bool parseConfiguration(const std::string &configuration,
   // Accept the legacy unversioned format as well as the escaped, versioned
   // configuration payload.
   size_t index = 0;
-  if (fields.size() == 26 && fields[0] == "1") {
+  if (fields.size() == 22 && fields[0] == "1") {
     index = 1;
-  } else if (fields.size() != 25) {
+  } else if (fields.size() != 21) {
     return false;
   }
   result.placeholder = fields[index++];
@@ -287,10 +276,6 @@ bool parseConfiguration(const std::string &configuration,
   result.font_family = fields[index++];
   result.text_align = fields[index++];
   result.direction = fields[index++];
-  result.padding_top = fields[index++];
-  result.padding_right = fields[index++];
-  result.padding_bottom = fields[index++];
-  result.padding_left = fields[index++];
   result.cursor_color = fields[index++];
   return true;
 }
@@ -431,10 +416,6 @@ void NativeInputView::applyConfiguration(const std::string &configuration) {
     font_family_ = next.font_family;
     text_align_ = next.text_align;
     direction_ = next.direction;
-    padding_top_ = next.padding_top;
-    padding_right_ = next.padding_right;
-    padding_bottom_ = next.padding_bottom;
-    padding_left_ = next.padding_left;
     cursor_color_ = next.cursor_color;
   };
 
@@ -490,16 +471,6 @@ void NativeInputView::applyConfiguration(const std::string &configuration) {
   if (text_align_ != next.text_align) updateTextAlign(next.text_align);
   if (direction_ != next.direction) updateDirection(next.direction);
 
-  if (padding_top_ != next.padding_top ||
-      padding_right_ != next.padding_right ||
-      padding_bottom_ != next.padding_bottom ||
-      padding_left_ != next.padding_left) {
-    padding_top_ = next.padding_top;
-    padding_right_ = next.padding_right;
-    padding_bottom_ = next.padding_bottom;
-    padding_left_ = next.padding_left;
-    updatePadding(padding_top_, padding_right_, padding_bottom_, padding_left_);
-  }
   if (cursor_color_ != next.cursor_color) updateCursorColor(next.cursor_color);
 }
 
@@ -630,7 +601,6 @@ void NativeInputView::ensureInputNode() {
   if (!direction_.empty()) {
     updateDirection(direction_);
   }
-  updatePadding(padding_top_, padding_right_, padding_bottom_, padding_left_);
   if (!cursor_color_.empty()) {
     updateCursorColor(cursor_color_);
   }
@@ -1008,41 +978,6 @@ void NativeInputView::updateDirection(const std::string &value) {
   ensureInputNode();
   setIntAttribute(NODE_TEXT_INPUT_DIRECTION,
                   value == "rtl" ? ARKUI_DIRECTION_RTL : ARKUI_DIRECTION_LTR);
-}
-
-void NativeInputView::updatePaddingTop(const std::string &value) {
-  padding_top_ = value;
-  updatePadding(padding_top_, padding_right_, padding_bottom_, padding_left_);
-}
-
-void NativeInputView::updatePaddingRight(const std::string &value) {
-  padding_right_ = value;
-  updatePadding(padding_top_, padding_right_, padding_bottom_, padding_left_);
-}
-
-void NativeInputView::updatePaddingBottom(const std::string &value) {
-  padding_bottom_ = value;
-  updatePadding(padding_top_, padding_right_, padding_bottom_, padding_left_);
-}
-
-void NativeInputView::updatePaddingLeft(const std::string &value) {
-  padding_left_ = value;
-  updatePadding(padding_top_, padding_right_, padding_bottom_, padding_left_);
-}
-
-void NativeInputView::updatePadding(const std::string &top,
-                                    const std::string &right,
-                                    const std::string &bottom,
-                                    const std::string &left) {
-  ensureInputNode();
-  ArkUI_NumberValue values[] = {
-      {.f32 = parseDimension(top)},
-      {.f32 = parseDimension(right)},
-      {.f32 = parseDimension(bottom)},
-      {.f32 = parseDimension(left)},
-  };
-  ArkUI_AttributeItem item = {values, 4};
-  UniAppX_ArkUIModuleInterface->setAttribute(input_node_, NODE_PADDING, &item);
 }
 
 void NativeInputView::updateCursorColor(const std::string &value) {
