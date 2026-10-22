@@ -594,7 +594,7 @@ offSeeked
       </navigator>
     </view>
 
-    <bottom-safe-area />
+    <view class="scroll-view_bottom-fixed"></view>
 </template>
 <script setup lang="ts">
   const audioUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
