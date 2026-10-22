@@ -31,7 +31,8 @@ export const getWindowInfo = defineSyncApi<typeof uni.getWindowInfo>(
       height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom,
     }
 
-    const { top: windowTop, bottom: windowBottom } = getWindowOffset()
+    const { top, bottom: windowBottom, topWindowHeight } = getWindowOffset()
+    const windowTop = top + topWindowHeight
 
     windowHeight -= windowTop
     windowHeight -= windowBottom
