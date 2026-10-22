@@ -1589,4 +1589,37 @@ flexBasis: fill;
       ),
     ])
   })
+
+  test.each(['app-android', 'app-ios', 'app-harmony'])(
+    'animation names preserve case with normalized keywords on %s',
+    async (platform) => {
+      const { json, messages } = await objectifierRule(
+        `
+.shorthand {
+  animation: areaPeopleEditFadeIn 1S LINEAR INFINITE ALTERNATE FORWARDS, FadeIn 200MS FORWARDS;
+}
+.longhand {
+  animation-name: areaPeopleEditFadeIn, FadeIn, fadein, NONE;
+  animation-duration: 1S, 200MS;
+  animation-iteration-count: INFINITE, 2;
+}
+`,
+        { dom2: true, platform }
+      )
+      expect(messages).toHaveLength(0)
+      expect(json.shorthand['']).toMatchObject({
+        animationName: 'areaPeopleEditFadeIn,FadeIn',
+        animationDuration: '1s,200ms',
+        animationTimingFunction: 'linear,ease',
+        animationIterationCount: 'infinite,1',
+        animationDirection: 'alternate,normal',
+        animationFillMode: 'forwards,forwards',
+      })
+      expect(json.longhand['']).toEqual({
+        animationName: 'areaPeopleEditFadeIn,FadeIn,fadein,none',
+        animationDuration: '1s,200ms',
+        animationIterationCount: 'infinite,2',
+      })
+    }
+  )
 })

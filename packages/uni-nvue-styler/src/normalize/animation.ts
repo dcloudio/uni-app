@@ -175,9 +175,10 @@ function createAnimationSyntaxOrKeywordNormalize(
   )
   const keywordNormalize = createSupportedAnimationKeywordNormalize(property)
   return (v, options) => {
-    const value = (v || '').toString().toLowerCase()
-    return keywords.has(value)
-      ? keywordNormalize(value, options)
+    const value = (v || '').toString()
+    const lowerValue = value.toLowerCase()
+    return keywords.has(lowerValue)
+      ? keywordNormalize(lowerValue, options)
       : syntaxNormalize(value, options)
   }
 }
