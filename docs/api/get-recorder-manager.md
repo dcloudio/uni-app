@@ -416,7 +416,7 @@ offInterruptionEnd
       <button class="btnstyle" size="default" id="btn-stopPlay" @click="stopVoice">停止播放</button>
     </view>
 
-    <bottom-safe-area />
+    <view class="scroll-view_bottom-fixed"></view>
   </scroll-view>
 </template>
 <script setup lang="ts">

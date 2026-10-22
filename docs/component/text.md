@@ -786,35 +786,34 @@ HBuilderX 4.51版本+ text组件嵌套时，子组件支持点击事件响应。
           <text class="uni-title-text">text相关属性示例</text>
         </view>
 
-        <view class="uni-title">
-          <text class="uni-subtitle-text">根据宽度自动折行</text>
-        </view>
-        <view class="text-box">
-          <text class="text">{{ multiLineText }}</text>
-        </view>
-        <text class="uni-subtitle-text">根据宽度自动折行，拍平测试</text>
-        <view class="text-box">
-          <text class="text" flatten>{{ multiLineText }}</text>
-        </view>
-
-        <view class="uni-title">
-          <text class="uni-subtitle-text">\\n换行</text>
-        </view>
-        <view class="text-box">
-          <text class="text">\n 换行</text>
-          <text class="text">\\n 换行</text>
-          <text class="text">\\\n 换行</text>
-          <text class="text">\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
-          <text class="text">\n\n连续换行\n\n连续换行\n\n连续换行</text>
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">根据宽度自动折行</text>
+            <view class="text-box"><text class="text">{{ multiLineText }}</text></view>
+          </view>
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">根据宽度自动折行，拍平测试</text>
+            <view class="text-box"><text class="text" flatten>{{ multiLineText }}</text></view>
+          </view>
         </view>
 
-        <text class="uni-subtitle-text">\\n换行，拍平测试</text>
-        <view class="text-box">
-          <text class="text" flatten>\n 换行</text>
-          <text class="text" flatten>\\n 换行</text>
-          <text class="text" flatten>\\\n 换行</text>
-          <text class="text" flatten>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
-          <text class="text" flatten>\n\n连续换行\n\n连续换行\n\n连续换行</text>
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">\\n换行</text>
+            <view class="text-box">
+              <text class="text">\n 换行</text><text class="text">\\n 换行</text><text class="text">\\\n 换行</text>
+              <text class="text">\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+              <text class="text">\n\n连续换行\n\n连续换行\n\n连续换行</text>
+            </view>
+          </view>
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">\\n换行，拍平测试</text>
+            <view class="text-box">
+              <text class="text" flatten>\n 换行</text><text class="text" flatten>\\n 换行</text><text class="text" flatten>\\\n 换行</text>
+              <text class="text" flatten>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+              <text class="text" flatten>\n\n连续换行\n\n连续换行\n\n连续换行</text>
+            </view>
+          </view>
         </view>
 
         <view class="uni-title">
@@ -832,6 +831,21 @@ HBuilderX 4.51版本+ text组件嵌套时，子组件支持点击事件响应。
             <text v-if="data.maxLinesText" id="max-lines-v-if-text" class="max-lines-text" :max-lines="1">{{ data.maxLinesText }}</text>
           </view>
         </template>
+
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">max-lines="2"</text>
+            <view class="text-box">
+              <text id="max-lines-text" class="max-lines-demo-text" max-lines="2">{{ multiLineText }}</text>
+            </view>
+          </view>
+          <view class="text-compare-column">
+            <text class="uni-subtitle-text">max-lines="2"，拍平测试</text>
+            <view class="text-box">
+              <text id="max-lines-flat-text" class="max-lines-demo-text" max-lines="2" flatten>{{ multiLineText }}</text>
+            </view>
+          </view>
+        </view>
 
         <view class="uni-title">
           <text class="uni-subtitle-text">space属性（App平台蒸汽模式不支持，推荐改用css white-space）</text>
@@ -869,25 +883,25 @@ HBuilderX 4.51版本+ text组件嵌套时，子组件支持点击事件响应。
           <!-- #endif -->
         </view>
 
-        <view class="uni-title">
-          <text class="uni-subtitle-text">嵌套1</text>
-        </view>
-        <view class="text-box">
+        <view class="text-compare-row">
+          <view class="text-compare-column">
+          <text class="uni-subtitle-text">嵌套1</text><view class="text-box">
           <text class="text" @tap="nestedText1Tap">一级节点黑/白色
             <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
               <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
             </text>
             <text style="font-size: 50px">二级节点大字体</text>
           </text>
-        </view>
-        <text class="uni-subtitle-text">嵌套1，拍平测试</text>
-        <view class="text-box">
+          </view></view>
+          <view class="text-compare-column">
+        <text class="uni-subtitle-text">嵌套1，拍平测试</text><view class="text-box">
           <text class="text" flatten @tap="nestedText1Tap">一级节点黑/白色
             <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
               <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
             </text>
             <text style="font-size: 50px">二级节点大字体</text>
           </text>
+          </view></view>
         </view>
 
         <text class="uni-subtitle-text">动态text嵌套</text>
@@ -895,36 +909,31 @@ HBuilderX 4.51版本+ text组件嵌套时，子组件支持点击事件响应。
           <text v-for="n in textArr" :key="n">{{ n }}</text>
         </text>
 
-        <view class="uni-title">
-          <text class="uni-subtitle-text">空嵌套测试</text>
-        </view>
-        <view class="text-box">
+        <view class="text-compare-row">
+          <view class="text-compare-column"><text class="uni-subtitle-text">空嵌套测试</text><view class="text-box">
           <text class="text">
             <text>
               文字应居中显示<text></text>
             </text>
           </text>
-        </view>
-        <text class="uni-subtitle-text">空嵌套测试（根拍平）</text>
-        <view class="text-box">
+          </view></view>
+          <view class="text-compare-column"><text class="uni-subtitle-text">空嵌套测试（根拍平）</text><view class="text-box">
           <text class="text" flatten>
             <text>
               文字应居中显示<text></text>
             </text>
           </text>
+          </view></view>
         </view>
 
-        <view class="uni-title">
-          <text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动</text>
-        </view>
-        <scroll-view class="text-container" direction="horizontal">
+        <view class="text-compare-row">
+          <view class="text-compare-column"><text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动</text><scroll-view class="text-container" direction="horizontal">
           <text class="text" style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
-        </scroll-view>
-
-        <text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动【拍平测试】</text>
-        <scroll-view class="text-container" direction="horizontal">
+          </scroll-view></view>
+          <view class="text-compare-column"><text class="uni-subtitle-text">含换行符的多行文本(3行)，但不自动换行，可横向滚动【拍平测试】</text><scroll-view class="text-container" direction="horizontal">
           <text class="text" flatten style="white-space: nowrap;align-self: flex-start;">HBuilderX，轻巧、极速，极客编辑器；\nuni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。uni-app x 是一个庞大的工程，它包括uts语言、uvue渲染引擎、uni的组件和API、以及扩展机制。\nuts是一门类ts的、跨平台的、新语言。</text>
-        </scroll-view>
+          </scroll-view></view>
+        </view>
 
         <!-- #ifdef APP -->
         <view class="uni-title">
@@ -1132,6 +1141,16 @@ defineExpose({
     align-items: center;
   }
 
+  .text-compare-row {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  .text-compare-column {
+    width: 48%;
+  }
+
   .text-container {
     width: 100%;
     background-color: var(--list-background-color, #ffffff);
@@ -1153,6 +1172,15 @@ defineExpose({
   .max-lines-text {
     width: 100px;
     font-size: 40px;
+    color: var(--text-color, #353535);
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .max-lines-demo-text {
+    width: 100px;
+    font-size: 15px;
+    line-height: 27px;
     color: var(--text-color, #353535);
     text-overflow: ellipsis;
     text-align: center;

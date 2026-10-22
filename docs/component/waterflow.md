@@ -626,7 +626,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
       </navigator>
     </view>
 
-    <bottom-safe-area />
+    <view class="scroll-view_bottom-fixed"></view>
   </scroll-view>
 </template>
 

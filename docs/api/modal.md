@@ -230,7 +230,7 @@
       </view>
     </view>
 
-    <bottom-safe-area />
+    <view class="scroll-view_bottom-fixed"></view>
 </template>
 
 <script setup lang="ts">

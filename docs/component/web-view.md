@@ -340,7 +340,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   </scroll-view>
   <!-- #endif -->
 
-  <bottom-safe-area />
+  <view class="scroll-view_bottom-fixed"></view>
 </template>
 
 <script setup lang="ts">

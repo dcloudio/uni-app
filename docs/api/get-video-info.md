@@ -128,7 +128,7 @@
       <text class="margin-top-10">{{relativeVideoInfo}}</text>
     </view>
 
-    <bottom-safe-area />
+    <view class="scroll-view_bottom-fixed"></view>
     <!-- #endif -->
 </template>
 

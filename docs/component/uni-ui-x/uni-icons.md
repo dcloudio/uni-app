@@ -275,20 +275,20 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 >示例
 ```vue
 <template>
-	<scroll-view class="page">
-		<view class="intro">
-			<text class="intro-text">图标组件可以减少小图片的使用，并支持自定义颜色和尺寸。</text>
+	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+		<view class="intro" :class="{ 'surface-dark': isDarkMode }">
+			<text class="intro-text" :class="{ 'text-dark': isDarkMode }">图标组件可以减少小图片的使用，并支持自定义颜色和尺寸。</text>
 		</view>
 
-		<view class="section-header">
-			<text class="section-title">图标</text>
+		<view class="section-header" :class="{ 'surface-dark': isDarkMode }">
+			<text class="section-title" :class="{ 'text-dark': isDarkMode }">图标</text>
 			<view class="display-mode">
-				<text class="display-mode-text">{{ checked ? 'Unicode' : '名称' }}</text>
+				<text class="display-mode-text" :class="{ 'text-dark': isDarkMode }">{{ checked ? 'Unicode' : '名称' }}</text>
 				<switch class="display-mode-switch" :checked="checked" @change="change" />
 			</view>
 		</view>
 
-		<view class="icon-content">
+		<view class="icon-content" :class="{ 'surface-dark': isDarkMode }">
 			<view
 				v-for="(item, index) in iconlist"
 				:key="index"
@@ -297,11 +297,18 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 			>
 				<uni-icons
 					:type="item.font_class"
-					:class="activeIndex == index ? 'icon-glyph icon-glyph-active' : 'icon-glyph'"
+					class="icon-glyph"
+					:class="{
+						'icon-glyph-active': activeIndex == index,
+						'icon-glyph-dark': isDarkMode
+					}"
 				/>
 				<text
 					class="icon-label"
-					:style="{ color: activeIndex == index ? '#007aff' : '#5e6d82' }"
+					:class="{
+						'icon-label-active': activeIndex == index,
+						'icon-label-dark': isDarkMode
+					}"
 				>{{ checked ? item.unicode : item.font_class }}</text>
 			</view>
 		</view>
@@ -309,10 +316,22 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 </template>
 
 <script setup lang="uts">
+	import { state } from '@/store/index.ts'
 	import { iconlist, iconType } from './icons_type'
 
 	const activeIndex = ref(-1)
 	const checked = ref(false)
+	const isDarkMode = computed(() : boolean => state.isDarkMode)
+
+	const syncNavigationBar = () : void => {
+		// #ifdef APP
+		const dark = isDarkMode.value
+		uni.setNavigationBarColor({
+			frontColor: dark ? '#ffffff' : '#000000',
+			backgroundColor: dark ? '#1a1a1a' : '#efeff4'
+		})
+		// #endif
+	}
 
 	const change = (event : UniSwitchChangeEvent) => {
 		checked.value = event.detail.value
@@ -332,6 +351,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 		})
 	}
 
+	watch(isDarkMode, syncNavigationBar, { immediate: true })
+	onShow(syncNavigationBar)
+
 	defineExpose({
 		activeIndex,
 		checked
@@ -341,12 +363,16 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 <style>
 	.page {
 		flex: 1;
-		background-color: var(--background-color, #f5f5f5);
+		background-color: var(--background-color, #efeff4);
+	}
+
+	.page-dark {
+		background-color: #1a1a1a;
 	}
 
 	.intro {
 		padding: 16px;
-		background-color: var(--content-background-color, #ffffff);
+		background-color: var(--list-background-color, #ffffff);
 	}
 
 	.intro-text {
@@ -358,7 +384,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 	.section-header {
 		margin-top: 10px;
 		padding: 12px 16px;
-		background-color: var(--content-background-color, #ffffff);
+		background-color: var(--list-background-color, #ffffff);
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
@@ -378,7 +404,8 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 	.display-mode-text {
 		margin-right: 8px;
 		font-size: 13px;
-		color: var(--secondary-text-color, #5e6d82);
+		color: var(--text-color, #333333);
+		opacity: 0.65;
 	}
 
 	.display-mode-switch {
@@ -387,9 +414,13 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 
 	.icon-content {
 		padding: 8px 0 24px;
-		background-color: var(--content-background-color, #ffffff);
+		background-color: var(--list-background-color, #ffffff);
 		flex-direction: row;
 		flex-wrap: wrap;
+	}
+
+	.surface-dark {
+		background-color: #2d2d2d;
 	}
 
 	.icon-item {
@@ -404,16 +435,38 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 		margin-top: 8px;
 		font-size: 12px;
 		text-align: center;
+		color: var(--text-color, #333333);
+		opacity: 0.65;
+	}
+
+	.icon-label-dark {
+		color: #ffffff;
+	}
+
+	.icon-label-active {
+		color: #007aff;
+		opacity: 1;
 	}
 
 	.icon-glyph {
-		color: #5e6d82;
+		color: var(--text-color, #333333);
 		font-size: 30px;
+		opacity: 0.65;
+	}
+
+	.icon-glyph-dark {
+		color: #ffffff;
 	}
 
 	.icon-glyph-active {
 		color: #007aff;
+		opacity: 1;
 	}
+
+	.text-dark {
+		color: #ffffff;
+	}
+
 </style>
 
 ```

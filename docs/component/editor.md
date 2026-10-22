@@ -190,7 +190,7 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
       <button>富文本编辑模板</button>
     </navigator>
 
-    <bottom-safe-area />
+    <view class="scroll-view_bottom-fixed"></view>
   </view>
 </template>
 
