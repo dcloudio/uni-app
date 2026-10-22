@@ -8220,6 +8220,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   props: props$8,
   emits: [
     "scroll",
+    "scrollend",
     "scrolltoupper",
     "scrolltolower",
     "refresherrefresh",

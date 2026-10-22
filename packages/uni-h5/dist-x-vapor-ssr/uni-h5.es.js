@@ -1,4 +1,4 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
 import { isArray, isString, extend, isFunction, capitalize, camelize, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, inject, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, defineComponent as defineComponent$2, mergeProps, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, logError } from "vue";
@@ -881,7 +881,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-const passiveOptions$1 = /* @__PURE__ */ passive(true);
+const passiveOptions$2 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
 let inited = false;
@@ -905,7 +905,7 @@ function addInteractListener(vm = { userAction: false }) {
             !--userInteract && setUserAction(false);
           }, 0);
         },
-        passiveOptions$1
+        passiveOptions$2
       );
     });
     inited = true;
@@ -8642,6 +8642,65 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
+const SCROLL_END_DELAY = 100;
+const passiveOptions$1 = { passive: true };
+function onScrollend(element, listener) {
+  if ("onscrollend" in element) {
+    element.addEventListener("scrollend", listener, passiveOptions$1);
+    return () => {
+      element.removeEventListener("scrollend", listener);
+    };
+  }
+  const activeTouches = /* @__PURE__ */ new Set();
+  let lastScrollEvent = null;
+  let waitingForTouchEnd = false;
+  const schedule = debounce(
+    () => {
+      if (activeTouches.size > 0) {
+        waitingForTouchEnd = true;
+      } else if (lastScrollEvent !== null) {
+        const event = lastScrollEvent;
+        lastScrollEvent = null;
+        listener(event);
+      }
+    },
+    SCROLL_END_DELAY,
+    { setTimeout, clearTimeout }
+  );
+  const onScroll = (event) => {
+    waitingForTouchEnd = false;
+    lastScrollEvent = event;
+    schedule();
+  };
+  const onTouchStart = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.add(event.changedTouches[i].identifier);
+    }
+  };
+  const onTouchEnd = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.delete(event.changedTouches[i].identifier);
+    }
+    if (activeTouches.size === 0 && waitingForTouchEnd) {
+      waitingForTouchEnd = false;
+      schedule();
+    }
+  };
+  element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
+  element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
+  element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
+  element.addEventListener("scroll", onScroll, passiveOptions$1);
+  return () => {
+    element.removeEventListener("touchstart", onTouchStart);
+    element.removeEventListener("touchend", onTouchEnd);
+    element.removeEventListener("touchcancel", onTouchEnd);
+    element.removeEventListener("scroll", onScroll);
+    schedule.cancel();
+    activeTouches.clear();
+    lastScrollEvent = null;
+    waitingForTouchEnd = false;
+  };
+}
 let UniVueElement$2 = class UniVueElement extends Object {
 };
 let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
@@ -8883,6 +8942,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   props: props$8,
   emits: [
     "scroll",
+    "scrollend",
     "scrolltoupper",
     "scrolltolower",
     "refresherrefresh",
@@ -9053,6 +9113,17 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     }
     state.lastScrollTop = target.scrollTop;
     state.lastScrollLeft = target.scrollLeft;
+  }
+  function _handleScrollEnd($event) {
+    const target = $event.target;
+    trigger("scrollend", $event, {
+      scrollLeft: target.scrollLeft,
+      scrollTop: target.scrollTop,
+      scrollHeight: target.scrollHeight,
+      scrollWidth: target.scrollWidth,
+      deltaX: state.lastScrollLeft - target.scrollLeft,
+      deltaY: state.lastScrollTop - target.scrollTop
+    });
   }
   function _scrollTopChanged(val) {
     if (realScrollY.value) {
@@ -9269,11 +9340,13 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
     main.value.addEventListener("scroll", __handleScroll, passive(false));
     main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
+    const removeScrollendListener = onScrollend(main.value, _handleScrollEnd);
     onBeforeUnmount(() => {
       main.value.removeEventListener("touchstart", __handleTouchStart);
       main.value.removeEventListener("touchmove", __handleTouchMove);
       main.value.removeEventListener("scroll", __handleScroll);
       main.value.removeEventListener("touchend", __handleTouchEnd);
+      removeScrollendListener();
     });
   });
   onActivated(() => {

@@ -56,7 +56,6 @@ function transformLoading(node, context) {
 
 !!(process.env.NODE_ENV !== "production") ? Object.freeze({}) : {};
 !!(process.env.NODE_ENV !== "production") ? Object.freeze([]) : [];
-const isArray = Array.isArray;
 const cacheStringFunction = (fn) => {
   const cache = /* @__PURE__ */ Object.create(null);
   return (str) => {
@@ -140,32 +139,6 @@ function transformWaterflowElement(node) {
     node.tagType = compilerCore.ElementTypes.ELEMENT;
     node.isSelfClosing = false;
     node.props.push(uniCliShared.createAttributeNode('type', 'custom'));
-}
-
-function getMiniProgramAIPaths(inputDir, platform) {
-    if (!inputDir || !platform) {
-        return [];
-    }
-    const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
-    const config = manifestJson[platform];
-    if (!(config === null || config === void 0 ? void 0 : config.agent)) {
-        return [];
-    }
-    const agentConfig = config.agent;
-    const paths = [];
-    const instruction = agentConfig.instruction;
-    if (instruction) {
-        paths.push(instruction);
-    }
-    const pageMetadata = agentConfig.pageMetadata;
-    if (pageMetadata) {
-        paths.push(pageMetadata);
-    }
-    const skills = agentConfig.skills;
-    if (isArray(skills) && skills.length > 0) {
-        paths.push(...skills.map((skill) => skill.path).filter(Boolean));
-    }
-    return paths;
 }
 
 var description = "项目配置文件。";
@@ -358,7 +331,7 @@ const options = {
                         'functional-pages',
                         'project.private.config.json',
                         projectConfigFilename,
-                        ...getMiniProgramAIPaths(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+                        ...uniCliShared.getMiniProgramAIPaths(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
                     ],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;

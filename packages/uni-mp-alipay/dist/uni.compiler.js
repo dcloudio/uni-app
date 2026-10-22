@@ -319,7 +319,12 @@ const options = {
                     : []),
                 ...(process.env.UNI_MP_PLUGIN ? [uniCliShared.copyMiniProgramPluginJson] : []),
                 {
-                    src: ['customize-tab-bar', 'preload.json', 'sitemap.json'],
+                    src: [
+                        'customize-tab-bar',
+                        'preload.json',
+                        'sitemap.json',
+                        ...uniCliShared.getMiniProgramAIPaths(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
+                    ],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
                     },

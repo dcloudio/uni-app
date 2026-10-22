@@ -66,14 +66,13 @@
 		// #ifdef APP-ANDROID || APP-IOS
 		NativeInputView,
 		// #endif
-		// #ifdef APP-ANDROID
+		// #ifdef APP-ANDROID || APP-HARMONY
 		UniInputElement,
 		// #endif
 		// #ifdef APP-IOS
 		UniInputElementImpl,
 		// #endif
 		// #ifdef APP-HARMONY
-		UniInputElement,
 		activateHarmonyInputPositionOwner,
 		activateHarmonyInputKeyboardAvoid,
 		beginHarmonyInputKeyboardAvoid,
@@ -264,14 +263,11 @@
 	defineOptions({
 		name: 'input',
 		rootElement: {
-			// #ifdef APP-ANDROID
+			// #ifdef APP-ANDROID || APP-HARMONY
 			class: UniInputElement
 			// #endif
 			// #ifdef APP-IOS
 			class: UniInputElementImpl
-			// #endif
-			// #ifdef APP-HARMONY
-			class: UniInputElement
 			// #endif
 		},
 		externalClasses: ['placeholder-class']
@@ -509,8 +505,6 @@
 		holdKeyboard: false,
 	});
 
-	const ins = getCurrentInstance()
-
 	const emit = defineEmits<{
 		(e : 'update:value', value : string) : void
 		(e : 'input', value : UniInputEvent) : void
@@ -734,104 +728,6 @@
 	// #ifdef APP-IOS
 	const instance = getCurrentInstance()
 	// #endif
-	// #ifdef APP-HARMONY
-	function clearHarmonyFocusAttemptTimer() {
-		if (harmonyFocusAttemptTimer != null) {
-			clearTimeout(harmonyFocusAttemptTimer!)
-			harmonyFocusAttemptTimer = null
-		}
-	}
-
-	function beginHarmonyFocusAttempt() {
-		const harmonyDisabled = props.disabled === true || props.disabled === 'true'
-		if (harmonyDisabled) return
-		ensureHarmonyKeyboardHeightListener()
-		beginHarmonyInputKeyboardAvoid(harmonyPositionOwner)
-		clearHarmonyFocusAttemptTimer()
-		// NativeNode focus has no failure callback. Restore the window-level
-		// avoid mode if a focus event does not arrive after the request.
-		harmonyFocusAttemptTimer = setTimeout(() => {
-			harmonyFocusAttemptTimer = null
-			if (!isFocusing.value) {
-				cancelHarmonyFocusAttempt()
-			}
-		}, 1000)
-	}
-
-	function completeHarmonyFocusAttempt() {
-		clearHarmonyFocusAttemptTimer()
-		activateHarmonyInputKeyboardAvoid(harmonyPositionOwner)
-	}
-
-	function cancelHarmonyFocusAttempt() {
-		clearHarmonyFocusAttemptTimer()
-		cancelHarmonyInputKeyboardAvoid(harmonyPositionOwner)
-		// A failed attempt owns only this component's listener ID. Preserve a
-		// previous successful focus's listener while its keyboard is closing.
-		if (!isFocusing.value
-			&& (!isHarmonyInputPositionOwner(harmonyPositionOwner) || keyboardHeight.value <= 0)) {
-			removeHarmonyKeyboardHeightListener()
-		}
-	}
-
-	function replayHarmonyFocus() {
-		const shouldFocus = props.focus === true || props.focus === 'true'
-		const shouldAutoFocus = props.autoFocus === true || props.autoFocus === 'true'
-		if (shouldFocus || shouldAutoFocus) {
-			beginHarmonyFocusAttempt()
-			// Apply focus before auto-focus so auto-focus wins when both props
-			// are present during initial rendering.
-			harmonyFocusRequest.value = shouldFocus
-			harmonyAutoFocusRequest.value = shouldAutoFocus
-			// Force a native focus replay even when the boolean props have not
-			// changed since the initial render.
-			harmonyFocusRequestVersion.value++
-		}
-	}
-
-	function ensureHarmonyKeyboardHeightListener() {
-		if (harmonyKeyboardHeightChangeId != null) return
-		harmonyKeyboardHeightChangeId = uni.onKeyboardHeightChange((event) => {
-			const height = Math.max(0, event.height)
-			setHarmonyInputKeyboardHeight(height)
-			handleHarmonyKeyboardHeightChange(height)
-		})
-	}
-
-	function removeHarmonyKeyboardHeightListener() {
-		if (harmonyKeyboardHeightChangeId == null) return
-		const listenerId = harmonyKeyboardHeightChangeId!
-		// Clear local state first so an exception from a Window that has already
-		// been destroyed cannot leave this component looking registered.
-		harmonyKeyboardHeightChangeId = null
-		try {
-			uni.offKeyboardHeightChange(listenerId)
-		} catch (e) {
-			// On application exit Harmony can destroy Window before component
-			// beforeUnmount hooks run. Ignore only that expected teardown race.
-			const message : string = getHarmonyInputErrorMessage(e)
-			if (message.indexOf('Window is nullptr') < 0) {
-				console.error(message)
-			}
-		}
-	}
-
-	function ensureHarmonyPageTouchEndListener() {
-		if (pageTouchEndId != null) return
-		pageTouchEndId = proxy?.$page.onTouchEnd(() => {
-			const recentEditorTouch = hasRecentEditorTouch()
-			if (!isTouching && !recentEditorTouch) {
-				pageTouchEndVersion.value++
-			}
-		})
-	}
-
-	function removeHarmonyPageTouchEndListener() {
-		if (pageTouchEndId == null) return
-		proxy?.$page.offTouchEnd(pageTouchEndId!)
-		pageTouchEndId = null
-	}
-	// #endif
 
 	// #ifdef APP-IOS
 	function onNativeViewReady() {
@@ -932,6 +828,7 @@
 	}
 	// #endif
 
+	// #ifdef APP-ANDROID || APP-IOS
 	function onViewInit(e : UniNativeViewInitEvent) {
 		// #ifdef APP-ANDROID
 		inputView = new NativeInputView(
@@ -967,17 +864,8 @@
 		onNativeViewReady()
 		// #endif
 	}
-
-	// #ifdef APP-HARMONY
-	function onHarmonyNativeViewInit(e : UniNativeViewInitEvent) {
-		harmonyNativeViewElement = e.detail.element
-		// Initial focus must wait until onMounted has registered the keyboard
-		// listener. Otherwise the first keyboardHeightChange can be lost.
-		if (harmonyMounted) {
-			replayHarmonyFocus()
-		}
-	}
 	// #endif
+
 	// #ifdef APP-ANDROID
 	function onInput(e : UniNativeViewEvent) {
 		const newValue = e.detail.value ?? ""
@@ -1051,6 +939,112 @@
 	}
 	// #endif
 	// #ifdef APP-HARMONY
+	function clearHarmonyFocusAttemptTimer() {
+		if (harmonyFocusAttemptTimer != null) {
+			clearTimeout(harmonyFocusAttemptTimer!)
+			harmonyFocusAttemptTimer = null
+		}
+	}
+
+	function beginHarmonyFocusAttempt() {
+		const harmonyDisabled = props.disabled === true || props.disabled === 'true'
+		if (harmonyDisabled) return
+		ensureHarmonyKeyboardHeightListener()
+		beginHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+		clearHarmonyFocusAttemptTimer()
+		// NativeNode focus has no failure callback. Restore the window-level
+		// avoid mode if a focus event does not arrive after the request.
+		harmonyFocusAttemptTimer = setTimeout(() => {
+			harmonyFocusAttemptTimer = null
+			if (!isFocusing.value) {
+				cancelHarmonyFocusAttempt()
+			}
+		}, 1000)
+	}
+
+	function completeHarmonyFocusAttempt() {
+		clearHarmonyFocusAttemptTimer()
+		activateHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+	}
+
+	function cancelHarmonyFocusAttempt() {
+		clearHarmonyFocusAttemptTimer()
+		cancelHarmonyInputKeyboardAvoid(harmonyPositionOwner)
+		// A failed attempt owns only this component's listener ID. Preserve a
+		// previous successful focus's listener while its keyboard is closing.
+		if (!isFocusing.value
+			&& (!isHarmonyInputPositionOwner(harmonyPositionOwner) || keyboardHeight.value <= 0)) {
+			removeHarmonyKeyboardHeightListener()
+		}
+	}
+
+	function replayHarmonyFocus() {
+		const shouldFocus = props.focus === true || props.focus === 'true'
+		const shouldAutoFocus = props.autoFocus === true || props.autoFocus === 'true'
+		if (shouldFocus || shouldAutoFocus) {
+			beginHarmonyFocusAttempt()
+			// Apply focus before auto-focus so auto-focus wins when both props
+			// are present during initial rendering.
+			harmonyFocusRequest.value = shouldFocus
+			harmonyAutoFocusRequest.value = shouldAutoFocus
+			// Force a native focus replay even when the boolean props have not
+			// changed since the initial render.
+			harmonyFocusRequestVersion.value++
+		}
+	}
+
+	function ensureHarmonyKeyboardHeightListener() {
+		if (harmonyKeyboardHeightChangeId != null) return
+		harmonyKeyboardHeightChangeId = uni.onKeyboardHeightChange((event) => {
+			const height = Math.max(0, event.height)
+			setHarmonyInputKeyboardHeight(height)
+			handleHarmonyKeyboardHeightChange(height)
+		})
+	}
+
+	function removeHarmonyKeyboardHeightListener() {
+		if (harmonyKeyboardHeightChangeId == null) return
+		const listenerId = harmonyKeyboardHeightChangeId!
+		// Clear local state first so an exception from a Window that has already
+		// been destroyed cannot leave this component looking registered.
+		harmonyKeyboardHeightChangeId = null
+		try {
+			uni.offKeyboardHeightChange(listenerId)
+		} catch (e) {
+			// On application exit Harmony can destroy Window before component
+			// beforeUnmount hooks run. Ignore only that expected teardown race.
+			const message : string = getHarmonyInputErrorMessage(e)
+			if (message.indexOf('Window is nullptr') < 0) {
+				console.error(message)
+			}
+		}
+	}
+
+	function ensureHarmonyPageTouchEndListener() {
+		if (pageTouchEndId != null) return
+		pageTouchEndId = proxy?.$page.onTouchEnd(() => {
+			const recentEditorTouch = hasRecentEditorTouch()
+			if (!isTouching && !recentEditorTouch) {
+				pageTouchEndVersion.value++
+			}
+		})
+	}
+
+	function removeHarmonyPageTouchEndListener() {
+		if (pageTouchEndId == null) return
+		proxy?.$page.offTouchEnd(pageTouchEndId!)
+		pageTouchEndId = null
+	}
+
+	function onHarmonyNativeViewInit(e : UniNativeViewInitEvent) {
+		harmonyNativeViewElement = e.detail.element
+		// Initial focus must wait until onMounted has registered the keyboard
+		// listener. Otherwise the first keyboardHeightChange can be lost.
+		if (harmonyMounted) {
+			replayHarmonyFocus()
+		}
+	}
+
 	function onInput(e : UniInputEvent) {
 		const detail = e.detail as unknown as HarmonyInputEventDetail
 		isComposing.value = detail.composing == true
@@ -1157,10 +1151,8 @@
 	}
 
 	function resetHarmonyInputPosition(release : boolean = false) {
-		// #ifdef APP-HARMONY
 		resetHarmonyInputPositionOwner(harmonyPositionOwner, release)
 		harmonyPositionReset = null
-		// #endif
 	}
 
 	function isHarmonyScrollParent(element : UniElement) : boolean {
@@ -1543,15 +1535,13 @@
 				}
 			})
 		}
-		// #ifndef APP-HARMONY
+		// #ifdef APP-ANDROID
 		setTimeout(() => {
-			// #ifdef APP-ANDROID
 			if (inputView) {
 				inputView.beginUpdateBatch()
 				syncAndroidInputStyleProps()
 				inputView.endUpdateBatch()
 			}
-			// #endif
 		}, 80)
 		// #endif
 

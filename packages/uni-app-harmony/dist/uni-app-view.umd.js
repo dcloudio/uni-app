@@ -1568,7 +1568,7 @@
   });
   var LONGPRESS_TIMEOUT = 350;
   var LONGPRESS_THRESHOLD = 10;
-  var passiveOptions$2 = /* @__PURE__ */ passive(true);
+  var passiveOptions$3 = /* @__PURE__ */ passive(true);
   var longPressTimer;
   function clearLongPressTimer() {
     if (longPressTimer) {
@@ -1618,10 +1618,10 @@
     }
   }
   function initLongPress() {
-    window.addEventListener("touchstart", touchstart, passiveOptions$2);
-    window.addEventListener("touchmove", touchmove, passiveOptions$2);
-    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
-    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
+    window.addEventListener("touchstart", touchstart, passiveOptions$3);
+    window.addEventListener("touchmove", touchmove, passiveOptions$3);
+    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
+    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
   }
   function checkValue$1(value, defaultValue) {
     var newValue = Number(value);
@@ -16015,7 +16015,7 @@
     };
     return newFn;
   }
-  var passiveOptions$1 = /* @__PURE__ */ passive(true);
+  var passiveOptions$2 = /* @__PURE__ */ passive(true);
   var states = [];
   var userInteract = 0;
   var inited = false;
@@ -16033,7 +16033,7 @@
           setTimeout(() => {
             !--userInteract && setUserAction(false);
           }, 0);
-        }, passiveOptions$1);
+        }, passiveOptions$2);
       });
       inited = true;
     }
@@ -20071,6 +20071,66 @@
       return result;
     }
   });
+  var SCROLL_END_DELAY = 100;
+  var passiveOptions$1 = {
+    passive: true
+  };
+  function onScrollend(element, listener) {
+    if ("onscrollend" in element) {
+      element.addEventListener("scrollend", listener, passiveOptions$1);
+      return () => {
+        element.removeEventListener("scrollend", listener);
+      };
+    }
+    var activeTouches = /* @__PURE__ */ new Set();
+    var lastScrollEvent = null;
+    var waitingForTouchEnd = false;
+    var schedule = debounce(() => {
+      if (activeTouches.size > 0) {
+        waitingForTouchEnd = true;
+      } else if (lastScrollEvent !== null) {
+        var event = lastScrollEvent;
+        lastScrollEvent = null;
+        listener(event);
+      }
+    }, SCROLL_END_DELAY, {
+      setTimeout,
+      clearTimeout
+    });
+    var onScroll = (event) => {
+      waitingForTouchEnd = false;
+      lastScrollEvent = event;
+      schedule();
+    };
+    var onTouchStart = (event) => {
+      for (var i2 = 0; i2 < event.changedTouches.length; i2++) {
+        activeTouches.add(event.changedTouches[i2].identifier);
+      }
+    };
+    var onTouchEnd = (event) => {
+      for (var i2 = 0; i2 < event.changedTouches.length; i2++) {
+        activeTouches.delete(event.changedTouches[i2].identifier);
+      }
+      if (activeTouches.size === 0 && waitingForTouchEnd) {
+        waitingForTouchEnd = false;
+        schedule();
+      }
+    };
+    element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
+    element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
+    element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
+    element.addEventListener("scroll", onScroll, passiveOptions$1);
+    return () => {
+      element.removeEventListener("touchstart", onTouchStart);
+      element.removeEventListener("touchend", onTouchEnd);
+      element.removeEventListener("touchcancel", onTouchEnd);
+      element.removeEventListener("scroll", onScroll);
+      schedule.cancel();
+      activeTouches.clear();
+      lastScrollEvent = null;
+      waitingForTouchEnd = false;
+    };
+  }
   var _objectGopn = {};
   var $keys = _objectKeysInternal;
   var hiddenKeys = _enumBugKeys.concat("length", "prototype");
@@ -20441,7 +20501,7 @@
       MODE: 3
     },
     props: props$j,
-    emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
+    emits: ["scroll", "scrollend", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
         emit: emit2,
@@ -20628,6 +20688,17 @@
       }
       state.lastScrollTop = target.scrollTop;
       state.lastScrollLeft = target.scrollLeft;
+    }
+    function _handleScrollEnd($event) {
+      var target = $event.target;
+      trigger2("scrollend", $event, {
+        scrollLeft: target.scrollLeft,
+        scrollTop: target.scrollTop,
+        scrollHeight: target.scrollHeight,
+        scrollWidth: target.scrollWidth,
+        deltaX: state.lastScrollLeft - target.scrollLeft,
+        deltaY: state.lastScrollTop - target.scrollTop
+      });
     }
     function _scrollTopChanged(val) {
       if (realScrollY.value) {
@@ -20856,12 +20927,14 @@
       main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
       main.value.addEventListener("scroll", __handleScroll, passive(false));
       main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
+      var removeScrollendListener = onScrollend(main.value, _handleScrollEnd);
       initScrollBounce();
       onBeforeUnmount(() => {
         main.value.removeEventListener("touchstart", __handleTouchStart);
         main.value.removeEventListener("touchmove", __handleTouchMove);
         main.value.removeEventListener("scroll", __handleScroll);
         main.value.removeEventListener("touchend", __handleTouchEnd);
+        removeScrollendListener();
       });
     });
     onActivated(() => {
