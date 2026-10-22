@@ -1,4 +1,4 @@
-import { camelize } from '@vue/shared'
+import { camelize, toHandlerKey } from '@vue/shared'
 import {
   type ComponentNode,
   type DirectiveNode,
@@ -33,7 +33,10 @@ import {
   ATTR_VUE_REF,
   ATTR_VUE_REF_IN_FOR,
   ATTR_VUE_SLOTS,
+  FRAGMENT_EVENTS,
+  type FragmentEvent,
   filterObserverName,
+  rewriteExpression,
   rewriteWithHelper,
 } from './utils'
 import { genBabelExpr, genExpr } from '../codegen'
@@ -178,11 +181,12 @@ function isComponentProp(name: string) {
  * @param externalClasses 组件的 externalClasses 数组
  */
 export function rewriteBinding(
-  { tag, props }: ComponentNode,
+  node: ComponentNode,
   context: TransformContext,
   externalClasses?: string[],
   preserveDynamicExternalClasses = false
 ) {
+  const { tag, props } = node
   const isMiniProgramComponent = context.isMiniProgramComponent(tag)
   if (
     isMiniProgramComponent === 'plugin' ||
@@ -209,6 +213,9 @@ export function rewriteBinding(
   const properties: (ObjectProperty | SpreadElement)[] = []
   const classExprArr: Expression[] = []
   const styleExprArr: Expression[] = []
+  const fragment = !!context.miniProgram.component?.fragment
+  const fragmentEvents = context.miniProgram.component?.fragmentEvents || []
+  const fragmentEventMeta: FragmentEvent[] = []
   for (let i = 0; i < props.length; i++) {
     const prop = props[i]
     let isReservedProp = false
@@ -234,6 +241,36 @@ export function rewriteBinding(
         createObjectProperty(name, stringLiteral(prop.value?.content || ''))
       )
     } else if (isDirectiveNode(prop)) {
+      if (
+        fragment &&
+        prop.name === 'on' &&
+        prop.arg &&
+        isStaticExp(prop.arg) &&
+        prop.exp
+      ) {
+        const eventName = prop.arg.content
+        const rewritten = rewriteExpression(prop.exp, context)
+        const rewrittenExpr = parseExpr(genExpr(rewritten), context, rewritten)
+        if (rewrittenExpr) {
+          properties.push(
+            createObjectProperty(
+              toHandlerKey(camelize(eventName)),
+              rewrittenExpr
+            )
+          )
+          if (isFragmentEvent(eventName, fragmentEvents)) {
+            fragmentEventMeta.push({
+              name: eventName,
+              handler: genExpr(rewritten),
+              modifiers: prop.modifiers,
+            })
+          }
+        }
+        // Fragment 组件事件统一通过 u-p 转发，避免在组件节点上生成失效事件。
+        props.splice(i, 1)
+        i--
+        continue
+      }
       if (prop.name !== 'bind') {
         continue
       }
@@ -341,6 +378,19 @@ export function rewriteBinding(
       )
     )
   }
+  if (fragmentEventMeta.length) {
+    ;(node as any)[FRAGMENT_EVENTS] = fragmentEventMeta
+  }
+}
+
+function isFragmentEvent(eventName: string, fragmentEvents: string[]) {
+  // click 在小程序模板中统一映射为 tap，按模板实际绑定的原生事件判断。
+  const normalizedEventName = camelize(
+    eventName.toLowerCase() === 'click' ? 'tap' : eventName
+  ).toLowerCase()
+  return fragmentEvents.some(
+    (name) => camelize(name).toLowerCase() === normalizedEventName
+  )
 }
 
 function createNormalizeExpr(

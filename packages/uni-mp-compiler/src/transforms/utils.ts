@@ -54,6 +54,14 @@ export const ATTR_ELEMENT_ID = 'u-e'
 
 export const ATTR_ELEMENT_TAG = 'u-t'
 
+export interface FragmentEvent {
+  name: string
+  handler: string
+  modifiers: string[]
+}
+
+export const FRAGMENT_EVENTS = '__uniFragmentEvents'
+
 export const ATTR_SET_ELEMENT_STYLE = 'eS' // 不能使用连字符e-s
 export const ATTR_SET_ELEMENT_ANIMATION = 'eA' // 不能使用连字符e-a
 export const ATTR_SET_ELEMENT_SCROLL = 'eR' // 不能使用连字符e-r

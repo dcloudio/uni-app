@@ -5,6 +5,7 @@ import {
   createCopyComponentDirs,
   createCopyPluginTarget,
   getNativeTags,
+  getPlatformManifestJsonOnce,
   transformComponentLink,
   transformDirection,
   // transformMatchMedia,
@@ -68,6 +69,24 @@ export const miniProgram: MiniProgramCompilerOptions = {
   component: {
     dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN_BIND,
+    // uni-app x 默认启用 virtualHost；关闭 enableVirtualHost 时必须与 runtime 保持一致。
+    fragment:
+      process.env.UNI_APP_X === 'true' &&
+      getPlatformManifestJsonOnce().enableVirtualHost !== false,
+    fragmentEvents: [
+      'tap',
+      'longtap',
+      'longpress',
+      'touchstart',
+      'touchmove',
+      'touchcancel',
+      'touchend',
+      'touchforcechange',
+      'transitionend',
+      'animationstart',
+      'animationiteration',
+      'animationend',
+    ],
   },
   filter: {
     lang: 'sjs',
