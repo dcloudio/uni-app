@@ -11522,12 +11522,13 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
     rootElement: {
       class: UniPickerViewElement
     },
-    externalClasses: ["mask-class"]
+    externalClasses: ["mask-class", "indicator-class"]
   },
   __name: "picker-view",
   __ssrInlineRender: true,
   props: {
     indicatorStyle: { default: "", type: String },
+    indicatorClass: { default: "", type: null },
     maskClass: { default: "", type: null },
     maskTopStyle: { default: "", type: String },
     maskBottomStyle: { default: "", type: String },
@@ -11607,6 +11608,7 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent$2({
       itemHeight: () => itemHeight.value,
       containerPaddingPx: () => containerPaddingPx.value,
       maskClass: () => props2.maskClass,
+      indicatorClass: () => props2.indicatorClass,
       maskTopStyle: () => maskTopInlineStyle.value,
       maskBottomStyle: () => maskBottomInlineStyle.value,
       indicatorStyle: () => indicatorInlineStyle.value,
@@ -11669,6 +11671,7 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
     const itemHeight = computed(() => ctx ? ctx.itemHeight() : 50);
     const containerPaddingPx = computed(() => ctx ? ctx.containerPaddingPx() : "50%");
     const maskClass = computed(() => ctx ? ctx.maskClass() : "");
+    const indicatorClass = computed(() => ctx ? ctx.indicatorClass() : "");
     const maskTopInlineStyle = computed(() => ctx ? ctx.maskTopStyle() : {});
     const maskBottomInlineStyle = computed(() => ctx ? ctx.maskBottomStyle() : {});
     const indicatorInlineStyle = computed(() => ctx ? ctx.indicatorStyle() : {});
@@ -11770,7 +11773,7 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
         }),
         _: 3
       }, _parent));
-      _push(`<div uni-view class="${ssrRenderClass([unref(maskClass), "uni-picker-view-mask uni-picker-view-mask-top"])}" style="${ssrRenderStyle(unref(maskTopInlineStyle))}"></div><div uni-view class="uni-picker-view-indicator" style="${ssrRenderStyle(unref(indicatorInlineStyle))}"></div><div uni-view class="${ssrRenderClass([unref(maskClass), "uni-picker-view-mask uni-picker-view-mask-bottom"])}" style="${ssrRenderStyle(unref(maskBottomInlineStyle))}"></div></div>`);
+      _push(`<div uni-view class="${ssrRenderClass([unref(maskClass), "uni-picker-view-mask uni-picker-view-mask-top"])}" style="${ssrRenderStyle(unref(maskTopInlineStyle))}"></div><div uni-view class="${ssrRenderClass([unref(indicatorClass), "uni-picker-view-indicator"])}" style="${ssrRenderStyle(unref(indicatorInlineStyle))}"></div><div uni-view class="${ssrRenderClass([unref(maskClass), "uni-picker-view-mask uni-picker-view-mask-bottom"])}" style="${ssrRenderStyle(unref(maskBottomInlineStyle))}"></div></div>`);
     };
   }
 });

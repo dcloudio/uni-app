@@ -10266,11 +10266,12 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
     rootElement: {
       class: UniPickerViewElement
     },
-    externalClasses: ["mask-class"]
+    externalClasses: ["mask-class", "indicator-class"]
   },
   __name: "picker-view",
   props: {
     indicatorStyle: { default: "", type: String },
+    indicatorClass: { default: "", type: null },
     maskClass: { default: "", type: null },
     maskTopStyle: { default: "", type: String },
     maskBottomStyle: { default: "", type: String },
@@ -10349,6 +10350,7 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
       itemHeight: () => itemHeight.value,
       containerPaddingPx: () => containerPaddingPx.value,
       maskClass: () => props2.maskClass,
+      indicatorClass: () => props2.indicatorClass,
       maskTopStyle: () => maskTopInlineStyle.value,
       maskBottomStyle: () => maskBottomInlineStyle.value,
       indicatorStyle: () => indicatorInlineStyle.value,
@@ -10367,7 +10369,7 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
 class UniPickerViewColumnElement extends UniViewElement {
 }
 const t0$a = Vue.template("<div uni-view>");
-const t1$5 = Vue.template("<div uni-view class=picker-view-column><!><div uni-view></div><div uni-view class=uni-picker-view-indicator></div><div uni-view>", 1);
+const t1$5 = Vue.template("<div uni-view class=picker-view-column><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
 const EPSILON = 1;
 const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -10383,6 +10385,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const itemHeight = Vue.computed(() => ctx ? ctx.itemHeight() : 50);
     const containerPaddingPx = Vue.computed(() => ctx ? ctx.containerPaddingPx() : "50%");
     const maskClass = Vue.computed(() => ctx ? ctx.maskClass() : "");
+    const indicatorClass = Vue.computed(() => ctx ? ctx.indicatorClass() : "");
     const maskTopInlineStyle = Vue.computed(() => ctx ? ctx.maskTopStyle() : {});
     const maskBottomInlineStyle = Vue.computed(() => ctx ? ctx.maskBottomStyle() : {});
     const indicatorInlineStyle = Vue.computed(() => ctx ? ctx.indicatorStyle() : {});
@@ -10484,6 +10487,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
       const _maskClass = Vue.unref(maskClass);
       Vue.setClass(n3, ["uni-picker-view-mask uni-picker-view-mask-top", _maskClass]);
       Vue.setStyle(n3, Vue.unref(maskTopInlineStyle));
+      Vue.setClass(n4, ["uni-picker-view-indicator", Vue.unref(indicatorClass)]);
       Vue.setStyle(n4, Vue.unref(indicatorInlineStyle));
       Vue.setClass(n5, ["uni-picker-view-mask uni-picker-view-mask-bottom", _maskClass]);
       Vue.setStyle(n5, Vue.unref(maskBottomInlineStyle));

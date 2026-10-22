@@ -28,6 +28,23 @@
      */
     indicatorStyle?: string;
     /**
+     * 指示器类
+     * @uniPlatform {
+       "app": {
+         "ios": {
+           "unixVaporVer": "5.11"
+         },
+         "android": {
+           "unixVaporVer": "5.21"
+         },
+        "harmony": {
+           "unixVaporVer": "5.0"
+         }
+       }
+     }
+     */
+    indicatorClass?: string.ClassString;
+    /**
      * 遮罩类
      * @uniPlatform {
        "app": {
@@ -132,6 +149,7 @@
 
   const props = withDefaults(defineProps<PickerViewProps>(), {
     indicatorStyle: '',
+    indicatorClass: '',
     maskClass: '',
     maskTopStyle: '',
     maskBottomStyle: '',
@@ -165,7 +183,7 @@
     rootElement: {
       class: UniPickerViewElement
     },
-    externalClasses: ['mask-class']
+    externalClasses: ['mask-class', 'indicator-class']
   })
 
   const emit = defineEmits<{
@@ -246,6 +264,7 @@
     itemHeight: () => itemHeight.value,
     containerPaddingPx: () => containerPaddingPx.value,
     maskClass: () => props.maskClass,
+    indicatorClass: () => props.indicatorClass,
     maskTopStyle: () => maskTopInlineStyle.value,
     maskBottomStyle: () => maskBottomInlineStyle.value,
     indicatorStyle: () => indicatorInlineStyle.value,

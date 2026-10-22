@@ -6,7 +6,7 @@
       </view>
     </scroll-view>
     <view class="uni-picker-view-mask uni-picker-view-mask-top" :class="maskClass" :style="maskTopInlineStyle"></view>
-    <view class="uni-picker-view-indicator" :style="indicatorInlineStyle"></view>
+    <view class="uni-picker-view-indicator" :class="indicatorClass" :style="indicatorInlineStyle"></view>
     <view class="uni-picker-view-mask uni-picker-view-mask-bottom" :class="maskClass" :style="maskBottomInlineStyle"></view>
   </view>
 </template>
@@ -28,6 +28,7 @@
   const itemHeight = computed<number>(() => ctx ? ctx.itemHeight() : 50)
   const containerPaddingPx = computed<string>(() => ctx ? ctx.containerPaddingPx() : '50%')
   const maskClass = computed<string>(() => ctx ? ctx.maskClass() : '')
+  const indicatorClass = computed<string>(() => ctx ? ctx.indicatorClass() : '')
   const maskTopInlineStyle = computed<any>(() => ctx ? ctx.maskTopStyle() : {})
   const maskBottomInlineStyle = computed<any>(() => ctx ? ctx.maskBottomStyle() : {})
   const indicatorInlineStyle = computed<any>(() => ctx ? ctx.indicatorStyle() : {})
