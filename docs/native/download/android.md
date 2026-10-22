@@ -103,24 +103,16 @@
 
 ## alpha版
 
-### 5.32.2026101609-alpha
+### 5.33.2026102115-alpha
 
-**[原生SDK(蒸汽模式)下载地址](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/Android-Vapor/Android-uni-app-x-vapor-SDK@101337-5.32.zip)**
+**[原生SDK(蒸汽模式)下载地址](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/Android-Vapor/Android-uni-app-x-vapor-SDK@101358-5.33.zip)**
 
-**[原生SDK(VDOM模式)下载地址](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/Android/Android-uni-app-x-SDK@15157-5.32.zip)**
+**[原生SDK(VDOM模式)下载地址](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/Android/Android-uni-app-x-SDK@15168-5.33.zip)**
 
-* 更新uni-app离线打包支持，需使用HBuilderX（5.32.2026101609-alpha）版本生成本地打包App资源。
-* 新增 组件 ad-drama 短剧组件 [文档](https://doc.dcloud.net.cn/uni-app-x/api/create-drama-ad.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=32816>
-* 修复 组件 camera 部分情况可能引起内存泄漏 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=22660)
-* 蒸汽模式 新增 组件 uniCloud 支持组合式定义datacom [文档](https://doc.dcloud.net.cn/uni-app-x/api/unicloud/) <https://issues.dcloud.net.cn/pages/issues/detail?id=33522>
-* 蒸汽模式 新增 API uni.convert2AbsFullPath 将相对路径转换为平台的绝对路径地址 [文档](https://doc.dcloud.net.cn/uni-app-x/api/convert2-abs-full-path.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=33471>
-* 蒸汽模式 修复 组件 waterflow 超高flow-item部分情况不显示 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33511)
-* 蒸汽模式 修复 CSS animation 使用 calc() 设置的长度值无动画效果 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33455)
-* 蒸汽模式 修复 DOM API UniElement animate 方法在同一元素创建多个动画无法并行运行，创建新动画会中断正在执行的其他动画 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33577)
-* 蒸汽模式 修复 API uni.installWgt 安装合法 wgt 报 103610 错误 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33639)
-* 蒸汽模式 修复 API uni.getFileSystemManager fstat、stat回调内的Stat实例无法调用isFile、isDirectory方法 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33568)
+* 更新uni-app离线打包支持，需使用HBuilderX（5.33.2026102115-alpha）版本生成本地打包App资源。
+* Android平台 蒸汽模式 修复 运行调试 云端打包运行可能报`cannot locate symbol _ZNSt6__ndk127__from_chars_floating_pointIfEENS`异常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33821)
 
 
 **[历史版本](https://pan.baidu.com/s/1OXvFjfGW6zDAyzTZGpY7hQ?pwd=aa2c)**
  
-**[历史版本更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.32.2026101609-alpha.html)**
+**[历史版本更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.33.2026102115-alpha.html)**
