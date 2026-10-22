@@ -13,6 +13,7 @@ import {
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
 import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
+import { onScrollend } from '../../helpers/scrollend'
 import { UniElement } from '../../helpers/UniElement'
 import {
   type CustomEventTrigger,
@@ -112,6 +113,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props,
   emits: [
     'scroll',
+    'scrollend',
     'scrolltoupper',
     'scrolltolower',
     'refresherrefresh',
@@ -440,6 +442,17 @@ function useScrollViewLoader(
     state.lastScrollTop = target.scrollTop
     state.lastScrollLeft = target.scrollLeft
   }
+  function _handleScrollEnd($event: Event) {
+    const target = $event.target as HTMLElement
+    trigger('scrollend', $event, {
+      scrollLeft: target.scrollLeft,
+      scrollTop: target.scrollTop,
+      scrollHeight: target.scrollHeight,
+      scrollWidth: target.scrollWidth,
+      deltaX: state.lastScrollLeft - target.scrollLeft,
+      deltaY: state.lastScrollTop - target.scrollTop,
+    })
+  }
   function _scrollTopChanged(val: number) {
     if (realScrollY.value) {
       if (_innerSetScrollTop) {
@@ -699,6 +712,7 @@ function useScrollViewLoader(
     main.value!.addEventListener('touchmove', __handleTouchMove, passive(false))
     main.value!.addEventListener('scroll', __handleScroll, passive(false))
     main.value!.addEventListener('touchend', __handleTouchEnd, passiveOptions)
+    const removeScrollendListener = onScrollend(main.value!, _handleScrollEnd)
     initScrollBounce()
 
     onBeforeUnmount(() => {
@@ -706,6 +720,7 @@ function useScrollViewLoader(
       main.value!.removeEventListener('touchmove', __handleTouchMove)
       main.value!.removeEventListener('scroll', __handleScroll)
       main.value!.removeEventListener('touchend', __handleTouchEnd)
+      removeScrollendListener()
     })
   })
 
