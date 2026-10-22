@@ -8834,7 +8834,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniFlowItemElement extends UniViewElement {
 }
-class UniWaterflowElement extends UniScrollViewElementImpl {
+class UniWaterflowElement extends UniScrollViewElement {
 }
 const t0$l = Vue.template('<div uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
 const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
@@ -9084,7 +9084,7 @@ class UniStickySectionElement extends UniViewElement {
 }
 class UniStickyHeaderElement extends UniViewElement {
 }
-class UniListViewElement extends UniScrollViewElementImpl {
+class UniListViewElement extends UniScrollViewElement {
 }
 const t0$i = Vue.template('<div uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
 const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({

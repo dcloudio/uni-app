@@ -405,10 +405,10 @@
 	})
 	// #ifdef APP-IOS
 	onReady(()=>{
-		uniPageInstance.setPageStyle(new UTSJSONObject({
+		uniPageInstance.setPageStyle({
 			disableSwipeBack: false,
 			swipeBackAsBackPress: true
-		}))
+		})
 	})
 	// #endif
 	onBackPress((options : OnBackPressOptions) : boolean | null => {
@@ -442,10 +442,10 @@
 	})
 	// #ifdef APP-IOS
 	onReady(() => {
-		uniPageInstance.setPageStyle(new UTSJSONObject({
+		uniPageInstance.setPageStyle({
 			disableSwipeBack: false,
 			swipeBackAsBackPress: true
-		}))
+		})
 	})
 	// #endif
 	onBackPress((options : OnBackPressOptions) : boolean | null => {
