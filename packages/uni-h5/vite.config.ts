@@ -380,6 +380,7 @@ function uniExtApi() {
         // TODO 整理 autoImport 规则或改为全局变量，Web Vapor 外部组件的元素基类必须从 uni-components 导入，避免框架构建自引用 uni-h5。
         '@dcloudio/uni-components': [
           'UniTextElement',
+          'UniTextElementImpl',
           'UniViewElementImpl',
           'UniViewElement',
         ],
