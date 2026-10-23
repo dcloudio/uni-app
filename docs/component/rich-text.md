@@ -71,9 +71,9 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ensp | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 中文字符空格一半大小 |
-| emsp | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 中文字符空格大小 |
-| nbsp | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 根据字体设置的空格大小 |
+| ensp | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 中文字符空格一半大小 |
+| emsp | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 中文字符空格大小 |
+| nbsp | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | 根据字体设置的空格大小 |
 
 ### 节点列表数据结构
 ``` json
