@@ -8,21 +8,18 @@ interface TextEncoder {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.31",
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "4.71",
                 "unixUtsPlugin": "4.71"
               },
             "harmony": {
-               "osVer": "5.0.2",
                "uniVer": "√",
                "unixVer": "4.71"
             }
@@ -41,21 +38,18 @@ interface TextEncoder {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.31",
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "4.71",
                 "unixUtsPlugin": "4.71"
               },
             "harmony": {
-               "osVer": "5.0.2",
                "uniVer": "√",
                "unixVer": "4.71"
             }

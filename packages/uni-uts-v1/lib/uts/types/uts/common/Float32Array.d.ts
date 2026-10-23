@@ -5,21 +5,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -38,21 +35,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -72,21 +66,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -106,21 +97,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -140,21 +128,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -178,21 +163,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -214,21 +196,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -252,21 +231,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -288,21 +264,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -324,21 +297,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -360,21 +330,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -395,21 +362,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -432,21 +396,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -468,21 +429,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -504,21 +462,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -541,21 +496,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -579,21 +531,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -615,21 +564,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -651,21 +597,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -688,21 +631,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -724,21 +664,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -760,21 +697,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -797,21 +731,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -832,21 +763,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -867,21 +795,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -901,21 +826,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -938,21 +860,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -974,21 +893,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1009,21 +925,18 @@ interface Float32Arrayy extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1049,21 +962,18 @@ interface Float32ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1084,21 +994,18 @@ interface Float32ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "√",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1121,21 +1028,18 @@ interface Float32ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1155,21 +1059,18 @@ interface Float32ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1190,21 +1091,18 @@ interface Float32ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",
@@ -1226,21 +1124,18 @@ interface Float32ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
-               "osVer": "5.0.0",
                "uniVer": "√",
                "unixVer": "4.61",
                "uniUtsPlugin": "√",

@@ -5,14 +5,12 @@
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "3.90",
@@ -39,14 +37,12 @@ declare function setInterval(handler: string | Function, timeout?: number, ...ar
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "3.90",
@@ -73,21 +69,18 @@ declare function setTimeout(handler: string | Function, timeout?: number, ...arg
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -115,21 +108,18 @@ declare function clearInterval(id: number | undefined): void;
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"

@@ -25,21 +25,18 @@ interface Number {
      @uniPlatform {
         "app": {
            "android": {
-              "osVer": "5.0",
               "uniVer": "√",
               "unixVer": "3.90",
               "uniUtsPlugin": "3.90",
               "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -69,21 +66,18 @@ interface Number {
      @uniPlatform {
         "app": {
            "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -113,19 +107,16 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -155,19 +146,16 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -196,21 +184,18 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "√",
                "unixVer": "4.11",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -239,25 +224,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -275,25 +257,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -311,25 +290,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x "
             }
         },
         "web": {
@@ -347,25 +323,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -384,25 +357,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -421,25 +391,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -457,25 +424,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -493,25 +457,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -529,25 +490,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -566,25 +524,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -603,25 +558,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -639,25 +591,22 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -675,14 +624,12 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             }
@@ -702,23 +649,20 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -736,23 +680,20 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -771,23 +712,20 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -805,23 +743,20 @@ interface Number {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "√",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
-                "uniVer": "√",
-                "uniUtsPlugin": "√",
-                "unixVer": "4.61"
-                "unixUtsPlugin": "4.61"
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -842,14 +777,12 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             }
@@ -875,19 +808,16 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "x",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "x",
                "unixUtsPlugin": "x"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -916,19 +846,16 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.9",
                "uniUtsPlugin": "3.9",
                "unixUtsPlugin": "3.9"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -957,19 +884,16 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.9",
                "uniUtsPlugin": "3.9",
                "unixUtsPlugin": "3.9"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -999,19 +923,16 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.9",
                "uniUtsPlugin": "3.9",
                "unixUtsPlugin": "3.9"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1041,14 +962,12 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.9",
                "uniUtsPlugin": "3.9",
                "unixUtsPlugin": "3.9"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             }
@@ -1076,19 +995,16 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "√",
                "unixVer": "3.9",
                "uniUtsPlugin": "3.9",
                "unixUtsPlugin": "3.9"
             },
             "ios": {
-               "osVer": "x",
                "uniVer": "x",
                 "unixVer": "x"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1118,21 +1034,18 @@ interface NumberConstructor {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "3.90",
                "uniUtsPlugin": "3.90",
                "unixUtsPlugin": "3.90"
             },
             "ios": {
-               "osVer": "12.0",
                "uniVer": "x",
                "unixVer": "x",
                "uniUtsPlugin": "3.9+",
                "unixUtsPlugin": "4.11"
             },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1157,21 +1070,18 @@ interface NumberConstructor {
     {
       "app": {
         "android": {
-          "osVer": "5.0",
           "uniVer": "√",
           "uniUtsPlugin": "3.91",
           "unixVer": "3.91",
           "unixUtsPlugin": "3.91"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "√",
           "uniUtsPlugin": "4.11",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.11"
         },
         "harmony": {
-            "osVer": "5.0.0",
             "uniVer": "√",
             "unixVer": "4.61",
             "uniUtsPlugin": "√",

@@ -4,21 +4,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -37,21 +34,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -71,21 +65,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -105,21 +96,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -139,21 +127,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -177,21 +162,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -213,21 +195,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -251,21 +230,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -287,21 +263,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -323,21 +296,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -359,21 +329,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -394,21 +361,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -431,21 +395,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -467,21 +428,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -503,21 +461,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -540,21 +495,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -578,21 +530,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -614,21 +563,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -650,21 +596,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -687,21 +630,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -723,21 +663,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -759,21 +696,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -796,21 +730,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -831,21 +762,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -866,21 +794,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -900,21 +825,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -937,21 +859,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -972,21 +891,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1007,21 +923,18 @@ interface Uint8Array extends TypedArray {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1047,21 +960,18 @@ interface Uint8ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1082,21 +992,18 @@ interface Uint8ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1119,21 +1026,18 @@ interface Uint8ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1153,21 +1057,18 @@ interface Uint8ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1188,21 +1089,18 @@ interface Uint8ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"
@@ -1224,21 +1122,18 @@ interface Uint8ArrayConstructor {
      @uniPlatform {
         "app": {
             "android": {
-                "osVer": "5.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.25",
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
                 "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
        	    },
             "harmony": {
-                "osVer": "5.0.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "√",
                 "unixVer": "4.61"

@@ -9,16 +9,12 @@ declare class UniActivityParams {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.62",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.62"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-               "unixVer": "x"
+               "unixUtsPlugin": "4.62",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -30,16 +26,12 @@ declare class UniActivityParams {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -50,16 +42,11 @@ declare class UniActivityParams {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -70,16 +57,12 @@ declare class UniActivityParams {
        @uniPlatform {
           "app": {
               "android": {
-                 "osVer": "5.0",
                  "uniVer": "x",
                  "unixVer": "5.01",
+                 "unixVaporVer":"x",
                  "uniUtsPlugin": "x",
-                 "unixUtsPlugin": "4.18"
-              },
-              "ios": {
-                 "osVer": "x",
-                 "uniVer": "x",
-                   "unixVer": "x"
+                 "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
               }
           }
        }
@@ -100,21 +83,18 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onAttachFragment(params : UniActivityParams, fragment : Fragment) : void;
+
   /**
      对应原生 Activity 的 [onUserInteraction](https://developer.android.com/reference/android/app/Activity#onUserInteraction()) 函数，该方法在用户与设备进行交互时被调用，用于处理用户交互前的逻辑。
      注意第一个参数为自定义参数 UniActivityParams。
@@ -123,22 +103,17 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onUserInteraction(params : UniActivityParams) : void;
-
 
   /**
      对应原生 Activity 的 [onPictureInPictureModeChanged](https://developer.android.com/reference/androidx/activity/ComponentActivity?hl=en#onPictureInPictureModeChanged(kotlin.Boolean)) 函数，该方法在 进入/离开 画中画模式时触发。
@@ -148,16 +123,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.82",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.82"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.82",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -173,16 +144,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.82",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.82"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.82",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -197,16 +164,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -224,16 +187,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -251,16 +210,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -278,16 +233,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -306,16 +257,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -330,16 +277,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -355,16 +298,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -380,16 +319,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -406,16 +341,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -431,16 +362,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -455,16 +382,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -480,16 +403,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -504,16 +423,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -529,21 +444,18 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onPreAttachFragment(params : UniActivityParams, fragment : Fragment) : void;
+
   /**
      对应原生 Activity [onUserInteraction](https://developer.android.com/reference/android/app/Activity#onUserInteraction()) 函数。
      在用户与设备进行交互时被调用，例如触摸屏幕或按键。开发者可以覆盖此方法以执行特定操作，如取消自动隐藏的导航控件等。
@@ -553,16 +465,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -578,16 +486,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -605,16 +509,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -629,8 +529,21 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @param {MutableList<String>} permissions 请求的权限
      @param {IntArray} grantResults 授予权限的结果数组
      @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#registerActivityCallback
+     @uniPlatform {
+        "app": {
+            "android": {
+               "uniVer": "x",
+               "unixVer": "4.18",
+               "unixVaporVer":"x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
+            }
+        }
+     }
    */
   onPreRequestPermissionsResult(params : UniActivityParams, requestCode : Int, permissions : MutableList<String>, grantResults : IntArray) : void;
+
   /**
      对应原生 Activity [onApplyThemeResource](https://developer.android.com/reference/android/app/Activity#onApplyThemeResource(android.content.res.Resources.Theme,int,boolean)) 函数。
      在super方法之前调用
@@ -642,16 +555,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -670,16 +579,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -696,16 +601,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -722,16 +623,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -747,16 +644,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -774,16 +667,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -799,16 +688,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -824,21 +709,18 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onPrePrepareNavigateUpTaskStack(params : UniActivityParams, builder : TaskStackBuilder) : void;
+
   /**
      对应原生 Activity [onProvideAssistData](https://developer.android.com/reference/android/app/Activity#onProvideAssistData(android.os.Bundle)) 函数，
      在 super 方法之前调用，注意第一个参数为自定义参数 UniActivityParams。
@@ -848,16 +730,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -873,16 +751,12 @@ declare class UniActivityCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -905,16 +779,12 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -929,21 +799,18 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onLowMemory(params : UniActivityParams) : void;
+
   /**
      对应原生 Activity [onTrimMemory](https://developer.android.com/reference/android/app/Activity#onTrimMemory(int)) 函数，
      当系统决定当前进程需要缩减内存使用时调用。开发者可以根据传递的内存级别清除不必要的资源以帮助系统管理内存。
@@ -953,16 +820,12 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -978,16 +841,12 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1002,16 +861,12 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1027,16 +882,12 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1060,16 +911,12 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1086,21 +933,18 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onKeyLongPress(params : UniActivityParams, keyCode : Int, event : KeyEvent | null) : void;
+
   /**
      此方法对应 Android Activity 的 [onKeyUp](https://developer.android.com/reference/android/app/Activity#onKeyUp(int,%20android.view.KeyEvent)) 函数，
      在用户松开键盘键时调用。可以用于处理按键抬起事件。
@@ -1111,16 +955,12 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1138,16 +978,12 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1164,16 +1000,12 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1190,16 +1022,12 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1216,16 +1044,12 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1243,16 +1067,12 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1275,16 +1095,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1301,22 +1117,17 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onPreCreate(params : UniActivityParams, savedInstanceState : Bundle | null) : void;
-
 
   /**
      对应原生 Activity 的 [onStart](https://developer.android.com/reference/android/app/Activity#onStart()) 函数，当Activity即将对用户可见时调用。
@@ -1326,21 +1137,18 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onStart(params : UniActivityParams) : void;
+
   /**
      在 Android Activity 的 [onStart](https://developer.android.com/reference/android/app/Activity#onStart()) 方法触发之前调用，
      允许开发者在 Activity 开始之前执行自定义逻辑。
@@ -1350,16 +1158,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1374,21 +1178,18 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onRestart(params : UniActivityParams) : void;
+
   /**
      对应原生 Activity 的 [onRestart](https://developer.android.com/reference/android/app/Activity#onRestart()) 函数，在super方法之前调用。此为在 Activity 重启前额外的准备步骤，提供了自定义操作的机会。
      在 super 方法之前调用，注意第一个参数为自定义参数 UniActivityParams。
@@ -1397,21 +1198,18 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onPreRestart(params : UniActivityParams) : void;
+
   /**
      对应原生 Activity 的 [onResume](https://developer.android.com/reference/android/app/Activity#onResume()) 函数，在 Activity 准备和用户进行交互时调用。此时 Activity 处于运行状态的顶层。
      注意第一个参数为自定义参数 UniActivityParams。
@@ -1421,16 +1219,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1446,16 +1240,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1470,16 +1260,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1494,22 +1280,17 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onPrePause(params : UniActivityParams) : void;
-
 
   /**
      对应原生 Activity 的 [onStop](https://developer.android.com/reference/android/app/Activity#onStop()) 函数，在 Activity 即将停止时被调用，这通常是因为 Activity 即将被销毁，或因为用户切换到了另一个 Activity。在此阶段，应保存数据或进行清理工作。
@@ -1519,16 +1300,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1543,16 +1320,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1567,16 +1340,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1591,16 +1360,12 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1620,16 +1385,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1644,16 +1405,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1669,16 +1426,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1694,16 +1447,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1718,16 +1467,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1744,21 +1489,18 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   onPanelClosed(params : UniActivityParams, featureId : Int, menu : Menu) : void;
+
   /**
      对应原生 Activity 的 [onSearchRequested](https://developer.android.com/reference/android/app/Activity#onSearchRequested()) 函数，当用户请求搜索操作时调用。您可以在这里启动一个搜索界面。
      注意第一个参数为自定义参数 UniActivityParams。
@@ -1767,16 +1509,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1792,16 +1530,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1818,16 +1552,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1843,16 +1573,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1868,16 +1594,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1895,16 +1617,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1920,16 +1638,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1944,16 +1658,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1968,16 +1678,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -1993,16 +1699,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2018,16 +1720,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2042,16 +1740,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2068,16 +1762,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2092,16 +1782,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2117,16 +1803,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2142,16 +1824,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2168,16 +1846,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2193,16 +1867,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2218,16 +1888,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2245,16 +1911,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2270,16 +1932,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
@@ -2295,21 +1953,18 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
    */
   dispatchKeyEvent(params : UniActivityParams, event : KeyEvent | null) : void;
+
   /**
      对应原生 Activity 的 [dispatchKeyEvent](https://developer.android.com/reference/android/app/Activity#dispatchKeyEvent(android.view.KeyEvent)) 函数，此方法在super.dispatchKeyEvent() 调用之前被调用，用于处理按键事件分发前的逻辑。
      在super方法之前调用，注意第一个参数为自定义参数 UniActivityParams。
@@ -2319,16 +1974,12 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
      @uniPlatform {
         "app": {
             "android": {
-               "osVer": "5.0",
                "uniVer": "x",
                "unixVer": "4.18",
+               "unixVaporVer":"x",
                "uniUtsPlugin": "x",
-               "unixUtsPlugin": "4.18"
-            },
-            "ios": {
-               "osVer": "x",
-               "uniVer": "x",
-                 "unixVer": "x"
+               "unixUtsPlugin": "4.18",
+               "unixVaporUtsPlugin": "5.21"
             }
         }
      }
