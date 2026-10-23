@@ -82,6 +82,9 @@ declare module 'vue' {
   export {
     createApp as createVueApp,
     createApp as createSSRApp,
+    // TODO: Web 端升级到 Vue 3.6 的完整 d.ts 后移除这两个临时类型别名。
+    createApp as createVaporApp,
+    createApp as createVaporSSRApp,
     defineComponent as defineApp,
     useCssVars
   }

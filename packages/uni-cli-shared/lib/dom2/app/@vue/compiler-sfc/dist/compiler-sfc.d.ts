@@ -1,24 +1,25 @@
-import * as _$_babel_types0 from "@babel/types";
-import { CallExpression, Expression, Node, ObjectPattern, Program, Statement, TSCallSignatureDeclaration, TSFunctionType, TSMethodSignature, TSModuleDeclaration, TSPropertySignature, TSType } from "@babel/types";
 import { BaseCodegenResult, BindingMetadata, BindingMetadata as BindingMetadata$1, CompilerError, CompilerError as CompilerError$1, CompilerOptions, CompilerOptions as CompilerOptions$1, ParserOptions, RawSourceMap, RootNode, SourceLocation, extractIdentifiers, generateCodeFrame, isInDestructureAssignment, isStaticProperty, walkIdentifiers } from "@vue/compiler-core";
 import { ParserPlugin, parse as babelParse } from "@babel/parser";
+import "source-map-js";
+import "lru-cache";
 import { LazyResult, Result } from "postcss";
 import MagicString, { default as MagicString$1 } from "magic-string";
+import { CallExpression, Expression, Node, ObjectPattern, Program, Statement, TSCallSignatureDeclaration, TSFunctionType, TSMethodSignature, TSModuleDeclaration, TSPropertySignature, TSType } from "@babel/types";
+import "@vue/shared";
 import TS from "typescript";
-
 //#region temp/packages/compiler-sfc/src/template/transformAssetUrl.d.ts
 export interface AssetURLTagConfig {
   [name: string]: string[];
 }
 export interface AssetURLOptions {
   /**
-  * If base is provided, instead of transforming relative asset urls into
-  * imports, they will be directly rewritten to absolute urls.
-  */
+   * If base is provided, instead of transforming relative asset urls into
+   * imports, they will be directly rewritten to absolute urls.
+   */
   base?: string | null;
   /**
-  * If true, also processes absolute urls.
-  */
+   * If true, also processes absolute urls.
+   */
   includeAbsolute?: boolean;
   tags?: AssetURLTagConfig;
 }
@@ -56,15 +57,15 @@ export interface SFCTemplateCompileOptions {
   preprocessLang?: string;
   preprocessOptions?: any;
   /**
-  * In some cases, compiler-sfc may not be inside the project root (e.g. when
-  * linked or globally installed). In such cases a custom `require` can be
-  * passed to correctly resolve the preprocessors.
-  */
+   * In some cases, compiler-sfc may not be inside the project root (e.g. when
+   * linked or globally installed). In such cases a custom `require` can be
+   * passed to correctly resolve the preprocessors.
+   */
   preprocessCustomRequire?: (id: string) => any;
   /**
-  * Configure what tags/attributes to transform into asset url imports,
-  * or disable the transform altogether with `false`.
-  */
+   * Configure what tags/attributes to transform into asset url imports,
+   * or disable the transform altogether with `false`.
+   */
   transformAssetUrls?: AssetURLOptions | AssetURLTagConfig | boolean;
 }
 export declare function compileTemplate(options: SFCTemplateCompileOptions): SFCTemplateCompileResults;
@@ -72,76 +73,76 @@ export declare function compileTemplate(options: SFCTemplateCompileOptions): SFC
 //#region temp/packages/compiler-sfc/src/compileScript.d.ts
 export interface SFCScriptCompileOptions {
   /**
-  * Scope ID for prefixing injected CSS variables.
-  * This must be consistent with the `id` passed to `compileStyle`.
-  */
+   * Scope ID for prefixing injected CSS variables.
+   * This must be consistent with the `id` passed to `compileStyle`.
+   */
   id: string;
   /**
-  * Production mode. Used to determine whether to generate hashed CSS variables
-  */
+   * Production mode. Used to determine whether to generate hashed CSS variables
+   */
   isProd?: boolean;
   /**
-  * Enable/disable source map. Defaults to true.
-  */
+   * Enable/disable source map. Defaults to true.
+   */
   sourceMap?: boolean;
   /**
-  * https://babeljs.io/docs/en/babel-parser#plugins
-  */
+   * https://babeljs.io/docs/en/babel-parser#plugins
+   */
   babelParserPlugins?: ParserPlugin[];
   /**
-  * A list of files to parse for global types to be made available for type
-  * resolving in SFC macros. The list must be fully resolved file system paths.
-  */
+   * A list of files to parse for global types to be made available for type
+   * resolving in SFC macros. The list must be fully resolved file system paths.
+   */
   globalTypeFiles?: string[];
   /**
-  * Compile the template and inline the resulting render function
-  * directly inside setup().
-  * - Only affects `<script setup>`
-  * - This should only be used in production because it prevents the template
-  * from being hot-reloaded separately from component state.
-  */
+   * Compile the template and inline the resulting render function
+   * directly inside setup().
+   * - Only affects `<script setup>`
+   * - This should only be used in production because it prevents the template
+   * from being hot-reloaded separately from component state.
+   */
   inlineTemplate?: boolean;
   /**
-  * Generate the final component as a variable instead of default export.
-  * This is useful in e.g. @vitejs/plugin-vue where the script needs to be
-  * placed inside the main module.
-  */
+   * Generate the final component as a variable instead of default export.
+   * This is useful in e.g. @vitejs/plugin-vue where the script needs to be
+   * placed inside the main module.
+   */
   genDefaultAs?: string;
   /**
-  * Options for template compilation when inlining. Note these are options that
-  * would normally be passed to `compiler-sfc`'s own `compileTemplate()`, not
-  * options passed to `compiler-dom`.
-  */
+   * Options for template compilation when inlining. Note these are options that
+   * would normally be passed to `compiler-sfc`'s own `compileTemplate()`, not
+   * options passed to `compiler-dom`.
+   */
   templateOptions?: Partial<SFCTemplateCompileOptions>;
   /**
-  * Hoist <script setup> static constants.
-  * - Only enables when one `<script setup>` exists.
-  * @default true
-  */
+   * Hoist <script setup> static constants.
+   * - Only enables when one `<script setup>` exists.
+   * @default true
+   */
   hoistStatic?: boolean;
   /**
-  * Set to `false` to disable reactive destructure for `defineProps` (pre-3.5
-  * behavior), or set to `'error'` to throw hard error on props destructures.
-  * @default true
-  */
+   * Set to `false` to disable reactive destructure for `defineProps` (pre-3.5
+   * behavior), or set to `'error'` to throw hard error on props destructures.
+   * @default true
+   */
   propsDestructure?: boolean | "error";
   /**
-  * File system access methods to be used when resolving types
-  * imported in SFC macros. Defaults to ts.sys in Node.js, can be overwritten
-  * to use a virtual file system for use in browsers (e.g. in REPLs)
-  */
+   * File system access methods to be used when resolving types
+   * imported in SFC macros. Defaults to ts.sys in Node.js, can be overwritten
+   * to use a virtual file system for use in browsers (e.g. in REPLs)
+   */
   fs?: {
     fileExists(file: string): boolean;
     readFile(file: string): string | undefined;
     realpath?(file: string): string;
   };
   /**
-  * Transform Vue SFCs into custom elements.
-  */
+   * Transform Vue SFCs into custom elements.
+   */
   customElement?: boolean | ((filename: string) => boolean);
   /**
-  * Force to use of Vapor mode.
-  */
+   * Force to use of Vapor mode.
+   */
   vapor?: boolean;
 }
 interface ImportBinding {
@@ -153,10 +154,10 @@ interface ImportBinding {
   isUsedInTemplate: boolean;
 }
 /**
-* Compile `<script setup>`
-* It requires the whole SFC descriptor because we need to handle and merge
-* normal `<script>` + `<script setup>` if both are present.
-*/
+ * Compile `<script setup>`
+ * It requires the whole SFC descriptor because we need to handle and merge
+ * normal `<script>` + `<script setup>` if both are present.
+ */
 export declare function compileScript(sfc: SFCDescriptor, options: SFCScriptCompileOptions): SFCScriptBlock;
 //#endregion
 //#region temp/packages/compiler-sfc/src/parse.d.ts
@@ -190,14 +191,14 @@ export interface SFCScriptBlock extends SFCBlock {
   setup?: string | boolean;
   bindings?: BindingMetadata$1;
   imports?: Record<string, ImportBinding>;
-  scriptAst?: _$_babel_types0.Statement[];
-  scriptSetupAst?: _$_babel_types0.Statement[];
+  scriptAst?: import("@babel/types").Statement[];
+  scriptSetupAst?: import("@babel/types").Statement[];
   warnings?: string[];
   /**
-  * Fully resolved dependency file paths (unix slashes) with imported types
-  * used in macros, used for HMR cache busting in @vitejs/plugin-vue and
-  * vue-loader.
-  */
+   * Fully resolved dependency file paths (unix slashes) with imported types
+   * used in macros, used for HMR cache busting in @vitejs/plugin-vue and
+   * vue-loader.
+   */
   deps?: string[];
 }
 export interface SFCStyleBlock extends SFCBlock {
@@ -215,19 +216,19 @@ export interface SFCDescriptor {
   customBlocks: SFCBlock[];
   cssVars: string[];
   /**
-  * whether the SFC uses :slotted() modifier.
-  * this is used as a compiler optimization hint.
-  */
+   * whether the SFC uses :slotted() modifier.
+   * this is used as a compiler optimization hint.
+   */
   slotted: boolean;
   vapor?: boolean;
   /**
-  * compare with an existing descriptor to determine whether HMR should perform
-  * a reload vs. re-render.
-  *
-  * Note: this comparison assumes the prev/next script are already identical,
-  * and only checks the special case where <script setup lang="ts"> unused import
-  * pruning result changes due to template changes.
-  */
+   * compare with an existing descriptor to determine whether HMR should perform
+   * a reload vs. re-render.
+   *
+   * Note: this comparison assumes the prev/next script are already identical,
+   * and only checks the special case where <script setup lang="ts"> unused import
+   * pruning result changes due to template changes.
+   */
   shouldForceReload: (prevImports: Record<string, ImportBinding>) => boolean;
   scriptCppBlocks: SFCScriptCppBlock[];
 }
@@ -262,14 +263,14 @@ export interface SFCStyleCompileOptions {
   postcssOptions?: any;
   postcssPlugins?: any[];
   /**
-  * @deprecated use `inMap` instead.
-  */
+   * @deprecated use `inMap` instead.
+   */
   map?: RawSourceMap;
 }
 /**
-* Aligns with postcss-modules
-* https://github.com/css-modules/postcss-modules
-*/
+ * Aligns with postcss-modules
+ * https://github.com/css-modules/postcss-modules
+ */
 interface CSSModulesOptions {
   scopeBehaviour?: "global" | "local";
   generateScopedName?: string | ((name: string, filename: string, css: string) => string);
@@ -297,9 +298,9 @@ export declare function compileStyleAsync(options: SFCAsyncStyleCompileOptions):
 //#region temp/packages/compiler-sfc/src/rewriteDefault.d.ts
 export declare function rewriteDefault(input: string, as: string, parserPlugins?: ParserPlugin[]): string;
 /**
-* Utility for rewriting `export default` in a script block into a variable
-* declaration so that we can inject things into it
-*/
+ * Utility for rewriting `export default` in a script block into a variable
+ * declaration so that we can inject things into it
+ */
 export declare function rewriteDefaultAST(ast: Statement[], s: MagicString$1, as: string): void;
 //#endregion
 //#region temp/packages/compiler-sfc/src/script/defineProps.d.ts
@@ -320,47 +321,47 @@ interface ModelDecl {
 //#region temp/packages/compiler-core/src/options.d.ts
 declare enum BindingTypes {
   /**
-  * returned from data()
-  */
+   * returned from data()
+   */
   DATA = "data",
   /**
-  * declared as a prop
-  */
+   * declared as a prop
+   */
   PROPS = "props",
   /**
-  * a local alias of a `<script setup>` destructured prop.
-  * the original is stored in __propsAliases of the bindingMetadata object.
-  */
+   * a local alias of a `<script setup>` destructured prop.
+   * the original is stored in __propsAliases of the bindingMetadata object.
+   */
   PROPS_ALIASED = "props-aliased",
   /**
-  * a let binding (may or may not be a ref)
-  */
+   * a let binding (may or may not be a ref)
+   */
   SETUP_LET = "setup-let",
   /**
-  * a const binding that can never be a ref.
-  * these bindings don't need `unref()` calls when processed in inlined
-  * template expressions.
-  */
+   * a const binding that can never be a ref.
+   * these bindings don't need `unref()` calls when processed in inlined
+   * template expressions.
+   */
   SETUP_CONST = "setup-const",
   /**
-  * a const binding that does not need `unref()`, but may be mutated.
-  */
+   * a const binding that does not need `unref()`, but may be mutated.
+   */
   SETUP_REACTIVE_CONST = "setup-reactive-const",
   /**
-  * a const binding that may be a ref.
-  */
+   * a const binding that may be a ref.
+   */
   SETUP_MAYBE_REF = "setup-maybe-ref",
   /**
-  * bindings that are guaranteed to be refs
-  */
+   * bindings that are guaranteed to be refs
+   */
   SETUP_REF = "setup-ref",
   /**
-  * declared by other options, e.g. computed, inject
-  */
+   * declared by other options, e.g. computed, inject
+   */
   OPTIONS = "options",
   /**
-  * a literal constant, e.g. 'foo', 1, true
-  */
+   * a literal constant, e.g. 'foo', 1, true
+   */
   LITERAL_CONST = "literal-const"
 }
 type BindingMetadata$2 = {
@@ -413,12 +414,12 @@ export declare class ScriptCompileContext {
   helperImports: Set<string>;
   helper(key: string): string;
   /**
-  * to be exposed on compiled script block for HMR cache busting
-  */
+   * to be exposed on compiled script block for HMR cache busting
+   */
   deps?: Set<string>;
   /**
-  * cache for resolved fs
-  */
+   * cache for resolved fs
+   */
   fs?: NonNullable<SFCScriptCompileOptions["fs"]>;
   constructor(descriptor: SFCDescriptor, options: Partial<SFCScriptCompileOptions>);
   getString(node: Node, scriptSetup?: boolean): string;
@@ -429,20 +430,20 @@ export declare class ScriptCompileContext {
 //#region temp/packages/compiler-sfc/src/script/resolveType.d.ts
 export type SimpleTypeResolveOptions = Partial<Pick<SFCScriptCompileOptions, "globalTypeFiles" | "fs" | "babelParserPlugins" | "isProd">>;
 /**
-* TypeResolveContext is compatible with ScriptCompileContext
-* but also allows a simpler version of it with minimal required properties
-* when resolveType needs to be used in a non-SFC context, e.g. in a babel
-* plugin. The simplest context can be just:
-* ```ts
-* const ctx: SimpleTypeResolveContext = {
-*   filename: '...',
-*   source: '...',
-*   options: {},
-*   error() {},
-*   ast: []
-* }
-* ```
-*/
+ * TypeResolveContext is compatible with ScriptCompileContext
+ * but also allows a simpler version of it with minimal required properties
+ * when resolveType needs to be used in a non-SFC context, e.g. in a babel
+ * plugin. The simplest context can be just:
+ * ```ts
+ * const ctx: SimpleTypeResolveContext = {
+ *   filename: '...',
+ *   source: '...',
+ *   options: {},
+ *   error() {},
+ *   ast: []
+ * }
+ * ```
+ */
 export type SimpleTypeResolveContext = Pick<ScriptCompileContext, "source" | "filename" | "error" | "warn" | "helper" | "getString" | "propsTypeDecl" | "propsRuntimeDefaults" | "propsDestructuredBindings" | "emitsTypeDecl" | "isCE"> & Partial<Pick<ScriptCompileContext, "scope" | "globalScopes" | "deps" | "fs">> & {
   ast: Statement[];
   options: SimpleTypeResolveOptions;
@@ -480,19 +481,19 @@ interface ResolvedElements {
   calls?: (TSCallSignatureDeclaration | TSFunctionType)[];
 }
 /**
-* Resolve arbitrary type node to a list of type elements that can be then
-* mapped to runtime props or emits.
-*/
+ * Resolve arbitrary type node to a list of type elements that can be then
+ * mapped to runtime props or emits.
+ */
 export declare function resolveTypeElements(ctx: TypeResolveContext, node: Node & MaybeWithScope & {
   _resolvedElements?: ResolvedElements;
 }, scope?: TypeScope, typeParameters?: Record<string, Node>): ResolvedElements;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function registerTS(_loadTS: () => typeof TS): void;
 /**
-* @private
-*/
+ * @private
+ */
 export declare function invalidateTypeCache(filename: string): void;
 export declare function inferRuntimeType(ctx: TypeResolveContext, node: Node & MaybeWithScope, scope?: TypeScope, isKeyOf?: boolean, typeParameters?: Record<string, Node>): string[];
 //#endregion
@@ -505,10 +506,10 @@ export declare const parseCache: Map<string, SFCParseResult>;
 export declare const errorMessages: Record<number, string>;
 export declare const walk: any;
 /**
-* @deprecated this is preserved to avoid breaking vite-plugin-vue < 5.0
-* with reactivityTransform: true. The desired behavior should be silently
-* ignoring the option instead of breaking.
-*/
+ * @deprecated this is preserved to avoid breaking vite-plugin-vue < 5.0
+ * with reactivityTransform: true. The desired behavior should be silently
+ * ignoring the option instead of breaking.
+ */
 export declare const shouldTransformRef: () => boolean;
 //#endregion
 export { type BindingMetadata, type CompilerError, type CompilerOptions, MagicString, babelParse, extractIdentifiers, generateCodeFrame, isInDestructureAssignment, isStaticProperty, walkIdentifiers };

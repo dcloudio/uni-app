@@ -4,6 +4,17 @@ export function isUniAppX() {
   return process.env.UNI_APP_X === 'true'
 }
 
+export function isUniAppXAppPlatform(
+  platform: AppXPlatform = process.env.UNI_UTS_PLATFORM
+) {
+  return (
+    isUniAppX() &&
+    (platform === 'app-android' ||
+      platform === 'app-ios' ||
+      platform === 'app-harmony')
+  )
+}
+
 export function isUniAppXAndroid(
   platform: AppXPlatform = process.env.UNI_UTS_PLATFORM
 ) {
@@ -18,6 +29,23 @@ export function isUniAppXIOS(
 
 export function isUniAppXVapor() {
   return isUniAppX() && process.env.UNI_APP_X_DOM2 === 'true'
+}
+
+/** Web Vapor 与 App DOM2 使用同一个对外开关，但产物和运行时不同。 */
+export function isUniAppXWebVapor() {
+  return (
+    isUniAppXVapor() &&
+    (process.env.UNI_PLATFORM === 'h5' || process.env.UNI_PLATFORM === 'web')
+  )
+}
+
+export function isUniAppXStandardScriptSupported(
+  platform: AppXPlatform = process.env.UNI_UTS_PLATFORM
+) {
+  return (
+    isUniAppX() &&
+    (platform !== 'app-android' || process.env.UNI_APP_X_DOM2 === 'true')
+  )
 }
 
 export function shouldUseHighResolutionSourceMap() {

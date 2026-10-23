@@ -22,7 +22,6 @@ describe('createUniOptions', () => {
     NODE_ENV: process.env.NODE_ENV,
     UNI_NODE_ENV: process.env.UNI_NODE_ENV,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
-    UNI_APP_X_VAPOR_SCRIPT_LANG: process.env.UNI_APP_X_VAPOR_SCRIPT_LANG,
     UNI_APP_X_TARGET_ARCHS: process.env.UNI_APP_X_TARGET_ARCHS,
     UNI_INPUT_DIR: process.env.UNI_INPUT_DIR,
     UNI_OUTPUT_DIR: process.env.UNI_OUTPUT_DIR,
@@ -57,7 +56,7 @@ describe('createUniOptions', () => {
           inputDir,
           'uni_modules/module-a/uasm',
           platform,
-          'libs/arm64-v8a/libmodule-a.so'
+          'libs/arm64-v8a/libUasmModuleA.so'
         ),
         ''
       )
@@ -66,7 +65,7 @@ describe('createUniOptions', () => {
           inputDir,
           'uni_modules/module-a/uasm',
           platform,
-          'libs/armeabi-v7a/libmodule-a.so'
+          'libs/armeabi-v7a/libUasmModuleA.so'
         ),
         ''
       )
@@ -75,7 +74,7 @@ describe('createUniOptions', () => {
           inputDir,
           'uni_modules/module-b/uasm',
           platform,
-          'libs/x86_64/libmodule-b.so'
+          'libs/x86_64/libUasmModuleB.so'
         ),
         ''
       )
@@ -149,27 +148,18 @@ describe('createUniOptions', () => {
   )
 
   test.each([
-    [true, true, true],
-    [true, false, false],
-    [false, true, false],
+    [false, true],
+    [true, false],
   ] as const)(
-    'keeps vite:esbuild with DOM2=%s and script lang=%s',
-    (isDom2, enableVaporScriptLang, expected) => {
-      if (isDom2) {
-        process.env.UNI_APP_X_DOM2 = 'true'
-      } else {
-        delete process.env.UNI_APP_X_DOM2
-      }
-      process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = enableVaporScriptLang
-        ? 'true'
-        : 'false'
+    'keeps vite:esbuild with Android VDOM=%s',
+    (isAndroidVdom, expected) => {
       const esbuildPlugin = { name: 'vite:esbuild' }
       const config = {
         plugins: [esbuildPlugin, { name: 'vite:asset' }],
         build: {},
       } as unknown as ResolvedConfig
 
-      configResolved(config)
+      configResolved(config, isAndroidVdom)
 
       expect(config.plugins.includes(esbuildPlugin)).toBe(expected)
     }

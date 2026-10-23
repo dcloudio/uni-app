@@ -28,7 +28,7 @@ export { setupDevtoolsPlugin } from './devtools'
 
 export { findComponentPropsData, pruneComponentPropsCache } from './renderProps'
 
-export const o: typeof vOn = (value, key) => vOn(value, key)
+export const o: typeof vOn = (value, key, flags) => vOn(value, key, flags)
 export const f: typeof vFor = (
   source: any,
   renderItem: (...args: any[]) => VForItem

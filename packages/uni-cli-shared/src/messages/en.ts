@@ -3,6 +3,8 @@ export default {
   'view.render.compiler.target': 'Current view.render compile target: {target}',
   'view.render.compiler.target.bytecode': 'bytecode',
   'view.render.compiler.target.nativecode': 'nativecode',
+  'vapor.default.script.lang':
+    'Default script lang for current uvue/vue files: {lang}',
   'style.isolation.version': 'Style isolation version: {version}',
   'style.isolation.version.upgrade':
     'Style isolation version: {version}. Upgrading to 2.0 is recommended.',
@@ -22,10 +24,14 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. Switching vapor mode requires restarting to take effect.',
+  'dev.watching.restart.script.engine':
+    'DONE  Restart required. Script engine changes require restarting to take effect.',
   'dev.watching.restart.independentSubPackages':
     'DONE  Restart required. Changing independent subpackage roots requires restarting to take effect.',
   'dev.watching.vapor.render.target':
     'vapor-render-target in manifest.json was changed to {manifestTarget}, but the running console is still {runtimeTarget}.',
+  'harmony.vapor.script.engine':
+    'Invalid Harmony script engine ({engine}) specified, using default.',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':
@@ -78,4 +84,8 @@ export default {
   'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
   'pages.json.tabbar.page.notfound':
     'The tabBar page "{pagePath}" is not declared in "pages.json".',
+  'vapor.tree.shaking.applied': `Based on the module selection and tree-shaking scan results in manifest.json, the following built-in modules and plugins will be included in this build:
+{modules}
+If you need to add more modules, please add them in manifest.json (you need to rebuild after adding). For third-party SDKs, select more modules in the visual interface, and add other modules according to the documentation in the source view of manifest.json. [Details](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html)
+Note: If a module is not included in the custom playground, the related APIs cannot be used in the custom playground; if a module is not included in the official package, the related APIs cannot be used after subsequent wgt resource updates.`,
 } as const

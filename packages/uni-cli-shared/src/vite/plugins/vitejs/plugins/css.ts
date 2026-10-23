@@ -366,6 +366,7 @@ export function cssPostPlugin(
     preserveModules,
     chunkCssFilename,
     chunkCssCode,
+    onCssChunkCacheHit,
     includeComponentCss,
     emitFile,
   }: {
@@ -377,6 +378,7 @@ export function cssPostPlugin(
       filename: string,
       cssCode: string
     ) => Promise<string | Uint8Array> | string
+    onCssChunkCacheHit?: (filename: string) => void
     includeComponentCss?: boolean
     emitFile?: (filename: string, cssCode: string | Uint8Array) => void
   }
@@ -581,6 +583,7 @@ export function cssPostPlugin(
           !hasFontFace &&
           cssChunkCodeHashCache.get(filename) === cssCodeHash
         ) {
+          onCssChunkCacheHit?.(filename)
           continue
         }
         let source = await processChunkCSS(cssCode, {

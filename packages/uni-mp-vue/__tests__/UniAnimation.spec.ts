@@ -223,6 +223,10 @@ describe('uni-mp-vue: UniAnimation', () => {
       { offset: 0, 'background-color': 'yellow' },
       { offset: 0.9, 'background-color': 'red' },
     ])
+
+    expect(normalizeKeyframes([{ backgroundColor: 'green' }])).toEqual([
+      { offset: 0, 'background-color': 'green' },
+    ])
   })
   it('coverAnimateToStyle', () => {
     expect(
@@ -353,6 +357,25 @@ describe('uni-mp-vue: UniAnimation', () => {
         transition: 'all 500ms linear',
         _duration: 500,
         _startTime: 500,
+      },
+    ])
+
+    expect(
+      coverAnimateToStyle(
+        {
+          backgroundColor: 'green',
+        },
+        {
+          duration: 1000,
+          fill: 'forwards',
+        }
+      )
+    ).toEqual([
+      {
+        'background-color': 'green',
+        transition: 'all 0ms linear',
+        _duration: 0,
+        _startTime: 0,
       },
     ])
 

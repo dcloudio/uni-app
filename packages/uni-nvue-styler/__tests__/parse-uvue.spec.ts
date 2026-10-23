@@ -217,6 +217,147 @@ describe('uvue-style', () => {
     expect(res2.code).toBe('{}')
   })
 
+  test('dom2 支持 css calc', async () => {
+    const { code, messages } = await parse(
+      `.content {
+          width: calc(100% - 20px);
+          height: CALC(100% - 10px);
+          top: calc(var(--window-top) + 10px);
+          padding-bottom: calc(100px - env(safe-area-inset-bottom));
+          margin: calc(10px + 2px) 5px;
+        }`,
+      {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+        map: true,
+        ts: true,
+      }
+    )
+
+    expect(messages).toHaveLength(0)
+    expect(code).toMatchSnapshot()
+  })
+
+  test('dom2 支持已确认属性的 css calc', async () => {
+    const properties = [
+      ['width', 'calc(10px + 2px)'],
+      ['height', 'calc(10px + 2px)'],
+      ['min-width', 'calc(10px + 2px)'],
+      ['min-height', 'calc(10px + 2px)'],
+      ['max-width', 'calc(10px + 2px)'],
+      ['max-height', 'calc(10px + 2px)'],
+      ['top', 'calc(10px + 2px)'],
+      ['right', 'calc(10px + 2px)'],
+      ['bottom', 'calc(10px + 2px)'],
+      ['left', 'calc(10px + 2px)'],
+      ['margin', 'calc(10px + 2px)'],
+      ['margin-top', 'calc(10px + 2px)'],
+      ['margin-right', 'calc(10px + 2px)'],
+      ['margin-bottom', 'calc(10px + 2px)'],
+      ['margin-left', 'calc(10px + 2px)'],
+      ['padding', 'calc(10px + 2px)'],
+      ['padding-top', 'calc(10px + 2px)'],
+      ['padding-right', 'calc(10px + 2px)'],
+      ['padding-bottom', 'calc(10px + 2px)'],
+      ['padding-left', 'calc(10px + 2px)'],
+      ['flex-basis', 'calc(10px + 2px)'],
+      ['border', 'calc(10px + 2px) solid red'],
+      ['border-top', 'calc(10px + 2px) solid red'],
+      ['border-right', 'calc(10px + 2px) solid red'],
+      ['border-bottom', 'calc(10px + 2px) solid red'],
+      ['border-left', 'calc(10px + 2px) solid red'],
+      ['border-width', 'calc(10px + 2px)'],
+      ['border-top-width', 'calc(10px + 2px)'],
+      ['border-right-width', 'calc(10px + 2px)'],
+      ['border-bottom-width', 'calc(10px + 2px)'],
+      ['border-left-width', 'calc(10px + 2px)'],
+      ['border-radius', 'calc(10% - 2px)'],
+      ['border-top-left-radius', 'calc(10% - 2px)'],
+      ['border-top-right-radius', 'calc(10% - 2px)'],
+      ['border-bottom-right-radius', 'calc(10% - 2px)'],
+      ['border-bottom-left-radius', 'calc(10% - 2px)'],
+      ['transform', 'translateX(calc(100% - 10px))'],
+      ['transform-origin', 'calc(50% - 10px) 50%'],
+      ['box-shadow', 'calc(10px + 2px) 0 2px #000000'],
+      ['text-shadow', '0 calc(10px + 2px) 2px #000000'],
+      ['backdrop-filter', 'blur(calc(10px + 2px))'],
+      ['opacity', 'calc(1 - 0.2)'],
+      ['font-size', 'calc(10px + 2px)'],
+      ['line-height', 'calc(10px + 2px)'],
+      ['z-index', 'calc(1 + 2)'],
+    ]
+
+    for (const [property, value] of properties) {
+      const { code, messages } = await parse(
+        `.content { ${property}: ${value}; }`,
+        {
+          type: 'uvue',
+          dom2: true,
+          platform: 'app-android',
+          map: true,
+          ts: true,
+        }
+      )
+      expect(messages).toHaveLength(0)
+      expect(code).not.toBe(
+        'new Map<string, Map<string, Map<string, any>>>([])'
+      )
+    }
+  })
+
+  test('dom2 展开 border 简写中的 calc width', async () => {
+    const { code, messages } = await parse(
+      `.all {
+        border: calc(1px + 1px) solid red;
+      }
+      .left {
+        border-left: calc(var(--width, 1px) + 1px) solid blue;
+      }`,
+      {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+        map: true,
+        ts: true,
+      }
+    )
+
+    expect(messages).toHaveLength(0)
+    for (const position of ['Top', 'Right', 'Bottom', 'Left']) {
+      expect(code).toContain(`["border${position}Width", calc(1px + 1px)]`)
+    }
+    expect(code).toContain('["borderLeftWidth", calc(var(--width, 1px) + 1px)]')
+  })
+
+  test('dom2 支持 render 属性中的 css calc', async () => {
+    const { code, messages } = await parse(
+      `.content {
+          border-radius: CALC(10% - 2px);
+          border-bottom-left-radius: calc(10% - 2px);
+          border-bottom-right-radius: calc(10% - 2px);
+          border-top-left-radius: calc(10% - 2px);
+          border-top-right-radius: calc(10% - 2px);
+          transform: translateX(CALC(100% - 10px));
+          transform-origin: calc(50% - 10px) calc(50% + 10px);
+          box-shadow: calc(10px + 2px) 0 2px #000000;
+          text-shadow: 0 calc(10px + 2px) 2px #000000;
+          backdrop-filter: blur(CALC(10px + 2px));
+          opacity: calc(1 - 0.2);
+        }`,
+      {
+        type: 'uvue',
+        dom2: true,
+        platform: 'app-android',
+        map: true,
+        ts: true,
+      }
+    )
+
+    expect(messages).toHaveLength(0)
+    expect(code).toMatchSnapshot()
+  })
+
   test('support env', async () => {
     const { code, messages } = await parse(
       `.top {

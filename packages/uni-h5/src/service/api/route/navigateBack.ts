@@ -7,6 +7,10 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { ON_BACK_PRESS } from '@dcloudio/uni-shared'
+import type { Router } from 'vue-router'
+//#if _X_VAPOR_
+import { getRouterInstance } from '../../../framework/plugin/routerInstance'
+//#endif
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -39,11 +43,14 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       return reject(ON_BACK_PRESS)
     }
 
-    if (__X__) {
-      getApp().vm.$router.go(-args!.delta!)
-    } else {
-      getApp().$router.go(-args!.delta!)
-    }
+    let router: Router
+    //#if _X_VAPOR_
+    router = getRouterInstance()
+    //#endif
+    //#if !_X_VAPOR_
+    router = __X__ ? getApp().vm.$router : getApp().$router
+    //#endif
+    router.go(-args!.delta!)
     return resolve()
   },
   NavigateBackProtocol,

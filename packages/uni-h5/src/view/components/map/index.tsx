@@ -17,7 +17,7 @@ import {
   useCustomEvent,
   useSubscribe,
 } from '@dcloudio/uni-components'
-import '@amap/amap-jsapi-types'
+import type {} from '@amap/amap-jsapi-types'
 import { callOptions } from '@dcloudio/uni-shared'
 import { type Point, getIsAMap, getIsBMap } from '../../../helpers/location'
 import {

@@ -15,6 +15,7 @@ import {
   isCSSRequest,
   isEnableConsole,
   isMiniProgramAssetFile,
+  isUniAppX,
   normalizeMiniProgramFilename,
   normalizePath,
   parseIndependentSubPackages,
@@ -23,6 +24,7 @@ import {
   parsePagesJson,
   removeExt,
   resolveMainPathOnce,
+  resolveMiniProgramComponentPackageRoot,
   resolveWorkersRootDir,
 } from '@dcloudio/uni-cli-shared'
 import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
@@ -30,6 +32,7 @@ import {
   getSubPackages,
   isUniComponentUrl,
   isUniPageUrl,
+  normalizeMiniProgramComponentFilename,
   parseVirtualComponentPathInfo,
   parseVirtualPagePathInfo,
 } from '../plugins/entry'
@@ -418,15 +421,26 @@ function createChunkFileNames(
       let independentRoot = parseIndependentRoot(id)
       id = independentRoot ? withoutIndependentRoot(id) : id
       let isMiniProgramEntry = false
+      let componentPackageRoot: string | undefined
       if (isUniPageUrl(id)) {
         const { filepath, root } = parseVirtualPagePathInfo(id)
         independentRoot = independentRoot || root
         id = path.resolve(process.env.UNI_INPUT_DIR, filepath)
         isMiniProgramEntry = true
       } else if (isUniComponentUrl(id)) {
-        const { filepath, root } = parseVirtualComponentPathInfo(id)
+        const { filepath, root, packageRoot } =
+          parseVirtualComponentPathInfo(id)
         independentRoot = independentRoot || root
         id = path.resolve(process.env.UNI_INPUT_DIR, filepath)
+        componentPackageRoot =
+          isUniAppX() && independentRoot
+            ? undefined
+            : isUniAppX()
+            ? resolveMiniProgramComponentPackageRoot(
+                normalizeMiniProgramFilename(id, inputDir),
+                packageRoot
+              )
+            : undefined
         isMiniProgramEntry = true
       }
       if (getWorkersRootDirs().length) {
@@ -449,6 +463,17 @@ function createChunkFileNames(
         return (
           resolveIndependentCommonChunkName(independentRoot, chunkFileName) +
           '.js'
+        )
+      }
+      if (componentPackageRoot) {
+        return (
+          removeExt(
+            normalizeMiniProgramComponentFilename(
+              id,
+              inputDir,
+              componentPackageRoot
+            )
+          ) + '.js'
         )
       }
       return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'

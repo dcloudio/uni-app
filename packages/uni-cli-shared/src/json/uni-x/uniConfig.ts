@@ -12,6 +12,7 @@ interface AppXUniConfig {
   conditionUrl?: string
   realEntryPagePath?: string
   themeConfig?: unknown
+  pageSelectorBackgroundColor?: unknown
 }
 
 // app-config.js 内容
@@ -35,6 +36,11 @@ export function normalizeAppXUniConfig(
   // darkmode
   if (pagesJson.themeConfig) {
     config.themeConfig = pagesJson.themeConfig
+  }
+  const pageSelectorBackgroundColor = (pagesJson as any)
+    .pageSelectorBackgroundColor
+  if (pageSelectorBackgroundColor) {
+    config.pageSelectorBackgroundColor = pageSelectorBackgroundColor
   }
   // TODO 待支持分包
   return config

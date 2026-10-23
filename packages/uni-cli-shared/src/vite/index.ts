@@ -44,6 +44,7 @@ interface UniVitePluginUniOptions {
     isCustomElement?: ParserOptions['isCustomElement']
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']
+    ssrPreTagTransforms?: CompilerOptions['nodeTransforms']
     whitespace?: CompilerOptions['whitespace']
   }
   jsxOptions?: {

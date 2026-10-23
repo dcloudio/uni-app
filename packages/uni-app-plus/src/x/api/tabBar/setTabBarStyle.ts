@@ -16,15 +16,28 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
       reject('tabBar is not exist')
       return
     }
-    const style = new Map<string, any | null>([
-      ['color', options.color],
-      ['selectedColor', options.selectedColor],
-      ['backgroundColor', options.backgroundColor],
-      ['backgroundImage', options.backgroundImage],
-      ['backgroundRepeat', options.backgroundRepeat],
-      ['borderStyle', options.borderStyle],
-      ['borderColor', options.borderColor],
-    ])
+    const style = new Map<string, any | null>()
+    if (options.color != null) {
+      style.set('color', options.color)
+    }
+    if (options.selectedColor != null) {
+      style.set('selectedColor', options.selectedColor)
+    }
+    if (options.backgroundColor != null) {
+      style.set('backgroundColor', options.backgroundColor)
+    }
+    if (options.backgroundImage != null) {
+      style.set('backgroundImage', options.backgroundImage)
+    }
+    if (options.backgroundRepeat != null) {
+      style.set('backgroundRepeat', options.backgroundRepeat)
+    }
+    if (options.borderStyle != null) {
+      style.set('borderStyle', options.borderStyle)
+    }
+    if (options.borderColor != null) {
+      style.set('borderColor', options.borderColor)
+    }
 
     if (!!options.midButton) {
       const midButtonOptions = options.midButton!

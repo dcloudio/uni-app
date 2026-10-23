@@ -79,7 +79,8 @@ function createDescriptor(filename, source, {
   sourceMap,
   compiler,
   template,
-  features
+  features,
+  uniAppXVaporSfcTransform
 }, hmr = false) {
   const { descriptor, errors } = compiler.parse(source, {
     filename,
@@ -102,6 +103,7 @@ function createDescriptor(filename, source, {
   } else {
     descriptor.id = getHash(normalizedPath + (isProduction ? source : ""));
   }
+  uniAppXVaporSfcTransform?.(descriptor);
   (hmr ? hmrCache : cache).set(filename, descriptor);
   return { descriptor, errors };
 }
@@ -1216,7 +1218,8 @@ function addMappingInternal(skipable, map, mapping) {
 }
 
 function shouldApplyUniAppXVaporScriptTransform(descriptor, transform) {
-  return !!(transform && descriptor.scriptSetup && descriptor.scriptSetup.lang === "ts" && !descriptor.script?.src && !descriptor.scriptSetup.src);
+  const lang = descriptor.scriptSetup?.lang;
+  return !!(transform && descriptor.scriptSetup && (lang === "js" || lang === "ts") && !descriptor.script?.src && !descriptor.scriptSetup.src);
 }
 function getPosition(source, line, column) {
   let pos = 0;
@@ -2743,6 +2746,7 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
     );
     return null;
   }
+  const uniAppXScriptMeta = descriptor.__uniAppXVaporSfcMeta;
   const attachedProps = [];
   const hasScoped = descriptor.styles.some((s) => s.scoped);
   const {
@@ -2784,6 +2788,18 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
     attachedProps
   );
   const customBlocksCode = await genCustomBlockCode(descriptor, pluginContext);
+  if (uniAppXScriptMeta?.scriptLang) {
+    attachedProps.push([
+      "__scriptLang",
+      JSON.stringify(uniAppXScriptMeta.scriptLang)
+    ]);
+  }
+  if (uniAppXScriptMeta?.hasImplicitLang) {
+    attachedProps.push([
+      "__uniDefaultScriptLang",
+      JSON.stringify(uniAppXScriptMeta.defaultLang)
+    ]);
+  }
   const output = [
     scriptCode,
     templateCode,
@@ -2891,7 +2907,10 @@ async function transformMain(code, filename, options, pluginContext, ssr, custom
   }
   let resolvedCode = output.join("\n");
   const lang = descriptor.scriptSetup?.lang || descriptor.script?.lang;
-  if (lang && /tsx?$/.test(lang) && !descriptor.script?.src) {
+  if ((lang && /tsx?$/.test(lang) || shouldApplyUniAppXVaporScriptTransform(
+    descriptor,
+    options.uniAppXVaporScriptTransform
+  )) && !descriptor.script?.src) {
     const { transformWithOxc } = await import('vite');
     if (transformWithOxc) {
       const { code: code2, map } = await transformWithOxc(

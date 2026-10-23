@@ -12675,6 +12675,7 @@ const ShowToastProtocol = {
     icon: String,
     image: String,
     duration: Number,
+    position: String,
     mask: Boolean,
 };
 const ShowToastOptions = {

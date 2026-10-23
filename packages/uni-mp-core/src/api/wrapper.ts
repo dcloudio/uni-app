@@ -6,7 +6,7 @@ import type {
   MPProtocolObject,
   MPProtocols,
 } from './protocols'
-import { shouldKeepReturnValue } from './protocols/x'
+import { forceReturnValueResult } from './protocols/x'
 
 import { isContextApi, isSyncApi, isTaskApi } from './promise'
 
@@ -68,7 +68,8 @@ export function initWrapper(protocols: MPProtocols) {
     fromArgs: unknown,
     argsOption: MPProtocolArgs = {},
     returnValue = {},
-    keepFromArgs = false
+    keepFromArgs = false,
+    restArgs: any[] = []
   ) {
     if (isPlainObject(fromArgs)) {
       // 一般 api 的参数解析
@@ -77,7 +78,7 @@ export function initWrapper(protocols: MPProtocols) {
         any
       > // returnValue 为 false 时，说明是格式化返回值，直接在返回值对象上修改赋值
       if (isFunction(argsOption)) {
-        argsOption = argsOption(fromArgs, toArgs) || {}
+        argsOption = argsOption(fromArgs, toArgs, restArgs) || {}
       }
       for (const key in fromArgs) {
         if (hasOwn(argsOption, key)) {
@@ -111,10 +112,13 @@ export function initWrapper(protocols: MPProtocols) {
       return toArgs
     } else if (isFunction(fromArgs)) {
       if (isFunction(argsOption)) {
-        argsOption(fromArgs, {})
+        argsOption(fromArgs, {}, restArgs)
       }
       // 事件 API 需要保证 on/off 传给平台的回调引用一致。
       fromArgs = processEventCallback(methodName, fromArgs, returnValue)
+    } else if (isFunction(argsOption)) {
+      // 目前仅服务于getStorageSync isUTS标记
+      argsOption(fromArgs, {}, restArgs)
     }
     return fromArgs
   }
@@ -129,14 +133,23 @@ export function initWrapper(protocols: MPProtocols) {
       // 处理通用 returnValue
       res = protocols.returnValue(methodName, res)
     }
-    const realKeepReturnValue =
-      keepReturnValue || (__X__ && shouldKeepReturnValue(methodName))
+    /**
+     * storage接口的返回值不应再遍历复制
+     * 目前在此处特殊处理
+     */
+    const useReturnValueResult = __X__ && forceReturnValueResult(methodName)
+    if (useReturnValueResult) {
+      if (typeof returnValue === 'function') {
+        return returnValue(res)
+      }
+    }
     return processArgs(
       methodName,
       res,
       returnValue as MPProtocolArgs,
       {},
-      realKeepReturnValue
+      keepReturnValue,
+      []
     )
   }
   return function wrapper(methodName: string, method: unknown) {
@@ -177,7 +190,14 @@ export function initWrapper(protocols: MPProtocols) {
         options = protocol(arg1)
       }
 
-      arg1 = processArgs(methodName, arg1, options.args, options.returnValue)
+      arg1 = processArgs(
+        methodName,
+        arg1,
+        options.args,
+        options.returnValue,
+        false,
+        [arg2]
+      )
 
       const args = [arg1]
       if (typeof arg2 !== 'undefined') {

@@ -56,8 +56,9 @@ export function useLoadingStyle(
   })
 
   return {
-    size: loadingSize,
+    width: loadingSize,
+    height: loadingSize,
     borderWidth: loadingBorderWidth,
-    borderRadius: loadingBorderRadius,
+    // borderRadius: loadingBorderRadius,
   }
 }

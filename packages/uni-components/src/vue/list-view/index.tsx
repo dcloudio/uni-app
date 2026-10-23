@@ -199,14 +199,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       childStatus.splice(index, 1)
       rearrangeDebounce()
     })
-    let firstItemRendered = false
-    provide('__listViewFirstItemRendered', (status: ListItemStatus) => {
-      if (firstItemRendered) {
-        return
-      }
-      state.defaultItemSize = status.cachedSize
-      state.defaultItemSizeUpdated = true
-    })
     watch(
       () => {
         return state.defaultHeaderSize

@@ -2,6 +2,15 @@ import { extend, isFunction } from '@vue/shared'
 import type { RPT2Options } from 'rollup-plugin-typescript2'
 import type tsTypes from 'typescript'
 import { createBasicUtsOptions } from '../utils/options'
+import type { UniXCompilerOptions } from '../../../lib/uni-x/dist/compiler'
+
+type SharedDataTransformerCreator = NonNullable<
+  NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
+>['createSharedDataTransformer']
+
+type WorkerTransformerCreator = NonNullable<
+  NonNullable<UniXCompilerOptions['transformOptions']>['workers']
+>['createWorkerTransformer']
 
 type ResolvedUasmLoad =
   | string
@@ -12,6 +21,8 @@ type ResolvedUasmLoad =
 
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   dom2?: boolean
+  excludeStandardTypeScript?: boolean
+  jsonImportMode?: 'uts'
   platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
   inputDir: string
   version: string
@@ -23,6 +34,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
     resolve: () => Record<string, string>
     extname?: string
     rewriteRootDir?: string
+    createWorkerTransformer: WorkerTransformerCreator
   }
   uasm?: {
     targetArchs?: string[]
@@ -43,15 +55,25 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
       typescript: typeof tsTypes
     ): string[] | undefined
   }
+  scriptMacros: {
+    createUniAppXScriptMacrosTransformer(options: {
+      typescript: typeof tsTypes
+    }): tsTypes.TransformerFactory<tsTypes.SourceFile>
+  }
   disableUTSBooleanConversion?: boolean
   sharedData?: {
     resolveFieldMeta(name: string): { fieldId: number }
+    createSharedDataTransformer?: SharedDataTransformerCreator
   }
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
-  if (options.dom2 && process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true') {
+  const excludeStandardTypeScript = options.excludeStandardTypeScript
+  delete options.excludeStandardTypeScript
+  if (options.dom2 || excludeStandardTypeScript) {
+    // UTS 导入的 JSON 使用独立模块实例，标准 JS/TS 继续使用 Vite JSON 流程。
+    options.jsonImportMode = 'uts'
     const exclude = options.exclude
       ? Array.isArray(options.exclude)
         ? options.exclude
@@ -59,7 +81,7 @@ export const uts2js: uts2js = (options) => {
       : []
     options.exclude = [
       ...exclude,
-      // 启用 Vapor JS/TS 脚本时，标准 TypeScript 由 Vite esbuild 处理，uts2js 只保留 UTS 请求。
+      // 标准 TypeScript 由 Vite esbuild 处理，uts2js 只保留 UTS 请求。
       '*.ts',
       '**/*.ts',
       '*.ts[?]*',

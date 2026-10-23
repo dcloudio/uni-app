@@ -18,6 +18,7 @@ import {
 import type { Plugin } from 'vite'
 import { isPages, setGlobalPageOrientation } from '../utils'
 import { isVue } from '../utils'
+import { applyPageSelectorBackgroundColors } from '../dom2/pageBackground'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -30,9 +31,18 @@ export function uniAppPagesPlugin(): Plugin {
 
   let allPagePaths: string[] = []
   let isFirst = true
+  let pagesJson: UniApp.PagesJson | undefined
+  let manifestJson: Record<string, any> | undefined
+  const loggedPagePaths = new Set<string>()
   return {
     name: 'uni:app-pages-json',
     apply: 'build',
+    buildStart() {
+      // 进度日志按一次构建记录页面，避免插件实例复用时沿用上一轮记录。
+      if (isFirst) {
+        loggedPagePaths.clear()
+      }
+    },
     resolveId(id) {
       if (isPages(id)) {
         return pagesJsonUTSPath
@@ -51,23 +61,24 @@ export function uniAppPagesPlugin(): Plugin {
     },
     transform(code, id) {
       if (isFirst && allPagePaths.length) {
-        const { filename } = parseVueRequest(id)
-        if (isVue(filename)) {
+        const { filename, query } = parseVueRequest(id)
+        // 只记录 SFC 主请求，?vue&type=... 是同一个文件的内部子模块。
+        if (isVue(filename) && !query.vue) {
           const vueFilename = removeExt(
             normalizePath(path.relative(process.env.UNI_INPUT_DIR, filename))
           )
           // 项目内的
           if (!vueFilename.startsWith('.')) {
-            // const index = allPagePaths.indexOf(pagePath)
-            // if (index > -1) {
-            if (runByHBuilderX()) {
-              console.log(
-                `当前工程${
-                  allPagePaths.length
-                }个页面，正在编译${vueFilename}...${'\u200D'}`
-              )
+            if (!loggedPagePaths.has(vueFilename)) {
+              loggedPagePaths.add(vueFilename)
+              if (runByHBuilderX()) {
+                console.log(
+                  `当前工程${
+                    allPagePaths.length
+                  }个页面，正在编译${vueFilename}...${'\u200D'}`
+                )
+              }
             }
-            // }
           }
         }
       }
@@ -83,7 +94,7 @@ export function uniAppPagesPlugin(): Plugin {
         )
 
         // pages.json
-        const pagesJson = normalizeUniAppXAppPagesJson(code)
+        pagesJson = normalizeUniAppXAppPagesJson(code)
 
         // add themeConfig - can move to uni-x/index.ts
         pagesJson.themeConfig = readThemeJSONFile()
@@ -92,14 +103,15 @@ export function uniAppPagesPlugin(): Plugin {
 
         allPagePaths = pagesJson.pages.map((p) => p.path)
 
+        const currentManifestJson = parseManifestJsonOnce(
+          process.env.UNI_INPUT_DIR
+        )
+        manifestJson = currentManifestJson
         this.emitFile({
           fileName: APP_CONFIG,
           type: 'asset',
           // 生成 app-config.js
-          source: normalizeUniAppXAppConfig(
-            pagesJson,
-            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-          ),
+          source: normalizeUniAppXAppConfig(pagesJson!, currentManifestJson),
         })
         if (process.env.UNI_PLATFORM === 'app-harmony') {
           this.emitFile({
@@ -121,6 +133,19 @@ export function uniAppPagesPlugin(): Plugin {
           map: { mappings: '' },
         }
       }
+    },
+    generateBundle: {
+      // page 选择器样式优先级高于 pages.json 的 backgroundColorContent，
+      // 必须在 CSS 插件采集完成后再回写 app-config。
+      order: 'post',
+      handler(_, bundle) {
+        const output = bundle[APP_CONFIG]
+        if (!output || output.type !== 'asset' || !pagesJson || !manifestJson) {
+          return
+        }
+        applyPageSelectorBackgroundColors(pagesJson)
+        output.source = normalizeUniAppXAppConfig(pagesJson, manifestJson)
+      },
     },
     buildEnd() {
       isFirst = false

@@ -1,7 +1,10 @@
 import path from 'path'
 import type { ResolvedId } from 'rollup'
 import { normalizePath } from '../src/utils'
-import { findUsingComponents } from '../src/json/mp/jsonFile'
+import {
+  findUsingComponents,
+  resetMiniProgramJsonFiles,
+} from '../src/json/mp/jsonFile'
 import {
   parseIndependentRoot,
   withIndependentRoot,
@@ -43,6 +46,20 @@ function dynamicImport(name: string, source: string) {
 }
 
 describe('transformVueComponentImports', () => {
+  const originalAppX = process.env.UNI_APP_X
+
+  beforeAll(() => {
+    process.env.UNI_APP_X = 'true'
+  })
+
+  afterAll(() => {
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
+    }
+  })
+
   let oldInputDir = process.env.UNI_INPUT_DIR
 
   afterAll(() => {
@@ -357,6 +374,45 @@ export function createApp() {
       )
       expect(findUsingComponents('package-a/pages/index/index')).toMatchObject({
         'component-b': '/package-a/pages/index/components/component-b',
+      })
+    })
+
+    test(`package root keeps uni_modules component imports inside subpackage`, async () => {
+      const filename = `${inputDir}/uni_modules/foo/components/foo/foo.vue`
+      resetMiniProgramJsonFiles()
+      await parseMainDescriptor(
+        filename,
+        parseProgram(
+          `import BarA from "../bar-a/bar-a.vue";
+const _sfc_main = {
+  components: {
+    BarA
+  }
+};
+const __BINDING_COMPONENTS__ = '{"bar-a":{"name":"_component_bar_a","type":"unknown"}}';
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return {};
+}
+export default _sfc_main;
+`,
+          filename,
+          {}
+        ),
+        resolve,
+        undefined
+      )
+
+      updateMiniProgramComponentsByMainFilename(
+        filename,
+        inputDir,
+        normalizeComponentName,
+        undefined,
+        'pages-a'
+      )
+      expect(
+        findUsingComponents('pages-a/uni_modules/foo/components/foo/foo')
+      ).toMatchObject({
+        'bar-a': '/pages-a/uni_modules/foo/components/bar-a/bar-a',
       })
     })
   })

@@ -1,6 +1,10 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import {
+  addMiniProgramComponentPackageRoot,
+  resetMiniProgramJsonFiles,
+} from '@dcloudio/uni-cli-shared'
 import { createBuildOptions } from '../src/plugin/build'
 import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
 import { withIndependentRoot } from '../src/plugins/independentUtils'
@@ -45,8 +49,14 @@ describe('mp vite build options', () => {
   const originalPlatform = process.env.UNI_PLATFORM
   const originalInputDir = process.env.UNI_INPUT_DIR
   const originalCompileTarget = process.env.UNI_COMPILE_TARGET
+  const originalAppX = process.env.UNI_APP_X
+
+  beforeEach(() => {
+    process.env.UNI_APP_X = 'true'
+  })
 
   afterEach(() => {
+    resetMiniProgramJsonFiles()
     if (originalPlatform === undefined) {
       delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
     } else {
@@ -61,6 +71,11 @@ describe('mp vite build options', () => {
       clearCompileTarget()
     } else {
       process.env.UNI_COMPILE_TARGET = originalCompileTarget
+    }
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
     }
   })
 
@@ -173,6 +188,56 @@ describe('mp vite build options', () => {
           ),
         })
       ).toBe('package-a/components/foo.js')
+      expect(
+        chunkFileNames({
+          isDynamicEntry: true,
+          facadeModuleId: virtualComponentPath(
+            'package-a/components/bar.vue',
+            'package-a',
+            'pages-sub'
+          ),
+        })
+      ).toBe('package-a/components/bar.js')
+      resetMiniProgramJsonFiles()
+      addMiniProgramComponentPackageRoot(
+        'uni_modules/foo/components/foo/foo',
+        'pages-a'
+      )
+      addMiniProgramComponentPackageRoot(
+        'uni_modules/foo/components/foo/foo',
+        'pages-b'
+      )
+      expect(
+        chunkFileNames({
+          isDynamicEntry: true,
+          facadeModuleId: virtualComponentPath(
+            'uni_modules/foo/components/foo/foo.vue',
+            undefined,
+            'pages-a'
+          ),
+        })
+      ).toBe('uni_modules/foo/components/foo/foo.js')
+      expect(
+        chunkFileNames({
+          isDynamicEntry: true,
+          facadeModuleId: virtualComponentPath(
+            'uni_modules/foo/components/foo/foo.vue',
+            undefined,
+            'pages-b'
+          ),
+        })
+      ).toBe('uni_modules/foo/components/foo/foo.js')
+      addMiniProgramComponentPackageRoot('uni_modules/foo/components/foo/foo')
+      expect(
+        chunkFileNames({
+          isDynamicEntry: true,
+          facadeModuleId: virtualComponentPath(
+            'uni_modules/foo/components/foo/foo.vue',
+            undefined,
+            'pages-a'
+          ),
+        })
+      ).toBe('uni_modules/foo/components/foo/foo.js')
       expect(
         chunkFileNames({
           isDynamicEntry: true,

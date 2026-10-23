@@ -36,17 +36,13 @@ import {
 import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
 
-import TabBar from './tabBar'
+import TabBar from './tabBar.vue'
+import { type LayoutState, setLayoutState } from './state'
 import { usePageRoute } from '../../setup/provide'
 
 type KeepAliveRoute = ReturnType<typeof useKeepAliveRoute>
 
 const DEFAULT_CSS_VAR_VALUE = '0px'
-
-let globalLayoutState: LayoutState | undefined = undefined
-export function getLayoutState() {
-  return globalLayoutState
-}
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Layout',
@@ -64,7 +60,7 @@ export default /*#__PURE__*/ defineSystemComponent({
     const showTabBar = (__UNI_FEATURE_TABBAR__ &&
       useShowTabBar(emit)) as ComputedRef<boolean>
     const clazz = useAppClass(showTabBar)
-    globalLayoutState = layoutState
+    setLayoutState(layoutState)
     return () => {
       const layoutTsx = createLayoutTsx(
         keepAliveRoute,
@@ -104,25 +100,6 @@ function initCssVar() {
     '--window-margin': DEFAULT_CSS_VAR_VALUE,
     '--tab-bar-height': DEFAULT_CSS_VAR_VALUE,
   })
-}
-interface LayoutState {
-  topWindowMediaQuery: boolean
-  showTopWindow: boolean
-  apiShowTopWindow: boolean
-  leftWindowMediaQuery: boolean
-  showLeftWindow: boolean
-  apiShowLeftWindow: boolean
-  rightWindowMediaQuery: boolean
-  showRightWindow: boolean
-  apiShowRightWindow: boolean
-  topWindowHeight: number
-  marginWidth: number
-  leftWindowWidth: number
-  rightWindowWidth: number
-  navigationBarTitleText: string
-  topWindowStyle: unknown
-  leftWindowStyle: unknown
-  rightWindowStyle: unknown
 }
 interface WindowState {
   matchTopWindow?: boolean

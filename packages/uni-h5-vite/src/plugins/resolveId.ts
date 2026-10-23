@@ -2,7 +2,11 @@ import path from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
 
-import { resolveBuiltIn, resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
+import {
+  isUniAppXWebVapor,
+  resolveBuiltIn,
+  resolveMainPathOnce,
+} from '@dcloudio/uni-cli-shared'
 import {
   isSSR,
   ownerModuleName,
@@ -38,12 +42,19 @@ export function uniResolveIdPlugin(): Plugin {
         id = '@dcloudio/uni-h5-vue'
       }
       if (isSSR(options)) {
-        if (id === '@dcloudio/uni-h5-vue') {
-          return resolveBuiltIn(
-            path.join(
-              '@dcloudio/uni-h5-vue',
-              resolveVueDistDir() + `/vue.runtime.cjs.js`
+        if (id === ownerModuleName) {
+          if (isUniAppXWebVapor()) {
+            return resolveBuiltIn(
+              path.join(ownerModuleName, 'dist-x-vapor-ssr/uni-h5.es.js')
             )
+          }
+        }
+        if (id === '@dcloudio/uni-h5-vue') {
+          const runtimeFile = isUniAppXWebVapor()
+            ? 'vue.runtime.esm.js'
+            : 'vue.runtime.cjs.js'
+          return resolveBuiltIn(
+            path.join('@dcloudio/uni-h5-vue', resolveVueDistDir(), runtimeFile)
           )
         }
       }

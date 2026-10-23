@@ -24,7 +24,11 @@ export function createErrorHandler(app: App) {
         invokeHook(appInstance.proxy, ON_ERROR, err)
       }
     } else {
+      //#if _X_VAPOR_
+      logError(err, info, instance?.$ as any, false)
+      //#else
       logError(err, info, instance ? instance.$.vnode : null, false)
+      //#endif
     }
   }
 }

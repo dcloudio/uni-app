@@ -502,6 +502,9 @@
       "ConnectSocketSuccess"
     ],
     [
+      "Convert2AbsFullPath"
+    ],
+    [
       "CopyFileOptions"
     ],
     [
@@ -1118,6 +1121,24 @@
     ],
     [
       "HideToast"
+    ],
+    [
+      "HideToastCompleteCallback"
+    ],
+    [
+      "HideToastFail"
+    ],
+    [
+      "HideToastFailCallback"
+    ],
+    [
+      "HideToastOptions"
+    ],
+    [
+      "HideToastSuccess"
+    ],
+    [
+      "HideToastSuccessCallback"
     ],
     [
       "IAccelerometerError"
@@ -2876,6 +2897,9 @@
     ],
     [
       "UnzipFileOptions"
+    ],
+    [
+      "UnzipSyncOptions"
     ],
     [
       "UploadFile"

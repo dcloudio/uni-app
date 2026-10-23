@@ -13,6 +13,7 @@ import {
   isPlainElementNode,
 } from '@dcloudio/uni-cli-shared'
 import type { NodeTransform, TransformContext } from '../transform'
+import type { VBindAttrsEventDirectiveNode } from './vOn'
 
 const V_BIND_ATTRS = '$attrs'
 
@@ -124,10 +125,13 @@ function mergeOnProp(
     return
   }
 
-  prop.exp.content =
-    propIndex < vBindIndex
-      ? `[${prop.exp.content}, ${attrsExp}]`
-      : `[${attrsExp}, ${prop.exp.content}]`
+  // 这里只记录需要透传的处理器及其声明顺序，本地处理器仍由 transformOn
+  // 按标准 v-on 规则完成内联语句、函数表达式和 TS 表达式的转换。
+  const eventProp = prop as VBindAttrsEventDirectiveNode
+  eventProp.__uniVBindAttrsEvent = {
+    attrsExp,
+    attrsFirst: propIndex > vBindIndex,
+  }
 }
 
 function hasFollowingId(props: ElementNode['props'], index: number) {

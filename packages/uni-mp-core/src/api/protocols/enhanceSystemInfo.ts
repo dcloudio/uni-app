@@ -257,6 +257,9 @@ export function populateParameters(
       parameters.uniRuntimeVersionCode = parseFloat(
         process.env.UNI_COMPILER_VERSION
       )
+      if (__PLATFORM__ === 'mp-alipay') {
+        delete parameters.uniCompileVersion
+      }
     } catch (error) {}
   }
 

@@ -24,7 +24,7 @@ import {
 
 const STORAGE_KEYS = 'uni-storage-keys'
 
-function parseValue(value: any) {
+function parseValue(value: any, isUTS: boolean) {
   const types = ['object', 'string', 'number', 'boolean', 'undefined']
   try {
     const object = isString(value) ? JSON.parse(value) : value
@@ -35,7 +35,7 @@ function parseValue(value: any) {
         // eslint-disable-next-line valid-typeof
         if (typeof object.data === type) {
           //#if _X_
-          if (type === 'object') {
+          if (type === 'object' && isUTS) {
             // @ts-expect-error 访问global.UTS
             return UTS.JSON.parse(JSON.stringify(object.data))
           }
@@ -88,7 +88,7 @@ export const setStorage = defineAsyncApi<API_TYPE_SET_STORAGE>(
   SetStorageProtocol
 )
 
-function getStorageOrigin(key: string): any {
+function getStorageOrigin(key: string, isUTS: boolean): any {
   const value = localStorage && localStorage.getItem(key)
   if (!isString(value)) {
     throw new Error('data not found')
@@ -96,7 +96,7 @@ function getStorageOrigin(key: string): any {
   let data: any = value
   try {
     const object = JSON.parse(value)
-    const result = parseValue(object)
+    const result = parseValue(object, isUTS)
     if (result !== undefined) {
       data = result
     }
@@ -106,9 +106,10 @@ function getStorageOrigin(key: string): any {
 
 export const getStorageSync = defineSyncApi<API_TYPE_GET_STORAGE_SYNC>(
   API_GET_STORAGE_SYNC,
-  (key: string) => {
+  // @ts-expect-error 内部isUTS参数
+  (key: string, isUTS: boolean) => {
     try {
-      return getStorageOrigin(key)
+      return getStorageOrigin(key, isUTS)
     } catch (error) {
       return ''
     }
@@ -118,9 +119,10 @@ export const getStorageSync = defineSyncApi<API_TYPE_GET_STORAGE_SYNC>(
 
 export const getStorage = defineAsyncApi<API_TYPE_GET_STORAGE>(
   API_GET_STORAGE,
-  ({ key }, { resolve, reject }) => {
+  // @ts-expect-error 内部isUTS参数
+  ({ key, isUTS }, { resolve, reject }) => {
     try {
-      const data = getStorageOrigin(key)
+      const data = getStorageOrigin(key, isUTS)
       resolve({
         data,
       })

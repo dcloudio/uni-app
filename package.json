@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-5020620260917001",
+  "version": "3.0.0-5030320261023001",
   "workspaces": [
     "packages/*"
   ],
@@ -45,7 +45,7 @@
     ]
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=22.12.0"
   },
   "devDependencies": {
     "@babel/core": "catalog:",

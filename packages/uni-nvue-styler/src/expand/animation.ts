@@ -1,7 +1,7 @@
 import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
 import { parseAnimation } from '../normalize/animation'
 import { getNormalizeMap } from '../normalize/map'
-import { tryExpandSingleValueVarShorthand } from './shorthand'
+import { expandShorthand, tryExpandSingleValueVarShorthand } from './shorthand'
 
 const animationName = __HYPHENATE__ ? 'animation-name' : 'animationName'
 const animationDuration = __HYPHENATE__
@@ -43,16 +43,15 @@ export function createTransformAnimation(
     const singleVarResult = tryExpandSingleValueVarShorthand(
       decl,
       animationLonghands,
-      value
+      value,
+      !!options.dom2
     )
     if (singleVarResult) {
       return singleVarResult
     }
-    // 无法静态确定变量所属槽位时，完整平铺并由运行时按目标 longhand 投影。
+    // animation 的各值域无法仅凭变量位置可靠判断，保留完整值交给运行时投影。
     if (/\bvar\(/i.test(value)) {
-      return animationLonghands.map((prop) =>
-        createDecl(prop, value, important, raws, source)
-      )
+      return expandShorthand(decl, animationLonghands, value)
     }
     const animation = parseAnimation(value.trim())
     if (!animation) {

@@ -1,3 +1,4 @@
+import { BindingTypes } from '@vue/compiler-core'
 import { assert } from './testUtils'
 
 describe('compiler: transform wxs', () => {
@@ -27,7 +28,108 @@ describe('compiler: transform wxs', () => {
       }
     )
   })
+  test('setup ref and computed argument', () => {
+    assert(
+      `<view>{{util.add(val,2)}}</view>`,
+      `<view>{{util.add(a, 2)}}</view>`,
+      `(_ctx, _cache) => {
+  return { a: val.value }
+}`,
+      {
+        filters: ['util'],
+        bindingMetadata: {
+          val: BindingTypes.SETUP_REF,
+        },
+      }
+    )
+  })
+  test('setup static and reactive arguments', () => {
+    assert(
+      `<view>{{util.add(count,state.count)}}</view>`,
+      `<view>{{util.add(a, b)}}</view>`,
+      `(_ctx, _cache) => {
+  return { a: count, b: state.count }
+}`,
+      {
+        filters: ['util'],
+        bindingMetadata: {
+          count: BindingTypes.LITERAL_CONST,
+          state: BindingTypes.SETUP_REACTIVE_CONST,
+        },
+      }
+    )
+  })
+  test('setup maybe-ref and let arguments', () => {
+    assert(
+      `<view>{{util.add(maybeRef,local)}}</view>`,
+      `<view>{{util.add(a, b)}}</view>`,
+      `(_ctx, _cache) => {
+  return { a: _unref(maybeRef), b: _unref(local) }
+}`,
+      {
+        filters: ['util'],
+        bindingMetadata: {
+          maybeRef: BindingTypes.SETUP_MAYBE_REF,
+          local: BindingTypes.SETUP_LET,
+        },
+      }
+    )
+  })
+  test('dynamic arguments', () => {
+    assert(
+      `<view>{{util.add(foo + bar,2)}}</view>`,
+      `<view>{{util.add(a, 2)}}</view>`,
+      `(_ctx, _cache) => {
+  return { a: _ctx.foo + _ctx.bar }
+}`,
+      {
+        filters: ['util'],
+      }
+    )
+  })
+  test('nested elements, calls, and arguments', () => {
+    assert(
+      `<view><view>{{util.add(util.add(state.nested.count,total),config.step)}}</view></view>`,
+      `<view><view>{{util.add(util.add(a, b), c)}}</view></view>`,
+      `(_ctx, _cache) => {
+  return { a: state.nested.count, b: total.value, c: config.step }
+}`,
+      {
+        filters: ['util'],
+        bindingMetadata: {
+          state: BindingTypes.SETUP_REACTIVE_CONST,
+          total: BindingTypes.SETUP_REF,
+          config: BindingTypes.SETUP_CONST,
+        },
+      }
+    )
+  })
+  test('arguments in v-for', () => {
+    assert(
+      `<view v-for="item in items">{{util.add(item,val)}}</view>`,
+      `<view wx:for="{{a}}" wx:for-item="item">{{util.add(item.a, b)}}</view>`,
+      `(_ctx, _cache) => {
+  return { a: _f(_ctx.items, (item, k0, i0) => { return { a: item }; }), b: val.value }
+}`,
+      {
+        filters: ['util'],
+        bindingMetadata: {
+          val: BindingTypes.SETUP_REF,
+        },
+      }
+    )
+  })
   test('v-if', () => {
+    assert(
+      `<view v-if="test.aa(foo)">123</view>`,
+      `<view wx:if="{{test.aa(a)}}">123</view>`,
+      `(_ctx, _cache) => {
+  return _e({ a: _ctx.foo }, {})
+}`,
+      {
+        filters: ['test'],
+      }
+    )
     assert(
       `<view v-if="test.aa()">123</view>`,
       `<view wx:if="{{test.aa()}}">123</view>`,
@@ -74,6 +176,19 @@ describe('compiler: transform wxs', () => {
     )
   })
   test('class', () => {
+    assert(
+      `<view class="page"><view :class="utils.cls('l-checkbox', [['checked', isChecked]])">123</view></view>`,
+      `<view class="page"><view class="{{utils.cls('l-checkbox', a)}}">123</view></view>`,
+      `(_ctx, _cache) => {
+  return { a: [['checked', isChecked.value]] }
+}`,
+      {
+        filters: ['utils'],
+        bindingMetadata: {
+          isChecked: BindingTypes.SETUP_REF,
+        },
+      }
+    )
     assert(
       `<view :class="utils.fc('classA')" class="classB"><view :class="pc('classC')"><text :class="utils.fc('classD')">Hello</text></view></view>`,
       `<view class="{{[utils.fc('classA'), 'classB']}}"><view class="{{a}}"><text class="{{utils.fc('classD')}}">Hello</text></view></view>`,

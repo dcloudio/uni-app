@@ -4,6 +4,7 @@ import type { Plugin, UserConfig } from 'vite'
 import {
   getPlatformManifestJson,
   isInHBuilderX,
+  isUniAppXStandardScriptSupported,
   // initPreContext,
   // normalizePath,
   parseManifestJsonOnce,
@@ -45,11 +46,9 @@ export function createConfig(
       build: createBuild(options, config),
       css: createCss(options, config),
       esbuild: {
-        include:
-          process.env.UNI_APP_X_DOM2 === 'true' &&
-          process.env.UNI_APP_X_VAPOR_SCRIPT_LANG === 'true'
-            ? /\.(tsx?|jsx)$/
-            : /\.(tsx?|jsx|uts)$/,
+        include: isUniAppXStandardScriptSupported()
+          ? /\.(tsx?|jsx)$/
+          : /\.(tsx?|jsx|uts)$/,
         exclude: /\.js$/,
         loader: 'ts',
       },

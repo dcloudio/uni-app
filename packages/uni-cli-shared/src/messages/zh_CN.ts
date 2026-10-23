@@ -3,6 +3,7 @@ export default {
   'view.render.compiler.target': '当前视图层编译目标：{target}',
   'view.render.compiler.target.bytecode': '字节码',
   'view.render.compiler.target.nativecode': '机器码',
+  'vapor.default.script.lang': '当前 uvue/vue 文件默认 script lang：{lang}',
   'style.isolation.version':
     '当前样式隔离策略：{version}。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
   'style.isolation.version.upgrade':
@@ -26,6 +27,10 @@ export default {
     'DONE  Restart required. 独立分包 root 列表变化需要重新运行才能生效。',
   'dev.watching.vapor.render.target':
     'manifest.json 中更改了视图层编译目标为{manifestTarget}，但注意运行控制台还是{runtimeTarget}。',
+  'harmony.vapor.script.engine':
+    '指定的 Harmony 脚本引擎无效（{engine}），使用默认值。',
+  'dev.watching.restart.script.engine':
+    'DONE  Restart required. 脚本引擎变化需要重新运行才能生效。',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': '编译失败',
   'stat.warn.appid':
@@ -82,4 +87,8 @@ export default {
   'pages.json.page.slash': '路径 "{pagePath}" 不能以 "/" 开头',
   'pages.json.tabbar.page.notfound':
     'tabBar 中配置的页面 "{pagePath}" 未在 pages.json 中注册。',
+  'vapor.tree.shaking.applied': `根据manifest.json的模块选择和摇树扫描结果，本次打包将包含如下内置模块和插件：
+{modules}
+如果需要添加更多模块，请在manifest.json中添加（添加后需重新打包）。涉及三方sdk的在可视化界面选择更多模块，其他模块根据文档在manifest.json源码视图添加。[详情](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html)
+注意：如某模块未包含在自定义基座中，相关API无法在自定义基座中使用；如某模块未包含在正式包中，后续wgt资源更新后相关API无法使用。`,
 } as const

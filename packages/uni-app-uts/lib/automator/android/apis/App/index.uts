@@ -449,6 +449,22 @@ export const callUniMethod = (
       })
       break
     }
+    case 'startPullDownRefresh':
+      // @ts-expect-error
+      uni.startPullDownRefresh({
+        success,
+        // @ts-expect-error
+        fail(error) {
+          error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+          callback(null, error)
+        },
+      })
+      break
+    case 'stopPullDownRefresh':
+      // @ts-expect-error
+      uni.stopPullDownRefresh()
+      success({ result: null })
+      break
     case 'getWindowInfo':
       // @ts-expect-error
       success(uni.getWindowInfo())

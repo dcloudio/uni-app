@@ -29,8 +29,12 @@ export const getAppBaseInfo: MPProtocol = {
 
     try {
       if (typeof __GLOBAL__.getAccountInfoSync === 'function') {
-        parameters.packagename =
+        const miniProgramAppId =
           __GLOBAL__.getAccountInfoSync().miniProgram.appId
+        if (miniProgramAppId) {
+          parameters.packagename = miniProgramAppId
+          parameters.packageName = miniProgramAppId
+        }
       }
     } catch (error) {}
 
@@ -43,6 +47,10 @@ export const getAppBaseInfo: MPProtocol = {
           process.env.UNI_COMPILER_VERSION
         )
       } catch (error) {}
+
+      if (__PLATFORM__ === 'mp-alipay') {
+        delete parameters.uniCompileVersion
+      }
     }
 
     extend(toRes, parameters)

@@ -23,9 +23,9 @@ type AutoImportOptions = Record<string, [string, (string | undefined)?][]>
 
 export function getArkTSAutoImports(
   isX: boolean,
-  isDom2: boolean
+  isVapor: boolean
 ): AutoImportOptions {
-  const runtimePackageName = getHarmonyRuntimePackageName(isX, isDom2)
+  const runtimePackageName = getHarmonyRuntimePackageName(isX, isVapor)
   const runtimeExports: [string][] = [
     // uts basic
     ['UTS'],
@@ -293,135 +293,149 @@ export function getArkTSAutoImports(
       ['Image'],
       ['Path2D'],
 
-      // copy from uni-preset
-      // ssr
-      ['ssrRef'],
-      ['shallowSsrRef'],
-      // uni-app lifecycle
-      // App and Page
-      ['onShow'],
-      ['onHide'],
-      // App
-      ['onAppShow'],
-      ['onAppHide'],
-      ['onLaunch'],
-      ['onError'],
-      ['onThemeChange'],
-      ['onKeyboardHeightChange'],
-      ['onPageNotFound'],
-      ['onUnhandledRejection'],
-      ['onLastPageBackPress'],
-      ['onExit'],
-      // Page
-      ['onPageShow'],
-      ['onPageHide'],
-      ['onLoad'],
-      ['onReady'],
-      ['onUnload'],
-      ['onResize'],
-      ['onBackPress'],
-      ['onPageScroll'],
-      ['onTabItemTap'],
-      ['onReachBottom'],
-      ['onPullDownRefresh'],
-      ['OnBackPressOptions'],
-      ['OnLaunchOptions'],
-      ['OnLoadOptions'],
-      ['OnPageScrollOptions'],
-      ['OnResizeOptions'],
-
-      // copy from vue-preset
-      // vue lifecycle
-      ['onActivated'],
-      ['onBeforeMount'],
-      ['onBeforeUnmount'],
-      ['onBeforeUpdate'],
-      ['onErrorCaptured'],
-      ['onDeactivated'],
-      ['onMounted'],
-      ['onServerPrefetch'],
-      ['onUnmounted'],
-      ['onUpdated'],
-      // uni-app specific lifecycle
-      ['onReuse'],
-      ['onRecycle'],
-
-      // setup helpers
-      ['useAttrs'],
-      ['useSlots'],
-      ['useComputedStyle'],
-      ['useRecycleState'],
-
-      // reactivity,
-      ['computed'],
-      ['customRef'],
-      ['isReadonly'],
-      ['isRef'],
-      ['isProxy'],
-      ['isReactive'],
-      ['markRaw'],
-      ['reactive'],
-      ['readonly'],
-      ['ref'],
-      ['shallowReactive'],
-      ['shallowReadonly'],
-      ['shallowRef'],
-      ['triggerRef'],
-      ['toRaw'],
-      ['toRef'],
-      ['toRefs'],
-      ['toValue'],
-      ['unref'],
-      ['watch'],
-      ['watchEffect'],
-      ['watchPostEffect'],
-      ['watchSyncEffect'],
-
-      // component
-      ['defineComponent'],
-      ['defineAsyncComponent'],
-      ['getCurrentInstance'],
-      ['inject'],
-      ['nextTick'],
-      ['provide'],
-      ['useCssModule'],
-      ['createApp'],
-      ['hasInjectionContext'],
-
-      // render
-      ['h'],
-      ['mergeProps'],
-      ['cloneVNode'],
-      ['isVNode'],
-      ['resolveComponent'],
-      ['resolveDirective'],
-      ['withDirectives'],
-      ['withModifiers'],
-
-      // effect scope
-      ['effectScope'],
-      ['EffectScope'],
-      ['getCurrentScope'],
-      ['onScopeDispose'],
-
       // worker
       ['WorkerTaskImpl'],
       ['Worker'],
-      ['WorkerPostMessageOptions']
+      ['WorkerPostMessageOptions'],
+
+      // 临时保留以兼容uni-canvas-dom2，后续再确定是否移除
+      ['nextTick']
     )
+
+    /**
+     * 蒸汽模式鸿蒙jsvm引擎或编译内置插件时禁止autoImport vue相关变量
+     */
+    if (
+      !isVapor ||
+      (process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE !== 'jsvm' &&
+        process.env.UNI_UTS_MODULE_TYPE !== 'built-in')
+    ) {
+      runtimeExports.push(
+        // copy from uni-preset
+        // ssr
+        ['ssrRef'],
+        ['shallowSsrRef'],
+        // uni-app lifecycle
+        // App and Page
+        ['onShow'],
+        ['onHide'],
+        // App
+        ['onAppShow'],
+        ['onAppHide'],
+        ['onLaunch'],
+        ['onError'],
+        ['onThemeChange'],
+        ['onKeyboardHeightChange'],
+        ['onPageNotFound'],
+        ['onUnhandledRejection'],
+        ['onLastPageBackPress'],
+        ['onExit'],
+        // Page
+        ['onPageShow'],
+        ['onPageHide'],
+        ['onLoad'],
+        ['onReady'],
+        ['onUnload'],
+        ['onResize'],
+        ['onBackPress'],
+        ['onPageScroll'],
+        ['onTabItemTap'],
+        ['onReachBottom'],
+        ['onPullDownRefresh'],
+        ['OnBackPressOptions'],
+        ['OnLaunchOptions'],
+        ['OnLoadOptions'],
+        ['OnPageScrollOptions'],
+        ['OnResizeOptions'],
+
+        // copy from vue-preset
+        // vue lifecycle
+        ['onActivated'],
+        ['onBeforeMount'],
+        ['onBeforeUnmount'],
+        ['onBeforeUpdate'],
+        ['onErrorCaptured'],
+        ['onDeactivated'],
+        ['onMounted'],
+        ['onServerPrefetch'],
+        ['onUnmounted'],
+        ['onUpdated'],
+        // uni-app specific lifecycle
+        ['onReuse'],
+        ['onRecycle'],
+
+        // setup helpers
+        ['useAttrs'],
+        ['useSlots'],
+        ['useComputedStyle'],
+        ['useRecycleState'],
+
+        // reactivity,
+        ['computed'],
+        ['customRef'],
+        ['isReadonly'],
+        ['isRef'],
+        ['isProxy'],
+        ['isReactive'],
+        ['markRaw'],
+        ['reactive'],
+        ['readonly'],
+        ['ref'],
+        ['shallowReactive'],
+        ['shallowReadonly'],
+        ['shallowRef'],
+        ['triggerRef'],
+        ['toRaw'],
+        ['toRef'],
+        ['toRefs'],
+        ['toValue'],
+        ['unref'],
+        ['watch'],
+        ['watchEffect'],
+        ['watchPostEffect'],
+        ['watchSyncEffect'],
+
+        // component
+        ['defineComponent'],
+        ['defineAsyncComponent'],
+        ['getCurrentInstance'],
+        ['inject'],
+        ['nextTick'],
+        ['provide'],
+        ['useCssModule'],
+        ['createApp'],
+        ['hasInjectionContext'],
+
+        // render
+        ['h'],
+        ['mergeProps'],
+        ['cloneVNode'],
+        ['isVNode'],
+        ['resolveComponent'],
+        ['resolveDirective'],
+        ['withDirectives'],
+        ['withModifiers'],
+
+        // effect scope
+        ['effectScope'],
+        ['EffectScope'],
+        ['getCurrentScope'],
+        ['onScopeDispose']
+      )
+    }
   }
 
-  if (isDom2) {
+  if (isVapor) {
     // dom2 特有
     runtimeExports.push(['UniVueElement'])
   }
 
-  const externalModuleExportsPath = isDom2
+  const externalModuleExportsPath = isVapor
     ? '../../lib/arkts/external-module-exports-dom2.json'
     : isX
     ? '../../lib/arkts/external-module-exports-x.json'
     : '../../lib/arkts/external-module-exports.json'
-  const internalModuleExportsPath = isDom2
+  const internalModuleExportsPath = isVapor
     ? '../../lib/arkts/internal-module-exports-dom2.json'
     : isX
     ? '../../lib/arkts/internal-module-exports-x.json'

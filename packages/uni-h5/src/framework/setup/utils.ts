@@ -28,3 +28,9 @@ export function initLaunchOptions({
   extend(enterOptions, launchOptions)
   return extend({}, launchOptions)
 }
+
+export function getScopeId(
+  instance: ComponentInternalInstance
+): string | undefined {
+  return (instance.type as any).__scopeId
+}

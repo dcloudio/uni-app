@@ -119,6 +119,7 @@ describe('dialogPage DevTools 打开通知', () => {
     mountPage.mockClear()
     mockInitRouteOptions.mockReset()
     mockInitRouteOptions.mockReturnValue({ meta: {} })
+    delete (testGlobal.__uniConfig as any).pageSelectorBackgroundColor
     isSystemDialogPage.mockReturnValue(false)
     getSystemDialogPages.mockReset()
     getSystemDialogPages.mockReturnValue([])
@@ -231,6 +232,136 @@ describe('dialogPage DevTools 打开通知', () => {
     expect(getCurrentPages).not.toHaveBeenCalled()
   })
 
+  test('dialogPage 的空背景配置仍使用默认透明背景', () => {
+    const { dialogPage } = createDialogPages()
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        backgroundColorContent: '',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('transparent')
+  })
+
+  test('dialogPage 不受全局 backgroundColorContent 影响', () => {
+    const { dialogPage } = createDialogPages()
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        backgroundColorContent: '#ffffff',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('transparent')
+  })
+
+  test('dialogPage 使用页面自身 backgroundColorContent 配置', () => {
+    const { dialogPage } = createDialogPages()
+    ;(testGlobal.__uniConfig as any).pageSelectorBackgroundColor = {
+      global: { light: '#000000' },
+    }
+    testGlobal.__uniRoutes = [
+      {
+        path: '/pages/dialog/dialog',
+        meta: {
+          backgroundColorContent: '#ffffff',
+        },
+      },
+    ] as UniApp.UniRoute[]
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        backgroundColorContent: '#ffffff',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('#ffffff')
+    testGlobal.__uniRoutes = []
+  })
+
+  test('dialogPage 不使用全局 page 选择器背景', () => {
+    const { dialogPage } = createDialogPages()
+    ;(testGlobal.__uniConfig as any).pageSelectorBackgroundColor = {
+      global: { light: '#000000' },
+    }
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        route: 'pages/dialog/dialog',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('transparent')
+  })
+
+  test('dialogPage 使用页面级 page 选择器背景', () => {
+    const { dialogPage } = createDialogPages()
+    ;(testGlobal.__uniConfig as any).pageSelectorBackgroundColor = {
+      pages: {
+        'pages/dialog/dialog': { light: '#ffffff' },
+      },
+    }
+    mockInitRouteOptions.mockReturnValueOnce({
+      meta: {
+        route: 'pages/dialog/dialog',
+      },
+    })
+
+    registerDialogPage(
+      {
+        url: '/pages/dialog/dialog',
+        path: '/pages/dialog/dialog',
+        query: {},
+        openType: 'navigateTo',
+      },
+      dialogPage
+    )
+
+    const pageStyle = (createDialogPage.mock.calls as any)[0][3]
+    expect(pageStyle.get('backgroundColorContent')).toBe('#ffffff')
+  })
+
   test('首页创建后分别迁移用户和系统 dialogPage', () => {
     const dialogPages: UniDialogPage[] = []
     const systemDialogPages: UniDialogPage[] = []
@@ -271,6 +402,7 @@ describe('dialogPage DevTools 打开通知', () => {
       bounces: 'bounces',
       androidOverscroll: 'android-overscroll',
       androidRefresherColor: 'android-refresher-color',
+      backgroundTextStyle: 'refresher-default-style',
       backgroundColor: 'refresher-background',
     }
     const rootElement = {
@@ -302,6 +434,7 @@ describe('dialogPage DevTools 打开通知', () => {
         bounces: true,
         androidOverscroll: true,
         androidRefresherColor: '#00ff00',
+        backgroundTextStyle: 'light',
         backgroundColor: '#ff0000',
       },
     })
@@ -323,6 +456,7 @@ describe('dialogPage DevTools 打开通知', () => {
       'enable-back-to-top': true,
       bounces: true,
       'android-overscroll': true,
+      'refresher-default-style': 'light',
       'android-refresher-color': '#00ff00',
       'refresher-background': '#ff0000',
     })
@@ -330,6 +464,7 @@ describe('dialogPage DevTools 打开通知', () => {
       enableBackToTop: true,
       bounces: true,
       androidOverscroll: true,
+      backgroundTextStyle: 'light',
       androidRefresherColor: '#00ff00',
       backgroundColor: '#ff0000',
     })

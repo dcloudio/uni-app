@@ -11,6 +11,7 @@ const BLACKLIST = [
   'AsyncLoadingComponent',
   'LayoutComponent',
   'PageComponent',
+  'createVaporPageRouteComponent',
   'ResizeSensor',
   'UniServiceJSBridge',
   'UniViewJSBridge',

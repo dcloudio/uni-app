@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "3.0.0-5020620260917001",
+  "version": "3.0.0-5030320261023001",
   "description": "@dcloudio/uni-automator",
   "main": "dist/index.js",
   "files": [
@@ -23,6 +23,7 @@
       "app",
       "h5",
       "mp-weixin",
+      "mp-alipay",
       "app-harmony"
     ],
     "uvue": true

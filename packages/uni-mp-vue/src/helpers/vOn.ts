@@ -13,15 +13,22 @@ import {
   getCurrentInstance,
 } from 'vue'
 import { createEventTarget } from '../dom/utils'
+import { RuntimeEventFlags } from '@dcloudio/uni-shared'
 
 type EventValue = Function | Function[]
 
 interface Invoker {
   (evt: MPEvent): unknown
   value: EventValue
+  once: boolean
+  called: boolean
 }
 
-export function vOn(value: EventValue | undefined, key?: number | string) {
+export function vOn(
+  value: EventValue | undefined,
+  key?: number | string,
+  flags: number = 0
+) {
   const instance = getCurrentInstance()! as unknown as {
     $ei: number
     ctx: { $scope: Record<string, any>; $mpPlatform: UniApp.PLATFORM }
@@ -53,7 +60,8 @@ export function vOn(value: EventValue | undefined, key?: number | string) {
     // add
     mpInstance[name] = createInvoker(
       value,
-      instance as unknown as ComponentInternalInstance
+      instance as unknown as ComponentInternalInstance,
+      (flags & RuntimeEventFlags.Once) !== 0
     )
   }
   return name
@@ -94,9 +102,14 @@ export interface MPTapEvent extends MPEvent {
 }
 function createInvoker(
   initialValue: EventValue,
-  instance: ComponentInternalInstance | null
+  instance: ComponentInternalInstance | null,
+  isOnce: boolean = false
 ) {
   const invoker: Invoker = (e: MPEvent) => {
+    if (invoker.once && invoker.called) {
+      return
+    }
+    invoker.called = true
     patchMPEvent(e, instance)
     let args: unknown[] = [e]
     if (instance && (instance as any).ctx.$getTriggerEventDetail) {
@@ -133,6 +146,8 @@ function createInvoker(
       return res
     }
   }
+  invoker.once = isOnce
+  invoker.called = false
   invoker.value = initialValue
   return invoker
 }

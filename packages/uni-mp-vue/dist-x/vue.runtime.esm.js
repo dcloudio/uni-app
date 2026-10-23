@@ -5661,11 +5661,9 @@ function getGlobalCreateApp(method) {
     if (typeof global !== 'undefined' &&
         typeof global[method] !== 'undefined') {
         return global[method];
-        // @ts-expect-error
     }
     else if (typeof my !== 'undefined') {
         // 支付宝小程序开启globalObjectMode配置后才会有global
-        // @ts-expect-error
         return my[method];
     }
 }
@@ -5732,9 +5730,11 @@ function hyphenateCssProperty(str) {
 }
 
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
+let uniAnimationNextId = 0;
 class UniAnimation {
     constructor(id, scope, keyframes, options = {}) {
         var _a;
+        this._animationId = 0;
         this._playState = 'idle';
         this.parsedKeyframes = [];
         this.options = {};
@@ -5762,6 +5762,7 @@ class UniAnimation {
         toRaw(this.scope).setData({
             ['$eA.' + this.id]: JSON.stringify({
                 id: this.id,
+                animationId: this._animationId,
                 playState: 'idle',
                 keyframes: this.parsedKeyframes,
                 options: this.options,
@@ -5779,9 +5780,11 @@ class UniAnimation {
         throw new Error('pause not implemented.');
     }
     play() {
+        this._animationId = ++uniAnimationNextId;
         this.scope.setData({
             ['$eA.' + this.id]: JSON.stringify({
                 id: this.id,
+                animationId: this._animationId,
                 playState: 'running',
                 keyframes: this.parsedKeyframes,
                 options: this.options,
@@ -5829,6 +5832,13 @@ function normalizeKeyframes(keyframes, direction = 'normal') {
         });
     });
     keyframes = handleDirection(keyframes, direction);
+    if (keyframes.length === 1) {
+        keyframes[0].offset = 0;
+        return keyframes.map((kf) => {
+            kf.offset = Number(kf.offset.toFixed(5));
+            return kf;
+        });
+    }
     // 记录已有的 offset 位置
     const existingOffsets = keyframes
         .map((kf, index) => ({
@@ -5885,11 +5895,21 @@ function coverAnimateToStyle(keyframes, options) {
     // Handle object format with array values
     if (!Array.isArray(keyframes)) {
         const propertyNames = Object.keys(keyframes);
-        const arrayLength = keyframes[propertyNames[0]].length;
+        const arrayLength = propertyNames.reduce((max, prop) => {
+            const value = keyframes[prop];
+            return Array.isArray(value) && value.length > max ? value.length : max;
+        }, 0);
+        if (arrayLength === 0) {
+            return coverAnimateToStyle([keyframes], options);
+        }
         const frames = Array.from({ length: arrayLength }, (_, i) => {
             const frame = {};
             propertyNames.forEach((prop) => {
-                frame[prop] = keyframes[prop][i];
+                var _a;
+                const value = keyframes[prop];
+                frame[prop] = Array.isArray(value)
+                    ? (_a = value[i]) !== null && _a !== void 0 ? _a : value[value.length - 1]
+                    : value;
             });
             return frame;
         });
@@ -6290,7 +6310,7 @@ function setUniElementScrollOffset(uniElement, res) {
     });
 }
 
-function vOn(value, key) {
+function vOn(value, key, flags = 0) {
     const instance = getCurrentInstance();
     const ctx = instance.ctx;
     // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
@@ -6315,12 +6335,16 @@ function vOn(value, key) {
     }
     else {
         // add
-        mpInstance[name] = createInvoker(value, instance);
+        mpInstance[name] = createInvoker(value, instance, (flags & 1 /* RuntimeEventFlags.Once */) !== 0);
     }
     return name;
 }
-function createInvoker(initialValue, instance) {
+function createInvoker(initialValue, instance, isOnce = false) {
     const invoker = (e) => {
+        if (invoker.once && invoker.called) {
+            return;
+        }
+        invoker.called = true;
         patchMPEvent(e, instance);
         let args = [e];
         if (instance && instance.ctx.$getTriggerEventDetail) {
@@ -6351,6 +6375,8 @@ function createInvoker(initialValue, instance) {
             return res;
         }
     };
+    invoker.once = isOnce;
+    invoker.called = false;
     invoker.value = initialValue;
     return invoker;
 }
@@ -6828,7 +6854,7 @@ function setupDevtoolsPlugin() {
     // noop
 }
 
-const o = (value, key) => vOn(value, key);
+const o = (value, key, flags) => vOn(value, key, flags);
 const f = (source, renderItem) => vFor(source, renderItem);
 const d = (names, key) => dynamicSlot(names, key);
 const r = (name, props, key) => renderSlot(name, props, key);

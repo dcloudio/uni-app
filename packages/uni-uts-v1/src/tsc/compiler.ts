@@ -8,7 +8,7 @@ import type {
   UniXCompilerOptions,
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
-import { normalizePath } from '../shared'
+import { getHBuilderXPluginPaths, normalizePath } from '../shared'
 import { SPECIAL_CHARS, isEnableGenericsParameterDefaults } from '../utils'
 import { COLORS, generateCodeFrame } from '../stacktrace/utils'
 
@@ -21,6 +21,14 @@ const UNI_APP_X_TYPE_VALIDATION =
 type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
 type LoadUasmTransformer = NonNullable<
   NonNullable<UniXCompilerOptions['transformOptions']>['loadUasmTransformer']
+>
+type WorkerTransformerCreator = NonNullable<
+  NonNullable<
+    NonNullable<UniXCompilerOptions['transformOptions']>['workers']
+  >['createWorkerTransformer']
+>
+type SharedDataTransformerOptions = NonNullable<
+  NonNullable<UniXCompilerOptions['transformOptions']>['sharedData']
 >
 
 const hbxVersion = process.env.HX_Version || ''
@@ -38,21 +46,22 @@ export function createUniXCompiler(
     normalizeFileName: (str: string) => string
     isPureSwift?: boolean
     resolveWorkers: () => Record<string, string>
+    createWorkerTransformer?: WorkerTransformerCreator
     loadUasmTransformer?: LoadUasmTransformer
+    sharedData?: SharedDataTransformerOptions
     sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   }
 ) {
   const inputDir = normalizePath(options.inputDir)
   const utsLibDir = path.resolve(__dirname, '../../lib')
 
-  const pluginPath = process.env.UNI_HBUILDERX_PLUGINS
+  const hbuilderxPluginPaths = getHBuilderXPluginPaths()
+  const legacyPluginPath = process.env.UNI_HBUILDERX_PLUGINS
     ? process.env.UNI_HBUILDERX_PLUGINS
     : path.resolve(process.cwd(), '../')
-
-  const hxLanguageServiceDir = path.resolve(
-    pluginPath,
-    'hbuilderx-language-services'
-  )
+  const hxLanguageServiceDir = hbuilderxPluginPaths
+    ? hbuilderxPluginPaths['hbuilderx-language-services']
+    : path.resolve(legacyPluginPath, 'hbuilderx-language-services')
 
   const tsFactory = require(path.resolve(
     utsLibDir,
@@ -89,7 +98,8 @@ export function createUniXCompiler(
     mode,
     targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
     tsFactory,
-    hxPluginDir: pluginPath,
+    hxPluginDir: hbuilderxPluginPaths ? undefined : legacyPluginPath,
+    hxPluginPaths: hbuilderxPluginPaths,
     paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
@@ -106,16 +116,20 @@ export function createUniXCompiler(
       // TODO 调整参数传递方式
       isPureSwift: options.isPureSwift,
       disableUTSBooleanConversion: process.env.UNI_COMPILE_TARGET === 'ext-api',
-      workers: {
-        resolve: options.resolveWorkers,
-        extname:
-          targetLanguage === 'ArkTS'
-            ? '.ets'
-            : targetLanguage === 'JavaScript'
-            ? '.js'
-            : undefined,
-      },
+      workers: options.createWorkerTransformer
+        ? {
+            resolve: options.resolveWorkers,
+            createWorkerTransformer: options.createWorkerTransformer,
+            extname:
+              targetLanguage === 'ArkTS'
+                ? '.ets'
+                : targetLanguage === 'JavaScript'
+                ? '.js'
+                : undefined,
+          }
+        : undefined,
       loadUasmTransformer: options.loadUasmTransformer,
+      sharedData: options.sharedData,
     },
     // dom2: process.env.UNI_APP_X_DOM2 === 'true',
     ...options,

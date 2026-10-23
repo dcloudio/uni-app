@@ -7,6 +7,7 @@ import {
   COMMON_EXCLUDE,
   isNormalCompileTarget,
   requireUniHelpers,
+  resolveHBuilderXPluginPath,
   runByHBuilderX,
   uniPrePlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -70,7 +71,7 @@ export function initPlugins(
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
 
-  if (process.env.UNI_HBUILDERX_PLUGINS && isNormalCompileTarget()) {
+  if (resolveHBuilderXPluginPath('uni_helpers') && isNormalCompileTarget()) {
     try {
       const { V } = requireUniHelpers()
       addPlugin(

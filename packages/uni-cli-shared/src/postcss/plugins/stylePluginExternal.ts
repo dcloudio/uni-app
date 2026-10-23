@@ -116,7 +116,11 @@ function processAlipayStyleIsolation(root: Root) {
             )
           }
         })
-        if (selector.nodes.length !== 1 || selector.nodes[0].type !== 'class') {
+        if (
+          selector.nodes.length === 0 ||
+          selector.nodes[0].type !== 'class' ||
+          selector.nodes.slice(1).some((node) => node.type !== 'pseudo')
+        ) {
           return
         }
         selector.nodes[0].value = prefix + selector.nodes[0].value

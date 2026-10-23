@@ -184,14 +184,15 @@ export function discardWebAppRouteTransaction(
 
 function takePendingProgrammaticRoute(to: AppRouteLocation) {
   const redirectedFrom = getOriginalRoute(to.redirectedFrom)
-  const index = pendingProgrammaticRoutes.findIndex(
-    (transaction) =>
+  for (let index = pendingProgrammaticRoutes.length - 1; index >= 0; index--) {
+    const transaction = pendingProgrammaticRoutes[index]
+    if (
       !transaction.cancelled &&
       (transaction.finalFullPath === to.fullPath ||
         transaction.finalFullPath === redirectedFrom?.fullPath)
-  )
-  if (index !== -1) {
-    return pendingProgrammaticRoutes.splice(index, 1)[0]
+    ) {
+      return pendingProgrammaticRoutes.splice(index, 1)[0]
+    }
   }
 }
 
@@ -273,7 +274,7 @@ function bindOrRedirectTransaction(
   if (transaction.finalFullPath !== to.fullPath) {
     const resolved = replaceTransactionRoute(router, transaction, to)
     if (transaction.finalFullPath !== to.fullPath) {
-      pendingProgrammaticRoutes.unshift(transaction)
+      pendingProgrammaticRoutes.push(transaction)
       return toRouteLocation(resolved.url)
     }
   }
@@ -291,7 +292,7 @@ async function createLaunchTransaction(router: Router, to: AppRouteLocation) {
     resolved.context
   )
   if (transaction.finalFullPath !== sourceFullPath) {
-    pendingProgrammaticRoutes.unshift(transaction)
+    pendingProgrammaticRoutes.push(transaction)
     return {
       transaction,
       redirect: toRouteLocation(resolved.url),
@@ -390,7 +391,7 @@ export function initWebAppRouteListener(
         )
         transaction.delta = historyRoute.delta
         if (transaction.finalFullPath !== historyRoute.fullPath) {
-          pendingProgrammaticRoutes.unshift(transaction)
+          pendingProgrammaticRoutes.push(transaction)
           return toRouteLocation(resolved.url)
         }
       }
@@ -411,7 +412,7 @@ export function initWebAppRouteListener(
         resolved.context
       )
       if (transaction.finalFullPath !== originalRoute.fullPath) {
-        pendingProgrammaticRoutes.unshift(transaction)
+        pendingProgrammaticRoutes.push(transaction)
         return toRouteLocation(resolved.url)
       }
     }

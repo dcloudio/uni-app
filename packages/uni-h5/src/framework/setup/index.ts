@@ -1,9 +1,26 @@
-import { extend, invokeArrayFns, isFunction, isPlainObject } from '@vue/shared'
+import {
+  //#if _X_VAPOR_
+  EMPTY_OBJ,
+  //#endif
+  extend,
+  invokeArrayFns,
+  isFunction,
+  isPlainObject,
+  //#if _X_VAPOR_
+  isPromise,
+  //#endif
+} from '@vue/shared'
 import {
   type ComponentInternalInstance,
   type ComponentPublicInstance,
   type DefineComponent,
+  //#if !_X_VAPOR_
   createBlock,
+  //#endif
+  //#if _X_VAPOR_ && !_X_VAPOR_SSR_
+  // @ts-expect-error 当前 Vue 类型尚未升级到 3.6，Web Vapor runtime 已导出该方法
+  createComponent,
+  //#endif
   getCurrentInstance,
   nextTick,
   onBeforeActivate,
@@ -11,10 +28,15 @@ import {
   onBeforeMount,
   onBeforeUnmount,
   onMounted,
+  //#if !_X_VAPOR_
   openBlock,
+  //#endif
   reactive,
   watch,
 } from 'vue'
+//#if _X_VAPOR_SSR_
+import { ssrRenderComponent } from 'vue/server-renderer'
+//#endif
 import {
   ON_APP_ENTER_BACKGROUND,
   ON_APP_ENTER_FOREGROUND,
@@ -158,15 +180,28 @@ export function setupPage(comp: any, path: string) {
       //#endif
       // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
       const query = decodedQuery(route.query)
+      //#if _X_VAPOR_
+      ;(instance as any).__pageQuery = query
+      //#else
       instance.attrs.__pageQuery = query
+      //#endif
       if (__X__) {
         const pageInstance = getPageInstanceByChild(instance)
         if (isDialogPageInstance(pageInstance)) {
+          //#if _X_VAPOR_
+          const dialogQuery = decodedQuery(
+            parseQuery(
+              (pageInstance?.attrs.route as string).split('?')[1] || ''
+            )
+          )
+          ;(instance as any).__pageQuery = dialogQuery
+          //#else
           instance.attrs.__pageQuery = decodedQuery(
             parseQuery(
               (pageInstance?.attrs.route as string).split('?')[1] || ''
             )
           )
+          //#endif
         }
       }
       getPage$BasePage(instance.proxy!).options = query
@@ -350,14 +385,40 @@ export function setupApp(comp: any) {
     before(comp) {
       comp.mpType = 'app'
       const { setup } = comp
+      //#if _X_VAPOR_SSR_
+      comp.setup = (props, ctx) => {
+        const res = setup && setup(props, ctx)
+        // SSR 内联 render 的优先级高于 comp.ssrRender，此处仅保留 setup 状态。
+        if (isPromise(res)) {
+          return res.then((value) =>
+            isFunction(value) ? EMPTY_OBJ : value || EMPTY_OBJ
+          )
+        }
+        return isFunction(res) ? EMPTY_OBJ : res
+      }
+      comp.ssrRender = (_ctx, push, parent) => {
+        push(ssrRenderComponent(LayoutComponent, null, null, parent))
+      }
+      //#else
       const render = () => {
+        //#if _X_VAPOR_
+        return createComponent(LayoutComponent, null, null, true)
+        //#else
         return openBlock(), createBlock(LayoutComponent)
+        //#endif
       }
       comp.setup = (props, ctx) => {
         const res = setup && setup(props, ctx)
+        //#if _X_VAPOR_
+        // Vapor 异步 setup 的空结果不会经过同步 setup 的默认值归一化。
+        if (isPromise(res)) {
+          return res.then((value) => value || EMPTY_OBJ)
+        }
+        //#endif
         return isFunction(res) ? render : res
       }
       comp.render = render
+      //#endif
     },
   })
 }

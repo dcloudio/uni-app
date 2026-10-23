@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import path from 'path'
 import fs from 'fs-extra'
 import type { SyncUniModulesFilePreprocessor } from '../uni_modules'
+import { resolveHBuilderXPluginPath } from '../shared'
 
 type BuildPlatform = 'app' | 'app-android' | 'app-ios' | 'app-harmony'
 
@@ -585,13 +586,14 @@ function createUniModulesConsoleExprRewriter() {
 }
 
 function loadUniModulesShared(): UniModulesShared {
-  return require(resolveHBuilderXPluginModule(
-    'uniapp-cli-vite/node_modules/@dcloudio/uni-cli-shared/dist/vite/plugins/uts/uni_modules.js'
-  )) as UniModulesShared
-}
-
-function resolveHBuilderXPluginModule(moduleName: string) {
-  return path.join(process.env.UNI_HBUILDERX_PLUGINS, moduleName)
+  const modulePath = resolveHBuilderXPluginPath(
+    'uniapp-cli-vite',
+    'node_modules/@dcloudio/uni-cli-shared/dist/vite/plugins/uts/uni_modules.js'
+  )
+  if (!modulePath) {
+    throw new Error('HBuilder plugin "uniapp-cli-vite" is not found')
+  }
+  return require(modulePath) as UniModulesShared
 }
 
 function normalizePlatform(platform?: string): BuildPlatform {

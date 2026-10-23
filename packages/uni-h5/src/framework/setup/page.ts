@@ -33,8 +33,9 @@ import {
 } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
+import { getScopeId } from './utils'
 //#if _X_ && !_NODE_JS_
-import { closeDialogPage } from '../../x/service/api/route/closeDialogPage'
+import { clearDialogPages } from '../../x/service/api/route/utils'
 //#endif
 //#if _X_
 import { initXPage } from '../../x/framework/setup/page'
@@ -90,6 +91,13 @@ export function getCurrentPagesMap() {
   return currentPagesMap
 }
 
+const pageUnloadCallbacks = new Set<(pageId: number) => void>()
+
+export function onPageUnload(callback: (pageId: number) => void) {
+  pageUnloadCallbacks.add(callback)
+  return () => pageUnloadCallbacks.delete(callback)
+}
+
 export function getCurrentPages() {
   const curPages = getCurrentBasePages()
   if (__X__) {
@@ -114,35 +122,31 @@ export function getCurrentBasePages() {
 }
 
 function removeRouteCache(routeKey: string) {
-  const vnode = pageCacheMap.get(routeKey)
-  if (vnode) {
+  const cacheEntry = pageCacheMap.get(routeKey)
+  if (cacheEntry) {
     pageCacheMap.delete(routeKey)
     /**
      * 此逻辑为处理首页->非首页->back回首页后首页reLaunch不触发当前首页的onUnmount问题
      * 但是相关的问题并没有彻底解决，比如activated、deactivated触发不符合预期的问题，后续需要继续跟进
      */
-    // resetShapeFlag(vnode)
-    routeCache.pruneCacheEntry!(vnode)
+    routeCache.pruneCacheEntry!(cacheEntry)
   }
 }
 
 export function removePage(routeKey: string, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+  const pageVm = currentPagesMap.get(routeKey) as
+    | ComponentPublicInstance
+    | undefined
+  if (!pageVm) {
+    return
+  }
+  const pageId = getPage$BasePage(pageVm).id
   if (__X__ && !__NODE_JS__) {
-    const dialogPages = (pageVm.$page as UniPage).getDialogPages()
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      closeDialogPage({ dialogPage: dialogPages[i] })
-    }
-    const systemDialogPages =
-      pageVm.$pageLayoutInstance?.$systemDialogPages?.value
-    if (systemDialogPages) {
-      for (let i = systemDialogPages.length - 1; i >= 0; i--) {
-        closeDialogPage({ dialogPage: systemDialogPages[i] })
-      }
-    }
+    clearDialogPages(pageVm.$page as UniPage)
   }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)
+  pageUnloadCallbacks.forEach((callback) => callback(pageId))
   currentPagesMap.delete(routeKey)
   removeRouteCaches && removeRouteCache(routeKey)
   if (__X__ && !__NODE_JS__) {
@@ -158,6 +162,16 @@ export function createPageState(type: NavigateType, __id__?: number) {
     __type__: type,
   }
 }
+
+//#if _X_
+// 弹页使用独立的负数 ID，避免与普通页面及浏览器历史中的正数 ID 冲突。
+// 从安全整数下界递增，保持后创建的弹页 ID 更大，并避开窗口的 -1、-2、-3。
+let dialogPageId = Number.MIN_SAFE_INTEGER
+
+export function createDialogPageId() {
+  return ++dialogPageId
+}
+//#endif
 
 export function initPublicPage(route: RouteLocationNormalizedLoaded) {
   const meta = usePageMeta()
@@ -176,8 +190,23 @@ export function initPublicPage(route: RouteLocationNormalizedLoaded) {
 }
 
 export function initPage(vm: ComponentPublicInstance) {
-  const route = vm.$route
+  let route: RouteLocationNormalizedLoaded
+  //#if _X_VAPOR_
+  route = useRoute()
+  //#endif
+  //#if !_X_VAPOR_
+  route = vm.$route
+  //#endif
   const page = initPublicPage(route)
+  //#if _X_VAPOR_
+  const routeMeta = route.meta
+  Object.defineProperty(page, 'eventChannel', {
+    configurable: true,
+    enumerable: true,
+    get: () => routeMeta.eventChannel,
+    set: (eventChannel) => (routeMeta.eventChannel = eventChannel),
+  })
+  //#endif
   initPageVm(vm, page)
   if (__X__) {
     initXPage(vm, route, page)
@@ -218,17 +247,25 @@ function resetShapeFlag(vnode: VNode) {
 // https://github.com/vuejs/vue-next/pull/3414
 
 type CacheKey = string | number | ConcreteComponent
+interface KeepAliveCacheEntry {
+  props?: Record<string, any> | null
+  attrs?: Record<string, any>
+}
 interface KeepAliveCache {
-  get(key: CacheKey): VNode | void
-  set(key: CacheKey, value: VNode): void
+  get(key: CacheKey): KeepAliveCacheEntry | void
+  set(key: CacheKey, value: KeepAliveCacheEntry): void
   delete(key: CacheKey): void
   forEach(
-    fn: (value: VNode, key: CacheKey, map: Map<CacheKey, VNode>) => void,
+    fn: (
+      value: KeepAliveCacheEntry,
+      key: CacheKey,
+      map: Map<CacheKey, KeepAliveCacheEntry>
+    ) => void,
     thisArg?: any
   ): void
-  pruneCacheEntry?: (cached: VNode) => void
+  pruneCacheEntry?: (cached: KeepAliveCacheEntry) => void
 }
-const pageCacheMap = new Map<CacheKey, VNode>()
+const pageCacheMap = new Map<CacheKey, KeepAliveCacheEntry>()
 const routeCache: KeepAliveCache = {
   get(key) {
     return pageCacheMap.get(key)
@@ -249,8 +286,8 @@ const routeCache: KeepAliveCache = {
   },
 }
 
-function isTabBarVNode(vnode: VNode): boolean {
-  return vnode.props!.type === 'tabBar'
+function isTabBarCacheEntry(cacheEntry: KeepAliveCacheEntry): boolean {
+  return (cacheEntry.attrs || cacheEntry.props)?.type === 'tabBar'
 }
 
 function pruneRouteCache(key: string) {
@@ -258,16 +295,15 @@ function pruneRouteCache(key: string) {
   if (!pageId) {
     return
   }
-  routeCache.forEach((vnode, key) => {
+  routeCache.forEach((cacheEntry, key) => {
     const cPageId = parseInt((key as string).split(SEP)[1])
     if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarCacheEntry(cacheEntry)) {
         // tabBar keep alive
         return
       }
       routeCache.delete(key)
-      // resetShapeFlag(vnode)
-      routeCache.pruneCacheEntry!(vnode)
+      routeCache.pruneCacheEntry!(cacheEntry)
       nextTick(() => pruneCurrentPages())
     }
   })
@@ -311,9 +347,9 @@ export function onPageReady(instance: ComponentInternalInstance) {
 }
 
 function updateCurPageBodyScopeId(instance: ComponentInternalInstance) {
-  const pageRoot = getPageInstanceByChild(instance)?.subTree
-    ?.el as Element | null
-  const pageBodyEl = pageRoot?.querySelector?.('uni-page-body')
+  const pageRoot = getPageInstanceByChild(instance)?.proxy
+    ?.$el as Element | null
+  const pageBodyEl = pageRoot?.querySelector('uni-page-body')
   if (!pageBodyEl) {
     return false
   }
@@ -327,10 +363,6 @@ function updateCurPageBodyScopeId(instance: ComponentInternalInstance) {
   const pageScopeId = getScopeId(instance)
   pageScopeId && pageBodyEl.setAttribute(pageScopeId, '')
   return true
-}
-
-function getScopeId(instance: ComponentInternalInstance) {
-  return (instance.type as any).__scopeId
 }
 
 let curScopeId: string

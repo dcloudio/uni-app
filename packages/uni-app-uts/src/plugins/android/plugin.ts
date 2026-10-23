@@ -9,6 +9,7 @@ import {
   buildNonTreeShakingUniModules,
   buildUniExtApis,
   createErrorWithBlockFlag,
+  createWorkerTransformer,
   emptyDir,
   enableSourceMap,
   getCssDepMap,
@@ -19,6 +20,7 @@ import {
   initSourceFileCallback,
   initUTSKotlinAutoImportsOnce,
   initUasmTransformerCreator,
+  initUts2jsSharedDataOptions,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
   normalizePath,
@@ -102,7 +104,9 @@ export function uniAppPlugin(): UniVitePlugin {
     process.env.UNI_APP_X_TSC === 'true'
       ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
           resolveWorkers,
+          createWorkerTransformer,
           loadUasmTransformer: initUasmTransformerCreator('app-android'),
+          sharedData: initUts2jsSharedDataOptions(),
           sourceFileCallback: initSourceFileCallback(),
         })
       : null

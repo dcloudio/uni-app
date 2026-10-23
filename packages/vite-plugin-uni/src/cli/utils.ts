@@ -8,15 +8,19 @@ import type { BuildOptions, InlineConfig, Logger } from 'vite'
 import {
   M,
   getPlatformDir,
+  getUniAppXVaporScriptLang,
   initModulePaths,
   initPreContext,
   isInHBuilderX,
   isNormalCompileTarget,
   isUniAppX,
   isUniAppXVapor,
+  normalizeUniAppXVaporEnv,
   output,
   parseManifestJsonOnce,
   parseScripts,
+  resolveHBuilderXPluginPath,
+  resolveUniAppXHarmonyScriptEngine,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
@@ -93,15 +97,6 @@ export function addConfigFile(inlineConfig: InlineConfig) {
   return inlineConfig
 }
 
-export function initVaporScriptLangEnv(inputDir: string) {
-  // 临时通过项目根目录的 .lang 标记开启 Vapor JS/TS 脚本编译链路。
-  process.env.UNI_APP_X_VAPOR_SCRIPT_LANG = fs.existsSync(
-    path.resolve(inputDir, '.lang')
-  )
-    ? 'true'
-    : 'false'
-}
-
 let initialized = false
 export function initEnv(
   type: 'unknown' | 'dev' | 'build',
@@ -144,9 +139,15 @@ export function initEnv(
   process.env.UNI_NODE_ENV = process.env.VITE_USER_NODE_ENV =
     process.env.NODE_ENV
 
-  process.env.UNI_CLI_CONTEXT = isInHBuilderX()
-    ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS!, 'uniapp-cli-vite')
-    : process.cwd()
+  if (isInHBuilderX()) {
+    const cliContext = resolveHBuilderXPluginPath('uniapp-cli-vite')
+    if (!cliContext) {
+      throw new Error('HBuilder plugin "uniapp-cli-vite" is required')
+    }
+    process.env.UNI_CLI_CONTEXT = cliContext
+  } else {
+    process.env.UNI_CLI_CONTEXT = process.cwd()
+  }
 
   // TODO 待优化
   initUTSPlatform(options)
@@ -167,7 +168,6 @@ export function initEnv(
 
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
-  initVaporScriptLangEnv(process.env.UNI_INPUT_DIR)
 
   initCustomScripts(options)
 
@@ -175,6 +175,8 @@ export function initEnv(
     UniApp.PLATFORM,
     'app-android' | 'app-ios'
   >
+
+  normalizeUniAppXVaporEnv()
 
   // 需要提前初始化
   initUVueEnv()
@@ -281,6 +283,10 @@ export function initEnv(
     if (manifestJson['uni-app-x']?.['styleIsolationVersion'] == 2) {
       process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     }
+    if (isUniAppXVapor() && process.env.UNI_PLATFORM === 'app-harmony') {
+      process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE =
+        resolveUniAppXHarmonyScriptEngine(manifestJson)
+    }
   } catch (e) {}
 
   if (!process.env.UNI_APP_X_TSC_DIR) {
@@ -365,17 +371,31 @@ export function initEnv(
         renderMode
     )
   )
-  if (
-    isUniAppXVapor() &&
-    (process.env.UNI_PLATFORM === 'app' ||
-      process.env.UNI_PLATFORM === 'app-harmony')
-  ) {
+  const vaporScriptPlatform =
+    process.env.UNI_UTS_PLATFORM || process.env.UNI_PLATFORM
+  const isVaporScriptPlatform =
+    isUniAppXVapor() ||
+    (isX &&
+      (vaporScriptPlatform === 'web' ||
+        vaporScriptPlatform?.startsWith('mp-') === true))
+  if (isVaporScriptPlatform) {
+    if (
+      process.env.UNI_PLATFORM === 'app' ||
+      process.env.UNI_PLATFORM === 'app-harmony'
+    ) {
+      console.log(
+        M['view.render.compiler.target'].replace(
+          '{target}',
+          process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+            ? M['view.render.compiler.target.bytecode']
+            : M['view.render.compiler.target.nativecode']
+        )
+      )
+    }
     console.log(
-      M['view.render.compiler.target'].replace(
-        '{target}',
-        process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
-          ? M['view.render.compiler.target.bytecode']
-          : M['view.render.compiler.target.nativecode']
+      M['vapor.default.script.lang'].replace(
+        '{lang}',
+        getUniAppXVaporScriptLang(process.env.UNI_INPUT_DIR)
       )
     )
   }

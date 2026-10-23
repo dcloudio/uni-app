@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.4
+  * @vue/compiler-sfc v3.6.0-rc.9
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -25,7 +25,7 @@ var __copyProps = (to, from, except, desc) => {
 	}
 	return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", {
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule || !__hasOwnProp.call(mod, "default") ? __defProp(target, "default", {
 	value: mod,
 	enumerable: true
 }) : target, mod));
@@ -122,7 +122,7 @@ function parseCssVars(sfc) {
 	const vars = [];
 	sfc.styles.forEach((style) => {
 		let match;
-		const content = style.content.replace(/\/\*([\s\S]*?)\*\/|\/\/.*/g, "");
+		const content = stripComments(style.content);
 		while (match = vBindRE.exec(content)) {
 			const start = match.index + match[0].length;
 			const end = lexBinding(content, start);
@@ -134,6 +134,70 @@ function parseCssVars(sfc) {
 	});
 	return vars;
 }
+const cssSpecialRE = /[/"'\\(]/g;
+function stripComments(content) {
+	const len = content.length;
+	let out = "";
+	let last = 0;
+	let i = 0;
+	cssSpecialRE.lastIndex = 0;
+	while (cssSpecialRE.test(content)) {
+		i = cssSpecialRE.lastIndex - 1;
+		const c = content.charCodeAt(i);
+		if (c === 47) {
+			const next = content.charCodeAt(i + 1);
+			if (next === 42) {
+				out += content.slice(last, i);
+				const end = content.indexOf("*/", i + 2);
+				i = last = end === -1 ? len : end + 2;
+			} else if (next === 47) {
+				out += content.slice(last, i);
+				i += 2;
+				while (i < len && !isNewline(content.charCodeAt(i))) i++;
+				last = i;
+			} else i++;
+		} else if (c === 34 || c === 39) i = skipString(content, i + 1, c);
+		else if (c === 92) i += 2;
+		else if (isUrlFunction(content, i)) i = skipUrl(content, i + 1);
+		else i++;
+		cssSpecialRE.lastIndex = i;
+	}
+	return last === 0 ? content : out + content.slice(last);
+}
+function skipString(s, i, quote) {
+	while (i < s.length) {
+		const c = s.charCodeAt(i);
+		if (c === quote) return i + 1;
+		if (isNewline(c)) return i;
+		if (c === 92) i += s.charCodeAt(i + 1) === 13 && s.charCodeAt(i + 2) === 10 ? 3 : 2;
+		else i++;
+	}
+	return i;
+}
+function isUrlFunction(s, i) {
+	const prev = s.charCodeAt(i - 4);
+	return (s.charCodeAt(i - 3) | 32) === 117 && (s.charCodeAt(i - 2) | 32) === 114 && (s.charCodeAt(i - 1) | 32) === 108 && prev !== 92 && !isIdentChar(prev);
+}
+function skipUrl(s, i) {
+	while (isWhitespace(s.charCodeAt(i))) i++;
+	const c = s.charCodeAt(i);
+	if (c === 34 || c === 39) return i;
+	while (i < s.length) {
+		const c = s.charCodeAt(i);
+		if (c === 41) return i + 1;
+		i += c === 92 ? 2 : 1;
+	}
+	return i;
+}
+function isIdentChar(c) {
+	return c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <= 57 || c === 45 || c === 95 || c >= 128;
+}
+function isNewline(c) {
+	return c === 10 || c === 13;
+}
+function isWhitespace(c) {
+	return c === 32 || c === 9 || c === 12 || isNewline(c);
+}
 function lexBinding(content, start) {
 	let state = 0;
 	let parenDepth = 0;
@@ -144,15 +208,15 @@ function lexBinding(content, start) {
 				if (char === `'`) state = 1;
 				else if (char === `"`) state = 2;
 				else if (char === `(`) parenDepth++;
-				else if (char === `)`) if (parenDepth > 0) parenDepth--;
-				else return i;
+				else if (char === `)`) {
+					if (parenDepth > 0) parenDepth--;
+					else return i;
+				}
 				break;
 			case 1:
 				if (char === `'`) state = 0;
 				break;
-			case 2:
-				if (char === `"`) state = 0;
-				break;
+			case 2: if (char === `"`) state = 0;
 		}
 	}
 	return null;
@@ -184,11 +248,14 @@ const cssVarsPlugin = (opts) => {
 };
 cssVarsPlugin.postcss = true;
 function genCssVarsCode(vars, bindings, id, isProd, vapor) {
-	const transformed = (0, _vue_compiler_dom.processExpression)((0, _vue_compiler_dom.createSimpleExpression)(genCssVarsFromList(vars, id, isProd), false), (0, _vue_compiler_dom.createTransformContext)((0, _vue_compiler_dom.createRoot)([]), {
+	const varsExp = genCssVarsFromList(vars, id, isProd);
+	const exp = (0, _vue_compiler_dom.createSimpleExpression)(varsExp, false);
+	const context = (0, _vue_compiler_dom.createTransformContext)((0, _vue_compiler_dom.createRoot)([]), {
 		prefixIdentifiers: true,
 		inline: true,
 		bindingMetadata: bindings.__isScriptSetup === false ? void 0 : bindings
-	}));
+	});
+	const transformed = (0, _vue_compiler_dom.processExpression)(exp, context);
 	const transformedString = transformed.type === 4 ? transformed.content : transformed.children.map((c) => {
 		return typeof c === "string" ? c : c.content;
 	}).join("");
@@ -198,33 +265,71 @@ function genNormalScriptCssVarsCode(cssVars, bindings, id, isProd, defaultVar) {
 	return `\nimport { ${CSS_VARS_HELPER} as _${CSS_VARS_HELPER} } from 'vue'\nconst __injectCSSVars__ = () => {\n${genCssVarsCode(cssVars, bindings, id, isProd)}}\nconst __setup__ = ${defaultVar}.setup\n${defaultVar}.setup = __setup__\n  ? (props, ctx) => { __injectCSSVars__();return __setup__(props, ctx) }\n  : __injectCSSVars__\n`;
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.129.0/helpers/checkPrivateRedeclaration.js
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/typeof.js
+function _typeof(o) {
+	"@babel/helpers - typeof";
+	return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
+		return typeof o;
+	} : function(o) {
+		return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+	}, _typeof(o);
+}
+//#endregion
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/toPrimitive.js
+function toPrimitive(t, r) {
+	if ("object" != _typeof(t) || !t) return t;
+	var e = t[Symbol.toPrimitive];
+	if (void 0 !== e) {
+		var i = e.call(t, r || "default");
+		if ("object" != _typeof(i)) return i;
+		throw new TypeError("@@toPrimitive must return a primitive value.");
+	}
+	return ("string" === r ? String : Number)(t);
+}
+//#endregion
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/toPropertyKey.js
+function toPropertyKey(t) {
+	var i = toPrimitive(t, "string");
+	return "symbol" == _typeof(i) ? i : i + "";
+}
+//#endregion
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/defineProperty.js
+function _defineProperty(e, r, t) {
+	return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
+		value: t,
+		enumerable: !0,
+		configurable: !0,
+		writable: !0
+	}) : e[r] = t, e;
+}
+//#endregion
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/checkPrivateRedeclaration.js
 function _checkPrivateRedeclaration(e, t) {
 	if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object");
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateMethodInitSpec.js
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateMethodInitSpec.js
 function _classPrivateMethodInitSpec(e, a) {
 	_checkPrivateRedeclaration(e, a), a.add(e);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldInitSpec.js
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateFieldInitSpec.js
 function _classPrivateFieldInitSpec(e, t, a) {
 	_checkPrivateRedeclaration(e, t), t.set(e, a);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.129.0/helpers/assertClassBrand.js
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/assertClassBrand.js
 function _assertClassBrand(e, t, n) {
 	if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n;
 	throw new TypeError("Private element is not present on this object");
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldGet2.js
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateFieldGet2.js
 function _classPrivateFieldGet2(s, a) {
 	return s.get(_assertClassBrand(s, a));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldSet2.js
+//#region \0@oxc-project+runtime@0.146.0/helpers/esm/classPrivateFieldSet2.js
 function _classPrivateFieldSet2(s, a, r) {
 	return s.set(_assertClassBrand(s, a), r), r;
 }
@@ -249,8 +354,10 @@ if (typeof AC === "undefined") {
 	var _PROCESS$env;
 	AS = class AbortSignal {
 		constructor() {
-			this._onabort = [];
-			this.aborted = false;
+			_defineProperty(this, "onabort", void 0);
+			_defineProperty(this, "_onabort", []);
+			_defineProperty(this, "reason", void 0);
+			_defineProperty(this, "aborted", false);
 		}
 		addEventListener(_, fn) {
 			this._onabort.push(fn);
@@ -258,7 +365,7 @@ if (typeof AC === "undefined") {
 	};
 	AC = class AbortController {
 		constructor() {
-			this.signal = new AS();
+			_defineProperty(this, "signal", new AS());
 			warnACPolyfill();
 		}
 		abort(reason) {
@@ -299,6 +406,8 @@ var Stack = class Stack {
 		return s;
 	}
 	constructor(max, HeapCls) {
+		_defineProperty(this, "heap", void 0);
+		_defineProperty(this, "length", void 0);
 		/* c8 ignore start */
 		if (!_constructing._) throw new TypeError("instantiate Stack using Stack.create(n)");
 		/* c8 ignore stop */
@@ -437,6 +546,126 @@ var LRUCache = class LRUCache {
 		_classPrivateFieldInitSpec(this, _dispose, void 0);
 		_classPrivateFieldInitSpec(this, _disposeAfter, void 0);
 		_classPrivateFieldInitSpec(this, _fetchMethod, void 0);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.ttl}
+			*/
+			"ttl",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.ttlResolution}
+			*/
+			"ttlResolution",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.ttlAutopurge}
+			*/
+			"ttlAutopurge",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.updateAgeOnGet}
+			*/
+			"updateAgeOnGet",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.updateAgeOnHas}
+			*/
+			"updateAgeOnHas",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.allowStale}
+			*/
+			"allowStale",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.noDisposeOnSet}
+			*/
+			"noDisposeOnSet",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.noUpdateTTL}
+			*/
+			"noUpdateTTL",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.maxEntrySize}
+			*/
+			"maxEntrySize",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.sizeCalculation}
+			*/
+			"sizeCalculation",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.noDeleteOnFetchRejection}
+			*/
+			"noDeleteOnFetchRejection",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.noDeleteOnStaleGet}
+			*/
+			"noDeleteOnStaleGet",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.allowStaleOnFetchAbort}
+			*/
+			"allowStaleOnFetchAbort",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.allowStaleOnFetchRejection}
+			*/
+			"allowStaleOnFetchRejection",
+			void 0
+		);
+		_defineProperty(
+			this,
+			/**
+			* {@link LRUCache.OptionsBase.ignoreFetchAbort}
+			*/
+			"ignoreFetchAbort",
+			void 0
+		);
 		_classPrivateFieldInitSpec(this, _size, void 0);
 		_classPrivateFieldInitSpec(this, _calculatedSize, void 0);
 		_classPrivateFieldInitSpec(this, _keyMap, void 0);
@@ -1132,11 +1361,13 @@ function _initializeSizeTracking() {
 	});
 	_classPrivateFieldSet2(_requireSize, this, (k, v, size, sizeCalculation) => {
 		if (_assertClassBrand(_LRUCache_brand, this, _isBackgroundFetch).call(this, v)) return 0;
-		if (!isPosInt(size)) if (sizeCalculation) {
-			if (typeof sizeCalculation !== "function") throw new TypeError("sizeCalculation must be a function");
-			size = sizeCalculation(v, k);
-			if (!isPosInt(size)) throw new TypeError("sizeCalculation return invalid (expect positive integer)");
-		} else throw new TypeError("invalid size value (must be positive integer). When maxSize or maxEntrySize is used, sizeCalculation or size must be set.");
+		if (!isPosInt(size)) {
+			if (sizeCalculation) {
+				if (typeof sizeCalculation !== "function") throw new TypeError("sizeCalculation must be a function");
+				size = sizeCalculation(v, k);
+				if (!isPosInt(size)) throw new TypeError("sizeCalculation return invalid (expect positive integer)");
+			} else throw new TypeError("invalid size value (must be positive integer). When maxSize or maxEntrySize is used, sizeCalculation or size must be set.");
+		}
 		return size;
 	});
 	_classPrivateFieldSet2(_addItemSize, this, (index, size, status) => {
@@ -1219,18 +1450,23 @@ function _backgroundFetch(k, index, options, context) {
 	const cb = (v, updateCache = false) => {
 		const { aborted } = ac.signal;
 		const ignoreAbort = options.ignoreFetchAbort && v !== void 0;
-		if (options.status) if (aborted && !updateCache) {
-			options.status.fetchAborted = true;
-			options.status.fetchError = ac.signal.reason;
-			if (ignoreAbort) options.status.fetchAbortIgnored = true;
-		} else options.status.fetchResolved = true;
+		if (options.status) {
+			if (aborted && !updateCache) {
+				options.status.fetchAborted = true;
+				options.status.fetchError = ac.signal.reason;
+				if (ignoreAbort) options.status.fetchAbortIgnored = true;
+			} else options.status.fetchResolved = true;
+		}
 		if (aborted && !ignoreAbort && !updateCache) return fetchFail(ac.signal.reason);
 		const bf = p;
-		if (_classPrivateFieldGet2(_valList, this)[index] === p) if (v === void 0) if (bf.__staleWhileFetching) _classPrivateFieldGet2(_valList, this)[index] = bf.__staleWhileFetching;
-		else this.delete(k);
-		else {
-			if (options.status) options.status.fetchUpdated = true;
-			this.set(k, v, fetchOpts.options);
+		if (_classPrivateFieldGet2(_valList, this)[index] === p) {
+			if (v === void 0) {
+				if (bf.__staleWhileFetching) _classPrivateFieldGet2(_valList, this)[index] = bf.__staleWhileFetching;
+				else this.delete(k);
+			} else {
+				if (options.status) options.status.fetchUpdated = true;
+				this.set(k, v, fetchOpts.options);
+			}
 		}
 		return v;
 	};
@@ -1310,12 +1546,13 @@ function createCache(max = 500) {
 function resolveTemplateAST(inAST, options) {
 	if (!(inAST === null || inAST === void 0 ? void 0 : inAST.transformed)) return inAST;
 	const { compiler = _vue_compiler_dom, compilerOptions, ssr, onError } = options;
-	return (0, _vue_compiler_core.createRoot)((ssr ? _vue_compiler_dom : compiler).parse(inAST.source, {
+	const template = (ssr ? _vue_compiler_dom : compiler).parse(inAST.source, {
 		prefixIdentifiers: true,
 		...compilerOptions,
 		parseMode: "sfc",
 		onError
-	}).children.find((node) => node.type === 1 && node.tag === "template").children, inAST.source);
+	}).children.find((node) => node.type === 1 && node.tag === "template");
+	return (0, _vue_compiler_core.createRoot)(template.children, inAST.source);
 }
 //#endregion
 //#region packages/compiler-sfc/src/script/importUsageCheck.ts
@@ -1383,9 +1620,7 @@ function resolveTemplateAnalysisResult(sfc, collectUsedIds = true, options) {
 				}
 				node.children.forEach(walk);
 				break;
-			case 5:
-				if (ids) extractIdentifiers$2(ids, node.content);
-				break;
+			case 5: if (ids) extractIdentifiers$2(ids, node.content);
 		}
 	}
 	const result = {
@@ -1548,9 +1783,7 @@ function parse(source, options = {}) {
 				if (styleBlock.attrs.vars) errors.push(/* @__PURE__ */ new SyntaxError("<style vars> has been replaced by a new proposal: https://github.com/vuejs/rfcs/pull/231"));
 				descriptor.styles.push(styleBlock);
 				break;
-			default:
-				descriptor.customBlocks.push(createBlock(node, source, pad));
-				break;
+			default: descriptor.customBlocks.push(createBlock(node, source, pad));
 		}
 	});
 	if (!descriptor.template && !descriptor.script && !descriptor.scriptSetup) {
@@ -1619,10 +1852,10 @@ function parse(source, options = {}) {
 				attrs: {
 					setup: true,
 					vapor: true,
-					lang: "uts"
+					lang: "ts"
 				},
 				setup: true,
-				lang: "uts"
+				lang: "ts"
 			};
 		}
 		function createDefaultTemplate() {
@@ -2266,9 +2499,10 @@ var require_consolidate$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 			var partialPath = options.partials[key];
 			if (partialPath === void 0 || partialPath === null || partialPath === false) return next(++index);
 			var file;
-			if (isAbsolute(partialPath)) if (extname(partialPath) !== "") file = partialPath;
-			else file = join(partialPath + extname(path$9));
-			else file = join(dirname(path$9), partialPath + extname(path$9));
+			if (isAbsolute(partialPath)) {
+				if (extname(partialPath) !== "") file = partialPath;
+				else file = join(partialPath + extname(path$9));
+			} else file = join(dirname(path$9), partialPath + extname(path$9));
 			read(file, options, function(err, str) {
 				if (err) return cb(err);
 				partials[key] = str;
@@ -3162,8 +3396,10 @@ var require_consolidate$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 				else if (options.nunjucks && options.nunjucks.configure) env = engine.configure.apply(engine, options.nunjucks.configure);
 				if (options.loader) env = new engine.Environment(options.loader);
 				else if (options.settings && options.settings.views) env = new engine.Environment(new engine.FileSystemLoader(options.settings.views));
-				else if (options.nunjucks && options.nunjucks.loader) if (typeof options.nunjucks.loader === "string") env = new engine.Environment(new engine.FileSystemLoader(options.nunjucks.loader));
-				else env = new engine.Environment(new engine.FileSystemLoader(options.nunjucks.loader[0], options.nunjucks.loader[1]));
+				else if (options.nunjucks && options.nunjucks.loader) {
+					if (typeof options.nunjucks.loader === "string") env = new engine.Environment(new engine.FileSystemLoader(options.nunjucks.loader));
+					else env = new engine.Environment(new engine.FileSystemLoader(options.nunjucks.loader[0], options.nunjucks.loader[1]));
+				}
 				env.renderString(str, options, cb);
 			} catch (err) {
 				throw cb(err);
@@ -3664,7 +3900,7 @@ const trimPlugin = () => {
 };
 trimPlugin.postcss = true;
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/unesc.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/unesc.js
 var require_unesc = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = unesc;
@@ -3715,7 +3951,7 @@ var require_unesc = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/getProp.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/getProp.js
 var require_getProp = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = getProp;
@@ -3731,7 +3967,7 @@ var require_getProp = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/ensureObject.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/ensureObject.js
 var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = ensureObject;
@@ -3746,7 +3982,7 @@ var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/stripComments.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/stripComments.js
 var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = stripComments;
@@ -3766,7 +4002,7 @@ var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/maxNestingDepth.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/maxNestingDepth.js
 var require_maxNestingDepth = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.MAX_NESTING_DEPTH = void 0;
@@ -3793,7 +4029,7 @@ var require_maxNestingDepth = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/util/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/util/index.js
 var require_util$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -3843,7 +4079,7 @@ var require_util$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	});
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/node.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/node.js
 var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var util_1 = require_util$1();
@@ -3997,7 +4233,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/types.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/types.js
 var require_types = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.UNIVERSAL = exports.ATTRIBUTE = exports.CLASS = exports.COMBINATOR = exports.COMMENT = exports.ID = exports.NESTING = exports.PSEUDO = exports.ROOT = exports.SELECTOR = exports.STRING = exports.TAG = void 0;
@@ -4015,7 +4251,7 @@ var require_types = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.UNIVERSAL = "universal";
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/container.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/container.js
 var require_container = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4406,7 +4642,7 @@ var require_container = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/root.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/root.js
 var require_root = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4462,7 +4698,7 @@ var require_root = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(container_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/selector.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/selector.js
 var require_selector = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4532,9 +4768,10 @@ var require_cssesc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 					else counter--;
 				}
 				value = "\\" + codePoint.toString(16).toUpperCase() + " ";
-			} else if (options.escapeEverything) if (regexAnySingleEscape.test(character)) value = "\\" + character;
-			else value = "\\" + codePoint.toString(16).toUpperCase() + " ";
-			else if (/[\t\n\f\r\x0B]/.test(character)) value = "\\" + codePoint.toString(16).toUpperCase() + " ";
+			} else if (options.escapeEverything) {
+				if (regexAnySingleEscape.test(character)) value = "\\" + character;
+				else value = "\\" + codePoint.toString(16).toUpperCase() + " ";
+			} else if (/[\t\n\f\r\x0B]/.test(character)) value = "\\" + codePoint.toString(16).toUpperCase() + " ";
 			else if (character == "\\" || !isIdentifier && (character == "\"" && quote == character || character == "'" && quote == character) || isIdentifier && regexSingleEscape.test(character)) value = "\\" + character;
 			else value = character;
 			output += value;
@@ -4560,7 +4797,7 @@ var require_cssesc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = cssesc;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/className.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/className.js
 var require_className = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4620,7 +4857,7 @@ var require_className = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/comment.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/comment.js
 var require_comment = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4657,7 +4894,7 @@ var require_comment = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/id.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/id.js
 var require_id = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4697,7 +4934,7 @@ var require_id = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/namespace.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/namespace.js
 var require_namespace = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4780,7 +5017,7 @@ var require_namespace = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(__importDefault(require_node$1()).default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/tag.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/tag.js
 var require_tag = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4817,7 +5054,7 @@ var require_tag = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(namespace_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/string.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/string.js
 var require_string = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4855,7 +5092,7 @@ var require_string = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.default = String;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/pseudo.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/pseudo.js
 var require_pseudo = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -4913,7 +5150,7 @@ var require_node = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require("util").deprecate;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/attribute.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/attribute.js
 var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5299,7 +5536,7 @@ var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/universal.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/universal.js
 var require_universal = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5337,7 +5574,7 @@ var require_universal = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(namespace_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/combinator.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/combinator.js
 var require_combinator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5374,7 +5611,7 @@ var require_combinator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/nesting.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/nesting.js
 var require_nesting = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __extends = exports && exports.__extends || (function() {
 		var extendStatics = function(d, b) {
@@ -5412,7 +5649,7 @@ var require_nesting = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}(node_1.default);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/sortAscending.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/sortAscending.js
 var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = sortAscending;
@@ -5423,7 +5660,7 @@ var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/tokenTypes.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/tokenTypes.js
 var require_tokenTypes = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.combinator = exports.word = exports.comment = exports.str = exports.tab = exports.newline = exports.feed = exports.cr = exports.backslash = exports.bang = exports.slash = exports.doubleQuote = exports.singleQuote = exports.space = exports.greaterThan = exports.pipe = exports.equals = exports.plus = exports.caret = exports.tilde = exports.dollar = exports.closeSquare = exports.openSquare = exports.closeParenthesis = exports.openParenthesis = exports.semicolon = exports.colon = exports.comma = exports.at = exports.asterisk = exports.ampersand = void 0;
@@ -5460,7 +5697,7 @@ var require_tokenTypes = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.combinator = -3;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/tokenize.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/tokenize.js
 var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -5503,7 +5740,8 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 			return result;
 		};
 	})();
-	var _a, _b;
+	var _a;
+	var _b;
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.FIELDS = void 0;
 	exports.default = tokenize;
@@ -5681,7 +5919,6 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 						endColumn = next - offset;
 					}
 					end = next + 1;
-					break;
 			}
 			tokens.push([
 				tokenType,
@@ -5702,7 +5939,7 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/parser.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/parser.js
 var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __assign = exports && exports.__assign || function() {
 		__assign = Object.assign || function(t) {
@@ -5784,7 +6021,8 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
 	};
-	var _a, _b;
+	var _a;
+	var _b;
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var root_1 = __importDefault(require_root());
 	var selector_1 = __importDefault(require_selector());
@@ -5853,10 +6091,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return indexes;
 	}
 	function uniqs() {
-		var list = Array.prototype.concat.apply([], arguments);
-		return list.filter(function(item, i) {
-			return i === list.indexOf(item);
-		});
+		return Array.from(new Set(Array.prototype.concat.apply([], arguments)));
 	}
 	exports.default = function() {
 		function Parser(rule, options) {
@@ -5904,6 +6139,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				attr.push(this.currToken);
 				this.position++;
 			}
+			if (!this.currToken) return this.expected("closing square bracket", startingToken[tokenize_1.FIELDS.START_POS]);
 			if (this.currToken[tokenize_1.FIELDS.TYPE] !== tokens.closeSquare) return this.expected("closing square bracket", this.currToken[tokenize_1.FIELDS.START_POS]);
 			var len = attr.length;
 			var node = {
@@ -5947,7 +6183,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 							}
 							if (commentBefore) {
 								(0, util_1.ensureObject)(node, "raws", "spaces", "attribute");
-								node.raws.spaces.attribute.before = spaceBefore;
+								node.raws.spaces.attribute.before = commentBefore;
 								commentBefore = "";
 							}
 							node.namespace = (node.namespace || "") + content;
@@ -6060,18 +6296,19 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 						spaceAfterMeaningfulToken = false;
 						break;
 					case tokens.comment:
-						if (lastAdded) if (spaceAfterMeaningfulToken || next && next[tokenize_1.FIELDS.TYPE] === tokens.space || lastAdded === "insensitive") {
-							var lastComment = (0, util_1.getProp)(node, "spaces", lastAdded, "after") || "";
-							var rawLastComment = (0, util_1.getProp)(node, "raws", "spaces", lastAdded, "after") || lastComment;
-							(0, util_1.ensureObject)(node, "raws", "spaces", lastAdded);
-							node.raws.spaces[lastAdded].after = rawLastComment + content;
-						} else {
-							var lastValue = node[lastAdded] || "";
-							var rawLastValue = (0, util_1.getProp)(node, "raws", lastAdded) || lastValue;
-							(0, util_1.ensureObject)(node, "raws");
-							node.raws[lastAdded] = rawLastValue + content;
-						}
-						else commentBefore = commentBefore + content;
+						if (lastAdded) {
+							if (spaceAfterMeaningfulToken || next && next[tokenize_1.FIELDS.TYPE] === tokens.space || lastAdded === "insensitive") {
+								var lastComment = (0, util_1.getProp)(node, "spaces", lastAdded, "after") || "";
+								var rawLastComment = (0, util_1.getProp)(node, "raws", "spaces", lastAdded, "after") || lastComment;
+								(0, util_1.ensureObject)(node, "raws", "spaces", lastAdded);
+								node.raws.spaces[lastAdded].after = rawLastComment + content;
+							} else {
+								var lastValue = node[lastAdded] || "";
+								var rawLastValue = (0, util_1.getProp)(node, "raws", lastAdded) || lastValue;
+								(0, util_1.ensureObject)(node, "raws");
+								node.raws[lastAdded] = rawLastValue + content;
+							}
+						} else commentBefore = commentBefore + content;
 						break;
 					default: return this.error("Unexpected \"".concat(content, "\" found."), { index: token[tokenize_1.FIELDS.START_POS] });
 				}
@@ -6283,7 +6520,9 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 			return this.error("Unexpected '|'.", this.currToken[tokenize_1.FIELDS.START_POS]);
 		};
 		Parser.prototype.namespace = function() {
-			var before = this.prevToken && this.content(this.prevToken) || true;
+			var prev = this.prevToken;
+			var before = prev && (prev[tokenize_1.FIELDS.TYPE] === tokens.word || prev[tokenize_1.FIELDS.TYPE] === tokens.asterisk || prev[tokenize_1.FIELDS.TYPE] === tokens.ampersand) ? this.content(prev) : true;
+			if (!this.nextToken) return this.unexpectedPipe();
 			if (this.nextToken[tokenize_1.FIELDS.TYPE] === tokens.word) {
 				this.position++;
 				return this.word(before);
@@ -6311,6 +6550,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 		Parser.prototype.parentheses = function() {
 			var last = this.current.last;
 			var unbalanced = 1;
+			var openingToken = this.currToken;
 			this.position++;
 			if (last && last.type === types.PSEUDO) {
 				var selector = new selector_1.default({
@@ -6355,7 +6595,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 					sourceIndex: parenStart[tokenize_1.FIELDS.START_POS]
 				}));
 			}
-			if (unbalanced) return this.expected("closing parenthesis", this.currToken[tokenize_1.FIELDS.START_POS]);
+			if (unbalanced) return this.expected("closing parenthesis", (this.currToken || openingToken)[tokenize_1.FIELDS.START_POS]);
 		};
 		Parser.prototype.pseudo = function() {
 			var _this = this;
@@ -6443,9 +6683,14 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				return word[i - 1] !== "\\";
 			});
 			var interpolations = indexesOf(word, "#{");
-			if (interpolations.length) hasId = hasId.filter(function(hashIndex) {
-				return !~interpolations.indexOf(hashIndex);
-			});
+			if (interpolations.length) {
+				var interpolationIndexes_1 = new Set(interpolations);
+				hasId = hasId.filter(function(hashIndex) {
+					return !interpolationIndexes_1.has(hashIndex);
+				});
+			}
+			var classIndexes = new Set(hasClass);
+			var idIndexes = new Set(hasId);
 			var indices = (0, sortAscending_1.default)(uniqs(__spreadArray(__spreadArray([0], __read(hasClass), false), __read(hasId), false)));
 			indices.forEach(function(ind, i) {
 				var index = indices[i + 1] || word.length;
@@ -6455,14 +6700,14 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 				var current = _this.currToken;
 				var sourceIndex = current[tokenize_1.FIELDS.START_POS] + indices[i];
 				var source = getSource(current[1], current[2] + ind, current[3], current[2] + (index - 1));
-				if (~hasClass.indexOf(ind)) {
+				if (classIndexes.has(ind)) {
 					var classNameOpts = {
 						value: value.slice(1),
 						source,
 						sourceIndex
 					};
 					node = new className_1.default(unescapeProp(classNameOpts, "value"));
-				} else if (~hasId.indexOf(ind)) {
+				} else if (idIndexes.has(ind)) {
 					var idOpts = {
 						value: value.slice(1),
 						source,
@@ -6627,7 +6872,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/processor.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/processor.js
 var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -6776,7 +7021,7 @@ var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}();
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/constructors.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/constructors.js
 var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __importDefault = exports && exports.__importDefault || function(mod) {
 		return mod && mod.__esModule ? mod : { "default": mod };
@@ -6845,7 +7090,7 @@ var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.universal = universal;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/guards.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/guards.js
 var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var _a;
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -6889,7 +7134,7 @@ var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/selectors/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/selectors/index.js
 var require_selectors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -6914,7 +7159,7 @@ var require_selectors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	__exportStar(require_guards(), exports);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-selector-parser@7.1.4/node_modules/postcss-selector-parser/dist/index.js
+//#region node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser/dist/index.js
 var require_dist = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -7090,15 +7335,17 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 		if (n.type === "universal") {
 			const prev = selector.at(selector.index(n) - 1);
 			const next = selector.at(selector.index(n) + 1);
-			if (!prev) if (next) {
-				if (next.type === "combinator" && next.value === " ") selector.removeChild(next);
-				selector.removeChild(n);
-				return;
-			} else {
-				node = import_dist.default.combinator({ value: "" });
-				selector.insertBefore(n, node);
-				selector.removeChild(n);
-				return false;
+			if (!prev) {
+				if (next) {
+					if (next.type === "combinator" && next.value === " ") selector.removeChild(next);
+					selector.removeChild(n);
+					return;
+				} else {
+					node = import_dist.default.combinator({ value: "" });
+					selector.insertBefore(n, node);
+					selector.removeChild(n);
+					return false;
+				}
 			}
 			if (node) return;
 		}
@@ -7342,12 +7589,14 @@ var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
 			part = parts[i];
 			if (part === ".") parts.splice(i, 1);
 			else if (part === "..") up++;
-			else if (up > 0) if (part === "") {
-				parts.splice(i + 1, up);
-				up = 0;
-			} else {
-				parts.splice(i, 2);
-				up--;
+			else if (up > 0) {
+				if (part === "") {
+					parts.splice(i + 1, up);
+					up = 0;
+				} else {
+					parts.splice(i, 2);
+					up--;
+				}
 			}
 		}
 		path = parts.join("/");
@@ -7599,8 +7848,10 @@ var require_array_set = /* @__PURE__ */ __commonJSMin(((exports) => {
 		var isDuplicate = hasNativeMap ? this.has(aStr) : has.call(this._set, sStr);
 		var idx = this._array.length;
 		if (!isDuplicate || aAllowDuplicates) this._array.push(aStr);
-		if (!isDuplicate) if (hasNativeMap) this._set.set(aStr, idx);
-		else this._set[sStr] = idx;
+		if (!isDuplicate) {
+			if (hasNativeMap) this._set.set(aStr, idx);
+			else this._set[sStr] = idx;
+		}
 	};
 	/**
 	* Is the given string a member of this set?
@@ -8916,18 +9167,20 @@ var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 		var lastGeneratedLine = 1, lastGeneratedColumn = 0;
 		var lastMapping = null;
 		aSourceMapConsumer.eachMapping(function(mapping) {
-			if (lastMapping !== null) if (lastGeneratedLine < mapping.generatedLine) {
-				addMappingWithCode(lastMapping, shiftNextLine());
-				lastGeneratedLine++;
-				lastGeneratedColumn = 0;
-			} else {
-				var nextLine = remainingLines[remainingLinesIndex] || "";
-				var code = nextLine.substr(0, mapping.generatedColumn - lastGeneratedColumn);
-				remainingLines[remainingLinesIndex] = nextLine.substr(mapping.generatedColumn - lastGeneratedColumn);
-				lastGeneratedColumn = mapping.generatedColumn;
-				addMappingWithCode(lastMapping, code);
-				lastMapping = mapping;
-				return;
+			if (lastMapping !== null) {
+				if (lastGeneratedLine < mapping.generatedLine) {
+					addMappingWithCode(lastMapping, shiftNextLine());
+					lastGeneratedLine++;
+					lastGeneratedColumn = 0;
+				} else {
+					var nextLine = remainingLines[remainingLinesIndex] || "";
+					var code = nextLine.substr(0, mapping.generatedColumn - lastGeneratedColumn);
+					remainingLines[remainingLinesIndex] = nextLine.substr(mapping.generatedColumn - lastGeneratedColumn);
+					lastGeneratedColumn = mapping.generatedColumn;
+					addMappingWithCode(lastMapping, code);
+					lastMapping = mapping;
+					return;
+				}
 			}
 			while (lastGeneratedLine < mapping.generatedLine) {
 				node.add(shiftNextLine());
@@ -9332,7 +9585,7 @@ const processors = {
 	stylus: styl
 };
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/fs.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/fs.js
 var require_fs = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.getFileSystem = getFileSystem;
@@ -9354,7 +9607,7 @@ var require_fs = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/unquote.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/unquote.js
 var require_unquote = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = unquote;
@@ -9367,7 +9620,7 @@ var require_unquote = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/replaceValueSymbols.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/replaceValueSymbols.js
 var require_replaceValueSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const matchValueName = /[$]?[\w-]+/g;
 	const replaceValueSymbols = (value, replacements) => {
@@ -9384,7 +9637,7 @@ var require_replaceValueSymbols = /* @__PURE__ */ __commonJSMin(((exports, modul
 	module.exports = replaceValueSymbols;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/replaceSymbols.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/replaceSymbols.js
 var require_replaceSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const replaceValueSymbols = require_replaceValueSymbols();
 	const replaceSymbols = (css, replacements) => {
@@ -9397,7 +9650,7 @@ var require_replaceSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 	module.exports = replaceSymbols;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/extractICSS.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/extractICSS.js
 var require_extractICSS = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const importPattern = /^:import\(("[^"]*"|'[^']*'|[^"']+)\)$/;
 	const balancedQuotes = /^("[^"]*"|'[^']*'|[^"']+)$/;
@@ -9451,7 +9704,7 @@ var require_extractICSS = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = extractICSS;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/createICSSRules.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/createICSSRules.js
 var require_createICSSRules = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const createImports = (imports, postcss, mode = "rule") => {
 		return Object.keys(imports).map((path) => {
@@ -9495,7 +9748,7 @@ var require_createICSSRules = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	module.exports = createICSSRules;
 }));
 //#endregion
-//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.19/node_modules/icss-utils/src/index.js
+//#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.28/node_modules/icss-utils/src/index.js
 var require_src$4 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = {
 		replaceValueSymbols: require_replaceValueSymbols(),
@@ -9505,7 +9758,7 @@ var require_src$4 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/Parser.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/Parser.js
 var require_Parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = void 0;
@@ -9573,7 +9826,7 @@ var require_Parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.default = Parser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/saveJSON.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/saveJSON.js
 var require_saveJSON = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = saveJSON;
@@ -9588,16 +9841,6 @@ var require_saveJSON = /* @__PURE__ */ __commonJSMin(((exports) => {
 //#endregion
 //#region node_modules/.pnpm/lodash.camelcase@4.3.0/node_modules/lodash.camelcase/index.js
 var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	/**
-	* lodash (Custom Build) <https://lodash.com/>
-	* Build: `lodash modularize exports="npm" -o ./`
-	* Copyright jQuery Foundation and other contributors <https://jquery.org/>
-	* Released under MIT license <https://lodash.com/license>
-	* Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	* Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	*/
-	/** Used as references for various `Number` constants. */
-	var INFINITY = Infinity;
 	/** `Object#toString` result references. */
 	var symbolTag = "[object Symbol]";
 	/** Used to match words composed of alphanumeric characters. */
@@ -9605,19 +9848,53 @@ var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	/** Used to match Latin Unicode letters (excluding mathematical operators). */
 	var reLatin = /[\xc0-\xd6\xd8-\xf6\xf8-\xff\u0100-\u017f]/g;
 	/** Used to compose unicode character classes. */
-	var rsAstralRange = "\\ud800-\\udfff", rsComboMarksRange = "\\u0300-\\u036f\\ufe20-\\ufe23", rsComboSymbolsRange = "\\u20d0-\\u20f0", rsDingbatRange = "\\u2700-\\u27bf", rsLowerRange = "a-z\\xdf-\\xf6\\xf8-\\xff", rsMathOpRange = "\\xac\\xb1\\xd7\\xf7", rsNonCharRange = "\\x00-\\x2f\\x3a-\\x40\\x5b-\\x60\\x7b-\\xbf", rsPunctuationRange = "\\u2000-\\u206f", rsSpaceRange = " \\t\\x0b\\f\\xa0\\ufeff\\n\\r\\u2028\\u2029\\u1680\\u180e\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u202f\\u205f\\u3000", rsUpperRange = "A-Z\\xc0-\\xd6\\xd8-\\xde", rsVarRange = "\\ufe0e\\ufe0f", rsBreakRange = rsMathOpRange + rsNonCharRange + rsPunctuationRange + rsSpaceRange;
+	var rsAstralRange = "\\ud800-\\udfff";
+	var rsComboMarksRange = "\\u0300-\\u036f\\ufe20-\\ufe23";
+	var rsComboSymbolsRange = "\\u20d0-\\u20f0";
+	var rsDingbatRange = "\\u2700-\\u27bf";
+	var rsLowerRange = "a-z\\xdf-\\xf6\\xf8-\\xff";
+	var rsMathOpRange = "\\xac\\xb1\\xd7\\xf7";
+	var rsNonCharRange = "\\x00-\\x2f\\x3a-\\x40\\x5b-\\x60\\x7b-\\xbf";
+	var rsPunctuationRange = "\\u2000-\\u206f";
+	var rsSpaceRange = " \\t\\x0b\\f\\xa0\\ufeff\\n\\r\\u2028\\u2029\\u1680\\u180e\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u202f\\u205f\\u3000";
+	var rsUpperRange = "A-Z\\xc0-\\xd6\\xd8-\\xde";
+	var rsVarRange = "\\ufe0e\\ufe0f";
+	var rsBreakRange = rsMathOpRange + rsNonCharRange + rsPunctuationRange + rsSpaceRange;
 	/** Used to compose unicode capture groups. */
-	var rsApos = "['’]", rsAstral = "[" + rsAstralRange + "]", rsBreak = "[" + rsBreakRange + "]", rsCombo = "[" + rsComboMarksRange + rsComboSymbolsRange + "]", rsDigits = "\\d+", rsDingbat = "[" + rsDingbatRange + "]", rsLower = "[" + rsLowerRange + "]", rsMisc = "[^" + rsAstralRange + rsBreakRange + rsDigits + rsDingbatRange + rsLowerRange + rsUpperRange + "]", rsFitz = "\\ud83c[\\udffb-\\udfff]", rsModifier = "(?:" + rsCombo + "|" + rsFitz + ")", rsNonAstral = "[^" + rsAstralRange + "]", rsRegional = "(?:\\ud83c[\\udde6-\\uddff]){2}", rsSurrPair = "[\\ud800-\\udbff][\\udc00-\\udfff]", rsUpper = "[" + rsUpperRange + "]", rsZWJ = "\\u200d";
+	var rsApos = "['’]";
+	var rsAstral = "[" + rsAstralRange + "]";
+	var rsBreak = "[" + rsBreakRange + "]";
+	var rsCombo = "[" + rsComboMarksRange + rsComboSymbolsRange + "]";
+	var rsDigits = "\\d+";
+	var rsDingbat = "[" + rsDingbatRange + "]";
+	var rsLower = "[" + rsLowerRange + "]";
+	var rsMisc = "[^" + rsAstralRange + rsBreakRange + rsDigits + rsDingbatRange + rsLowerRange + rsUpperRange + "]";
+	var rsFitz = "\\ud83c[\\udffb-\\udfff]";
+	var rsModifier = "(?:" + rsCombo + "|" + rsFitz + ")";
+	var rsNonAstral = "[^" + rsAstralRange + "]";
+	var rsRegional = "(?:\\ud83c[\\udde6-\\uddff]){2}";
+	var rsSurrPair = "[\\ud800-\\udbff][\\udc00-\\udfff]";
+	var rsUpper = "[" + rsUpperRange + "]";
+	var rsZWJ = "\\u200d";
 	/** Used to compose unicode regexes. */
-	var rsLowerMisc = "(?:" + rsLower + "|" + rsMisc + ")", rsUpperMisc = "(?:" + rsUpper + "|" + rsMisc + ")", rsOptLowerContr = "(?:" + rsApos + "(?:d|ll|m|re|s|t|ve))?", rsOptUpperContr = "(?:" + rsApos + "(?:D|LL|M|RE|S|T|VE))?", reOptMod = rsModifier + "?", rsOptVar = "[" + rsVarRange + "]?", rsOptJoin = "(?:" + rsZWJ + "(?:" + [
+	var rsLowerMisc = "(?:" + rsLower + "|" + rsMisc + ")";
+	var rsUpperMisc = "(?:" + rsUpper + "|" + rsMisc + ")";
+	var rsOptLowerContr = "(?:" + rsApos + "(?:d|ll|m|re|s|t|ve))?";
+	var rsOptUpperContr = "(?:" + rsApos + "(?:D|LL|M|RE|S|T|VE))?";
+	var reOptMod = rsModifier + "?";
+	var rsOptVar = "[" + rsVarRange + "]?";
+	var rsOptJoin = "(?:" + rsZWJ + "(?:" + [
 		rsNonAstral,
 		rsRegional,
 		rsSurrPair
-	].join("|") + ")" + rsOptVar + reOptMod + ")*", rsSeq = rsOptVar + reOptMod + rsOptJoin, rsEmoji = "(?:" + [
+	].join("|") + ")" + rsOptVar + reOptMod + ")*";
+	var rsSeq = rsOptVar + reOptMod + rsOptJoin;
+	var rsEmoji = "(?:" + [
 		rsDingbat,
 		rsRegional,
 		rsSurrPair
-	].join("|") + ")" + rsSeq, rsSymbol = "(?:" + [
+	].join("|") + ")" + rsSeq;
+	var rsSymbol = "(?:" + [
 		rsNonAstral + rsCombo + "?",
 		rsCombo,
 		rsRegional,
@@ -9971,7 +10248,8 @@ var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
 	/** Used to convert symbols to primitives and strings. */
-	var symbolProto = Symbol ? Symbol.prototype : void 0, symbolToString = symbolProto ? symbolProto.toString : void 0;
+	var symbolProto = Symbol ? Symbol.prototype : void 0;
+	var symbolToString = symbolProto ? symbolProto.toString : void 0;
 	/**
 	* The base implementation of `_.slice` without an iteratee call guard.
 	*
@@ -10004,7 +10282,7 @@ var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) 
 		if (typeof value == "string") return value;
 		if (isSymbol(value)) return symbolToString ? symbolToString.call(value) : "";
 		var result = value + "";
-		return result == "0" && 1 / value == -INFINITY ? "-0" : result;
+		return result == "0" && 1 / value == -Infinity ? "-0" : result;
 	}
 	/**
 	* Casts `array` to a slice if it's needed.
@@ -10229,7 +10507,7 @@ var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	module.exports = camelCase;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/localsConvention.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/localsConvention.js
 var require_localsConvention = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.makeLocalsConventionReducer = makeLocalsConventionReducer;
@@ -10260,16 +10538,14 @@ var require_localsConvention = /* @__PURE__ */ __commonJSMin(((exports) => {
 					tokens[className] = value;
 					tokens[dashesCamelCase(className)] = value;
 					break;
-				case "dashesOnly":
-					tokens[dashesCamelCase(className)] = value;
-					break;
+				case "dashesOnly": tokens[dashesCamelCase(className)] = value;
 			}
 			return tokens;
 		};
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/FileSystemLoader.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/FileSystemLoader.js
 var require_FileSystemLoader = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = void 0;
@@ -10354,7 +10630,7 @@ var require_FileSystemLoader = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.default = FileSystemLoader;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.19/node_modules/postcss-modules-extract-imports/src/topologicalSort.js
+//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.28/node_modules/postcss-modules-extract-imports/src/topologicalSort.js
 var require_topologicalSort = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const PERMANENT_MARKER = 2;
 	const TEMPORARY_MARKER = 1;
@@ -10393,7 +10669,7 @@ var require_topologicalSort = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	module.exports = topologicalSort;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.19/node_modules/postcss-modules-extract-imports/src/index.js
+//#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.28/node_modules/postcss-modules-extract-imports/src/index.js
 var require_src$3 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const topologicalSort = require_topologicalSort();
 	const matchImports = /^(.+?)\s+from\s+(?:"([^"]+)"|'([^']+)'|(global))$/;
@@ -10488,10 +10764,13 @@ var require_src$3 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 						declaration.value = values.join(", ");
 					});
 					const importsOrder = topologicalSort(graph, failOnWrongOrder);
-					if (importsOrder instanceof Error) throw importDecls[importsOrder.nodes.find((importPath) => importDecls.hasOwnProperty(importPath))].error("Failed to resolve order of composed modules " + importsOrder.nodes.map((importPath) => "`" + importPath + "`").join(", ") + ".", {
-						plugin: "postcss-modules-extract-imports",
-						word: "composes"
-					});
+					if (importsOrder instanceof Error) {
+						const importPath = importsOrder.nodes.find((importPath) => importDecls.hasOwnProperty(importPath));
+						throw importDecls[importPath].error("Failed to resolve order of composed modules " + importsOrder.nodes.map((importPath) => "`" + importPath + "`").join(", ") + ".", {
+							plugin: "postcss-modules-extract-imports",
+							word: "composes"
+						});
+					}
 					let lastImportRule;
 					importsOrder.forEach((path) => {
 						const importedSymbols = imports[path];
@@ -10523,7 +10802,7 @@ var require_src$3 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/hash/wasm-hash.js
 var require_wasm_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	const MAX_SHORT_STRING = Math.floor(65472 / 4) & -4;
+	const MAX_SHORT_STRING = Math.floor(16368) & -4;
 	var WasmHash = class {
 		/**
 		* @param {WebAssembly.Instance} instance wasm instance
@@ -10570,28 +10849,29 @@ var require_wasm_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		_updateWithShortString(data, encoding) {
 			const { exports: exports$3, buffered, mem, chunkSize } = this;
 			let endPos;
-			if (data.length < 70) if (!encoding || encoding === "utf-8" || encoding === "utf8") {
-				endPos = buffered;
-				for (let i = 0; i < data.length; i++) {
-					const cc = data.charCodeAt(i);
-					if (cc < 128) mem[endPos++] = cc;
-					else if (cc < 2048) {
-						mem[endPos] = cc >> 6 | 192;
-						mem[endPos + 1] = cc & 63 | 128;
-						endPos += 2;
-					} else {
-						endPos += mem.write(data.slice(i), endPos, encoding);
-						break;
+			if (data.length < 70) {
+				if (!encoding || encoding === "utf-8" || encoding === "utf8") {
+					endPos = buffered;
+					for (let i = 0; i < data.length; i++) {
+						const cc = data.charCodeAt(i);
+						if (cc < 128) mem[endPos++] = cc;
+						else if (cc < 2048) {
+							mem[endPos] = cc >> 6 | 192;
+							mem[endPos + 1] = cc & 63 | 128;
+							endPos += 2;
+						} else {
+							endPos += mem.write(data.slice(i), endPos, encoding);
+							break;
+						}
 					}
-				}
-			} else if (encoding === "latin1") {
-				endPos = buffered;
-				for (let i = 0; i < data.length; i++) {
-					const cc = data.charCodeAt(i);
-					mem[endPos++] = cc;
-				}
+				} else if (encoding === "latin1") {
+					endPos = buffered;
+					for (let i = 0; i < data.length; i++) {
+						const cc = data.charCodeAt(i);
+						mem[endPos++] = cc;
+					}
+				} else endPos = buffered + mem.write(data, buffered, encoding);
 			} else endPos = buffered + mem.write(data, buffered, encoding);
-			else endPos = buffered + mem.write(data, buffered, encoding);
 			if (endPos < chunkSize) this.buffered = endPos;
 			else {
 				const l = endPos & ~(this.chunkSize - 1);
@@ -10686,11 +10966,12 @@ var require_BatchedHash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				this.hash.update(this.string, this.encoding);
 				this.string = void 0;
 			}
-			if (typeof data === "string") if (data.length < MAX_SHORT_STRING && (!inputEncoding || !inputEncoding.startsWith("ba"))) {
-				this.string = data;
-				this.encoding = inputEncoding;
-			} else this.hash.update(data, inputEncoding);
-			else this.hash.update(data);
+			if (typeof data === "string") {
+				if (data.length < MAX_SHORT_STRING && (!inputEncoding || !inputEncoding.startsWith("ba"))) {
+					this.string = data;
+					this.encoding = inputEncoding;
+				} else this.hash.update(data, inputEncoding);
+			} else this.hash.update(data);
 			return this;
 		}
 		/**
@@ -11311,7 +11592,7 @@ var require_lib = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = ValueParser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-local-by-default@4.2.0_postcss@8.5.19/node_modules/postcss-modules-local-by-default/src/index.js
+//#region node_modules/.pnpm/postcss-modules-local-by-default@4.2.0_postcss@8.5.28/node_modules/postcss-modules-local-by-default/src/index.js
 var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const selectorParser = require_dist();
 	const valueParser = require_lib();
@@ -11506,22 +11787,18 @@ var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 					}
 				}
 				break;
-			case "function":
-				if (context.options && context.options.rewriteUrl && node.value.toLowerCase() === "url") node.nodes.map((nestedNode) => {
-					if (nestedNode.type !== "string" && nestedNode.type !== "word") return;
-					let newUrl = context.options.rewriteUrl(context.global, nestedNode.value);
-					switch (nestedNode.type) {
-						case "string":
-							if (nestedNode.quote === "'") newUrl = newUrl.replace(/(\\)/g, "\\$1").replace(/'/g, "\\'");
-							if (nestedNode.quote === "\"") newUrl = newUrl.replace(/(\\)/g, "\\$1").replace(/"/g, "\\\"");
-							break;
-						case "word":
-							newUrl = newUrl.replace(/("|'|\)|\\)/g, "\\$1");
-							break;
-					}
-					nestedNode.value = newUrl;
-				});
-				break;
+			case "function": if (context.options && context.options.rewriteUrl && node.value.toLowerCase() === "url") node.nodes.map((nestedNode) => {
+				if (nestedNode.type !== "string" && nestedNode.type !== "word") return;
+				let newUrl = context.options.rewriteUrl(context.global, nestedNode.value);
+				switch (nestedNode.type) {
+					case "string":
+						if (nestedNode.quote === "'") newUrl = newUrl.replace(/(\\)/g, "\\$1").replace(/'/g, "\\'");
+						if (nestedNode.quote === "\"") newUrl = newUrl.replace(/(\\)/g, "\\$1").replace(/"/g, "\\\"");
+						break;
+					case "word": newUrl = newUrl.replace(/("|'|\)|\\)/g, "\\$1");
+				}
+				nestedNode.value = newUrl;
+			});
 		}
 		return node;
 	}
@@ -11598,10 +11875,12 @@ var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				} else if (node.type !== "word") return;
 				const value = node.type === "word" ? node.value.toLowerCase() : null;
 				let shouldParseAnimationName = false;
-				if (value && validIdent.test(value)) if ("$" + value in animationKeywords) {
-					parsedAnimationKeywords["$" + value] = "$" + value in parsedAnimationKeywords ? parsedAnimationKeywords["$" + value] + 1 : 0;
-					shouldParseAnimationName = parsedAnimationKeywords["$" + value] >= animationKeywords["$" + value];
-				} else shouldParseAnimationName = true;
+				if (value && validIdent.test(value)) {
+					if ("$" + value in animationKeywords) {
+						parsedAnimationKeywords["$" + value] = "$" + value in parsedAnimationKeywords ? parsedAnimationKeywords["$" + value] + 1 : 0;
+						shouldParseAnimationName = parsedAnimationKeywords["$" + value] >= animationKeywords["$" + value];
+					} else shouldParseAnimationName = true;
+				}
 				return localizeDeclNode(node, {
 					options: context.options,
 					global: context.global,
@@ -11710,7 +11989,7 @@ var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.postcss = true;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-scope@3.2.1_postcss@8.5.19/node_modules/postcss-modules-scope/src/index.js
+//#region node_modules/.pnpm/postcss-modules-scope@3.2.1_postcss@8.5.28/node_modules/postcss-modules-scope/src/index.js
 var require_src$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const selectorParser = require_dist();
 	const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -11786,9 +12065,7 @@ var require_src$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 							node.each((item) => traverseNode(item));
 							break;
 						case "id":
-						case "class":
-							if (exportGlobals) exports$1[node.value] = [node.value];
-							break;
+						case "class": if (exportGlobals) exports$1[node.value] = [node.value];
 					}
 					return node;
 				}
@@ -11890,7 +12167,7 @@ var require_string_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = hash;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules-values@4.0.0_postcss@8.5.19/node_modules/postcss-modules-values/src/index.js
+//#region node_modules/.pnpm/postcss-modules-values@4.0.0_postcss@8.5.28/node_modules/postcss-modules-values/src/index.js
 var require_src = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const ICSSUtils = require_src$4();
 	const matchImports = /^(.+?|\([\s\S]+?\))\s+from\s+("[^"]*"|'[^']*'|[\w-]+)$/;
@@ -11977,7 +12254,7 @@ var require_src = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.postcss = true;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/scoping.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/scoping.js
 var require_scoping = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.behaviours = void 0;
@@ -12039,7 +12316,7 @@ var require_scoping = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.19/node_modules/postcss-modules/build/pluginFactory.js
+//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.28/node_modules/postcss-modules/build/pluginFactory.js
 var require_pluginFactory = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.makePlugin = makePlugin;
@@ -12342,7 +12619,10 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
 	else if (userPlugins) userPlugins = userPlugins.filter((p) => p !== "jsx");
 	if (lang === "uts" || lang === "ts" || lang === "mts" || lang === "tsx" || lang === "cts" || lang === "mtsx") {
 		plugins.push(["typescript", { dts }], "explicitResourceManagement");
-		if (!userPlugins || !userPlugins.includes("decorators")) plugins.push("decorators-legacy");
+		if (!(userPlugins === null || userPlugins === void 0 ? void 0 : userPlugins.some((plugin) => {
+			const name = (0, _vue_shared.isArray)(plugin) ? plugin[0] : plugin;
+			return name === "decorators" || name === "decorators-legacy";
+		}))) plugins.push(lang === "uts" ? "decorators" : "decorators-legacy");
 	}
 	if (userPlugins) plugins.push(...userPlugins);
 	return plugins;
@@ -12368,25 +12648,28 @@ function rewriteDefaultAST(ast, s, as) {
 		return;
 	}
 	ast.forEach((node) => {
-		if (node.type === "ExportDefaultDeclaration") if (node.declaration.type === "ClassDeclaration" && node.declaration.id) {
-			const start = node.declaration.decorators && node.declaration.decorators.length > 0 ? node.declaration.decorators[node.declaration.decorators.length - 1].end : node.start;
-			s.overwrite(start, node.declaration.id.start, ` class `);
-			s.append(`\nconst ${as} = ${node.declaration.id.name}`);
-		} else s.overwrite(node.start, node.declaration.start, `const ${as} = `);
-		else if (node.type === "ExportNamedDeclaration") {
+		if (node.type === "ExportDefaultDeclaration") {
+			if (node.declaration.type === "ClassDeclaration" && node.declaration.id) {
+				const start = node.declaration.decorators && node.declaration.decorators.length > 0 ? node.declaration.decorators[node.declaration.decorators.length - 1].end : node.start;
+				s.overwrite(start, node.declaration.id.start, ` class `);
+				s.append(`\nconst ${as} = ${node.declaration.id.name}`);
+			} else s.overwrite(node.start, node.declaration.start, `const ${as} = `);
+		} else if (node.type === "ExportNamedDeclaration") {
 			for (const specifier of node.specifiers) if (specifier.type === "ExportSpecifier" && specifier.exported.type === "Identifier" && specifier.exported.name === "default") {
-				if (node.source) if (specifier.local.name === "default") {
-					s.prepend(`import { default as __VUE_DEFAULT__ } from '${node.source.value}'\n`);
-					const end = specifierEnd(s, specifier.local.end, node.end);
-					s.remove(specifier.start, end);
-					s.append(`\nconst ${as} = __VUE_DEFAULT__`);
-					continue;
-				} else {
-					s.prepend(`import { ${s.slice(specifier.local.start, specifier.local.end)} as __VUE_DEFAULT__ } from '${node.source.value}'\n`);
-					const end = specifierEnd(s, specifier.exported.end, node.end);
-					s.remove(specifier.start, end);
-					s.append(`\nconst ${as} = __VUE_DEFAULT__`);
-					continue;
+				if (node.source) {
+					if (specifier.local.name === "default") {
+						s.prepend(`import { default as __VUE_DEFAULT__ } from '${node.source.value}'\n`);
+						const end = specifierEnd(s, specifier.local.end, node.end);
+						s.remove(specifier.start, end);
+						s.append(`\nconst ${as} = __VUE_DEFAULT__`);
+						continue;
+					} else {
+						s.prepend(`import { ${s.slice(specifier.local.start, specifier.local.end)} as __VUE_DEFAULT__ } from '${node.source.value}'\n`);
+						const end = specifierEnd(s, specifier.exported.end, node.end);
+						s.remove(specifier.start, end);
+						s.append(`\nconst ${as} = __VUE_DEFAULT__`);
+						continue;
+					}
 				}
 				const end = specifierEnd(s, specifier.end, node.end);
 				s.remove(specifier.start, end);
@@ -12687,7 +12970,7 @@ function expand_(str, max, maxLength, isTop) {
 }
 //#endregion
 //#region node_modules/.pnpm/minimatch@10.2.6/node_modules/minimatch/dist/esm/assert-valid-pattern.js
-const MAX_PATTERN_LENGTH = 1024 * 64;
+const MAX_PATTERN_LENGTH = 65536;
 const assertValidPattern = (pattern) => {
 	if (typeof pattern !== "string") throw new TypeError("invalid pattern");
 	if (pattern.length > MAX_PATTERN_LENGTH) throw new TypeError("pattern is too long");
@@ -12798,12 +13081,15 @@ const parseClass = (glob, position) => {
 		glob.length - pos,
 		true
 	];
-	if (negs.length === 0 && ranges.length === 1 && /^\\?.$/.test(ranges[0]) && !negate) return [
-		regexpEscape(ranges[0].length === 2 ? ranges[0].slice(-1) : ranges[0]),
-		false,
-		endPos - pos,
-		false
-	];
+	if (negs.length === 0 && ranges.length === 1 && /^\\?.$/.test(ranges[0]) && !negate) {
+		const r = ranges[0].length === 2 ? ranges[0].slice(-1) : ranges[0];
+		return [
+			regexpEscape(r),
+			false,
+			endPos - pos,
+			false
+		];
+	}
 	const sranges = "[" + (negate ? "^" : "") + rangesToString(ranges) + "]";
 	const snegs = "[" + (negate ? "" : "^") + rangesToString(negs) + "]";
 	return [
@@ -12843,7 +13129,7 @@ const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true } = {}
 var _AST;
 let _Symbol$for;
 var _a;
-const types = new Set([
+const types = /* @__PURE__ */ new Set([
 	"!",
 	"?",
 	"+",
@@ -12852,7 +13138,7 @@ const types = new Set([
 ]);
 const isExtglobType = (c) => types.has(c);
 const isExtglobAST = (c) => isExtglobType(c.type);
-const adoptionMap = new Map([
+const adoptionMap = /* @__PURE__ */ new Map([
 	["!", ["@"]],
 	["?", ["?", "@"]],
 	["@", ["@"]],
@@ -12864,12 +13150,12 @@ const adoptionMap = new Map([
 	]],
 	["+", ["+", "@"]]
 ]);
-const adoptionWithSpaceMap = new Map([
+const adoptionWithSpaceMap = /* @__PURE__ */ new Map([
 	["!", ["?"]],
 	["@", ["?"]],
 	["+", ["?", "*"]]
 ]);
-const adoptionAnyMap = new Map([
+const adoptionAnyMap = /* @__PURE__ */ new Map([
 	["!", ["?", "@"]],
 	["?", ["?", "@"]],
 	["@", ["?", "@"]],
@@ -12886,27 +13172,27 @@ const adoptionAnyMap = new Map([
 		"*"
 	]]
 ]);
-const usurpMap = new Map([
-	["!", new Map([["!", "@"]])],
-	["?", new Map([["*", "*"], ["+", "*"]])],
-	["@", new Map([
+const usurpMap = /* @__PURE__ */ new Map([
+	["!", /* @__PURE__ */ new Map([["!", "@"]])],
+	["?", /* @__PURE__ */ new Map([["*", "*"], ["+", "*"]])],
+	["@", /* @__PURE__ */ new Map([
 		["!", "!"],
 		["?", "?"],
 		["@", "@"],
 		["*", "*"],
 		["+", "+"]
 	])],
-	["+", new Map([["?", "*"], ["*", "*"]])]
+	["+", /* @__PURE__ */ new Map([["?", "*"], ["*", "*"]])]
 ]);
 const startNoTraversal = "(?!(?:^|/)\\.\\.?(?:$|/))";
 const startNoDot = "(?!\\.)";
-const addPatternStart = new Set(["[", "."]);
-const justDots = new Set(["..", "."]);
+const addPatternStart = /* @__PURE__ */ new Set(["[", "."]);
+const justDots = /* @__PURE__ */ new Set(["..", "."]);
 const reSpecials = /* @__PURE__ */ new Set("().*{}+?[]^$\\!");
 const regExpEscape$1 = (s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 const qmark = "[^/]";
-const star$1 = qmark + "*?";
-const starNoEmpty = qmark + "+?";
+const star$1 = "[^/]*?";
+const starNoEmpty = "[^/]+?";
 let ID = 0;
 var _root = /* @__PURE__ */ new WeakMap();
 var _hasMagic2 = /* @__PURE__ */ new WeakMap();
@@ -12941,6 +13227,7 @@ var AST = class AST {
 	}
 	constructor(type, parent, options = {}) {
 		_classPrivateMethodInitSpec(this, _AST_brand);
+		_defineProperty(this, "type", void 0);
 		_classPrivateFieldInitSpec(this, _root, void 0);
 		_classPrivateFieldInitSpec(this, _hasMagic2, void 0);
 		_classPrivateFieldInitSpec(this, _uflag, false);
@@ -12952,7 +13239,7 @@ var AST = class AST {
 		_classPrivateFieldInitSpec(this, _options, void 0);
 		_classPrivateFieldInitSpec(this, _toString, void 0);
 		_classPrivateFieldInitSpec(this, _emptyExt, false);
-		this.id = ++ID;
+		_defineProperty(this, "id", ++ID);
 		this.type = type;
 		if (type) _classPrivateFieldSet2(_hasMagic2, this, true);
 		_classPrivateFieldSet2(_parent, this, parent);
@@ -13101,7 +13388,7 @@ var AST = class AST {
 		let final = "";
 		if (this.type === "!" && _classPrivateFieldGet2(_emptyExt, this)) final = (this.isStart() && !dot ? startNoDot : "") + starNoEmpty;
 		else {
-			const close = this.type === "!" ? "))" + (this.isStart() && !dot && !allowDot ? startNoDot : "") + star$1 + ")" : this.type === "@" ? ")" : this.type === "?" ? ")?" : this.type === "+" && bodyDotAllowed ? ")" : this.type === "*" && bodyDotAllowed ? `)?` : `)${this.type}`;
+			const close = this.type === "!" ? "))" + (this.isStart() && !dot && !allowDot ? startNoDot : "") + "[^/]*?)" : this.type === "@" ? ")" : this.type === "?" ? ")?" : this.type === "+" && bodyDotAllowed ? ")" : this.type === "*" && bodyDotAllowed ? `)?` : `)${this.type}`;
 			final = start + body + close;
 		}
 		return [
@@ -13517,6 +13804,24 @@ var Minimatch = class {
 	constructor(pattern, options = {}) {
 		var _options$maxGlobstarR;
 		_classPrivateMethodInitSpec(this, _Minimatch_brand);
+		_defineProperty(this, "options", void 0);
+		_defineProperty(this, "set", void 0);
+		_defineProperty(this, "pattern", void 0);
+		_defineProperty(this, "windowsPathsNoEscape", void 0);
+		_defineProperty(this, "nonegate", void 0);
+		_defineProperty(this, "negate", void 0);
+		_defineProperty(this, "comment", void 0);
+		_defineProperty(this, "empty", void 0);
+		_defineProperty(this, "preserveMultipleSlashes", void 0);
+		_defineProperty(this, "partial", void 0);
+		_defineProperty(this, "globSet", void 0);
+		_defineProperty(this, "globParts", void 0);
+		_defineProperty(this, "nocase", void 0);
+		_defineProperty(this, "isWindows", void 0);
+		_defineProperty(this, "platform", void 0);
+		_defineProperty(this, "windowsNoMagicRoot", void 0);
+		_defineProperty(this, "maxGlobstarRecursion", void 0);
+		_defineProperty(this, "regexp", void 0);
 		assertValidPattern(pattern);
 		options = options || {};
 		this.options = options;
@@ -13821,9 +14126,10 @@ var Minimatch = class {
 				const next = pp[i + 1];
 				const prev = pp[i - 1];
 				if (p !== GLOBSTAR || prev === GLOBSTAR) return;
-				if (prev === void 0) if (next !== void 0 && next !== GLOBSTAR) pp[i + 1] = "(?:\\/|" + twoStar + "\\/)?" + next;
-				else pp[i] = twoStar;
-				else if (next === void 0) pp[i - 1] = prev + "(?:\\/|\\/" + twoStar + ")?";
+				if (prev === void 0) {
+					if (next !== void 0 && next !== GLOBSTAR) pp[i + 1] = "(?:\\/|" + twoStar + "\\/)?" + next;
+					else pp[i] = twoStar;
+				} else if (next === void 0) pp[i - 1] = prev + "(?:\\/|\\/" + twoStar + ")?";
 				else if (next !== GLOBSTAR) {
 					pp[i - 1] = prev + "(?:\\/|\\/" + twoStar + "\\/)" + next;
 					pp[i + 1] = GLOBSTAR;
@@ -14084,12 +14390,10 @@ function innerResolveTypeElements(ctx, node, scope, typeParameters) {
 			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope);
 			break;
 		}
-		case "TSTypeQuery":
-			{
-				const resolved = resolveTypeReference(ctx, node, scope);
-				if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope);
-			}
-			break;
+		case "TSTypeQuery": {
+			const resolved = resolveTypeReference(ctx, node, scope);
+			if (resolved) return resolveTypeElements(ctx, resolved, resolved._ownerScope);
+		}
 	}
 	return ctx.error(`Unresolvable type: ${node.type}`, node, scope);
 }
@@ -14193,10 +14497,12 @@ function resolveIndexType(ctx, node, scope) {
 function resolveArrayElementType(ctx, node, scope) {
 	if (node.type === "TSArrayType") return [node.elementType];
 	if (node.type === "TSTupleType") return node.elementTypes.map((t) => t.type === "TSNamedTupleMember" ? t.elementType : t);
-	if (node.type === "TSTypeReference") if (getReferenceName(node) === "Array" && node.typeParameters) return node.typeParameters.params;
-	else {
-		const resolved = resolveTypeReference(ctx, node, scope);
-		if (resolved) return resolveArrayElementType(ctx, resolved, scope);
+	if (node.type === "TSTypeReference") {
+		if (getReferenceName(node) === "Array" && node.typeParameters) return node.typeParameters.params;
+		else {
+			const resolved = resolveTypeReference(ctx, node, scope);
+			if (resolved) return resolveArrayElementType(ctx, resolved, scope);
+		}
 	}
 	return ctx.error("Failed to resolve element type from target type", node, scope);
 }
@@ -14245,7 +14551,7 @@ function resolveTemplateKeys(ctx, node, scope) {
 	for (const r of resolved) for (const rr of restResolved) res.push(leading + r + rr);
 	return res;
 }
-const SupportedBuiltinsSet = new Set([
+const SupportedBuiltinsSet = /* @__PURE__ */ new Set([
 	"Partial",
 	"Required",
 	"Readonly",
@@ -14317,24 +14623,25 @@ function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 	return resolved;
 }
 function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
-	if (typeof name === "string") if (scope.imports[name]) return resolveTypeFromImport(ctx, node, name, scope);
-	else {
-		const lookupSource = node.type === "TSTypeQuery" ? onlyExported ? scope.exportedDeclares : scope.declares : onlyExported ? scope.exportedTypes : scope.types;
-		if (lookupSource[name]) return lookupSource[name];
+	if (typeof name === "string") {
+		if (scope.imports[name]) return resolveTypeFromImport(ctx, node, name, scope);
 		else {
-			const globalScopes = resolveGlobalScope(ctx);
-			if (globalScopes) for (const s of globalScopes) {
-				const src = node.type === "TSTypeQuery" ? s.declares : s.types;
-				if (src[name]) {
-					(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(s.filename);
-					const resolved = src[name];
-					if (resolved._ownerScope && resolved._ownerScope !== s) ctx.deps.add(resolved._ownerScope.filename);
-					return resolved;
+			const lookupSource = node.type === "TSTypeQuery" ? onlyExported ? scope.exportedDeclares : scope.declares : onlyExported ? scope.exportedTypes : scope.types;
+			if (lookupSource[name]) return lookupSource[name];
+			else {
+				const globalScopes = resolveGlobalScope(ctx);
+				if (globalScopes) for (const s of globalScopes) {
+					const src = node.type === "TSTypeQuery" ? s.declares : s.types;
+					if (src[name]) {
+						(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(s.filename);
+						const resolved = src[name];
+						if (resolved._ownerScope && resolved._ownerScope !== s) ctx.deps.add(resolved._ownerScope.filename);
+						return resolved;
+					}
 				}
 			}
 		}
-	}
-	else {
+	} else {
 		let ns = innerResolveTypeReference(ctx, scope, name[0], node, onlyExported);
 		if (ns) {
 			if (ns.type !== "TSModuleDeclaration") ns = ns._ns;
@@ -14442,6 +14749,7 @@ function resolveExt(filename, fs) {
 }
 const tsConfigCache = createCache();
 const tsConfigRefMap = /* @__PURE__ */ new Map();
+const extendedConfigCache = /* @__PURE__ */ new Map();
 function resolveWithTS(containingFile, source, ts, fs) {
 	const configPath = ts.findConfigFile(containingFile, fs.fileExists);
 	let tsCompilerOptions;
@@ -14487,7 +14795,7 @@ function resolveWithTS(containingFile, source, ts, fs) {
 }
 function loadTSConfig(configPath, ts, fs, visited = /* @__PURE__ */ new Set()) {
 	const parseConfigHost = ts.sys;
-	const config = ts.parseJsonConfigFileContent(ts.readConfigFile(configPath, fs.readFile).config, parseConfigHost, (0, path.dirname)(configPath), void 0, configPath);
+	const config = ts.parseJsonConfigFileContent(ts.readConfigFile(configPath, fs.readFile).config, parseConfigHost, (0, path.dirname)(configPath), void 0, configPath, void 0, void 0, extendedConfigCache);
 	const res = [config];
 	visited.add(configPath);
 	if (config.projectReferences) for (const ref of config.projectReferences) {
@@ -14508,6 +14816,10 @@ function invalidateTypeCache(filename) {
 	fileToScopeCache.delete(filename);
 	fileToGlobalScopeCache.delete(filename);
 	tsConfigCache.delete(filename);
+	if (filename.endsWith(".json")) {
+		extendedConfigCache.clear();
+		tsConfigCache.clear();
+	}
 	const affectedConfig = tsConfigRefMap.get(filename);
 	if (affectedConfig) tsConfigCache.delete(affectedConfig);
 }
@@ -14676,24 +14988,23 @@ function recordType(node, types, declares, overwriteId) {
 		case "TSDeclareFunction":
 			if (node.id) declares[node.id.name] = node;
 			break;
-		case "VariableDeclaration":
-			if (node.declare) {
-				for (const decl of node.declarations) if (decl.id.type === "Identifier" && decl.id.typeAnnotation) declares[decl.id.name] = decl.id.typeAnnotation.typeAnnotation;
-			}
-			break;
+		case "VariableDeclaration": if (node.declare) {
+			for (const decl of node.declarations) if (decl.id.type === "Identifier" && decl.id.typeAnnotation) declares[decl.id.name] = decl.id.typeAnnotation.typeAnnotation;
+		}
 	}
 }
 function mergeNamespaces(to, from) {
 	const toBody = to.body;
 	const fromBody = from.body;
-	if (toBody.type === "TSModuleDeclaration") if (fromBody.type === "TSModuleDeclaration") mergeNamespaces(toBody, fromBody);
-	else fromBody.body.push({
-		type: "ExportNamedDeclaration",
-		declaration: toBody,
-		exportKind: "type",
-		specifiers: []
-	});
-	else if (fromBody.type === "TSModuleDeclaration") toBody.body.push({
+	if (toBody.type === "TSModuleDeclaration") {
+		if (fromBody.type === "TSModuleDeclaration") mergeNamespaces(toBody, fromBody);
+		else fromBody.body.push({
+			type: "ExportNamedDeclaration",
+			declaration: toBody,
+			exportKind: "type",
+			specifiers: []
+		});
+	} else if (fromBody.type === "TSModuleDeclaration") toBody.body.push({
 		type: "ExportNamedDeclaration",
 		declaration: fromBody,
 		exportKind: "type",
@@ -14732,16 +15043,17 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 			case "TSInterfaceDeclaration": {
 				const types = /* @__PURE__ */ new Set();
 				const members = node.type === "TSTypeLiteral" ? node.members : node.body.body;
-				for (const m of members) if (isKeyOf) if (m.type === "TSPropertySignature" && m.key.type === "NumericLiteral") types.add("Number");
-				else if (m.type === "TSIndexSignature") {
-					const annotation = m.parameters[0].typeAnnotation;
-					if (annotation && annotation.type !== "Noop") {
-						const type = inferRuntimeType(ctx, annotation.typeAnnotation, scope)[0];
-						if (type === "Unknown") return [UNKNOWN_TYPE];
-						types.add(type);
-					}
-				} else types.add("String");
-				else if (m.type === "TSCallSignatureDeclaration" || m.type === "TSConstructSignatureDeclaration") types.add("Function");
+				for (const m of members) if (isKeyOf) {
+					if (m.type === "TSPropertySignature" && m.key.type === "NumericLiteral") types.add("Number");
+					else if (m.type === "TSIndexSignature") {
+						const annotation = m.parameters[0].typeAnnotation;
+						if (annotation && annotation.type !== "Noop") {
+							const type = inferRuntimeType(ctx, annotation.typeAnnotation, scope)[0];
+							if (type === "Unknown") return [UNKNOWN_TYPE];
+							types.add(type);
+						}
+					} else types.add("String");
+				} else if (m.type === "TSCallSignatureDeclaration" || m.type === "TSConstructSignatureDeclaration") types.add("Function");
 				else types.add("Object");
 				return types.size ? Array.from(types) : [isKeyOf ? UNKNOWN_TYPE : "Object"];
 			}
@@ -14845,7 +15157,7 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 						case "WritableComputedRef": return ["Object"];
 						case "MaybeRef":
 						case "MaybeRefOrGetter": {
-							const types = new Set(["Object"]);
+							const types = /* @__PURE__ */ new Set(["Object"]);
 							if (node.typeName.name === "MaybeRefOrGetter") types.add("Function");
 							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope, false, typeParameters)) types.add(t);
 							return Array.from(types);
@@ -14857,9 +15169,7 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 							if (node.typeParameters && node.typeParameters.params[1]) return inferRuntimeType(ctx, node.typeParameters.params[1], scope);
 							break;
 						case "Exclude":
-						case "OmitThisParameter":
-							if (node.typeParameters && node.typeParameters.params[0]) return inferRuntimeType(ctx, node.typeParameters.params[0], scope);
-							break;
+						case "OmitThisParameter": if (node.typeParameters && node.typeParameters.params[0]) return inferRuntimeType(ctx, node.typeParameters.params[0], scope);
 					}
 				}
 				break;
@@ -14901,13 +15211,11 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				break;
 			}
 			case "TSTypeOperator": return inferRuntimeType(ctx, node.typeAnnotation, scope, node.operator === "keyof");
-			case "TSAnyKeyword":
-				if (isKeyOf) return [
-					"String",
-					"Number",
-					"Symbol"
-				];
-				break;
+			case "TSAnyKeyword": if (isKeyOf) return [
+				"String",
+				"Number",
+				"Symbol"
+			];
 		}
 	} catch (e) {} finally {
 		ctx.silentOnExtendsFailure = prevSilent;
@@ -14924,9 +15232,7 @@ function inferEnumType(node) {
 		case "StringLiteral":
 			types.add("String");
 			break;
-		case "NumericLiteral":
-			types.add("Number");
-			break;
+		case "NumericLiteral": types.add("Number");
 	}
 	return types.size ? [...types] : ["Number"];
 }
@@ -15070,10 +15376,12 @@ function genModelProps(ctx) {
 		if (runtimeTypes) {
 			const hasBoolean = runtimeTypes.includes("Boolean");
 			const hasFunction = runtimeTypes.includes("Function");
-			if (runtimeTypes.includes("Unknown")) if (hasBoolean || hasFunction) {
-				runtimeTypes = runtimeTypes.filter((t) => t !== UNKNOWN_TYPE);
-				skipCheck = true;
-			} else runtimeTypes = ["null"];
+			if (runtimeTypes.includes("Unknown")) {
+				if (hasBoolean || hasFunction) {
+					runtimeTypes = runtimeTypes.filter((t) => t !== UNKNOWN_TYPE);
+					skipCheck = true;
+				} else runtimeTypes = ["null"];
+			}
 			if (!isProd) codegenOptions = `type: ${toRuntimeTypeString(runtimeTypes)}` + (skipCheck ? ", skipCheck: true" : "");
 			else if (hasBoolean || runtimeOptions && hasFunction) codegenOptions = `type: ${toRuntimeTypeString(runtimeTypes)}`;
 		}
@@ -15159,10 +15467,12 @@ function resolveRuntimePropsFromType(ctx, node) {
 		const e = elements.props[key];
 		let type = inferRuntimeType(ctx, e);
 		let skipCheck = false;
-		if (type.includes("Unknown")) if (type.includes("Boolean") || type.includes("Function")) {
-			type = type.filter((t) => t !== UNKNOWN_TYPE);
-			skipCheck = true;
-		} else type = ["null"];
+		if (type.includes("Unknown")) {
+			if (type.includes("Boolean") || type.includes("Function")) {
+				type = type.filter((t) => t !== UNKNOWN_TYPE);
+				skipCheck = true;
+			} else type = ["null"];
+		}
 		props.push({
 			key,
 			required: !e.optional,
@@ -15181,18 +15491,20 @@ function genRuntimePropFromType(ctx, { key, required, type, skipCheck }, hasStat
 			if (node.type === "SpreadElement") return false;
 			return resolveObjectKey(node.key, node.computed) === key;
 		});
-		if (prop) if (prop.type === "ObjectProperty") defaultString = `default: ${ctx.getString(prop.value)}`;
-		else {
-			let paramsString = "";
-			if (prop.params.length) {
-				const start = prop.params[0].start;
-				const end = prop.params[prop.params.length - 1].end;
-				paramsString = ctx.getString({
-					start,
-					end
-				});
+		if (prop) {
+			if (prop.type === "ObjectProperty") defaultString = `default: ${ctx.getString(prop.value)}`;
+			else {
+				let paramsString = "";
+				if (prop.params.length) {
+					const start = prop.params[0].start;
+					const end = prop.params[prop.params.length - 1].end;
+					paramsString = ctx.getString({
+						start,
+						end
+					});
+				}
+				defaultString = `${prop.async ? "async " : ""}${prop.kind !== "method" ? `${prop.kind} ` : ""}default(${paramsString}) ${ctx.getString(prop.body)}`;
 			}
-			defaultString = `${prop.async ? "async " : ""}${prop.kind !== "method" ? `${prop.kind} ` : ""}default(${paramsString}) ${ctx.getString(prop.body)}`;
 		}
 	}
 	const finalKey = getEscapedPropName(key);
@@ -15204,8 +15516,10 @@ function genRuntimePropFromType(ctx, { key, required, type, skipCheck }, hasStat
 	])} }`;
 	else if (type.some((el) => el === "Boolean" || (!hasStaticDefaults || defaultString) && el === "Function")) return `${finalKey}: { ${concatStrings([`type: ${toRuntimeTypeString(type)}`, defaultString])} }`;
 	else {
-		if (ctx.isCE) if (defaultString) return `${finalKey}: ${`{ ${defaultString}, type: ${toRuntimeTypeString(type)} }`}`;
-		else return `${finalKey}: {type: ${toRuntimeTypeString(type)}}`;
+		if (ctx.isCE) {
+			if (defaultString) return `${finalKey}: ${`{ ${defaultString}, type: ${toRuntimeTypeString(type)} }`}`;
+			else return `${finalKey}: {type: ${toRuntimeTypeString(type)}}`;
+		}
 		return `${finalKey}: ${defaultString ? `{ ${defaultString} }` : `{}`}`;
 	}
 }
@@ -15522,7 +15836,6 @@ function processDefineOptions(ctx, node) {
 						if (binding && !binding.isType && isUniModuleImportSource(binding.source)) ctx.rootElementFromUniModule = true;
 					}
 				}
-				break;
 		}
 	}
 	if (ctx.rootElementTagName) {
@@ -15705,9 +16018,10 @@ function compileScript(sfc, options) {
 				if (local === imported) warnOnce(`\`${imported}\` is a compiler macro and no longer needs to be imported.`);
 				else ctx.error(`\`${imported}\` is a compiler macro and cannot be aliased to a different name.`, specifier);
 				removeSpecifier(i);
-			} else if (existing) if (existing.source === source && existing.imported === imported) removeSpecifier(i);
-			else ctx.error(`different imports aliased to same local name.`, specifier);
-			else registerUserImport(source, local, imported, node.importKind === "type" || specifier.type === "ImportSpecifier" && specifier.importKind === "type", true, !inlineMode);
+			} else if (existing) {
+				if (existing.source === source && existing.imported === imported) removeSpecifier(i);
+				else ctx.error(`different imports aliased to same local name.`, specifier);
+			} else registerUserImport(source, local, imported, node.importKind === "type" || specifier.type === "ImportSpecifier" && specifier.importKind === "type", true, !inlineMode);
 		}
 		if (node.specifiers.length && removed === node.specifiers.length) ctx.s.remove(node.start + startOffset, node.end + startOffset);
 	}
@@ -15767,18 +16081,20 @@ function compileScript(sfc, options) {
 					if (ctx.propsDestructureRestId) setupBindings[ctx.propsDestructureRestId] = "setup-reactive-const";
 					const isDefineEmits = !isDefineProps && processDefineEmits(ctx, init, decl.id);
 					!isDefineEmits && (processDefineSlots(ctx, init, decl.id) || processDefineModel(ctx, init, decl.id));
-					if (isDefineProps && !ctx.propsDestructureRestId && ctx.propsDestructureDecl) if (left === 1) ctx.s.remove(node.start + startOffset, node.end + startOffset);
-					else {
-						let start = decl.start + startOffset;
-						let end = decl.end + startOffset;
-						if (i === total - 1) start = node.declarations[lastNonRemoved].end + startOffset;
-						else end = node.declarations[i + 1].start + startOffset;
-						ctx.s.remove(start, end);
-						left--;
-					}
-					else if (isDefineEmits) if (options.className && init.type === "CallExpression") ctx.s.overwrite(startOffset + init.callee.start, startOffset + init.callee.end, ctx.helper("defineEmits"));
-					else ctx.s.overwrite(startOffset + init.start, startOffset + init.end, "__emit");
-					else lastNonRemoved = i;
+					if (isDefineProps && !ctx.propsDestructureRestId && ctx.propsDestructureDecl) {
+						if (left === 1) ctx.s.remove(node.start + startOffset, node.end + startOffset);
+						else {
+							let start = decl.start + startOffset;
+							let end = decl.end + startOffset;
+							if (i === total - 1) start = node.declarations[lastNonRemoved].end + startOffset;
+							else end = node.declarations[i + 1].start + startOffset;
+							ctx.s.remove(start, end);
+							left--;
+						}
+					} else if (isDefineEmits) {
+						if (options.className && init.type === "CallExpression") ctx.s.overwrite(startOffset + init.callee.start, startOffset + init.callee.end, ctx.helper("defineEmits"));
+						else ctx.s.overwrite(startOffset + init.start, startOffset + init.end, "__emit");
+					} else lastNonRemoved = i;
 				}
 			}
 		}
@@ -15791,15 +16107,17 @@ function compileScript(sfc, options) {
 				enter(child, parent) {
 					if ((0, _vue_compiler_dom.isFunctionType)(child)) this.skip();
 					if (child.type === "BlockStatement") scope.push(child.body);
+					else if (child.type === "SwitchCase") scope.push(child.consequent);
 					if (child.type === "AwaitExpression") {
 						hasAwait = true;
-						processAwait(ctx, child, scope[scope.length - 1].some((n, i) => {
+						const needsSemi = scope[scope.length - 1].some((n, i) => {
 							return (scope.length === 1 || i > 0) && n.type === "ExpressionStatement" && n.start === child.start;
-						}), parent.type === "ExpressionStatement");
+						});
+						processAwait(ctx, child, needsSemi, parent.type === "ExpressionStatement");
 					}
 				},
-				exit(node) {
-					if (node.type === "BlockStatement") scope.pop();
+				leave(node) {
+					if (node.type === "BlockStatement" || node.type === "SwitchCase") scope.pop();
 				}
 			});
 		}
@@ -15817,16 +16135,17 @@ function compileScript(sfc, options) {
 	checkInvalidScopeReference(ctx.emitsRuntimeDecl, DEFINE_EMITS);
 	checkInvalidScopeReference(ctx.optionsRuntimeDecl, DEFINE_OPTIONS);
 	for (const { runtimeOptionNodes } of Object.values(ctx.modelDecls)) for (const node of runtimeOptionNodes) checkInvalidScopeReference(node, DEFINE_MODEL);
-	if (script) if (startOffset < scriptStartOffset) {
-		ctx.s.remove(0, startOffset);
-		ctx.s.remove(endOffset, scriptStartOffset);
-		ctx.s.remove(scriptEndOffset, source.length);
+	if (script) {
+		if (startOffset < scriptStartOffset) {
+			ctx.s.remove(0, startOffset);
+			ctx.s.remove(endOffset, scriptStartOffset);
+			ctx.s.remove(scriptEndOffset, source.length);
+		} else {
+			ctx.s.remove(0, scriptStartOffset);
+			ctx.s.remove(scriptEndOffset, startOffset);
+			ctx.s.remove(endOffset, source.length);
+		}
 	} else {
-		ctx.s.remove(0, scriptStartOffset);
-		ctx.s.remove(scriptEndOffset, startOffset);
-		ctx.s.remove(endOffset, source.length);
-	}
-	else {
 		ctx.s.remove(0, startOffset);
 		ctx.s.remove(endOffset, source.length);
 	}
@@ -15949,15 +16268,17 @@ function compileScript(sfc, options) {
 		const err = errors[0];
 		if (typeof err === "string") throw new Error(err);
 		else if (err) {
-			if (err.loc) if (onVueTemplateCompileLog) err.customPrint = () => {
-				onVueTemplateCompileLog("error", err);
-			};
-			else err.message += `\n\n` + sfc.filename + "\n" + (0, _vue_shared.generateCodeFrame)(source, err.loc.start.offset, err.loc.end.offset) + `\n`;
+			if (err.loc) {
+				if (onVueTemplateCompileLog) err.customPrint = () => {
+					onVueTemplateCompileLog("error", err);
+				};
+				else err.message += `\n\n` + sfc.filename + "\n" + (0, _vue_shared.generateCodeFrame)(source, err.loc.start.offset, err.loc.end.offset) + `\n`;
+			}
 			throw err;
 		}
 		if (preamble) ctx.s.prepend(preamble);
 		if (helpers && (helpers.has(_vue_compiler_dom.UNREF) || helpers.has("unref"))) ctx.helperImports.delete("unref");
-		returned = code;
+		returned = vapor && !ssr && hasAwait ? `return () => {${code}}` : code;
 	} else returned = `() => {}`;
 	if (!inlineMode && true) ctx.s.appendRight(endOffset, `\nconst __returned__ = ${returned}\nObject.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\nreturn __returned__\n}\n\n`);
 	else ctx.s.appendRight(endOffset, `\n${vapor && !ssr ? `` : `return `}${returned}\n}\n\n`);
@@ -16005,7 +16326,8 @@ function compileScript(sfc, options) {
 	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
 	if (!ctx.hasDefineExposeCall && !inlineMode) setupPreambleLines.push(`__expose();`);
 	const setupPreamble = setupPreambleLines.length ? `  ${setupPreambleLines.join("\n  ")}\n` : "";
-	if (ctx.isTS || ctx.isUTS) {
+	const wrapVaporJS = (scriptLang === "js" || scriptSetupLang === "js") && vapor && !ssr;
+	if (ctx.isTS || ctx.isUTS || wrapVaporJS) {
 		if (ssr && vapor) runtimeOptions += `\n  __vapor: true,`;
 		const def = (defaultExport ? `\n  ...${normalScriptDefaultVar},` : ``) + (definedOptions ? `\n  ...${definedOptions},` : "");
 		ctx.s.prependLeft(startOffset, `\n${genDefaultAs} /*@__PURE__*/${ctx.helper(vapor && !ssr ? `defineVaporSharedDataComponent` : `defineComponent`)}({${def}${runtimeOptions}\n  ${hasAwait ? `async ` : ``}setup(${args}) {\n${setupPreamble}`);
@@ -16065,9 +16387,10 @@ function walkDeclaration(from, node, bindings, userImportAliases, hoistStatic, i
 				if ((hoistStatic || from === "script") && (isAllLiteral || isConst && (0, _vue_compiler_dom.isStaticNode)(init))) bindingType = "literal-const";
 				else if (isCallOf(init, userReactiveBinding)) bindingType = isConst ? "setup-reactive-const" : "setup-let";
 				else if (isConstMacroCall || isConst && canNeverBeRef(init, userReactiveBinding)) bindingType = isCallOf(init, "defineProps") ? "setup-reactive-const" : "setup-const";
-				else if (isConst) if (isCallOf(init, (m) => m === userImportAliases["ref"] || m === userImportAliases["computed"] || m === userImportAliases["shallowRef"] || m === userImportAliases["customRef"] || m === userImportAliases["toRef"] || m === userImportAliases["useTemplateRef"] || m === "defineModel")) bindingType = "setup-ref";
-				else bindingType = "setup-maybe-ref";
-				else bindingType = "setup-let";
+				else if (isConst) {
+					if (isCallOf(init, (m) => m === userImportAliases["ref"] || m === userImportAliases["computed"] || m === userImportAliases["shallowRef"] || m === userImportAliases["customRef"] || m === userImportAliases["toRef"] || m === userImportAliases["useTemplateRef"] || m === "defineModel")) bindingType = "setup-ref";
+					else bindingType = "setup-maybe-ref";
+				} else bindingType = "setup-let";
 				registerBinding(bindings, id, bindingType);
 			} else {
 				if (isCallOf(init, "defineProps") && isPropsDestructureEnabled) continue;
@@ -16082,11 +16405,12 @@ function walkDeclaration(from, node, bindings, userImportAliases, hoistStatic, i
 	return isAllLiteral;
 }
 function walkObjectPattern(node, bindings, isConst, isDefineCall = false) {
-	for (const p of node.properties) if (p.type === "ObjectProperty") if (p.key.type === "Identifier" && p.key === p.value) {
-		const type = isDefineCall ? "setup-const" : isConst ? "setup-maybe-ref" : "setup-let";
-		registerBinding(bindings, p.key, type);
-	} else walkPattern(p.value, bindings, isConst, isDefineCall);
-	else {
+	for (const p of node.properties) if (p.type === "ObjectProperty") {
+		if (p.key.type === "Identifier" && p.key === p.value) {
+			const type = isDefineCall ? "setup-const" : isConst ? "setup-maybe-ref" : "setup-let";
+			registerBinding(bindings, p.key, type);
+		} else walkPattern(p.value, bindings, isConst, isDefineCall);
+	} else {
 		const type = isConst ? "setup-const" : "setup-let";
 		registerBinding(bindings, p.argument, type);
 	}
@@ -16101,10 +16425,12 @@ function walkPattern(node, bindings, isConst, isDefineCall = false) {
 		registerBinding(bindings, node.argument, type);
 	} else if (node.type === "ObjectPattern") walkObjectPattern(node, bindings, isConst);
 	else if (node.type === "ArrayPattern") walkArrayPattern(node, bindings, isConst);
-	else if (node.type === "AssignmentPattern") if (node.left.type === "Identifier") {
-		const type = isDefineCall ? "setup-const" : isConst ? "setup-maybe-ref" : "setup-let";
-		registerBinding(bindings, node.left, type);
-	} else walkPattern(node.left, bindings, isConst);
+	else if (node.type === "AssignmentPattern") {
+		if (node.left.type === "Identifier") {
+			const type = isDefineCall ? "setup-const" : isConst ? "setup-maybe-ref" : "setup-let";
+			registerBinding(bindings, node.left, type);
+		} else walkPattern(node.left, bindings, isConst);
+	}
 }
 function canNeverBeRef(node, userReactiveImport) {
 	if (isCallOf(node, userReactiveImport)) return true;
@@ -16157,7 +16483,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-rc.4";
+const version = "3.6.0-rc.9";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

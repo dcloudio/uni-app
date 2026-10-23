@@ -46,6 +46,15 @@ export const resolveMainPathOnce = once((inputDir: string) => {
   if (fs.existsSync(mainTsPath)) {
     return normalizePath(mainTsPath)
   }
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+    process.env.UNI_APP_X_DOM2 !== 'true'
+  ) {
+    throw new Error(
+      'uni-app x Android VDOM 模式仅支持 main.uts 或 main.ts 入口文件'
+    )
+  }
   return normalizePath(path.resolve(inputDir, 'main.js'))
 })
 

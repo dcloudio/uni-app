@@ -7,6 +7,7 @@ import { M } from './messages'
 import { EXTNAME_VUE_RE } from './constants'
 import { encodeBase64Url } from './url'
 import { isUniAppXAndroidNative } from './x'
+import { resolveHBuilderXPluginPath } from './hbx/pluginPaths'
 
 function genEncryptEasyComModuleIndex(
   pluginId: string,
@@ -566,7 +567,7 @@ export async function checkEncryptUniModules(
     }
     return {}
   }
-  if (!process.env.UNI_HBUILDERX_PLUGINS) {
+  if (!resolveHBuilderXPluginPath('uni_helpers')) {
     if (isHarmonySplitCompile) {
       refreshEncryptUniModules(params.platform, inputDir)
     }

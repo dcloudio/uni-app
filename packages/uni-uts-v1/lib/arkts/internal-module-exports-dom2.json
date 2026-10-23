@@ -502,6 +502,9 @@
       "ConnectSocketSuccess"
     ],
     [
+      "Convert2AbsFullPath"
+    ],
+    [
       "CopyFileOptions"
     ],
     [
@@ -1120,6 +1123,24 @@
       "HideToast"
     ],
     [
+      "HideToastCompleteCallback"
+    ],
+    [
+      "HideToastFail"
+    ],
+    [
+      "HideToastFailCallback"
+    ],
+    [
+      "HideToastOptions"
+    ],
+    [
+      "HideToastSuccess"
+    ],
+    [
+      "HideToastSuccessCallback"
+    ],
+    [
       "IAccelerometerError"
     ],
     [
@@ -1364,6 +1385,12 @@
     ],
     [
       "LoadFontFaceSuccessCallback"
+    ],
+    [
+      "LoadUasm"
+    ],
+    [
+      "LoadUasmSync"
     ],
     [
       "LoadingPage"
@@ -2846,6 +2873,9 @@
     ],
     [
       "UnzipFileOptions"
+    ],
+    [
+      "UnzipSyncOptions"
     ],
     [
       "UploadFile"

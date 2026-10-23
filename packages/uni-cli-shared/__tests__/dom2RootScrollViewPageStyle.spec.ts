@@ -35,6 +35,7 @@ describe('dom2 root scroll-view page style', () => {
               androidOverscroll: false,
               androidRefresherColor: '',
               backgroundColor: '',
+              backgroundTextStyle: 'dark',
             },
           },
         ],
@@ -50,6 +51,7 @@ describe('dom2 root scroll-view page style', () => {
       androidOverscroll: false,
       androidRefresherColor: '',
       backgroundColor: '',
+      backgroundTextStyle: 'dark',
     })
   })
 
@@ -62,6 +64,7 @@ describe('dom2 root scroll-view page style', () => {
             style: {
               bounces: false,
               backgroundColor: '#ffffff',
+              backgroundTextStyle: 'light',
             },
           },
         ],
@@ -71,6 +74,7 @@ describe('dom2 root scroll-view page style', () => {
           androidOverscroll: true,
           androidRefresherColor: '#007aff',
           backgroundColor: '#f8f8f8',
+          backgroundTextStyle: 'dark',
         },
       })
     )
@@ -83,6 +87,7 @@ describe('dom2 root scroll-view page style', () => {
       androidOverscroll: true,
       androidRefresherColor: '#007aff',
       backgroundColor: '#ffffff',
+      backgroundTextStyle: 'light',
     })
   })
 
@@ -98,6 +103,7 @@ describe('dom2 root scroll-view page style', () => {
         globalStyle: {
           androidRefresherColor: '@refresherColor',
           backgroundColor: '@backgroundColor',
+          backgroundTextStyle: '@backgroundTextStyle',
         },
       })
     )
@@ -107,6 +113,7 @@ describe('dom2 root scroll-view page style', () => {
     )
     expect(globalThemeOptions?.androidRefresherColor).toBeUndefined()
     expect(globalThemeOptions?.backgroundColor).toBeUndefined()
+    expect(globalThemeOptions?.backgroundTextStyle).toBeUndefined()
 
     normalizeUniAppXAppPagesJson(
       JSON.stringify({
@@ -116,6 +123,7 @@ describe('dom2 root scroll-view page style', () => {
             style: {
               androidRefresherColor: '@pageRefresherColor',
               backgroundColor: '@pageBackgroundColor',
+              backgroundTextStyle: '@pageBackgroundTextStyle',
             },
           },
         ],
@@ -131,5 +139,6 @@ describe('dom2 root scroll-view page style', () => {
     )
     expect(pageThemeOptions?.androidRefresherColor).toBeUndefined()
     expect(pageThemeOptions?.backgroundColor).toBeUndefined()
+    expect(pageThemeOptions?.backgroundTextStyle).toBeUndefined()
   })
 })

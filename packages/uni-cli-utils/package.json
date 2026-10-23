@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-utils",
-  "version": "3.0.0-5020620260917001",
+  "version": "3.0.0-5030320261023001",
   "description": "@dcloudio/uni-cli-utils",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "lib"
   ],
   "engines": {
-    "node": "^14.18.0 || >=16.0.0"
+    "node": ">=22.12.0"
   },
   "repository": {
     "type": "git",

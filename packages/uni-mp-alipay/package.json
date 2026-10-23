@@ -1,11 +1,12 @@
 {
   "name": "@dcloudio/uni-mp-alipay",
-  "version": "3.0.0-5020620260917001",
+  "version": "3.0.0-5030320261023001",
   "description": "uni-app mp-alipay",
   "main": "dist/index.js",
   "files": [
     "dist",
-    "dist-x"
+    "dist-x",
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -32,7 +33,8 @@
     "@dcloudio/uni-mp-vue": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@vue/compiler-core": "catalog:",
-    "@vue/shared": "catalog:"
+    "@vue/shared": "catalog:",
+    "jimp": "catalog:"
   },
   "devDependencies": {
     "mini-types": "^0.1.7"

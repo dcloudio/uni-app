@@ -105,3 +105,10 @@ export const VIRTUAL_HOST_ID = 'virtualHostId'
 // mini program css variables
 export const UNI_STATUS_BAR_HEIGHT = 'u_s_b_h'
 export const UNI_SAFE_AREA_INSET_BOTTOM = 'u_s_a_i_b'
+
+/**
+ * mini program runtime event flags
+ */
+export const enum RuntimeEventFlags {
+  Once = 1,
+}

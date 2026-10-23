@@ -19,12 +19,13 @@ import { defineSystemComponent } from '@dcloudio/uni-components'
 import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
 import { useBackgroundColorContent } from '../../../helpers/useBackgroundColorContent'
 
-import PageHead from './pageHead'
-import PageBody from './pageBody'
+import PageHead from './pageHead.vue'
+import PageBody from './pageBody.vue'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
 import { stringifyQuery } from '@dcloudio/uni-shared'
 //#if _X_
+import { createDialogPageId } from '../../setup/page'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import {
   DIALOG_TAG,
@@ -59,6 +60,9 @@ export default /*#__PURE__*/ defineSystemComponent({
           )
           pageMeta = Object.assign(pageMeta, routePageMeta)
         }
+        // dialogPage 不切换 history，需在子组件 setup 订阅事件前分配独立 ID。
+        // $basePage 也从 pageMeta 初始化，保证组件订阅与页面桥接使用同一个 ID。
+        pageMeta.id = createDialogPageId()
         if (!routePageMeta?.backgroundColorContent) {
           pageMeta.backgroundColorContent = 'transparent'
         }

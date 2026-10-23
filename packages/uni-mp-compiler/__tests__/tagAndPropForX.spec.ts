@@ -215,5 +215,17 @@ describe('compiler: transform tagAndProp', () => {
         nodeTransforms: [transformTeleport],
       }
     )
+    assert(
+      `<Teleport :disabled="data.disabled" :defer="isDeferred"><view /></Teleport>`,
+      `<root-portal enable="{{a}}" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"><view/></root-portal>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: !_ctx.data.disabled, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformTeleport],
+      }
+    )
   })
 })

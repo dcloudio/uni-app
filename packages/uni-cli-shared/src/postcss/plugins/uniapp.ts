@@ -7,6 +7,8 @@ import {
   defaultRpx2Unit,
   isBuiltInComponent,
 } from '@dcloudio/uni-shared'
+import { BG_PROPS } from './constants'
+import { adaptAlipayPageBackground } from './alipayPageBackground'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -16,21 +18,9 @@ export interface UniAppCssProcessorOptions {
 
 const defaultUniAppCssProcessorOptions = extend({}, defaultRpx2Unit)
 
-const BG_PROPS = [
-  'background',
-  'background-clip',
-  'background-color',
-  'background-image',
-  'background-origin',
-  'background-position',
-  'background-repeat',
-  'background-size',
-  'background-attachment',
-]
-
 function transform(
   selector: selectorParser.Node,
-  state: { bg: boolean },
+  state: { body: boolean },
   { rewriteTag }: TransformOptions
 ) {
   if (selector.type !== 'tag') {
@@ -40,20 +30,24 @@ function transform(
   const { value } = selector
   selector.value = rewriteTag(value)
   if (value === 'page' && selector.value === 'uni-page-body') {
-    state.bg = true
+    state.body = true
   }
 }
 
-function createBodyBackgroundRule(origRule: Rule) {
-  const bgDecls: Declaration[] = []
+function createBodyRule(origRule: Rule) {
+  const bodyDecls: Declaration[] = []
   origRule.walkDecls((decl) => {
     if (BG_PROPS.indexOf(decl.prop) !== -1) {
-      bgDecls.push(decl.clone())
+      bodyDecls.push(decl.clone())
+    }
+    // css变量也要提升到body
+    if (decl.prop.startsWith('--')) {
+      bodyDecls.push(decl.clone())
     }
   })
-  if (bgDecls.length) {
+  if (bodyDecls.length) {
     const { rule } = require('postcss')
-    origRule.after(rule({ selector: 'body' }).append(bgDecls))
+    origRule.after(rule({ selector: 'body' }).append(bodyDecls))
   }
 }
 
@@ -65,11 +59,11 @@ interface TransformOptions {
 
 function walkRules(options: TransformOptions) {
   return (rule: Rule) => {
-    const state = { bg: false }
+    const state = { body: false }
     rule.selector = selectorParser((selectors) =>
       selectors.walk((selector) => transform(selector, state, options))
     ).processSync(rule.selector)
-    state.bg && createBodyBackgroundRule(rule)
+    state.body && createBodyRule(rule)
   }
 }
 
@@ -108,6 +102,7 @@ function rewriteUniH5Tags(tag: string) {
   if (tag === 'page') {
     return 'uni-page-body'
   }
+  // TODO: Web Vapor 需将 view、text、image 转换为对应的 attribute 宿主选择器。
   if (isBuiltInComponent(tag)) {
     return COMPONENT_SELECTOR_PREFIX + tag
   }
@@ -147,6 +142,7 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
           root.walkDecls(walkDecls(rpx2unit))
           const rewriteTag = transforms[platform]
           filterPrefersColorScheme(root)
+          adaptAlipayPageBackground(root)
           if (rewriteTag) {
             root.walkRules(
               walkRules({

@@ -399,7 +399,7 @@ export interface ShowActionSheetSuccess {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -553,7 +553,7 @@ type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
  *    "alipay": {
  *      "hostVer": "√",
  *      "uniVer": "√",
- *      "unixVer": "5.25"
+ *      "unixVer": "5.31"
  *    },
  *    "baidu": {
  *      "hostVer": "√",
@@ -625,7 +625,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -697,7 +697,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -769,7 +769,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -841,7 +841,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -1273,7 +1273,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -1345,7 +1345,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -1417,7 +1417,7 @@ export type ShowActionSheetOptions = {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",
@@ -1509,7 +1509,7 @@ export interface Uni {
    *    "alipay": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "5.25"
+   *      "unixVer": "5.31"
    *    },
    *    "baidu": {
    *      "hostVer": "√",

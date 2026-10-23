@@ -11,7 +11,7 @@ export { isInHBuilderX } from './utils'
 
 export const runByHBuilderX = once(() => {
   return (
-    !!process.env.UNI_HBUILDERX_PLUGINS &&
+    (!!process.env.HX_PLUGIN_PATHS || !!process.env.UNI_HBUILDERX_PLUGINS) &&
     (!!process.env.RUN_BY_HBUILDERX || !!process.env.HX_Version)
   )
 })

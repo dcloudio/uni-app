@@ -19,7 +19,7 @@ import { normalizeNumber } from './number'
 import { normalizeString } from './string'
 import { normalizeShorthandLength } from './shorthandLength'
 import { normalizeTransform } from './transform'
-import { normalizeInterval } from './interval'
+import { normalizeInterval, normalizeTransitionDelay } from './interval'
 import { normalizeTimingFunction } from './timingFunction'
 import { createCombinedNormalize } from './combined'
 import { normalizeGradient, normalizeUrl } from './image'
@@ -29,6 +29,7 @@ import { normalizeFontFace, normalizeSrc } from './fontFace'
 import { normalizeFlexFlow } from './flexFlow'
 import { animationNormalizeFactoryMap } from './animation'
 import { normalizeBackdropFilter } from './backdropFilter'
+import { createNormalizeDom2Calc } from './calc'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -194,6 +195,7 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   textShadow: normalizeDefault,
   // transition-property 支持逗号多值分割
   transitionProperty: normalizeProperty,
+  transitionDelay: normalizeTransitionDelay,
   transitionTimingFunction: normalizeTimingFunction,
 }
 
@@ -263,7 +265,10 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
         normalize = createCombinedNormalize([normalizeFlexFlow, normalize])
       }
     }
-    result[prop] = normalizePlatform(normalize, property.uniPlatform)
+    result[prop] = normalizePlatform(
+      dom2 ? createNormalizeDom2Calc(normalize, prop) : normalize,
+      property.uniPlatform
+    )
   }
   return result
 }

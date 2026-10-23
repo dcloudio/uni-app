@@ -267,6 +267,34 @@ describe('web app route', () => {
     )
   })
 
+  test('相同目标的连续导航关联最后一次事务', async () => {
+    const fullPath = '/pages/next/next'
+    const first = appRoute.createWebAppRouteTransaction(
+      fullPath,
+      API_NAVIGATE_TO
+    )
+    const second = appRoute.createWebAppRouteTransaction(
+      fullPath,
+      API_NAVIGATE_TO
+    )
+    const latest = appRoute.createWebAppRouteTransaction(
+      fullPath,
+      API_NAVIGATE_TO
+    )
+    appRoute.queueWebAppRouteTransaction(first)
+    appRoute.queueWebAppRouteTransaction(second)
+    appRoute.queueWebAppRouteTransaction(latest)
+
+    const to = createRoute(fullPath)
+    expect(await routerBeforeEach(to)).toBeUndefined()
+    appRoute.discardWebAppRouteTransaction(first)
+    appRoute.discardWebAppRouteTransaction(second)
+    routerAfterEach(to, createRoute('/'))
+
+    expect(onRouteConfirmed).toHaveBeenCalledTimes(1)
+    expect(onRouteConfirmed).toHaveBeenCalledWith(latest)
+  })
+
   test('navigateTo 重写后使用最终 URL 和 Context 完成路由', async () => {
     const beforeEvents: Record<string, any>[] = []
     const routeListener = jest.fn()

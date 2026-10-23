@@ -3,17 +3,20 @@ import fs from 'fs'
 import {
   type ComponentJson,
   addMiniProgramComponentJson,
+  addMiniProgramComponentPackageRoot,
   camelize,
   capitalize,
   decodeBase64Url,
   encodeBase64Url,
   getUniModulesEncryptType,
   isAlipayXStyleIsolation,
+  isUniAppX,
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
   removeExt,
+  resolveMiniProgramComponentPackageRoot,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 
@@ -26,13 +29,18 @@ const uniComponentPrefix = 'uniComponent://'
 interface VirtualMiniProgramFileInfo {
   filepath: string
   root?: string
+  packageRoot?: string
 }
 
 export function virtualPagePath(filepath: string, root?: string) {
   return uniPagePrefix + encodeVirtualFileInfo(filepath, root)
 }
-export function virtualComponentPath(filepath: string, root?: string) {
-  return uniComponentPrefix + encodeVirtualFileInfo(filepath, root)
+export function virtualComponentPath(
+  filepath: string,
+  root?: string,
+  packageRoot?: string
+) {
+  return uniComponentPrefix + encodeVirtualFileInfo(filepath, root, packageRoot)
 }
 
 export function parseVirtualPagePath(uniPageUrl: string) {
@@ -74,12 +82,14 @@ export function parseComponentStyleIsolation(content: string) {
 
 let hasOptimizationSubPackages = false // 是否开启分包优化配置
 let subPackages: string[] = []
+let subPackageRoots: string[] = []
 function initSubPackages() {
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   const pagesJsonFile = path.resolve(inputDir, 'pages.json')
   if (!fs.existsSync(pagesJsonFile)) {
     hasOptimizationSubPackages = false
     subPackages = []
+    subPackageRoots = []
     return
   }
   const platform = process.env.UNI_PLATFORM
@@ -89,17 +99,59 @@ function initSubPackages() {
   const { appJson } = parseMiniProgramPagesJson(
     fs.readFileSync(pagesJsonFile, 'utf8'),
     platform,
-    { subpackages: true }
+    { subpackages: true, independentSubpackages: true }
   )
-  subPackages = Object.values(appJson.subPackages || appJson.subpackages || {})
-    .filter(Boolean)
-    .map(({ root }) => `${root.replace(/\/$/, '')}/`)
+  subPackageRoots = hasOptimizationSubPackages
+    ? Object.values(appJson.subPackages || appJson.subpackages || {})
+        .filter(Boolean)
+        .map(({ root, independent }) => {
+          if (independent === true) {
+            return ''
+          }
+          return normalizePath(root).replace(/^\/+|\/+$/g, '')
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.length - a.length)
+    : []
+  subPackages = subPackageRoots.map((root) => `${root}/`)
 }
 export function getSubPackages() {
   return {
     hasOptimizationSubPackages,
     subPackages,
   }
+}
+
+export function getSubPackageRootByFilename(
+  filename: string,
+  inputDir: string
+) {
+  if (!isUniAppX() || !hasOptimizationSubPackages) {
+    return
+  }
+  const normalizedFilename = normalizePath(filename).split('?')[0]
+  const relativeFilename = path.isAbsolute(normalizedFilename)
+    ? normalizePath(path.relative(inputDir, normalizedFilename))
+    : normalizedFilename
+  return subPackageRoots.find((root) => {
+    return relativeFilename === root || relativeFilename.startsWith(root + '/')
+  })
+}
+
+export function normalizeMiniProgramComponentFilename(
+  filename: string,
+  inputDir: string,
+  packageRoot?: string
+) {
+  const miniProgramFilename = normalizeMiniProgramFilename(filename, inputDir)
+  if (
+    isUniAppX() &&
+    packageRoot &&
+    miniProgramFilename.startsWith('uni_modules/')
+  ) {
+    return `${packageRoot}/${miniProgramFilename}`
+  }
+  return miniProgramFilename
 }
 
 export function uniEntryPlugin({
@@ -139,14 +191,20 @@ export function uniEntryPlugin({
 ${root ? '__uniCreatePage' : `${global}.createPage`}(MiniProgramPage)`,
         }
       } else if (isUniComponentUrl(id)) {
-        const { filepath: componentFilepath, root } =
-          parseVirtualComponentPathInfo(id)
+        const {
+          filepath: componentFilepath,
+          root,
+          packageRoot,
+        } = parseVirtualComponentPathInfo(id)
         const filepath = normalizePath(
           path.resolve(inputDir, componentFilepath)
         )
+        const relativePath = normalizePath(path.relative(inputDir, filepath))
+        if (!root && packageRoot && relativePath.startsWith('uni_modules/')) {
+          addMiniProgramComponentPackageRoot(relativePath, packageRoot)
+        }
         this.addWatchFile(filepath)
 
-        const relativePath = normalizePath(path.relative(inputDir, filepath))
         // 判断当前插件是否是easycom加密插件
         if (relativePath.startsWith('uni_modules')) {
           const pluginId = relativePath.split('/')[1]
@@ -188,7 +246,18 @@ ${root ? '__uniCreatePage' : `${global}.createPage`}(MiniProgramPage)`,
         }
 
         addMiniProgramComponentJson(
-          removeExt(normalizeMiniProgramFilename(filepath, inputDir)),
+          removeExt(
+            normalizeMiniProgramComponentFilename(
+              filepath,
+              inputDir,
+              root
+                ? undefined
+                : resolveMiniProgramComponentPackageRoot(
+                    relativePath,
+                    packageRoot
+                  )
+            )
+          ),
           json
         )
         if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
@@ -244,8 +313,16 @@ function genIndependentCreateImport(
     : ''
 }
 
-function encodeVirtualFileInfo(filepath: string, root?: string) {
-  return encodeBase64Url(root ? JSON.stringify({ filepath, root }) : filepath)
+function encodeVirtualFileInfo(
+  filepath: string,
+  root?: string,
+  packageRoot?: string
+) {
+  return encodeBase64Url(
+    root || packageRoot
+      ? JSON.stringify({ filepath, root, packageRoot })
+      : filepath
+  )
 }
 
 function decodeVirtualFileInfo(
@@ -260,6 +337,8 @@ function decodeVirtualFileInfo(
         return {
           filepath: info.filepath,
           root: typeof info.root === 'string' ? info.root : undefined,
+          packageRoot:
+            typeof info.packageRoot === 'string' ? info.packageRoot : undefined,
         }
       }
     } catch (e) {

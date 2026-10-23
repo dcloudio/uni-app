@@ -1,0 +1,24 @@
+export class UniCloudDBElement extends UniElementImpl {
+
+  loadData(arg : any) : void {
+    this.onLoadData(arg)
+  }
+  loadMore() : void {
+    this.onLoadMore()
+  }
+  add(value : any, options : any) : void {
+    this.onAdd(value, options)
+  }
+  override remove(id : any, options : any) : void {
+    this.onRemove(id, options)
+  }
+  update(id : string, value : any, options : any) : void {
+    this.onUpdate(id, value, options)
+  }
+
+  onLoadData : (val : any) => void = () => { }
+  onLoadMore : () => void = () => { }
+  onAdd : (val : any, options : any) => void = () => { }
+  onRemove : (id : any, options : any) => void = () => { }
+  onUpdate : (id : string, val : any, options : any) => void = () => { }
+}

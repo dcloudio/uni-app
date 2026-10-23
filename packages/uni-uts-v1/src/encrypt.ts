@@ -1,7 +1,11 @@
 import path, { join, relative } from 'path'
 import fs from 'fs-extra'
 import type { APP_PLATFORM } from './manifest/utils'
-import { normalizePath, resolveSourceMapPath } from './shared'
+import {
+  normalizePath,
+  resolveHBuilderXPluginPath,
+  resolveSourceMapPath,
+} from './shared'
 import {
   compileAndroidDex,
   createStderrListener,
@@ -227,7 +231,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     }
   }
   // development
-  if (process.env.UNI_HBUILDERX_PLUGINS) {
+  if (resolveHBuilderXPluginPath('uni_helpers')) {
     const { DUM } = requireUniHelpers()
 
     const ktFiles: Record<string, string> = sync('**/*.kt', {

@@ -232,6 +232,46 @@ describe('standalone uts', () => {
     expect(process.env.UNI_UTS_TARGET_LANGUAGE).toBe('swift')
   })
 
+  test('新插件路径存在时仍保留显式传入的旧插件根目录', async () => {
+    const { pluginDir } = createUniModuleFixture()
+    const hbuilderxPlugins = path.resolve(tempDir, 'plugins')
+    process.env.HX_PLUGIN_PATHS = JSON.stringify({})
+    Reflect.deleteProperty(process.env, 'UNI_HBUILDERX_PLUGINS')
+    buildUniModuleMock.mockResolvedValueOnce(undefined)
+
+    await buildStandaloneUTS({ uniModule: pluginDir, hbuilderxPlugins })
+
+    expect(process.env.UNI_HBUILDERX_PLUGINS).toBe(hbuilderxPlugins)
+  })
+
+  test('新插件路径存在时仍执行旧插件根目录推导', async () => {
+    const { pluginDir } = createUniModuleFixture()
+    process.env.HX_PLUGIN_PATHS = JSON.stringify({})
+    Reflect.deleteProperty(process.env, 'UNI_HBUILDERX_PLUGINS')
+    buildUniModuleMock.mockResolvedValueOnce(undefined)
+
+    await buildStandaloneUTS({ uniModule: pluginDir })
+
+    expect(process.env.UNI_HBUILDERX_PLUGINS).toBe(
+      path.resolve(process.cwd(), '..')
+    )
+  })
+
+  test('新插件路径存在时仍保留 HX_APP_ROOT 推导的旧插件根目录', async () => {
+    const { pluginDir } = createUniModuleFixture()
+    const hxAppRoot = path.resolve(tempDir, 'hbuilder')
+    process.env.HX_PLUGIN_PATHS = JSON.stringify({})
+    process.env.HX_APP_ROOT = hxAppRoot
+    Reflect.deleteProperty(process.env, 'UNI_HBUILDERX_PLUGINS')
+    buildUniModuleMock.mockResolvedValueOnce(undefined)
+
+    await buildStandaloneUTS({ uniModule: pluginDir })
+
+    expect(process.env.UNI_HBUILDERX_PLUGINS).toBe(
+      path.resolve(hxAppRoot, 'plugins')
+    )
+  })
+
   test('file 模式编译失败时 customPrint 会输出原始文件路径', async () => {
     const { inputFile, outputDir } = createFileFixture()
     const depFile = path.resolve(path.dirname(inputFile), 'bar.uts')

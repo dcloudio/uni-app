@@ -123,6 +123,10 @@ export const openDialogPage = (
     callback(page)
   }
 
+  if ((dialogPage as any).__nativePageId == null) {
+    ;(dialogPage as any).__nativePageId = page.pageId
+  }
+
   const successOptions = {
     errMsg: 'openDialogPage:ok',
   }

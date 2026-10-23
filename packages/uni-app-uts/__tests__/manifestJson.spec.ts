@@ -1,5 +1,10 @@
 import { validateThemeValue } from '@dcloudio/uni-cli-shared'
 import { normalizeManifestJson } from '../src/plugins/utils'
+import { MIN_RUNTIME_VERSION } from '../src/plugins/minRuntimeVersion'
+
+jest.mock('../src/plugins/compilerRuleVersion', () => ({
+  getUniCompilerRuleVersion: () => 7,
+}))
 
 describe('x-ios x-harmony manifestJson', () => {
   beforeEach(() => {
@@ -12,6 +17,8 @@ describe('x-ios x-harmony manifestJson', () => {
     process.env.UNI_INPUT_DIR = undefined as any
     process.env.UNI_PLATFORM = undefined as any
     process.env.UNI_UTS_PLATFORM = undefined as any
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_VAPOR_RENDER_TARGET')
   })
 
   const mockManifestJson = {
@@ -105,6 +112,43 @@ describe('x-ios x-harmony manifestJson', () => {
       const result = normalizeManifestJson('app-ios', mockManifestJson) as any
       // iOS 平台应该也能访问 theme 配置
       expect(result.app?.defaultAppTheme).toBe('dark')
+    })
+  })
+
+  describe('runtime compatibility version', () => {
+    test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+      'should write compiler versions for %s in vapor mode',
+      (platform) => {
+        process.env.UNI_APP_X_DOM2 = 'true'
+        const manifest = normalizeManifestJson(platform, {
+          ...mockManifestJson,
+          'uni-app-x': {
+            minRuntimeVersion: '0.1',
+            bytecodeVersion: 999,
+            compilerRuleVersion: 999,
+          },
+        }) as any
+
+        expect(manifest['uni-app-x'].minRuntimeVersion).toBe(
+          MIN_RUNTIME_VERSION
+        )
+        expect(manifest['uni-app-x'].compilerRuleVersion).toBe(7)
+        expect(MIN_RUNTIME_VERSION).toMatch(/^\d+\.\d+$/)
+        expect(manifest['uni-app-x'].bytecodeVersion).toBeUndefined()
+      }
+    )
+
+    test('should omit minimum runtime version outside vapor mode', () => {
+      const manifest = normalizeManifestJson('app-ios', {
+        ...mockManifestJson,
+        'uni-app-x': {
+          minRuntimeVersion: MIN_RUNTIME_VERSION,
+          compilerRuleVersion: 999,
+        },
+      }) as any
+
+      expect(manifest['uni-app-x'].minRuntimeVersion).toBeUndefined()
+      expect(manifest['uni-app-x'].compilerRuleVersion).toBeUndefined()
     })
   })
 

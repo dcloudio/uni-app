@@ -5,6 +5,9 @@ import { type TransformDecl, createDecl } from '../utils'
 export const transformFont: TransformDecl = (decl) => {
   let { value, important, raws, source } = decl
   value = value.trim()
+  if (/\bvar\(/i.test(value)) {
+    return [decl]
+  }
   const result: Declaration[] = []
   const font = parseCSSFont(value) as IFont
   if ((font as ISystemFont).system) {

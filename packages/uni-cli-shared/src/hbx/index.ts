@@ -6,8 +6,12 @@ import { resolveWorkersDir } from '../workers'
 export { formatAtFilename, createErrorWithBlockFlag } from './log'
 
 export * from './env'
+export { resolveHBuilderXPluginPath } from './pluginPaths'
 export {
+  initWebVaporAliases,
+  resolveWebVaporPackage,
   initModuleAlias,
+  normalizeUniAppXVaporEnv,
   installHBuilderXPlugin,
   formatInstallHBuilderXPluginTips,
 } from './alias'

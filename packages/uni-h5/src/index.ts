@@ -16,7 +16,6 @@ export {
   Editor,
   Form,
   Icon,
-  Image,
   Input,
   Label,
   MovableArea,
@@ -34,9 +33,7 @@ export {
   Swiper,
   SwiperItem,
   Switch,
-  Text,
   Textarea,
-  View,
   //#if _X_
   PageContainer,
   Loading,
@@ -115,6 +112,11 @@ export {
   //#endif
 } from '@dcloudio/uni-components'
 
+// Web Vapor 的 view、text、image 已由编译器降级为原生 DOM，不导出旧的 Vue 组件及其元素实现。
+//#if !_X_VAPOR_
+export { Image, Text, View } from '@dcloudio/uni-components'
+//#endif
+
 export { useI18n } from '@dcloudio/uni-core'
 
 export { default as plugin } from './framework/plugin'
@@ -145,9 +147,22 @@ export * from './service/bridge'
 
 export { getApp, getCurrentPages } from './framework'
 
+//#if _X_VAPOR_
+// @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
+export { default as LayoutComponent } from './framework/components/layout/index-vapor.vue'
+//#else
+// @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
 export { default as LayoutComponent } from './framework/components/layout/index'
+//#endif
+//#if _X_VAPOR_
+// @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
+export { default as PageComponent } from './framework/components/page/index-vapor.vue'
+export { createVaporPageRouteComponent } from './framework/components/page/route-vapor'
+//#else
+// @ts-expect-error 条件编译前两个分支会同时参与类型检查，构建后只保留一个导出
 export { default as PageComponent } from './framework/components/page/index'
-export { default as AsyncErrorComponent } from './framework/components/async-error/index'
-export { default as AsyncLoadingComponent } from './framework/components/async-loading'
+//#endif
+export { default as AsyncErrorComponent } from './framework/components/async-error/asyncError.vue'
+export { default as AsyncLoadingComponent } from './framework/components/async-loading/asyncLoading.vue'
 export * from './framework/setup/state'
 export { getRealPath } from './platform'

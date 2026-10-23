@@ -19,6 +19,7 @@ const DEFAULT_KEYS = [
   'APP_ANDROID',
   'APP_IOS',
   'APP_HARMONY',
+  'APP_HARMONY_JSVM',
   'H5',
   'MP',
   'MP_360',
@@ -153,6 +154,12 @@ export function initPreContext(
     preNVueContext: scopedPreNVueContext,
     preUVueContext: scopedPreUVueContext,
   } = initScopedPreContext(platform, userPreContext, utsPlatform, isX)
+  const isAppHarmonyJsvm =
+    platform === 'app-harmony' &&
+    isX === true &&
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE === 'jsvm'
+  scopedPreUVueContext.APP_HARMONY_JSVM = isAppHarmonyJsvm
   extend(preVueContext, scopedPreVueContext)
   extend(preNVueContext, scopedPreNVueContext)
   extend(preUVueContext, scopedPreUVueContext)

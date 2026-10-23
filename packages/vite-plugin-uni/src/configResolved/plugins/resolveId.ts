@@ -3,10 +3,12 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import {
+  isUniAppXWebVapor,
   resolveBuiltIn,
   resolvePiniaAlias,
   resolveUTSModule,
   resolveVueI18nAlias,
+  resolveWebVaporPackage,
 } from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
@@ -43,15 +45,23 @@ export function uniResolveIdPlugin(
 ): Plugin {
   const resolveCache: Record<string, string> = {}
   const isX = process.env.UNI_APP_X === 'true'
-  const builtInAliases = isX
+  const isVapor = process.env.UNI_APP_X_VAPOR === 'true'
+  const builtInAliases: Record<string, string> = isX
     ? {
         ...resolveVueI18nAlias(),
         ...resolvePiniaAlias(),
       }
     : {}
+  if (isUniAppXWebVapor()) {
+    builtInAliases['vue-router'] = resolveWebVaporPackage(
+      'vue-router/dist/vue-router.js'
+    )
+  }
   if (isX) {
     BUILT_IN_MODULES['@dcloudio/uni-app'] = 'dist-x/uni-app.es.js'
-    BUILT_IN_MODULES['@dcloudio/uni-cloud'] = 'dist/uni-cloud-x.es.js'
+    BUILT_IN_MODULES['@dcloudio/uni-cloud'] = isVapor
+      ? 'dist/uni-cloud-x-vapor.es.js'
+      : 'dist/uni-cloud-x.es.js'
   }
   return {
     name: 'uni:resolve-id',
