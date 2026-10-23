@@ -29,7 +29,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 抱抱海心理咨询：[Android](https://appgallery.huawei.com/app/C119009491)、[iOS](https://apps.apple.com/cn/app/%E6%8A%B1%E6%8A%B1%E6%B5%B7%E5%BF%83%E7%90%86%E5%92%A8%E8%AF%A2/id6809343318)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.dahe.psy.hmos)、微信小程序搜索"抱抱海心理"
 ## 应用商店下载量百万级
 - 京大大回收：[Android](https://appgallery.huawei.com/app/C108165699)、[iOS](https://apps.apple.com/cn/app/%E4%BA%AC%E5%A4%A7%E5%A4%A7%E5%9B%9E%E6%94%B6-%E4%B8%93%E4%B8%9A%E8%B4%AD%E7%89%A9%E5%8D%A1%E7%A4%BC%E5%93%81%E5%8D%A1%E5%88%B8%E5%9B%9E%E6%94%B6%E5%B9%B3%E5%8F%B0/id6748420409?uo=4)、微信小程序搜索"京大大回收"
-- 尚家家：[Android](https://appgallery.huawei.com/app/C117527135)、[iOS](https://apps.apple.com/cn/app/%E5%B0%9A%E5%AE%B6%E5%AE%B6-%E8%A3%85%E4%BF%AE%E5%85%AC%E5%8F%B8%E5%B7%A5%E9%95%BF%E6%8E%A5%E5%8D%95%E6%B4%BE%E5%8D%95%E5%B9%B3%E5%8F%B0/id6796617412)、微信小程序搜索"天禅库尚家家装"
 ## 应用商店下载量十万级
 - 万象八字：[Android](https://appgallery.huawei.com/app/C115905187)、[iOS](https://apps.apple.com/cn/app/%E4%B8%87%E8%B1%A1%E5%85%AB%E5%AD%97/id6746738853)
 - 金股讯：[Android](https://sj.qq.com/appdetail/com.jinguxun.app)、[iOS](https://apps.apple.com/cn/app/%E9%87%91%E8%82%A1%E8%AE%AF/id1615272585)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.jinguxun.happ)
