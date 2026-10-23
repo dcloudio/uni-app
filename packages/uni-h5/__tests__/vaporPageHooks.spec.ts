@@ -111,7 +111,7 @@ describe('Web Vapor 页面生命周期框架接入', () => {
       const instance = {
         type: { __scriptLang: 'ts' },
         vapor: true,
-        __pageQuery: { title: 'modal', content: 'content' },
+        __pageQuery: { title: 'modal', content: 'content', '1query': 'raw' },
         // Vapor 的 attrs 不能依赖删除属性来清理内部参数。
         attrs: Object.freeze({}),
         onLoad: [onLoad],
@@ -153,14 +153,20 @@ describe('Web Vapor 页面生命周期框架接入', () => {
     }
   )
 
-  test.each([false, true])(
-    '仅无脚本的客户端页面使用框架补充入口，SSR=%s',
-    async (ssr) => {
-      const instance = { proxy: { $basePage: {} } } as any
+  test.each([
+    { ssr: false, vapor: true },
+    { ssr: true, vapor: true },
+    { ssr: false, vapor: false },
+    { ssr: true, vapor: false },
+  ])(
+    '页面副本的 query 继承与生命周期不影响普通组件、Window 和旧模式：%j',
+    async ({ ssr, vapor }) => {
+      const instance = { attrs: {}, proxy: { $basePage: {} } } as any
+      const query = { name1: 'value', '1query': 'raw' }
       const initUniPageHooks = jest.fn()
       const { setupPage, setupWindow } = await load(
         'packages/uni-h5/src/framework/setup/index.ts',
-        true,
+        vapor,
         {
           '@vue/shared': jest.requireActual('@vue/shared'),
           vue: {
@@ -183,13 +189,14 @@ describe('Web Vapor 页面生命周期框架接入', () => {
             subscribeViewMethod: () => {},
           },
           '../components/layout/index-vapor.vue': {},
+          '../..': {},
           './app': {},
           './page': {
             initPage: () => {},
             getPage$BasePage: (vm: any) => vm.$basePage,
           },
           './provide': {
-            usePageRoute: () => ({ query: {} }),
+            usePageRoute: () => ({ query }),
             usePageMeta: () => ({}),
           },
           './utils': {},
@@ -207,8 +214,28 @@ describe('Web Vapor 页面生命周期框架接入', () => {
           __uniConfig: {},
         }
       )
-      setupPage({}, 'pages/index/index').setup({}, {})
-      expect(initUniPageHooks).toHaveBeenCalledTimes(ssr ? 0 : 1)
+      const original = { inheritAttrs: true }
+      const page = setupPage(original, 'pages/index/index')
+      expect(page).not.toBe(original)
+      expect(page.inheritAttrs).toBe(vapor ? false : true)
+      expect(original.inheritAttrs).toBe(true)
+      for (const options of [{}, { inheritAttrs: false }]) {
+        const originalSetup = jest.fn()
+        const component = { ...options, setup: originalSetup }
+        const routed = setupPage(component, 'pages/index/index')
+        expect(routed.inheritAttrs).toBe(vapor ? false : options.inheritAttrs)
+        expect(component.inheritAttrs).toBe(options.inheritAttrs)
+        expect(component.setup).toBe(originalSetup)
+        expect(routed.setup).not.toBe(originalSetup)
+      }
+      expect(setupWindow({ inheritAttrs: true }, 1).inheritAttrs).toBe(true)
+      page.setup({}, {})
+      expect(vapor ? instance.__pageQuery : instance.attrs.__pageQuery).toEqual(
+        query
+      )
+      expect(instance.proxy.options).toEqual(query)
+      expect(instance.proxy.$basePage.options).toEqual(query)
+      expect(initUniPageHooks).toHaveBeenCalledTimes(vapor && !ssr ? 1 : 0)
       initUniPageHooks.mockClear()
       const setup = jest.fn(() => 'block')
       expect(setupPage({ setup }, 'pages/index/index').setup({}, {})).toBe(

@@ -2498,18 +2498,20 @@ function rerender(id, newRender) {
 function reload(id, newComp) {
 	const record = map.get(id);
 	if (!record) return;
+	let pageComp;
 	if (typeof window !== "undefined" && record.initialDef.__vapor && record.initialDef.__mpType === "page") {
 		const setupPage = window.__setupPage;
-		if (setupPage) newComp = setupPage(newComp);
+		if (setupPage) pageComp = normalizeClassComponent(setupPage(newComp));
 	}
 	newComp = normalizeClassComponent(newComp);
+	const resolveNewComp = (instance) => pageComp && instance.vapor && instance.$pageInstance === instance ? pageComp : newComp;
 	const isVapor = record.initialDef.__vapor;
 	updateComponentDef(record.initialDef, newComp);
 	const instances = [...record.instances];
 	if (isVapor && newComp.__vapor && !instances.some((instance) => instance.parent && !instance.parent.vapor) && !instances.some((i) => i.ceReload)) {
 		for (const instance of instances) {
 			const oldComp = normalizeClassComponent(instance.type);
-			if (oldComp !== record.initialDef) updateComponentDef(oldComp, newComp);
+			if (oldComp !== record.initialDef) updateComponentDef(oldComp, resolveNewComp(instance));
 			if (instance.root && instance.root.ce && instance !== instance.root) instance.root.ce._removeChildStyle(instance.type);
 		}
 		const dirtyInstances = new Set(instances);
@@ -2522,7 +2524,7 @@ function reload(id, newComp) {
 						rerenderedParents.add(parent);
 						parent.hmrRerender();
 					}
-				} else instance.hmrReload(newComp);
+				} else instance.hmrReload(resolveNewComp(instance));
 			}
 		});
 	} else {
@@ -2532,7 +2534,7 @@ function reload(id, newComp) {
 			const oldComp = normalizeClassComponent(instance.type);
 			let dirtyInstances = hmrDirtyComponents.get(oldComp);
 			if (!dirtyInstances) {
-				if (oldComp !== record.initialDef) updateComponentDef(oldComp, newComp);
+				if (oldComp !== record.initialDef) updateComponentDef(oldComp, resolveNewComp(instance));
 				hmrDirtyComponents.set(oldComp, dirtyInstances = /* @__PURE__ */ new Set());
 			}
 			dirtyInstances.add(instance);

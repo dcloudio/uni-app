@@ -169,6 +169,51 @@ describe('Vapor 页面查询参数', () => {
     expect(mockUseRoute).toHaveBeenCalledTimes(2)
   })
 
+  test.each([false, true])(
+    '数字开头的 query 仍传入页面 props，业务原始参数不变（多页=%s）',
+    (pages) => {
+      global.__UNI_FEATURE_PAGES__ = pages
+      global.location = {
+        href: 'http://localhost/#/pages/index/index?1=one&2name=two&name1=value',
+      } as Location
+      const query = Object.freeze({
+        '1': 'one',
+        '2name': 'two',
+        name1: 'value',
+      })
+      const route = {
+        query,
+        path: '/pages/index/index',
+        fullPath: '/pages/index/index?1=one&2name=two&name1=value',
+        meta: { ...pageMeta },
+      }
+      mockUseRoute.mockReturnValue(route)
+      const { pageProps } = setup()
+      expect(pageProps).toEqual(query)
+      if (pages) expect(pageProps).toBe(query)
+      const vm = {} as any
+      initPages.true(vm)
+      expect(initXPage).toHaveBeenCalledWith(
+        vm,
+        expect.objectContaining({ query }),
+        vm.$basePage
+      )
+      expect(usePageRoute().query).toEqual(query)
+    }
+  )
+
+  test('普通参数保留原对象、值类型和合法属性名', () => {
+    global.__UNI_FEATURE_PAGES__ = true
+    const query = Object.freeze({
+      name1: 'value',
+      'data-id': '1',
+      'a.b': null,
+      tags: ['a', 'b'],
+    })
+    mockUseRoute.mockReturnValue({ query })
+    expect(setup().pageProps).toBe(query)
+  })
+
   test.each([false, true])('VDOM 保持原有取参方式（多页=%s）', (pages) => {
     global.__UNI_FEATURE_PAGES__ = pages
     const route = pages

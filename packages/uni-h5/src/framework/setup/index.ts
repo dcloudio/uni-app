@@ -182,6 +182,13 @@ export function setupPage(comp: any, path: string) {
   return setupComponent(comp, {
     type: 'page',
     clone: true, // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    //#if _X_VAPOR_
+    before(comp) {
+      // 路由传入的 query 供 props/onLoad/options 接收，不自动作为根 DOM 属性。
+      // 仅修改路由页面副本，同一文件作为普通组件使用时保留原有 attrs 继承行为。
+      comp.inheritAttrs = false
+    },
+    //#endif
     init: initPage,
     setup(instance) {
       // instance.root = instance // 组件 root 指向页面
