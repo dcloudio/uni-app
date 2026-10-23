@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import { parse } from '@vue/compiler-sfc'
 import { sync } from 'fast-glob'
+import { format, resolveConfig } from 'prettier'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -96,17 +97,23 @@ export function syncExtApiDir(sourceDir: string, outputDir: string) {
   sync('**/*.uts', { absolute: true, cwd: outputDir }).forEach((file) => {
     fs.renameSync(file, file + '.ts')
   })
-  sync('**/*.uvue', { absolute: true, cwd: outputDir }).forEach((file) => {
-    const newFile = file.replace('.uvue', '.vue')
-    fs.renameSync(file, newFile)
-    const content = fs.readFileSync(newFile, 'utf8')
-    if (content.includes('.uvue')) {
-      fs.writeFileSync(newFile, content.replace(/\.uvue(['"])/g, '.vue$1'))
+  sync('**/*.{vue,uvue}', { absolute: true, cwd: outputDir }).forEach(
+    (file) => {
+      const newFile = file.replace('.uvue', '.vue')
+      if (newFile !== file) fs.renameSync(file, newFile)
+      const content = fs.readFileSync(newFile, 'utf8')
+      const normalized = content
+        .replace(/\r\n/g, '\n')
+        .replace(/\.uvue(['"])/g, '.vue$1')
+      if (normalized !== content) fs.writeFileSync(newFile, normalized)
     }
-  })
+  )
 }
 
-export function syncExtComponentFile(apiDirs: string[]) {
+export function syncExtComponentFile(
+  apiDirs: string[],
+  targets: SyncTarget[] = syncTargets
+) {
   try {
     const { preprocess } = require('../packages/uni-preprocess')
     apiDirs.forEach((apiDir) => {
@@ -115,7 +122,7 @@ export function syncExtComponentFile(apiDirs: string[]) {
         sync(path.join(apiDir, `./${componentDir}/package.json`)).forEach(
           (packageJsonPath) => {
             const componentsDir = path.resolve(packageJsonPath, '../components')
-            syncComponent(componentsDir, component, preprocess, syncTargets)
+            syncComponent(componentsDir, component, preprocess, targets)
           }
         )
       })
@@ -125,6 +132,7 @@ export function syncExtComponentFile(apiDirs: string[]) {
       '[syncExtComponentFile] sync ext component file error:',
       error
     )
+    throw error
   }
 }
 
@@ -152,7 +160,7 @@ function syncComponent(
     files.forEach((filePath) => {
       const relativePath = path.relative(componentRoot, filePath)
       const { dir, name, ext } = path.parse(relativePath)
-      const code = fs.readFileSync(filePath, 'utf8')
+      const code = fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n')
       // MP 使用 UniElement 类型，与 APP 的辅助文件实现相同。
       const preprocessContext =
         name === 'useLoadingStyle' && target.context.MP
@@ -199,9 +207,20 @@ function syncComponent(
       }
 
       if (ext === '.ts' || ext === '.js' || ext === '.uts') {
+        const targetFilePath = path.resolve(
+          target.path,
+          dir,
+          `${name}.${target.scriptLang}`
+        )
         fs.outputFileSync(
-          path.resolve(target.path, dir, `${name}.${target.scriptLang}`),
-          preprocessedCode
+          targetFilePath,
+          target.scriptLang === 'ts'
+            ? format(preprocessedCode, {
+                ...resolveConfig.sync(targetFilePath),
+                filepath: targetFilePath,
+                endOfLine: 'lf',
+              })
+            : preprocessedCode
         )
       }
     })

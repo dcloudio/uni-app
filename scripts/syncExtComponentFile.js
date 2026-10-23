@@ -8,6 +8,7 @@ const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const compiler_sfc_1 = require("@vue/compiler-sfc");
 const fast_glob_1 = require("fast-glob");
+const prettier_1 = require("prettier");
 function resolve(file) {
     return path_1.default.resolve(__dirname, file);
 }
@@ -78,17 +79,20 @@ function syncExtApiDir(sourceDir, outputDir) {
     (0, fast_glob_1.sync)('**/*.uts', { absolute: true, cwd: outputDir }).forEach((file) => {
         fs_extra_1.default.renameSync(file, file + '.ts');
     });
-    (0, fast_glob_1.sync)('**/*.uvue', { absolute: true, cwd: outputDir }).forEach((file) => {
+    (0, fast_glob_1.sync)('**/*.{vue,uvue}', { absolute: true, cwd: outputDir }).forEach((file) => {
         const newFile = file.replace('.uvue', '.vue');
-        fs_extra_1.default.renameSync(file, newFile);
+        if (newFile !== file)
+            fs_extra_1.default.renameSync(file, newFile);
         const content = fs_extra_1.default.readFileSync(newFile, 'utf8');
-        if (content.includes('.uvue')) {
-            fs_extra_1.default.writeFileSync(newFile, content.replace(/\.uvue(['"])/g, '.vue$1'));
-        }
+        const normalized = content
+            .replace(/\r\n/g, '\n')
+            .replace(/\.uvue(['"])/g, '.vue$1');
+        if (normalized !== content)
+            fs_extra_1.default.writeFileSync(newFile, normalized);
     });
 }
 exports.syncExtApiDir = syncExtApiDir;
-function syncExtComponentFile(apiDirs) {
+function syncExtComponentFile(apiDirs, targets = syncTargets) {
     try {
         const { preprocess } = require('../packages/uni-preprocess');
         apiDirs.forEach((apiDir) => {
@@ -96,13 +100,14 @@ function syncExtComponentFile(apiDirs) {
                 const componentDir = `uni-${component.originName}`;
                 (0, fast_glob_1.sync)(path_1.default.join(apiDir, `./${componentDir}/package.json`)).forEach((packageJsonPath) => {
                     const componentsDir = path_1.default.resolve(packageJsonPath, '../components');
-                    syncComponent(componentsDir, component, preprocess, syncTargets);
+                    syncComponent(componentsDir, component, preprocess, targets);
                 });
             });
         });
     }
     catch (error) {
         console.error('[syncExtComponentFile] sync ext component file error:', error);
+        throw error;
     }
 }
 exports.syncExtComponentFile = syncExtComponentFile;
@@ -121,7 +126,7 @@ function syncComponent(componentsDir, component, preprocess, targets) {
         files.forEach((filePath) => {
             const relativePath = path_1.default.relative(componentRoot, filePath);
             const { dir, name, ext } = path_1.default.parse(relativePath);
-            const code = fs_extra_1.default.readFileSync(filePath, 'utf8');
+            const code = fs_extra_1.default.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n');
             // MP 使用 UniElement 类型，与 APP 的辅助文件实现相同。
             const preprocessContext = name === 'useLoadingStyle' && target.context.MP
                 ? { ...target.context, APP: true }
@@ -150,7 +155,14 @@ function syncComponent(componentsDir, component, preprocess, targets) {
                 return;
             }
             if (ext === '.ts' || ext === '.js' || ext === '.uts') {
-                fs_extra_1.default.outputFileSync(path_1.default.resolve(target.path, dir, `${name}.${target.scriptLang}`), preprocessedCode);
+                const targetFilePath = path_1.default.resolve(target.path, dir, `${name}.${target.scriptLang}`);
+                fs_extra_1.default.outputFileSync(targetFilePath, target.scriptLang === 'ts'
+                    ? (0, prettier_1.format)(preprocessedCode, {
+                        ...prettier_1.resolveConfig.sync(targetFilePath),
+                        filepath: targetFilePath,
+                        endOfLine: 'lf',
+                    })
+                    : preprocessedCode);
             }
         });
     });

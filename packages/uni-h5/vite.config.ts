@@ -34,6 +34,7 @@ import {
 import { webVaporComponentStylesPlugin } from '../../scripts/webVaporComponents'
 import { resolveWebVaporComponents } from '../../scripts/webVaporComponentConfig'
 import { checkWebVaporVNodes } from '../../scripts/checkWebVaporVNodes'
+import { createFrameworkTemplateCompiler } from '../../scripts/frameworkBuild'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -261,6 +262,14 @@ export default defineConfig(async () => {
             }
           : {}),
         template: {
+          ...(isX_VAPOR && !isX_VAPOR_SSR_BUILD
+            ? {
+                compiler: createFrameworkTemplateCompiler(
+                  require('@dcloudio/compiler-vapor-web'),
+                  path.resolve(__dirname, '../..')
+                ),
+              }
+            : {}),
           compilerOptions: {
             isNativeTag: realIsH5NativeTag,
             isCustomElement: realIsH5CustomElement,
