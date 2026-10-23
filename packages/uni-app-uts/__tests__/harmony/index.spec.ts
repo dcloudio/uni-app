@@ -123,6 +123,7 @@ describe('harmony plugin init', () => {
 
     expect(mockUts2js).toHaveBeenCalledWith(
       expect.objectContaining({
+        excludeStandardTypeScript: true,
         sharedDataLibName: 'libentry.so',
       })
     )
@@ -152,7 +153,7 @@ describe('harmony plugin init', () => {
     ).not.toContain('vapor-script')
     expect(mockUts2js).toHaveBeenCalledWith(
       expect.objectContaining({
-        excludeStandardTypeScript: true,
+        excludeStandardTypeScript: false,
         uasm: undefined,
         extApi: { collectExtApiUsageAst: mockCollectExtApiUsageAst },
       })

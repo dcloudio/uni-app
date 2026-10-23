@@ -409,7 +409,7 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     expect(config.plugins).toContain(esbuildPlugin)
   })
 
-  test.each(['web', 'mp-weixin', 'app-ios', 'app-harmony'] as const)(
+  test.each(['web', 'mp-weixin'] as const)(
     'does not record script language metadata outside App Vapor (%s)',
     (platform) => {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
@@ -451,29 +451,33 @@ describe('uniUTSUVueJavaScriptPlugin', () => {
     })
   })
 
-  test('keeps the existing Android VDOM UTS behavior', () => {
-    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
-    const plugin = uniUTSUVueJavaScriptPlugin()
-    const transform = getTransform(plugin)
-    const esbuildPlugin = { name: 'vite:esbuild' }
-    const config = { plugins: [esbuildPlugin] }
+  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+    'keeps the existing VDOM UTS behavior on %s',
+    (platform) => {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      process.env.UNI_UTS_PLATFORM = platform
+      const plugin = uniUTSUVueJavaScriptPlugin()
+      const transform = getTransform(plugin)
+      const esbuildPlugin = { name: 'vite:esbuild' }
+      const config = { plugins: [esbuildPlugin] }
 
-    expect(
-      transform.call(
-        {} as any,
-        '<script lang="ts">const value = 1</script>',
-        '/pages/index/index.uvue'
+      expect(
+        transform.call(
+          {} as any,
+          '<script lang="ts">const value = 1</script>',
+          '/pages/index/index.uvue'
+        )
+      ).toEqual(
+        expect.objectContaining({
+          code: '<script lang="uts">const value = 1</script>',
+        })
       )
-    ).toEqual(
-      expect.objectContaining({
-        code: '<script lang="uts">const value = 1</script>',
-      })
-    )
-    if (typeof plugin.configResolved === 'function') {
-      plugin.configResolved(config as any)
+      if (typeof plugin.configResolved === 'function') {
+        plugin.configResolved(config as any)
+      }
+      expect(config.plugins).not.toContain(esbuildPlugin)
     }
-    expect(config.plugins).not.toContain(esbuildPlugin)
-  })
+  )
 
   test('keeps the legacy empty source map for explicit UTS scripts on App VDOM', () => {
     Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')

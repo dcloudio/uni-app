@@ -56,7 +56,7 @@ describe('uni-app x predicates', () => {
     expect(isUniAppXVapor()).toBe(false)
     expect(isUniAppXJsEngine()).toBe(true)
     expect(isUniAppXAndroidJsEngine()).toBe(false)
-    expect(isUniAppXStandardScriptSupported()).toBe(true)
+    expect(isUniAppXStandardScriptSupported()).toBe(false)
   })
 
   test('app x Android vapor js engine predicates', () => {
@@ -91,13 +91,25 @@ describe('uni-app x predicates', () => {
     expect(isUniAppXStandardScriptSupported()).toBe(false)
   })
 
-  test.each(['web', 'mp-weixin', 'app-harmony'] as const)(
+  test.each(['web', 'mp-weixin'] as const)(
     'app x %s supports standard scripts without DOM2',
     (platform) => {
       process.env.UNI_APP_X = 'true'
       process.env.UNI_UTS_PLATFORM = platform
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
 
+      expect(isUniAppXStandardScriptSupported()).toBe(true)
+    }
+  )
+
+  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+    '%s only supports standard scripts in DOM2',
+    (platform) => {
+      process.env.UNI_APP_X = 'true'
+      process.env.UNI_UTS_PLATFORM = platform
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      expect(isUniAppXStandardScriptSupported()).toBe(false)
+      process.env.UNI_APP_X_DOM2 = 'true'
       expect(isUniAppXStandardScriptSupported()).toBe(true)
     }
   )

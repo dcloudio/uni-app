@@ -48,21 +48,26 @@ describe('uts2js standard TypeScript routing', () => {
     ).toBe(false)
   })
 
-  test('keeps TypeScript in uts2js for non-DOM2 builds', () => {
-    const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
-    globalThis.uts2js = runtimeUts2js
+  test.each(['app-android', 'app-ios', 'app-harmony'] as const)(
+    'keeps TypeScript in uts2js for non-DOM2 %s builds',
+    (platform) => {
+      const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])
+      globalThis.uts2js = runtimeUts2js
 
-    uts2js({
-      platform: 'app-android',
-      inputDir: '/project/src',
-      version: 'test',
-      modules: {},
-      scriptMacros,
-    })
+      uts2js({
+        platform,
+        dom2: false,
+        excludeStandardTypeScript: false,
+        inputDir: '/project/src',
+        version: 'test',
+        modules: {},
+        scriptMacros,
+      })
 
-    expect(runtimeUts2js.mock.calls[0][0].exclude).toBeUndefined()
-    expect(runtimeUts2js.mock.calls[0][0].jsonImportMode).toBeUndefined()
-  })
+      expect(runtimeUts2js.mock.calls[0][0].exclude).toBeUndefined()
+      expect(runtimeUts2js.mock.calls[0][0].jsonImportMode).toBeUndefined()
+    }
+  )
 
   test('excludes standard TypeScript without enabling DOM2 transforms', () => {
     const runtimeUts2js = jest.fn((_options: Record<string, any>) => [])

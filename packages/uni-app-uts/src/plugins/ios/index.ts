@@ -86,7 +86,8 @@ export function init() {
         ]),
     resolveUTSCompiler().uts2js({
       dom2: isDom2,
-      excludeStandardTypeScript: true,
+      // VDOM 的 TS 依赖仍按 UTS 编译，仅 DOM2 交给标准 TS 编译链。
+      excludeStandardTypeScript: isDom2,
       platform: 'app-ios',
       inputDir: process.env.UNI_INPUT_DIR,
       version: process.env.UNI_COMPILER_VERSION,
