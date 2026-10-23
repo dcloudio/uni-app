@@ -74,6 +74,14 @@ export interface MiniProgramCompilerOptions {
   }
   component?: {
     /**
+     * 自定义组件宿主节点是否按 Fragment 方式渲染
+     */
+    fragment?: boolean
+    /**
+     * Fragment wrapper 可以接收的原生冒泡事件
+     */
+    fragmentEvents?: string[]
+    /**
      * 是否支持 :host 伪类
      */
     ':host'?: boolean

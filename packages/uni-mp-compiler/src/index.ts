@@ -21,6 +21,7 @@ export type {
 
 export { genExpr } from './codegen'
 export { rewriteExpression } from './transforms/utils'
+export { ATTR_TT_REF } from './transforms/utils'
 export { isForElementNode } from './transforms/vFor'
 export { transformOn } from './transforms/vOn'
 export { transformModel } from './transforms/vModel'
