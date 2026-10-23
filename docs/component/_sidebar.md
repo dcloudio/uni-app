@@ -87,6 +87,7 @@
   * [uni-time-format | 时间格式化](./uni-ui-x/uni-time-format.md)
   * [uni-tab-bar | 选项卡容器](./uni-ui-x/uni-tab.md)
   * [uni-refresh-box | 自定义下拉刷新](./uni-ui-x/uni-refresh-box.md)
+  * [uni-expandable-text | 可展开文本](./uni-ui-x/uni-expandable-text.md)
 * 微信专用组件
   * Skyline
     * 手势系统
