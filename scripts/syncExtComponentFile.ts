@@ -119,12 +119,13 @@ export function syncExtComponentFile(
     apiDirs.forEach((apiDir) => {
       components.forEach((component) => {
         const componentDir = `uni-${component.originName}`
-        sync(path.join(apiDir, `./${componentDir}/package.json`)).forEach(
-          (packageJsonPath) => {
-            const componentsDir = path.resolve(packageJsonPath, '../components')
-            syncComponent(componentsDir, component, preprocess, targets)
-          }
-        )
+        sync(`${componentDir}/package.json`, {
+          cwd: apiDir,
+          absolute: true,
+        }).forEach((packageJsonPath) => {
+          const componentsDir = path.resolve(packageJsonPath, '../components')
+          syncComponent(componentsDir, component, preprocess, targets)
+        })
       })
     })
   } catch (error) {
@@ -151,7 +152,10 @@ function syncComponent(
   )
     ? path.join(componentsDir, component.originName)
     : componentsDir
-  const files = sync(path.join(componentRoot, '**/*'), { onlyFiles: true })
+  // glob 模式固定使用正斜杠，文件路径交给 cwd 和 path.resolve 处理。
+  const files = sync('**/*', { cwd: componentRoot, onlyFiles: true }).map(
+    (file) => path.resolve(componentRoot, file)
+  )
   const originComponentPath = ['.vue', '.uvue']
     .map((ext) => path.join(componentRoot, `${component.originName}${ext}`))
     .find((filePath) => files.includes(filePath))

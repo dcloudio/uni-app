@@ -87,7 +87,9 @@ describe('框架构建可复现性', () => {
   })
 
   test('同步生成的 TS 连续两次输出一致，格式化检查无需再次改写', async () => {
-    const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'framework-sync-'))
+    const temp = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'framework-sync-[fixture]-')
+    )
     try {
       const source = path.join(temp, 'source')
       const output = path.join(temp, 'output')
@@ -100,6 +102,10 @@ describe('框架构建可复现性', () => {
         path.join(source, 'uni-loading/components/loading/element.uts'),
         '\r\nexport class UniLoadingElement { }\r\n'
       )
+      fs.outputFileSync(
+        path.join(source, 'uni-loading/components/loading/loading.uvue'),
+        '<template><view /></template>\r\n<script setup lang="uts">\r\n</script>\r\n'
+      )
       const targets = [
         {
           path: output,
@@ -109,6 +115,13 @@ describe('框架构建可复现性', () => {
         },
       ]
       syncExtComponentFile([source], targets)
+      const component = fs.readFileSync(
+        path.join(output, 'uniloading.vue'),
+        'utf8'
+      )
+      expect(component).not.toContain('\r')
+      expect(component).toContain('lang="ts"')
+      expect(fs.existsSync(path.join(output, 'loading.vue'))).toBe(false)
       const filename = path.join(output, 'element.ts')
       const first = fs.readFileSync(filename, 'utf8')
       expect(first).not.toContain('\r')
