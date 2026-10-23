@@ -33,9 +33,9 @@
     // #ifdef WEB
     class UniCustomEvent<T> {
         detail : T
-        constructor(type : string, detail : T) {
-        // this.type = type
-        this.detail = detail
+        constructor(type : string, options : UniCustomEventOptions<T>) {
+            // this.type = type
+            this.detail = options.detail
         }
     }
     // #endif

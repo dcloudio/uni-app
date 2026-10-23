@@ -18761,8 +18761,8 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
     const timeChangeEventName = `${baseEventName}_time_change`;
     const columnChangeEventName = `${baseEventName}_column_change`;
     class UniCustomEvent3 {
-      constructor(type, detail) {
-        this.detail = detail;
+      constructor(type, options) {
+        this.detail = options.detail;
       }
     }
     class UniPickerCancelEvent extends UniCustomEvent3 {
