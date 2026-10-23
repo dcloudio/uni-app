@@ -24,6 +24,11 @@
   font-family: uni-icon;
 }
 
+.uni-checkbox-svg {
+  width: 16px;
+  height: 16px;
+}
+
 .uni-checkbox-disabled {
   background-color: #e1e1e1;
   border-color: #d1d1d1;

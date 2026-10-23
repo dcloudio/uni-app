@@ -10862,7 +10862,7 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
 const t0$F = template("<img>");
 const t1$k = template("<div class=uni-tabbar__mid>");
 const t2$a = template("<div class=uni-tabbar__iconfont> ");
-const t3$5 = template("<div>");
+const t3$6 = template("<div>");
 const t4$5 = template("<div class=uni-tabbar__label> ");
 const t5$4 = template("<div> ");
 const t6$3 = template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
@@ -11125,7 +11125,7 @@ const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => getIconfontText(_for_item0.value, _for_key0.value),
           () => {
-            const n14 = t3$5();
+            const n14 = t3$6();
             renderEffect(() => {
               setClass(n14, getIconClass(_for_item0.value));
               setStyle(n14, getIconStyle());
@@ -11145,7 +11145,7 @@ const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
             return n14;
           },
           () => createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n19 = t3$5();
+            const n19 = t3$6();
             renderEffect(() => {
               setClass(n19, getIconClass(_for_item0.value));
               setStyle(n19, getIconStyle());
@@ -11207,7 +11207,7 @@ function setLayoutState(state) {
 const t0$E = template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
 const t1$j = template("<div class=uni-mask>");
 const t2$9 = template("<uni-left-window><!><div class=uni-left-window>");
-const t3$4 = template("<uni-right-window><!><div class=uni-right-window>");
+const t3$5 = template("<uni-right-window><!><div class=uni-right-window>");
 const t4$4 = template("<uni-layout><!><uni-content><uni-main></uni-main>");
 const t5$3 = template("<uni-app>", 1);
 const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
@@ -11655,7 +11655,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n34, 2);
         createIf(() => unref(hasRightWindow) && unref(RightWindow), () => {
-          const n33 = t3$4();
+          const n33 = t3$5();
           const n32 = child(n33);
           const n31 = next(n32);
           renderEffect(() => {
@@ -12254,7 +12254,7 @@ function usePageHeadTransparent(headRef, {
 const t0$B = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
 const t1$i = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$8 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
-const t3$3 = template("<i class=uni-btn-icon></i>");
+const t3$4 = template("<i class=uni-btn-icon></i>");
 const t4$3 = template("<div>");
 const t5$2 = template("<i class=uni-loading></i>", 2);
 const t6$2 = template("<img class=uni-page-head__title_image>");
@@ -12533,7 +12533,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
                 return n15;
               },
               () => {
-                const n17 = t3$3();
+                const n17 = t3$4();
                 renderEffect(() => {
                   const _button = _for_item0.value;
                   setStyle(n17, _button.iconStyle);
@@ -12712,7 +12712,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
                 return n54;
               },
               () => {
-                const n56 = t3$3();
+                const n56 = t3$4();
                 renderEffect(() => {
                   const _button = _for_item0.value;
                   setStyle(n56, _button.iconStyle);
@@ -16999,10 +16999,11 @@ class UniCheckboxElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 }
-const t0$w = template("<span uni-text> ", 1);
-const t1$h = template("<span uni-text>");
-const t2$7 = template("<div uni-view class=uni-checkbox><span uni-text> </span>", 1);
-const fontUnicode$1 = "";
+const t0$w = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
+const t1$h = template("<div uni-view>", 1);
+const t2$7 = template("<span uni-text>");
+const t3$3 = template("<div uni-view class=uni-checkbox><div uni-view></div>", 1);
+const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox",
@@ -17037,6 +17038,12 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         return { color: props2.color };
       }
       return {};
+    });
+    const iconColor = computed(() => {
+      if (props2.disabled) {
+        return "currentColor";
+      }
+      return props2.color != "" ? props2.color : "#007aff";
     });
     const group = inject(CHECKBOX_GROUP_KEY, null);
     const labelCtx = inject(LABEL_KEY, null);
@@ -17103,45 +17110,57 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t0$w();
-        const x2 = txt(n2);
-        on$1(n2, "click", withModifiers(handleTap, ["stop"]));
+        const n6 = t1$h();
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setClass(n2, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+          setClass(n6, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n2, unref(activeStyle));
-          setText(x2, normalizeUniText(toDisplayString(_isChecked ? fontUnicode$1 : "")));
+          setStyle(n6, unref(activeStyle));
         });
-        return n2;
+        setInsertionState(n6);
+        createIf(() => unref(isChecked), () => {
+          const n5 = t0$w();
+          const n4 = child(n5);
+          setAttr(n4, "d", iconPath, true);
+          renderEffect(() => setAttr(n4, "fill", unref(iconColor), true));
+          return n5;
+        });
+        on$1(n6, "click", withModifiers(handleTap, ["stop"]));
+        return n6;
       },
       () => {
-        const n11 = t2$7();
-        const n4 = child(n11);
-        const x4 = txt(n4);
+        const n19 = t3$3();
+        const n12 = child(n19);
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setClass(n4, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+          setClass(n12, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n4, unref(activeStyle));
-          setText(x4, normalizeUniText(toDisplayString(_isChecked ? fontUnicode$1 : "")));
+          setStyle(n12, unref(activeStyle));
         });
-        setInsertionState(n11, 1);
+        setInsertionState(n12);
+        createIf(() => unref(isChecked), () => {
+          const n11 = t0$w();
+          const n10 = child(n11);
+          setAttr(n10, "d", iconPath, true);
+          renderEffect(() => setAttr(n10, "fill", unref(iconColor), true));
+          return n11;
+        });
+        setInsertionState(n19, 1);
         createIf(
           () => isStringSlot,
           () => {
-            const n8 = t1$h();
-            setInsertionState(n8);
+            const n16 = t2$7();
+            setInsertionState(n16);
             createSlot(
               "default",
               null,
@@ -17149,20 +17168,20 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n8;
+            return n16;
           },
           () => {
-            const n10 = createSlot();
-            return n10;
+            const n18 = createSlot();
+            return n18;
           },
-          517
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+          1029
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
-        on$1(n11, "click", withModifiers(handleTap, ["stop"]));
-        return n11;
+        on$1(n19, "click", withModifiers(handleTap, ["stop"]));
+        return n19;
       },
-      261
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
+      517
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
     );
     return n0;
   }
