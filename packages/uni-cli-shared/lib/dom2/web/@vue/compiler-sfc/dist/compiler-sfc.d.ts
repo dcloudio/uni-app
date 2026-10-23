@@ -143,6 +143,7 @@ export interface SFCScriptCompileOptions {
    * Force to use of Vapor mode.
    */
   vapor?: boolean;
+  componentType?: "app" | "page" | "component";
 }
 interface ImportBinding {
   isType: boolean;

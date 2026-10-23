@@ -7,6 +7,10 @@ export * from "@vue/runtime-vapor";
 //#region temp/packages/runtime-vapor-web/src/componentId.d.ts
 export declare function withComponentId<T extends Block>(rawCid: string, create: () => T, recycleItem?: boolean): T;
 //#endregion
+//#region temp/packages/runtime-vapor-web/src/page.d.ts
+export declare function setUniPageHooksInitializer(initialize?: (instance: VaporComponentInstance) => void): void;
+export declare function initUniPageHooks(): void;
+//#endregion
 //#region temp/packages/runtime-vapor-web/src/selectorQuery.d.ts
 export declare function querySelectorInComponent(instance: VaporComponentInstance, selector: string): Element | null;
 export declare function querySelectorAllInComponent(instance: VaporComponentInstance, selector: string): Element[];

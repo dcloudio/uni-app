@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const uniShared = require("@dcloudio/uni-shared");
-const shared = require("@vue/shared");
 const Vue = require("vue");
+const shared = require("@vue/shared");
 const vueRouter = require("vue-router");
 const uniI18n = require("@dcloudio/uni-i18n");
 function _interopNamespaceDefault(e2) {
@@ -706,31 +706,6 @@ function getRouteOptions(path, alias = false) {
     );
   }
   return __uniRoutes.find((route) => route.path === path);
-}
-const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
-function isSystemDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
-}
-function getSystemDialogPages(parentPage) {
-  if (!parentPage)
-    return [];
-  return parentPage.$getSystemDialogPages();
-}
-function invokeNewDialogPageHook(page, hook) {
-  const currentPage = getCurrentPage();
-  let shouldInvoke = false;
-  if (!currentPage) {
-    shouldInvoke = true;
-  } else {
-    if (isSystemDialogPage(page)) {
-      const systemDialogPages = getSystemDialogPages(currentPage);
-      shouldInvoke = systemDialogPages.includes(page);
-    } else {
-      const dialogPages = currentPage.getDialogPages();
-      shouldInvoke = dialogPages.includes(page);
-    }
-  }
-  shouldInvoke && invokeHook(page.vm, hook);
 }
 function getPageInstanceByChild(child) {
   var _a;
@@ -5102,7 +5077,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
           const n6 = Vue.next(n5);
           Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
           Vue.setInsertionState(n5);
-          const n4 = Vue.withComponentId("42efa222", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
+          const n4 = Vue.withComponentId("9bbd592a", () => Vue.createDynamicComponent(() => Vue.unref(TopWindow), {
             "navigation-bar-title-text": () => Vue.unref(layoutState).navigationBarTitleText,
             $: [
               () => Vue.unref(windowState)
@@ -5120,12 +5095,12 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = Vue.withComponentId("1b0a2624", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n11 = Vue.withComponentId("1b0a17e4", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n12 = Vue.withComponentId("dbf3501c", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
+              const n11 = Vue.withComponentId("dbf341dc", () => Vue.createComponent(Vue.VaporKeepAlive, {
                 "match-by": "key",
                 cache: () => Vue.unref(routeCache2)
               }, Vue.extend(() => {
-                const n10 = Vue.withComponentId("1b0a166e", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => Vue.unref(routeKey)));
+                const n10 = Vue.withComponentId("dbf34066", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => Vue.unref(routeKey)));
                 return n10;
               }, {
                 _: 1
@@ -5136,7 +5111,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             return n12;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n14 = Vue.withComponentId("1b0a0ee2", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n14 = Vue.withComponentId("dbf338da", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -5159,7 +5134,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             return n20;
           });
           Vue.setInsertionState(n22);
-          const n21 = Vue.withComponentId("1b0936e6", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
+          const n21 = Vue.withComponentId("dbf260de", () => Vue.createDynamicComponent(() => Vue.unref(LeftWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
@@ -5183,7 +5158,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             return n29;
           });
           Vue.setInsertionState(n31);
-          const n30 = Vue.withComponentId("1b085ca4", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
+          const n30 = Vue.withComponentId("dbf1869c", () => Vue.createDynamicComponent(() => Vue.unref(RightWindow), { $: [
             () => Vue.unref(windowState)
           ] }));
           Vue.setStaticTemplateRef(n30, rightWindowRef, null, "rightWindowRef");
@@ -5199,12 +5174,12 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             return Vue.unref(hasPages) && ((_a = Vue.unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n42 = Vue.withComponentId("1b084ca8", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n41 = Vue.withComponentId("1b083ee4", () => Vue.createComponent(Vue.VaporKeepAlive, {
+            const n42 = Vue.withComponentId("dbf176a0", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
+              const n41 = Vue.withComponentId("dbf168dc", () => Vue.createComponent(Vue.VaporKeepAlive, {
                 "match-by": "key",
                 cache: () => Vue.unref(routeCache2)
               }, Vue.extend(() => {
-                const n40 = Vue.withComponentId("1b083da0", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => Vue.unref(routeKey)));
+                const n40 = Vue.withComponentId("dbf16798", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => Vue.unref(routeKey)));
                 return n40;
               }, {
                 _: 1
@@ -5215,7 +5190,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             return n42;
           },
           () => Vue.createIf(() => !Vue.unref(hasPages), () => {
-            const n44 = Vue.withComponentId("1b08362c", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
+            const n44 = Vue.withComponentId("dbf16024", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n44;
           }),
           2309
@@ -5228,7 +5203,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     Vue.setInsertionState(n49, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n48 = Vue.withComponentId("1b082f24", () => Vue.createComponent(_sfc_main$w));
+      const n48 = Vue.withComponentId("dbf1591c", () => Vue.createComponent(_sfc_main$w));
       Vue.applyVShow(n48, () => Vue.unref(showTabBar));
       return n48;
     });
@@ -5890,7 +5865,7 @@ const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => Vue.unref(searchOnClick) && Vue.unref(searchOnClick)($event);
-            const n39 = Vue.withComponentId("b1ddb6c0", () => Vue.createComponent(Vue.unref(Input), {
+            const n39 = Vue.withComponentId("9df031c8", () => Vue.createComponent(Vue.unref(Input), {
               disabled: true,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -5905,7 +5880,7 @@ const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
             const _on_blur = ($event) => Vue.unref(searchOnBlur) && Vue.unref(searchOnBlur)($event);
             const _on_input = ($event) => Vue.unref(searchOnInput) && Vue.unref(searchOnInput)($event);
             const _on_confirm = ($event) => Vue.unref(searchOnConfirm) && Vue.unref(searchOnConfirm)($event);
-            const n41 = Vue.withComponentId("b1dcfacc", () => Vue.createComponent(Vue.unref(Input), {
+            const n41 = Vue.withComponentId("9def75d4", () => Vue.createComponent(Vue.unref(Input), {
               focus: () => Vue.unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: Vue.unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + Vue.unref(navigationBar).searchInput.placeholderColor,
@@ -6056,7 +6031,7 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.withComponentId("64781ad4", () => Vue.createComponent(_sfc_main$r));
+      const n2 = Vue.withComponentId("6c5ca19a", () => Vue.createComponent(_sfc_main$r));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -6067,7 +6042,7 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createSlot();
     Vue.setInsertionState(n8, 1);
     Vue.createIf(() => Vue.unref(isX), () => {
-      const n7 = Vue.withComponentId("6c91a811", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = Vue.withComponentId("708ab3d6", () => Vue.createComponent(Vue.unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     Vue.setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -6184,12 +6159,12 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.withComponentId("20e16be8", () => Vue.createComponent(_sfc_main$s));
+      const n2 = Vue.withComponentId("55c2f8ec", () => Vue.createComponent(_sfc_main$s));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.withComponentId("09680334", () => Vue.createComponent(_sfc_main$q, null, Vue.extend(() => {
-      const n3 = Vue.withComponentId("096802e8", () => Vue.createDynamicComponent(
+    Vue.withComponentId("629c11e2", () => Vue.createComponent(_sfc_main$q, null, Vue.extend(() => {
+      const n3 = Vue.withComponentId("629c1208", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
           () => Vue.unref(pageProps)
@@ -6208,7 +6183,7 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = Vue.withComponentId("0967fbb0-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = Vue.withComponentId("629c15a4-" + _for_item0.value.route, () => Vue.createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -9546,7 +9521,7 @@ const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.watch(() => props2.scrollAnchoring, updateScrollAnchorItem);
     Vue.watch(() => props2.initialScrollBottom, queueLayout);
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
-    const n9 = Vue.withComponentId("79f9bcce", () => Vue.createComponent(__syscom_0, { onScroll: () => onScroll }, {
+    const n9 = Vue.withComponentId("13a1d4d2", () => Vue.createComponent(__syscom_0, { onScroll: () => onScroll }, {
       "refresher": Vue.extend(() => {
         const n7 = Vue.createSlot(
           "refresher",
@@ -10462,7 +10437,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n3);
     const n5 = Vue.next(n4);
     Vue.setInsertionState(n7, n6);
-    const n2 = Vue.withComponentId("02a52c40", () => Vue.createComponent(__syscom_0, {
+    const n2 = Vue.withComponentId("e09e2578", () => Vue.createComponent(__syscom_0, {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -12336,7 +12311,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     );
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
-    const n7 = Vue.withComponentId("2e46ccff", () => Vue.createComponent(__syscom_0, {
+    const n7 = Vue.withComponentId("702235fa", () => Vue.createComponent(__syscom_0, {
       onScroll: () => onScroll,
       onScrollend: () => onScrollEnd
     }, {
@@ -15070,63 +15045,6 @@ const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-function injectLifecycleHook(name, hook, publicThis, instance) {
-  if (shared.isFunction(hook)) {
-    Vue.injectHook(name, hook.bind(publicThis), instance);
-  }
-}
-function initHooks(options, instance, publicThis) {
-  const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
-  mpType === "page" && instance.renderer === "component") {
-    return;
-  }
-  Object.keys(options).forEach((name) => {
-    if (uniShared.isUniLifecycleHook(name, options[name], false)) {
-      const hooks = options[name];
-      if (shared.isArray(hooks)) {
-        hooks.forEach(
-          (hook) => injectLifecycleHook(name, hook, publicThis, instance)
-        );
-      } else {
-        injectLifecycleHook(name, hooks, publicThis, instance);
-      }
-    }
-  });
-  if (mpType === "page") {
-    instance.__isVisible = true;
-    try {
-      let query;
-      query = instance.__pageQuery;
-      const scriptLang = instance.type.__scriptLang;
-      const isUTS = !scriptLang || scriptLang === "uts";
-      if (true) {
-        query = isUTS ? new uniShared.UTSJSONObject(uniShared.decodedQuery(query)) : uniShared.decodedQuery(query);
-      }
-      if (false)
-        ;
-      invokeHook(publicThis, uniShared.ON_LOAD, query);
-      if (!instance.vapor) {
-        delete instance.attrs.__pageQuery;
-      }
-      const $basePage = true ? publicThis.$basePage : publicThis.$page;
-      if (true) {
-        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          if (isDialogPageInstance(getPageInstanceByChild(instance))) {
-            invokeNewDialogPageHook(publicThis.$page, uniShared.ON_SHOW);
-          } else {
-            invokeHook(publicThis, uniShared.ON_SHOW);
-          }
-        }
-      }
-    } catch (e2) {
-      console.error(e2.message + uniShared.LINEFEED + e2.stack);
-    }
-  }
-}
-function applyOptions(options, instance, publicThis) {
-  initHooks(options, instance, publicThis);
-}
 function set(target, key, val) {
   return target[key] = val;
 }
@@ -15250,7 +15168,6 @@ function initApp(app) {
   }
   {
     globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
     globalProperties.$callMethod = $callMethod;
   }
   {

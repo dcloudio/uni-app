@@ -22,6 +22,10 @@ import {
   createComponent,
   //#endif
   getCurrentInstance,
+  //#if _X_VAPOR_ && !_NODE_JS_
+  // @ts-expect-error Web Vapor 专用编译辅助函数
+  initUniPageHooks,
+  //#endif
   nextTick,
   onBeforeActivate,
   onBeforeDeactivate,
@@ -123,6 +127,12 @@ function wrapperComponentSetup(
     if (oldSetup) {
       return oldSetup(props, ctx)
     }
+    //#if _X_VAPOR_ && !_NODE_JS_
+    // 无脚本页面没有编译器注入的入口，也需初始化可见状态；此时模板尚未执行。
+    if (type === 'page') {
+      initUniPageHooks()
+    }
+    //#endif
   }
   if (__X__ && (type === 'page' || type === 'window')) {
     // 只要不是手动设置隔离样式的组件，全部设置为 app-shared

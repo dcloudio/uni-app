@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, onServerPrefetch, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, logError, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -11589,7 +11589,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
           const n6 = next(n5);
           renderEffect(() => setStyle(n5, unref(layoutState).topWindowStyle));
           setInsertionState(n5);
-          const n4 = withComponentId("42efa222", () => createDynamicComponent(() => unref(TopWindow), {
+          const n4 = withComponentId("9bbd592a", () => createDynamicComponent(() => unref(TopWindow), {
             "navigation-bar-title-text": () => unref(layoutState).navigationBarTitleText,
             $: [
               () => unref(windowState)
@@ -11607,12 +11607,12 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n12 = withComponentId("1b0a2624", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n11 = withComponentId("1b0a17e4", () => createComponent$1(VaporKeepAlive, {
+            const n12 = withComponentId("dbf3501c", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
+              const n11 = withComponentId("dbf341dc", () => createComponent$1(VaporKeepAlive, {
                 "match-by": "key",
                 cache: () => unref(routeCache2)
               }, extend$1(() => {
-                const n10 = withComponentId("1b0a166e", () => createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => unref(routeKey)));
+                const n10 = withComponentId("dbf34066", () => createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => unref(routeKey)));
                 return n10;
               }, {
                 _: 1
@@ -11623,7 +11623,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
             return n12;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n14 = withComponentId("1b0a0ee2", () => createDynamicComponent(() => unref(firstPageComponent)));
+            const n14 = withComponentId("dbf338da", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n14;
           }),
           517
@@ -11646,7 +11646,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
             return n20;
           });
           setInsertionState(n22);
-          const n21 = withComponentId("1b0936e6", () => createDynamicComponent(() => unref(LeftWindow), { $: [
+          const n21 = withComponentId("dbf260de", () => createDynamicComponent(() => unref(LeftWindow), { $: [
             () => unref(windowState)
           ] }));
           setStaticTemplateRef(n21, leftWindowRef, null, "leftWindowRef");
@@ -11670,7 +11670,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
             return n29;
           });
           setInsertionState(n31);
-          const n30 = withComponentId("1b085ca4", () => createDynamicComponent(() => unref(RightWindow), { $: [
+          const n30 = withComponentId("dbf1869c", () => createDynamicComponent(() => unref(RightWindow), { $: [
             () => unref(windowState)
           ] }));
           setStaticTemplateRef(n30, rightWindowRef, null, "rightWindowRef");
@@ -11686,12 +11686,12 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
             return unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route);
           },
           () => {
-            const n42 = withComponentId("1b084ca8", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n41 = withComponentId("1b083ee4", () => createComponent$1(VaporKeepAlive, {
+            const n42 = withComponentId("dbf176a0", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
+              const n41 = withComponentId("dbf168dc", () => createComponent$1(VaporKeepAlive, {
                 "match-by": "key",
                 cache: () => unref(routeCache2)
               }, extend$1(() => {
-                const n40 = withComponentId("1b083da0", () => createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => unref(routeKey)));
+                const n40 = withComponentId("dbf16798", () => createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => unref(routeKey)));
                 return n40;
               }, {
                 _: 1
@@ -11702,7 +11702,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
             return n42;
           },
           () => createIf(() => !unref(hasPages), () => {
-            const n44 = withComponentId("1b08362c", () => createDynamicComponent(() => unref(firstPageComponent)));
+            const n44 = withComponentId("dbf16024", () => createDynamicComponent(() => unref(firstPageComponent)));
             return n44;
           }),
           2309
@@ -11715,7 +11715,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
     );
     setInsertionState(n49, 1);
     createIf(() => unref(hasTabBar), () => {
-      const n48 = withComponentId("1b082f24", () => createComponent$1(_sfc_main$F));
+      const n48 = withComponentId("dbf1591c", () => createComponent$1(_sfc_main$F));
       applyVShow(n48, () => unref(showTabBar2));
       return n48;
     });
@@ -11842,6 +11842,9 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
     setup(instance2);
     if (oldSetup) {
       return oldSetup(props2, ctx);
+    }
+    if (type === "page") {
+      initUniPageHooks();
     }
   };
   if (type === "page" || type === "window") {
@@ -12629,7 +12632,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = withComponentId("b1ddb6c0", () => createComponent$1(unref(__syscom_0$2), {
+            const n39 = withComponentId("9df031c8", () => createComponent$1(unref(__syscom_0$2), {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -12644,7 +12647,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = withComponentId("b1dcfacc", () => createComponent$1(unref(__syscom_0$2), {
+            const n41 = withComponentId("9def75d4", () => createComponent$1(unref(__syscom_0$2), {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -13057,7 +13060,7 @@ const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = withComponentId("64781ad4", () => createComponent$1(_sfc_main$A));
+      const n2 = withComponentId("6c5ca19a", () => createComponent$1(_sfc_main$A));
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
@@ -13068,7 +13071,7 @@ const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
     createSlot();
     setInsertionState(n8, 1);
     createIf(() => unref(isX), () => {
-      const n7 = withComponentId("6c91a811", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
+      const n7 = withComponentId("708ab3d6", () => createComponent$1(unref(ResizeSensor), { onResize: () => resize }));
       return n7;
     });
     setStaticTemplateRef(n8, wrapperRef, null, "wrapperRef");
@@ -13185,12 +13188,12 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n8);
     createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = withComponentId("20e16be8", () => createComponent$1(_sfc_main$B));
+      const n2 = withComponentId("55c2f8ec", () => createComponent$1(_sfc_main$B));
       return n2;
     });
     setInsertionState(n8, 1);
-    withComponentId("09680334", () => createComponent$1(_sfc_main$z, null, extend$1(() => {
-      const n3 = withComponentId("096802e8", () => createDynamicComponent(
+    withComponentId("629c11e2", () => createComponent$1(_sfc_main$z, null, extend$1(() => {
+      const n3 = withComponentId("629c1208", () => createDynamicComponent(
         () => unref(pageComponent),
         { $: [
           () => unref(pageProps)
@@ -13209,7 +13212,7 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
     createFor(
       () => getDialogPages(),
       (_for_item0) => {
-        const n7 = withComponentId("0967fbb0-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
+        const n7 = withComponentId("629c15a4-" + _for_item0.value.route, () => createDynamicComponent(() => _for_item0.value.component, {
           style: () => dialogPageStyle,
           "data-type": () => _for_item0.value.type,
           route: () => _for_item0.value.route
@@ -18026,7 +18029,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
       sectionMap.clear();
     });
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
-    const n9 = withComponentId("79f9bcce", () => createComponent$1(__syscom_1, { onScroll: () => onScroll }, {
+    const n9 = withComponentId("13a1d4d2", () => createComponent$1(__syscom_1, { onScroll: () => onScroll }, {
       "refresher": extend$1(() => {
         const n7 = createSlot(
           "refresher",
@@ -19225,7 +19228,7 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
     const n4 = next(n3);
     const n5 = next(n4);
     setInsertionState(n7, n6);
-    const n2 = withComponentId("02a52c40", () => createComponent$1(__syscom_1, {
+    const n2 = withComponentId("e09e2578", () => createComponent$1(__syscom_1, {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -21985,7 +21988,7 @@ const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
       itemInstanceMap.clear();
     });
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
-    const n7 = withComponentId("2e46ccff", () => createComponent$1(__syscom_1, {
+    const n7 = withComponentId("702235fa", () => createComponent$1(__syscom_1, {
       onScroll: () => onScroll,
       onScrollend: () => onScrollEnd
     }, {
@@ -25987,9 +25990,6 @@ function initHooks(options, instance2, publicThis) {
     }
   }
 }
-function applyOptions(options, instance2, publicThis) {
-  initHooks(options, instance2, publicThis);
-}
 function set(target, key, val) {
   return target[key] = val;
 }
@@ -26113,12 +26113,16 @@ function initApp(app) {
   }
   {
     globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
     globalProperties.$callMethod = $callMethod;
   }
+  setUniPageHooksInitializer(initVaporPageHooks);
   {
     invokeCreateVueAppHook(app);
   }
+}
+function initVaporPageHooks(instance2) {
+  const page = instance2;
+  initHooks(page.type, page, page.proxy);
 }
 function initRouter(app) {
   const router2 = createRouter(createRouterOptions());
@@ -29502,6 +29506,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
         clearTimeout(timer.value);
       }
     });
+    initUniPageHooks();
     const _component_picker_view_column = _sfc_main$j;
     const n49 = t1$7();
     const n0 = child(n49);
@@ -29529,7 +29534,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       setText(x2, normalizeUniText(toDisplayString(unref(confirmText))));
     });
     setInsertionState(n47);
-    withComponentId("fcd3e31a", () => createComponent$1(_sfc_main$k, {
+    withComponentId("202ebd77", () => createComponent$1(_sfc_main$k, {
       style: { "flex": "1" },
       onChange: () => handleChange,
       "mask-top-style": () => unref(maskTopStyle),
@@ -29540,7 +29545,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       const n4 = createIf(
         () => unref(mode) == "selector",
         () => {
-          const n9 = withComponentId("fcd3d3a2", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+          const n9 = withComponentId("202ec533", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
             const n6 = createFor(
               () => unref(range),
               (_for_item0, _for_key0) => {
@@ -29575,7 +29580,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
           const n12 = createFor(
             () => unref(range),
             (_for_item0, _for_key0) => {
-              const n17 = withComponentId("9dad04e2-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n17 = withComponentId("34b2a1ea-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n14 = createFor(
                   () => _for_item0.value,
                   (_for_item1, _for_key1) => {
@@ -29613,7 +29618,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       const n18 = createIf(
         () => unref(mode) == "time",
         () => {
-          const n23 = withComponentId("9daced2e", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+          const n23 = withComponentId("34b28a36", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
             const n20 = createFor(
               () => unref(hours),
               (_for_item0, _for_key0) => {
@@ -29634,7 +29639,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
             _: 1
             /* NON_STABLE */
           })));
-          const n27 = withComponentId("9dacde9c", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+          const n27 = withComponentId("34b27ba4", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
             const n24 = createFor(
               () => unref(minutes),
               (_for_item0, _for_key0) => {
@@ -29664,7 +29669,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       const n28 = createIf(
         () => unref(mode) == "date",
         () => {
-          const n33 = withComponentId("9dac2bb2", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+          const n33 = withComponentId("34b1c8ba", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
             const n30 = createFor(
               () => unref(years),
               (_for_item0) => {
@@ -29686,7 +29691,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
             /* NON_STABLE */
           })));
           const n34 = createIf(() => unref(fields) != "year", () => {
-            const n39 = withComponentId("9dac1cb0", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+            const n39 = withComponentId("34b1b9b8", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
               const n36 = createFor(
                 () => unref(monthsText),
                 (_for_item0) => {
@@ -29710,7 +29715,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
             return n39;
           });
           const n40 = createIf(() => unref(fields) == "day", () => {
-            const n45 = withComponentId("9dac0ca8", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+            const n45 = withComponentId("34b1a9b0", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
               const n42 = createFor(
                 () => unref(days),
                 (_for_item0) => {
@@ -30095,6 +30100,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
       uni.$off(failEventName.value, null);
       window.removeEventListener("resize", fixSize);
     });
+    initUniPageHooks();
     const n25 = t6$1();
     const n0 = child(n25);
     const n24 = next(n0);
@@ -30878,6 +30884,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
     onResize(() => {
       getSystemInfo2();
     });
+    initUniPageHooks();
     const _component_input = __syscom_0$2;
     const _component_loading = _sfc_main$p;
     const _component_scroll_view = __syscom_1;
@@ -30899,7 +30906,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
       setStyle(n6, mapBoxStyleCom.value);
     });
     setInsertionState(n6, n5);
-    withComponentId("294f91b0", () => createComponent$1(__syscom_0, {
+    withComponentId("ecc07898", () => createComponent$1(__syscom_0, {
       class: "uni-choose-location-map",
       id: () => mapId.value,
       latitude: () => latitude.value,
@@ -30962,7 +30969,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
       setInsertionState(n16, 1);
       const _on_focus = () => isFocus.value = true;
       const _on_confirm = () => poiSearch("poiSearch");
-      withComponentId("00a30941", () => createComponentWithFallback(_component_input, {
+      withComponentId("ab4dd086", () => createComponentWithFallback(_component_input, {
         modelValue: () => searchValue.value,
         "onUpdate:modelValue": () => (_value) => searchValue.value = _value,
         type: "text",
@@ -30981,7 +30988,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
         return n19;
       });
       setInsertionState(n50, 1);
-      const n49 = withComponentId("00a318c9", () => createComponentWithFallback(_component_scroll_view, {
+      const n49 = withComponentId("ab4db176", () => createComponentWithFallback(_component_scroll_view, {
         "scroll-with-animation": false,
         direction: "vertical",
         "scroll-top": () => scrollTop.value,
@@ -31018,7 +31025,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
               () => {
                 const n31 = t3$1();
                 setInsertionState(n31);
-                withComponentId("00a3852a", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
+                withComponentId("ab4cd8b4", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
                 return n31;
               },
               () => {
@@ -31074,7 +31081,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
           () => {
             const n48 = t3$1();
             setInsertionState(n48);
-            withComponentId("00a3fa5d", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
+            withComponentId("ab4bee4e", () => createComponentWithFallback(_component_loading, { class: () => ["uni-choose-location-poi-search-loading-item", [darkClassCom.value]] }));
             return n48;
           },
           null,
@@ -31696,6 +31703,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       uni.$emit(successEventName.value, JSON.stringify(ret));
       return false;
     });
+    initUniPageHooks();
     const _component_textarea = __syscom_0$1;
     const _component_scroll_view = __syscom_1;
     const n24 = t4();
@@ -31725,7 +31733,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => editable.value,
       () => {
-        const n6 = withComponentId("30449bdb", () => createComponentWithFallback(_component_textarea, {
+        const n6 = withComponentId("d0d6a152", () => createComponentWithFallback(_component_textarea, {
           modelValue: () => content.value,
           "onUpdate:modelValue": () => (_value) => content.value = _value,
           class: "uni-modal-dialog__textarea",
@@ -31740,7 +31748,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
         return n6;
       },
       () => createIf(() => content.value.length > 0, () => {
-        const n9 = withComponentId("3044a798", () => createComponentWithFallback(_component_scroll_view, {
+        const n9 = withComponentId("d0d689d8", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-modal-dialog__scroll",
           "show-scrollbar": "true",
           style: () => ({ maxHeight: maxScrollHeight.value })
@@ -31983,6 +31991,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       uni.$off(successEventName.value, null);
       uni.$off(failEventName.value, null);
     });
+    initUniPageHooks();
     const n5 = t1$3();
     const n4 = child(n5);
     renderEffect(() => {
@@ -31991,7 +32000,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("337c75dd", () => createComponent$1(_sfc_main$p, {
+    withComponentId("63bf2f59", () => createComponent$1(_sfc_main$p, {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -33043,7 +33052,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
     createIf(() => !loadingFinished.value, () => {
       const n5 = t0$3();
       setInsertionState(n5);
-      withComponentId("0c669e04", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
+      withComponentId("05b3a380", () => createComponentWithFallback(_component_loading, { style: { "margin": "auto", "width": "54px", "height": "54px", "border-color": "#d3d3d3" } }));
       return n5;
     });
     setInsertionState(n10, 3);
@@ -33310,8 +33319,9 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
     onBackPress((options) => {
       return false;
     });
+    initUniPageHooks();
     const _component_swiper_item = _sfc_main$b;
-    const n8 = withComponentId("365d9a5d", () => createComponent$1(_sfc_main$c, {
+    const n8 = withComponentId("0e721061", () => createComponent$1(_sfc_main$c, {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -33327,11 +33337,11 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => unref(swiperItems),
             (_for_item0) => {
-              const n7 = withComponentId("15606b35-" + _for_item0.value.slot, () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("3a2f7039-" + _for_item0.value.slot, () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRenderItem(_for_item0.value.index),
                   () => {
-                    const n6 = withComponentId("15606f35-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("3a2f7439-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_item0.value.index,
                       src: () => _for_item0.value.src,
                       longPressAction: () => unref(longPressAction),
@@ -33479,7 +33489,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
       emit2("previewImageFinish", e2);
     };
     const _component_swiper_item = _sfc_main$b;
-    const n8 = withComponentId("09f35926", () => createComponent$1(_sfc_main$c, {
+    const n8 = withComponentId("342d51a2", () => createComponent$1(_sfc_main$c, {
       class: "uni-preview-image-swiper",
       style: { "flex": "1", "background-color": "black" },
       "indicator-dots": false,
@@ -33495,11 +33505,11 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
           const n2 = createFor(
             () => props2.urls,
             (_for_item0, _for_key0) => {
-              const n7 = withComponentId("5a819f9d", () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
+              const n7 = withComponentId("43c12dce", () => createComponentWithFallback(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, extend$1(() => {
                 const n4 = createIf(
                   () => shouldRender(_for_key0.value),
                   () => {
-                    const n6 = withComponentId("5a81a624", () => createComponent$1(UniPreviewImageItem, {
+                    const n6 = withComponentId("43c120c0", () => createComponent$1(UniPreviewImageItem, {
                       index: () => _for_key0.value,
                       src: () => _for_item0.value,
                       longPressAction: () => props2.longPressAction,
@@ -33905,6 +33915,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       const systemInfo = uni.getSystemInfoSync();
       isLandscape2.value = systemInfo.deviceOrientation == "landscape";
     });
+    initUniPageHooks();
     const _setTemplateRef = createTemplateRefSetter();
     const n15 = t0();
     const n4 = child(n15);
@@ -33923,7 +33934,7 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     const n10 = child(n11);
     const n12 = next(n11);
     setInsertionState(n4, n3);
-    const n0 = withComponentId("1fba92ed", () => createComponent$1(__syscom_0, {
+    const n0 = withComponentId("4a34dd69", () => createComponent$1(__syscom_0, {
       class: "uni-open-location-map",
       id: () => unref(mapId),
       latitude: () => unref(latitude),

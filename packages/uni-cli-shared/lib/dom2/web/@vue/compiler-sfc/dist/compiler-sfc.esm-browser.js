@@ -44683,6 +44683,7 @@ function compileScript(sfc, options) {
 		returned = vapor && !ssr && hasAwait ? `return () => {${code}}` : code;
 		if (cssModuleBindings.length) returned = `{\n${cssModuleBindings.join("\n")}\n${returned}\n}`;
 	} else returned = `() => {}`;
+	if (vapor && !ssr && options.componentType === "page") ctx.s.appendRight(endOffset, `\n;${ctx.helper("initUniPageHooks")}()\n`);
 	if (!inlineMode && true) ctx.s.appendRight(endOffset, `\nconst __returned__ = ${returned}\nObject.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\nreturn __returned__\n}\n\n`);
 	else ctx.s.appendRight(endOffset, `\n${vapor && !ssr && inlineMode && !(!sfc.template && ctx.hasDefaultExportRender) ? `` : `return `}${returned}\n}\n\n`);
 	const genDefaultAs = options.genDefaultAs ? `const ${options.genDefaultAs} =` : `export default`;

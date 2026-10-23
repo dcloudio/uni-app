@@ -391,6 +391,9 @@ describe('initPluginVueOptions', () => {
       'h5'
     )
     pagesCacheSet.add('pages/index/index')
+    const helpers = jest
+      .spyOn(require('../../uni-cli-shared/src/utils'), 'requireUniHelpers')
+      .mockReturnValue({})
     try {
       const vueOptions = initPluginVueOptions(
         { inputDir } as any,
@@ -402,7 +405,19 @@ describe('initPluginVueOptions', () => {
       )
       expect(isUniPage(path.join(inputDir, 'windows/top.uvue'))).toBe(true)
       expect(isUniPage(path.join(inputDir, 'components/App.uvue'))).toBe(false)
+      // 样式接收范围包括窗口，但页面生命周期只能给真正的页面注入。
+      const { extraOptions } = vueOptions.script as any
+      expect(
+        extraOptions({
+          filename: path.join(inputDir, 'pages/index/index.uvue'),
+        }).componentType
+      ).toBe('page')
+      expect(
+        extraOptions({ filename: path.join(inputDir, 'windows/top.uvue') })
+          .componentType
+      ).toBe('component')
     } finally {
+      helpers.mockRestore()
       pagesCacheSet.clear()
       cachedPages.forEach((file) => pagesCacheSet.add(file))
       windowsCacheSet.clear()

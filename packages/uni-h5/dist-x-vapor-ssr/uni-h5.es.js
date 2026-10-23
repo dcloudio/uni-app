@@ -1,7 +1,7 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { isArray, isString, extend, isFunction, capitalize, camelize, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, openBlock, createBlock, createVNode, inject, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, defineComponent as defineComponent$2, mergeProps, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, isInSSRComponentSetup, injectHook, useAttrs as useAttrs$1, useSlots, renderSlot, logError } from "vue";
+import { isArray, isString, extend, isFunction, capitalize, camelize, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderDynamicComponent, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -534,31 +534,6 @@ function getRouteOptions(path, alias = false) {
     );
   }
   return __uniRoutes.find((route) => route.path === path);
-}
-const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
-function isSystemDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
-}
-function getSystemDialogPages(parentPage) {
-  if (!parentPage)
-    return [];
-  return parentPage.$getSystemDialogPages();
-}
-function invokeNewDialogPageHook(page, hook) {
-  const currentPage = getCurrentPage();
-  let shouldInvoke = false;
-  if (!currentPage) {
-    shouldInvoke = true;
-  } else {
-    if (isSystemDialogPage(page)) {
-      const systemDialogPages = getSystemDialogPages(currentPage);
-      shouldInvoke = systemDialogPages.includes(page);
-    } else {
-      const dialogPages = currentPage.getDialogPages();
-      shouldInvoke = dialogPages.includes(page);
-    }
-  }
-  shouldInvoke && invokeHook(page.vm, hook);
 }
 function getPageInstanceByChild(child) {
   var _a;
@@ -17250,63 +17225,6 @@ const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-function injectLifecycleHook(name, hook, publicThis, instance) {
-  if (isFunction(hook)) {
-    injectHook(name, hook.bind(publicThis), instance);
-  }
-}
-function initHooks(options, instance, publicThis) {
-  const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
-  mpType === "page" && instance.renderer === "component") {
-    return;
-  }
-  Object.keys(options).forEach((name) => {
-    if (isUniLifecycleHook(name, options[name], false)) {
-      const hooks = options[name];
-      if (isArray(hooks)) {
-        hooks.forEach(
-          (hook) => injectLifecycleHook(name, hook, publicThis, instance)
-        );
-      } else {
-        injectLifecycleHook(name, hooks, publicThis, instance);
-      }
-    }
-  });
-  if (mpType === "page") {
-    instance.__isVisible = true;
-    try {
-      let query;
-      query = instance.__pageQuery;
-      const scriptLang = instance.type.__scriptLang;
-      const isUTS = !scriptLang || scriptLang === "uts";
-      if (true) {
-        query = isUTS ? new UTSJSONObject(decodedQuery(query)) : decodedQuery(query);
-      }
-      if (false)
-        ;
-      invokeHook(publicThis, ON_LOAD, query);
-      if (!instance.vapor) {
-        delete instance.attrs.__pageQuery;
-      }
-      const $basePage = true ? publicThis.$basePage : publicThis.$page;
-      if (true) {
-        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
-          if (isDialogPageInstance(getPageInstanceByChild(instance))) {
-            invokeNewDialogPageHook(publicThis.$page, ON_SHOW);
-          } else {
-            invokeHook(publicThis, ON_SHOW);
-          }
-        }
-      }
-    } catch (e2) {
-      console.error(e2.message + LINEFEED + e2.stack);
-    }
-  }
-}
-function applyOptions(options, instance, publicThis) {
-  initHooks(options, instance, publicThis);
-}
 function set(target, key, val) {
   return target[key] = val;
 }
@@ -17430,7 +17348,6 @@ function initApp(app) {
   }
   {
     globalProperties.$set = set;
-    globalProperties.$applyOptions = applyOptions;
     globalProperties.$callMethod = $callMethod;
   }
   {

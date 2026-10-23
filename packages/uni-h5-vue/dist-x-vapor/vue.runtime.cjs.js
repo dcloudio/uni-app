@@ -20655,6 +20655,16 @@ function withComponentId(rawCid, create, recycleItem = false) {
 	}
 }
 //#endregion
+//#region packages/runtime-vapor-web/src/page.ts
+let uniPageHooksInitializer;
+function setUniPageHooksInitializer(initialize) {
+	uniPageHooksInitializer = initialize;
+}
+function initUniPageHooks() {
+	const instance = getCurrentInstance();
+	if (instance && instance.$pageInstance === instance && uniPageHooksInitializer) uniPageHooksInitializer(instance);
+}
+//#endregion
 //#region packages/runtime-vapor-web/src/selectorQuery.ts
 function querySelectorInComponent(instance, selector) {
 	return query(instance, selector);
@@ -21864,6 +21874,7 @@ exports.hydrateOnVisible = hydrateOnVisible;
 exports.initCustomFormatter = initCustomFormatter;
 exports.initDirectivesForSSR = initDirectivesForSSR;
 exports.initFeatureFlags = initFeatureFlags;
+exports.initUniPageHooks = initUniPageHooks;
 exports.inject = inject;
 exports.injectHook = injectHook;
 exports.insert = insert;
@@ -22079,6 +22090,7 @@ exports.setStyle = setStyle;
 exports.setTemplateRefBinding = setTemplateRefBinding;
 exports.setText = setText;
 exports.setTransitionHooks = setTransitionHooks;
+exports.setUniPageHooksInitializer = setUniPageHooksInitializer;
 exports.setValue = setValue;
 exports.setVarsOnNode = setVarsOnNode;
 exports.setViewDynamicProps = setViewDynamicProps;
