@@ -80,7 +80,7 @@ function syncExtApiDir(sourceDir, outputDir) {
         fs_extra_1.default.renameSync(file, file + '.ts');
     });
     (0, fast_glob_1.sync)('**/*.{vue,uvue}', { absolute: true, cwd: outputDir }).forEach((file) => {
-        const newFile = file.replace('.uvue', '.vue');
+        const newFile = file.replace(/\.uvue$/, '.vue');
         if (newFile !== file)
             fs_extra_1.default.renameSync(file, newFile);
         const content = fs_extra_1.default.readFileSync(newFile, 'utf8');

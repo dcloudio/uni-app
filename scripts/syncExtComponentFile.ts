@@ -99,7 +99,7 @@ export function syncExtApiDir(sourceDir: string, outputDir: string) {
   })
   sync('**/*.{vue,uvue}', { absolute: true, cwd: outputDir }).forEach(
     (file) => {
-      const newFile = file.replace('.uvue', '.vue')
+      const newFile = file.replace(/\.uvue$/, '.vue')
       if (newFile !== file) fs.renameSync(file, newFile)
       const content = fs.readFileSync(newFile, 'utf8')
       const normalized = content

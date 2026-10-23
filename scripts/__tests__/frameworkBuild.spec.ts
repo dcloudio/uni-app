@@ -56,8 +56,19 @@ describe('框架构建可复现性', () => {
     expect(isUniPage).toHaveBeenCalledWith('/repo/first/Example.vue')
   })
 
+  test.each([
+    ['C:\\Repo', 'c:/repo/src/Example.vue'],
+    ['\\\\Server\\Share\\Repo', '//server/share/repo/src/Example.vue'],
+  ])('Windows 根目录 %s 按 Windows 规则计算相对路径', (root, filename) => {
+    const compile = jest.fn((_source, options) => options)
+    const compiler = createFrameworkTemplateCompiler({ compile }, root)
+    expect(compiler.compile('', { filename }).filename).toBe('src/Example.vue')
+  })
+
   test('外部 SFC 同步统一换行，连续同步输出一致', () => {
-    const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'framework-sfc-'))
+    const temp = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'framework-sfc.uvue-[fixture]-')
+    )
     try {
       const source = path.join(temp, 'source')
       const output = path.join(temp, 'output')
