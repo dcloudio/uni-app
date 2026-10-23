@@ -5,7 +5,7 @@
   },
   "files": {
     "app-ios/index.uts": {
-      "md5": "3134e94f54ea061ea2e6440ceec9cebf"
+      "md5": "f377d107174bf827acd5d8411dd786ad"
     },
     "common/test/test.uts": {
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
@@ -14,7 +14,7 @@
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "interface.uts": {
-      "md5": "4821d45870be9af550787418f7a4c34c"
+      "md5": "ed49219d1803322afc0ac1ef6365f373"
     },
     "package.json": {
       "md5": "9595031a0d4158abb72060cdf3a200c1"

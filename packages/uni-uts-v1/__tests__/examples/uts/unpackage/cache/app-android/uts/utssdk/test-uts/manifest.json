@@ -5,7 +5,7 @@
   },
   "files": {
     "app-android/index.uts": {
-      "md5": "6958ca9d5c365d041dd72dc46091b839"
+      "md5": "296b0202e9f2d5dad603ffb1ab2fca4e"
     },
     "common/test/test.uts": {
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
@@ -14,7 +14,7 @@
       "md5": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "interface.uts": {
-      "md5": "4821d45870be9af550787418f7a4c34c"
+      "md5": "ed49219d1803322afc0ac1ef6365f373"
     },
     "package.json": {
       "md5": "9595031a0d4158abb72060cdf3a200c1"
