@@ -2498,12 +2498,20 @@ function rerender(id, newRender) {
 function reload(id, newComp) {
 	const record = map.get(id);
 	if (!record) return;
+	if (typeof window !== "undefined" && record.initialDef.__vapor && record.initialDef.__mpType === "page") {
+		const setupPage = window.__setupPage;
+		if (setupPage) newComp = setupPage(newComp);
+	}
 	newComp = normalizeClassComponent(newComp);
 	const isVapor = record.initialDef.__vapor;
 	updateComponentDef(record.initialDef, newComp);
 	const instances = [...record.instances];
 	if (isVapor && newComp.__vapor && !instances.some((instance) => instance.parent && !instance.parent.vapor) && !instances.some((i) => i.ceReload)) {
-		for (const instance of instances) if (instance.root && instance.root.ce && instance !== instance.root) instance.root.ce._removeChildStyle(instance.type);
+		for (const instance of instances) {
+			const oldComp = normalizeClassComponent(instance.type);
+			if (oldComp !== record.initialDef) updateComponentDef(oldComp, newComp);
+			if (instance.root && instance.root.ce && instance !== instance.root) instance.root.ce._removeChildStyle(instance.type);
+		}
 		const dirtyInstances = new Set(instances);
 		const rerenderedParents = /* @__PURE__ */ new Set();
 		runWithHmrUpdating(() => {
