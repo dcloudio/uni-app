@@ -42,8 +42,8 @@
 
 | 合法值 | 兼容性 |
 | :- |  :-: |
-| switch | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |
-| checkbox | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x |
+| switch | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| checkbox | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 type为checkbox只有微信小程序和Web平台支持。一般建议使用标准的[checkbox组件](checkbox-group.md)
 
