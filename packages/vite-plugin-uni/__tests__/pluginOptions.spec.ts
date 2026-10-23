@@ -65,9 +65,9 @@ describe('initPluginVueOptions', () => {
   test.each([
     ['android-vdom', 'app-android', false, false, ['typescript', 'decorators']],
     ['android-vapor', 'app-android', true, true, undefined],
-    ['ios-vdom', 'app-ios', false, false, ['decorators']],
+    ['ios-vdom', 'app-ios', false, false, ['typescript', 'decorators']],
     ['ios-vapor', 'app-ios', true, true, undefined],
-    ['harmony-vdom', 'app-harmony', false, false, ['decorators']],
+    ['harmony-vdom', 'app-harmony', false, false, ['typescript', 'decorators']],
     ['harmony-vapor', 'app-harmony', true, true, undefined],
     ['web', 'web', false, false, ['decorators']],
     ['mp', 'mp-weixin', false, false, ['decorators']],
@@ -203,8 +203,14 @@ describe('initPluginVueOptions', () => {
     expect(vueOptions.template).not.toHaveProperty('vaporCompiler')
   })
 
-  test.each(['web', 'mp-weixin', 'app-ios', 'app-harmony'] as const)(
-    'uses script lang parser semantics on %s',
+  test.each([
+    'web',
+    'mp-weixin',
+    'app-android',
+    'app-ios',
+    'app-harmony',
+  ] as const)(
+    'preserves the platform script parser behavior on %s',
     (platform) => {
       process.env.UNI_APP_X = 'true'
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
@@ -232,7 +238,12 @@ describe('initPluginVueOptions', () => {
           })
       }
 
-      expect(compile('js')).toThrow()
+      if (platform === 'web' || platform === 'mp-weixin') {
+        expect(compile('js')).toThrow()
+      } else {
+        // App VDOM 保持历史 UTS 解析规则，不按标准 JS/TS 区分解析器。
+        expect(compile('js')).not.toThrow()
+      }
       expect(compile('ts')).not.toThrow()
       expect(compile('uts')).not.toThrow()
     }

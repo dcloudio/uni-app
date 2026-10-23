@@ -141,7 +141,7 @@ export function uniUTSUVueJavaScriptPlugin(
         if (!langMatch) {
           result = `<script${attributes} lang="uts">`
         } else if (lang === 'ts') {
-          // Android VDOM 模式下，TypeScript 继续由 uts2js 处理。
+          // App VDOM 将 lang="ts" 归一为 UTS，保持各平台原有的 UTS 编译链。
           result = match.replace(langMatch[0], `${langMatch[1]}lang="uts"`)
         } else {
           result = match
