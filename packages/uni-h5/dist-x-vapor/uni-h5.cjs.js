@@ -4394,7 +4394,7 @@ function getRealPath(filePath) {
 const t0$w = Vue.template("<img>");
 const t1$c = Vue.template("<div class=uni-tabbar__mid>");
 const t2$4 = Vue.template("<div class=uni-tabbar__iconfont> ");
-const t3$3 = Vue.template("<div>");
+const t3$4 = Vue.template("<div>");
 const t4$2 = Vue.template("<div class=uni-tabbar__label> ");
 const t5$2 = Vue.template("<div> ");
 const t6$1 = Vue.template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
@@ -4648,7 +4648,7 @@ const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.createIf(
           () => getIconfontText(_for_item0.value, _for_key0.value),
           () => {
-            const n14 = t3$3();
+            const n14 = t3$4();
             Vue.renderEffect(() => {
               Vue.setClass(n14, getIconClass(_for_item0.value));
               Vue.setStyle(n14, getIconStyle());
@@ -4668,7 +4668,7 @@ const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
             return n14;
           },
           () => Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n19 = t3$3();
+            const n19 = t3$4();
             Vue.renderEffect(() => {
               Vue.setClass(n19, getIconClass(_for_item0.value));
               Vue.setStyle(n19, getIconStyle());
@@ -4723,7 +4723,7 @@ const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
 const t0$v = Vue.template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
 const t1$b = Vue.template("<div class=uni-mask>");
 const t2$3 = Vue.template("<uni-left-window><!><div class=uni-left-window>");
-const t3$2 = Vue.template("<uni-right-window><!><div class=uni-right-window>");
+const t3$3 = Vue.template("<uni-right-window><!><div class=uni-right-window>");
 const t4$1 = Vue.template("<uni-layout><!><uni-content><uni-main></uni-main>");
 const t5$1 = Vue.template("<uni-app>", 1);
 const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
@@ -5143,7 +5143,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n34, 2);
         Vue.createIf(() => Vue.unref(hasRightWindow) && Vue.unref(RightWindow), () => {
-          const n33 = t3$2();
+          const n33 = t3$3();
           const n32 = Vue.child(n33);
           const n31 = Vue.next(n32);
           Vue.renderEffect(() => {
@@ -5493,7 +5493,7 @@ function usePageHeadTransparent(headRef, {
 const t0$s = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
 const t1$a = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
-const t3$1 = Vue.template("<i class=uni-btn-icon></i>");
+const t3$2 = Vue.template("<i class=uni-btn-icon></i>");
 const t4 = Vue.template("<div>");
 const t5 = Vue.template("<i class=uni-loading></i>", 2);
 const t6 = Vue.template("<img class=uni-page-head__title_image>");
@@ -5766,7 +5766,7 @@ const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
                 return n15;
               },
               () => {
-                const n17 = t3$1();
+                const n17 = t3$2();
                 Vue.renderEffect(() => {
                   const _button = _for_item0.value;
                   Vue.setStyle(n17, _button.iconStyle);
@@ -5945,7 +5945,7 @@ const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
                 return n54;
               },
               () => {
-                const n56 = t3$1();
+                const n56 = t3$2();
                 Vue.renderEffect(() => {
                   const _button = _for_item0.value;
                   Vue.setStyle(n56, _button.iconStyle);
@@ -8581,8 +8581,8 @@ class UniCheckboxElement extends UniViewElement {
 const t0$n = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
 const t1$9 = Vue.template("<div uni-view>", 1);
 const t2$1 = Vue.template("<span uni-text>");
-const t3 = Vue.template("<div uni-view class=uni-checkbox><div uni-view></div>", 1);
-const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+const t3$1 = Vue.template("<div uni-view class=uni-checkbox><div uni-view></div>", 1);
+const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox",
@@ -8674,7 +8674,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.createIf(() => Vue.unref(isChecked), () => {
           const n5 = t0$n();
           const n4 = Vue.child(n5);
-          Vue.setAttr(n4, "d", iconPath, true);
+          Vue.setAttr(n4, "d", iconPath$1, true);
           Vue.renderEffect(() => Vue.setAttr(n4, "fill", Vue.unref(iconColor), true));
           return n5;
         });
@@ -8682,7 +8682,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         return n6;
       },
       () => {
-        const n19 = t3();
+        const n19 = t3$1();
         const n12 = Vue.child(n19);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
@@ -8699,7 +8699,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.createIf(() => Vue.unref(isChecked), () => {
           const n11 = t0$n();
           const n10 = Vue.child(n11);
-          Vue.setAttr(n10, "d", iconPath, true);
+          Vue.setAttr(n10, "d", iconPath$1, true);
           Vue.renderEffect(() => Vue.setAttr(n10, "fill", Vue.unref(iconColor), true));
           return n11;
         });
@@ -10641,10 +10641,11 @@ class UniRadioElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setRadioChecked(val);
   }
 }
-const t0$8 = Vue.template("<span uni-text> ", 1);
-const t1$3 = Vue.template("<span uni-text>");
-const t2 = Vue.template("<div uni-view class=uni-radio><span uni-text> </span>", 1);
-const fontUnicode = "";
+const t0$8 = Vue.template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
+const t1$3 = Vue.template("<div uni-view>", 1);
+const t2 = Vue.template("<span uni-text>");
+const t3 = Vue.template("<div uni-view class=uni-radio><div uni-view></div>", 1);
+const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "radio",
@@ -10730,47 +10731,57 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => !hasDefaultSlot,
       () => {
-        const n2 = t0$8();
-        const x2 = Vue.txt(n2);
-        Vue.on(n2, "click", Vue.withModifiers(handleTap, ["stop"]));
+        const n6 = t1$3();
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
-          Vue.setClass(n2, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
+          Vue.setClass(n6, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
             [!_disabled, __props.iconClass]
           )]);
-          Vue.setStyle(n2, Vue.unref(activeStyle));
-          Vue.setText(x2, Vue.normalizeUniText(Vue.toDisplayString(_isChecked ? fontUnicode : "")));
+          Vue.setStyle(n6, Vue.unref(activeStyle));
         });
-        return n2;
+        Vue.setInsertionState(n6);
+        Vue.createIf(() => Vue.unref(isChecked), () => {
+          const n5 = t0$8();
+          const n4 = Vue.child(n5);
+          Vue.setAttr(n4, "d", iconPath, true);
+          return n5;
+        });
+        Vue.on(n6, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n6;
       },
       () => {
-        const n11 = t2();
-        const n4 = Vue.child(n11);
-        const x4 = Vue.txt(n4);
+        const n19 = t3();
+        const n12 = Vue.child(n19);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
-          Vue.setClass(n4, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
+          Vue.setClass(n12, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
             [!_disabled, __props.iconClass]
           )]);
-          Vue.setStyle(n4, Vue.unref(activeStyle));
-          Vue.setText(x4, Vue.normalizeUniText(Vue.toDisplayString(_isChecked ? fontUnicode : "")));
+          Vue.setStyle(n12, Vue.unref(activeStyle));
         });
-        Vue.setInsertionState(n11, 1);
+        Vue.setInsertionState(n12);
+        Vue.createIf(() => Vue.unref(isChecked), () => {
+          const n11 = t0$8();
+          const n10 = Vue.child(n11);
+          Vue.setAttr(n10, "d", iconPath, true);
+          return n11;
+        });
+        Vue.setInsertionState(n19, 1);
         Vue.createIf(
           () => isStringSlot,
           () => {
-            const n8 = t1$3();
-            Vue.setInsertionState(n8);
+            const n16 = t2();
+            Vue.setInsertionState(n16);
             Vue.createSlot(
               "default",
               null,
@@ -10778,20 +10789,20 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n8;
+            return n16;
           },
           () => {
-            const n10 = Vue.createSlot();
-            return n10;
+            const n18 = Vue.createSlot();
+            return n18;
           },
-          517
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+          1029
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
-        Vue.on(n11, "click", Vue.withModifiers(handleTap, ["stop"]));
-        return n11;
+        Vue.on(n19, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n19;
       },
-      261
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
+      517
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
     );
     return n0;
   }
