@@ -29,6 +29,7 @@
   * [设置tabBar](set-tab-bar.md)
   * [页面下拉刷新](pull-down-refresh.md)
   * [将页面滚动到指定位置](page-scroll-to.md)
+  <!-- * [ScrollViewContext](scrollviewcontext.md) -->
   * [监听中间按钮的点击事件](on-tab-bar-mid-button-tap.md)
   * [窗口](window.md)
   * [宽屏适配](wide-screen-adaptation.md)
