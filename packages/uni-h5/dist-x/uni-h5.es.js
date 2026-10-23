@@ -31829,7 +31829,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
           },
           fail() {
             var _a;
-            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new PreviewImageErrorImpl(1101001, UniErrorPreviewImage));
+            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new UniError("uni-previewImage", 1101001, "user cancel"));
             uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 });
           }
         });
@@ -32750,7 +32750,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const UniErrorPreviewImage$1 = "uni-previewImage";
+const UniErrorPreviewImage = "uni-previewImage";
 const PreviewImageUniErrors = /* @__PURE__ */ new Map([
   /**
    * 用户取消
@@ -32777,18 +32777,18 @@ const PreviewImageUniErrors = /* @__PURE__ */ new Map([
    */
   [1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
 ]);
-let PreviewImageErrorImpl$1 = class PreviewImageErrorImpl2 extends UniError {
+class PreviewImageErrorImpl extends UniError {
   constructor(errCode, uniErrorSubject) {
     super();
     this.errSubject = uniErrorSubject;
     this.errCode = errCode;
     this.errMsg = PreviewImageUniErrors.get(errCode) ?? "";
   }
-};
+}
 function __previewImage(option) {
   var _a, _b;
   if (option.urls.length == 0) {
-    let error = new PreviewImageErrorImpl$1(1001, UniErrorPreviewImage$1);
+    let error = new PreviewImageErrorImpl(1001, UniErrorPreviewImage);
     (_a = option.fail) == null ? void 0 : _a.call(option, error);
     (_b = option.complete) == null ? void 0 : _b.call(option, error);
     return;
@@ -32819,7 +32819,7 @@ function __previewImage(option) {
         (_b2 = (_a2 = option.longPressActions) == null ? void 0 : _a2.success) == null ? void 0 : _b2.call(_a2, success);
         (_d = (_c = option.longPressActions) == null ? void 0 : _c.complete) == null ? void 0 : _d.call(_c, success);
       } else {
-        var fail = new PreviewImageErrorImpl$1(1101001, UniErrorPreviewImage$1);
+        var fail = new PreviewImageErrorImpl(1101001, UniErrorPreviewImage);
         (_f = (_e = option.longPressActions) == null ? void 0 : _e.fail) == null ? void 0 : _f.call(_e, fail);
         (_h = (_g = option.longPressActions) == null ? void 0 : _g.complete) == null ? void 0 : _h.call(_g, fail);
       }
@@ -32830,13 +32830,13 @@ function __previewImage(option) {
     animationType: "fade-in",
     success(_) {
       var _a2, _b2;
-      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage$1 };
+      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage };
       (_a2 = option.success) == null ? void 0 : _a2.call(option, success);
       (_b2 = option.complete) == null ? void 0 : _b2.call(option, success);
     },
     fail(_) {
       var _a2, _b2;
-      let error = new PreviewImageErrorImpl$1(1101010, UniErrorPreviewImage$1);
+      let error = new PreviewImageErrorImpl(1101010, UniErrorPreviewImage);
       (_a2 = option.fail) == null ? void 0 : _a2.call(option, error);
       (_b2 = option.complete) == null ? void 0 : _b2.call(option, error);
     }

@@ -1164,7 +1164,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		color: #999999;
+		color: #757575;
 		font-size: 16px;
 	}
 </style>

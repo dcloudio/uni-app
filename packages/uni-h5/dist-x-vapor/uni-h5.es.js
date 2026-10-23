@@ -32455,7 +32455,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
           },
           fail() {
             var _a;
-            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new PreviewImageErrorImpl(1101001, UniErrorPreviewImage));
+            (_a = longPressAction.fail) == null ? void 0 : _a.call(longPressAction, new UniError("uni-previewImage", 1101001, "user cancel"));
             uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 });
           }
         });
@@ -33603,7 +33603,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
 });
 const _style_0$1 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n";
 const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
-const UniErrorPreviewImage$1 = "uni-previewImage";
+const UniErrorPreviewImage = "uni-previewImage";
 const PreviewImageUniErrors = /* @__PURE__ */ new Map([
   /**
    * 用户取消
@@ -33630,18 +33630,18 @@ const PreviewImageUniErrors = /* @__PURE__ */ new Map([
    */
   [1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
 ]);
-let PreviewImageErrorImpl$1 = class PreviewImageErrorImpl2 extends UniError {
+class PreviewImageErrorImpl extends UniError {
   constructor(errCode, uniErrorSubject) {
     super();
     this.errSubject = uniErrorSubject;
     this.errCode = errCode;
     this.errMsg = PreviewImageUniErrors.get(errCode) ?? "";
   }
-};
+}
 function __previewImage(option) {
   var _a, _b;
   if (option.urls.length == 0) {
-    let error = new PreviewImageErrorImpl$1(1001, UniErrorPreviewImage$1);
+    let error = new PreviewImageErrorImpl(1001, UniErrorPreviewImage);
     (_a = option.fail) == null ? void 0 : _a.call(option, error);
     (_b = option.complete) == null ? void 0 : _b.call(option, error);
     return;
@@ -33672,7 +33672,7 @@ function __previewImage(option) {
         (_b2 = (_a2 = option.longPressActions) == null ? void 0 : _a2.success) == null ? void 0 : _b2.call(_a2, success);
         (_d = (_c = option.longPressActions) == null ? void 0 : _c.complete) == null ? void 0 : _d.call(_c, success);
       } else {
-        var fail = new PreviewImageErrorImpl$1(1101001, UniErrorPreviewImage$1);
+        var fail = new PreviewImageErrorImpl(1101001, UniErrorPreviewImage);
         (_f = (_e = option.longPressActions) == null ? void 0 : _e.fail) == null ? void 0 : _f.call(_e, fail);
         (_h = (_g = option.longPressActions) == null ? void 0 : _g.complete) == null ? void 0 : _h.call(_g, fail);
       }
@@ -33683,13 +33683,13 @@ function __previewImage(option) {
     animationType: "fade-in",
     success(_) {
       var _a2, _b2;
-      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage$1 };
+      let success = { errMsg: "ok", "errSubject": UniErrorPreviewImage };
       (_a2 = option.success) == null ? void 0 : _a2.call(option, success);
       (_b2 = option.complete) == null ? void 0 : _b2.call(option, success);
     },
     fail(_) {
       var _a2, _b2;
-      let error = new PreviewImageErrorImpl$1(1101010, UniErrorPreviewImage$1);
+      let error = new PreviewImageErrorImpl(1101010, UniErrorPreviewImage);
       (_a2 = option.fail) == null ? void 0 : _a2.call(option, error);
       (_b2 = option.complete) == null ? void 0 : _b2.call(option, error);
     }

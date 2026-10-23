@@ -154,7 +154,7 @@ const style = useComputedStyle({
 
 // #ifdef VUE3-VAPOR && APP-HARMONY
 function rgba2argb(color: string | null): string | null {
-  if (color !== null && color.startsWith('#') && color.length == 9) {
+  if (color != null && color.startsWith('#') && color.length == 9) {
     // 将 #RRGGBBAA 转换为 #AARRGGBB
     const alpha = color.substring(7, 9)  // AA
     const rgb = color.substring(1, 7)    // RRGGBB

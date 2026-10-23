@@ -311,7 +311,13 @@
 					uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e.tapIndex, index: props.index })
 				},
 				fail() {
+					// Android VDOM 保留原生错误类型，其他模式使用内置 UniError 并保持相同的错误信息。
+					// #ifdef APP-ANDROID && !VUE3-VAPOR
 					(longPressAction as LongPressActionsOptions).fail?.(new PreviewImageErrorImpl(1101001, UniErrorPreviewImage))
+					// #endif
+					// #ifndef APP-ANDROID && !VUE3-VAPOR
+					(longPressAction as LongPressActionsOptions).fail?.(new UniError('uni-previewImage', 1101001, 'user cancel') as LongPressActionsFailResult)
+					// #endif
 					uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 })
 				}
 			})

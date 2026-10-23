@@ -1566,7 +1566,7 @@
 		transform: translateY(-50%);
 		left: 0;
 		right: 0;
-		color: #999999;
+		color: #757575;
 		white-space: nowrap;
 	}
 </style>
