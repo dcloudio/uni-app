@@ -828,17 +828,17 @@ function addSafeAreaInsets (result) {
   }
 }
 
-function getOSInfo (system, platform) {
+function getOSInfo (system = '', platform = '') {
   /**
    * system 枚举值说明：
    *
    * weixin: 操作系统及版本
    * qq: 操作系统及版本
    * kuaishou: 操作系统及版本
+   * toutiao/douyin: 操作系统及版本
    *
    * alipay、dingding: 系统版本
    * baidu: 操作系统版本
-   * toutiao/douyin: 操作系统版本
    * jd: 操作系统版本
    * harmony: 操作系统版本
    *
@@ -849,7 +849,7 @@ function getOSInfo (system, platform) {
 
   if (
     platform &&
-    ( "mp-baidu" === 'mp-baidu'   )
+    ( "mp-baidu" === 'mp-baidu'  )
   ) {
     osName = platform;
     osVersion = system;
@@ -883,9 +883,9 @@ function getOSInfo (system, platform) {
   }
 
   return {
-    osName,
-    osVersion,
-    system
+    osName: osName.trim(),
+    osVersion: osVersion.trim(),
+    system: system.trim()
   }
 }
 
@@ -922,10 +922,10 @@ function getPlatform (platform) {
 }
 
 function populateParameters (result) {
-  const {
+  let {
     brand = '', model = '', system = '',
-    language = '', theme, version,
-    platform, fontSizeSetting,
+    language = '', theme, version = '',
+    platform = '', fontSizeSetting,
     SDKVersion, pixelRatio, deviceOrientation
   } = result;
   // const isQuickApp = "mp-baidu".indexOf('quickapp-webview') !== -1
@@ -941,7 +941,7 @@ function populateParameters (result) {
   }
 
   // deviceType
-  const deviceType = getGetDeviceType(result);
+  const deviceType = getGetDeviceType(result, model);
 
   // deviceModel
   const deviceBrand = getDeviceBrand(brand);
@@ -1005,7 +1005,7 @@ function populateParameters (result) {
   Object.assign(result, parameters, extraParam);
 }
 
-function getGetDeviceType (result, model) {
+function getGetDeviceType (result, model = '') {
   const platform = result.platform || '';
   let deviceType = result.deviceType || 'phone';
   return deviceType
@@ -1247,12 +1247,14 @@ function wrapper (methodName, method) {
       if (typeof arg2 !== 'undefined') {
         args.push(arg2);
       }
+      // methodName 保留公开 API 名，仅使用 apiName 调用平台 API
+      let apiName = methodName;
       if (isFn(options.name)) {
-        methodName = options.name(arg1);
+        apiName = options.name(arg1);
       } else if (isStr(options.name)) {
-        methodName = options.name;
+        apiName = options.name;
       }
-      const returnValue = swan[methodName].apply(swan, args);
+      const returnValue = swan[apiName].apply(swan, args);
       if (isSyncApi(methodName)) { // 同步 api
         return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName))
       }

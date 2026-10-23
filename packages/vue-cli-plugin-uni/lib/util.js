@@ -178,20 +178,20 @@ module.exports = {
   },
   AliYunCloudAuthWebSDK: 'https://cn-shanghai-aliyun-cloudauth.oss-cn-shanghai.aliyuncs.com/web_sdk_js/jsvm_all.js',
   createObfuscatedStringExpression (value) {
-  if (!value) {
-    return JSON.stringify('')
+    if (!value) {
+      return JSON.stringify('')
+    }
+
+    const data = []
+    const mask = []
+    const randomData = crypto.randomBytes(value.length * 2)
+
+    for (let i = 0; i < value.length; i++) {
+      const maskValue = randomData.readUInt16LE(i * 2)
+      mask.push(maskValue)
+      data.push(value.charCodeAt(i) ^ maskValue)
+    }
+
+    return `(function(){var d=${JSON.stringify(data)},m=${JSON.stringify(mask)},s='';for(var i=0;i<d.length;i++){s+=String.fromCharCode(d[i]^m[i]);}return s;}())`
   }
-
-  const data = []
-  const mask = []
-  const randomData = crypto.randomBytes(value.length * 2)
-
-  for (let i = 0; i < value.length; i++) {
-    const maskValue = randomData.readUInt16LE(i * 2)
-    mask.push(maskValue)
-    data.push(value.charCodeAt(i) ^ maskValue)
-  }
-
-  return `(function(){var d=${JSON.stringify(data)},m=${JSON.stringify(mask)},s='';for(var i=0;i<d.length;i++){s+=String.fromCharCode(d[i]^m[i]);}return s;}())`
-}
 }
