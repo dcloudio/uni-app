@@ -1,4 +1,4 @@
-## uni.onMemoryWarning(UTSCallback) @onmemorywarning
+## uni.onMemoryWarning(callback) @onmemorywarning
 
 监听内存不足告警事件。当系统内存不足时，会触发该事件，开发者可以在回调函数中获取当前内存使用情况，并进行相应的处理。
 
