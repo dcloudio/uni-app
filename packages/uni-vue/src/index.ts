@@ -1,5 +1,6 @@
-import type { App, ComponentInternalInstance } from 'vue'
+import type { App } from 'vue'
 //#if _X_VAPOR_ && !_NODE_JS_
+import type { ComponentInternalInstance } from 'vue'
 // @ts-expect-error Web Vapor 专用的页面初始化注册入口
 import { setUniPageHooksInitializer } from 'vue'
 import { initHooks } from './componentOptions/hooks'
