@@ -185,6 +185,8 @@ export function setupPage(comp: any, path: string) {
     //#if _X_VAPOR_
     before(comp) {
       // 路由传入的 query 供 props/onLoad/options 接收，不自动作为根 DOM 属性。
+      // query 键名可能不是合法的 DOM 属性名（如 ?1=1），自动透传会触发
+      // InvalidCharacterError，中断页面渲染并可能导致白屏；参数本身仍完整保留。
       // 仅修改路由页面副本，同一文件作为普通组件使用时保留原有 attrs 继承行为。
       comp.inheritAttrs = false
     },
