@@ -10930,7 +10930,6 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     const fillRef = Vue.ref(null);
     const handleRef = Vue.ref(null);
     const thumbRef = Vue.ref(null);
-    const showValueRef = Vue.ref(null);
     function setColor(element, color) {
       if (element == null)
         return;
@@ -10961,24 +10960,42 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     props2.value;
     const currentValue = Vue.ref(props2.value);
-    Vue.ref(false);
+    const isDragging = Vue.ref(false);
     let trackWidth = 0;
     let trackLeft = 0;
     let rafId = 0;
     let ticking = false;
+    let isTouchDevice = false;
     let cachedDecimalPlaces = -1;
     let cachedStep = props2.step;
     let lastValue = 0;
-    let thumbTranslateX = 0;
-    let trackActiveScaleX = 0;
+    const thumbTranslateX = Vue.ref(0);
+    const trackActiveScaleX = Vue.ref(0);
     const effectiveMax = Vue.computed(() => {
-      const range = props2.max - props2.min;
-      const steps = Math.floor(range / props2.step);
-      return props2.min + steps * props2.step;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      const step = props2.step;
+      const range = max - min;
+      if (!Number.isFinite(step) || step <= 0 || range <= 0)
+        return min;
+      return min + Math.floor(range / step) * step;
     });
     let _activeStatus = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    function removeMouseListeners() {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+    function resetInteractionState() {
+      if (rafId != 0) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      ticking = false;
+      isDragging.value = false;
+      lastValue = currentValue.value;
+    }
     function preventDefaultEvent(e2) {
       if (e2.cancelable) {
         e2.preventDefault();
@@ -11012,27 +11029,19 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
       return result;
     }
+    function applyVisualPosition(percentage, fillScale) {
+      thumbTranslateX.value = percentage * 100;
+      trackActiveScaleX.value = fillScale;
+    }
     function renderVisuals(newValue) {
-      const clampedValue = Math.max(props2.min, Math.min(newValue, effectiveMax.value));
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
+      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min;
       currentValue.value = clampedValue;
-      const percentage = (clampedValue - props2.min) / (props2.max - props2.min);
+      const range = max - min;
+      const percentage = range > 0 ? (clampedValue - min) / range : 0;
       const fillScale = percentage - 1e-3;
-      const handleEl = handleRef.value;
-      if (handleEl != null) {
-        handleEl.style.setProperty("transform", `translateX(${percentage * 100}%)`);
-      } else {
-        thumbTranslateX = percentage * 100;
-      }
-      const thumbEl = thumbRef.value;
-      if (thumbEl != null) {
-        thumbEl.style.setProperty("transform", `translateX(-${percentage * 100}%)`);
-      }
-      const fillEl = fillRef.value;
-      if (fillEl != null) {
-        fillEl.style.setProperty("transform", `scaleX(${fillScale})`);
-      } else {
-        trackActiveScaleX = fillScale;
-      }
+      applyVisualPosition(percentage, fillScale);
     }
     function calculateValue(clientX) {
       if (trackWidth <= 0) {
@@ -11040,18 +11049,23 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
       const containerWidth = trackWidth;
       const containerLeft = trackLeft;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      if (max <= min)
+        return min;
       let currentX = clientX - containerLeft;
       currentX = Math.max(0, Math.min(currentX, containerWidth));
       const ratio = currentX / containerWidth;
-      let newValue = lerp(props2.min, props2.max, ratio);
+      let newValue = lerp(min, max, ratio);
       newValue = applyStepPrecision(newValue);
-      newValue = Math.min(newValue, effectiveMax.value);
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
       return newValue;
     }
     function handleTouchStart(e2) {
       if (props2.disabled == true) {
         return;
       }
+      isTouchDevice = true;
       if (e2.touches.length > 0) {
         lastValue = currentValue.value;
         _activeStatus = 0;
@@ -11070,14 +11084,13 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
         const newValue = calculateValue(e2.changedTouches[0].clientX);
         renderVisuals(newValue);
       }
-      if (rafId != 0) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
-      }
-      ticking = false;
       if (lastValue !== currentValue.value) {
         emit2("change", new UniSliderChangeEvent(currentValue.value));
       }
+      resetInteractionState();
+    }
+    function handleTouchCancel() {
+      resetInteractionState();
     }
     function handleTouchMove(e2) {
       if (props2.disabled == true) {
@@ -11117,6 +11130,60 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
         ticking = true;
       }
     }
+    function handleMouseMove(e2) {
+      if (isDragging.value == false || props2.disabled == true) {
+        return;
+      }
+      if (e2.cancelable) {
+        e2.preventDefault();
+      }
+      if (ticking == false) {
+        rafId = requestAnimationFrame(() => {
+          const newValue = calculateValue(e2.clientX);
+          if (newValue === currentValue.value) {
+            ticking = false;
+            return;
+          }
+          renderVisuals(newValue);
+          emit2("changing", new UniSliderChangeEvent(currentValue.value));
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    function handleMouseDown(e2) {
+      if (props2.disabled == true) {
+        return;
+      }
+      if (isTouchDevice == true) {
+        return;
+      }
+      e2.preventDefault();
+      lastValue = currentValue.value;
+      isDragging.value = true;
+      const containerEl = containerRef.value;
+      if (containerEl != null) {
+        const rect = containerEl.getBoundingClientRect();
+        trackLeft = rect.left;
+        trackWidth = rect.width;
+      }
+      const newValue = calculateValue(e2.clientX);
+      renderVisuals(newValue);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+    function handleMouseUp() {
+      if (isDragging.value == false) {
+        return;
+      }
+      if (lastValue !== currentValue.value) {
+        emit2("change", new UniSliderChangeEvent(currentValue.value));
+      }
+      resetInteractionState();
+      removeMouseListeners();
+    }
     renderVisuals(currentValue.value);
     __expose({
       renderVisuals,
@@ -11135,6 +11202,10 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.on(n4, "touchstart", handleTouchStart);
     Vue.on(n4, "touchmove", handleTouchMove);
     Vue.on(n4, "touchend", handleTouchEnd);
+    Vue.on(n4, "touchcancel", handleTouchCancel);
+    Vue.on(n4, "mousedown", handleMouseDown);
+    Vue.on(n4, "mousemove", handleMouseMove);
+    Vue.on(n4, "mouseup", handleMouseUp);
     Vue.setStaticTemplateRef(n4, containerRef, null, "containerRef");
     Vue.renderEffect(() => {
       const _props = props2;
@@ -11153,7 +11224,6 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.createIf(() => props2.showValue, () => {
       const n7 = t0$6();
       const x7 = Vue.txt(n7);
-      Vue.setStaticTemplateRef(n7, showValueRef, null, "showValueRef");
       Vue.renderEffect(() => Vue.setText(x7, Vue.normalizeUniText(Vue.toDisplayString(Vue.unref(currentValue)))));
       return n7;
     });

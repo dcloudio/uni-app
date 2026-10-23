@@ -12230,12 +12230,11 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     const attrs = useAttrs$1();
     const id2 = attrs.id;
     const props2 = __props;
-    const containerRef = ref(null);
+    ref(null);
     const backgroundRef = ref(null);
     const fillRef = ref(null);
     const handleRef = ref(null);
     const thumbRef = ref(null);
-    ref(null);
     function setColor(element, color) {
       if (element == null)
         return;
@@ -12273,13 +12272,31 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     let ticking = false;
     let cachedDecimalPlaces = -1;
     let cachedStep = props2.step;
-    let thumbTranslateX = 0;
-    let trackActiveScaleX = 0;
+    let lastValue = 0;
+    const thumbTranslateX = ref(0);
+    const trackActiveScaleX = ref(0);
     const effectiveMax = computed(() => {
-      const range = props2.max - props2.min;
-      const steps = Math.floor(range / props2.step);
-      return props2.min + steps * props2.step;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      const step = props2.step;
+      const range = max - min;
+      if (!Number.isFinite(step) || step <= 0 || range <= 0)
+        return min;
+      return min + Math.floor(range / step) * step;
     });
+    function removeMouseListeners() {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+    function resetInteractionState() {
+      if (rafId != 0) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      ticking = false;
+      isDragging.value = false;
+      lastValue = currentValue.value;
+    }
     function lerp(start, end, t2) {
       const clampedT = Math.max(0, Math.min(1, t2));
       return start * (1 - clampedT) + end * clampedT;
@@ -12307,27 +12324,19 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       }
       return result;
     }
+    function applyVisualPosition(percentage, fillScale) {
+      thumbTranslateX.value = percentage * 100;
+      trackActiveScaleX.value = fillScale;
+    }
     function renderVisuals(newValue) {
-      const clampedValue = Math.max(props2.min, Math.min(newValue, effectiveMax.value));
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
+      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min;
       currentValue.value = clampedValue;
-      const percentage = (clampedValue - props2.min) / (props2.max - props2.min);
+      const range = max - min;
+      const percentage = range > 0 ? (clampedValue - min) / range : 0;
       const fillScale = percentage - 1e-3;
-      const handleEl = handleRef.value;
-      if (handleEl != null) {
-        handleEl.style.setProperty("transform", `translateX(${percentage * 100}%)`);
-      } else {
-        thumbTranslateX = percentage * 100;
-      }
-      const thumbEl = thumbRef.value;
-      if (thumbEl != null) {
-        thumbEl.style.setProperty("transform", `translateX(-${percentage * 100}%)`);
-      }
-      const fillEl = fillRef.value;
-      if (fillEl != null) {
-        fillEl.style.setProperty("transform", `scaleX(${fillScale})`);
-      } else {
-        trackActiveScaleX = fillScale;
-      }
+      applyVisualPosition(percentage, fillScale);
     }
     function calculateValue(clientX) {
       if (trackWidth <= 0) {
@@ -12335,12 +12344,16 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       }
       const containerWidth = trackWidth;
       const containerLeft = trackLeft;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      if (max <= min)
+        return min;
       let currentX = clientX - containerLeft;
       currentX = Math.max(0, Math.min(currentX, containerWidth));
       const ratio = currentX / containerWidth;
-      let newValue = lerp(props2.min, props2.max, ratio);
+      let newValue = lerp(min, max, ratio);
       newValue = applyStepPrecision(newValue);
-      newValue = Math.min(newValue, effectiveMax.value);
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
       return newValue;
     }
     function handleMouseMove(e2) {
@@ -12364,36 +12377,15 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         ticking = true;
       }
     }
-    function handleMouseDown(e2) {
-      if (props2.disabled == true) {
-        return;
-      }
-      e2.preventDefault();
-      isDragging.value = true;
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        const rect = containerEl.getBoundingClientRect();
-        trackLeft = rect.left;
-        trackWidth = rect.width;
-      }
-      const newValue = calculateValue(e2.clientX);
-      renderVisuals(newValue);
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    }
     function handleMouseUp() {
       if (isDragging.value == false) {
         return;
       }
-      isDragging.value = false;
-      if (rafId != 0) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
+      if (lastValue !== currentValue.value) {
+        emit2("change", new UniSliderChangeEvent(currentValue.value));
       }
-      ticking = false;
-      emit2("change", new UniSliderChangeEvent(currentValue.value));
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      resetInteractionState();
+      removeMouseListeners();
     }
     function handleKeyDown(e2) {
       if (props2.disabled == true) {
@@ -12416,6 +12408,9 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         return;
       }
       newValue = applyStepPrecision(newValue);
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      newValue = max > min ? Math.max(min, Math.min(newValue, effectiveMax.value)) : min;
       requestAnimationFrame(() => {
         renderVisuals(newValue);
         emit2("change", new UniSliderChangeEvent(currentValue.value));
@@ -12432,18 +12427,14 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         watch(() => {
           return props2.value;
         }, (newValue) => {
-          if (isDragging.value == false) {
-            renderVisuals(newValue);
-          }
+          if (isDragging.value)
+            return;
+          renderVisuals(newValue);
         });
-        watch(() => {
-          return props2.min;
-        }, () => {
-          renderVisuals(currentValue.value);
-        });
-        watch(() => {
-          return props2.max;
-        }, () => {
+        watch([
+          () => props2.min,
+          () => props2.max
+        ], () => {
           renderVisuals(currentValue.value);
         });
         watch(() => {
@@ -12453,6 +12444,11 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         });
         watch(() => props2.showValue, () => {
           nextTick(() => setTimeout(handleResize, 10));
+        });
+        watch(() => props2.disabled, (disabled) => {
+          if (disabled) {
+            resetInteractionState();
+          }
         });
       });
       const formCtx = inject(FORM_KEY, null);
@@ -12474,10 +12470,6 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         });
       }
       window.addEventListener("resize", handleResize);
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        containerEl.addEventListener("mousedown", handleMouseDown);
-      }
       const handleEl = handleRef.value;
       if (handleEl != null) {
         handleEl.addEventListener("keydown", handleKeyDown);
@@ -12496,18 +12488,11 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
           labelCtx.unregister(props2.name);
         }
       }
-      if (rafId != 0) {
-        cancelAnimationFrame(rafId);
-      }
+      resetInteractionState();
     });
     onBeforeUnmount(() => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      removeMouseListeners();
       window.removeEventListener("resize", handleResize);
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        containerEl.removeEventListener("mousedown", handleMouseDown);
-      }
     });
     __expose({
       renderVisuals,

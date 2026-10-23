@@ -19770,7 +19770,6 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     const fillRef = ref(null);
     const handleRef = ref(null);
     const thumbRef = ref(null);
-    const showValueRef = ref(null);
     function setColor(element, color) {
       if (element == null)
         return;
@@ -19810,16 +19809,33 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     let cachedDecimalPlaces = -1;
     let cachedStep = props2.step;
     let lastValue = 0;
-    let thumbTranslateX = 0;
-    let trackActiveScaleX = 0;
+    const thumbTranslateX = ref(0);
+    const trackActiveScaleX = ref(0);
     const effectiveMax = computed(() => {
-      const range = props2.max - props2.min;
-      const steps = Math.floor(range / props2.step);
-      return props2.min + steps * props2.step;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      const step = props2.step;
+      const range = max - min;
+      if (!Number.isFinite(step) || step <= 0 || range <= 0)
+        return min;
+      return min + Math.floor(range / step) * step;
     });
     let _activeStatus = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    function removeMouseListeners() {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+    function resetInteractionState() {
+      if (rafId != 0) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      ticking = false;
+      isDragging.value = false;
+      lastValue = currentValue.value;
+    }
     function preventDefaultEvent(e2) {
       if (e2.cancelable) {
         e2.preventDefault();
@@ -19853,27 +19869,19 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
       }
       return result;
     }
+    function applyVisualPosition(percentage, fillScale) {
+      thumbTranslateX.value = percentage * 100;
+      trackActiveScaleX.value = fillScale;
+    }
     function renderVisuals(newValue) {
-      const clampedValue = Math.max(props2.min, Math.min(newValue, effectiveMax.value));
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min;
+      const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min;
       currentValue.value = clampedValue;
-      const percentage = (clampedValue - props2.min) / (props2.max - props2.min);
+      const range = max - min;
+      const percentage = range > 0 ? (clampedValue - min) / range : 0;
       const fillScale = percentage - 1e-3;
-      const handleEl = handleRef.value;
-      if (handleEl != null) {
-        handleEl.style.setProperty("transform", `translateX(${percentage * 100}%)`);
-      } else {
-        thumbTranslateX = percentage * 100;
-      }
-      const thumbEl = thumbRef.value;
-      if (thumbEl != null) {
-        thumbEl.style.setProperty("transform", `translateX(-${percentage * 100}%)`);
-      }
-      const fillEl = fillRef.value;
-      if (fillEl != null) {
-        fillEl.style.setProperty("transform", `scaleX(${fillScale})`);
-      } else {
-        trackActiveScaleX = fillScale;
-      }
+      applyVisualPosition(percentage, fillScale);
     }
     function calculateValue(clientX) {
       if (trackWidth <= 0) {
@@ -19881,12 +19889,16 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
       }
       const containerWidth = trackWidth;
       const containerLeft = trackLeft;
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      if (max <= min)
+        return min;
       let currentX = clientX - containerLeft;
       currentX = Math.max(0, Math.min(currentX, containerWidth));
       const ratio = currentX / containerWidth;
-      let newValue = lerp(props2.min, props2.max, ratio);
+      let newValue = lerp(min, max, ratio);
       newValue = applyStepPrecision(newValue);
-      newValue = Math.min(newValue, effectiveMax.value);
+      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
       return newValue;
     }
     function handleTouchStart(e2) {
@@ -19912,14 +19924,13 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
         const newValue = calculateValue(e2.changedTouches[0].clientX);
         renderVisuals(newValue);
       }
-      if (rafId != 0) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
-      }
-      ticking = false;
       if (lastValue !== currentValue.value) {
         emit2("change", new UniSliderChangeEvent(currentValue.value));
       }
+      resetInteractionState();
+    }
+    function handleTouchCancel() {
+      resetInteractionState();
     }
     function handleTouchMove(e2) {
       if (props2.disabled == true) {
@@ -19988,6 +19999,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
         return;
       }
       e2.preventDefault();
+      lastValue = currentValue.value;
       isDragging.value = true;
       const containerEl = containerRef.value;
       if (containerEl != null) {
@@ -19997,6 +20009,8 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
       }
       const newValue = calculateValue(e2.clientX);
       renderVisuals(newValue);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
     }
@@ -20004,15 +20018,11 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
       if (isDragging.value == false) {
         return;
       }
-      isDragging.value = false;
-      if (rafId != 0) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
+      if (lastValue !== currentValue.value) {
+        emit2("change", new UniSliderChangeEvent(currentValue.value));
       }
-      ticking = false;
-      emit2("change", new UniSliderChangeEvent(currentValue.value));
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      resetInteractionState();
+      removeMouseListeners();
     }
     function handleKeyDown(e2) {
       if (props2.disabled == true) {
@@ -20035,6 +20045,9 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
         return;
       }
       newValue = applyStepPrecision(newValue);
+      const min = Number.isFinite(props2.min) ? props2.min : 0;
+      const max = Number.isFinite(props2.max) ? props2.max : min;
+      newValue = max > min ? Math.max(min, Math.min(newValue, effectiveMax.value)) : min;
       requestAnimationFrame(() => {
         renderVisuals(newValue);
         emit2("change", new UniSliderChangeEvent(currentValue.value));
@@ -20051,18 +20064,14 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
         watch(() => {
           return props2.value;
         }, (newValue) => {
-          if (isDragging.value == false) {
-            renderVisuals(newValue);
-          }
+          if (isDragging.value)
+            return;
+          renderVisuals(newValue);
         });
-        watch(() => {
-          return props2.min;
-        }, () => {
-          renderVisuals(currentValue.value);
-        });
-        watch(() => {
-          return props2.max;
-        }, () => {
+        watch([
+          () => props2.min,
+          () => props2.max
+        ], () => {
           renderVisuals(currentValue.value);
         });
         watch(() => {
@@ -20072,6 +20081,11 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
         });
         watch(() => props2.showValue, () => {
           nextTick(() => setTimeout(handleResize, 10));
+        });
+        watch(() => props2.disabled, (disabled) => {
+          if (disabled) {
+            resetInteractionState();
+          }
         });
       });
       const formCtx = inject(FORM_KEY, null);
@@ -20093,10 +20107,6 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
         });
       }
       window.addEventListener("resize", handleResize);
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        containerEl.addEventListener("mousedown", handleMouseDown);
-      }
       const handleEl = handleRef.value;
       if (handleEl != null) {
         handleEl.addEventListener("keydown", handleKeyDown);
@@ -20115,18 +20125,11 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
           labelCtx.unregister(props2.name);
         }
       }
-      if (rafId != 0) {
-        cancelAnimationFrame(rafId);
-      }
+      resetInteractionState();
     });
     onBeforeUnmount(() => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      removeMouseListeners();
       window.removeEventListener("resize", handleResize);
-      const containerEl = containerRef.value;
-      if (containerEl != null) {
-        containerEl.removeEventListener("mousedown", handleMouseDown);
-      }
     });
     __expose({
       renderVisuals,
@@ -20145,6 +20148,10 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     on$1(n4, "touchstart", handleTouchStart);
     on$1(n4, "touchmove", handleTouchMove);
     on$1(n4, "touchend", handleTouchEnd);
+    on$1(n4, "touchcancel", handleTouchCancel);
+    on$1(n4, "mousedown", handleMouseDown);
+    on$1(n4, "mousemove", handleMouseMove);
+    on$1(n4, "mouseup", handleMouseUp);
     setStaticTemplateRef(n4, containerRef, null, "containerRef");
     renderEffect(() => {
       const _props = props2;
@@ -20163,7 +20170,6 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     createIf(() => props2.showValue, () => {
       const n7 = t0$f();
       const x7 = txt(n7);
-      setStaticTemplateRef(n7, showValueRef, null, "showValueRef");
       renderEffect(() => setText(x7, normalizeUniText(toDisplayString(unref(currentValue)))));
       return n7;
     });

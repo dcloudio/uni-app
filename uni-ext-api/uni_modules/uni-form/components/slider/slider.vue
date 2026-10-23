@@ -1,6 +1,10 @@
 <template>
   <view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;">
-    <view ref="containerRef" class="slider-track" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+    <view ref="containerRef" class="slider-track" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd" @touchcancel="handleTouchCancel"
+      <!-- #ifdef WEB -->
+      @mousedown="handleMouseDown" @mousemove="handleMouseMove" @mouseup="handleMouseUp"
+      <!-- #endif -->
+    >
       <!-- 背景轨道 -->
       <view
         <!-- #ifndef APP-ANDROID -->
@@ -50,13 +54,8 @@
       <!-- #ifndef APP-ANDROID -->
       flatten
       <!-- #endif -->
-      v-if="props.showValue" ref="showValueRef" style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;">
-      <!-- #ifndef APP -->
+      v-if="props.showValue" style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;">
       {{ currentValue }}
-      <!-- #endif -->
-      <!-- #ifdef APP -->
-      {{ initialValue }}
-      <!-- #endif -->
     </text>
   </view>
 </template>
@@ -388,7 +387,6 @@
   const fillRef = ref<UniElement | null>(null)
   const handleRef = ref<UniElement | null>(null)
   const thumbRef = ref<UniElement | null>(null)
-  const showValueRef = ref<UniTextElement | null>(null)
 
   function setColor(element : UniElement | null, color : string) {
     if (element == null) return
@@ -432,20 +430,40 @@
   let cachedDecimalPlaces = -1 // 缓存 step 小数位数，-1表示未缓存
   let cachedStep = props.step // 缓存 step 值，便于检测变化
   let lastValue = 0 // 用于判断是否触发 change
-  let thumbTranslateX = 0
-  let trackActiveScaleX = 0
+  const thumbTranslateX = ref(0)
+  const trackActiveScaleX = ref(0)
 
   // 计算有效的最大值（考虑 step）
   const effectiveMax = computed(() : number => {
-    const range = props.max - props.min
-    const steps = Math.floor(range / props.step)
-    return props.min + steps * props.step
+    const min = Number.isFinite(props.min) ? props.min : 0
+    const max = Number.isFinite(props.max) ? props.max : min
+    const step = props.step
+    const range = max - min
+    if (!Number.isFinite(step) || step <= 0 || range <= 0) return min
+    return min + Math.floor(range / step) * step
   })
 
   let _activeStatus : number = 0 // 滑动判断 0:未激活 1:已激活
   let touchStartX = 0 // 触摸起始 X 坐标
   let touchStartY = 0 // 触摸起始 Y 坐标
   const TOUCH_THRESHOLD = 4 // 触摸阈值（像素）
+
+  function removeMouseListeners() {
+    // #ifdef WEB
+    window.removeEventListener('mousemove', handleMouseMove)
+    window.removeEventListener('mouseup', handleMouseUp)
+    // #endif
+  }
+
+  function resetInteractionState() {
+    if (rafId != 0) {
+      cancelAnimationFrame(rafId)
+      rafId = 0
+    }
+    ticking = false
+    isDragging.value = false
+    lastValue = currentValue.value
+  }
 
   function preventDefaultEvent(e : UniTouchEvent) {
     if (e.cancelable) {
@@ -490,49 +508,44 @@
     return result
   }
 
-  function setTextValue() {
-    const showValueEl = showValueRef.value
-    if (props.showValue && showValueEl != null) {
-      showValueEl.value = currentValue.value + ''
+  function applyVisualPosition(percentage : number, fillScale : number) {
+    // #ifdef WEB
+    thumbTranslateX.value = percentage * 100
+    trackActiveScaleX.value = fillScale
+    // #endif
+    // #ifndef WEB
+    const handleEl = handleRef.value
+    if (handleEl != null) {
+      handleEl.style.setProperty('transform', `translateX(${percentage * 100}%)`)
     }
+    const thumbEl = thumbRef.value
+    if (thumbEl != null) {
+      thumbEl.style.setProperty('transform', `translateX(-${percentage * 100}%)`)
+    }
+    const fillEl = fillRef.value
+    if (fillEl != null) {
+      fillEl.style.setProperty('transform', `scaleX(${fillScale})`)
+    }
+    // #endif
   }
 
   // 核心渲染函数：更新视觉效果
   function renderVisuals(newValue : number) {
     // 1. 边界限制（使用有效最大值）
-    const clampedValue = Math.max(props.min, Math.min(newValue, effectiveMax.value))
+    const min = Number.isFinite(props.min) ? props.min : 0
+    const max = Number.isFinite(effectiveMax.value) ? effectiveMax.value : min
+    const clampedValue = Number.isFinite(newValue) ? Math.max(min, Math.min(newValue, max)) : min
     currentValue.value = clampedValue
 
     // 2. 使用 value、min、max 计算比例（不依赖布局信息）
-    const percentage = (clampedValue - props.min) / (props.max - props.min)
+    const range = max - min
+    const percentage = range > 0 ? (clampedValue - min) / range : 0
 
     // 3. 填充条缩放比例（减去微小值避免边界问题）
     const fillScale = percentage - 0.001
 
-    // 4. 直接使用百分比修改元素的 transform 属性
-    const handleEl = handleRef.value
-    if (handleEl != null) {
-      handleEl.style.setProperty('transform', `translateX(${percentage * 100}%)`)
-    } else {
-      thumbTranslateX = percentage * 100
-    }
+    applyVisualPosition(percentage, fillScale)
 
-    // 5. 为 thumbRef 设置反向 transform，确保滑块不超出容器
-    const thumbEl = thumbRef.value
-    if (thumbEl != null) {
-      thumbEl.style.setProperty('transform', `translateX(-${percentage * 100}%)`)
-    }
-
-    const fillEl = fillRef.value
-    if (fillEl != null) {
-      fillEl.style.setProperty('transform', `scaleX(${fillScale})`)
-    } else {
-      trackActiveScaleX = fillScale
-    }
-
-    // #ifdef APP
-    setTextValue()
-    // #endif
   }
 
   // 计算新值
@@ -543,6 +556,9 @@
 
     const containerWidth = trackWidth
     const containerLeft = trackLeft
+    const min = Number.isFinite(props.min) ? props.min : 0
+    const max = Number.isFinite(props.max) ? props.max : min
+    if (max <= min) return min
 
     let currentX = clientX - containerLeft
 
@@ -553,13 +569,13 @@
     const ratio = currentX / containerWidth
 
     // 使用线性插值计算实际值
-    let newValue = lerp(props.min, props.max, ratio)
+    let newValue = lerp(min, max, ratio)
 
     // 应用步进精度处理
     newValue = applyStepPrecision(newValue)
 
     // 确保不超过有效最大值
-    newValue = Math.min(newValue, effectiveMax.value)
+    newValue = Math.max(min, Math.min(newValue, effectiveMax.value))
 
     return newValue
   }
@@ -598,15 +614,14 @@
       renderVisuals(newValue)
     }
 
-    if (rafId != 0) {
-      cancelAnimationFrame(rafId)
-      rafId = 0
-    }
-    ticking = false
-
     if (lastValue !== currentValue.value) {
       emit('change', new UniSliderChangeEvent(currentValue.value))
     }
+    resetInteractionState()
+  }
+
+  function handleTouchCancel() {
+    resetInteractionState()
   }
 
   // 触摸移动处理
@@ -662,6 +677,7 @@
   }
 
   // #region Mouse End Resize	// 鼠标移动处理 (使用 rAF 优化)
+  // #ifdef WEB
   function handleMouseMove(e : MouseEvent) {
     if (isDragging.value == false || props.disabled == true) {
       return
@@ -698,6 +714,7 @@
     }
 
     e.preventDefault()
+    lastValue = currentValue.value
     isDragging.value = true
 
     // 缓存轨道尺寸
@@ -712,11 +729,11 @@
     const newValue = calculateValue(e.clientX)
     renderVisuals(newValue)
 
-    // #ifdef WEB
     // 绑定全局鼠标事件
+    window.removeEventListener('mousemove', handleMouseMove)
+    window.removeEventListener('mouseup', handleMouseUp)
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseup', handleMouseUp)
-    // #endif
   }
 
   // 鼠标释放
@@ -725,26 +742,14 @@
       return
     }
 
-    isDragging.value = false
-
-    // 取消 rAF
-    if (rafId != 0) {
-      cancelAnimationFrame(rafId)
-      rafId = 0
+    if (lastValue !== currentValue.value) {
+      emit('change', new UniSliderChangeEvent(currentValue.value))
     }
-    ticking = false
+    resetInteractionState()
+    removeMouseListeners()
 
-    // 触发 change 事件
-    emit('change', new UniSliderChangeEvent(currentValue.value))
-
-    // #ifdef WEB
     // 移除全局鼠标事件
-    window.removeEventListener('mousemove', handleMouseMove)
-    window.removeEventListener('mouseup', handleMouseUp)
-    // #endif
   }
-
-  // #ifdef WEB
   // 键盘事件处理
   function handleKeyDown(e : KeyboardEvent) {
     if (props.disabled == true) {
@@ -771,6 +776,9 @@
 
     // 应用步进精度处理
     newValue = applyStepPrecision(newValue)
+    const min = Number.isFinite(props.min) ? props.min : 0
+    const max = Number.isFinite(props.max) ? props.max : min
+    newValue = max > min ? Math.max(min, Math.min(newValue, effectiveMax.value)) : min
 
     // 键盘操作频率低，直接调用
     requestAnimationFrame(() => {
@@ -797,16 +805,15 @@
     nextTick(() => {
       // 监听 props 变化
       watch(() : number => { return props.value }, (newValue : number) => {
-        if (isDragging.value == false) {
-          renderVisuals(newValue)
-        }
+        // 拖动期间以组件内部值为准，避免父组件回传旧值导致滑块回跳。
+        if (isDragging.value) return
+        renderVisuals(newValue)
       })
 
-      watch(() : number => { return props.min }, () => {
-        renderVisuals(currentValue.value)
-      })
-
-      watch(() : number => { return props.max }, () => {
+      watch([
+        () : number => props.min,
+        () : number => props.max
+      ], () => {
         renderVisuals(currentValue.value)
       })
 
@@ -816,6 +823,12 @@
 
       watch(() : boolean => props.showValue, () => {
         nextTick(() => setTimeout(handleResize, 10))
+      })
+
+      watch(() : boolean => props.disabled, (disabled : boolean) => {
+        if (disabled) {
+          resetInteractionState()
+        }
       })
     })
 
@@ -843,11 +856,6 @@
     // #ifdef WEB
     // 监听窗口resize
     window.addEventListener('resize', handleResize)
-    // 监听鼠标按下事件
-    const containerEl = containerRef.value
-    if (containerEl != null) {
-      containerEl.addEventListener('mousedown', handleMouseDown)
-    }
     const handleEl = handleRef.value
     if (handleEl != null) {
       handleEl.addEventListener('keydown', handleKeyDown)
@@ -869,19 +877,12 @@
         labelCtx.unregister(props.name)
       }
     }
-    if (rafId != 0) {
-      cancelAnimationFrame(rafId)
-    }
+    resetInteractionState()
   })
   onBeforeUnmount(() => {
+    removeMouseListeners()
     // #ifdef WEB
-    window.removeEventListener('mousemove', handleMouseMove)
-    window.removeEventListener('mouseup', handleMouseUp)
     window.removeEventListener('resize', handleResize)
-    const containerEl = containerRef.value
-    if (containerEl != null) {
-      containerEl.removeEventListener('mousedown', handleMouseDown)
-    }
     // #endif
   })
   defineExpose({
