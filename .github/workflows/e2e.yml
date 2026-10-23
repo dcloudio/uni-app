@@ -55,7 +55,7 @@ jobs:
           npx cypress version --component node
 
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v7.4.4
         with:
           install: false
           start: npm run dev:ssr
@@ -67,7 +67,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v7.4.4
         with:
           install: false
           start: npm run dev:ssr
