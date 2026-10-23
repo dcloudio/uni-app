@@ -22,7 +22,7 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| flash | auto \| on \| off \| torch | "auto" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61 | 闪光灯，值为auto, on, off, torch |
+| flash | auto \| on \| off \| torch | "auto" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: x | 闪光灯，值为auto, on, off, torch |
 | device-position | back \| front | "back" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61 | 前置或后置，值为front, back |
 | mode | normal \| scanCode | "normal" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: x | *(string)*<br/>应用模式，只在初始化时有效，不能动态变更 |
 | resolution | low \| medium \| high | "medium" | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: x | *(string)*<br/>分辨率，不支持动态修改 |
