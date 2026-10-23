@@ -270,6 +270,21 @@ describe('android-dom2 plugin init', () => {
       plugins.map((plugin: { name: string }) => plugin.name)
     ).not.toContain('stats')
   })
+
+  test.each([undefined, 'ext-api', 'uni_modules'] as const)(
+    'Android DOM2 不开启 TS 的 UTS 转换：%s',
+    (target) => {
+      if (target === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_COMPILE_TARGET')
+      } else {
+        process.env.UNI_COMPILE_TARGET = target
+      }
+      initPlugins()
+      expect(
+        mockUts2js.mock.calls[0][0].transformTypeScriptAsUTS
+      ).toBeUndefined()
+    }
+  )
 })
 
 export {}

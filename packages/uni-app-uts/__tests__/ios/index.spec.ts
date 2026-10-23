@@ -157,6 +157,24 @@ describe('ios plugin init', () => {
     )
   })
 
+  test.each([
+    [undefined, false, false],
+    ['ext-api', false, true],
+    ['ext-api', true, false],
+    ['uni_modules', false, false],
+    [undefined, true, false],
+  ])('TS 按 UTS 转换仅限内部非 DOM2：%s / %s', (target, dom2, expected) => {
+    if (target === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_COMPILE_TARGET')
+    } else {
+      process.env.UNI_COMPILE_TARGET = target as any
+    }
+    initPlugins(false, dom2 as boolean)
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({ transformTypeScriptAsUTS: expected })
+    )
+  })
+
   test('non-dom2 keeps Ext API collection without UASM transform', () => {
     const plugins = initPlugins(false, false)
 
