@@ -44,7 +44,10 @@ export function isUniAppXStandardScriptSupported(
 ) {
   return (
     isUniAppX() &&
-    (platform !== 'app-android' || process.env.UNI_APP_X_DOM2 === 'true')
+    // App VDOM 保持 UTS 编译；标准 JS/TS 仅用于 Vapor、Web 和小程序。
+    (process.env.UNI_APP_X_DOM2 === 'true' ||
+      platform === 'web' ||
+      platform?.startsWith('mp-') === true)
   )
 }
 

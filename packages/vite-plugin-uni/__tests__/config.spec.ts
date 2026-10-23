@@ -3,10 +3,9 @@ import type { UserConfig } from 'vite'
 jest.mock('@dcloudio/uni-cli-shared', () => ({
   getPlatformManifestJson: () => ({}),
   isInHBuilderX: () => false,
-  isUniAppXStandardScriptSupported: () =>
-    process.env.UNI_APP_X === 'true' &&
-    (process.env.UNI_UTS_PLATFORM !== 'app-android' ||
-      process.env.UNI_APP_X_DOM2 === 'true'),
+  isUniAppXStandardScriptSupported: jest.requireActual(
+    '../../uni-cli-shared/src/x'
+  ).isUniAppXStandardScriptSupported,
   parseManifestJsonOnce: () => ({}),
 }))
 
@@ -41,8 +40,10 @@ describe('createConfig', () => {
     ['non-app-x', false, 'web', false, true],
     ['android-vdom', true, 'app-android', false, true],
     ['android-vapor', true, 'app-android', true, false],
-    ['ios', true, 'app-ios', false, false],
-    ['harmony', true, 'app-harmony', false, false],
+    ['ios-vdom', true, 'app-ios', false, true],
+    ['harmony-vdom', true, 'app-harmony', false, true],
+    ['ios-vapor', true, 'app-ios', true, false],
+    ['harmony-vapor', true, 'app-harmony', true, false],
     ['web', true, 'web', false, false],
     ['mp', true, 'mp-weixin', false, false],
   ] as const)(
