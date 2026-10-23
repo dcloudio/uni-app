@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-lark",
-  "version": "3.0.0-alpha-5030320261021002",
+  "version": "3.0.0-5030320261023001",
   "description": "uni-app mp-lark",
   "main": "dist/index.js",
   "files": [
