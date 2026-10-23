@@ -207,4 +207,19 @@
     background-color: #efeff480;
     z-index: 1;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-picker-view-mask-bottom {
+      background-image: linear-gradient(to top, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+    }
+
+    .uni-picker-view-mask-top {
+      background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+    }
+
+    .uni-picker-view-indicator {
+      border-color: rgba(255, 255, 255, 0.05);
+      background-color: rgba(35, 35, 35, 0.5);
+    }
+  }
 </style>
