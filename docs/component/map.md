@@ -15,14 +15,14 @@
 | 4.0 | 4.41 | 5.31 | 4.31 | 4.31 | 4.61 |
 
 
-不同图商在不同平台的兼容性
+不同图商在不同平台的兼容性（高德为插件版本）
 |图商		|Web|Android|iOS	|harmony|
 |:-:		|:-:|:-:		|:-:	|:-:		|
 |腾讯		|√	|4.31+	|4.31+|4.61+	|
-|高德		|√	|√			|√		|x			|
+|高德		|√	|√		  |√	  |x			|
 |Google	|√	|x			|x		|x			|
 
-App标准基座里地图是腾讯地图，如需高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)。该插件基于独立的 `<amap>` 组件实现，Android平台与内置 map 组件存在功能差异：属性、事件、上下文 API 均为内置 map 的子集；iOS平台自`1.3.0`起和内置map组件功能一致；Harmony 平台暂不支持，详见[高德地图插件功能差异](#amap)。
+App标准基座里地图是腾讯地图，如需高德地图版本，请在插件市场单独安装，需要自定义基座运行：[官方高德地图插件](https://ext.dcloud.net.cn/plugin?id=25947)。该插件基于独立的 `<amap>` 组件实现。Android平台自`1.4.0`起，本节列出的属性、事件和上下文 API 与内置 map 组件的功能对齐；iOS平台自`1.3.0`起功能对齐；Harmony 平台暂不支持。详见[高德地图插件功能差异](#amap)。
 
 除了内置支持的图商，还可以在插件市场寻找更多地图解决方案：
 1. [插件市场的三方地图插件](https://ext.dcloud.net.cn/search?q=%E5%9C%B0%E5%9B%BE&orderBy=Relevance&uni-appx=1)
@@ -1064,15 +1064,15 @@ App平台的高德地图由插件市场 [官方高德地图插件 uni-map-amap](
 
 | 差异项 | 内置 map 组件（腾讯地图） | 高德地图插件 |
 | :- | :-: | :-: |
-| 基础属性：longitude、latitude、scale、theme、min-scale、max-scale、layer-style、show-location、enable-satellite、enable-traffic | √ | √ |
-| markers 标记点 | √ | √ |
-| 覆盖物属性：polyline、polygons、circles、controls、include-points | √ | Android：x；iOS：1.3.0+ |
-| 手势视角属性：enable-3D、show-compass、enable-zoom、enable-scroll、enable-rotate、rotate、skew、enable-overlooking | √ | Android：x；iOS：1.3.0+ |
-| 显示控制属性：enable-poi、enable-building、enable-indoorMap | √ | Android：x；iOS：1.3.0+ |
-| 事件：@markertap、@controltap、@regionchange、@updated、@tap、@anchorpointtap、@poitap | √ | Android：x；iOS：1.3.0+ |
-| 上下文 API：`uni.createAmapContext` 及已实现的上下文方法 | √ | Android：x；iOS：1.3.0+ |
+| 基础属性：longitude、latitude、scale、theme、min-scale、max-scale、layer-style、show-location、enable-satellite、enable-traffic | √ | Android：1.0.0+；iOS：1.1.0+；Harmony：x |
+| markers 标记点 | √ | Android：1.0.0+；iOS：1.1.0+；Harmony：x |
+| 覆盖物属性：polyline（`<amap>` 使用 `polylines`）、polygons、circles、controls、include-points | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
+| 手势视角属性：enable-3D、show-compass、enable-zoom、enable-scroll、enable-rotate、rotate、skew、enable-overlooking | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
+| 显示控制属性：show-scale、enable-poi、enable-building、enable-indoorMap | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
+| 事件：@markertap、@controltap、@regionchange、@updated、@tap、@callouttap、@anchorpointtap、@poitap | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
+| 上下文 API：`uni.createAmapContext` 及已实现的上下文方法 | √ | Android：1.4.0+；iOS：1.3.0+；Harmony：x |
 
-其中，iOS 1.3.0 的上下文 API 支持 `getCenterLocation`、`moveToLocation`、`translateMarker`、`includePoints`、`getRegion`、`getScale`、`addMarkers`、`removeMarkers`、`moveAlong`、`addGroundOverlay`、`updateGroundOverlay`、`removeGroundOverlay`。高德插件使用 `uni.createAmapContext(mapId, component)`，与内置腾讯地图的 `uni.createMapContext(mapId)` 不同。
+高德插件通过 `uni.createAmapContext(mapId, component)` 获取上下文，与内置腾讯地图的 `uni.createMapContext(mapId)` 不同。Android 1.4.0+ 和 iOS 1.3.0+ 支持 `getCenterLocation`、`moveToLocation`、`translateMarker`、`includePoints`、`getRegion`、`getScale`、`addMarkers`、`removeMarkers`、`moveAlong`、`addGroundOverlay`、`updateGroundOverlay`、`removeGroundOverlay`。
 
 完整差异明细、插件版本支持情况及 API Key 配置说明，详见插件市场 [uni-map-amap 插件文档](https://ext.dcloud.net.cn/plugin?id=25947)。
 
