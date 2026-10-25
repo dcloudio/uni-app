@@ -30,7 +30,7 @@
 | hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
 | hover-start-time | number | 50 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
 | hover-stay-time | number | 400 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
-| max-lines | number |   | Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
+| max-lines | number | -1 | Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
 | flatten | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 
 #### space 的属性描述
@@ -1295,11 +1295,15 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
 
 多行文本设置最大行，目前在web规范中，需使用临时规范-webkit-line-clamp，并搭配display: -webkit-box。
 
-App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式下改成了text的max-lines组件属性。
+App平台未支持`-webkit-` css，取而代之的方案是 text 组件上新增了 max-line 组件属性。
 
-使用max-lines属性时，不需要写 `display: -webkit-box;-webkit-box-orient: vertical;overflow: hidden;`。如果你需要兼容web，可以写在web的条件编译中。
+*App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式下改成了text的max-lines组件属性。*
 
-web和小程序的text组件暂未支持max-lines组件属性，后续计划蒸汽模式的全平台text组件都将支持max-lines属性，并在web和小程序上编译为-webkit写法。
+web和小程序的text组件暂未支持max-lines组件属性。
+- 在web vdom模式和小程序中，由于text组件的外层有组件包装，所以在外层设置 `-webkit-line-clamp` 并不会生效。需要选择器向下再取。
+- 后续蒸汽模式的web平台将去除外层包装，让`-webkit-line-clamp` 直接生效。
+
+uni-ui x 提供了 [可折叠文本组件 uni-expandable-text](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-expandable-text.html)，支持`全文`、`收起`等操作。
 
 ## Bug & Tips@tips
 - app平台text组件开启selectable后，仅支持全部文字复制，暂不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
