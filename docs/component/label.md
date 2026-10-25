@@ -19,7 +19,7 @@
 | 4.0 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.11 | 4.71 |
 
 
-App平台可以用view加事件来替代label。
+App平台VDOM模式可以用view加事件来替代label。
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
