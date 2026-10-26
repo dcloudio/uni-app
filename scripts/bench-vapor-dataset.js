@@ -27,17 +27,21 @@ async function main() {
       },
     }).outputText
   const plugin = jscc({ values: { _X_: 1, _X_VAPOR_: 1 } })
-  const { code } = await plugin.load.call(
-    {},
-    path.join(root, 'packages/uni-components/src/helpers/UniElement.ts')
-  )
+  const compileElement = async (file) => {
+    const { code } = await plugin.load.call(
+      {},
+      path.join(root, 'packages/uni-components/src/helpers', file)
+    )
+    return compile(code)
+  }
   const sources = {
     '@vue/shared': read(
       'packages/uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
     ),
     '@dcloudio/uni-shared': read('packages/uni-shared/dist/uni-shared.cjs.js'),
     vue: read('packages/uni-h5-vue/dist-x-vapor/vue.runtime.cjs.js'),
-    '../helpers/UniElement': compile(code),
+    '../helpers/UniElement': await compileElement('UniElement.ts'),
+    './UniElement-vapor': await compileElement('UniElement-vapor.ts'),
     elements: compile(
       read('packages/uni-components/src/vue/web-vapor-elements.ts')
     ),

@@ -1,0 +1,139 @@
+import { camelize } from '@vue/shared'
+import {
+  type UniDOMStringMap,
+  createRpx2Unit,
+  createUniDOMStringMap,
+  defaultRpx2Unit,
+  getUniElementPage,
+} from '@dcloudio/uni-shared'
+
+const rpx2Unit = createRpx2Unit(
+  defaultRpx2Unit.unit,
+  defaultRpx2Unit.unitRatio,
+  defaultRpx2Unit.unitPrecision
+)
+
+function transformRpx(value: string) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return rpx2Unit(num + 'rpx')
+    })
+  }
+  return value
+}
+
+// 独立维护 Vapor 行为；旧 Custom Element 的兼容方法随组件迁移逐步移除。
+export class UniElement extends HTMLElement {
+  private _props: Record<string, any> = {}
+  // 旧组件只做 attribute -> dataset 的单向同步：Vue/uni 运行时更新
+  // data-* 后，已访问过的 dataset 会同步刷新；暂不支持 dataset 反写 DOM attribute。
+  private __uniDatasetMap?: UniDOMStringMap
+  // 过渡期旧组件自行保存首次读取前的原始值，不再依赖全局属性拦截。
+  private __uniDataset?: Record<string, any>
+
+  attachVmProps(props: Record<string, any>) {
+    this._props = props
+  }
+
+  getAttribute(qualifiedName: string): string | null {
+    const name = camelize(qualifiedName)
+    const attr =
+      name in this._props
+        ? this._props[name] + ''
+        : super.getAttribute(qualifiedName)
+    return attr === undefined ? null : attr
+  }
+
+  getPage() {
+    return getUniElementPage<UniPage>(this)
+  }
+  get uniPage() {
+    return this.getPage()
+  }
+
+  get dataset(): UniDOMStringMap {
+    if (!this.__uniDatasetMap) {
+      // 旧组件兼容：首次读取前的缓存由本类属性方法维护，迁移原生宿主后移除。
+      this.__uniDatasetMap = createUniDOMStringMap(
+        (this as unknown as { __uniDataset?: Record<string, any> })
+          .__uniDataset || {}
+      )
+    }
+    return this.__uniDatasetMap
+  }
+
+  setAttribute(qualifiedName: string, value: string) {
+    if (/^\d/.test(qualifiedName)) return
+    if (qualifiedName.startsWith('data-')) {
+      ;(this.__uniDataset || (this.__uniDataset = {}))[
+        camelize(qualifiedName.substring(5))
+      ] = value
+    }
+    super.setAttribute(qualifiedName, value)
+    if (qualifiedName.startsWith('data-') && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value)
+    }
+  }
+
+  removeAttribute(qualifiedName: string) {
+    if (this.__uniDataset && qualifiedName.startsWith('data-')) {
+      delete this.__uniDataset[camelize(qualifiedName.substring(5))]
+    }
+    super.removeAttribute(qualifiedName)
+    if (qualifiedName.startsWith('data-') && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName)
+    }
+  }
+
+  getBoundingClientRectAsync(callback) {
+    if (callback) {
+      const domRect = this.getBoundingClientRect()
+      try {
+        callback.success?.(domRect)
+      } catch (error) {
+        console.error(error)
+      }
+      try {
+        callback.complete?.(domRect)
+      } catch (error) {
+        console.error(error)
+      }
+      return
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect()
+      resolve(domRect)
+    })
+  }
+
+  get style() {
+    const originalStyle = super.style
+    // @ts-expect-error
+    if (originalStyle.__patchRpx__) {
+      return originalStyle
+    }
+    // @ts-expect-error
+    originalStyle.__patchRpx__ = true
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle)
+    super.style.setProperty = function (
+      property: string,
+      value: string | null,
+      priority?: string
+    ) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + '') : value,
+        priority || undefined
+      )
+    }
+    return super.style
+  }
+
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, '')
+  }
+
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, '')
+  }
+}

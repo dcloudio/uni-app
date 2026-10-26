@@ -32,10 +32,11 @@ jest.mock('@dcloudio/uni-api', () => ({
 async function loadForMode(
   file: string,
   vapor: boolean,
-  imports: Record<string, any>
+  imports: Record<string, any>,
+  isX = true
 ) {
   const plugin = jscc({
-    values: { _X_: 1, _X_VAPOR_: +vapor, _NODE_JS_: 0 },
+    values: { _X_: +isX, _X_VAPOR_: +vapor, _NODE_JS_: 0 },
   })
   const { code } = await (plugin.load as any).call(
     {},
@@ -57,6 +58,28 @@ async function loadForMode(
     module.exports
   )
   return module.exports
+}
+
+async function loadUniElement(
+  vapor: boolean,
+  imports: Record<string, any>,
+  isX = true
+) {
+  const mode = vapor ? 'vapor' : 'vdom'
+  const implementation = await loadForMode(
+    `uni-components/src/helpers/UniElement-${mode}.ts`,
+    vapor,
+    imports,
+    isX
+  )
+  const entry = await loadForMode(
+    'uni-components/src/helpers/UniElement.ts',
+    vapor,
+    { [`./UniElement-${mode}`]: implementation },
+    isX
+  )
+  expect(entry.UniElement).toBe(implementation.UniElement)
+  return entry
 }
 
 describe('Web Vapor 原生宿主 Element', () => {
@@ -103,13 +126,8 @@ describe('Web Vapor 原生宿主 Element', () => {
       ),
       '@dcloudio/uni-shared': jest.requireActual('@dcloudio/uni-shared'),
     }
-    UniElement = (
-      await loadForMode(
-        'uni-components/src/helpers/UniElement.ts',
-        true,
-        elementImports
-      )
-    ).UniElement
+    const elementModule = await loadUniElement(true, elementImports)
+    UniElement = elementModule.UniElement
     jest.doMock('../src/helpers/UniElement', () => ({ UniElement }))
     elements = await import('../src/vue/web-vapor-elements')
     isBuiltInElement = (
@@ -389,13 +407,7 @@ describe('Web Vapor 原生宿主 Element', () => {
   test.each([false, true])(
     '真实初始化后仅旧组件使用 dataset 缓存，Vapor=%s',
     async (vapor) => {
-      const Base = (
-        await loadForMode(
-          'uni-components/src/helpers/UniElement.ts',
-          vapor,
-          elementImports
-        )
-      ).UniElement
+      const Base = (await loadUniElement(vapor, elementImports)).UniElement
       class LegacyField extends Base {}
       const runtime = {
         defineComponent: (options: any) => options,
@@ -796,13 +808,7 @@ describe('Web Vapor 原生宿主 Element', () => {
       const previous = global.HTMLElement
       ;(global as any).HTMLElement = other.window.HTMLElement
       try {
-        const Base = (
-          await loadForMode(
-            'uni-components/src/helpers/UniElement.ts',
-            vapor,
-            elementImports
-          )
-        ).UniElement
+        const Base = (await loadUniElement(vapor, elementImports)).UniElement
         class Legacy extends Base {}
         if (vapor) {
           Object.defineProperty(Legacy.prototype, 'uniTagName', {
@@ -950,4 +956,42 @@ describe('Web Vapor 原生宿主 Element', () => {
       expect(el.hasAttribute(key)).toBe(false)
     }
   })
+
+  test.each([
+    [false, false],
+    [false, true],
+    [true, true],
+  ])(
+    '拆分保留旧组件的直接继承与属性行为，Vapor=%s，X=%s',
+    async (vapor, isX) => {
+      const { UniElement: Base } = await loadUniElement(
+        vapor,
+        elementImports,
+        isX
+      )
+      expect(Object.getPrototypeOf(Base.prototype)).toBe(HTMLElement.prototype)
+      class Legacy extends Base {}
+      const tag = `uni-split-${+vapor}-${+isX}`
+      dom.window.customElements.define(tag, Legacy)
+      const el = document.createElement(tag) as any
+      expect(el).toBeInstanceOf(Base)
+      expect(el.__isUniElement).toBe(vapor ? undefined : true)
+      expect(el.tagName).toBe(`SPLIT-${+vapor}-${+isX}`)
+      expect(el.nodeName).toBe(el.tagName)
+      el.setAttribute('data-value', 'dom')
+      el.attachVmProps({ dataValue: 7 })
+      expect(el.getAttribute('data-value')).toBe('7')
+      expect(Element.prototype.getAttribute.call(el, 'data-value')).toBe('dom')
+      el.style.setProperty('width', '10px')
+      expect(el.style.width).toBe('10px')
+      const setProperty = el.style.setProperty
+      expect(el.style.setProperty).toBe(setProperty)
+      if (!isX) {
+        expect(el.dataset).not.toBeInstanceOf(Map)
+        expect(el.getPage).toBeUndefined()
+        expect(el.setAttribute).toBe(HTMLElement.prototype.setAttribute)
+        expect(el.removeAttribute).toBe(HTMLElement.prototype.removeAttribute)
+      }
+    }
+  )
 })
