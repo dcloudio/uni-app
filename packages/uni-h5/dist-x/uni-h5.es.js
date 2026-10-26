@@ -12536,32 +12536,36 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
+const iconProps = {
+  type: {
+    type: String,
+    required: true,
+    default: ""
+  },
+  size: {
+    type: [String, Number],
+    default: 23
+  },
+  color: {
+    type: String,
+    default: ""
+  }
+};
+function useIcon(props2) {
+  return computed(() => ICONS[props2.type]);
+}
 class UniIconElement extends UniElement2 {
 }
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
-  props: {
-    type: {
-      type: String,
-      required: true,
-      default: ""
-    },
-    size: {
-      type: [String, Number],
-      default: 23
-    },
-    color: {
-      type: String,
-      default: ""
-    }
-  },
+  props: iconProps,
   rootElement: {
     name: "uni-icon",
     class: UniIconElement
   },
   setup(props2) {
     const rootRef = ref(null);
-    const path = computed(() => ICONS[props2.type]);
+    const path = useIcon(props2);
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
@@ -13443,7 +13447,7 @@ function useCache(props2, type) {
     return ref("");
   }
 }
-const emits$1 = ["confirm", ...emit];
+const emits$2 = ["confirm", ...emit];
 function useInput(props2, { emit: emit2, expose }) {
   const INPUT_TYPES = [
     "text",
@@ -13590,7 +13594,7 @@ class UniInputElement extends UniElement2 {
 const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$m,
-  emits: emits$1,
+  emits: emits$2,
   rootElement: {
     name: "uni-input",
     class: UniInputElement
@@ -17098,65 +17102,6 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-const SCROLL_END_DELAY = 100;
-const passiveOptions$1 = { passive: true };
-function onScrollend(element, listener2) {
-  if ("onscrollend" in element) {
-    element.addEventListener("scrollend", listener2, passiveOptions$1);
-    return () => {
-      element.removeEventListener("scrollend", listener2);
-    };
-  }
-  const activeTouches = /* @__PURE__ */ new Set();
-  let lastScrollEvent = null;
-  let waitingForTouchEnd = false;
-  const schedule = debounce(
-    () => {
-      if (activeTouches.size > 0) {
-        waitingForTouchEnd = true;
-      } else if (lastScrollEvent !== null) {
-        const event = lastScrollEvent;
-        lastScrollEvent = null;
-        listener2(event);
-      }
-    },
-    SCROLL_END_DELAY,
-    { setTimeout, clearTimeout }
-  );
-  const onScroll = (event) => {
-    waitingForTouchEnd = false;
-    lastScrollEvent = event;
-    schedule();
-  };
-  const onTouchStart = (event) => {
-    for (let i = 0; i < event.changedTouches.length; i++) {
-      activeTouches.add(event.changedTouches[i].identifier);
-    }
-  };
-  const onTouchEnd = (event) => {
-    for (let i = 0; i < event.changedTouches.length; i++) {
-      activeTouches.delete(event.changedTouches[i].identifier);
-    }
-    if (activeTouches.size === 0 && waitingForTouchEnd) {
-      waitingForTouchEnd = false;
-      schedule();
-    }
-  };
-  element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
-  element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
-  element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
-  element.addEventListener("scroll", onScroll, passiveOptions$1);
-  return () => {
-    element.removeEventListener("touchstart", onTouchStart);
-    element.removeEventListener("touchend", onTouchEnd);
-    element.removeEventListener("touchcancel", onTouchEnd);
-    element.removeEventListener("scroll", onScroll);
-    schedule.cancel();
-    activeTouches.clear();
-    lastScrollEvent = null;
-    waitingForTouchEnd = false;
-  };
-}
 class UniVueElement extends HTMLElement {
 }
 class UniLoadingElement extends UniVueElement {
@@ -17298,34 +17243,88 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       return (route > 1 ? 1 : route) * 360;
     });
     return () => {
-      const {
-        refreshState,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
       return createVNode("div", {
         "ref": rootRef,
         "style": rootStyle.value,
         "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+      }, [props2.refresherDefaultStyle !== "none" ? createVNode("div", {
         "class": "uni-scroll-view-refresh"
-      }, [refreshState == "pulling" || refreshState == "refreshing" ? createVNode(_sfc_main$9, {
+      }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? createVNode(_sfc_main$9, {
         "key": "refresh__loading",
         "class": "uni-scroll-view-refresh__loading",
-        "paused": refreshState == "pulling",
+        "paused": props2.refreshState == "pulling",
         "style": {
-          transform: refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-          color: refresherDefaultStyle
+          transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
+          color: props2.refresherDefaultStyle
         }
-      }, null, 8, ["paused", "style"]) : null]) : null, refresherDefaultStyle === "none" ? createVNode("div", {
+      }, null, 8, ["paused", "style"]) : null]) : null, props2.refresherDefaultStyle === "none" ? createVNode("div", {
         "class": "uni-scroll-view-refresher-container",
         "style": {
-          height: `${refresherThreshold}px`
+          height: `${props2.refresherThreshold}px`
         }
       }, [slots.default && slots.default()]) : null], 4);
     };
   }
 });
+const SCROLL_END_DELAY = 100;
+const passiveOptions$1 = { passive: true };
+function onScrollend(element, listener2) {
+  if ("onscrollend" in element) {
+    element.addEventListener("scrollend", listener2, passiveOptions$1);
+    return () => {
+      element.removeEventListener("scrollend", listener2);
+    };
+  }
+  const activeTouches = /* @__PURE__ */ new Set();
+  let lastScrollEvent = null;
+  let waitingForTouchEnd = false;
+  const schedule = debounce(
+    () => {
+      if (activeTouches.size > 0) {
+        waitingForTouchEnd = true;
+      } else if (lastScrollEvent !== null) {
+        const event = lastScrollEvent;
+        lastScrollEvent = null;
+        listener2(event);
+      }
+    },
+    SCROLL_END_DELAY,
+    { setTimeout, clearTimeout }
+  );
+  const onScroll = (event) => {
+    waitingForTouchEnd = false;
+    lastScrollEvent = event;
+    schedule();
+  };
+  const onTouchStart = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.add(event.changedTouches[i].identifier);
+    }
+  };
+  const onTouchEnd = (event) => {
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      activeTouches.delete(event.changedTouches[i].identifier);
+    }
+    if (activeTouches.size === 0 && waitingForTouchEnd) {
+      waitingForTouchEnd = false;
+      schedule();
+    }
+  };
+  element.addEventListener("touchstart", onTouchStart, passiveOptions$1);
+  element.addEventListener("touchend", onTouchEnd, passiveOptions$1);
+  element.addEventListener("touchcancel", onTouchEnd, passiveOptions$1);
+  element.addEventListener("scroll", onScroll, passiveOptions$1);
+  return () => {
+    element.removeEventListener("touchstart", onTouchStart);
+    element.removeEventListener("touchend", onTouchEnd);
+    element.removeEventListener("touchcancel", onTouchEnd);
+    element.removeEventListener("scroll", onScroll);
+    schedule.cancel();
+    activeTouches.clear();
+    lastScrollEvent = null;
+    waitingForTouchEnd = false;
+  };
+}
 const passiveOptions = /* @__PURE__ */ passive(true);
 const props$i = {
   direction: {
@@ -17393,136 +17392,66 @@ const props$i = {
     default: false
   }
 };
-class UniScrollViewElement extends UniElement2 {
+const emits$1 = [
+  "scroll",
+  "scrollend",
+  "scrolltoupper",
+  "scrolltolower",
+  "refresherrefresh",
+  "refresherrestore",
+  "refresherpulling",
+  "refresherabort",
+  "update:refresherTriggered"
+];
+function useScrollView(props2, { emit: emit2, expose }) {
+  const rootRef = ref(null);
+  const main = ref(null);
+  const wrap = ref(null);
+  const content = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state: state2, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
+  const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(
+    props2,
+    state2,
+    scrollTopNumber,
+    scrollLeftNumber,
+    trigger,
+    rootRef,
+    main,
+    content,
+    emit2
+  );
+  const mainStyle = computed(() => {
+    let style = "";
+    realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+    realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+    return style;
+  });
+  const scrollBarClassName = computed(() => {
+    let className = "uni-scroll-view";
+    if (props2.showScrollbar === false) {
+      className += " uni-scroll-view-scrollbar-hidden";
+    }
+    return className;
+  });
+  expose({
+    // 自动化测试需要暴露main从而获取scrollLeft
+    $getMain() {
+      return main.value;
+    }
+  });
+  return {
+    rootRef,
+    main,
+    wrap,
+    content,
+    state: state2,
+    mainStyle,
+    scrollBarClassName,
+    _scrollLeftChanged,
+    _scrollTopChanged
+  };
 }
-const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ScrollView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$i,
-  emits: ["scroll", "scrollend", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
-  rootElement: {
-    name: "uni-scroll-view",
-    class: UniScrollViewElement
-  },
-  setup(props2, {
-    emit: emit2,
-    slots,
-    expose
-  }) {
-    const rootRef = ref(null);
-    const main = ref(null);
-    const wrap = ref(null);
-    const content = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: state2,
-      scrollTopNumber,
-      scrollLeftNumber
-    } = useScrollViewState(props2);
-    const {
-      realScrollX,
-      realScrollY,
-      _scrollLeftChanged,
-      _scrollTopChanged
-    } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
-    const mainStyle = computed(() => {
-      let style = "";
-      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-      return style;
-    });
-    const scrollBarClassName = computed(() => {
-      let className = "uni-scroll-view";
-      if (props2.showScrollbar === false) {
-        className += " uni-scroll-view-scrollbar-hidden";
-      }
-      return className;
-    });
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      Object.defineProperties(rootElement, {
-        scrollHeight: {
-          get() {
-            return main.value.scrollHeight;
-          }
-        },
-        scrollWidth: {
-          get() {
-            return main.value.scrollWidth;
-          }
-        },
-        scrollLeft: {
-          get() {
-            return main.value.scrollLeft;
-          },
-          set(val) {
-            _scrollLeftChanged(val);
-          }
-        },
-        scrollTop: {
-          get() {
-            return main.value.scrollTop;
-          },
-          set(val) {
-            _scrollTopChanged(val);
-          }
-        },
-        scrollTo: {
-          get() {
-            return main.value.scrollTo.bind(main.value);
-          }
-        },
-        scrollBy: {
-          get() {
-            return main.value.scrollBy.bind(main.value);
-          }
-        }
-      });
-      rootElement.attachVmProps(props2);
-    });
-    expose({
-      // 自动化测试需要暴露main从而获取scrollLeft
-      $getMain() {
-        return main.value;
-      }
-    });
-    return () => {
-      const {
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      const {
-        refresherHeight,
-        refreshState
-      } = state2;
-      return createVNode("uni-scroll-view", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "ref": wrap,
-        "class": "uni-scroll-view"
-      }, [createVNode("div", {
-        "ref": main,
-        "style": mainStyle.value,
-        "class": scrollBarClassName.value
-      }, [refresherEnabled ? createVNode(Refresher, {
-        "refreshState": refreshState,
-        "refresherHeight": refresherHeight,
-        "refresherThreshold": refresherThreshold,
-        "refresherDefaultStyle": refresherDefaultStyle,
-        "refresherBackground": refresherBackground
-      }, {
-        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
-      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
-    };
-  }
-});
 function useScrollViewState(props2) {
   const scrollTopNumber = computed(() => {
     return Number(props2.scrollTop) || 0;
@@ -17868,7 +17797,11 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         y: props2.refresherThreshold
       };
     };
-    main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
+    main.value.addEventListener(
+      "touchstart",
+      __handleTouchStart,
+      passiveOptions
+    );
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
     main.value.addEventListener("scroll", __handleScroll, passive(false));
     main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
@@ -17891,16 +17824,22 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   watch(scrollLeftNumber, (val) => {
     _scrollLeftChanged(val);
   });
-  watch(() => props2.scrollIntoView, (val) => {
-    _scrollIntoViewChanged(val);
-  });
-  watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
+  watch(
+    () => props2.scrollIntoView,
+    (val) => {
+      _scrollIntoViewChanged(val);
     }
-  });
+  );
+  watch(
+    () => props2.refresherTriggered,
+    (val) => {
+      if (val === true) {
+        _setRefreshState("refreshing");
+      } else if (val === false) {
+        _setRefreshState("restore");
+      }
+    }
+  );
   return {
     realScrollX,
     realScrollY,
@@ -17908,6 +17847,111 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _scrollLeftChanged
   };
 }
+class UniScrollViewElement extends UniElement2 {
+}
+const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ScrollView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$i,
+  emits: emits$1,
+  rootElement: {
+    name: "uni-scroll-view",
+    class: UniScrollViewElement
+  },
+  setup(props2, context) {
+    const {
+      rootRef,
+      main,
+      wrap,
+      content,
+      state: state2,
+      mainStyle,
+      scrollBarClassName,
+      _scrollLeftChanged,
+      _scrollTopChanged
+    } = useScrollView(props2, context);
+    const {
+      slots
+    } = context;
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      Object.defineProperties(rootElement, {
+        scrollHeight: {
+          get() {
+            return main.value.scrollHeight;
+          }
+        },
+        scrollWidth: {
+          get() {
+            return main.value.scrollWidth;
+          }
+        },
+        scrollLeft: {
+          get() {
+            return main.value.scrollLeft;
+          },
+          set(val) {
+            _scrollLeftChanged(val);
+          }
+        },
+        scrollTop: {
+          get() {
+            return main.value.scrollTop;
+          },
+          set(val) {
+            _scrollTopChanged(val);
+          }
+        },
+        scrollTo: {
+          get() {
+            return main.value.scrollTo.bind(main.value);
+          }
+        },
+        scrollBy: {
+          get() {
+            return main.value.scrollBy.bind(main.value);
+          }
+        }
+      });
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState
+      } = state2;
+      return createVNode("uni-scroll-view", {
+        "ref": rootRef
+      }, [createVNode("div", {
+        "ref": wrap,
+        "class": "uni-scroll-view"
+      }, [createVNode("div", {
+        "ref": main,
+        "style": mainStyle.value,
+        "class": scrollBarClassName.value
+      }, [refresherEnabled ? createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
+    };
+  }
+});
 function createBackgroundColorStyle(color) {
   return color ? { backgroundColor: color } : void 0;
 }

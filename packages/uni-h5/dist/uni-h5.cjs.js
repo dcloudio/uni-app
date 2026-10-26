@@ -3371,26 +3371,30 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
+const iconProps = {
+  type: {
+    type: String,
+    required: true,
+    default: ""
+  },
+  size: {
+    type: [String, Number],
+    default: 23
+  },
+  color: {
+    type: String,
+    default: ""
+  }
+};
+function useIcon(props2) {
+  return vue.computed(() => ICONS[props2.type]);
+}
 const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
-  props: {
-    type: {
-      type: String,
-      required: true,
-      default: ""
-    },
-    size: {
-      type: [String, Number],
-      default: 23
-    },
-    color: {
-      type: String,
-      default: ""
-    }
-  },
+  props: iconProps,
   setup(props2) {
     const rootRef = vue.ref(null);
-    const path = vue.computed(() => ICONS[props2.type]);
+    const path = useIcon(props2);
     return () => {
       return vue.createVNode("uni-icon", {
         "ref": rootRef
@@ -4119,7 +4123,7 @@ function useCache(props2, type) {
     return vue.ref("");
   }
 }
-const emits$1 = ["confirm", ...emit];
+const emits$2 = ["confirm", ...emit];
 function useInput(props2, { emit: emit2, expose }) {
   const INPUT_TYPES = [
     "text",
@@ -4300,7 +4304,7 @@ function useInput(props2, { emit: emit2, expose }) {
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$j,
-  emits: emits$1,
+  emits: emits$2,
   setup(props2, context) {
     const {
       rootRef,
@@ -6644,20 +6648,15 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       return (route > 1 ? 1 : route) * 360;
     });
     return () => {
-      const {
-        refreshState,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
       return vue.createVNode("div", {
         "ref": rootRef,
         "style": rootStyle.value,
         "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? vue.createVNode("div", {
+      }, [props2.refresherDefaultStyle !== "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresh"
       }, [vue.createVNode("div", {
         "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? vue.createVNode("svg", {
+      }, [props2.refreshState == "pulling" ? vue.createVNode("svg", {
         "key": "refresh__icon",
         "style": {
           transform: "rotate(" + refreshRotate.value + "deg)"
@@ -6672,7 +6671,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       }, null), vue.createVNode("path", {
         "d": "M0 0h24v24H0z",
         "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? vue.createVNode("svg", {
+      }, null)], 4) : null, props2.refreshState == "refreshing" ? vue.createVNode("svg", {
         "key": "refresh__spinner",
         "class": "uni-scroll-view-refresh__spinner",
         "width": "24",
@@ -6685,10 +6684,10 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? vue.createVNode("div", {
+      }, null)]) : null])]) : null, props2.refresherDefaultStyle === "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresher-container",
         "style": {
-          height: `${refresherThreshold}px`
+          height: `${props2.refresherThreshold}px`
         }
       }, [slots.default && slots.default()]) : null], 4);
     };
@@ -6760,88 +6759,66 @@ const props$f = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ScrollView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$f,
-  emits: ["scroll", "scrollend", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
-  setup(props2, {
-    emit: emit2,
-    slots,
-    expose
-  }) {
-    const rootRef = vue.ref(null);
-    const main = vue.ref(null);
-    const wrap = vue.ref(null);
-    const content = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state,
-      scrollTopNumber,
-      scrollLeftNumber
-    } = useScrollViewState(props2);
-    const {
-      realScrollX,
-      realScrollY,
-      _scrollLeftChanged,
-      _scrollTopChanged
-    } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
-    const mainStyle = vue.computed(() => {
-      let style = "";
-      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-      return style;
-    });
-    const scrollBarClassName = vue.computed(() => {
-      let className = "uni-scroll-view";
-      if (props2.showScrollbar === false) {
-        className += " uni-scroll-view-scrollbar-hidden";
-      }
-      return className;
-    });
-    expose({
-      // 自动化测试需要暴露main从而获取scrollLeft
-      $getMain() {
-        return main.value;
-      }
-    });
-    return () => {
-      const {
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      const {
-        refresherHeight,
-        refreshState
-      } = state;
-      return vue.createVNode("uni-scroll-view", {
-        "ref": rootRef
-      }, [vue.createVNode("div", {
-        "ref": wrap,
-        "class": "uni-scroll-view"
-      }, [vue.createVNode("div", {
-        "ref": main,
-        "style": mainStyle.value,
-        "class": scrollBarClassName.value
-      }, [refresherEnabled ? vue.createVNode(Refresher, {
-        "refreshState": refreshState,
-        "refresherHeight": refresherHeight,
-        "refresherThreshold": refresherThreshold,
-        "refresherDefaultStyle": refresherDefaultStyle,
-        "refresherBackground": refresherBackground
-      }, {
-        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
-      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
-    };
-  }
-});
+const emits$1 = [
+  "scroll",
+  "scrollend",
+  "scrolltoupper",
+  "scrolltolower",
+  "refresherrefresh",
+  "refresherrestore",
+  "refresherpulling",
+  "refresherabort",
+  "update:refresherTriggered"
+];
+function useScrollView(props2, { emit: emit2, expose }) {
+  const rootRef = vue.ref(null);
+  const main = vue.ref(null);
+  const wrap = vue.ref(null);
+  const content = vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
+  const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(
+    props2,
+    state,
+    scrollTopNumber,
+    scrollLeftNumber,
+    trigger,
+    rootRef,
+    main,
+    content,
+    emit2
+  );
+  const mainStyle = vue.computed(() => {
+    let style = "";
+    realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+    realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+    return style;
+  });
+  const scrollBarClassName = vue.computed(() => {
+    let className = "uni-scroll-view";
+    if (props2.showScrollbar === false) {
+      className += " uni-scroll-view-scrollbar-hidden";
+    }
+    return className;
+  });
+  expose({
+    // 自动化测试需要暴露main从而获取scrollLeft
+    $getMain() {
+      return main.value;
+    }
+  });
+  return {
+    rootRef,
+    main,
+    wrap,
+    content,
+    state,
+    mainStyle,
+    scrollBarClassName,
+    _scrollLeftChanged,
+    _scrollTopChanged
+  };
+}
 function useScrollViewState(props2) {
   const scrollTopNumber = vue.computed(() => {
     return Number(props2.scrollTop) || 0;
@@ -7034,16 +7011,22 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   vue.watch(scrollLeftNumber, (val) => {
     _scrollLeftChanged(val);
   });
-  vue.watch(() => props2.scrollIntoView, (val) => {
-    _scrollIntoViewChanged(val);
-  });
-  vue.watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
+  vue.watch(
+    () => props2.scrollIntoView,
+    (val) => {
+      _scrollIntoViewChanged(val);
     }
-  });
+  );
+  vue.watch(
+    () => props2.refresherTriggered,
+    (val) => {
+      if (val === true) {
+        _setRefreshState("refreshing");
+      } else if (val === false) {
+        _setRefreshState("restore");
+      }
+    }
+  );
   return {
     realScrollX,
     realScrollY,
@@ -7051,6 +7034,63 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ScrollView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$f,
+  emits: emits$1,
+  setup(props2, context) {
+    const {
+      rootRef,
+      main,
+      wrap,
+      content,
+      state,
+      mainStyle,
+      scrollBarClassName,
+      _scrollLeftChanged,
+      _scrollTopChanged
+    } = useScrollView(props2, context);
+    const {
+      slots
+    } = context;
+    return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState
+      } = state;
+      return vue.createVNode("uni-scroll-view", {
+        "ref": rootRef
+      }, [vue.createVNode("div", {
+        "ref": wrap,
+        "class": "uni-scroll-view"
+      }, [vue.createVNode("div", {
+        "ref": main,
+        "style": mainStyle.value,
+        "class": scrollBarClassName.value
+      }, [refresherEnabled ? vue.createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
+    };
+  }
+});
 function createBackgroundColorStyle(color) {
   return color ? { backgroundColor: color } : void 0;
 }

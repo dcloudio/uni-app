@@ -10259,26 +10259,30 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
+const iconProps = {
+  type: {
+    type: String,
+    required: true,
+    default: ""
+  },
+  size: {
+    type: [String, Number],
+    default: 23
+  },
+  color: {
+    type: String,
+    default: ""
+  }
+};
+function useIcon(props2) {
+  return computed(() => ICONS[props2.type]);
+}
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
-  props: {
-    type: {
-      type: String,
-      required: true,
-      default: ""
-    },
-    size: {
-      type: [String, Number],
-      default: 23
-    },
-    color: {
-      type: String,
-      default: ""
-    }
-  },
+  props: iconProps,
   setup(props2) {
     const rootRef = ref(null);
-    const path = computed(() => ICONS[props2.type]);
+    const path = useIcon(props2);
     return () => {
       return createVNode("uni-icon", {
         "ref": rootRef
@@ -11098,7 +11102,7 @@ function useCache(props2, type) {
     return ref("");
   }
 }
-const emits$1 = ["confirm", ...emit];
+const emits$2 = ["confirm", ...emit];
 function useInput(props2, { emit: emit2, expose }) {
   const INPUT_TYPES = [
     "text",
@@ -11279,7 +11283,7 @@ function useInput(props2, { emit: emit2, expose }) {
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$q,
-  emits: emits$1,
+  emits: emits$2,
   setup(props2, context) {
     const {
       rootRef,
@@ -14692,6 +14696,105 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
+const Refresher = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Refresher",
+  props: {
+    refreshState: {
+      type: String,
+      default: ""
+    },
+    refresherHeight: {
+      type: Number,
+      default: 0
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: "black"
+    },
+    refresherBackground: {
+      type: String,
+      default: "#fff"
+    }
+  },
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const rootStyle = computed(() => {
+      const style = {
+        backgroundColor: props2.refresherBackground
+      };
+      switch (props2.refreshState) {
+        case "pulling":
+          style.height = props2.refresherHeight + "px";
+          break;
+        case "refreshing":
+          style.height = props2.refresherThreshold + "px";
+          style.transition = "height 0.3s";
+          break;
+        case "":
+        case "refresherabort":
+        case "restore":
+          style.height = "0px";
+          style.transition = "height 0.3s";
+          break;
+      }
+      return style;
+    });
+    const refreshRotate = computed(() => {
+      const route = props2.refresherHeight / props2.refresherThreshold;
+      return (route > 1 ? 1 : route) * 360;
+    });
+    return () => {
+      return createVNode("div", {
+        "ref": rootRef,
+        "style": rootStyle.value,
+        "class": "uni-scroll-view-refresher"
+      }, [props2.refresherDefaultStyle !== "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresh"
+      }, [createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [props2.refreshState == "pulling" ? createVNode("svg", {
+        "key": "refresh__icon",
+        "style": {
+          transform: "rotate(" + refreshRotate.value + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, props2.refreshState == "refreshing" ? createVNode("svg", {
+        "key": "refresh__spinner",
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, props2.refresherDefaultStyle === "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresher-container",
+        "style": {
+          height: `${props2.refresherThreshold}px`
+        }
+      }, [slots.default && slots.default()]) : null], 4);
+    };
+  }
+});
 const SCROLL_END_DELAY = 100;
 const passiveOptions$1 = { passive: true };
 function onScrollend(element, listener2) {
@@ -14751,110 +14854,6 @@ function onScrollend(element, listener2) {
     waitingForTouchEnd = false;
   };
 }
-const Refresher = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Refresher",
-  props: {
-    refreshState: {
-      type: String,
-      default: ""
-    },
-    refresherHeight: {
-      type: Number,
-      default: 0
-    },
-    refresherThreshold: {
-      type: Number,
-      default: 45
-    },
-    refresherDefaultStyle: {
-      type: String,
-      default: "black"
-    },
-    refresherBackground: {
-      type: String,
-      default: "#fff"
-    }
-  },
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = ref(null);
-    const rootStyle = computed(() => {
-      const style = {
-        backgroundColor: props2.refresherBackground
-      };
-      switch (props2.refreshState) {
-        case "pulling":
-          style.height = props2.refresherHeight + "px";
-          break;
-        case "refreshing":
-          style.height = props2.refresherThreshold + "px";
-          style.transition = "height 0.3s";
-          break;
-        case "":
-        case "refresherabort":
-        case "restore":
-          style.height = "0px";
-          style.transition = "height 0.3s";
-          break;
-      }
-      return style;
-    });
-    const refreshRotate = computed(() => {
-      const route = props2.refresherHeight / props2.refresherThreshold;
-      return (route > 1 ? 1 : route) * 360;
-    });
-    return () => {
-      const {
-        refreshState,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      return createVNode("div", {
-        "ref": rootRef,
-        "style": rootStyle.value,
-        "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresh"
-      }, [createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? createVNode("svg", {
-        "key": "refresh__icon",
-        "style": {
-          transform: "rotate(" + refreshRotate.value + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
-        "key": "refresh__spinner",
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresher-container",
-        "style": {
-          height: `${refresherThreshold}px`
-        }
-      }, [slots.default && slots.default()]) : null], 4);
-    };
-  }
-});
 const passiveOptions = /* @__PURE__ */ passive(true);
 const props$m = {
   direction: {
@@ -14922,88 +14921,66 @@ const props$m = {
     default: false
   }
 };
-const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ScrollView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$m,
-  emits: ["scroll", "scrollend", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
-  setup(props2, {
-    emit: emit2,
-    slots,
-    expose
-  }) {
-    const rootRef = ref(null);
-    const main = ref(null);
-    const wrap = ref(null);
-    const content = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: state2,
-      scrollTopNumber,
-      scrollLeftNumber
-    } = useScrollViewState(props2);
-    const {
-      realScrollX,
-      realScrollY,
-      _scrollLeftChanged,
-      _scrollTopChanged
-    } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
-    const mainStyle = computed(() => {
-      let style = "";
-      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
-      return style;
-    });
-    const scrollBarClassName = computed(() => {
-      let className = "uni-scroll-view";
-      if (props2.showScrollbar === false) {
-        className += " uni-scroll-view-scrollbar-hidden";
-      }
-      return className;
-    });
-    expose({
-      // 自动化测试需要暴露main从而获取scrollLeft
-      $getMain() {
-        return main.value;
-      }
-    });
-    return () => {
-      const {
-        refresherEnabled,
-        refresherBackground,
-        refresherDefaultStyle,
-        refresherThreshold
-      } = props2;
-      const {
-        refresherHeight,
-        refreshState
-      } = state2;
-      return createVNode("uni-scroll-view", {
-        "ref": rootRef
-      }, [createVNode("div", {
-        "ref": wrap,
-        "class": "uni-scroll-view"
-      }, [createVNode("div", {
-        "ref": main,
-        "style": mainStyle.value,
-        "class": scrollBarClassName.value
-      }, [refresherEnabled ? createVNode(Refresher, {
-        "refreshState": refreshState,
-        "refresherHeight": refresherHeight,
-        "refresherThreshold": refresherThreshold,
-        "refresherDefaultStyle": refresherDefaultStyle,
-        "refresherBackground": refresherBackground
-      }, {
-        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
-      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
-    };
-  }
-});
+const emits$1 = [
+  "scroll",
+  "scrollend",
+  "scrolltoupper",
+  "scrolltolower",
+  "refresherrefresh",
+  "refresherrestore",
+  "refresherpulling",
+  "refresherabort",
+  "update:refresherTriggered"
+];
+function useScrollView(props2, { emit: emit2, expose }) {
+  const rootRef = ref(null);
+  const main = ref(null);
+  const wrap = ref(null);
+  const content = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state: state2, scrollTopNumber, scrollLeftNumber } = useScrollViewState(props2);
+  const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } = useScrollViewLoader(
+    props2,
+    state2,
+    scrollTopNumber,
+    scrollLeftNumber,
+    trigger,
+    rootRef,
+    main,
+    content,
+    emit2
+  );
+  const mainStyle = computed(() => {
+    let style = "";
+    realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+    realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+    return style;
+  });
+  const scrollBarClassName = computed(() => {
+    let className = "uni-scroll-view";
+    if (props2.showScrollbar === false) {
+      className += " uni-scroll-view-scrollbar-hidden";
+    }
+    return className;
+  });
+  expose({
+    // 自动化测试需要暴露main从而获取scrollLeft
+    $getMain() {
+      return main.value;
+    }
+  });
+  return {
+    rootRef,
+    main,
+    wrap,
+    content,
+    state: state2,
+    mainStyle,
+    scrollBarClassName,
+    _scrollLeftChanged,
+    _scrollTopChanged
+  };
+}
 function useScrollViewState(props2) {
   const scrollTopNumber = computed(() => {
     return Number(props2.scrollTop) || 0;
@@ -15343,7 +15320,11 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         y: props2.refresherThreshold
       };
     };
-    main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
+    main.value.addEventListener(
+      "touchstart",
+      __handleTouchStart,
+      passiveOptions
+    );
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
     main.value.addEventListener("scroll", __handleScroll, passive(false));
     main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
@@ -15366,16 +15347,22 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   watch(scrollLeftNumber, (val) => {
     _scrollLeftChanged(val);
   });
-  watch(() => props2.scrollIntoView, (val) => {
-    _scrollIntoViewChanged(val);
-  });
-  watch(() => props2.refresherTriggered, (val) => {
-    if (val === true) {
-      _setRefreshState("refreshing");
-    } else if (val === false) {
-      _setRefreshState("restore");
+  watch(
+    () => props2.scrollIntoView,
+    (val) => {
+      _scrollIntoViewChanged(val);
     }
-  });
+  );
+  watch(
+    () => props2.refresherTriggered,
+    (val) => {
+      if (val === true) {
+        _setRefreshState("refreshing");
+      } else if (val === false) {
+        _setRefreshState("restore");
+      }
+    }
+  );
   return {
     realScrollX,
     realScrollY,
@@ -15383,6 +15370,63 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _scrollLeftChanged
   };
 }
+const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ScrollView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$m,
+  emits: emits$1,
+  setup(props2, context) {
+    const {
+      rootRef,
+      main,
+      wrap,
+      content,
+      state: state2,
+      mainStyle,
+      scrollBarClassName,
+      _scrollLeftChanged,
+      _scrollTopChanged
+    } = useScrollView(props2, context);
+    const {
+      slots
+    } = context;
+    return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState
+      } = state2;
+      return createVNode("uni-scroll-view", {
+        "ref": rootRef
+      }, [createVNode("div", {
+        "ref": wrap,
+        "class": "uni-scroll-view"
+      }, [createVNode("div", {
+        "ref": main,
+        "style": mainStyle.value,
+        "class": scrollBarClassName.value
+      }, [refresherEnabled ? createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
+    };
+  }
+});
 function createBackgroundColorStyle(color) {
   return color ? { backgroundColor: color } : void 0;
 }
