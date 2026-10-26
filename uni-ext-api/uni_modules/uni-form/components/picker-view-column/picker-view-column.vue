@@ -219,7 +219,7 @@
 
     .uni-picker-view-indicator {
       border-color: rgba(255, 255, 255, 0.05);
-      background-color: rgba(35, 35, 35, 0.5);
+      background-color: transparent;
     }
   }
 </style>

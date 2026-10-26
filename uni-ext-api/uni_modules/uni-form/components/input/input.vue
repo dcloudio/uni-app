@@ -1492,7 +1492,7 @@
 				const element = proxy?.$el
 				if (element != null) dispatchLabelClick(element, event)
 			},
-			getDisabled: () => Boolean(props.disabled)
+			getDisabled: () => props.disabled === true || props.disabled === 'true'
 		}
 		if (labelCtx != null) labelCtx.register(target)
 		if (id != null && id.length > 0) unregisterLabelTarget = registerLabelTarget(id, target)

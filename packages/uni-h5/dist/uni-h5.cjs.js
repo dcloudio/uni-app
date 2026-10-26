@@ -4099,151 +4099,223 @@ function isPaste(event) {
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = vue.ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
-    vue.watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
-    vue.watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
+    const cache = vue.ref(
+      typeof value !== "undefined" && value !== null ? value.toLocaleString() : ""
+    );
+    vue.watch(
+      () => props2.modelValue,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
+    vue.watch(
+      () => props2.value,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
     return cache;
   } else {
     return vue.ref("");
   }
 }
-const Input = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Input",
-  props: props$j,
-  emits: ["confirm", ...emit],
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email"];
-    const AUTOCOMPLETES = ["off", "one-time-code"];
-    const type = vue.computed(() => {
-      let type2 = "";
-      switch (props2.type) {
-        case "text":
-          type2 = "text";
-          if (props2.confirmType === "search") {
-            type2 = "search";
-          }
-          break;
-        case "idcard":
-          type2 = "text";
-          break;
-        case "digit":
-          type2 = "number";
-          break;
-        case "none":
-          type2 = "text";
-          break;
-        default:
-          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
-          break;
-      }
-      return props2.password ? "password" : type2;
-    });
-    const autocomplete = vue.computed(() => {
-      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
-      const kebabCaseIndex = AUTOCOMPLETES.indexOf(shared.hyphenate(props2.textContentType));
-      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
-      return AUTOCOMPLETES[index2];
-    });
-    const inputmode = vue.computed(() => {
-      if (props2.inputmode !== void 0) {
-        return props2.inputmode;
-      }
-      if (INPUT_MODES.includes(props2.type)) {
-        return props2.type;
-      }
-      let inputmodeMap = {};
-      {
-        inputmodeMap = {
-          idcard: "text"
-        };
-      }
-      return inputmodeMap[props2.type];
-    });
-    let cache = useCache(props2, type);
-    let resetCache = {
-      fn: null
-    };
-    const rootRef = vue.ref(null);
-    const {
-      fieldRef,
-      state,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2, (event, state2) => {
-      const input = event.target;
-      if (type.value === "number") {
-        if (resetCache.fn) {
-          input.removeEventListener("blur", resetCache.fn);
-          resetCache.fn = null;
+const emits$1 = ["confirm", ...emit];
+function useInput(props2, { emit: emit2, expose }) {
+  const INPUT_TYPES = [
+    "text",
+    "number",
+    "idcard",
+    "digit",
+    "password",
+    "tel",
+    "search",
+    "email"
+  ];
+  const AUTOCOMPLETES = ["off", "one-time-code"];
+  const type = vue.computed(() => {
+    let type2 = "";
+    switch (props2.type) {
+      case "text":
+        type2 = "text";
+        if (props2.confirmType === "search") {
+          type2 = "search";
         }
-        if (input.validity && !input.validity.valid) {
-          if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
-            cache.value = "-";
-            state2.value = "";
-            resetCache.fn = () => {
-              cache.value = input.value = "";
-            };
-            input.addEventListener("blur", resetCache.fn);
-            return false;
-          }
-          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
-          return false;
-        } else {
-          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
-          cache.value = input.value;
-        }
-        if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
-          input.value = cache.value = state2.value;
+        break;
+      case "idcard":
+        type2 = "text";
+        break;
+      case "digit":
+        type2 = "number";
+        break;
+      case "none":
+        type2 = "text";
+        break;
+      default:
+        type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+        break;
+    }
+    return props2.password ? "password" : type2;
+  });
+  const autocomplete = vue.computed(() => {
+    const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+    const kebabCaseIndex = AUTOCOMPLETES.indexOf(
+      shared.hyphenate(props2.textContentType)
+    );
+    const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+    return AUTOCOMPLETES[index2];
+  });
+  const inputmode = vue.computed(() => {
+    if (props2.inputmode !== void 0) {
+      return props2.inputmode;
+    }
+    if (INPUT_MODES.includes(props2.type)) {
+      return props2.type;
+    }
+    let inputmodeMap = {};
+    {
+      inputmodeMap = {
+        idcard: "text"
+      };
+    }
+    return inputmodeMap[props2.type];
+  });
+  let cache = useCache(props2, type);
+  let resetCache = { fn: null };
+  const rootRef = vue.ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
+    const input = event.target;
+    if (type.value === "number") {
+      if (resetCache.fn) {
+        input.removeEventListener("blur", resetCache.fn);
+        resetCache.fn = null;
+      }
+      if (input.validity && !input.validity.valid) {
+        if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
+          cache.value = "-";
+          state2.value = "";
+          resetCache.fn = () => {
+            cache.value = input.value = "";
+          };
+          input.addEventListener("blur", resetCache.fn);
           return false;
         }
+        const res = resolveDigitDecimalPoint(
+          event,
+          cache,
+          state2,
+          input,
+          resetCache
+        );
+        if (typeof res === "boolean")
+          return res;
+        cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
+        return false;
+      } else {
+        const res = resolveDigitDecimalPoint(
+          event,
+          cache,
+          state2,
+          input,
+          resetCache
+        );
+        if (typeof res === "boolean")
+          return res;
+        cache.value = input.value;
       }
-    });
-    vue.watch(() => state.value, (value) => {
+      if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
+        input.value = cache.value = state2.value;
+        return false;
+      }
+    }
+  });
+  vue.watch(
+    () => state.value,
+    (value) => {
       if (props2.type === "number" && !(cache.value === "-" && value === "")) {
         cache.value = value.toString();
       }
-    });
-    vue.watch(() => props2.maxlength, (length) => {
+    }
+  );
+  vue.watch(
+    () => props2.maxlength,
+    (length) => {
       length = parseInt(length, 10);
       if (!(length >= 0)) {
         return;
       }
       const realValue = state.value.slice(0, length);
       realValue !== state.value && (state.value = realValue);
-    });
-    const NUMBER_TYPES = ["number", "digit"];
-    const step = vue.computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      const input = event.target;
-      event.stopPropagation();
-      trigger("confirm", event, {
-        value: input.value
-      });
-      !props2.confirmHold && input.blur();
     }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state.value = detail.value;
-      }
+  );
+  const NUMBER_TYPES = ["number", "digit"];
+  const step = vue.computed(
+    () => NUMBER_TYPES.includes(props2.type) ? props2.step : ""
+  );
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    const input = event.target;
+    event.stopPropagation();
+    trigger("confirm", event, {
+      value: input.value
     });
+    !props2.confirmHold && input.blur();
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
+    }
+  });
+  function onInput(event) {
+    const value = event.target.value.toString();
+    if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
+      if (isPaste(event)) {
+        state.value = value.slice(0, state.maxlength);
+      }
+      return;
+    }
+    if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+      return;
+    }
+    state.value = value;
+  }
+  return {
+    rootRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    fixDisabledColor,
+    type,
+    autocomplete,
+    inputmode,
+    cache,
+    step,
+    onKeyUpEnter,
+    onInput
+  };
+}
+const Input = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$j,
+  emits: emits$1,
+  setup(props2, context) {
+    const {
+      rootRef,
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      type,
+      autocomplete,
+      inputmode,
+      cache,
+      step,
+      onKeyUpEnter,
+      onInput
+    } = useInput(props2, context);
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
         "key": "disabled-input",
@@ -4264,19 +4336,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
-        "onInput": vue.withModifiers((event) => {
-          const value = event.target.value.toString();
-          if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
-            if (isPaste(event)) {
-              state.value = value.slice(0, state.maxlength);
-            }
-            return;
-          }
-          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
-            return;
-          }
-          state.value = value;
-        }, ["stop"]),
+        "onInput": vue.withModifiers(onInput, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
@@ -8078,28 +8138,18 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Textarea",
-  props: props$a,
-  emits: ["confirm", "change", "linechange", ...emit],
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
-    const rootRef = vue.ref(null);
-    const wrapperRef = vue.ref(null);
-    const {
-      fieldRef,
-      state,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2);
-    const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
-    const isDone = vue.computed(() => ConfirmTypes.includes(props2.confirmType));
-    const heightRef = vue.ref(0);
-    const lineRef = vue.ref(null);
-    vue.watch(() => heightRef.value, (height) => {
+const emits = ["confirm", "change", "linechange", ...emit];
+function useTextarea(props2, { emit: emit2, expose }) {
+  const rootRef = vue.ref(null);
+  const wrapperRef = vue.ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+  const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
+  const isDone = vue.computed(() => ConfirmTypes.includes(props2.confirmType));
+  const heightRef = vue.ref(0);
+  const lineRef = vue.ref(null);
+  vue.watch(
+    () => heightRef.value,
+    (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
       const wrapper2 = wrapperRef.value;
@@ -8116,44 +8166,77 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       if (props2.autoHeight) {
         wrapper2.style.height = height + "px";
       }
+    }
+  );
+  function onResize({ height }) {
+    heightRef.value = height;
+  }
+  function onChange(event) {
+  }
+  function confirm(event) {
+    trigger("confirm", event, {
+      value: state.value
     });
-    function onResize({
-      height
-    }) {
-      heightRef.value = height;
+  }
+  function onKeyDownEnter(event) {
+    if (event.key !== "Enter") {
+      return;
     }
-    function onChange(event) {
+    if (isDone.value) {
+      event.preventDefault();
     }
-    function confirm(event) {
-      trigger("confirm", event, {
-        value: state.value
-      });
+  }
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
     }
-    function onKeyDownEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        event.preventDefault();
-      }
+    if (isDone.value) {
+      confirm(event);
+      const textarea = event.target;
+      !props2.confirmHold && textarea.blur();
     }
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        confirm(event);
-        const textarea = event.target;
-        !props2.confirmHold && textarea.blur();
-      }
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state.value = detail.value;
     }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state.value = detail.value;
-      }
-    });
+  });
+  return {
+    rootRef,
+    wrapperRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    fixDisabledColor,
+    valueCompute,
+    lineRef,
+    onResize,
+    onChange,
+    onKeyDownEnter,
+    onKeyUpEnter
+  };
+}
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$a,
+  emits,
+  setup(props2, context) {
+    const {
+      rootRef,
+      wrapperRef,
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      valueCompute,
+      lineRef,
+      onResize,
+      onChange,
+      onKeyDownEnter,
+      onKeyUpEnter
+    } = useTextarea(props2, context);
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
         "key": "disabled-textarea",

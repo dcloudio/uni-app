@@ -34,8 +34,8 @@ export function findLabelTarget(id: string): ActivatableChild | null {
   if (id.length === 0) return null
   const targets = labelTargets.get(id)
   if (targets == null || targets.length === 0) return null
-  // The latest mounted target wins, matching the DOM's effective id lookup
-  // while allowing a page to be replaced during navigation.
+  // The latest mounted target wins deterministically. Unmounting removes its
+  // entry so page navigation does not leave stale controls behind.
   return targets[targets.length - 1]
 }
 

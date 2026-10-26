@@ -3032,7 +3032,7 @@
       children: nextChildren,
       patchFlag
     } = nextVNode;
-    var emits = component.emitsOptions;
+    var emits2 = component.emitsOptions;
     if (nextVNode.dirs || nextVNode.transition) {
       return true;
     }
@@ -3044,12 +3044,12 @@
         if (!prevProps) {
           return !!nextProps;
         }
-        return hasPropsChanged(prevProps, nextProps, emits);
+        return hasPropsChanged(prevProps, nextProps, emits2);
       } else if (patchFlag & 8) {
         var dynamicProps = nextVNode.dynamicProps;
         for (var i2 = 0; i2 < dynamicProps.length; i2++) {
           var key2 = dynamicProps[i2];
-          if (nextProps[key2] !== prevProps[key2] && !isEmitListener(emits, key2)) {
+          if (nextProps[key2] !== prevProps[key2] && !isEmitListener(emits2, key2)) {
             return true;
           }
         }
@@ -3069,7 +3069,7 @@
       if (!nextProps) {
         return true;
       }
-      return hasPropsChanged(prevProps, nextProps, emits);
+      return hasPropsChanged(prevProps, nextProps, emits2);
     }
     return false;
   }
@@ -16546,140 +16546,184 @@
       return ref("");
     }
   }
+  var emits$1 = ["confirm", ...emit];
+  function useInput(props2, _ref) {
+    var {
+      emit: emit2,
+      expose
+    } = _ref;
+    var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email"];
+    var AUTOCOMPLETES = ["off", "one-time-code"];
+    var type = computed(() => {
+      var type2 = "";
+      switch (props2.type) {
+        case "text":
+          type2 = "text";
+          if (props2.confirmType === "search") {
+            type2 = "search";
+          }
+          break;
+        case "idcard":
+          type2 = "text";
+          break;
+        case "digit":
+          type2 = "number";
+          break;
+        case "none":
+          type2 = "text";
+          break;
+        default:
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          break;
+      }
+      return props2.password ? "password" : type2;
+    });
+    var autocomplete = computed(() => {
+      var camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+      var kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
+      var index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+      return AUTOCOMPLETES[index2];
+    });
+    var inputmode = computed(() => {
+      if (props2.inputmode !== void 0) {
+        return props2.inputmode;
+      }
+      if (INPUT_MODES.includes(props2.type)) {
+        return props2.type;
+      }
+      var inputmodeMap = {};
+      {
+        inputmodeMap = {
+          idcard: "text"
+        };
+      }
+      return inputmodeMap[props2.type];
+    });
+    var cache2 = useCache(props2, type);
+    var resetCache = {
+      fn: null
+    };
+    var rootRef = ref(null);
+    var {
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger: trigger2
+    } = useField(props2, rootRef, emit2, (event, state2) => {
+      var input = event.target;
+      if (type.value === "number") {
+        if (resetCache.fn) {
+          input.removeEventListener("blur", resetCache.fn);
+          resetCache.fn = null;
+        }
+        if (input.validity && !input.validity.valid) {
+          if ((!cache2.value || !input.value) && event.data === "-" || cache2.value[0] === "-" && event.inputType === "deleteContentBackward") {
+            cache2.value = "-";
+            state2.value = "";
+            resetCache.fn = () => {
+              cache2.value = input.value = "";
+            };
+            input.addEventListener("blur", resetCache.fn);
+            return false;
+          }
+          var res = resolveDigitDecimalPoint(event, cache2, state2, input, resetCache);
+          if (typeof res === "boolean")
+            return res;
+          cache2.value = state2.value = input.value = cache2.value === "-" ? "" : cache2.value;
+          return false;
+        } else {
+          var _res = resolveDigitDecimalPoint(event, cache2, state2, input, resetCache);
+          if (typeof _res === "boolean")
+            return _res;
+          cache2.value = input.value;
+        }
+        if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
+          input.value = cache2.value = state2.value;
+          return false;
+        }
+      }
+    });
+    watch(() => state.value, (value) => {
+      if (props2.type === "number" && !(cache2.value === "-" && value === "")) {
+        cache2.value = value.toString();
+      }
+    });
+    watch(() => props2.maxlength, (length) => {
+      length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
+      var realValue = state.value.slice(0, length);
+      realValue !== state.value && (state.value = realValue);
+    });
+    var NUMBER_TYPES = ["number", "digit"];
+    var step2 = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      var input = event.target;
+      event.stopPropagation();
+      trigger2("confirm", event, {
+        value: input.value
+      });
+      !props2.confirmHold && input.blur();
+    }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state.value = detail.value;
+      }
+    });
+    function onInput(event) {
+      var value = event.target.value.toString();
+      if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
+        if (isPaste(event)) {
+          state.value = value.slice(0, state.maxlength);
+        }
+        return;
+      }
+      if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+        return;
+      }
+      state.value = value;
+    }
+    return {
+      rootRef,
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      type,
+      autocomplete,
+      inputmode,
+      cache: cache2,
+      step: step2,
+      onKeyUpEnter,
+      onInput
+    };
+  }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
     props: props$n,
-    emits: ["confirm", ...emit],
-    setup(props2, _ref) {
+    emits: emits$1,
+    setup(props2, context) {
       var {
-        emit: emit2,
-        expose
-      } = _ref;
-      var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email"];
-      var AUTOCOMPLETES = ["off", "one-time-code"];
-      var type = computed(() => {
-        var type2 = "";
-        switch (props2.type) {
-          case "text":
-            type2 = "text";
-            if (props2.confirmType === "search") {
-              type2 = "search";
-            }
-            break;
-          case "idcard":
-            type2 = "text";
-            break;
-          case "digit":
-            type2 = "number";
-            break;
-          case "none":
-            type2 = "text";
-            break;
-          default:
-            type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
-            break;
-        }
-        return props2.password ? "password" : type2;
-      });
-      var autocomplete = computed(() => {
-        var camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
-        var kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
-        var index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
-        return AUTOCOMPLETES[index2];
-      });
-      var inputmode = computed(() => {
-        if (props2.inputmode !== void 0) {
-          return props2.inputmode;
-        }
-        if (INPUT_MODES.includes(props2.type)) {
-          return props2.type;
-        }
-        var inputmodeMap = {};
-        {
-          inputmodeMap = {
-            idcard: "text"
-          };
-        }
-        return inputmodeMap[props2.type];
-      });
-      var cache2 = useCache(props2, type);
-      var resetCache = {
-        fn: null
-      };
-      var rootRef = ref(null);
-      var {
+        rootRef,
         fieldRef,
         state,
         scopedAttrsState,
         fixDisabledColor,
-        trigger: trigger2
-      } = useField(props2, rootRef, emit2, (event, state2) => {
-        var input = event.target;
-        if (type.value === "number") {
-          if (resetCache.fn) {
-            input.removeEventListener("blur", resetCache.fn);
-            resetCache.fn = null;
-          }
-          if (input.validity && !input.validity.valid) {
-            if ((!cache2.value || !input.value) && event.data === "-" || cache2.value[0] === "-" && event.inputType === "deleteContentBackward") {
-              cache2.value = "-";
-              state2.value = "";
-              resetCache.fn = () => {
-                cache2.value = input.value = "";
-              };
-              input.addEventListener("blur", resetCache.fn);
-              return false;
-            }
-            var res = resolveDigitDecimalPoint(event, cache2, state2, input, resetCache);
-            if (typeof res === "boolean")
-              return res;
-            cache2.value = state2.value = input.value = cache2.value === "-" ? "" : cache2.value;
-            return false;
-          } else {
-            var _res = resolveDigitDecimalPoint(event, cache2, state2, input, resetCache);
-            if (typeof _res === "boolean")
-              return _res;
-            cache2.value = input.value;
-          }
-          if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
-            input.value = cache2.value = state2.value;
-            return false;
-          }
-        }
-      });
-      watch(() => state.value, (value) => {
-        if (props2.type === "number" && !(cache2.value === "-" && value === "")) {
-          cache2.value = value.toString();
-        }
-      });
-      watch(() => props2.maxlength, (length) => {
-        length = parseInt(length, 10);
-        if (!(length >= 0)) {
-          return;
-        }
-        var realValue = state.value.slice(0, length);
-        realValue !== state.value && (state.value = realValue);
-      });
-      var NUMBER_TYPES = ["number", "digit"];
-      var step2 = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
-      function onKeyUpEnter(event) {
-        if (event.key !== "Enter") {
-          return;
-        }
-        var input = event.target;
-        event.stopPropagation();
-        trigger2("confirm", event, {
-          value: input.value
-        });
-        !props2.confirmHold && input.blur();
-      }
-      expose({
-        $triggerInput: (detail) => {
-          emit2("update:modelValue", detail.value);
-          emit2("update:value", detail.value);
-          state.value = detail.value;
-        }
-      });
+        type,
+        autocomplete,
+        inputmode,
+        cache: cache2,
+        step: step2,
+        onKeyUpEnter,
+        onInput
+      } = useInput(props2, context);
       return () => {
         var inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
           "key": "disabled-input",
@@ -16700,19 +16744,7 @@
           "key": "input",
           "ref": fieldRef,
           "value": state.value,
-          "onInput": withModifiers((event) => {
-            var value = event.target.value.toString();
-            if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
-              if (isPaste(event)) {
-                state.value = value.slice(0, state.maxlength);
-              }
-              return;
-            }
-            if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
-              return;
-            }
-            state.value = value;
-          }, ["stop"]),
+          "onInput": withModifiers(onInput, ["stop"]),
           "disabled": !!props2.disabled,
           "type": type.value,
           "maxlength": state.maxlength,
@@ -22133,87 +22165,118 @@
     var DARK_TEST_STRING = "(prefers-color-scheme: dark)";
     fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
   }
+  var emits = ["confirm", "change", "linechange", ...emit];
+  function useTextarea(props2, _ref) {
+    var {
+      emit: emit2,
+      expose
+    } = _ref;
+    var rootRef = ref(null);
+    var wrapperRef = ref(null);
+    var {
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger: trigger2
+    } = useField(props2, rootRef, emit2);
+    var valueCompute = computed(() => state.value.split(LINEFEED));
+    var isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
+    var heightRef = ref(0);
+    var lineRef = ref(null);
+    watch(() => heightRef.value, (height) => {
+      var el = rootRef.value;
+      var lineEl = lineRef.value;
+      var wrapper2 = wrapperRef.value;
+      var lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+      if (isNaN(lineHeight)) {
+        lineHeight = lineEl.offsetHeight;
+      }
+      var lineCount = Math.round(height / lineHeight);
+      trigger2("linechange", {}, {
+        height,
+        heightRpx: 750 / window.innerWidth * height,
+        lineCount
+      });
+      if (props2.autoHeight) {
+        wrapper2.style.height = height + "px";
+      }
+    });
+    function onResize(_ref2) {
+      var {
+        height
+      } = _ref2;
+      heightRef.value = height;
+    }
+    function onChange2(event) {
+    }
+    function confirm(event) {
+      trigger2("confirm", event, {
+        value: state.value
+      });
+    }
+    function onKeyDownEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        event.preventDefault();
+      }
+    }
+    function onKeyUpEnter(event) {
+      if (event.key !== "Enter") {
+        return;
+      }
+      if (isDone.value) {
+        confirm(event);
+        var textarea = event.target;
+        !props2.confirmHold && textarea.blur();
+      }
+    }
+    {
+      setFixMargin();
+    }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state.value = detail.value;
+      }
+    });
+    return {
+      rootRef,
+      wrapperRef,
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      valueCompute,
+      lineRef,
+      onResize,
+      onChange: onChange2,
+      onKeyDownEnter,
+      onKeyUpEnter
+    };
+  }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
     props: props$e,
-    emits: ["confirm", "change", "linechange", ...emit],
-    setup(props2, _ref) {
+    emits,
+    setup(props2, context) {
       var {
-        emit: emit2,
-        expose
-      } = _ref;
-      var rootRef = ref(null);
-      var wrapperRef = ref(null);
-      var {
+        rootRef,
+        wrapperRef,
         fieldRef,
         state,
         scopedAttrsState,
         fixDisabledColor,
-        trigger: trigger2
-      } = useField(props2, rootRef, emit2);
-      var valueCompute = computed(() => state.value.split(LINEFEED));
-      var isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
-      var heightRef = ref(0);
-      var lineRef = ref(null);
-      watch(() => heightRef.value, (height) => {
-        var el = rootRef.value;
-        var lineEl = lineRef.value;
-        var wrapper2 = wrapperRef.value;
-        var lineHeight = parseFloat(getComputedStyle(el).lineHeight);
-        if (isNaN(lineHeight)) {
-          lineHeight = lineEl.offsetHeight;
-        }
-        var lineCount = Math.round(height / lineHeight);
-        trigger2("linechange", {}, {
-          height,
-          heightRpx: 750 / window.innerWidth * height,
-          lineCount
-        });
-        if (props2.autoHeight) {
-          wrapper2.style.height = height + "px";
-        }
-      });
-      function onResize(_ref2) {
-        var {
-          height
-        } = _ref2;
-        heightRef.value = height;
-      }
-      function onChange2(event) {
-      }
-      function confirm(event) {
-        trigger2("confirm", event, {
-          value: state.value
-        });
-      }
-      function onKeyDownEnter(event) {
-        if (event.key !== "Enter") {
-          return;
-        }
-        if (isDone.value) {
-          event.preventDefault();
-        }
-      }
-      function onKeyUpEnter(event) {
-        if (event.key !== "Enter") {
-          return;
-        }
-        if (isDone.value) {
-          confirm(event);
-          var textarea = event.target;
-          !props2.confirmHold && textarea.blur();
-        }
-      }
-      {
-        setFixMargin();
-      }
-      expose({
-        $triggerInput: (detail) => {
-          emit2("update:modelValue", detail.value);
-          emit2("update:value", detail.value);
-          state.value = detail.value;
-        }
-      });
+        valueCompute,
+        lineRef,
+        onResize,
+        onChange: onChange2,
+        onKeyDownEnter,
+        onKeyUpEnter
+      } = useTextarea(props2, context);
       return () => {
         var textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
           "key": "disabled-textarea",

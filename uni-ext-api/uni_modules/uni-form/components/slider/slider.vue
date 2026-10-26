@@ -63,24 +63,7 @@
 <script setup lang="ts">
   import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget } from '../common.ts'
   import { UniSliderChangeEvent, UniSliderElement } from './global.ts'
-
-  type UnRegisterField = (name : string) => void
-  type InjectForm = { unregisterField : UnRegisterField }
-  type InjectLabel = { unregister : (id ?: string) => void }
-  type SliderInFormContextField = {
-    name : string,
-    getValue : () => any,
-    reset ?: () => void
-  }
-  type SliderInFormContext = {
-    registerField : (field : SliderInFormContextField) => void,
-    unregisterField : UnRegisterField
-  }
-  type LabelContextRegChild = { id ?: string, activate: (event: UniPointerEvent) => void, getDisabled ?: () => boolean }
-  type LabelContextReg = {
-    register : (child : LabelContextRegChild) => void
-    unregister : (id ?: string) => void
-  }
+  import { ActivatableChild, FormContext, LabelContext } from '../types.ts'
 
   defineOptions({
     name: 'slider',
@@ -834,7 +817,7 @@
     })
 
     // register with form if available
-    const formCtx = inject<SliderInFormContext | null>(FORM_KEY, null)
+    const formCtx = inject<FormContext | null>(FORM_KEY, null)
     if (formCtx != null && props.name.length > 0) {
       formCtx.registerField({
         name: props.name,
@@ -846,18 +829,20 @@
       })
     }
     // register with label if available
-    const labelCtx = inject<LabelContextReg | null>(LABEL_KEY, null)
+    const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+    const target: ActivatableChild = {
+      id: id.length > 0 ? id : props.name,
+      activate: (event: UniPointerEvent) => {
+        const element = thumbRef.value
+        if (element != null) dispatchLabelClick(element, event)
+      },
+      getDisabled: () => props.disabled
+    }
     if (labelCtx != null) {
-      const target: LabelContextRegChild = {
-        id: id.length > 0 ? id : props.name,
-        activate: (event: UniPointerEvent) => {
-          const element = thumbRef.value
-          if (element != null) dispatchLabelClick(element, event)
-        },
-        getDisabled: () => props.disabled
-      }
       labelCtx.register(target)
-      if (id.length > 0) unregisterLabelTarget = registerLabelTarget(id, target)
+    }
+    if (id.length > 0) {
+      unregisterLabelTarget = registerLabelTarget(id, target)
     }
 
     // #ifdef WEB
@@ -872,11 +857,11 @@
 
   // 清理
   onUnmounted(() => {
-    const formCtx = inject<InjectForm | null>(FORM_KEY, null)
+    const formCtx = inject<FormContext | null>(FORM_KEY, null)
     if (formCtx != null && props.name.length > 0) {
       formCtx.unregisterField(props.name)
     }
-    const labelCtx = inject<InjectLabel | null>(LABEL_KEY, null)
+    const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
     if (labelCtx != null) {
       if (id.length > 0) {
         labelCtx.unregister(id)

@@ -13423,17 +13423,163 @@ function isPaste(event) {
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
-    watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
-    watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
+    const cache = ref(
+      typeof value !== "undefined" && value !== null ? value.toLocaleString() : ""
+    );
+    watch(
+      () => props2.modelValue,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
+    watch(
+      () => props2.value,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
     return cache;
   } else {
     return ref("");
   }
+}
+const emits$1 = ["confirm", ...emit];
+function useInput(props2, { emit: emit2, expose }) {
+  const INPUT_TYPES = [
+    "text",
+    "number",
+    "idcard",
+    "digit",
+    "password",
+    "tel",
+    "search",
+    "email"
+  ];
+  const AUTOCOMPLETES = ["off", "one-time-code"];
+  const type = computed(() => {
+    let type2 = "";
+    switch (props2.type) {
+      case "text":
+        type2 = "text";
+        if (props2.confirmType === "search") {
+          type2 = "search";
+        }
+        break;
+      case "idcard":
+        type2 = "text";
+        break;
+      case "digit":
+        type2 = "number";
+        break;
+      case "none":
+        type2 = "text";
+        break;
+      default:
+        type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+        break;
+    }
+    return props2.password ? "password" : type2;
+  });
+  const autocomplete = computed(() => {
+    const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+    const kebabCaseIndex = AUTOCOMPLETES.indexOf(
+      hyphenate(props2.textContentType)
+    );
+    const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+    return AUTOCOMPLETES[index2];
+  });
+  const inputmode = computed(() => {
+    if (props2.inputmode !== void 0) {
+      return props2.inputmode;
+    }
+    if (INPUT_MODES.includes(props2.type)) {
+      return props2.type;
+    }
+    let inputmodeMap = {};
+    {
+      inputmodeMap = {
+        number: "numeric",
+        digit: "decimal",
+        idcard: "text"
+      };
+    }
+    return inputmodeMap[props2.type];
+  });
+  let cache = useCache(props2, type);
+  const rootRef = ref(null);
+  const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state22) => {
+    {
+      return;
+    }
+  });
+  watch(
+    () => state2.value,
+    (value) => {
+      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
+        cache.value = value.toString();
+      }
+    }
+  );
+  watch(
+    () => props2.maxlength,
+    (length) => {
+      length = parseInt(length, 10);
+      if (!(length >= 0)) {
+        return;
+      }
+      const realValue = state2.value.slice(0, length);
+      realValue !== state2.value && (state2.value = realValue);
+    }
+  );
+  const NUMBER_TYPES = ["number", "digit"];
+  const step = computed(
+    () => NUMBER_TYPES.includes(props2.type) ? props2.step : ""
+  );
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    const input = event.target;
+    event.stopPropagation();
+    trigger("confirm", event, {
+      value: input.value
+    });
+    !props2.confirmHold && input.blur();
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state2.value = detail.value;
+    }
+  });
+  function onInput(event) {
+    const value = event.target.value.toString();
+    if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
+      if (isPaste(event)) {
+        state2.value = value.slice(0, state2.maxlength);
+      }
+      return;
+    }
+    if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+      return;
+    }
+    state2.value = value;
+  }
+  return {
+    rootRef,
+    fieldRef,
+    state: state2,
+    scopedAttrsState,
+    fixDisabledColor,
+    type,
+    autocomplete,
+    inputmode,
+    cache,
+    step,
+    onKeyUpEnter,
+    onInput
+  };
 }
 class UniInputElement extends UniElement2 {
   focus(options) {
@@ -13444,110 +13590,26 @@ class UniInputElement extends UniElement2 {
 const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$m,
-  emits: ["confirm", ...emit],
+  emits: emits$1,
   rootElement: {
     name: "uni-input",
     class: UniInputElement
   },
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
-    const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel", "search", "email"];
-    const AUTOCOMPLETES = ["off", "one-time-code"];
-    const type = computed(() => {
-      let type2 = "";
-      switch (props2.type) {
-        case "text":
-          type2 = "text";
-          if (props2.confirmType === "search") {
-            type2 = "search";
-          }
-          break;
-        case "idcard":
-          type2 = "text";
-          break;
-        case "digit":
-          type2 = "number";
-          break;
-        case "none":
-          type2 = "text";
-          break;
-        default:
-          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
-          break;
-      }
-      return props2.password ? "password" : type2;
-    });
-    const autocomplete = computed(() => {
-      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
-      const kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
-      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
-      return AUTOCOMPLETES[index2];
-    });
-    const inputmode = computed(() => {
-      if (props2.inputmode !== void 0) {
-        return props2.inputmode;
-      }
-      if (INPUT_MODES.includes(props2.type)) {
-        return props2.type;
-      }
-      let inputmodeMap = {};
-      {
-        inputmodeMap = {
-          number: "numeric",
-          digit: "decimal",
-          idcard: "text"
-        };
-      }
-      return inputmodeMap[props2.type];
-    });
-    let cache = useCache(props2, type);
-    const rootRef = ref(null);
+  setup(props2, context) {
     const {
+      rootRef,
       fieldRef,
       state: state2,
       scopedAttrsState,
       fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2, (event, state22) => {
-      {
-        return;
-      }
-    });
-    watch(() => state2.value, (value) => {
-      if (props2.type === "number" && !(cache.value === "-" && value === "")) {
-        cache.value = value.toString();
-      }
-    });
-    watch(() => props2.maxlength, (length) => {
-      length = parseInt(length, 10);
-      if (!(length >= 0)) {
-        return;
-      }
-      const realValue = state2.value.slice(0, length);
-      realValue !== state2.value && (state2.value = realValue);
-    });
-    const NUMBER_TYPES = ["number", "digit"];
-    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      const input = event.target;
-      event.stopPropagation();
-      trigger("confirm", event, {
-        value: input.value
-      });
-      !props2.confirmHold && input.blur();
-    }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state2.value = detail.value;
-      }
-    });
+      type,
+      autocomplete,
+      inputmode,
+      cache,
+      step,
+      onKeyUpEnter,
+      onInput
+    } = useInput(props2, context);
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperty(rootElement, "value", {
@@ -13580,19 +13642,7 @@ const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
         "key": "input",
         "ref": fieldRef,
         "value": state2.value,
-        "onInput": withModifiers((event) => {
-          const value = event.target.value.toString();
-          if (type.value === "number" && state2.maxlength > 0 && value.length > state2.maxlength) {
-            if (isPaste(event)) {
-              state2.value = value.slice(0, state2.maxlength);
-            }
-            return;
-          }
-          if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
-            return;
-          }
-          state2.value = value;
-        }, ["stop"]),
+        "onInput": withModifiers(onInput, ["stop"]),
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state2.maxlength,
@@ -19217,38 +19267,18 @@ function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
 }
-class UniTextareaElement extends UniElement2 {
-  focus(options) {
-    var _a;
-    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
-  }
-}
-const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Textarea",
-  props: props$d,
-  emits: ["confirm", "change", "linechange", ...emit],
-  rootElement: {
-    name: "uni-textarea",
-    class: UniTextareaElement
-  },
-  setup(props2, {
-    emit: emit2,
-    expose
-  }) {
-    const rootRef = ref(null);
-    const wrapperRef = ref(null);
-    const {
-      fieldRef,
-      state: state2,
-      scopedAttrsState,
-      fixDisabledColor,
-      trigger
-    } = useField(props2, rootRef, emit2);
-    const valueCompute = computed(() => state2.value.split(LINEFEED));
-    const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
-    const heightRef = ref(0);
-    const lineRef = ref(null);
-    watch(() => heightRef.value, (height) => {
+const emits = ["confirm", "change", "linechange", ...emit];
+function useTextarea(props2, { emit: emit2, expose }) {
+  const rootRef = ref(null);
+  const wrapperRef = ref(null);
+  const { fieldRef, state: state2, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+  const valueCompute = computed(() => state2.value.split(LINEFEED));
+  const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
+  const heightRef = ref(0);
+  const lineRef = ref(null);
+  watch(
+    () => heightRef.value,
+    (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
       const wrapper = wrapperRef.value;
@@ -19265,60 +19295,106 @@ const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
       if (props2.autoHeight) {
         wrapper.style.height = height + "px";
       }
-    });
-    watch(() => props2.autoHeight, (autoHeight) => {
+    }
+  );
+  watch(
+    () => props2.autoHeight,
+    (autoHeight) => {
       const wrapper = wrapperRef.value;
       if (autoHeight) {
         wrapper.style.height = heightRef.value + "px";
       } else {
         wrapper.style.height = "";
       }
-    });
-    function onResize2({
-      height
-    }) {
-      heightRef.value = height;
     }
-    function onChange2(event) {
-      {
-        trigger("change", event, {
-          value: state2.value
-        });
-      }
-    }
-    function confirm(event) {
-      trigger("confirm", event, {
+  );
+  function onResize2({ height }) {
+    heightRef.value = height;
+  }
+  function onChange2(event) {
+    {
+      trigger("change", event, {
         value: state2.value
       });
     }
-    function onKeyDownEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        event.preventDefault();
-      }
-    }
-    function onKeyUpEnter(event) {
-      if (event.key !== "Enter") {
-        return;
-      }
-      if (isDone.value) {
-        confirm(event);
-        const textarea = event.target;
-        !props2.confirmHold && textarea.blur();
-      }
-    }
-    {
-      setFixMargin();
-    }
-    expose({
-      $triggerInput: (detail) => {
-        emit2("update:modelValue", detail.value);
-        emit2("update:value", detail.value);
-        state2.value = detail.value;
-      }
+  }
+  function confirm(event) {
+    trigger("confirm", event, {
+      value: state2.value
     });
+  }
+  function onKeyDownEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    if (isDone.value) {
+      event.preventDefault();
+    }
+  }
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    if (isDone.value) {
+      confirm(event);
+      const textarea = event.target;
+      !props2.confirmHold && textarea.blur();
+    }
+  }
+  {
+    setFixMargin();
+  }
+  expose({
+    $triggerInput: (detail) => {
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      state2.value = detail.value;
+    }
+  });
+  return {
+    rootRef,
+    wrapperRef,
+    fieldRef,
+    state: state2,
+    scopedAttrsState,
+    fixDisabledColor,
+    valueCompute,
+    lineRef,
+    onResize: onResize2,
+    onChange: onChange2,
+    onKeyDownEnter,
+    onKeyUpEnter
+  };
+}
+class UniTextareaElement extends UniElement2 {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
+  }
+}
+const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$d,
+  emits,
+  rootElement: {
+    name: "uni-textarea",
+    class: UniTextareaElement
+  },
+  setup(props2, context) {
+    const {
+      rootRef,
+      wrapperRef,
+      fieldRef,
+      state: state2,
+      scopedAttrsState,
+      fixDisabledColor,
+      valueCompute,
+      lineRef,
+      onResize: onResize2,
+      onChange: onChange2,
+      onKeyDownEnter,
+      onKeyUpEnter
+    } = useTextarea(props2, context);
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperty(rootElement, "value", {
@@ -20381,7 +20457,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
   emits: ["beforeenter", "enter", "afterenter", "beforeleave", "leave", "afterleave", "clickoverlay"],
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    const emits = __emit;
+    const emits2 = __emit;
     const showPageContainer = ref(false);
     const isAnimating = ref(false);
     const transitionTimer = ref(null);
@@ -20451,10 +20527,10 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
       isAnimating.value = false;
       clearTransitionTimer();
       if (type == "enter") {
-        emits("afterenter");
+        emits2("afterenter");
       } else if (type == "leave") {
         showPageContainer.value = false;
-        emits("afterleave");
+        emits2("afterleave");
       }
     }
     function listenTransitionEnd(type) {
@@ -20468,12 +20544,12 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
       translateValue.value = 0;
     }
     function openContainer() {
-      emits("beforeenter");
+      emits2("beforeenter");
       showPageContainer.value = true;
       isEntered.value = false;
       resetDragState();
       nextTick(() => {
-        emits("enter");
+        emits2("enter");
         isAnimating.value = true;
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -20487,11 +20563,11 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
       if (isAnimating.value) {
         return;
       }
-      emits("beforeleave");
+      emits2("beforeleave");
       isAnimating.value = true;
       nextTick(() => {
         isEntered.value = false;
-        emits("leave");
+        emits2("leave");
         listenTransitionEnd("leave");
       });
     }
@@ -20509,7 +20585,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
       if (isAnimating.value) {
         return;
       }
-      emits("clickoverlay", event);
+      emits2("clickoverlay", event);
       nextTick(() => {
         closeContainer();
       });

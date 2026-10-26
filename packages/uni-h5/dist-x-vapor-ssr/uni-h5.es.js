@@ -819,13 +819,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$g = 0;
+let index$f = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance = getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$g++}`;
+  const id2 = vm.id || `context${index$f++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -1618,7 +1618,7 @@ defineComponent(
 );
 class UniButtonElement extends UniElement2 {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -1659,6 +1659,60 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function getUniTagName(value) {
+  const el = value;
+  if (!el || el.nodeType !== 1 || el.namespaceURI !== "http://www.w3.org/1999/xhtml") {
+    return;
+  }
+  switch (el.localName) {
+    case "div":
+      return el.hasAttribute("uni-view") ? "VIEW" : void 0;
+    case "span":
+      return el.hasAttribute("uni-text") ? "TEXT" : void 0;
+    case "img":
+      return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
+  }
+}
+const NativeUniElement = UniElement2;
+class UniViewElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
+  }
+}
+class UniTextElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
+  }
+}
+class UniImageElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniImageElement && getUniTagName(value) === "IMAGE" || nativeHasInstance.call(this, value);
+  }
+}
+class UniInputElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+  get value() {
+    return this.querySelector("input").value;
+  }
+  set value(value) {
+    this.querySelector("input").value = value;
+  }
+}
+const descriptors$1 = {
+  uniTagName: { value: "INPUT" },
+  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
+  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
+};
+function initInputElement(root) {
+  Object.defineProperties(root, descriptors$1);
+}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -2143,7 +2197,6 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 once(() => {
 });
-const _hoisted_1$3 = { class: "uni-input-wrapper" };
 const props$c = /* @__PURE__ */ extend({}, props$d, {
   placeholderClass: {
     type: String,
@@ -2154,155 +2207,225 @@ const props$c = /* @__PURE__ */ extend({}, props$d, {
     default: ""
   }
 });
+function isPaste(event) {
+  return event.inputType === "insertFromPaste";
+}
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
-    watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
-    watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
-    });
+    const cache = ref(
+      typeof value !== "undefined" && value !== null ? value.toLocaleString() : ""
+    );
+    watch(
+      () => props2.modelValue,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
+    watch(
+      () => props2.value,
+      (value2) => {
+        cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
+      }
+    );
     return cache;
   } else {
     return ref("");
   }
 }
-class UniInputElement extends UniElement2 {
-  focus(options) {
-    var _a;
-    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
-  }
-}
-const Input = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Input",
-  props: props$c,
-  emits: ["confirm", ...emit],
-  setup(props2, { emit: emit2, expose }) {
-    const INPUT_TYPES = [
-      "text",
-      "number",
-      "idcard",
-      "digit",
-      "password",
-      "tel",
-      "search",
-      "email"
-    ];
-    const AUTOCOMPLETES = ["off", "one-time-code"];
-    const type = computed(() => {
-      let type2 = "";
-      switch (props2.type) {
-        case "text":
-          type2 = "text";
-          if (props2.confirmType === "search") {
-            type2 = "search";
-          }
-          break;
-        case "idcard":
-          type2 = "text";
-          break;
-        case "digit":
-          type2 = "number";
-          break;
-        case "none":
-          type2 = "text";
-          break;
-        default:
-          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
-          break;
-      }
-      return props2.password ? "password" : type2;
-    });
-    const autocomplete = computed(() => {
-      const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
-      const kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
-      const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
-      return AUTOCOMPLETES[index2];
-    });
-    const inputmode = computed(() => {
-      if (props2.inputmode !== void 0) {
-        return props2.inputmode;
-      }
-      if (INPUT_MODES.includes(props2.type)) {
-        return props2.type;
-      }
-      let inputmodeMap = {};
-      {
-        inputmodeMap = {
-          number: "numeric",
-          digit: "decimal",
-          idcard: "text"
-        };
-      }
-      return inputmodeMap[props2.type];
-    });
-    let cache = useCache(props2, type);
-    const rootRef = ref(null);
-    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
-      {
-        return;
-      }
-    });
-    watch(() => state.value, (value) => {
+const emits$1 = ["confirm", ...emit];
+function useInput(props2, { emit: emit2, expose }) {
+  const INPUT_TYPES = [
+    "text",
+    "number",
+    "idcard",
+    "digit",
+    "password",
+    "tel",
+    "search",
+    "email"
+  ];
+  const AUTOCOMPLETES = ["off", "one-time-code"];
+  const type = computed(() => {
+    let type2 = "";
+    switch (props2.type) {
+      case "text":
+        type2 = "text";
+        if (props2.confirmType === "search") {
+          type2 = "search";
+        }
+        break;
+      case "idcard":
+        type2 = "text";
+        break;
+      case "digit":
+        type2 = "number";
+        break;
+      case "none":
+        type2 = "text";
+        break;
+      default:
+        type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+        break;
+    }
+    return props2.password ? "password" : type2;
+  });
+  const autocomplete = computed(() => {
+    const camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+    const kebabCaseIndex = AUTOCOMPLETES.indexOf(
+      hyphenate(props2.textContentType)
+    );
+    const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+    return AUTOCOMPLETES[index2];
+  });
+  const inputmode = computed(() => {
+    if (props2.inputmode !== void 0) {
+      return props2.inputmode;
+    }
+    if (INPUT_MODES.includes(props2.type)) {
+      return props2.type;
+    }
+    let inputmodeMap = {};
+    {
+      inputmodeMap = {
+        number: "numeric",
+        digit: "decimal",
+        idcard: "text"
+      };
+    }
+    return inputmodeMap[props2.type];
+  });
+  let cache = useCache(props2, type);
+  const rootRef = ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2, (event, state2) => {
+    {
+      return;
+    }
+  });
+  watch(
+    () => state.value,
+    (value) => {
       if (props2.type === "number" && !(cache.value === "-" && value === "")) {
         cache.value = value.toString();
       }
-    });
-    watch(() => props2.maxlength, (length) => {
+    }
+  );
+  watch(
+    () => props2.maxlength,
+    (length) => {
       length = parseInt(length, 10);
       if (!(length >= 0)) {
         return;
       }
       const realValue = state.value.slice(0, length);
       realValue !== state.value && (state.value = realValue);
+    }
+  );
+  const NUMBER_TYPES = ["number", "digit"];
+  const step = computed(
+    () => NUMBER_TYPES.includes(props2.type) ? props2.step : ""
+  );
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    const input = event.target;
+    event.stopPropagation();
+    trigger("confirm", event, {
+      value: input.value
     });
-    const NUMBER_TYPES = ["number", "digit"];
-    const step = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
-    expose({ $triggerInput: (detail) => {
+    !props2.confirmHold && input.blur();
+  }
+  expose({
+    $triggerInput: (detail) => {
       emit2("update:modelValue", detail.value);
       emit2("update:value", detail.value);
       state.value = detail.value;
-    } });
-    return () => {
-      let inputNode = props2.disabled && fixDisabledColor ? (openBlock(), createBlock("input", {
-        key: "disabled-input",
-        ref: fieldRef,
-        value: state.value,
-        tabindex: "-1",
-        readonly: !!props2.disabled,
-        type: type.value,
-        maxlength: state.maxlength,
-        step: step.value,
-        class: "uni-input-input",
-        style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
-        inputmode: inputmode.value
-      }, null, 512)) : (openBlock(), createBlock("input", {
-        key: "input",
-        ref: fieldRef,
-        value: state.value,
-        disabled: !!props2.disabled,
-        type: type.value,
-        maxlength: state.maxlength,
-        step: step.value,
-        enterkeyhint: props2.confirmType,
-        pattern: props2.type === "number" ? "[0-9]*" : void 0,
-        class: "uni-input-input",
-        style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
-        autocomplete: autocomplete.value,
-        inputmode: inputmode.value
-      }, null, 512));
-      return openBlock(), createBlock("uni-input", { ref: rootRef }, [createVNode("div", _hoisted_1$3, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-        style: props2.placeholderStyle,
-        class: ["uni-input-placeholder", props2.placeholderClass]
-      }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? (openBlock(), createBlock("form", {
-        key: 0,
-        action: "",
-        novalidate: true,
-        class: "uni-input-form"
-      }, [normalizeVNode(() => inputNode)])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => inputNode)], 64))])], 512);
-    };
+    }
+  });
+  function onInput(event) {
+    const value = event.target.value.toString();
+    if (type.value === "number" && state.maxlength > 0 && value.length > state.maxlength) {
+      if (isPaste(event)) {
+        state.value = value.slice(0, state.maxlength);
+      }
+      return;
+    }
+    if (value.length === 0 && event.inputType === "insertText" && event.data === ".") {
+      return;
+    }
+    state.value = value;
+  }
+  return {
+    rootRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    fixDisabledColor,
+    type,
+    autocomplete,
+    inputmode,
+    cache,
+    step,
+    onKeyUpEnter,
+    onInput
+  };
+}
+const _hoisted_1$3 = { class: "uni-input-wrapper" };
+const Input = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Input",
+  props: props$c,
+  emits: emits$1,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-input",
+    class: UniInputElement,
+    native: true
+  },
+  setup(props2, context) {
+    const { rootRef, fieldRef, state, scopedAttrsState, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
+    const renderInput = () => (openBlock(), createBlock(Fragment, null, [props2.disabled && fixDisabledColor ? (openBlock(), createBlock("input", {
+      key: "disabled-input",
+      ref: fieldRef,
+      value: state.value,
+      tabindex: "-1",
+      readonly: !!props2.disabled,
+      type: type.value,
+      maxlength: state.maxlength,
+      step: step.value,
+      class: "uni-input-input",
+      style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
+      inputmode: inputmode.value
+    }, null, 512)) : (openBlock(), createBlock("input", {
+      key: "input",
+      ref: fieldRef,
+      value: state.value,
+      disabled: !!props2.disabled,
+      type: type.value,
+      maxlength: state.maxlength,
+      step: step.value,
+      enterkeyhint: props2.confirmType,
+      pattern: props2.type === "number" ? "[0-9]*" : void 0,
+      class: "uni-input-input",
+      style: props2.cursorColor ? { caretColor: props2.cursorColor } : {},
+      autocomplete: autocomplete.value,
+      inputmode: inputmode.value
+    }, null, 512))], 64));
+    const root = (openBlock(), createBlock("div", {
+      "uni-input": "",
+      "uni-view": "",
+      ref: rootRef
+    }, [createVNode("div", _hoisted_1$3, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+      style: props2.placeholderStyle,
+      class: ["uni-input-placeholder", props2.placeholderClass]
+    }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? (openBlock(), createBlock("form", {
+      key: 0,
+      action: "",
+      novalidate: true,
+      class: "uni-input-form"
+    }, [normalizeVNode(() => renderInput())])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => renderInput())], 64))])], 512));
+    initInputElement(root);
+    return root;
   }
 });
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
@@ -2363,6 +2486,32 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
+class UniTextareaElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
+  }
+}
+const descriptors = {
+  uniTagName: { value: "TEXTAREA" },
+  focus: Object.getOwnPropertyDescriptor(
+    UniTextareaElement.prototype,
+    "focus"
+  )
+};
+function setValue(value) {
+  this.querySelector("textarea").value = value;
+}
+function initTextareaElement(root, state) {
+  Object.defineProperties(root, descriptors);
+  Object.defineProperty(root, "value", {
+    get: () => state.value,
+    set: setValue
+  });
+}
 const props$b = /* @__PURE__ */ extend({}, props$d, {
   placeholderClass: {
     type: String,
@@ -2381,40 +2530,22 @@ const props$b = /* @__PURE__ */ extend({}, props$d, {
   }
 });
 let fixMargin = false;
-const ConfirmTypes = [
-  "done",
-  "go",
-  "next",
-  "search",
-  "send"
-];
+const ConfirmTypes = ["done", "go", "next", "search", "send"];
 function setFixMargin() {
   fixMargin = false;
 }
-class UniTextareaElement extends UniElement2 {
-  focus(options) {
-    var _a;
-    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
-  }
-}
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Textarea",
-  props: props$b,
-  emits: [
-    "confirm",
-    "change",
-    "linechange",
-    ...emit
-  ],
-  setup(props2, { emit: emit2, expose }) {
-    const rootRef = ref(null);
-    const wrapperRef = ref(null);
-    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
-    const valueCompute = computed(() => state.value.split(LINEFEED));
-    computed(() => ConfirmTypes.includes(props2.confirmType));
-    const heightRef = ref(0);
-    const lineRef = ref(null);
-    watch(() => heightRef.value, (height) => {
+const emits = ["confirm", "change", "linechange", ...emit];
+function useTextarea(props2, { emit: emit2, expose }) {
+  const rootRef = ref(null);
+  const wrapperRef = ref(null);
+  const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+  const valueCompute = computed(() => state.value.split(LINEFEED));
+  const isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
+  const heightRef = ref(0);
+  const lineRef = ref(null);
+  watch(
+    () => heightRef.value,
+    (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
       const wrapper = wrapperRef.value;
@@ -2431,84 +2562,152 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
       if (props2.autoHeight) {
         wrapper.style.height = height + "px";
       }
-    });
-    watch(() => props2.autoHeight, (autoHeight) => {
+    }
+  );
+  watch(
+    () => props2.autoHeight,
+    (autoHeight) => {
       const wrapper = wrapperRef.value;
       if (autoHeight) {
         wrapper.style.height = heightRef.value + "px";
       } else {
         wrapper.style.height = "";
       }
-    });
-    {
-      onMounted(setFixMargin);
     }
-    expose({ $triggerInput: (detail) => {
+  );
+  function onResize2({ height }) {
+    heightRef.value = height;
+  }
+  function onChange(event) {
+    {
+      trigger("change", event, {
+        value: state.value
+      });
+    }
+  }
+  function confirm(event) {
+    trigger("confirm", event, {
+      value: state.value
+    });
+  }
+  function onKeyDownEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    if (isDone.value) {
+      event.preventDefault();
+    }
+  }
+  function onKeyUpEnter(event) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    if (isDone.value) {
+      confirm(event);
+      const textarea = event.target;
+      !props2.confirmHold && textarea.blur();
+    }
+  }
+  {
+    onMounted(setFixMargin);
+  }
+  expose({
+    $triggerInput: (detail) => {
       emit2("update:modelValue", detail.value);
       emit2("update:value", detail.value);
       state.value = detail.value;
-    } });
-    return () => {
-      let textareaNode = props2.disabled && fixDisabledColor ? (openBlock(), createBlock("textarea", {
-        key: "disabled-textarea",
-        ref: fieldRef,
-        value: state.value,
-        tabindex: "-1",
-        readonly: !!props2.disabled,
-        maxlength: state.maxlength,
-        class: {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        style: {
-          overflowY: props2.autoHeight ? "hidden" : "auto",
-          /* eslint-disable no-restricted-syntax */
-          ...props2.cursorColor && { caretColor: props2.cursorColor }
-        }
-      }, null, 512)) : (openBlock(), createBlock("textarea", {
-        key: "textarea",
-        ref: fieldRef,
-        value: state.value,
-        disabled: !!props2.disabled,
-        maxlength: state.maxlength,
-        enterkeyhint: props2.confirmType,
-        inputmode: props2.inputmode,
-        class: {
-          "uni-textarea-textarea": true,
-          "uni-textarea-textarea-fix-margin": fixMargin
-        },
-        style: {
-          overflowY: props2.autoHeight ? "hidden" : "auto",
-          /* eslint-disable no-restricted-syntax */
-          ...props2.cursorColor && { caretColor: props2.cursorColor }
-        }
-      }, null, 512));
-      return openBlock(), createBlock("uni-textarea", {
-        ref: rootRef,
-        "auto-height": props2.autoHeight
-      }, [createVNode("div", {
-        ref: wrapperRef,
-        class: "uni-textarea-wrapper"
-      }, [
-        withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
-          style: props2.placeholderStyle,
-          class: ["uni-textarea-placeholder", props2.placeholderClass]
-        }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !state.value.length]]),
-        createVNode("div", {
-          ref: lineRef,
-          class: "uni-textarea-line"
-        }, " ", 512),
-        createVNode("div", { class: {
-          "uni-textarea-compute": true,
-          "uni-textarea-compute-auto-height": props2.autoHeight
-        } }, [normalizeVNode(() => valueCompute.value.map((item) => (openBlock(), createBlock("div", null, [item.trim() ? (openBlock(), createBlock(Fragment, { key: 0 }, [normalizeVNode(() => item)], 64)) : normalizeVNode(() => ".")])))), createVNode(ResizeSensor, { initial: true })]),
-        props2.confirmType === "search" ? (openBlock(), createBlock("form", {
-          key: 0,
-          action: "",
-          class: "uni-input-form"
-        }, [normalizeVNode(() => textareaNode)])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => textareaNode)], 64))
-      ], 512)], 512);
-    };
+    }
+  });
+  return {
+    rootRef,
+    wrapperRef,
+    fieldRef,
+    state,
+    scopedAttrsState,
+    fixDisabledColor,
+    valueCompute,
+    lineRef,
+    onResize: onResize2,
+    onChange,
+    onKeyDownEnter,
+    onKeyUpEnter
+  };
+}
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Textarea",
+  props: props$b,
+  emits,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-textarea",
+    class: UniTextareaElement,
+    native: true
+  },
+  setup(props2, context) {
+    const { rootRef, wrapperRef, fieldRef, state, scopedAttrsState, fixDisabledColor, valueCompute, lineRef, onResize: onResize2, onChange, onKeyDownEnter, onKeyUpEnter } = useTextarea(props2, context);
+    const renderTextarea = () => (openBlock(), createBlock(Fragment, null, [props2.disabled && fixDisabledColor ? (openBlock(), createBlock("textarea", {
+      key: "disabled-textarea",
+      ref: fieldRef,
+      value: state.value,
+      tabindex: "-1",
+      readonly: !!props2.disabled,
+      maxlength: state.maxlength,
+      class: {
+        "uni-textarea-textarea": true,
+        "uni-textarea-textarea-fix-margin": fixMargin
+      },
+      style: {
+        overflowY: props2.autoHeight ? "hidden" : "auto",
+        /* eslint-disable no-restricted-syntax */
+        ...props2.cursorColor && { caretColor: props2.cursorColor }
+      }
+    }, null, 512)) : (openBlock(), createBlock("textarea", {
+      key: "textarea",
+      ref: fieldRef,
+      value: state.value,
+      disabled: !!props2.disabled,
+      maxlength: state.maxlength,
+      enterkeyhint: props2.confirmType,
+      inputmode: props2.inputmode,
+      class: {
+        "uni-textarea-textarea": true,
+        "uni-textarea-textarea-fix-margin": fixMargin
+      },
+      style: {
+        overflowY: props2.autoHeight ? "hidden" : "auto",
+        /* eslint-disable no-restricted-syntax */
+        ...props2.cursorColor && { caretColor: props2.cursorColor }
+      }
+    }, null, 512))], 64));
+    const root = (openBlock(), createBlock("div", {
+      "uni-textarea": "",
+      "uni-view": "",
+      ref: rootRef,
+      "auto-height": props2.autoHeight
+    }, [createVNode("div", {
+      ref: wrapperRef,
+      class: "uni-textarea-wrapper"
+    }, [
+      withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        style: props2.placeholderStyle,
+        class: ["uni-textarea-placeholder", props2.placeholderClass]
+      }), [normalizeVNode(() => props2.placeholder)], 16), [[vShow, !state.value.length]]),
+      createVNode("div", {
+        ref: lineRef,
+        class: "uni-textarea-line"
+      }, " ", 512),
+      createVNode("div", { class: {
+        "uni-textarea-compute": true,
+        "uni-textarea-compute-auto-height": props2.autoHeight
+      } }, [normalizeVNode(() => valueCompute.value.map((item) => (openBlock(), createBlock("div", null, [item.trim() ? (openBlock(), createBlock(Fragment, { key: 0 }, [normalizeVNode(() => item)], 64)) : normalizeVNode(() => ".")])))), createVNode(ResizeSensor, { initial: true })]),
+      props2.confirmType === "search" ? (openBlock(), createBlock("form", {
+        key: 0,
+        action: "",
+        class: "uni-input-form"
+      }, [normalizeVNode(() => renderTextarea())])) : (openBlock(), createBlock(Fragment, { key: 1 }, [normalizeVNode(() => renderTextarea())], 64))
+    ], 512)], 512));
+    initTextareaElement(root, state);
+    return root;
   }
 });
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
@@ -9405,7 +9604,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    const emits = __emit;
+    const emits2 = __emit;
     const showPageContainer = ref(false);
     const isAnimating = ref(false);
     const transitionTimer = ref(null);
@@ -9472,10 +9671,10 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       isAnimating.value = false;
       clearTransitionTimer();
       if (type == "enter") {
-        emits("afterenter");
+        emits2("afterenter");
       } else if (type == "leave") {
         showPageContainer.value = false;
-        emits("afterleave");
+        emits2("afterleave");
       }
     }
     function listenTransitionEnd(type) {
@@ -9489,12 +9688,12 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       translateValue.value = 0;
     }
     function openContainer() {
-      emits("beforeenter");
+      emits2("beforeenter");
       showPageContainer.value = true;
       isEntered.value = false;
       resetDragState();
       nextTick(() => {
-        emits("enter");
+        emits2("enter");
         isAnimating.value = true;
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -9508,11 +9707,11 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
       if (isAnimating.value) {
         return;
       }
-      emits("beforeleave");
+      emits2("beforeleave");
       isAnimating.value = true;
       nextTick(() => {
         isEntered.value = false;
-        emits("leave");
+        emits2("leave");
         listenTransitionEnd("leave");
       });
     }
@@ -9572,37 +9771,6 @@ _sfc_main$o.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/page-container/index.vue");
   return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
 };
-const nativeHasInstance = Function.prototype[Symbol.hasInstance];
-function getUniTagName(value) {
-  const el = value;
-  if (!el || el.nodeType !== 1 || el.namespaceURI !== "http://www.w3.org/1999/xhtml") {
-    return;
-  }
-  switch (el.localName) {
-    case "div":
-      return el.hasAttribute("uni-view") ? "VIEW" : void 0;
-    case "span":
-      return el.hasAttribute("uni-text") ? "TEXT" : void 0;
-    case "img":
-      return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
-  }
-}
-const NativeUniElement = UniElement2;
-class UniViewElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
-  }
-}
-class UniTextElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
-  }
-}
-class UniImageElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniImageElement && getUniTagName(value) === "IMAGE" || nativeHasInstance.call(this, value);
-  }
-}
 const FORM_KEY = "UNI_FORM_CTX";
 const LABEL_KEY = "UNI_LABEL_CTX";
 const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
@@ -11041,7 +11209,7 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { emit: __emit }) {
     const props2 = __props;
-    const emits = __emit;
+    const emits2 = __emit;
     const showPageContainer = ref(false);
     const isAnimating = ref(false);
     const transitionTimer = ref(null);
@@ -11145,12 +11313,12 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
       clearTransitionTimer();
       transitionType.value = null;
       if (type == "enter") {
-        emits("afterenter");
+        emits2("afterenter");
       } else if (type == "leave") {
         showPageContainer.value = false;
         isEntered.value = false;
         resetDragState();
-        emits("afterleave");
+        emits2("afterleave");
       }
     }
     function listenTransitionEnd(type, version) {
@@ -11166,7 +11334,7 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
       if (transitionType.value == "enter") {
         cancelTransition();
       }
-      emits("beforeleave");
+      emits2("beforeleave");
       isAnimating.value = true;
       transitionType.value = "leave";
       transitionVersion++;
@@ -11176,7 +11344,7 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
           return;
         }
         isEntered.value = false;
-        emits("leave");
+        emits2("leave");
         listenTransitionEnd("leave", version);
       });
     }
@@ -11187,7 +11355,7 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
       if (transitionType.value == "leave") {
         cancelTransition();
       }
-      emits("beforeenter");
+      emits2("beforeenter");
       showPageContainer.value = true;
       isEntered.value = false;
       isAnimating.value = true;
@@ -11199,7 +11367,7 @@ const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
         if (version != transitionVersion || transitionType.value != "enter") {
           return;
         }
-        emits("enter");
+        emits2("enter");
         requestAnimationFrame(() => {
           if (version != transitionVersion || transitionType.value != "enter") {
             return;
@@ -12536,19 +12704,20 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         });
       }
       const labelCtx = inject(LABEL_KEY, null);
+      const target = {
+        id: id2.length > 0 ? id2 : props2.name,
+        activate: (event) => {
+          const element = thumbRef.value;
+          if (element != null)
+            dispatchLabelClick(element, event);
+        },
+        getDisabled: () => props2.disabled
+      };
       if (labelCtx != null) {
-        const target = {
-          id: id2.length > 0 ? id2 : props2.name,
-          activate: (event) => {
-            const element = thumbRef.value;
-            if (element != null)
-              dispatchLabelClick(element, event);
-          },
-          getDisabled: () => props2.disabled
-        };
         labelCtx.register(target);
-        if (id2.length > 0)
-          unregisterLabelTarget = registerLabelTarget(id2, target);
+      }
+      if (id2.length > 0) {
+        unregisterLabelTarget = registerLabelTarget(id2, target);
       }
       window.addEventListener("resize", handleResize);
       const handleEl = handleRef.value;
@@ -18191,7 +18360,7 @@ export {
   index$4 as AdDraw,
   _sfc_main$u as AsyncErrorComponent,
   _sfc_main$v as AsyncLoadingComponent,
-  index$f as Button,
+  index$e as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
   _sfc_main$n as Checkbox,
@@ -18230,7 +18399,7 @@ export {
   _sfc_main$3 as Swiper,
   _sfc_main$2 as SwiperItem,
   _sfc_main$1 as Switch,
-  index$e as Textarea,
+  indexVapor as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
