@@ -175,6 +175,20 @@ uni-app div:where([uni-web-view]) > iframe {
   border: none;
 }
 
+/* Video 保留旧宿主尺寸与布局，内部控制栏和全屏容器继续复用 video.css。 */
+uni-app div:where([uni-video]) {
+  width: 300px;
+  height: 225px;
+  display: inline-block;
+  line-height: 0;
+  font-size: inherit;
+  text-align: inherit;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
 /* 文字容器 */
 uni-app uni-label {
   overflow: hidden;
@@ -228,8 +242,7 @@ uni-app uni-swiper-item,
 uni-app uni-swiper,
 uni-app uni-switch,
 uni-app uni-template,
-uni-app uni-unicloud-db,
-uni-app uni-video {
+uni-app uni-unicloud-db {
   position: relative;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -301,8 +314,7 @@ uni-app uni-swiper-item[hidden],
 uni-app uni-swiper[hidden],
 uni-app uni-switch[hidden],
 uni-app uni-template[hidden],
-uni-app uni-unicloud-db[hidden],
-uni-app uni-video[hidden] {
+uni-app uni-unicloud-db[hidden] {
   display: none !important;
 }
 
