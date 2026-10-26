@@ -232,16 +232,39 @@ describe('h5 easycom', () => {
   )
 
   test.each(['button', 'input', 'textarea'])(
-    'Vapor 临时启用旧 %s 时，导入框架组件并复用旧样式',
+    'Vapor 沿用旧 %s 业务实现时，导入对应宿主样式',
     (name) => {
       delete process.env.UNI_HX_VERSION_DEV
       const code = transform(
         `const n0 = _createAssetComponent("v-uni-${name}")`
       )
       expect(code).toContain("from '@dcloudio/uni-h5'")
-      expect(code).toContain(`@dcloudio/uni-components/style/${name}.css`)
-      expect(code).not.toContain('style-x-vapor')
+      expect(code).toContain(
+        `@dcloudio/uni-components/${
+          name === 'button' ? 'style-x-vapor' : 'style'
+        }/${name}.css`
+      )
+      if (name !== 'button') expect(code).not.toContain('style-x-vapor')
       expect(code).not.toContain('uni_modules/uni-form')
+    }
+  )
+
+  test.each([false, true])(
+    'Button 按宿主选择样式，非 Vapor 保留旧路径（Vapor=%s）',
+    (vapor) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      if (!vapor) delete process.env.UNI_APP_X_DOM2
+      const code = transform('_resolveComponent("v-uni-button")')
+      expect(code).toContain(
+        `@dcloudio/uni-components/${
+          vapor ? 'style-x-vapor' : 'style'
+        }/button.css`
+      )
+      expect(code).not.toContain(
+        `@dcloudio/uni-components/${
+          vapor ? 'style' : 'style-x-vapor'
+        }/button.css`
+      )
     }
   )
 

@@ -253,7 +253,6 @@ uni-app uni-ad-rewarded-video,
 uni-app uni-animation-view,
 uni-app uni-audio,
 uni-app uni-block,
-uni-app uni-button,
 uni-app uni-camera,
 uni-app uni-custom-tab-bar,
 uni-app uni-live-player,
@@ -301,7 +300,6 @@ uni-app uni-ad-rewarded-video[hidden],
 uni-app uni-animation-view[hidden],
 uni-app uni-audio[hidden],
 uni-app uni-block[hidden],
-uni-app uni-button[hidden],
 uni-app uni-camera[hidden],
 uni-app uni-custom-tab-bar[hidden],
 uni-app uni-live-player[hidden],
@@ -338,8 +336,18 @@ uni-app uni-unicloud-db {
   flex-direction: column;
 }
 
-uni-app uni-button {
+/* Button 使用独立状态样式，保留旧宿主的块布局与 flex 默认值。 */
+uni-app div:where([uni-button]) {
   margin: 0;
+  display: block;
+  font-size: 18px;
+  text-align: center;
+  /* div 的浏览器默认值为 isolate，旧宿主为 normal。 */
+  unicode-bidi: normal;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
 }
 
 /* 透传scroll-view的flex-direction样式 */

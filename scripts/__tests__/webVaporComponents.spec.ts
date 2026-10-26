@@ -353,6 +353,54 @@ describe('Web Vapor 组件生成', () => {
     }
   )
 
+  test('保留框架 Button 样式，启用 App 共用实现后由提取结果接管', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-button-'))
+    try {
+      const extApiDir = path.join(tempDir, 'source [button]')
+      const styleDir = path.join(tempDir, 'style [vapor]')
+      const packageFile = path.join(extApiDir, 'uni-form/package.json')
+      const options = {
+        extApiDir,
+        componentsDir: path.join(tempDir, 'compiled [button]'),
+        componentsEntryOutput: path.join(tempDir, 'index.ts'),
+        styleDir,
+        context: {
+          ...initScopedPreContext('h5', {}, 'web', true).preUVueContext,
+          VUE3_VAPOR: true,
+        },
+      }
+      fs.outputJsonSync(packageFile, {
+        uni_modules: { components: { web: false } },
+      })
+      fs.outputFileSync(
+        path.join(extApiDir, 'uni-form/components/button/button.uvue'),
+        '<template><view /></template><style>.app-button { color: red; }</style>'
+      )
+      const buttonStyle = path.join(styleDir, 'button.css')
+      const manualStyle = 'div:where([uni-button]) { display: block; }'
+      fs.outputFileSync(buttonStyle, manualStyle)
+      fs.outputFileSync(path.join(styleDir, 'obsolete.css'), '.obsolete {}')
+      await prepareWebVaporComponents(options)
+      expect(fs.readFileSync(buttonStyle, 'utf8')).toBe(manualStyle)
+      expect(fs.readdirSync(styleDir)).toEqual(['button.css'])
+      expect(
+        fs.readFileSync(options.componentsEntryOutput, 'utf8')
+      ).not.toContain('default as Button')
+
+      fs.outputJsonSync(packageFile, {
+        uni_modules: { components: { web: 'dom2' } },
+      })
+      await prepareWebVaporComponents(options)
+      expect(fs.readFileSync(buttonStyle, 'utf8')).toContain('.app-button {')
+      expect(fs.readFileSync(buttonStyle, 'utf8')).not.toContain('[uni-button]')
+      expect(fs.readFileSync(options.componentsEntryOutput, 'utf8')).toContain(
+        'default as Button'
+      )
+    } finally {
+      fs.removeSync(tempDir)
+    }
+  })
+
   test('入口和样式遵循同一筛选结果，样式提取复用完整编译上下文', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-style-'))
     const originalExtApiDir = process.env.UNI_APP_EXT_API_DIR

@@ -1,0 +1,310 @@
+/* 此文件暂由框架手工维护，复用旧 Web Button 的声明，仅替换为原生 div 宿主。
+ * 保持与 ../style/button.css 的状态、尺寸、暗色模式规则一致。
+ * TODO 切换 App 共用 Button 后由同步脚本提取组件样式覆盖本文件，
+ * 同时删除 scripts/webVaporComponents.js 中 button.css 的清理豁免。
+ */
+div:where([uni-button]) {
+  position: relative;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 14px;
+  padding-right: 14px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 2.55555556;
+  border-radius: 5px;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+  color: #000000;
+  background-color: #f8f8f8;
+  cursor: pointer;
+}
+
+div:where([uni-button])[hidden] {
+  display: none !important;
+}
+
+div:where([uni-button]):after {
+  content: ' ';
+  width: 200%;
+  height: 200%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+div:where([uni-button])[native] {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+div:where([uni-button])[native] .uni-button-cover-view-wrapper {
+  border: inherit;
+  border-color: inherit;
+  border-radius: inherit;
+  background-color: inherit;
+}
+
+div:where([uni-button])[native] .uni-button-cover-view-inner {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+div:where([uni-button]) uni-cover-view {
+  line-height: inherit;
+  white-space: inherit;
+}
+
+div:where([uni-button])[type='default'] {
+  color: #000000;
+  background-color: #f8f8f8;
+}
+
+div:where([uni-button])[type='primary'] {
+  color: #ffffff;
+  background-color: #007aff;
+}
+
+div:where([uni-button])[type='warn'] {
+  color: #ffffff;
+  background-color: #e64340;
+}
+
+div:where([uni-button])[disabled] {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+}
+
+div:where([uni-button])[disabled][type='default'],
+div:where([uni-button])[disabled]:not([type]) {
+  color: rgba(0, 0, 0, 0.3);
+  background-color: #f7f7f7;
+}
+
+div:where([uni-button])[disabled][type='primary'] {
+  background-color: rgba(0, 122, 255, 0.6);
+}
+
+div:where([uni-button])[disabled][type='warn'] {
+  background-color: #ec8b89;
+}
+
+div:where([uni-button])[type='primary'][plain] {
+  color: #007aff;
+  border: 1px solid #007aff;
+  background-color: transparent;
+}
+
+div:where([uni-button])[type='primary'][plain][disabled] {
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+div:where([uni-button])[type='primary'][plain]:after {
+  border-width: 0;
+}
+
+div:where([uni-button])[type='default'][plain] {
+  color: #353535;
+  border: 1px solid #353535;
+  background-color: transparent;
+}
+
+div:where([uni-button])[type='default'][plain][disabled] {
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+div:where([uni-button])[type='default'][plain]:after {
+  border-width: 0;
+}
+
+div:where([uni-button])[plain] {
+  color: #353535;
+  border: 1px solid #353535;
+  background-color: transparent;
+}
+
+div:where([uni-button])[plain][disabled] {
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+div:where([uni-button])[plain]:after {
+  border-width: 0;
+}
+
+div:where([uni-button])[plain][native] .uni-button-cover-view-inner {
+  padding: 0;
+}
+
+div:where([uni-button])[type='warn'][plain] {
+  color: #e64340;
+  border: 1px solid #e64340;
+  background-color: transparent;
+}
+
+div:where([uni-button])[type='warn'][plain][disabled] {
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+div:where([uni-button])[type='warn'][plain]:after {
+  border-width: 0;
+}
+
+div:where([uni-button])[size='mini'] {
+  display: inline-block;
+  line-height: 2.3;
+  font-size: 13px;
+  padding: 0 1.34em;
+}
+
+div:where([uni-button])[size='mini'][native] {
+  padding: 0;
+}
+
+div:where([uni-button])[size='mini'][native] .uni-button-cover-view-inner {
+  padding: 0 1.34em;
+}
+
+div:where([uni-button])[loading]:not([disabled]) {
+  cursor: progress;
+}
+
+div:where([uni-button])[loading]:before {
+  content: ' ';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  animation: uni-loading 1s steps(12, end) infinite;
+  background-size: 100%;
+}
+
+div:where([uni-button])[loading][type='primary'] {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #0062cc;
+}
+
+div:where([uni-button])[loading][type='primary'][plain] {
+  color: #007aff;
+  background-color: transparent;
+}
+
+div:where([uni-button])[loading][type='default'] {
+  color: rgba(0, 0, 0, 0.6);
+  background-color: #dedede;
+}
+
+div:where([uni-button])[loading][type='default'][plain] {
+  color: #353535;
+  background-color: transparent;
+}
+
+div:where([uni-button])[loading][type='warn'] {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #ce3c39;
+}
+
+div:where([uni-button])[loading][type='warn'][plain] {
+  color: #e64340;
+  background-color: transparent;
+}
+
+div:where([uni-button])[loading][native]:before {
+  content: none;
+}
+
+.button-hover {
+  color: rgba(0, 0, 0, 0.6);
+  background-color: #dedede;
+}
+
+.button-hover[plain] {
+  color: rgba(53, 53, 53, 0.6);
+  border-color: rgba(53, 53, 53, 0.6);
+  background-color: transparent;
+}
+
+.button-hover[type='primary'] {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #0062cc;
+}
+
+.button-hover[type='primary'][plain] {
+  color: rgba(0, 122, 255, 0.6);
+  border-color: rgba(0, 122, 255, 0.6);
+  background-color: transparent;
+}
+
+.button-hover[type='default'] {
+  color: rgba(0, 0, 0, 0.6);
+  background-color: #dedede;
+}
+
+.button-hover[type='default'][plain] {
+  color: rgba(53, 53, 53, 0.6);
+  border-color: rgba(53, 53, 53, 0.6);
+  background-color: transparent;
+}
+
+.button-hover[type='warn'] {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #ce3c39;
+}
+
+.button-hover[type='warn'][plain] {
+  color: rgba(230, 67, 64, 0.6);
+  border-color: rgba(230, 67, 64, 0.6);
+  background-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  div:where([uni-button]),
+  div:where([uni-button])[type='default'] {
+    color: #d6d6d6;
+    background-color: #343434;
+  }
+
+  .button-hover,
+  .button-hover[type='default'] {
+    color: #d6d6d6;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  div:where([uni-button])[disabled][type='default'],
+  div:where([uni-button])[disabled]:not([type]) {
+    color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  div:where([uni-button])[type='primary'][plain][disabled] {
+    color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  div:where([uni-button])[type='default'][plain] {
+    color: #d6d6d6;
+    border: 1px solid #d6d6d6;
+  }
+
+  .button-hover[type='default'][plain] {
+    color: rgba(150, 150, 150, 0.6);
+    border-color: rgba(150, 150, 150, 0.6);
+    background-color: rgba(50, 50, 50, 0.2);
+  }
+
+  div:where([uni-button])[type='default'][plain][disabled] {
+    border-color: hsla(0, 0%, 100%, 0.2);
+    color: hsla(0, 0%, 100%, 0.2);
+  }
+}
