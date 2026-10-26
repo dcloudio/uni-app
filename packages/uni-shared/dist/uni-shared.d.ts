@@ -263,11 +263,14 @@ export declare const H5_BUILT_IN_TAGS: string[];
 
 declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
+    $uniDataset?: Readonly<Record<string, string>> | Map<string, any>;
 }
 
 export declare const I18N_JSON_DELIMITERS: [string, string];
 
 export declare const initCustomDatasetOnce: (isBuiltInElement?: ((el: HTMLElement) => boolean) | undefined) => void;
+
+export declare function initVaporDataset(window: Window): void;
 
 /**
  * nodeId

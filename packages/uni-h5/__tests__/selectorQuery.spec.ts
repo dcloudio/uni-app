@@ -71,10 +71,7 @@ describe('SelectorQuery 模式兼容', () => {
           ),
           isArray: Array.isArray,
         },
-        '@dcloudio/uni-shared': {
-          createUniDOMStringMap: (v: any) => v,
-          getCustomDataset: (el: HTMLElement) => ({ ...el.dataset }),
-        },
+        '@dcloudio/uni-shared': jest.requireActual('@dcloudio/uni-shared'),
         '@dcloudio/uni-core': {
           getWindowOffset: () => ({ top: 5, topWindowHeight: 10 }),
         },
@@ -204,7 +201,7 @@ describe('SelectorQuery 模式兼容', () => {
     expect(callback.mock.calls[0][0]).toEqual([
       {
         id: 'box',
-        dataset: { value: 'v' },
+        dataset: expect.any(Map),
         node: el,
         left: 1,
         right: 21,
@@ -220,6 +217,31 @@ describe('SelectorQuery 模式兼容', () => {
       },
       { node: nodes[1] },
     ])
+    expect(callback.mock.calls[0][0][0].dataset.get('value')).toBe('v')
+  })
+
+  test('dataset 快照保留 Map 保留键、原始值和 undefined 条目', () => {
+    const { initVaporDataset } = jest.requireActual('@dcloudio/uni-shared')
+    initVaporDataset(dom.window)
+    const { vm, nodes } = mount('<div id="dataset" uni-view></div>')
+    const payload = { count: 1 }
+    const dataset = nodes[0].dataset as unknown as Map<string, any>
+    dataset.set('get', payload).set('set', null).set('empty', undefined)
+    const callback = jest.fn()
+    query(
+      vm,
+      [{ selector: '#dataset', single: true, fields: { dataset: true } }],
+      callback
+    )
+    const snapshot = callback.mock.calls[0][0][0].dataset
+    expect(snapshot).not.toBe(dataset)
+    expect(snapshot.get('get')).toBe(payload)
+    expect(snapshot.has('set')).toBe(true)
+    expect(snapshot.get('set')).toBe(null)
+    expect(snapshot.has('empty')).toBe(true)
+    expect(snapshot.get('empty')).toBeUndefined()
+    dataset.clear()
+    expect(snapshot.size).toBe(3)
   })
 
   test('旧模式保持外壳查找内部节点的行为', () => {

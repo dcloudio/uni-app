@@ -151,6 +151,10 @@ function wrapTemplate(node, dirs) {
 const EMPTY_EXPRESSION = (0, _vue_compiler_dom.createSimpleExpression)("", true);
 //#endregion
 //#region packages/compiler-vapor/src/utils.ts
+function isUniBasicElement(node) {
+	const marker = node.tag === "div" ? "uni-view" : node.tag === "span" ? "uni-text" : node.tag === "img" ? "uni-image" : void 0;
+	return marker !== void 0 && node.props.some((prop) => prop.type === 6 && prop.name === marker);
+}
 const findProp$1 = _vue_compiler_dom.findProp;
 /** find directive */
 const findDir$5 = _vue_compiler_dom.findDir;
@@ -3420,6 +3424,7 @@ var CodegenContext = class {
 		};
 		this.delegates = /* @__PURE__ */ new Set();
 		this.dynamicPropNames = /* @__PURE__ */ new Map();
+		this.hoists = [];
 		this.identifiers = Object.create(null);
 		this.expressionReplacements = [];
 		this.scopeLevel = 0;
@@ -3470,7 +3475,7 @@ function generate(ir, options = {}) {
 	if (!inline) push("}");
 	const delegates = genDelegates(context);
 	const templates = genTemplates(ir.template.entries, context);
-	const preamble = genHelperImports(context) + genAssetImports(context) + templates + genDynamicPropNames(context) + delegates;
+	const preamble = genHelperImports(context) + genAssetImports(context) + templates + genDynamicPropNames(context) + context.hoists.join("") + delegates;
 	const newlineCount = [...preamble].filter((c) => c === "\n").length;
 	if (newlineCount && !inline) frag.unshift(...new Array(newlineCount).fill(LF));
 	let [code, map] = codeFragmentToString(frag, context);
@@ -3528,7 +3533,7 @@ const transformVBind = (dir, node, context) => {
 		exp = (0, _vue_compiler_dom.createSimpleExpression)("", true, loc);
 	}
 	arg = resolveExpression(arg);
-	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || (0, _vue_shared.isSpecialBooleanAttr)(arg.content) || isCheckboxValueProp(node, arg.content) || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || arg.content.toLowerCase().startsWith("data-") && isUniBasicElement(node) || (0, _vue_shared.isSpecialBooleanAttr)(arg.content) || isCheckboxValueProp(node, arg.content) || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
 	exp = resolveExpression(exp, excludeNumber);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
@@ -5524,6 +5529,7 @@ exports.genMulti = genMulti;
 exports.generate = generate;
 exports.getBaseTransformPreset = getBaseTransformPreset;
 exports.isBlockOperation = isBlockOperation;
+exports.isUniBasicElement = isUniBasicElement;
 exports.parse = _vue_compiler_dom.parse;
 exports.parseValueDestructure = parseValueDestructure;
 exports.transform = transform;

@@ -1,4 +1,5 @@
 import { UniElement } from '../helpers/UniElement'
+import { type UniDOMStringMap, initVaporDataset } from '@dcloudio/uni-shared'
 
 const nativeHasInstance = Function.prototype[Symbol.hasInstance]
 
@@ -21,8 +22,9 @@ function getUniTagName(value: unknown) {
   }
 }
 
-// 运行时保留旧元素基类供复合组件继承；这三个原生宿主的公开类型不承诺旧 dataset 等重写。
+// 仅 dataset 遵循 uni 的 Map 契约，其余原生 DOM 属性不随逻辑 Element 类型重写。
 interface NativeUniElement extends HTMLElement {
+  readonly dataset: UniDOMStringMap
   readonly uniTagName: string | undefined
   getPage: UniElement['getPage']
   readonly uniPage: UniElement['uniPage']
@@ -61,7 +63,7 @@ interface ElementConstructors {
   HTMLImageElement: { prototype: HTMLElement }
 }
 
-// 只从 Vapor 浏览器入口调用；不触碰逐节点创建路径，也不覆盖已有宿主实现。
+// 只从 Vapor 浏览器入口调用；不触碰逐节点创建路径，dataset 单独按 uni 契约适配。
 export function installWebVaporElements(realm?: Window) {
   if (!realm) return
 
@@ -122,4 +124,5 @@ export function installWebVaporElements(realm?: Window) {
       }
     }
   }
+  initVaporDataset(realm)
 }

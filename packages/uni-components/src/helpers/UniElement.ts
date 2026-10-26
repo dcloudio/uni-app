@@ -28,6 +28,10 @@ export class UniElement extends HTMLElement {
   // H5 X 第一版只做 attribute -> dataset 的单向同步：Vue/uni 运行时更新
   // data-* 后，已访问过的 dataset 会同步刷新；暂不支持 dataset 反写 DOM attribute。
   private __uniDatasetMap?: UniDOMStringMap
+  //#if _X_VAPOR_
+  // 过渡期旧组件自行保存首次读取前的原始值，不再依赖全局属性拦截。
+  private __uniDataset?: Record<string, any>
+  //#endif
   //#endif
   //#if !_X_VAPOR_
   public __isUniElement: boolean
@@ -59,8 +63,7 @@ export class UniElement extends HTMLElement {
 
   get dataset(): UniDOMStringMap {
     if (!this.__uniDatasetMap) {
-      // 首次读取依赖 initView 中安装的旧缓存，保存此前写入 data-* 的原始值。
-      // Web Vapor 沿用旧 Element 期间不能单独停用缓存；改用新机制后移除对应依赖，非 Vapor 保留。
+      // 非 Vapor 由旧全局拦截维护缓存；Vapor 仅在本类维护，迁移到新宿主后移除此兼容路径。
       this.__uniDatasetMap = createUniDOMStringMap(
         (this as unknown as { __uniDataset?: Record<string, any> })
           .__uniDataset || {}
@@ -70,6 +73,14 @@ export class UniElement extends HTMLElement {
   }
 
   setAttribute(qualifiedName: string, value: string) {
+    //#if _X_VAPOR_
+    if (/^\d/.test(qualifiedName)) return
+    if (qualifiedName.startsWith('data-')) {
+      ;(this.__uniDataset || (this.__uniDataset = {}))[
+        camelize(qualifiedName.substring(5))
+      ] = value
+    }
+    //#endif
     super.setAttribute(qualifiedName, value)
     if (qualifiedName.startsWith('data-') && this.__uniDatasetMap) {
       this.__uniDatasetMap.set(qualifiedName, value)
@@ -77,6 +88,11 @@ export class UniElement extends HTMLElement {
   }
 
   removeAttribute(qualifiedName: string) {
+    //#if _X_VAPOR_
+    if (this.__uniDataset && qualifiedName.startsWith('data-')) {
+      delete this.__uniDataset[camelize(qualifiedName.substring(5))]
+    }
+    //#endif
     super.removeAttribute(qualifiedName)
     if (qualifiedName.startsWith('data-') && this.__uniDatasetMap) {
       this.__uniDatasetMap.delete(qualifiedName)

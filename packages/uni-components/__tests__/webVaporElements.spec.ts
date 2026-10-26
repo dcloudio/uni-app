@@ -9,6 +9,21 @@ jest.mock('@vue/shared', () =>
     '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
   )
 )
+jest.mock('@vue/compiler-core', () =>
+  jest.requireActual('../../uni-cli-shared/lib/dom2/web/@vue/compiler-core')
+)
+jest.mock('@vue/compiler-dom', () =>
+  jest.requireActual('../../uni-cli-shared/lib/dom2/web/@vue/compiler-dom')
+)
+jest.mock('@vue/compiler-ssr', () =>
+  jest.requireActual('../../uni-cli-shared/lib/dom2/web/@vue/compiler-ssr')
+)
+jest.mock(
+  '@vue/compiler-vapor',
+  () =>
+    jest.requireActual('../../uni-cli-shared/lib/dom2/web/@vue/compiler-vapor'),
+  { virtual: true }
+)
 
 jest.mock('@dcloudio/uni-api', () => ({
   defineSyncApi: (_name: string, implementation: Function) => implementation,
@@ -164,10 +179,10 @@ describe('Web Vapor 原生宿主 Element', () => {
       expect(Object.getPrototypeOf(el)).toBe(prototype)
       expect(Object.keys(el)).toEqual([])
       el.setAttribute('data-name', 'value')
-      expect(el.dataset.name).toBe('value')
-      expect(el.dataset.get).toBeUndefined()
+      expect(el.dataset.name).toBeNull()
+      expect(el.dataset).toBeInstanceOf(Map)
       el.dataset.name = 'changed'
-      expect(el.getAttribute('data-name')).toBe('changed')
+      expect(el.getAttribute('data-name')).toBe('value')
       el.style.setProperty('margin-left', '1px')
       expect(el.style.getPropertyValue('margin-left')).toBe('1px')
       expect(el.style.__patchRpx__).toBeUndefined()
@@ -193,7 +208,74 @@ describe('Web Vapor 原生宿主 Element', () => {
     expect(dom.window.HTMLElement.prototype.getPage).toBeUndefined()
   })
 
-  test('原生宿主能被现有 builtIn 判断识别，公开类型保留原生 dataset', () => {
+  test.each([
+    ['div', 'uni-view'],
+    ['span', 'uni-text'],
+    ['img', 'uni-image'],
+  ])('基础宿主 %s 的 dataset 保留类型，与手动属性操作独立', (tag, marker) => {
+    install()
+    const el = document.createElement(tag)
+    el.setAttribute(marker, '')
+    el.setAttribute('data-count', '1')
+    el.setAttribute('data-get', 'reserved')
+    el.setAttribute('data-v-scope', '')
+    ;(el as any).$uniDataset = { 'data-count': '1', 'data-get': 'reserved' }
+    const { getCustomDataset, normalizeTarget, createUniDOMStringMap } =
+      elementImports['@dcloudio/uni-shared']
+    // 查询首次读取也应触发惰性初始化，之后直接复用同一份 Map。
+    const dataset = getCustomDataset(el)
+    expect(dataset).toBeInstanceOf(Map)
+    expect(el.dataset).toBe(dataset)
+    expect((el as any).$uniDataset).toBe(dataset)
+    expect(dataset.get('count')).toBe('1')
+    expect(dataset.get('get')).toBe('reserved')
+    expect(dataset.has('vScope')).toBe(false)
+    expect(getCustomDataset(el)).toBe(dataset)
+    expect(normalizeTarget(el).dataset).toBe(dataset)
+    const snapshot = createUniDOMStringMap(getCustomDataset(el))
+    expect(snapshot).not.toBe(dataset)
+    expect(snapshot.get('get')).toBe('reserved')
+    const payload = { count: 2 }
+    dataset.set('payload', payload)
+    expect(dataset.payload).toBe(payload)
+    dataset.set('empty', undefined)
+    expect(dataset.has('empty')).toBe(true)
+    expect(dataset.get('empty')).toBeUndefined()
+    el.removeAttribute('data-empty')
+    expect(dataset.has('empty')).toBe(true)
+    dataset.delete('empty')
+    expect(dataset.has('empty')).toBe(false)
+    dataset.count = 3
+    expect(snapshot.get('count')).toBe('1')
+    expect(el.getAttribute('data-count')).toBe('1')
+    dataset.clear()
+    expect(dataset.size).toBe(0)
+    expect(el.hasAttribute('data-v-scope')).toBe(true)
+    expect((el as any).__uniDataset).toBeUndefined()
+    const other = document.createElement(tag)
+    other.setAttribute(marker, '')
+    ;(other.dataset as any).set('payload', payload)
+    expect((other.dataset as any).get('payload')).toBe(payload)
+    expect(other.dataset).not.toBe(dataset)
+    const plain = document.createElement(tag)
+    plain.dataset.count = '4'
+    expect(plain.getAttribute('data-count')).toBe('4')
+    expect(plain.dataset).not.toBeInstanceOf(Map)
+  })
+
+  test('未使用新 dataset 机制的节点保留缓存合并，不按 Map 类型误判', () => {
+    const { getCustomDataset, createUniDOMStringMap } =
+      elementImports['@dcloudio/uni-shared']
+    const el = document.createElement('div')
+    const dataset = createUniDOMStringMap({ count: '1' })
+    Object.defineProperty(el, 'dataset', { value: dataset })
+    ;(el as any).__uniDataset = { count: 2 }
+    expect(getCustomDataset(el)).toEqual({ count: 2 })
+    ;(el as any).$uniDataset = { 'data-count': 'initial' }
+    expect(getCustomDataset(el)).toEqual({ count: 2 })
+  })
+
+  test('原生宿主能被现有 builtIn 判断识别，公开类型提供 uni dataset', () => {
     install()
     const el = document.createElement(
       'div'
@@ -201,7 +283,7 @@ describe('Web Vapor 原生宿主 Element', () => {
     expect(isBuiltInElement(el)).toBe(false)
     el.setAttribute('uni-view', '')
     expect(isBuiltInElement(el)).toBe(true)
-    const dataset: DOMStringMap = el.dataset
+    const dataset: import('@dcloudio/uni-shared').UniDOMStringMap = el.dataset
     expect(dataset).toBe(el.dataset)
   })
 
@@ -398,18 +480,38 @@ describe('Web Vapor 原生宿主 Element', () => {
           el.setAttribute('data-v-12345678', '')
           expect(hasOwn(el, '__uniDataset')).toBe(false)
           el.setAttribute('data-count', '1')
+          if (marker) (el.dataset as any).set('count', '1')
           expect(datasetApi.getCustomDataset(el).count).toBe('1')
           el.dataset.count = '2'
-          expect(el.getAttribute('data-count')).toBe('2')
+          expect(el.getAttribute('data-count')).toBe(marker ? '1' : '2')
           expect(datasetApi.getCustomDataset(el).count).toBe('2')
           delete el.dataset.count
-          expect(el.hasAttribute('data-count')).toBe(false)
-          expect(datasetApi.getCustomDataset(el)).not.toHaveProperty('count')
+          expect(el.hasAttribute('data-count')).toBe(!!marker)
+          expect(Object.keys(datasetApi.getCustomDataset(el))).not.toContain(
+            'count'
+          )
           el.setAttribute('data-count', '3')
-          expect(datasetApi.getCustomDataset(el).count).toBe('3')
+          if (marker) expect((el.dataset as any).has('count')).toBe(false)
+          else expect(datasetApi.getCustomDataset(el).count).toBe('3')
           el.removeAttribute('data-count')
-          expect(datasetApi.getCustomDataset(el)).not.toHaveProperty('count')
+          expect(Object.keys(datasetApi.getCustomDataset(el))).not.toContain(
+            'count'
+          )
           expect(hasOwn(el, '__uniDataset')).toBe(false)
+          if (marker) {
+            const payload = { count: 4 }
+            ;(el.dataset as any).set('set', payload)
+            const dataset = datasetApi.getCustomDataset(el)
+            expect(dataset).toBe(el.dataset)
+            expect(dataset.get('set')).toBe(payload)
+            const snapshot =
+              elementImports['@dcloudio/uni-shared'].createUniDOMStringMap(
+                dataset
+              )
+            expect(snapshot.get('set')).toBe(payload)
+            dataset.set('set', 'changed')
+            expect(snapshot.get('set')).toBe(payload)
+          }
         }
 
         const payload = { count: 1 }
@@ -510,6 +612,342 @@ describe('Web Vapor 原生宿主 Element', () => {
       }
     } finally {
       other.window.close()
+    }
+  })
+
+  test('静态初始数据只关联不创建 Map，读取不扫描 DOM，克隆实例隔离', () => {
+    const { JSDOM } = jest.requireActual('jsdom')
+    const other = new JSDOM('<!doctype html><body></body>')
+    const read = jest.spyOn(
+      other.window.HTMLElement.prototype,
+      'dataset',
+      'get'
+    )
+    try {
+      install(other.window)
+      const template = other.window.document.createElement('template')
+      template.innerHTML =
+        '<div uni-view data-count="1"><span uni-text></span><img uni-image></div>'
+      const initial = Object.freeze({ 'data-count': '1' })
+      for (let i = 0; i < 1000; i++) {
+        const clone = template.content.cloneNode(true)
+        clone.firstElementChild.$uniDataset = initial
+        other.window.document.body.appendChild(clone)
+      }
+      const el = other.window.document.body.firstElementChild
+      expect(el.$uniDataset).toBe(initial)
+      expect(el.firstElementChild.$uniDataset).toBeUndefined()
+      el.setAttribute('data-v-scope', '')
+      el.setAttribute('data-count', '2')
+      expect(read).not.toHaveBeenCalled()
+      const dataset = el.dataset
+      expect(dataset.get('count')).toBe('1')
+      expect(dataset.has('vScope')).toBe(false)
+      expect(read).not.toHaveBeenCalled()
+      expect(el.dataset).toBe(dataset)
+      el.setAttribute('data-count', '3')
+      expect(dataset.get('count')).toBe('1')
+      dataset.set('count', 'logical')
+      expect(el.nextElementSibling.$uniDataset).toBe(initial)
+      expect(el.nextElementSibling.dataset.get('count')).toBe('1')
+      expect(el.nextElementSibling.dataset).not.toBe(dataset)
+      expect(read).not.toHaveBeenCalled()
+    } finally {
+      read.mockRestore()
+      other.window.close()
+    }
+  })
+
+  test('IntersectionObserver 从实际宿主生成 dataset 快照，不丢失保留键', async () => {
+    install()
+    const el = document.createElement('div')
+    el.setAttribute('uni-view', '')
+    const dataset = el.dataset as any
+    const payload = { count: 1 }
+    dataset.set('get', payload).set('empty', undefined)
+    const previous = (global as any).IntersectionObserver
+    let deliver: Function
+    ;(global as any).IntersectionObserver = class {
+      constructor(callback: Function) {
+        deliver = callback
+      }
+      observe() {}
+    }
+    try {
+      const { requestComponentObserver } = await loadForMode(
+        'uni-api/src/helpers/requestComponentObserver.ts',
+        true,
+        {
+          '@dcloudio/uni-shared': elementImports['@dcloudio/uni-shared'],
+          './intersection-observer': {
+            initIntersectionObserverPolyfill: jest.fn(),
+          },
+        }
+      )
+      const callback = jest.fn()
+      requestComponentObserver(
+        el,
+        { selector: 'div', thresholds: [0] },
+        callback
+      )
+      const rect = {
+        top: 0,
+        left: 0,
+        right: 10,
+        bottom: 10,
+        width: 10,
+        height: 10,
+      }
+      deliver!([
+        {
+          target: el,
+          intersectionRatio: 1,
+          boundingClientRect: rect,
+          intersectionRect: rect,
+          rootBounds: rect,
+        },
+      ])
+      const snapshot = callback.mock.calls[0][0].dataset
+      expect(snapshot).not.toBe(dataset)
+      expect(snapshot.get('get')).toBe(payload)
+      expect(snapshot.has('empty')).toBe(true)
+      expect(snapshot.get('empty')).toBeUndefined()
+      dataset.clear()
+      expect(snapshot.size).toBe(2)
+    } finally {
+      ;(global as any).IntersectionObserver = previous
+    }
+  })
+
+  test('同步后的 SFC 编译产物与真实宿主 dataset、事件联动', async () => {
+    install()
+    const vue = jest.requireActual(
+      '../../uni-h5-vue/dist-x-vapor/vue.runtime.cjs.js'
+    )
+    const sfc = jest.requireActual(
+      '../../uni-cli-shared/lib/dom2/web/@vue/compiler-sfc'
+    )
+    const compiler = jest.requireActual('@dcloudio/compiler-vapor-web')
+    const data = vue.ref({ 'data-value': undefined, 'data-get': { count: 1 } })
+    const click = jest.fn()
+    const { descriptor } =
+      sfc.parse(`<script setup vapor>const data = _data; const click = _click;</script>
+      <template><view :data-count="1" v-bind="data" @click="click"><text :data-count="2"/><image :data-count="3"/></view></template>`)
+    const { content } = sfc.compileScript(descriptor, {
+      id: 'dataset',
+      vapor: true,
+      isProd: true,
+      inlineTemplate: true,
+      genDefaultAs: '__sfc__',
+      templateOptions: {
+        compiler: { parse: compiler.parse, compile: compiler.compile },
+      },
+    })
+    const code = content
+      .replace(/\bimport {/g, 'const {')
+      .replace(/ as _/g, ': _')
+      .replace(/} from ['"]vue['"]/g, '} = Vue')
+    const Component = new Function(
+      'Vue',
+      '_data',
+      '_click',
+      `${code}\nreturn __sfc__`
+    )(vue, data, click)
+    const app = vue.createVaporApp(Component)
+    const host = document.createElement('div')
+    const prototype = dom.window.HTMLElement.prototype
+    const { setAttribute, removeAttribute } = prototype
+    try {
+      document.body.appendChild(host)
+      app.mount(host)
+      const el = host.firstElementChild as HTMLElement
+      const dataset = el.dataset as any
+      expect(dataset.get('count')).toBe(1)
+      expect(dataset.has('value')).toBe(true)
+      expect(dataset.get('value')).toBeUndefined()
+      expect(dataset.get('get')).toBe(data.value['data-get'])
+      expect((el.firstElementChild as any).dataset.get('count')).toBe(2)
+      expect((el.lastElementChild as any).dataset.get('count')).toBe(3)
+      el.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))
+      expect(click).toHaveBeenCalledTimes(1)
+      expect(click.mock.calls[0][0].target.dataset).toBe(dataset)
+      data.value = { 'data-value': null }
+      await vue.nextTick()
+      expect(dataset.has('get')).toBe(false)
+      expect(dataset.has('value')).toBe(true)
+      expect(dataset.get('value')).toBe(null)
+      data.value = {}
+      await vue.nextTick()
+      expect(dataset.has('value')).toBe(false)
+      expect((el as any).__uniDataset).toBeUndefined()
+    } finally {
+      app.unmount()
+      prototype.setAttribute = setAttribute
+      prototype.removeAttribute = removeAttribute
+      host.remove()
+    }
+  })
+
+  test.each([false, true])(
+    '独立 Window 初始化不叠加属性拦截，Vapor=%s',
+    async (vapor) => {
+      const { JSDOM } = jest.requireActual('jsdom')
+      const other = new JSDOM('<!doctype html><body></body>')
+      const previous = global.HTMLElement
+      ;(global as any).HTMLElement = other.window.HTMLElement
+      try {
+        const Base = (
+          await loadForMode(
+            'uni-components/src/helpers/UniElement.ts',
+            vapor,
+            elementImports
+          )
+        ).UniElement
+        class Legacy extends Base {}
+        if (vapor) {
+          Object.defineProperty(Legacy.prototype, 'uniTagName', {
+            value: 'FIELD',
+          })
+          install(other.window)
+        }
+        other.window.customElements.define('uni-field', Legacy)
+        const prototype = other.window.HTMLElement.prototype
+        const installedSet = prototype.setAttribute
+        const installedRemove = prototype.removeAttribute
+        const datasetApi = await loadForMode(
+          'uni-shared/src/dom/customDataset.ts',
+          vapor,
+          {
+            '@vue/shared': elementImports['@vue/shared'],
+            '../utils': elementImports['@dcloudio/uni-shared'],
+          }
+        )
+        const { initView } = await loadForMode(
+          'uni-core/src/view/init/index.ts',
+          vapor,
+          {
+            '@dcloudio/uni-shared': datasetApi,
+            './longPress': { initLongPress: jest.fn() },
+            './rem': { useRem: jest.fn() },
+            '../../helpers': {
+              isBuiltInElement: (el: any) => !!el.__isUniElement,
+            },
+          }
+        )
+        initView()
+        const initializedSet = prototype.setAttribute
+        const initializedRemove = prototype.removeAttribute
+        initView()
+        expect(prototype.setAttribute).toBe(initializedSet)
+        expect(prototype.removeAttribute).toBe(initializedRemove)
+        if (vapor) {
+          expect(initializedSet).toBe(installedSet)
+          expect(initializedRemove).toBe(installedRemove)
+        } else {
+          expect(initializedSet).not.toBe(installedSet)
+        }
+        for (const Host of [
+          other.window.HTMLDivElement,
+          other.window.HTMLSpanElement,
+          other.window.HTMLImageElement,
+        ]) {
+          expect(Object.hasOwn(Host.prototype, 'setAttribute')).toBe(false)
+          expect(Object.hasOwn(Host.prototype, 'removeAttribute')).toBe(false)
+          if (!vapor)
+            expect(Object.hasOwn(Host.prototype, 'dataset')).toBe(false)
+        }
+        const el = other.window.document.createElement('uni-field')
+        const payload = { count: 1 }
+        el.setAttribute('data-removed', payload as any)
+        el.removeAttribute('data-removed')
+        el.setAttribute('data-payload', payload as any)
+        expect(el.__uniDataset.payload).toBe(payload)
+        const dataset = el.dataset
+        expect(dataset.has('removed')).toBe(false)
+        expect(dataset.get('payload')).toBe(payload)
+        el.setAttribute('data-payload', null as any)
+        expect(dataset.has('payload')).toBe(true)
+        expect(dataset.get('payload')).toBeNull()
+        el.removeAttribute('data-payload')
+        expect(dataset.has('payload')).toBe(false)
+        expect(el.__uniDataset).toEqual({})
+        const plain = other.window.document.createElement('div')
+        plain.setAttribute('data-value', payload as any)
+        expect(plain.dataset).not.toBeInstanceOf(Map)
+        expect(plain.dataset.value).toBe('[object Object]')
+        expect(plain.__uniDataset).toBeUndefined()
+        if (vapor)
+          expect(() => plain.setAttribute('1-invalid', 'ignored')).toThrow()
+        else plain.setAttribute('1-invalid', 'ignored')
+        expect(plain.hasAttribute('1-invalid')).toBe(false)
+        if (vapor) {
+          const native = other.window.document.createElement('span')
+          native.setAttribute('uni-text', '')
+          native.setAttribute('DATA-payload', payload as any)
+          expect(native.dataset.has('payload')).toBe(false)
+          native.removeAttribute('DaTa-payload')
+          expect(native.dataset.has('payload')).toBe(false)
+          expect(native.__uniDataset).toBeUndefined()
+        }
+      } finally {
+        ;(global as any).HTMLElement = previous
+        other.window.close()
+      }
+    }
+  )
+
+  test('Vapor 不改写原生属性 API，手动属性修改不影响 dataset', () => {
+    const { JSDOM } = jest.requireActual('jsdom')
+    const other = new JSDOM('<!doctype html>')
+    try {
+      const proto = other.window.HTMLElement.prototype
+      const set = proto.setAttribute
+      const remove = proto.removeAttribute
+      install(other.window)
+      expect(proto.setAttribute).toBe(set)
+      expect(proto.removeAttribute).toBe(remove)
+      for (const [tag, marker] of [
+        ['div', 'uni-view'],
+        ['span', 'uni-text'],
+        ['img', 'uni-image'],
+      ]) {
+        const el = other.window.document.createElement(tag)
+        el.setAttribute(marker, '')
+        el.$uniDataset = { 'data-id': 'initial' }
+        el.setAttribute('data-id', 'manual')
+        expect(el.setAttribute).toBe(set)
+        expect(el.removeAttribute).toBe(remove)
+        expect(el.dataset.get('id')).toBe('initial')
+        el.removeAttribute('data-id')
+        expect(el.dataset.get('id')).toBe('initial')
+        el.dataset.set('id', 'logical')
+        expect(el.hasAttribute('data-id')).toBe(false)
+      }
+    } finally {
+      other.window.close()
+    }
+  })
+
+  test('普通属性操作不识别节点、不读取 dataset', () => {
+    install()
+    const el = document.createElement('div')
+    Object.defineProperties(el, {
+      uniTagName: {
+        get() {
+          throw new Error('普通属性不应读取 uniTagName')
+        },
+      },
+      dataset: {
+        get() {
+          throw new Error('普通属性不应读取 dataset')
+        },
+      },
+    })
+    for (const key of ['id', 'title', 'class', 'style', 'aria-label']) {
+      el.setAttribute(key, 'value')
+      expect(el.getAttribute(key)).toBe('value')
+      el.removeAttribute(key)
+      expect(el.hasAttribute(key)).toBe(false)
     }
   })
 })

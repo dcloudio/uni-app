@@ -12185,8 +12185,15 @@ function setProp(el, key, value) {
 	if (key in el) setDOMProp(el, key, value);
 	else setAttr(el, key, value);
 }
-function setAttr(el, key, value, isSVG = false, forceHydrate = true) {
+function setAttr(el, key, value, isSVG = false, forceHydrate = true, removed = false) {
 	if (shouldSkipFallthroughKey(el, key)) return;
+	if ((key[0] === "d" || key[0] === "D") && key.slice(0, 5).toLowerCase() === "data-" && !el.localName.includes("-")) {
+		const dataset = el.dataset;
+		if (dataset instanceof Map) {
+			if (removed) dataset.delete(key);
+			else dataset.set(key, value);
+		}
+	}
 	if (key === "true-value") el._trueValue = value;
 	else if (key === "false-value") el._falseValue = value;
 	if (isHydrating$1 && !isRecreatedNode(el)) {
@@ -12472,7 +12479,7 @@ function patchDynamicProps(el, props, isSVG, staticKeys) {
 	const nextProps = Object.create(null);
 	if (prevProps) {
 		for (const key in prevProps) if (!(key in props)) {
-			setDynamicProp(el, key, null, isSVG);
+			setDynamicProp(el, key, null, isSVG, false, true);
 			if ((key === "value" || key === ".value") && el.tagName === "SELECT" && !shouldSkipFallthroughKey(el, "value")) el.$valueBound = false;
 		}
 	}
@@ -12491,7 +12498,7 @@ function patchDynamicProps(el, props, isSVG, staticKeys) {
 /**
 * @internal
 */
-function setDynamicProp(el, key, value, isSVG = false, forceHydrate = false) {
+function setDynamicProp(el, key, value, isSVG = false, forceHydrate = false, removed = false) {
 	const rawKey = key;
 	if (key === "class") setClass(el, value, isSVG);
 	else if (key === "style") setStyle(el, value);
@@ -12507,7 +12514,7 @@ function setDynamicProp(el, key, value, isSVG = false, forceHydrate = false) {
 	} else if (el._isVueCE && (shouldSetAsPropForVueCE(el, key) || el._def.__asyncLoader && (/[A-Z]/.test(key) || !(0, _vue_shared.isString)(value)))) setDOMProp(el, (0, _vue_shared.camelize)(key), value, forceHydrate, key);
 	else {
 		if ((0, _vue_shared.isNativeOn)(rawKey)) el[`$p$${key}`] = value;
-		setAttr(el, key, value, isSVG, forceHydrate);
+		setAttr(el, key, value, isSVG, forceHydrate, removed);
 	}
 	return value;
 }
@@ -20959,6 +20966,11 @@ function setViewDynamicProps(el, args, staticKeys, isSVG) {
 	setHover(el, hoverClassKey === void 0 ? void 0 : props[hoverClassKey], stopPropagationKey === void 0 ? void 0 : props[stopPropagationKey], startTimeKey === void 0 ? void 0 : props[startTimeKey], stayTimeKey === void 0 ? void 0 : props[stayTimeKey]);
 }
 //#endregion
+//#region packages/runtime-vapor-web/src/dataset.ts
+function initUniDataset(el, data) {
+	el.$uniDataset = data;
+}
+//#endregion
 //#region packages/runtime-vapor-web/src/apiCreateRecycleFor.ts
 function preCreateRecycleFor(src, getKey, getId) {
 	const exposed = getCurrentInstance().provides["__uni_recycle_view_instance"].exposed;
@@ -21884,6 +21896,7 @@ exports.hydrateOnVisible = hydrateOnVisible;
 exports.initCustomFormatter = initCustomFormatter;
 exports.initDirectivesForSSR = initDirectivesForSSR;
 exports.initFeatureFlags = initFeatureFlags;
+exports.initUniDataset = initUniDataset;
 exports.initUniPageHooks = initUniPageHooks;
 exports.inject = inject;
 exports.injectHook = injectHook;

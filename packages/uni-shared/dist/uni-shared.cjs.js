@@ -1502,7 +1502,169 @@ const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
     };
 });
 function getCustomDataset(el) {
-    return shared.extend({}, el.dataset, el.__uniDataset);
+    const dataset = el.dataset;
+    const target = el;
+    // Vapor 原生宿主只有一份 Map 数据，直接供事件读取，并让查询按条目复制，
+    // 避免对象展开丢失 get/set 等保留键。旧 uni-* Custom Element 仍走原缓存合并。
+    if (target.$uniDataset === dataset) {
+        return dataset;
+    }
+    return shared.extend({}, dataset, target.__uniDataset);
+}
+
+class UniDOMStringMap extends Map {
+    constructor(options) {
+        super();
+        this._options = options;
+    }
+    get(key) {
+        const normalizedKey = normalizeDatasetKey(String(key));
+        return super.has(normalizedKey) ? super.get(normalizedKey) : null;
+    }
+    set(key, value) {
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        super.set(normalizedKey, value);
+        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
+        return this;
+    }
+    has(key) {
+        return super.has(normalizeDatasetKey(String(key)));
+    }
+    delete(key) {
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        const deleted = super.delete(normalizedKey);
+        if (deleted) {
+            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
+        }
+        return deleted;
+    }
+    clear() {
+        const keys = Array.from(super.keys());
+        super.clear();
+        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
+    }
+}
+function normalizeDatasetKey(key) {
+    const normalizedKey = key.replace(/[A-Z]/g, (char) => char.toLowerCase());
+    if (normalizedKey.indexOf('data-') !== 0) {
+        return key;
+    }
+    return normalizedKey
+        .slice(5)
+        .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+}
+function normalizeDatasetAttrName(key) {
+    return ('data-' +
+        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
+            return '-' + char.toLowerCase();
+        }));
+}
+function isReservedDatasetKey(target, key) {
+    return key in target;
+}
+function setDatasetValue(dataset, key, value) {
+    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
+}
+function initDataset(dataset, source) {
+    if (!source) {
+        return;
+    }
+    if (source instanceof Map) {
+        source.forEach((value, key) => setDatasetValue(dataset, key, value));
+        return;
+    }
+    Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
+}
+function createUniDOMStringMap(source, options) {
+    const target = new UniDOMStringMap(options);
+    initDataset(target, source);
+    return new Proxy(target, {
+        get(target, key, receiver) {
+            if (typeof key === 'string') {
+                if (!isReservedDatasetKey(target, key)) {
+                    return target.has(key) ? target.get(key) : null;
+                }
+            }
+            const value = Reflect.get(target, key, target);
+            if (typeof value === 'function') {
+                return (...args) => {
+                    const result = value.apply(target, args);
+                    return result === target ? receiver : result;
+                };
+            }
+            return value;
+        },
+        set(target, key, value, receiver) {
+            if (typeof key === 'string' && !isReservedDatasetKey(target, key)) {
+                target.set(key, value);
+                return true;
+            }
+            return Reflect.set(target, key, value, receiver);
+        },
+        deleteProperty(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return target.delete(key);
+            }
+            return Reflect.deleteProperty(target, key);
+        },
+        has(target, key) {
+            if (typeof key === 'string' && target.has(key)) {
+                return true;
+            }
+            return Reflect.has(target, key);
+        },
+        ownKeys(target) {
+            return Array.from(target.keys()).filter((key) => !isReservedDatasetKey(target, key));
+        },
+        getOwnPropertyDescriptor(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return {
+                    configurable: true,
+                    enumerable: true,
+                    value: target.get(key),
+                    writable: true,
+                };
+            }
+            return Reflect.getOwnPropertyDescriptor(target, key);
+        },
+    });
+}
+
+const installed = /*#__PURE__*/ new WeakSet();
+// 仅安装 dataset getter，原生属性 API 不参与业务数据维护。
+function initVaporDataset(window) {
+    const realm = window;
+    const prototype = realm.HTMLElement.prototype;
+    if (installed.has(prototype))
+        return;
+    installed.add(prototype);
+    const nativeDataset = Object.getOwnPropertyDescriptor(prototype, 'dataset');
+    for (const [Host, marker] of [
+        [realm.HTMLDivElement, 'uni-view'],
+        [realm.HTMLSpanElement, 'uni-text'],
+        [realm.HTMLImageElement, 'uni-image'],
+    ]) {
+        if (Object.getOwnPropertyDescriptor(Host.prototype, 'dataset'))
+            continue;
+        Object.defineProperty(Host.prototype, 'dataset', {
+            configurable: true,
+            enumerable: nativeDataset.enumerable,
+            get() {
+                if (!this.hasAttribute(marker))
+                    return nativeDataset.get.call(this);
+                const data = this.$uniDataset;
+                return data instanceof Map
+                    ? data
+                    : (this.$uniDataset = createUniDOMStringMap(data));
+            },
+        });
+    }
 }
 
 const unitRE = /*#__PURE__*/ new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, 'g');
@@ -2662,130 +2824,6 @@ function isDom2AppUserVueComponentTag(tag) {
     return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
 }
 
-class UniDOMStringMap extends Map {
-    constructor(options) {
-        super();
-        this._options = options;
-    }
-    get(key) {
-        const normalizedKey = normalizeDatasetKey(String(key));
-        return super.has(normalizedKey) ? super.get(normalizedKey) : null;
-    }
-    set(key, value) {
-        var _a, _b;
-        const normalizedKey = normalizeDatasetKey(String(key));
-        super.set(normalizedKey, value);
-        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
-        return this;
-    }
-    has(key) {
-        return super.has(normalizeDatasetKey(String(key)));
-    }
-    delete(key) {
-        var _a, _b;
-        const normalizedKey = normalizeDatasetKey(String(key));
-        const deleted = super.delete(normalizedKey);
-        if (deleted) {
-            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
-        }
-        return deleted;
-    }
-    clear() {
-        const keys = Array.from(super.keys());
-        super.clear();
-        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
-    }
-}
-function normalizeDatasetKey(key) {
-    const normalizedKey = key.replace(/[A-Z]/g, (char) => char.toLowerCase());
-    if (normalizedKey.indexOf('data-') !== 0) {
-        return key;
-    }
-    return normalizedKey
-        .slice(5)
-        .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
-}
-function normalizeDatasetAttrName(key) {
-    return ('data-' +
-        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
-            return '-' + char.toLowerCase();
-        }));
-}
-function isReservedDatasetKey(target, key) {
-    return key in target;
-}
-function setDatasetValue(dataset, key, value) {
-    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
-}
-function initDataset(dataset, source) {
-    if (!source) {
-        return;
-    }
-    if (source instanceof Map) {
-        source.forEach((value, key) => setDatasetValue(dataset, key, value));
-        return;
-    }
-    Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
-}
-function createUniDOMStringMap(source, options) {
-    const target = new UniDOMStringMap(options);
-    initDataset(target, source);
-    return new Proxy(target, {
-        get(target, key, receiver) {
-            if (typeof key === 'string') {
-                if (!isReservedDatasetKey(target, key)) {
-                    return target.has(key) ? target.get(key) : null;
-                }
-            }
-            const value = Reflect.get(target, key, target);
-            if (typeof value === 'function') {
-                return (...args) => {
-                    const result = value.apply(target, args);
-                    return result === target ? receiver : result;
-                };
-            }
-            return value;
-        },
-        set(target, key, value, receiver) {
-            if (typeof key === 'string' && !isReservedDatasetKey(target, key)) {
-                target.set(key, value);
-                return true;
-            }
-            return Reflect.set(target, key, value, receiver);
-        },
-        deleteProperty(target, key) {
-            if (typeof key === 'string' &&
-                !isReservedDatasetKey(target, key) &&
-                target.has(key)) {
-                return target.delete(key);
-            }
-            return Reflect.deleteProperty(target, key);
-        },
-        has(target, key) {
-            if (typeof key === 'string' && target.has(key)) {
-                return true;
-            }
-            return Reflect.has(target, key);
-        },
-        ownKeys(target) {
-            return Array.from(target.keys()).filter((key) => !isReservedDatasetKey(target, key));
-        },
-        getOwnPropertyDescriptor(target, key) {
-            if (typeof key === 'string' &&
-                !isReservedDatasetKey(target, key) &&
-                target.has(key)) {
-                return {
-                    configurable: true,
-                    enumerable: true,
-                    value: target.get(key),
-                    writable: true,
-                };
-            }
-            return Reflect.getOwnPropertyDescriptor(target, key);
-        },
-    });
-}
-
 const uniElementPageMap = new WeakMap();
 function setUniElementPage(pageElement, page) {
     uniElementPageMap.set(pageElement, page);
@@ -3036,6 +3074,7 @@ exports.getPartClass = getPartClass;
 exports.getUniElementPage = getUniElementPage;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
+exports.initVaporDataset = initVaporDataset;
 exports.invokeArrayFns = invokeArrayFns;
 exports.invokeArrayFnsWithResults = invokeArrayFnsWithResults;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;

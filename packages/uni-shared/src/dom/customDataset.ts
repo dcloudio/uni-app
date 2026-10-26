@@ -2,6 +2,7 @@ import { camelize, extend } from '@vue/shared'
 import { once } from '../utils'
 interface HTMLElementWithDataset extends HTMLElement {
   __uniDataset?: Record<string, any>
+  $uniDataset?: Readonly<Record<string, string>> | Map<string, any>
 }
 
 function formatKey(key: string) {
@@ -42,5 +43,12 @@ export const initCustomDatasetOnce = /*#__PURE__*/ once(
 )
 
 export function getCustomDataset(el: HTMLElement | HTMLElementWithDataset) {
-  return extend({}, el.dataset, (el as HTMLElementWithDataset).__uniDataset)
+  const dataset = el.dataset
+  const target = el as HTMLElementWithDataset
+  // Vapor 原生宿主只有一份 Map 数据，直接供事件读取，并让查询按条目复制，
+  // 避免对象展开丢失 get/set 等保留键。旧 uni-* Custom Element 仍走原缓存合并。
+  if (target.$uniDataset === dataset) {
+    return dataset as DOMStringMap & Map<string, any>
+  }
+  return extend({}, dataset, target.__uniDataset)
 }

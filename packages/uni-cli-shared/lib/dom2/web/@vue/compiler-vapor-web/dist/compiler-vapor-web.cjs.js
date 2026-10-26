@@ -522,6 +522,44 @@ function isFlowRow(node) {
 	return node.type === 1 && (node.tag === "flow-item" || node.tag === "template" && node.children.length === 1 && node.children[0].type === 1 && node.children[0].tag === "flow-item" && !(0, _vue_compiler_dom.findDir)(node.children[0], "for"));
 }
 //#endregion
+//#region packages/compiler-vapor-web/src/transforms/transformDataset.ts
+function createDatasetTransform() {
+	const operations = /* @__PURE__ */ new WeakMap();
+	const hoists = /* @__PURE__ */ new Map();
+	return {
+		transformElementProps(props, node, context) {
+			if (props[0] || !(0, _vue_compiler_vapor.isUniBasicElement)(node)) return;
+			const data = Object.create(null);
+			for (const prop of props[1]) if (prop.key.isStatic && prop.key.content.toLowerCase().startsWith("data-") && prop.modifier !== "." && prop.values[0].isStatic) data[prop.key.content] = prop.values[0].content;
+			if (!Object.keys(data).length) return;
+			const operation = {
+				type: 3,
+				element: context.reference(),
+				tag: node.tag,
+				isSVG: false,
+				prop: {
+					key: (0, _vue_compiler_dom.createSimpleExpression)("dataset", true),
+					values: []
+				}
+			};
+			operations.set(operation, JSON.stringify(data));
+			context.registerOperation(operation);
+		},
+		genOperation(operation, context) {
+			if (operation.type !== 3) return;
+			const json = operations.get(operation);
+			if (!json) return;
+			let name = hoists.get(json);
+			if (!name) {
+				name = context.getUniqueLocalName("_dataset");
+				hoists.set(json, name);
+				context.hoists.push(`const ${name} = ${json}\n`);
+			}
+			return [_vue_compiler_vapor.NEWLINE, ...(0, _vue_compiler_vapor.genCall)(context.helper("initUniDataset"), `n${operation.element}`, name)];
+		}
+	};
+}
+//#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformUniAppXWeb.ts
 function createUniAppXWebTransform(options = {}) {
 	if (options.ssr) {
@@ -539,6 +577,7 @@ function createUniAppXWebTransform(options = {}) {
 	const text = createTextTransform();
 	const recycle = createRecycleForTransform();
 	const componentId = createComponentIdTransform(recycle);
+	const dataset = createDatasetTransform();
 	return {
 		transform: (node, context) => {
 			transformListView(node, context);
@@ -552,14 +591,15 @@ function createUniAppXWebTransform(options = {}) {
 			return [exitRecycle, exitComponentId].flat().filter((exit) => !!exit);
 		},
 		transformElementProps: (props, node, context, getEffectIndex) => {
+			dataset.transformElementProps(props, node, context, getEffectIndex);
 			hover.transformElementProps(props, node, context, getEffectIndex);
 			image.transformElementProps(props, node, context, getEffectIndex);
 			text.transformElementProps(props, node, context, getEffectIndex);
 		},
 		genOperation: (operation, context) => {
-			var _hover$genOperation, _componentId$genOpera, _image$genOperation, _text$genOperation;
+			var _hover$genOperation, _componentId$genOpera, _dataset$genOperation, _image$genOperation, _text$genOperation;
 			const hoverOperation = (_hover$genOperation = hover.genOperation) === null || _hover$genOperation === void 0 ? void 0 : _hover$genOperation.call(hover, operation, context);
-			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
+			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || ((_dataset$genOperation = dataset.genOperation) === null || _dataset$genOperation === void 0 ? void 0 : _dataset$genOperation.call(dataset, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
 		},
 		genEventHandler: image.genEventHandler
 	};
