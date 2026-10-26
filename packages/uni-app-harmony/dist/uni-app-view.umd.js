@@ -13879,7 +13879,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$u = {
+  var props$t = {
     canvasId: {
       type: String,
       default: ""
@@ -13899,7 +13899,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$u,
+    props: props$t,
     computed: {
       id() {
         return this.canvasId;
@@ -14381,7 +14381,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$t = {
+  var props$s = {
     name: {
       type: String,
       default: ""
@@ -14389,7 +14389,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$t,
+    props: props$s,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14442,7 +14442,7 @@
     }
     return getFieldsValue;
   }
-  var props$s = {
+  var props$r = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14491,7 +14491,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$s,
+    props: props$r,
     setup(props2, _ref) {
       var {
         slots
@@ -14673,7 +14673,7 @@
       });
     }
   }
-  var props$r = {
+  var props$q = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -15649,7 +15649,7 @@
       });
     });
   }
-  var props$q = /* @__PURE__ */ extend({}, props$r, {
+  var editorProps = /* @__PURE__ */ extend({}, props$q, {
     id: {
       type: String,
       default: ""
@@ -15679,18 +15679,23 @@
       default: false
     }
   });
+  var editorEmit = ["ready", "focus", "blur", "input", "statuschange", ...emit$1];
+  function useEditor(props2, emit2) {
+    var rootRef = ref(null);
+    var trigger2 = useCustomEvent(rootRef, emit2);
+    useQuill(props2, rootRef, trigger2);
+    useKeyboard(props2, rootRef, trigger2);
+    return rootRef;
+  }
   const Editor = /* @__PURE__ */ defineBuiltInComponent({
     name: "Editor",
-    props: props$q,
-    emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+    props: editorProps,
+    emits: editorEmit,
     setup(props2, _ref) {
       var {
         emit: emit2
       } = _ref;
-      var rootRef = ref(null);
-      var trigger2 = useCustomEvent(rootRef, emit2);
-      useQuill(props2, rootRef, trigger2);
-      useKeyboard(props2, rootRef, trigger2);
+      var rootRef = useEditor(props2, emit2);
       return () => {
         return createVNode("uni-editor", {
           "ref": rootRef,
@@ -16231,7 +16236,7 @@
       type: String,
       default: ""
     }
-  }, props$r);
+  }, props$q);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -20098,7 +20103,7 @@
       }
     });
   };
-  function renderRichText$1(props2, rootRef, triggerItemClick) {
+  function renderRichText(props2, rootRef, triggerItemClick) {
     var vm = getCurrentInstance();
     var scopeId = vm && vm.vnode.scopeId || "";
     var vnode = shallowRef([]);
@@ -20118,7 +20123,6 @@
       selectable: props2.userSelect || props2.selectable ? true : null
     }, h("div", {}, vnode.value));
   }
-  var renderRichText = renderRichText$1;
   const RichText = /* @__PURE__ */ defineBuiltInComponent({
     name: "RichText",
     compatConfig: {
@@ -20284,7 +20288,7 @@
     return a2;
   };
   var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
-  /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
+  const _sfc_main = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
     name: "loading",
     styleIsolation: "app-and-page",
     // @ts-ignore
@@ -20393,7 +20397,15 @@
           "class": "uni-scroll-view-refresher"
         }, [props2.refresherDefaultStyle !== "none" ? createVNode("div", {
           "class": "uni-scroll-view-refresh"
-        }, [createVNode("div", {
+        }, [__X_VAPOR__ ? props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? createVNode(_sfc_main, {
+          "key": "refresh__loading",
+          "class": "uni-scroll-view-refresh__loading",
+          "paused": props2.refreshState == "pulling",
+          "style": {
+            transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
+            color: props2.refresherDefaultStyle
+          }
+        }, null, 8, ["paused", "style"]) : null : createVNode("div", {
           "class": "uni-scroll-view-refresh-inner"
         }, [props2.refreshState == "pulling" ? createVNode("svg", {
           "key": "refresh__icon",

@@ -2374,7 +2374,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$q = {
+const props$p = {
   canvasId: {
     type: String,
     default: ""
@@ -2394,7 +2394,7 @@ const index$z = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$q,
+  props: props$p,
   computed: {
     id() {
       return this.canvasId;
@@ -2859,7 +2859,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = {
+const props$o = {
   name: {
     type: String,
     default: ""
@@ -2867,7 +2867,7 @@ const props$p = {
 };
 const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$p,
+  props: props$o,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2919,7 +2919,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$o = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2968,7 +2968,7 @@ const props$o = {
 };
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$o,
+  props: props$n,
   setup(props2, {
     slots
   }) {
@@ -3069,7 +3069,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$n = {
+const props$m = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3280,7 +3280,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
+const editorProps = /* @__PURE__ */ shared.extend({}, props$m, {
   id: {
     type: String,
     default: ""
@@ -3310,16 +3310,28 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
+const editorEmit = [
+  "ready",
+  "focus",
+  "blur",
+  "input",
+  "statuschange",
+  ...emit$1
+];
+function useEditor(props2, emit2) {
+  const rootRef = vue.ref(null);
+  useQuill(props2);
+  useKeyboard$1(props2, rootRef);
+  return rootRef;
+}
 const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$m,
-  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+  props: editorProps,
+  emits: editorEmit,
   setup(props2, {
     emit: emit2
   }) {
-    const rootRef = vue.ref(null);
-    useQuill(props2);
-    useKeyboard$1(props2, rootRef);
+    const rootRef = useEditor(props2);
     return () => {
       return vue.createVNode("uni-editor", {
         "ref": rootRef,
@@ -3807,7 +3819,7 @@ const props$k = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$n
+  props$m
 );
 const emit = [
   "input",
@@ -6641,7 +6653,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     }
   });
 };
-function renderRichText$1(props2, rootRef, triggerItemClick) {
+function renderRichText(props2, rootRef, triggerItemClick) {
   const vm = vue.getCurrentInstance();
   const scopeId = vm && vm.vnode.scopeId || "";
   const vnode = vue.shallowRef([]);
@@ -6662,7 +6674,6 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
     vue.h("div", {}, vnode.value)
   );
 }
-const renderRichText = renderRichText$1;
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {

@@ -577,6 +577,7 @@ export declare function getElementInsertionParent(): UniElement | null;
 export declare function onElement(node: UniElement, event: string, fn: (event: UniEvent) => void, options?: AddEventListenerOptions & {
   effect?: boolean;
   stop?: boolean;
+  prevent?: boolean;
 }): void;
 export declare function onElementRef(node: UniElement | VaporSharedDataComponentInstance<any>, fn: Function): void;
 export declare function createElementDynamicSlotVector(slots: any | null): any | null;

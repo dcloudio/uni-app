@@ -1567,7 +1567,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$r = {
+const canvasProps = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -1579,7 +1579,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$r,
+  props: canvasProps,
   setup(props2, {}) {
     const rootRef = vue.ref(null);
     const canvas = vue.ref(null);
@@ -1594,7 +1594,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$o = {
   name: {
     type: String,
     default: ""
@@ -1602,7 +1602,7 @@ const props$q = {
 };
 const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$q,
+  props: props$o,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -1654,7 +1654,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$p = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -1703,7 +1703,7 @@ const props$p = {
 };
 const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$p,
+  props: props$n,
   setup(props2, {
     slots
   }) {
@@ -1804,7 +1804,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$o = {
+const props$m = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -4729,7 +4729,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
+const editorProps = /* @__PURE__ */ shared.extend({}, props$m, {
   id: {
     type: String,
     default: ""
@@ -4759,16 +4759,28 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
+const editorEmit = [
+  "ready",
+  "focus",
+  "blur",
+  "input",
+  "statuschange",
+  ...emit$1
+];
+function useEditor(props2, emit2) {
+  const rootRef = vue.ref(null);
+  useQuill(props2);
+  useKeyboard$1(props2, rootRef);
+  return rootRef;
+}
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$n,
-  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+  props: editorProps,
+  emits: editorEmit,
   setup(props2, {
     emit: emit2
   }) {
-    const rootRef = vue.ref(null);
-    useQuill(props2);
-    useKeyboard$1(props2, rootRef);
+    const rootRef = useEditor(props2);
     return () => {
       return vue.createVNode("uni-editor", {
         "ref": rootRef,
@@ -4904,7 +4916,7 @@ function useResizeSensorReset(rootRef) {
     lastElementChild.scrollTop = 1e5;
   };
 }
-const props$m = {
+const props$l = {
   src: {
     type: String,
     default: ""
@@ -4943,7 +4955,7 @@ const IMAGE_MODES = {
 };
 const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$m,
+  props: props$l,
   setup(props2, {
     emit: emit2
   }) {
@@ -5220,7 +5232,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$l = /* @__PURE__ */ shared.extend(
+const props$k = /* @__PURE__ */ shared.extend(
   {},
   {
     name: {
@@ -5310,7 +5322,7 @@ const props$l = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$o
+  props$m
 );
 const emit = [
   "input",
@@ -5558,7 +5570,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
+const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -5734,7 +5746,7 @@ function useInput(props2, { emit: emit2, expose }) {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$k,
+  props: props$j,
   emits: emits$2,
   setup(props2, context) {
     const {
@@ -7572,7 +7584,7 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$j = {
+const props$i = {
   name: {
     type: String,
     default: ""
@@ -7580,7 +7592,7 @@ const props$j = {
 };
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$j,
+  props: props$i,
   // emits: ['change'],
   setup(props2, {
     emit: emit2,
@@ -7649,7 +7661,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$i = {
+const props$h = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7698,7 +7710,7 @@ const props$i = {
 };
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$i,
+  props: props$h,
   setup(props2, {
     slots
   }) {
@@ -7898,7 +7910,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$h = {
+const props$g = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -8007,7 +8019,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     }
   });
 };
-function renderRichText$1(props2, rootRef, triggerItemClick) {
+function renderRichText(props2, rootRef, triggerItemClick) {
   const vm = vue.getCurrentInstance();
   const scopeId = vm && vm.vnode.scopeId || "";
   const vnode = vue.shallowRef([]);
@@ -8028,13 +8040,12 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
     vue.h("div", {}, vnode.value)
   );
 }
-const renderRichText = renderRichText$1;
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$h,
+  props: props$g,
   emits: ["itemclick"],
   setup(props2, {
     emit: emit2
@@ -8159,15 +8170,37 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-scroll-view-refresher"
       }, [props2.refresherDefaultStyle !== "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresh"
-      }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? vue.createVNode(_sfc_main$2, {
-        "key": "refresh__loading",
-        "class": "uni-scroll-view-refresh__loading",
-        "paused": props2.refreshState == "pulling",
+      }, [vue.createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [props2.refreshState == "pulling" ? vue.createVNode("svg", {
+        "key": "refresh__icon",
         "style": {
-          transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-          color: props2.refresherDefaultStyle
-        }
-      }, null, 8, ["paused", "style"]) : null]) : null, props2.refresherDefaultStyle === "none" ? vue.createVNode("div", {
+          transform: "rotate(" + refreshRotate.value + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [vue.createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), vue.createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, props2.refreshState == "refreshing" ? vue.createVNode("svg", {
+        "key": "refresh__spinner",
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [vue.createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, props2.refresherDefaultStyle === "none" ? vue.createVNode("div", {
         "class": "uni-scroll-view-refresher-container",
         "style": {
           height: `${props2.refresherThreshold}px`
@@ -8176,7 +8209,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$g = {
+const props$f = {
   direction: {
     type: [String],
     default: "vertical"
@@ -8528,7 +8561,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$g,
+  props: props$f,
   emits: emits$1,
   setup(props2, context) {
     const {
@@ -8588,7 +8621,7 @@ function withBackgroundColor(style, color) {
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$f = {
+const props$e = {
   name: {
     type: String,
     default: ""
@@ -8650,7 +8683,7 @@ const props$f = {
 };
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$f,
+  props: props$e,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -8797,7 +8830,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$e = {
+const props$d = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -9192,7 +9225,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
 }
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$e,
+  props: props$d,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -9415,7 +9448,7 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   }
   return createNavigationTsx;
 };
-const props$d = {
+const props$c = {
   itemId: {
     type: String,
     default: ""
@@ -9423,7 +9456,7 @@ const props$d = {
 };
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$d,
+  props: props$c,
   setup(props2, {
     slots
   }) {
@@ -9440,7 +9473,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$c = {
+const props$b = {
   name: {
     type: String,
     default: ""
@@ -9484,7 +9517,7 @@ const props$c = {
 };
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$c,
+  props: props$b,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -9668,7 +9701,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
+const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9785,7 +9818,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$b,
+  props: props$a,
   emits,
   setup(props2, context) {
     const {
@@ -9935,7 +9968,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$a = {
+const props$9 = {
   direction: {
     type: String,
     default: "vertical",
@@ -9994,7 +10027,7 @@ const props$a = {
 };
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$a,
+  props: props$9,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -11661,7 +11694,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$9 = {
+const props$8 = {
   id: {
     type: String,
     default: ""
@@ -11751,7 +11784,7 @@ const props$9 = {
 };
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$9,
+  props: props$8,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
@@ -11998,31 +12031,37 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$8 = {
+const Invoke = /* @__PURE__ */ uniShared.once(
+  () => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
+);
+const webViewProps = {
   src: {
     type: String,
     default: ""
   }
 };
+function useWebView(props2, emit2) {
+  Invoke();
+  const rootRef = vue.ref(null);
+  vue.ref(null);
+  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  return { rootRef, $listeners, $excludeAttrs };
+}
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$8,
+  props: webViewProps,
   emits: ["load"],
   setup(props2, {
     emit: emit2
   }) {
-    Invoke();
-    const rootRef = vue.ref(null);
-    vue.ref(null);
     const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
+      rootRef,
+      $listeners,
+      $excludeAttrs
+    } = useWebView();
     return () => {
       return vue.createVNode("uni-web-view", vue.mergeProps({
         "class": "uni-webview"

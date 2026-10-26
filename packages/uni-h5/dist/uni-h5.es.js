@@ -8487,7 +8487,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$x = {
+const props$w = {
   canvasId: {
     type: String,
     default: ""
@@ -8507,7 +8507,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$x,
+  props: props$w,
   computed: {
     id() {
       return this.canvasId;
@@ -8975,7 +8975,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$w = {
+const props$v = {
   name: {
     type: String,
     default: ""
@@ -8983,7 +8983,7 @@ const props$w = {
 };
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$w,
+  props: props$v,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -9035,7 +9035,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$v = {
+const props$u = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -9084,7 +9084,7 @@ const props$v = {
 };
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$v,
+  props: props$u,
   setup(props2, {
     slots
   }) {
@@ -9195,7 +9195,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$u = {
+const props$t = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -10167,7 +10167,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$t = /* @__PURE__ */ extend({}, props$u, {
+const editorProps = /* @__PURE__ */ extend({}, props$t, {
   id: {
     type: String,
     default: ""
@@ -10197,17 +10197,29 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
     default: false
   }
 });
+const editorEmit = [
+  "ready",
+  "focus",
+  "blur",
+  "input",
+  "statuschange",
+  ...emit$1
+];
+function useEditor(props2, emit2) {
+  const rootRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  useQuill(props2, rootRef, trigger);
+  useKeyboard$1(props2, rootRef);
+  return rootRef;
+}
 const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$t,
-  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+  props: editorProps,
+  emits: editorEmit,
   setup(props2, {
     emit: emit2
   }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useQuill(props2, rootRef, trigger);
-    useKeyboard$1(props2, rootRef);
+    const rootRef = useEditor(props2, emit2);
     return () => {
       return createVNode("uni-editor", {
         "ref": rootRef,
@@ -10763,7 +10775,7 @@ const props$r = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$u
+  props$t
 );
 const emit = [
   "input",
@@ -14751,7 +14763,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     }
   });
 };
-function renderRichText$1(props2, rootRef, triggerItemClick) {
+function renderRichText(props2, rootRef, triggerItemClick) {
   const vm = getCurrentInstance();
   const scopeId = vm && vm.vnode.scopeId || "";
   const vnode = shallowRef([]);
@@ -14772,7 +14784,6 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
     h("div", {}, vnode.value)
   );
 }
-const renderRichText = renderRichText$1;
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {

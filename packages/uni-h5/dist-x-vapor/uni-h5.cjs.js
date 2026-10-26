@@ -27,6 +27,323 @@ realGlobal.UTS = uniShared.UTS;
 realGlobal.UTSJSONObject = uniShared.UTSJSONObject;
 realGlobal.UTSValueIterable = uniShared.UTSValueIterable;
 realGlobal.UniError = uniShared.UniError;
+function defineComponent(options) {
+  const setup = options.setup;
+  if (setup) {
+    options.setup = (props2, context) => {
+      const result = setup(props2, context);
+      return typeof result === "function" ? result() : result;
+    };
+  }
+  return Vue.defineVaporComponent(options);
+}
+function createUnsupportedRender$1(name) {
+  const element = Vue.createPlainElement("uni-" + name, null, null, true);
+  element.textContent = name + " is unsupported";
+  return element;
+}
+function converPx(value) {
+  if (/^-?\d+[ur]px$/i.test(value)) {
+    return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
+      return `${uni.upx2px(parseFloat(num))}px`;
+    });
+  } else if (/^-?[\d\.]+$/.test(value)) {
+    return `${value}px`;
+  }
+  return value || "";
+}
+function converType(type) {
+  return type.replace(/[A-Z]/g, (text) => {
+    return `-${text.toLowerCase()}`;
+  }).replace("webkit", "-webkit");
+}
+function getStyle(action) {
+  const animateTypes1 = [
+    "matrix",
+    "matrix3d",
+    "scale",
+    "scale3d",
+    "rotate3d",
+    "skew",
+    "translate",
+    "translate3d"
+  ];
+  const animateTypes2 = [
+    "scaleX",
+    "scaleY",
+    "scaleZ",
+    "rotate",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "skewX",
+    "skewY",
+    "translateX",
+    "translateY",
+    "translateZ"
+  ];
+  const animateTypes3 = ["opacity", "background-color"];
+  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
+  const animates = action.animates;
+  const option = action.option;
+  const transition = option.transition;
+  const style = {};
+  const transform = [];
+  animates.forEach((animate) => {
+    let type = animate.type;
+    let args = [...animate.args];
+    if (animateTypes1.concat(animateTypes2).includes(type)) {
+      if (type.startsWith("rotate") || type.startsWith("skew")) {
+        args = args.map((value) => parseFloat(value) + "deg");
+      } else if (type.startsWith("translate")) {
+        args = args.map(converPx);
+      }
+      if (animateTypes2.indexOf(type) >= 0) {
+        args.length = 1;
+      }
+      transform.push(`${type}(${args.join(",")})`);
+    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
+      type = args[0];
+      const value = args[1];
+      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
+    }
+  });
+  style.transform = style.webkitTransform = transform.join(" ");
+  style.transition = style.webkitTransition = Object.keys(style).map(
+    (type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`
+  ).join(",");
+  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
+  return style;
+}
+function startAnimation(context) {
+  const animation2 = context.animation;
+  if (!animation2 || !animation2.actions || !animation2.actions.length) {
+    return;
+  }
+  let index2 = 0;
+  const actions = animation2.actions;
+  const length = animation2.actions.length;
+  function animate() {
+    const action = actions[index2];
+    const transition = action.option.transition;
+    const style = getStyle(action);
+    Object.keys(style).forEach((key) => {
+      context.$el.style[key] = style[key];
+    });
+    index2 += 1;
+    if (index2 < length) {
+      setTimeout(animate, transition.duration + transition.delay);
+    }
+  }
+  setTimeout(() => {
+    animate();
+  }, 0);
+}
+const animation = {
+  props: ["animation"],
+  watch: {
+    animation: {
+      deep: true,
+      handler() {
+        startAnimation(this);
+      }
+    }
+  },
+  mounted() {
+    startAnimation(this);
+  }
+};
+const defineRuntimeComponent = defineComponent;
+const createUnsupportedRender = createUnsupportedRender$1;
+const defineBuiltInComponent = (options) => {
+  options.__reserved = true;
+  const { props: props2, mixins } = options;
+  if (!props2 || !props2.animation) {
+    (mixins || (options.mixins = [])).push(animation);
+  }
+  return defineSystemComponent(options);
+};
+const defineSystemComponent = (options) => {
+  options.__reserved = true;
+  options.compatConfig = {
+    MODE: 3
+    // 标记为vue3
+  };
+  return defineRuntimeComponent(options);
+};
+const defineUnsupportedComponent = (name) => {
+  return defineBuiltInComponent({
+    name: shared.capitalize(shared.camelize(name)),
+    setup() {
+      return createUnsupportedRender(name);
+    }
+  });
+};
+const rpx2Unit = uniShared.createRpx2Unit(
+  uniShared.defaultRpx2Unit.unit,
+  uniShared.defaultRpx2Unit.unitRatio,
+  uniShared.defaultRpx2Unit.unitPrecision
+);
+function transformRpx(value) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return rpx2Unit(num + "rpx");
+    });
+  }
+  return value;
+}
+let UniElement$1 = class UniElement extends Object {
+  constructor() {
+    super(...arguments);
+    this._props = {};
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    const name = shared.camelize(qualifiedName);
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
+  }
+  getPage() {
+    return uniShared.getUniElementPage(this);
+  }
+  get uniPage() {
+    return this.getPage();
+  }
+  get dataset() {
+    if (!this.__uniDatasetMap) {
+      this.__uniDatasetMap = uniShared.createUniDOMStringMap(
+        this.__uniDataset || {}
+      );
+    }
+    return this.__uniDatasetMap;
+  }
+  setAttribute(qualifiedName, value) {
+    if (/^\d/.test(qualifiedName))
+      return;
+    if (qualifiedName.startsWith("data-")) {
+      (this.__uniDataset || (this.__uniDataset = {}))[shared.camelize(qualifiedName.substring(5))] = value;
+    }
+    super.setAttribute(qualifiedName, value);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value);
+    }
+  }
+  removeAttribute(qualifiedName) {
+    if (this.__uniDataset && qualifiedName.startsWith("data-")) {
+      delete this.__uniDataset[shared.camelize(qualifiedName.substring(5))];
+    }
+    super.removeAttribute(qualifiedName);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName);
+    }
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
+    });
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
+  }
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, "");
+  }
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, "");
+  }
+};
+const UniElement2 = UniElement$1;
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function getUniTagName(value) {
+  const el = value;
+  if (!el || el.nodeType !== 1 || el.namespaceURI !== "http://www.w3.org/1999/xhtml") {
+    return;
+  }
+  switch (el.localName) {
+    case "div":
+      return el.hasAttribute("uni-view") ? "VIEW" : void 0;
+    case "span":
+      return el.hasAttribute("uni-text") ? "TEXT" : void 0;
+    case "img":
+      return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
+  }
+}
+const NativeUniElement = UniElement2;
+class UniViewElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
+  }
+}
+class UniTextElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
+  }
+}
+class UniImageElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniImageElement && getUniTagName(value) === "IMAGE" || nativeHasInstance.call(this, value);
+  }
+}
+class UniCanvasElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniCanvasElement && value instanceof UniViewElement && value.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const canvasProps = {
+  disableScroll: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const _t0$e = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
+const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Canvas",
+  props: canvasProps,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-canvas",
+    class: UniCanvasElement,
+    native: true
+  },
+  setup() {
+    const root = (() => {
+      const _n0 = _t0$e();
+      return _n0;
+    })();
+    return root;
+  }
+});
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -940,20 +1257,6 @@ function defineGlobalData(app, defaultGlobalData) {
     }
   });
 }
-function useSubscribe(callback, name, multiple, pageId) {
-  const instance = Vue.getCurrentInstance();
-  instance.proxy;
-  pageId = pageId == null ? useCurrentPageId() : pageId;
-}
-let index$c = 0;
-function useContextInfo(_id) {
-  useCurrentPageId();
-  const instance = Vue.getCurrentInstance();
-  const vm = instance.proxy;
-  const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$c++}`;
-  return `${type}.${id2}`;
-}
 function withWebEvent(fn) {
   return fn.__wwe = true, fn;
 }
@@ -974,376 +1277,6 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
     detail
   };
 }
-function useUserAction() {
-  const state = Vue.reactive({
-    /**
-     * 是否用户激活
-     */
-    userAction: false
-  });
-  return {
-    state
-  };
-}
-function entries(obj) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
-}
-const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
-const LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
-  const { excludeListeners = false, excludeKeys = [] } = params;
-  const instance = Vue.getCurrentInstance();
-  const attrs2 = Vue.shallowRef({});
-  const listeners = Vue.shallowRef({});
-  const excludeAttrs = Vue.shallowRef({});
-  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
-  instance.attrs = Vue.reactive(instance.attrs);
-  Vue.watchEffect(() => {
-    const res = entries(instance.attrs).reduce(
-      (acc, [key, val]) => {
-        if (allExcludeKeys.includes(key)) {
-          acc.exclude[key] = val;
-        } else if (LISTENER_PREFIX.test(key)) {
-          if (!excludeListeners) {
-            acc.attrs[key] = val;
-          }
-          acc.listeners[key] = val;
-        } else {
-          acc.attrs[key] = val;
-        }
-        return acc;
-      },
-      {
-        exclude: {},
-        attrs: {},
-        listeners: {}
-      }
-    );
-    attrs2.value = res.attrs;
-    listeners.value = res.listeners;
-    excludeAttrs.value = res.exclude;
-  });
-  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
-};
-function useBooleanAttr(props2, keys) {
-  if (shared.isString(keys)) {
-    keys = [keys];
-  }
-  return keys.reduce((res, key) => {
-    if (props2[key]) {
-      res[key] = true;
-    }
-    return res;
-  }, /* @__PURE__ */ Object.create(null));
-}
-function defineComponent(options) {
-  const setup = options.setup;
-  if (setup) {
-    options.setup = (props2, context) => {
-      const result = setup(props2, context);
-      return typeof result === "function" ? result() : result;
-    };
-  }
-  return Vue.defineVaporComponent(options);
-}
-function createUnsupportedRender$1(name) {
-  const element = Vue.createPlainElement("uni-" + name, null, null, true);
-  element.textContent = name + " is unsupported";
-  return element;
-}
-function converPx(value) {
-  if (/^-?\d+[ur]px$/i.test(value)) {
-    return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
-    });
-  } else if (/^-?[\d\.]+$/.test(value)) {
-    return `${value}px`;
-  }
-  return value || "";
-}
-function converType(type) {
-  return type.replace(/[A-Z]/g, (text) => {
-    return `-${text.toLowerCase()}`;
-  }).replace("webkit", "-webkit");
-}
-function getStyle(action) {
-  const animateTypes1 = [
-    "matrix",
-    "matrix3d",
-    "scale",
-    "scale3d",
-    "rotate3d",
-    "skew",
-    "translate",
-    "translate3d"
-  ];
-  const animateTypes2 = [
-    "scaleX",
-    "scaleY",
-    "scaleZ",
-    "rotate",
-    "rotateX",
-    "rotateY",
-    "rotateZ",
-    "skewX",
-    "skewY",
-    "translateX",
-    "translateY",
-    "translateZ"
-  ];
-  const animateTypes3 = ["opacity", "background-color"];
-  const animateTypes4 = ["width", "height", "left", "right", "top", "bottom"];
-  const animates = action.animates;
-  const option = action.option;
-  const transition = option.transition;
-  const style = {};
-  const transform = [];
-  animates.forEach((animate) => {
-    let type = animate.type;
-    let args = [...animate.args];
-    if (animateTypes1.concat(animateTypes2).includes(type)) {
-      if (type.startsWith("rotate") || type.startsWith("skew")) {
-        args = args.map((value) => parseFloat(value) + "deg");
-      } else if (type.startsWith("translate")) {
-        args = args.map(converPx);
-      }
-      if (animateTypes2.indexOf(type) >= 0) {
-        args.length = 1;
-      }
-      transform.push(`${type}(${args.join(",")})`);
-    } else if (animateTypes3.concat(animateTypes4).includes(args[0])) {
-      type = args[0];
-      const value = args[1];
-      style[type] = animateTypes4.includes(type) ? converPx(value) : value;
-    }
-  });
-  style.transform = style.webkitTransform = transform.join(" ");
-  style.transition = style.webkitTransition = Object.keys(style).map(
-    (type) => `${converType(type)} ${transition.duration}ms ${transition.timingFunction} ${transition.delay}ms`
-  ).join(",");
-  style.transformOrigin = style.webkitTransformOrigin = option.transformOrigin;
-  return style;
-}
-function startAnimation(context) {
-  const animation2 = context.animation;
-  if (!animation2 || !animation2.actions || !animation2.actions.length) {
-    return;
-  }
-  let index2 = 0;
-  const actions = animation2.actions;
-  const length = animation2.actions.length;
-  function animate() {
-    const action = actions[index2];
-    const transition = action.option.transition;
-    const style = getStyle(action);
-    Object.keys(style).forEach((key) => {
-      context.$el.style[key] = style[key];
-    });
-    index2 += 1;
-    if (index2 < length) {
-      setTimeout(animate, transition.duration + transition.delay);
-    }
-  }
-  setTimeout(() => {
-    animate();
-  }, 0);
-}
-const animation = {
-  props: ["animation"],
-  watch: {
-    animation: {
-      deep: true,
-      handler() {
-        startAnimation(this);
-      }
-    }
-  },
-  mounted() {
-    startAnimation(this);
-  }
-};
-const defineRuntimeComponent = defineComponent;
-const createUnsupportedRender = createUnsupportedRender$1;
-const defineBuiltInComponent = (options) => {
-  options.__reserved = true;
-  const { props: props2, mixins } = options;
-  if (!props2 || !props2.animation) {
-    (mixins || (options.mixins = [])).push(animation);
-  }
-  return defineSystemComponent(options);
-};
-const defineSystemComponent = (options) => {
-  options.__reserved = true;
-  options.compatConfig = {
-    MODE: 3
-    // 标记为vue3
-  };
-  return defineRuntimeComponent(options);
-};
-const defineUnsupportedComponent = (name) => {
-  return defineBuiltInComponent({
-    name: shared.capitalize(shared.camelize(name)),
-    setup() {
-      return createUnsupportedRender(name);
-    }
-  });
-};
-const rpx2Unit = uniShared.createRpx2Unit(
-  uniShared.defaultRpx2Unit.unit,
-  uniShared.defaultRpx2Unit.unitRatio,
-  uniShared.defaultRpx2Unit.unitPrecision
-);
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return rpx2Unit(num + "rpx");
-    });
-  }
-  return value;
-}
-let UniElement$1 = class UniElement extends Object {
-  constructor() {
-    super(...arguments);
-    this._props = {};
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
-    return attr2 === void 0 ? null : attr2;
-  }
-  getPage() {
-    return uniShared.getUniElementPage(this);
-  }
-  get uniPage() {
-    return this.getPage();
-  }
-  get dataset() {
-    if (!this.__uniDatasetMap) {
-      this.__uniDatasetMap = uniShared.createUniDOMStringMap(
-        this.__uniDataset || {}
-      );
-    }
-    return this.__uniDatasetMap;
-  }
-  setAttribute(qualifiedName, value) {
-    if (/^\d/.test(qualifiedName))
-      return;
-    if (qualifiedName.startsWith("data-")) {
-      (this.__uniDataset || (this.__uniDataset = {}))[shared.camelize(qualifiedName.substring(5))] = value;
-    }
-    super.setAttribute(qualifiedName, value);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.set(qualifiedName, value);
-    }
-  }
-  removeAttribute(qualifiedName) {
-    if (this.__uniDataset && qualifiedName.startsWith("data-")) {
-      delete this.__uniDataset[shared.camelize(qualifiedName.substring(5))];
-    }
-    super.removeAttribute(qualifiedName);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.delete(qualifiedName);
-    }
-  }
-  getBoundingClientRectAsync(callback) {
-    var _a, _b;
-    if (callback) {
-      const domRect = this.getBoundingClientRect();
-      try {
-        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
-      }
-      try {
-        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
-      } catch (error) {
-        console.error(error);
-      }
-      return;
-    }
-    return new Promise((resolve, reject) => {
-      const domRect = this.getBoundingClientRect();
-      resolve(domRect);
-    });
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
-};
-const UniElement2 = UniElement$1;
-const _t0$c = Vue.template("<canvas class=uni-canvas-canvas>");
-const props$f = { disableScroll: {
-  type: [Boolean, String],
-  default: false
-} };
-class UniCanvasElement extends UniElement2 {
-  get width() {
-    return this.querySelector("canvas").width;
-  }
-  set width(value) {
-    this.querySelector("canvas").width = value;
-  }
-  get height() {
-    return this.querySelector("canvas").height;
-  }
-  set height(value) {
-    this.querySelector("canvas").height = value;
-  }
-  getContext(contextId, options) {
-    return this.querySelector("canvas").getContext(contextId, options);
-  }
-  toBlob(...args) {
-    const c = this.querySelector("canvas");
-    return c.toBlob.apply(c, args);
-  }
-  toDataURL(type, encoderOptions) {
-    return this.querySelector("canvas").toDataURL(type, encoderOptions);
-  }
-}
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: true,
-  name: "Canvas",
-  compatConfig: { MODE: 3 },
-  props: props$f,
-  setup(props2, {}) {
-    const rootRef = Vue.ref(null);
-    const canvas = Vue.ref(null);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$c();
-          Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
-          return _n0;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
-  }
-});
 function useHover(props2) {
   const hovering = Vue.ref(false);
   let hoverTouch = false;
@@ -1422,6 +1355,17 @@ function useHover(props2) {
       onTouchcancel: withWebEvent(onTouchcancel)
     }
   };
+}
+function useBooleanAttr(props2, keys) {
+  if (shared.isString(keys)) {
+    keys = [keys];
+  }
+  return keys.reduce((res, key) => {
+    if (props2[key]) {
+      res[key] = true;
+    }
+    return res;
+  }, /* @__PURE__ */ Object.create(null));
 }
 function useVaporFormField(props2, state) {
   const form = Vue.inject("UNI_FORM_CTX", null);
@@ -1622,7 +1566,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement2 {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -1677,37 +1621,6 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const nativeHasInstance = Function.prototype[Symbol.hasInstance];
-function getUniTagName(value) {
-  const el = value;
-  if (!el || el.nodeType !== 1 || el.namespaceURI !== "http://www.w3.org/1999/xhtml") {
-    return;
-  }
-  switch (el.localName) {
-    case "div":
-      return el.hasAttribute("uni-view") ? "VIEW" : void 0;
-    case "span":
-      return el.hasAttribute("uni-text") ? "TEXT" : void 0;
-    case "img":
-      return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
-  }
-}
-const NativeUniElement = UniElement2;
-class UniViewElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
-  }
-}
-class UniTextElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
-  }
-}
-class UniImageElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniImageElement && getUniTagName(value) === "IMAGE" || nativeHasInstance.call(this, value);
-  }
-}
 class UniInputElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -1759,10 +1672,21 @@ function throttle(fn, wait) {
   };
   return newFn;
 }
+function useUserAction() {
+  const state = Vue.reactive({
+    /**
+     * 是否用户激活
+     */
+    userAction: false
+  });
+  return {
+    state
+  };
+}
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$e = {
+const props$c = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -1858,7 +1782,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$d = /* @__PURE__ */ shared.extend(
+const props$b = /* @__PURE__ */ shared.extend(
   {},
   {
     name: {
@@ -1948,7 +1872,7 @@ const props$d = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$e
+  props$c
 );
 const emit = [
   "input",
@@ -2196,7 +2120,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const props$c = /* @__PURE__ */ shared.extend({}, props$d, {
+const props$a = /* @__PURE__ */ shared.extend({}, props$b, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2370,13 +2294,13 @@ function useInput(props2, { emit: emit2, expose }) {
     onInput
   };
 }
-const _t0$b = Vue.template("<input tabindex=-1 class=uni-input-input>");
+const _t0$d = Vue.template("<input tabindex=-1 class=uni-input-input>");
 const _t1$6 = Vue.template("<input class=uni-input-input>");
 const _t2$3 = Vue.template("<form action novalidate class=uni-input-form> ");
 const _t3$3 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper><div> </div>", 1);
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$c,
+  props: props$a,
   emits: emits$2,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -2389,7 +2313,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$b();
+        const _n2 = _t0$d();
         Vue.setBlockKey(_n2, "disabled-input");
         Vue.on(
           _n2,
@@ -2460,7 +2384,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const _t0$a = Vue.template("<div><div></div></div>");
+const _t0$c = Vue.template("<div><div></div></div>");
 const _t1$5 = Vue.template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
@@ -2476,7 +2400,7 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n2 = Vue.createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$a();
+        const _n0 = _t0$c();
         const _n1 = _t1$5();
         Vue.on(_n0, "scroll", update);
         Vue.on(_n1, "scroll", update);
@@ -2538,7 +2462,7 @@ function initTextareaElement(root, state) {
     set: setValue
   });
 }
-const props$b = /* @__PURE__ */ shared.extend({}, props$d, {
+const props$9 = /* @__PURE__ */ shared.extend({}, props$b, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2652,14 +2576,14 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$9 = Vue.template("<textarea tabindex=-1>");
+const _t0$b = Vue.template("<textarea tabindex=-1>");
 const _t1$4 = Vue.template("<textarea>");
 const _t2$2 = Vue.template("<form action class=uni-input-form> ");
 const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$2 = Vue.template("<div>", 1);
-const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$b,
+  props: props$9,
   emits: emits$1,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -2672,7 +2596,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$9();
+        const _n2 = _t0$b();
         Vue.setBlockKey(_n2, "disabled-textarea");
         Vue.on(
           _n2,
@@ -2775,6 +2699,60 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
+function useSubscribe(callback, name, multiple, pageId) {
+  const instance = Vue.getCurrentInstance();
+  instance.proxy;
+  pageId = pageId == null ? useCurrentPageId() : pageId;
+}
+let index$9 = 0;
+function useContextInfo(_id) {
+  useCurrentPageId();
+  const instance = Vue.getCurrentInstance();
+  const vm = instance.proxy;
+  const type = vm.$options.name.toLowerCase();
+  const id2 = vm.id || `context${index$9++}`;
+  return `${type}.${id2}`;
+}
+function entries(obj) {
+  return Object.keys(obj).map((key) => [key, obj[key]]);
+}
+const DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+const LISTENER_PREFIX = /^on[A-Z]+/;
+const useAttrs = (params = {}) => {
+  const { excludeListeners = false, excludeKeys = [] } = params;
+  const instance = Vue.getCurrentInstance();
+  const attrs2 = Vue.shallowRef({});
+  const listeners = Vue.shallowRef({});
+  const excludeAttrs = Vue.shallowRef({});
+  const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+  instance.attrs = Vue.reactive(instance.attrs);
+  Vue.watchEffect(() => {
+    const res = entries(instance.attrs).reduce(
+      (acc, [key, val]) => {
+        if (allExcludeKeys.includes(key)) {
+          acc.exclude[key] = val;
+        } else if (LISTENER_PREFIX.test(key)) {
+          if (!excludeListeners) {
+            acc.attrs[key] = val;
+          }
+          acc.listeners[key] = val;
+        } else {
+          acc.attrs[key] = val;
+        }
+        return acc;
+      },
+      {
+        exclude: {},
+        attrs: {},
+        listeners: {}
+      }
+    );
+    attrs2.value = res.attrs;
+    listeners.value = res.listeners;
+    excludeAttrs.value = res.exclude;
+  });
+  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
+};
 const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
 function usePageMeta() {
   return Vue.inject(pageMetaKey);
@@ -6518,7 +6496,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const props$a = /* @__PURE__ */ shared.extend({}, props$e, {
+const editorProps = /* @__PURE__ */ shared.extend({}, props$c, {
   id: {
     type: String,
     default: ""
@@ -6548,34 +6526,50 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$e, {
     default: false
   }
 });
-class UniEditorElement extends UniElement2 {
+const editorEmit = [
+  "ready",
+  "focus",
+  "blur",
+  "input",
+  "statuschange",
+  ...emit$1
+];
+function useEditor(props2, emit2) {
+  const rootRef = Vue.ref(null);
+  useQuill(props2);
+  useKeyboard(props2, rootRef);
+  return rootRef;
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const _t0$a = Vue.template("<div uni-editor uni-view class=ql-container>", 1);
+class UniEditorElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$5 = { value: "EDITOR" };
+const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$a,
-  emit: [
-    "ready",
-    "focus",
-    "blur",
-    "input",
-    "statuschange",
-    ...emit$1
-  ],
+  props: editorProps,
+  emits: editorEmit,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-editor",
+    class: UniEditorElement,
+    native: true
+  },
   setup(props2, { emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    useQuill(props2);
-    useKeyboard(props2, rootRef);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = Vue.createPlainElement("uni-editor", {
-          id: () => props2.id,
-          class: "ql-container"
-        }, null, true);
-        Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
-        return _n0;
-      })();
-    };
+    const rootRef = useEditor(props2);
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$a();
+      Vue.renderEffect(() => {
+        Vue.setProp(_n0, "id", props2.id);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    return root;
   }
 });
 const INFO_COLOR = "#10aeff";
@@ -6638,14 +6632,14 @@ const iconProps = {
 function useIcon(props2) {
   return Vue.computed(() => ICONS[props2.type]);
 }
-const _t0$8 = Vue.template("<div uni-icon uni-view> ", 1);
+const _t0$9 = Vue.template("<div uni-icon uni-view> ", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "ICON" };
-const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$4 = { value: "ICON" };
+const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -6657,12 +6651,12 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$8();
+      const _n0 = _t0$9();
       const _x0 = Vue.txt(_n0);
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    Object.defineProperty(root, "uniTagName", uniTagName$4);
     return root;
   }
 });
@@ -6851,14 +6845,14 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const _t0$7 = Vue.template("<div><!> ", 1);
+const _t0$8 = Vue.template("<div><!> ", 1);
 class UniMovableAreaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$1 = { value: "MOVABLE-AREA" };
-const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$3 = { value: "MOVABLE-AREA" };
+const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -6873,7 +6867,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
     const movableViewItems = renderChildren();
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n3 = _t0$7();
+      const _n3 = _t0$8();
       const _n2 = Vue.child(_n3);
       const _n1 = Vue.next(_n2, true);
       Vue.renderEffect(() => Vue.setDynamicProps(_n3, [
@@ -6891,7 +6885,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    Object.defineProperty(root, "uniTagName", uniTagName$3);
     return root;
   }
 });
@@ -7851,14 +7845,14 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const _t0$6 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
+const _t0$7 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
 class UniMovableViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName = { value: "MOVABLE-VIEW" };
-const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$2 = { value: "MOVABLE-VIEW" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -7872,7 +7866,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, setParent } = useMovableView(props2, emit2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n3 = _t0$6();
+      const _n3 = _t0$7();
       const _n2 = Vue.child(_n3);
       const _n1 = Vue.next(_n2, true);
       Vue.setInsertionState(_n3, _n2);
@@ -7881,7 +7875,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
     return root;
   }
 });
@@ -7977,7 +7971,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$9 = {
+const props$8 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -8225,13 +8219,13 @@ function nodeList2Block(source, scopeId, triggerItemClick, namespace = () => sha
     (_node, index2) => keyedSource.value.keys[index2]
   );
 }
-function renderRichText$1(props2, rootRef, triggerItemClick) {
+function renderRichText(props2, rootRef, triggerItemClick) {
   const vm = Vue.getCurrentInstance();
   const nodes = Vue.computed(
     () => shared.isString(props2.nodes) ? parseHtml(props2.nodes) : props2.nodes
   );
   const root = Vue.createPlainElement(
-    "uni-rich-text",
+    "div",
     {
       selectable: () => props2.userSelect || props2.selectable ? true : null
     },
@@ -8249,17 +8243,28 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
     },
     true
   );
+  root.setAttribute("uni-rich-text", "");
+  root.setAttribute("uni-view", "");
   rootRef.value = root;
   return root;
 }
-const renderRichText = renderRichText$1;
-class UniRichTextElement extends UniElement2 {
+class UniRichTextElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$1 = { value: "RICH-TEXT" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$9,
+  props: props$8,
   emits: ["itemclick"],
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-rich-text",
+    class: UniRichTextElement,
+    native: true
+  },
   setup(props2, { emit: emit2 }) {
     const rootRef = Vue.ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
@@ -8267,6 +8272,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
+    Object.defineProperty(result, "uniTagName", uniTagName$1);
     return result;
   }
 });
@@ -8321,7 +8327,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     return n1;
   }
 });
-const _t0$5 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t0$6 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
 const _t1$3 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$1 = Vue.template("<div class=uni-scroll-view-refresh-inner>");
 const _t3$1 = Vue.template("<div class=uni-scroll-view-refresh>");
@@ -8406,7 +8412,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
             const _n20 = _t2$1();
             Vue.setInsertionState(_n20);
             Vue.createIf(() => props2.refreshState == "pulling", () => {
-              const _n12 = _t0$5();
+              const _n12 = _t0$6();
               Vue.setBlockKey(_n12, "refresh__icon");
               Vue.renderEffect(() => Vue.setAttr(_n12, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
               return _n12;
@@ -8452,7 +8458,7 @@ class UniScrollViewElement extends UniViewElement {
     return this === UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const props$8 = {
+const props$7 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -8799,10 +8805,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
-const _t0$4 = Vue.template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
+const _t0$5 = Vue.template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
-  props: props$8,
+  props: props$7,
   emits,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -8815,7 +8821,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     const { slots } = context;
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n14 = _t0$4();
+      const _n14 = _t0$5();
       const _n13 = Vue.child(_n14);
       const _n12 = Vue.child(_n13);
       const _n11 = Vue.child(_n12);
@@ -12797,7 +12803,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     return n7;
   }
 });
-const _t0$3 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t0$4 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
 const _t1$2 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
 const _t2 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
 const _t3 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
@@ -13329,7 +13335,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$7 = {
+const props$6 = {
   id: {
     type: String,
     default: ""
@@ -13419,7 +13425,7 @@ const props$7 = {
 };
 const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$7,
+  props: props$6,
   emits: [
     "fullscreenchange",
     "progress",
@@ -13582,7 +13588,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
             Vue.renderEffect(() => Vue.setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
             Vue.setInsertionState(_n24, _n23);
             Vue.createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$3();
+              const _n19 = _t0$4();
               return _n19;
             }, () => {
               const _n21 = createNodes(() => !gestureState.toastThin && (() => {
@@ -13638,32 +13644,63 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$6 = { src: {
-  type: String,
-  default: ""
-} };
-const indexX = /* @__PURE__ */ defineBuiltInComponent({
+const Invoke = /* @__PURE__ */ uniShared.once(
+  () => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
+);
+const webViewProps = {
+  src: {
+    type: String,
+    default: ""
+  }
+};
+function useWebView(props2, emit2) {
+  Invoke();
+  const rootRef = Vue.ref(null);
+  Vue.ref(null);
+  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  return { rootRef, $listeners, $excludeAttrs };
+}
+const _t0$3 = Vue.template("<div>", 1);
+class UniWebViewElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName = { value: "WEB-VIEW" };
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$6,
+  props: webViewProps,
   emits: ["load"],
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-web-view",
+    class: UniWebViewElement,
+    native: true
+  },
   setup(props2, { emit: emit2 }) {
-    Invoke();
-    const rootRef = Vue.ref(null);
-    Vue.ref(null);
-    const { $attrs, $excludeAttrs, $listeners } = useAttrs({ excludeListeners: true });
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n0 = Vue.createPlainElement("uni-web-view", {
-          class: "uni-webview",
-          $: [() => $listeners.value, () => $excludeAttrs.value]
-        }, null, true);
-        Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
-        return _n0;
-      })();
-    };
+    const { rootRef, $listeners, $excludeAttrs } = useWebView();
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$3();
+      Vue.renderEffect(() => {
+        Vue.setDynamicProps(_n0, [
+          {
+            "uni-web-view": "",
+            "uni-view": "",
+            class: "uni-webview"
+          },
+          $listeners.value,
+          $excludeAttrs.value
+        ]);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
   }
 });
 const ICON_PATH_ORIGIN = "data:image/png;base64,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";
@@ -16375,15 +16412,15 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$t;
 exports.AsyncLoadingComponent = _sfc_main$u;
-exports.Button = index$b;
+exports.Button = index$a;
 exports.Camera = index$3;
-exports.Canvas = indexX$1;
+exports.Canvas = indexVapor$7;
 exports.Checkbox = _sfc_main$n;
 exports.CheckboxGroup = _sfc_main$m;
-exports.Editor = index$a;
+exports.Editor = indexVapor$5;
 exports.FlowItem = _sfc_main$l;
 exports.Form = _sfc_main$k;
-exports.Icon = indexVapor$2;
+exports.Icon = indexVapor$4;
 exports.Input = Input;
 exports.Label = _sfc_main$j;
 exports.LayoutComponent = _sfc_main$v;
@@ -16394,8 +16431,8 @@ exports.LivePusher = index$1;
 exports.Loading = _sfc_main$g;
 exports.Map = index$7;
 exports.MatchMedia = _sfc_main$f;
-exports.MovableArea = indexVapor$1;
-exports.MovableView = indexVapor;
+exports.MovableArea = indexVapor$3;
+exports.MovableView = indexVapor$2;
 exports.Navigator = _sfc_main$e;
 exports.PageComponent = _sfc_main$p;
 exports.PageContainer = _sfc_main$d;
@@ -16406,7 +16443,7 @@ exports.Progress = _sfc_main$9;
 exports.Radio = _sfc_main$8;
 exports.RadioGroup = _sfc_main$7;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$9;
+exports.RichText = indexVapor$1;
 exports.ScrollView = __syscom_0;
 exports.Slider = _sfc_main$6;
 exports.StickyHeader = _sfc_main$5;
@@ -16414,7 +16451,7 @@ exports.StickySection = _sfc_main$4;
 exports.Swiper = _sfc_main$3;
 exports.SwiperItem = _sfc_main$2;
 exports.Switch = _sfc_main$1;
-exports.Textarea = indexVapor$3;
+exports.Textarea = indexVapor$6;
 exports.UniButtonElement = UniButtonElement;
 exports.UniButtonElementImpl = UniButtonElement;
 exports.UniCanvasElement = UniCanvasElement;
@@ -16483,7 +16520,7 @@ exports.UniViewElementImpl = UniViewElement;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$8;
 exports.Waterflow = _sfc_main;
-exports.WebView = indexX;
+exports.WebView = indexVapor;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.createVaporPageRouteComponent = createVaporPageRouteComponent;

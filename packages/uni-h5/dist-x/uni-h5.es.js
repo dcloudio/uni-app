@@ -2732,7 +2732,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$t = {
+const canvasProps = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -2768,7 +2768,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$t,
+  props: canvasProps,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -2791,7 +2791,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$s = {
+const props$q = {
   name: {
     type: String,
     default: ""
@@ -2801,7 +2801,7 @@ class UniCheckboxGroupElement extends UniElement2 {
 }
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$s,
+  props: props$q,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -2861,7 +2861,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$r = {
+const props$p = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2912,7 +2912,7 @@ class UniCheckboxElement extends UniElement2 {
 }
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$r,
+  props: props$p,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3050,7 +3050,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$q = {
+const props$o = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -12434,7 +12434,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$p = /* @__PURE__ */ extend({}, props$q, {
+const editorProps = /* @__PURE__ */ extend({}, props$o, {
   id: {
     type: String,
     default: ""
@@ -12464,12 +12464,27 @@ const props$p = /* @__PURE__ */ extend({}, props$q, {
     default: false
   }
 });
+const editorEmit = [
+  "ready",
+  "focus",
+  "blur",
+  "input",
+  "statuschange",
+  ...emit$1
+];
+function useEditor(props2, emit2) {
+  const rootRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  useQuill(props2, rootRef, trigger);
+  useKeyboard$1(props2, rootRef);
+  return rootRef;
+}
 class UniEditorElement extends UniElement2 {
 }
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$p,
-  emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+  props: editorProps,
+  emits: editorEmit,
   rootElement: {
     name: "uni-editor",
     class: UniEditorElement
@@ -12477,10 +12492,7 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     emit: emit2
   }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useQuill(props2, rootRef, trigger);
-    useKeyboard$1(props2, rootRef);
+    const rootRef = useEditor(props2, emit2);
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
@@ -12646,7 +12658,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$o = {
+const props$n = {
   src: {
     type: String,
     default: ""
@@ -12687,7 +12699,7 @@ class UniImageElement extends UniElement2 {
 }
 const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$o,
+  props: props$n,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -13050,7 +13062,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$n = /* @__PURE__ */ extend(
+const props$m = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -13140,7 +13152,7 @@ const props$n = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$q
+  props$o
 );
 const emit = [
   "input",
@@ -13411,7 +13423,7 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-const props$m = /* @__PURE__ */ extend({}, props$n, {
+const props$l = /* @__PURE__ */ extend({}, props$m, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -13593,7 +13605,7 @@ class UniInputElement extends UniElement2 {
 }
 const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$m,
+  props: props$l,
   emits: emits$2,
   rootElement: {
     name: "uni-input",
@@ -16654,7 +16666,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$l = {
+const props$k = {
   name: {
     type: String,
     default: ""
@@ -16664,7 +16676,7 @@ class UniRadioGroupElement extends UniElement2 {
 }
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$l,
+  props: props$k,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -16756,7 +16768,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$k = {
+const props$j = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -16807,7 +16819,7 @@ class UniRadioElement extends UniElement2 {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$k,
+  props: props$j,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -17038,7 +17050,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$j = {
+const props$i = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -17147,7 +17159,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     }
   });
 };
-function renderRichText$1(props2, rootRef, triggerItemClick) {
+function renderRichText(props2, rootRef, triggerItemClick) {
   const vm = getCurrentInstance();
   const scopeId = vm && vm.vnode.scopeId || "";
   const vnode = shallowRef([]);
@@ -17168,7 +17180,6 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
     h("div", {}, vnode.value)
   );
 }
-const renderRichText = renderRichText$1;
 class UniRichTextElement extends UniElement2 {
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
@@ -17176,7 +17187,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$j,
+  props: props$i,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -17345,15 +17356,37 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-scroll-view-refresher"
       }, [props2.refresherDefaultStyle !== "none" ? createVNode("div", {
         "class": "uni-scroll-view-refresh"
-      }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? createVNode(_sfc_main$9, {
-        "key": "refresh__loading",
-        "class": "uni-scroll-view-refresh__loading",
-        "paused": props2.refreshState == "pulling",
+      }, [createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [props2.refreshState == "pulling" ? createVNode("svg", {
+        "key": "refresh__icon",
         "style": {
-          transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-          color: props2.refresherDefaultStyle
-        }
-      }, null, 8, ["paused", "style"]) : null]) : null, props2.refresherDefaultStyle === "none" ? createVNode("div", {
+          transform: "rotate(" + refreshRotate.value + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, props2.refreshState == "refreshing" ? createVNode("svg", {
+        "key": "refresh__spinner",
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, props2.refresherDefaultStyle === "none" ? createVNode("div", {
         "class": "uni-scroll-view-refresher-container",
         "style": {
           height: `${props2.refresherThreshold}px`
@@ -17422,7 +17455,7 @@ function onScrollend(element, listener2) {
   };
 }
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$i = {
+const props$h = {
   direction: {
     type: [String],
     default: "vertical"
@@ -17950,7 +17983,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$i,
+  props: props$h,
   emits: emits$1,
   rootElement: {
     name: "uni-scroll-view",
@@ -18056,7 +18089,7 @@ function withBackgroundColor(style, color) {
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$h = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -18157,7 +18190,7 @@ class UniSliderElement extends UniElement2 {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$h,
+  props: props$g,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -18317,7 +18350,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$g = {
+const props$f = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -18820,7 +18853,7 @@ class UniSwiperElement extends UniElement2 {
 }
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$g,
+  props: props$f,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -19052,7 +19085,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$f = {
+const props$e = {
   itemId: {
     type: String,
     default: ""
@@ -19062,7 +19095,7 @@ class UniSwiperItemElement extends UniElement2 {
 }
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$f,
+  props: props$e,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -19119,7 +19152,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$e = {
+const props$d = {
   name: {
     type: String,
     default: ""
@@ -19165,7 +19198,7 @@ class UniSwitchElement extends UniElement2 {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$e,
+  props: props$d,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -19384,7 +19417,7 @@ const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$d = /* @__PURE__ */ extend({}, props$n, {
+const props$c = /* @__PURE__ */ extend({}, props$m, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -19514,7 +19547,7 @@ class UniTextareaElement extends UniElement2 {
 }
 const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$d,
+  props: props$c,
   emits,
   rootElement: {
     name: "uni-textarea",
@@ -19690,7 +19723,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$c = {
+const props$b = {
   direction: {
     type: String,
     default: "vertical",
@@ -19751,7 +19784,7 @@ class UniListViewElement extends UniElement2 {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$c,
+  props: props$b,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -21861,7 +21894,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$b = {
+const props$a = {
   id: {
     type: String,
     default: ""
@@ -21953,7 +21986,7 @@ class UniVideoElement extends UniElement2 {
 }
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$b,
+  props: props$a,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -22220,19 +22253,54 @@ const onWebInvokeAppService = ({ name, arg }) => {
     }
   }
 };
-const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$a = {
+const Invoke = /* @__PURE__ */ once(
+  () => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService)
+);
+const webViewProps = {
   src: {
     type: String,
     default: ""
   }
 };
+function useWebView(props2, emit2) {
+  Invoke();
+  const rootRef = ref(null);
+  const iframeRef = ref(null);
+  const { $attrs, $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  const trigger = useCustomEvent(rootRef, emit2);
+  const renderIframe = () => {
+    const iframe = document.createElement("iframe");
+    iframe.onload = function(event) {
+      trigger("load", event, { src: props2.src, url: props2.src });
+    };
+    watchEffect(() => {
+      for (const key in $attrs.value) {
+        if (hasOwn($attrs.value, key)) {
+          const attr2 = $attrs.value[key];
+          iframe[key] = attr2;
+        }
+      }
+    });
+    watchEffect(() => {
+      iframe.src = getRealPath(props2.src);
+    });
+    iframeRef.value = iframe;
+  };
+  renderIframe();
+  onMounted(() => {
+    var _a;
+    (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
+  });
+  return { rootRef, $listeners, $excludeAttrs };
+}
 class UniWebViewElement extends UniElement2 {
 }
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$a,
+  props: webViewProps,
   emits: ["load"],
   rootElement: {
     name: "uni-web-view",
@@ -22241,43 +22309,11 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     emit: emit2
   }) {
-    Invoke();
-    const rootRef = ref(null);
-    const iframeRef = ref(null);
     const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const trigger = useCustomEvent(rootRef, emit2);
-    const renderIframe = () => {
-      const iframe = document.createElement("iframe");
-      iframe.onload = function(event) {
-        trigger("load", event, {
-          src: props2.src,
-          url: props2.src
-        });
-      };
-      watchEffect(() => {
-        for (const key in $attrs.value) {
-          if (hasOwn($attrs.value, key)) {
-            const attr2 = $attrs.value[key];
-            iframe[key] = attr2;
-          }
-        }
-      });
-      watchEffect(() => {
-        iframe.src = getRealPath(props2.src);
-      });
-      iframeRef.value = iframe;
-    };
-    renderIframe();
-    onMounted(() => {
-      var _a;
-      (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
-    });
+      rootRef,
+      $listeners,
+      $excludeAttrs
+    } = useWebView(props2, emit2);
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
