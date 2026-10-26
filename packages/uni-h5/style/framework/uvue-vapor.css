@@ -157,6 +157,24 @@ uni-app div:where([uni-canvas]) > .uni-canvas-canvas {
   height: 100%;
 }
 
+/* WebView 保留旧宿主的 flex 布局和字体继承，iframe 继续占满宿主。 */
+uni-app div:where([uni-web-view]) {
+  flex: 1;
+  font-size: inherit;
+  text-align: inherit;
+  overflow: visible;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
+uni-app div:where([uni-web-view]) > iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
 /* 文字容器 */
 uni-app uni-label {
   overflow: hidden;
@@ -211,8 +229,7 @@ uni-app uni-swiper,
 uni-app uni-switch,
 uni-app uni-template,
 uni-app uni-unicloud-db,
-uni-app uni-video,
-uni-app uni-web-view {
+uni-app uni-video {
   position: relative;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -285,8 +302,7 @@ uni-app uni-swiper[hidden],
 uni-app uni-switch[hidden],
 uni-app uni-template[hidden],
 uni-app uni-unicloud-db[hidden],
-uni-app uni-video[hidden],
-uni-app uni-web-view[hidden] {
+uni-app uni-video[hidden] {
   display: none !important;
 }
 
