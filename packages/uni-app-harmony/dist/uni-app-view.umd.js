@@ -16779,6 +16779,12 @@
       };
     }
   });
+  var movableAreaProps = {
+    scaleArea: {
+      type: Boolean,
+      default: false
+    }
+  };
   function entries(obj) {
     return Object.keys(obj).map((key2) => [key2, obj[key2]]);
   }
@@ -16901,57 +16907,43 @@
       return movableViewItems;
     };
   }
-  var movableAreaProps = {
-    scaleArea: {
-      type: Boolean,
-      default: false
-    }
-  };
   var useMovableAreaChildren = useMovableAreaChildren$1;
-  const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
-    inheritAttrs: false,
-    name: "MovableArea",
-    props: movableAreaProps,
-    setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
-      var rootRef = ref(null);
-      var _isMounted = ref(false);
-      var {
-        setContexts,
-        events: movableAreaEvents
-      } = useMovableAreaState(props2, rootRef);
-      var {
-        $listeners,
-        $attrs,
-        $excludeAttrs
-      } = useAttrs();
-      var _listeners = $listeners.value;
-      var events = ["onTouchstart", "onTouchmove", "onTouchend"];
-      events.forEach((event) => {
-        var existing = _listeners[event];
-        var ours = movableAreaEvents["_".concat(event)];
-        _listeners[event] = existing ? [].concat(existing, ours) : ours;
-      });
-      onMounted(() => {
-        movableAreaEvents._resize();
-        initScrollBounce();
-        _isMounted.value = true;
-      });
-      var renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
-      provide("_isMounted", _isMounted);
-      provide("movableAreaRootRef", rootRef);
-      return () => {
-        var movableViewItems = renderChildren();
-        return createVNode("uni-movable-area", mergeProps({
-          "ref": rootRef
-        }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
-          "onResize": movableAreaEvents._resize
-        }, null, 8, ["onResize"]), movableViewItems], 16);
-      };
-    }
-  });
+  function useMovableArea(props2, slots) {
+    var rootRef = ref(null);
+    var _isMounted = ref(false);
+    var {
+      setContexts,
+      events: movableAreaEvents
+    } = useMovableAreaState(props2, rootRef);
+    var {
+      $listeners,
+      $attrs,
+      $excludeAttrs
+    } = useAttrs();
+    var _listeners = $listeners.value;
+    var events = ["onTouchstart", "onTouchmove", "onTouchend"];
+    events.forEach((event) => {
+      var existing = _listeners[event];
+      var ours = movableAreaEvents["_".concat(event)];
+      _listeners[event] = existing ? [].concat(existing, ours) : ours;
+    });
+    onMounted(() => {
+      movableAreaEvents._resize();
+      initScrollBounce();
+      _isMounted.value = true;
+    });
+    var renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
+    provide("_isMounted", _isMounted);
+    provide("movableAreaRootRef", rootRef);
+    return {
+      rootRef,
+      renderChildren,
+      movableAreaEvents,
+      $attrs,
+      $excludeAttrs,
+      _listeners
+    };
+  }
   function calc(e2) {
     return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
   }
@@ -17091,117 +17083,32 @@
       }
     };
   }
-  var addListenerToElement = function(element, type, callback, capture) {
-    element.addEventListener(type, ($event) => {
-      if (isFunction(callback)) {
-        if (callback($event) === false) {
-          if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
-            $event.preventDefault();
-          }
-          $event.stopPropagation();
-        }
-      }
-    }, {
-      passive: false
-    });
-  };
-  var __mouseMoveEventListener;
-  var __mouseUpEventListener;
-  function useTouchtrack(element, method, useCancel) {
-    onBeforeUnmount(() => {
-      document.removeEventListener("mousemove", __mouseMoveEventListener);
-      document.removeEventListener("mouseup", __mouseUpEventListener);
-    });
-    var x0 = 0;
-    var y0 = 0;
-    var x1 = 0;
-    var y1 = 0;
-    var fn = function($event, state, x, y) {
-      if (method({
-        // @ts-expect-error
-        cancelable: $event.cancelable,
-        target: $event.target,
-        currentTarget: $event.currentTarget,
-        preventDefault: $event.preventDefault.bind($event),
-        stopPropagation: $event.stopPropagation.bind($event),
-        touches: $event.touches,
-        changedTouches: $event.changedTouches,
-        detail: {
-          state,
-          x,
-          y,
-          dx: x - x0,
-          dy: y - y0,
-          ddx: x - x1,
-          ddy: y - y1,
-          timeStamp: $event.timeStamp
-        }
-      }) === false) {
-        return false;
-      }
-    };
-    var $eventOld = null;
-    var hasTouchStart;
-    var hasMouseDown;
-    addListenerToElement(element, "touchstart", function($event) {
-      hasTouchStart = true;
-      if ($event.touches.length === 1 && !$eventOld) {
-        $eventOld = $event;
-        x0 = x1 = $event.touches[0].pageX;
-        y0 = y1 = $event.touches[0].pageY;
-        return fn($event, "start", x0, y0);
-      }
-    });
-    addListenerToElement(element, "mousedown", function($event) {
-      hasMouseDown = true;
-      if (!hasTouchStart && !$eventOld) {
-        $eventOld = $event;
-        x0 = x1 = $event.pageX;
-        y0 = y1 = $event.pageY;
-        return fn($event, "start", x0, y0);
-      }
-    });
-    addListenerToElement(element, "touchmove", function($event) {
-      if ($event.touches.length === 1 && $eventOld) {
-        var res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
-        x1 = $event.touches[0].pageX;
-        y1 = $event.touches[0].pageY;
-        return res;
-      }
-    });
-    var mouseMoveEventListener = __mouseMoveEventListener = function($event) {
-      if (!hasTouchStart && hasMouseDown && $eventOld) {
-        var res = fn($event, "move", $event.pageX, $event.pageY);
-        x1 = $event.pageX;
-        y1 = $event.pageY;
-        return res;
-      }
-    };
-    document.addEventListener("mousemove", mouseMoveEventListener);
-    addListenerToElement(element, "touchend", function($event) {
-      if ($event.touches.length === 0 && $eventOld) {
-        hasTouchStart = false;
-        $eventOld = null;
-        return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
-      }
-    });
-    var mouseUpEventListener = __mouseUpEventListener = function($event) {
-      hasMouseDown = false;
-      if (!hasTouchStart && $eventOld) {
-        $eventOld = null;
-        return fn($event, "end", $event.pageX, $event.pageY);
-      }
-    };
-    document.addEventListener("mouseup", mouseUpEventListener);
-    addListenerToElement(element, "touchcancel", function($event) {
-      if ($eventOld) {
-        hasTouchStart = false;
-        var $eventTemp = $eventOld;
-        $eventOld = null;
-        return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
-      }
-    });
-  }
+  const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
+    inheritAttrs: false,
+    name: "MovableArea",
+    props: movableAreaProps,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var {
+        rootRef,
+        renderChildren,
+        movableAreaEvents,
+        $attrs,
+        $excludeAttrs,
+        _listeners
+      } = useMovableArea(props2, slots);
+      return () => {
+        var movableViewItems = renderChildren();
+        return createVNode("uni-movable-area", mergeProps({
+          "ref": rootRef
+        }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
+          "onResize": movableAreaEvents._resize
+        }, null, 8, ["onResize"]), movableViewItems], 16);
+      };
+    }
+  });
   function e(e2, t2, n) {
     return e2 > t2 - n && e2 < t2 + n;
   }
@@ -17551,29 +17458,128 @@
   function v(a2, b) {
     return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
   }
-  const MovableView = /* @__PURE__ */ defineBuiltInComponent({
-    name: "MovableView",
-    props: movableViewProps,
-    emits: ["change", "scale"],
-    setup(props2, _ref) {
-      var {
-        slots,
-        emit: emit2
-      } = _ref;
-      var rootRef = ref(null);
-      var trigger2 = useCustomEvent(rootRef, emit2);
-      var {
-        setParent
-      } = useMovableViewState(props2, trigger2, rootRef);
-      return () => {
-        return createVNode("uni-movable-view", {
-          "ref": rootRef
-        }, [createVNode(ResizeSensor, {
-          "onResize": setParent
-        }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
-      };
-    }
-  });
+  var addListenerToElement = function(element, type, callback, capture) {
+    element.addEventListener(type, ($event) => {
+      if (isFunction(callback)) {
+        if (callback($event) === false) {
+          if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
+            $event.preventDefault();
+          }
+          $event.stopPropagation();
+        }
+      }
+    }, {
+      passive: false
+    });
+  };
+  var __mouseMoveEventListener;
+  var __mouseUpEventListener;
+  function useTouchtrack(element, method, useCancel) {
+    onBeforeUnmount(() => {
+      document.removeEventListener("mousemove", __mouseMoveEventListener);
+      document.removeEventListener("mouseup", __mouseUpEventListener);
+    });
+    var x0 = 0;
+    var y0 = 0;
+    var x1 = 0;
+    var y1 = 0;
+    var fn = function($event, state, x, y) {
+      if (method({
+        // @ts-expect-error
+        cancelable: $event.cancelable,
+        target: $event.target,
+        currentTarget: $event.currentTarget,
+        preventDefault: $event.preventDefault.bind($event),
+        stopPropagation: $event.stopPropagation.bind($event),
+        touches: $event.touches,
+        changedTouches: $event.changedTouches,
+        detail: {
+          state,
+          x,
+          y,
+          dx: x - x0,
+          dy: y - y0,
+          ddx: x - x1,
+          ddy: y - y1,
+          timeStamp: $event.timeStamp
+        }
+      }) === false) {
+        return false;
+      }
+    };
+    var $eventOld = null;
+    var hasTouchStart;
+    var hasMouseDown;
+    addListenerToElement(element, "touchstart", function($event) {
+      hasTouchStart = true;
+      if ($event.touches.length === 1 && !$eventOld) {
+        $eventOld = $event;
+        x0 = x1 = $event.touches[0].pageX;
+        y0 = y1 = $event.touches[0].pageY;
+        return fn($event, "start", x0, y0);
+      }
+    });
+    addListenerToElement(element, "mousedown", function($event) {
+      hasMouseDown = true;
+      if (!hasTouchStart && !$eventOld) {
+        $eventOld = $event;
+        x0 = x1 = $event.pageX;
+        y0 = y1 = $event.pageY;
+        return fn($event, "start", x0, y0);
+      }
+    });
+    addListenerToElement(element, "touchmove", function($event) {
+      if ($event.touches.length === 1 && $eventOld) {
+        var res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
+        x1 = $event.touches[0].pageX;
+        y1 = $event.touches[0].pageY;
+        return res;
+      }
+    });
+    var mouseMoveEventListener = __mouseMoveEventListener = function($event) {
+      if (!hasTouchStart && hasMouseDown && $eventOld) {
+        var res = fn($event, "move", $event.pageX, $event.pageY);
+        x1 = $event.pageX;
+        y1 = $event.pageY;
+        return res;
+      }
+    };
+    document.addEventListener("mousemove", mouseMoveEventListener);
+    addListenerToElement(element, "touchend", function($event) {
+      if ($event.touches.length === 0 && $eventOld) {
+        hasTouchStart = false;
+        $eventOld = null;
+        return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
+      }
+    });
+    var mouseUpEventListener = __mouseUpEventListener = function($event) {
+      hasMouseDown = false;
+      if (!hasTouchStart && $eventOld) {
+        $eventOld = null;
+        return fn($event, "end", $event.pageX, $event.pageY);
+      }
+    };
+    document.addEventListener("mouseup", mouseUpEventListener);
+    addListenerToElement(element, "touchcancel", function($event) {
+      if ($eventOld) {
+        hasTouchStart = false;
+        var $eventTemp = $eventOld;
+        $eventOld = null;
+        return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
+      }
+    });
+  }
+  function useMovableView(props2, emit2) {
+    var rootRef = ref(null);
+    var trigger2 = useCustomEvent(rootRef, emit2);
+    var {
+      setParent
+    } = useMovableViewState(props2, trigger2, rootRef);
+    return {
+      rootRef,
+      setParent
+    };
+  }
   var requesting = false;
   function _requestAnimationFrame(e2) {
     if (!requesting) {
@@ -18255,6 +18261,28 @@
       setParent
     };
   }
+  const MovableView = /* @__PURE__ */ defineBuiltInComponent({
+    name: "MovableView",
+    props: movableViewProps,
+    emits: ["change", "scale"],
+    setup(props2, _ref) {
+      var {
+        slots,
+        emit: emit2
+      } = _ref;
+      var {
+        rootRef,
+        setParent
+      } = useMovableView(props2, emit2);
+      return () => {
+        return createVNode("uni-movable-view", {
+          "ref": rootRef
+        }, [createVNode(ResizeSensor, {
+          "onResize": setParent
+        }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+      };
+    }
+  });
   var OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
   var ANIMATION_IN = ["slide-in-right", "slide-in-left", "slide-in-top", "slide-in-bottom", "fade-in", "zoom-out", "zoom-fade-out", "pop-in", "none"];
   var ANIMATION_OUT = ["slide-out-right", "slide-out-left", "slide-out-top", "slide-out-bottom", "fade-out", "zoom-in", "zoom-fade-in", "pop-out", "none"];

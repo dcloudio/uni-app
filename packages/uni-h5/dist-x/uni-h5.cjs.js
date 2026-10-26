@@ -5802,6 +5802,12 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const movableAreaProps = {
+  scaleArea: {
+    type: Boolean,
+    default: false
+  }
+};
 function entries(obj) {
   return Object.keys(obj).map((key) => [key, obj[key]]);
 }
@@ -5899,51 +5905,34 @@ function useMovableAreaChildren$1(rootRef, slots, setContexts) {
     return movableViewItems;
   };
 }
-const movableAreaProps = {
-  scaleArea: {
-    type: Boolean,
-    default: false
-  }
-};
 const useMovableAreaChildren = useMovableAreaChildren$1;
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "MovableArea",
-  props: movableAreaProps,
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const _isMounted = vue.ref(false);
-    let {
-      setContexts,
-      events: movableAreaEvents
-    } = useMovableAreaState(props2, rootRef);
-    const {
-      $listeners,
-      $attrs,
-      $excludeAttrs
-    } = useAttrs();
-    const _listeners = $listeners.value;
-    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
-    events.forEach((event) => {
-      let existing = _listeners[event];
-      let ours = movableAreaEvents[`_${event}`];
-      _listeners[event] = existing ? [].concat(existing, ours) : ours;
-    });
-    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
-    vue.provide("_isMounted", _isMounted);
-    vue.provide("movableAreaRootRef", rootRef);
-    return () => {
-      const movableViewItems = renderChildren();
-      return vue.createVNode("uni-movable-area", vue.mergeProps({
-        "ref": rootRef
-      }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
-        "onResize": movableAreaEvents._resize
-      }, null, 8, ["onResize"]), movableViewItems], 16);
-    };
-  }
-});
+function useMovableArea(props2, slots) {
+  const rootRef = vue.ref(null);
+  const _isMounted = vue.ref(false);
+  let { setContexts, events: movableAreaEvents } = useMovableAreaState(
+    props2,
+    rootRef
+  );
+  const { $listeners, $attrs, $excludeAttrs } = useAttrs();
+  const _listeners = $listeners.value;
+  let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+  events.forEach((event) => {
+    let existing = _listeners[event];
+    let ours = movableAreaEvents[`_${event}`];
+    _listeners[event] = existing ? [].concat(existing, ours) : ours;
+  });
+  const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
+  vue.provide("_isMounted", _isMounted);
+  vue.provide("movableAreaRootRef", rootRef);
+  return {
+    rootRef,
+    renderChildren,
+    movableAreaEvents,
+    $attrs,
+    $excludeAttrs,
+    _listeners
+  };
+}
 function calc(e2) {
   return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
 }
@@ -6076,6 +6065,31 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: movableAreaProps,
+  setup(props2, {
+    slots
+  }) {
+    const {
+      rootRef,
+      renderChildren,
+      movableAreaEvents,
+      $attrs,
+      $excludeAttrs,
+      _listeners
+    } = useMovableArea(props2, slots);
+    return () => {
+      const movableViewItems = renderChildren();
+      return vue.createVNode("uni-movable-area", vue.mergeProps({
+        "ref": rootRef
+      }, $attrs.value, $excludeAttrs.value, _listeners), [vue.createVNode(ResizeSensor, {
+        "onResize": movableAreaEvents._resize
+      }, null, 8, ["onResize"]), movableViewItems], 16);
+    };
+  }
+});
 function e(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
@@ -6423,28 +6437,12 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
-  name: "MovableView",
-  props: movableViewProps,
-  emits: ["change", "scale"],
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      setParent
-    } = useMovableViewState(props2, trigger, rootRef);
-    return () => {
-      return vue.createVNode("uni-movable-view", {
-        "ref": rootRef
-      }, [vue.createVNode(ResizeSensor, {
-        "onResize": setParent
-      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
-    };
-  }
-});
+function useMovableView(props2, emit2) {
+  const rootRef = vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { setParent } = useMovableViewState(props2, trigger, rootRef);
+  return { rootRef, setParent };
+}
 let requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -6488,7 +6486,9 @@ function g(friction, execute, endCallback) {
       let isDone = friction2.done();
       if (!isDone) {
         if (!record2.cancelled) {
-          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+          record2.id = requestAnimationFrame(
+            fn.bind(null, record2, friction2, execute2, endCallback2)
+          );
         }
       }
       if (isDone && endCallback2) {
@@ -6567,23 +6567,37 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const xMove = vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const xMove = vue.computed(
+    () => props2.direction === "all" || props2.direction === "horizontal"
+  );
+  const yMove = vue.computed(
+    () => props2.direction === "all" || props2.direction === "vertical"
+  );
   const xSync = vue.ref(_getPx(props2.x));
   const ySync = vue.ref(_getPx(props2.y));
-  vue.watch(() => props2.x, (val) => {
-    xSync.value = _getPx(val);
-  });
-  vue.watch(() => props2.y, (val) => {
-    ySync.value = _getPx(val);
-  });
+  vue.watch(
+    () => props2.x,
+    (val) => {
+      xSync.value = _getPx(val);
+    }
+  );
+  vue.watch(
+    () => props2.y,
+    (val) => {
+      ySync.value = _getPx(val);
+    }
+  );
   vue.watch(xSync, (val) => {
     _setX(val);
   });
   vue.watch(ySync, (val) => {
     _setY(val);
   });
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  const _STD = new STD(
+    1,
+    9 * Math.pow(dampingNumber.value, 2) / 40,
+    dampingNumber.value
+  );
   function _getLimitXY(x, y) {
     let outOfBounds = false;
     if (x > maxX.value) {
@@ -6640,15 +6654,19 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     _STD._springY._endPosition = _translateY.value;
     _STD._springScale._endPosition = _scale.value;
     _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o);
-    }, function() {
-      _SFA.cancel();
-    });
+    _SFA = g(
+      _STD,
+      function() {
+        let data = _STD.x();
+        let x2 = data.x;
+        let y2 = data.y;
+        let scale2 = data.scale;
+        _setTransform(x2, y2, scale2, source, r, o);
+      },
+      function() {
+        _SFA.cancel();
+      }
+    );
   }
   function _setTransform(x, y, scale, source = "", r, o) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
@@ -6708,7 +6726,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+        _animationTo(
+          val + _scaleOffset.x,
+          ySync.value + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -6721,7 +6743,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+        _animationTo(
+          xSync.value + _scaleOffset.x,
+          val + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -6759,9 +6785,12 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
   vue.watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  vue.watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
+  vue.watch(
+    () => props2.scaleValue,
+    (val) => {
+      scaleValueSync.value = Number(val) || 0;
+    }
+  );
   const {
     _updateBoundary,
     _updateOffset,
@@ -6784,7 +6813,22 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     xSync,
     ySync,
     _STD
-  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  } = useMovableViewTransform(
+    rootRef,
+    props2,
+    _scaleOffset,
+    _scale,
+    maxX,
+    maxY,
+    minX,
+    minY,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA,
+    _adjustScale,
+    trigger
+  );
   function _updateScale(scale, animat) {
     if (props2.scale) {
       scale = _adjustScale(scale);
@@ -6871,10 +6915,16 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
 }
 function useMovableViewState(props2, trigger, rootRef) {
   const _isMounted = vue.inject("_isMounted", vue.ref(false));
-  vue.inject("addMovableViewContext", () => {
-  });
-  vue.inject("removeMovableViewContext", () => {
-  });
+  vue.inject(
+    "addMovableViewContext",
+    () => {
+    }
+  );
+  vue.inject(
+    "removeMovableViewContext",
+    () => {
+    }
+  );
   let _scale = vue.ref(1);
   let _oldScale = vue.ref(1);
   let _isScaling = vue.ref(false);
@@ -6887,9 +6937,12 @@ function useMovableViewState(props2, trigger, rootRef) {
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   new Friction(1, frictionNumber.value);
-  vue.watch(() => props2.disabled, () => {
-    __handleTouchStart();
-  });
+  vue.watch(
+    () => props2.disabled,
+    () => {
+      __handleTouchStart();
+    }
+  );
   const {
     // scale
     _updateOldScale,
@@ -6916,7 +6969,18 @@ function useMovableViewState(props2, trigger, rootRef) {
     xSync,
     ySync,
     _STD
-  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  } = useMovableViewInit(
+    props2,
+    rootRef,
+    trigger,
+    _scale,
+    _oldScale,
+    _isScaling,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA
+  );
   function __handleTouchStart() {
     if (!_isScaling.value) {
       if (!props2.disabled) {
@@ -6940,7 +7004,10 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
+    let limitXY = _getLimitXY(
+      xSync.value + _scaleOffset.x,
+      ySync.value + _scaleOffset.y
+    );
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
@@ -6950,6 +7017,27 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
+  name: "MovableView",
+  props: movableViewProps,
+  emits: ["change", "scale"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const {
+      rootRef,
+      setParent
+    } = useMovableView(props2, emit2);
+    return () => {
+      return vue.createVNode("uni-movable-view", {
+        "ref": rootRef
+      }, [vue.createVNode(ResizeSensor, {
+        "onResize": setParent
+      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+    };
+  }
+});
 const OPEN_TYPES = [
   "navigate",
   "redirect",

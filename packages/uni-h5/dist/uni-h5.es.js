@@ -11350,6 +11350,12 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const movableAreaProps = {
+  scaleArea: {
+    type: Boolean,
+    default: false
+  }
+};
 function entries(obj) {
   return Object.keys(obj).map((key) => [key, obj[key]]);
 }
@@ -11447,55 +11453,38 @@ function useMovableAreaChildren$1(rootRef, slots, setContexts) {
     return movableViewItems;
   };
 }
-const movableAreaProps = {
-  scaleArea: {
-    type: Boolean,
-    default: false
-  }
-};
 const useMovableAreaChildren = useMovableAreaChildren$1;
-const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "MovableArea",
-  props: movableAreaProps,
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = ref(null);
-    const _isMounted = ref(false);
-    let {
-      setContexts,
-      events: movableAreaEvents
-    } = useMovableAreaState(props2, rootRef);
-    const {
-      $listeners,
-      $attrs,
-      $excludeAttrs
-    } = useAttrs();
-    const _listeners = $listeners.value;
-    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
-    events.forEach((event) => {
-      let existing = _listeners[event];
-      let ours = movableAreaEvents[`_${event}`];
-      _listeners[event] = existing ? [].concat(existing, ours) : ours;
-    });
-    onMounted(() => {
-      movableAreaEvents._resize();
-      _isMounted.value = true;
-    });
-    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
-    provide("_isMounted", _isMounted);
-    provide("movableAreaRootRef", rootRef);
-    return () => {
-      const movableViewItems = renderChildren();
-      return createVNode("uni-movable-area", mergeProps({
-        "ref": rootRef
-      }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
-        "onResize": movableAreaEvents._resize
-      }, null, 8, ["onResize"]), movableViewItems], 16);
-    };
-  }
-});
+function useMovableArea(props2, slots) {
+  const rootRef = ref(null);
+  const _isMounted = ref(false);
+  let { setContexts, events: movableAreaEvents } = useMovableAreaState(
+    props2,
+    rootRef
+  );
+  const { $listeners, $attrs, $excludeAttrs } = useAttrs();
+  const _listeners = $listeners.value;
+  let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+  events.forEach((event) => {
+    let existing = _listeners[event];
+    let ours = movableAreaEvents[`_${event}`];
+    _listeners[event] = existing ? [].concat(existing, ours) : ours;
+  });
+  onMounted(() => {
+    movableAreaEvents._resize();
+    _isMounted.value = true;
+  });
+  const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
+  provide("_isMounted", _isMounted);
+  provide("movableAreaRootRef", rootRef);
+  return {
+    rootRef,
+    renderChildren,
+    movableAreaEvents,
+    $attrs,
+    $excludeAttrs,
+    _listeners
+  };
+}
 function calc(e2) {
   return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
 }
@@ -11628,136 +11617,31 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const addListenerToElement = function(element, type, callback, capture) {
-  element.addEventListener(
-    type,
-    ($event) => {
-      if (isFunction(callback)) {
-        if (callback($event) === false) {
-          if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
-            $event.preventDefault();
-          }
-          $event.stopPropagation();
-        }
-      }
-    },
-    {
-      passive: false
-    }
-  );
-};
-let __mouseMoveEventListener;
-let __mouseUpEventListener;
-function useTouchtrack(element, method, useCancel) {
-  onBeforeUnmount(() => {
-    document.removeEventListener("mousemove", __mouseMoveEventListener);
-    document.removeEventListener("mouseup", __mouseUpEventListener);
-  });
-  let x0 = 0;
-  let y0 = 0;
-  let x1 = 0;
-  let y1 = 0;
-  const fn = function($event, state2, x, y) {
-    if (method({
-      // @ts-expect-error
-      cancelable: $event.cancelable,
-      target: $event.target,
-      currentTarget: $event.currentTarget,
-      preventDefault: $event.preventDefault.bind($event),
-      stopPropagation: $event.stopPropagation.bind($event),
-      touches: $event.touches,
-      changedTouches: $event.changedTouches,
-      detail: {
-        state: state2,
-        x,
-        y,
-        dx: x - x0,
-        dy: y - y0,
-        ddx: x - x1,
-        ddy: y - y1,
-        timeStamp: $event.timeStamp
-      }
-    }) === false) {
-      return false;
-    }
-  };
-  let $eventOld = null;
-  let hasTouchStart;
-  let hasMouseDown;
-  addListenerToElement(element, "touchstart", function($event) {
-    hasTouchStart = true;
-    if ($event.touches.length === 1 && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.touches[0].pageX;
-      y0 = y1 = $event.touches[0].pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "mousedown", function($event) {
-    hasMouseDown = true;
-    if (!hasTouchStart && !$eventOld) {
-      $eventOld = $event;
-      x0 = x1 = $event.pageX;
-      y0 = y1 = $event.pageY;
-      return fn($event, "start", x0, y0);
-    }
-  });
-  addListenerToElement(element, "touchmove", function($event) {
-    if ($event.touches.length === 1 && $eventOld) {
-      const res = fn(
-        $event,
-        "move",
-        $event.touches[0].pageX,
-        $event.touches[0].pageY
-      );
-      x1 = $event.touches[0].pageX;
-      y1 = $event.touches[0].pageY;
-      return res;
-    }
-  });
-  const mouseMoveEventListener = __mouseMoveEventListener = function($event) {
-    if (!hasTouchStart && hasMouseDown && $eventOld) {
-      const res = fn($event, "move", $event.pageX, $event.pageY);
-      x1 = $event.pageX;
-      y1 = $event.pageY;
-      return res;
-    }
-  };
-  document.addEventListener("mousemove", mouseMoveEventListener);
-  addListenerToElement(element, "touchend", function($event) {
-    if ($event.touches.length === 0 && $eventOld) {
-      hasTouchStart = false;
-      $eventOld = null;
-      return fn(
-        $event,
-        "end",
-        $event.changedTouches[0].pageX,
-        $event.changedTouches[0].pageY
-      );
-    }
-  });
-  const mouseUpEventListener = __mouseUpEventListener = function($event) {
-    hasMouseDown = false;
-    if (!hasTouchStart && $eventOld) {
-      $eventOld = null;
-      return fn($event, "end", $event.pageX, $event.pageY);
-    }
-  };
-  document.addEventListener("mouseup", mouseUpEventListener);
-  addListenerToElement(element, "touchcancel", function($event) {
-    if ($eventOld) {
-      hasTouchStart = false;
-      const $eventTemp = $eventOld;
-      $eventOld = null;
-      return fn(
-        $event,
-        useCancel ? "cancel" : "end",
-        $eventTemp.touches[0].pageX,
-        $eventTemp.touches[0].pageY
-      );
-    }
-  });
-}
+const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: movableAreaProps,
+  setup(props2, {
+    slots
+  }) {
+    const {
+      rootRef,
+      renderChildren,
+      movableAreaEvents,
+      $attrs,
+      $excludeAttrs,
+      _listeners
+    } = useMovableArea(props2, slots);
+    return () => {
+      const movableViewItems = renderChildren();
+      return createVNode("uni-movable-area", mergeProps({
+        "ref": rootRef
+      }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
+        "onResize": movableAreaEvents._resize
+      }, null, 8, ["onResize"]), movableViewItems], 16);
+    };
+  }
+});
 function e(e2, t2, n) {
   return e2 > t2 - n && e2 < t2 + n;
 }
@@ -12110,28 +11994,142 @@ const movableViewProps = {
 function v(a2, b) {
   return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
-const MovableView = /* @__PURE__ */ defineBuiltInComponent({
-  name: "MovableView",
-  props: movableViewProps,
-  emits: ["change", "scale"],
-  setup(props2, {
-    slots,
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      setParent
-    } = useMovableViewState(props2, trigger, rootRef);
-    return () => {
-      return createVNode("uni-movable-view", {
-        "ref": rootRef
-      }, [createVNode(ResizeSensor, {
-        "onResize": setParent
-      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
-    };
-  }
-});
+const addListenerToElement = function(element, type, callback, capture) {
+  element.addEventListener(
+    type,
+    ($event) => {
+      if (isFunction(callback)) {
+        if (callback($event) === false) {
+          if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
+            $event.preventDefault();
+          }
+          $event.stopPropagation();
+        }
+      }
+    },
+    {
+      passive: false
+    }
+  );
+};
+let __mouseMoveEventListener;
+let __mouseUpEventListener;
+function useTouchtrack(element, method, useCancel) {
+  onBeforeUnmount(() => {
+    document.removeEventListener("mousemove", __mouseMoveEventListener);
+    document.removeEventListener("mouseup", __mouseUpEventListener);
+  });
+  let x0 = 0;
+  let y0 = 0;
+  let x1 = 0;
+  let y1 = 0;
+  const fn = function($event, state2, x, y) {
+    if (method({
+      // @ts-expect-error
+      cancelable: $event.cancelable,
+      target: $event.target,
+      currentTarget: $event.currentTarget,
+      preventDefault: $event.preventDefault.bind($event),
+      stopPropagation: $event.stopPropagation.bind($event),
+      touches: $event.touches,
+      changedTouches: $event.changedTouches,
+      detail: {
+        state: state2,
+        x,
+        y,
+        dx: x - x0,
+        dy: y - y0,
+        ddx: x - x1,
+        ddy: y - y1,
+        timeStamp: $event.timeStamp
+      }
+    }) === false) {
+      return false;
+    }
+  };
+  let $eventOld = null;
+  let hasTouchStart;
+  let hasMouseDown;
+  addListenerToElement(element, "touchstart", function($event) {
+    hasTouchStart = true;
+    if ($event.touches.length === 1 && !$eventOld) {
+      $eventOld = $event;
+      x0 = x1 = $event.touches[0].pageX;
+      y0 = y1 = $event.touches[0].pageY;
+      return fn($event, "start", x0, y0);
+    }
+  });
+  addListenerToElement(element, "mousedown", function($event) {
+    hasMouseDown = true;
+    if (!hasTouchStart && !$eventOld) {
+      $eventOld = $event;
+      x0 = x1 = $event.pageX;
+      y0 = y1 = $event.pageY;
+      return fn($event, "start", x0, y0);
+    }
+  });
+  addListenerToElement(element, "touchmove", function($event) {
+    if ($event.touches.length === 1 && $eventOld) {
+      const res = fn(
+        $event,
+        "move",
+        $event.touches[0].pageX,
+        $event.touches[0].pageY
+      );
+      x1 = $event.touches[0].pageX;
+      y1 = $event.touches[0].pageY;
+      return res;
+    }
+  });
+  const mouseMoveEventListener = __mouseMoveEventListener = function($event) {
+    if (!hasTouchStart && hasMouseDown && $eventOld) {
+      const res = fn($event, "move", $event.pageX, $event.pageY);
+      x1 = $event.pageX;
+      y1 = $event.pageY;
+      return res;
+    }
+  };
+  document.addEventListener("mousemove", mouseMoveEventListener);
+  addListenerToElement(element, "touchend", function($event) {
+    if ($event.touches.length === 0 && $eventOld) {
+      hasTouchStart = false;
+      $eventOld = null;
+      return fn(
+        $event,
+        "end",
+        $event.changedTouches[0].pageX,
+        $event.changedTouches[0].pageY
+      );
+    }
+  });
+  const mouseUpEventListener = __mouseUpEventListener = function($event) {
+    hasMouseDown = false;
+    if (!hasTouchStart && $eventOld) {
+      $eventOld = null;
+      return fn($event, "end", $event.pageX, $event.pageY);
+    }
+  };
+  document.addEventListener("mouseup", mouseUpEventListener);
+  addListenerToElement(element, "touchcancel", function($event) {
+    if ($eventOld) {
+      hasTouchStart = false;
+      const $eventTemp = $eventOld;
+      $eventOld = null;
+      return fn(
+        $event,
+        useCancel ? "cancel" : "end",
+        $eventTemp.touches[0].pageX,
+        $eventTemp.touches[0].pageY
+      );
+    }
+  });
+}
+function useMovableView(props2, emit2) {
+  const rootRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { setParent } = useMovableViewState(props2, trigger, rootRef);
+  return { rootRef, setParent };
+}
 let requesting = false;
 function _requestAnimationFrame(e2) {
   if (!requesting) {
@@ -12175,7 +12173,9 @@ function g(friction, execute, endCallback) {
       let isDone = friction2.done();
       if (!isDone) {
         if (!record2.cancelled) {
-          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+          record2.id = requestAnimationFrame(
+            fn.bind(null, record2, friction2, execute2, endCallback2)
+          );
         }
       }
       if (isDone && endCallback2) {
@@ -12254,23 +12254,37 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const xMove = computed(
+    () => props2.direction === "all" || props2.direction === "horizontal"
+  );
+  const yMove = computed(
+    () => props2.direction === "all" || props2.direction === "vertical"
+  );
   const xSync = ref(_getPx(props2.x));
   const ySync = ref(_getPx(props2.y));
-  watch(() => props2.x, (val) => {
-    xSync.value = _getPx(val);
-  });
-  watch(() => props2.y, (val) => {
-    ySync.value = _getPx(val);
-  });
+  watch(
+    () => props2.x,
+    (val) => {
+      xSync.value = _getPx(val);
+    }
+  );
+  watch(
+    () => props2.y,
+    (val) => {
+      ySync.value = _getPx(val);
+    }
+  );
   watch(xSync, (val) => {
     _setX(val);
   });
   watch(ySync, (val) => {
     _setY(val);
   });
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  const _STD = new STD(
+    1,
+    9 * Math.pow(dampingNumber.value, 2) / 40,
+    dampingNumber.value
+  );
   function _getLimitXY(x, y) {
     let outOfBounds = false;
     if (x > maxX.value) {
@@ -12330,15 +12344,19 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     _STD._springY._endPosition = _translateY.value;
     _STD._springScale._endPosition = _scale.value;
     _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o2);
-    }, function() {
-      _SFA.cancel();
-    });
+    _SFA = g(
+      _STD,
+      function() {
+        let data = _STD.x();
+        let x2 = data.x;
+        let y2 = data.y;
+        let scale2 = data.scale;
+        _setTransform(x2, y2, scale2, source, r, o2);
+      },
+      function() {
+        _SFA.cancel();
+      }
+    );
   }
   function _setTransform(x, y, scale, source = "", r, o2) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
@@ -12398,7 +12416,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+        _animationTo(
+          val + _scaleOffset.x,
+          ySync.value + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -12411,7 +12433,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+        _animationTo(
+          xSync.value + _scaleOffset.x,
+          val + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -12449,9 +12475,12 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
   watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
+  watch(
+    () => props2.scaleValue,
+    (val) => {
+      scaleValueSync.value = Number(val) || 0;
+    }
+  );
   const {
     _updateBoundary,
     _updateOffset,
@@ -12474,7 +12503,22 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     xSync,
     ySync,
     _STD
-  } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  } = useMovableViewTransform(
+    rootRef,
+    props2,
+    _scaleOffset,
+    _scale,
+    maxX,
+    maxY,
+    minX,
+    minY,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA,
+    _adjustScale,
+    trigger
+  );
   function _updateScale(scale, animat) {
     if (props2.scale) {
       scale = _adjustScale(scale);
@@ -12561,10 +12605,16 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
 }
 function useMovableViewState(props2, trigger, rootRef) {
   const _isMounted = inject("_isMounted", ref(false));
-  const addMovableViewContext = inject("addMovableViewContext", () => {
-  });
-  const removeMovableViewContext = inject("removeMovableViewContext", () => {
-  });
+  const addMovableViewContext = inject(
+    "addMovableViewContext",
+    () => {
+    }
+  );
+  const removeMovableViewContext = inject(
+    "removeMovableViewContext",
+    () => {
+    }
+  );
   let _scale = ref(1);
   let _oldScale = ref(1);
   let _isScaling = ref(false);
@@ -12589,9 +12639,12 @@ function useMovableViewState(props2, trigger, rootRef) {
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   const _friction = new Friction$1(1, frictionNumber.value);
-  watch(() => props2.disabled, () => {
-    __handleTouchStart();
-  });
+  watch(
+    () => props2.disabled,
+    () => {
+      __handleTouchStart();
+    }
+  );
   const {
     // scale
     _updateOldScale,
@@ -12618,7 +12671,18 @@ function useMovableViewState(props2, trigger, rootRef) {
     xSync,
     ySync,
     _STD
-  } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  } = useMovableViewInit(
+    props2,
+    rootRef,
+    trigger,
+    _scale,
+    _oldScale,
+    _isScaling,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA
+  );
   function __handleTouchStart() {
     if (!_isScaling.value) {
       if (!props2.disabled) {
@@ -12739,14 +12803,18 @@ function useMovableViewState(props2, trigger, rootRef) {
           }
         }
         _friction.setEnd(x, y);
-        _FA = g(_friction, function() {
-          let t2 = _friction.s();
-          let x2 = t2.x;
-          let y2 = t2.y;
-          _setTransform(x2, y2, _scale.value, "friction");
-        }, function() {
-          _FA.cancel();
-        });
+        _FA = g(
+          _friction,
+          function() {
+            let t2 = _friction.s();
+            let x2 = t2.x;
+            let y2 = t2.y;
+            _setTransform(x2, y2, _scale.value, "friction");
+          },
+          function() {
+            _FA.cancel();
+          }
+        );
       }
     }
     if (!props2.outOfBounds && !props2.inertia) {
@@ -12762,7 +12830,10 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
+    let limitXY = _getLimitXY(
+      xSync.value + _scaleOffset.x,
+      ySync.value + _scaleOffset.y
+    );
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
@@ -12783,7 +12854,11 @@ function useMovableViewState(props2, trigger, rootRef) {
     });
     setParent();
     _friction.reconfigure(1, frictionNumber.value);
-    _STD.reconfigure(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+    _STD.reconfigure(
+      1,
+      9 * Math.pow(dampingNumber.value, 2) / 40,
+      dampingNumber.value
+    );
     rootRef.value.style.transformOrigin = "center";
     const context = {
       rootRef,
@@ -12803,6 +12878,27 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
+const MovableView = /* @__PURE__ */ defineBuiltInComponent({
+  name: "MovableView",
+  props: movableViewProps,
+  emits: ["change", "scale"],
+  setup(props2, {
+    slots,
+    emit: emit2
+  }) {
+    const {
+      rootRef,
+      setParent
+    } = useMovableView(props2, emit2);
+    return () => {
+      return createVNode("uni-movable-view", {
+        "ref": rootRef
+      }, [createVNode(ResizeSensor, {
+        "onResize": setParent
+      }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+    };
+  }
+});
 const OPEN_TYPES = [
   "navigate",
   "redirect",

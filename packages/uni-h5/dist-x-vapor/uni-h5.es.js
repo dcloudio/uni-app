@@ -2052,13 +2052,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$f = 0;
+let index$d = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$f++}`;
+  const id2 = vm.id || `context${index$d++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -2602,7 +2602,7 @@ let UniElement$1 = class UniElement extends HTMLElement {
   }
 };
 const UniElement2 = UniElement$1;
-const _t0$c = template("<canvas class=uni-canvas-canvas>");
+const _t0$e = template("<canvas class=uni-canvas-canvas>");
 const props$g = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -2651,7 +2651,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
         const _n1 = createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$c();
+          const _n0 = _t0$e();
           renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -3017,7 +3017,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement2 {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -3863,7 +3863,7 @@ function useInput(props2, { emit: emit2, expose }) {
     onInput
   };
 }
-const _t0$b = template("<input tabindex=-1 class=uni-input-input>");
+const _t0$d = template("<input tabindex=-1 class=uni-input-input>");
 const _t1$7 = template("<input class=uni-input-input>");
 const _t2$4 = template("<form action novalidate class=uni-input-form> ");
 const _t3$4 = template("<div uni-input uni-view><div class=uni-input-wrapper><div> </div>", 1);
@@ -3882,7 +3882,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$b();
+        const _n2 = _t0$d();
         setBlockKey(_n2, "disabled-input");
         on$1(
           _n2,
@@ -3953,7 +3953,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const _t0$a = template("<div><div></div></div>");
+const _t0$c = template("<div><div></div></div>");
 const _t1$6 = template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
@@ -3970,7 +3970,7 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$a();
+        const _n0 = _t0$c();
         const _n1 = _t1$6();
         on$1(_n0, "scroll", update);
         on$1(_n1, "scroll", update);
@@ -4169,7 +4169,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$9 = template("<textarea tabindex=-1>");
+const _t0$b = template("<textarea tabindex=-1>");
 const _t1$5 = template("<textarea>");
 const _t2$3 = template("<form action class=uni-input-form> ");
 const _t3$3 = template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
@@ -4189,7 +4189,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$9();
+        const _n2 = _t0$b();
         setBlockKey(_n2, "disabled-textarea");
         on$1(
           _n2,
@@ -6595,13 +6595,13 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
-let index$d = 0;
+let index$b = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$d++);
+    const callbackId = String(index$b++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -14394,7 +14394,7 @@ const props$b = /* @__PURE__ */ extend({}, props$f, {
 });
 class UniEditorElement extends UniElement2 {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$b,
   emit: [
@@ -14491,14 +14491,14 @@ const iconProps = {
 function useIcon(props2) {
   return computed(() => ICONS[props2.type]);
 }
-const _t0$8 = template("<div uni-icon uni-view> ", 1);
+const _t0$a = template("<div uni-icon uni-view> ", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName = { value: "ICON" };
-const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$2 = { value: "ICON" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -14510,15 +14510,21 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$8();
+      const _n0 = _t0$a();
       const _x0 = txt(_n0);
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
     return root;
   }
 });
+const movableAreaProps = {
+  scaleArea: {
+    type: Boolean,
+    default: false
+  }
+};
 function useMovableAreaChildren$1(rootRef, slots, setContexts) {
   const contexts = [];
   setContexts(contexts);
@@ -14538,69 +14544,38 @@ function useMovableAreaChildren$1(rootRef, slots, setContexts) {
   provide("removeMovableViewContext", remove2);
   return () => slots.default && slots.default();
 }
-const movableAreaProps = {
-  scaleArea: {
-    type: Boolean,
-    default: false
-  }
-};
 const useMovableAreaChildren = useMovableAreaChildren$1;
-class UniMovableAreaElement extends UniElement2 {
+function useMovableArea(props2, slots) {
+  const rootRef = ref(null);
+  const _isMounted = ref(false);
+  let { setContexts, events: movableAreaEvents } = useMovableAreaState(
+    props2,
+    rootRef
+  );
+  const { $listeners, $attrs, $excludeAttrs } = useAttrs();
+  const _listeners = $listeners.value;
+  let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+  events.forEach((event) => {
+    let existing = _listeners[event];
+    let ours = movableAreaEvents[`_${event}`];
+    _listeners[event] = existing ? [].concat(existing, ours) : ours;
+  });
+  onMounted(() => {
+    movableAreaEvents._resize();
+    _isMounted.value = true;
+  });
+  const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
+  provide("_isMounted", _isMounted);
+  provide("movableAreaRootRef", rootRef);
+  return {
+    rootRef,
+    renderChildren,
+    movableAreaEvents,
+    $attrs,
+    $excludeAttrs,
+    _listeners
+  };
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "MovableArea",
-  props: movableAreaProps,
-  rootElement: {
-    name: "uni-movable-area",
-    class: UniMovableAreaElement
-  },
-  setup(props2, { slots }) {
-    const rootRef = ref(null);
-    const _isMounted = ref(false);
-    let { setContexts, events: movableAreaEvents } = useMovableAreaState(props2, rootRef);
-    const { $listeners, $attrs, $excludeAttrs } = useAttrs();
-    const _listeners = $listeners.value;
-    let events = [
-      "onTouchstart",
-      "onTouchmove",
-      "onTouchend"
-    ];
-    events.forEach((event) => {
-      let existing = _listeners[event];
-      let ours = movableAreaEvents[`_${event}`];
-      _listeners[event] = existing ? [].concat(existing, ours) : ours;
-    });
-    onMounted(() => {
-      movableAreaEvents._resize();
-      _isMounted.value = true;
-    });
-    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
-    provide("_isMounted", _isMounted);
-    provide("movableAreaRootRef", rootRef);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      const movableViewItems = renderChildren();
-      return (() => {
-        const _setTemplateRef = createTemplateRefSetter();
-        const _n2 = createPlainElement("uni-movable-area", { $: [
-          () => $attrs.value,
-          () => $excludeAttrs.value,
-          () => _listeners
-        ] }, () => {
-          const _n0 = createComponent(ResizeSensor, { onResize: () => movableAreaEvents._resize });
-          const _n1 = createNodes(() => movableViewItems);
-          return [_n0, _n1];
-        }, true);
-        renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
-  }
-});
 function calc(e2) {
   return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
 }
@@ -14733,37 +14708,50 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-function useMovableViewFrame() {
-  let frame;
-  let pending;
-  function run() {
-    const callback = pending;
-    frame = void 0;
-    pending = void 0;
-    callback == null ? void 0 : callback();
+const _t0$9 = template("<div><!> ", 1);
+class UniMovableAreaElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-  function cancel() {
-    if (frame !== void 0)
-      cancelAnimationFrame(frame);
-    frame = void 0;
-    pending = void 0;
-  }
-  function flush() {
-    if (frame !== void 0)
-      cancelAnimationFrame(frame);
-    run();
-  }
-  onBeforeUnmount(cancel);
-  return {
-    request(callback) {
-      pending = callback;
-      if (frame === void 0)
-        frame = requestAnimationFrame(run);
-    },
-    flush,
-    cancel
-  };
 }
+const uniTagName$1 = { value: "MOVABLE-AREA" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: movableAreaProps,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-movable-area",
+    class: UniMovableAreaElement,
+    native: true
+  },
+  setup(props2, { slots }) {
+    const { rootRef, renderChildren, movableAreaEvents, $attrs, $excludeAttrs, _listeners } = useMovableArea(props2, slots);
+    const movableViewItems = renderChildren();
+    const root = (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n3 = _t0$9();
+      const _n2 = child(_n3);
+      const _n1 = next(_n2, true);
+      renderEffect(() => setDynamicProps(_n3, [
+        {
+          "uni-movable-area": "",
+          "uni-view": ""
+        },
+        $attrs.value,
+        $excludeAttrs.value,
+        _listeners
+      ]));
+      setInsertionState(_n3, _n2);
+      createComponent(ResizeSensor, { onResize: () => movableAreaEvents._resize });
+      setNodes(_n1, () => movableViewItems);
+      renderEffect(() => _setTemplateRef(_n3, rootRef));
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    return root;
+  }
+});
 function e(e2, t12, n) {
   return e2 > t12 - n && e2 < t12 + n;
 }
@@ -15116,38 +15104,43 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-class UniMovableViewElement extends UniElement2 {
-}
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
-  name: "MovableView",
-  props: movableViewProps,
-  emits: ["change", "scale"],
-  rootElement: {
-    name: "uni-movable-view",
-    class: UniMovableViewElement
-  },
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { setParent } = useMovableViewState(props2, trigger, rootRef);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return (() => {
-        const _setTemplateRef = createTemplateRefSetter();
-        const _n2 = createPlainElement("uni-movable-view", null, () => {
-          const _n0 = createComponent(ResizeSensor, { onResize: () => setParent });
-          const _n1 = createNodes(() => slots.default && slots.default());
-          return [_n0, _n1];
-        }, true);
-        renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
+function useMovableViewFrame() {
+  let frame;
+  let pending;
+  function run() {
+    const callback = pending;
+    frame = void 0;
+    pending = void 0;
+    callback == null ? void 0 : callback();
   }
-});
+  function cancel() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    frame = void 0;
+    pending = void 0;
+  }
+  function flush() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    run();
+  }
+  onBeforeUnmount(cancel);
+  return {
+    request(callback) {
+      pending = callback;
+      if (frame === void 0)
+        frame = requestAnimationFrame(run);
+    },
+    flush,
+    cancel
+  };
+}
+function useMovableView(props2, emit2) {
+  const rootRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { setParent } = useMovableViewState(props2, trigger, rootRef);
+  return { rootRef, setParent };
+}
 function p(t12, n) {
   if (t12 === n) {
     return 0;
@@ -15181,7 +15174,9 @@ function g(friction, execute, endCallback) {
       let isDone = friction2.done();
       if (!isDone) {
         if (!record2.cancelled) {
-          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+          record2.id = requestAnimationFrame(
+            fn.bind(null, record2, friction2, execute2, endCallback2)
+          );
         }
       }
       if (isDone && endCallback2) {
@@ -15261,23 +15256,37 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const xMove = computed(
+    () => props2.direction === "all" || props2.direction === "horizontal"
+  );
+  const yMove = computed(
+    () => props2.direction === "all" || props2.direction === "vertical"
+  );
   const xSync = ref(_getPx(props2.x));
   const ySync = ref(_getPx(props2.y));
-  watch(() => props2.x, (val) => {
-    xSync.value = _getPx(val);
-  });
-  watch(() => props2.y, (val) => {
-    ySync.value = _getPx(val);
-  });
+  watch(
+    () => props2.x,
+    (val) => {
+      xSync.value = _getPx(val);
+    }
+  );
+  watch(
+    () => props2.y,
+    (val) => {
+      ySync.value = _getPx(val);
+    }
+  );
   watch(xSync, (val) => {
     _setX(val);
   });
   watch(ySync, (val) => {
     _setY(val);
   });
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  const _STD = new STD(
+    1,
+    9 * Math.pow(dampingNumber.value, 2) / 40,
+    dampingNumber.value
+  );
   function _getLimitXY(x, y) {
     let outOfBounds = false;
     if (x > maxX.value) {
@@ -15338,15 +15347,19 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     _STD._springY._endPosition = _translateY.value;
     _STD._springScale._endPosition = _scale.value;
     _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o);
-    }, function() {
-      _SFA.cancel();
-    });
+    _SFA = g(
+      _STD,
+      function() {
+        let data = _STD.x();
+        let x2 = data.x;
+        let y2 = data.y;
+        let scale2 = data.scale;
+        _setTransform(x2, y2, scale2, source, r, o);
+      },
+      function() {
+        _SFA.cancel();
+      }
+    );
   }
   function _setTransform(x, y, scale, source = "", r, o) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
@@ -15406,7 +15419,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+        _animationTo(
+          val + _scaleOffset.x,
+          ySync.value + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -15419,7 +15436,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+        _animationTo(
+          xSync.value + _scaleOffset.x,
+          val + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -15458,11 +15479,51 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
   watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
-  const { _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY } = useMovableViewLayout(rootRef, _scale, _adjustScale);
-  const { frame, FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  watch(
+    () => props2.scaleValue,
+    (val) => {
+      scaleValueSync.value = Number(val) || 0;
+    }
+  );
+  const {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const {
+    frame,
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewTransform(
+    rootRef,
+    props2,
+    _scaleOffset,
+    _scale,
+    maxX,
+    maxY,
+    minX,
+    minY,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA,
+    _adjustScale,
+    trigger
+  );
   const _requestAnimationFrame2 = frame.request;
   function _updateScale(scale, animat) {
     if (props2.scale) {
@@ -15552,10 +15613,16 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
 }
 function useMovableViewState(props2, trigger, rootRef) {
   const _isMounted = inject("_isMounted", ref(false));
-  const addMovableViewContext = inject("addMovableViewContext", () => {
-  });
-  const removeMovableViewContext = inject("removeMovableViewContext", () => {
-  });
+  const addMovableViewContext = inject(
+    "addMovableViewContext",
+    () => {
+    }
+  );
+  const removeMovableViewContext = inject(
+    "removeMovableViewContext",
+    () => {
+    }
+  );
   let _scale = ref(1);
   let _oldScale = ref(1);
   let _isScaling = ref(false);
@@ -15580,10 +15647,51 @@ function useMovableViewState(props2, trigger, rootRef) {
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   const _friction = new Friction$1(1, frictionNumber.value);
-  watch(() => props2.disabled, () => {
-    __handleTouchStart();
-  });
-  const { _updateOldScale, _endScale, _setScale, scaleValueSync, frame, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  watch(
+    () => props2.disabled,
+    () => {
+      __handleTouchStart();
+    }
+  );
+  const {
+    // scale
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    frame,
+    // layout
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    // transform
+    FAandSFACancel,
+    _getLimitXY,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewInit(
+    props2,
+    rootRef,
+    trigger,
+    _scale,
+    _oldScale,
+    _isScaling,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA
+  );
   const _requestAnimationFrame2 = frame.request;
   function __handleTouchStart() {
     if (!_isScaling.value) {
@@ -15706,14 +15814,18 @@ function useMovableViewState(props2, trigger, rootRef) {
           }
         }
         _friction.setEnd(x, y);
-        _FA = g(_friction, function() {
-          let t12 = _friction.s();
-          let x2 = t12.x;
-          let y2 = t12.y;
-          _setTransform(x2, y2, _scale.value, "friction");
-        }, function() {
-          _FA.cancel();
-        });
+        _FA = g(
+          _friction,
+          function() {
+            let t12 = _friction.s();
+            let x2 = t12.x;
+            let y2 = t12.y;
+            _setTransform(x2, y2, _scale.value, "friction");
+          },
+          function() {
+            _FA.cancel();
+          }
+        );
       }
     }
     if (!props2.outOfBounds && !props2.inertia) {
@@ -15729,7 +15841,10 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
+    let limitXY = _getLimitXY(
+      xSync.value + _scaleOffset.x,
+      ySync.value + _scaleOffset.y
+    );
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
@@ -15750,7 +15865,11 @@ function useMovableViewState(props2, trigger, rootRef) {
     });
     setParent();
     _friction.reconfigure(1, frictionNumber.value);
-    _STD.reconfigure(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+    _STD.reconfigure(
+      1,
+      9 * Math.pow(dampingNumber.value, 2) / 40,
+      dampingNumber.value
+    );
     rootRef.value.style.transformOrigin = "center";
     const context = {
       rootRef,
@@ -15766,8 +15885,44 @@ function useMovableViewState(props2, trigger, rootRef) {
   onUnmounted(() => {
     FAandSFACancel();
   });
-  return { setParent };
+  return {
+    setParent
+  };
 }
+const _t0$8 = template("<div uni-movable-view uni-view><!> ", 1);
+class UniMovableViewElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName = { value: "MOVABLE-VIEW" };
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "MovableView",
+  props: movableViewProps,
+  emits: ["change", "scale"],
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-movable-view",
+    class: UniMovableViewElement,
+    native: true
+  },
+  setup(props2, { slots, emit: emit2 }) {
+    const { rootRef, setParent } = useMovableView(props2, emit2);
+    const root = (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n3 = _t0$8();
+      const _n2 = child(_n3);
+      const _n1 = next(_n2, true);
+      setInsertionState(_n3, _n2);
+      createComponent(ResizeSensor, { onResize: () => setParent });
+      setNodes(_n1, () => slots.default && slots.default());
+      renderEffect(() => _setTemplateRef(_n3, rootRef));
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
+  }
+});
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -34607,15 +34762,15 @@ export {
   index$4 as AdDraw,
   _sfc_main$C as AsyncErrorComponent,
   _sfc_main$D as AsyncLoadingComponent,
-  index$e as Button,
+  index$c as Button,
   index$3 as Camera,
   indexX$1 as Canvas,
   _sfc_main$w as Checkbox,
   _sfc_main$v as CheckboxGroup,
-  index$c as Editor,
+  index$a as Editor,
   _sfc_main$u as FlowItem,
   _sfc_main$t as Form,
-  indexVapor as Icon,
+  indexVapor$2 as Icon,
   __syscom_0$2 as Input,
   _sfc_main$s as Label,
   _sfc_main$E as LayoutComponent,
@@ -34626,8 +34781,8 @@ export {
   _sfc_main$p as Loading,
   __syscom_0 as Map,
   _sfc_main$o as MatchMedia,
-  index$b as MovableArea,
-  index$a as MovableView,
+  indexVapor$1 as MovableArea,
+  indexVapor as MovableView,
   _sfc_main$n as Navigator,
   _sfc_main$y as PageComponent,
   _sfc_main$m as PageContainer,

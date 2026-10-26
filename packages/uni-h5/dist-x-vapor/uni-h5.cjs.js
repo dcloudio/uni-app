@@ -945,13 +945,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$e = 0;
+let index$c = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$e++}`;
+  const id2 = vm.id || `context${index$c++}`;
   return `${type}.${id2}`;
 }
 function withWebEvent(fn) {
@@ -1293,7 +1293,7 @@ let UniElement$1 = class UniElement extends Object {
   }
 };
 const UniElement2 = UniElement$1;
-const _t0$a = Vue.template("<canvas class=uni-canvas-canvas>");
+const _t0$c = Vue.template("<canvas class=uni-canvas-canvas>");
 const props$f = { disableScroll: {
   type: [Boolean, String],
   default: false
@@ -1334,7 +1334,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
         const _n1 = Vue.createPlainElement("uni-canvas", null, () => {
-          const _n0 = _t0$a();
+          const _n0 = _t0$c();
           Vue.renderEffect(() => _setTemplateRef(_n0, canvas));
           return _n0;
         }, true);
@@ -1622,7 +1622,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement2 {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -2370,7 +2370,7 @@ function useInput(props2, { emit: emit2, expose }) {
     onInput
   };
 }
-const _t0$9 = Vue.template("<input tabindex=-1 class=uni-input-input>");
+const _t0$b = Vue.template("<input tabindex=-1 class=uni-input-input>");
 const _t1$6 = Vue.template("<input class=uni-input-input>");
 const _t2$3 = Vue.template("<form action novalidate class=uni-input-form> ");
 const _t3$3 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper><div> </div>", 1);
@@ -2389,7 +2389,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$9();
+        const _n2 = _t0$b();
         Vue.setBlockKey(_n2, "disabled-input");
         Vue.on(
           _n2,
@@ -2460,7 +2460,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const _t0$8 = Vue.template("<div><div></div></div>");
+const _t0$a = Vue.template("<div><div></div></div>");
 const _t1$5 = Vue.template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
@@ -2476,7 +2476,7 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n2 = Vue.createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$8();
+        const _n0 = _t0$a();
         const _n1 = _t1$5();
         Vue.on(_n0, "scroll", update);
         Vue.on(_n1, "scroll", update);
@@ -2652,12 +2652,12 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$7 = Vue.template("<textarea tabindex=-1>");
+const _t0$9 = Vue.template("<textarea tabindex=-1>");
 const _t1$4 = Vue.template("<textarea>");
 const _t2$2 = Vue.template("<form action class=uni-input-form> ");
 const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$2 = Vue.template("<div>", 1);
-const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: emits$1,
@@ -2672,7 +2672,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$7();
+        const _n2 = _t0$9();
         Vue.setBlockKey(_n2, "disabled-textarea");
         Vue.on(
           _n2,
@@ -6550,7 +6550,7 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$e, {
 });
 class UniEditorElement extends UniElement2 {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$a,
   emit: [
@@ -6638,14 +6638,14 @@ const iconProps = {
 function useIcon(props2) {
   return Vue.computed(() => ICONS[props2.type]);
 }
-const _t0$6 = Vue.template("<div uni-icon uni-view> ", 1);
+const _t0$8 = Vue.template("<div uni-icon uni-view> ", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName = { value: "ICON" };
-const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$2 = { value: "ICON" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -6657,15 +6657,21 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$6();
+      const _n0 = _t0$8();
       const _x0 = Vue.txt(_n0);
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
     return root;
   }
 });
+const movableAreaProps = {
+  scaleArea: {
+    type: Boolean,
+    default: false
+  }
+};
 function useMovableAreaChildren$1(rootRef, slots, setContexts) {
   const contexts = [];
   setContexts(contexts);
@@ -6685,57 +6691,34 @@ function useMovableAreaChildren$1(rootRef, slots, setContexts) {
   Vue.provide("removeMovableViewContext", remove);
   return () => slots.default && slots.default();
 }
-const movableAreaProps = {
-  scaleArea: {
-    type: Boolean,
-    default: false
-  }
-};
 const useMovableAreaChildren = useMovableAreaChildren$1;
-class UniMovableAreaElement extends UniElement2 {
+function useMovableArea(props2, slots) {
+  const rootRef = Vue.ref(null);
+  const _isMounted = Vue.ref(false);
+  let { setContexts, events: movableAreaEvents } = useMovableAreaState(
+    props2,
+    rootRef
+  );
+  const { $listeners, $attrs, $excludeAttrs } = useAttrs();
+  const _listeners = $listeners.value;
+  let events = ["onTouchstart", "onTouchmove", "onTouchend"];
+  events.forEach((event) => {
+    let existing = _listeners[event];
+    let ours = movableAreaEvents[`_${event}`];
+    _listeners[event] = existing ? [].concat(existing, ours) : ours;
+  });
+  const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
+  Vue.provide("_isMounted", _isMounted);
+  Vue.provide("movableAreaRootRef", rootRef);
+  return {
+    rootRef,
+    renderChildren,
+    movableAreaEvents,
+    $attrs,
+    $excludeAttrs,
+    _listeners
+  };
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "MovableArea",
-  props: movableAreaProps,
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const _isMounted = Vue.ref(false);
-    let { setContexts, events: movableAreaEvents } = useMovableAreaState(props2, rootRef);
-    const { $listeners, $attrs, $excludeAttrs } = useAttrs();
-    const _listeners = $listeners.value;
-    let events = [
-      "onTouchstart",
-      "onTouchmove",
-      "onTouchend"
-    ];
-    events.forEach((event) => {
-      let existing = _listeners[event];
-      let ours = movableAreaEvents[`_${event}`];
-      _listeners[event] = existing ? [].concat(existing, ours) : ours;
-    });
-    const renderChildren = useMovableAreaChildren(rootRef, slots, setContexts);
-    Vue.provide("_isMounted", _isMounted);
-    Vue.provide("movableAreaRootRef", rootRef);
-    return () => {
-      const movableViewItems = renderChildren();
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n2 = Vue.createPlainElement("uni-movable-area", { $: [
-          () => $attrs.value,
-          () => $excludeAttrs.value,
-          () => _listeners
-        ] }, () => {
-          const _n0 = createComponent(ResizeSensor, { onResize: () => movableAreaEvents._resize });
-          const _n1 = createNodes(() => movableViewItems);
-          return [_n0, _n1];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
-  }
-});
 function calc(e2) {
   return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
 }
@@ -6868,36 +6851,50 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-function useMovableViewFrame() {
-  let frame;
-  let pending;
-  function run() {
-    const callback = pending;
-    frame = void 0;
-    pending = void 0;
-    callback == null ? void 0 : callback();
+const _t0$7 = Vue.template("<div><!> ", 1);
+class UniMovableAreaElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-  function cancel() {
-    if (frame !== void 0)
-      cancelAnimationFrame(frame);
-    frame = void 0;
-    pending = void 0;
-  }
-  function flush() {
-    if (frame !== void 0)
-      cancelAnimationFrame(frame);
-    run();
-  }
-  return {
-    request(callback) {
-      pending = callback;
-      if (frame === void 0)
-        frame = requestAnimationFrame(run);
-    },
-    flush,
-    cancel
-  };
 }
+const uniTagName$1 = { value: "MOVABLE-AREA" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "MovableArea",
+  props: movableAreaProps,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-movable-area",
+    class: UniMovableAreaElement,
+    native: true
+  },
+  setup(props2, { slots }) {
+    const { rootRef, renderChildren, movableAreaEvents, $attrs, $excludeAttrs, _listeners } = useMovableArea(props2, slots);
+    const movableViewItems = renderChildren();
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n3 = _t0$7();
+      const _n2 = Vue.child(_n3);
+      const _n1 = Vue.next(_n2, true);
+      Vue.renderEffect(() => Vue.setDynamicProps(_n3, [
+        {
+          "uni-movable-area": "",
+          "uni-view": ""
+        },
+        $attrs.value,
+        $excludeAttrs.value,
+        _listeners
+      ]));
+      Vue.setInsertionState(_n3, _n2);
+      createComponent(ResizeSensor, { onResize: () => movableAreaEvents._resize });
+      setNodes(_n1, () => movableViewItems);
+      Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    return root;
+  }
+});
 function e(e2, t12, n) {
   return e2 > t12 - n && e2 < t12 + n;
 }
@@ -7245,30 +7242,42 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-class UniMovableViewElement extends UniElement2 {
-}
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
-  name: "MovableView",
-  props: movableViewProps,
-  emits: ["change", "scale"],
-  setup(props2, { slots, emit: emit2 }) {
-    const rootRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { setParent } = useMovableViewState(props2, trigger, rootRef);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n2 = Vue.createPlainElement("uni-movable-view", null, () => {
-          const _n0 = createComponent(ResizeSensor, { onResize: () => setParent });
-          const _n1 = createNodes(() => slots.default && slots.default());
-          return [_n0, _n1];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n2, rootRef));
-        return _n2;
-      })();
-    };
+function useMovableViewFrame() {
+  let frame;
+  let pending;
+  function run() {
+    const callback = pending;
+    frame = void 0;
+    pending = void 0;
+    callback == null ? void 0 : callback();
   }
-});
+  function cancel() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    frame = void 0;
+    pending = void 0;
+  }
+  function flush() {
+    if (frame !== void 0)
+      cancelAnimationFrame(frame);
+    run();
+  }
+  return {
+    request(callback) {
+      pending = callback;
+      if (frame === void 0)
+        frame = requestAnimationFrame(run);
+    },
+    flush,
+    cancel
+  };
+}
+function useMovableView(props2, emit2) {
+  const rootRef = Vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { setParent } = useMovableViewState(props2, trigger, rootRef);
+  return { rootRef, setParent };
+}
 function p(t12, n) {
   if (t12 === n) {
     return 0;
@@ -7302,7 +7311,9 @@ function g(friction, execute, endCallback) {
       let isDone = friction2.done();
       if (!isDone) {
         if (!record2.cancelled) {
-          record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+          record2.id = requestAnimationFrame(
+            fn.bind(null, record2, friction2, execute2, endCallback2)
+          );
         }
       }
       if (isDone && endCallback2) {
@@ -7382,23 +7393,37 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     let val = Number(props2.damping);
     return isNaN(val) ? 20 : val;
   });
-  const xMove = Vue.computed(() => props2.direction === "all" || props2.direction === "horizontal");
-  const yMove = Vue.computed(() => props2.direction === "all" || props2.direction === "vertical");
+  const xMove = Vue.computed(
+    () => props2.direction === "all" || props2.direction === "horizontal"
+  );
+  const yMove = Vue.computed(
+    () => props2.direction === "all" || props2.direction === "vertical"
+  );
   const xSync = Vue.ref(_getPx(props2.x));
   const ySync = Vue.ref(_getPx(props2.y));
-  Vue.watch(() => props2.x, (val) => {
-    xSync.value = _getPx(val);
-  });
-  Vue.watch(() => props2.y, (val) => {
-    ySync.value = _getPx(val);
-  });
+  Vue.watch(
+    () => props2.x,
+    (val) => {
+      xSync.value = _getPx(val);
+    }
+  );
+  Vue.watch(
+    () => props2.y,
+    (val) => {
+      ySync.value = _getPx(val);
+    }
+  );
   Vue.watch(xSync, (val) => {
     _setX(val);
   });
   Vue.watch(ySync, (val) => {
     _setY(val);
   });
-  const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+  const _STD = new STD(
+    1,
+    9 * Math.pow(dampingNumber.value, 2) / 40,
+    dampingNumber.value
+  );
   function _getLimitXY(x, y) {
     let outOfBounds = false;
     if (x > maxX.value) {
@@ -7456,15 +7481,19 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     _STD._springY._endPosition = _translateY.value;
     _STD._springScale._endPosition = _scale.value;
     _STD.setEnd(x, y, scale, 1);
-    _SFA = g(_STD, function() {
-      let data = _STD.x();
-      let x2 = data.x;
-      let y2 = data.y;
-      let scale2 = data.scale;
-      _setTransform(x2, y2, scale2, source, r, o);
-    }, function() {
-      _SFA.cancel();
-    });
+    _SFA = g(
+      _STD,
+      function() {
+        let data = _STD.x();
+        let x2 = data.x;
+        let y2 = data.y;
+        let scale2 = data.scale;
+        _setTransform(x2, y2, scale2, source, r, o);
+      },
+      function() {
+        _SFA.cancel();
+      }
+    );
   }
   function _setTransform(x, y, scale, source = "", r, o) {
     if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
@@ -7524,7 +7553,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+        _animationTo(
+          val + _scaleOffset.x,
+          ySync.value + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -7537,7 +7570,11 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
         if (_SFA) {
           _SFA.cancel();
         }
-        _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+        _animationTo(
+          xSync.value + _scaleOffset.x,
+          val + _scaleOffset.y,
+          _scale.value
+        );
       }
     }
     return val;
@@ -7576,11 +7613,51 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
   Vue.watch(scaleMaxNumber, () => {
     _setScaleMinOrMax();
   });
-  Vue.watch(() => props2.scaleValue, (val) => {
-    scaleValueSync.value = Number(val) || 0;
-  });
-  const { _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY } = useMovableViewLayout(rootRef, _scale, _adjustScale);
-  const { frame, FAandSFACancel, _getLimitXY, _animationTo, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger);
+  Vue.watch(
+    () => props2.scaleValue,
+    (val) => {
+      scaleValueSync.value = Number(val) || 0;
+    }
+  );
+  const {
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY
+  } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+  const {
+    frame,
+    FAandSFACancel,
+    _getLimitXY,
+    _animationTo,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewTransform(
+    rootRef,
+    props2,
+    _scaleOffset,
+    _scale,
+    maxX,
+    maxY,
+    minX,
+    minY,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA,
+    _adjustScale,
+    trigger
+  );
   const _requestAnimationFrame2 = frame.request;
   function _updateScale(scale, animat) {
     if (props2.scale) {
@@ -7670,10 +7747,16 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
 }
 function useMovableViewState(props2, trigger, rootRef) {
   const _isMounted = Vue.inject("_isMounted", Vue.ref(false));
-  Vue.inject("addMovableViewContext", () => {
-  });
-  Vue.inject("removeMovableViewContext", () => {
-  });
+  Vue.inject(
+    "addMovableViewContext",
+    () => {
+    }
+  );
+  Vue.inject(
+    "removeMovableViewContext",
+    () => {
+    }
+  );
   let _scale = Vue.ref(1);
   let _oldScale = Vue.ref(1);
   let _isScaling = Vue.ref(false);
@@ -7686,10 +7769,51 @@ function useMovableViewState(props2, trigger, rootRef) {
     return isNaN(val) || val <= 0 ? 2 : val;
   });
   new Friction(1, frictionNumber.value);
-  Vue.watch(() => props2.disabled, () => {
-    __handleTouchStart();
-  });
-  const { _updateOldScale, _endScale, _setScale, scaleValueSync, frame, _updateBoundary, _updateOffset, _updateWH, _scaleOffset, minX, minY, maxX, maxY, FAandSFACancel, _getLimitXY, _setTransform, _revise, dampingNumber, xMove, yMove, xSync, ySync, _STD } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+  Vue.watch(
+    () => props2.disabled,
+    () => {
+      __handleTouchStart();
+    }
+  );
+  const {
+    // scale
+    _updateOldScale,
+    _endScale,
+    _setScale,
+    scaleValueSync,
+    frame,
+    // layout
+    _updateBoundary,
+    _updateOffset,
+    _updateWH,
+    _scaleOffset,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    // transform
+    FAandSFACancel,
+    _getLimitXY,
+    _setTransform,
+    _revise,
+    dampingNumber,
+    xMove,
+    yMove,
+    xSync,
+    ySync,
+    _STD
+  } = useMovableViewInit(
+    props2,
+    rootRef,
+    trigger,
+    _scale,
+    _oldScale,
+    _isScaling,
+    _translateX,
+    _translateY,
+    _SFA,
+    _FA
+  );
   frame.request;
   function __handleTouchStart() {
     if (!_isScaling.value) {
@@ -7714,14 +7838,53 @@ function useMovableViewState(props2, trigger, rootRef) {
     _updateOffset();
     _updateWH(scale);
     _updateBoundary();
-    let limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
+    let limitXY = _getLimitXY(
+      xSync.value + _scaleOffset.x,
+      ySync.value + _scaleOffset.y
+    );
     let x = limitXY.x;
     let y = limitXY.y;
     _setTransform(x, y, scale, "", true);
     _updateOldScale(scale);
   }
-  return { setParent };
+  return {
+    setParent
+  };
 }
+const _t0$6 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
+class UniMovableViewElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName = { value: "MOVABLE-VIEW" };
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "MovableView",
+  props: movableViewProps,
+  emits: ["change", "scale"],
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-movable-view",
+    class: UniMovableViewElement,
+    native: true
+  },
+  setup(props2, { slots, emit: emit2 }) {
+    const { rootRef, setParent } = useMovableView(props2, emit2);
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n3 = _t0$6();
+      const _n2 = Vue.child(_n3);
+      const _n1 = Vue.next(_n2, true);
+      Vue.setInsertionState(_n3, _n2);
+      createComponent(ResizeSensor, { onResize: () => setParent });
+      setNodes(_n1, () => slots.default && slots.default());
+      Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
+  }
+});
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
@@ -16212,15 +16375,15 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$t;
 exports.AsyncLoadingComponent = _sfc_main$u;
-exports.Button = index$d;
+exports.Button = index$b;
 exports.Camera = index$3;
 exports.Canvas = indexX$1;
 exports.Checkbox = _sfc_main$n;
 exports.CheckboxGroup = _sfc_main$m;
-exports.Editor = index$c;
+exports.Editor = index$a;
 exports.FlowItem = _sfc_main$l;
 exports.Form = _sfc_main$k;
-exports.Icon = indexVapor;
+exports.Icon = indexVapor$2;
 exports.Input = Input;
 exports.Label = _sfc_main$j;
 exports.LayoutComponent = _sfc_main$v;
@@ -16231,8 +16394,8 @@ exports.LivePusher = index$1;
 exports.Loading = _sfc_main$g;
 exports.Map = index$7;
 exports.MatchMedia = _sfc_main$f;
-exports.MovableArea = index$b;
-exports.MovableView = index$a;
+exports.MovableArea = indexVapor$1;
+exports.MovableView = indexVapor;
 exports.Navigator = _sfc_main$e;
 exports.PageComponent = _sfc_main$p;
 exports.PageContainer = _sfc_main$d;
@@ -16251,7 +16414,7 @@ exports.StickySection = _sfc_main$4;
 exports.Swiper = _sfc_main$3;
 exports.SwiperItem = _sfc_main$2;
 exports.Switch = _sfc_main$1;
-exports.Textarea = indexVapor$1;
+exports.Textarea = indexVapor$3;
 exports.UniButtonElement = UniButtonElement;
 exports.UniButtonElementImpl = UniButtonElement;
 exports.UniCanvasElement = UniCanvasElement;
