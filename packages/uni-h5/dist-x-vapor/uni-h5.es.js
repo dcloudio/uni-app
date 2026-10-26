@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, withModifiers, setAttr, getCurrentInstance, warn, unref, ref, inject, onMounted, onBeforeUnmount, watch, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, extend as extend$1, renderEffect, reactive, computed, onBeforeMount, nextTick, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, on as on$1, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -397,8 +397,8 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$h = template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
-const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
+const _t0$i = template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
+const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -409,13 +409,62 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$h();
+      const _n0 = _t0$i();
       return _n0;
     })();
     initCanvasElement(root);
     return root;
   }
 });
+function useVaporFormField(props2, state) {
+  const form = inject("UNI_FORM_CTX", null);
+  if (!form)
+    return;
+  const initialValue = state.value;
+  const getValue = () => state.value;
+  const reset = () => {
+    state.value = initialValue;
+  };
+  watch(
+    () => props2.name,
+    (name, oldName) => {
+      if (oldName)
+        form.unregisterField(oldName);
+      if (name)
+        form.registerField({ name, getValue, reset });
+    },
+    { immediate: true, flush: "sync" }
+  );
+  onBeforeUnmount(() => {
+    if (props2.name)
+      form.unregisterField(props2.name);
+  });
+}
+function useVaporButton(props2, rootRef) {
+  const form = inject("UNI_FORM_CTX", null);
+  const label = inject("UNI_LABEL_CTX", null);
+  if (label) {
+    const fallbackId = `__uni_vapor_button_${getCurrentInstance().uid}`;
+    const child2 = {
+      // 只注册一次，读取最新 id，不因改名改变 Label 默认激活的顺序。
+      get id() {
+        return props2.id || fallbackId;
+      },
+      activate() {
+        const root = rootRef.value;
+        if (root && !props2.disabled) {
+          root.click();
+        }
+      },
+      getDisabled() {
+        return !!props2.disabled;
+      }
+    };
+    onMounted(() => label.register(child2));
+    onBeforeUnmount(() => label.unregister(child2.id));
+  }
+  return form;
+}
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -2517,55 +2566,6 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-function useVaporFormField(props2, state) {
-  const form = inject("UNI_FORM_CTX", null);
-  if (!form)
-    return;
-  const initialValue = state.value;
-  const getValue = () => state.value;
-  const reset = () => {
-    state.value = initialValue;
-  };
-  watch(
-    () => props2.name,
-    (name, oldName) => {
-      if (oldName)
-        form.unregisterField(oldName);
-      if (name)
-        form.registerField({ name, getValue, reset });
-    },
-    { immediate: true, flush: "sync" }
-  );
-  onBeforeUnmount(() => {
-    if (props2.name)
-      form.unregisterField(props2.name);
-  });
-}
-function useVaporButton(props2, rootRef) {
-  const form = inject("UNI_FORM_CTX", null);
-  const label = inject("UNI_LABEL_CTX", null);
-  if (label) {
-    const fallbackId = `__uni_vapor_button_${getCurrentInstance().uid}`;
-    const child2 = {
-      // 只注册一次，读取最新 id，不因改名改变 Label 默认激活的顺序。
-      get id() {
-        return props2.id || fallbackId;
-      },
-      activate() {
-        const root = rootRef.value;
-        if (root && !props2.disabled) {
-          root.click();
-        }
-      },
-      getDisabled() {
-        return !!props2.disabled;
-      }
-    };
-    onMounted(() => label.register(child2));
-    onBeforeUnmount(() => label.unregister(child2.id));
-  }
-  return form;
-}
 function useListeners(props2, listeners2) {
   _addListeners(props2.id, listeners2);
   watch(
@@ -2792,14 +2792,21 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-class UniButtonElement extends UniElement2 {
+const _t0$h = template("<div> ", 1);
+class UniButtonElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniButtonElement && value instanceof UniViewElement && value.hasAttribute("uni-button") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$9 = { value: "BUTTON" };
+const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
+  // TODO native 仅用于迁移期间跳过旧注册流程，旧注册机制清理后移除。
   rootElement: {
     name: "uni-button",
-    class: UniButtonElement
+    class: UniButtonElement,
+    native: true
   },
   setup(props2, { slots }) {
     const rootRef = ref(null);
@@ -2812,50 +2819,40 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
       if (isLabelClick) {
         rootRef.value.click();
       }
-      const formType = props2.formType;
-      if (formType) {
-        if (!uniForm) {
-          return;
-        }
-        if (formType === "submit") {
-          uniForm.submit(e2);
-        } else if (formType === "reset") {
-          uniForm.reset(e2);
-        }
-        return;
+      if (props2.formType === "submit") {
+        uniForm == null ? void 0 : uniForm.submit(e2);
+      } else if (props2.formType === "reset") {
+        uniForm == null ? void 0 : uniForm.reset(e2);
       }
     });
     useListeners(props2, { "label-click": onClick });
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      const hoverClass = props2.hoverClass;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      const loadingAttrs = useBooleanAttr(props2, "loading");
-      const plainAttrs = useBooleanAttr(props2, "plain");
-      const hasHoverClass = hoverClass && hoverClass !== "none";
-      return (() => {
-        const _setTemplateRef = createTemplateRefSetter();
-        const _n1 = createPlainElement("uni-button", {
-          onClick: () => onClick,
-          id: () => props2.id,
-          class: () => hasHoverClass && hovering.value ? hoverClass : "",
-          $: [
-            () => hasHoverClass && binding,
-            () => booleanAttrs,
-            () => loadingAttrs,
-            () => plainAttrs
-          ]
-        }, extend$1(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
+    const root = (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n0 = _t0$h();
+      on$1(_n0, "click", onClick);
+      const _x0 = txt(_n0);
+      setNodes(_x0, () => slots.default && slots.default());
+      renderEffect(() => {
+        setDynamicProps(_n0, [
+          {
+            "uni-button": "",
+            "uni-view": "",
+            id: props2.id,
+            class: props2.hoverClass !== "none" && hovering.value ? props2.hoverClass : ""
+          },
+          props2.hoverClass && props2.hoverClass !== "none" && binding,
+          useBooleanAttr(props2, [
+            "disabled",
+            "loading",
+            "plain"
+          ])
+        ]);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$9);
+    return root;
   }
 });
 class UniInputElement extends UniViewElement {
@@ -17195,38 +17192,6 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
-  if (isInSSRComponentSetup)
-    return;
-  injectHook(lifecycle, hook, target);
-};
-const onLoad = /* @__PURE__ */ createLifeCycleHook(
-  ON_LOAD,
-  2
-  /* HookFlags.PAGE */
-);
-const onReady = /* @__PURE__ */ createLifeCycleHook(
-  ON_READY,
-  2
-  /* HookFlags.PAGE */
-);
-const onUnload = /* @__PURE__ */ createLifeCycleHook(
-  ON_UNLOAD,
-  2
-  /* HookFlags.PAGE */
-);
-const onResize = /* @__PURE__ */ createLifeCycleHook(
-  ON_RESIZE,
-  2
-  /* HookFlags.PAGE */
-);
-const onBackPress = /* @__PURE__ */ createLifeCycleHook(
-  ON_BACK_PRESS,
-  2
-  /* HookFlags.PAGE */
-);
-template("<div uni-view class=uni-page-container-overlay>");
-template("<div uni-view>");
 const FORM_KEY = "UNI_FORM_CTX";
 const LABEL_KEY = "UNI_LABEL_CTX";
 const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
@@ -17855,7 +17820,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
       var _a;
       const eventTarget = event.target;
       const element = (eventTarget == null ? void 0 : eventTarget.nodeType) === 1 ? eventTarget : eventTarget == null ? void 0 : eventTarget.parentElement;
-      if (element == null ? void 0 : element.closest("uni-button, .uni-button")) {
+      if (element == null ? void 0 : element.closest("uni-button, [uni-button], .uni-button")) {
         return;
       }
       const classList = ((_a = event.target) == null ? void 0 : _a.classList) ? event.target.classList : [];
@@ -18497,6 +18462,36 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
 });
 class UniMatchMediaElement extends UniViewElement {
 }
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
+  if (isInSSRComponentSetup)
+    return;
+  injectHook(lifecycle, hook, target);
+};
+const onLoad = /* @__PURE__ */ createLifeCycleHook(
+  ON_LOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onReady = /* @__PURE__ */ createLifeCycleHook(
+  ON_READY,
+  2
+  /* HookFlags.PAGE */
+);
+const onUnload = /* @__PURE__ */ createLifeCycleHook(
+  ON_UNLOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onResize = /* @__PURE__ */ createLifeCycleHook(
+  ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
+const onBackPress = /* @__PURE__ */ createLifeCycleHook(
+  ON_BACK_PRESS,
+  2
+  /* HookFlags.PAGE */
+);
 const t0$o = template("<div uni-view>", 1);
 const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -34939,9 +34934,9 @@ export {
   index$4 as AdDraw,
   _sfc_main$C as AsyncErrorComponent,
   _sfc_main$D as AsyncLoadingComponent,
-  index$9 as Button,
+  indexVapor$8 as Button,
   index$3 as Camera,
-  indexVapor$8 as Canvas,
+  indexVapor$9 as Canvas,
   _sfc_main$w as Checkbox,
   _sfc_main$v as CheckboxGroup,
   indexVapor$7 as Editor,

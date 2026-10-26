@@ -326,8 +326,8 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$f = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
-const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
+const _t0$g = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
+const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -338,12 +338,40 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$f();
+      const _n0 = _t0$g();
       return _n0;
     })();
     return root;
   }
 });
+function useVaporFormField(props2, state) {
+  const form = Vue.inject("UNI_FORM_CTX", null);
+  if (!form)
+    return;
+  const initialValue = state.value;
+  const getValue = () => state.value;
+  const reset = () => {
+    state.value = initialValue;
+  };
+  Vue.watch(
+    () => props2.name,
+    (name, oldName) => {
+      if (oldName)
+        form.unregisterField(oldName);
+      if (name)
+        form.registerField({ name, getValue, reset });
+    },
+    { immediate: true, flush: "sync" }
+  );
+}
+function useVaporButton(props2, rootRef) {
+  const form = Vue.inject("UNI_FORM_CTX", null);
+  const label = Vue.inject("UNI_LABEL_CTX", null);
+  if (label) {
+    `__uni_vapor_button_${Vue.getCurrentInstance().uid}`;
+  }
+  return form;
+}
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -1367,34 +1395,6 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-function useVaporFormField(props2, state) {
-  const form = Vue.inject("UNI_FORM_CTX", null);
-  if (!form)
-    return;
-  const initialValue = state.value;
-  const getValue = () => state.value;
-  const reset = () => {
-    state.value = initialValue;
-  };
-  Vue.watch(
-    () => props2.name,
-    (name, oldName) => {
-      if (oldName)
-        form.unregisterField(oldName);
-      if (name)
-        form.registerField({ name, getValue, reset });
-    },
-    { immediate: true, flush: "sync" }
-  );
-}
-function useVaporButton(props2, rootRef) {
-  const form = Vue.inject("UNI_FORM_CTX", null);
-  const label = Vue.inject("UNI_LABEL_CTX", null);
-  if (label) {
-    `__uni_vapor_button_${Vue.getCurrentInstance().uid}`;
-  }
-  return form;
-}
 const buttonProps = {
   id: {
     type: String,
@@ -1564,11 +1564,22 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-class UniButtonElement extends UniElement2 {
+const _t0$f = Vue.template("<div> ", 1);
+class UniButtonElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniButtonElement && value instanceof UniViewElement && value.hasAttribute("uni-button") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$9 = { value: "BUTTON" };
+const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
+  // TODO native 仅用于迁移期间跳过旧注册流程，旧注册机制清理后移除。
+  rootElement: {
+    name: "uni-button",
+    class: UniButtonElement,
+    native: true
+  },
   setup(props2, { slots }) {
     const rootRef = Vue.ref(null);
     const uniForm = useVaporButton();
@@ -1580,45 +1591,39 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
       if (isLabelClick) {
         rootRef.value.click();
       }
-      const formType = props2.formType;
-      if (formType) {
-        if (!uniForm) {
-          return;
-        }
-        if (formType === "submit") {
-          uniForm.submit(e2);
-        } else if (formType === "reset") {
-          uniForm.reset(e2);
-        }
-        return;
+      if (props2.formType === "submit") {
+        uniForm == null ? void 0 : uniForm.submit(e2);
+      } else if (props2.formType === "reset") {
+        uniForm == null ? void 0 : uniForm.reset(e2);
       }
     });
-    return () => {
-      const hoverClass = props2.hoverClass;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      const loadingAttrs = useBooleanAttr(props2, "loading");
-      const plainAttrs = useBooleanAttr(props2, "plain");
-      const hasHoverClass = hoverClass && hoverClass !== "none";
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n1 = Vue.createPlainElement("uni-button", {
-          onClick: () => onClick,
-          id: () => props2.id,
-          class: () => hasHoverClass && hovering.value ? hoverClass : "",
-          $: [
-            () => hasHoverClass && binding,
-            () => booleanAttrs,
-            () => loadingAttrs,
-            () => plainAttrs
-          ]
-        }, Vue.extend(() => {
-          const _n0 = createNodes(() => slots.default && slots.default());
-          return _n0;
-        }, { _: 1 }), true);
-        Vue.renderEffect(() => _setTemplateRef(_n1, rootRef));
-        return _n1;
-      })();
-    };
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$f();
+      Vue.on(_n0, "click", onClick);
+      const _x0 = Vue.txt(_n0);
+      setNodes(_x0, () => slots.default && slots.default());
+      Vue.renderEffect(() => {
+        Vue.setDynamicProps(_n0, [
+          {
+            "uni-button": "",
+            "uni-view": "",
+            id: props2.id,
+            class: props2.hoverClass !== "none" && hovering.value ? props2.hoverClass : ""
+          },
+          props2.hoverClass && props2.hoverClass !== "none" && binding,
+          useBooleanAttr(props2, [
+            "disabled",
+            "loading",
+            "plain"
+          ])
+        ]);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName$9);
+    return root;
   }
 });
 class UniInputElement extends UniViewElement {
@@ -8871,18 +8876,6 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = Vue.getCurrentInstance()) => {
-  if (Vue.isInSSRComponentSetup)
-    return;
-  Vue.injectHook(lifecycle, hook, target);
-};
-const onResize = /* @__PURE__ */ createLifeCycleHook(
-  uniShared.ON_RESIZE,
-  2
-  /* HookFlags.PAGE */
-);
-Vue.template("<div uni-view class=uni-page-container-overlay>");
-Vue.template("<div uni-view>");
 const FORM_KEY = "UNI_FORM_CTX";
 const LABEL_KEY = "UNI_LABEL_CTX";
 const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
@@ -9407,7 +9400,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
       var _a;
       const eventTarget = event.target;
       const element = (eventTarget == null ? void 0 : eventTarget.nodeType) === 1 ? eventTarget : eventTarget == null ? void 0 : eventTarget.parentElement;
-      if (element == null ? void 0 : element.closest("uni-button, .uni-button")) {
+      if (element == null ? void 0 : element.closest("uni-button, [uni-button], .uni-button")) {
         return;
       }
       const classList = ((_a = event.target) == null ? void 0 : _a.classList) ? event.target.classList : [];
@@ -9988,6 +9981,16 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniMatchMediaElement extends UniViewElement {
 }
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = Vue.getCurrentInstance()) => {
+  if (Vue.isInSSRComponentSetup)
+    return;
+  Vue.injectHook(lifecycle, hook, target);
+};
+const onResize = /* @__PURE__ */ createLifeCycleHook(
+  uniShared.ON_RESIZE,
+  2
+  /* HookFlags.PAGE */
+);
 const t0$f = Vue.template("<div uni-view>", 1);
 const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -16562,9 +16565,9 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$t;
 exports.AsyncLoadingComponent = _sfc_main$u;
-exports.Button = index$7;
+exports.Button = indexVapor$a;
 exports.Camera = index$3;
-exports.Canvas = indexVapor$a;
+exports.Canvas = indexVapor$b;
 exports.Checkbox = _sfc_main$n;
 exports.CheckboxGroup = _sfc_main$m;
 exports.Editor = indexVapor$8;
