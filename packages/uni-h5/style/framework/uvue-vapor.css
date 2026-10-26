@@ -150,7 +150,6 @@ uni-app uni-progress,
 uni-app uni-radio-group,
 uni-app uni-radio,
 uni-app uni-rich-text,
-uni-app uni-scroll-view,
 uni-app uni-slider,
 uni-app uni-sticky-header,
 uni-app uni-sticky-section,
@@ -217,7 +216,6 @@ uni-app uni-progress[hidden],
 uni-app uni-radio-group[hidden],
 uni-app uni-radio[hidden],
 uni-app uni-rich-text[hidden],
-uni-app uni-scroll-view[hidden],
 uni-app uni-slider[hidden],
 uni-app uni-sticky-header[hidden],
 uni-app uni-sticky-section[hidden],
@@ -249,7 +247,6 @@ uni-app uni-list-item,
 uni-app uni-navigator,
 uni-app uni-radio-group,
 uni-app uni-checkbox-group,
-uni-app uni-scroll-view,
 uni-app uni-list-view,
 uni-app uni-unicloud-db,
 uni-app uni-custom-tab-bar,
@@ -277,7 +274,6 @@ uni-app uni-list-item,
 uni-app uni-navigator,
 uni-app uni-radio-group,
 uni-app uni-checkbox-group,
-uni-app uni-scroll-view,
 uni-app uni-list-view,
 uni-app uni-unicloud-db,
 uni-app uni-sticky-section,
@@ -305,8 +301,13 @@ uni-app uni-button {
 }
 
 /* 透传scroll-view的flex-direction样式 */
-uni-app uni-scroll-view {
+uni-app div:where([uni-scroll-view]) {
   width: auto;
+  /* 保留旧宿主的字体继承，不套用基础 view 的字体默认值。 */
+  font-size: inherit;
+  text-align: inherit;
+  /* 滚动由内部容器负责，外层保持旧宿主的可见溢出，不继承基础 view 的裁剪。 */
+  overflow: visible;
 }
 
 uni-app .uni-scroll-view,

@@ -56,33 +56,34 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (route > 1 ? 1 : route) * 360
     })
     return () => {
-      const { refreshState, refresherDefaultStyle, refresherThreshold } = props
+      // Vapor 仅执行一次 render closure，JSX 直接读取 props，避免解构后丢失响应式依赖。
       return (
         <div
           ref={rootRef}
           style={rootStyle.value}
           class="uni-scroll-view-refresher"
         >
-          {refresherDefaultStyle !== 'none' ? (
+          {props.refresherDefaultStyle !== 'none' ? (
             <div class="uni-scroll-view-refresh">
               {__X__ ? (
-                refreshState == 'pulling' || refreshState == 'refreshing' ? (
+                props.refreshState == 'pulling' ||
+                props.refreshState == 'refreshing' ? (
                   <Loading
                     key="refresh__loading"
                     class="uni-scroll-view-refresh__loading"
-                    paused={refreshState == 'pulling'}
+                    paused={props.refreshState == 'pulling'}
                     style={{
                       transform:
-                        refreshState == 'pulling'
+                        props.refreshState == 'pulling'
                           ? 'rotate(' + refreshRotate.value + 'deg)'
                           : undefined,
-                      color: refresherDefaultStyle,
+                      color: props.refresherDefaultStyle,
                     }}
                   />
                 ) : null
               ) : (
                 <div class="uni-scroll-view-refresh-inner">
-                  {refreshState == 'pulling' ? (
+                  {props.refreshState == 'pulling' ? (
                     <svg
                       key="refresh__icon"
                       style={{
@@ -98,7 +99,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                       <path d="M0 0h24v24H0z" fill="none" />
                     </svg>
                   ) : null}
-                  {refreshState == 'refreshing' ? (
+                  {props.refreshState == 'refreshing' ? (
                     <svg
                       key="refresh__spinner"
                       class="uni-scroll-view-refresh__spinner"
@@ -120,10 +121,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               )}
             </div>
           ) : null}
-          {refresherDefaultStyle === 'none' ? (
+          {props.refresherDefaultStyle === 'none' ? (
             <div
               class="uni-scroll-view-refresher-container"
-              style={{ height: `${refresherThreshold}px` }}
+              style={{ height: `${props.refresherThreshold}px` }}
             >
               {slots.default && slots.default()}
             </div>

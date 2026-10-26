@@ -9,7 +9,7 @@ import MovableArea, { UniMovableAreaElement } from './movable-area/index'
 import MovableView, { UniMovableViewElement } from './movable-view/index'
 import ResizeSensor from './resize-sensor/index'
 import RichText, { UniRichTextElement } from './rich-text'
-import ScrollView, { UniScrollViewElement } from './scroll-view/index'
+import ScrollView, { UniScrollViewElement } from './scroll-view/index-vapor'
 import PageContainer from './page-container/index.vue'
 import { UniPageContainerElement } from './page-container/element'
 import {
