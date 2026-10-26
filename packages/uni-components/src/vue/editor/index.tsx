@@ -45,7 +45,7 @@ export class UniEditorElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Editor',
   props,
-  emit: ['ready', 'focus', 'blur', 'input', 'statuschange', ...keyboardEmit],
+  emits: ['ready', 'focus', 'blur', 'input', 'statuschange', ...keyboardEmit],
   //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-editor',
