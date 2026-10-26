@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.makePhoneCall(options) @makephonecall
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-makePhoneCall
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-makePhoneCall
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-makePhoneCall
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-makePhoneCall
 
 :::
 

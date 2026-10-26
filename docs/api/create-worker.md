@@ -26,10 +26,10 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 ::: sourceCode
 ## uni.createWorker(url) @createworker
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-createWorker
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWorker
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-createWorker
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWorker
 
 :::
 

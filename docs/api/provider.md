@@ -50,10 +50,10 @@ uni-app 通过 provider 机制来统一不同的SDK，屏蔽他们的差异。
 ::: sourceCode
 ## uni.getProviderSync(options) @getprovidersync
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getProvider
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getProvider
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getProvider
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getProvider
 
 :::
 
@@ -283,10 +283,10 @@ getProvider的同步方法
 ::: sourceCode
 ## uni.~~getProvider(options)~~ @getprovider
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-getProvider
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getProvider
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-getProvider
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getProvider
 
 :::
 

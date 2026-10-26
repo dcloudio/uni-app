@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.createWebViewContext(webviewId, component?) @createwebviewcontext
 
-> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-web-view
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWebviewContext
 
 
-> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-web-view
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWebviewContext
 
 :::
 
@@ -184,10 +184,10 @@ loadData
 ::: sourceCode
 ## uni.~~createWebviewContext(webviewId, component?)~~ @createwebviewcontext
 
-> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-web-view
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWebviewContext
 
 
-> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-web-view
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWebviewContext
 
 :::
 
