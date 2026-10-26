@@ -1,4 +1,4 @@
-import Canvas, { UniCanvasElement } from './canvas/index-x'
+import Canvas, { UniCanvasElement } from './canvas/index-vapor'
 // 临时复用旧表单组件并编译为 Vapor；接入新 UVue 组件后删除对应导出及 form-vapor 适配。
 import Button, { UniButtonElement } from './button/index'
 import Input, { UniInputElement } from './input/index-vapor'

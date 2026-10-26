@@ -135,6 +135,28 @@ uni-app div:where([uni-editor]) {
   justify-content: normal;
 }
 
+/* Canvas 保留旧宿主的尺寸和字体继承，绘图尺寸由内部 canvas 的 width/height 控制。 */
+uni-app div:where([uni-canvas]) {
+  width: 300px;
+  height: 150px;
+  display: block;
+  font-size: inherit;
+  text-align: inherit;
+  overflow: visible;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
+uni-app div:where([uni-canvas]) > .uni-canvas-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 /* 文字容器 */
 uni-app uni-label {
   overflow: hidden;
@@ -158,7 +180,6 @@ uni-app uni-audio,
 uni-app uni-block,
 uni-app uni-button,
 uni-app uni-camera,
-uni-app uni-canvas,
 uni-app uni-checkbox-group,
 uni-app uni-checkbox,
 uni-app uni-cover-image,
@@ -233,7 +254,6 @@ uni-app uni-audio[hidden],
 uni-app uni-block[hidden],
 uni-app uni-button[hidden],
 uni-app uni-camera[hidden],
-uni-app uni-canvas[hidden],
 uni-app uni-checkbox-group[hidden],
 uni-app uni-checkbox[hidden],
 uni-app uni-cover-image[hidden],
