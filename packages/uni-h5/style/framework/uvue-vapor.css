@@ -52,11 +52,6 @@ uni-app.uni-app--showtabbar uni-page-wrapper::after {
   display: none;
 }
 
-uni-app uni-match-media {
-  font-size: 16px;
-  text-align: left;
-}
-
 /* input 布局对齐 App 端 */
 uni-app div:where([uni-input]) {
   height: auto;
@@ -249,17 +244,6 @@ div:where([uni-resize-sensor]) > div:last-child > div {
   height: 200%;
 }
 
-/* 文字容器 */
-uni-app uni-label {
-  overflow: hidden;
-  flex-basis: auto;
-  letter-spacing: 0;
-}
-
-uni-app uni-label {
-  letter-spacing: 0;
-}
-
 /* uni-app uni-* */
 uni-app uni-ad-draw,
 uni-app uni-ad-fullscreen-video,
@@ -271,34 +255,12 @@ uni-app uni-audio,
 uni-app uni-block,
 uni-app uni-button,
 uni-app uni-camera,
-uni-app uni-checkbox-group,
-uni-app uni-checkbox,
-uni-app uni-cover-image,
-uni-app uni-cover-view,
 uni-app uni-custom-tab-bar,
-uni-app uni-form,
-uni-app uni-label,
-uni-app uni-list-item,
-uni-app uni-list-view,
 uni-app uni-live-player,
 uni-app uni-live-pusher,
-uni-app uni-match-media,
 uni-app uni-navigation-bar,
-uni-app uni-navigator,
 uni-app uni-open-data,
 uni-app uni-page-meta,
-/* uni-app uni-picker-view-column, */
-uni-app uni-picker-view,
-uni-app uni-picker,
-uni-app uni-progress,
-uni-app uni-radio-group,
-uni-app uni-radio,
-uni-app uni-slider,
-uni-app uni-sticky-header,
-uni-app uni-sticky-section,
-uni-app uni-swiper-item,
-uni-app uni-swiper,
-uni-app uni-switch,
 uni-app uni-template,
 uni-app uni-unicloud-db {
   position: relative;
@@ -341,34 +303,12 @@ uni-app uni-audio[hidden],
 uni-app uni-block[hidden],
 uni-app uni-button[hidden],
 uni-app uni-camera[hidden],
-uni-app uni-checkbox-group[hidden],
-uni-app uni-checkbox[hidden],
-uni-app uni-cover-image[hidden],
-uni-app uni-cover-view[hidden],
 uni-app uni-custom-tab-bar[hidden],
-uni-app uni-form[hidden],
-uni-app uni-label[hidden],
-uni-app uni-list-item[hidden],
-uni-app uni-list-view[hidden],
 uni-app uni-live-player[hidden],
 uni-app uni-live-pusher[hidden],
-uni-app uni-match-media[hidden],
 uni-app uni-navigation-bar[hidden],
-uni-app uni-navigator[hidden],
 uni-app uni-open-data[hidden],
 uni-app uni-page-meta[hidden],
-uni-app uni-picker-view-column[hidden],
-uni-app uni-picker-view[hidden],
-uni-app uni-picker[hidden],
-uni-app uni-progress[hidden],
-uni-app uni-radio-group[hidden],
-uni-app uni-radio[hidden],
-uni-app uni-slider[hidden],
-uni-app uni-sticky-header[hidden],
-uni-app uni-sticky-section[hidden],
-uni-app uni-swiper-item[hidden],
-uni-app uni-swiper[hidden],
-uni-app uni-switch[hidden],
 uni-app uni-template[hidden],
 uni-app uni-unicloud-db[hidden] {
   display: none !important;
@@ -381,20 +321,8 @@ uni-app uni-right-window .uni-right-window,
 uni-app uni-top-window .uni-top-window,
 uni-app uni-animation-view,
 uni-app uni-block,
-uni-app uni-match-media,
-uni-app uni-label,
-uni-app uni-swiper,
-uni-app uni-swiper-item,
-uni-app uni-cover-view,
-uni-app uni-list-item,
-uni-app uni-navigator,
-uni-app uni-radio-group,
-uni-app uni-checkbox-group,
-uni-app uni-list-view,
 uni-app uni-unicloud-db,
-uni-app uni-custom-tab-bar,
-uni-app uni-sticky-section,
-uni-app uni-sticky-header {
+uni-app uni-custom-tab-bar {
   display: flex;
   align-items: stretch;
   align-content: stretch;
@@ -406,33 +334,8 @@ uni-app uni-page-body,
 uni-app uni-left-window .uni-left-window,
 uni-app uni-right-window .uni-right-window,
 uni-app uni-top-window .uni-top-window,
-uni-app uni-match-media,
-uni-app uni-label,
-uni-app uni-swiper,
-uni-app uni-swiper-item,
-uni-app uni-cover-view,
-uni-app uni-list-item,
-uni-app uni-navigator,
-uni-app uni-radio-group,
-uni-app uni-checkbox-group,
-uni-app uni-list-view,
-uni-app uni-unicloud-db,
-uni-app uni-sticky-section,
-uni-app uni-sticky-header {
+uni-app uni-unicloud-db {
   flex-direction: column;
-}
-
-/* 与开发者元素接触的非滚动容器 */
-uni-app uni-match-media,
-uni-app uni-label,
-uni-app uni-swiper,
-uni-app uni-swiper-item,
-uni-app uni-cover-view,
-uni-app uni-list-item,
-uni-app uni-navigator,
-uni-app uni-radio-group,
-uni-app uni-checkbox-group {
-  overflow: hidden;
 }
 
 uni-app uni-button {
@@ -450,9 +353,7 @@ uni-app div:where([uni-scroll-view]) {
 }
 
 uni-app .uni-scroll-view,
-uni-app .uni-scroll-view-content,
-uni-app .uni-list-view-visible,
-uni-app uni-navigator a {
+uni-app .uni-scroll-view-content {
   flex-direction: inherit;
   align-items: inherit;
   align-content: inherit;
@@ -460,20 +361,9 @@ uni-app uni-navigator a {
   flex-wrap: inherit;
 }
 
-uni-app uni-navigator a {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-uni-app .uni-scroll-view-content,
-uni-app .uni-sticky-header-wrapper {
+uni-app .uni-scroll-view-content {
   display: flex;
   min-height: 0px;
-}
-
-uni-app uni-swiper-item {
-  position: absolute;
 }
 
 /* 设置默认的光标颜色 */
@@ -485,19 +375,6 @@ uni-app .uni-textarea-textarea {
 uni-app .uni-input-input:disabled,
 uni-app .uni-textarea-textarea:disabled {
   cursor: inherit;
-}
-
-uni-app uni-checkbox {
-  align-items: center;
-}
-
-uni-app .uni-checkbox-wrapper {
-  flex-direction: inherit;
-  align-content: inherit;
-  justify-content: inherit;
-  align-items: inherit;
-  width: 100%;
-  height: 100%;
 }
 
 /* 覆盖 video 的 poster 背景 */
