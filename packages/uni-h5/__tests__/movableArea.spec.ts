@@ -13,7 +13,7 @@ jest.mock('@vue/shared', () =>
 )
 
 const root = path.resolve(__dirname, '../../..')
-const file = 'packages/uni-components/src/vue/movable-area/index.tsx'
+const file = 'packages/uni-components/src/vue/movable-area/index-vapor.tsx'
 
 async function preprocess(vapor: boolean, source = file) {
   const plugin = jscc({
@@ -46,6 +46,10 @@ describe('Web Vapor MovableArea', () => {
   let vue: any
   let MovableArea: any
   let MovableView: any
+  let UniElement: any
+  let elements: any
+  let UniMovableAreaElement: any
+  let UniMovableViewElement: any
   let Child: any
   let dom: any
   let app: any
@@ -62,7 +66,7 @@ describe('Web Vapor MovableArea', () => {
   beforeAll(async () => {
     const { JSDOM } = jest.requireActual('jsdom')
     dom = new JSDOM(
-      '<!DOCTYPE html><head><style>uni-movable-area{padding:0;border:0 solid}</style></head><body></body>'
+      '<!DOCTYPE html><head><style>[uni-movable-area]{padding:0;border:0 solid}</style></head><body></body>'
     )
     for (const name of [
       'window',
@@ -74,6 +78,7 @@ describe('Web Vapor MovableArea', () => {
       'Text',
       'Comment',
       'ShadowRoot',
+      'customElements',
       '__PLATFORM__',
       '__X__',
       '__NODE_JS__',
@@ -116,29 +121,47 @@ describe('Web Vapor MovableArea', () => {
       ),
       { vue }
     )
-    class UniElement extends HTMLElement {
-      attachVmProps() {}
-      getBoundingClientRect(): DOMRect {
-        const width = this.localName === 'uni-movable-area' ? 200 : 20
-        const height = this.localName === 'uni-movable-area' ? 100 : 20
-        return {
-          x: 0,
-          y: 0,
-          top: 0,
-          left: 0,
-          right: width,
-          bottom: height,
-          width,
-          height,
-          toJSON() {},
-        }
+    const shared = jest.requireActual(
+      '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
+    )
+    const uniShared = jest.requireActual('@dcloudio/uni-shared')
+    const load = async (source: string, dependencies = {}) =>
+      evaluate(
+        await preprocess(true, 'packages/uni-components/src/' + source),
+        { vue, ...dependencies }
+      )
+    UniElement = (
+      await load('helpers/UniElement-vapor.ts', {
+        '@vue/shared': shared,
+        '@dcloudio/uni-shared': uniShared,
+      })
+    ).UniElement
+    elements = await load('vue/web-vapor-elements.ts', {
+      '../helpers/UniElement': { UniElement },
+      '@dcloudio/uni-shared': uniShared,
+    })
+    elements.installWebVaporElements(dom.window)
+    // JSDOM 不做布局，为真实拖动/缩放算法提供固定的区域和子节点尺寸。
+    dom.window.HTMLElement.prototype.getBoundingClientRect = function () {
+      const width = this.hasAttribute('uni-movable-area') ? 200 : 20
+      const height = this.hasAttribute('uni-movable-area') ? 100 : 20
+      return {
+        x: 0,
+        y: 0,
+        top: 0,
+        left: 0,
+        right: width,
+        bottom: height,
+        width,
+        height,
+        toJSON() {},
       }
     }
-    dom.window.customElements.define('uni-movable-area', UniElement)
-    dom.window.customElements.define(
-      'uni-movable-view',
-      class extends UniElement {}
-    )
+    const component = await load('helpers/component.ts', {
+      '@vue/shared': shared,
+      './component-vapor': await load('helpers/component-vapor.ts'),
+      './animation': { default: {} },
+    })
     const sensor = vue.defineVaporComponent({
       setup(_: any, { attrs }: any) {
         resize.mockImplementation(() => attrs.onResize())
@@ -166,21 +189,10 @@ describe('Web Vapor MovableArea', () => {
       vue,
       '/vue-jsx/vapor': jsxRuntime,
       './children-vapor': children,
-      '../../helpers/component': {
-        defineBuiltInComponent(options: any) {
-          const setup = options.setup
-          options.setup = (props: any, ctx: any) => setup(props, ctx)()
-          return vue.defineVaporComponent(options)
-        },
-      },
+      '../../helpers/component': component,
+      '../web-vapor-elements': elements,
       '../../helpers/useEvent': { withWebEvent: (fn: Function) => fn },
-      '../../helpers/useAttrs': {
-        useAttrs: () => ({
-          $listeners: vue.ref({}),
-          $attrs: vue.ref({}),
-          $excludeAttrs: vue.ref({}),
-        }),
-      },
+      '../../helpers/useAttrs': await load('helpers/useAttrs.ts'),
       '../../helpers/scroll': {
         initScrollBounce() {},
         disableScrollBounce() {},
@@ -191,44 +203,63 @@ describe('Web Vapor MovableArea', () => {
         path.join(root, 'packages/uni-components/src/components/movableArea')
       ),
     }
-    MovableArea = evaluate(await compile(file), imports).default
-    const load = async (source: string, dependencies = {}) =>
-      evaluate(
-        await preprocess(true, 'packages/uni-components/src/' + source),
-        { vue, ...dependencies }
-      )
-    const shared = jest.requireActual(
-      path.join(
-        root,
-        'packages/uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
-      )
-    )
-    MovableView = evaluate(
-      await compile('packages/uni-components/src/vue/movable-view/index.tsx'),
+    const area = evaluate(await compile(file), {
+      ...imports,
+      './useMovableArea': await load(
+        'vue/movable-area/useMovableArea.ts',
+        imports
+      ),
+    })
+    MovableArea = area.default
+    UniMovableAreaElement = area.UniMovableAreaElement
+    const view = evaluate(
+      await compile(
+        'packages/uni-components/src/vue/movable-view/index-vapor.tsx'
+      ),
       {
         ...imports,
-        './frame-vapor': await load('vue/movable-view/frame-vapor.ts'),
-        '../../helpers/useTouchtrack': await load('helpers/useTouchtrack.ts', {
-          '@vue/shared': shared,
-        }),
-        '../../helpers/useEvent': await load('helpers/useEvent.ts', {
-          '@dcloudio/uni-shared': { normalizeTarget: (event: Event) => event },
-          '@dcloudio/uni-core': { createNativeEvent: (event: Event) => event },
-        }),
         '../../components/movable-view': await load(
           'components/movable-view/index.ts',
           {
             './utils': await load('components/movable-view/utils.js'),
           }
         ),
+        './useMovableView': await load('vue/movable-view/useMovableView.ts', {
+          ...imports,
+          './frame-vapor': await load('vue/movable-view/frame-vapor.ts'),
+          '../../helpers/useTouchtrack': await load(
+            'helpers/useTouchtrack.ts',
+            {
+              '@vue/shared': shared,
+            }
+          ),
+          '../../helpers/useEvent': await load('helpers/useEvent.ts', {
+            '@dcloudio/uni-shared': {
+              normalizeTarget: (event: Event) => event,
+            },
+            '@dcloudio/uni-core': {
+              createNativeEvent: (event: Event) => event,
+            },
+          }),
+          '../../components/movable-view': await load(
+            'components/movable-view/index.ts',
+            {
+              './utils': await load('components/movable-view/utils.js'),
+            }
+          ),
+        }),
       }
-    ).default
+    )
+    MovableView = view.default
+    UniMovableViewElement = view.UniMovableViewElement
     // 与 MovableView 使用相同的 DOM ref 和挂载/卸载注册协议，记录区域算法调用。
     Child = vue.defineVaporComponent({
       props: ['id'],
       setup(props: any) {
-        const element = document.createElement('uni-movable-view')
-        element.dataset.id = props.id
+        const element = document.createElement('div')
+        element.setAttribute('uni-movable-view', '')
+        element.setAttribute('uni-view', '')
+        element.setAttribute('data-id', String(props.id))
         element.appendChild(document.createElement('span'))
         const context = {
           rootRef: vue.ref(element),
@@ -299,7 +330,7 @@ describe('Web Vapor MovableArea', () => {
   function touch(
     type: string,
     distance: number,
-    target = host.querySelector('uni-movable-view')!,
+    target = host.querySelector('[uni-movable-view]')!,
     secondTarget = target
   ) {
     const event = new dom.window.Event(type, { cancelable: true })
@@ -312,7 +343,7 @@ describe('Web Vapor MovableArea', () => {
         : [],
       changedTouches: [],
     })
-    host.querySelector('uni-movable-area')!.dispatchEvent(event)
+    host.querySelector('[uni-movable-area]')!.dispatchEvent(event)
   }
 
   function flushFrames() {
@@ -358,6 +389,64 @@ describe('Web Vapor MovableArea', () => {
     ).toContain(`scale(${scale})`)
   }
 
+  test('原生宿主保留组件 ref、类型与 dataset，不注册或包装 Custom Element', async () => {
+    const areaRef = vue.shallowRef()
+    const viewRef = vue.shallowRef()
+    const payload = vue.ref({ count: 1 })
+    app = vue.createVaporApp(
+      vue.defineVaporComponent({
+        setup() {
+          const area = vue.createComponent(
+            MovableArea,
+            {
+              'data-payload': () => payload.value,
+            },
+            () => {
+              const view = vue.createComponent(MovableView, {
+                'data-payload': () => payload.value,
+              })
+              vue.setStaticTemplateRef(view, viewRef)
+              return view
+            }
+          )
+          vue.setStaticTemplateRef(area, areaRef)
+          vue.onMounted(() => {
+            expect(areaRef.value.uniTagName).toBe('MOVABLE-AREA')
+            expect(viewRef.value.uniTagName).toBe('MOVABLE-VIEW')
+          })
+          return area
+        },
+      })
+    )
+    app.config.errorHandler = errors
+    app.mount(host)
+    for (const [node, tag, type] of [
+      [areaRef.value, 'movable-area', UniMovableAreaElement],
+      [viewRef.value, 'movable-view', UniMovableViewElement],
+    ]) {
+      expect(node.tagName).toBe('DIV')
+      expect(node).toBeInstanceOf(UniElement)
+      expect(node).toBeInstanceOf(elements.UniViewElement)
+      expect(node).toBeInstanceOf(type)
+      expect(node.hasAttribute('uni-' + tag)).toBe(true)
+      expect(node.setAttribute).toBe(dom.window.Element.prototype.setAttribute)
+      expect(node.removeAttribute).toBe(
+        dom.window.Element.prototype.removeAttribute
+      )
+      expect(node.attachVmProps).toBeUndefined()
+      expect(dom.window.customElements.get('uni-' + tag)).toBeUndefined()
+      expect(node.dataset.get('payload')).toBe(payload.value)
+      class Derived extends type {}
+      expect(node).not.toBeInstanceOf(Derived)
+    }
+    expect(areaRef.value).not.toBeInstanceOf(UniMovableViewElement)
+    expect(viewRef.value).not.toBeInstanceOf(UniMovableAreaElement)
+    payload.value = { count: 2 }
+    await vue.nextTick()
+    expect(areaRef.value.dataset.get('payload')).toBe(payload.value)
+    expect(viewRef.value.dataset.get('payload')).toBe(payload.value)
+  })
+
   test('真实子组件分别更新，同一帧保留最新缩放，重排及新增不丢任务', async () => {
     const ids = vue.ref([1, 2])
     const scale = await mountViews(ids)
@@ -374,18 +463,42 @@ describe('Web Vapor MovableArea', () => {
     expect(scale).toHaveBeenCalledTimes(2)
     ids.value = [2, 3, 1]
     await vue.nextTick()
-    pinch(host.querySelector('uni-movable-view') as HTMLElement)
+    pinch(host.querySelector('[uni-movable-view]') as HTMLElement)
     expectScale(1, 4)
     expectScale(2, 4)
     expectScale(3, 2)
     expect(frames.size).toBe(0)
   })
 
+  test('原生宿主保留位置属性更新与区域边界约束', async () => {
+    const position = vue.reactive({ x: 300, y: 200 })
+    mount(() =>
+      vue.createComponent(MovableView, {
+        direction: () => 'all',
+        animation: () => false,
+        x: () => position.x,
+        y: () => position.y,
+      })
+    )
+    await vue.nextTick()
+    sensors.forEach((callback) => callback())
+    await vue.nextTick()
+    const node = host.querySelector('[uni-movable-view]') as HTMLElement
+    expect(node.style.transform).toContain('translateX(180px)')
+    expect(node.style.transform).toContain('translateY(80px)')
+    position.x = -10
+    position.y = -20
+    await vue.nextTick()
+    expect(node.style.transform).toContain('translateX(0px)')
+    expect(node.style.transform).toContain('translateY(0px)')
+    expect(host.querySelector('[uni-movable-view]')).toBe(node)
+  })
+
   test('结束手势立即提交待执行值，下一次手势基准正确', async () => {
     const scale = await mountViews(vue.ref([1, 2]))
-    pinch(host.querySelector('uni-movable-view') as HTMLElement)
+    pinch(host.querySelector('[uni-movable-view]') as HTMLElement)
     expect(frames.size).toBe(0)
-    pinch(host.querySelector('uni-movable-view') as HTMLElement)
+    pinch(host.querySelector('[uni-movable-view]') as HTMLElement)
     for (const id of [1, 2]) expectScale(id, 4)
     expect(scale.mock.calls).toEqual([
       [1, 2],
@@ -436,7 +549,7 @@ describe('Web Vapor MovableArea', () => {
 
   test('拖动与缩放共用节点级调度，两个节点不会丢失位移', async () => {
     await mountViews(vue.ref([1, 2]))
-    const elements = Array.from(host.querySelectorAll('uni-movable-view'))
+    const elements = Array.from(host.querySelectorAll('[uni-movable-view]'))
     function drag(element: Element, type: string, x: number) {
       const event = new dom.window.Event(type, {
         cancelable: true,
@@ -466,7 +579,7 @@ describe('Web Vapor MovableArea', () => {
 
   test('单指切换双指后结束，冒泡到区域前不丢弃最后的缩放', async () => {
     await mountViews(vue.ref([1, 2]))
-    const element = host.querySelector('uni-movable-view')!
+    const element = host.querySelector('[uni-movable-view]')!
     const point = { pageX: 0, pageY: 0, target: element }
     for (const [type, touches] of [
       ['touchstart', [point]],
@@ -487,7 +600,10 @@ describe('Web Vapor MovableArea', () => {
   })
 
   test('Vapor 不依赖 VNode，非 Vapor 保留原节点收集与 App rebuild', async () => {
-    const vapor = await preprocess(true)
+    const vapor = await preprocess(
+      true,
+      'packages/uni-components/src/vue/movable-area/useMovableArea.ts'
+    )
     expect(vapor).not.toMatch(/VNode|flatVNode|useRebuild|children-vdom/)
     expect(vapor).toContain("from './children-vapor'")
     expect(
@@ -496,7 +612,10 @@ describe('Web Vapor MovableArea', () => {
         'packages/uni-components/src/vue/movable-area/children-vapor.ts'
       )
     ).not.toMatch(/VNode|flatVNode|useRebuild/)
-    const standard = await preprocess(false)
+    const standard = await preprocess(
+      false,
+      'packages/uni-components/src/vue/movable-area/useMovableArea.ts'
+    )
     expect(standard).toContain("from './children-vdom'")
     expect(standard).not.toContain('children-vapor')
     const vdom = await preprocess(
@@ -507,6 +626,19 @@ describe('Web Vapor MovableArea', () => {
     expect(vdom).toContain('useRebuild(')
     expect(vdom).toContain('(movableViewItem as VNode).el')
   })
+
+  test.each(['area', 'view'])(
+    '非 Vapor movable-%s 保留旧宿主和属性绑定',
+    async (name) => {
+      const source = await preprocess(
+        false,
+        `packages/uni-components/src/vue/movable-${name}/index.tsx`
+      )
+      expect(source).toContain(`<uni-movable-${name}`)
+      expect(source).toContain('rootElement.attachVmProps(props)')
+      expect(source).not.toMatch(/native: true|web-vapor-elements|uni-view=""/)
+    }
+  )
 
   test.each(['h5', 'app'])(
     '拆分后保留旧 %s 子节点收集、上下文顺序和移除行为',
@@ -580,7 +712,7 @@ describe('Web Vapor MovableArea', () => {
         vue.createComponent(Child, { id: () => 2 })
       ),
     ])
-    expect(host.querySelectorAll('uni-movable-view')).toHaveLength(2)
+    expect(host.querySelectorAll('[uni-movable-view]')).toHaveLength(2)
     pinch(contexts.get(1).rootRef.value)
     resize()
     expect(contexts.get(1)._setScale).toHaveBeenCalledWith(2)
@@ -605,7 +737,7 @@ describe('Web Vapor MovableArea', () => {
     ids.value = [2, 3, 1]
     await vue.nextTick()
     expect(
-      Array.from(host.querySelectorAll('uni-movable-view'), (el) =>
+      Array.from(host.querySelectorAll('[uni-movable-view]'), (el) =>
         el.getAttribute('data-id')
       )
     ).toEqual(['2', '3', '1'])
@@ -618,8 +750,8 @@ describe('Web Vapor MovableArea', () => {
     }
     ids.value = []
     await vue.nextTick()
-    expect(host.querySelectorAll('uni-movable-view')).toHaveLength(0)
-    pinch(host.querySelector('uni-movable-area') as HTMLElement)
+    expect(host.querySelectorAll('[uni-movable-view]')).toHaveLength(0)
+    pinch(host.querySelector('[uni-movable-area]') as HTMLElement)
     for (const context of contexts.values()) {
       expect(context._setScale).not.toHaveBeenCalled()
     }
@@ -663,7 +795,7 @@ describe('Web Vapor MovableArea', () => {
     expect(previous._setScale).toHaveBeenCalledTimes(1)
     visible.value = false
     await vue.nextTick()
-    pinch(host.querySelector('uni-movable-area') as HTMLElement)
+    pinch(host.querySelector('[uni-movable-area]') as HTMLElement)
     expect(previous._setScale).toHaveBeenCalledTimes(1)
     visible.value = true
     await vue.nextTick()

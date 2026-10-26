@@ -3,7 +3,7 @@ import type {
   AddMovableViewContext,
   MovableViewContext,
   RemoveMovableViewContext,
-} from './index'
+} from './useMovableArea'
 
 export function useMovableAreaChildren(
   rootRef: Ref<HTMLElement | null>,

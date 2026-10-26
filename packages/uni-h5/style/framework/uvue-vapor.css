@@ -110,6 +110,21 @@ uni-app div:where([uni-icon]) {
   justify-content: normal;
 }
 
+/* Movable 复用基础 view 的布局，保留旧宿主的尺寸与字体继承。 */
+uni-app div:where([uni-movable-area]),
+uni-app div:where([uni-movable-view]) {
+  width: 10px;
+  height: 10px;
+  font-size: inherit;
+  text-align: inherit;
+}
+
+uni-app div:where([uni-movable-view]) {
+  top: 0;
+  left: 0;
+  cursor: grab;
+}
+
 /* 文字容器 */
 uni-app uni-label {
   overflow: hidden;
@@ -148,8 +163,6 @@ uni-app uni-live-player,
 uni-app uni-live-pusher,
 uni-app uni-map,
 uni-app uni-match-media,
-uni-app uni-movable-area,
-uni-app uni-movable-view,
 uni-app uni-navigation-bar,
 uni-app uni-navigator,
 uni-app uni-open-data,
@@ -213,8 +226,6 @@ uni-app uni-live-player[hidden],
 uni-app uni-live-pusher[hidden],
 uni-app uni-map[hidden],
 uni-app uni-match-media[hidden],
-uni-app uni-movable-area[hidden],
-uni-app uni-movable-view[hidden],
 uni-app uni-navigation-bar[hidden],
 uni-app uni-navigator[hidden],
 uni-app uni-open-data[hidden],
@@ -250,8 +261,6 @@ uni-app uni-match-media,
 uni-app uni-label,
 uni-app uni-swiper,
 uni-app uni-swiper-item,
-uni-app uni-movable-area,
-uni-app uni-movable-view,
 uni-app uni-cover-view,
 uni-app uni-list-item,
 uni-app uni-navigator,
@@ -277,8 +286,6 @@ uni-app uni-match-media,
 uni-app uni-label,
 uni-app uni-swiper,
 uni-app uni-swiper-item,
-uni-app uni-movable-area,
-uni-app uni-movable-view,
 uni-app uni-cover-view,
 uni-app uni-list-item,
 uni-app uni-navigator,
@@ -296,8 +303,6 @@ uni-app uni-match-media,
 uni-app uni-label,
 uni-app uni-swiper,
 uni-app uni-swiper-item,
-uni-app uni-movable-area,
-uni-app uni-movable-view,
 uni-app uni-cover-view,
 uni-app uni-list-item,
 uni-app uni-navigator,
