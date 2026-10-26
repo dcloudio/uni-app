@@ -48,6 +48,10 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
   let vue: any
   let helpers: any
   let Button: any
+  let inputElement: any
+  let nativeElements: any
+  let NativeUniElement: any
+  let fixDisabledColor = false
   const inputs: Record<string, any> = {}
   const apps: any[] = []
   const globals = new Map<string, any>()
@@ -65,6 +69,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       'Text',
       'Comment',
       'ShadowRoot',
+      'customElements',
       '__PLATFORM__',
       '__X__',
       '__NODE_JS__',
@@ -105,7 +110,10 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     `,
         ],
         {
-          input: await preprocess(`vue/${name}/index.tsx`, true),
+          input: await preprocess(
+            `vue/${name}/${name === 'input' ? 'index-vapor' : 'index'}.tsx`,
+            true
+          ),
           encoding: 'utf8',
         }
       )
@@ -139,6 +147,28 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     const shared = jest.requireActual(
       '../../uni-cli-shared/lib/dom2/web/@vue/shared/dist/shared.cjs.js'
     )
+    const uniShared = jest.requireActual('@dcloudio/uni-shared')
+    NativeUniElement = evaluate(
+      await preprocess('helpers/UniElement-vapor.ts', true),
+      { '@vue/shared': shared, '@dcloudio/uni-shared': uniShared }
+    ).UniElement
+    nativeElements = evaluate(
+      await preprocess('vue/web-vapor-elements.ts', true),
+      {
+        '../helpers/UniElement': { UniElement: NativeUniElement },
+        '@dcloudio/uni-shared': uniShared,
+      }
+    )
+    nativeElements.installWebVaporElements(dom.window)
+    inputElement = evaluate(
+      await preprocess('vue/input/element-vapor.ts', true),
+      { '../web-vapor-elements': nativeElements }
+    )
+    const builtIn = evaluate(await preprocess('helpers/component.ts', true), {
+      '@vue/shared': shared,
+      './component-vapor': { defineComponent },
+      './animation': { default: {} },
+    })
     const fields = evaluate(await preprocess('helpers/useField.ts', true), {
       vue,
       '@vue/shared': shared,
@@ -163,15 +193,32 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       './useKeyboard': { props: {}, emit: [], useKeyboard() {} },
       './useScopedAttrs': { useScopedAttrs: () => ({ state: { attrs: {} } }) },
     })
+    const fieldHelpers = {
+      ...fields,
+      useField(...args: any[]) {
+        return { ...fields.useField(...args), fixDisabledColor }
+      },
+    }
+    const inputState = evaluate(
+      await preprocess('vue/input/useInput.ts', true),
+      {
+        vue,
+        '@vue/shared': shared,
+        '../../helpers/useField': fieldHelpers,
+        './utils': { resolveDigitDecimalPoint() {} },
+      }
+    )
     for (const name of ['input', 'textarea']) {
       inputs[name] = evaluate(await compile(name), {
         vue,
         '@vue/shared': shared,
         '@dcloudio/uni-shared': { LINEFEED: '\n' },
         '/vue-jsx/vapor': evaluate(fs.readFileSync(runtime, 'utf8'), { vue }),
-        '../../helpers/component': { defineBuiltInComponent: defineComponent },
+        '../../helpers/component': builtIn,
         '../../helpers/UniElement': { UniElement },
-        '../../helpers/useField': fields,
+        './element-vapor': inputElement,
+        './useInput': inputState,
+        '../../helpers/useField': fieldHelpers,
         './utils': { resolveDigitDecimalPoint() {} },
         '../resize-sensor/index': {
           default: vue.defineVaporComponent({
@@ -179,16 +226,14 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
           }),
         },
       }).default
-      dom.window.customElements.define(
-        `uni-${name}`,
-        class extends UniElement {}
-      )
     }
   }, 30000)
 
   afterEach(() => {
+    fixDisabledColor = false
     apps.splice(0).forEach((app) => app.unmount())
     document.body.innerHTML = ''
+    jest.useRealTimers()
   })
   afterAll(() => {
     dom.window.close()
@@ -353,7 +398,11 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       )
       await vue.nextTick()
       const element = host.querySelector(name) as HTMLInputElement
-      expect(host.querySelectorAll(`uni-${name}`)).toHaveLength(1)
+      expect(
+        host.querySelectorAll(
+          name === 'input' ? 'div[uni-input][uni-view]' : 'uni-textarea'
+        )
+      ).toHaveLength(1)
       expect(element.value).toBe('initial')
       element.value = 'edited'
       element.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
@@ -374,6 +423,214 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       props.disabled = true
       await vue.nextTick()
       expect(element.disabled).toBe(true)
+    }
+  )
+
+  test('Input 原生根节点首次 ref 可见即具备 Element 能力，更新不重新绑定', async () => {
+    const node = vue.shallowRef()
+    const value = vue.ref('initial')
+    const initialized = jest.spyOn(inputElement, 'initInputElement')
+    let mountedRoot: any
+    const { host } = mount(() => {
+      const component = vue.createComponent(inputs.input, {
+        value: () => value.value,
+        id: () => 'native-input',
+      })
+      vue.setStaticTemplateRef(component, node)
+      vue.onMounted(() => {
+        mountedRoot = node.value
+        expect(mountedRoot.value).toBe('initial')
+        expect(mountedRoot.uniTagName).toBe('INPUT')
+      })
+      return component
+    })
+    try {
+      const root = node.value
+      expect(root).toBe(mountedRoot)
+      expect(root).toBe(host.querySelector('#native-input'))
+      expect(root).toBeInstanceOf(dom.window.HTMLDivElement)
+      expect(root).toBeInstanceOf(NativeUniElement)
+      expect(root).toBeInstanceOf(nativeElements.UniViewElement)
+      expect(root).toBeInstanceOf(inputElement.UniInputElement)
+      expect(root.tagName).toBe('DIV')
+      expect(root.constructor).toBe(dom.window.HTMLDivElement)
+      expect(root.setAttribute).toBe(dom.window.Element.prototype.setAttribute)
+      expect(root.removeAttribute).toBe(
+        dom.window.Element.prototype.removeAttribute
+      )
+      expect(root.attachVmProps).toBeUndefined()
+      expect(root.__uniDataset).toBeUndefined()
+      expect(dom.window.customElements.get('uni-input')).toBeUndefined()
+      const field = root.querySelector('input')
+      const focus = jest.spyOn(field, 'focus')
+      root.focus({ preventScroll: true })
+      expect(focus).toHaveBeenCalledWith({ preventScroll: true })
+      expect(document.activeElement).toBe(field)
+      root.value = 'manual'
+      expect(field.value).toBe('manual')
+      value.value = 'updated'
+      await vue.nextTick()
+      expect(root.value).toBe('updated')
+      expect(node.value).toBe(root)
+      expect(initialized).toHaveBeenCalledTimes(1)
+      class Derived extends inputElement.UniInputElement {}
+      expect(root).not.toBeInstanceOf(Derived)
+      const plain = document.createElement('div')
+      plain.setAttribute('uni-view', '')
+      expect(plain).not.toBeInstanceOf(inputElement.UniInputElement)
+    } finally {
+      initialized.mockRestore()
+    }
+  })
+
+  test('Input 的业务 dataset 透传保留原始值，实例隔离且不拦截手动属性操作', async () => {
+    const data = vue.ref({ count: 1 })
+    const enabled = vue.ref(true)
+    const click = jest.fn((event: Event) => {
+      expect(event.currentTarget).toBe(first)
+      expect((event.currentTarget as any).dataset).toBe(dataset)
+    })
+    const { host } = mount(() => [
+      vue.createComponent(inputs.input, {
+        $: [() => (enabled.value ? { 'data-payload': data.value } : {})],
+        onClick: () => click,
+      }),
+      vue.createComponent(inputs.input),
+    ])
+    const [first, second] = Array.from(
+      host.querySelectorAll('div[uni-input]')
+    ) as any[]
+    const dataset = first.dataset
+    expect(dataset.get('payload')).toBe(data.value)
+    expect(first.getAttribute('data-payload')).toBe('[object Object]')
+    expect(second.dataset).not.toBe(dataset)
+    expect(second.dataset.has('payload')).toBe(false)
+    first.click()
+    expect(click).toHaveBeenCalledTimes(1)
+    expect(click.mock.calls[0][0].target).toBe(first)
+    first.setAttribute('data-payload', 'manual')
+    expect(dataset.get('payload')).toBe(data.value)
+    data.value = { count: 2 }
+    await vue.nextTick()
+    expect(dataset.get('payload')).toBe(data.value)
+    enabled.value = false
+    await vue.nextTick()
+    expect(dataset.has('payload')).toBe(false)
+    expect(first.hasAttribute('data-payload')).toBe(false)
+  })
+
+  test('Input 搜索表单与禁用修复分支切换后，Element 仍访问当前输入节点', async () => {
+    jest.useFakeTimers()
+    fixDisabledColor = true
+    const props = vue.reactive({
+      disabled: false,
+      confirmType: 'search',
+      value: 'initial',
+    })
+    const confirm = jest.fn()
+    const { host } = mount(() =>
+      vue.createComponent(inputs.input, {
+        disabled: () => props.disabled,
+        confirmType: () => props.confirmType,
+        value: () => props.value,
+        onConfirm: () => confirm,
+      })
+    )
+    const root = host.querySelector('div[uni-input]') as any
+    let field = root.querySelector('input')
+    expect(field.parentElement.tagName).toBe('FORM')
+    field.value = 'search'
+    field.dispatchEvent(
+      new dom.window.KeyboardEvent('keyup', { key: 'Enter', bubbles: true })
+    )
+    expect(confirm.mock.calls[0][0].detail.value).toBe('search')
+    props.disabled = true
+    await vue.nextTick()
+    const readonly = root.querySelector('input')
+    expect(readonly).not.toBe(field)
+    expect(readonly.readOnly).toBe(true)
+    root.value = 'readonly'
+    expect(readonly.value).toBe('readonly')
+    expect(root.value).toBe('readonly')
+    props.disabled = false
+    props.confirmType = 'done'
+    await vue.nextTick()
+    field = root.querySelector('input')
+    expect(root.querySelector('form')).toBeNull()
+    expect(field.readOnly).toBe(false)
+    root.focus()
+    expect(document.activeElement).toBe(field)
+    root.value = 'restored'
+    expect(field.value).toBe('restored')
+    props.disabled = true
+    await vue.nextTick()
+    expect(root.querySelector('input').readOnly).toBe(true)
+    props.value = 'after-search'
+    await vue.nextTick()
+    expect(root.value).toBe('after-search')
+    props.confirmType = 'search'
+    props.disabled = false
+    await vue.nextTick()
+    expect(root.querySelector('form input')).not.toBeNull()
+    expect(root.querySelector('input').readOnly).toBe(false)
+    props.value = 'twice'
+    await vue.nextTick()
+    jest.advanceTimersByTime(100)
+    await vue.nextTick()
+    expect(root.value).toBe('twice')
+  })
+
+  test.each([false, true])(
+    'Input 搜索模式反复切换后保持值同步、事件和根节点身份，禁用修复=%s',
+    async (fixDisabled) => {
+      jest.useFakeTimers()
+      fixDisabledColor = fixDisabled
+      const props = vue.reactive({ confirmType: 'search', value: 'initial' })
+      const update = jest.fn()
+      const node = vue.shallowRef()
+      const { host } = mount(() => {
+        const component = vue.createComponent(inputs.input, {
+          confirmType: () => props.confirmType,
+          modelValue: () => props.value,
+          'onUpdate:modelValue': () => update,
+        })
+        vue.setStaticTemplateRef(component, node)
+        return component
+      })
+      const root = node.value
+      const focus = root.focus
+      const descriptor = Object.getOwnPropertyDescriptor(root, 'value')
+      for (let i = 0; i < 4; i++) {
+        const previous = root.querySelector('input')
+        props.confirmType = i % 2 ? 'search' : 'done'
+        await vue.nextTick()
+        props.value = 'value-' + i
+        await vue.nextTick()
+        // useField 的外部值同步保留既有 100ms 节流，先完成该任务再检查渲染结果。
+        jest.advanceTimersByTime(100)
+        await vue.nextTick()
+        const field = root.querySelector('input')
+        expect(field).not.toBe(previous)
+        expect(root.value).toBe(props.value)
+        expect(field.value).toBe(props.value)
+        expect(node.value).toBe(root)
+        expect(host.querySelectorAll('div[uni-input]')).toHaveLength(1)
+        expect(root.querySelectorAll('input')).toHaveLength(1)
+        expect(root.focus).toBe(focus)
+        expect(Object.getOwnPropertyDescriptor(root, 'value')).toEqual(
+          descriptor
+        )
+        root.focus()
+        expect(document.activeElement).toBe(field)
+        update.mockClear()
+        field.value = 'typed-' + i
+        field.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
+        await vue.nextTick()
+        jest.advanceTimersByTime(100)
+        await vue.nextTick()
+        expect(update).toHaveBeenCalledTimes(1)
+        expect(update).toHaveBeenCalledWith(field.value)
+      }
     }
   )
 
@@ -600,6 +857,20 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     app.unmount()
     apps.pop()
     expect(label.children).toHaveLength(0)
+  })
+
+  test('Input 非 Vapor 保留旧根节点、Custom Element 和 mounted 属性绑定', async () => {
+    const vdom = await preprocess('vue/input/index.tsx', false)
+    expect(vdom).toContain('class UniInputElement extends UniElement')
+    expect(vdom).toContain('<uni-input ref={rootRef}>')
+    expect(vdom).toContain('rootElement.attachVmProps(props)')
+    expect(vdom).toContain("Object.defineProperty(rootElement, 'value'")
+    expect(vdom).not.toMatch(
+      /element-vapor|initInputElement|native: true|uni-view/
+    )
+    const helper = await preprocess('helpers/component.ts', false)
+    expect(helper).toContain('customElements.define(')
+    expect(helper).not.toContain('rootElement.native')
   })
 
   test.each(['helpers/useField.ts', 'vue/button/index.tsx'])(

@@ -1,74 +1,7 @@
-import { extend, hyphenate } from '@vue/shared'
-import {
-  type ComputedRef,
-  type ExtractPropTypes,
-  type Ref,
-  computed,
-  onMounted,
-  ref,
-  watch,
-  withModifiers,
-} from 'vue'
+import { onMounted, withModifiers } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import {
-  type INPUT_MODE,
-  INPUT_MODES,
-  emit as fieldEmit,
-  props as fieldProps,
-  useField,
-} from '../../helpers/useField'
-import { resolveDigitDecimalPoint } from './utils'
-
-const props = /*#__PURE__*/ extend({}, fieldProps, {
-  placeholderClass: {
-    type: String,
-    default: 'input-placeholder',
-  },
-  textContentType: {
-    type: String,
-    default: '',
-  },
-})
-
-function isPaste(event: InputEvent) {
-  return event.inputType === 'insertFromPaste'
-}
-
-type Props = ExtractPropTypes<typeof props>
-type ResetCache = { fn: (() => void) | null }
-function useCache(props: Props, type: ComputedRef<string>) {
-  if (type.value === 'number') {
-    const value =
-      typeof props.modelValue === 'undefined' ? props.value : props.modelValue
-    const cache = ref(
-      typeof value !== 'undefined' && value !== null
-        ? value.toLocaleString()
-        : ''
-    )
-    watch(
-      () => props.modelValue,
-      (value) => {
-        cache.value =
-          typeof value !== 'undefined' && value !== null
-            ? value.toLocaleString()
-            : ''
-      }
-    )
-    watch(
-      () => props.value,
-      (value) => {
-        cache.value =
-          typeof value !== 'undefined' && value !== null
-            ? value.toLocaleString()
-            : ''
-      }
-    )
-    return cache
-  } else {
-    return ref('')
-  }
-}
+import { emits, props, useInput } from './useInput'
 
 export class UniInputElement extends UniElement {
   focus(options?: FocusOptions | undefined): void {
@@ -79,201 +12,28 @@ export class UniInputElement extends UniElement {
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Input',
   props,
-  emits: ['confirm', ...fieldEmit],
+  emits,
   //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-input',
     class: UniInputElement,
   },
   //#endif
-  setup(props, { emit, expose }) {
-    const INPUT_TYPES = [
-      'text',
-      'number',
-      'idcard',
-      'digit',
-      'password',
-      'tel',
-      'search',
-      'email',
-    ]
-    const AUTOCOMPLETES = ['off', 'one-time-code']
-    const type = computed(() => {
-      let type = ''
-      switch (props.type) {
-        case 'text':
-          type = 'text'
-          if (props.confirmType === 'search') {
-            type = 'search'
-          }
-          break
-        case 'idcard':
-          // TODO 可能要根据不同平台进行区分处理
-          type = 'text'
-          break
-        case 'digit':
-          type = 'number'
-          break
-        case 'none':
-          type = 'text'
-          break
-        default:
-          type = INPUT_TYPES.includes(props.type) ? props.type : 'text'
-          break
-      }
-      return props.password ? 'password' : type
-    })
-    const autocomplete = computed(() => {
-      const camelizeIndex = AUTOCOMPLETES.indexOf(props.textContentType)
-      const kebabCaseIndex = AUTOCOMPLETES.indexOf(
-        hyphenate(props.textContentType)
-      )
-      const index =
-        camelizeIndex !== -1
-          ? camelizeIndex
-          : kebabCaseIndex !== -1
-          ? kebabCaseIndex
-          : 0
-      return AUTOCOMPLETES[index]
-    })
-    const inputmode = computed(() => {
-      // 如果同时配置 type、 inputmode，则以 inputmode 为准。防止与用户之前逻辑冲突
-      if (props.inputmode !== undefined) {
-        return props.inputmode
-      }
-      if (INPUT_MODES.includes(props.type as INPUT_MODE)) {
-        return props.type
-      }
-      let inputmodeMap = {}
-      if (__X__) {
-        inputmodeMap = {
-          number: 'numeric',
-          digit: 'decimal',
-          idcard: 'text',
-        }
-      } else {
-        // iOS 上 inputmode="decimal" 弹出键盘没有负号
-        inputmodeMap = {
-          idcard: 'text',
-        }
-      }
-      return inputmodeMap[props.type]
-    })
-    let cache = useCache(props, type)
-    let resetCache: ResetCache = { fn: null }
-    const rootRef: Ref<HTMLElement | null> = ref(null)
-    const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
-      useField(props, rootRef, emit, (event, state) => {
-        if (__X__) {
-          return
-        }
-
-        const input = event.target as HTMLInputElement
-        if (type.value === 'number') {
-          // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
-          if (resetCache.fn) {
-            input.removeEventListener('blur', resetCache.fn)
-            resetCache.fn = null
-          }
-          if (input.validity && !input.validity.valid) {
-            if (
-              ((!cache.value || !input.value) &&
-                (event as InputEvent).data === '-') ||
-              (cache.value[0] === '-' &&
-                (event as InputEvent).inputType === 'deleteContentBackward')
-            ) {
-              cache.value = '-'
-              state.value = ''
-              resetCache.fn = () => {
-                cache.value = input.value = ''
-              }
-              input.addEventListener('blur', resetCache.fn)
-              return false
-            }
-            // 处理小数点
-            const res = resolveDigitDecimalPoint(
-              event as InputEvent,
-              cache,
-              state,
-              input,
-              resetCache
-            )
-            if (typeof res === 'boolean') return res
-            cache.value =
-              state.value =
-              input.value =
-                cache.value === '-' ? '' : cache.value
-            // 输入非法字符不触发 input 事件
-            return false
-          } else {
-            // 处理小数点
-            const res = resolveDigitDecimalPoint(
-              event as InputEvent,
-              cache,
-              state,
-              input,
-              resetCache
-            )
-            if (typeof res === 'boolean') return res
-
-            cache.value = input.value
-          }
-
-          // type="number" 不支持 maxlength 属性，因此需要主动限制长度。
-          if (
-            state.maxlength > 0 &&
-            input.value.length > state.maxlength &&
-            !isPaste(event as InputEvent)
-          ) {
-            input.value = cache.value = state.value
-            return false
-          }
-        }
-      })
-    watch(
-      () => state.value,
-      (value) => {
-        if (props.type === 'number' && !(cache.value === '-' && value === '')) {
-          cache.value = value.toString()
-        }
-      }
-    )
-    watch(
-      () => props.maxlength,
-      (length) => {
-        length = parseInt(length as any, 10)
-        if (!(length >= 0)) {
-          return
-        }
-        const realValue = state.value.slice(0, length)
-        realValue !== state.value && (state.value = realValue)
-      }
-    )
-    const NUMBER_TYPES = ['number', 'digit']
-    const step = computed(() =>
-      NUMBER_TYPES.includes(props.type) ? props.step : ''
-    )
-
-    function onKeyUpEnter(event: Event) {
-      if ((event as KeyboardEvent).key !== 'Enter') {
-        return
-      }
-      const input = event.target as HTMLInputElement
-      event.stopPropagation()
-      trigger('confirm', event, {
-        value: input.value,
-      })
-      !props.confirmHold && input.blur()
-    }
-
-    expose({
-      $triggerInput: (detail: { value: string }) => {
-        emit('update:modelValue', detail.value)
-        emit('update:value', detail.value)
-        state.value = detail.value
-      },
-    })
-
+  setup(props, context) {
+    const {
+      rootRef,
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      type,
+      autocomplete,
+      inputmode,
+      cache,
+      step,
+      onKeyUpEnter,
+      onInput,
+    } = useInput(props, context)
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniInputElement
@@ -314,33 +74,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ref={fieldRef}
             // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
             value={state.value}
-            onInput={withModifiers(
-              (event: Event) => {
-                const value = (
-                  event.target as HTMLInputElement
-                ).value.toString()
-                if (
-                  type.value === 'number' &&
-                  state.maxlength > 0 &&
-                  value.length > state.maxlength
-                ) {
-                  if (isPaste(event as InputEvent)) {
-                    state.value = value.slice(0, state.maxlength)
-                  }
-                  return
-                }
-                // fix: 已有小数点，再输入小数点时 value 为空，不可赋值 state.value
-                if (
-                  value.length === 0 &&
-                  (event as InputEvent).inputType === 'insertText' &&
-                  (event as InputEvent).data === '.'
-                ) {
-                  return
-                }
-                state.value = value
-              },
-              ['stop']
-            )}
+            onInput={withModifiers(onInput, ['stop'])}
             disabled={!!props.disabled}
             type={type.value}
             maxlength={state.maxlength}

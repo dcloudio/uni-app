@@ -52,7 +52,6 @@ uni-app.uni-app--showtabbar uni-page-wrapper::after {
   display: none;
 }
 
-uni-app uni-input,
 uni-app uni-textarea,
 uni-app uni-match-media {
   font-size: 16px;
@@ -60,17 +59,23 @@ uni-app uni-match-media {
 }
 
 /* input 布局对齐 App 端 */
-uni-app uni-input {
+uni-app div:where([uni-input]) {
   height: auto;
   display: flex;
+  line-height: 1.4em;
+  /* 保留旧 input 的 flex 默认值，不继承基础 view 的纵向布局。 */
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
 }
 
-uni-app uni-input>.uni-input-wrapper {
+uni-app div:where([uni-input])>.uni-input-wrapper {
   height: auto;
   flex: 1;
 }
 
-uni-app uni-input>.uni-input-wrapper>.uni-input-input {
+uni-app div:where([uni-input])>.uni-input-wrapper>.uni-input-input {
   height: auto;
   flex: 1;
 }
@@ -108,7 +113,6 @@ uni-app uni-custom-tab-bar,
 uni-app uni-editor,
 uni-app uni-form,
 uni-app uni-icon,
-uni-app uni-input,
 uni-app uni-label,
 uni-app uni-list-item,
 uni-app uni-list-view,
@@ -177,7 +181,6 @@ uni-app uni-custom-tab-bar[hidden],
 uni-app uni-editor[hidden],
 uni-app uni-form[hidden],
 uni-app uni-icon[hidden],
-uni-app uni-input[hidden],
 uni-app uni-label[hidden],
 uni-app uni-list-item[hidden],
 uni-app uni-list-view[hidden],

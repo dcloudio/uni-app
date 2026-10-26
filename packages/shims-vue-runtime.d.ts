@@ -25,6 +25,8 @@ declare module '@vue/runtime-core' {
           name: string
           class: CustomElementConstructor
           options?: ElementDefinitionOptions
+          // TODO 仅供 Web Vapor 迁移期间跳过 Custom Element 注册，旧组件全部迁移后删除。
+          native?: true
         }
       | 0
   }

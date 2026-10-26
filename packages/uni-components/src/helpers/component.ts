@@ -44,6 +44,11 @@ export const defineBuiltInComponent = ((options: any) => {
       options.rootElement
     if (rootElement) {
       //#if _X_VAPOR_
+      // 已迁移为普通 DOM 的组件只保留 rootElement 契约，供组件 ref 返回根节点。
+      // TODO 旧组件全部迁移后，删除 native 标记、此判断及 Vapor 注册分支，保留非 Vapor 注册。
+      if (rootElement.native) {
+        return defineSystemComponent(options)
+      }
       // TODO Web Vapor 旧组件的过渡适配：共享固定标签名，避免逐实例标记或反复解析 DOM 标签。
       // 待旧组件全部替换或重构为原生宿主后，移除此补丁及 Vapor 的 Custom Element 注册路径；
       // 新组件不得接入此注册机制，非 Vapor 保留原有行为。旧组件范围见 uni-core/src/view/init/index.ts。
