@@ -203,6 +203,17 @@ uni-app div:where([uni-map]) {
   justify-content: normal;
 }
 
+/* Ad 保留旧宿主的块布局和字体继承，广告 SDK 仍使用内部容器。 */
+uni-app div:where([uni-ad]) {
+  display: block;
+  font-size: inherit;
+  text-align: inherit;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
 /* 内部尺寸传感器不使用 uni-view，避免套用业务组件的布局和 Element 能力。 */
 div:where([uni-resize-sensor]),
 div:where([uni-resize-sensor]) > div {
@@ -255,7 +266,6 @@ uni-app uni-ad-fullscreen-video,
 uni-app uni-ad-interactive,
 uni-app uni-ad-interstitial,
 uni-app uni-ad-rewarded-video,
-uni-app uni-ad,
 uni-app uni-animation-view,
 uni-app uni-audio,
 uni-app uni-block,
@@ -326,7 +336,6 @@ uni-app uni-ad-fullscreen-video[hidden],
 uni-app uni-ad-interactive[hidden],
 uni-app uni-ad-interstitial[hidden],
 uni-app uni-ad-rewarded-video[hidden],
-uni-app uni-ad[hidden],
 uni-app uni-animation-view[hidden],
 uni-app uni-audio[hidden],
 uni-app uni-block[hidden],

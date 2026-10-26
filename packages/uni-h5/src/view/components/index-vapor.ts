@@ -2,7 +2,7 @@
 export { default as Video } from './video/index-vapor'
 export { default as WebView } from './web-view/index-vapor'
 export { default as Map } from './map/index-vapor'
-export { default as Ad } from './ad/index'
+export { default as Ad } from './ad/index-vapor'
 export { default as AdContentPage } from './ad-content-page/index'
 export { default as AdDraw } from './ad-draw/index'
 export { default as Camera } from './camera/index'
