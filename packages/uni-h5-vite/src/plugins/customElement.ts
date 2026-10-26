@@ -10,7 +10,7 @@ export function uniCustomElementPlugin(): Plugin {
   return {
     name: 'uni:h5-custom-element',
     transform(code, id) {
-      if (!isVueSfcFile(id)) {
+      if (!isVueSfcFile(id) && !id.includes('vue&type=script')) {
         return
       }
       if (!code.includes('$UniCustomElement$')) {
