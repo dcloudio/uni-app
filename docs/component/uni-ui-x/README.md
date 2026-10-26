@@ -58,22 +58,23 @@ uni-ui x 没有写死的颜色和文字:
 <!-- 组件列表开始 -->
 ### uni-ui x 已支持的组件列表
 
-| 组件名 | 组件说明 |
-| --- | --- |
-| uni-badge-view | [数字角标](https://ext.dcloud.net.cn/plugin?name=uni-badge-view) |
-| uni-collapse | [折叠面板](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x) |
-| uni-combox | [组合框](https://ext.dcloud.net.cn/plugin?name=uni-combox-x) |
-| uni-drag-cell | [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell) |
-| uni-fab-button | [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button) |
-| uni-index-bar | [uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar) |
-| uni-icons | [图标](https://ext.dcloud.net.cn/plugin?name=uni-icons-x) |
-| uni-link | [链接](https://ext.dcloud.net.cn/plugin?name=uni-link-x) |
-| uni-nav-bar | [uni-nav-bar](https://ext.dcloud.net.cn/plugin?name=uni-nav-bar-x) |
-| uni-number-box | [数字输入框](https://ext.dcloud.net.cn/plugin?name=uni-number-box-x) |
-| uni-rate | [评分](https://ext.dcloud.net.cn/plugin?name=uni-rate-x) |
-| uni-refresh-box | [uni-refresh-box](https://ext.dcloud.net.cn/plugin?name=uni-refresh-box) |
-| uni-tab | [选项卡](https://ext.dcloud.net.cn/plugin?name=uni-tab-bar) |
-| uni-time-format | [时间格式化](https://ext.dcloud.net.cn/plugin?name=uni-time-format) |
+| 组件名							| 组件说明																																|
+| ---									| ---																																			|
+| uni-badge-view			| [数字角标](https://ext.dcloud.net.cn/plugin?name=uni-badge-view)				|
+| uni-collapse				| [折叠面板](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)				|
+| uni-combox					| [组合框](https://ext.dcloud.net.cn/plugin?name=uni-combox-x)						|
+| uni-drag-cell				| [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell)		|
+| uni-expandable-text	| [可折叠文本](https://ext.dcloud.net.cn/plugin?name=uni-expandable-text)													|
+| uni-fab-button			| [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)	|
+| uni-index-bar				| [uni-index-bar](https://ext.dcloud.net.cn/plugin?name=uni-index-bar)		|
+| uni-icons						| [图标](https://ext.dcloud.net.cn/plugin?name=uni-icons-x)								|
+| uni-link						| [链接](https://ext.dcloud.net.cn/plugin?name=uni-link-x)								|
+| uni-nav-bar					| [uni-nav-bar](https://ext.dcloud.net.cn/plugin?name=uni-nav-bar-x)			|
+| uni-number-box			| [数字输入框](https://ext.dcloud.net.cn/plugin?name=uni-number-box-x)		|
+| uni-rate						| [评分](https://ext.dcloud.net.cn/plugin?name=uni-rate-x)								|
+| uni-refresh-box			| [uni-refresh-box](https://ext.dcloud.net.cn/plugin?name=uni-refresh-box)|
+| uni-tab							| [选项卡](https://ext.dcloud.net.cn/plugin?name=uni-tab-bar)							|
+| uni-time-format			| [时间格式化](https://ext.dcloud.net.cn/plugin?name=uni-time-format)			|
 <!-- 组件列表结束 -->
 
 ## uni-ui的升级建议@uniuiupgrade
@@ -101,11 +102,11 @@ uni-ui 无法直接升级 uni-ui x，组件名称、用法都有变化。
 |uni-dateformat				|日期格式化							|改用[uni-time-format](https://ext.dcloud.net.cn/plugin?name=uni-time-format)	|
 |uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date													|
 |uni-drawer						|抽屉										|改用内置组件page-container													|
-|uni-easyinput				|增强输入框							|改用内置组件input																		|
+|uni-easyinput				|增强输入框							|改用[uni-easyinput](https://ext.dcloud.net.cn/plugin?name=uni-easyinput)														|
 |uni-fab							|悬浮按钮								|改用[uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)									|
 |uni-fav							|收藏按钮								|无																									|
 |uni-file-picker			|文件选择上传						|无																									|
-|uni-forms						|表单										|改用内置组件form																		|
+|uni-forms						|表单										|改用[uni-forms](https://ext.dcloud.net.cn/plugin?name=uni-forms)|
 |uni-goods-nav				|商品导航								|无																									|
 |uni-grid							|宫格										|无																									|
 |uni-group						|分组										|无																									|
