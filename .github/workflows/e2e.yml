@@ -23,6 +23,8 @@ jobs:
     env:
       CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/node_modules/.cache/Cypress
       ELECTRON_EXTRA_LAUNCH_ARGS: ${{ matrix.os == 'windows-latest' && '--disable-gpu' || '' }}
+      # 记录 Windows 下 Cypress 宿主的启动及退出信息，定位 Chrome 启动前的 GPU 崩溃。
+      DEBUG: ${{ matrix.os == 'windows-latest' && 'cypress:cli,cypress:electron' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
