@@ -1284,12 +1284,20 @@ class UniElement extends Object {
     return this.__uniDatasetMap;
   }
   setAttribute(qualifiedName, value) {
+    if (/^\d/.test(qualifiedName))
+      return;
+    if (qualifiedName.startsWith("data-")) {
+      (this.__uniDataset || (this.__uniDataset = {}))[camelize(qualifiedName.substring(5))] = value;
+    }
     super.setAttribute(qualifiedName, value);
     if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
       this.__uniDatasetMap.set(qualifiedName, value);
     }
   }
   removeAttribute(qualifiedName) {
+    if (this.__uniDataset && qualifiedName.startsWith("data-")) {
+      delete this.__uniDataset[camelize(qualifiedName.substring(5))];
+    }
     super.removeAttribute(qualifiedName);
     if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
       this.__uniDatasetMap.delete(qualifiedName);
@@ -5250,6 +5258,9 @@ function setupPage(comp, path) {
     type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    before(comp2) {
+      comp2.inheritAttrs = false;
+    },
     init: initPage,
     setup(instance) {
       instance.$pageInstance = instance;

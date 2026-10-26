@@ -868,7 +868,12 @@
     };
   });
   function getCustomDataset(el) {
-    return extend({}, el.dataset, el.__uniDataset);
+    var dataset = el.dataset;
+    var target = el;
+    if (target.$uniDataset === dataset) {
+      return dataset;
+    }
+    return extend({}, dataset, target.__uniDataset);
   }
   var unitRE = /* @__PURE__ */ new RegExp(`"[^"]+"|'[^']+'|url\\([^)]+\\)|(\\d*\\.?\\d+)[r|u]px`, "g");
   function toFixed(number, precision) {
@@ -1566,94 +1571,6 @@
   var ViewJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("service"), {
     invokeServiceMethod
   });
-  var LONGPRESS_TIMEOUT = 350;
-  var LONGPRESS_THRESHOLD = 10;
-  var passiveOptions$3 = /* @__PURE__ */ passive(true);
-  var longPressTimer;
-  function clearLongPressTimer() {
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      longPressTimer = null;
-    }
-  }
-  var startPageX = 0;
-  var startPageY = 0;
-  function touchstart(evt) {
-    clearLongPressTimer();
-    if (evt.touches.length !== 1) {
-      return;
-    }
-    var {
-      pageX,
-      pageY
-    } = evt.touches[0];
-    startPageX = pageX;
-    startPageY = pageY;
-    longPressTimer = setTimeout(function() {
-      var customEvent = new CustomEvent("longpress", {
-        bubbles: true,
-        cancelable: true,
-        // @ts-expect-error
-        target: evt.target,
-        currentTarget: evt.currentTarget
-      });
-      customEvent.touches = evt.touches;
-      customEvent.changedTouches = evt.changedTouches;
-      evt.target.dispatchEvent(customEvent);
-    }, LONGPRESS_TIMEOUT);
-  }
-  function touchmove(evt) {
-    if (!longPressTimer) {
-      return;
-    }
-    if (evt.touches.length !== 1) {
-      return clearLongPressTimer();
-    }
-    var {
-      pageX,
-      pageY
-    } = evt.touches[0];
-    if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
-      return clearLongPressTimer();
-    }
-  }
-  function initLongPress() {
-    window.addEventListener("touchstart", touchstart, passiveOptions$3);
-    window.addEventListener("touchmove", touchmove, passiveOptions$3);
-    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
-    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
-  }
-  function checkValue$1(value, defaultValue) {
-    var newValue = Number(value);
-    return isNaN(newValue) ? defaultValue : newValue;
-  }
-  var isApple$1 = () => /^Apple/.test(navigator.vendor);
-  function getWindowWidth() {
-    var isApple2 = /^Apple/.test(navigator.vendor);
-    isApple2 && window.matchMedia("(orientation:landscape)").matches;
-    var windowWidth = isApple2 ? plus.webview.currentWebview().getStyle().width : Math.min(window.innerWidth, document.documentElement.clientWidth);
-    return windowWidth;
-  }
-  function useRem() {
-    var config = __uniConfig.globalStyle || {};
-    var maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
-    var baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
-    function updateRem() {
-      var width = getWindowWidth();
-      width = width <= maxWidth2 ? width : baseWidth2;
-      document.documentElement.style.fontSize = width / 23.4375 + "px";
-    }
-    updateRem();
-    document.addEventListener("DOMContentLoaded", updateRem);
-    window.addEventListener("load", updateRem);
-    window.addEventListener("resize", updateRem);
-    if (isApple$1()) {
-      window.addEventListener("orientationchange", () => {
-        updateRem();
-        setTimeout(updateRem, 50);
-      });
-    }
-  }
   var _strictMethod;
   var hasRequired_strictMethod;
   function require_strictMethod() {
@@ -7212,6 +7129,94 @@
     var fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
     fromRouteArray.splice(fromRouteArray.length - i2 - 1, i2 + 1);
     return addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
+  }
+  var LONGPRESS_TIMEOUT = 350;
+  var LONGPRESS_THRESHOLD = 10;
+  var passiveOptions$3 = /* @__PURE__ */ passive(true);
+  var longPressTimer;
+  function clearLongPressTimer() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+  var startPageX = 0;
+  var startPageY = 0;
+  function touchstart(evt) {
+    clearLongPressTimer();
+    if (evt.touches.length !== 1) {
+      return;
+    }
+    var {
+      pageX,
+      pageY
+    } = evt.touches[0];
+    startPageX = pageX;
+    startPageY = pageY;
+    longPressTimer = setTimeout(function() {
+      var customEvent = new CustomEvent("longpress", {
+        bubbles: true,
+        cancelable: true,
+        // @ts-expect-error
+        target: evt.target,
+        currentTarget: evt.currentTarget
+      });
+      customEvent.touches = evt.touches;
+      customEvent.changedTouches = evt.changedTouches;
+      evt.target.dispatchEvent(customEvent);
+    }, LONGPRESS_TIMEOUT);
+  }
+  function touchmove(evt) {
+    if (!longPressTimer) {
+      return;
+    }
+    if (evt.touches.length !== 1) {
+      return clearLongPressTimer();
+    }
+    var {
+      pageX,
+      pageY
+    } = evt.touches[0];
+    if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
+      return clearLongPressTimer();
+    }
+  }
+  function initLongPress() {
+    window.addEventListener("touchstart", touchstart, passiveOptions$3);
+    window.addEventListener("touchmove", touchmove, passiveOptions$3);
+    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$3);
+    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$3);
+  }
+  function checkValue$1(value, defaultValue) {
+    var newValue = Number(value);
+    return isNaN(newValue) ? defaultValue : newValue;
+  }
+  var isApple$1 = () => /^Apple/.test(navigator.vendor);
+  function getWindowWidth() {
+    var isApple2 = /^Apple/.test(navigator.vendor);
+    isApple2 && window.matchMedia("(orientation:landscape)").matches;
+    var windowWidth = isApple2 ? plus.webview.currentWebview().getStyle().width : Math.min(window.innerWidth, document.documentElement.clientWidth);
+    return windowWidth;
+  }
+  function useRem() {
+    var config = __uniConfig.globalStyle || {};
+    var maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+    var baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
+    function updateRem() {
+      var width = getWindowWidth();
+      width = width <= maxWidth2 ? width : baseWidth2;
+      document.documentElement.style.fontSize = width / 23.4375 + "px";
+    }
+    updateRem();
+    document.addEventListener("DOMContentLoaded", updateRem);
+    window.addEventListener("load", updateRem);
+    window.addEventListener("resize", updateRem);
+    if (isApple$1()) {
+      window.addEventListener("orientationchange", () => {
+        updateRem();
+        setTimeout(updateRem, 50);
+      });
+    }
   }
   function initView() {
     useRem();

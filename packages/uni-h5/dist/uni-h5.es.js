@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, openBlock, createElementBlock, defineComponent, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createElementVNode, toDisplayString, unref, onBeforeActivate, onBeforeDeactivate, createBlock, onDeactivated, createApp, Transition, effectScope, renderList, normalizeClass, normalizeStyle, createCommentVNode, withCtx, KeepAlive, resolveDynamicComponent } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, onCreateVueApp, formatDateTime, RESPONSIVE_MIN_WIDTH, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, passive, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, onCreateVueApp, formatDateTime, RESPONSIVE_MIN_WIDTH, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -660,93 +660,6 @@ const ViewJSBridge = /* @__PURE__ */ extend(
     invokeServiceMethod
   }
 );
-const LONGPRESS_TIMEOUT = 350;
-const LONGPRESS_THRESHOLD = 10;
-const passiveOptions$4 = /* @__PURE__ */ passive(true);
-let longPressTimer;
-function clearLongPressTimer() {
-  if (longPressTimer) {
-    clearTimeout(longPressTimer);
-    longPressTimer = null;
-  }
-}
-let startPageX = 0;
-let startPageY = 0;
-function touchstart(evt) {
-  clearLongPressTimer();
-  if (evt.touches.length !== 1) {
-    return;
-  }
-  const { pageX, pageY } = evt.touches[0];
-  startPageX = pageX;
-  startPageY = pageY;
-  longPressTimer = setTimeout(function() {
-    const customEvent = new CustomEvent("longpress", {
-      bubbles: true,
-      cancelable: true,
-      // @ts-expect-error
-      target: evt.target,
-      currentTarget: evt.currentTarget
-    });
-    customEvent.touches = evt.touches;
-    customEvent.changedTouches = evt.changedTouches;
-    evt.target.dispatchEvent(customEvent);
-  }, LONGPRESS_TIMEOUT);
-}
-function touchmove(evt) {
-  if (!longPressTimer) {
-    return;
-  }
-  if (evt.touches.length !== 1) {
-    return clearLongPressTimer();
-  }
-  const { pageX, pageY } = evt.touches[0];
-  if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
-    return clearLongPressTimer();
-  }
-}
-function initLongPress() {
-  window.addEventListener("touchstart", touchstart, passiveOptions$4);
-  window.addEventListener("touchmove", touchmove, passiveOptions$4);
-  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$4);
-  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$4);
-}
-function checkValue$1(value, defaultValue) {
-  const newValue = Number(value);
-  return isNaN(newValue) ? defaultValue : newValue;
-}
-const isApple$1 = () => /^Apple/.test(navigator.vendor);
-function getWindowWidth$1() {
-  const isApple2 = /^Apple/.test(navigator.vendor);
-  const screenFix = isApple2 && window.matchMedia("(orientation:landscape)").matches;
-  var screenWidth = screenFix ? Math.max(screen.width, screen.height) : screen.width;
-  var windowWidth = isApple2 ? Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
-  return windowWidth;
-}
-function useRem() {
-  const config = __uniConfig.globalStyle || {};
-  const maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
-  const baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
-  function updateRem() {
-    let width = getWindowWidth$1();
-    width = width <= maxWidth2 ? width : baseWidth2;
-    document.documentElement.style.fontSize = width / 23.4375 + "px";
-  }
-  updateRem();
-  document.addEventListener("DOMContentLoaded", updateRem);
-  window.addEventListener("load", updateRem);
-  window.addEventListener("resize", updateRem);
-  if (isApple$1()) {
-    window.addEventListener("orientationchange", () => {
-      updateRem();
-      setTimeout(updateRem, 50);
-    });
-  }
-}
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
@@ -1337,6 +1250,93 @@ function getPageInstanceByChild(child) {
     pageInstance = pageInstance.parent;
   }
   return pageInstance;
+}
+const LONGPRESS_TIMEOUT = 350;
+const LONGPRESS_THRESHOLD = 10;
+const passiveOptions$4 = /* @__PURE__ */ passive(true);
+let longPressTimer;
+function clearLongPressTimer() {
+  if (longPressTimer) {
+    clearTimeout(longPressTimer);
+    longPressTimer = null;
+  }
+}
+let startPageX = 0;
+let startPageY = 0;
+function touchstart(evt) {
+  clearLongPressTimer();
+  if (evt.touches.length !== 1) {
+    return;
+  }
+  const { pageX, pageY } = evt.touches[0];
+  startPageX = pageX;
+  startPageY = pageY;
+  longPressTimer = setTimeout(function() {
+    const customEvent = new CustomEvent("longpress", {
+      bubbles: true,
+      cancelable: true,
+      // @ts-expect-error
+      target: evt.target,
+      currentTarget: evt.currentTarget
+    });
+    customEvent.touches = evt.touches;
+    customEvent.changedTouches = evt.changedTouches;
+    evt.target.dispatchEvent(customEvent);
+  }, LONGPRESS_TIMEOUT);
+}
+function touchmove(evt) {
+  if (!longPressTimer) {
+    return;
+  }
+  if (evt.touches.length !== 1) {
+    return clearLongPressTimer();
+  }
+  const { pageX, pageY } = evt.touches[0];
+  if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
+    return clearLongPressTimer();
+  }
+}
+function initLongPress() {
+  window.addEventListener("touchstart", touchstart, passiveOptions$4);
+  window.addEventListener("touchmove", touchmove, passiveOptions$4);
+  window.addEventListener("touchend", clearLongPressTimer, passiveOptions$4);
+  window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$4);
+}
+function checkValue$1(value, defaultValue) {
+  const newValue = Number(value);
+  return isNaN(newValue) ? defaultValue : newValue;
+}
+const isApple$1 = () => /^Apple/.test(navigator.vendor);
+function getWindowWidth$1() {
+  const isApple2 = /^Apple/.test(navigator.vendor);
+  const screenFix = isApple2 && window.matchMedia("(orientation:landscape)").matches;
+  var screenWidth = screenFix ? Math.max(screen.width, screen.height) : screen.width;
+  var windowWidth = isApple2 ? Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
+  return windowWidth;
+}
+function useRem() {
+  const config = __uniConfig.globalStyle || {};
+  const maxWidth2 = checkValue$1(config.rpxCalcMaxDeviceWidth, 960);
+  const baseWidth2 = checkValue$1(config.rpxCalcBaseDeviceWidth, 375);
+  function updateRem() {
+    let width = getWindowWidth$1();
+    width = width <= maxWidth2 ? width : baseWidth2;
+    document.documentElement.style.fontSize = width / 23.4375 + "px";
+  }
+  updateRem();
+  document.addEventListener("DOMContentLoaded", updateRem);
+  window.addEventListener("load", updateRem);
+  window.addEventListener("resize", updateRem);
+  if (isApple$1()) {
+    window.addEventListener("orientationchange", () => {
+      updateRem();
+      setTimeout(updateRem, 50);
+    });
+  }
 }
 function initView() {
   useRem();

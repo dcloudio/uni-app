@@ -1,4 +1,4 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, initVaporDataset, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
 import { withModifiers, setAttr, template, getCurrentInstance, warn, unref, ref, onMounted, watch, onBeforeUnmount, reactive, shallowRef, watchEffect, defineVaporComponent, createPlainElement, createTemplateRefSetter, renderEffect, inject, onUnmounted, Fragment, EffectScope, extend as extend$1, computed, onBeforeMount, nextTick, setBlockKey, on as on$1, setValue, setProp, setStyle, child, applyVShow, txt, setDynamicProps, setInsertionState, createIf, onActivated, setClassName, next, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, isInSSRComponentSetup, useAttrs as useAttrs$1, useSlots, normalizeUniText, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
@@ -650,6 +650,12 @@ function useRem() {
       updateRem();
       setTimeout(updateRem, 50);
     });
+  }
+}
+function initView() {
+  useRem();
+  if (__UNI_FEATURE_LONGPRESS__) {
+    initLongPress();
   }
 }
 function getDefaultExportFromCjs(x) {
@@ -1498,15 +1504,6 @@ function createInitUniAppVmMethodWarnings() {
   };
 }
 const initUniAppVmMethodWarnings = process.env.NODE_ENV !== "production" ? createInitUniAppVmMethodWarnings() : () => /* @__PURE__ */ new Set();
-function initView() {
-  useRem();
-  initCustomDatasetOnce(
-    (el) => el.localName.startsWith("uni-") && isBuiltInElement(el)
-  );
-  if (__UNI_FEATURE_LONGPRESS__) {
-    initLongPress();
-  }
-}
 class ComponentDescriptor {
   constructor(vm) {
     this.$bindClass = false;
@@ -2538,12 +2535,20 @@ class UniElement extends HTMLElement {
     return this.__uniDatasetMap;
   }
   setAttribute(qualifiedName, value) {
+    if (/^\d/.test(qualifiedName))
+      return;
+    if (qualifiedName.startsWith("data-")) {
+      (this.__uniDataset || (this.__uniDataset = {}))[camelize(qualifiedName.substring(5))] = value;
+    }
     super.setAttribute(qualifiedName, value);
     if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
       this.__uniDatasetMap.set(qualifiedName, value);
     }
   }
   removeAttribute(qualifiedName) {
+    if (this.__uniDataset && qualifiedName.startsWith("data-")) {
+      delete this.__uniDataset[camelize(qualifiedName.substring(5))];
+    }
     super.removeAttribute(qualifiedName);
     if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
       this.__uniDatasetMap.delete(qualifiedName);
@@ -11887,6 +11892,9 @@ function setupPage(comp, path) {
     type: "page",
     clone: true,
     // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    before(comp2) {
+      comp2.inheritAttrs = false;
+    },
     init: initPage,
     setup(instance2) {
       instance2.$pageInstance = instance2;
@@ -16942,6 +16950,7 @@ function installWebVaporElements(realm) {
       }
     }
   }
+  initVaporDataset(realm);
 }
 const FORM_KEY = "UNI_FORM_CTX";
 const LABEL_KEY = "UNI_LABEL_CTX";
