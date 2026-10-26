@@ -1294,7 +1294,7 @@ function transformRpx(value) {
   }
   return value;
 }
-class UniElement extends Object {
+let UniElement$1 = class UniElement extends Object {
   constructor() {
     super();
     this._props = {};
@@ -1377,7 +1377,8 @@ class UniElement extends Object {
   get nodeName() {
     return super.nodeName.replace(/^UNI-/, "");
   }
-}
+};
+const UniElement2 = UniElement$1;
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -10357,7 +10358,7 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
   2
   /* HookFlags.PAGE */
 );
-class UniPageContainerElement extends UniElement {
+class UniPageContainerElement extends UniElement2 {
 }
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;

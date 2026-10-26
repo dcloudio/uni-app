@@ -71,9 +71,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.ts'
+  import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, classes, toStringOrEmpty } from '../common.ts'
   import { UniCheckboxElement } from './global.ts'
-  import { LabelContext, CheckboxGroupContext } from '../types.ts'
+  import { ActivatableChild, LabelContext, CheckboxGroupContext } from '../types.ts'
 
   interface CheckboxProps {
     /**
@@ -298,6 +298,7 @@
 
   const group = inject<CheckboxGroupContext | null>(CHECKBOX_GROUP_KEY, null)
   const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+  let unregisterLabelTarget: (() => void) | null = null
 
   const setChecked = (checked : boolean, syncGroup : boolean) => {
     if (isChecked.value == checked) {
@@ -326,8 +327,7 @@
       })
     }
     // Register with enclosing label if any
-    if (labelCtx != null) {
-      labelCtx.register({
+    const target: ActivatableChild = {
         id: id || toStringOrEmpty(props.value),
         activate: (event: UniPointerEvent) => {
           const element = proxy?.$el
@@ -336,7 +336,12 @@
           }
         },
         getDisabled: () => props.disabled
-      })
+    }
+    if (labelCtx != null) {
+      labelCtx.register(target)
+    }
+    if (id != null && id.length > 0) {
+      unregisterLabelTarget = registerLabelTarget(id, target)
     }
   })
 
@@ -347,6 +352,8 @@
     if (labelCtx != null) {
       labelCtx.unregister(id || toStringOrEmpty(props.value))
     }
+    unregisterLabelTarget?.()
+    unregisterLabelTarget = null
   })
 
   const handleTap = () => {

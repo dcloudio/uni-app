@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-  import { FORM_KEY, LABEL_KEY } from '../common.ts'
+  import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget } from '../common.ts'
   import { UniSliderChangeEvent, UniSliderElement } from './global.ts'
 
   type UnRegisterField = (name : string) => void
@@ -76,7 +76,7 @@
     registerField : (field : SliderInFormContextField) => void,
     unregisterField : UnRegisterField
   }
-  type LabelContextRegChild = { id ?: string, getDisabled ?: () => boolean }
+  type LabelContextRegChild = { id ?: string, activate: (event: UniPointerEvent) => void, getDisabled ?: () => boolean }
   type LabelContextReg = {
     register : (child : LabelContextRegChild) => void
     unregister : (id ?: string) => void
@@ -360,6 +360,7 @@
 
   const attrs = useAttrs()
   const id = attrs.id
+  let unregisterLabelTarget: (() => void) | null = null
 
   // Props 定义
   const props = withDefaults(defineProps<SliderProps>(), {
@@ -847,10 +848,16 @@
     // register with label if available
     const labelCtx = inject<LabelContextReg | null>(LABEL_KEY, null)
     if (labelCtx != null) {
-      labelCtx.register({
+      const target: LabelContextRegChild = {
         id: id.length > 0 ? id : props.name,
+        activate: (event: UniPointerEvent) => {
+          const element = thumbRef.value
+          if (element != null) dispatchLabelClick(element, event)
+        },
         getDisabled: () => props.disabled
-      })
+      }
+      labelCtx.register(target)
+      if (id.length > 0) unregisterLabelTarget = registerLabelTarget(id, target)
     }
 
     // #ifdef WEB
@@ -877,6 +884,8 @@
         labelCtx.unregister(props.name)
       }
     }
+    unregisterLabelTarget?.()
+    unregisterLabelTarget = null
     resetInteractionState()
   })
   onBeforeUnmount(() => {

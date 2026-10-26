@@ -22,9 +22,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { FORM_KEY, LABEL_KEY, dispatchLabelClick, classes } from '../common.ts'
+  import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, classes } from '../common.ts'
   import { UniSwitchElement } from './global.ts'
-  import { FormContext, LabelContext } from '../types.ts'
+  import { ActivatableChild, FormContext, LabelContext } from '../types.ts'
 
   interface SwitchProps {
     /**
@@ -246,6 +246,7 @@
 
   const formCtx = inject<FormContext | null>(FORM_KEY, null)
   const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+  let unregisterLabelTarget: (() => void) | null = null
 
   const isChecked = ref(props.checked)
   const activeStyle = computed(() => {
@@ -276,8 +277,7 @@
       })
     }
     // register with label if available
-    if (labelCtx != null) {
-      labelCtx.register({
+    const target: ActivatableChild = {
         id: id || props.name,
         activate: (event: UniPointerEvent) => {
           const element = proxy?.$el
@@ -286,7 +286,12 @@
           }
         },
         getDisabled: () => props.disabled
-      })
+    }
+    if (labelCtx != null) {
+      labelCtx.register(target)
+    }
+    if (id != null && id.length > 0) {
+      unregisterLabelTarget = registerLabelTarget(id, target)
     }
 
     enableTransition.value = true
@@ -299,6 +304,8 @@
     if (labelCtx != null) {
       labelCtx.unregister(id || props.name)
     }
+    unregisterLabelTarget?.()
+    unregisterLabelTarget = null
   })
 
   const handleTap = () => {

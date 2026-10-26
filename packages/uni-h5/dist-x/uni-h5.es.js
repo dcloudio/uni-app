@@ -2366,7 +2366,7 @@ function transformRpx(value) {
   }
   return value;
 }
-class UniElement extends HTMLElement {
+let UniElement$1 = class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
@@ -2449,9 +2449,10 @@ class UniElement extends HTMLElement {
   get nodeName() {
     return super.nodeName.replace(/^UNI-/, "");
   }
-}
+};
+const UniElement2 = UniElement$1;
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-class UniFormElement extends UniElement {
+class UniFormElement extends UniElement2 {
 }
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -2521,7 +2522,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-class UniLabelElement extends UniElement {
+class UniLabelElement extends UniElement2 {
 }
 const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
@@ -2664,7 +2665,7 @@ const buttonProps = {
     default: false
   }
 };
-class UniButtonElement extends UniElement {
+class UniButtonElement extends UniElement2 {
 }
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
@@ -2737,7 +2738,7 @@ const props$t = {
     default: false
   }
 };
-class UniCanvasElement extends UniElement {
+class UniCanvasElement extends UniElement2 {
   get width() {
     return this.querySelector("canvas").width;
   }
@@ -2796,7 +2797,7 @@ const props$s = {
     default: ""
   }
 };
-class UniCheckboxGroupElement extends UniElement {
+class UniCheckboxGroupElement extends UniElement2 {
 }
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
@@ -2907,7 +2908,7 @@ const props$r = {
     default: ""
   }
 };
-class UniCheckboxElement extends UniElement {
+class UniCheckboxElement extends UniElement2 {
 }
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
@@ -12463,7 +12464,7 @@ const props$p = /* @__PURE__ */ extend({}, props$q, {
     default: false
   }
 });
-class UniEditorElement extends UniElement {
+class UniEditorElement extends UniElement2 {
 }
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
@@ -12535,7 +12536,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-class UniIconElement extends UniElement {
+class UniIconElement extends UniElement2 {
 }
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
@@ -12678,7 +12679,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-class UniImageElement extends UniElement {
+class UniImageElement extends UniElement2 {
 }
 const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
@@ -13434,7 +13435,7 @@ function useCache(props2, type) {
     return ref("");
   }
 }
-class UniInputElement extends UniElement {
+class UniInputElement extends UniElement2 {
   focus(options) {
     var _a;
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
@@ -13726,7 +13727,7 @@ const movableAreaProps = {
   }
 };
 const useMovableAreaChildren = useMovableAreaChildren$1;
-class UniMovableAreaElement extends UniElement {
+class UniMovableAreaElement extends UniElement2 {
 }
 const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
@@ -14392,7 +14393,7 @@ const movableViewProps = {
 function v(a2, b) {
   return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
 }
-class UniMovableViewElement extends UniElement {
+class UniMovableViewElement extends UniElement2 {
 }
 const MovableView = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
@@ -15223,7 +15224,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-class UniNavigatorElement extends UniElement {
+class UniNavigatorElement extends UniElement2 {
 }
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
@@ -15324,7 +15325,7 @@ function useState$3(props2) {
   });
   return state2;
 }
-class UniPickerViewElement extends UniElement {
+class UniPickerViewElement extends UniElement2 {
 }
 const PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
@@ -16152,7 +16153,7 @@ function useCustomClick(dom) {
     }
   });
 }
-class UniPickerViewColumnElement extends UniElement {
+class UniPickerViewColumnElement extends UniElement2 {
 }
 const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
@@ -16393,7 +16394,7 @@ const progressProps = {
     default: 0
   }
 };
-class UniProgressElement extends UniElement {
+class UniProgressElement extends UniElement2 {
 }
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
@@ -16509,7 +16510,7 @@ const props$l = {
     default: ""
   }
 };
-class UniRadioGroupElement extends UniElement {
+class UniRadioGroupElement extends UniElement2 {
 }
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
@@ -16652,7 +16653,7 @@ const props$k = {
     default: ""
   }
 };
-class UniRadioElement extends UniElement {
+class UniRadioElement extends UniElement2 {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
@@ -17018,7 +17019,7 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
   );
 }
 const renderRichText = renderRichText$1;
-class UniRichTextElement extends UniElement {
+class UniRichTextElement extends UniElement2 {
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
@@ -17342,7 +17343,7 @@ const props$i = {
     default: false
   }
 };
-class UniScrollViewElement extends UniElement {
+class UniScrollViewElement extends UniElement2 {
 }
 const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
@@ -17928,7 +17929,7 @@ const props$h = {
 const getValuePercentage = (value, min, max) => {
   return 100 * (value - min) / (max - min) + "%";
 };
-class UniSliderElement extends UniElement {
+class UniSliderElement extends UniElement2 {
   constructor() {
     super(...arguments);
     __publicField(this, "_initialValue", 0);
@@ -18625,7 +18626,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
     swiperEnabled
   };
 }
-class UniSwiperElement extends UniElement {
+class UniSwiperElement extends UniElement2 {
 }
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
@@ -18867,7 +18868,7 @@ const props$f = {
     default: ""
   }
 };
-class UniSwiperItemElement extends UniElement {
+class UniSwiperItemElement extends UniElement2 {
 }
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
@@ -18970,7 +18971,7 @@ const props$e = {
     default: ""
   }
 };
-class UniSwitchElement extends UniElement {
+class UniSwitchElement extends UniElement2 {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
@@ -19127,7 +19128,7 @@ function normalizeText(text2, { space, decode: decode2 }) {
 function parseTextIgnoreLinefeed(text2, options) {
   return normalizeText(text2, options);
 }
-class UniTextElement extends UniElement {
+class UniTextElement extends UniElement2 {
 }
 const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -19216,7 +19217,7 @@ function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
 }
-class UniTextareaElement extends UniElement {
+class UniTextareaElement extends UniElement2 {
   focus(options) {
     var _a;
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
@@ -19401,7 +19402,7 @@ const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniViewElement extends UniElement {
+class UniViewElement extends UniElement2 {
 }
 const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
@@ -19530,7 +19531,7 @@ const props$c = {
     default: false
   }
 };
-class UniListViewElement extends UniElement {
+class UniListViewElement extends UniElement2 {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
@@ -20135,7 +20136,7 @@ function getSize(isVertical, el) {
     return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
   }
 }
-class UniListItemElement extends UniElement {
+class UniListItemElement extends UniElement2 {
 }
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
@@ -20203,7 +20204,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniStickySectionElement extends UniElement {
+class UniStickySectionElement extends UniElement2 {
 }
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
@@ -20267,7 +20268,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniStickyHeaderElement extends UniElement {
+class UniStickyHeaderElement extends UniElement2 {
 }
 const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
@@ -20353,7 +20354,7 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
   2
   /* HookFlags.PAGE */
 );
-class UniPageContainerElement extends UniElement {
+class UniPageContainerElement extends UniElement2 {
 }
 const MAX_SLIDER_DISTANCE = 100;
 const MIN_SLIDER_VELOCITY = 0.3;
@@ -21732,7 +21733,7 @@ const props$b = {
     default: true
   }
 };
-class UniVideoElement extends UniElement {
+class UniVideoElement extends UniElement2 {
 }
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
@@ -22010,7 +22011,7 @@ const props$a = {
     default: ""
   }
 };
-class UniWebViewElement extends UniElement {
+class UniWebViewElement extends UniElement2 {
 }
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
@@ -27342,7 +27343,7 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-class UniMapElement extends UniElement {
+class UniMapElement extends UniElement2 {
 }
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
@@ -27388,7 +27389,7 @@ const props$1 = {
     default: 0
   }
 };
-class UniCoverViewElement extends UniElement {
+class UniCoverViewElement extends UniElement2 {
 }
 const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
@@ -27441,7 +27442,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniCoverImageElement extends UniElement {
+class UniCoverImageElement extends UniElement2 {
 }
 const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
@@ -27626,7 +27627,7 @@ const props = {
     default: ""
   }
 };
-class UniPickerElement extends UniElement {
+class UniPickerElement extends UniElement2 {
 }
 const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
@@ -33957,8 +33958,8 @@ export {
   UniCoverViewElement,
   UniEditorElement,
   UniEditorElement as UniEditorElementImpl,
-  UniElement,
-  UniElement as UniElementImpl,
+  UniElement2 as UniElement,
+  UniElement2 as UniElementImpl,
   UniError2 as UniError,
   UniFormElement,
   UniFormElement as UniFormElementImpl,

@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-    import { FORM_KEY } from '../common.ts'
+    import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget } from '../common.ts'
     import { UniPickerElement } from './global.ts'
-    import { FormContext } from '../types.ts'
+    import { ActivatableChild, FormContext, LabelContext } from '../types.ts'
 	
     const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
     const baseEventName = `uni_picker_${uuid}`
@@ -261,6 +261,11 @@
     }>()
 
     const formCtx = inject<FormContext | null>(FORM_KEY, null)
+    const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+    const attrs = useAttrs()
+    const id = attrs.id
+    const proxy = getCurrentInstance()?.proxy
+    let unregisterLabelTarget: (() => void) | null = null
 
     const innerValue = ref<any>(props.value)
     const initialValue = ref<any>('')
@@ -341,6 +346,16 @@
 
     onMounted(() => {
         initialValue.value = props.value
+        const target: ActivatableChild = {
+            id: id,
+            activate: (event: UniPointerEvent) => {
+                const element = proxy?.$el
+                if (element != null) dispatchLabelClick(element, event)
+            },
+            getDisabled: () => props.disabled
+        }
+        if (labelCtx != null) labelCtx.register(target)
+        if (id != null && id.length > 0) unregisterLabelTarget = registerLabelTarget(id, target)
         // register with form if available
         if (formCtx && props.name) {
             formCtx.registerField({
@@ -385,6 +400,9 @@
     })
 
     onUnmounted(() => {
+        if (labelCtx != null) labelCtx.unregister(id)
+        unregisterLabelTarget?.()
+        unregisterLabelTarget = null
         if (formCtx && props.name) {
             formCtx.unregisterField(props.name)
         }

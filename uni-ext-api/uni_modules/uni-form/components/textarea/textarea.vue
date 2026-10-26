@@ -48,6 +48,8 @@
 	// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 	import { hasRecentEditorTouch, markEditorTouchStart } from "../common.ts"
 	// #endif
+	import { LABEL_KEY, dispatchLabelClick, registerLabelTarget } from "../common.ts"
+	import { ActivatableChild, LabelContext } from "../types.ts"
 
 	const keyboardHeight = ref(0)
 	const isFocusing = ref(false)
@@ -55,6 +57,10 @@
 	const adjustPosition = computed(() => Boolean(props.adjustPosition))
 
 	const proxy = getCurrentInstance()?.proxy
+	const attrs = useAttrs()
+	const id = attrs.id
+	const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+	let unregisterLabelTarget: (() => void) | null = null
 	// #ifdef APP-HARMONY
 	// 通过变量持有 UniTextareaElement 实例，避免被回收，待框架调整 $el 实现后可尝试移除
 	let textareaElement : UniTextareaElement | null = null
@@ -1096,6 +1102,16 @@
 		// #endif
 
 		const formCtx = inject<TextareaInFormContext | null>(FORM_KEY, null)
+		const target: ActivatableChild = {
+			id: id,
+			activate: (event: UniPointerEvent) => {
+				const element = proxy?.$el
+				if (element != null) dispatchLabelClick(element, event)
+			},
+			getDisabled: () => Boolean(props.disabled)
+		}
+		if (labelCtx != null) labelCtx.register(target)
+		if (id != null && id.length > 0) unregisterLabelTarget = registerLabelTarget(id, target)
 		if (formCtx && props.name) {
 			formCtx.registerField({
 				name: props.name,
@@ -1139,6 +1155,9 @@
 		// #endif
 
 		const formCtx = inject<{ unregisterField : (name : string) => void } | null>(FORM_KEY, null)
+		if (labelCtx != null) labelCtx.unregister(id)
+		unregisterLabelTarget?.()
+		unregisterLabelTarget = null
 		if (formCtx && props.name) {
 			formCtx.unregisterField(props.name)
 		}

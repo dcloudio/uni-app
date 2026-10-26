@@ -1201,7 +1201,7 @@ function transformRpx(value) {
   }
   return value;
 }
-class UniElement extends Object {
+let UniElement$1 = class UniElement extends Object {
   constructor() {
     super(...arguments);
     this._props = {};
@@ -1291,13 +1291,14 @@ class UniElement extends Object {
   get nodeName() {
     return super.nodeName.replace(/^UNI-/, "");
   }
-}
+};
+const UniElement2 = UniElement$1;
 const _t0$9 = Vue.template("<canvas class=uni-canvas-canvas>");
 const props$f = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
-class UniCanvasElement extends UniElement {
+class UniCanvasElement extends UniElement2 {
   get width() {
     return this.querySelector("canvas").width;
   }
@@ -1619,7 +1620,7 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-class UniButtonElement extends UniElement {
+class UniButtonElement extends UniElement2 {
 }
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
@@ -2173,7 +2174,7 @@ function useCache(props2, type) {
     return Vue.ref("");
   }
 }
-class UniInputElement extends UniElement {
+class UniInputElement extends UniElement2 {
   focus(options) {
     var _a;
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
@@ -2446,7 +2447,7 @@ const ConfirmTypes = [
   "search",
   "send"
 ];
-class UniTextareaElement extends UniElement {
+class UniTextareaElement extends UniElement2 {
   focus(options) {
     var _a;
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
@@ -6405,7 +6406,7 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$e, {
     default: false
   }
 });
-class UniEditorElement extends UniElement {
+class UniEditorElement extends UniElement2 {
 }
 const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
@@ -6477,7 +6478,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-class UniIconElement extends UniElement {
+class UniIconElement extends UniElement2 {
 }
 const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
@@ -6538,7 +6539,7 @@ const movableAreaProps = {
   }
 };
 const useMovableAreaChildren = useMovableAreaChildren$1;
-class UniMovableAreaElement extends UniElement {
+class UniMovableAreaElement extends UniElement2 {
 }
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
@@ -7091,7 +7092,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-class UniMovableViewElement extends UniElement {
+class UniMovableViewElement extends UniElement2 {
 }
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
@@ -7936,7 +7937,7 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
   return root;
 }
 const renderRichText = renderRichText$1;
-class UniRichTextElement extends UniElement {
+class UniRichTextElement extends UniElement2 {
 }
 const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
@@ -8198,7 +8199,7 @@ const props$8 = {
     default: false
   }
 };
-class UniScrollViewElement extends UniElement {
+class UniScrollViewElement extends UniElement2 {
 }
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
@@ -8530,7 +8531,7 @@ function getUniTagName(value) {
       return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
   }
 }
-const NativeUniElement = UniElement;
+const NativeUniElement = UniElement2;
 class UniViewElement extends NativeUniElement {
   static [Symbol.hasInstance](value) {
     return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
@@ -8551,6 +8552,15 @@ const LABEL_KEY = "UNI_LABEL_CTX";
 const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
 const CHECKBOX_GROUP_KEY = "UNI_CHECKBOX_GROUP_CTX";
 const PICKER_VIEW_KEY = "UNI_PICKER_VIEW_CTX";
+const labelTargets = /* @__PURE__ */ new Map();
+function findLabelTarget(id2) {
+  if (id2.length === 0)
+    return null;
+  const targets = labelTargets.get(id2);
+  if (targets == null || targets.length === 0)
+    return null;
+  return targets[targets.length - 1];
+}
 function toStringOrEmpty(val) {
   if (val == null) {
     return "";
@@ -9045,13 +9055,16 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
     const ctx = { register, unregister };
     Vue.provide(LABEL_KEY, ctx);
     function findTarget() {
-      if (children.length === 0)
-        return null;
       if (props2.for && props2.for.length > 0) {
         const byId = children.find((c) => c.id === props2.for);
         if (byId)
           return byId;
+        const byScopeId = findLabelTarget(props2.for);
+        if (byScopeId)
+          return byScopeId;
       }
+      if (children.length === 0)
+        return null;
       return children[0];
     }
     const handleTap = (event) => {
@@ -10200,6 +10213,7 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   emits: ["change", "columnchange", "cancel"],
   setup(__props, { expose: __expose, emit: __emit }) {
+    var _a;
     const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
     const baseEventName = `uni_picker_${uuid}`;
     const readyEventName = `${baseEventName}_ready`;
@@ -10211,6 +10225,10 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
     const columnChangeEventName = `${baseEventName}_column_change`;
     const props2 = __props;
     Vue.inject(FORM_KEY, null);
+    Vue.inject(LABEL_KEY, null);
+    const attrs2 = Vue.useAttrs();
+    attrs2.id;
+    (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
     const innerValue = Vue.ref(props2.value);
     Vue.ref("");
     const isOpening = Vue.ref(false);
@@ -16082,8 +16100,8 @@ exports.UniCheckboxGroupElement = UniCheckboxGroupElement;
 exports.UniCheckboxGroupElementImpl = UniCheckboxGroupElement;
 exports.UniEditorElement = UniEditorElement;
 exports.UniEditorElementImpl = UniEditorElement;
-exports.UniElement = UniElement;
-exports.UniElementImpl = UniElement;
+exports.UniElement = UniElement2;
+exports.UniElementImpl = UniElement2;
 exports.UniFormElement = UniFormElement;
 exports.UniFormElementImpl = UniFormElement;
 exports.UniIconElement = UniIconElement;

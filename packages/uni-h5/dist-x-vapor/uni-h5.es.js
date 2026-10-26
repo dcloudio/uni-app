@@ -2507,7 +2507,7 @@ function transformRpx(value) {
   }
   return value;
 }
-class UniElement extends HTMLElement {
+let UniElement$1 = class UniElement extends HTMLElement {
   constructor() {
     super(...arguments);
     this._props = {};
@@ -2597,13 +2597,14 @@ class UniElement extends HTMLElement {
   get nodeName() {
     return super.nodeName.replace(/^UNI-/, "");
   }
-}
+};
+const UniElement2 = UniElement$1;
 const _t0$b = template("<canvas class=uni-canvas-canvas>");
 const props$g = { disableScroll: {
   type: [Boolean, String],
   default: false
 } };
-class UniCanvasElement extends UniElement {
+class UniCanvasElement extends UniElement2 {
   get width() {
     return this.querySelector("canvas").width;
   }
@@ -3011,7 +3012,7 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-class UniButtonElement extends UniElement {
+class UniButtonElement extends UniElement2 {
 }
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
@@ -3607,7 +3608,7 @@ function useCache(props2, type) {
     return ref("");
   }
 }
-class UniInputElement extends UniElement {
+class UniInputElement extends UniElement2 {
   focus(options) {
     var _a;
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
@@ -3916,7 +3917,7 @@ function setFixMargin() {
   const DARK_TEST_STRING = "(prefers-color-scheme: dark)";
   fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
 }
-class UniTextareaElement extends UniElement {
+class UniTextareaElement extends UniElement2 {
   focus(options) {
     var _a;
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
@@ -14221,7 +14222,7 @@ const props$b = /* @__PURE__ */ extend({}, props$f, {
     default: false
   }
 });
-class UniEditorElement extends UniElement {
+class UniEditorElement extends UniElement2 {
 }
 const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
@@ -14302,7 +14303,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-class UniIconElement extends UniElement {
+class UniIconElement extends UniElement2 {
 }
 const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
@@ -14371,7 +14372,7 @@ const movableAreaProps = {
   }
 };
 const useMovableAreaChildren = useMovableAreaChildren$1;
-class UniMovableAreaElement extends UniElement {
+class UniMovableAreaElement extends UniElement2 {
 }
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
@@ -14942,7 +14943,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-class UniMovableViewElement extends UniElement {
+class UniMovableViewElement extends UniElement2 {
 }
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
@@ -15962,7 +15963,7 @@ function renderRichText$1(props2, rootRef, triggerItemClick) {
   return root;
 }
 const renderRichText = renderRichText$1;
-class UniRichTextElement extends UniElement {
+class UniRichTextElement extends UniElement2 {
 }
 const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
@@ -16328,7 +16329,7 @@ const props$9 = {
     default: false
   }
 };
-class UniScrollViewElement extends UniElement {
+class UniScrollViewElement extends UniElement2 {
 }
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
@@ -16880,7 +16881,7 @@ function getUniTagName(value) {
       return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
   }
 }
-const NativeUniElement = UniElement;
+const NativeUniElement = UniElement2;
 class UniViewElement extends NativeUniElement {
   static [Symbol.hasInstance](value) {
     return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
@@ -16899,18 +16900,18 @@ class UniImageElement extends NativeUniElement {
 function installWebVaporElements(realm) {
   if (!realm)
     return;
-  if (!Object.getOwnPropertyDescriptor(UniElement, Symbol.hasInstance)) {
-    Object.defineProperty(UniElement, Symbol.hasInstance, {
+  if (!Object.getOwnPropertyDescriptor(UniElement2, Symbol.hasInstance)) {
+    Object.defineProperty(UniElement2, Symbol.hasInstance, {
       configurable: true,
       value(value) {
-        return this === UniElement && !!getUniTagName(value) || nativeHasInstance.call(this, value);
+        return this === UniElement2 && !!getUniTagName(value) || nativeHasInstance.call(this, value);
       }
     });
   }
   const descriptors = {
     getPage: {
       value() {
-        return this.uniTagName ? UniElement.prototype.getPage.call(this) : null;
+        return this.uniTagName ? UniElement2.prototype.getPage.call(this) : null;
       },
       writable: true
     },
@@ -16921,7 +16922,7 @@ function installWebVaporElements(realm) {
     },
     // 仅复用无实例状态的公共方法，不复制 dataset、style、属性或标签名重写。
     getBoundingClientRectAsync: {
-      value: UniElement.prototype.getBoundingClientRectAsync,
+      value: UniElement2.prototype.getBoundingClientRectAsync,
       writable: true
     }
   };
@@ -16957,6 +16958,37 @@ const LABEL_KEY = "UNI_LABEL_CTX";
 const RADIO_GROUP_KEY = "UNI_RADIO_GROUP_CTX";
 const CHECKBOX_GROUP_KEY = "UNI_CHECKBOX_GROUP_CTX";
 const PICKER_VIEW_KEY = "UNI_PICKER_VIEW_CTX";
+const labelTargets = /* @__PURE__ */ new Map();
+function registerLabelTarget(id2, target) {
+  if (id2.length === 0) {
+    return () => {
+    };
+  }
+  let targets = labelTargets.get(id2);
+  if (targets == null) {
+    targets = [];
+    labelTargets.set(id2, targets);
+  }
+  targets.push(target);
+  return () => {
+    const current = labelTargets.get(id2);
+    if (current == null)
+      return;
+    const index2 = current.indexOf(target);
+    if (index2 !== -1)
+      current.splice(index2, 1);
+    if (current.length === 0)
+      labelTargets.delete(id2);
+  };
+}
+function findLabelTarget(id2) {
+  if (id2.length === 0)
+    return null;
+  const targets = labelTargets.get(id2);
+  if (targets == null || targets.length === 0)
+    return null;
+  return targets[targets.length - 1];
+}
 function buildPointerEvent(event) {
   return new MouseEvent("click", {
     bubbles: true,
@@ -17056,6 +17088,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
     });
     const group = inject(CHECKBOX_GROUP_KEY, null);
     const labelCtx = inject(LABEL_KEY, null);
+    let unregisterLabelTarget = null;
     const setChecked = (checked, syncGroup) => {
       if (isChecked.value == checked) {
         return;
@@ -17078,17 +17111,21 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
           setChecked(checked, false);
         });
       }
+      const target = {
+        id: id2 || toStringOrEmpty(props2.value),
+        activate: (event) => {
+          const element = proxy == null ? void 0 : proxy.$el;
+          if (element != null) {
+            dispatchLabelClick(element, event);
+          }
+        },
+        getDisabled: () => props2.disabled
+      };
       if (labelCtx != null) {
-        labelCtx.register({
-          id: id2 || toStringOrEmpty(props2.value),
-          activate: (event) => {
-            const element = proxy == null ? void 0 : proxy.$el;
-            if (element != null) {
-              dispatchLabelClick(element, event);
-            }
-          },
-          getDisabled: () => props2.disabled
-        });
+        labelCtx.register(target);
+      }
+      if (id2 != null && id2.length > 0) {
+        unregisterLabelTarget = registerLabelTarget(id2, target);
       }
     });
     onUnmounted(() => {
@@ -17098,6 +17135,8 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
       if (labelCtx != null) {
         labelCtx.unregister(id2 || toStringOrEmpty(props2.value));
       }
+      unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
+      unregisterLabelTarget = null;
     });
     const handleTap = () => {
       if (props2.disabled) {
@@ -17526,13 +17565,16 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     const ctx = { register: register2, unregister };
     provide(LABEL_KEY, ctx);
     function findTarget() {
-      if (children.length === 0)
-        return null;
       if (props2.for && props2.for.length > 0) {
         const byId = children.find((c) => c.id === props2.for);
         if (byId)
           return byId;
+        const byScopeId = findLabelTarget(props2.for);
+        if (byScopeId)
+          return byScopeId;
       }
+      if (children.length === 0)
+        return null;
       return children[0];
     }
     const handleTap = (event) => {
@@ -18760,6 +18802,7 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
   },
   emits: ["change", "columnchange", "cancel"],
   setup(__props, { expose: __expose, emit: __emit }) {
+    var _a;
     const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
     const baseEventName = `uni_picker_${uuid}`;
     const readyEventName = `${baseEventName}_ready`;
@@ -18798,6 +18841,11 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
     const props2 = __props;
     const emit2 = __emit;
     const formCtx = inject(FORM_KEY, null);
+    const labelCtx = inject(LABEL_KEY, null);
+    const attrs2 = useAttrs$1();
+    const id2 = attrs2.id;
+    const proxy = (_a = getCurrentInstance()) == null ? void 0 : _a.proxy;
+    let unregisterLabelTarget = null;
     const innerValue = ref(props2.value);
     const initialValue = ref("");
     const isOpening = ref(false);
@@ -18864,6 +18912,19 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
     }
     onMounted(() => {
       initialValue.value = props2.value;
+      const target = {
+        id: id2,
+        activate: (event) => {
+          const element = proxy == null ? void 0 : proxy.$el;
+          if (element != null)
+            dispatchLabelClick(element, event);
+        },
+        getDisabled: () => props2.disabled
+      };
+      if (labelCtx != null)
+        labelCtx.register(target);
+      if (id2 != null && id2.length > 0)
+        unregisterLabelTarget = registerLabelTarget(id2, target);
       if (formCtx && props2.name) {
         formCtx.registerField({
           name: props2.name,
@@ -18896,6 +18957,10 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
       });
     });
     onUnmounted(() => {
+      if (labelCtx != null)
+        labelCtx.unregister(id2);
+      unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
+      unregisterLabelTarget = null;
       if (formCtx && props2.name) {
         formCtx.unregisterField(props2.name);
       }
@@ -19492,6 +19557,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
     });
     const groupCtx = inject(RADIO_GROUP_KEY, null);
     const labelCtx = inject(LABEL_KEY, null);
+    let unregisterLabelTarget = null;
     const setChecked = (checked, syncGroup) => {
       if (syncGroup && groupCtx != null) {
         const value = toStringOrEmpty(props2.value);
@@ -19532,23 +19598,29 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
           groupCtx.setSelectedValue(toStringOrEmpty(props2.value));
         }
       }
+      const target = {
+        id: id2 || toStringOrEmpty(props2.value),
+        activate: (event) => {
+          const element = proxy == null ? void 0 : proxy.$el;
+          if (element != null) {
+            dispatchLabelClick(element, event);
+          }
+        },
+        getDisabled: () => props2.disabled
+      };
       if (labelCtx != null) {
-        labelCtx.register({
-          id: id2 || toStringOrEmpty(props2.value),
-          activate: (event) => {
-            const element = proxy == null ? void 0 : proxy.$el;
-            if (element != null) {
-              dispatchLabelClick(element, event);
-            }
-          },
-          getDisabled: () => props2.disabled
-        });
+        labelCtx.register(target);
+      }
+      if (id2 != null && id2.length > 0) {
+        unregisterLabelTarget = registerLabelTarget(id2, target);
       }
     });
     onUnmounted(() => {
       if (labelCtx != null) {
         labelCtx.unregister(id2 || toStringOrEmpty(props2.value));
       }
+      unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
+      unregisterLabelTarget = null;
     });
     __expose({
       getRadioChecked: () => {
@@ -19773,6 +19845,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     const emit2 = __emit;
     const attrs2 = useAttrs$1();
     const id2 = attrs2.id;
+    let unregisterLabelTarget = null;
     const props2 = __props;
     const containerRef = ref(null);
     const backgroundRef = ref(null);
@@ -20110,10 +20183,18 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
       }
       const labelCtx = inject(LABEL_KEY, null);
       if (labelCtx != null) {
-        labelCtx.register({
+        const target = {
           id: id2.length > 0 ? id2 : props2.name,
+          activate: (event) => {
+            const element = thumbRef.value;
+            if (element != null)
+              dispatchLabelClick(element, event);
+          },
           getDisabled: () => props2.disabled
-        });
+        };
+        labelCtx.register(target);
+        if (id2.length > 0)
+          unregisterLabelTarget = registerLabelTarget(id2, target);
       }
       window.addEventListener("resize", handleResize);
       const handleEl = handleRef.value;
@@ -20134,6 +20215,8 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
           labelCtx.unregister(props2.name);
         }
       }
+      unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
+      unregisterLabelTarget = null;
       resetInteractionState();
     });
     onBeforeUnmount(() => {
@@ -21668,6 +21751,7 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
     const emit2 = __emit;
     const formCtx = inject(FORM_KEY, null);
     const labelCtx = inject(LABEL_KEY, null);
+    let unregisterLabelTarget = null;
     const isChecked = ref(props2.checked);
     const activeStyle = computed(() => {
       if (isChecked.value && props2.color) {
@@ -21694,17 +21778,21 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
           }
         });
       }
+      const target = {
+        id: id2 || props2.name,
+        activate: (event) => {
+          const element = proxy == null ? void 0 : proxy.$el;
+          if (element != null) {
+            dispatchLabelClick(element, event);
+          }
+        },
+        getDisabled: () => props2.disabled
+      };
       if (labelCtx != null) {
-        labelCtx.register({
-          id: id2 || props2.name,
-          activate: (event) => {
-            const element = proxy == null ? void 0 : proxy.$el;
-            if (element != null) {
-              dispatchLabelClick(element, event);
-            }
-          },
-          getDisabled: () => props2.disabled
-        });
+        labelCtx.register(target);
+      }
+      if (id2 != null && id2.length > 0) {
+        unregisterLabelTarget = registerLabelTarget(id2, target);
       }
       enableTransition.value = true;
     });
@@ -21715,6 +21803,8 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
       if (labelCtx != null) {
         labelCtx.unregister(id2 || props2.name);
       }
+      unregisterLabelTarget == null ? void 0 : unregisterLabelTarget();
+      unregisterLabelTarget = null;
     });
     const handleTap = () => {
       if (props2.disabled) {
@@ -22772,7 +22862,7 @@ const props$8 = {
     default: true
   }
 };
-class UniVideoElement extends UniElement {
+class UniVideoElement extends UniElement2 {
 }
 const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
@@ -23020,7 +23110,7 @@ const props$7 = { src: {
   type: String,
   default: ""
 } };
-class UniWebViewElement extends UniElement {
+class UniWebViewElement extends UniElement2 {
 }
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
@@ -25264,7 +25354,7 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-class UniMapElement extends UniElement {
+class UniMapElement extends UniElement2 {
 }
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
@@ -34454,8 +34544,8 @@ export {
   UniCheckboxGroupElement as UniCheckboxGroupElementImpl,
   UniEditorElement,
   UniEditorElement as UniEditorElementImpl,
-  UniElement,
-  UniElement as UniElementImpl,
+  UniElement2 as UniElement,
+  UniElement2 as UniElementImpl,
   UniError2 as UniError,
   UniFormElement,
   UniFormElement as UniFormElementImpl,

@@ -8,7 +8,7 @@
   // Label that supports internal form controls (checkbox/radio/switch)
   // via provide/inject registration. Clicking the label will activate
   // the first registered control, or the one matching `for` if provided.
-  import { LABEL_KEY } from '../common.ts'
+  import { LABEL_KEY, findLabelTarget } from '../common.ts'
   import { UniLabelElement } from './global.ts'
   import { ActivatableChild, LabelContext } from '../types.ts'
 
@@ -89,12 +89,14 @@
   provide(LABEL_KEY, ctx)
 
   function findTarget(): ActivatableChild | null {
-    if (children.length === 0) return null
     // Prefer matching by `for` if provided
     if (props.for && props.for.length > 0) {
       const byId = children.find(c => c.id === props.for)
       if (byId) return byId
+      const byScopeId = findLabelTarget(props.for)
+      if (byScopeId) return byScopeId
     }
+    if (children.length === 0) return null
     // Fallback to first child
     return children[0]
   }

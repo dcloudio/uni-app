@@ -75,9 +75,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, classes, toStringOrEmpty } from '../common.ts'
+  import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, registerLabelTarget, classes, toStringOrEmpty } from '../common.ts'
   import { UniRadioElement } from './global.ts'
-  import { LabelContext } from '../types.ts'
+  import { ActivatableChild, LabelContext } from '../types.ts'
 
   interface InjectedRadioGroupContext {
     selectedValue: Ref<string | null>
@@ -296,6 +296,7 @@
   })
   const groupCtx = inject<InjectedRadioGroupContext | null>(RADIO_GROUP_KEY, null)
   const labelCtx = inject<LabelContext | null>(LABEL_KEY, null)
+  let unregisterLabelTarget: (() => void) | null = null
 
   // TODO 需编译器修复
   const fontUnicode = '\ueA08'
@@ -354,8 +355,7 @@
       }
     }
     // Register with label if present
-    if (labelCtx != null) {
-      labelCtx.register({
+    const target: ActivatableChild = {
         id: id || toStringOrEmpty(props.value),
         activate: (event: UniPointerEvent) => {
           const element = proxy?.$el
@@ -364,7 +364,12 @@
           }
         },
         getDisabled: () => props.disabled
-      })
+    }
+    if (labelCtx != null) {
+      labelCtx.register(target)
+    }
+    if (id != null && id.length > 0) {
+      unregisterLabelTarget = registerLabelTarget(id, target)
     }
   })
 
@@ -372,6 +377,8 @@
     if (labelCtx != null) {
       labelCtx.unregister(id || toStringOrEmpty(props.value))
     }
+    unregisterLabelTarget?.()
+    unregisterLabelTarget = null
   })
 
   defineExpose({
