@@ -125,6 +125,16 @@ uni-app div:where([uni-movable-view]) {
   cursor: grab;
 }
 
+/* Editor 的布局继续使用 editor.css，保留旧宿主的字体继承和 flex 默认值。 */
+uni-app div:where([uni-editor]) {
+  font-size: inherit;
+  text-align: inherit;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
 /* 文字容器 */
 uni-app uni-label {
   overflow: hidden;
@@ -154,7 +164,6 @@ uni-app uni-checkbox,
 uni-app uni-cover-image,
 uni-app uni-cover-view,
 uni-app uni-custom-tab-bar,
-uni-app uni-editor,
 uni-app uni-form,
 uni-app uni-label,
 uni-app uni-list-item,
@@ -230,7 +239,6 @@ uni-app uni-checkbox[hidden],
 uni-app uni-cover-image[hidden],
 uni-app uni-cover-view[hidden],
 uni-app uni-custom-tab-bar[hidden],
-uni-app uni-editor[hidden],
 uni-app uni-form[hidden],
 uni-app uni-label[hidden],
 uni-app uni-list-item[hidden],
