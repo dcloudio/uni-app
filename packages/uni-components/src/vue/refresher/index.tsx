@@ -65,7 +65,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         >
           {props.refresherDefaultStyle !== 'none' ? (
             <div class="uni-scroll-view-refresh">
-              {__X__ ? (
+              {__X_VAPOR__ ? (
                 props.refreshState == 'pulling' ||
                 props.refreshState == 'refreshing' ? (
                   <Loading
