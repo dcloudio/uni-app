@@ -52,7 +52,6 @@ uni-app.uni-app--showtabbar uni-page-wrapper::after {
   display: none;
 }
 
-uni-app uni-textarea,
 uni-app uni-match-media {
   font-size: 16px;
   text-align: left;
@@ -80,8 +79,26 @@ uni-app div:where([uni-input])>.uni-input-wrapper>.uni-input-input {
   flex: 1;
 }
 
+/* Textarea 保留旧宿主的尺寸、换行和布局默认值，内部类样式继续复用 textarea.css。 */
+uni-app div:where([uni-textarea]) {
+  width: 300px;
+  height: 150px;
+  display: block;
+  line-height: normal;
+  white-space: pre-wrap;
+  word-break: break-all;
+  letter-spacing: 0;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
+uni-app div:where([uni-textarea])[auto-height="true"] {
+  height: fit-content !important;
+}
+
 /* 文字容器 */
-uni-app uni-textarea,
 uni-app uni-label {
   overflow: hidden;
   flex-basis: auto;
@@ -141,7 +158,6 @@ uni-app uni-swiper-item,
 uni-app uni-swiper,
 uni-app uni-switch,
 uni-app uni-template,
-uni-app uni-textarea,
 uni-app uni-unicloud-db,
 uni-app uni-video,
 uni-app uni-web-view {
@@ -209,7 +225,6 @@ uni-app uni-swiper-item[hidden],
 uni-app uni-swiper[hidden],
 uni-app uni-switch[hidden],
 uni-app uni-template[hidden],
-uni-app uni-textarea[hidden],
 uni-app uni-unicloud-db[hidden],
 uni-app uni-video[hidden],
 uni-app uni-web-view[hidden] {

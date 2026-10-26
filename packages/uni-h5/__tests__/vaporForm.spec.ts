@@ -49,6 +49,8 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
   let helpers: any
   let Button: any
   let inputElement: any
+  let textareaElement: any
+  let resizeTextarea: (height: number) => void
   let nativeElements: any
   let NativeUniElement: any
   let fixDisabledColor = false
@@ -70,6 +72,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       'Comment',
       'ShadowRoot',
       'customElements',
+      'getComputedStyle',
       '__PLATFORM__',
       '__X__',
       '__NODE_JS__',
@@ -111,7 +114,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         ],
         {
           input: await preprocess(
-            `vue/${name}/${name === 'input' ? 'index-vapor' : 'index'}.tsx`,
+            `vue/${name}/${name === 'button' ? 'index' : 'index-vapor'}.tsx`,
             true
           ),
           encoding: 'utf8',
@@ -164,6 +167,10 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       await preprocess('vue/input/element-vapor.ts', true),
       { '../web-vapor-elements': nativeElements }
     )
+    textareaElement = evaluate(
+      await preprocess('vue/textarea/element-vapor.ts', true),
+      { '../web-vapor-elements': nativeElements }
+    )
     const builtIn = evaluate(await preprocess('helpers/component.ts', true), {
       '@vue/shared': shared,
       './component-vapor': { defineComponent },
@@ -208,6 +215,15 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         './utils': { resolveDigitDecimalPoint() {} },
       }
     )
+    const textareaState = evaluate(
+      await preprocess('vue/textarea/useTextarea.ts', true),
+      {
+        vue,
+        '@vue/shared': shared,
+        '@dcloudio/uni-shared': { LINEFEED: '\n' },
+        '../../helpers/useField': fieldHelpers,
+      }
+    )
     for (const name of ['input', 'textarea']) {
       inputs[name] = evaluate(await compile(name), {
         vue,
@@ -216,13 +232,20 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         '/vue-jsx/vapor': evaluate(fs.readFileSync(runtime, 'utf8'), { vue }),
         '../../helpers/component': builtIn,
         '../../helpers/UniElement': { UniElement },
-        './element-vapor': inputElement,
+        './element-vapor': name === 'input' ? inputElement : textareaElement,
         './useInput': inputState,
+        './useTextarea': textareaState,
         '../../helpers/useField': fieldHelpers,
         './utils': { resolveDigitDecimalPoint() {} },
         '../resize-sensor/index': {
           default: vue.defineVaporComponent({
-            setup: () => document.createElement('uni-resize-sensor'),
+            props: { initial: Boolean },
+            emits: ['resize'],
+            setup(_props: any, { emit }: any) {
+              // JSDOM 不计算布局，通过真实 resize 事件协议验证高度与行数处理。
+              resizeTextarea = (height) => emit('resize', { height })
+              return document.createElement('uni-resize-sensor')
+            },
           }),
         },
       }).default
@@ -398,11 +421,9 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       )
       await vue.nextTick()
       const element = host.querySelector(name) as HTMLInputElement
-      expect(
-        host.querySelectorAll(
-          name === 'input' ? 'div[uni-input][uni-view]' : 'uni-textarea'
-        )
-      ).toHaveLength(1)
+      expect(host.querySelectorAll(`div[uni-${name}][uni-view]`)).toHaveLength(
+        1
+      )
       expect(element.value).toBe('initial')
       element.value = 'edited'
       element.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
@@ -633,6 +654,198 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       }
     }
   )
+
+  test('Textarea 原生根节点保留 value 状态语义，dataset 与属性 API 不受影响', async () => {
+    jest.useFakeTimers()
+    const node = vue.shallowRef()
+    const value = vue.ref('initial')
+    const payload = { count: 1 }
+    const update = jest.fn()
+    const initialized = jest.spyOn(textareaElement, 'initTextareaElement')
+    const { host } = mount(() => {
+      const component = vue.createComponent(inputs.textarea, {
+        value: () => value.value,
+        'data-payload': () => payload,
+        'onUpdate:value': () => update,
+      })
+      vue.setStaticTemplateRef(component, node)
+      vue.onMounted(() => {
+        expect(node.value.value).toBe('initial')
+        expect(node.value.uniTagName).toBe('TEXTAREA')
+      })
+      return component
+    })
+    // useField 在 ref 的 watcher 中安装原生输入监听，先完成本轮挂载调度。
+    await vue.nextTick()
+    try {
+      const root = node.value
+      expect(root).toBe(host.querySelector('div[uni-textarea][uni-view]'))
+      expect(root).toBeInstanceOf(dom.window.HTMLDivElement)
+      expect(root).toBeInstanceOf(NativeUniElement)
+      expect(root).toBeInstanceOf(nativeElements.UniViewElement)
+      expect(root).toBeInstanceOf(textareaElement.UniTextareaElement)
+      expect(root).not.toBeInstanceOf(inputElement.UniInputElement)
+      expect(root.tagName).toBe('DIV')
+      expect(root.setAttribute).toBe(dom.window.Element.prototype.setAttribute)
+      expect(root.removeAttribute).toBe(
+        dom.window.Element.prototype.removeAttribute
+      )
+      expect(root.attachVmProps).toBeUndefined()
+      expect(dom.window.customElements.get('uni-textarea')).toBeUndefined()
+      expect(root.dataset.get('payload')).toBe(payload)
+      root.setAttribute('data-payload', 'manual')
+      expect(root.dataset.get('payload')).toBe(payload)
+      const field = root.querySelector('textarea')
+      const focus = jest.spyOn(field, 'focus')
+      root.focus({ preventScroll: true })
+      expect(focus).toHaveBeenCalledWith({ preventScroll: true })
+      root.value = 'manual'
+      expect(field.value).toBe('manual')
+      // 与旧版一致：赋值不更新状态、不触发事件，派发 input 后才同步。
+      expect(root.value).toBe('initial')
+      expect(update).not.toHaveBeenCalled()
+      field.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
+      await vue.nextTick()
+      expect(root.value).toBe('manual')
+      expect(update).toHaveBeenCalledTimes(1)
+      value.value = 'updated'
+      await vue.nextTick()
+      jest.advanceTimersByTime(100)
+      await vue.nextTick()
+      expect(root.value).toBe('updated')
+      expect(field.value).toBe('updated')
+      expect(node.value).toBe(root)
+      expect(initialized).toHaveBeenCalledTimes(1)
+    } finally {
+      initialized.mockRestore()
+    }
+  })
+
+  test.each([false, true])(
+    'Textarea 搜索、禁用分支切换后保持响应式与事件，禁用修复=%s',
+    async (fixDisabled) => {
+      jest.useFakeTimers()
+      fixDisabledColor = fixDisabled
+      const props = vue.reactive({
+        confirmType: 'search',
+        disabled: false,
+        value: 'initial',
+      })
+      const update = jest.fn()
+      const confirm = jest.fn()
+      const change = jest.fn()
+      const { host } = mount(() =>
+        vue.createComponent(inputs.textarea, {
+          confirmType: () => props.confirmType,
+          disabled: () => props.disabled,
+          modelValue: () => props.value,
+          'onUpdate:modelValue': () => update,
+          onConfirm: () => confirm,
+          onChange: () => change,
+        })
+      )
+      const root = host.querySelector('div[uni-textarea]') as any
+      const descriptor = Object.getOwnPropertyDescriptor(root, 'value')
+      for (let i = 0; i < 4; i++) {
+        props.confirmType = i % 2 ? 'search' : 'done'
+        props.disabled = true
+        await vue.nextTick()
+        let field = root.querySelector('textarea')
+        expect(fixDisabled ? field.readOnly : field.disabled).toBe(true)
+        props.disabled = false
+        props.value = 'value-' + i
+        await vue.nextTick()
+        jest.advanceTimersByTime(100)
+        await vue.nextTick()
+        field = root.querySelector('textarea')
+        expect(root.querySelectorAll('textarea')).toHaveLength(1)
+        expect(field.value).toBe(props.value)
+        expect(root.value).toBe(props.value)
+        expect(Object.getOwnPropertyDescriptor(root, 'value')).toEqual(
+          descriptor
+        )
+        root.focus()
+        expect(document.activeElement).toBe(field)
+        update.mockClear()
+        field.value = 'typed-' + i
+        field.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
+        await vue.nextTick()
+        expect(update).toHaveBeenCalledTimes(1)
+        expect(root.value).toBe(field.value)
+        field.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
+        expect(change.mock.calls[i][0].detail.value).toBe(field.value)
+        field.dispatchEvent(
+          new dom.window.KeyboardEvent('keyup', { key: 'Enter', bubbles: true })
+        )
+        expect(confirm.mock.calls[i][0].detail.value).toBe(field.value)
+        const form = root.querySelector('form')
+        if (form) {
+          const event = new dom.window.Event('submit', { cancelable: true })
+          form.dispatchEvent(event)
+          expect(event.defaultPrevented).toBe(true)
+        }
+      }
+    }
+  )
+
+  test('Textarea 自动高度、行数与多行测量内容保持同步', async () => {
+    jest.useFakeTimers()
+    const props = vue.reactive({ autoHeight: false, value: 'first\n\nlast' })
+    const linechange = jest.fn()
+    const { host } = mount(() =>
+      vue.createComponent(inputs.textarea, {
+        autoHeight: () => props.autoHeight,
+        value: () => props.value,
+        onLinechange: () => linechange,
+      })
+    )
+    const root = host.querySelector('div[uni-textarea]') as HTMLElement
+    root.style.lineHeight = '20px'
+    const wrapper = root.querySelector('.uni-textarea-wrapper') as HTMLElement
+    const compute = root.querySelector('.uni-textarea-compute')!
+    const lines = () =>
+      Array.from(compute.children)
+        .filter((el) => el.tagName === 'DIV')
+        .map((el) => el.textContent)
+    expect(lines()).toEqual(['first', '.', 'last'])
+    resizeTextarea(60)
+    await vue.nextTick()
+    expect(linechange.mock.calls[0][0].detail).toEqual({
+      height: 60,
+      heightRpx: (750 / window.innerWidth) * 60,
+      lineCount: 3,
+    })
+    expect(wrapper.style.height).toBe('')
+    props.autoHeight = true
+    await vue.nextTick()
+    expect(root.getAttribute('auto-height')).toBe('true')
+    expect(wrapper.style.height).toBe('60px')
+    expect(compute.classList.contains('uni-textarea-compute-auto-height')).toBe(
+      true
+    )
+    expect(root.querySelector('textarea')!.style.overflowY).toBe('hidden')
+    props.value = 'changed\nlast'
+    await vue.nextTick()
+    jest.advanceTimersByTime(100)
+    await vue.nextTick()
+    expect(lines()).toEqual(['changed', 'last'])
+    // line-height 为 normal 时继续使用测量节点的高度。
+    root.style.lineHeight = 'normal'
+    Object.defineProperty(
+      root.querySelector('.uni-textarea-line'),
+      'offsetHeight',
+      { value: 20 }
+    )
+    resizeTextarea(40)
+    await vue.nextTick()
+    expect(wrapper.style.height).toBe('40px')
+    expect(linechange.mock.calls[1][0].detail.lineCount).toBe(2)
+    props.autoHeight = false
+    await vue.nextTick()
+    expect(root.getAttribute('auto-height')).toBe('false')
+    expect(wrapper.style.height).toBe('')
+    expect(root.querySelector('textarea')!.style.overflowY).toBe('auto')
+  })
 
   test('编译后的 Button 对接提交/重置，Label 点击不递归或重复提交', async () => {
     const form = { submit: jest.fn(), reset: jest.fn() }
@@ -871,6 +1084,17 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     const helper = await preprocess('helpers/component.ts', false)
     expect(helper).toContain('customElements.define(')
     expect(helper).not.toContain('rootElement.native')
+  })
+
+  test('Textarea 非 Vapor 保留旧根节点、状态 getter 和 mounted 属性绑定', async () => {
+    const vdom = await preprocess('vue/textarea/index.tsx', false)
+    expect(vdom).toContain('class UniTextareaElement extends UniElement')
+    expect(vdom).toContain('<uni-textarea ref={rootRef}')
+    expect(vdom).toContain('rootElement.attachVmProps(props)')
+    expect(vdom).toContain('return state.value')
+    expect(vdom).not.toMatch(
+      /element-vapor|initTextareaElement|native: true|uni-view/
+    )
   })
 
   test.each(['helpers/useField.ts', 'vue/button/index.tsx'])(
