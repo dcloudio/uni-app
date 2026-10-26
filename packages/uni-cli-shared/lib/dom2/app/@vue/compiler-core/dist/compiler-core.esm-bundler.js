@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-rc.12
+  * @vue/compiler-core v3.6.0-rc.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/

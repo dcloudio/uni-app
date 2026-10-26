@@ -523,6 +523,8 @@ export interface SuspenseProps {
    */
   suspensible?: boolean;
 }
+export declare let isSuspenseEnabled: boolean;
+export declare function withSuspenseEnabled<T>(value: T): T;
 declare const SuspenseImpl: {
   name: string;
   __isSuspense: boolean;
@@ -619,6 +621,8 @@ export interface TransitionElement {
 }
 export declare function useTransitionState(): TransitionState;
 export declare const BaseTransitionPropsValidators: Record<string, any>;
+export declare let isTransitionEnabled: boolean;
+export declare function withTransitionEnabled<T>(value: T): T;
 export declare const BaseTransition: {
   new (): {
     $props: BaseTransitionProps<any>;
@@ -731,6 +735,8 @@ export interface KeepAliveContext extends ComponentRenderContext {
   getCachedComponent: (vnode: VNode) => VNode;
   getStorageContainer: () => RendererElement;
 }
+export declare let isKeepAliveEnabled: boolean;
+export declare function withKeepAliveEnabled<T>(value: T): T;
 export declare const KeepAlive: {
   __isKeepAlive: true;
   new (): {
@@ -1828,6 +1834,14 @@ export declare function createSlots(slots: Record<string, SSRSlot>, dynamicSlots
 //#region temp/packages/runtime-core/src/helpers/withMemo.d.ts
 export declare function withMemo(memo: any[], render: () => VNode<any, any>, cache: any[], index: number): VNode<any, any>;
 export declare function isMemoSame(cached: VNode, memo: any[]): boolean;
+//#endregion
+//#region temp/packages/runtime-core/src/vaporInteropState.d.ts
+/**
+ * Set by `vaporInteropPlugin`. Stays false in apps that never import the
+ * plugin, so bundlers drop the vapor-in-vdom branches of the renderer.
+ */
+export declare let isVaporInteropEnabled: boolean;
+export declare function setVaporInteropEnabled(): void;
 //#endregion
 //#region temp/packages/runtime-core/src/compat/globalConfig.d.ts
 export type LegacyConfig = {

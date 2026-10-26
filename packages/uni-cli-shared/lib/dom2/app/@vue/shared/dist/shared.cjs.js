@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.12
+  * @vue/shared v3.6.0-rc.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -368,8 +368,6 @@ const MATH_TAGS = "annotation,annotation-xml,maction,maligngroup,malignmark,math
 const VOID_TAGS = "area,base,br,col,embed,hr,img,input,link,meta,param,source,track,wbr";
 const FORMATTING_TAGS = "a,b,big,code,em,font,i,nobr,s,small,strike,strong,tt,u";
 const ALWAYS_CLOSE_TAGS = "title,style,script,noscript,template,object,table,button,textarea,select,iframe,fieldset,form,foreignObject,desc,mi,mo,mn,ms,mtext,annotation-xml";
-const INLINE_TAGS = "a,abbr,acronym,b,bdi,bdo,big,br,button,canvas,cite,code,data,datalist,del,dfn,em,embed,i,iframe,img,input,ins,kbd,label,map,mark,meter,noscript,object,output,picture,progress,q,ruby,s,samp,script,select,small,span,strong,sub,sup,svg,textarea,time,u,tt,var,video";
-const BLOCK_TAGS = "address,article,aside,blockquote,dd,details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,li,main,menu,nav,ol,p,pre,section,table,ul";
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
@@ -400,16 +398,6 @@ const isFormattingTag = /*@__PURE__*/ makeMap(FORMATTING_TAGS);
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
 const isAlwaysCloseTag = /*@__PURE__*/ makeMap(ALWAYS_CLOSE_TAGS);
-/**
-* Compiler only.
-* Do NOT use in runtime code paths unless behind `__DEV__` flag.
-*/
-const isInlineTag = /*@__PURE__*/ makeMap(INLINE_TAGS);
-/**
-* Compiler only.
-* Do NOT use in runtime code paths unless behind `__DEV__` flag.
-*/
-const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 //#endregion
 //#region packages/shared/src/domAttrConfig.ts
 /**
@@ -804,7 +792,18 @@ const VaporDynamicComponentFlags = {
 	"NS_SVG": 8,
 	"8": "NS_SVG",
 	"NS_MATHML": 16,
-	"16": "NS_MATHML"
+	"16": "NS_MATHML",
+	"SLOT_SINGLE_ROOT": 32,
+	"32": "SLOT_SINGLE_ROOT"
+};
+/**
+* `isSingleRoot` of a component creation call for the single root of a slot
+* body (`true` marks the single root of a component template). See
+* resolveFallthroughOwner in runtime-vapor.
+*/
+const VaporSingleRoot = {
+	"SLOT": 2,
+	"2": "SLOT"
 };
 //#endregion
 exports.EMPTY_ARR = EMPTY_ARR;
@@ -820,6 +819,7 @@ exports.TemplateFlags = TemplateFlags;
 exports.VaporBlockShape = VaporBlockShape;
 exports.VaporDynamicComponentFlags = VaporDynamicComponentFlags;
 exports.VaporIfFlags = VaporIfFlags;
+exports.VaporSingleRoot = VaporSingleRoot;
 exports.VaporSlotFlags = VaporSlotFlags;
 exports.VaporSlotStability = VaporSlotStability;
 exports.VaporVForFlags = VaporVForFlags;
@@ -846,7 +846,6 @@ exports.includeBooleanAttr = includeBooleanAttr;
 exports.invokeArrayFns = invokeArrayFns;
 exports.isAlwaysCloseTag = isAlwaysCloseTag;
 exports.isArray = isArray;
-exports.isBlockTag = isBlockTag;
 exports.isBooleanAttr = isBooleanAttr;
 exports.isBuiltInDirective = isBuiltInDirective;
 exports.isBuiltInTag = isBuiltInTag;
@@ -857,7 +856,6 @@ exports.isFunction = isFunction;
 exports.isGloballyAllowed = isGloballyAllowed;
 exports.isGloballyWhitelisted = isGloballyWhitelisted;
 exports.isHTMLTag = isHTMLTag;
-exports.isInlineTag = isInlineTag;
 exports.isIntegerKey = isIntegerKey;
 exports.isKnownHtmlAttr = isKnownHtmlAttr;
 exports.isKnownMathMLAttr = isKnownMathMLAttr;
