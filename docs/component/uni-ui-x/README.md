@@ -62,7 +62,8 @@ uni-ui x 没有写死的颜色和文字:
 | ---									| ---																																			|
 | uni-badge-view			| [数字角标](https://ext.dcloud.net.cn/plugin?name=uni-badge-view)				|
 | uni-collapse				| [折叠面板](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)				|
-| uni-combox					| [组合框](https://ext.dcloud.net.cn/plugin?name=uni-combox-x)						|
+| uni-combobox				| [组合框](https://ext.dcloud.net.cn/plugin?name=uni-combobox)						|
+| uni-combox-x				| [已废弃组合框](https://ext.dcloud.net.cn/plugin?name=uni-combox-x)					|
 | uni-drag-cell				| [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell)		|
 | uni-expandable-text	| [可折叠文本](https://ext.dcloud.net.cn/plugin?name=uni-expandable-text)													|
 | uni-fab-button			| [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)	|
@@ -95,7 +96,7 @@ uni-ui 无法直接升级 uni-ui x，组件名称、用法都有变化。
 |uni-calendar					|日历										|见hello uni-app x里的模板中的日历页面								|
 |uni-card							|卡片										|无																									|
 |uni-collapse					|折叠面板								|改用[uni-collapse](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)		|
-|uni-combox						|组合框									|改用[uni-combox](https://ext.dcloud.net.cn/plugin?name=uni-combox-x)																										|
+|uni-combox						|组合框									|改用[uni-combobox](https://ext.dcloud.net.cn/plugin?name=uni-combobox)																										|
 |uni-countdown				|倒计时									|无																									|
 |uni-data-checkbox		|数据选择器							|无																									|
 |uni-data-picker			|数据驱动的picker选择器	|组件本身支持uni-app x vdom														|
