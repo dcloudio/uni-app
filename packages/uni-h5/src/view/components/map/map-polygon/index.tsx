@@ -145,9 +145,14 @@ export default /*#__PURE__*/ defineSystemComponent({
     )
 
     onUnmounted(() => {
-      // 卸载时清除地图上绘制的 polygon
-      polygonIns.setMap(null)
+      // SDK 尚未加载时也可能卸载，此时还没有创建 polygon。
+      polygonIns?.setMap(null)
     })
+    //#if _X_VAPOR_
+    // 覆盖物由地图 SDK 绘制，Vapor 使用空 Block，不创建 DOM。
+    return []
+    //#else
     return () => null
+    //#endif
   },
 })

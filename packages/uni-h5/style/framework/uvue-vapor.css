@@ -189,6 +189,20 @@ uni-app div:where([uni-video]) {
   justify-content: normal;
 }
 
+/* Map 保留旧宿主尺寸与字体继承，SDK 仍挂载到内部固定 div。 */
+uni-app div:where([uni-map]) {
+  width: 300px;
+  height: 150px;
+  display: block;
+  font-size: inherit;
+  text-align: inherit;
+  overflow: visible;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
 /* 文字容器 */
 uni-app uni-label {
   overflow: hidden;
@@ -223,7 +237,6 @@ uni-app uni-list-item,
 uni-app uni-list-view,
 uni-app uni-live-player,
 uni-app uni-live-pusher,
-uni-app uni-map,
 uni-app uni-match-media,
 uni-app uni-navigation-bar,
 uni-app uni-navigator,
@@ -295,7 +308,6 @@ uni-app uni-list-item[hidden],
 uni-app uni-list-view[hidden],
 uni-app uni-live-player[hidden],
 uni-app uni-live-pusher[hidden],
-uni-app uni-map[hidden],
 uni-app uni-match-media[hidden],
 uni-app uni-navigation-bar[hidden],
 uni-app uni-navigator[hidden],
