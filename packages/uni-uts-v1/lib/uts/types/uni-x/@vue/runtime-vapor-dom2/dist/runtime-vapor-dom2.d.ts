@@ -550,6 +550,7 @@ declare global {
 export declare function createElementDynamicSlot(name: string, fn: VaporSlot): DynamicSlot;
 export declare function createElementForSlots<Source extends UniSharedData>(rawSource: UniSharedDataVFor<Source>, getSlot: (item: ItemOf<Source>, key: KeyOf<Source>, index: number) => UniElementDynamicSlot): UniElementDynamicSlotVector;
 export declare function createElementIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
+export declare function createElementIfChain(page: UniPage, select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block;
 export declare function setElementText(el: UniElement | UniText | null, value: string): void;
 export declare function setElementHtml(el: UniElement, value: string): void;
 export declare function setElementAttr(el: UniElement, key: string, value: any): void;
@@ -610,6 +611,7 @@ export declare function createNativeViewRecycleFor<Source extends UniSharedData>
 export declare class NativeViewRecycleContext {}
 export declare function createNativeViewRecycleContext(): NativeViewRecycleContext;
 export declare function createNativeViewIf(page: UniPage, condition: () => any, b1: BlockFn, b2?: BlockFn | null, once?: boolean): Block;
+export declare function createNativeViewIfChain(page: UniPage, select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block;
 export declare function setNativeViewAttr(el: UniNativeBaseView, key: string, value: any): void;
 export declare function setNativeViewInsertionState(parent: UniNativeBaseView, anchor?: UniNativeBaseView | 0 | null): void;
 export declare function getNativeViewInsertionParent(): UniNativeBaseView | null;
