@@ -4863,37 +4863,24 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    return () => vue.createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
-    }, [vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+const resizeSensorProps = {
+  initial: {
+    type: Boolean,
+    default: false
   }
-});
+};
+function useResizeSensor(props2, emit2) {
+  const rootRef = vue.ref(null);
+  const reset = useResizeSensorReset(rootRef);
+  const update = useResizeSensorUpdate(rootRef, emit2, reset);
+  return { rootRef, update };
+}
 function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = vue.reactive({
-    width: -1,
-    height: -1
-  });
-  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
+  const size = vue.reactive({ width: -1, height: -1 });
+  vue.watch(
+    () => shared.extend({}, size),
+    (value) => emit2("resize", value)
+  );
   return () => {
     const rootEl = rootRef.value;
     if (!rootEl)
@@ -4906,16 +4893,34 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
 }
 function useResizeSensorReset(rootRef) {
   return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
+    const { firstElementChild, lastElementChild } = rootRef.value;
     firstElementChild.scrollLeft = 1e5;
     firstElementChild.scrollTop = 1e5;
     lastElementChild.scrollLeft = 1e5;
     lastElementChild.scrollTop = 1e5;
   };
 }
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: resizeSensorProps,
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const {
+      rootRef,
+      update
+    } = useResizeSensor(props2, emit2);
+    return () => vue.createVNode("uni-resize-sensor", {
+      "ref": rootRef,
+      "onAnimationstartOnce": update
+    }, [vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  }
+});
 const props$j = {
   src: {
     type: String,

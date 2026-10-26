@@ -2174,30 +2174,25 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: { initial: {
+const resizeSensorProps = {
+  initial: {
     type: Boolean,
     default: false
-  } },
-  emits: ["resize"],
-  setup(props2, { emit: emit2 }) {
-    const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => (() => {
-      const _cache = createVNodeCache("c61bbd7f");
-      return openBlock(), createBlock("uni-resize-sensor", { ref: rootRef }, [..._cache[0] || (_cache[0] = [createVNode("div", null, [createVNode("div")], -1), createVNode("div", null, [createVNode("div")], -1)])], 512);
-    })();
   }
-});
+};
+function useResizeSensor(props2, emit2) {
+  const rootRef = ref(null);
+  const reset = useResizeSensorReset(rootRef);
+  const update = useResizeSensorUpdate(rootRef, emit2, reset);
+  useResizeSensorLifecycle(rootRef, props2, update, reset);
+  return { rootRef, update };
+}
 function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({
-    width: -1,
-    height: -1
-  });
-  watch(() => extend({}, size), (value) => emit2("resize", value));
+  const size = reactive({ width: -1, height: -1 });
+  watch(
+    () => extend({}, size),
+    (value) => emit2("resize", value)
+  );
   return () => {
     const rootEl = rootRef.value;
     if (!rootEl)
@@ -2232,6 +2227,22 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: resizeSensorProps,
+  emits: ["resize"],
+  setup(props2, { emit: emit2 }) {
+    const { rootRef, update } = useResizeSensor(props2, emit2);
+    const root = (() => {
+      const _cache = createVNodeCache("d8f4f8be");
+      return openBlock(), createBlock("div", {
+        "uni-resize-sensor": "",
+        ref: rootRef
+      }, [..._cache[0] || (_cache[0] = [createVNode("div", null, [createVNode("div")], -1), createVNode("div", null, [createVNode("div")], -1)])], 512);
+    })();
+    return root;
+  }
+});
 class UniTextareaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);

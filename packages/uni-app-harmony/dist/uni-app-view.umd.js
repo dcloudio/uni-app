@@ -13637,33 +13637,22 @@
       };
     }
   });
-  const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-    name: "ResizeSensor",
-    props: {
-      initial: {
-        type: Boolean,
-        default: false
-      }
-    },
-    emits: ["resize"],
-    setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
-      var rootRef = ref(null);
-      var reset = useResizeSensorReset(rootRef);
-      var update = useResizeSensorUpdate(rootRef, emit2, reset);
-      useResizeSensorLifecycle(rootRef, props2, update, reset);
-      return () => createVNode("uni-resize-sensor", {
-        "ref": rootRef,
-        "onAnimationstartOnce": update
-      }, [createVNode("div", {
-        "onScroll": update
-      }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
-        "onScroll": update
-      }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  var resizeSensorProps = {
+    initial: {
+      type: Boolean,
+      default: false
     }
-  });
+  };
+  function useResizeSensor(props2, emit2) {
+    var rootRef = ref(null);
+    var reset = useResizeSensorReset(rootRef);
+    var update = useResizeSensorUpdate(rootRef, emit2, reset);
+    useResizeSensorLifecycle(rootRef, props2, update, reset);
+    return {
+      rootRef,
+      update
+    };
+  }
   function useResizeSensorUpdate(rootRef, emit2, reset) {
     var size2 = reactive({
       width: -1,
@@ -13707,6 +13696,28 @@
       }
     });
   }
+  const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+    name: "ResizeSensor",
+    props: resizeSensorProps,
+    emits: ["resize"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var {
+        rootRef,
+        update
+      } = useResizeSensor(props2, emit2);
+      return () => createVNode("uni-resize-sensor", {
+        "ref": rootRef,
+        "onAnimationstartOnce": update
+      }, [createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+    }
+  });
   var pixelRatio = /* @__PURE__ */ function() {
     var canvas = document.createElement("canvas");
     canvas.height = canvas.width = 0;

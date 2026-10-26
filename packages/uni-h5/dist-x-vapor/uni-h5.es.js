@@ -3609,7 +3609,7 @@ function useInput(props2, { emit: emit2, expose }) {
   };
 }
 const _t0$g = template("<input tabindex=-1 class=uni-input-input>");
-const _t1$6 = template("<input class=uni-input-input>");
+const _t1$5 = template("<input class=uni-input-input>");
 const _t2$4 = template("<form action novalidate class=uni-input-form> ");
 const _t3$4 = template("<div uni-input uni-view><div class=uni-input-wrapper><div> </div>", 1);
 const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
@@ -3647,7 +3647,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$6();
+        const _n4 = _t1$5();
         setBlockKey(_n4, "input");
         on$1(_n4, "input", withModifiers(onInput, ["stop"]));
         on$1(_n4, "keyup", onKeyUpEnter);
@@ -3698,40 +3698,25 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const _t0$f = template("<div><div></div></div>");
-const _t1$5 = template("<div><div>");
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: { initial: {
+const resizeSensorProps = {
+  initial: {
     type: Boolean,
     default: false
-  } },
-  emits: ["resize"],
-  setup(props2, { emit: emit2 }) {
-    const rootRef = ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    useResizeSensorLifecycle(rootRef, props2, update, reset);
-    return () => (() => {
-      const _setTemplateRef = createTemplateRefSetter();
-      const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$f();
-        const _n1 = _t1$5();
-        on$1(_n0, "scroll", update);
-        on$1(_n1, "scroll", update);
-        return [_n0, _n1];
-      }, true);
-      renderEffect(() => _setTemplateRef(_n2, rootRef));
-      return _n2;
-    })();
   }
-});
+};
+function useResizeSensor(props2, emit2) {
+  const rootRef = ref(null);
+  const reset = useResizeSensorReset(rootRef);
+  const update = useResizeSensorUpdate(rootRef, emit2, reset);
+  useResizeSensorLifecycle(rootRef, props2, update, reset);
+  return { rootRef, update };
+}
 function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = reactive({
-    width: -1,
-    height: -1
-  });
-  watch(() => extend({}, size), (value) => emit2("resize", value));
+  const size = reactive({ width: -1, height: -1 });
+  watch(
+    () => extend({}, size),
+    (value) => emit2("resize", value)
+  );
   return () => {
     const rootEl = rootRef.value;
     if (!rootEl)
@@ -3766,6 +3751,27 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
+const _t0$f = template("<div uni-resize-sensor><div><div></div></div><div><div>", 1);
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: resizeSensorProps,
+  emits: ["resize"],
+  setup(props2, { emit: emit2 }) {
+    const { rootRef, update } = useResizeSensor(props2, emit2);
+    const root = (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n2 = _t0$f();
+      const _n0 = child(_n2);
+      const _n1 = next(_n0);
+      on$1(_n0, "scroll", update);
+      on$1(_n1, "scroll", update);
+      renderEffect(() => _setTemplateRef(_n2, rootRef));
+      return _n2;
+    })();
+    on$1(root, "animationstart", update, { once: true });
+    return root;
+  }
+});
 class UniTextareaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
