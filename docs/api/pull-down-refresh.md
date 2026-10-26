@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.startPullDownRefresh(options?) @startpulldownrefresh
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-pullDownRefresh
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-pullDownRefresh
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
 
 :::
 
@@ -84,10 +84,10 @@
 ::: sourceCode
 ## uni.stopPullDownRefresh() @stoppulldownrefresh
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-pullDownRefresh
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-pullDownRefresh
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
 
 :::
 
