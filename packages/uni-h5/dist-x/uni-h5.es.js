@@ -30195,7 +30195,8 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
           page_size: size
         }).then((res) => {
           var _a, _b;
-          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
+          let poisData;
+          poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
           poiHandle(poisData);
           searchLoading.value = false;
         }).catch((err) => {
@@ -30215,7 +30216,8 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
           }
         }).then((res) => {
           var _a, _b;
-          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
+          let poisData;
+          poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
           poiHandle(poisData);
           if (pois.value.length > 0 && index2 == 1) {
             let poi = pois.value[0];

@@ -45,3 +45,9 @@
     transform: rotate(360deg);
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .default {
+    color: #fff;
+  }
+}

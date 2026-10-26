@@ -415,7 +415,15 @@
         page_index: index,
         page_size: size,
       }).then((res : UTSJSONObject) => {
-        let poisData = res.getJSON('result')?.getJSON('result')?.getArray('data') as Array<UTSJSONObject>;
+        let poisData: Array<UTSJSONObject>;
+        // #ifndef VUE3-VAPOR
+        poisData = res.getJSON('result')?.getJSON('result')?.getArray('data') as Array<UTSJSONObject>;
+        // #endif
+        // #ifdef VUE3-VAPOR
+        // 普通对象和 UTSJSONObject 均按属性读取，保留数组检查，不将异常响应当作空列表。
+        const data = res['result']?.['result']?.['data'];
+        poisData = (Array.isArray(data) ? data : null) as Array<UTSJSONObject>;
+        // #endif
         poiHandle(poisData);
         searchLoading.value = false;
       }).catch((err) => {
@@ -434,7 +442,14 @@
           page_size: size,
         }
       }).then((res : UTSJSONObject) => {
-        let poisData = res.getJSON('result')?.getJSON('result')?.getArray('pois') as Array<UTSJSONObject>;
+        let poisData: Array<UTSJSONObject>;
+        // #ifndef VUE3-VAPOR
+        poisData = res.getJSON('result')?.getJSON('result')?.getArray('pois') as Array<UTSJSONObject>;
+        // #endif
+        // #ifdef VUE3-VAPOR
+        const data = res['result']?.['result']?.['pois'];
+        poisData = (Array.isArray(data) ? data : null) as Array<UTSJSONObject>;
+        // #endif
         poiHandle(poisData);
         if (pois.value.length > 0 && index == 1) {
           let poi : Poi = pois.value[0];

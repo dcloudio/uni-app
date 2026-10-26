@@ -31060,7 +31060,9 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
           page_size: size
         }).then((res) => {
           var _a, _b;
-          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
+          let poisData;
+          const data = (_b = (_a = res["result"]) == null ? void 0 : _a["result"]) == null ? void 0 : _b["data"];
+          poisData = Array.isArray(data) ? data : null;
           poiHandle(poisData);
           searchLoading.value = false;
         }).catch((err) => {
@@ -31080,7 +31082,9 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
           }
         }).then((res) => {
           var _a, _b;
-          let poisData = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
+          let poisData;
+          const data = (_b = (_a = res["result"]) == null ? void 0 : _a["result"]) == null ? void 0 : _b["pois"];
+          poisData = Array.isArray(data) ? data : null;
           poiHandle(poisData);
           if (pois.value.length > 0 && index2 == 1) {
             let poi = pois.value[0];
