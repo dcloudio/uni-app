@@ -364,7 +364,7 @@ const _hoisted_1$5 = {
   "uni-canvas": "",
   "uni-view": ""
 };
-const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -1341,7 +1341,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement2 {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -1490,7 +1490,7 @@ function useUserAction() {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$c = {
+const props$a = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -1596,7 +1596,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$b = /* @__PURE__ */ extend(
+const props$9 = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -1686,7 +1686,7 @@ const props$b = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$c
+  props$a
 );
 const emit = [
   "input",
@@ -1943,7 +1943,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 once(() => {
 });
-const props$a = /* @__PURE__ */ extend({}, props$b, {
+const props$8 = /* @__PURE__ */ extend({}, props$9, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2120,7 +2120,7 @@ function useInput(props2, { emit: emit2, expose }) {
 const _hoisted_1$4 = { class: "uni-input-wrapper" };
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$a,
+  props: props$8,
   emits: emits$2,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -2258,7 +2258,7 @@ function initTextareaElement(root, state) {
     set: setValue
   });
 }
-const props$9 = /* @__PURE__ */ extend({}, props$b, {
+const props$7 = /* @__PURE__ */ extend({}, props$9, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2379,9 +2379,9 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$9,
+  props: props$7,
   emits: emits$1,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -2507,13 +2507,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$9 = 0;
+let index$7 = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance = getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$9++}`;
+  const id2 = vm.id || `context${index$7++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -7090,7 +7090,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const editorProps = /* @__PURE__ */ extend({}, props$c, {
+const editorProps = /* @__PURE__ */ extend({}, props$a, {
   id: {
     type: String,
     default: ""
@@ -7140,8 +7140,8 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "EDITOR" };
-const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$7 = { value: "EDITOR" };
+const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
   emits: editorEmit,
@@ -7160,7 +7160,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       id: props2.id,
       class: "ql-container"
     }, null, 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
     return root;
   }
 });
@@ -7233,8 +7233,8 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "ICON" };
-const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$6 = { value: "ICON" };
+const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -7246,7 +7246,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (openBlock(), createBlock("div", _hoisted_1$3, [normalizeVNode(() => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)))]));
-    Object.defineProperty(root, "uniTagName", uniTagName$4);
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
     return root;
   }
 });
@@ -7444,8 +7444,8 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "MOVABLE-AREA" };
-const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$5 = { value: "MOVABLE-AREA" };
+const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -7463,7 +7463,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor), normalizeVNode(() => movableViewItems)], 16));
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
     return root;
   }
 });
@@ -8609,8 +8609,8 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "MOVABLE-VIEW" };
-const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$4 = { value: "MOVABLE-VIEW" };
+const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -8627,7 +8627,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       ref: rootRef
     }, [createVNode(ResizeSensor), normalizeVNode(() => slots.default && slots.default())], 512));
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    Object.defineProperty(root, "uniTagName", uniTagName$4);
     return root;
   }
 });
@@ -8723,7 +8723,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$8 = {
+const props$6 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -9005,11 +9005,11 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$1 = { value: "RICH-TEXT" };
-const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$3 = { value: "RICH-TEXT" };
+const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$8,
+  props: props$6,
   emits: ["itemclick"],
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -9024,7 +9024,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$1);
+    Object.defineProperty(result, "uniTagName", uniTagName$3);
     return result;
   }
 });
@@ -9258,7 +9258,7 @@ function onScrollend(element, listener) {
   };
 }
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$7 = {
+const props$5 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -9781,7 +9781,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
 }
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
-  props: props$7,
+  props: props$5,
   emits,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -14632,6 +14632,23 @@ _sfc_main.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-waterflow/components/waterflow/waterflow.vue");
   return _sfc_setup ? _sfc_setup(props2, ctx) : void 0;
 };
+function ssrRegisterHelper(comp, filename) {
+  if (typeof comp === "function") {
+    comp.__setup = () => {
+      const ssrContext = useSSRContext();
+      (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add(filename);
+    };
+  } else {
+    const setup = comp.setup;
+    comp.setup = (props2, ctx) => {
+      const ssrContext = useSSRContext();
+      (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add(filename);
+      if (setup) {
+        return setup(props2, ctx);
+      }
+    };
+  }
+}
 const _hoisted_1$2 = { class: "uni-video-icon uni-video-toast-icon" };
 const _hoisted_2 = { class: "uni-video-cover" };
 const _hoisted_3 = { class: "uni-video-bar uni-video-bar-full" };
@@ -14642,6 +14659,7 @@ const _hoisted_7 = { class: "uni-video-loading" };
 const _hoisted_8 = { class: "uni-video-toast-title" };
 const _hoisted_9 = { class: "uni-video-toast-title-current-time" };
 const _hoisted_10 = { class: "uni-video-slots" };
+const __moduleId = "packages/uni-h5/src/view/components/video/useVideo.tsx";
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
   const h = Math.floor(val / 3600);
@@ -15256,7 +15274,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$6 = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -15344,43 +15362,50 @@ const props$6 = {
     default: true
   }
 };
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$6,
-  emits: [
-    "fullscreenchange",
-    "progress",
-    "loadedmetadata",
-    "waiting",
-    "error",
-    "play",
-    "pause",
-    "ended",
-    "timeupdate"
-  ],
-  setup(props2, { emit: emit2, attrs, slots }) {
-    const rootRef = ref(null);
-    const containerRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { state: userActionState } = useUserAction();
-    const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
-    initI18nVideoMsgsOnce();
-    const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs, trigger);
-    const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
-    const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek, (currentTimeNew) => {
-      gestureState.currentTimeNew = currentTimeNew;
-    });
-    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    return () => {
+const videoEmits = [
+  "fullscreenchange",
+  "progress",
+  "loadedmetadata",
+  "waiting",
+  "error",
+  "play",
+  "pause",
+  "ended",
+  "timeupdate"
+];
+function useVideoComponent(props2, { emit: emit2, attrs, slots }) {
+  const rootRef = ref(null);
+  const containerRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state: userActionState } = useUserAction();
+  const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
+  initI18nVideoMsgsOnce();
+  const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs, trigger);
+  const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
+  const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek, (currentTimeNew) => {
+    gestureState.currentTimeNew = currentTimeNew;
+  });
+  useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
+      play,
+      pause,
+      stop,
+      seek,
+      sendDanmu,
+      playbackRate,
+      requestFullScreen,
+      exitFullScreen
+    },
+    render: () => {
       return (() => {
-        const _cache = createVNodeCache("0be45101");
-        return openBlock(), createBlock("uni-video", {
-          ref: rootRef,
-          id: props2.id
-        }, [createVNode("div", {
+        const _cache = createVNodeCache("f414baeb");
+        return openBlock(), createBlock("div", {
           ref: containerRef,
           class: "uni-video-container"
         }, [
@@ -15455,7 +15480,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
             class: "uni-video-danmu"
           }, null, 512), [[vShow, videoState.start && danmuState.enable]]),
           normalizeVNode(() => controlsState.centerPlayBtnShow && (() => {
-            const _cache2 = createVNodeCache("b572dc15");
+            const _cache2 = createVNodeCache("30ba2fb0");
             return openBlock(), createBlock("div", _hoisted_2, [_cache2[0] || (_cache2[0] = createVNode("div", { class: "uni-video-cover-play-button uni-video-icon" }, null, -1))]);
           })()),
           createVNode("div", _hoisted_7, [gestureState.gestureType === "volume" ? (openBlock(), createBlock("div", {
@@ -15481,9 +15506,39 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
             normalizeVNode(() => formatTime(videoState.currentDuration))
           ])]),
           createVNode("div", _hoisted_10, [normalizeVNode(() => slots.default && slots.default())])
-        ], 512)], 512);
+        ], 512);
       })();
-    };
+    }
+  };
+}
+ssrRegisterHelper(useVideoComponent, __moduleId);
+class UniVideoElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$2 = { value: "VIDEO" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-video",
+    class: UniVideoElement,
+    native: true
+  },
+  setup(props2, context) {
+    const { rootRef, toggleControls, methods, render } = useVideoComponent(props2, context);
+    const root = (openBlock(), createBlock("div", {
+      "uni-video": "",
+      "uni-view": "",
+      ref: rootRef,
+      id: props2.id
+    }, [normalizeVNode(() => render())], 512));
+    Object.assign(root, methods);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    return root;
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -15556,8 +15611,8 @@ class UniWebViewElement extends UniViewElement {
     return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName = { value: "WEB-VIEW" };
-const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$1 = { value: "WEB-VIEW" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
@@ -15575,7 +15630,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       "uni-view": "",
       class: "uni-webview"
     }, $listeners.value, $excludeAttrs.value, { ref: rootRef }), null, 16));
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Object.defineProperty(root, "uniTagName", uniTagName$1);
     return root;
   }
 });
@@ -15874,7 +15929,7 @@ const getIsAMap = () => {
 const getIsBMap = () => {
   return getMapInfo().type === "BMapGL";
 };
-const props$5 = {
+const props$4 = {
   id: {
     type: [Number, String],
     default: ""
@@ -15960,7 +16015,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -16294,12 +16349,10 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       onUnmounted(() => removeMapChidlContext(context));
     }
     onUnmounted(removeMarker);
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$4 = {
+const props$3 = {
   points: {
     type: Array,
     require: true
@@ -16345,7 +16398,7 @@ const props$4 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -16419,12 +16472,10 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       watch(props2, updatePolyline);
     });
     onUnmounted(removePolyline);
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$3 = {
+const props$2 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -16456,7 +16507,7 @@ const props$3 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -16517,13 +16568,11 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
       watch(props2, updateCircle);
     });
     onUnmounted(removeCircle);
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
 const _hoisted_1$1 = { class: "uni-map-control" };
-const props$2 = {
+const props$1 = {
   id: {
     type: [Number, String],
     default: ""
@@ -16547,7 +16596,7 @@ const props$2 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$2,
+  props: props$1,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -16592,7 +16641,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$1 = {
+const props = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -16626,7 +16675,7 @@ const props$1 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$1,
+  props,
   setup(props2) {
     let polygonIns;
     const onMapReady = inject("onMapReady");
@@ -16694,13 +16743,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
       watch(props2, drawPolygon);
     });
     onUnmounted(() => {
-      polygonIns.setMap(null);
+      polygonIns == null ? void 0 : polygonIns.setMap(null);
     });
-    return () => null;
+    return [];
   }
 });
-const _hoisted_1 = { style: "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;" };
-const props = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -16791,7 +16839,11 @@ function getMapPosition(maps2, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps2, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps2,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -16854,24 +16906,37 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state.latitude || longitude !== state.longitude) {
-      state.latitude = latitude;
-      state.longitude = longitude;
-      if (map) {
-        const centerPosition = getMapPosition(maps2, state.latitude, state.longitude);
-        map.setCenter(centerPosition);
+  watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state.latitude || longitude !== state.longitude) {
+        state.latitude = latitude;
+        state.longitude = longitude;
+        if (map) {
+          const centerPosition = getMapPosition(
+            maps2,
+            state.latitude,
+            state.longitude
+          );
+          map.setCenter(centerPosition);
+        }
       }
     }
-  });
-  watch(() => props2.includePoints, (points) => {
-    state.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
+  );
+  watch(
+    () => props2.includePoints,
+    (points) => {
+      state.includePoints = getPoints(points);
+      if (isBoundsReady) {
+        updateBounds();
+      }
+    },
+    {
+      deep: true
     }
-  }, { deep: true });
+  );
   function emitBoundsReady() {
     isBoundsReady = true;
     onBoundsReadyCallbacks.forEach((callback) => callback());
@@ -16904,7 +16969,10 @@ function useMap(props2, rootRef, emit2) {
     else {
       const bounds = new maps2.LatLngBounds();
       state.includePoints.forEach(({ latitude, longitude }) => {
-        const latLng = new maps2.LatLng(latitude, longitude);
+        const latLng = new maps2.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -16935,9 +17003,12 @@ function useMap(props2, rootRef, emit2) {
       map2.enableScrollWheelZoom();
       map2._printLog && map2._printLog("uniapp");
     }
-    watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
+    watch(
+      () => props2.scale,
+      (scale) => {
+        map2.setZoom(Number(scale) || 16);
+      }
+    );
     onBoundsReady(() => {
       if (state.includePoints.length) {
         updateBounds();
@@ -16956,16 +17027,27 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       map2.addEventListener("dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
     } else {
-      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-        boundsChangedEvent.remove();
-        emitBoundsReady();
-      });
+      const boundsChangedEvent = event.addListener(
+        map2,
+        "bounds_changed",
+        () => {
+          boundsChangedEvent.remove();
+          emitBoundsReady();
+        }
+      );
       event.addListener(map2, "complete", () => {
         emitBoundsReady();
       });
@@ -16980,17 +17062,31 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       event.addListener(map2, "dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
       const zoomChangedCallback = () => {
         emit2("update:scale", map2.getZoom());
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "scale"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "scale"
+            },
+            getMapInfo2()
+          )
+        );
       };
       event.addListener(map2, "zoom_changed", zoomChangedCallback);
       event.addListener(map2, "zoomend", zoomChangedCallback);
@@ -17006,96 +17102,104 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state.latitude = latitude;
-              state.longitude = longitude;
-              if (map) {
-                const centerPosition = getMapPosition(maps2, latitude, longitude);
-                map.setCenter(centerPosition);
-              }
-              onMapReady(() => {
-                callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              callOptions(data, `${type}:ok`);
-            } else {
-              callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state.latitude = latitude;
+                state.longitude = longitude;
+                if (map) {
+                  const centerPosition = getMapPosition(
+                    maps2,
+                    latitude,
+                    longitude
+                  );
+                  map.setCenter(centerPosition);
+                }
+                onMapReady(() => {
+                  callOptions(data, `${type}:ok`);
+                });
+              } else {
+                callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  callOptions(data, `${type}:fail ${error.message}`);
+                }
+                callOptions(data, `${type}:ok`);
+              } else {
+                callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   onMounted(() => {
@@ -17115,43 +17219,59 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
+const _hoisted_1 = { style: "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;" };
+class UniMapElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMapElement && value instanceof UniViewElement && value.hasAttribute("uni-map") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName = { value: "MAP" };
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props,
-  emits: [
-    "markertap",
-    "labeltap",
-    "callouttap",
-    "controltap",
-    "regionchange",
-    "tap",
-    "click",
-    "updated",
-    "update:scale",
-    "update:latitude",
-    "update:longitude"
-  ],
+  props: mapProps,
+  emits: mapEmits,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-map",
+    class: UniMapElement,
+    native: true
+  },
   setup(props2, { emit: emit2, slots }) {
     const rootRef = ref(null);
     const { mapRef, trigger } = useMap(props2, rootRef, emit2);
-    return () => {
-      return openBlock(), createBlock("uni-map", {
-        ref: rootRef,
-        id: props2.id
-      }, [
-        createVNode("div", {
-          ref: mapRef,
-          style: "width: 100%; height: 100%; position: relative; overflow: hidden"
-        }, null, 512),
-        normalizeVNode(() => props2.markers.map((item) => (openBlock(), createBlock(MapMarker, mergeProps({ key: item.id }, item), null, 16)))),
-        normalizeVNode(() => props2.polyline.map((item) => (openBlock(), createBlock(MapPolyline, item, null, 16)))),
-        normalizeVNode(() => props2.circles.map((item) => (openBlock(), createBlock(MapCircle, item, null, 16)))),
-        normalizeVNode(() => props2.controls.map((item) => (openBlock(), createBlock(MapControl, mergeProps(item, { trigger }), null, 16)))),
-        normalizeVNode(() => props2.showLocation && (openBlock(), createBlock(MapLocation))),
-        normalizeVNode(() => props2.polygons.map((item) => (openBlock(), createBlock(MapPolygon, item, null, 16)))),
-        createVNode("div", _hoisted_1, [normalizeVNode(() => slots.default && slots.default())])
-      ], 512);
-    };
+    const root = (openBlock(), createBlock("div", {
+      "uni-map": "",
+      "uni-view": "",
+      ref: rootRef,
+      id: props2.id
+    }, [
+      createVNode("div", {
+        ref: mapRef,
+        style: "width: 100%; height: 100%; position: relative; overflow: hidden"
+      }, null, 512),
+      normalizeVNode(() => props2.markers.map((item) => (openBlock(), createBlock(MapMarker, mergeProps({ key: item.id }, item), null, 16)))),
+      normalizeVNode(() => props2.polyline.map((item) => (openBlock(), createBlock(MapPolyline, item, null, 16)))),
+      normalizeVNode(() => props2.circles.map((item) => (openBlock(), createBlock(MapCircle, item, null, 16)))),
+      normalizeVNode(() => props2.controls.map((item) => (openBlock(), createBlock(MapControl, mergeProps(item, { trigger }), null, 16)))),
+      normalizeVNode(() => props2.showLocation && (openBlock(), createBlock(MapLocation))),
+      normalizeVNode(() => props2.polygons.map((item) => (openBlock(), createBlock(MapPolygon, item, null, 16)))),
+      createVNode("div", _hoisted_1, [normalizeVNode(() => slots.default && slots.default())])
+    ], 512));
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
   }
 });
 const _AdConfig = class _AdConfig {
@@ -18641,15 +18761,15 @@ export {
   index$4 as AdDraw,
   _sfc_main$u as AsyncErrorComponent,
   _sfc_main$v as AsyncLoadingComponent,
-  index$a as Button,
+  index$8 as Button,
   index$3 as Camera,
-  indexVapor$7 as Canvas,
+  indexVapor$9 as Canvas,
   _sfc_main$n as Checkbox,
   _sfc_main$m as CheckboxGroup,
-  indexVapor$5 as Editor,
+  indexVapor$7 as Editor,
   _sfc_main$l as FlowItem,
   _sfc_main$k as Form,
-  indexVapor$4 as Icon,
+  indexVapor$6 as Icon,
   Input,
   _sfc_main$j as Label,
   _sfc_main$w as LayoutComponent,
@@ -18658,10 +18778,10 @@ export {
   index$2 as LivePlayer,
   index$1 as LivePusher,
   _sfc_main$g as Loading,
-  index$7 as Map,
+  indexVapor as Map,
   _sfc_main$f as MatchMedia,
-  indexVapor$3 as MovableArea,
-  indexVapor$2 as MovableView,
+  indexVapor$5 as MovableArea,
+  indexVapor$4 as MovableView,
   _sfc_main$e as Navigator,
   _sfc_main$q as PageComponent,
   _sfc_main$d as PageContainer,
@@ -18672,7 +18792,7 @@ export {
   _sfc_main$8 as Radio,
   _sfc_main$7 as RadioGroup,
   ResizeSensor,
-  indexVapor$1 as RichText,
+  indexVapor$3 as RichText,
   __syscom_0 as ScrollView,
   _sfc_main$6 as Slider,
   _sfc_main$5 as StickyHeader,
@@ -18680,7 +18800,7 @@ export {
   _sfc_main$3 as Swiper,
   _sfc_main$2 as SwiperItem,
   _sfc_main$1 as Switch,
-  indexVapor$6 as Textarea,
+  indexVapor$8 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
@@ -18751,9 +18871,9 @@ export {
   UniViewElement,
   UniViewElement as UniViewElementImpl,
   UniViewJSBridge$1 as UniViewJSBridge,
-  index$8 as Video,
+  indexVapor$2 as Video,
   _sfc_main as Waterflow,
-  indexVapor as WebView,
+  indexVapor$1 as WebView,
   clearStorage,
   clearStorageSync,
   createVaporPageRouteComponent,

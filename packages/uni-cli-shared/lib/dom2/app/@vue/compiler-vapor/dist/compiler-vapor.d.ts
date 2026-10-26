@@ -23166,6 +23166,7 @@ export declare function isTransitionGroupTag(tag: string): boolean;
 export declare function isKeepAliveTag(tag: string): boolean;
 export declare function isTeleportTag(tag: string): boolean;
 export declare function isBuiltInComponent(tag: string): string | undefined;
+export declare function isLongIfChain(head: IfIRNode): boolean;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/expression.d.ts
 type SourceRange = {
@@ -23233,6 +23234,9 @@ export declare function needsVaporCtx(block: BlockIRNode): boolean;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/slotOutlet.d.ts
 export declare function genSlotFlags(flags: number): string | undefined;
+//#endregion
+//#region temp/packages/compiler-vapor/src/generators/if.d.ts
+export declare function genIfChainFlags(once: boolean | undefined, slotRoot: boolean, index: number): string;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/prop.d.ts
 export declare function isListenerProp(prop: IRProp): boolean;

@@ -8487,7 +8487,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$w = {
+const props$u = {
   canvasId: {
     type: String,
     default: ""
@@ -8507,7 +8507,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$w,
+  props: props$u,
   computed: {
     id() {
       return this.canvasId;
@@ -8975,7 +8975,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$v = {
+const props$t = {
   name: {
     type: String,
     default: ""
@@ -8983,7 +8983,7 @@ const props$v = {
 };
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$v,
+  props: props$t,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -9035,7 +9035,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$u = {
+const props$s = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -9084,7 +9084,7 @@ const props$u = {
 };
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$u,
+  props: props$s,
   setup(props2, {
     slots
   }) {
@@ -9195,7 +9195,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$t = {
+const props$r = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -10167,7 +10167,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const editorProps = /* @__PURE__ */ extend({}, props$t, {
+const editorProps = /* @__PURE__ */ extend({}, props$r, {
   id: {
     type: String,
     default: ""
@@ -10302,7 +10302,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$s = {
+const props$q = {
   src: {
     type: String,
     default: ""
@@ -10341,7 +10341,7 @@ const IMAGE_MODES = {
 };
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$s,
+  props: props$q,
   setup(props2, {
     emit: emit2
   }) {
@@ -10685,7 +10685,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$r = /* @__PURE__ */ extend(
+const props$p = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -10775,7 +10775,7 @@ const props$r = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$t
+  props$r
 );
 const emit = [
   "input",
@@ -11078,7 +11078,7 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
     }
   }
 }
-const props$q = /* @__PURE__ */ extend({}, props$r, {
+const props$o = /* @__PURE__ */ extend({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -11294,7 +11294,7 @@ function useInput(props2, { emit: emit2, expose }) {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$q,
+  props: props$o,
   emits: emits$2,
   setup(props2, context) {
     const {
@@ -14238,7 +14238,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = {
+const props$n = {
   name: {
     type: String,
     default: ""
@@ -14246,7 +14246,7 @@ const props$p = {
 };
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$p,
+  props: props$n,
   // emits: ['change'],
   setup(props2, {
     emit: emit2,
@@ -14330,7 +14330,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$o = {
+const props$m = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -14374,7 +14374,7 @@ const props$o = {
 };
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$o,
+  props: props$m,
   setup(props2, {
     slots
   }) {
@@ -14585,7 +14585,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$n = {
+const props$l = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -14789,7 +14789,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$n,
+  props: props$l,
   emits: ["itemclick"],
   setup(props2, {
     emit: emit2
@@ -14962,7 +14962,7 @@ function onScrollend(element, listener2) {
   };
 }
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$m = {
+const props$k = {
   direction: {
     type: [String],
     default: "vertical"
@@ -15482,7 +15482,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$m,
+  props: props$k,
   emits: emits$1,
   setup(props2, context) {
     const {
@@ -15540,7 +15540,7 @@ function createBackgroundColorStyle(color) {
 function withBackgroundColor(style, color) {
   return color ? Object.assign(style, { backgroundColor: color }) : style;
 }
-const props$l = {
+const props$j = {
   name: {
     type: String,
     default: ""
@@ -15591,7 +15591,7 @@ const props$l = {
 };
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$l,
+  props: props$j,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -15770,7 +15770,7 @@ function lerp(min, max, t2) {
   t2 = Math.min(1, Math.max(0, t2));
   return min * (1 - t2) + max * t2;
 }
-const props$k = {
+const props$i = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -16271,7 +16271,7 @@ function useLayout(props2, state2, swiperContexts, slideFrameRef, emit2, trigger
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$k,
+  props: props$i,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -16495,7 +16495,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$j = {
+const props$h = {
   itemId: {
     type: String,
     default: ""
@@ -16503,7 +16503,7 @@ const props$j = {
 };
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$j,
+  props: props$h,
   setup(props2, {
     slots
   }) {
@@ -16552,7 +16552,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$i = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -16580,7 +16580,7 @@ const props$i = {
 };
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$i,
+  props: props$g,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -16756,7 +16756,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = /* @__PURE__ */ extend({}, props$r, {
+const props$f = /* @__PURE__ */ extend({}, props$p, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -16864,7 +16864,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$h,
+  props: props$f,
   emits,
   setup(props2, context) {
     const {
@@ -18256,7 +18256,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$g = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -18344,86 +18344,92 @@ const props$g = {
     default: true
   }
 };
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$g,
-  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
-  setup(props2, {
-    emit: emit2,
-    attrs: attrs2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const containerRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: userActionState
-    } = useUserAction();
-    const {
-      $attrs: videoAttrs
-    } = useAttrs({
-      excludeListeners: true
-    });
-    initI18nVideoMsgsOnce();
-    const {
-      videoRef,
-      state: videoState,
+const videoEmits = ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"];
+function useVideoComponent(props2, {
+  emit: emit2,
+  attrs: attrs2,
+  slots
+}) {
+  const rootRef = ref(null);
+  const containerRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const {
+    state: userActionState
+  } = useUserAction();
+  const {
+    $attrs: videoAttrs
+  } = useAttrs({
+    excludeListeners: true
+  });
+  initI18nVideoMsgsOnce();
+  const {
+    videoRef,
+    state: videoState,
+    play,
+    pause,
+    stop,
+    seek,
+    playbackRate,
+    toggle,
+    onDurationChange,
+    onLoadedMetadata,
+    onProgress,
+    onWaiting,
+    onVideoError,
+    onPlay,
+    onPause,
+    onEnded,
+    onTimeUpdate
+  } = useVideo(props2, attrs2, trigger);
+  const {
+    state: danmuState,
+    danmuRef,
+    updateDanmu,
+    toggleDanmu,
+    sendDanmu
+  } = useDanmu(props2, videoState);
+  const {
+    state: fullscreenState,
+    onFullscreenChange,
+    emitFullscreenChange,
+    toggleFullscreen,
+    requestFullScreen,
+    exitFullScreen
+  } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const {
+    state: gestureState,
+    onTouchstart,
+    onTouchend,
+    onTouchmove
+  } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const {
+    state: controlsState,
+    progressRef,
+    ballRef,
+    clickProgress,
+    toggleControls,
+    autoHideEnd,
+    autoHideStart
+  } = useControls(props2, videoState, seek, (currentTimeNew) => {
+    gestureState.currentTimeNew = currentTimeNew;
+  });
+  useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
       play,
       pause,
       stop,
       seek,
+      sendDanmu,
       playbackRate,
-      toggle,
-      onDurationChange,
-      onLoadedMetadata,
-      onProgress,
-      onWaiting,
-      onVideoError,
-      onPlay,
-      onPause,
-      onEnded,
-      onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
-    const {
-      state: danmuState,
-      danmuRef,
-      updateDanmu,
-      toggleDanmu,
-      sendDanmu
-    } = useDanmu(props2, videoState);
-    const {
-      state: fullscreenState,
-      onFullscreenChange,
-      emitFullscreenChange,
-      toggleFullscreen,
       requestFullScreen,
       exitFullScreen
-    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const {
-      state: gestureState,
-      onTouchstart,
-      onTouchend,
-      onTouchmove
-    } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const {
-      state: controlsState,
-      progressRef,
-      ballRef,
-      clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
-    } = useControls(props2, videoState, seek, (currentTimeNew) => {
-      gestureState.currentTimeNew = currentTimeNew;
-    });
-    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    return () => {
-      return createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id,
-        "onClick": toggleControls
-      }, [createVNode("div", {
+    },
+    render: () => {
+      return createVNode("div", {
         "ref": containerRef,
         "class": "uni-video-container",
         "onTouchstart": onTouchstart,
@@ -18568,8 +18574,26 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title-current-time"
       }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
-    };
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
+    }
+  };
+}
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  setup(props2, context) {
+    const {
+      rootRef,
+      toggleControls,
+      methods,
+      render
+    } = useVideoComponent(props2, context);
+    return () => createVNode("uni-video", {
+      "ref": rootRef,
+      "id": props2.id,
+      "onClick": toggleControls
+    }, [render()], 8, ["id", "onClick"]);
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -18596,7 +18620,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$f = {
+const props$e = {
   src: {
     type: String,
     default: ""
@@ -18609,7 +18633,7 @@ const props$f = {
 const index$c = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$f,
+  props: props$e,
   emits: ["load"],
   setup(props2, {
     emit: emit2
@@ -19102,7 +19126,7 @@ function translateCoordinateSystem(type, coords, skip) {
     )
   );
 }
-const props$e = {
+const props$d = {
   id: {
     type: [Number, String],
     default: ""
@@ -19188,7 +19212,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$e,
+  props: props$d,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -19565,7 +19589,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$d = {
+const props$c = {
   points: {
     type: Array,
     require: true
@@ -19611,7 +19635,7 @@ const props$d = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$d,
+  props: props$c,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -19700,7 +19724,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$c = {
+const props$b = {
   latitude: {
     type: [Number, String],
     require: true
@@ -19732,7 +19756,7 @@ const props$c = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$c,
+  props: props$b,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -19808,7 +19832,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$b = {
+const props$a = {
   id: {
     type: [Number, String],
     default: ""
@@ -19832,7 +19856,7 @@ const props$b = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$b,
+  props: props$a,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -21028,7 +21052,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$a = {
+const props$9 = {
   src: {
     type: String,
     default: ""
@@ -21036,7 +21060,7 @@ const props$a = {
 };
 const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$a,
+  props: props$9,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -21126,7 +21150,7 @@ const ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$9 = {
+const props$8 = {
   urls: {
     type: Array,
     default() {
@@ -21145,7 +21169,7 @@ function getIndex(props2) {
 }
 const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$9,
+  props: props$8,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -22234,7 +22258,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
   GetLocationOptions
 );
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$8 = {
+const props$7 = {
   latitude: {
     type: Number
   },
@@ -22291,7 +22315,7 @@ function useState$2(props2) {
 }
 const LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$8,
+  props: props$7,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -22398,7 +22422,7 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$7 = {
+const props$6 = {
   latitude: {
     type: Number
   },
@@ -22565,7 +22589,7 @@ function useList(state2) {
 }
 const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$7,
+  props: props$6,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -22883,7 +22907,7 @@ const ModalTheme = {
   }
 };
 const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$6 = {
+const props$5 = {
   title: {
     type: String,
     default: ""
@@ -22926,7 +22950,7 @@ const props$6 = {
   }
 };
 const modal = /* @__PURE__ */ defineComponent({
-  props: props$6,
+  props: props$5,
   setup(props2, {
     emit: emit2
   }) {
@@ -23078,7 +23102,7 @@ function createToastIcon$1(icon) {
 const ToastTransition = Transition;
 const defineToast = defineComponent;
 const createToastIcon = createToastIcon$1;
-const props$5 = {
+const props$4 = {
   title: {
     type: String,
     default: ""
@@ -23111,7 +23135,7 @@ const props$5 = {
 const ToastIconClassName = "uni-toast__icon";
 const Toast = /* @__PURE__ */ defineToast({
   name: "Toast",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -23410,7 +23434,7 @@ function setActionSheetTheme(theme, actionSheetTheme) {
     actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
   });
 }
-const props$4 = {
+const props$3 = {
   title: {
     type: String,
     default: ""
@@ -23436,7 +23460,7 @@ const props$4 = {
 };
 const actionSheet = /* @__PURE__ */ defineComponent({
   name: "ActionSheet",
-  props: props$4,
+  props: props$3,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -24571,7 +24595,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$3 = {
+const props$2 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -24605,7 +24629,7 @@ const props$3 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     let polygonIns;
     const onMapReady = inject("onMapReady");
@@ -24693,12 +24717,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
       watch(props2, drawPolygon);
     });
     onUnmounted(() => {
-      polygonIns.setMap(null);
+      polygonIns == null ? void 0 : polygonIns.setMap(null);
     });
     return () => null;
   }
 });
-const props$2 = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -24789,7 +24813,11 @@ function getMapPosition(maps2, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps2, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps2,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -24852,26 +24880,37 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state2.latitude || longitude !== state2.longitude) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (map) {
-        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-        map.setCenter(centerPosition);
+  watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state2.latitude || longitude !== state2.longitude) {
+        state2.latitude = latitude;
+        state2.longitude = longitude;
+        if (map) {
+          const centerPosition = getMapPosition(
+            maps2,
+            state2.latitude,
+            state2.longitude
+          );
+          map.setCenter(centerPosition);
+        }
       }
     }
-  });
-  watch(() => props2.includePoints, (points) => {
-    state2.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
+  );
+  watch(
+    () => props2.includePoints,
+    (points) => {
+      state2.includePoints = getPoints(points);
+      if (isBoundsReady) {
+        updateBounds();
+      }
+    },
+    {
+      deep: true
     }
-  }, {
-    deep: true
-  });
+  );
   function emitBoundsReady() {
     isBoundsReady = true;
     onBoundsReadyCallbacks.forEach((callback) => callback());
@@ -24903,11 +24942,11 @@ function useMap(props2, rootRef, emit2) {
       ;
     else {
       const bounds = new maps2.LatLngBounds();
-      state2.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
-        const latLng = new maps2.LatLng(latitude, longitude);
+      state2.includePoints.forEach(({ latitude, longitude }) => {
+        const latLng = new maps2.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -24938,9 +24977,12 @@ function useMap(props2, rootRef, emit2) {
       map2.enableScrollWheelZoom();
       map2._printLog && map2._printLog("uniapp");
     }
-    watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
+    watch(
+      () => props2.scale,
+      (scale) => {
+        map2.setZoom(Number(scale) || 16);
+      }
+    );
     onBoundsReady(() => {
       if (state2.includePoints.length) {
         updateBounds();
@@ -24959,16 +25001,27 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       map2.addEventListener("dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
     } else {
-      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-        boundsChangedEvent.remove();
-        emitBoundsReady();
-      });
+      const boundsChangedEvent = event.addListener(
+        map2,
+        "bounds_changed",
+        () => {
+          boundsChangedEvent.remove();
+          emitBoundsReady();
+        }
+      );
       event.addListener(map2, "complete", () => {
         emitBoundsReady();
       });
@@ -24983,17 +25036,31 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       event.addListener(map2, "dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
       const zoomChangedCallback = () => {
         emit2("update:scale", map2.getZoom());
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "scale"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "scale"
+            },
+            getMapInfo2()
+          )
+        );
       };
       event.addListener(map2, "zoom_changed", zoomChangedCallback);
       event.addListener(map2, "zoomend", zoomChangedCallback);
@@ -25009,96 +25076,104 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state2.latitude = latitude;
-              state2.longitude = longitude;
-              if (map) {
-                const centerPosition = getMapPosition(maps2, latitude, longitude);
-                map.setCenter(centerPosition);
-              }
-              onMapReady(() => {
-                callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              callOptions(data, `${type}:ok`);
-            } else {
-              callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state2.latitude = latitude;
+                state2.longitude = longitude;
+                if (map) {
+                  const centerPosition = getMapPosition(
+                    maps2,
+                    latitude,
+                    longitude
+                  );
+                  map.setCenter(centerPosition);
+                }
+                onMapReady(() => {
+                  callOptions(data, `${type}:ok`);
+                });
+              } else {
+                callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state2.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  callOptions(data, `${type}:fail ${error.message}`);
+                }
+                callOptions(data, `${type}:ok`);
+              } else {
+                callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state2.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   onMounted(() => {
@@ -25118,10 +25193,23 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
 const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  props: mapProps,
+  emits: mapEmits,
   setup(props2, {
     emit: emit2,
     slots

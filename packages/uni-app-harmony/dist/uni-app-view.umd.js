@@ -13879,7 +13879,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$t = {
+  var props$s = {
     canvasId: {
       type: String,
       default: ""
@@ -13899,7 +13899,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$t,
+    props: props$s,
     computed: {
       id() {
         return this.canvasId;
@@ -14381,7 +14381,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$s = {
+  var props$r = {
     name: {
       type: String,
       default: ""
@@ -14389,7 +14389,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$s,
+    props: props$r,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14442,7 +14442,7 @@
     }
     return getFieldsValue;
   }
-  var props$r = {
+  var props$q = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14491,7 +14491,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$r,
+    props: props$q,
     setup(props2, _ref) {
       var {
         slots
@@ -14673,7 +14673,7 @@
       });
     }
   }
-  var props$q = {
+  var props$p = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -15649,7 +15649,7 @@
       });
     });
   }
-  var editorProps = /* @__PURE__ */ extend({}, props$q, {
+  var editorProps = /* @__PURE__ */ extend({}, props$p, {
     id: {
       type: String,
       default: ""
@@ -15778,7 +15778,7 @@
       };
     }
   });
-  var props$p = {
+  var props$o = {
     src: {
       type: String,
       default: ""
@@ -15817,7 +15817,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$p,
+    props: props$o,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -16149,7 +16149,7 @@
     }
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$o = /* @__PURE__ */ extend({}, {
+  var props$n = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -16236,7 +16236,7 @@
       type: String,
       default: ""
     }
-  }, props$q);
+  }, props$p);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -16527,7 +16527,7 @@
       }
     }
   }
-  var props$n = /* @__PURE__ */ extend({}, props$o, {
+  var props$m = /* @__PURE__ */ extend({}, props$n, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -16716,7 +16716,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$n,
+    props: props$m,
     emits: emits$2,
     setup(props2, context) {
       var {
@@ -19581,7 +19581,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$m = {
+  var props$l = {
     name: {
       type: String,
       default: ""
@@ -19589,7 +19589,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$m,
+    props: props$l,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -19674,7 +19674,7 @@
     }
     return fields2;
   }
-  var props$l = {
+  var props$k = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -19718,7 +19718,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$l,
+    props: props$k,
     setup(props2, _ref) {
       var {
         slots
@@ -19932,7 +19932,7 @@
     });
     return results.children;
   }
-  var props$k = {
+  var props$j = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -20128,7 +20128,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$k,
+    props: props$j,
     emits: ["itemclick"],
     setup(props2, _ref) {
       var {
@@ -20505,7 +20505,7 @@
     };
   }
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$j = {
+  var props$i = {
     direction: {
       type: [String],
       default: "vertical"
@@ -21015,7 +21015,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$j,
+    props: props$i,
     emits: emits$1,
     setup(props2, context) {
       var {
@@ -21077,7 +21077,7 @@
       backgroundColor: color
     }) : style;
   }
-  var props$i = {
+  var props$h = {
     name: {
       type: String,
       default: ""
@@ -21128,7 +21128,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$i,
+    props: props$h,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -21308,7 +21308,7 @@
     t2 = Math.min(1, Math.max(0, t2));
     return min2 * (1 - t2) + max2 * t2;
   }
-  var props$h = {
+  var props$g = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -21817,7 +21817,7 @@
   }
   const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$h,
+    props: props$g,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -21929,7 +21929,7 @@
       };
     }
   });
-  var props$g = {
+  var props$f = {
     itemId: {
       type: String,
       default: ""
@@ -21937,7 +21937,7 @@
   };
   const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$g,
+    props: props$f,
     setup(props2, _ref) {
       var {
         slots
@@ -21987,7 +21987,7 @@
       };
     }
   });
-  var props$f = {
+  var props$e = {
     name: {
       type: String,
       default: ""
@@ -22015,7 +22015,7 @@
   };
   const Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$f,
+    props: props$e,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -22208,7 +22208,7 @@
     var i2 = _toPrimitive(t2, "string");
     return "symbol" == typeof i2 ? i2 : i2 + "";
   }
-  var props$e = /* @__PURE__ */ extend({}, props$o, {
+  var props$d = /* @__PURE__ */ extend({}, props$n, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -22326,7 +22326,7 @@
   }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$e,
+    props: props$d,
     emits,
     setup(props2, context) {
       var {
@@ -23046,7 +23046,7 @@
       }
     }
   };
-  var props$d = {
+  var props$c = {
     tag: {
       type: String,
       default: ""
@@ -23066,7 +23066,7 @@
   };
   var index$1 = 0;
   const Embed = /* @__PURE__ */ defineBuiltInComponent({
-    props: props$d,
+    props: props$c,
     setup(props2, _ref) {
       var {
         expose,
@@ -23173,7 +23173,7 @@
       _handleSubscribe
     });
   }
-  var props$c = {
+  var props$b = {
     id: {
       type: String,
       default: ""
@@ -23199,7 +23199,7 @@
   };
   const WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView",
-    props: props$c,
+    props: props$b,
     setup(props2) {
       var embedRef = ref(null);
       var pageId = getCurrentPageId();
@@ -23864,7 +23864,7 @@
     });
     return progressing;
   }
-  var props$b = {
+  var videoProps = {
     id: {
       type: String,
       default: ""
@@ -23952,87 +23952,93 @@
       default: true
     }
   };
-  const Video = /* @__PURE__ */ defineBuiltInComponent({
-    name: "Video",
-    props: props$b,
-    emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
-    setup(props2, _ref2) {
-      var {
-        emit: emit2,
-        attrs: attrs2,
-        slots
-      } = _ref2;
-      var rootRef = ref(null);
-      var containerRef = ref(null);
-      var trigger2 = useCustomEvent(rootRef, emit2);
-      var {
-        state: userActionState
-      } = useUserAction();
-      var {
-        $attrs: videoAttrs
-      } = useAttrs({
-        excludeListeners: true
-      });
-      initI18nVideoMsgsOnce();
-      var {
-        videoRef,
-        state: videoState,
+  var videoEmits = ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"];
+  function useVideoComponent(props2, _ref2) {
+    var {
+      emit: emit2,
+      attrs: attrs2,
+      slots
+    } = _ref2;
+    var rootRef = ref(null);
+    var containerRef = ref(null);
+    var trigger2 = useCustomEvent(rootRef, emit2);
+    var {
+      state: userActionState
+    } = useUserAction();
+    var {
+      $attrs: videoAttrs
+    } = useAttrs({
+      excludeListeners: true
+    });
+    initI18nVideoMsgsOnce();
+    var {
+      videoRef,
+      state: videoState,
+      play,
+      pause,
+      stop,
+      seek,
+      playbackRate,
+      toggle,
+      onDurationChange,
+      onLoadedMetadata,
+      onProgress,
+      onWaiting,
+      onVideoError,
+      onPlay,
+      onPause,
+      onEnded,
+      onTimeUpdate
+    } = useVideo(props2, attrs2, trigger2);
+    var {
+      state: danmuState,
+      danmuRef,
+      updateDanmu,
+      toggleDanmu,
+      sendDanmu
+    } = useDanmu(props2, videoState);
+    var {
+      state: fullscreenState,
+      onFullscreenChange,
+      emitFullscreenChange,
+      toggleFullscreen,
+      requestFullScreen,
+      exitFullScreen
+    } = useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef);
+    var {
+      state: gestureState,
+      onTouchstart,
+      onTouchend,
+      onTouchmove
+    } = useGesture(props2, videoState, videoRef, fullscreenState);
+    var {
+      state: controlsState,
+      progressRef,
+      ballRef,
+      clickProgress,
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
+    } = useControls(props2, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew;
+    });
+    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    var progressing = useProgressing(videoState, gestureState, controlsState);
+    return {
+      rootRef,
+      toggleControls,
+      methods: {
         play,
         pause,
         stop,
         seek,
+        sendDanmu,
         playbackRate,
-        toggle,
-        onDurationChange,
-        onLoadedMetadata,
-        onProgress,
-        onWaiting,
-        onVideoError,
-        onPlay,
-        onPause,
-        onEnded,
-        onTimeUpdate
-      } = useVideo(props2, attrs2, trigger2);
-      var {
-        state: danmuState,
-        danmuRef,
-        updateDanmu,
-        toggleDanmu,
-        sendDanmu
-      } = useDanmu(props2, videoState);
-      var {
-        state: fullscreenState,
-        onFullscreenChange,
-        emitFullscreenChange,
-        toggleFullscreen,
         requestFullScreen,
         exitFullScreen
-      } = useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef);
-      var {
-        state: gestureState,
-        onTouchstart,
-        onTouchend,
-        onTouchmove
-      } = useGesture(props2, videoState, videoRef, fullscreenState);
-      var {
-        state: controlsState,
-        progressRef,
-        ballRef,
-        clickProgress,
-        toggleControls,
-        autoHideEnd,
-        autoHideStart
-      } = useControls(props2, videoState, seek, (currentTimeNew) => {
-        gestureState.currentTimeNew = currentTimeNew;
-      });
-      useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-      var progressing = useProgressing(videoState, gestureState, controlsState);
-      return () => {
-        return createVNode("uni-video", {
-          "ref": rootRef,
-          "id": props2.id,
-          "onClick": toggleControls
-        }, [createVNode("div", {
+      },
+      render: () => {
+        return createVNode("div", {
           "ref": containerRef,
           "class": "uni-video-container",
           "onTouchstart": onTouchstart,
@@ -24177,8 +24183,26 @@
           "class": "uni-video-toast-title-current-time"
         }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
           "class": "uni-video-slots"
-        }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
-      };
+        }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
+      }
+    };
+  }
+  const Video = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Video",
+    props: videoProps,
+    emits: videoEmits,
+    setup(props2, context) {
+      var {
+        rootRef,
+        toggleControls,
+        methods,
+        render
+      } = useVideoComponent(props2, context);
+      return () => createVNode("uni-video", {
+        "ref": rootRef,
+        "id": props2.id,
+        "onClick": toggleControls
+      }, [render()], 8, ["id", "onClick"]);
     }
   });
   class UniVideo extends UniComponent {

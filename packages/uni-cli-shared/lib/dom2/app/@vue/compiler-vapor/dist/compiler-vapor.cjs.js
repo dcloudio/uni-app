@@ -580,7 +580,7 @@ function transform(node, options = {}) {
 	};
 	const context = new TransformContext(ir, node, options);
 	transformNode(context);
-	if (!options.platform) finalizeIfChains(context);
+	finalizeIfChains(context);
 	ir.node.imports = context.imports;
 	return ir;
 }
@@ -6013,6 +6013,7 @@ exports.createVaporCompilerError = createVaporCompilerError;
 exports.genCall = genCall;
 exports.genDirectiveModifiers = genDirectiveModifiers;
 exports.genDynamicComponentFlags = genDynamicComponentFlags;
+exports.genIfChainFlags = genIfChainFlags;
 exports.genMulti = genMulti;
 exports.genSlotFlags = genSlotFlags;
 exports.generate = generate;
@@ -6028,6 +6029,7 @@ exports.isConstantExpression = isConstantExpression;
 exports.isDirectStaticLiteralProp = isDirectStaticLiteralProp;
 exports.isKeepAliveTag = isKeepAliveTag;
 exports.isListenerProp = isListenerProp;
+exports.isLongIfChain = isLongIfChain;
 exports.isStaticExpression = isStaticExpression;
 exports.isTeleportTag = isTeleportTag;
 exports.isTransitionGroupTag = isTransitionGroupTag;

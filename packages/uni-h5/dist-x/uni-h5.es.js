@@ -2791,7 +2791,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$o = {
   name: {
     type: String,
     default: ""
@@ -2801,7 +2801,7 @@ class UniCheckboxGroupElement extends UniElement2 {
 }
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$q,
+  props: props$o,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -2861,7 +2861,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$p = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2912,7 +2912,7 @@ class UniCheckboxElement extends UniElement2 {
 }
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$p,
+  props: props$n,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3050,7 +3050,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$o = {
+const props$m = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -12434,7 +12434,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const editorProps = /* @__PURE__ */ extend({}, props$o, {
+const editorProps = /* @__PURE__ */ extend({}, props$m, {
   id: {
     type: String,
     default: ""
@@ -12658,7 +12658,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$n = {
+const props$l = {
   src: {
     type: String,
     default: ""
@@ -12699,7 +12699,7 @@ class UniImageElement extends UniElement2 {
 }
 const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$n,
+  props: props$l,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -13062,7 +13062,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$m = /* @__PURE__ */ extend(
+const props$k = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -13152,7 +13152,7 @@ const props$m = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$o
+  props$m
 );
 const emit = [
   "input",
@@ -13423,7 +13423,7 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-const props$l = /* @__PURE__ */ extend({}, props$m, {
+const props$j = /* @__PURE__ */ extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -13605,7 +13605,7 @@ class UniInputElement extends UniElement2 {
 }
 const __syscom_3$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$l,
+  props: props$j,
   emits: emits$2,
   rootElement: {
     name: "uni-input",
@@ -16666,7 +16666,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$k = {
+const props$i = {
   name: {
     type: String,
     default: ""
@@ -16676,7 +16676,7 @@ class UniRadioGroupElement extends UniElement2 {
 }
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$k,
+  props: props$i,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -16768,7 +16768,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$j = {
+const props$h = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -16819,7 +16819,7 @@ class UniRadioElement extends UniElement2 {
 }
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$j,
+  props: props$h,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -17050,7 +17050,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$i = {
+const props$g = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -17187,7 +17187,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$i,
+  props: props$g,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -17455,7 +17455,7 @@ function onScrollend(element, listener2) {
   };
 }
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$h = {
+const props$f = {
   direction: {
     type: [String],
     default: "vertical"
@@ -17983,7 +17983,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$h,
+  props: props$f,
   emits: emits$1,
   rootElement: {
     name: "uni-scroll-view",
@@ -18089,7 +18089,7 @@ function withBackgroundColor(style, color) {
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$g = {
+const props$e = {
   name: {
     type: String,
     default: ""
@@ -18190,7 +18190,7 @@ class UniSliderElement extends UniElement2 {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$g,
+  props: props$e,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -18350,7 +18350,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$f = {
+const props$d = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -18853,7 +18853,7 @@ class UniSwiperElement extends UniElement2 {
 }
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$f,
+  props: props$d,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -19085,7 +19085,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$e = {
+const props$c = {
   itemId: {
     type: String,
     default: ""
@@ -19095,7 +19095,7 @@ class UniSwiperItemElement extends UniElement2 {
 }
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$e,
+  props: props$c,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -19152,7 +19152,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$d = {
+const props$b = {
   name: {
     type: String,
     default: ""
@@ -19198,7 +19198,7 @@ class UniSwitchElement extends UniElement2 {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$d,
+  props: props$b,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -19417,7 +19417,7 @@ const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$c = /* @__PURE__ */ extend({}, props$m, {
+const props$a = /* @__PURE__ */ extend({}, props$k, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -19547,7 +19547,7 @@ class UniTextareaElement extends UniElement2 {
 }
 const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$c,
+  props: props$a,
   emits,
   rootElement: {
     name: "uni-textarea",
@@ -19723,7 +19723,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$b = {
+const props$9 = {
   direction: {
     type: String,
     default: "vertical",
@@ -19784,7 +19784,7 @@ class UniListViewElement extends UniElement2 {
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$b,
+  props: props$9,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -21894,7 +21894,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$a = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -21982,106 +21982,92 @@ const props$a = {
     default: true
   }
 };
-class UniVideoElement extends UniElement2 {
-}
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$a,
-  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
-  rootElement: {
-    name: "uni-video",
-    class: UniVideoElement
-  },
-  setup(props2, {
-    emit: emit2,
-    attrs: attrs2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const containerRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: userActionState
-    } = useUserAction();
-    const {
-      $attrs: videoAttrs
-    } = useAttrs({
-      excludeListeners: true
-    });
-    initI18nVideoMsgsOnce();
-    const {
-      videoRef,
-      state: videoState,
+const videoEmits = ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"];
+function useVideoComponent(props2, {
+  emit: emit2,
+  attrs: attrs2,
+  slots
+}) {
+  const rootRef = ref(null);
+  const containerRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const {
+    state: userActionState
+  } = useUserAction();
+  const {
+    $attrs: videoAttrs
+  } = useAttrs({
+    excludeListeners: true
+  });
+  initI18nVideoMsgsOnce();
+  const {
+    videoRef,
+    state: videoState,
+    play,
+    pause,
+    stop,
+    seek,
+    playbackRate,
+    toggle,
+    onDurationChange,
+    onLoadedMetadata,
+    onProgress,
+    onWaiting,
+    onVideoError,
+    onPlay,
+    onPause,
+    onEnded,
+    onTimeUpdate
+  } = useVideo(props2, attrs2, trigger);
+  const {
+    state: danmuState,
+    danmuRef,
+    updateDanmu,
+    toggleDanmu,
+    sendDanmu
+  } = useDanmu(props2, videoState);
+  const {
+    state: fullscreenState,
+    onFullscreenChange,
+    emitFullscreenChange,
+    toggleFullscreen,
+    requestFullScreen,
+    exitFullScreen
+  } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const {
+    state: gestureState,
+    onTouchstart,
+    onTouchend,
+    onTouchmove
+  } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const {
+    state: controlsState,
+    progressRef,
+    ballRef,
+    clickProgress,
+    toggleControls,
+    autoHideEnd,
+    autoHideStart
+  } = useControls(props2, videoState, seek, (currentTimeNew) => {
+    gestureState.currentTimeNew = currentTimeNew;
+  });
+  useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
       play,
       pause,
       stop,
       seek,
+      sendDanmu,
       playbackRate,
-      toggle,
-      onDurationChange,
-      onLoadedMetadata,
-      onProgress,
-      onWaiting,
-      onVideoError,
-      onPlay,
-      onPause,
-      onEnded,
-      onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
-    const {
-      state: danmuState,
-      danmuRef,
-      updateDanmu,
-      toggleDanmu,
-      sendDanmu
-    } = useDanmu(props2, videoState);
-    const {
-      state: fullscreenState,
-      onFullscreenChange,
-      emitFullscreenChange,
-      toggleFullscreen,
       requestFullScreen,
       exitFullScreen
-    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const {
-      state: gestureState,
-      onTouchstart,
-      onTouchend,
-      onTouchmove
-    } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const {
-      state: controlsState,
-      progressRef,
-      ballRef,
-      clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
-    } = useControls(props2, videoState, seek, (currentTimeNew) => {
-      gestureState.currentTimeNew = currentTimeNew;
-    });
-    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      Object.assign(rootElement, {
-        play,
-        pause,
-        stop,
-        seek,
-        sendDanmu,
-        playbackRate,
-        requestFullScreen,
-        exitFullScreen
-      });
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id,
-        "onClick": toggleControls
-      }, [createVNode("div", {
+    },
+    render: () => {
+      return createVNode("div", {
         "ref": containerRef,
         "class": "uni-video-container",
         "onTouchstart": onTouchstart,
@@ -22226,8 +22212,37 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title-current-time"
       }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
-    };
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
+    }
+  };
+}
+class UniVideoElement extends UniElement2 {
+}
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  rootElement: {
+    name: "uni-video",
+    class: UniVideoElement
+  },
+  setup(props2, context) {
+    const {
+      rootRef,
+      toggleControls,
+      methods,
+      render
+    } = useVideoComponent(props2, context);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      Object.assign(rootElement, methods);
+      rootElement.attachVmProps(props2);
+    });
+    return () => createVNode("uni-video", {
+      "ref": rootRef,
+      "id": props2.id,
+      "onClick": toggleControls
+    }, [render()], 8, ["id", "onClick"]);
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -22725,7 +22740,7 @@ function translateCoordinateSystem(type, coords, skip) {
     )
   );
 }
-const props$9 = {
+const props$8 = {
   id: {
     type: [Number, String],
     default: ""
@@ -22811,7 +22826,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$9,
+  props: props$8,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -23154,7 +23169,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$8 = {
+const props$7 = {
   points: {
     type: Array,
     require: true
@@ -23200,7 +23215,7 @@ const props$8 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$8,
+  props: props$7,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -23289,7 +23304,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$7 = {
+const props$6 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -23321,7 +23336,7 @@ const props$7 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$7,
+  props: props$6,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -23397,7 +23412,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$6 = {
+const props$5 = {
   id: {
     type: [Number, String],
     default: ""
@@ -23421,7 +23436,7 @@ const props$6 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$6,
+  props: props$5,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -25605,7 +25620,7 @@ const getLocation = /* @__PURE__ */ defineAsyncApi(
   GetLocationOptions
 );
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$5 = {
+const props$4 = {
   latitude: {
     type: Number
   },
@@ -25662,7 +25677,7 @@ function useState$1(props2) {
 }
 const LocationView = /* @__PURE__ */ defineSystemComponent({
   name: "LocationView",
-  props: props$5,
+  props: props$4,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -25949,7 +25964,7 @@ function createToastIcon$1(icon) {
 const ToastTransition = Transition;
 const defineToast = defineComponent;
 const createToastIcon = createToastIcon$1;
-const props$4 = {
+const props$3 = {
   title: {
     type: String,
     default: ""
@@ -25982,7 +25997,7 @@ const props$4 = {
 const ToastIconClassName = "uni-toast__icon";
 const Toast = /* @__PURE__ */ defineToast({
   name: "Toast",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -27048,7 +27063,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$3 = {
+const props$2 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -27082,7 +27097,7 @@ const props$3 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     let polygonIns;
     const onMapReady = inject("onMapReady");
@@ -27170,12 +27185,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
       watch(props2, drawPolygon);
     });
     onUnmounted(() => {
-      polygonIns.setMap(null);
+      polygonIns == null ? void 0 : polygonIns.setMap(null);
     });
     return () => null;
   }
 });
-const props$2 = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -27266,7 +27281,11 @@ function getMapPosition(maps2, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps2, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps2,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -27329,26 +27348,37 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state2.latitude || longitude !== state2.longitude) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (map) {
-        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-        map.setCenter(centerPosition);
+  watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state2.latitude || longitude !== state2.longitude) {
+        state2.latitude = latitude;
+        state2.longitude = longitude;
+        if (map) {
+          const centerPosition = getMapPosition(
+            maps2,
+            state2.latitude,
+            state2.longitude
+          );
+          map.setCenter(centerPosition);
+        }
       }
     }
-  });
-  watch(() => props2.includePoints, (points) => {
-    state2.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
+  );
+  watch(
+    () => props2.includePoints,
+    (points) => {
+      state2.includePoints = getPoints(points);
+      if (isBoundsReady) {
+        updateBounds();
+      }
+    },
+    {
+      deep: true
     }
-  }, {
-    deep: true
-  });
+  );
   function emitBoundsReady() {
     isBoundsReady = true;
     onBoundsReadyCallbacks.forEach((callback) => callback());
@@ -27380,11 +27410,11 @@ function useMap(props2, rootRef, emit2) {
       ;
     else {
       const bounds = new maps2.LatLngBounds();
-      state2.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
-        const latLng = new maps2.LatLng(latitude, longitude);
+      state2.includePoints.forEach(({ latitude, longitude }) => {
+        const latLng = new maps2.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -27415,9 +27445,12 @@ function useMap(props2, rootRef, emit2) {
       map2.enableScrollWheelZoom();
       map2._printLog && map2._printLog("uniapp");
     }
-    watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
+    watch(
+      () => props2.scale,
+      (scale) => {
+        map2.setZoom(Number(scale) || 16);
+      }
+    );
     onBoundsReady(() => {
       if (state2.includePoints.length) {
         updateBounds();
@@ -27436,16 +27469,27 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       map2.addEventListener("dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
     } else {
-      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-        boundsChangedEvent.remove();
-        emitBoundsReady();
-      });
+      const boundsChangedEvent = event.addListener(
+        map2,
+        "bounds_changed",
+        () => {
+          boundsChangedEvent.remove();
+          emitBoundsReady();
+        }
+      );
       event.addListener(map2, "complete", () => {
         emitBoundsReady();
       });
@@ -27460,17 +27504,31 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       event.addListener(map2, "dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
       const zoomChangedCallback = () => {
         emit2("update:scale", map2.getZoom());
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "scale"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "scale"
+            },
+            getMapInfo2()
+          )
+        );
       };
       event.addListener(map2, "zoom_changed", zoomChangedCallback);
       event.addListener(map2, "zoomend", zoomChangedCallback);
@@ -27486,96 +27544,104 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state2.latitude = latitude;
-              state2.longitude = longitude;
-              if (map) {
-                const centerPosition = getMapPosition(maps2, latitude, longitude);
-                map.setCenter(centerPosition);
-              }
-              onMapReady(() => {
-                callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              callOptions(data, `${type}:ok`);
-            } else {
-              callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state2.latitude = latitude;
+                state2.longitude = longitude;
+                if (map) {
+                  const centerPosition = getMapPosition(
+                    maps2,
+                    latitude,
+                    longitude
+                  );
+                  map.setCenter(centerPosition);
+                }
+                onMapReady(() => {
+                  callOptions(data, `${type}:ok`);
+                });
+              } else {
+                callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state2.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  callOptions(data, `${type}:fail ${error.message}`);
+                }
+                callOptions(data, `${type}:ok`);
+              } else {
+                callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state2.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   onMounted(() => {
@@ -27595,12 +27661,25 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
 class UniMapElement extends UniElement2 {
 }
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  props: mapProps,
+  emits: mapEmits,
   rootElement: {
     name: "uni-map",
     class: UniMapElement

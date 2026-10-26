@@ -326,8 +326,8 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$e = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
-const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
+const _t0$f = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
+const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -338,7 +338,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$e();
+      const _n0 = _t0$f();
       return _n0;
     })();
     return root;
@@ -1566,7 +1566,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement2 {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -1686,7 +1686,7 @@ function useUserAction() {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$c = {
+const props$a = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -1782,7 +1782,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$b = /* @__PURE__ */ shared.extend(
+const props$9 = /* @__PURE__ */ shared.extend(
   {},
   {
     name: {
@@ -1872,7 +1872,7 @@ const props$b = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$c
+  props$a
 );
 const emit = [
   "input",
@@ -2120,7 +2120,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const props$a = /* @__PURE__ */ shared.extend({}, props$b, {
+const props$8 = /* @__PURE__ */ shared.extend({}, props$9, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2294,13 +2294,13 @@ function useInput(props2, { emit: emit2, expose }) {
     onInput
   };
 }
-const _t0$d = Vue.template("<input tabindex=-1 class=uni-input-input>");
-const _t1$6 = Vue.template("<input class=uni-input-input>");
+const _t0$e = Vue.template("<input tabindex=-1 class=uni-input-input>");
+const _t1$5 = Vue.template("<input class=uni-input-input>");
 const _t2$3 = Vue.template("<form action novalidate class=uni-input-form> ");
 const _t3$3 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper><div> </div>", 1);
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$a,
+  props: props$8,
   emits: emits$2,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -2313,7 +2313,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$d();
+        const _n2 = _t0$e();
         Vue.setBlockKey(_n2, "disabled-input");
         Vue.on(
           _n2,
@@ -2333,7 +2333,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$6();
+        const _n4 = _t1$5();
         Vue.setBlockKey(_n4, "input");
         Vue.on(_n4, "input", Vue.withModifiers(onInput, ["stop"]));
         Vue.on(_n4, "keyup", onKeyUpEnter);
@@ -2384,8 +2384,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const _t0$c = Vue.template("<div><div></div></div>");
-const _t1$5 = Vue.template("<div><div>");
+const _t0$d = Vue.template("<div><div></div></div>");
+const _t1$4 = Vue.template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: { initial: {
@@ -2400,8 +2400,8 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n2 = Vue.createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$c();
-        const _n1 = _t1$5();
+        const _n0 = _t0$d();
+        const _n1 = _t1$4();
         Vue.on(_n0, "scroll", update);
         Vue.on(_n1, "scroll", update);
         return [_n0, _n1];
@@ -2462,7 +2462,7 @@ function initTextareaElement(root, state) {
     set: setValue
   });
 }
-const props$9 = /* @__PURE__ */ shared.extend({}, props$b, {
+const props$7 = /* @__PURE__ */ shared.extend({}, props$9, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -2576,14 +2576,14 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$b = Vue.template("<textarea tabindex=-1>");
-const _t1$4 = Vue.template("<textarea>");
+const _t0$c = Vue.template("<textarea tabindex=-1>");
+const _t1$3 = Vue.template("<textarea>");
 const _t2$2 = Vue.template("<form action class=uni-input-form> ");
 const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$2 = Vue.template("<div>", 1);
-const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$9,
+  props: props$7,
   emits: emits$1,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -2596,7 +2596,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$b();
+        const _n2 = _t0$c();
         Vue.setBlockKey(_n2, "disabled-textarea");
         Vue.on(
           _n2,
@@ -2618,7 +2618,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$4();
+        const _n4 = _t1$3();
         Vue.setBlockKey(_n4, "textarea");
         Vue.on(_n4, "keydown", onKeyDownEnter);
         Vue.on(_n4, "keyup", onKeyUpEnter);
@@ -2704,13 +2704,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$9 = 0;
+let index$7 = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$9++}`;
+  const id2 = vm.id || `context${index$7++}`;
   return `${type}.${id2}`;
 }
 function entries(obj) {
@@ -6496,7 +6496,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const editorProps = /* @__PURE__ */ shared.extend({}, props$c, {
+const editorProps = /* @__PURE__ */ shared.extend({}, props$a, {
   id: {
     type: String,
     default: ""
@@ -6540,14 +6540,14 @@ function useEditor(props2, emit2) {
   useKeyboard(props2, rootRef);
   return rootRef;
 }
-const _t0$a = Vue.template("<div uni-editor uni-view class=ql-container>", 1);
+const _t0$b = Vue.template("<div uni-editor uni-view class=ql-container>", 1);
 class UniEditorElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "EDITOR" };
-const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$7 = { value: "EDITOR" };
+const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
   emits: editorEmit,
@@ -6561,14 +6561,14 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = useEditor(props2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = _t0$a();
+      const _n0 = _t0$b();
       Vue.renderEffect(() => {
         Vue.setProp(_n0, "id", props2.id);
         _setTemplateRef(_n0, rootRef);
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
     return root;
   }
 });
@@ -6632,14 +6632,14 @@ const iconProps = {
 function useIcon(props2) {
   return Vue.computed(() => ICONS[props2.type]);
 }
-const _t0$9 = Vue.template("<div uni-icon uni-view> ", 1);
+const _t0$a = Vue.template("<div uni-icon uni-view> ", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "ICON" };
-const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$6 = { value: "ICON" };
+const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -6651,12 +6651,12 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$9();
+      const _n0 = _t0$a();
       const _x0 = Vue.txt(_n0);
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$4);
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
     return root;
   }
 });
@@ -6845,14 +6845,14 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const _t0$8 = Vue.template("<div><!> ", 1);
+const _t0$9 = Vue.template("<div><!> ", 1);
 class UniMovableAreaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "MOVABLE-AREA" };
-const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$5 = { value: "MOVABLE-AREA" };
+const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -6867,7 +6867,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
     const movableViewItems = renderChildren();
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n3 = _t0$8();
+      const _n3 = _t0$9();
       const _n2 = Vue.child(_n3);
       const _n1 = Vue.next(_n2, true);
       Vue.renderEffect(() => Vue.setDynamicProps(_n3, [
@@ -6885,7 +6885,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
     return root;
   }
 });
@@ -7845,14 +7845,14 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const _t0$7 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
+const _t0$8 = Vue.template("<div uni-movable-view uni-view><!> ", 1);
 class UniMovableViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "MOVABLE-VIEW" };
-const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$4 = { value: "MOVABLE-VIEW" };
+const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -7866,7 +7866,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, setParent } = useMovableView(props2, emit2);
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n3 = _t0$7();
+      const _n3 = _t0$8();
       const _n2 = Vue.child(_n3);
       const _n1 = Vue.next(_n2, true);
       Vue.setInsertionState(_n3, _n2);
@@ -7875,7 +7875,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    Object.defineProperty(root, "uniTagName", uniTagName$4);
     return root;
   }
 });
@@ -7971,7 +7971,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$8 = {
+const props$6 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -8253,11 +8253,11 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$1 = { value: "RICH-TEXT" };
-const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$3 = { value: "RICH-TEXT" };
+const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$8,
+  props: props$6,
   emits: ["itemclick"],
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -8272,7 +8272,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$1);
+    Object.defineProperty(result, "uniTagName", uniTagName$3);
     return result;
   }
 });
@@ -8327,8 +8327,8 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     return n1;
   }
 });
-const _t0$6 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$3 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
+const _t0$7 = Vue.template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t1$2 = Vue.template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$1 = Vue.template("<div class=uni-scroll-view-refresh-inner>");
 const _t3$1 = Vue.template("<div class=uni-scroll-view-refresh>");
 const _t4$1 = Vue.template("<div class=uni-scroll-view-refresher-container> ");
@@ -8412,7 +8412,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
             const _n20 = _t2$1();
             Vue.setInsertionState(_n20);
             Vue.createIf(() => props2.refreshState == "pulling", () => {
-              const _n12 = _t0$6();
+              const _n12 = _t0$7();
               Vue.setBlockKey(_n12, "refresh__icon");
               Vue.renderEffect(() => Vue.setAttr(_n12, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
               return _n12;
@@ -8422,7 +8422,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
             }, 777);
             Vue.setInsertionState(_n20, 1);
             Vue.createIf(() => props2.refreshState == "refreshing", () => {
-              const _n17 = _t1$3();
+              const _n17 = _t1$2();
               Vue.setBlockKey(_n17, "refresh__spinner");
               return _n17;
             }, () => {
@@ -8458,7 +8458,7 @@ class UniScrollViewElement extends UniViewElement {
     return this === UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const props$7 = {
+const props$5 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -8805,10 +8805,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
-const _t0$5 = Vue.template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
+const _t0$6 = Vue.template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
-  props: props$7,
+  props: props$5,
   emits,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -8821,7 +8821,7 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
     const { slots } = context;
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n14 = _t0$5();
+      const _n14 = _t0$6();
       const _n13 = Vue.child(_n14);
       const _n12 = Vue.child(_n13);
       const _n11 = Vue.child(_n12);
@@ -12803,9 +12803,9 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
     return n7;
   }
 });
-const _t0$4 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
-const _t1$2 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
-const _t2 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
+const _t0$5 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t1$1 = Vue.template("<div><!><div class=uni-video-toast-draw></div>");
+const _t2 = Vue.template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ', 1);
 const _t3 = Vue.template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
 const _t4 = Vue.template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
 function formatTime(val) {
@@ -13335,7 +13335,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$6 = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -13423,202 +13423,241 @@ const props$6 = {
     default: true
   }
 };
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$6,
-  emits: [
-    "fullscreenchange",
-    "progress",
-    "loadedmetadata",
-    "waiting",
-    "error",
-    "play",
-    "pause",
-    "ended",
-    "timeupdate"
-  ],
-  setup(props2, { emit: emit2, attrs: attrs2, slots }) {
-    const rootRef = Vue.ref(null);
-    const containerRef = Vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { state: userActionState } = useUserAction();
-    const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
-    initI18nVideoMsgsOnce();
-    const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
-    const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
-    const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek);
-    useContext();
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    return () => {
+const videoEmits = [
+  "fullscreenchange",
+  "progress",
+  "loadedmetadata",
+  "waiting",
+  "error",
+  "play",
+  "pause",
+  "ended",
+  "timeupdate"
+];
+function useVideoComponent(props2, { emit: emit2, attrs: attrs2, slots }) {
+  const rootRef = Vue.ref(null);
+  const containerRef = Vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state: userActionState } = useUserAction();
+  const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
+  initI18nVideoMsgsOnce();
+  const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
+  const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
+  const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek);
+  useContext();
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
+      play,
+      pause,
+      stop,
+      seek,
+      sendDanmu,
+      playbackRate,
+      requestFullScreen,
+      exitFullScreen
+    },
+    render: () => {
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n32 = Vue.createPlainElement("uni-video", {
-          id: () => props2.id,
-          onClick: () => toggleControls
-        }, () => {
-          const _n0 = _t2();
-          const _n1 = Vue.child(_n0);
-          const _n2 = Vue.next(_n1);
-          let _p0 = Vue.child(_n2);
-          const _n3 = Vue.child(_p0);
-          const _n4 = Vue.next(_n3);
-          const _n5 = Vue.next(_n4);
-          const _n9 = Vue.child(_n5);
-          const _n6 = Vue.child(_n9);
-          const _n7 = Vue.next(_n6);
-          const _n8 = Vue.next(_n7);
-          const _n10 = Vue.next(_n5);
-          const _n11 = Vue.next(_p0);
-          const _n12 = Vue.next(_n11);
-          const _n13 = Vue.next(_n2);
-          const _n14 = Vue.next(_n13, true);
-          const _n27 = Vue.next(_n14);
-          const _n30 = Vue.next(_n27);
-          const _n28 = Vue.child(Vue.child(_n30));
-          const _n29 = Vue.next(_n28, true);
-          const _n31 = Vue.next(_n30);
-          Vue.on(_n0, "touchstart", onTouchstart);
-          Vue.on(_n0, "touchend", onTouchend);
-          Vue.on(_n0, "touchmove", onTouchmove);
-          Vue.on(
-            _n0,
-            // @ts-expect-error
-            "fullscreenchange",
-            Vue.withModifiers(onFullscreenChange, ["stop"])
-          );
-          Vue.on(_n0, "webkitfullscreenchange", Vue.withModifiers(($event) => onFullscreenChange($event, true), ["stop"]));
-          Vue.on(_n1, "durationchange", onDurationChange);
-          Vue.on(_n1, "loadedmetadata", onLoadedMetadata);
-          Vue.on(_n1, "progress", onProgress);
-          Vue.on(_n1, "waiting", onWaiting);
-          Vue.on(_n1, "error", onVideoError);
-          Vue.on(_n1, "play", onPlay);
-          Vue.on(_n1, "pause", onPause);
-          Vue.on(_n1, "ended", onEnded);
-          Vue.on(_n1, "timeupdate", (event) => {
-            onTimeUpdate(event);
-            updateDanmu(event);
-          });
-          Vue.on(_n1, "webkitbeginfullscreen", () => emitFullscreenChange(true));
-          Vue.on(_n1, "x5videoenterfullscreen", () => emitFullscreenChange(true));
-          Vue.on(_n1, "webkitendfullscreen", () => emitFullscreenChange(false));
-          Vue.on(_n1, "x5videoexitfullscreen", () => emitFullscreenChange(false));
-          Vue.applyVShow(_n2, () => controlsState.controlsShow);
-          Vue.on(_n2, "click", Vue.withModifiers(() => {
+        const _n0 = _t2();
+        const _n1 = Vue.child(_n0);
+        const _n2 = Vue.next(_n1);
+        let _p0 = Vue.child(_n2);
+        const _n3 = Vue.child(_p0);
+        const _n4 = Vue.next(_n3);
+        const _n5 = Vue.next(_n4);
+        const _n9 = Vue.child(_n5);
+        const _n6 = Vue.child(_n9);
+        const _n7 = Vue.next(_n6);
+        const _n8 = Vue.next(_n7);
+        const _n10 = Vue.next(_n5);
+        const _n11 = Vue.next(_p0);
+        const _n12 = Vue.next(_n11);
+        const _n13 = Vue.next(_n2);
+        const _n14 = Vue.next(_n13, true);
+        const _n27 = Vue.next(_n14);
+        const _n30 = Vue.next(_n27);
+        const _n28 = Vue.child(Vue.child(_n30));
+        const _n29 = Vue.next(_n28, true);
+        const _n31 = Vue.next(_n30);
+        Vue.on(_n0, "touchstart", onTouchstart);
+        Vue.on(_n0, "touchend", onTouchend);
+        Vue.on(_n0, "touchmove", onTouchmove);
+        Vue.on(
+          _n0,
+          // @ts-expect-error
+          "fullscreenchange",
+          Vue.withModifiers(onFullscreenChange, ["stop"])
+        );
+        Vue.on(_n0, "webkitfullscreenchange", Vue.withModifiers(($event) => onFullscreenChange($event, true), ["stop"]));
+        Vue.on(_n1, "durationchange", onDurationChange);
+        Vue.on(_n1, "loadedmetadata", onLoadedMetadata);
+        Vue.on(_n1, "progress", onProgress);
+        Vue.on(_n1, "waiting", onWaiting);
+        Vue.on(_n1, "error", onVideoError);
+        Vue.on(_n1, "play", onPlay);
+        Vue.on(_n1, "pause", onPause);
+        Vue.on(_n1, "ended", onEnded);
+        Vue.on(_n1, "timeupdate", (event) => {
+          onTimeUpdate(event);
+          updateDanmu(event);
+        });
+        Vue.on(_n1, "webkitbeginfullscreen", () => emitFullscreenChange(true));
+        Vue.on(_n1, "x5videoenterfullscreen", () => emitFullscreenChange(true));
+        Vue.on(_n1, "webkitendfullscreen", () => emitFullscreenChange(false));
+        Vue.on(_n1, "x5videoexitfullscreen", () => emitFullscreenChange(false));
+        Vue.applyVShow(_n2, () => controlsState.controlsShow);
+        Vue.on(_n2, "click", Vue.withModifiers(() => {
+        }, ["stop"]));
+        Vue.applyVShow(_n3, () => props2.showPlayBtn);
+        Vue.on(_n3, "click", Vue.withModifiers(toggle, ["stop"]));
+        Vue.applyVShow(_n4, () => props2.showProgress);
+        const _x4 = Vue.txt(_n4);
+        setNodes(_x4, () => formatTime(videoState.currentTime));
+        Vue.on(_n5, "click", Vue.withModifiers(clickProgress, ["stop"]));
+        Vue.applyVShow(_n5, () => props2.showProgress);
+        Vue.applyVShow(_n10, () => props2.showProgress);
+        const _x10 = Vue.txt(_n10);
+        setNodes(_x10, () => formatTime(videoState.currentDuration));
+        Vue.applyVShow(_n11, () => props2.danmuBtn);
+        Vue.on(_n11, "click", Vue.withModifiers(toggleDanmu, ["stop"]));
+        Vue.applyVShow(_n12, () => props2.showFullscreenBtn);
+        Vue.on(_n12, "click", Vue.withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
+        Vue.applyVShow(_n13, () => videoState.start && danmuState.enable);
+        setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
+          const _n02 = _t3();
+          const _n16 = Vue.child(_n02);
+          Vue.on(_n02, "click", Vue.withModifiers(() => {
           }, ["stop"]));
-          Vue.applyVShow(_n3, () => props2.showPlayBtn);
-          Vue.on(_n3, "click", Vue.withModifiers(toggle, ["stop"]));
-          Vue.applyVShow(_n4, () => props2.showProgress);
-          const _x4 = Vue.txt(_n4);
-          setNodes(_x4, () => formatTime(videoState.currentTime));
-          Vue.on(_n5, "click", Vue.withModifiers(clickProgress, ["stop"]));
-          Vue.applyVShow(_n5, () => props2.showProgress);
-          Vue.applyVShow(_n10, () => props2.showProgress);
-          const _x10 = Vue.txt(_n10);
-          setNodes(_x10, () => formatTime(videoState.currentDuration));
-          Vue.applyVShow(_n11, () => props2.danmuBtn);
-          Vue.on(_n11, "click", Vue.withModifiers(toggleDanmu, ["stop"]));
-          Vue.applyVShow(_n12, () => props2.showFullscreenBtn);
-          Vue.on(_n12, "click", Vue.withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
-          Vue.applyVShow(_n13, () => videoState.start && danmuState.enable);
-          setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
-            const _n02 = _t3();
-            const _n16 = Vue.child(_n02);
-            Vue.on(_n02, "click", Vue.withModifiers(() => {
-            }, ["stop"]));
-            Vue.on(_n16, "click", Vue.withModifiers(play, ["stop"]));
-            return _n02;
-          })());
-          Vue.renderEffect(() => {
-            Vue.setDynamicProps(_n1, [
-              {
-                style: { "object-fit": props2.objectFit },
-                muted: !!props2.muted,
-                loop: !!props2.loop,
-                src: videoState.src,
-                poster: props2.poster,
-                autoplay: !!props2.autoplay
+          Vue.on(_n16, "click", Vue.withModifiers(play, ["stop"]));
+          return _n02;
+        })());
+        Vue.renderEffect(() => {
+          Vue.setDynamicProps(_n1, [
+            {
+              style: { "object-fit": props2.objectFit },
+              muted: !!props2.muted,
+              loop: !!props2.loop,
+              src: videoState.src,
+              poster: props2.poster,
+              autoplay: !!props2.autoplay
+            },
+            videoAttrs.value,
+            {
+              class: {
+                "uni-video-video": true,
+                "uni-video-video-fullscreen": fullscreenState.fullscreen
               },
-              videoAttrs.value,
-              {
-                class: {
-                  "uni-video-video": true,
-                  "uni-video-video-fullscreen": fullscreenState.fullscreen
-                },
-                "webkit-playsinline": true,
-                playsinline: true
-              }
-            ]);
-            _setTemplateRef(_n1, videoRef);
-            Vue.setClassName(_n3, 1 | 2 | (!videoState.playing ? 4 : 0) | (videoState.playing ? 8 : 0), [
-              " uni-video-icon",
-              " uni-video-control-button",
-              " uni-video-control-button-play",
-              " uni-video-control-button-pause"
-            ]);
-            Vue.setClassName(_n9, 1 | (progressing.value ? 2 : 0), [" uni-video-progress", " uni-video-progress-progressing"]);
-            Vue.setStyle(_n6, {
-              width: videoState.buffered - videoState.progress + "%",
-              left: videoState.progress + "%"
-            });
-            Vue.setStyle(_n7, { width: videoState.progress + "%" });
-            Vue.setStyle(_n8, { left: videoState.progress + "%" });
-            Vue.setClassName(_n8, 1 | (progressing.value ? 2 : 0), [" uni-video-ball", " uni-video-ball-progressing"]);
-            _setTemplateRef(_n8, ballRef);
-            _setTemplateRef(_n5, progressRef);
-            Vue.setClassName(_n11, 1 | 2 | (danmuState.enable ? 4 : 0), [
-              " uni-video-icon",
-              " uni-video-danmu-button",
-              " uni-video-danmu-button-active"
-            ]);
-            Vue.setClassName(_n12, 1 | 2 | (fullscreenState.fullscreen ? 4 : 0), [
-              " uni-video-icon",
-              " uni-video-fullscreen",
-              " uni-video-type-fullscreen"
-            ]);
-            _setTemplateRef(_n13, danmuRef);
+              "webkit-playsinline": true,
+              playsinline: true
+            }
+          ]);
+          _setTemplateRef(_n1, videoRef);
+          Vue.setClassName(_n3, 1 | 2 | (!videoState.playing ? 4 : 0) | (videoState.playing ? 8 : 0), [
+            " uni-video-icon",
+            " uni-video-control-button",
+            " uni-video-control-button-play",
+            " uni-video-control-button-pause"
+          ]);
+          Vue.setClassName(_n9, 1 | (progressing.value ? 2 : 0), [" uni-video-progress", " uni-video-progress-progressing"]);
+          Vue.setStyle(_n6, {
+            width: videoState.buffered - videoState.progress + "%",
+            left: videoState.progress + "%"
           });
-          Vue.setInsertionState(_n27);
-          Vue.createIf(() => gestureState.gestureType === "volume", () => {
-            const _n24 = _t1$2();
-            const _n23 = Vue.child(_n24);
-            const _n22 = Vue.next(_n23);
-            Vue.renderEffect(() => Vue.setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
-            Vue.setInsertionState(_n24, _n23);
-            Vue.createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$4();
-              return _n19;
-            }, () => {
-              const _n21 = createNodes(() => !gestureState.toastThin && (() => {
-                const _n02 = _t4();
-                return _n02;
-              })());
-              return _n21;
-            }, 265);
-            Vue.setStyle(_n24, { marginTop: `5px` });
-            Vue.renderEffect(() => Vue.setStyle(_n22, { width: `${gestureState.volumeNew * 100}%` }));
-            return _n24;
+          Vue.setStyle(_n7, { width: videoState.progress + "%" });
+          Vue.setStyle(_n8, { left: videoState.progress + "%" });
+          Vue.setClassName(_n8, 1 | (progressing.value ? 2 : 0), [" uni-video-ball", " uni-video-ball-progressing"]);
+          _setTemplateRef(_n8, ballRef);
+          _setTemplateRef(_n5, progressRef);
+          Vue.setClassName(_n11, 1 | 2 | (danmuState.enable ? 4 : 0), [
+            " uni-video-icon",
+            " uni-video-danmu-button",
+            " uni-video-danmu-button-active"
+          ]);
+          Vue.setClassName(_n12, 1 | 2 | (fullscreenState.fullscreen ? 4 : 0), [
+            " uni-video-icon",
+            " uni-video-fullscreen",
+            " uni-video-type-fullscreen"
+          ]);
+          _setTemplateRef(_n13, danmuRef);
+        });
+        Vue.setInsertionState(_n27);
+        Vue.createIf(() => gestureState.gestureType === "volume", () => {
+          const _n24 = _t1$1();
+          const _n23 = Vue.child(_n24);
+          const _n22 = Vue.next(_n23);
+          Vue.renderEffect(() => Vue.setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
+          Vue.setInsertionState(_n24, _n23);
+          Vue.createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
+            const _n19 = _t0$5();
+            return _n19;
           }, () => {
-            const _n26 = createNodes(null);
-            return _n26;
-          }, 521);
-          const _x28 = Vue.txt(_n28);
-          setNodes(_x28, () => formatTime(gestureState.currentTimeNew));
-          setNodes(_n29, " / ", () => formatTime(videoState.currentDuration));
-          const _x31 = Vue.txt(_n31);
-          setNodes(_x31, () => slots.default && slots.default());
-          Vue.renderEffect(() => {
-            Vue.setClassName(_n30, 1 | (progressing.value ? 2 : 0), [" uni-video-toast", " uni-video-toast-progress"]);
-            _setTemplateRef(_n0, containerRef);
-          });
-          return _n0;
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n32, rootRef));
-        return _n32;
+            const _n21 = createNodes(() => !gestureState.toastThin && (() => {
+              const _n02 = _t4();
+              return _n02;
+            })());
+            return _n21;
+          }, 265);
+          Vue.setStyle(_n24, { marginTop: `5px` });
+          Vue.renderEffect(() => Vue.setStyle(_n22, { width: `${gestureState.volumeNew * 100}%` }));
+          return _n24;
+        }, () => {
+          const _n26 = createNodes(null);
+          return _n26;
+        }, 521);
+        const _x28 = Vue.txt(_n28);
+        setNodes(_x28, () => formatTime(gestureState.currentTimeNew));
+        setNodes(_n29, " / ", () => formatTime(videoState.currentDuration));
+        const _x31 = Vue.txt(_n31);
+        setNodes(_x31, () => slots.default && slots.default());
+        Vue.renderEffect(() => {
+          Vue.setClassName(_n30, 1 | (progressing.value ? 2 : 0), [" uni-video-toast", " uni-video-toast-progress"]);
+          _setTemplateRef(_n0, containerRef);
+        });
+        return _n0;
       })();
-    };
+    }
+  };
+}
+const _t0$4 = Vue.template("<div uni-video uni-view> ", 1);
+class UniVideoElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$2 = { value: "VIDEO" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-video",
+    class: UniVideoElement,
+    native: true
+  },
+  setup(props2, context) {
+    const { rootRef, toggleControls, methods, render } = useVideoComponent(props2, context);
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n0 = _t0$4();
+      Vue.on(_n0, "click", toggleControls);
+      const _x0 = Vue.txt(_n0);
+      setNodes(_x0, () => render());
+      Vue.renderEffect(() => {
+        Vue.setProp(_n0, "id", props2.id);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    Object.assign(root, methods);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    return root;
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -13668,8 +13707,8 @@ class UniWebViewElement extends UniViewElement {
     return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName = { value: "WEB-VIEW" };
-const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$1 = { value: "WEB-VIEW" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
@@ -13699,7 +13738,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Object.defineProperty(root, "uniTagName", uniTagName$1);
     return root;
   }
 });
@@ -13757,7 +13796,7 @@ const getIsAMap = () => {
 const getIsBMap = () => {
   return getMapInfo().type === "BMapGL";
 };
-const props$5 = {
+const props$4 = {
   id: {
     type: [Number, String],
     default: ""
@@ -13840,7 +13879,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = Vue.inject("onMapReady");
@@ -14161,12 +14200,10 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       };
       addMapChidlContext(context);
     }
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$4 = {
+const props$3 = {
   points: {
     type: Array,
     require: true
@@ -14212,7 +14249,7 @@ const props$4 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const onMapReady = Vue.inject("onMapReady");
     let polyline;
@@ -14285,12 +14322,10 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       addPolyline(props2);
       Vue.watch(props2, updatePolyline);
     });
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$3 = {
+const props$2 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -14322,7 +14357,7 @@ const props$3 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     const onMapReady = Vue.inject("onMapReady");
     let circle;
@@ -14382,13 +14417,11 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
       addCircle(props2);
       Vue.watch(props2, updateCircle);
     });
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
 const _t0$2 = Vue.template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
-const props$2 = {
+const props$1 = {
   id: {
     type: [Number, String],
     default: ""
@@ -14412,7 +14445,7 @@ const props$2 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$2,
+  props: props$1,
   setup(props2) {
     const imgPath = Vue.computed(() => getRealPath(props2.iconPath));
     const positionStyle = Vue.computed(() => {
@@ -14470,7 +14503,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$1 = {
+const props = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -14504,7 +14537,7 @@ const props$1 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$1,
+  props,
   setup(props2) {
     let polygonIns;
     const onMapReady = Vue.inject("onMapReady");
@@ -14571,12 +14604,10 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
       drawPolygon();
       Vue.watch(props2, drawPolygon);
     });
-    return () => null;
+    return [];
   }
 });
-const _t0$1 = Vue.template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
-const _t1$1 = Vue.template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
-const props = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -14667,7 +14698,11 @@ function getMapPosition(maps, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -14712,17 +14747,26 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  Vue.watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state.latitude || longitude !== state.longitude) {
-      state.latitude = latitude;
-      state.longitude = longitude;
+  Vue.watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state.latitude || longitude !== state.longitude) {
+        state.latitude = latitude;
+        state.longitude = longitude;
+      }
     }
-  });
-  Vue.watch(() => props2.includePoints, (points) => {
-    state.includePoints = getPoints(points);
-  }, { deep: true });
+  );
+  Vue.watch(
+    () => props2.includePoints,
+    (points) => {
+      state.includePoints = getPoints(points);
+    },
+    {
+      deep: true
+    }
+  );
   function updateBounds() {
     if (getIsAMap()) {
       const points = [];
@@ -14736,7 +14780,10 @@ function useMap(props2, rootRef, emit2) {
     else {
       const bounds = new maps.LatLngBounds();
       state.includePoints.forEach(({ latitude, longitude }) => {
-        const latLng = new maps.LatLng(latitude, longitude);
+        const latLng = new maps.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -14744,94 +14791,98 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            uniShared.callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state.latitude = latitude;
-              state.longitude = longitude;
-              if (map)
-                ;
-              onMapReady(() => {
-                uniShared.callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              uniShared.callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              uniShared.callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                uniShared.callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              uniShared.callOptions(data, `${type}:ok`);
-            } else {
-              uniShared.callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state.latitude = latitude;
+                state.longitude = longitude;
+                if (map)
+                  ;
+                onMapReady(() => {
+                  uniShared.callOptions(data, `${type}:ok`);
+                });
+              } else {
+                uniShared.callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            uniShared.callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            uniShared.callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  uniShared.callOptions(data, `${type}:fail ${error.message}`);
+                }
+                uniShared.callOptions(data, `${type}:ok`);
+              } else {
+                uniShared.callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            uniShared.callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              uniShared.callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              uniShared.callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              uniShared.callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   Vue.provide("onMapReady", onMapReady);
@@ -14843,66 +14894,78 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
+const _t0$1 = Vue.template('<div uni-map uni-view><div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div> <div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ', 1);
+class UniMapElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMapElement && value instanceof UniViewElement && value.hasAttribute("uni-map") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName = { value: "MAP" };
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props,
-  emits: [
-    "markertap",
-    "labeltap",
-    "callouttap",
-    "controltap",
-    "regionchange",
-    "tap",
-    "click",
-    "updated",
-    "update:scale",
-    "update:latitude",
-    "update:longitude"
-  ],
+  props: mapProps,
+  emits: mapEmits,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-map",
+    class: UniMapElement,
+    native: true
+  },
   setup(props2, { emit: emit2, slots }) {
     const rootRef = Vue.ref(null);
     const { mapRef, trigger } = useMap(props2, rootRef, emit2);
-    return () => {
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n8 = Vue.createPlainElement("uni-map", { id: () => props2.id }, () => {
-          const _n0 = _t0$1();
-          const _n7 = _t1$1();
-          const _n1 = createNodes(() => props2.markers.map((item) => (() => {
-            const _n02 = Vue.createKeyedFragment(() => item.id, () => {
-              const _n2 = createComponent(MapMarker, { $: [() => item] }, null, true);
-              return _n2;
-            });
-            return _n02;
-          })()), () => props2.polyline.map((item) => (() => {
-            const _n02 = createComponent(MapPolyline, { $: [() => item] }, null, true);
-            return _n02;
-          })()), () => props2.circles.map((item) => (() => {
-            const _n02 = createComponent(MapCircle, { $: [() => item] }, null, true);
-            return _n02;
-          })()), () => props2.controls.map((item) => (() => {
-            const _n02 = createComponent(MapControl, { $: [() => item, { trigger: () => trigger }] }, null, true);
-            return _n02;
-          })()), () => props2.showLocation && (() => {
-            const _n02 = createComponent(MapLocation, null, null, true);
-            return _n02;
-          })(), () => props2.polygons.map((item) => (() => {
-            const _n02 = createComponent(MapPolygon, { $: [() => item] }, null, true);
-            return _n02;
-          })()));
-          const _x7 = Vue.txt(_n7);
-          setNodes(_x7, () => slots.default && slots.default());
-          Vue.renderEffect(() => _setTemplateRef(_n0, mapRef));
-          return [
-            _n0,
-            _n1,
-            _n7
-          ];
-        }, true);
-        Vue.renderEffect(() => _setTemplateRef(_n8, rootRef));
-        return _n8;
-      })();
-    };
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n3 = _t0$1();
+      const _n0 = Vue.child(_n3);
+      const _n1 = Vue.next(_n0, true);
+      const _n2 = Vue.next(_n1);
+      setNodes(_n1, () => props2.markers.map((item) => (() => {
+        const _n02 = Vue.createKeyedFragment(() => item.id, () => {
+          const _n22 = createComponent(MapMarker, { $: [() => item] }, null, true);
+          return _n22;
+        });
+        return _n02;
+      })()), () => props2.polyline.map((item) => (() => {
+        const _n02 = createComponent(MapPolyline, { $: [() => item] }, null, true);
+        return _n02;
+      })()), () => props2.circles.map((item) => (() => {
+        const _n02 = createComponent(MapCircle, { $: [() => item] }, null, true);
+        return _n02;
+      })()), () => props2.controls.map((item) => (() => {
+        const _n02 = createComponent(MapControl, { $: [() => item, { trigger: () => trigger }] }, null, true);
+        return _n02;
+      })()), () => props2.showLocation && (() => {
+        const _n02 = createComponent(MapLocation, null, null, true);
+        return _n02;
+      })(), () => props2.polygons.map((item) => (() => {
+        const _n02 = createComponent(MapPolygon, { $: [() => item] }, null, true);
+        return _n02;
+      })()));
+      const _x2 = Vue.txt(_n2);
+      setNodes(_x2, () => slots.default && slots.default());
+      Vue.renderEffect(() => {
+        Vue.setProp(_n3, "id", props2.id);
+        _setTemplateRef(_n0, mapRef);
+        _setTemplateRef(_n3, rootRef);
+      });
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
   }
 });
 const _t0 = Vue.template("<div class=uni-ad-container></div>");
@@ -16412,15 +16475,15 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$t;
 exports.AsyncLoadingComponent = _sfc_main$u;
-exports.Button = index$a;
+exports.Button = index$8;
 exports.Camera = index$3;
-exports.Canvas = indexVapor$7;
+exports.Canvas = indexVapor$9;
 exports.Checkbox = _sfc_main$n;
 exports.CheckboxGroup = _sfc_main$m;
-exports.Editor = indexVapor$5;
+exports.Editor = indexVapor$7;
 exports.FlowItem = _sfc_main$l;
 exports.Form = _sfc_main$k;
-exports.Icon = indexVapor$4;
+exports.Icon = indexVapor$6;
 exports.Input = Input;
 exports.Label = _sfc_main$j;
 exports.LayoutComponent = _sfc_main$v;
@@ -16429,10 +16492,10 @@ exports.ListView = _sfc_main$h;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Loading = _sfc_main$g;
-exports.Map = index$7;
+exports.Map = indexVapor;
 exports.MatchMedia = _sfc_main$f;
-exports.MovableArea = indexVapor$3;
-exports.MovableView = indexVapor$2;
+exports.MovableArea = indexVapor$5;
+exports.MovableView = indexVapor$4;
 exports.Navigator = _sfc_main$e;
 exports.PageComponent = _sfc_main$p;
 exports.PageContainer = _sfc_main$d;
@@ -16443,7 +16506,7 @@ exports.Progress = _sfc_main$9;
 exports.Radio = _sfc_main$8;
 exports.RadioGroup = _sfc_main$7;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = indexVapor$1;
+exports.RichText = indexVapor$3;
 exports.ScrollView = __syscom_0;
 exports.Slider = _sfc_main$6;
 exports.StickyHeader = _sfc_main$5;
@@ -16451,7 +16514,7 @@ exports.StickySection = _sfc_main$4;
 exports.Swiper = _sfc_main$3;
 exports.SwiperItem = _sfc_main$2;
 exports.Switch = _sfc_main$1;
-exports.Textarea = indexVapor$6;
+exports.Textarea = indexVapor$8;
 exports.UniButtonElement = UniButtonElement;
 exports.UniButtonElementImpl = UniButtonElement;
 exports.UniCanvasElement = UniCanvasElement;
@@ -16518,9 +16581,9 @@ exports.UniTextareaElementImpl = UniTextareaElement;
 exports.UniViewElement = UniViewElement;
 exports.UniViewElementImpl = UniViewElement;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$8;
+exports.Video = indexVapor$2;
 exports.Waterflow = _sfc_main;
-exports.WebView = indexVapor;
+exports.WebView = indexVapor$1;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.createVaporPageRouteComponent = createVaporPageRouteComponent;

@@ -25756,7 +25756,7 @@ function transform(node, options = {}) {
 	};
 	const context = new TransformContext(ir, node, options);
 	transformNode(context);
-	if (!options.platform) finalizeIfChains(context);
+	finalizeIfChains(context);
 	ir.node.imports = context.imports;
 	return ir;
 }
@@ -31186,6 +31186,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	genCall: () => genCall,
 	genDirectiveModifiers: () => genDirectiveModifiers,
 	genDynamicComponentFlags: () => genDynamicComponentFlags,
+	genIfChainFlags: () => genIfChainFlags,
 	genMulti: () => genMulti,
 	genSlotFlags: () => genSlotFlags,
 	generate: () => generate,
@@ -31201,6 +31202,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	isDirectStaticLiteralProp: () => isDirectStaticLiteralProp,
 	isKeepAliveTag: () => isKeepAliveTag,
 	isListenerProp: () => isListenerProp,
+	isLongIfChain: () => isLongIfChain,
 	isStaticExpression: () => isStaticExpression,
 	isTeleportTag: () => isTeleportTag,
 	isTransitionGroupTag: () => isTransitionGroupTag,

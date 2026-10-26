@@ -397,8 +397,8 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$g = template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
-const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
+const _t0$h = template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
+const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -409,7 +409,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$g();
+      const _n0 = _t0$h();
       return _n0;
     })();
     initCanvasElement(root);
@@ -2794,7 +2794,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement2 {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2967,7 +2967,7 @@ function useUserAction() {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$d = {
+const props$b = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3073,7 +3073,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$c = /* @__PURE__ */ extend(
+const props$a = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -3163,7 +3163,7 @@ const props$c = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$d
+  props$b
 );
 const emit = [
   "input",
@@ -3434,7 +3434,7 @@ once(() => {
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 });
-const props$b = /* @__PURE__ */ extend({}, props$c, {
+const props$9 = /* @__PURE__ */ extend({}, props$a, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3608,13 +3608,13 @@ function useInput(props2, { emit: emit2, expose }) {
     onInput
   };
 }
-const _t0$f = template("<input tabindex=-1 class=uni-input-input>");
-const _t1$7 = template("<input class=uni-input-input>");
+const _t0$g = template("<input tabindex=-1 class=uni-input-input>");
+const _t1$6 = template("<input class=uni-input-input>");
 const _t2$4 = template("<form action novalidate class=uni-input-form> ");
 const _t3$4 = template("<div uni-input uni-view><div class=uni-input-wrapper><div> </div>", 1);
 const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$b,
+  props: props$9,
   emits: emits$2,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -3627,7 +3627,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     const renderInput = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$f();
+        const _n2 = _t0$g();
         setBlockKey(_n2, "disabled-input");
         on$1(
           _n2,
@@ -3647,7 +3647,7 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$7();
+        const _n4 = _t1$6();
         setBlockKey(_n4, "input");
         on$1(_n4, "input", withModifiers(onInput, ["stop"]));
         on$1(_n4, "keyup", onKeyUpEnter);
@@ -3698,8 +3698,8 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-const _t0$e = template("<div><div></div></div>");
-const _t1$6 = template("<div><div>");
+const _t0$f = template("<div><div></div></div>");
+const _t1$5 = template("<div><div>");
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: { initial: {
@@ -3715,8 +3715,8 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n2 = createPlainElement("uni-resize-sensor", { onAnimationstartOnce: () => update }, () => {
-        const _n0 = _t0$e();
-        const _n1 = _t1$6();
+        const _n0 = _t0$f();
+        const _n1 = _t1$5();
         on$1(_n0, "scroll", update);
         on$1(_n1, "scroll", update);
         return [_n0, _n1];
@@ -3792,7 +3792,7 @@ function initTextareaElement(root, state) {
     set: setValue
   });
 }
-const props$a = /* @__PURE__ */ extend({}, props$c, {
+const props$8 = /* @__PURE__ */ extend({}, props$a, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -3914,14 +3914,14 @@ function useTextarea(props2, { emit: emit2, expose }) {
     onKeyUpEnter
   };
 }
-const _t0$d = template("<textarea tabindex=-1>");
-const _t1$5 = template("<textarea>");
+const _t0$e = template("<textarea tabindex=-1>");
+const _t1$4 = template("<textarea>");
 const _t2$3 = template("<form action class=uni-input-form> ");
 const _t3$3 = template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$3 = template("<div>", 1);
 const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$a,
+  props: props$8,
   emits: emits$1,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -3934,7 +3934,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
     const renderTextarea = () => (() => {
       const _setTemplateRef = createTemplateRefSetter();
       const _n0 = createIf(() => props2.disabled && fixDisabledColor, () => {
-        const _n2 = _t0$d();
+        const _n2 = _t0$e();
         setBlockKey(_n2, "disabled-textarea");
         on$1(
           _n2,
@@ -3956,7 +3956,7 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
         });
         return _n2;
       }, () => {
-        const _n4 = _t1$5();
+        const _n4 = _t1$4();
         setBlockKey(_n4, "textarea");
         on$1(_n4, "keydown", onKeyDownEnter);
         on$1(_n4, "keyup", onKeyUpEnter);
@@ -4088,13 +4088,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$a = 0;
+let index$9 = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$a++}`;
+  const id2 = vm.id || `context${index$9++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -6581,13 +6581,13 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
-let index$9 = 0;
+let index$8 = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$9++);
+    const callbackId = String(index$8++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -14348,7 +14348,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const editorProps = /* @__PURE__ */ extend({}, props$d, {
+const editorProps = /* @__PURE__ */ extend({}, props$b, {
   id: {
     type: String,
     default: ""
@@ -14393,14 +14393,14 @@ function useEditor(props2, emit2) {
   useKeyboard$1(props2, rootRef);
   return rootRef;
 }
-const _t0$c = template("<div uni-editor uni-view class=ql-container>", 1);
+const _t0$d = template("<div uni-editor uni-view class=ql-container>", 1);
 class UniEditorElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "EDITOR" };
-const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$7 = { value: "EDITOR" };
+const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
   emits: editorEmit,
@@ -14414,14 +14414,14 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = useEditor(props2, emit2);
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n0 = _t0$c();
+      const _n0 = _t0$d();
       renderEffect(() => {
         setProp(_n0, "id", props2.id);
         _setTemplateRef(_n0, rootRef);
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
     return root;
   }
 });
@@ -14485,14 +14485,14 @@ const iconProps = {
 function useIcon(props2) {
   return computed(() => ICONS[props2.type]);
 }
-const _t0$b = template("<div uni-icon uni-view> ", 1);
+const _t0$c = template("<div uni-icon uni-view> ", 1);
 class UniIconElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "ICON" };
-const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$6 = { value: "ICON" };
+const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -14504,12 +14504,12 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const path = useIcon(props2);
     const root = (() => {
-      const _n0 = _t0$b();
+      const _n0 = _t0$c();
       const _x0 = txt(_n0);
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$4);
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
     return root;
   }
 });
@@ -14702,14 +14702,14 @@ function useMovableAreaState(props2, rootRef) {
     }
   };
 }
-const _t0$a = template("<div><!> ", 1);
+const _t0$b = template("<div><!> ", 1);
 class UniMovableAreaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "MOVABLE-AREA" };
-const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$5 = { value: "MOVABLE-AREA" };
+const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -14724,7 +14724,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
     const movableViewItems = renderChildren();
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n3 = _t0$a();
+      const _n3 = _t0$b();
       const _n2 = child(_n3);
       const _n1 = next(_n2, true);
       renderEffect(() => setDynamicProps(_n3, [
@@ -14742,7 +14742,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$3);
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
     return root;
   }
 });
@@ -15883,14 +15883,14 @@ function useMovableViewState(props2, trigger, rootRef) {
     setParent
   };
 }
-const _t0$9 = template("<div uni-movable-view uni-view><!> ", 1);
+const _t0$a = template("<div uni-movable-view uni-view><!> ", 1);
 class UniMovableViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "MOVABLE-VIEW" };
-const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$4 = { value: "MOVABLE-VIEW" };
+const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -15904,7 +15904,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
     const { rootRef, setParent } = useMovableView(props2, emit2);
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n3 = _t0$9();
+      const _n3 = _t0$a();
       const _n2 = child(_n3);
       const _n1 = next(_n2, true);
       setInsertionState(_n3, _n2);
@@ -15913,7 +15913,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
       renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    Object.defineProperty(root, "uniTagName", uniTagName$4);
     return root;
   }
 });
@@ -16009,7 +16009,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$9 = {
+const props$7 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -16291,11 +16291,11 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$1 = { value: "RICH-TEXT" };
-const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$3 = { value: "RICH-TEXT" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
-  props: props$9,
+  props: props$7,
   emits: ["itemclick"],
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -16310,7 +16310,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$1);
+    Object.defineProperty(result, "uniTagName", uniTagName$3);
     return result;
   }
 });
@@ -16401,8 +16401,8 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
     return n1;
   }
 });
-const _t0$8 = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
-const _t1$4 = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
+const _t0$9 = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
+const _t1$3 = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$2 = template("<div class=uni-scroll-view-refresh-inner>");
 const _t3$2 = template("<div class=uni-scroll-view-refresh>");
 const _t4$2 = template("<div class=uni-scroll-view-refresher-container> ");
@@ -16486,7 +16486,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
             const _n20 = _t2$2();
             setInsertionState(_n20);
             createIf(() => props2.refreshState == "pulling", () => {
-              const _n12 = _t0$8();
+              const _n12 = _t0$9();
               setBlockKey(_n12, "refresh__icon");
               renderEffect(() => setAttr(_n12, "style", { transform: "rotate(" + refreshRotate.value + "deg)" }, true));
               return _n12;
@@ -16496,7 +16496,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
             }, 777);
             setInsertionState(_n20, 1);
             createIf(() => props2.refreshState == "refreshing", () => {
-              const _n17 = _t1$4();
+              const _n17 = _t1$3();
               setBlockKey(_n17, "refresh__spinner");
               return _n17;
             }, () => {
@@ -16606,7 +16606,7 @@ function onScrollend(element, listener2) {
   };
 }
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$8 = {
+const props$6 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -17127,10 +17127,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     _scrollLeftChanged
   };
 }
-const _t0$7 = template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
+const _t0$8 = template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
 const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
-  props: props$8,
+  props: props$6,
   emits,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
@@ -17143,7 +17143,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     const { slots } = context;
     const root = (() => {
       const _setTemplateRef = createTemplateRefSetter();
-      const _n14 = _t0$7();
+      const _n14 = _t0$8();
       const _n13 = child(_n14);
       const _n12 = child(_n13);
       const _n11 = child(_n12);
@@ -22424,9 +22424,9 @@ const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
     return n7;
   }
 });
-const _t0$6 = template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
-const _t1$3 = template("<div><!><div class=uni-video-toast-draw></div>");
-const _t2$1 = template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ');
+const _t0$7 = template('<text class="uni-video-icon uni-video-toast-icon">', false, 1);
+const _t1$2 = template("<div><!><div class=uni-video-toast-draw></div>");
+const _t2$1 = template('<div class=uni-video-container><video></video><div class="uni-video-bar uni-video-bar-full"><div class=uni-video-controls><div></div><div class=uni-video-current-time> </div><div class=uni-video-progress-container><div><div class=uni-video-progress-buffered></div><div class=uni-video-progress-played></div><div><div class=uni-video-inner></div></div></div></div><div class=uni-video-duration> </div></div><div></div><div></div></div><div style="z-index: 0;" class=uni-video-danmu></div> <div class=uni-video-loading></div><div><div class=uni-video-toast-title><span class=uni-video-toast-title-current-time> </span> </div></div><div class=uni-video-slots> ', 1);
 const _t3$1 = template('<div class=uni-video-cover><div class="uni-video-cover-play-button uni-video-icon"></div>', 1);
 const _t4$1 = template('<text class="uni-video-icon uni-video-toast-icon">', 1, 1);
 function formatTime(val) {
@@ -23043,7 +23043,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$7 = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -23131,224 +23131,243 @@ const props$7 = {
     default: true
   }
 };
-class UniVideoElement extends UniElement2 {
-}
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$7,
-  emits: [
-    "fullscreenchange",
-    "progress",
-    "loadedmetadata",
-    "waiting",
-    "error",
-    "play",
-    "pause",
-    "ended",
-    "timeupdate"
-  ],
-  rootElement: {
-    name: "uni-video",
-    class: UniVideoElement
-  },
-  setup(props2, { emit: emit2, attrs: attrs2, slots }) {
-    const rootRef = ref(null);
-    const containerRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const { state: userActionState } = useUserAction();
-    const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
-    initI18nVideoMsgsOnce();
-    const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
-    const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
-    const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek, (currentTimeNew) => {
-      gestureState.currentTimeNew = currentTimeNew;
-    });
-    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      Object.assign(rootElement, {
-        play,
-        pause,
-        stop,
-        seek,
-        sendDanmu,
-        playbackRate,
-        requestFullScreen,
-        exitFullScreen
-      });
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
+const videoEmits = [
+  "fullscreenchange",
+  "progress",
+  "loadedmetadata",
+  "waiting",
+  "error",
+  "play",
+  "pause",
+  "ended",
+  "timeupdate"
+];
+function useVideoComponent(props2, { emit: emit2, attrs: attrs2, slots }) {
+  const rootRef = ref(null);
+  const containerRef = ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const { state: userActionState } = useUserAction();
+  const { $attrs: videoAttrs } = useAttrs({ excludeListeners: true });
+  initI18nVideoMsgsOnce();
+  const { videoRef, state: videoState, play, pause, stop, seek, playbackRate, toggle, onDurationChange, onLoadedMetadata, onProgress, onWaiting, onVideoError, onPlay, onPause, onEnded, onTimeUpdate } = useVideo(props2, attrs2, trigger);
+  const { state: danmuState, danmuRef, updateDanmu, toggleDanmu, sendDanmu } = useDanmu(props2, videoState);
+  const { state: fullscreenState, onFullscreenChange, emitFullscreenChange, toggleFullscreen, requestFullScreen, exitFullScreen } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const { state: gestureState, onTouchstart, onTouchend, onTouchmove } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const { state: controlsState, progressRef, ballRef, clickProgress, toggleControls, autoHideEnd, autoHideStart } = useControls(props2, videoState, seek, (currentTimeNew) => {
+    gestureState.currentTimeNew = currentTimeNew;
+  });
+  useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
+      play,
+      pause,
+      stop,
+      seek,
+      sendDanmu,
+      playbackRate,
+      requestFullScreen,
+      exitFullScreen
+    },
+    render: () => {
       return (() => {
         const _setTemplateRef = createTemplateRefSetter();
-        const _n32 = createPlainElement("uni-video", {
-          id: () => props2.id,
-          onClick: () => toggleControls
-        }, () => {
-          const _n0 = _t2$1();
-          const _n1 = child(_n0);
-          const _n2 = next(_n1);
-          let _p0 = child(_n2);
-          const _n3 = child(_p0);
-          const _n4 = next(_n3);
-          const _n5 = next(_n4);
-          const _n9 = child(_n5);
-          const _n6 = child(_n9);
-          const _n7 = next(_n6);
-          const _n8 = next(_n7);
-          const _n10 = next(_n5);
-          const _n11 = next(_p0);
-          const _n12 = next(_n11);
-          const _n13 = next(_n2);
-          const _n14 = next(_n13, true);
-          const _n27 = next(_n14);
-          const _n30 = next(_n27);
-          const _n28 = child(child(_n30));
-          const _n29 = next(_n28, true);
-          const _n31 = next(_n30);
-          on$1(_n0, "touchstart", onTouchstart);
-          on$1(_n0, "touchend", onTouchend);
-          on$1(_n0, "touchmove", onTouchmove);
-          on$1(
-            _n0,
-            // @ts-expect-error
-            "fullscreenchange",
-            withModifiers(onFullscreenChange, ["stop"])
-          );
-          on$1(_n0, "webkitfullscreenchange", withModifiers(($event) => onFullscreenChange($event, true), ["stop"]));
-          on$1(_n1, "durationchange", onDurationChange);
-          on$1(_n1, "loadedmetadata", onLoadedMetadata);
-          on$1(_n1, "progress", onProgress);
-          on$1(_n1, "waiting", onWaiting);
-          on$1(_n1, "error", onVideoError);
-          on$1(_n1, "play", onPlay);
-          on$1(_n1, "pause", onPause);
-          on$1(_n1, "ended", onEnded);
-          on$1(_n1, "timeupdate", (event) => {
-            onTimeUpdate(event);
-            updateDanmu(event);
-          });
-          on$1(_n1, "webkitbeginfullscreen", () => emitFullscreenChange(true));
-          on$1(_n1, "x5videoenterfullscreen", () => emitFullscreenChange(true));
-          on$1(_n1, "webkitendfullscreen", () => emitFullscreenChange(false));
-          on$1(_n1, "x5videoexitfullscreen", () => emitFullscreenChange(false));
-          applyVShow(_n2, () => controlsState.controlsShow);
-          on$1(_n2, "click", withModifiers(() => {
+        const _n0 = _t2$1();
+        const _n1 = child(_n0);
+        const _n2 = next(_n1);
+        let _p0 = child(_n2);
+        const _n3 = child(_p0);
+        const _n4 = next(_n3);
+        const _n5 = next(_n4);
+        const _n9 = child(_n5);
+        const _n6 = child(_n9);
+        const _n7 = next(_n6);
+        const _n8 = next(_n7);
+        const _n10 = next(_n5);
+        const _n11 = next(_p0);
+        const _n12 = next(_n11);
+        const _n13 = next(_n2);
+        const _n14 = next(_n13, true);
+        const _n27 = next(_n14);
+        const _n30 = next(_n27);
+        const _n28 = child(child(_n30));
+        const _n29 = next(_n28, true);
+        const _n31 = next(_n30);
+        on$1(_n0, "touchstart", onTouchstart);
+        on$1(_n0, "touchend", onTouchend);
+        on$1(_n0, "touchmove", onTouchmove);
+        on$1(
+          _n0,
+          // @ts-expect-error
+          "fullscreenchange",
+          withModifiers(onFullscreenChange, ["stop"])
+        );
+        on$1(_n0, "webkitfullscreenchange", withModifiers(($event) => onFullscreenChange($event, true), ["stop"]));
+        on$1(_n1, "durationchange", onDurationChange);
+        on$1(_n1, "loadedmetadata", onLoadedMetadata);
+        on$1(_n1, "progress", onProgress);
+        on$1(_n1, "waiting", onWaiting);
+        on$1(_n1, "error", onVideoError);
+        on$1(_n1, "play", onPlay);
+        on$1(_n1, "pause", onPause);
+        on$1(_n1, "ended", onEnded);
+        on$1(_n1, "timeupdate", (event) => {
+          onTimeUpdate(event);
+          updateDanmu(event);
+        });
+        on$1(_n1, "webkitbeginfullscreen", () => emitFullscreenChange(true));
+        on$1(_n1, "x5videoenterfullscreen", () => emitFullscreenChange(true));
+        on$1(_n1, "webkitendfullscreen", () => emitFullscreenChange(false));
+        on$1(_n1, "x5videoexitfullscreen", () => emitFullscreenChange(false));
+        applyVShow(_n2, () => controlsState.controlsShow);
+        on$1(_n2, "click", withModifiers(() => {
+        }, ["stop"]));
+        applyVShow(_n3, () => props2.showPlayBtn);
+        on$1(_n3, "click", withModifiers(toggle, ["stop"]));
+        applyVShow(_n4, () => props2.showProgress);
+        const _x4 = txt(_n4);
+        setNodes(_x4, () => formatTime(videoState.currentTime));
+        on$1(_n5, "click", withModifiers(clickProgress, ["stop"]));
+        applyVShow(_n5, () => props2.showProgress);
+        applyVShow(_n10, () => props2.showProgress);
+        const _x10 = txt(_n10);
+        setNodes(_x10, () => formatTime(videoState.currentDuration));
+        applyVShow(_n11, () => props2.danmuBtn);
+        on$1(_n11, "click", withModifiers(toggleDanmu, ["stop"]));
+        applyVShow(_n12, () => props2.showFullscreenBtn);
+        on$1(_n12, "click", withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
+        applyVShow(_n13, () => videoState.start && danmuState.enable);
+        setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
+          const _n02 = _t3$1();
+          const _n16 = child(_n02);
+          on$1(_n02, "click", withModifiers(() => {
           }, ["stop"]));
-          applyVShow(_n3, () => props2.showPlayBtn);
-          on$1(_n3, "click", withModifiers(toggle, ["stop"]));
-          applyVShow(_n4, () => props2.showProgress);
-          const _x4 = txt(_n4);
-          setNodes(_x4, () => formatTime(videoState.currentTime));
-          on$1(_n5, "click", withModifiers(clickProgress, ["stop"]));
-          applyVShow(_n5, () => props2.showProgress);
-          applyVShow(_n10, () => props2.showProgress);
-          const _x10 = txt(_n10);
-          setNodes(_x10, () => formatTime(videoState.currentDuration));
-          applyVShow(_n11, () => props2.danmuBtn);
-          on$1(_n11, "click", withModifiers(toggleDanmu, ["stop"]));
-          applyVShow(_n12, () => props2.showFullscreenBtn);
-          on$1(_n12, "click", withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"]));
-          applyVShow(_n13, () => videoState.start && danmuState.enable);
-          setNodes(_n14, () => controlsState.centerPlayBtnShow && (() => {
-            const _n02 = _t3$1();
-            const _n16 = child(_n02);
-            on$1(_n02, "click", withModifiers(() => {
-            }, ["stop"]));
-            on$1(_n16, "click", withModifiers(play, ["stop"]));
-            return _n02;
-          })());
-          renderEffect(() => {
-            setDynamicProps(_n1, [
-              {
-                style: { "object-fit": props2.objectFit },
-                muted: !!props2.muted,
-                loop: !!props2.loop,
-                src: videoState.src,
-                poster: props2.poster,
-                autoplay: !!props2.autoplay
+          on$1(_n16, "click", withModifiers(play, ["stop"]));
+          return _n02;
+        })());
+        renderEffect(() => {
+          setDynamicProps(_n1, [
+            {
+              style: { "object-fit": props2.objectFit },
+              muted: !!props2.muted,
+              loop: !!props2.loop,
+              src: videoState.src,
+              poster: props2.poster,
+              autoplay: !!props2.autoplay
+            },
+            videoAttrs.value,
+            {
+              class: {
+                "uni-video-video": true,
+                "uni-video-video-fullscreen": fullscreenState.fullscreen
               },
-              videoAttrs.value,
-              {
-                class: {
-                  "uni-video-video": true,
-                  "uni-video-video-fullscreen": fullscreenState.fullscreen
-                },
-                "webkit-playsinline": true,
-                playsinline: true
-              }
-            ]);
-            _setTemplateRef(_n1, videoRef);
-            setClassName(_n3, 1 | 2 | (!videoState.playing ? 4 : 0) | (videoState.playing ? 8 : 0), [
-              " uni-video-icon",
-              " uni-video-control-button",
-              " uni-video-control-button-play",
-              " uni-video-control-button-pause"
-            ]);
-            setClassName(_n9, 1 | (progressing.value ? 2 : 0), [" uni-video-progress", " uni-video-progress-progressing"]);
-            setStyle(_n6, {
-              width: videoState.buffered - videoState.progress + "%",
-              left: videoState.progress + "%"
-            });
-            setStyle(_n7, { width: videoState.progress + "%" });
-            setStyle(_n8, { left: videoState.progress + "%" });
-            setClassName(_n8, 1 | (progressing.value ? 2 : 0), [" uni-video-ball", " uni-video-ball-progressing"]);
-            _setTemplateRef(_n8, ballRef);
-            _setTemplateRef(_n5, progressRef);
-            setClassName(_n11, 1 | 2 | (danmuState.enable ? 4 : 0), [
-              " uni-video-icon",
-              " uni-video-danmu-button",
-              " uni-video-danmu-button-active"
-            ]);
-            setClassName(_n12, 1 | 2 | (fullscreenState.fullscreen ? 4 : 0), [
-              " uni-video-icon",
-              " uni-video-fullscreen",
-              " uni-video-type-fullscreen"
-            ]);
-            _setTemplateRef(_n13, danmuRef);
+              "webkit-playsinline": true,
+              playsinline: true
+            }
+          ]);
+          _setTemplateRef(_n1, videoRef);
+          setClassName(_n3, 1 | 2 | (!videoState.playing ? 4 : 0) | (videoState.playing ? 8 : 0), [
+            " uni-video-icon",
+            " uni-video-control-button",
+            " uni-video-control-button-play",
+            " uni-video-control-button-pause"
+          ]);
+          setClassName(_n9, 1 | (progressing.value ? 2 : 0), [" uni-video-progress", " uni-video-progress-progressing"]);
+          setStyle(_n6, {
+            width: videoState.buffered - videoState.progress + "%",
+            left: videoState.progress + "%"
           });
-          setInsertionState(_n27);
-          createIf(() => gestureState.gestureType === "volume", () => {
-            const _n24 = _t1$3();
-            const _n23 = child(_n24);
-            const _n22 = next(_n23);
-            renderEffect(() => setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
-            setInsertionState(_n24, _n23);
-            createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
-              const _n19 = _t0$6();
-              return _n19;
-            }, () => {
-              const _n21 = createNodes(() => !gestureState.toastThin && (() => {
-                const _n02 = _t4$1();
-                return _n02;
-              })());
-              return _n21;
-            }, 265);
-            setStyle(_n24, { marginTop: `5px` });
-            renderEffect(() => setStyle(_n22, { width: `${gestureState.volumeNew * 100}%` }));
-            return _n24;
+          setStyle(_n7, { width: videoState.progress + "%" });
+          setStyle(_n8, { left: videoState.progress + "%" });
+          setClassName(_n8, 1 | (progressing.value ? 2 : 0), [" uni-video-ball", " uni-video-ball-progressing"]);
+          _setTemplateRef(_n8, ballRef);
+          _setTemplateRef(_n5, progressRef);
+          setClassName(_n11, 1 | 2 | (danmuState.enable ? 4 : 0), [
+            " uni-video-icon",
+            " uni-video-danmu-button",
+            " uni-video-danmu-button-active"
+          ]);
+          setClassName(_n12, 1 | 2 | (fullscreenState.fullscreen ? 4 : 0), [
+            " uni-video-icon",
+            " uni-video-fullscreen",
+            " uni-video-type-fullscreen"
+          ]);
+          _setTemplateRef(_n13, danmuRef);
+        });
+        setInsertionState(_n27);
+        createIf(() => gestureState.gestureType === "volume", () => {
+          const _n24 = _t1$2();
+          const _n23 = child(_n24);
+          const _n22 = next(_n23);
+          renderEffect(() => setClassName(_n24, 1 | (gestureState.toastThin ? 2 : 0), [" uni-video-toast-container", " uni-video-toast-container-thin"]));
+          setInsertionState(_n24, _n23);
+          createIf(() => !gestureState.toastThin && gestureState.volumeNew > 0 && gestureState.gestureType === "volume", () => {
+            const _n19 = _t0$7();
+            return _n19;
           }, () => {
-            const _n26 = createNodes(null);
-            return _n26;
-          }, 521);
-          const _x28 = txt(_n28);
-          setNodes(_x28, () => formatTime(gestureState.currentTimeNew));
-          setNodes(_n29, " / ", () => formatTime(videoState.currentDuration));
-          const _x31 = txt(_n31);
-          setNodes(_x31, () => slots.default && slots.default());
-          renderEffect(() => {
-            setClassName(_n30, 1 | (progressing.value ? 2 : 0), [" uni-video-toast", " uni-video-toast-progress"]);
-            _setTemplateRef(_n0, containerRef);
-          });
-          return _n0;
-        }, true);
-        renderEffect(() => _setTemplateRef(_n32, rootRef));
-        return _n32;
+            const _n21 = createNodes(() => !gestureState.toastThin && (() => {
+              const _n02 = _t4$1();
+              return _n02;
+            })());
+            return _n21;
+          }, 265);
+          setStyle(_n24, { marginTop: `5px` });
+          renderEffect(() => setStyle(_n22, { width: `${gestureState.volumeNew * 100}%` }));
+          return _n24;
+        }, () => {
+          const _n26 = createNodes(null);
+          return _n26;
+        }, 521);
+        const _x28 = txt(_n28);
+        setNodes(_x28, () => formatTime(gestureState.currentTimeNew));
+        setNodes(_n29, " / ", () => formatTime(videoState.currentDuration));
+        const _x31 = txt(_n31);
+        setNodes(_x31, () => slots.default && slots.default());
+        renderEffect(() => {
+          setClassName(_n30, 1 | (progressing.value ? 2 : 0), [" uni-video-toast", " uni-video-toast-progress"]);
+          _setTemplateRef(_n0, containerRef);
+        });
+        return _n0;
       })();
-    };
+    }
+  };
+}
+const _t0$6 = template("<div uni-video uni-view>", 1);
+class UniVideoElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
+}
+const uniTagName$2 = { value: "VIDEO" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
+  rootElement: {
+    name: "uni-video",
+    class: UniVideoElement,
+    native: true
+  },
+  setup(props2, context) {
+    const { rootRef, toggleControls, methods, render } = useVideoComponent(props2, context);
+    const root = (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n0 = _t0$6();
+      on$1(_n0, "click", toggleControls);
+      renderEffect(() => {
+        setProp(_n0, "id", props2.id);
+        _setTemplateRef(_n0, rootRef);
+      });
+      return _n0;
+    })();
+    setInsertionState(root);
+    insert(render(), root);
+    Object.assign(root, methods);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    return root;
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -23422,7 +23441,7 @@ class UniWebViewElement extends UniViewElement {
     return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName = { value: "WEB-VIEW" };
+const uniTagName$1 = { value: "WEB-VIEW" };
 const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
@@ -23453,7 +23472,7 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Object.defineProperty(root, "uniTagName", uniTagName$1);
     return root;
   }
 });
@@ -23853,7 +23872,7 @@ function translateCoordinateSystem(type, coords, skip) {
     )
   );
 }
-const props$6 = {
+const props$5 = {
   id: {
     type: [Number, String],
     default: ""
@@ -23939,7 +23958,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$6,
+  props: props$5,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -24273,12 +24292,10 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       onUnmounted(() => removeMapChidlContext(context));
     }
     onUnmounted(removeMarker);
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$5 = {
+const props$4 = {
   points: {
     type: Array,
     require: true
@@ -24324,7 +24341,7 @@ const props$5 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -24398,12 +24415,10 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
       watch(props2, updatePolyline);
     });
     onUnmounted(removePolyline);
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
-const props$4 = {
+const props$3 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -24435,7 +24450,7 @@ const props$4 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -24496,13 +24511,11 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
       watch(props2, updateCircle);
     });
     onUnmounted(removeCircle);
-    return () => {
-      return null;
-    };
+    return [];
   }
 });
 const _t0$4 = template("<div class=uni-map-control><img class=uni-map-control-icon>", 1);
-const props$3 = {
+const props$2 = {
   id: {
     type: [Number, String],
     default: ""
@@ -24526,7 +24539,7 @@ const props$3 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -25117,7 +25130,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$2 = {
+const props$1 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -25151,7 +25164,7 @@ const props$2 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$2,
+  props: props$1,
   setup(props2) {
     let polygonIns;
     const onMapReady = inject("onMapReady");
@@ -25219,14 +25232,12 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
       watch(props2, drawPolygon);
     });
     onUnmounted(() => {
-      polygonIns.setMap(null);
+      polygonIns == null ? void 0 : polygonIns.setMap(null);
     });
-    return () => null;
+    return [];
   }
 });
-const _t0$3 = template('<div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div>');
-const _t1$2 = template('<div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ');
-const props$1 = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -25317,7 +25328,11 @@ function getMapPosition(maps2, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps2, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps2,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -25380,24 +25395,37 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state.latitude || longitude !== state.longitude) {
-      state.latitude = latitude;
-      state.longitude = longitude;
-      if (map) {
-        const centerPosition = getMapPosition(maps2, state.latitude, state.longitude);
-        map.setCenter(centerPosition);
+  watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state.latitude || longitude !== state.longitude) {
+        state.latitude = latitude;
+        state.longitude = longitude;
+        if (map) {
+          const centerPosition = getMapPosition(
+            maps2,
+            state.latitude,
+            state.longitude
+          );
+          map.setCenter(centerPosition);
+        }
       }
     }
-  });
-  watch(() => props2.includePoints, (points) => {
-    state.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
+  );
+  watch(
+    () => props2.includePoints,
+    (points) => {
+      state.includePoints = getPoints(points);
+      if (isBoundsReady) {
+        updateBounds();
+      }
+    },
+    {
+      deep: true
     }
-  }, { deep: true });
+  );
   function emitBoundsReady() {
     isBoundsReady = true;
     onBoundsReadyCallbacks.forEach((callback) => callback());
@@ -25430,7 +25458,10 @@ function useMap(props2, rootRef, emit2) {
     else {
       const bounds = new maps2.LatLngBounds();
       state.includePoints.forEach(({ latitude, longitude }) => {
-        const latLng = new maps2.LatLng(latitude, longitude);
+        const latLng = new maps2.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -25461,9 +25492,12 @@ function useMap(props2, rootRef, emit2) {
       map2.enableScrollWheelZoom();
       map2._printLog && map2._printLog("uniapp");
     }
-    watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
+    watch(
+      () => props2.scale,
+      (scale) => {
+        map2.setZoom(Number(scale) || 16);
+      }
+    );
     onBoundsReady(() => {
       if (state.includePoints.length) {
         updateBounds();
@@ -25482,16 +25516,27 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       map2.addEventListener("dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
     } else {
-      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-        boundsChangedEvent.remove();
-        emitBoundsReady();
-      });
+      const boundsChangedEvent = event.addListener(
+        map2,
+        "bounds_changed",
+        () => {
+          boundsChangedEvent.remove();
+          emitBoundsReady();
+        }
+      );
       event.addListener(map2, "complete", () => {
         emitBoundsReady();
       });
@@ -25506,17 +25551,31 @@ function useMap(props2, rootRef, emit2) {
         });
       });
       event.addListener(map2, "dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "drag"
+            },
+            getMapInfo2()
+          )
+        );
       });
       const zoomChangedCallback = () => {
         emit2("update:scale", map2.getZoom());
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "scale"
-        }, getMapInfo2()));
+        trigger(
+          "regionchange",
+          {},
+          extend(
+            {
+              type: "end",
+              causedBy: "scale"
+            },
+            getMapInfo2()
+          )
+        );
       };
       event.addListener(map2, "zoom_changed", zoomChangedCallback);
       event.addListener(map2, "zoomend", zoomChangedCallback);
@@ -25532,96 +25591,104 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state.latitude = latitude;
-              state.longitude = longitude;
-              if (map) {
-                const centerPosition = getMapPosition(maps2, latitude, longitude);
-                map.setCenter(centerPosition);
-              }
-              onMapReady(() => {
-                callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              callOptions(data, `${type}:ok`);
-            } else {
-              callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state.latitude = latitude;
+                state.longitude = longitude;
+                if (map) {
+                  const centerPosition = getMapPosition(
+                    maps2,
+                    latitude,
+                    longitude
+                  );
+                  map.setCenter(centerPosition);
+                }
+                onMapReady(() => {
+                  callOptions(data, `${type}:ok`);
+                });
+              } else {
+                callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  callOptions(data, `${type}:fail ${error.message}`);
+                }
+                callOptions(data, `${type}:ok`);
+              } else {
+                callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   onMounted(() => {
@@ -25641,76 +25708,78 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-class UniMapElement extends UniElement2 {
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
+const _t0$3 = template('<div uni-map uni-view><div style="width: 100%; height: 100%; position: relative; overflow: hidden"></div> <div style="position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"> ', 1);
+class UniMapElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniMapElement && value instanceof UniViewElement && value.hasAttribute("uni-map") || Function.prototype[Symbol.hasInstance].call(this, value);
+  }
 }
+const uniTagName = { value: "MAP" };
 const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$1,
-  emits: [
-    "markertap",
-    "labeltap",
-    "callouttap",
-    "controltap",
-    "regionchange",
-    "tap",
-    "click",
-    "updated",
-    "update:scale",
-    "update:latitude",
-    "update:longitude"
-  ],
+  props: mapProps,
+  emits: mapEmits,
+  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-map",
-    class: UniMapElement
+    class: UniMapElement,
+    native: true
   },
   setup(props2, { emit: emit2, slots }) {
     const rootRef = ref(null);
     const { mapRef, trigger } = useMap(props2, rootRef, emit2);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return (() => {
-        const _setTemplateRef = createTemplateRefSetter();
-        const _n8 = createPlainElement("uni-map", { id: () => props2.id }, () => {
-          const _n0 = _t0$3();
-          const _n7 = _t1$2();
-          const _n1 = createNodes(() => props2.markers.map((item) => (() => {
-            const _n02 = createKeyedFragment(() => item.id, () => {
-              const _n2 = createComponent(MapMarker, { $: [() => item] }, null, true);
-              return _n2;
-            });
-            return _n02;
-          })()), () => props2.polyline.map((item) => (() => {
-            const _n02 = createComponent(MapPolyline, { $: [() => item] }, null, true);
-            return _n02;
-          })()), () => props2.circles.map((item) => (() => {
-            const _n02 = createComponent(MapCircle, { $: [() => item] }, null, true);
-            return _n02;
-          })()), () => props2.controls.map((item) => (() => {
-            const _n02 = createComponent(MapControl, { $: [() => item, { trigger: () => trigger }] }, null, true);
-            return _n02;
-          })()), () => props2.showLocation && (() => {
-            const _n02 = createComponent(MapLocation, null, null, true);
-            return _n02;
-          })(), () => props2.polygons.map((item) => (() => {
-            const _n02 = createComponent(MapPolygon, { $: [() => item] }, null, true);
-            return _n02;
-          })()));
-          const _x7 = txt(_n7);
-          setNodes(_x7, () => slots.default && slots.default());
-          renderEffect(() => _setTemplateRef(_n0, mapRef));
-          return [
-            _n0,
-            _n1,
-            _n7
-          ];
-        }, true);
-        renderEffect(() => _setTemplateRef(_n8, rootRef));
-        return _n8;
-      })();
-    };
+    const root = (() => {
+      const _setTemplateRef = createTemplateRefSetter();
+      const _n3 = _t0$3();
+      const _n0 = child(_n3);
+      const _n1 = next(_n0, true);
+      const _n2 = next(_n1);
+      setNodes(_n1, () => props2.markers.map((item) => (() => {
+        const _n02 = createKeyedFragment(() => item.id, () => {
+          const _n22 = createComponent(MapMarker, { $: [() => item] }, null, true);
+          return _n22;
+        });
+        return _n02;
+      })()), () => props2.polyline.map((item) => (() => {
+        const _n02 = createComponent(MapPolyline, { $: [() => item] }, null, true);
+        return _n02;
+      })()), () => props2.circles.map((item) => (() => {
+        const _n02 = createComponent(MapCircle, { $: [() => item] }, null, true);
+        return _n02;
+      })()), () => props2.controls.map((item) => (() => {
+        const _n02 = createComponent(MapControl, { $: [() => item, { trigger: () => trigger }] }, null, true);
+        return _n02;
+      })()), () => props2.showLocation && (() => {
+        const _n02 = createComponent(MapLocation, null, null, true);
+        return _n02;
+      })(), () => props2.polygons.map((item) => (() => {
+        const _n02 = createComponent(MapPolygon, { $: [() => item] }, null, true);
+        return _n02;
+      })()));
+      const _x2 = txt(_n2);
+      setNodes(_x2, () => slots.default && slots.default());
+      renderEffect(() => {
+        setProp(_n3, "id", props2.id);
+        _setTemplateRef(_n0, mapRef);
+        _setTemplateRef(_n3, rootRef);
+      });
+      return _n3;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
   }
 });
 const _t0$2 = template("<div class=uni-ad-container></div>");
@@ -34778,15 +34847,15 @@ export {
   index$4 as AdDraw,
   _sfc_main$C as AsyncErrorComponent,
   _sfc_main$D as AsyncLoadingComponent,
-  index$b as Button,
+  index$a as Button,
   index$3 as Camera,
-  indexVapor$6 as Canvas,
+  indexVapor$7 as Canvas,
   _sfc_main$w as Checkbox,
   _sfc_main$v as CheckboxGroup,
-  indexVapor$5 as Editor,
+  indexVapor$6 as Editor,
   _sfc_main$u as FlowItem,
   _sfc_main$t as Form,
-  indexVapor$4 as Icon,
+  indexVapor$5 as Icon,
   __syscom_0$2 as Input,
   _sfc_main$s as Label,
   _sfc_main$E as LayoutComponent,
@@ -34797,8 +34866,8 @@ export {
   _sfc_main$p as Loading,
   __syscom_0 as Map,
   _sfc_main$o as MatchMedia,
-  indexVapor$3 as MovableArea,
-  indexVapor$2 as MovableView,
+  indexVapor$4 as MovableArea,
+  indexVapor$3 as MovableView,
   _sfc_main$n as Navigator,
   _sfc_main$y as PageComponent,
   _sfc_main$m as PageContainer,
@@ -34809,7 +34878,7 @@ export {
   _sfc_main$h as Radio,
   _sfc_main$g as RadioGroup,
   ResizeSensor,
-  indexVapor$1 as RichText,
+  indexVapor$2 as RichText,
   __syscom_1 as ScrollView,
   _sfc_main$f as Slider,
   _sfc_main$e as StickyHeader,
@@ -34891,7 +34960,7 @@ export {
   UniViewElement as UniViewElementImpl,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$8 as Video,
+  indexVapor$1 as Video,
   _sfc_main$9 as Waterflow,
   indexVapor as WebView,
   __f__,

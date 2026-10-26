@@ -2374,7 +2374,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$p = {
+const props$n = {
   canvasId: {
     type: String,
     default: ""
@@ -2394,7 +2394,7 @@ const index$z = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$p,
+  props: props$n,
   computed: {
     id() {
       return this.canvasId;
@@ -2859,7 +2859,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$o = {
+const props$m = {
   name: {
     type: String,
     default: ""
@@ -2867,7 +2867,7 @@ const props$o = {
 };
 const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$o,
+  props: props$m,
   emits: ["change"],
   setup(props2, {
     emit: emit2,
@@ -2919,7 +2919,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$n = {
+const props$l = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -2968,7 +2968,7 @@ const props$n = {
 };
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$n,
+  props: props$l,
   setup(props2, {
     slots
   }) {
@@ -3069,7 +3069,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$m = {
+const props$k = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3280,7 +3280,7 @@ function useQuill(props2, rootRef, trigger) {
   useContextInfo();
   useSubscribe();
 }
-const editorProps = /* @__PURE__ */ shared.extend({}, props$m, {
+const editorProps = /* @__PURE__ */ shared.extend({}, props$k, {
   id: {
     type: String,
     default: ""
@@ -3414,7 +3414,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$l = {
+const props$j = {
   src: {
     type: String,
     default: ""
@@ -3453,7 +3453,7 @@ const IMAGE_MODES = {
 };
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$l,
+  props: props$j,
   setup(props2, {
     emit: emit2
   }) {
@@ -3729,7 +3729,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$k = /* @__PURE__ */ shared.extend(
+const props$i = /* @__PURE__ */ shared.extend(
   {},
   {
     name: {
@@ -3819,7 +3819,7 @@ const props$k = /* @__PURE__ */ shared.extend(
       default: ""
     }
   },
-  props$m
+  props$k
 );
 const emit = [
   "input",
@@ -4099,7 +4099,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
     }
   }
 }
-const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
+const props$h = /* @__PURE__ */ shared.extend({}, props$i, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -4315,7 +4315,7 @@ function useInput(props2, { emit: emit2, expose }) {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$j,
+  props: props$h,
   emits: emits$2,
   setup(props2, context) {
     const {
@@ -6153,7 +6153,7 @@ function _activeAnimation(state, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$i = {
+const props$g = {
   name: {
     type: String,
     default: ""
@@ -6161,7 +6161,7 @@ const props$i = {
 };
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$i,
+  props: props$g,
   // emits: ['change'],
   setup(props2, {
     emit: emit2,
@@ -6230,7 +6230,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$h = {
+const props$f = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -6274,7 +6274,7 @@ const props$h = {
 };
 const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$h,
+  props: props$f,
   setup(props2, {
     slots
   }) {
@@ -6475,7 +6475,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$g = {
+const props$e = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -6679,7 +6679,7 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$g,
+  props: props$e,
   emits: ["itemclick"],
   setup(props2, {
     emit: emit2
@@ -6792,7 +6792,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$f = {
+const props$d = {
   direction: {
     type: [String],
     default: "vertical"
@@ -7138,7 +7138,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$f,
+  props: props$d,
   emits: emits$1,
   setup(props2, context) {
     const {
@@ -7196,7 +7196,7 @@ function createBackgroundColorStyle(color) {
 function withBackgroundColor(style, color) {
   return color ? Object.assign(style, { backgroundColor: color }) : style;
 }
-const props$e = {
+const props$c = {
   name: {
     type: String,
     default: ""
@@ -7247,7 +7247,7 @@ const props$e = {
 };
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$e,
+  props: props$c,
   emits: ["changing", "change"],
   setup(props2, {
     emit: emit2
@@ -7420,7 +7420,7 @@ function lerp(min, max, t2) {
   t2 = Math.min(1, Math.max(0, t2));
   return min * (1 - t2) + max * t2;
 }
-const props$d = {
+const props$b = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -7815,7 +7815,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
 }
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$d,
+  props: props$b,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   setup(props2, {
     slots,
@@ -8038,7 +8038,7 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   }
   return createNavigationTsx;
 };
-const props$c = {
+const props$a = {
   itemId: {
     type: String,
     default: ""
@@ -8046,7 +8046,7 @@ const props$c = {
 };
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$c,
+  props: props$a,
   setup(props2, {
     slots
   }) {
@@ -8063,7 +8063,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$b = {
+const props$9 = {
   name: {
     type: String,
     default: ""
@@ -8091,7 +8091,7 @@ const props$b = {
 };
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$b,
+  props: props$9,
   emits: ["change"],
   setup(props2, {
     emit: emit2
@@ -8258,7 +8258,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
+const props$8 = /* @__PURE__ */ shared.extend({}, props$i, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -8359,7 +8359,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
 }
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$a,
+  props: props$8,
   emits,
   setup(props2, context) {
     const {
@@ -9437,7 +9437,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
   });
   return progressing;
 }
-const props$9 = {
+const videoProps = {
   id: {
     type: String,
     default: ""
@@ -9525,84 +9525,90 @@ const props$9 = {
     default: true
   }
 };
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$9,
-  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
-  setup(props2, {
-    emit: emit2,
-    attrs,
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const containerRef = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: userActionState
-    } = useUserAction();
-    const {
-      $attrs: videoAttrs
-    } = useAttrs({
-      excludeListeners: true
-    });
-    initI18nVideoMsgsOnce();
-    const {
-      videoRef,
-      state: videoState,
+const videoEmits = ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"];
+function useVideoComponent(props2, {
+  emit: emit2,
+  attrs,
+  slots
+}) {
+  const rootRef = vue.ref(null);
+  const containerRef = vue.ref(null);
+  const trigger = useCustomEvent(rootRef, emit2);
+  const {
+    state: userActionState
+  } = useUserAction();
+  const {
+    $attrs: videoAttrs
+  } = useAttrs({
+    excludeListeners: true
+  });
+  initI18nVideoMsgsOnce();
+  const {
+    videoRef,
+    state: videoState,
+    play,
+    pause,
+    stop,
+    seek,
+    playbackRate,
+    toggle,
+    onDurationChange,
+    onLoadedMetadata,
+    onProgress,
+    onWaiting,
+    onVideoError,
+    onPlay,
+    onPause,
+    onEnded,
+    onTimeUpdate
+  } = useVideo(props2, attrs, trigger);
+  const {
+    state: danmuState,
+    danmuRef,
+    updateDanmu,
+    toggleDanmu,
+    sendDanmu
+  } = useDanmu(props2, videoState);
+  const {
+    state: fullscreenState,
+    onFullscreenChange,
+    emitFullscreenChange,
+    toggleFullscreen,
+    requestFullScreen,
+    exitFullScreen
+  } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+  const {
+    state: gestureState,
+    onTouchstart,
+    onTouchend,
+    onTouchmove
+  } = useGesture(props2, videoState, videoRef, fullscreenState);
+  const {
+    state: controlsState,
+    progressRef,
+    ballRef,
+    clickProgress,
+    toggleControls,
+    autoHideEnd,
+    autoHideStart
+  } = useControls(props2, videoState, seek);
+  useContext();
+  const progressing = useProgressing(videoState, gestureState, controlsState);
+  return {
+    rootRef,
+    toggleControls,
+    methods: {
       play,
       pause,
       stop,
       seek,
+      sendDanmu,
       playbackRate,
-      toggle,
-      onDurationChange,
-      onLoadedMetadata,
-      onProgress,
-      onWaiting,
-      onVideoError,
-      onPlay,
-      onPause,
-      onEnded,
-      onTimeUpdate
-    } = useVideo(props2, attrs, trigger);
-    const {
-      state: danmuState,
-      danmuRef,
-      updateDanmu,
-      toggleDanmu,
-      sendDanmu
-    } = useDanmu(props2, videoState);
-    const {
-      state: fullscreenState,
-      onFullscreenChange,
-      emitFullscreenChange,
-      toggleFullscreen,
       requestFullScreen,
       exitFullScreen
-    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const {
-      state: gestureState,
-      onTouchstart,
-      onTouchend,
-      onTouchmove
-    } = useGesture(props2, videoState, videoRef, fullscreenState);
-    const {
-      state: controlsState,
-      progressRef,
-      ballRef,
-      clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
-    } = useControls(props2, videoState, seek);
-    useContext();
-    const progressing = useProgressing(videoState, gestureState, controlsState);
-    return () => {
-      return vue.createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id,
-        "onClick": toggleControls
-      }, [vue.createVNode("div", {
+    },
+    render: () => {
+      return vue.createVNode("div", {
         "ref": containerRef,
         "class": "uni-video-container",
         "onTouchstart": onTouchstart,
@@ -9747,8 +9753,26 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title-current-time"
       }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.currentDuration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
-    };
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"]);
+    }
+  };
+}
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: videoProps,
+  emits: videoEmits,
+  setup(props2, context) {
+    const {
+      rootRef,
+      toggleControls,
+      methods,
+      render
+    } = useVideoComponent(props2, context);
+    return () => vue.createVNode("uni-video", {
+      "ref": rootRef,
+      "id": props2.id,
+      "onClick": toggleControls
+    }, [render()], 8, ["id", "onClick"]);
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
@@ -9775,7 +9799,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ uniShared.once(() => UniServiceJSBridge.on(uniShared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$8 = {
+const props$7 = {
   src: {
     type: String,
     default: ""
@@ -9788,7 +9812,7 @@ const props$8 = {
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$8,
+  props: props$7,
   emits: ["load"],
   setup(props2, {
     emit: emit2
@@ -9869,7 +9893,7 @@ const getIsAMap = () => {
 const getIsBMap = () => {
   return getMapInfo().type === "BMapGL";
 };
-const props$7 = {
+const props$6 = {
   id: {
     type: [Number, String],
     default: ""
@@ -9952,7 +9976,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$7,
+  props: props$6,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
@@ -10316,7 +10340,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$6 = {
+const props$5 = {
   points: {
     type: Array,
     require: true
@@ -10362,7 +10386,7 @@ const props$6 = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$6,
+  props: props$5,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let polyline;
@@ -10450,7 +10474,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$5 = {
+const props$4 = {
   latitude: {
     type: [Number, String],
     require: true
@@ -10482,7 +10506,7 @@ const props$5 = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$5,
+  props: props$4,
   setup(props2) {
     const onMapReady = vue.inject("onMapReady");
     let circle;
@@ -10557,7 +10581,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$4 = {
+const props$3 = {
   id: {
     type: [Number, String],
     default: ""
@@ -10581,7 +10605,7 @@ const props$4 = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$4,
+  props: props$3,
   setup(props2) {
     const imgPath = vue.computed(() => getRealPath(props2.iconPath));
     const positionStyle = vue.computed(() => {
@@ -10635,7 +10659,7 @@ const MapLocation = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$3 = {
+const props$2 = {
   // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
   dashArray: {
     type: Array,
@@ -10669,7 +10693,7 @@ const props$3 = {
 };
 const MapPolygon = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolygon",
-  props: props$3,
+  props: props$2,
   setup(props2) {
     let polygonIns;
     const onMapReady = vue.inject("onMapReady");
@@ -10759,7 +10783,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     return () => null;
   }
 });
-const props$2 = {
+const mapProps = {
   id: {
     type: String,
     default: ""
@@ -10850,7 +10874,11 @@ function getMapPosition(maps, latitude, longitude) {
   } else if (getIsAMap()) {
     return getAMapPosition(maps, latitude, longitude);
   } else {
-    return getGoogleOrQQMapPosition(maps, latitude, longitude);
+    return getGoogleOrQQMapPosition(
+      maps,
+      latitude,
+      longitude
+    );
   }
 }
 function getLat(latLng) {
@@ -10895,19 +10923,26 @@ function useMap(props2, rootRef, emit2) {
   function removeMapChidlContext(context) {
     delete contexts[context.id];
   }
-  vue.watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state.latitude || longitude !== state.longitude) {
-      state.latitude = latitude;
-      state.longitude = longitude;
+  vue.watch(
+    [() => props2.latitude, () => props2.longitude],
+    ([latitudeVlaue, longitudeVlaue]) => {
+      const latitude = Number(latitudeVlaue);
+      const longitude = Number(longitudeVlaue);
+      if (latitude !== state.latitude || longitude !== state.longitude) {
+        state.latitude = latitude;
+        state.longitude = longitude;
+      }
     }
-  });
-  vue.watch(() => props2.includePoints, (points) => {
-    state.includePoints = getPoints(points);
-  }, {
-    deep: true
-  });
+  );
+  vue.watch(
+    () => props2.includePoints,
+    (points) => {
+      state.includePoints = getPoints(points);
+    },
+    {
+      deep: true
+    }
+  );
   function updateBounds() {
     if (getIsAMap()) {
       const points = [];
@@ -10920,11 +10955,11 @@ function useMap(props2, rootRef, emit2) {
       ;
     else {
       const bounds = new maps.LatLngBounds();
-      state.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
-        const latLng = new maps.LatLng(latitude, longitude);
+      state.includePoints.forEach(({ latitude, longitude }) => {
+        const latLng = new maps.LatLng(
+          latitude,
+          longitude
+        );
         bounds.extend(latLng);
       });
       map.fitBounds(bounds);
@@ -10932,94 +10967,98 @@ function useMap(props2, rootRef, emit2) {
   }
   try {
     const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            uniShared.callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state.latitude = latitude;
-              state.longitude = longitude;
-              if (map)
-                ;
-              onMapReady(() => {
-                uniShared.callOptions(data, `${type}:ok`);
+    useSubscribe(
+      (type, data = {}) => {
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              const center = map.getCenter();
+              uniShared.callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: `${type}:ok`
               });
-            } else {
-              uniShared.callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                uniShared.callOptions(data, `${type}:fail ${error.message}`);
+            });
+            break;
+          case "moveToLocation":
+            {
+              let latitude = Number(data.latitude);
+              let longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                const context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
               }
-              uniShared.callOptions(data, `${type}:ok`);
-            } else {
-              uniShared.callOptions(data, `${type}:fail not found`);
+              if (latitude && longitude) {
+                state.latitude = latitude;
+                state.longitude = longitude;
+                if (map)
+                  ;
+                onMapReady(() => {
+                  uniShared.callOptions(data, `${type}:ok`);
+                });
+              } else {
+                uniShared.callOptions(data, `${type}:fail`);
+              }
             }
-          });
-          break;
-        case "includePoints":
-          state.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            uniShared.callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            uniShared.callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              const context = contexts[data.markerId];
+              if (context) {
+                try {
+                  context.translate(data);
+                } catch (error) {
+                  uniShared.callOptions(data, `${type}:fail ${error.message}`);
+                }
+                uniShared.callOptions(data, `${type}:ok`);
+              } else {
+                uniShared.callOptions(data, `${type}:fail not found`);
+              }
             });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            uniShared.callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
+            break;
+          case "includePoints":
+            state.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              uniShared.callOptions(data, `${type}:ok`);
             });
-          });
-          break;
-      }
-    }, id2, true);
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              const latLngBounds = map.getBounds();
+              const southwest = latLngBounds.getSouthWest();
+              const northeast = latLngBounds.getNorthEast();
+              uniShared.callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              uniShared.callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: `${type}:ok`
+              });
+            });
+            break;
+        }
+      },
+      id2,
+      true
+    );
   } catch (error) {
   }
   vue.provide("onMapReady", onMapReady);
@@ -11031,10 +11070,23 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
+const mapEmits = [
+  "markertap",
+  "labeltap",
+  "callouttap",
+  "controltap",
+  "regionchange",
+  "tap",
+  "click",
+  "updated",
+  "update:scale",
+  "update:latitude",
+  "update:longitude"
+];
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
-  props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  props: mapProps,
+  emits: mapEmits,
   setup(props2, {
     emit: emit2,
     slots
