@@ -203,6 +203,41 @@ uni-app div:where([uni-map]) {
   justify-content: normal;
 }
 
+/* 内部尺寸传感器不使用 uni-view，避免套用业务组件的布局和 Element 能力。 */
+div:where([uni-resize-sensor]),
+div:where([uni-resize-sensor]) > div {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+div:where([uni-resize-sensor]) {
+  display: block;
+  z-index: -1;
+  visibility: hidden;
+  /* 复用 resize-sensor.css 中的首次显示动画。 */
+  animation: once-show 1ms;
+}
+
+div:where([uni-resize-sensor]) > div > div {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+div:where([uni-resize-sensor]) > div:first-child > div {
+  width: 100000px;
+  height: 100000px;
+}
+
+div:where([uni-resize-sensor]) > div:last-child > div {
+  width: 200%;
+  height: 200%;
+}
+
 /* 文字容器 */
 uni-app uni-label {
   overflow: hidden;

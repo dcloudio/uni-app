@@ -237,7 +237,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
         './useTextarea': textareaState,
         '../../helpers/useField': fieldHelpers,
         './utils': { resolveDigitDecimalPoint() {} },
-        '../resize-sensor/index': {
+        '../resize-sensor/index-vapor': {
           default: vue.defineVaporComponent({
             props: { initial: Boolean },
             emits: ['resize'],

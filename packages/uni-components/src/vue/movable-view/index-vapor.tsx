@@ -1,6 +1,6 @@
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniViewElement } from '../web-vapor-elements'
-import ResizeSensor from '../resize-sensor/index'
+import ResizeSensor from '../resize-sensor/index-vapor'
 import { movableViewProps } from '../../components/movable-view'
 import { useMovableView } from './useMovableView'
 

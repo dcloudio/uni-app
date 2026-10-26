@@ -198,7 +198,7 @@ describe('Web Vapor MovableArea', () => {
         disableScrollBounce() {},
       },
       '../../helpers/UniElement': { UniElement },
-      '../resize-sensor/index': { default: sensor },
+      '../resize-sensor/index-vapor': { default: sensor },
       '../../components/movableArea': jest.requireActual(
         path.join(root, 'packages/uni-components/src/components/movableArea')
       ),

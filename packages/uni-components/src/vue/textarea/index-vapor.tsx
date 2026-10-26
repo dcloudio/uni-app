@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
-import ResizeSensor from '../resize-sensor/index'
+import ResizeSensor from '../resize-sensor/index-vapor'
 import { UniTextareaElement, initTextareaElement } from './element-vapor'
 import { emits, fixMargin, props, useTextarea } from './useTextarea'
 
