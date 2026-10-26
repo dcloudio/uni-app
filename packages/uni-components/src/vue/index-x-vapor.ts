@@ -10,8 +10,6 @@ import MovableView, { UniMovableViewElement } from './movable-view/index-vapor'
 import ResizeSensor from './resize-sensor/index-vapor'
 import RichText, { UniRichTextElement } from './rich-text/index-vapor'
 import ScrollView, { UniScrollViewElement } from './scroll-view/index-vapor'
-import PageContainer from './page-container/index.vue'
-import { UniPageContainerElement } from './page-container/element'
 import {
   UniImageElement,
   UniTextElement,
@@ -38,7 +36,6 @@ export {
   ResizeSensor,
   RichText,
   ScrollView,
-  PageContainer,
   UniCanvasElement,
   UniCanvasElement as UniCanvasElementImpl,
   UniEditorElement,
@@ -59,6 +56,4 @@ export {
   UniTextElement as UniTextElementImpl,
   UniViewElement,
   UniViewElement as UniViewElementImpl,
-  UniPageContainerElement,
-  UniPageContainerElement as UniPageContainerElementImpl,
 }
