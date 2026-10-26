@@ -173,7 +173,6 @@ uni-app uni-picker,
 uni-app uni-progress,
 uni-app uni-radio-group,
 uni-app uni-radio,
-uni-app uni-rich-text,
 uni-app uni-slider,
 uni-app uni-sticky-header,
 uni-app uni-sticky-section,
@@ -195,8 +194,22 @@ uni-app uni-web-view {
   border-width: medium;
 }
 
-uni-app uni-rich-text {
+/* 保留 RichText 的内联布局与字体继承，不套用基础 view 的 flex 和裁剪默认值。 */
+uni-app div:where([uni-rich-text]) {
+  display: inline;
+  font-size: inherit;
+  text-align: inherit;
   line-height: 1.5;
+  overflow: visible;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}
+
+uni-app div:where([uni-rich-text])[selectable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* uni-app uni-* */
@@ -236,7 +249,6 @@ uni-app uni-picker[hidden],
 uni-app uni-progress[hidden],
 uni-app uni-radio-group[hidden],
 uni-app uni-radio[hidden],
-uni-app uni-rich-text[hidden],
 uni-app uni-slider[hidden],
 uni-app uni-sticky-header[hidden],
 uni-app uni-sticky-section[hidden],

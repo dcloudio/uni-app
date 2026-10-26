@@ -25,7 +25,10 @@ async function load(
   imports: Record<string, any>
 ) {
   const code = ts.transpileModule(await preprocess(file, vapor), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS },
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2020,
+    },
   }).outputText
   const module = { exports: {} as any }
   new Function('require', 'module', 'exports', code)(
@@ -42,7 +45,7 @@ describe('Web Vapor 手写节点', () => {
     'packages/uni-h5/src/service/api/ui/popup/utils.ts',
     'packages/uni-core/src/helpers/icon.ts',
     'packages/uni-components/src/helpers/component.ts',
-    'packages/uni-components/src/vue/rich-text/index.tsx',
+    'packages/uni-components/src/vue/rich-text/index-vapor.tsx',
     'packages/uni-components/src/vue/rich-text/nodes-parser.ts',
     'packages/uni-components/src/helpers/component-vapor.ts',
     'packages/uni-core/src/helpers/icon-vapor.ts',
@@ -104,7 +107,6 @@ describe('Web Vapor 手写节点', () => {
       for (const file of [
         'packages/uni-components/src/helpers/component.ts',
         'packages/uni-core/src/helpers/icon.ts',
-        'packages/uni-components/src/vue/rich-text/index.tsx',
         'packages/uni-h5/src/service/api/ui/popup/toast.tsx',
       ]) {
         const code = await preprocess(file, vapor)
@@ -113,6 +115,22 @@ describe('Web Vapor 手写节点', () => {
       }
     }
   )
+
+  test('RichText 独立选择 Vapor 入口，非 Vapor 保留旧宿主与 mounted 绑定', async () => {
+    const standard = await preprocess(
+      'packages/uni-components/src/vue/rich-text/index.tsx',
+      false
+    )
+    const vapor = await preprocess(
+      'packages/uni-components/src/vue/rich-text/index-vapor.tsx',
+      true
+    )
+    expect(standard).toContain("from './render-vdom'")
+    expect(standard).toContain('rootElement.attachVmProps(props)')
+    expect(standard).not.toMatch(/render-vapor|web-vapor-elements|native: true/)
+    expect(vapor).toContain("from './render-vapor'")
+    expect(vapor).not.toMatch(/render-vdom|attachVmProps/)
+  })
 
   test.each([false, true])(
     '组件定义保留公共选项，仅 Vapor 展开 setup（Vapor=%s）',
@@ -347,6 +365,10 @@ describe('RichText Vapor 真实运行时更新', () => {
   let nodeList2VNode: Function
   let renderVaporRichText: Function
   let renderVDomRichText: Function
+  let RichText: any
+  let UniRichTextElement: any
+  let UniElement: any
+  let elements: any
   const apps: any[] = []
   const errors = jest.fn()
   const keyReads = jest.fn()
@@ -368,10 +390,14 @@ describe('RichText Vapor 真实运行时更新', () => {
       'Text',
       'Comment',
       'ShadowRoot',
+      'customElements',
+      '__X__',
+      '__NODE_JS__',
     ]) {
       previousGlobals.set(name, (global as any)[name])
       ;(global as any)[name] = dom.window[name]
     }
+    Object.assign(global, { __X__: true, __NODE_JS__: false })
     vue = jest.requireActual(
       path.join(root, 'packages/uni-h5-vue/dist-x-vapor/vue.runtime.cjs.js')
     )
@@ -437,6 +463,60 @@ describe('RichText Vapor 真实运行时更新', () => {
       false,
       renderImports
     ))
+    const uniShared = jest.requireActual('@dcloudio/uni-shared')
+    const element = await load(
+      'packages/uni-components/src/helpers/UniElement-vapor.ts',
+      true,
+      {
+        ...imports,
+        '@dcloudio/uni-shared': uniShared,
+      }
+    )
+    UniElement = element.UniElement
+    elements = await load(
+      'packages/uni-components/src/vue/web-vapor-elements.ts',
+      true,
+      {
+        '../helpers/UniElement': element,
+        '@dcloudio/uni-shared': uniShared,
+      }
+    )
+    elements.installWebVaporElements(dom.window)
+    const helpers = await load(
+      'packages/uni-components/src/helpers/component.ts',
+      true,
+      {
+        ...imports,
+        './component-vapor': await load(
+          'packages/uni-components/src/helpers/component-vapor.ts',
+          true,
+          imports
+        ),
+        './animation': { default: {} },
+      }
+    )
+    const events = await load(
+      'packages/uni-components/src/helpers/useEvent.ts',
+      true,
+      {
+        ...imports,
+        '@dcloudio/uni-shared': uniShared,
+        '@dcloudio/uni-core': {},
+      }
+    )
+    const component = await load(
+      'packages/uni-components/src/vue/rich-text/index-vapor.tsx',
+      true,
+      {
+        ...imports,
+        '@dcloudio/uni-components': { ...helpers, ...events },
+        '../../components/rich-text': richText,
+        './render-vapor': { renderRichText: renderVaporRichText },
+        '../web-vapor-elements': elements,
+      }
+    )
+    RichText = component.default
+    UniRichTextElement = component.UniRichTextElement
   }, 20000)
 
   afterAll(() => {
@@ -481,7 +561,8 @@ describe('RichText Vapor 真实运行时更新', () => {
       app.config.errorHandler = errors
       apps.push(app)
       app.mount(host)
-      const element = host.querySelector('uni-rich-text')!
+      const selector = vapor ? '[uni-rich-text]' : 'uni-rich-text'
+      const element = host.querySelector(selector)!
       expect(rootRef.value).toBe(element)
       expect(element.textContent).toBe('first')
       expect(element.hasAttribute('selectable')).toBe(false)
@@ -489,7 +570,7 @@ describe('RichText Vapor 真实运行时更新', () => {
       state.nodes[0].children[0].text = 'second'
       state.userSelect = true
       await vue.nextTick()
-      expect(host.querySelector('uni-rich-text')).toBe(element)
+      expect(host.querySelector(selector)).toBe(element)
       expect(element.textContent).toBe('second')
       expect(element.hasAttribute('selectable')).toBe(true)
 
@@ -501,6 +582,117 @@ describe('RichText Vapor 真实运行时更新', () => {
       expect(rootRef.value).toBe(element)
     }
   )
+
+  function mountRichText(props: Record<string, Function>) {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const ref = vue.shallowRef()
+    const app = vue.createVaporApp(
+      vue.defineVaporComponent({
+        setup() {
+          const component = vue.createComponent(
+            { ...RichText, __scopeId: 'data-v-rich-test' },
+            props
+          )
+          vue.setStaticTemplateRef(component, ref)
+          vue.onMounted(() => expect(ref.value.uniTagName).toBe('RICH-TEXT'))
+          return component
+        },
+      })
+    )
+    app.config.errorHandler = errors
+    apps.push(app)
+    app.mount(host)
+    return { host, ref, element: ref.value as HTMLElement }
+  }
+
+  test('RichText 原生宿主保留 ref、Element、dataset 与属性更新，内部 HTML 不标记为基础组件', async () => {
+    const state = vue.reactive({
+      nodes: '<p>内容</p>',
+      payload: { count: 1 },
+      selected: false,
+      color: 'red',
+    })
+    const { element, ref } = mountRichText({
+      nodes: () => state.nodes,
+      'data-payload': () => state.payload,
+      class: () => 'rich',
+      style: () => ({ color: state.color }),
+      selectable: () => state.selected,
+    })
+    expect(element.tagName).toBe('DIV')
+    expect(element).toBeInstanceOf(UniElement)
+    expect(element).toBeInstanceOf(elements.UniViewElement)
+    expect(element).toBeInstanceOf(UniRichTextElement)
+    class Derived extends UniRichTextElement {}
+    expect(element).not.toBeInstanceOf(Derived)
+    expect(element.hasAttribute('uni-rich-text')).toBe(true)
+    expect(element.hasAttribute('uni-view')).toBe(true)
+    expect(element.querySelector('[uni-view]')).toBeNull()
+    expect(element.hasAttribute('data-v-rich-test')).toBe(true)
+    expect(element.firstElementChild!.hasAttribute('data-v-rich-test')).toBe(
+      true
+    )
+    expect(element.setAttribute).toBe(dom.window.Element.prototype.setAttribute)
+    expect(element.removeAttribute).toBe(
+      dom.window.Element.prototype.removeAttribute
+    )
+    expect((element as any).attachVmProps).toBeUndefined()
+    expect(dom.window.customElements.get('uni-rich-text')).toBeUndefined()
+    expect((element.dataset as any).get('payload')).toBe(state.payload)
+    expect(element.className).toBe('rich')
+    expect(element.style.color).toBe('red')
+    const content = element.firstElementChild
+    const markerWrites = jest.spyOn(element, 'setAttribute')
+    state.nodes = '<p>更新</p>'
+    state.payload = { count: 2 }
+    state.color = 'blue'
+    state.selected = true
+    await vue.nextTick()
+    expect(ref.value).toBe(element)
+    expect(element.firstElementChild).toBe(content)
+    expect(element.textContent).toBe('更新')
+    expect(element.style.color).toBe('blue')
+    expect(element.getAttribute('selectable')).toBe('true')
+    expect((element.dataset as any).get('payload')).toBe(state.payload)
+    expect(
+      markerWrites.mock.calls.some(
+        ([key]) => key === 'uni-view' || key === 'uni-rich-text'
+      )
+    ).toBe(false)
+    markerWrites.mockRestore()
+  })
+
+  test('RichText 链接和图片保留 itemclick 内容与宿主 target', () => {
+    const itemclick = jest.fn()
+    const outerClick = jest.fn()
+    const { host, element } = mountRichText({
+      nodes: () => '<a href="/detail">链接</a><img src="/image.png">',
+      onItemclick: () => itemclick,
+    })
+    host.addEventListener('click', outerClick)
+    for (const [selector, detail] of [
+      ['a', { href: '/detail' }],
+      ['img', { src: '/image.png' }],
+    ] as const) {
+      const event = new dom.window.MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      })
+      element.querySelector(selector)!.dispatchEvent(event)
+      expect(itemclick).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: 'itemclick',
+          target: element,
+          currentTarget: element,
+          detail,
+        })
+      )
+      expect(event.defaultPrevented).toBe(true)
+    }
+    expect(itemclick).toHaveBeenCalledTimes(2)
+    expect(outerClick).not.toHaveBeenCalled()
+  })
 
   function mount(nodes: any[], vdom = false) {
     const state = vue.reactive({ nodes })

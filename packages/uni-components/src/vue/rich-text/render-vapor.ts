@@ -21,7 +21,7 @@ export function renderRichText(
     isString(props.nodes) ? parseHtml(props.nodes) : props.nodes
   )
   const root = createPlainElement(
-    'uni-rich-text',
+    'div',
     {
       selectable: () => (props.userSelect || props.selectable ? true : null),
     },
@@ -39,6 +39,9 @@ export function renderRichText(
     },
     true
   )
+  // 静态宿主标记只初始化一次，不参与 selectable 的响应式更新。
+  root.setAttribute('uni-rich-text', '')
+  root.setAttribute('uni-view', '')
   rootRef.value = root
   return root
 }

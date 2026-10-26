@@ -4,21 +4,9 @@ import {
   defineBuiltInComponent,
   useCustomEvent,
 } from '@dcloudio/uni-components'
-//#if _X_VAPOR_
-import { renderRichText as renderVaporRichText } from './render-vapor'
-//#else
-import { renderRichText as renderVDomRichText } from './render-vdom'
-//#endif
+import { renderRichText } from './render-vdom'
 import { props } from '../../components/rich-text'
 import { UniElement } from '../../helpers/UniElement'
-
-// prettier-ignore
-const renderRichText =
-//#if _X_VAPOR_
-  renderVaporRichText
-//#else
-renderVDomRichText
-//#endif
 
 export class UniRichTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
