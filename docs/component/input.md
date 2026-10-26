@@ -1223,8 +1223,8 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 同时使用 inputmode 和 comfirm-type 时，若设值冲突，键盘右下角按键类型由 comfirm-type 决定。
 
 ## placeholder-style和placeholder-class说明
-- uni-app x 4.41前，App平台仅支持`color`、`font-size`、`font-weight`。
-- uni-app x 4.41后，App平台新增支持`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。
+- uni-app x 4.41前，App平台(VDOM 模式)仅支持`color`、`font-size`、`font-weight`。
+- uni-app x 4.41后，App平台(VDOM 模式)新增支持`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。
 - placeholder-style的`font-size`样式不支持rpx单位。
 
 
