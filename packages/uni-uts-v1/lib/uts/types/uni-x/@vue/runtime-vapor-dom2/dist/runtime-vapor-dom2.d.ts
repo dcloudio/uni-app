@@ -275,6 +275,9 @@ export declare function unmountPage(pageInstance: ComponentPublicInstance): void
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateIf.d.ts
 export declare function createSharedDataIf(condition: () => any, b1: () => void, b2?: (() => void) | null, flags?: number): void;
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/apiCreateIfChain.d.ts
+export declare function createSharedDataIfChain(select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): void;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFor.d.ts
 type ItemOf<S> = S extends readonly (infer T)[] ? T : S extends Reactive<readonly (infer T)[]> ? T : S extends Set<infer T> ? T : S extends Map<infer K, infer V> ? [K, V] : S extends string ? string : S extends number ? number : S extends Record<any, infer V> ? V : S extends Iterable<infer T> ? T : any;
 type KeyOf<S> = S extends readonly unknown[] | Iterable<unknown> ? number : S extends Record<any, any> ? string : number;
