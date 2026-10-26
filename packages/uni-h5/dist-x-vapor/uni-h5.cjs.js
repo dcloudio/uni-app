@@ -327,7 +327,7 @@ const canvasProps = {
   }
 };
 const _t0$f = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
-const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -1566,7 +1566,7 @@ function createNodes(...values) {
 }
 class UniButtonElement extends UniElement2 {
 }
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, { slots }) {
@@ -2586,7 +2586,7 @@ const _t1$3 = Vue.template("<textarea>");
 const _t2$2 = Vue.template("<form action class=uni-input-form> ");
 const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$2 = Vue.template("<div>", 1);
-const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$7,
   emits: emits$1,
@@ -2709,13 +2709,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$7 = 0;
+let index$6 = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = Vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$7++}`;
+  const id2 = vm.id || `context${index$6++}`;
   return `${type}.${id2}`;
 }
 function entries(obj) {
@@ -6551,8 +6551,8 @@ class UniEditorElement extends UniViewElement {
     return this === UniEditorElement && value instanceof UniViewElement && value.hasAttribute("uni-editor") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$7 = { value: "EDITOR" };
-const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$8 = { value: "EDITOR" };
+const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
   emits: editorEmit,
@@ -6573,7 +6573,7 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$7);
+    Object.defineProperty(root, "uniTagName", uniTagName$8);
     return root;
   }
 });
@@ -6643,8 +6643,8 @@ class UniIconElement extends UniViewElement {
     return this === UniIconElement && value instanceof UniViewElement && value.hasAttribute("uni-icon") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$6 = { value: "ICON" };
-const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$7 = { value: "ICON" };
+const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
@@ -6661,7 +6661,7 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
       setNodes(_x0, () => path.value && path.value.d && createSvgIconVNode(path.value.d, props2.color || path.value.c, rpx2px(props2.size)));
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$6);
+    Object.defineProperty(root, "uniTagName", uniTagName$7);
     return root;
   }
 });
@@ -6856,8 +6856,8 @@ class UniMovableAreaElement extends UniViewElement {
     return this === UniMovableAreaElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-area") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$5 = { value: "MOVABLE-AREA" };
-const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$6 = { value: "MOVABLE-AREA" };
+const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -6890,7 +6890,7 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$5);
+    Object.defineProperty(root, "uniTagName", uniTagName$6);
     return root;
   }
 });
@@ -7856,8 +7856,8 @@ class UniMovableViewElement extends UniViewElement {
     return this === UniMovableViewElement && value instanceof UniViewElement && value.hasAttribute("uni-movable-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$4 = { value: "MOVABLE-VIEW" };
-const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$5 = { value: "MOVABLE-VIEW" };
+const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -7880,7 +7880,7 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
       Vue.renderEffect(() => _setTemplateRef(_n3, rootRef));
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$4);
+    Object.defineProperty(root, "uniTagName", uniTagName$5);
     return root;
   }
 });
@@ -8258,8 +8258,8 @@ class UniRichTextElement extends UniViewElement {
     return this === UniRichTextElement && value instanceof UniViewElement && value.hasAttribute("uni-rich-text") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$3 = { value: "RICH-TEXT" };
-const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$4 = { value: "RICH-TEXT" };
+const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
   props: props$6,
@@ -8277,7 +8277,7 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
       trigger("itemclick", e2, detail);
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
-    Object.defineProperty(result, "uniTagName", uniTagName$3);
+    Object.defineProperty(result, "uniTagName", uniTagName$4);
     return result;
   }
 });
@@ -13635,8 +13635,8 @@ class UniVideoElement extends UniViewElement {
     return this === UniVideoElement && value instanceof UniViewElement && value.hasAttribute("uni-video") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$2 = { value: "VIDEO" };
-const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$3 = { value: "VIDEO" };
+const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
   emits: videoEmits,
@@ -13661,7 +13661,7 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
       return _n0;
     })();
     Object.assign(root, methods);
-    Object.defineProperty(root, "uniTagName", uniTagName$2);
+    Object.defineProperty(root, "uniTagName", uniTagName$3);
     return root;
   }
 });
@@ -13712,8 +13712,8 @@ class UniWebViewElement extends UniViewElement {
     return this === UniWebViewElement && value instanceof UniViewElement && value.hasAttribute("uni-web-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName$1 = { value: "WEB-VIEW" };
-const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$2 = { value: "WEB-VIEW" };
+const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: webViewProps,
@@ -13743,7 +13743,7 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n0;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName$1);
+    Object.defineProperty(root, "uniTagName", uniTagName$2);
     return root;
   }
 });
@@ -14918,8 +14918,8 @@ class UniMapElement extends UniViewElement {
     return this === UniMapElement && value instanceof UniViewElement && value.hasAttribute("uni-map") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 }
-const uniTagName = { value: "MAP" };
-const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
+const uniTagName$1 = { value: "MAP" };
+const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: mapProps,
   emits: mapEmits,
@@ -14969,12 +14969,10 @@ const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
       });
       return _n3;
     })();
-    Object.defineProperty(root, "uniTagName", uniTagName);
+    Object.defineProperty(root, "uniTagName", uniTagName$1);
     return root;
   }
 });
-const _t0 = Vue.template("<div class=uni-ad-container></div>");
-const _t1 = Vue.template("<div class=uni-ad-custom-material> ");
 const _AdConfig = class _AdConfig {
   constructor() {
     this._adConfig = null;
@@ -15065,10 +15063,7 @@ const _AdConfig = class _AdConfig {
           });
         } else {
           this._callbacks.forEach((i) => {
-            i.fail({
-              errCode: rd.ret,
-              errMsg: rd.msg
-            });
+            i.fail({ errCode: rd.ret, errMsg: rd.msg });
           });
         }
         this._callbacks = [];
@@ -15095,10 +15090,13 @@ const _AdConfig = class _AdConfig {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
-      last: Date.now(),
-      data
-    }));
+    localStorage.setItem(
+      _AdConfig.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        data
+      })
+    );
   }
 };
 _AdConfig.IC = 0;
@@ -15106,7 +15104,9 @@ _AdConfig.IS = 0;
 _AdConfig.URL = "https://hac1.dcloud.net.cn/ah5v2";
 _AdConfig.KEY = "uni_app_ad_config";
 _AdConfig.CACHE_TIME = 1e3 * 60 * 10;
-_AdConfig.ERROR_INVALID_ADPID = { "-5002": "invalid adpid" };
+_AdConfig.ERROR_INVALID_ADPID = {
+  "-5002": "invalid adpid"
+};
 let AdConfig = _AdConfig;
 const _AdReport = class _AdReport {
   static get instance() {
@@ -15125,10 +15125,12 @@ const _AdReport = class _AdReport {
     this._setConfig(this._guid);
   }
   get(data) {
-    this._process(Object.assign(data, {
-      d: location.hostname,
-      i: this._guid
-    }));
+    this._process(
+      Object.assign(data, {
+        d: location.hostname,
+        i: this._guid
+      })
+    );
   }
   _process(data) {
     uni.request({
@@ -15163,10 +15165,13 @@ const _AdReport = class _AdReport {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdReport.KEY, JSON.stringify({
-      last: Date.now(),
-      guid
-    }));
+    localStorage.setItem(
+      _AdReport.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        guid
+      })
+    );
   }
 };
 _AdReport.URL = "https://has1.dcloud.net.cn/ahl";
@@ -15269,13 +15274,17 @@ class AdRender {
   load(adpid) {
     this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
     this._reset();
-    AdConfig.instance.get(this._currentAdpid, (b, a) => {
-      this._b = b;
-      this._pl = a;
-      this._renderAd();
-    }, (err) => {
-      this._trigger("error", {}, err);
-    });
+    AdConfig.instance.get(
+      this._currentAdpid,
+      (b, a) => {
+        this._b = b;
+        this._pl = a;
+        this._renderAd();
+      },
+      (err) => {
+        this._trigger("error", {}, err);
+      }
+    );
   }
   dispose() {
     this._clearCheckTimer();
@@ -15304,27 +15313,29 @@ class AdRender {
     this._createView(id2);
     if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderGdt(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderGdt(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     if (providerId === AD_PROVIDER.TUIA) {
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderTuiaMaterial(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderTuiaMaterial(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     this._renderNext();
@@ -15351,7 +15362,11 @@ class AdRender {
           window.TencentGDT.NATIVE.renderAd(res[0], id2);
           this._trigger("load", {}, {});
         } else {
-          this._trigger("error", {}, res || { errMsg: "No advertisement" });
+          this._trigger(
+            "error",
+            {},
+            res || { errMsg: "No advertisement" }
+          );
           this._renderNext();
         }
       }
@@ -15368,15 +15383,29 @@ class AdRender {
     this._tuiaData = data;
     if (this._hasCustomTuiaMaterial()) {
       adView.innerHTML = "";
-      this._setCustomTuiaVisible(true);
-      this.report(40, this._currentChannel || void 0);
-      this._trigger("load", {}, {});
+      let resolved = false;
+      this._setCustomTuiaVisible(true, (hasContent2) => {
+        if (resolved)
+          return;
+        resolved = true;
+        if (hasContent2) {
+          this.report(40, this._currentChannel || void 0);
+          this._trigger("load", {}, {});
+        } else {
+          this._renderTuiaDefaultMaterial(adView, data);
+        }
+      });
       return;
     }
+    this._renderTuiaDefaultMaterial(adView, data);
+  }
+  _renderTuiaDefaultMaterial(adView, data) {
     this._setCustomTuiaVisible(false);
     const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
     if (!materialSrc) {
-      this._trigger("error", {}, { errMsg: "Invalid tuia material imgs/img" });
+      this._trigger("error", {}, {
+        errMsg: "Invalid tuia material imgs/img"
+      });
       this._renderNext();
       return;
     }
@@ -15431,7 +15460,11 @@ class AdRender {
         this._trigger("load", {}, res || {});
       },
       fail: (err) => {
-        this._trigger("error", {}, err || { errMsg: "TuiaSDKLite execute fail" });
+        this._trigger(
+          "error",
+          {},
+          err || { errMsg: "TuiaSDKLite execute fail" }
+        );
         this._renderNext();
       }
     });
@@ -15532,71 +15565,120 @@ class AdRender {
   }
 }
 const DEFAULT_WIDESCREEN_WIDTH = 750;
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+const adProps = {
+  adpid: {
+    type: String,
+    default: ""
+  },
+  adpidWidescreen: {
+    type: String,
+    default: ""
+  },
+  widescreenWidth: {
+    type: Number,
+    default: DEFAULT_WIDESCREEN_WIDTH
+  }
+};
+function useAd(props2, emit2, hasCustomTuiaMaterial) {
+  const rootRef = Vue.ref(null);
+  const customTuiaVisible = Vue.ref(
+    false
+  );
+  const { $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  const trigger = useCustomEvent(rootRef, emit2);
+  const ad = new AdRender(props2, trigger, rootRef, {
+    hasCustomTuiaMaterial,
+    setCustomTuiaVisible: (visible, onRendered) => {
+      customTuiaVisible.value = visible ? onRendered : false;
+    }
+  });
+  Vue.watch(
+    () => props2.adpid,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  Vue.watch(
+    () => props2.adpidWidescreen,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  return { rootRef, customTuiaVisible, $excludeAttrs, $listeners, ad };
+}
+const _t0 = Vue.template("<div class=uni-ad-custom-material> ");
+const _t1 = Vue.template("<div><div class=uni-ad-container></div>", 1);
+const uniTagName = { value: "AD" };
+const indexVapor = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Ad",
-  props: {
-    adpid: {
-      type: String,
-      default: ""
-    },
-    adpidWidescreen: {
-      type: String,
-      default: ""
-    },
-    widescreenWidth: {
-      type: Number,
-      default: DEFAULT_WIDESCREEN_WIDTH
-    }
-  },
+  props: adProps,
   setup(props2, { emit: emit2, slots }) {
-    const rootRef = Vue.ref(null);
-    const customTuiaVisible = Vue.ref(false);
-    const { $excludeAttrs, $listeners } = useAttrs({ excludeListeners: true });
-    const trigger = useCustomEvent(rootRef, emit2);
-    const ad = new AdRender(props2, trigger, rootRef, {
-      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
-      setCustomTuiaVisible: (visible) => {
-        customTuiaVisible.value = visible;
+    const { rootRef, customTuiaVisible, $excludeAttrs, $listeners, ad } = useAd(
+      props2,
+      emit2,
+      // Vapor 插槽会直接创建节点，只判断是否声明，不为探测而提前执行插槽。
+      () => Boolean(slots.default)
+    );
+    let pendingMaterial;
+    const confirmMaterial = () => {
+      const pending = pendingMaterial;
+      pendingMaterial = void 0;
+      if (pending && rootRef.value && customTuiaVisible.value === pending.onRendered) {
+        pending.onRendered(pending.hasContent);
       }
-    });
-    Vue.watch(() => props2.adpid, (val) => {
-      ad.load(val);
-    });
-    Vue.watch(() => props2.adpidWidescreen, (val) => {
-      ad.load(val);
-    });
-    return () => {
-      const { adpid, adpidWidescreen, widescreenWidth } = props2;
-      return (() => {
-        const _setTemplateRef = Vue.createTemplateRefSetter();
-        const _n6 = Vue.createPlainElement("uni-ad", { $: [
-          () => $listeners.value,
-          () => $excludeAttrs.value,
-          {
-            adpid: () => adpid,
-            adpidWidescreen: () => adpidWidescreen,
-            widescreenWidth: () => widescreenWidth
-          }
-        ] }, () => {
-          const _n0 = _t0();
-          Vue.on(_n0, "click", () => ad.report(41));
-          Vue.renderEffect(() => _setTemplateRef(_n0, rootRef));
-          const _n1 = Vue.createIf(() => customTuiaVisible.value && slots.default, () => {
-            const _n3 = _t1();
-            Vue.on(_n3, "click", () => ad.renderTuiaFromCustomMaterial());
-            const _x3 = Vue.txt(_n3);
-            setNodes(_x3, () => slots.default());
-            return _n3;
-          }, () => {
-            const _n5 = createNodes(null);
-            return _n5;
-          }, 265);
-          return [_n0, _n1];
-        });
-        return _n6;
-      })();
     };
+    const renderCustomMaterial = () => {
+      var _a;
+      const onRendered = customTuiaVisible.value;
+      if (typeof onRendered !== "function")
+        return null;
+      const content = (_a = slots.default) == null ? void 0 : _a.call(slots);
+      pendingMaterial = {
+        onRendered,
+        hasContent: Boolean(content) && (!Array.isArray(content) || content.length > 0)
+      };
+      Vue.queuePostFlushCb(confirmMaterial);
+      return content;
+    };
+    const root = (() => {
+      const _setTemplateRef = Vue.createTemplateRefSetter();
+      const _n6 = _t1();
+      const _n0 = Vue.child(_n6);
+      Vue.on(_n0, "click", () => ad.report(41));
+      Vue.renderEffect(() => {
+        Vue.setDynamicProps(_n6, [
+          {
+            "uni-ad": "",
+            "uni-view": ""
+          },
+          $listeners.value,
+          $excludeAttrs.value,
+          {
+            adpid: props2.adpid,
+            adpidWidescreen: props2.adpidWidescreen,
+            widescreenWidth: props2.widescreenWidth
+          }
+        ]);
+        _setTemplateRef(_n0, rootRef);
+      });
+      Vue.setInsertionState(_n6, 1);
+      Vue.createIf(() => customTuiaVisible.value, () => {
+        const _n3 = _t0();
+        Vue.on(_n3, "click", () => ad.renderTuiaFromCustomMaterial());
+        const _x3 = Vue.txt(_n3);
+        setNodes(_x3, () => renderCustomMaterial());
+        return _n3;
+      }, () => {
+        const _n5 = createNodes(null);
+        return _n5;
+      }, 265);
+      return _n6;
+    })();
+    Object.defineProperty(root, "uniTagName", uniTagName);
+    return root;
   }
 });
 const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
@@ -16475,20 +16557,20 @@ Object.defineProperty(exports, "UniError", {
   enumerable: true,
   get: () => uniShared.UniError
 });
-exports.Ad = index$6;
+exports.Ad = indexVapor;
 exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$t;
 exports.AsyncLoadingComponent = _sfc_main$u;
-exports.Button = index$8;
+exports.Button = index$7;
 exports.Camera = index$3;
-exports.Canvas = indexVapor$9;
+exports.Canvas = indexVapor$a;
 exports.Checkbox = _sfc_main$n;
 exports.CheckboxGroup = _sfc_main$m;
-exports.Editor = indexVapor$7;
+exports.Editor = indexVapor$8;
 exports.FlowItem = _sfc_main$l;
 exports.Form = _sfc_main$k;
-exports.Icon = indexVapor$6;
+exports.Icon = indexVapor$7;
 exports.Input = Input;
 exports.Label = _sfc_main$j;
 exports.LayoutComponent = _sfc_main$v;
@@ -16497,10 +16579,10 @@ exports.ListView = _sfc_main$h;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Loading = _sfc_main$g;
-exports.Map = indexVapor;
+exports.Map = indexVapor$1;
 exports.MatchMedia = _sfc_main$f;
-exports.MovableArea = indexVapor$5;
-exports.MovableView = indexVapor$4;
+exports.MovableArea = indexVapor$6;
+exports.MovableView = indexVapor$5;
 exports.Navigator = _sfc_main$e;
 exports.PageComponent = _sfc_main$p;
 exports.PageContainer = _sfc_main$d;
@@ -16511,7 +16593,7 @@ exports.Progress = _sfc_main$9;
 exports.Radio = _sfc_main$8;
 exports.RadioGroup = _sfc_main$7;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = indexVapor$3;
+exports.RichText = indexVapor$4;
 exports.ScrollView = __syscom_0;
 exports.Slider = _sfc_main$6;
 exports.StickyHeader = _sfc_main$5;
@@ -16519,7 +16601,7 @@ exports.StickySection = _sfc_main$4;
 exports.Swiper = _sfc_main$3;
 exports.SwiperItem = _sfc_main$2;
 exports.Switch = _sfc_main$1;
-exports.Textarea = indexVapor$8;
+exports.Textarea = indexVapor$9;
 exports.UniButtonElement = UniButtonElement;
 exports.UniButtonElementImpl = UniButtonElement;
 exports.UniCanvasElement = UniCanvasElement;
@@ -16586,9 +16668,9 @@ exports.UniTextareaElementImpl = UniTextareaElement;
 exports.UniViewElement = UniViewElement;
 exports.UniViewElementImpl = UniViewElement;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = indexVapor$2;
+exports.Video = indexVapor$3;
 exports.Waterflow = _sfc_main;
-exports.WebView = indexVapor$1;
+exports.WebView = indexVapor$2;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.createVaporPageRouteComponent = createVaporPageRouteComponent;

@@ -1,10 +1,4 @@
 "use strict";
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const uniShared = require("@dcloudio/uni-shared");
 const vue = require("vue");
@@ -14278,10 +14272,10 @@ function usePickerForm(_resetFormData, _getFormData) {
 }
 const _AdConfig = class _AdConfig {
   constructor() {
-    __publicField(this, "_adConfig", null);
-    __publicField(this, "_isLoading", false);
-    __publicField(this, "_callbacks", []);
-    __publicField(this, "_configLast", 0);
+    this._adConfig = null;
+    this._isLoading = false;
+    this._callbacks = [];
+    this._configLast = 0;
   }
   static get instance() {
     if (!_AdConfig._instance) {
@@ -14330,10 +14324,7 @@ const _AdConfig = class _AdConfig {
   }
   _doCallback(adpid, success, fail) {
     _AdConfig.IS++;
-    var {
-      a,
-      b
-    } = this._adConfig;
+    var { a, b } = this._adConfig;
     const adData = a[adpid];
     if (adData) {
       success(b, Array.isArray(adData) ? adData : [adData]);
@@ -14364,19 +14355,12 @@ const _AdConfig = class _AdConfig {
           this._adConfig = data;
           this._configLast = Date.now();
           this._setConfig(data);
-          this._callbacks.forEach(({
-            adpid: adpid2,
-            success,
-            fail
-          }) => {
+          this._callbacks.forEach(({ adpid: adpid2, success, fail }) => {
             this._doCallback(adpid2, success, fail);
           });
         } else {
           this._callbacks.forEach((i) => {
-            i.fail({
-              errCode: rd.ret,
-              errMsg: rd.msg
-            });
+            i.fail({ errCode: rd.ret, errMsg: rd.msg });
           });
         }
         this._callbacks = [];
@@ -14403,26 +14387,23 @@ const _AdConfig = class _AdConfig {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
-      last: Date.now(),
-      data
-    }));
+    localStorage.setItem(
+      _AdConfig.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        data
+      })
+    );
   }
 };
-__publicField(_AdConfig, "IC", 0);
-__publicField(_AdConfig, "IS", 0);
-// 生产环境地址
-// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
-// 生产环境地址v2
-__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
-// 测试环境地址
-// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
-// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
-__publicField(_AdConfig, "KEY", "uni_app_ad_config");
-__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
-__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
+_AdConfig.IC = 0;
+_AdConfig.IS = 0;
+_AdConfig.URL = "https://hac1.dcloud.net.cn/ah5v2";
+_AdConfig.KEY = "uni_app_ad_config";
+_AdConfig.CACHE_TIME = 1e3 * 60 * 10;
+_AdConfig.ERROR_INVALID_ADPID = {
   "-5002": "invalid adpid"
-});
+};
 let AdConfig = _AdConfig;
 const _AdReport = class _AdReport {
   static get instance() {
@@ -14441,10 +14422,12 @@ const _AdReport = class _AdReport {
     this._setConfig(this._guid);
   }
   get(data) {
-    this._process(Object.assign(data, {
-      d: location.hostname,
-      i: this._guid
-    }));
+    this._process(
+      Object.assign(data, {
+        d: location.hostname,
+        i: this._guid
+      })
+    );
   }
   _process(data) {
     uni.request({
@@ -14479,14 +14462,17 @@ const _AdReport = class _AdReport {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null;
     }
-    localStorage.setItem(_AdReport.KEY, JSON.stringify({
-      last: Date.now(),
-      guid
-    }));
+    localStorage.setItem(
+      _AdReport.KEY,
+      JSON.stringify({
+        last: Date.now(),
+        guid
+      })
+    );
   }
 };
-__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
-__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+_AdReport.URL = "https://has1.dcloud.net.cn/ahl";
+_AdReport.KEY = "uni_app_ad_guid";
 let AdReport = _AdReport;
 class AdScript {
   static get instance() {
@@ -14534,18 +14520,14 @@ class AdScript {
     }
     ads.onload = () => {
       this._cache[provider] = 1;
-      this._callback[provider].forEach(({
-        success
-      }) => {
+      this._callback[provider].forEach(({ success }) => {
         success();
       });
       this._callback[provider].length = 0;
     };
     ads.onerror = (err) => {
       this._cache[provider] = void 0;
-      this._callback[provider].forEach(({
-        fail
-      }) => {
+      this._callback[provider].forEach(({ fail }) => {
         fail(err);
       });
       this._callback[provider].length = 0;
@@ -14561,12 +14543,12 @@ const AD_PROVIDER = {
 };
 class AdRender {
   constructor(props2, trigger, rootRef, options) {
-    __publicField(this, "_pi", 0);
-    __publicField(this, "_pl", []);
-    __publicField(this, "_b", {});
-    __publicField(this, "_checkTimerCount", 0);
-    __publicField(this, "_currentChannel", null);
-    __publicField(this, "_tuiaData", null);
+    this._pi = 0;
+    this._pl = [];
+    this._b = {};
+    this._checkTimerCount = 0;
+    this._currentChannel = null;
+    this._tuiaData = null;
     this._checkTimer = null;
     this._adpid = props2.adpid;
     this._adpidWidescreen = props2.adpidWidescreen;
@@ -14589,13 +14571,17 @@ class AdRender {
   load(adpid) {
     this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
     this._reset();
-    AdConfig.instance.get(this._currentAdpid, (b, a) => {
-      this._b = b;
-      this._pl = a;
-      this._renderAd();
-    }, (err) => {
-      this._trigger("error", {}, err);
-    });
+    AdConfig.instance.get(
+      this._currentAdpid,
+      (b, a) => {
+        this._b = b;
+        this._pl = a;
+        this._renderAd();
+      },
+      (err) => {
+        this._trigger("error", {}, err);
+      }
+    );
   }
   dispose() {
     this._clearCheckTimer();
@@ -14624,27 +14610,29 @@ class AdRender {
     this._createView(id2);
     if (providerId === AD_PROVIDER.GDT) {
       window.TencentGDT = window.TencentGDT || [];
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderGdt(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderGdt(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     if (providerId === AD_PROVIDER.TUIA) {
-      AdScript.instance.load({
-        provider: providerId,
-        script
-      }, () => {
-        this._renderTuiaMaterial(id2, data);
-      }, (err) => {
-        this._trigger("error", {}, err);
-        this._renderNext();
-      });
+      AdScript.instance.load(
+        { provider: providerId, script },
+        () => {
+          this._renderTuiaMaterial(id2, data);
+        },
+        (err) => {
+          this._trigger("error", {}, err);
+          this._renderNext();
+        }
+      );
       return;
     }
     this._renderNext();
@@ -14671,9 +14659,11 @@ class AdRender {
           window.TencentGDT.NATIVE.renderAd(res[0], id2);
           this._trigger("load", {}, {});
         } else {
-          this._trigger("error", {}, res || {
-            errMsg: "No advertisement"
-          });
+          this._trigger(
+            "error",
+            {},
+            res || { errMsg: "No advertisement" }
+          );
           this._renderNext();
         }
       }
@@ -14683,9 +14673,7 @@ class AdRender {
   _renderTuiaMaterial(id2, data) {
     const adView = document.getElementById(id2);
     if (!adView) {
-      this._trigger("error", {}, {
-        errMsg: "Invalid ad container"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid ad container" });
       this._renderNext();
       return;
     }
@@ -14697,6 +14685,9 @@ class AdRender {
       this._trigger("load", {}, {});
       return;
     }
+    this._renderTuiaDefaultMaterial(adView, data);
+  }
+  _renderTuiaDefaultMaterial(adView, data) {
     this._setCustomTuiaVisible(false);
     const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
     if (!materialSrc) {
@@ -14709,9 +14700,7 @@ class AdRender {
     const img = document.createElement("img");
     img.src = materialSrc;
     img.onerror = () => {
-      this._trigger("error", {}, {
-        errMsg: "Tuia material load fail"
-      });
+      this._trigger("error", {}, { errMsg: "Tuia material load fail" });
       this._renderNext();
     };
     img.alt = "ad";
@@ -14745,9 +14734,7 @@ class AdRender {
     this._setCustomTuiaVisible(false);
     const tuia = window.TuiaSDKLite;
     if (!tuia || typeof tuia.execute !== "function") {
-      this._trigger("error", {}, {
-        errMsg: "Invalid TuiaSDKLite"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid TuiaSDKLite" });
       this._renderNext();
       return;
     }
@@ -14761,9 +14748,11 @@ class AdRender {
         this._trigger("load", {}, res || {});
       },
       fail: (err) => {
-        this._trigger("error", {}, err || {
-          errMsg: "TuiaSDKLite execute fail"
-        });
+        this._trigger(
+          "error",
+          {},
+          err || { errMsg: "TuiaSDKLite execute fail" }
+        );
         this._renderNext();
       }
     });
@@ -14776,9 +14765,7 @@ class AdRender {
     this._rootRef.value.append(adView);
     const scriptPath = provider.s || provider.script;
     if (!scriptPath || typeof scriptPath !== "string") {
-      this._trigger("error", {}, {
-        errMsg: "Invalid provider script"
-      });
+      this._trigger("error", {}, { errMsg: "Invalid provider script" });
       this._renderNext();
       return;
     }
@@ -14866,48 +14853,64 @@ class AdRender {
   }
 }
 const DEFAULT_WIDESCREEN_WIDTH = 750;
+const adProps = {
+  adpid: {
+    type: String,
+    default: ""
+  },
+  adpidWidescreen: {
+    type: String,
+    default: ""
+  },
+  widescreenWidth: {
+    type: Number,
+    default: DEFAULT_WIDESCREEN_WIDTH
+  }
+};
+function useAd(props2, emit2, hasCustomTuiaMaterial) {
+  const rootRef = vue.ref(null);
+  const customTuiaVisible = vue.ref(
+    false
+  );
+  const { $excludeAttrs, $listeners } = useAttrs({
+    excludeListeners: true
+  });
+  const trigger = useCustomEvent(rootRef, emit2);
+  const ad = new AdRender(props2, trigger, rootRef, {
+    hasCustomTuiaMaterial,
+    setCustomTuiaVisible: (visible, onRendered) => {
+      customTuiaVisible.value = visible;
+    }
+  });
+  vue.watch(
+    () => props2.adpid,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  vue.watch(
+    () => props2.adpidWidescreen,
+    (val) => {
+      ad.load(val);
+    }
+  );
+  return { rootRef, customTuiaVisible, $excludeAttrs, $listeners, ad };
+}
 const index$5 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Ad",
-  props: {
-    adpid: {
-      type: String,
-      default: ""
-    },
-    adpidWidescreen: {
-      type: String,
-      default: ""
-    },
-    widescreenWidth: {
-      type: Number,
-      default: DEFAULT_WIDESCREEN_WIDTH
-    }
-  },
+  props: adProps,
   setup(props2, {
     emit: emit2,
     slots
   }) {
-    const rootRef = vue.ref(null);
-    const customTuiaVisible = vue.ref(false);
     const {
+      rootRef,
+      customTuiaVisible,
       $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const trigger = useCustomEvent(rootRef, emit2);
-    const ad = new AdRender(props2, trigger, rootRef, {
-      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
-      setCustomTuiaVisible: (visible) => {
-        customTuiaVisible.value = visible;
-      }
-    });
-    vue.watch(() => props2.adpid, (val) => {
-      ad.load(val);
-    });
-    vue.watch(() => props2.adpidWidescreen, (val) => {
-      ad.load(val);
-    });
+      $listeners,
+      ad
+    } = useAd(props2, emit2, () => Boolean(slots.default && slots.default().length));
     return () => {
       const {
         adpid,
