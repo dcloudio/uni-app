@@ -1503,7 +1503,7 @@ function getCustomDataset(el) {
     const dataset = el.dataset;
     const target = el;
     // Vapor 原生宿主只有一份 Map 数据，直接供事件读取，并让查询按条目复制，
-    // 避免对象展开丢失 get/set 等保留键。旧 uni-* Custom Element 仍走原缓存合并。
+    // 避免对象展开丢失 get/set 等保留键。非 Vapor 的旧 uni-* Custom Element 仍走原缓存合并。
     if (target.$uniDataset === dataset) {
         return dataset;
     }

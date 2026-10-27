@@ -1,4 +1,4 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
 import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
@@ -144,23 +144,6 @@ const defineBuiltInComponent = (options) => {
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
   }
-  {
-    const rootElement = options.rootElement;
-    if (rootElement) {
-      if (rootElement.native) {
-        return defineSystemComponent(options);
-      }
-      Object.defineProperty(rootElement.class.prototype, "uniTagName", {
-        configurable: true,
-        value: rootElement.name.slice(4).toUpperCase()
-      });
-      customElements.define(
-        rootElement.name,
-        rootElement.class,
-        rootElement.options
-      );
-    }
-  }
   return defineSystemComponent(options);
 };
 const defineSystemComponent = (options) => {
@@ -179,65 +162,12 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
-const rpx2Unit = createRpx2Unit(
-  defaultRpx2Unit.unit,
-  defaultRpx2Unit.unitRatio,
-  defaultRpx2Unit.unitPrecision
-);
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text2, num) => {
-      return rpx2Unit(num + "rpx");
-    });
-  }
-  return value;
-}
 let UniElement$1 = class UniElement extends HTMLElement {
-  constructor() {
-    super(...arguments);
-    this._props = {};
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = camelize(qualifiedName);
-    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
-    return attr2 === void 0 ? null : attr2;
-  }
   getPage() {
     return getUniElementPage(this);
   }
   get uniPage() {
     return this.getPage();
-  }
-  get dataset() {
-    if (!this.__uniDatasetMap) {
-      this.__uniDatasetMap = createUniDOMStringMap(
-        this.__uniDataset || {}
-      );
-    }
-    return this.__uniDatasetMap;
-  }
-  setAttribute(qualifiedName, value) {
-    if (/^\d/.test(qualifiedName))
-      return;
-    if (qualifiedName.startsWith("data-")) {
-      (this.__uniDataset || (this.__uniDataset = {}))[camelize(qualifiedName.substring(5))] = value;
-    }
-    super.setAttribute(qualifiedName, value);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.set(qualifiedName, value);
-    }
-  }
-  removeAttribute(qualifiedName) {
-    if (this.__uniDataset && qualifiedName.startsWith("data-")) {
-      delete this.__uniDataset[camelize(qualifiedName.substring(5))];
-    }
-    super.removeAttribute(qualifiedName);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.delete(qualifiedName);
-    }
   }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
@@ -259,28 +189,6 @@ let UniElement$1 = class UniElement extends HTMLElement {
       const domRect = this.getBoundingClientRect();
       resolve(domRect);
     });
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
   }
 };
 const UniElement2 = UniElement$1;
@@ -401,11 +309,9 @@ const _t0$i = template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas
 const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-canvas",
-    class: UniCanvasElement,
-    native: true
+    class: UniCanvasElement
   },
   setup() {
     const root = (() => {
@@ -2802,11 +2708,9 @@ const uniTagName$9 = { value: "BUTTON" };
 const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，旧注册机制清理后移除。
   rootElement: {
     name: "uni-button",
-    class: UniButtonElement,
-    native: true
+    class: UniButtonElement
   },
   setup(props2, { slots }) {
     const rootRef = ref(null);
@@ -3613,11 +3517,9 @@ const __syscom_0$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$9,
   emits: emits$2,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-input",
-    class: UniInputElement,
-    native: true
+    class: UniInputElement
   },
   setup(props2, context) {
     const { rootRef, fieldRef, state, scopedAttrsState, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
@@ -3926,11 +3828,9 @@ const __syscom_0$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$8,
   emits: emits$1,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-textarea",
-    class: UniTextareaElement,
-    native: true
+    class: UniTextareaElement
   },
   setup(props2, context) {
     const { rootRef, wrapperRef, fieldRef, state, scopedAttrsState, fixDisabledColor, valueCompute, lineRef, onResize: onResize2, onChange: onChange2, onKeyDownEnter, onKeyUpEnter } = useTextarea(props2, context);
@@ -14407,11 +14307,9 @@ const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
   emits: editorEmit,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-editor",
-    class: UniEditorElement,
-    native: true
+    class: UniEditorElement
   },
   setup(props2, { emit: emit2 }) {
     const rootRef = useEditor(props2, emit2);
@@ -14498,11 +14396,9 @@ const uniTagName$7 = { value: "ICON" };
 const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-icon",
-    class: UniIconElement,
-    native: true
+    class: UniIconElement
   },
   setup(props2) {
     const path = useIcon(props2);
@@ -14716,11 +14612,9 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-movable-area",
-    class: UniMovableAreaElement,
-    native: true
+    class: UniMovableAreaElement
   },
   setup(props2, { slots }) {
     const { rootRef, renderChildren, movableAreaEvents, $attrs, $excludeAttrs, _listeners } = useMovableArea(props2, slots);
@@ -15897,11 +15791,9 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-movable-view",
-    class: UniMovableViewElement,
-    native: true
+    class: UniMovableViewElement
   },
   setup(props2, { slots, emit: emit2 }) {
     const { rootRef, setParent } = useMovableView(props2, emit2);
@@ -16300,11 +16192,9 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: { MODE: 3 },
   props: props$7,
   emits: ["itemclick"],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-rich-text",
-    class: UniRichTextElement,
-    native: true
+    class: UniRichTextElement
   },
   setup(props2, { emit: emit2 }) {
     const rootRef = ref(null);
@@ -17135,11 +17025,9 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   props: props$6,
   emits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-scroll-view",
-    class: UniScrollViewElement,
-    native: true
+    class: UniScrollViewElement
   },
   setup(props2, context) {
     const { rootRef, main, wrap, content, state, mainStyle, scrollBarClassName, _scrollLeftChanged, _scrollTopChanged } = useScrollView(props2, context);
@@ -23346,11 +23234,9 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
   emits: videoEmits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-video",
-    class: UniVideoElement,
-    native: true
+    class: UniVideoElement
   },
   setup(props2, context) {
     const { rootRef, toggleControls, methods, render } = useVideoComponent(props2, context);
@@ -23448,11 +23334,9 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "WebView",
   props: webViewProps,
   emits: ["load"],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-web-view",
-    class: UniWebViewElement,
-    native: true
+    class: UniWebViewElement
   },
   setup(props2, { emit: emit2 }) {
     const { rootRef, $listeners, $excludeAttrs } = useWebView(props2, emit2);
@@ -25733,11 +25617,9 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: mapProps,
   emits: mapEmits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-map",
-    class: UniMapElement,
-    native: true
+    class: UniMapElement
   },
   setup(props2, { emit: emit2, slots }) {
     const rootRef = ref(null);

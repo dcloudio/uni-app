@@ -179,65 +179,12 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
-const rpx2Unit = uniShared.createRpx2Unit(
-  uniShared.defaultRpx2Unit.unit,
-  uniShared.defaultRpx2Unit.unitRatio,
-  uniShared.defaultRpx2Unit.unitPrecision
-);
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return rpx2Unit(num + "rpx");
-    });
-  }
-  return value;
-}
 let UniElement$1 = class UniElement extends Object {
-  constructor() {
-    super(...arguments);
-    this._props = {};
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
-    return attr2 === void 0 ? null : attr2;
-  }
   getPage() {
     return uniShared.getUniElementPage(this);
   }
   get uniPage() {
     return this.getPage();
-  }
-  get dataset() {
-    if (!this.__uniDatasetMap) {
-      this.__uniDatasetMap = uniShared.createUniDOMStringMap(
-        this.__uniDataset || {}
-      );
-    }
-    return this.__uniDatasetMap;
-  }
-  setAttribute(qualifiedName, value) {
-    if (/^\d/.test(qualifiedName))
-      return;
-    if (qualifiedName.startsWith("data-")) {
-      (this.__uniDataset || (this.__uniDataset = {}))[shared.camelize(qualifiedName.substring(5))] = value;
-    }
-    super.setAttribute(qualifiedName, value);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.set(qualifiedName, value);
-    }
-  }
-  removeAttribute(qualifiedName) {
-    if (this.__uniDataset && qualifiedName.startsWith("data-")) {
-      delete this.__uniDataset[shared.camelize(qualifiedName.substring(5))];
-    }
-    super.removeAttribute(qualifiedName);
-    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
-      this.__uniDatasetMap.delete(qualifiedName);
-    }
   }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
@@ -259,28 +206,6 @@ let UniElement$1 = class UniElement extends Object {
       const domRect = this.getBoundingClientRect();
       resolve(domRect);
     });
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
   }
 };
 const UniElement2 = UniElement$1;
@@ -330,11 +255,9 @@ const _t0$g = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-ca
 const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-canvas",
-    class: UniCanvasElement,
-    native: true
+    class: UniCanvasElement
   },
   setup() {
     const root = (() => {
@@ -1574,11 +1497,9 @@ const uniTagName$9 = { value: "BUTTON" };
 const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，旧注册机制清理后移除。
   rootElement: {
     name: "uni-button",
-    class: UniButtonElement,
-    native: true
+    class: UniButtonElement
   },
   setup(props2, { slots }) {
     const rootRef = Vue.ref(null);
@@ -2307,11 +2228,9 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$8,
   emits: emits$2,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-input",
-    class: UniInputElement,
-    native: true
+    class: UniInputElement
   },
   setup(props2, context) {
     const { rootRef, fieldRef, state, scopedAttrsState, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
@@ -2595,11 +2514,9 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$7,
   emits: emits$1,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-textarea",
-    class: UniTextareaElement,
-    native: true
+    class: UniTextareaElement
   },
   setup(props2, context) {
     const { rootRef, wrapperRef, fieldRef, state, scopedAttrsState, fixDisabledColor, valueCompute, lineRef, onResize: onResize2, onChange: onChange2, onKeyDownEnter, onKeyUpEnter } = useTextarea(props2, context);
@@ -6561,11 +6478,9 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
   emits: editorEmit,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-editor",
-    class: UniEditorElement,
-    native: true
+    class: UniEditorElement
   },
   setup(props2, { emit: emit2 }) {
     const rootRef = useEditor(props2);
@@ -6652,11 +6567,9 @@ const uniTagName$7 = { value: "ICON" };
 const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-icon",
-    class: UniIconElement,
-    native: true
+    class: UniIconElement
   },
   setup(props2) {
     const path = useIcon(props2);
@@ -6866,11 +6779,9 @@ const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-movable-area",
-    class: UniMovableAreaElement,
-    native: true
+    class: UniMovableAreaElement
   },
   setup(props2, { slots }) {
     const { rootRef, renderChildren, movableAreaEvents, $attrs, $excludeAttrs, _listeners } = useMovableArea(props2, slots);
@@ -7866,11 +7777,9 @@ const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-movable-view",
-    class: UniMovableViewElement,
-    native: true
+    class: UniMovableViewElement
   },
   setup(props2, { slots, emit: emit2 }) {
     const { rootRef, setParent } = useMovableView(props2, emit2);
@@ -8269,11 +8178,9 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: { MODE: 3 },
   props: props$6,
   emits: ["itemclick"],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-rich-text",
-    class: UniRichTextElement,
-    native: true
+    class: UniRichTextElement
   },
   setup(props2, { emit: emit2 }) {
     const rootRef = Vue.ref(null);
@@ -8820,11 +8727,9 @@ const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   props: props$5,
   emits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-scroll-view",
-    class: UniScrollViewElement,
-    native: true
+    class: UniScrollViewElement
   },
   setup(props2, context) {
     const { rootRef, main, wrap, content, state, mainStyle, scrollBarClassName, _scrollLeftChanged, _scrollTopChanged } = useScrollView(props2, context);
@@ -13643,11 +13548,9 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: videoProps,
   emits: videoEmits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-video",
-    class: UniVideoElement,
-    native: true
+    class: UniVideoElement
   },
   setup(props2, context) {
     const { rootRef, toggleControls, methods, render } = useVideoComponent(props2, context);
@@ -13721,11 +13624,9 @@ const indexVapor$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "WebView",
   props: webViewProps,
   emits: ["load"],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-web-view",
-    class: UniWebViewElement,
-    native: true
+    class: UniWebViewElement
   },
   setup(props2, { emit: emit2 }) {
     const { rootRef, $listeners, $excludeAttrs } = useWebView();
@@ -14926,11 +14827,9 @@ const indexVapor$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: mapProps,
   emits: mapEmits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: "uni-map",
-    class: UniMapElement,
-    native: true
+    class: UniMapElement
   },
   setup(props2, { emit: emit2, slots }) {
     const rootRef = Vue.ref(null);
