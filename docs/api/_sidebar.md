@@ -83,8 +83,6 @@
   * [安装 APK](install-apk.md)
   * [监听权限申请](create-request-permission-listener.md)
   * [请求系统权限](request-system-permission.md)
-  * [蓝牙-通用](bluetooth-general.md)
-  * [蓝牙-低功耗中心设备](bluetooth-le-central.md)
 * 媒体
   * [拍照或从相册选择图片](choose-image.md)
   * [图片预览](preview-image.md)
