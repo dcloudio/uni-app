@@ -1,6 +1,0 @@
-/**
- * interface.uts
- * uts插件接口定义文件，按规范定义接口文件可以在HBuilderX中更好的做到语法提示
- */
-export type TestOpenDialogPage = (url:string)=>void
-export type TestCloseDialogPage = ()=>void
