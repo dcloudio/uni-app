@@ -10926,8 +10926,8 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
 );
 const t0$F = template("<img>");
 const t1$k = template("<div class=uni-tabbar__mid>");
-const t2$a = template("<div class=uni-tabbar__iconfont> ");
-const t3$7 = template("<div>");
+const t2$b = template("<div class=uni-tabbar__iconfont> ");
+const t3$8 = template("<div>");
 const t4$5 = template("<div class=uni-tabbar__label> ");
 const t5$4 = template("<div> ");
 const t6$3 = template("<div class=uni-tabbar__item><!><div class=uni-tabbar__bd></div>");
@@ -11190,14 +11190,14 @@ const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => getIconfontText(_for_item0.value, _for_key0.value),
           () => {
-            const n14 = t3$7();
+            const n14 = t3$8();
             renderEffect(() => {
               setClass(n14, getIconClass(_for_item0.value));
               setStyle(n14, getIconStyle());
             });
             setInsertionState(n14);
             createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n13 = t2$a();
+              const n13 = t2$b();
               const x13 = txt(n13);
               renderEffect(() => {
                 const _item = _for_item0.value;
@@ -11210,7 +11210,7 @@ const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
             return n14;
           },
           () => createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n19 = t3$7();
+            const n19 = t3$8();
             renderEffect(() => {
               setClass(n19, getIconClass(_for_item0.value));
               setStyle(n19, getIconStyle());
@@ -11271,8 +11271,8 @@ function setLayoutState(state) {
 }
 const t0$E = template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
 const t1$j = template("<div class=uni-mask>");
-const t2$9 = template("<uni-left-window><!><div class=uni-left-window>");
-const t3$6 = template("<uni-right-window><!><div class=uni-right-window>");
+const t2$a = template("<uni-left-window><!><div class=uni-left-window>");
+const t3$7 = template("<uni-right-window><!><div class=uni-right-window>");
 const t4$4 = template("<uni-layout><!><uni-content><uni-main></uni-main>");
 const t5$3 = template("<uni-app>", 1);
 const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
@@ -11696,7 +11696,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
         );
         setInsertionState(n34, 1);
         createIf(() => unref(hasLeftWindow) && unref(LeftWindow), () => {
-          const n24 = t2$9();
+          const n24 = t2$a();
           const n23 = child(n24);
           const n22 = next(n23);
           renderEffect(() => {
@@ -11720,7 +11720,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n34, 2);
         createIf(() => unref(hasRightWindow) && unref(RightWindow), () => {
-          const n33 = t3$6();
+          const n33 = t3$7();
           const n32 = child(n33);
           const n31 = next(n32);
           renderEffect(() => {
@@ -12321,8 +12321,8 @@ function usePageHeadTransparent(headRef, {
 }
 const t0$B = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
 const t1$i = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
-const t2$8 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
-const t3$5 = template("<i class=uni-btn-icon></i>");
+const t2$9 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
+const t3$6 = template("<i class=uni-btn-icon></i>");
 const t4$3 = template("<div>");
 const t5$2 = template("<i class=uni-loading></i>", 2);
 const t6$2 = template("<img class=uni-page-head__title_image>");
@@ -12589,7 +12589,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
             () => createIf(
               () => _for_item0.value.btnSelect,
               () => {
-                const n15 = t2$8();
+                const n15 = t2$9();
                 const n13 = child(n15);
                 const n14 = child(next(n13));
                 renderEffect(() => {
@@ -12601,7 +12601,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
                 return n15;
               },
               () => {
-                const n17 = t3$5();
+                const n17 = t3$6();
                 renderEffect(() => {
                   const _button = _for_item0.value;
                   setStyle(n17, _button.iconStyle);
@@ -12780,7 +12780,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
                 return n54;
               },
               () => {
-                const n56 = t3$5();
+                const n56 = t3$6();
                 renderEffect(() => {
                   const _button = _for_item0.value;
                   setStyle(n56, _button.iconStyle);
@@ -17169,8 +17169,8 @@ class UniCheckboxElement extends UniViewElement {
 }
 const t0$w = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
 const t1$h = template("<div uni-view>", 1);
-const t2$7 = template("<span uni-text>");
-const t3$4 = template("<div uni-view class=uni-checkbox><div uni-view></div>", 1);
+const t2$8 = template("<span uni-text>");
+const t3$5 = template("<div uni-view class=uni-checkbox><div uni-view></div>", 1);
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -17309,7 +17309,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         return n6;
       },
       () => {
-        const n19 = t3$4();
+        const n19 = t3$5();
         const n12 = child(n19);
         renderEffect(() => {
           const _disabled = __props.disabled;
@@ -17334,7 +17334,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => isStringSlot,
           () => {
-            const n16 = t2$7();
+            const n16 = t2$8();
             setInsertionState(n16);
             createSlot(
               "default",
@@ -18949,6 +18949,7 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
   props: {
     disabled: { type: Boolean, default: false },
     mode: { default: "selector", type: String },
+    selectorType: { default: "", type: String },
     range: { default: [], type: Array },
     rangeKey: { default: "", type: String },
     value: { default: "", type: [Number, String, Array] },
@@ -18964,6 +18965,7 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
     const baseEventName = `uni_picker_${uuid}`;
     const readyEventName = `${baseEventName}_ready`;
     const optionsEventName = `${baseEventName}_options`;
+    const layoutEventName = `${optionsEventName}_layout`;
     const selectorChangeEventName = `${baseEventName}_selector_change`;
     const cancelEventName = `${baseEventName}_cancel_change`;
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
@@ -19038,10 +19040,26 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
         }
       });
     }
+    function getPopover() {
+      const element = proxy == null ? void 0 : proxy.$el;
+      if (element == null)
+        return null;
+      const { top, left, width, height } = element.getBoundingClientRect();
+      return { top, left, width, height };
+    }
+    function sendLayout() {
+      uni.$emit(optionsEventName, {
+        layoutOnly: true,
+        popover: getPopover()
+      });
+    }
     function sendOptions(eventName) {
       const baseParams = {
         mode: props2.mode
       };
+      const isIPad = navigator.vendor.indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+      baseParams.selectorType = props2.selectorType === "picker" || props2.selectorType === "select" ? props2.selectorType : isIPad ? "picker" : "select";
+      baseParams.popover = getPopover();
       const currentValue = innerValue.value;
       switch (props2.mode) {
         case "selector":
@@ -19091,6 +19109,7 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
           }
         });
       }
+      uni.$on(layoutEventName, sendLayout);
       uni.$on(readyEventName, () => {
         sendOptions(optionsEventName);
       });
@@ -19121,6 +19140,7 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
       if (formCtx && props2.name) {
         formCtx.unregisterField(props2.name);
       }
+      uni.$off(layoutEventName, sendLayout);
       uni.$off(readyEventName);
       uni.$off(selectorChangeEventName);
       uni.$off(multiSelectorChangeEventName);
@@ -19671,8 +19691,8 @@ class UniRadioElement extends UniViewElement {
 }
 const t0$h = template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
 const t1$b = template("<div uni-view>", 1);
-const t2$6 = template("<span uni-text>");
-const t3$3 = template("<div uni-view class=uni-radio><div uni-view></div>", 1);
+const t2$7 = template("<span uni-text>");
+const t3$4 = template("<div uni-view class=uni-radio><div uni-view></div>", 1);
 const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -19814,7 +19834,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
         return n6;
       },
       () => {
-        const n19 = t3$3();
+        const n19 = t3$4();
         const n12 = child(n19);
         renderEffect(() => {
           const _disabled = __props.disabled;
@@ -19839,7 +19859,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
         createIf(
           () => isStringSlot,
           () => {
-            const n16 = t2$6();
+            const n16 = t2$7();
             setInsertionState(n16);
             createSlot(
               "default",
@@ -29458,8 +29478,37 @@ const createEditorContextAsync = function(options) {
     );
   });
 };
+const POPUP_WIDTH = 300;
+const POPUP_EDGE = 6;
+function getPickerPopupStyle(popover, windowWidth, windowHeight, contentHeight) {
+  const width = Math.min(POPUP_WIDTH, windowWidth - POPUP_EDGE * 2);
+  let height = Math.min(contentHeight, windowHeight - POPUP_EDGE * 2);
+  let left = (windowWidth - width) / 2;
+  let top = (windowHeight - height) / 2;
+  if (popover != null) {
+    left = Math.max(POPUP_EDGE, Math.min(windowWidth - width - POPUP_EDGE, popover.left));
+    const spaceAbove = Math.max(0, popover.top - POPUP_EDGE * 2);
+    const spaceBelow = Math.max(0, windowHeight - popover.top - popover.height - POPUP_EDGE * 2);
+    const above = spaceBelow < height && spaceAbove > spaceBelow;
+    height = Math.min(height, above ? spaceAbove : spaceBelow);
+    top = above ? popover.top - height - POPUP_EDGE : popover.top + popover.height + POPUP_EDGE;
+    top = Math.max(POPUP_EDGE, Math.min(windowHeight - height - POPUP_EDGE, top));
+  }
+  return {
+    content: {
+      left: `${left}px`,
+      top: `${top}px`,
+      right: "auto",
+      bottom: "auto",
+      width: `${width}px`,
+      height: `${height}px`
+    }
+  };
+}
 const t0$8 = template("<span data-v-212d40c7 uni-text> ");
-const t1$7 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </span><span data-v-212d40c7 uni-text class=uni-picker__header-btn-ok> </div><div data-v-212d40c7 uni-view class=uni-picker__view>", 1);
+const t1$7 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </span><span data-v-212d40c7 uni-text class=uni-picker__header-btn-ok> </div>");
+const t2$6 = template("<div data-v-212d40c7 uni-view class=uni-picker__view>");
+const t3$3 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view>", 1);
 const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
   __name: "picker",
   setup(__props) {
@@ -29541,6 +29590,41 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
     };
     const language = ref("zh-Hans");
     const instance2 = getCurrentInstance();
+    const popover = ref(null);
+    const selectorType = ref("select");
+    const windowWidth = ref(0);
+    const windowHeight = ref(0);
+    const selectRef = ref(null);
+    let closing = false;
+    const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500);
+    const isSelect = computed(() => isDesktop.value && mode.value == "selector" && selectorType.value == "select");
+    const popupStyle = computed(() => {
+      if (!isDesktop.value)
+        return { content: {} };
+      const contentHeight = isSelect.value ? Math.min(300, range.value.length * 34 + 12) : 300;
+      return getPickerPopupStyle(popover.value, windowWidth.value, windowHeight.value, contentHeight);
+    });
+    const updateLayout = () => {
+      windowWidth.value = window.innerWidth;
+      windowHeight.value = window.innerHeight;
+      uni.$emit(`${optionsEventName.value}_layout`);
+    };
+    const selectItem = (index2) => {
+      eventValue.value = [index2];
+      confirm();
+    };
+    watch(isSelect, (select) => {
+      if (!select)
+        value.value = eventValue.value.slice();
+    });
+    watch(() => [isSelect.value, eventValue.value[0], range.value.length, show.value], () => {
+      if (isSelect.value && show.value) {
+        nextTick(() => {
+          var _a;
+          return (_a = selectRef.value) == null ? void 0 : _a.scrollTo(0, Math.max(0, eventValue.value[0] ?? 0) * 34);
+        });
+      }
+    });
     const selectedDate = computed(() => {
       const { year, month, day } = selected;
       switch (fields.value) {
@@ -29593,6 +29677,8 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       }
     };
     const confirm = () => {
+      if (closing)
+        return;
       const val = eventValue.value;
       const modeValue = mode.value;
       switch (modeValue) {
@@ -29614,10 +29700,13 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       closeDialog();
     };
     const close = () => {
+      if (closing)
+        return;
       uni.$emit(cancelEventName.value);
       closeDialog();
     };
     const closeDialog = () => {
+      closing = true;
       show.value = false;
       clearTimeout(timer.value);
       timer.value = setTimeout(() => {
@@ -29873,6 +29962,14 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       timeChangeEventName.value = options["timeChangeEventName"];
       columnChangeEventName.value = options["columnChangeEventName"];
       uni.$on(optionsEventName.value, (data) => {
+        if (data["layoutOnly"] == true) {
+          popover.value = data["popover"];
+          return;
+        }
+        if (data["selectorType"] != null) {
+          selectorType.value = data["selectorType"];
+          popover.value = data["popover"];
+        }
         if (data["mode"] != null) {
           mode.value = data["mode"];
         }
@@ -29945,6 +30042,9 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
         eventValue.value = value.value;
         calculateRanges();
       });
+      updateLayout();
+      window.addEventListener("resize", updateLayout);
+      document.addEventListener("scroll", updateLayout, true);
       uni.$emit(readyEventName.value);
       initLanguageAndTheme();
       switchTheme(theme.value);
@@ -29957,257 +30057,308 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       show.value = true;
     });
     onUnload(() => {
+      window.removeEventListener("resize", updateLayout);
+      document.removeEventListener("scroll", updateLayout, true);
       uni.$off(optionsEventName.value, null);
       if (timer.value) {
         clearTimeout(timer.value);
       }
     });
     initUniPageHooks();
+    const _component_scroll_view = __syscom_1;
     const _component_picker_view_column = _sfc_main$j;
-    const n49 = t1$7();
-    const n0 = child(n49);
-    const n48 = next(n0);
-    const n3 = child(n48);
-    const n1 = child(n3);
-    const n2 = next(n1);
-    const n47 = next(n3);
+    const _component_picker_view = _sfc_main$k;
+    const n56 = t3$3();
+    const n0 = child(n56);
+    const n55 = next(n0);
     on$1(n0, "click", close);
-    const x1 = txt(n1);
-    on$1(n1, "click", close);
-    const x2 = txt(n2);
-    on$1(n2, "click", confirm);
-    on$1(n3, "click", withModifiers(() => {
-    }, ["stop"]));
     renderEffect(() => {
       const _theme = unref(theme);
-      setClass(n49, ["uni-picker__container", ["uni-picker-theme--" + _theme]]);
-      setClassName(n0, (unref(show) ? 1 : 0) | (_theme == "dark" ? 2 : 0), [" picker__ani-show", " picker__mask--dark"], "uni-picker__mask");
-      setClass(n48, ["uni-picker__inner-box", [unref(show) ? "picker__ani-box-show" : "", "inner-box--" + _theme]]);
-      setClass(n3, ["uni-picker__header-btn", ["header-btn--" + _theme]]);
-      setClass(n1, ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + _theme]]);
-      setText(x1, normalizeUniText(toDisplayString(unref(cancelText))));
-      setText(x2, normalizeUniText(toDisplayString(unref(confirmText))));
+      const _isDesktop = unref(isDesktop);
+      const _show = unref(show);
+      setClass(n56, ["uni-picker__container", ["uni-picker-theme--" + _theme, { "uni-picker__container--desktop": _isDesktop }]]);
+      setClassName(n0, (_show ? 1 : 0) | (_theme == "dark" ? 2 : 0), [" picker__ani-show", " picker__mask--dark"], "uni-picker__mask");
+      setClass(n55, ["uni-picker__inner-box", [_show ? "picker__ani-box-show" : "", "inner-box--" + _theme, { "uni-picker__inner-box--desktop": _isDesktop }]]);
+      setStyle(n55, unref(popupStyle).content);
     });
-    setInsertionState(n47);
-    withComponentId("3e31f994", () => createComponent$1(_sfc_main$k, {
-      style: { "flex": "1" },
-      onChange: () => handleChange,
-      "mask-top-style": () => unref(maskTopStyle),
-      "mask-bottom-style": () => unref(maskBottomStyle),
-      indicatorStyle: () => unref(indicatorStyle),
-      value: () => unref(value)
-    }, extend$1(() => {
-      const n4 = createIf(
-        () => unref(mode) == "selector",
-        () => {
-          const n9 = withComponentId("3e31ea1c", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-            const n6 = createFor(
-              () => unref(range),
-              (_for_item0, _for_key0) => {
-                const n8 = t0$8();
-                const x8 = txt(n8);
-                renderEffect(() => {
-                  const _rangeKey = unref(rangeKey);
-                  const _item = _for_item0.value;
-                  setClass(n8, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                  setText(x8, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
-                });
-                return n8;
-              },
-              (item, selectorIdx) => selectorIdx,
-              40
-              /* IS_SINGLE_NODE, SLOT_ROOT */
-            );
-            return n6;
-          }, {
-            _: 1
-            /* NON_STABLE */
-          })));
-          return n9;
-        },
-        null,
-        129
-        /* TRUE_SINGLE_ROOT, SLOT_ROOT */
-      );
-      const n10 = createIf(
-        () => unref(mode) == "multiSelector",
-        () => {
-          const n12 = createFor(
+    setInsertionState(n55);
+    createIf(
+      () => unref(isSelect),
+      () => {
+        const n6 = withComponentId("3e320916", () => createComponentWithFallback(_component_scroll_view, {
+          class: "uni-picker__select",
+          direction: "vertical",
+          "show-scrollbar": true
+        }, extend$1(() => {
+          const n3 = createFor(
             () => unref(range),
             (_for_item0, _for_key0) => {
-              const n17 = withComponentId("3bf712c2-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-                const n14 = createFor(
-                  () => _for_item0.value,
-                  (_for_item1, _for_key1) => {
-                    const n16 = t0$8();
-                    const x16 = txt(n16);
+              const n5 = t0$8();
+              const x5 = txt(n5);
+              on$1(n5, "click", () => selectItem(_for_key0.value));
+              renderEffect(() => {
+                const _rangeKey = unref(rangeKey);
+                const _item = _for_item0.value;
+                setClassName(n5, unref(eventValue)[0] == _for_key0.value ? 1 : 0, " uni-picker__select-item--selected", "uni-picker__select-item");
+                setText(x5, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
+              });
+              return n5;
+            },
+            (item, selectorIdx) => selectorIdx,
+            40
+            /* IS_SINGLE_NODE, SLOT_ROOT */
+          );
+          return n3;
+        }, {
+          _: 1
+          /* NON_STABLE */
+        })));
+        setStaticTemplateRef(n6, selectRef, null, "selectRef");
+        return n6;
+      },
+      () => {
+        const n10 = t1$7();
+        const n8 = child(n10);
+        const n9 = next(n8);
+        const n54 = t2$6();
+        const x8 = txt(n8);
+        on$1(n8, "click", close);
+        const x9 = txt(n9);
+        on$1(n9, "click", confirm);
+        on$1(n10, "click", withModifiers(() => {
+        }, ["stop"]));
+        renderEffect(() => {
+          const _theme = unref(theme);
+          setClass(n10, ["uni-picker__header-btn", ["header-btn--" + _theme]]);
+          setClass(n8, ["uni-picker__header-btn-cancel", ["header-btn-cannel--" + _theme]]);
+          setText(x8, normalizeUniText(toDisplayString(unref(cancelText))));
+          setText(x9, normalizeUniText(toDisplayString(unref(confirmText))));
+        });
+        setInsertionState(n54);
+        withComponentId("3bf70f3e", () => createComponentWithFallback(_component_picker_view, {
+          style: { "flex": "1" },
+          onChange: () => handleChange,
+          "mask-top-style": () => unref(maskTopStyle),
+          "mask-bottom-style": () => unref(maskBottomStyle),
+          indicatorStyle: () => unref(indicatorStyle),
+          value: () => unref(value)
+        }, extend$1(() => {
+          const n11 = createIf(
+            () => unref(mode) == "selector",
+            () => {
+              const n16 = withComponentId("3bf71985", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n13 = createFor(
+                  () => unref(range),
+                  (_for_item0, _for_key0) => {
+                    const n15 = t0$8();
+                    const x15 = txt(n15);
                     renderEffect(() => {
                       const _rangeKey = unref(rangeKey);
-                      const _column = _for_item1.value;
-                      setClass(n16, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                      setText(x16, normalizeUniText(toDisplayString(_rangeKey ? _column[_rangeKey] : _column)));
+                      const _item = _for_item0.value;
+                      setClass(n15, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x15, normalizeUniText(toDisplayString(_rangeKey ? _item[_rangeKey] : _item)));
                     });
-                    return n16;
+                    return n15;
                   },
-                  (column, colIdx) => colIdx,
+                  (item, selectorIdx) => selectorIdx,
                   40
                   /* IS_SINGLE_NODE, SLOT_ROOT */
                 );
-                return n14;
+                return n13;
               }, {
                 _: 1
                 /* NON_STABLE */
               })));
-              return n17;
+              return n16;
             },
-            (item, multiIdx) => multiIdx,
-            34
-            /* IS_COMPONENT, SLOT_ROOT */
+            null,
+            129
+            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
           );
-          return n12;
-        },
-        null,
-        129
-        /* TRUE_SINGLE_ROOT, SLOT_ROOT */
-      );
-      const n18 = createIf(
-        () => unref(mode) == "time",
-        () => {
-          const n23 = withComponentId("3bf72127", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-            const n20 = createFor(
-              () => unref(hours),
-              (_for_item0, _for_key0) => {
-                const n22 = t0$8();
-                const x22 = txt(n22);
-                renderEffect(() => {
-                  setClass(n22, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                  setText(x22, normalizeUniText(toDisplayString(_for_item0.value)));
-                });
-                return n22;
-              },
-              (h, hIdx) => h,
-              40
-              /* IS_SINGLE_NODE, SLOT_ROOT */
-            );
-            return n20;
-          }, {
-            _: 1
-            /* NON_STABLE */
-          })));
-          const n27 = withComponentId("3bf72870", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-            const n24 = createFor(
-              () => unref(minutes),
-              (_for_item0, _for_key0) => {
-                const n26 = t0$8();
-                const x26 = txt(n26);
-                renderEffect(() => {
-                  setClass(n26, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                  setText(x26, normalizeUniText(toDisplayString(_for_item0.value)));
-                });
-                return n26;
-              },
-              (m, mIdx) => m,
-              40
-              /* IS_SINGLE_NODE, SLOT_ROOT */
-            );
-            return n24;
-          }, {
-            _: 1
-            /* NON_STABLE */
-          })));
-          return [n23, n27];
-        },
-        null,
-        130
-        /* TRUE_MULTI_ROOT, SLOT_ROOT */
-      );
-      const n28 = createIf(
-        () => unref(mode) == "date",
-        () => {
-          const n33 = withComponentId("3bf77f5a", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-            const n30 = createFor(
-              () => unref(years),
-              (_for_item0) => {
-                const n32 = t0$8();
-                const x32 = txt(n32);
-                renderEffect(() => {
-                  setClass(n32, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                  setText(x32, normalizeUniText(toDisplayString(_for_item0.value) + toDisplayString(unref(yearText))));
-                });
-                return n32;
-              },
-              (year) => year,
-              40
-              /* IS_SINGLE_NODE, SLOT_ROOT */
-            );
-            return n30;
-          }, {
-            _: 1
-            /* NON_STABLE */
-          })));
-          const n34 = createIf(() => unref(fields) != "year", () => {
-            const n39 = withComponentId("3bf786c6", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-              const n36 = createFor(
-                () => unref(monthsText),
-                (_for_item0) => {
-                  const n38 = t0$8();
-                  const x38 = txt(n38);
-                  renderEffect(() => {
-                    setClass(n38, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                    setText(x38, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(monthText))));
-                  });
-                  return n38;
+          const n17 = createIf(
+            () => unref(mode) == "multiSelector",
+            () => {
+              const n19 = createFor(
+                () => unref(range),
+                (_for_item0, _for_key0) => {
+                  const n24 = withComponentId("3bf7288e-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                    const n21 = createFor(
+                      () => _for_item0.value,
+                      (_for_item1, _for_key1) => {
+                        const n23 = t0$8();
+                        const x23 = txt(n23);
+                        renderEffect(() => {
+                          const _rangeKey = unref(rangeKey);
+                          const _column = _for_item1.value;
+                          setClass(n23, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                          setText(x23, normalizeUniText(toDisplayString(_rangeKey ? _column[_rangeKey] : _column)));
+                        });
+                        return n23;
+                      },
+                      (column, colIdx) => colIdx,
+                      40
+                      /* IS_SINGLE_NODE, SLOT_ROOT */
+                    );
+                    return n21;
+                  }, {
+                    _: 1
+                    /* NON_STABLE */
+                  })));
+                  return n24;
                 },
-                (month) => month,
-                40
-                /* IS_SINGLE_NODE, SLOT_ROOT */
+                (item, multiIdx) => multiIdx,
+                34
+                /* IS_COMPONENT, SLOT_ROOT */
               );
-              return n36;
-            }, {
-              _: 1
-              /* NON_STABLE */
-            })));
-            return n39;
-          });
-          const n40 = createIf(() => unref(fields) == "day", () => {
-            const n45 = withComponentId("3bf78edf", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
-              const n42 = createFor(
-                () => unref(days),
-                (_for_item0) => {
-                  const n44 = t0$8();
-                  const x44 = txt(n44);
-                  renderEffect(() => {
-                    setClass(n44, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
-                    setText(x44, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(dayText))));
-                  });
-                  return n44;
-                },
-                (day) => day,
-                40
-                /* IS_SINGLE_NODE, SLOT_ROOT */
-              );
-              return n42;
-            }, {
-              _: 1
-              /* NON_STABLE */
-            })));
-            return n45;
-          });
-          return [n33, n34, n40];
-        },
-        null,
-        130
-        /* TRUE_MULTI_ROOT, SLOT_ROOT */
-      );
-      return [n4, n10, n18, n28];
-    }, {
-      _: 1
-      /* NON_STABLE */
-    })));
-    return n49;
+              return n19;
+            },
+            null,
+            129
+            /* TRUE_SINGLE_ROOT, SLOT_ROOT */
+          );
+          const n25 = createIf(
+            () => unref(mode) == "time",
+            () => {
+              const n30 = withComponentId("3bf7833d", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n27 = createFor(
+                  () => unref(hours),
+                  (_for_item0, _for_key0) => {
+                    const n29 = t0$8();
+                    const x29 = txt(n29);
+                    renderEffect(() => {
+                      setClass(n29, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x29, normalizeUniText(toDisplayString(_for_item0.value)));
+                    });
+                    return n29;
+                  },
+                  (h, hIdx) => h,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n27;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              const n34 = withComponentId("3bf78a86", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n31 = createFor(
+                  () => unref(minutes),
+                  (_for_item0, _for_key0) => {
+                    const n33 = t0$8();
+                    const x33 = txt(n33);
+                    renderEffect(() => {
+                      setClass(n33, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x33, normalizeUniText(toDisplayString(_for_item0.value)));
+                    });
+                    return n33;
+                  },
+                  (m, mIdx) => m,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n31;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              return [n30, n34];
+            },
+            null,
+            130
+            /* TRUE_MULTI_ROOT, SLOT_ROOT */
+          );
+          const n35 = createIf(
+            () => unref(mode) == "date",
+            () => {
+              const n40 = withComponentId("3bf7929b", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n37 = createFor(
+                  () => unref(years),
+                  (_for_item0) => {
+                    const n39 = t0$8();
+                    const x39 = txt(n39);
+                    renderEffect(() => {
+                      setClass(n39, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                      setText(x39, normalizeUniText(toDisplayString(_for_item0.value) + toDisplayString(unref(yearText))));
+                    });
+                    return n39;
+                  },
+                  (year) => year,
+                  40
+                  /* IS_SINGLE_NODE, SLOT_ROOT */
+                );
+                return n37;
+              }, {
+                _: 1
+                /* NON_STABLE */
+              })));
+              const n41 = createIf(() => unref(fields) != "year", () => {
+                const n46 = withComponentId("3bf79a07", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                  const n43 = createFor(
+                    () => unref(monthsText),
+                    (_for_item0) => {
+                      const n45 = t0$8();
+                      const x45 = txt(n45);
+                      renderEffect(() => {
+                        setClass(n45, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                        setText(x45, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(monthText))));
+                      });
+                      return n45;
+                    },
+                    (month) => month,
+                    40
+                    /* IS_SINGLE_NODE, SLOT_ROOT */
+                  );
+                  return n43;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                })));
+                return n46;
+              });
+              const n47 = createIf(() => unref(fields) == "day", () => {
+                const n52 = withComponentId("3bf7f380", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                  const n49 = createFor(
+                    () => unref(days),
+                    (_for_item0) => {
+                      const n51 = t0$8();
+                      const x51 = txt(n51);
+                      renderEffect(() => {
+                        setClass(n51, ["uni-picker__view-item", ["view-item--" + unref(theme)]]);
+                        setText(x51, normalizeUniText(toDisplayString(formatSingle(_for_item0.value)) + toDisplayString(unref(dayText))));
+                      });
+                      return n51;
+                    },
+                    (day) => day,
+                    40
+                    /* IS_SINGLE_NODE, SLOT_ROOT */
+                  );
+                  return n49;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                })));
+                return n52;
+              });
+              return [n40, n41, n47];
+            },
+            null,
+            130
+            /* TRUE_MULTI_ROOT, SLOT_ROOT */
+          );
+          return [n11, n17, n25, n35];
+        }, {
+          _: 1
+          /* NON_STABLE */
+        })));
+        return [n10, n54];
+      },
+      265
+      /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_0 */
+    );
+    return n56;
   }
 });
-const _style_0$8 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__mask--dark {\n		background-color: rgba(0, 0, 0, .6);\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n";
+const _style_0$8 = "\n.uni-picker__container {\n		flex: 1;\n}\n.uni-picker__mask {\n		flex: 1;\n		background-color: rgba(0, 0, 0, .3);\n		opacity: 0;\n		transition-property: opacity;\n		transition-duration: 0.3s;\n}\n.picker__mask--dark {\n		background-color: rgba(0, 0, 0, .6);\n}\n.picker__ani-show {\n		opacity: 1;\n}\n.uni-picker__inner-box {\n		position: absolute;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		height: 300px;\n		transform: translateY(100%);\n		transition-property: transform;\n		transition-duration: 0.2s;\n}\n.picker__ani-box-show {\n		transform: translateY(0%);\n}\n.uni-picker__header-btn {\n		flex-direction: row;\n		justify-content: space-between;\n		border-bottom: 1px #f7f7f7 solid;\n}\n.uni-picker__header-btn-cancel {\n		font-size: 14px;\n		padding: 15px;\n		background-color: transparent;\n}\n.uni-picker__header-btn-ok {\n		font-size: 14px;\n		padding: 15px;\n		color: #007aff;\n}\n.uni-picker__view {\n		position: relative;\n		flex: 1;\n}\n.uni-picker__view-item {\n		width: 100%;\n		text-align: center;\n		height: 50px;\n		line-height: 50px;\n}\n.inner-box--light {\n		background-color: #fff;\n}\n.header-btn-cannel--light {\n		color: #000;\n}\n.inner-box--dark {\n		background-color: #232323;\n}\n.header-btn-cannel--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.view-item--dark {\n		color: rgba(255, 255, 255, .8);\n}\n.header-btn--dark {\n		border-color: rgba(255, 255, 255, .05);\n}\n.uni-picker__mask {\n		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */\n		overflow: auto;\n		overscroll-behavior: none;\n		touch-action: none;\n}\n.uni-picker__container--desktop .uni-picker__mask {\n		background-color: transparent;\n}\n.uni-picker__inner-box--desktop {\n		transform: none;\n		opacity: 0;\n		border-radius: 5px;\n		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);\n		transition-property: opacity;\n}\n.uni-picker__inner-box--desktop.picker__ani-box-show {\n		transform: none;\n		opacity: 1;\n}\n.uni-picker__inner-box--desktop .uni-picker__header-btn {\n		flex-shrink: 0;\n}\n.uni-picker__inner-box--desktop .uni-picker__view {\n		min-height: 0;\n		overflow: hidden;\n		border-radius: 0 0 5px 5px;\n}\n.uni-picker__select {\n		height: 100%;\n		box-sizing: border-box;\n		padding: 6px 0;\n		border-radius: 5px;\n		overscroll-behavior: contain;\n}\n.uni-picker__select .uni-scroll-view {\n		overscroll-behavior: contain;\n}\n.uni-picker__select-item {\n		flex-shrink: 0;\n		height: 34px;\n		line-height: 34px;\n		padding: 0 10px;\n		text-align: center;\n		color: #555;\n		white-space: nowrap;\n		text-overflow: ellipsis;\n		overflow: hidden;\n		cursor: pointer;\n}\n.uni-picker__select-item:hover {\n		background-color: #f6f6f6;\n}\n.uni-picker-theme--dark .uni-picker__select-item {\n		color: rgba(255, 255, 255, .8);\n}\n.uni-picker-theme--dark .uni-picker__select-item:hover {\n		background-color: rgba(255, 255, 255, .1);\n}\n.uni-picker__select-item.uni-picker__select-item--selected {\n		color: #007aff;\n}\n\n";
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {

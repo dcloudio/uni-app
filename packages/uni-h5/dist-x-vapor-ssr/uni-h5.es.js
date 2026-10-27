@@ -11444,6 +11444,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
   props: {
     disabled: { type: Boolean, default: false },
     mode: { default: "selector", type: String },
+    selectorType: { default: "", type: String },
     range: { default: [], type: Array },
     rangeKey: { default: "", type: String },
     value: { default: "", type: [Number, String, Array] },
@@ -11460,6 +11461,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
     const baseEventName = `uni_picker_${uuid}`;
     const readyEventName = `${baseEventName}_ready`;
     const optionsEventName = `${baseEventName}_options`;
+    const layoutEventName = `${optionsEventName}_layout`;
     const selectorChangeEventName = `${baseEventName}_selector_change`;
     const cancelEventName = `${baseEventName}_cancel_change`;
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`;
@@ -11512,10 +11514,26 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
         });
       }
     }, { deep: true });
+    function getPopover() {
+      const element = proxy == null ? void 0 : proxy.$el;
+      if (element == null)
+        return null;
+      const { top, left, width, height } = element.getBoundingClientRect();
+      return { top, left, width, height };
+    }
+    function sendLayout() {
+      uni.$emit(optionsEventName, {
+        layoutOnly: true,
+        popover: getPopover()
+      });
+    }
     function sendOptions(eventName) {
       const baseParams = {
         mode: props2.mode
       };
+      const isIPad = navigator.vendor.indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+      baseParams.selectorType = props2.selectorType === "picker" || props2.selectorType === "select" ? props2.selectorType : isIPad ? "picker" : "select";
+      baseParams.popover = getPopover();
       const currentValue = innerValue.value;
       switch (props2.mode) {
         case "selector":
@@ -11565,6 +11583,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
           }
         });
       }
+      uni.$on(layoutEventName, sendLayout);
       uni.$on(readyEventName, () => {
         sendOptions(optionsEventName);
       });
@@ -11595,6 +11614,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
       if (formCtx && props2.name) {
         formCtx.unregisterField(props2.name);
       }
+      uni.$off(layoutEventName, sendLayout);
       uni.$off(readyEventName);
       uni.$off(selectorChangeEventName);
       uni.$off(multiSelectorChangeEventName);

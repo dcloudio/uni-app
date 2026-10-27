@@ -10447,6 +10447,7 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
   props: {
     disabled: { type: Boolean, default: false },
     mode: { default: "selector", type: String },
+    selectorType: { default: "", type: String },
     range: { default: [], type: Array },
     rangeKey: { default: "", type: String },
     value: { default: "", type: [Number, String, Array] },

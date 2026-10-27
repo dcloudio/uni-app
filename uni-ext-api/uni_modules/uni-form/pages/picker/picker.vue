@@ -1,7 +1,18 @@
 <template>
+	<!-- #ifdef WEB -->
+	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme, {'uni-picker__container--desktop': isDesktop}]">
+		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
+		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme, {'uni-picker__inner-box--desktop': isDesktop}]" :style="popupStyle.content">
+			<scroll-view v-if="isSelect" ref="selectRef" class="uni-picker__select" direction="vertical" :show-scrollbar="true">
+				<text v-for="(item, selectorIdx) in range" :key="selectorIdx" class="uni-picker__select-item" :class="{'uni-picker__select-item--selected': eventValue[0] == selectorIdx}" @click="selectItem(selectorIdx)">{{rangeKey ? item[rangeKey] : item}}</text>
+			</scroll-view>
+			<template v-else>
+	<!-- #endif -->
+	<!-- #ifndef WEB -->
 	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme]">
 		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
 		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme]">
+	<!-- #endif -->
 			<view class="uni-picker__header-btn" :class="['header-btn--'+theme]" @click.stop>
 				<text class="uni-picker__header-btn-cancel" :class="['header-btn-cannel--'+theme]" @click="close">{{ cancelText }}</text>
 				<text class="uni-picker__header-btn-ok" @click="confirm">{{ confirmText }}</text>
@@ -45,11 +56,17 @@
 					</template>
 				</picker-view>
 			</view>
+			<!-- #ifdef WEB -->
+			</template>
+			<!-- #endif -->
 		</view>
 	</view>
 </template>
 
 <script setup lang="ts">
+	// #ifdef WEB
+	import { getPickerPopupStyle, PickerPopover } from '../../components/picker/popup.ts'
+	// #endif
 	type SelectedData = {
 		year: number,
 		month: number,
@@ -136,6 +153,43 @@
 
 	const instance = getCurrentInstance()
 
+	// #ifdef WEB
+	const popover = ref<PickerPopover | null>(null)
+	const selectorType = ref('select')
+	const windowWidth = ref(0)
+	const windowHeight = ref(0)
+	const selectRef = ref<UniScrollViewElement | null>(null)
+	let closing = false
+	const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500)
+	const isSelect = computed(() => isDesktop.value && mode.value == 'selector' && selectorType.value == 'select')
+	const popupStyle = computed(() => {
+		if (!isDesktop.value) return { content: {} }
+		const contentHeight = isSelect.value ? Math.min(300, range.value.length * 34 + 12) : 300
+		return getPickerPopupStyle(popover.value, windowWidth.value, windowHeight.value, contentHeight)
+	})
+
+	const updateLayout = () => {
+		windowWidth.value = window.innerWidth
+		windowHeight.value = window.innerHeight
+		uni.$emit(`${optionsEventName.value}_layout`)
+	}
+
+	const selectItem = (index: number) => {
+		eventValue.value = [index]
+		confirm()
+	}
+
+	// 切换展示方式时保留尚未确认的选择，并将列表滚动到当前选中项。
+	watch(isSelect, (select) => {
+		if (!select) value.value = eventValue.value.slice()
+	})
+	watch(() => [isSelect.value, eventValue.value[0], range.value.length, show.value], () => {
+		if (isSelect.value && show.value) {
+			nextTick(() => selectRef.value?.scrollTo(0, Math.max(0, eventValue.value[0] ?? 0) * 34))
+		}
+	})
+	// #endif
+
 	// computed
 	const selectedDate = computed((): string => {
 		const { year, month, day } = selected
@@ -199,6 +253,9 @@
 	}
 
 	const confirm = () => {
+		// #ifdef WEB
+		if (closing) return
+		// #endif
 		const val = eventValue.value
 		const modeValue = mode.value
 		switch (modeValue) {
@@ -221,11 +278,17 @@
 	}
 
 	const close = () => {
+		// #ifdef WEB
+		if (closing) return
+		// #endif
 		uni.$emit(cancelEventName.value)
 		closeDialog()
 	}
 
 	const closeDialog = () => {
+		// #ifdef WEB
+		closing = true
+		// #endif
 		show.value = false
 		clearTimeout(timer.value)
 		timer.value = setTimeout(() => {
@@ -536,6 +599,16 @@
 		columnChangeEventName.value = options['columnChangeEventName']!
 
 		uni.$on(optionsEventName.value, (data: UTSJSONObject) => {
+			// #ifdef WEB
+			if (data['layoutOnly'] == true) {
+				popover.value = data['popover'] as PickerPopover | null
+				return
+			}
+			if (data['selectorType'] != null) {
+				selectorType.value = data['selectorType'] as string
+				popover.value = data['popover'] as PickerPopover | null
+			}
+			// #endif
 			if (data['mode'] != null) {
 				mode.value = data['mode']
 			}
@@ -615,6 +688,12 @@
 			calculateRanges()
 		})
 
+		// #ifdef WEB
+		updateLayout()
+		window.addEventListener('resize', updateLayout)
+		document.addEventListener('scroll', updateLayout, true)
+		// #endif
+
 		uni.$emit(readyEventName.value)
 
 		initLanguageAndTheme()
@@ -644,6 +723,10 @@
 	})
 
 	onUnload(() => {
+		// #ifdef WEB
+		window.removeEventListener('resize', updateLayout)
+		document.removeEventListener('scroll', updateLayout, true)
+		// #endif
 		uni.$off(optionsEventName.value, null)
 		if (timer.value) {
 			clearTimeout(timer.value)
@@ -740,4 +823,80 @@
 	.header-btn--dark {
 		border-color: rgba(255, 255, 255, .05);
 	}
+	/* #ifdef WEB */
+	.uni-picker__mask {
+		/* 建立滚动容器，通过 CSS 阻止遮罩上的滚动传递到背景页面。 */
+		overflow: auto;
+		overscroll-behavior: none;
+		touch-action: none;
+	}
+
+	.uni-picker__container--desktop .uni-picker__mask {
+		background-color: transparent;
+	}
+
+	.uni-picker__inner-box--desktop {
+		transform: none;
+		opacity: 0;
+		border-radius: 5px;
+		box-shadow: 0 0 20px 5px rgba(0, 0, 0, .3);
+		transition-property: opacity;
+	}
+
+	.uni-picker__inner-box--desktop.picker__ani-box-show {
+		transform: none;
+		opacity: 1;
+	}
+
+	.uni-picker__inner-box--desktop .uni-picker__header-btn {
+		flex-shrink: 0;
+	}
+
+	.uni-picker__inner-box--desktop .uni-picker__view {
+		min-height: 0;
+		overflow: hidden;
+		border-radius: 0 0 5px 5px;
+	}
+
+	.uni-picker__select {
+		height: 100%;
+		box-sizing: border-box;
+		padding: 6px 0;
+		border-radius: 5px;
+		overscroll-behavior: contain;
+	}
+
+	.uni-picker__select .uni-scroll-view {
+		overscroll-behavior: contain;
+	}
+
+	.uni-picker__select-item {
+		flex-shrink: 0;
+		height: 34px;
+		line-height: 34px;
+		padding: 0 10px;
+		text-align: center;
+		color: #555;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		cursor: pointer;
+	}
+
+	.uni-picker__select-item:hover {
+		background-color: #f6f6f6;
+	}
+
+	.uni-picker-theme--dark .uni-picker__select-item {
+		color: rgba(255, 255, 255, .8);
+	}
+
+	.uni-picker-theme--dark .uni-picker__select-item:hover {
+		background-color: rgba(255, 255, 255, .1);
+	}
+
+	.uni-picker__select-item.uni-picker__select-item--selected {
+		color: #007aff;
+	}
+	/* #endif */
 </style>

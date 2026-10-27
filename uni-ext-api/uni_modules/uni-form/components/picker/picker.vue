@@ -8,11 +8,17 @@
     import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget } from '../common.ts'
     import { UniPickerElement } from './global.ts'
     import { ActivatableChild, FormContext, LabelContext } from '../types.ts'
+    // #ifdef WEB
+    import { PickerPopover } from './popup.ts'
+    // #endif
 	
     const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
     const baseEventName = `uni_picker_${uuid}`
     const readyEventName = `${baseEventName}_ready`
     const optionsEventName = `${baseEventName}_options`
+    // #ifdef WEB
+    const layoutEventName = `${optionsEventName}_layout`
+    // #endif
     const selectorChangeEventName = `${baseEventName}_selector_change`
     const cancelEventName = `${baseEventName}_cancel_change`
     const multiSelectorChangeEventName = `${baseEventName}_multiSelector_change`
@@ -121,6 +127,10 @@
          * }    
          */
         mode ?: Mode
+        // #ifdef WEB
+        /** 宽屏单列选择器的展示方式，默认 iPad 使用 picker，其他设备使用 select */
+        selectorType ?: 'picker' | 'select' | ''
+        // #endif
         /**
          * mode为 selector 或 multiSelector 时，range 有效
          * @uniPlatform {
@@ -245,6 +255,9 @@
     const props = withDefaults(defineProps<PickerProps>(), {
         disabled: false,
         mode: 'selector',
+        // #ifdef WEB
+        selectorType: '',
+        // #endif
         range: [],
         rangeKey: '',
         value: '',
@@ -313,10 +326,32 @@
         })
     }
 
+    // #ifdef WEB
+    function getPopover(): PickerPopover | null {
+        const element = proxy?.$el
+        if (element == null) return null
+        const { top, left, width, height } = element.getBoundingClientRect()
+        return { top, left, width, height }
+    }
+
+    function sendLayout() {
+        uni.$emit(optionsEventName, {
+            layoutOnly: true,
+            popover: getPopover()
+        })
+    }
+    // #endif
+
     function sendOptions(eventName : string) {
         const baseParams = {
             mode: props.mode,
         }
+        // #ifdef WEB
+        const isIPad = navigator.vendor.indexOf('Apple') === 0 && navigator.maxTouchPoints > 0
+        baseParams.selectorType = props.selectorType === 'picker' || props.selectorType === 'select'
+            ? props.selectorType : (isIPad ? 'picker' : 'select')
+        baseParams.popover = getPopover()
+        // #endif
         const currentValue = innerValue.value
         switch (props.mode) {
             case 'selector':
@@ -365,6 +400,10 @@
             })
         }
 
+        // #ifdef WEB
+        uni.$on(layoutEventName, sendLayout)
+        // #endif
+
         // 监听页面加载
         uni.$on(readyEventName, () => {
             sendOptions(optionsEventName)
@@ -406,6 +445,9 @@
         if (formCtx && props.name) {
             formCtx.unregisterField(props.name)
         }
+        // #ifdef WEB
+        uni.$off(layoutEventName, sendLayout)
+        // #endif
         uni.$off(readyEventName)
         uni.$off(selectorChangeEventName)
         uni.$off(multiSelectorChangeEventName)
