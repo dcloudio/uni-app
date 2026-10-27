@@ -62,6 +62,9 @@
 <script module="inputCpp" lang="cpp" class-name="NativeInputView" src="../../cppsdk/app-harmony/input_view.h" namespace="uniappx::form"></script>
 <!-- #endif -->
 <script setup lang="ts">
+	// #ifdef APP-IOS || APP-HARMONY
+	import { useEditorColor } from "../editor-color.ts"
+	// #endif
 	import {
 		// #ifdef APP-ANDROID || APP-IOS
 		NativeInputView,
@@ -148,6 +151,9 @@
 		],
 		filterProperties: true
 	})
+	// #ifdef APP-IOS || APP-HARMONY
+	const valueColor = useEditorColor(style)
+	// #endif
 
 	// #ifdef APP-ANDROID
 	// 暗黑默认值：开发者未设置 color（useComputedStyle 读到 null）时，使用主题默认色
@@ -174,6 +180,7 @@
 
 	// #ifdef APP-HARMONY
 	const getStyleValue = (property: string): string => {
+		if (property == 'color') return valueColor.value
 		const value = style.get(property)
 		return typeof value == 'string' ? value : ''
 	}
@@ -779,9 +786,6 @@
 				case 'font-size':
 					inputView?.updateFontSize(rpx2px(value))
 					break
-				case 'color':
-					inputView?.updateColor(value)
-					break
 				case 'line-height':
 					inputView?.updateLineHeight(rpx2px(value))
 					break
@@ -805,6 +809,7 @@
 					break
 			}
 		})
+		inputView?.updateColor(valueColor.value)
 	}
 	// #endif
 
@@ -1359,7 +1364,7 @@
 		watch(() => style.get('font-size'), (value : string) => {
 			inputView?.updateFontSize(rpx2px(value))
 		})
-		watch(() => style.get('color'), (value : string) => {
+		watch(() => valueColor.value, (value : string) => {
 			inputView?.updateColor(value)
 		})
 		watch(() => style.get('line-height'), (value : string) => {
@@ -1590,13 +1595,11 @@
 		/* #endif */
 	}
 
-	/* #ifdef APP-ANDROID */
 	@media (prefers-color-scheme: dark) {
 		.uni-input-wrapper {
 			background-color: #3b3b3b;
 		}
 	}
-	/* #endif */
 
 	.uni-input-container {
 		width: 100%;

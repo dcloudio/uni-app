@@ -33,6 +33,9 @@
 	<!-- #endif -->
 </template>
 <script setup lang="ts">
+	// #ifdef APP-IOS || APP-HARMONY
+	import { useEditorColor } from "../editor-color.ts"
+	// #endif
 	import {
 		NativeTextareaView,
 		// #ifdef APP-ANDROID
@@ -102,6 +105,9 @@
 		],
 		filterProperties: true
 	})
+	// #ifdef APP-IOS || APP-HARMONY
+	const valueColor = useEditorColor(style)
+	// #endif
 
 	// #ifdef APP-ANDROID
 	// 暗黑默认值：开发者未设置 color（useComputedStyle 读到 null）时，使用主题默认色
@@ -730,15 +736,20 @@
 					break
 			}
 		}
+		// #ifdef APP-IOS || APP-HARMONY
+		textareaView.updateColor(valueColor.value)
+		// #endif
 		let updatePadding = false
 		style.forEach((value, key) => {
 			switch (key) {
 				case 'font-size':
 					textareaView.updateFontSize(typeof value == 'string' ? rpx2px(value) : undefined)
 					break
+				// #ifdef APP-ANDROID
 				case 'color':
 					textareaView.updateColor(value as string)
 					break
+				// #endif
 				case 'line-height':
 					textareaView.updateLineHeight(rpx2px(value as string))
 					break
@@ -1005,9 +1016,11 @@
 		watch(() => style.get('font-size'), (value : string) => {
 			textareaView?.updateFontSize(rpx2px(value))
 		})
-		watch(() => style.get('color'), (value : string) => {
+		// #ifdef APP-IOS || APP-HARMONY
+		watch(() => valueColor.value, (value : string) => {
 			textareaView?.updateColor(value)
 		})
+		// #endif
 		watch(() => style.get('line-height'), (value : string) => {
 			textareaView?.updateLineHeight(rpx2px(value))
 		})
@@ -1186,13 +1199,11 @@
 		/* #endif */
 	}
 
-	/* #ifdef APP-ANDROID */
 	@media (prefers-color-scheme: dark) {
 		.uni-textarea-wrapper {
 			background-color: #3b3b3b;
 		}
 	}
-	/* #endif */
 
 	.uni-textarea-container {
 		height: 100%;
