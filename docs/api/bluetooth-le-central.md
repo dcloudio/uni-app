@@ -10,7 +10,7 @@
 
 - **服务**：设备对外提供的一组功能，由 UUID 标识，可包含一个或多个特征值；
 - **特征值**：服务下的数据点，由 UUID 标识，其 `properties` 描述支持的操作，如 read、write、notify、indicate 等；
-- **UUID**：服务与特征值的标识，可采用 16 位、32 位短格式或 128 位完整格式。调用接口时应使用服务、特征值发现结果返回的 UUID。
+- **UUID**：用于标识服务和特征值。调用接口时，使用 uni.getBLEDeviceServices 和 uni.getBLEDeviceCharacteristics 返回的 UUID。
 
 本文负责连接与数据通信，[蓝牙-通用](./bluetooth-general.md)负责适配器管理与设备发现。各接口及参数的支持范围以对应的兼容性表为准。
 
@@ -33,15 +33,18 @@
 ### 通用
 
 - **以特征值属性为准**：读、写和通知分别要求特征值支持对应的操作；支持读取不代表支持通知或写入。
-- **重新连接后重新发现**：服务或特征值发生变化、设备固件更新或重新连接后，应重新获取服务与特征值。不能假设旧结果始终有效，也不能保证断开重连一定清除系统缓存。
+- **重新连接后重新发现**：断线重连后，应重新获取服务与特征值，并按需开启通知，不要直接沿用上次连接的结果。
 - **区分通知与事件监听**：关闭外设通知需调用 `notifyBLECharacteristicValueChange` 并传入 `state: false`；`offBLECharacteristicValueChange` 只移除事件监听，不能代替关闭通知。
 - **按监听所属范围清理**：不再使用时移除自身注册的特征值和连接状态监听。当前 iOS 插件可保存 `on*` 返回的监听 ID，并将该 ID 传给对应的 `off*`，避免清空其他页面的监听。
 - **控制写入长度与时序**：单次写入长度由平台和当前连接决定，超长数据需由业务分包；同一连接上的读写与通知配置操作宜按完成回调依次执行。
 
-## 调试建议
+### iOS 外设固件变更
 
-- 先用 iOS 蓝牙调试工具（如 **LightBlue**）连接设备，确认目标服务/特征值的 UUID 与属性，并先在其中验证读、写、订阅是否正常；
-- 将工具结果与 App 内 [uni.getBLEDeviceServices](#getbledeviceservices)/[uni.getBLEDeviceCharacteristics](#getbledevicecharacteristics) 的输出对照，辅助定位服务、特征值或操作属性不匹配的问题。最终以设备协议和真机结果为准。
+固件升级若增删服务或特征值、修改 UUID、特征值属性或服务包含关系，可能使 iOS 缓存的 GATT 结构与外设不一致，出现找不到新特征值、属性仍为旧值、读写或开启通知失败等问题。
+
+- **外设侧**：应在 Generic Attribute Service（`0x1801`）中实现 Service Changed 特征值（`0x2A05`），并在 GATT 数据库结构变化后按规范发送 Service Changed indication，告知 iOS 原有服务信息已失效、需要重新发现。这是外设与系统协作处理 GATT 变更的机制，不能用 App 侧“清理缓存”或反复断开重连代替。
+- **应用侧**：当前 iOS 内置蓝牙 API 已处理系统的服务变更通知，使旧的服务和特征值信息失效。应用仍需在连接有效时重新调用 [uni.getBLEDeviceServices](#getbledeviceservices) 和 [uni.getBLEDeviceCharacteristics](#getbledevicecharacteristics)，以新返回的 UUID 和属性为准，再按需调用 [uni.notifyBLECharacteristicValueChange](#notifyblecharacteristicvaluechange) 开启通知，之后进行读写。
+
 
 <!-- UTSAPIJSON.createBLEConnection.name -->
 
@@ -58,6 +61,33 @@
 <!-- UTSAPIJSON.createBLEConnection.example -->
 
 <!-- UTSAPIJSON.createBLEConnection.tutorial -->
+
+### iOS 使用说明
+
+- 先初始化适配器并扫描到目标设备，再传入扫描返回的 `deviceId`。能扫描到设备只表示收到了广播，不保证外设当前接受连接。
+- 先注册 `onBLEConnectionStateChange`，再发起连接。同一设备不要并行调用多次 `createBLEConnection`，避免重复连接导致失败。
+- 在 `success` 回调后调用 `getBLEDeviceServices` 和 `getBLEDeviceCharacteristics`，再开始读写或开启通知。连接成功不代表服务发现、特征值发现或业务认证已完成。
+- `timeout` 的单位是毫秒，应设置为大于 0 的数值，并结合真机耗时确定。当前 iOS 插件不传时不设置连接超时期限，但仍可能因系统报告失败或适配器状态变化而结束。
+- 当前 iOS 插件对已经连接的设备再次调用连接会返回成功。
+
+### iOS 连接失败与超时排查 @ios-connection-troubleshooting
+
+`createBLEConnection` 失败时，先确认适配器已初始化且可用，并使用扫描返回的 `deviceId`。连接成功后的服务发现、读写和通知问题，应按对应接口排查。
+
+连接超时表示未在指定时间内完成连接，不代表设备已关机或停止广播；等待上一次断开完成也可能超时。能扫描到设备，不代表设备当前接受连接。
+
+可按以下方向排查：
+
+| 可能原因 | 检查与处理方式 |
+| --- | --- |
+| 信号弱或干扰 | 靠近外设，在干扰较少的环境中重试。 |
+| 外设被占用或不可连接 | 断开其他手机、App 或调试工具的连接，确认外设处于可连接模式。 |
+| 重复连接或断开未完成 | 同一设备只保留一个连接流程，避免并行连接或立即反复重连。 |
+| 超时时间过短 | 结合正常连接耗时，适当增加 `timeout` 后对比。 |
+| 外设重启或配对信息变化 | 重新扫描；若提示配对异常，按设备说明重新配对。持续失败时检查外设日志。 |
+| 连接过多或系统暂不可用 | 关闭不必要的连接和扫描，通过 `onBluetoothAdapterStateChange` 确认可用后再试。 |
+
+重试应设置间隔和次数上限，持续失败时提示用户检查设备。重连成功后，需重新发现服务和特征值，并按需开启通知。仍无法定位时，可按[调试建议](#调试建议)使用蓝牙工具对照验证。
 
 
 <!-- UTSAPIJSON.closeBLEConnection.name -->
