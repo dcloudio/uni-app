@@ -73,7 +73,8 @@
             opacity: navigationBar.type === 'transparent' ? 0 : 1,
           }"
         >
-          <i v-if="navigationBar.loading" class="uni-loading" />
+          <i v-if="!isXVapor && navigationBar.loading" class="uni-loading" />
+          <Loading v-else-if="isXVapor && navigationBar.loading" style="display: inline-block; width: 20px; height: 20px; margin-top: 7px;"></Loading>
           <img
             v-else-if="navigationBar.titleImage"
             :src="navigationBar.titleImage"
@@ -192,6 +193,8 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
 import { Input } from '@dcloudio/uni-components'
+// TODO 优化导入路径
+import Loading from '../../../../../uni-components/src/vue/loading/index-x.vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   ICON_PATH_BACK,
@@ -223,6 +226,7 @@ defineOptions({
 const hasPages = __UNI_FEATURE_PAGES__
 const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
 const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__
+const isXVapor = __X_VAPOR__
 
 const ICON_PATHS = {
   none: '',
