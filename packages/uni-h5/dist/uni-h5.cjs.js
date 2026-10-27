@@ -14428,7 +14428,7 @@ const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
                 opacity: vue.unref(navigationBar).type === "transparent" ? 0 : 1
               })
             }, [
-              !vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_13)) : vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createBlock(_sfc_main$6, {
+              !vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_13)) : vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createBlock(vue.unref(_sfc_main$6), {
                 key: 1,
                 style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" }
               })) : vue.unref(navigationBar).titleImage ? (vue.openBlock(), vue.createElementBlock("img", {

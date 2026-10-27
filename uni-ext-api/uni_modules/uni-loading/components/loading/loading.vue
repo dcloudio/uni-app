@@ -123,18 +123,19 @@ defineOptions({
   }
 });
 
-// 当没有设置显式颜色时，遵循系统主题
 // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 const deviceInfo = uni.getDeviceInfo()
-const osTheme = ref<string>(deviceInfo.osTheme ?? 'light')
-const osThemeChangeId = uni.onOsThemeChange((result: OsThemeChangeResult) => {
-  osTheme.value = result.osTheme
+const appBaseInfo = uni.getAppBaseInfo()
+const configuredAppTheme = appBaseInfo.appTheme ?? 'auto'
+const effectiveTheme = ref<string>(configuredAppTheme == 'auto' ? (deviceInfo.osTheme ?? 'light') : configuredAppTheme)
+const appThemeChangeId = uni.onAppThemeChange((result: AppThemeChangeResult) => {
+  effectiveTheme.value = result.appTheme
 })
 const defaultLoadingColor = computed<string>(() => {
-  return osTheme.value == 'dark' ? '#FFFFFFFF' : '#000000FF'
+  return effectiveTheme.value == 'dark' ? '#FFFFFFFF' : '#000000FF'
 })
 onUnmounted(() => {
-  uni.offOsThemeChange(osThemeChangeId)
+  uni.offAppThemeChange(appThemeChangeId)
 })
 // #endif
 

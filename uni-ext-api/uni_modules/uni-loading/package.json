@@ -43,7 +43,10 @@
       "mp-weixin": true
 		},
 		"dependencies": [
-			"uni-framework"
+			"uni-framework",
+			"uni-getDeviceInfo",
+			"uni-getAppBaseInfo",
+			"uni-theme"
 		],
 		"encrypt": [],
 		"platforms": {

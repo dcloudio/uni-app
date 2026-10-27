@@ -10925,7 +10925,7 @@ const _sfc_main$b = /* @__PURE__ */ defineComponent({
                 opacity: unref(navigationBar).type === "transparent" ? 0 : 1
               })
             }, [
-              !unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createBlock(_sfc_main$c, {
+              !unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createBlock(unref(_sfc_main$c), {
                 key: 1,
                 style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" }
               })) : unref(navigationBar).titleImage ? (openBlock(), createElementBlock("img", {
