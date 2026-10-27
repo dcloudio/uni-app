@@ -1,4 +1,4 @@
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, LINEFEED, PRIMARY_COLOR, passive, debounce, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_WEB_INVOKE_APP_SERVICE, callOptions, formatDateTime, addFont, resolveOwnerEl } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, createRpx2Unit, defaultRpx2Unit, getUniElementPage, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, LINEFEED, PRIMARY_COLOR, passive, debounce, isUniLifecycleHook, ON_LOAD, ON_SHOW, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_WEB_INVOKE_APP_SERVICE, callOptions, formatDateTime, addFont, resolveOwnerEl } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
 import { createVNode, getCurrentInstance, ref, defineVaporComponent, openBlock, createElementBlock, Fragment, renderList, isVNode, createBlock, createElementVNode, Comment, Text, cloneVNode, defineComponent as defineComponent$1, provide, computed, inject, onBeforeUnmount, mergeProps, onMounted, watch, reactive, isReactive, nextTick, useSSRContext, unref, watchEffect, onActivated, ssrContextKey, onBeforeMount, withCtx, resolveDynamicComponent, withDirectives, vShow, shallowRef, markRaw, onUnmounted, createTextVNode, h, isInSSRComponentSetup, injectHook, logError, Transition } from "vue";
 import { isArray, isString, extend, capitalize, camelize, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isFunction, isPromise, EMPTY_OBJ, hyphenate } from "@vue/shared";
@@ -927,8 +927,7 @@ class UniElement extends Object {
     return attr2 === void 0 ? null : attr2;
   }
   getPage() {
-    var _a, _b;
-    return ((_b = (_a = this.__vnode) == null ? void 0 : _a.ctx) == null ? void 0 : _b.page) || null;
+    return getUniElementPage(this);
   }
   get uniPage() {
     return this.getPage();
@@ -3050,7 +3049,7 @@ class UniNormalPageImpl extends UniPageImpl {
   }
 }
 function initXPage(vm, route, page) {
-  var _a, _b;
+  var _a, _b, _c;
   initPageVm(vm, page);
   if (!("$pageLayoutInstance" in vm)) {
     Object.defineProperty(vm, "$pageLayoutInstance", {
@@ -3107,6 +3106,7 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.$vm = vm;
     vm.$basePage.fullPath = vm.$basePage.path;
   }
+  (_c = pageInstance.proxy) == null ? void 0 : _c.$el;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
