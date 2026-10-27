@@ -45,16 +45,16 @@ describe('h5 pages.json page route', () => {
     })
   })
 
-  function transform(vapor: boolean, ssr = false) {
+  function transform(vapor: boolean, ssr = false, navigationBuild = false) {
     if (vapor) {
       process.env.UNI_APP_X_DOM2 = 'true'
       process.env.UNI_APP_X_VAPOR = 'true'
     }
     const plugin = uniPagesJsonPlugin() as any
     plugin.configResolved({
-      command: 'serve',
-      define: {},
-      isProduction: false,
+      command: navigationBuild ? 'build' : 'serve',
+      define: navigationBuild ? { __UNI_FEATURE_NAVIGATIONBAR__: true } : {},
+      isProduction: navigationBuild,
     })
     return plugin.transform.call(
       {},
@@ -66,6 +66,21 @@ describe('h5 pages.json page route', () => {
       ssr ? { ssr: true } : undefined
     ).code as string
   }
+
+  test.each([false, true])(
+    '导航栏发行构建按模式加载 Loading 样式（Vapor=%s）',
+    (vapor) => {
+      const code = transform(vapor, false, true)
+      expect(
+        code.includes(
+          "import '@dcloudio/uni-components/style-x-vapor/loading.css'"
+        )
+      ).toBe(vapor)
+      expect(code).not.toContain(
+        "import '@dcloudio/uni-components/style-x/loading.css'"
+      )
+    }
+  )
 
   test('Web VDOM 保持原有 VNode 页面包装', () => {
     const code = transform(false)

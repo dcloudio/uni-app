@@ -18,7 +18,7 @@ describe('API 样式依赖', () => {
   })
 
   test.each(['h5', 'web'] as const)(
-    '%s Vapor 仅切换 swiper 的 API 样式依赖',
+    '%s Vapor 使用对应的 Swiper 和 Loading 样式依赖',
     (platform) => {
       process.env.UNI_APP_X = 'true'
       process.env.UNI_PLATFORM = platform
@@ -30,6 +30,14 @@ describe('API 样式依赖', () => {
       const vaporDeps = API_DEPS_CSS(true)
       expect(COMPONENT_DEPS_CSS(true)).toEqual({
         ...vdomComponentDeps,
+        'scroll-view': [
+          ...vdomComponentDeps['scroll-view'],
+          '@dcloudio/uni-components/style-x-vapor/loading.css',
+        ],
+        'list-view': [
+          ...vdomComponentDeps['list-view'],
+          '@dcloudio/uni-components/style-x-vapor/loading.css',
+        ],
         picker: vdomComponentDeps.picker.map((style) =>
           /\/picker-view(?:-column)?\.css$/.test(style)
             ? style.replace('/style/', '/style-x-vapor/')
@@ -38,6 +46,7 @@ describe('API 样式依赖', () => {
       })
       expect(vaporDeps).toEqual({
         ...vdomDeps,
+        showLoading: ['@dcloudio/uni-components/style-x-vapor/loading.css'],
         previewImage: vdomDeps.previewImage.map((style) =>
           /\/swiper(?:-item)?\.css$/.test(style)
             ? style.replace('/style/', '/style-x-vapor/')

@@ -5,6 +5,7 @@ import {
   type FEATURE_DEFINES,
   H5_FRAMEWORK_STYLE_PATH,
   MANIFEST_JSON_JS,
+  X_VAPOR_BASE_COMPONENTS_STYLE_PATH,
   checkPagesJson,
   defineUniPagesJsonPlugin,
   getWorkers,
@@ -159,6 +160,10 @@ function generateCssCode(config: ResolvedConfig) {
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'pageHead.css')
+    if (isUniAppXWebVapor()) {
+      // 导航栏内部直接使用 Loading，发行摇树时也必须保留其样式。
+      cssFiles.push(X_VAPOR_BASE_COMPONENTS_STYLE_PATH + 'loading.css')
+    }
   }
   if (define.__UNI_FEATURE_TABBAR__) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'tabBar.css')

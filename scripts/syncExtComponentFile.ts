@@ -45,6 +45,7 @@ function createPreContext(
   return { ...preContext, ...context }
 }
 
+// Web Vapor 从 uni-ext-api 编译 Loading；这里仍负责旧 Web 和两种 MP 的副本，不能随 Vapor 迁移删除。
 const syncTargets: SyncTarget[] = [
   {
     path: path.resolve(uniComponentsPath, './lib-x/uniloading'),

@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
-import Loading from '../loading/index-x.vue'
+import Loading from '../loading'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Refresher',

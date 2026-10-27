@@ -27,7 +27,13 @@
   <!-- #endif -->
   <!-- #endif -->
 
-  <!-- #ifdef WEB || MP -->
+  <!-- #ifdef WEB && VUE3-VAPOR -->
+  <view class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
+    <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
+  </view>
+  <!-- #endif -->
+
+  <!-- #ifdef MP || (WEB && !VUE3-VAPOR) -->
   <uni-loading-element class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
     <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
   </uni-loading-element>
@@ -110,7 +116,9 @@ defineOptions({
   styleIsolation: 'app-and-page',
   // @ts-ignore
   rootElement: {
+    // #ifndef WEB && VUE3-VAPOR
     name: 'uni-loading-element',
+    // #endif
     class: UniLoadingElement
   }
 });

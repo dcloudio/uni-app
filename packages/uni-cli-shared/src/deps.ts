@@ -47,7 +47,13 @@ export const API_DEPS_CSS = (isX: boolean) => {
       `${BASE_COMPONENTS_STYLE_PATH}/scroll-view.css`,
       `${BASE_COMPONENTS_STYLE_PATH}/image.css`,
     ]
-    deps_css.showLoading = [`${X_BASE_COMPONENTS_STYLE_PATH}loading.css`]
+    deps_css.showLoading = [
+      `${
+        isWebVapor
+          ? X_VAPOR_BASE_COMPONENTS_STYLE_PATH
+          : X_BASE_COMPONENTS_STYLE_PATH
+      }loading.css`,
+    ]
   } else {
     deps_css.showModal = [`${H5_API_STYLE_PATH}modal.css`]
     deps_css.showActionSheet = [`${H5_API_STYLE_PATH}action-sheet.css`]
@@ -62,6 +68,10 @@ export const API_DEPS_CSS = (isX: boolean) => {
 }
 export const COMPONENT_DEPS_CSS = (isX: boolean) => {
   const isWebVapor = isX && isUniAppXWebVapor()
+  // Refresher 在 Vapor 中直接使用 Loading，不能依赖页面另外引用 <loading> 才加载样式。
+  const loadingCss = isWebVapor
+    ? [X_VAPOR_BASE_COMPONENTS_STYLE_PATH + 'loading.css']
+    : []
   return {
     canvas: [RESIZE_SENSOR_CSS],
     image: [RESIZE_SENSOR_CSS],
@@ -76,7 +86,7 @@ export const COMPONENT_DEPS_CSS = (isX: boolean) => {
       componentCss('picker-view', isWebVapor),
       componentCss('picker-view-column', isWebVapor),
     ],
-    'scroll-view': [REFRESHER_CSS],
-    'list-view': [RESIZE_SENSOR_CSS, REFRESHER_CSS],
+    'scroll-view': [REFRESHER_CSS, ...loadingCss],
+    'list-view': [RESIZE_SENSOR_CSS, REFRESHER_CSS, ...loadingCss],
   }
 }

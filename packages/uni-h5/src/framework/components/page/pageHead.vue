@@ -193,8 +193,7 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
 import { Input } from '@dcloudio/uni-components'
-// TODO 优化导入路径
-import Loading from '../../../../../uni-components/src/vue/loading/index-x.vue'
+import Loading from '../../../../../uni-components/src/vue/loading'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
   ICON_PATH_BACK,
