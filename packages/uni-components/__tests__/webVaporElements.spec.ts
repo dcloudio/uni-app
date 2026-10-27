@@ -398,14 +398,14 @@ describe('Web Vapor 原生宿主 Element', () => {
     expect(legacy).toBeInstanceOf(Legacy)
     expect(legacy).toBeInstanceOf(UniElement)
     expect('__isUniElement' in legacy).toBe(false)
-    expect((legacy as any).dataset.get).toBeInstanceOf(Function)
+    expect((legacy as any).dataset.get).toBeUndefined()
     expect((legacy as any).getPage()).toBeNull()
     expect(view).not.toBeInstanceOf(Progress)
     expect(view).not.toBeInstanceOf(Legacy)
   })
 
   test.each([false, true])(
-    '真实初始化后仅旧组件使用 dataset 缓存，Vapor=%s',
+    'Vapor 不注册旧宿主，非 Vapor 保留注册和 dataset 缓存，Vapor=%s',
     async (vapor) => {
       const Base = (await loadUniElement(vapor, elementImports)).UniElement
       class LegacyField extends Base {}
@@ -429,7 +429,10 @@ describe('Web Vapor 原生宿主 Element', () => {
         elementImports
       )
       const name = vapor ? 'uni-test-vapor' : 'uni-test-vdom'
-      defineBuiltInComponent({ rootElement: { name, class: LegacyField } })
+      const rootElement = { name, class: LegacyField }
+      const component = defineBuiltInComponent({ rootElement })
+      expect(component.rootElement).toBe(rootElement)
+      expect(customElements.get(name)).toBe(vapor ? undefined : LegacyField)
       const first = document.createElement(name)
       const second = document.createElement(name)
       Object.defineProperty(LegacyField.prototype, 'tagName', {
@@ -437,22 +440,14 @@ describe('Web Vapor 原生宿主 Element', () => {
           throw new Error('识别旧组件不应重新读取和解析 DOM 标签名')
         },
       })
-      expect(identify(first)).toBe(true)
-      expect(identify(second)).toBe(true)
+      expect(identify(first)).toBe(!vapor)
+      expect(identify(second)).toBe(!vapor)
       expect(hasOwn(first, 'uniTagName')).toBe(false)
       expect(hasOwn(second, 'uniTagName')).toBe(false)
       if (vapor) {
-        expect((first as any).uniTagName).toBe('TEST-VAPOR')
-        expect((second as any).uniTagName).toBe('TEST-VAPOR')
+        expect('uniTagName' in first).toBe(false)
+        expect('uniTagName' in LegacyField.prototype).toBe(false)
         expect('__isUniElement' in first).toBe(false)
-        expect(
-          Object.getOwnPropertyDescriptor(LegacyField.prototype, 'uniTagName')
-        ).toEqual({
-          value: 'TEST-VAPOR',
-          writable: false,
-          enumerable: false,
-          configurable: true,
-        })
       } else {
         expect((first as any).__isUniElement).toBe(true)
         expect('uniTagName' in first).toBe(false)
@@ -526,16 +521,26 @@ describe('Web Vapor 原生宿主 Element', () => {
           }
         }
 
-        const payload = { count: 1 }
-        first.setAttribute('data-payload', payload as any)
-        expect(datasetApi.getCustomDataset(first).payload).toBe(payload)
-        expect((first as any).dataset.get('payload')).toBe(payload)
-        first.setAttribute('data-payload', 'updated')
-        expect(datasetApi.getCustomDataset(first).payload).toBe('updated')
-        expect((first as any).dataset.get('payload')).toBe('updated')
-        first.removeAttribute('data-payload')
-        expect(datasetApi.getCustomDataset(first)).not.toHaveProperty('payload')
-        expect((first as any).dataset.has('payload')).toBe(false)
+        if (vapor) {
+          expect(prototype.setAttribute).toBe(setAttribute)
+          expect(prototype.removeAttribute).toBe(removeAttribute)
+          first.setAttribute('data-payload', 'native')
+          expect(first.dataset.payload).toBe('native')
+          expect(hasOwn(first, '__uniDataset')).toBe(false)
+        } else {
+          const payload = { count: 1 }
+          first.setAttribute('data-payload', payload as any)
+          expect(datasetApi.getCustomDataset(first).payload).toBe(payload)
+          expect((first as any).dataset.get('payload')).toBe(payload)
+          first.setAttribute('data-payload', 'updated')
+          expect(datasetApi.getCustomDataset(first).payload).toBe('updated')
+          expect((first as any).dataset.get('payload')).toBe('updated')
+          first.removeAttribute('data-payload')
+          expect(datasetApi.getCustomDataset(first)).not.toHaveProperty(
+            'payload'
+          )
+          expect((first as any).dataset.has('payload')).toBe(false)
+        }
       } finally {
         prototype.setAttribute = setAttribute
         prototype.removeAttribute = removeAttribute
@@ -862,21 +867,31 @@ describe('Web Vapor 原生宿主 Element', () => {
           if (!vapor)
             expect(Object.hasOwn(Host.prototype, 'dataset')).toBe(false)
         }
-        const el = other.window.document.createElement('uni-field')
         const payload = { count: 1 }
-        el.setAttribute('data-removed', payload as any)
-        el.removeAttribute('data-removed')
-        el.setAttribute('data-payload', payload as any)
-        expect(el.__uniDataset.payload).toBe(payload)
-        const dataset = el.dataset
-        expect(dataset.has('removed')).toBe(false)
-        expect(dataset.get('payload')).toBe(payload)
-        el.setAttribute('data-payload', null as any)
-        expect(dataset.has('payload')).toBe(true)
-        expect(dataset.get('payload')).toBeNull()
-        el.removeAttribute('data-payload')
-        expect(dataset.has('payload')).toBe(false)
-        expect(el.__uniDataset).toEqual({})
+        if (vapor) {
+          const el = other.window.document.createElement('uni-field')
+          expect(el.setAttribute).toBe(installedSet)
+          expect(el.removeAttribute).toBe(installedRemove)
+          el.setAttribute('data-payload', payload as any)
+          expect(el.dataset.payload).toBe('[object Object]')
+          expect(el.__uniDataset).toBeUndefined()
+          expect(el.attachVmProps).toBeUndefined()
+        } else {
+          const el = other.window.document.createElement('uni-field')
+          el.setAttribute('data-removed', payload as any)
+          el.removeAttribute('data-removed')
+          el.setAttribute('data-payload', payload as any)
+          expect(el.__uniDataset.payload).toBe(payload)
+          const dataset = el.dataset
+          expect(dataset.has('removed')).toBe(false)
+          expect(dataset.get('payload')).toBe(payload)
+          el.setAttribute('data-payload', null as any)
+          expect(dataset.has('payload')).toBe(true)
+          expect(dataset.get('payload')).toBeNull()
+          el.removeAttribute('data-payload')
+          expect(dataset.has('payload')).toBe(false)
+          expect(el.__uniDataset).toEqual({})
+        }
         const plain = other.window.document.createElement('div')
         plain.setAttribute('data-value', payload as any)
         expect(plain.dataset).not.toBeInstanceOf(Map)
@@ -957,10 +972,32 @@ describe('Web Vapor 原生宿主 Element', () => {
     }
   })
 
+  test('Vapor 基类不再覆盖原生属性、dataset、样式和标签名', () => {
+    for (const name of [
+      'getAttribute',
+      'setAttribute',
+      'removeAttribute',
+      'dataset',
+      'style',
+      'tagName',
+      'nodeName',
+      'attachVmProps',
+    ]) {
+      expect(Object.hasOwn(UniElement.prototype, name)).toBe(false)
+    }
+    class Native extends UniElement {}
+    customElements.define('test-native-base', Native)
+    const el = document.createElement('test-native-base') as any
+    expect(el.tagName).toBe('TEST-NATIVE-BASE')
+    expect(el.nodeName).toBe('TEST-NATIVE-BASE')
+    expect(el.setAttribute).toBe(Element.prototype.setAttribute)
+    expect(el.removeAttribute).toBe(Element.prototype.removeAttribute)
+    expect(Object.keys(el)).toEqual([])
+  })
+
   test.each([
     [false, false],
     [false, true],
-    [true, true],
   ])(
     '拆分保留旧组件的直接继承与属性行为，Vapor=%s，X=%s',
     async (vapor, isX) => {

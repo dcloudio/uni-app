@@ -29,11 +29,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   props,
   emits: ['itemclick'],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: 'uni-rich-text',
     class: UniRichTextElement,
-    native: true,
   },
   setup(props, { emit }) {
     const rootRef = ref<HTMLElement | null>(null)

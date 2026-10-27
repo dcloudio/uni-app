@@ -40,8 +40,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Video',
   props: videoProps,
   emits: videoEmits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
-  rootElement: { name: 'uni-video', class: UniVideoElement, native: true },
+  rootElement: { name: 'uni-video', class: UniVideoElement },
   setup(props, context) {
     const { rootRef, toggleControls, methods, render } = useVideoComponent(
       props,

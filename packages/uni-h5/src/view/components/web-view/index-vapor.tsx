@@ -23,8 +23,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'WebView',
   props: webViewProps,
   emits: ['load'],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
-  rootElement: { name: 'uni-web-view', class: UniWebViewElement, native: true },
+  rootElement: { name: 'uni-web-view', class: UniWebViewElement },
   setup(props, { emit }) {
     const { rootRef, $listeners, $excludeAttrs } = useWebView(props, emit)
     const root = (

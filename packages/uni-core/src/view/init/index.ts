@@ -10,7 +10,7 @@ export function initView() {
     return
   }
   useRem()
-  // Vapor 的业务绑定显式双写，旧组件自行维护缓存，不安装全局属性拦截。
+  // Vapor 的业务绑定显式双写，不安装全局属性拦截；旧缓存机制仅用于非 Vapor。
   //#if !_X_VAPOR_
   initCustomDatasetOnce(isBuiltInElement)
   //#endif

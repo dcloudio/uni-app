@@ -25,8 +25,7 @@ const uniTagName = { value: 'BUTTON' }
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Button',
   props: buttonProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，旧注册机制清理后移除。
-  rootElement: { name: 'uni-button', class: UniButtonElement, native: true },
+  rootElement: { name: 'uni-button', class: UniButtonElement },
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
     const uniForm = useVaporButton(props, rootRef)

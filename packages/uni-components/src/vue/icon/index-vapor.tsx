@@ -20,8 +20,7 @@ const uniTagName = { value: 'ICON' }
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Icon',
   props: iconProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
-  rootElement: { name: 'uni-icon', class: UniIconElement, native: true },
+  rootElement: { name: 'uni-icon', class: UniIconElement },
   setup(props) {
     const path = useIcon(props)
     const root = (

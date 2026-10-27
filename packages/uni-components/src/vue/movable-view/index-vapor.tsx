@@ -22,11 +22,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'MovableView',
   props: movableViewProps,
   emits: ['change', 'scale'],
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: 'uni-movable-view',
     class: UniMovableViewElement,
-    native: true,
   },
   setup(props, { slots, emit }) {
     const { rootRef, setParent } = useMovableView(props, emit)

@@ -9,11 +9,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ScrollView',
   props,
   emits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: 'uni-scroll-view',
     class: UniScrollViewElement,
-    native: true,
   },
   setup(props, context) {
     const {

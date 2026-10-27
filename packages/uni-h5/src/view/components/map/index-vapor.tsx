@@ -29,8 +29,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Map',
   props: mapProps,
   emits: mapEmits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
-  rootElement: { name: 'uni-map', class: UniMapElement, native: true },
+  rootElement: { name: 'uni-map', class: UniMapElement },
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { mapRef, trigger } = useMap(

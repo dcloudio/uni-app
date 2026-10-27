@@ -7,8 +7,7 @@ export { UniCanvasElement }
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Canvas',
   props: canvasProps,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
-  rootElement: { name: 'uni-canvas', class: UniCanvasElement, native: true },
+  rootElement: { name: 'uni-canvas', class: UniCanvasElement },
   setup() {
     const root = (
       <div uni-canvas="" uni-view="">

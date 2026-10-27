@@ -20,11 +20,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Editor',
   props: editorProps,
   emits: editorEmit,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
   rootElement: {
     name: 'uni-editor',
     class: UniEditorElement,
-    native: true,
   },
   setup(props, { emit }) {
     const rootRef = useEditor(props, emit)

@@ -9,8 +9,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Input',
   props,
   emits,
-  // TODO native 仅用于迁移期间跳过旧注册流程，Vapor 旧组件全部迁移后移除。
-  rootElement: { name: 'uni-input', class: UniInputElement, native: true },
+  rootElement: { name: 'uni-input', class: UniInputElement },
   setup(props, context) {
     const {
       rootRef,
