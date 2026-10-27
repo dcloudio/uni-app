@@ -10102,7 +10102,7 @@ _sfc_main$m.setup = (props2, ctx) => {
 };
 class UniFlowItemElement extends UniViewElement {
 }
-class UniWaterflowElement extends UniScrollViewElement {
+class UniWaterflowElement extends UniScrollViewElementImpl {
 }
 const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   ...{
@@ -10356,7 +10356,7 @@ class UniStickySectionElement extends UniViewElement {
 }
 class UniStickyHeaderElement extends UniViewElement {
 }
-class UniListViewElement extends UniScrollViewElement {
+class UniListViewElement extends UniScrollViewElementImpl {
 }
 const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
   ...{
