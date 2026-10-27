@@ -21404,6 +21404,21 @@ function initUniDataset(el, data) {
 	el.$uniDataset = data;
 }
 //#endregion
+//#region packages/runtime-vapor-web/src/element.ts
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function initUniElementType(Type, name) {
+	if ((0, _vue_shared.hasOwn)(Type, Symbol.hasInstance)) return Type;
+	const marker = `uni-${name}`;
+	const Base = Object.getPrototypeOf(Type);
+	Object.defineProperty(Type, Symbol.hasInstance, { value(value) {
+		return this === Type && value instanceof Base && value.hasAttribute(marker) || nativeHasInstance.call(this, value);
+	} });
+	return Type;
+}
+function initUniElement(root, tagName) {
+	Object.defineProperty(root, "uniTagName", tagName);
+}
+//#endregion
 //#region packages/runtime-vapor-web/src/apiCreateRecycleFor.ts
 function preCreateRecycleFor(src, getKey, getId) {
 	const exposed = getCurrentInstance().provides["__uni_recycle_view_instance"].exposed;
@@ -22333,6 +22348,8 @@ exports.initCustomFormatter = initCustomFormatter;
 exports.initDirectivesForSSR = initDirectivesForSSR;
 exports.initFeatureFlags = initFeatureFlags;
 exports.initUniDataset = initUniDataset;
+exports.initUniElement = initUniElement;
+exports.initUniElementType = initUniElementType;
 exports.initUniPageHooks = initUniPageHooks;
 exports.inject = inject;
 exports.injectHook = injectHook;

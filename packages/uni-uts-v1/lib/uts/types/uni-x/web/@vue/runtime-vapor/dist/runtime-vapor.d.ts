@@ -1,6 +1,6 @@
 import { AllowedComponentProps, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, ComponentCustomElementInterface, ComponentCustomProps, ComponentInternalOptions, ComponentObjectPropsOptions, ComponentPropsOptions, ComponentTypeEmits, CreateAppFunction, CustomElementOptions, DirectiveModifiers, EffectScope, EmitFn, EmitsOptions, EmitsToProps, ExtractDefaultPropTypes, ExtractPropTypes, GenericAppContext, GenericComponentInstance, KeepAliveProps, LifecycleHook, MoveType, NULL_DYNAMIC_COMPONENT, NormalizedPropsOptions, ObjectEmitsOptions, Plugin, ReservedProps, SchedulerJob, ShallowUnwrapRef, SuspenseBoundary, TeleportProps, TransitionGroupProps, TransitionHooks, TransitionProps, TransitionState, TypeEmitsToOptions, VNode, VueElementBase } from "@vue/runtime-dom";
 import { EffectScope as EffectScope$1, ReactiveEffect, Ref, ShallowRef } from "@vue/reactivity";
-import { IsKeyValues, Namespace, NormalizedStyle, Prettify, VaporSlotStability, extend } from "@vue/shared";
+import { IsKeyValues, Namespace, NormalizedStyle, Prettify, VaporSingleRoot, VaporSlotStability, extend } from "@vue/shared";
 //#region temp/packages/runtime-vapor/src/apiTemplateRef.d.ts
 type NodeRef = string | Ref | ((ref: Element | VaporComponentInstance, refs: Record<string, any>) => void);
 type RefEl = Element | VaporComponentInstance | DynamicFragment | VaporFragment;
@@ -14,9 +14,21 @@ export declare function createTemplateRefSetter(): setRefFn;
 export declare function setStaticTemplateRef(el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string): void;
 export declare function setTemplateRefBinding(el: RefEl, getter: () => any, refFor?: boolean, refKey?: string): void;
 //#endregion
+//#region temp/packages/runtime-vapor/src/components/Transition.d.ts
+export declare const VaporTransition: FunctionalVaporComponent<TransitionProps>;
+interface KeyContext {
+  key: any;
+  type?: any;
+  slot?: boolean;
+  siblings?: boolean;
+  index?: number;
+}
+//#endregion
+//#region temp/packages/runtime-vapor/src/dom/hydrationState.d.ts
+export declare let isHydrating: boolean;
+//#endregion
 //#region temp/packages/runtime-vapor/src/dom/hydration.d.ts
 export declare let currentHydrationNode: Node | null;
-export declare let isHydrating: boolean;
 type Anchor = Node & {
   $vha?: number;
   $fe?: Anchor;
@@ -86,8 +98,10 @@ interface SlotBoundaryContext {
   adoptFallback?: (render: BlockFn) => Block;
   run<R>(fn: () => R, scope?: EffectScope$1): R;
   getScopeIds?: () => string[] | null;
-  markDirty: (force?: boolean) => void;
-  onContentInvalid?: (() => void)[];
+  markDirty: () => void;
+  isHolding: () => boolean;
+  isHeld: () => boolean;
+  fallthroughOwner?: FallthroughOwner;
 }
 //#endregion
 //#region temp/packages/runtime-vapor/src/renderContext.d.ts
@@ -113,10 +127,16 @@ export interface VaporKeepAliveContext {
 export declare class VaporFragment<T extends Block = Block> implements TransitionOptions {
   $key?: any;
   $transition?: VaporTransitionHooks | undefined;
+  $tkey?: any;
+  $ttype?: any;
+  $keyCtx?: KeyContext;
   nodes: T;
   vnode?: VNode | null;
   anchor?: Node;
   isBlockValid?: (componentAsValid?: boolean) => boolean;
+  getContent?(): Block;
+  awaitLeavingRoot?(cb: () => void): boolean;
+  slotName?: string;
   insert?(parent: ParentNode, anchor: Node | null, parentSuspense?: SuspenseBoundary | null, transitionHooks?: TransitionHooks): void;
   move?(parent: ParentNode, anchor: Node | null, moveType: MoveType, parentComponent?: VaporComponentInstance, parentSuspense?: SuspenseBoundary | null, transitionHooks?: TransitionHooks): void;
   remove?(parent?: ParentNode, transitionHooks?: TransitionHooks): void;
@@ -145,7 +165,7 @@ declare class RenderContextFragment<T extends Block = Block> extends VaporFragme
 }
 export declare class ForFragment extends VaporFragment<Block[]> {
   resetListeners?: (() => void)[];
-  constructor(nodes: Block[], trackSlotBoundary: boolean, onInvalid?: () => void);
+  constructor(nodes: Block[]);
   onReset(fn: () => void): void;
 }
 export declare class ForBlock extends VaporFragment {
@@ -165,8 +185,9 @@ export declare class DynamicFragment extends RenderContextFragment {
     key: any;
     noScope: boolean;
     branchKey?: any;
-    prevKey: any;
+    prevKey?: any;
   };
+  leaving?: boolean;
   anchorLabel?: string;
   keyed?: boolean;
   branchKey?: any;
@@ -174,11 +195,11 @@ export declare class DynamicFragment extends RenderContextFragment {
   hydrationClaim?: FragmentClaim;
   fallthrough?: (nodes: Block) => void;
   scopeIdOwners?: VaporComponentInstance[];
+  wasValid?: boolean;
   everUpdated: boolean;
-  constructor(flags?: number, anchorLabel?: string, keyed?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void, adoptAnchor?: Node);
+  constructor(flags?: number, anchorLabel?: string, keyed?: boolean, slotRoot?: boolean, adoptAnchor?: Node);
   protected get autoHydrate(): boolean;
   update(render?: BlockFn, key?: any, noScope?: boolean, branchKey?: any): void;
-  protected getBranchParent(): ParentNode | null;
   renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any, noScope: boolean, notifyUpdated: boolean, removePrevious?: () => void, branchKey?: any): void;
   private renderNodes;
 }
@@ -213,6 +234,11 @@ interface VaporTransitionState extends TransitionState {
   root?: Block;
   persisted?: boolean;
   refresh?: (hooks: VaporTransitionHooks) => void;
+  pendingLeave?: () => void;
+  siblingLeave?: DynamicFragment;
+  siblingEnter?: DynamicFragment[];
+  siblingDirty?: SlotBoundaryContext[];
+  siblingJob?: SchedulerJob;
 }
 export interface VaporTransitionHooks extends TransitionHooks {
   __vapor: true;
@@ -230,6 +256,11 @@ interface TransitionOptions {
   $key?: any;
   $transition?: VaporTransitionHooks;
   $vshow?: VShowFlags;
+  $tkey?: any;
+  $ttype?: any;
+  $keyCtx?: KeyContext;
+  $removing?: VaporTransitionHooks;
+  $rendered?: VaporTransitionHooks;
 }
 export type Block = Node | VaporFragment | DynamicFragment | VaporComponentInstance | Block[];
 type BlockFn = (...args: any[]) => Block;
@@ -242,8 +273,9 @@ export declare function remove(block: Block, parent?: ParentNode): void;
 export declare function removeNode(block: Node, parent?: ParentNode): void;
 /**
  * First node of a block as it appears in its own container, or `undefined`
- * when the block has no node there: an empty array of blocks, or a block
- * whose content lives elsewhere (a teleport target) and has no marker left.
+ * when the block has no node there: an empty array of blocks, an async setup
+ * component not mounted yet, or a block whose content lives elsewhere (a
+ * teleport target) and has no marker left.
  */
 export declare function getBlockFirstNode(block: Block): Node | undefined;
 export declare function findBlockBoundary(block: Block): {
@@ -388,7 +420,14 @@ interface SharedInternalOptions {
 type LooseRawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
 };
-export declare function createComponent(component: VaporComponent, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext, managedMount?: boolean, ce?: (instance: VaporComponentInstance) => void): VaporComponentInstance;
+interface FallthroughOwner {
+  type: VaporComponent;
+  attrs: Record<string, any>;
+  accessedAttrs?: boolean;
+  instance?: GenericComponentInstance | null;
+  adoptRoot?: (el: Element) => void;
+}
+export declare function createComponent(component: VaporComponent, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | VaporSingleRoot, once?: boolean, appContext?: GenericAppContext, managedMount?: boolean, ce?: (instance: VaporComponentInstance) => void): VaporComponentInstance;
 export declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emits extends EmitsOptions = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, any> = Record<string, any>> implements GenericComponentInstance {
   vapor: true;
   propsValues: Record<string, any>;
@@ -440,7 +479,7 @@ export declare class VaporComponentInstance<Props extends Record<string, any> = 
   inputScope?: EffectScope;
   unmountScope?: EffectScope;
   $key?: any;
-  deferredKeepAliveUpdates?: DeferredKeepAliveUpdates;
+  deferredRootUpdates?: DeferredRootUpdates;
   ce?: ComponentCustomElementInterface;
   isMounted: boolean;
   isUnmounted: boolean;
@@ -469,7 +508,7 @@ export declare class VaporComponentInstance<Props extends Record<string, any> = 
   hmrReload?: (newComp: VaporComponent) => void;
   propsOptions?: NormalizedPropsOptions;
   emitsOptions?: ObjectEmitsOptions | null;
-  isSingleRoot?: boolean;
+  isSingleRoot?: boolean | VaporSingleRoot;
   renderScope?: EffectScope;
   hmrRootHooks?: ((block: Block) => void)[];
   /**
@@ -491,15 +530,15 @@ export declare function isVaporComponent(value: unknown): value is VaporComponen
  * a string passed directly to `createComponentWithFallback` is plain element
  * fallback, not a component name.
  */
-export declare function createAssetComponent(name: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, maybeSelfReference?: boolean, ns?: Namespace, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
+export declare function createAssetComponent(name: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | VaporSingleRoot, once?: boolean, maybeSelfReference?: boolean, ns?: Namespace, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
 /**
  * Used when a component cannot be resolved at compile time
  * and needs rely on runtime resolution - where it might fallback to a plain
  * element if the resolution fails.
  */
-export declare function createComponentWithFallback(comp: VaporComponent | typeof NULL_DYNAMIC_COMPONENT | string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, ns?: Namespace, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
-export declare function createPlainElement(comp: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, ns?: Namespace): HTMLElement;
-interface DeferredKeepAliveUpdates {
+export declare function createComponentWithFallback(comp: VaporComponent | typeof NULL_DYNAMIC_COMPONENT | string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | VaporSingleRoot, once?: boolean, ns?: Namespace, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
+export declare function createPlainElement(comp: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | VaporSingleRoot, once?: boolean, ns?: Namespace): HTMLElement;
+interface DeferredRootUpdates {
   effects: SchedulerJob[];
   owners: VaporComponentInstance[];
   suspense: SuspenseBoundary;
@@ -685,7 +724,7 @@ type TargetElement = Element & {
   $dprops?: Record<string, any>;
 };
 export declare function setProp(el: any, key: string, value: any): void;
-export declare function setAttr(el: any, key: string, value: any, isSVG?: boolean, forceHydrate?: boolean): void;
+export declare function setAttr(el: any, key: string, value: any, isSVG?: boolean, forceHydrate?: boolean, removed?: boolean): void;
 export declare function setDOMProp(el: any, key: string, value: any, forceHydrate?: boolean, attrName?: string): void;
 export declare function setClass(el: TargetElement, value: any, isSVG?: boolean, isNormalized?: boolean): void;
 export declare function setClassName(el: TargetElement, flags: number, cls: string | string[], prefix?: string, suffix?: string): void;
@@ -713,6 +752,19 @@ export declare function setDynamicEvents(el: HTMLElement, events: Record<string,
 //#endregion
 //#region temp/packages/runtime-vapor/src/apiCreateIf.d.ts
 export declare function createIf(condition: () => any, b1: BlockFn, b2?: BlockFn, flags?: number): Block;
+//#endregion
+//#region temp/packages/runtime-vapor/src/apiCreateIfChain.d.ts
+/**
+ * A long `v-if` / `v-else-if` chain as one fragment: `select` returns the
+ * index of the branch to render, `blocks.length` when none matches. Nested
+ * `createIf` calls would recurse once per branch at creation.
+ *
+ * `branchFlags[i]` carries branch i's shape in the low two bits and
+ * `TRUE_NO_SCOPE`; its last entry describes the `v-else` branch or, without
+ * one, the empty state. `null` means every branch is a scoped single root
+ * and the empty state is empty.
+ */
+export declare function createIfChain(select: () => number, blocks: BlockFn[], branchFlags: number[] | null, flags: number): Block;
 //#endregion
 //#region temp/packages/runtime-vapor/src/apiCreateFragment.d.ts
 /**
@@ -753,6 +805,7 @@ interface ForSelector {
  */
 export declare function createSelector(source: () => any): ForSelector;
 export declare function createForSlots(rawSource: () => Source, renderSlot: (item: ShallowRef, key?: ShallowRef, index?: ShallowRef) => VaporSlot, getName: (item: any, key: any, index?: number) => unknown, getKey?: (item: any, key: any, index?: number) => unknown): () => DynamicSlot[];
+export declare function createItemRef(item: any): ShallowRef;
 export declare function getRestElement(val: any, keys: string[]): any;
 export declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
 //#endregion
@@ -791,9 +844,6 @@ export declare const applyCheckboxModel: VaporModelDirective<HTMLInputElement>;
 export declare const applyRadioModel: VaporModelDirective<HTMLInputElement>;
 export declare const applySelectModel: VaporModelDirective<HTMLSelectElement, "number">;
 export declare const applyDynamicModel: VaporModelDirective;
-//#endregion
-//#region temp/packages/runtime-vapor/src/components/Transition.d.ts
-export declare const VaporTransition: FunctionalVaporComponent<TransitionProps>;
 //#endregion
 //#region temp/packages/runtime-vapor/src/components/TransitionGroup.d.ts
 export declare const VaporTransitionGroup: DefineVaporComponent<{}, string, TransitionGroupProps>;

@@ -28720,7 +28720,7 @@ function genOperations(opers, context) {
 }
 function genOperationWithInsertionState(oper, context) {
 	const [frag, push] = buildCodeFragment();
-	if (isBlockOperation(oper) && oper.parent) push(...genInsertionState(oper, context));
+	if (isBlockOperation(oper) && oper.parent !== void 0) push(...genInsertionState(oper, context));
 	push(...genOperation(oper, context));
 	return frag;
 }
@@ -29508,6 +29508,63 @@ function closesOpenAncestor(tag, ns, parentTag, scope) {
 	}
 	return false;
 }
+const BUILT_IN_TAGS = /*#__PURE__*/ [
+	"ad",
+	"ad-content-page",
+	"ad-draw",
+	"audio",
+	"button",
+	"camera",
+	"canvas",
+	"checkbox",
+	"checkbox-group",
+	"cover-image",
+	"cover-view",
+	"editor",
+	"form",
+	"functional-page-navigator",
+	"icon",
+	"image",
+	"input",
+	"label",
+	"live-player",
+	"live-pusher",
+	"map",
+	"movable-area",
+	"movable-view",
+	"navigator",
+	"official-account",
+	"open-data",
+	"picker",
+	"picker-view",
+	"picker-view-column",
+	"progress",
+	"radio",
+	"radio-group",
+	"rich-text",
+	"scroll-view",
+	"slider",
+	"swiper",
+	"swiper-item",
+	"switch",
+	"text",
+	"textarea",
+	"video",
+	"view",
+	"web-view",
+	"location-picker",
+	"location-view"
+].map((tag) => "uni-" + tag);
+const UVUE_WEB_BUILT_IN_TAGS = /*#__PURE__*/ [
+	"page-container",
+	"list-view",
+	"list-item",
+	"sticky-section",
+	"sticky-header",
+	"cloud-db-element",
+	"loading-element",
+	"loading"
+].map((tag) => "uni-" + tag);
 const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
 const hasRpxRE = /[ru]px/;
 function normalizeRpx(value) {
@@ -29518,6 +29575,48 @@ function normalizeRpx(value) {
 		const result = Math.round(whole / 10) * 10 / 1e6;
 		return result === 0 ? "0" : `${result}rem`;
 	});
+}
+const UVUE_VAPOR_APP_EASYCOMS = [
+	"ad",
+	"camera",
+	"canvas",
+	"editor",
+	"button",
+	"checkbox",
+	"checkbox-group",
+	"form",
+	"input",
+	"label",
+	"picker",
+	"picker-view",
+	"picker-view-column",
+	"radio",
+	"radio-group",
+	"slider",
+	"switch",
+	"textarea",
+	"list-item",
+	"list-view",
+	"sticky-header",
+	"sticky-section",
+	"live-player",
+	"live-pusher",
+	"loading",
+	"map",
+	"match-media",
+	"navigator",
+	"page-container",
+	"progress",
+	"rich-text",
+	"swiper",
+	"swiper-item",
+	"video",
+	"flow-item",
+	"waterflow",
+	"web-view"
+];
+function isDom2AppVueComponentTag(tag) {
+	return UVUE_VAPOR_APP_EASYCOMS.includes(tag);
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
@@ -32004,6 +32103,67 @@ function createDatasetTransform() {
 	};
 }
 //#endregion
+//#region packages/compiler-vapor-web/src/uniElement.ts
+const names = /* @__PURE__ */ new Set([...BUILT_IN_TAGS, ...UVUE_WEB_BUILT_IN_TAGS]);
+function resolveUniElementRoot(ast, name) {
+	if (!ast || !(names.has(`uni-${name}`) || isDom2AppVueComponentTag(name))) return;
+	const roots = ast.children.filter((node) => node.type !== 3 && !(node.type === 2 && !node.content.trim()));
+	if (roots.length !== 1) return;
+	const root = roots[0];
+	if (root.type !== 1 || ![
+		"view",
+		"text",
+		"image",
+		"cover-view",
+		"cover-image"
+	].includes(root.tag) || root.props.some((prop) => prop.type === 7 && prop.name === "for" || prop.type === 6 && prop.name === `uni-${name}`)) return;
+	return root;
+}
+//#endregion
+//#region packages/compiler-vapor-web/src/transforms/transformUniElement.ts
+function createUniElementTransform() {
+	let root;
+	let name;
+	let descriptor;
+	let elementOperation;
+	return {
+		transform(node, context) {
+			if (node.type === 0) {
+				name = context.options.bindingMetadata.__uniElement;
+				if (name) root = resolveUniElementRoot(node, name);
+			} else if (root && node.type === 1 && node.loc === root.loc && isUniBasicElement(node)) {
+				if (!node.props.some((prop) => prop.type === 6 && prop.name === `uni-${name}`)) node.props.unshift({
+					type: 6,
+					name: `uni-${name}`,
+					nameLoc: node.loc,
+					value: void 0,
+					loc: node.loc
+				});
+				const operation = {
+					type: 3,
+					element: context.reference(),
+					tag: node.tag,
+					isSVG: false,
+					prop: {
+						key: createSimpleExpression("uniTagName", true),
+						values: []
+					}
+				};
+				elementOperation = operation;
+				context.registerOperation(operation);
+			}
+		},
+		genOperation(operation, context) {
+			if (operation !== elementOperation) return;
+			if (!descriptor) {
+				descriptor = context.getUniqueLocalName("_uniElement");
+				context.hoists.push(`const ${descriptor} = { value: ${JSON.stringify(name.toUpperCase())} }\n`);
+			}
+			return [NEWLINE, ...genCall(context.helper("initUniElement"), `n${operation.element}`, descriptor)];
+		}
+	};
+}
+//#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformUniAppXWeb.ts
 function createUniAppXWebTransform(options = {}) {
 	if (options.ssr) {
@@ -32022,6 +32182,7 @@ function createUniAppXWebTransform(options = {}) {
 	const recycle = createRecycleForTransform();
 	const componentId = createComponentIdTransform(recycle);
 	const dataset = createDatasetTransform();
+	const element = createUniElementTransform();
 	return {
 		transform: (node, context) => {
 			transformListView(node, context);
@@ -32034,6 +32195,7 @@ function createUniAppXWebTransform(options = {}) {
 			transformStaticStyle(node);
 			return [exitRecycle, exitComponentId].flat().filter((exit) => !!exit);
 		},
+		transformUniElement: element.transform,
 		transformElementProps: (props, node, context, getEffectIndex) => {
 			dataset.transformElementProps(props, node, context, getEffectIndex);
 			hover.transformElementProps(props, node, context, getEffectIndex);
@@ -32041,9 +32203,9 @@ function createUniAppXWebTransform(options = {}) {
 			text.transformElementProps(props, node, context, getEffectIndex);
 		},
 		genOperation: (operation, context) => {
-			var _hover$genOperation, _componentId$genOpera, _dataset$genOperation, _image$genOperation, _text$genOperation;
+			var _hover$genOperation, _componentId$genOpera, _element$genOperation, _dataset$genOperation, _image$genOperation, _text$genOperation;
 			const hoverOperation = (_hover$genOperation = hover.genOperation) === null || _hover$genOperation === void 0 ? void 0 : _hover$genOperation.call(hover, operation, context);
-			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || ((_dataset$genOperation = dataset.genOperation) === null || _dataset$genOperation === void 0 ? void 0 : _dataset$genOperation.call(dataset, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
+			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || ((_element$genOperation = element.genOperation) === null || _element$genOperation === void 0 ? void 0 : _element$genOperation.call(element, operation, context)) || ((_dataset$genOperation = dataset.genOperation) === null || _dataset$genOperation === void 0 ? void 0 : _dataset$genOperation.call(dataset, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
 		},
 		genEventHandler: image.genEventHandler
 	};
@@ -32094,6 +32256,7 @@ function compile(source, options = {}) {
 	const ast = typeof source === "string" ? parse$6(source, resolvedOptions) : source;
 	const [nodeTransforms, directiveTransforms] = getBaseTransformPreset();
 	const web = createUniAppXWebTransform();
+	nodeTransforms.splice(nodeTransforms.indexOf(transformChildren), 0, web.transformUniElement);
 	return generate(transform(ast, _objectSpread2(_objectSpread2({}, resolvedOptions), {}, {
 		transformElementProps: web.transformElementProps,
 		nodeTransforms: [
@@ -32123,7 +32286,8 @@ var src_exports = /* @__PURE__ */ __exportAll({
 	UNI_APP_SCOPE_ID: () => UNI_APP_SCOPE_ID,
 	compile: () => compile,
 	compileSSR: () => compileSSR,
-	parse: () => parse$3
+	parse: () => parse$3,
+	resolveUniElementRoot: () => resolveUniElementRoot
 });
 //#endregion
 //#region \0polyfill-node.fs.js
@@ -44538,6 +44702,33 @@ function processAwait(ctx, node, needSemi, isStatement) {
 	ctx.s.appendLeft(node.end + startOffset, `)),\n  ${isStatement ? `` : `__temp = `}await __temp,\n  __restore()${isStatement ? `` : `,\n  __temp`}\n)`);
 }
 //#endregion
+//#region packages/compiler-sfc/src/script/uniElement.ts
+function processUniElement(ctx) {
+	var _options$templateOpti, _options$templateOpti2;
+	const { descriptor, options } = ctx;
+	const template = descriptor.template;
+	const compiler = (_options$templateOpti = options.templateOptions) === null || _options$templateOpti === void 0 ? void 0 : _options$templateOpti.compiler;
+	if (!(descriptor.vapor || options.vapor) || ((_options$templateOpti2 = options.templateOptions) === null || _options$templateOpti2 === void 0 ? void 0 : _options$templateOpti2.ssr) || compiler && compiler.parse !== parse$3 || !(template === null || template === void 0 ? void 0 : template.ast) || template.src || template.lang) return;
+	const declaration = ctx.optionsRuntimeDecl;
+	const name = readOption(declaration, "name");
+	const elementClass = readOption(readOption(declaration, "rootElement"), "class");
+	if ((name === null || name === void 0 ? void 0 : name.type) !== "StringLiteral" || (elementClass === null || elementClass === void 0 ? void 0 : elementClass.type) !== "Identifier" || !resolveUniElementRoot(template.ast, name.value)) return;
+	Object.defineProperty(ctx.bindingMetadata, "__uniElement", { value: name.value });
+	const source = descriptor.scriptSetup.content;
+	return source.slice(declaration.start, elementClass.start) + `/*@__PURE__*/${ctx.helper("initUniElementType")}(${elementClass.name}, ${JSON.stringify(name.value)})` + source.slice(elementClass.end, declaration.end);
+}
+function readOption(node, name) {
+	if (!node) return;
+	node = unwrapTSNode(node);
+	if (node.type !== "ObjectExpression") return;
+	let value;
+	for (const prop of node.properties) {
+		if (prop.type === "SpreadElement" || prop.computed) return;
+		if (prop.key.type === "Identifier" && prop.key.name === name || prop.key.type === "StringLiteral" && prop.key.value === name) value = prop.type === "ObjectProperty" ? unwrapTSNode(prop.value) : void 0;
+	}
+	return value;
+}
+//#endregion
 //#region packages/compiler-sfc/src/compileScript.ts
 init_objectSpread2();
 const MACROS = [
@@ -44861,6 +45052,7 @@ function compileScript(sfc, options) {
 		const isolation = resolveUniStyleIsolation(ctx.optionsRuntimeDecl, resolveUniStyleIsolation(defaultExport));
 		if (isolation !== void 0) Object.defineProperty(ctx.bindingMetadata, "__uniStyleIsolation", { value: isolation });
 	}
+	const uniElementOptions = processUniElement(ctx);
 	let args = `__props`;
 	if (ctx.propsTypeDecl) args += `: any`;
 	if (ctx.propsDecl) {
@@ -44944,8 +45136,8 @@ function compileScript(sfc, options) {
 		var _options$templateOpti3;
 		if (isMultiRoot(sfc.template.ast, (_options$templateOpti3 = options.templateOptions) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
 	}
-	let definedOptions = "";
-	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
+	let definedOptions = uniElementOptions || "";
+	if (!definedOptions && ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
 	if (!ctx.hasDefineExposeCall && !inlineMode) setupPreambleLines.push(`__expose();`);
 	const setupPreamble = setupPreambleLines.length ? `  ${setupPreambleLines.join("\n  ")}\n` : "";
 	if (ctx.isTS) {

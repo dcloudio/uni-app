@@ -782,8 +782,11 @@ export declare class WatcherEffect extends ReactiveEffect {
   forceTrigger: boolean;
   isMultiSource: boolean;
   oldValue: any;
+  cbCleanups?: (() => void)[];
   boundCleanup: typeof onWatcherCleanup;
   constructor(source: WatchSource | WatchSource[] | WatchEffect | object, cb?: WatchCallback<any, any> | null | undefined, options?: WatchOptions);
+  cleanupCallback(): void;
+  stop(): void;
   run(initialRun?: boolean): void;
 }
 export declare function watch(source: WatchSource | WatchSource[] | WatchEffect | object, cb?: WatchCallback | null, options?: WatchOptions): WatchHandle;

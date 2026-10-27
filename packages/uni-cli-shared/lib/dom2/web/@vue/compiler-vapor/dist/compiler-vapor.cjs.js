@@ -2913,7 +2913,7 @@ function genOperations(opers, context) {
 }
 function genOperationWithInsertionState(oper, context) {
 	const [frag, push] = buildCodeFragment();
-	if (isBlockOperation(oper) && oper.parent) push(...genInsertionState(oper, context));
+	if (isBlockOperation(oper) && oper.parent !== void 0) push(...genInsertionState(oper, context));
 	push(...genOperation(oper, context));
 	return frag;
 }

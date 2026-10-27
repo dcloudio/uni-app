@@ -1,4 +1,4 @@
-import { Block, ForFragment, VaporComponentInstance, VaporSlot } from "@vue/runtime-vapor";
+import { Block, ForFragment, VaporComponentInstance, VaporSlot, isTransitionEnabled } from "@vue/runtime-vapor";
 import { withAsyncContext } from "@vue/runtime-core";
 import { normalizeUniText } from "@vue/shared";
 import { Ref, ShallowRef } from "@vue/reactivity";
@@ -20,6 +20,13 @@ export declare function setHover(el: HTMLElement, hoverClass: unknown, stopPropa
 //#endregion
 //#region temp/packages/runtime-vapor-web/src/view.d.ts
 export declare function setViewDynamicProps(el: HTMLElement, args: any[], staticKeys?: string[], isSVG?: boolean): void;
+//#endregion
+//#region temp/packages/runtime-vapor-web/src/dataset.d.ts
+export declare function initUniDataset(el: HTMLElement, data: Readonly<Record<string, string>>): void;
+//#endregion
+//#region temp/packages/runtime-vapor-web/src/element.d.ts
+export declare function initUniElementType<T extends Function>(Type: T, name: string): T;
+export declare function initUniElement(root: Element, tagName: PropertyDescriptor): void;
 //#endregion
 //#region temp/packages/runtime-vapor-web/src/apiCreateRecycleFor.d.ts
 type Source = any[] | Record<any, any> | number | string | Set<any> | Map<any, any>;
@@ -58,4 +65,4 @@ export declare function setImageMode(el: ImageElement, value: unknown): void;
 export declare function setImageDynamicProps(el: HTMLImageElement, args: any[], staticKeys?: string[], isSVG?: boolean): void;
 export declare function setImageDynamicEvents(el: HTMLElement, events: Record<string, any>): void;
 //#endregion
-export { type VaporSlot, normalizeUniText, withAsyncContext };
+export { type VaporSlot, isTransitionEnabled, normalizeUniText, withAsyncContext };

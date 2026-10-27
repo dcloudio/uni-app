@@ -560,6 +560,67 @@ function createDatasetTransform() {
 	};
 }
 //#endregion
+//#region packages/compiler-vapor-web/src/uniElement.ts
+const names = /* @__PURE__ */ new Set([..._dcloudio_uni_shared.BUILT_IN_TAGS, ..._dcloudio_uni_shared.UVUE_WEB_BUILT_IN_TAGS]);
+function resolveUniElementRoot(ast, name) {
+	if (!ast || !(names.has(`uni-${name}`) || (0, _dcloudio_uni_shared.isDom2AppVueComponentTag)(name))) return;
+	const roots = ast.children.filter((node) => node.type !== 3 && !(node.type === 2 && !node.content.trim()));
+	if (roots.length !== 1) return;
+	const root = roots[0];
+	if (root.type !== 1 || ![
+		"view",
+		"text",
+		"image",
+		"cover-view",
+		"cover-image"
+	].includes(root.tag) || root.props.some((prop) => prop.type === 7 && prop.name === "for" || prop.type === 6 && prop.name === `uni-${name}`)) return;
+	return root;
+}
+//#endregion
+//#region packages/compiler-vapor-web/src/transforms/transformUniElement.ts
+function createUniElementTransform() {
+	let root;
+	let name;
+	let descriptor;
+	let elementOperation;
+	return {
+		transform(node, context) {
+			if (node.type === 0) {
+				name = context.options.bindingMetadata.__uniElement;
+				if (name) root = resolveUniElementRoot(node, name);
+			} else if (root && node.type === 1 && node.loc === root.loc && (0, _vue_compiler_vapor.isUniBasicElement)(node)) {
+				if (!node.props.some((prop) => prop.type === 6 && prop.name === `uni-${name}`)) node.props.unshift({
+					type: 6,
+					name: `uni-${name}`,
+					nameLoc: node.loc,
+					value: void 0,
+					loc: node.loc
+				});
+				const operation = {
+					type: 3,
+					element: context.reference(),
+					tag: node.tag,
+					isSVG: false,
+					prop: {
+						key: (0, _vue_compiler_dom.createSimpleExpression)("uniTagName", true),
+						values: []
+					}
+				};
+				elementOperation = operation;
+				context.registerOperation(operation);
+			}
+		},
+		genOperation(operation, context) {
+			if (operation !== elementOperation) return;
+			if (!descriptor) {
+				descriptor = context.getUniqueLocalName("_uniElement");
+				context.hoists.push(`const ${descriptor} = { value: ${JSON.stringify(name.toUpperCase())} }\n`);
+			}
+			return [_vue_compiler_vapor.NEWLINE, ...(0, _vue_compiler_vapor.genCall)(context.helper("initUniElement"), `n${operation.element}`, descriptor)];
+		}
+	};
+}
+//#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformUniAppXWeb.ts
 function createUniAppXWebTransform(options = {}) {
 	if (options.ssr) {
@@ -578,6 +639,7 @@ function createUniAppXWebTransform(options = {}) {
 	const recycle = createRecycleForTransform();
 	const componentId = createComponentIdTransform(recycle);
 	const dataset = createDatasetTransform();
+	const element = createUniElementTransform();
 	return {
 		transform: (node, context) => {
 			transformListView(node, context);
@@ -590,6 +652,7 @@ function createUniAppXWebTransform(options = {}) {
 			transformStaticStyle(node);
 			return [exitRecycle, exitComponentId].flat().filter((exit) => !!exit);
 		},
+		transformUniElement: element.transform,
 		transformElementProps: (props, node, context, getEffectIndex) => {
 			dataset.transformElementProps(props, node, context, getEffectIndex);
 			hover.transformElementProps(props, node, context, getEffectIndex);
@@ -597,9 +660,9 @@ function createUniAppXWebTransform(options = {}) {
 			text.transformElementProps(props, node, context, getEffectIndex);
 		},
 		genOperation: (operation, context) => {
-			var _hover$genOperation, _componentId$genOpera, _dataset$genOperation, _image$genOperation, _text$genOperation;
+			var _hover$genOperation, _componentId$genOpera, _element$genOperation, _dataset$genOperation, _image$genOperation, _text$genOperation;
 			const hoverOperation = (_hover$genOperation = hover.genOperation) === null || _hover$genOperation === void 0 ? void 0 : _hover$genOperation.call(hover, operation, context);
-			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || ((_dataset$genOperation = dataset.genOperation) === null || _dataset$genOperation === void 0 ? void 0 : _dataset$genOperation.call(dataset, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
+			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || ((_element$genOperation = element.genOperation) === null || _element$genOperation === void 0 ? void 0 : _element$genOperation.call(element, operation, context)) || ((_dataset$genOperation = dataset.genOperation) === null || _dataset$genOperation === void 0 ? void 0 : _dataset$genOperation.call(dataset, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
 		},
 		genEventHandler: image.genEventHandler
 	};
@@ -624,6 +687,7 @@ function compile(source, options = {}) {
 	const ast = typeof source === "string" ? (0, _vue_compiler_dom.parse)(source, resolvedOptions) : source;
 	const [nodeTransforms, directiveTransforms] = (0, _vue_compiler_vapor.getBaseTransformPreset)();
 	const web = createUniAppXWebTransform();
+	nodeTransforms.splice(nodeTransforms.indexOf(_vue_compiler_vapor.transformChildren), 0, web.transformUniElement);
 	const ir = (0, _vue_compiler_vapor.transform)(ast, {
 		...resolvedOptions,
 		transformElementProps: web.transformElementProps,
@@ -659,3 +723,4 @@ exports.UNI_APP_SCOPE_ID = _vue_shared.UNI_APP_SCOPE_ID;
 exports.compile = compile;
 exports.compileSSR = compileSSR;
 exports.parse = parse;
+exports.resolveUniElementRoot = resolveUniElementRoot;

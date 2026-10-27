@@ -15461,6 +15461,32 @@ function processAwait(ctx, node, needSemi, isStatement) {
 	ctx.s.appendLeft(node.end + startOffset, `)),\n  ${isStatement ? `` : `__temp = `}await __temp,\n  __restore()${isStatement ? `` : `,\n  __temp`}\n)`);
 }
 //#endregion
+//#region packages/compiler-sfc/src/script/uniElement.ts
+function processUniElement(ctx) {
+	const { descriptor, options } = ctx;
+	const template = descriptor.template;
+	const compiler = options.templateOptions?.compiler;
+	if (!(descriptor.vapor || options.vapor) || options.templateOptions?.ssr || compiler && compiler.parse !== _dcloudio_compiler_vapor_web.parse || !template?.ast || template.src || template.lang) return;
+	const declaration = ctx.optionsRuntimeDecl;
+	const name = readOption(declaration, "name");
+	const elementClass = readOption(readOption(declaration, "rootElement"), "class");
+	if (name?.type !== "StringLiteral" || elementClass?.type !== "Identifier" || !(0, _dcloudio_compiler_vapor_web.resolveUniElementRoot)(template.ast, name.value)) return;
+	Object.defineProperty(ctx.bindingMetadata, "__uniElement", { value: name.value });
+	const source = descriptor.scriptSetup.content;
+	return source.slice(declaration.start, elementClass.start) + `/*@__PURE__*/${ctx.helper("initUniElementType")}(${elementClass.name}, ${JSON.stringify(name.value)})` + source.slice(elementClass.end, declaration.end);
+}
+function readOption(node, name) {
+	if (!node) return;
+	node = (0, _vue_compiler_dom.unwrapTSNode)(node);
+	if (node.type !== "ObjectExpression") return;
+	let value;
+	for (const prop of node.properties) {
+		if (prop.type === "SpreadElement" || prop.computed) return;
+		if (prop.key.type === "Identifier" && prop.key.name === name || prop.key.type === "StringLiteral" && prop.key.value === name) value = prop.type === "ObjectProperty" ? (0, _vue_compiler_dom.unwrapTSNode)(prop.value) : void 0;
+	}
+	return value;
+}
+//#endregion
 //#region packages/compiler-sfc/src/compileScript.ts
 const MACROS = [
 	DEFINE_PROPS,
@@ -15781,6 +15807,7 @@ function compileScript(sfc, options) {
 		const isolation = resolveUniStyleIsolation(ctx.optionsRuntimeDecl, resolveUniStyleIsolation(defaultExport));
 		if (isolation !== void 0) Object.defineProperty(ctx.bindingMetadata, "__uniStyleIsolation", { value: isolation });
 	}
+	const uniElementOptions = processUniElement(ctx);
 	let args = `__props`;
 	if (ctx.propsTypeDecl) args += `: any`;
 	if (ctx.propsDecl) {
@@ -15867,8 +15894,8 @@ function compileScript(sfc, options) {
 	if (vapor && !ssr && sfc.template && !sfc.template.src) {
 		if (isMultiRoot(sfc.template.ast, options.templateOptions?.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
 	}
-	let definedOptions = "";
-	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
+	let definedOptions = uniElementOptions || "";
+	if (!definedOptions && ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
 	if (!ctx.hasDefineExposeCall && !inlineMode) setupPreambleLines.push(`__expose();`);
 	const setupPreamble = setupPreambleLines.length ? `  ${setupPreambleLines.join("\n  ")}\n` : "";
 	if (ctx.isTS) {
