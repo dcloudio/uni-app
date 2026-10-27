@@ -1,6 +1,0 @@
-framework module TencentLBS {
-  umbrella header "TencentLBS.h"
-
-  export *
-  module * { export * }
-}
