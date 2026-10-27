@@ -1,10 +1,11 @@
 import { ChooseMedia, ChooseMediaOptions, ChooseMediaSuccess, ChooseMediaTempFile } from '../interface.uts';
 import { ChooseMediaApiOptions, ChooseMediaApiProtocol, API_CHOOSE_MEDIA } from '../protocol.uts';
-import { _chooseMedia, __ChooseMediaOptions, getMediaAssetInfo } from './media.uts'
+import { _chooseMedia, __ChooseMediaOptions, getMediaAssetInfo, copyMediaFile } from './media.uts'
 import { ChooseMediaErrorImpl } from '../unierror.uts'
 import { cameraPicker, camera } from '@kit.CameraKit'
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import { uni } from '@dcloudio/uni-runtime'
+
 
 type CameraPosition = 'back' | 'front'
 type UNI_MEDIA_TYPE = 'image' | 'video' | 'mix'
@@ -52,10 +53,11 @@ const _takeCamera = async (args: ChooseMediaOptions, executor: ApiExecutor<Choos
       executor.reject(err.message, err as ApiError);
     } else {
       const assetInfo = await getMediaAssetInfo(res.resultUri)
+      const tempFilePath = await copyMediaFile(res.resultUri)
       const isVideo = assetInfo.fileType === 'video'
       let tempFile: ChooseMediaTempFile = {
         fileType: assetInfo.fileType,
-        tempFilePath: res.resultUri,
+        tempFilePath,
         size: !isVideo ? assetInfo.byteSize : assetInfo.size,
         byteSize: null,
         thumbTempFilePath: null,

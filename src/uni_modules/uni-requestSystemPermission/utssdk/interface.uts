@@ -1,0 +1,140 @@
+export type RequestSystemPermissionErrorCode =
+/**
+ * 申请权限为空
+ */
+1560601 |
+/**
+ * 不支持申请权限
+ */
+1560604
+
+
+/**
+ * 申请系统权限成功回调参数
+ */
+export interface RequestSystemPermissionSuccess {
+  /**
+   * 已授权权限列表，仅包含当前系统支持的权限
+   */
+  grantedList: string[]
+  /**
+   * 已拒绝权限列表
+   */
+  deniedList: string[]
+  /**
+   * 不在询问权限列表
+   */
+  doNotAskAgainList: string[]
+}
+type RequestSystemPermissionSuccessCallback = (result: RequestSystemPermissionSuccess) => void
+
+/**
+ * 申请系统权限失败回调参数
+ */
+export interface RequestSystemPermissionFail extends IUniError {
+  /**
+   * 错误码
+   */
+  errCode: RequestSystemPermissionErrorCode
+}
+type RequestSystemPermissionFailCallback = (result: RequestSystemPermissionFail) => void
+
+/**
+ * 申请系统权限完成回调参数
+ */
+export type RequestSystemPermissionComplete = any
+type RequestSystemPermissionCompleteCallback = (result: RequestSystemPermissionComplete) => void
+
+/**
+ * 请求系统权限参数
+ */
+export type RequestSystemPermissionOptions = {
+  /**
+   * 申请的系统权限列表
+   */
+  permissions: string[]
+  /**
+   * 申请系统权限成功回调
+   */
+  success?: RequestSystemPermissionSuccessCallback | null
+
+  fail?: RequestSystemPermissionFailCallback | null
+  complete?: RequestSystemPermissionCompleteCallback | null
+}
+
+export type RequestSystemPermission = (options: RequestSystemPermissionOptions) => void
+
+export interface Uni {
+  /**
+   * 申请系统权限
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/request-system-permission.html
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/request-system-permission.html
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/request-system-permission.html
+	 * @uniPlatform {
+	 * 	"app": {
+	 * 		"android": {
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "5.25",
+	 * 			"unixVaporVer": "5.25"
+	 * 		},
+	 * 		"ios": {
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x",
+	 * 			"unixVaporVer": "x"
+	 * 		},
+	 * 		"harmony": {
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "5.25",
+	 * 			"unixVaporVer": "5.25"
+	 * 		}
+	 * 	},
+	 * 	"web": {
+	 * 		"uniVer": "x",
+	 * 		"unixVer": "x"
+	 * 	},
+	 * 	"mp": {
+	 * 		"weixin": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		},
+	 * 		"alipay": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		},
+	 * 		"baidu": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		},
+	 * 		"toutiao": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		},
+	 * 		"lark": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		},
+	 * 		"qq": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		},
+	 * 		"kuaishou": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		},
+	 * 		"jd": {
+	 * 			"hostVer": "x",
+	 * 			"uniVer": "x",
+	 * 			"unixVer": "x"
+	 * 		}
+	 * 	}
+	 * }
+   */
+  requestSystemPermission(options: RequestSystemPermissionOptions): void;
+}

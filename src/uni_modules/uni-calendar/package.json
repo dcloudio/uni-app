@@ -1,0 +1,74 @@
+{
+	"id": "uni-calendar",
+	"displayName": "uni-calendar",
+	"version": "1.0.0",
+	"description": "uni-calendar",
+	"keywords": ["uni-calendar"],
+	"repository": "",
+	"engines": {
+		"HBuilderX": "^5.08.0"
+	},
+	"dcloudext": {
+		"type": "uts",
+		"sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+		"contact": {
+			"qq": ""
+		},
+		"declaration": {
+			"ads": "",
+			"data": "",
+			"permissions": ""
+		},
+		"npmurl": ""
+	},
+	"uni_modules": {
+		"dependencies": [],
+		"uni-ext-api": {
+			"uni": {
+				"addPhoneCalendar": {
+					"name": "addPhoneCalendar",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true,
+						"arkts": true
+					}
+				},
+				"addPhoneRepeatCalendar": {
+					"name": "addPhoneRepeatCalendar",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true,
+						"arkts": true
+					}
+				}
+			}
+		},
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "u",
+				"aliyun": "u"
+			},
+			"client": {
+				"Vue": {
+					"vue2": "u",
+					"vue3": "u"
+				},
+				"App": {
+					"app-android": "u",
+					"app-ios": "u",
+					"app-harmony": "u"
+				}
+			}
+		}
+	}
+}

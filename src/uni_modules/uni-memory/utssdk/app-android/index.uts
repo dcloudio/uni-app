@@ -1,0 +1,59 @@
+import { UTSAndroid } from "io.dcloud.uts"
+import { OnMemoryWarningCallback, MemoryWarningCallbackResult } from '../interface.uts'
+import { createMemoryWarningNativeError } from '../unierror.uts'
+
+
+let listeners : OnMemoryWarningCallback[] = []
+
+const onAppTrimMemoryListener = (ret : number) => {
+  listeners.forEach(listener => {
+    const res : MemoryWarningCallbackResult = {
+      level: ret
+    }
+    listener(res)
+  })
+}
+
+@Suppress("DEPRECATION")
+export function onMemoryWarning(callback : OnMemoryWarningCallback) {
+  if (listeners.indexOf(callback) != -1) {
+    return
+  }
+  if (listeners.length == 0) {
+    try {
+      UTSAndroid.onAppTrimMemory(onAppTrimMemoryListener)
+      UTSAndroid.onAppActivityDestroy(() => {
+        listeners = []
+      })
+    } catch (e) {
+      throw createMemoryWarningNativeError(1100601, 701, (e as Error).message)
+    }
+  }
+  listeners.push(callback)
+}
+
+
+@Suppress("DEPRECATION")
+export function offMemoryWarning(callback : OnMemoryWarningCallback | null = null) {
+  if (callback == null) {
+    listeners = []
+    try {
+      UTSAndroid.offAppTrimMemory(null)
+    } catch (e) {
+      throw createMemoryWarningNativeError(1100602, 702, (e as Error).message)
+    }
+    return
+  }
+
+  const index = listeners.indexOf(callback)
+  if (index > -1) {
+    listeners.splice(index, 1)
+  }
+  if (listeners.length == 0) {
+    try {
+      UTSAndroid.offAppTrimMemory(onAppTrimMemoryListener)
+    } catch (e) {
+      throw createMemoryWarningNativeError(1100602, 703, (e as Error).message)
+    }
+  }
+}

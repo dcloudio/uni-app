@@ -1,0 +1,250 @@
+import {
+  CompassErrorCode,
+  CompassAccuracy,
+  OnCompassChangeCallback,
+  OnCompassChangeCallbackResult,
+  StartCompassComplete,
+  StartCompassCompleteCallback,
+  StartCompassFail,
+  StartCompassFailCallback,
+  StartCompassOptions,
+  StartCompassSuccess,
+  StartCompassSuccessCallback,
+  StopCompassComplete,
+  StopCompassCompleteCallback,
+  StopCompassFail,
+  StopCompassFailCallback,
+  StopCompassSuccess,
+  StopCompassSuccessCallback,
+  StopCompassOptions
+} from '../interface.uts'
+// @ts-ignore Android 原生混编对象由 Kotlin 提供
+import CompassNative from 'uts.sdk.modules.uniCompass.CompassNative'
+import { createStartCompassFail, createStopCompassFail } from '../unierror.uts'
+
+const startErrMsg = 'startCompass:ok'
+const stopErrMsg = 'stopCompass:ok'
+const changeErrMsg = 'onCompassChange:ok'
+const startEnabledErrMsg = 'startCompass:fail, has enable, should stop pre operation'
+const sampleIntervalMs = 200
+
+let started : boolean = false
+let nativeListenerBound : boolean = false
+let lastDispatchTime : number = 0
+const callbacks : Array<OnCompassChangeCallback> = []
+// const callbacks : Map<number, OnCompassChangeCallback> = new Map<number, OnCompassChangeCallback>();
+// let compassCallbackId = 1
+
+function resetDispatchState() : void {
+  lastDispatchTime = 0
+}
+
+function shouldDispatch() : boolean {
+  const now = Date.now()
+  if (lastDispatchTime != 0 && now - lastDispatchTime < sampleIntervalMs) {
+    return false
+  }
+  lastDispatchTime = now
+  return true
+}
+
+function mapAccuracy(accuracyCode : number | null) : CompassAccuracy {
+  if (accuracyCode == null) {
+    return null
+  }
+  if (accuracyCode == -1) {
+    return 'no-contact'
+  }
+  if (accuracyCode == 0) {
+    return 'unreliable'
+  }
+  if (accuracyCode == 1) {
+    return 'low'
+  }
+  if (accuracyCode == 2) {
+    return 'medium'
+  }
+  if (accuracyCode == 3) {
+    return 'high'
+  }
+  return `unknow ${accuracyCode}`
+}
+
+function createStartCompassSuccess(errMsg : string) : StartCompassSuccess {
+  return {
+    errMsg: errMsg
+  }
+}
+
+function createStopCompassSuccess(errMsg : string) : StopCompassSuccess {
+  return {
+    errMsg: errMsg
+  }
+}
+
+function createStartedFail() : StartCompassFail {
+  return createStartCompassFail(602, startEnabledErrMsg)
+}
+
+function hasCallback(callback : OnCompassChangeCallback) : boolean {
+  let index = 0
+  while (index < callbacks.length) {
+    if (callbacks[index] == callback) {
+      return true
+    }
+    index++
+  }
+  return false
+}
+
+function dispatchCompassChange(direction : number, accuracyCode : number | null) : void {
+  if (!shouldDispatch()) {
+    return
+  }
+  const result : OnCompassChangeCallbackResult = {
+    direction: direction,
+    accuracy: mapAccuracy(accuracyCode),
+    errMsg: changeErrMsg
+  }
+  let index = 0
+  while (index < callbacks.length) {
+    callbacks[index](result)
+    index++
+  }
+}
+
+function ensureNativeListener() : void {
+  if (nativeListenerBound) {
+    return
+  }
+  CompassNative.setListener((direction : number, accuracyCode : number | null) => {
+    dispatchCompassChange(direction, accuracyCode)
+  })
+  nativeListenerBound = true
+}
+
+function callStartSuccess(options : StartCompassOptions | null) : void {
+  const result = createStartCompassSuccess(startErrMsg)
+  options?.success?.(result)
+  options?.complete?.(result)
+}
+
+function callStartFail(options : StartCompassOptions | null, fail : StartCompassFail) : void {
+  options?.fail?.(fail)
+  options?.complete?.(fail)
+}
+
+function callStopSuccess(options : StopCompassOptions | null) : void {
+  const result = createStopCompassSuccess(stopErrMsg)
+  options?.success?.(result)
+  options?.complete?.(result)
+}
+
+function callStopFail(options : StopCompassOptions | null, fail : StopCompassFail) : void {
+  options?.fail?.(fail)
+  options?.complete?.(fail)
+}
+
+function createNativeData(nativeCode : number) : UTSJSONObject {
+  return {
+    platformCode: nativeCode
+  } as UTSJSONObject
+}
+
+function mapStartNativeError(nativeCode : number) : StartCompassFail {
+  const data = createNativeData(nativeCode)
+  let errCode : CompassErrorCode = 604
+  if (nativeCode == 701 || nativeCode == 702 || nativeCode == 703) {
+    errCode = 601
+  } else if (nativeCode == 704) {
+    errCode = 602
+  }
+  return createStartCompassFail(errCode, 'startCompass:fail', data)
+}
+
+function mapStopNativeError(nativeCode : number) : StopCompassFail {
+  const data = createNativeData(nativeCode)
+  let errCode : CompassErrorCode = 603
+  if (nativeCode == 701 || nativeCode == 702 || nativeCode == 703) {
+    errCode = 601
+  } else if (nativeCode == 704) {
+    errCode = 602
+  }
+  return createStopCompassFail(errCode, 'stopCompass:fail', data)
+}
+
+export function onCompassChange(callback : OnCompassChangeCallback) : void {
+  ensureNativeListener()
+  if (hasCallback(callback)) {
+    return
+  }
+  callbacks.push(callback)
+  if (!started) {
+    startCompass()
+  }
+}
+
+export function offCompassChange(callback : OnCompassChangeCallback | null = null) : void {
+  if( callback == null ){
+    callbacks.length = 0
+  }else{
+    let index = 0
+    while (index < callbacks.length) {
+      if (callbacks[index] == callback) {
+        callbacks.splice(index, 1)
+        return
+      }
+      index++
+    }
+  }
+}
+
+export function startCompass(options : StartCompassOptions | null = null) : void {
+  ensureNativeListener()
+  if (started) {
+    callStartSuccess(options)
+    return
+  }
+  const nativeCode = CompassNative.start()
+  if (nativeCode != 0) {
+    callStartFail(options, mapStartNativeError(nativeCode))
+    return
+  }
+  started = true
+  resetDispatchState()
+  callStartSuccess(options)
+}
+
+export function stopCompass(options : StopCompassOptions | null = null) : void {
+  if (!started) {
+    callStopSuccess(options)
+    return
+  }
+  const nativeCode = CompassNative.stop()
+  if (nativeCode != 0) {
+    callStopFail(options, mapStopNativeError(nativeCode))
+    return
+  }
+  started = false
+  resetDispatchState()
+  callStopSuccess(options)
+}
+
+export {
+  OnCompassChangeCallback,
+  OnCompassChangeCallbackResult,
+  StartCompassComplete,
+  StartCompassCompleteCallback,
+  StartCompassFail,
+  StartCompassFailCallback,
+  StartCompassOptions,
+  StartCompassSuccess,
+  StartCompassSuccessCallback,
+  StopCompassComplete,
+  StopCompassCompleteCallback,
+  StopCompassFail,
+  StopCompassFailCallback,
+  StopCompassSuccess,
+  StopCompassSuccessCallback,
+  StopCompassOptions
+} from '../interface.uts'

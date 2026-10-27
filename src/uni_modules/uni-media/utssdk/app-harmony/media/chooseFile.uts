@@ -3,6 +3,7 @@ import { API_CHOOSE_FILE, ChooseFileApiOptions, ChooseFileApiProtocol } from '..
 import { chooseImage } from './chooseImage.uts';
 import { chooseVideo } from './chooseVideo.uts';
 import { getMimeTypeFromExtension } from './media.uts';
+import { _copyMediaFiles } from './media.uts';
 
 import { BusinessError } from '@kit.BasicServicesKit';
 import { picker, fileIo } from '@kit.CoreFileKit';
@@ -55,14 +56,18 @@ const VIDEOS: string[] = [
 
 function getFile(url: string) {
     const file = fileIo.openSync(url, fileIo.OpenMode.READ_ONLY)
-    const size = fileIo.statSync(file.fd).size
-    const ext = file.name.split('.').pop()!
-    return {
-        path: url,
-        name: file.name,
-        size,
-        type: getMimeTypeFromExtension(ext) ?? ext
-    } as ChooseFileTempFile
+    try {
+        const size = fileIo.statSync(file.fd).size
+        const ext = file.name.split('.').pop()!
+        return {
+            path: url,
+            name: file.name,
+            size,
+            type: getMimeTypeFromExtension(ext) ?? ext
+        } as ChooseFileTempFile
+    } finally {
+        fileIo.closeSync(file)
+    }
 }
 
 export const chooseFile: ChooseFile = defineAsyncApi<ChooseFileOptions, ChooseFileSuccess>(
@@ -113,11 +118,12 @@ export const chooseFile: ChooseFile = defineAsyncApi<ChooseFileOptions, ChooseFi
                 }
 
                 documentPicker.select(documentSelectOptions)
-                    .then((documentSelectResult: Array<string>) => {
-                        let tempFiles = documentSelectResult.map((url): ChooseFileTempFile => getFile(url))
+                    .then(async (documentSelectResult: Array<string>) => {
+                        const tempFilePaths = await _copyMediaFiles(documentSelectResult)
+                        let tempFiles = tempFilePaths.map((url): ChooseFileTempFile => getFile(url))
                         if (tempFiles.length !== 0) {
                             executor.resolve({
-                                tempFilePaths: documentSelectResult,
+                                tempFilePaths,
                                 tempFiles
                             } as ChooseFileSuccess)
                         } else {

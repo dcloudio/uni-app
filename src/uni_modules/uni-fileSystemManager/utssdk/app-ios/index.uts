@@ -24,6 +24,7 @@ import {
 	SaveFileOptions,
 	RemoveSavedFileOptions,
 	UnzipFileOptions,
+	UnzipSyncOptions,
 	GetSavedFileListOptions,
 	GetSavedFileListResult,
 	TruncateFileOptions,
@@ -205,22 +206,12 @@ class InnerFileSystemManager implements FileSystemManager {
 	}
 
 	unlinkSync(filePath : string) {
-		let semaphore = DispatchSemaphore(value = 0)
-		let successTmp : boolean = false
-		let errorTmp : UniFileSystemManagerError | null = null
-
-		UniFileSystemManager.removeFile(filePath = filePath, completionHandler = (success : boolean, error ?: UniFileSystemManagerError) : void => {
-			successTmp = success
-			errorTmp = error
-			semaphore.signal()
-		})
-
-		semaphore.wait(timeout = DispatchTime.distantFuture)
-
-		if (errorTmp != null && !successTmp) {
-			let err = this.getErrorMessage("unlinkSync", errorTmp!.errorCode, errorTmp!.description)
+		const result = UniFileSystemManager.removeFileSync(filePath = filePath)
+		if (result.success == false && result.error != null) {
+			const error = result.error!
+			let err = this.getErrorMessage("unlinkSync", error.errorCode, error.description)
 			console.log(err)
-		} else if (successTmp) {
+		} else if (result.success) {
 			console.log("unlinkSync:ok")
 		}
 	}
@@ -686,6 +677,11 @@ class InnerFileSystemManager implements FileSystemManager {
 				})
 			}
 		})
+	}
+
+	unzipSync(options : UnzipSyncOptions) : boolean {
+		const result = UniFileSystemManager.unzipSync(zipFilePath = options.zipFilePath, targetPath = options.targetPath)
+		return result.success
 	}
 
 	getSavedFileList(options : GetSavedFileListOptions) {

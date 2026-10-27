@@ -82,7 +82,7 @@ export type NodeInfo = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -181,7 +181,7 @@ export type NodeField = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -264,7 +264,7 @@ export interface NodesRef {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -335,7 +335,7 @@ export interface NodesRef {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -399,7 +399,7 @@ export interface NodesRef {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -503,7 +503,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "√"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",

@@ -84,6 +84,7 @@ class NetworkRequestTaskImpl implements RequestTask {
 		if (this.call != null) {
 			this.call?.cancel();
 		}
+		UTSAndroid.destroyInstance(this)
 	}
 
 	public onHeadersReceived(listener : RequestTaskOnHeadersReceivedCallback) : number {

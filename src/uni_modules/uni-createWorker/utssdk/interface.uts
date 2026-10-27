@@ -162,9 +162,9 @@ export type WorkerEnv = {
     *       "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *       "hostVer": "-",
-    *       "uniVer": "-",
-    *       "unixVer": "-"
+    *       "hostVer": "√",
+    *       "uniVer": "√",
+    *       "unixVer": "5.31"
     *     },
     *     "baidu": {
     *       "hostVer": "-",
@@ -247,9 +247,9 @@ export interface Worker {
     *       "unixVer": "4.41"
     *     },
     *     "alipay": {
-    *       "hostVer": "-",
-    *       "uniVer": "-",
-    *       "unixVer": "-"
+    *       "hostVer": "√",
+    *       "uniVer": "√",
+    *       "unixVer": "5.31"
     *     },
     *     "baidu": {
     *       "hostVer": "-",
@@ -288,21 +288,185 @@ export interface Worker {
   /**
    * 监听 主线程/Worker线程 向当前线程发送的消息的事件。
    * @param callback 监听消息的回调函数
+   *
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.21"
+   *    },
+   *    "ios": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.11"
+   *    },
+   *    "harmony": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "5.0"
+   *    }
+   *  },
+   * "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "4.81"
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "1.9.90",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    }
+   *  }
+   * }
    */
   onMessage(callback: WorkerOnMessageCallback): void;
   /**
    * 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
    * @param callback 监听错误的回调函数
+   *
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.21"
+   *    },
+   *    "ios": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.11"
+   *    },
+   *    "harmony": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "5.0"
+   *    }
+   *  },
+   * "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "4.81"
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "1.9.90",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
    */
   onError(callback: WorkerOnErrorCallback): void;
   /**
    * 向 主线程/Worker线程 发送的消息。
    * @param message 发送的数据
    * @param options 发送消息的参数
+   *
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.21"
+   *    },
+   *    "ios": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.11"
+   *    },
+   *    "harmony": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "5.0"
+   *    }
+   *  },
+   * "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "4.81"
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "1.9.90",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    }
+   *  }
+   * }
    */
   postMessage(message: any, options?: WorkerPostMessageOptions | null): void;
   /**
    * 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
+   *
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.21"
+   *    },
+   *    "ios": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "x",
+   *      "unixVaporUtsPlugin": "5.11"
+   *    },
+   *    "harmony": {
+   *      "uniVer": "x",
+   *      "unixVer": "4.81",
+   *      "unixUtsPlugin": "4.81",
+   *      "unixVaporVer": "5.0"
+   *    }
+   *  },
+   * "web": {
+   *    "uniVer": "x",
+   *    "unixVer": "4.81"
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "1.9.90",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    }
+   *  }
+   * }
    */
   terminate(): void;
 }
@@ -343,6 +507,18 @@ export interface Uni {
    * "web": {
    *    "uniVer": "x",
    *    "unixVer": "4.81"
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "1.9.90",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    }
    *  }
    * }
    */

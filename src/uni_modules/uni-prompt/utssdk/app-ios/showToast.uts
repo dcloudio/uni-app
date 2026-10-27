@@ -1,12 +1,12 @@
 import { UTSiOS } from "DCloudUTSFoundation"
 import { UIScreen, UIImage } from 'UIKit'
-import { ShowToastOptions, ShowLoadingOptions, ShowToastSuccess, ShowToastFail, ShowLoadingSuccess, ShowLoadingFail } from '../interface.uts'
+import { ShowToastOptions, ShowLoadingOptions, ShowToastSuccess, ShowToastFail, ShowLoadingSuccess, ShowLoadingFail, HideToastOptions, HideToastSuccess } from '../interface.uts'
 import { PromptErrorImpl } from "../unierror.uts"
 
 /* 显示toast */
 export function toShowToast(options : ShowToastOptions) {
 	if (options.title == null || options.title.length == 0) {
-		let res = new PromptErrorImpl(1001, "showLoading:title is null");
+		let res = new PromptErrorImpl(1001, "showToast:title is null");
 		options.fail?.(res)
 		options.complete?.(res)
 	} else {
@@ -18,7 +18,7 @@ export function toShowToast(options : ShowToastOptions) {
 		//mask
 		let mask = MCToast.MCToastRespond.default
 		if (options.mask == true) {
-			mask = MCToast.MCToastRespond.noRespond
+				mask = MCToast.MCToastRespond.noRespond
 		}
 		MCToastConfig.shared.background.size = CGSize.init(width = 135, height = 120);
 		//position
@@ -32,7 +32,12 @@ export function toShowToast(options : ShowToastOptions) {
 			} else {
 				centerPoint = Number(interval)
 			}
-			MCToast.mc_text(options.title, offset = CGFloat(centerPoint.toFloat()), duration = CGFloat(duration.toFloat()), respond = mask)
+			UniApplicationToastPresenter.show(
+				text = options.title,
+				offset = CGFloat(centerPoint.toFloat()),
+				duration = CGFloat(duration.toFloat()),
+				mask = options.mask == true
+			)
 		} else {
 			let successImage = new UIImage(named = "uni_uts_toast_success.png")
 			let failureImage = new UIImage(named = "uni_uts_toast_error.png")
@@ -82,8 +87,22 @@ export function toShowToast(options : ShowToastOptions) {
 }
 
 /* 隐藏toast */
-export function toHideToast() {
-	MCToast.mc_remove()
+export function toHideToast(options : HideToastOptions | null) {
+	try {
+		MCToast.mc_remove()
+		if (options?.allType == true) {
+			UniApplicationToastPresenter.remove()
+		}
+		const res : HideToastSuccess = {
+			errMsg: "hideToast:ok"
+		}
+		options?.success?.(res)
+		options?.complete?.(res)
+	} catch (e) {
+		const err = new PromptErrorImpl(1001, "hideToast:fail")
+		options?.fail?.(err)
+		options?.complete?.(err)
+	}
 }
 
 // #ifndef UNI-APP-X

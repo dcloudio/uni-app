@@ -58,6 +58,11 @@ export type Icon =
           "uniUtsPlugin": "4.11",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "uniVer": "x",
+          "unixVer": "5.25",
+          "unixUtsPlugin": "5.25"
         }
       },
       "mp": {
@@ -69,7 +74,7 @@ export type Icon =
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -124,6 +129,11 @@ export type Icon =
           "uniUtsPlugin": "4.11",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "uniVer": "x",
+          "unixVer": "5.25",
+          "unixUtsPlugin": "5.25"
         }
       },
       "mp": {
@@ -135,7 +145,7 @@ export type Icon =
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -188,6 +198,11 @@ export type Icon =
         "ios": {
           "uniVer": "√",
           "uniUtsPlugin": "x",
+          "unixVer": "x",
+          "unixUtsPlugin": "x"
+        },
+        "harmony": {
+          "uniVer": "x",
           "unixVer": "x",
           "unixUtsPlugin": "x"
         }
@@ -256,6 +271,11 @@ export type Icon =
           "uniUtsPlugin": "x",
           "unixVer": "x",
           "unixUtsPlugin": "x"
+        },
+        "harmony": {
+          "uniVer": "x",
+          "unixVer": "x",
+          "unixUtsPlugin": "x"
         }
       },
       "mp": {
@@ -322,6 +342,11 @@ export type Icon =
           "uniUtsPlugin": "4.11",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "uniVer": "x",
+          "unixVer": "5.25",
+          "unixUtsPlugin": "5.25"
         }
       },
       "mp": {
@@ -333,7 +358,7 @@ export type Icon =
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -388,6 +413,11 @@ export type Icon =
           "uniUtsPlugin": "4.11",
           "unixVer": "4.11",
           "unixUtsPlugin": "4.11"
+        },
+        "harmony": {
+          "uniVer": "x",
+          "unixVer": "5.25",
+          "unixUtsPlugin": "5.25"
         }
       },
       "mp": {
@@ -399,7 +429,7 @@ export type Icon =
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -475,7 +505,7 @@ export type ShowToastPosition =
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -510,7 +540,7 @@ export type ShowToastPosition =
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "5.32"
       }
     }
    */
@@ -546,7 +576,7 @@ export type ShowToastPosition =
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -581,7 +611,7 @@ export type ShowToastPosition =
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "5.32"
       }
     }
    */
@@ -617,7 +647,7 @@ export type ShowToastPosition =
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -652,7 +682,7 @@ export type ShowToastPosition =
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "5.32"
       }
     }
    */
@@ -693,7 +723,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -752,8 +782,8 @@ export type ShowToastOptions = {
         },
         "harmony": {
           "uniVer": "x",
-          "unixVer": "x",
-          "unixVaporVer": "x"
+          "unixVer": "5.25",
+          "unixVaporVer": "5.25"
         }
       },
       "mp": {
@@ -765,7 +795,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -806,7 +836,7 @@ export type ShowToastOptions = {
    */
   icon?: Icon | null,
   /**
-   * 自定义图标的本地路径（app端暂不支持gif）
+   * 自定义图标的本地路径（app-android/app-ios端暂不支持gif）
    * @uniPlatform
     {
       "app": {
@@ -823,8 +853,8 @@ export type ShowToastOptions = {
         },
         "harmony": {
           "uniVer": "x",
-          "unixVer": "x",
-          "unixVaporVer": "x"
+          "unixVer": "5.25",
+          "unixVaporVer": "5.25"
         }
       },
       "mp": {
@@ -836,7 +866,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -895,8 +925,8 @@ export type ShowToastOptions = {
         },
         "harmony": {
           "uniVer": "x",
-          "unixVer": "x",
-          "unixVaporVer": "x"
+          "unixVer": "5.25",
+          "unixVaporVer": "5.25"
         }
       },
       "mp": {
@@ -908,7 +938,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -980,7 +1010,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1044,49 +1074,49 @@ export type ShowToastOptions = {
       },
       "mp": {
         "weixin": {
-          "hostVer": "√",
-          "uniVer": "√",
-          "unixVer": "4.41"
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
         },
         "alipay": {
-          "hostVer": "√",
-          "uniVer": "√",
+          "hostVer": "x",
+          "uniVer": "x",
           "unixVer": "x"
         },
         "baidu": {
-          "hostVer": "√",
-          "uniVer": "√",
+          "hostVer": "x",
+          "uniVer": "x",
           "unixVer": "x"
         },
         "toutiao": {
-          "hostVer": "√",
-          "uniVer": "√",
+          "hostVer": "x",
+          "uniVer": "x",
           "unixVer": "x"
         },
         "lark": {
-          "hostVer": "√",
-          "uniVer": "√",
+          "hostVer": "x",
+          "uniVer": "x",
           "unixVer": "x"
         },
         "qq": {
-          "hostVer": "√",
-          "uniVer": "√",
+          "hostVer": "x",
+          "uniVer": "x",
           "unixVer": "x"
         },
         "kuaishou": {
-          "hostVer": "√",
-          "uniVer": "√",
+          "hostVer": "x",
+          "uniVer": "x",
           "unixVer": "x"
         },
         "jd": {
-          "hostVer": "√",
-          "uniVer": "√",
+          "hostVer": "x",
+          "uniVer": "x",
           "unixVer": "x"
         }
       },
       "web": {
         "uniVer": "x",
-        "unixVer": "x"
+        "unixVer": "5.32"
       }
     }
    */
@@ -1122,7 +1152,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1193,7 +1223,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1264,7 +1294,7 @@ export type ShowToastOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1343,7 +1373,7 @@ export type ShowToastOptions = {
       "alipay": {
         "hostVer": "√",
         "uniVer": "√",
-        "unixVer": "x"
+        "unixVer": "5.31"
       },
       "baidu": {
         "hostVer": "√",
@@ -1419,7 +1449,7 @@ export type ShowToast = (options: ShowToastOptions) => void
       "alipay": {
         "hostVer": "√",
         "uniVer": "√",
-        "unixVer": "x"
+        "unixVer": "5.31"
       },
       "baidu": {
         "hostVer": "√",
@@ -1458,7 +1488,300 @@ export type ShowToast = (options: ShowToastOptions) => void
     }
   }
  */
-export type HideToast = () => void
+export type HideToastSuccess = {
+  errMsg: string
+}
+
+export type HideToastFail = IPromptError;
+
+export type HideToastSuccessCallback = (res: HideToastSuccess) => void
+export type HideToastFailCallback = (res: HideToastFail) => void
+export type HideToastCompleteCallback = (res: any) => void
+
+export type HideToastOptions = {
+  /**
+   * 是否关闭所有类型的 toast，默认不关闭。仅鸿蒙平台支持。
+   * @uniPlatform
+    {
+      "app": {
+        "android": {
+          "uniVer": "5.31",
+          "unixVer": "5.31",
+          "unixVaporVer": "5.31"
+        },
+        "ios": {
+          "uniVer": "5.31",
+          "unixVer": "5.31",
+          "unixVaporVer": "5.31"
+        },
+        "harmony": {
+          "uniVer": "x",
+          "unixVer": "5.31",
+          "unixVaporVer": "5.31"
+        }
+      },
+      "mp": {
+        "weixin": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "alipay": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "baidu": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "toutiao": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "lark": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "qq": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "kuaishou": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        },
+        "jd": {
+          "hostVer": "x",
+          "uniVer": "x",
+          "unixVer": "x"
+        }
+      },
+      "web": {
+        "uniVer": "x",
+        "unixVer": "5.32"
+      }
+    }
+   */
+  allType?: boolean | null,
+	/**
+	 * 成功回调函数定义
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "uniVer": "5.31",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      },
+	      "ios": {
+	        "uniVer": "5.31",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      },
+	      "harmony": {
+	        "uniVer": "x",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      }
+	    },
+	    "mp": {
+	      "weixin": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "alipay": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "baidu": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "toutiao": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "lark": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "qq": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "kuaishou": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "jd": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      }
+	    },
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "x"
+	    }
+	  }
+	 */
+  success?: HideToastSuccessCallback | null,
+	/**
+	 * 失败回调函数定义
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "uniVer": "5.31",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      },
+	      "ios": {
+	        "uniVer": "5.31",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      },
+	      "harmony": {
+	        "uniVer": "x",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      }
+	    },
+	    "mp": {
+	      "weixin": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "alipay": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "baidu": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "toutiao": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "lark": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "qq": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "kuaishou": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "jd": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      }
+	    },
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "x"
+	    }
+	  }
+	 */
+  fail?: HideToastFailCallback | null,
+	/**
+	 * 完成回调函数定义
+	 * @uniPlatform
+	  {
+	    "app": {
+	      "android": {
+	        "uniVer": "5.31",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      },
+	      "ios": {
+	        "uniVer": "5.31",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      },
+	      "harmony": {
+	        "uniVer": "x",
+	        "unixVer": "5.31",
+	        "unixVaporVer": "5.31"
+	      }
+	    },
+	    "mp": {
+	      "weixin": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "alipay": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "baidu": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "toutiao": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "lark": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "qq": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "kuaishou": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      },
+	      "jd": {
+	        "hostVer": "x",
+	        "uniVer": "x",
+	        "unixVer": "x"
+	      }
+	    },
+	    "web": {
+	      "uniVer": "x",
+	      "unixVer": "x"
+	    }
+	  }
+	 */
+  complete?: HideToastCompleteCallback | null
+}
+
+export type HideToast = (options?: HideToastOptions| null) => void
 
 // #ifdef !UNI-APP-X
 /**
@@ -1548,7 +1871,7 @@ export type ShowLoadingOptions = {
       "alipay": {
         "hostVer": "√",
         "uniVer": "√",
-        "unixVer": "x"
+        "unixVer": "5.31"
       },
       "baidu": {
         "hostVer": "√",
@@ -1624,7 +1947,7 @@ export type ShowLoading = (options: ShowLoadingOptions) => void
       "alipay": {
         "hostVer": "√",
         "uniVer": "√",
-        "unixVer": "x"
+        "unixVer": "5.31"
       },
       "baidu": {
         "hostVer": "√",
@@ -1794,7 +2117,7 @@ export type ShowModalOptions = {
       "alipay": {
         "hostVer": "√",
         "uniVer": "√",
-        "unixVer": "x"
+        "unixVer": "5.31"
       },
       "baidu": {
         "hostVer": "√",
@@ -1960,7 +2283,7 @@ export type ShowActionSheetOptions = {
       "alipay": {
         "hostVer": "√",
         "uniVer": "√",
-        "unixVer": "x"
+        "unixVer": "5.31"
       },
       "baidu": {
         "hostVer": "√",
@@ -2048,7 +2371,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -2127,7 +2450,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -2166,7 +2489,7 @@ export interface Uni {
       }
     }
    */
-  hideToast(): void,
+  hideToast: HideToast,
 // #ifndef UNI-APP-X
   /**
    * @description 显示 loading 提示框, 需主动调用 uni.hideLoading 才能关闭提示框。
@@ -2211,7 +2534,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -2296,7 +2619,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -2385,7 +2708,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -2473,7 +2796,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",

@@ -1,0 +1,201 @@
+import { InstallWgtErrors, UniInstallWgtErrorSubject } from "../utssdk/unierror.uts";
+
+
+/**
+ * 安装应用错误码
+ */
+export type InstallWgtErrorCode =
+/**
+ * 安装应用成功
+ */
+103600 |
+/** filePath 参数为空或对应文件不存在。 */
+1030601 |
+/** staging 目录操作失败。 */
+103602 |
+/** WGT 资源目录结构不合法。 */
+103603 |
+/** WGT 资源放置到正式目录失败。 */
+103604 |
+/** WGT 资源安装失败。 */
+103605 |
+/** Zstandard 解压失败。 */
+103606 |
+/** ZIP 解压失败。 */
+103607 |
+/** manifest 文件缺失。 */
+103608 |
+/** WGT 必需启动资源缺失。 */
+103609 |
+/** manifest 字段不合法。 */
+103610 |
+/** WGT 版本低于或等于 Runtime 版本。 */
+103611 |
+/** 内部错误。 */
+103612 |
+/** manifest JSON 解析失败。 */
+103613 |
+/** WGT manifest appId 与 Runtime appId 不一致。 */
+103614 |
+/** WGT 要求的最低 Runtime 版本高于当前 Runtime 版本。 */
+103615 |
+/** manifest 缺少 uni-app-x.minRuntimeVersion。 */
+103617 |
+/** manifest 缺少 uni-app-x.compilerRuleVersion。 */
+103618 |
+/** WGT 与 Runtime 的 compilerRuleVersion 不一致。 */
+103619
+
+/**
+ * 安装应用成功回调参数
+ */
+export interface InstallWgtSuccess {
+
+}
+
+export class InstallWgtSuccessImpl implements InstallWgtSuccess {
+
+}
+
+
+type InstallWgtSuccessCallback = (result: InstallWgtSuccess) => void
+
+/**
+ * 安装应用失败回调参数
+ */
+export interface InstallWgtFail extends IUniError {
+  /**
+   * 错误码
+   */
+  errCode: InstallWgtErrorCode
+}
+
+export class InstallWgtFailImpl extends UniError implements InstallWgtFail {
+  override errCode: InstallWgtErrorCode
+	constructor(errCode: number, message: string, cause: string) {
+    super()
+    this.errSubject = UniInstallWgtErrorSubject
+    this.errCode = errCode as InstallWgtErrorCode
+    this.errMsg = message.length > 0
+      ? message
+      : InstallWgtErrors.get(this.errCode) ?? ''
+    if ((this.errCode == 103602 || this.errCode == 103612) && cause.length > 0) {
+      this.cause = new SourceError(cause)
+    }
+  }
+}
+
+type InstallWgtFailCallback = (result: InstallWgtFail) => void
+
+/**
+ * 安装应用完成回调参数
+ */
+export type InstallWgtComplete = any
+type InstallWgtCompleteCallback = (result: InstallWgtComplete) => void
+
+/**
+ * 安装应用参数
+ */
+export type InstallWgtOptions = {
+  /**
+   * 应用资源文件（wgt）路径
+   */
+  filePath: string
+  /**
+   * 忽略 WGT version.name 校验，默认值为 false。
+   * compilerRuleVersion 仍会校验。
+   */
+  ignoreVersion?: boolean
+  /**
+   * 应用资源文件安装成功回调
+   */
+  success?: InstallWgtSuccessCallback | null
+  /**
+   * 应用资源文件安装失败回调
+   */
+  fail?: InstallWgtFailCallback | null
+  /**
+   * 应用资源文件安装完成回调
+   */
+  complete?: InstallWgtCompleteCallback | null
+}
+
+
+export type InstallWgt = (options: InstallWgtOptions) => void
+
+
+export interface Uni {
+  /**
+   * 安装wgt包   
+   * @param {InstallWgtOptions} options 参数
+   * 
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/install-wgt.html#installWgt
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"uniVer": "x",
+   * 			"unixVer": "x",
+   *            "unixvVer": "5.31"
+   * 		},
+   * 		"ios": {
+   * 			"uniVer": "x",
+   * 			"unixVer": "x",
+   *            "unixvVer": "5.31"
+   * 		},
+   *    "harmony": {
+   *      "uniVer": "x",
+   *      "unixVer": "x",
+   *      "unixvVer": "x"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "x"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  installWgt(options: InstallWgtOptions): void
+}

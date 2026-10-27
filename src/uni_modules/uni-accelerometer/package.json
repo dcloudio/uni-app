@@ -1,0 +1,107 @@
+{
+  "id": "uni-accelerometer",
+  "displayName": "uni-accelerometer",
+  "version": "1.0.0",
+  "description": "uni-accelerometer",
+  "keywords": [
+    "uni-accelerometer"
+  ],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^5.08.0"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "",
+      "data": "",
+      "permissions": ""
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "uni-ext-api": {
+      "uni": {
+        "onAccelerometerChange": {
+          "name": "onAccelerometerChange",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        },
+        "offAccelerometerChange": {
+          "name": "offAccelerometerChange",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        },
+        "startAccelerometer": {
+          "name": "startAccelerometer",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        },
+        "stopAccelerometer": {
+          "name": "stopAccelerometer",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        }
+      }
+    },
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "u",
+        "aliyun": "u"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "u",
+          "vue3": "u"
+        },
+        "App": {
+          "app-android": "u",
+          "app-ios": "u",
+          "app-harmony": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        }
+      }
+    }
+  }
+}

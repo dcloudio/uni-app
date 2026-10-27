@@ -172,6 +172,22 @@
         "harmony": {
            "unixVaporVer": "5.0"
          }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
        }
      }
      */
@@ -189,6 +205,22 @@
         "harmony": {
            "unixVaporVer": "5.21"
          }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
        }
      }
      */
@@ -205,6 +237,22 @@
          },
         "harmony": {
            "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "√"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "√"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "√"
          }
        }
      }
@@ -709,5 +757,61 @@
     background-color: transparent;
     color: rgba(0, 0, 0, .2);
     border-color: rgba(0, 0, 0, .2);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-button-type-default_view {
+      background-color: #343434;
+    }
+
+    .uni-button-type-default_text {
+      color: #d6d6d6;
+    }
+
+    .button-hover,
+    .uni-button-view_default_hover {
+      color: #d6d6d6;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .uni-button-disabled.uni-button-type-default_view {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .uni-button-disabled.uni-button-type-default_text {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .uni-button.uni-button-view-plain.uni-button-type-default_text {
+      color: #353535;
+    }
+
+    .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
+      border-color: #353535;
+      background-color: transparent;
+    }
+
+    .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
+      color: #353535;
+    }
+
+    .button-hover.uni-button-view-plain,
+    .uni-button-view_plain_default_hover {
+      color: rgba(150, 150, 150, 0.6);
+      border-color: rgba(150, 150, 150, 0.6);
+      background-color: rgba(50, 50, 50, 0.2);
+    }
+
+    .uni-button.uni-button-disabled.uni-button-view-plain,
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
+      color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.2);
+      background-color: transparent;
+    }
+
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {
+      color: rgba(255, 255, 255, .2);
+      background-color: rgba(255, 255, 255, .08);
+    }
   }
 </style>

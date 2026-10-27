@@ -1,0 +1,201 @@
+import Activity from 'android.app.Activity'
+import Manifest from 'android.Manifest'
+import Intent from 'android.content.Intent'
+import PackageManager from 'android.content.pm.PackageManager'
+import { AddPhoneCalendarFail, AddPhoneCalendarOptions, AddPhoneCalendarSuccess, AddPhoneRepeatCalendarFail, AddPhoneRepeatCalendarOptions, AddPhoneRepeatCalendarSuccess, CalendarErrorCode } from '../interface.uts'
+import { NormalizedCalendarOptions, normalizeCalendarOptions, normalizeRepeatCalendarOptions, validateBaseOptions, validateRepeatOptions } from '../common.uts'
+import { createAddPhoneCalendarFail, createAddPhoneRepeatCalendarFail } from '../unierror.uts'
+// @ts-ignore Android 原生混编对象由 Kotlin 提供
+import CalendarNative from 'uts.sdk.modules.uniCalendar.CalendarNative'
+
+const CALENDAR_INSERT_REQUEST_CODE : Int = 18242
+let resultCallback : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+function createAddPhoneCalendarSuccess(errMsg : string) : AddPhoneCalendarSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function createAddPhoneRepeatCalendarSuccess(errMsg : string) : AddPhoneRepeatCalendarSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function callCalendarSuccess(options : AddPhoneCalendarOptions, errMsg : string) : void {
+	const result = createAddPhoneCalendarSuccess(errMsg)
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function callRepeatSuccess(options : AddPhoneRepeatCalendarOptions, errMsg : string) : void {
+	const result = createAddPhoneRepeatCalendarSuccess(errMsg)
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function callCalendarFail(options : AddPhoneCalendarOptions, fail : AddPhoneCalendarFail) : void {
+	options.fail?.(fail)
+	options.complete?.(fail)
+}
+
+function callRepeatFail(options : AddPhoneRepeatCalendarOptions, fail : AddPhoneRepeatCalendarFail) : void {
+	options.fail?.(fail)
+	options.complete?.(fail)
+}
+
+function createData(code : number) : UTSJSONObject {
+	return {
+		platformCode: code
+	} as UTSJSONObject
+}
+
+function mapAddPhoneCalendarNativeCode(code : number) : AddPhoneCalendarFail {
+	let errCode : CalendarErrorCode = 608
+	if (code == 701 || code == 702) {
+		errCode = 607
+	} else if (code == 704) {
+		errCode = 606
+	}
+	return createAddPhoneCalendarFail(errCode, 'addPhoneCalendar:fail', createData(code))
+}
+
+function mapAddPhoneRepeatCalendarNativeCode(code : number) : AddPhoneRepeatCalendarFail {
+	let errCode : CalendarErrorCode = 608
+	if (code == 701 || code == 702) {
+		errCode = 607
+	} else if (code == 704) {
+		errCode = 606
+	}
+	return createAddPhoneRepeatCalendarFail(errCode, 'addPhoneRepeatCalendar:fail', createData(code))
+}
+
+function toNativeOptions(normalized : NormalizedCalendarOptions) : UTSJSONObject {
+	return {
+		title: normalized.title,
+		startTime: normalized.startTime,
+		endTime: normalized.endTime,
+		allDay: normalized.allDay,
+		notes: normalized.notes,
+		location: normalized.location,
+		alarm: normalized.alarm,
+		alarmOffset: normalized.alarmOffset,
+		path: normalized.path,
+		repeatInterval: normalized.repeatInterval,
+		repeatEndTime: normalized.repeatEndTime
+	} as UTSJSONObject
+}
+
+function clearActivityResultCallback() : void {
+	if (resultCallback != null) {
+		UTSAndroid.offAppActivityResult(resultCallback)
+		resultCallback = null
+	}
+}
+
+function hasCalendarPermissions(activity : Activity) : boolean {
+	return activity.checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED
+}
+
+function createAddPhoneCalendarCancelFail() : AddPhoneCalendarFail {
+	return createAddPhoneCalendarFail(609, 'addPhoneCalendar:fail user cancelled')
+}
+
+function createAddPhoneRepeatCalendarCancelFail() : AddPhoneRepeatCalendarFail {
+	return createAddPhoneRepeatCalendarFail(609, 'addPhoneRepeatCalendar:fail user cancelled')
+}
+
+function startInsertEventActivity(normalized : NormalizedCalendarOptions, onSuccess : () => void, onCancel : () => void) : void {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		onCancel()
+		return
+	}
+	clearActivityResultCallback()
+	const callback = (requestCode : Int, resultCode : Int, _ ?: Intent) => {
+		if (requestCode != CALENDAR_INSERT_REQUEST_CODE) {
+			return
+		}
+		clearActivityResultCallback()
+		if (resultCode == Activity.RESULT_OK) {
+			onSuccess()
+			return
+		}
+		onCancel()
+	}
+	resultCallback = callback
+	UTSAndroid.onAppActivityResult(callback)
+	activity.startActivityForResult(CalendarNative.createInsertEventIntent(toNativeOptions(normalized)), CALENDAR_INSERT_REQUEST_CODE)
+}
+
+function performDirectAdd(normalized : NormalizedCalendarOptions) : number {
+	return CalendarNative.addEvent(toNativeOptions(normalized))
+}
+
+function performAddCalendar(options : AddPhoneCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		callCalendarFail(options, mapAddPhoneCalendarNativeCode(701))
+		return
+	}
+	if (hasCalendarPermissions(activity)) {
+		const code = performDirectAdd(normalized)
+		if (code != 0) {
+			callCalendarFail(options, mapAddPhoneCalendarNativeCode(code))
+			return
+		}
+		callCalendarSuccess(options, `${action}:ok`)
+		return
+	}
+	startInsertEventActivity(normalized, () => {
+		callCalendarSuccess(options, `${action}:ok`)
+	}, () => {
+		callCalendarFail(options, createAddPhoneCalendarCancelFail())
+	})
+}
+
+function performAddRepeat(options : AddPhoneRepeatCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		callRepeatFail(options, mapAddPhoneRepeatCalendarNativeCode(701))
+		return
+	}
+	if (hasCalendarPermissions(activity)) {
+		const code = performDirectAdd(normalized)
+		if (code != 0) {
+			callRepeatFail(options, mapAddPhoneRepeatCalendarNativeCode(code))
+			return
+		}
+		callRepeatSuccess(options, `${action}:ok`)
+		return
+	}
+	startInsertEventActivity(normalized, () => {
+		callRepeatSuccess(options, `${action}:ok`)
+	}, () => {
+		callRepeatFail(options, createAddPhoneRepeatCalendarCancelFail())
+	})
+}
+
+export function addPhoneCalendar(options : AddPhoneCalendarOptions) : void {
+	const error = validateBaseOptions(options)
+	if (error != null) {
+		callCalendarFail(options, createAddPhoneCalendarFail(error, null))
+		return
+	}
+	performAddCalendar(options, normalizeCalendarOptions(options), 'addPhoneCalendar')
+}
+
+export function addPhoneRepeatCalendar(options : AddPhoneRepeatCalendarOptions) : void {
+	const error = validateRepeatOptions(options)
+	if (error != null) {
+		callRepeatFail(options, createAddPhoneRepeatCalendarFail(error, null))
+		return
+	}
+	performAddRepeat(options, normalizeRepeatCalendarOptions(options), 'addPhoneRepeatCalendar')
+}
+
+export {
+	AddPhoneCalendarOptions,
+	AddPhoneRepeatCalendarOptions
+} from '../interface.uts'

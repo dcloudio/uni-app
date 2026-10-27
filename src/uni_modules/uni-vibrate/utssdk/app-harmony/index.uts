@@ -1,0 +1,64 @@
+import { VibrateErrorCode, VibrateLong, VibrateLongFail, VibrateLongOptions, VibrateLongSuccess, VibrateShort, VibrateShortFail, VibrateShortOptions, VibrateShortSuccess } from '../interface.uts'
+import { VibrateLongFailImpl, VibrateShortFailImpl } from '../unierror.uts'
+import { VibrateNative } from './VibrateNative.ets'
+
+function createVibrateShortFail(code : number) : VibrateShortFail {
+  return new VibrateShortFailImpl(code as VibrateErrorCode)
+}
+
+function createVibrateLongFail(code : number) : VibrateLongFail {
+  return new VibrateLongFailImpl(code as VibrateErrorCode)
+}
+
+export const vibrateShort : VibrateShort = function (options : VibrateShortOptions) {
+  const resultCode = VibrateNative.vibrateShort(options.type)
+  if (resultCode == 0) {
+    const result : VibrateShortSuccess = {
+      errMsg: 'vibrateShort:ok'
+    }
+    options.success?.(result)
+    options.complete?.(result)
+    return
+  }
+
+  const fail = createVibrateShortFail(resultCode)
+  options.fail?.(fail)
+  options.complete?.(fail)
+}
+
+export const vibrateLong : VibrateLong = function (options : VibrateLongOptions) {
+  const resultCode = VibrateNative.vibrateLong()
+  if (resultCode == 0) {
+    const result : VibrateLongSuccess = {
+      errMsg: 'vibrateLong:ok'
+    }
+    options.success?.(result)
+    options.complete?.(result)
+    return
+  }
+
+  const fail = createVibrateLongFail(resultCode)
+  options.fail?.(fail)
+  options.complete?.(fail)
+}
+
+export {
+    VibrateShortType,
+    VibrateShortSuccess,
+    VibrateShortSuccessCallback,
+    VibrateShortFail,
+    VibrateShortFailCallback,
+    VibrateShortComplete,
+    VibrateShortCompleteCallback,
+    VibrateLongSuccess,
+    VibrateLongSuccessCallback,
+    VibrateLongFail,
+    VibrateLongFailCallback,
+    VibrateLongComplete,
+    VibrateLongCompleteCallback,
+    VibrateErrorCode,
+    VibrateShortOptions,
+    VibrateLongOptions,
+    VibrateShort,
+    VibrateLong
+} from '../interface.uts'

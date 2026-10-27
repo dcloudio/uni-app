@@ -6,6 +6,46 @@ import uniformTypeDescriptor from '@ohos.data.uniformTypeDescriptor'
 import dataSharePredicates from '@ohos.data.dataSharePredicates'
 import { getAbilityContext, getEnv } from '@dcloudio/uni-runtime'
 
+let copyFileId = 0
+export async function copyMediaFile(sourceUri: string): Promise<string> {
+    const dir = `${getEnv().CACHE_PATH}/uni-media`
+    if (!fs.accessSync(dir)) {
+        fs.mkdirSync(dir, true)
+    }
+    const source = await fs.open(sourceUri, fs.OpenMode.READ_ONLY)
+    const name = source.name.split('/').pop() ?? `media-${Date.now()}`
+    const path = `${dir}/${Date.now()}-${copyFileId++}-${name}`
+    try {
+        const target = await fs.open(path, fs.OpenMode.CREATE | fs.OpenMode.WRITE_ONLY)
+        try {
+            await fs.copyFile(source.fd, target.fd)
+        } finally {
+            await fs.close(target)
+        }
+        return path
+    } catch (error) {
+        try { await fs.unlink(path) } catch (ignored) { }
+        throw error as Error
+    } finally {
+        await fs.close(source)
+    }
+}
+
+async function copyMediaFiles(uris: string[]): Promise<string[]> {
+    const paths: string[] = []
+    try {
+        for (const uri of uris) {
+            paths.push(await copyMediaFile(uri))
+        }
+        return paths
+    } catch (error) {
+        await Promise.all(paths.map(async (path) => {
+            try { await fs.unlink(path) } catch (ignored) { }
+        }))
+        throw error as Error
+    }
+}
+
 type _MediaOrientation =
     | 'up'
     | 'down'
@@ -409,11 +449,12 @@ async function getVideoThumbnail(videoUri: string, pixelMap: image.PixelMap) {
     const tempFilePath: string = `${tempDirPath}/${tempFileName}`
     const file = fs.openSync(tempFilePath, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE);
 
-    if (!fs.accessSync(tempDirPath)) { fs.mkdirSync(tempDirPath, true) }
-    await imagePacker.packToFile(pixelMap, file.fd, { format: 'image/jpeg', quality: 80 } as image.PackingOption)
-
-    await fs.close(file)
-    await pixelMap.release();
+    try {
+        await imagePacker.packToFile(pixelMap, file.fd, { format: 'image/jpeg', quality: 80 } as image.PackingOption)
+    } finally {
+        await fs.close(file)
+        await pixelMap.release()
+    }
     return tempFilePath
 }
 
@@ -528,16 +569,13 @@ export async function _chooseMedia(
     const photoPicker = new photoAccessHelper.PhotoViewPicker()
     const photoSelectResult = await photoPicker.select(photoSelectOptions)
 
-    const uris = photoSelectResult.photoUris
-
-    const tempFiles: _MediaFile[] = []
-    const createMediaFile: Promise<void>[] = []
-
-    uris.forEach((uri) => {
-        createMediaFile.push(new Promise(async (resolve) => {
-            const assetInfo = await getMediaAssetInfo(uri)
+    const sourceUris = photoSelectResult.photoUris
+    const uris = await copyMediaFiles(sourceUris)
+    try {
+        const tempFiles = await Promise.all(uris.map(async (uri, index): Promise<_MediaFile> => {
+            const assetInfo = await getMediaAssetInfo(sourceUris[index])
             if (assetInfo.fileType === 'video') {
-                tempFiles.push({
+                return {
                     fileType: assetInfo.fileType,
                     tempFilePath: uri,
                     size: assetInfo.size,
@@ -546,24 +584,24 @@ export async function _chooseMedia(
                     width: assetInfo.width,
                     height: assetInfo.height,
                     thumbTempFilePath: assetInfo.thumbTempFilePath,
-                } as _MediaFile)
+                } as _MediaFile
             } else if (assetInfo.fileType === 'image') {
-                tempFiles.push({
+                return {
                     fileType: assetInfo.fileType,
                     tempFilePath: uri,
                     size: assetInfo.byteSize,
-                } as _MediaFile)
+                } as _MediaFile
             }
-
-            resolve()
+            throw new Error('Unsupported media type')
         }))
-    })
 
-    await Promise.all(createMediaFile)
-
-    return {
-        tempFiles,
-    } as _chooseMediaSuccessCallbackResult
+        return { tempFiles } as _chooseMediaSuccessCallbackResult
+    } catch (error) {
+        await Promise.all(uris.map(async (path) => {
+            try { await fs.unlink(path) } catch (ignored) { }
+        }))
+        throw error as Error
+    }
 }
 
 export function getMimeTypeFromExtension(extension: string): string | null {

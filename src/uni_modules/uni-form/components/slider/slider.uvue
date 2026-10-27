@@ -14,7 +14,10 @@
           <!-- #ifndef APP-ANDROID -->
           flatten
           <!-- #endif -->
-          ref="fillRef" class="slider-track-fill" android-layer-type="hardware"
+          <!-- #ifdef APP-ANDROID -->
+          android-layer-type="hardware"
+          <!-- #endif -->
+          ref="fillRef" class="slider-track-fill"
           :class="props.trackActiveClass"
           :style="{ transform: `scaleX(${trackActiveScaleX})` }">
         </view>
@@ -31,10 +34,13 @@
           <!-- #ifndef APP-ANDROID -->
           flatten
           <!-- #endif -->
+          <!-- #ifdef APP-ANDROID -->
+          android-layer-type="hardware"
+          <!-- #endif -->
           <!-- #ifdef WEB -->
           tabIndex="0" role="slider" :aria-valuenow="currentValue" :aria-valuemin="min" :aria-valuemax="max"
           <!-- #endif -->
-          ref="thumbRef" class="slider-handle" android-layer-type="hardware"
+          ref="thumbRef" class="slider-handle"
           :class="props.thumbClass"
           :style="{ transform: `translateX(-${thumbTranslateX}%)` }">
         </view>
@@ -46,7 +52,7 @@
       <!-- #ifndef APP-ANDROID -->
       flatten
       <!-- #endif -->
-      v-if="props.showValue" ref="showValueRef" style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 3px;white-space: nowrap;">
+      v-if="props.showValue" ref="showValueRef" style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;">
       <!-- #ifndef APP -->
       {{ currentValue }}
       <!-- #endif -->
@@ -815,5 +821,11 @@
     will-change: transform;
     cursor: grab;
     /* #endif */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .slider-track-bg {
+      background-color: #393939;
+    }
   }
 </style>

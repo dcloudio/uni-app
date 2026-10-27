@@ -3,18 +3,17 @@
 #include <tuple>
 #include "recycle_waterflow.h"
 #include "interface/UniCSSProperty.h"
-#include "layout/Flex.h"
-#include "layout/UniLayout.h"
-#include "vue/shared/napi/napi_adapter.h"
+#include "node_api.h"
 #if defined(OS_ANDROID)
-#include "vue/shared/napi/node_v8/napi_node_v8.h"
+#include "v8/node_api_v8.h"
 #endif
 
 using namespace uniappx;
 
 /**
  * - 关于unobserve和removeEventListener的说明
- *   目前Element回收时会自动解绑所有事件监听和ResizeObserver，因此在RecycleXXX等实例销毁时无需重复做这些工作
+ *   目前Element回收时会自动解绑所有事件监听和ResizeObserver，因此在RecycleList等实例销毁时无需重复做这些工作
+ *   removeEventListener在destroyed时执行一次防止RecycleList析构后还触发滚动等事件，比如issue-31946 用户在iOS平台bounce未结束时触发list-view销毁，在RecycleList析构后仍触发了滚动事件
  */
 
 namespace recycle_waterflow {
@@ -50,24 +49,59 @@ namespace recycle_waterflow {
 #endif
     }
 
+    inline uint64_t getTimestamp() {
+        return static_cast<uint64_t>(
+                std::chrono::duration_cast<std::chrono::milliseconds>(
+                        std::chrono::steady_clock::now().time_since_epoch())
+                        .count());
+    }
+
     enum NativeChannelFnAction : uint32_t {
-        NativeChannelFnActionDestroy = 0
+        NativeChannelFnActionDestroy = 0,
+        NativeChannelFnActionUpdateList = 1
     };
-    // 不检查napi_status，上游确保正确
+    // 不检查napi_status，上游确保参数类型正确
+    std::vector<std::string> resolveKeyList(napi_env env, napi_value jsKeyList) {
+        std::vector<std::string> keyList;
+        bool isArray = false;
+        napi_is_array(env, jsKeyList, &isArray);
+        if (!isArray) {
+            return keyList;
+        }
+        uint32_t length = 0;
+        napi_get_array_length(env, jsKeyList, &length);
+        keyList.reserve(length);
+        for (uint32_t i = 0; i < length; ++i) {
+            napi_value jsKey;
+            napi_get_element(env, jsKeyList, i, &jsKey);
+            size_t strLen = 0;
+            napi_get_value_string_utf8(env, jsKey, nullptr, 0, &strLen);
+            std::string key(strLen + 1, '\0');
+            napi_get_value_string_utf8(
+                    env, jsKey, key.data(), strLen + 1, &strLen);
+            key.resize(strLen);
+            keyList.push_back(std::move(key));
+        }
+        return keyList;
+    }
+
     napi_value NativeChannelFn(napi_env env, napi_callback_info info) {
         napi_value undefined;
         napi_get_undefined(env, &undefined);
-        size_t argc = 2;
-        napi_value args[2];
-        napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+        size_t argc = 0;
+        napi_get_cb_info(env, info, &argc, nullptr, nullptr, nullptr);
         if (argc < 2) {
             return undefined;
         }
+        std::vector<napi_value> args(argc);
+        napi_get_cb_info(
+                env, info, &argc, args.data(), nullptr, nullptr);
         double action = 0.0;
         napi_get_value_double(env, args[0], &action);
         double waterflowId = 0.0;
         napi_get_value_double(env, args[1], &waterflowId);
-        if (static_cast<uint32_t>(action) == NativeChannelFnActionDestroy) {
+        auto actionInt = static_cast<uint32_t>(action);
+        if (actionInt == NativeChannelFnActionDestroy) {
             auto it = waterflowInstanceCache.find(waterflowId);
             if (it != waterflowInstanceCache.end()) {
                 auto waterflow = it->second.lock();
@@ -75,6 +109,20 @@ namespace recycle_waterflow {
                     waterflow->setDestroyed(true);
                 }
             }
+        } else if (actionInt == NativeChannelFnActionUpdateList) {
+            if (argc < 3) {
+                return undefined;
+            }
+            auto it = waterflowInstanceCache.find(waterflowId);
+            if (it == waterflowInstanceCache.end()) {
+                return undefined;
+            }
+            auto waterflow = it->second.lock();
+            if (!waterflow) {
+                waterflowInstanceCache.erase(it);
+                return undefined;
+            }
+            waterflow->updateList(resolveKeyList(env, args[2]));
         }
         return undefined;
     }
@@ -102,7 +150,7 @@ namespace recycle_waterflow {
         waterflowInstanceCache[waterflowId] = this->shared_from_this();
 #if defined(OS_ANDROID)
         auto weakThis = this->weak_from_this();
-        vue::shared::napi::node_v8::RunWithV8ScopeNoLocker(this->_sharedData->_env, [weakThis]() {
+        napi::v8_bridge::RunWithV8ScopeNoLocker(this->_sharedData->_env, [weakThis]() {
             auto self = weakThis.lock();
             if (!self ||
                 !canCallVueComponentMethod(self.get())) {
@@ -159,6 +207,61 @@ namespace recycle_waterflow {
         this->rebuildItemOffsets();
         this->updateRenderList();
     }
+    
+    /**
+     * 无动画时必然存在跳转不准的情况，不同于list-view，waterflow在跳转到index为200的item时，是可能渲染出来199项的
+     * 199项的尺寸发生变化时可能会影响200所属的列，从而导致200的offsetY发生变化。
+     */
+    void RecycleWaterflow::setScrollIntoViewKey(const std::string key) {
+        if (key.empty()) {
+            return;
+        }
+        auto [_,offset] = this->getItemOffset(key);
+        if (offset < 0.0f) {
+            return;
+        }
+        this->cachedSizeStart = 0.0f;
+        this->scrollingToItem = true;
+        this->scrollingToItemKey = key;
+        this->scrollingToItemOffset = offset;
+        auto scrollWithAnimationAttr = this->scrollElement->getAnyAttribute("scroll-with-animation");
+        if (const auto* b = std::any_cast<bool>(&scrollWithAnimationAttr)) {
+            this->scrollingToItemWithAnimation = *b;
+        }
+        this->scrollingToItemTimestamp = getTimestamp();
+        if (this->scrolling) {
+            this->scrollingToItemIgnoreNextEnd = true;
+        }
+        this->scrollElement->scrollTo(0, offset);
+    }
+
+    void RecycleWaterflow::checkAndUpdateScrollingToItemOffset() {
+        if (!this->scrollingToItem || this->destroyed) {
+            return;
+        }
+        auto [_,offset] = this->getItemOffset(this->scrollingToItemKey);
+        if (offset < 0) {
+            return;
+        }
+        if (this->scrollingToItemOffset != offset) {
+            this->scrollingToItemOffset = offset;
+            // scrollTo会触发scrollEnd
+            if (this->scrolling) {
+                this->scrollingToItemIgnoreNextEnd = true;
+            }
+            uint64_t animationTimeRemain = 0;
+            if (this->scrollingToItemWithAnimation) {
+                auto timestamp = getTimestamp();
+                animationTimeRemain = this->scrollingToItemTimestamp + this->scrollAnimationDuration - timestamp;
+            }
+            // TODO 底层实现scrollTo duration后修改此处逻辑
+            if (animationTimeRemain > 0) {
+                this->scrollElement->scrollTo(0, offset);
+            } else {
+                this->scrollElement->scrollTo(0, offset);
+            }
+        }
+    }
 
     void RecycleWaterflow::setElement(Element *element) {
         // setElement触发在render之后，需要在此时机获取一次高度
@@ -166,35 +269,32 @@ namespace recycle_waterflow {
         this->scrollElement = scrollElement;
         // 调用getBoundingClientRect获取高度略微浪费性能。OffsetHeight返回的又是整形，不符合预期。或许需要暴露NativeView给list-view用
         // auto size = this->scrollElement->getBoundingClientRect().height;
-        auto scrollLayoutNode = this->scrollElement->GetLayoutNode();
-        auto height = layoutPx2LogicPx(UniLayoutNodeLayoutGetHeight(scrollLayoutNode));
-        auto width = layoutPx2LogicPx(UniLayoutNodeLayoutGetWidth(scrollLayoutNode));
-        auto paddingTop = layoutPx2LogicPx(UniLayoutNodeLayoutGetPadding(scrollLayoutNode,
-                                                                         CSSDirection::CSSTop));
-        auto paddingBottom = layoutPx2LogicPx(UniLayoutNodeLayoutGetPadding(scrollLayoutNode,
-                                                                            CSSDirection::CSSBottom));
-        auto paddingLeft = layoutPx2LogicPx(UniLayoutNodeLayoutGetPadding(scrollLayoutNode,
-                                                                          CSSDirection::CSSLeft));
-        auto paddingRight = layoutPx2LogicPx(UniLayoutNodeLayoutGetPadding(scrollLayoutNode,
-                                                                           CSSDirection::CSSRight));
-        if (height && !std::isnan(height)) {
-            if (std::isnan(paddingTop)) {
-                paddingTop = 0;
+        if (!this->scrollElement->IsNeedLayout()) {
+            auto height = layoutPx2LogicPx(this->scrollElement->GetLayoutHeight());
+            auto width = layoutPx2LogicPx(this->scrollElement->GetLayoutWidth());
+            auto paddingTop = layoutPx2LogicPx(this->scrollElement->GetLayoutPaddingTop());
+            auto paddingBottom = layoutPx2LogicPx(this->scrollElement->GetLayoutPaddingBottom());
+            auto paddingLeft = layoutPx2LogicPx(this->scrollElement->GetLayoutPaddingLeft());
+            auto paddingRight = layoutPx2LogicPx(this->scrollElement->GetLayoutPaddingRight());
+            if (!std::isnan(height)) {
+                if (std::isnan(paddingTop)) {
+                    paddingTop = 0;
+                }
+                if (std::isnan(paddingBottom)) {
+                    paddingBottom = 0;
+                }
+                this->updateContainerSize(height - paddingTop - paddingBottom);
             }
-            if (std::isnan(paddingBottom)) {
-                paddingBottom = 0;
+            if (!std::isnan(width)) {
+                if (std::isnan(paddingLeft)) {
+                    paddingLeft = 0;
+                }
+                if (std::isnan(paddingRight)) {
+                    paddingRight = 0;
+                }
+                this->updateContainerCrossAxisSize(
+                        width - paddingLeft - paddingRight);
             }
-            this->updateContainerSize(height - paddingTop - paddingBottom);
-        }
-        if (width && !std::isnan(width)) {
-            if (std::isnan(paddingLeft)) {
-                paddingLeft = 0;
-            }
-            if (std::isnan(paddingRight)) {
-                paddingRight = 0;
-            }
-            this->updateContainerCrossAxisSize(
-                    width - paddingLeft - paddingRight);
         }
         this->addScrollListener();
         this->startRootObserve();
@@ -256,28 +356,24 @@ namespace recycle_waterflow {
     };
 
     void RecycleWaterflow::removeScrollListener() {
-        // if (this->scrollElement && this->scrollListener) {
-        //     this->scrollElement->removeEventListener(
-        //             this->scrollListener->getId());
-        //     this->scrollListener = nullptr;
-        // }
-        // if (this->scrollElement && this->scrollEndListener) {
-        //     this->scrollElement->removeEventListener(
-        //             this->scrollEndListener->getId());
-        //     this->scrollEndListener = nullptr;
-        // }
+         if (this->scrollElement && this->scrollListener) {
+             this->scrollElement->removeEventListener(
+                     this->scrollListener->getId());
+             this->scrollListener = nullptr;
+         }
+         if (this->scrollElement && this->scrollEndListener) {
+             this->scrollElement->removeEventListener(
+                     this->scrollEndListener->getId());
+             this->scrollEndListener = nullptr;
+         }
     };
 
     void RecycleWaterflow::onScroll(const UniScrollEvent &event) {
-        if (this->ignoreNextScroll) {
-            this->ignoreNextScroll = false;
-            return;
-        }
         if (!this->scrolling) {
             this->onScrollStart();
             this->scrolling = true;
         }
-        float scrollTop = this->scrollElement->getScrollTop();
+        float scrollTop = event.detail().scrollTop();
         this->realScrollOffset = scrollTop;
         scrollTop = this->prepareFastScroll(scrollTop);
         this->updateScrollOffset(scrollTop);
@@ -286,6 +382,11 @@ namespace recycle_waterflow {
     void RecycleWaterflow::onScrollStart() {
         // TODO 不考虑同一页面多个回收列表同时滚动的场景
         this->scrollElement->GetPage()->setRecycling(true);
+        if (this->resetCachedSizeOnNextScroll && !this->scrollingToItem) {
+            this->resetCachedSizeOnNextScroll = false;
+            this->cachedSizeStart = this->originalCachedSize;
+            this->cachedSizeEnd = this->originalCachedSize;
+        }
     };
 
     void RecycleWaterflow::onScrollEnd() {
@@ -304,15 +405,21 @@ namespace recycle_waterflow {
         }
         if (this->scrollOffset != this->realScrollOffset || exitFastScrollMode) {
             this->scrollOffset = this->realScrollOffset;
+            this->updateMinMaxRenderOffset();
             this->updateRenderListOnScroll();
+        }
+        if (this->scrollingToItemIgnoreNextEnd) {
+            this->scrollingToItemIgnoreNextEnd = false;
+        } else if (this->scrollingToItem) {
+            this->scrollingToItem = false;
+            this->scrollingToItemKey.clear();
+            // 滚动完成后flow-item重新排版会使用新设置的cachedSize，等下次滚动再重设cachedSize
+            this->resetCachedSizeOnNextScroll = true;
         }
     };
 
     float RecycleWaterflow::prepareFastScroll(float offset) {
-        auto timestamp = static_cast<uint64_t>(
-                std::chrono::duration_cast<std::chrono::milliseconds>(
-                        std::chrono::steady_clock::now().time_since_epoch())
-                        .count());
+        auto timestamp = getTimestamp();
         auto lastOffset = this->lastScrollOffsetForFastScroll;
         auto lastTimestamp = this->lastScrollTimestampForFastScroll;
         this->lastScrollOffsetForFastScroll = offset;
@@ -331,7 +438,7 @@ namespace recycle_waterflow {
         }
 
         bool ignoreFastScrollMode =
-                offset < 1 || offset > this->placeholderSize - this->size - 1;
+                offset < 1 || offset > this->placeholderSize - this->size - 1 || true;
         if (!ignoreFastScrollMode) {
             auto velocity = deltaOffset / deltaTime;
             if (std::abs(velocity) > this->fastScrollVelocity) {
@@ -343,7 +450,7 @@ namespace recycle_waterflow {
                     this->cachedSizeEnd = scrollDirectionCachedSize;
                 } else {
                     // 快速滚动期间减少渲染内容
-                    this->cachedSizeStart = scrollDirectionCachedSize;
+                    this->cachedSizeStart = this->scrollingToItem ? 0.0f : scrollDirectionCachedSize;
                     this->cachedSizeEnd = 0.0f;
                 }
             } else {
@@ -364,7 +471,6 @@ namespace recycle_waterflow {
                                          (deltaOffsetAbs / deltaOffset);
                 offset = this->lastScrollOffsetForFastScrollRender +
                          deltaOffsetRender;
-                auto deltaFastScrollOffset = deltaOffset - deltaOffsetRender;
                 this->fastScrollOffset += deltaOffset - deltaOffsetRender;
             }
         }
@@ -399,6 +505,7 @@ namespace recycle_waterflow {
 
     void RecycleWaterflow::updateList(const std::vector<std::string> keyList) {
         this->keyList = keyList;
+        this->forceRenderInfoUpdate = true;
 
         // rebuild list with preserved items when possible
         std::vector<ItemInfo> tempList;
@@ -456,7 +563,10 @@ namespace recycle_waterflow {
             return;
 
         itemPtr->size = size;
-        this->rebuildItemOffsets();
+        this->rebuildItemOffsetsFrom(itemPtr->index);
+        if (this->scrollingToItem) {
+            this->checkAndUpdateScrollingToItemOffset();
+        }
         if (this->isAllRenderItemSettled()) {
             this->updateRenderListOnItemSizeChange();
         }
@@ -481,8 +591,6 @@ namespace recycle_waterflow {
     }
 
     void RecycleWaterflow::updateScrollOffset(float offset) {
-        float delta = offset - this->scrollOffset;
-        float deltaAbs = std::abs(delta);
         this->lastScrollOffset = this->scrollOffset;
 
         float maxScroll = std::max(0.0f, this->placeholderSize - this->size);
@@ -501,8 +609,8 @@ namespace recycle_waterflow {
         // cachedSize不用于避免频繁更新渲染列表，每次不可更新大量显示item，简单来说滚动期间的更新就是小步快跑
         auto pureOffset = this->scrollOffset;
         this->minRenderOffset =
-                std::max(0.0f, pureOffset - this->cachedSizeStart);
-        this->maxRenderOffset = pureOffset + this->size + this->cachedSizeEnd;
+                std::max(0.0f, pureOffset - this->cachedSizeStart + this->calcTolerance);
+        this->maxRenderOffset = pureOffset + this->size + this->cachedSizeEnd - this->calcTolerance;
     }
 
     void RecycleWaterflow::preTriggerRenderListUpdate() {
@@ -512,7 +620,7 @@ namespace recycle_waterflow {
         this->triggerRenderListUpdate();
         // 退出快速滚动的下一帧使用重置的cachedSize
         if (this->resetCachedSizeOnNextRender) {
-            this->cachedSizeStart = this->originalCachedSize;
+            this->cachedSizeStart = this->scrollingToItem ? 0.0f : this->originalCachedSize;
             this->cachedSizeEnd = this->originalCachedSize;
             this->resetCachedSizeOnNextRender = false;
         }
@@ -533,7 +641,6 @@ namespace recycle_waterflow {
             auto it = this->keyItemMap.find(key);
             if (it != this->keyItemMap.end()) {
                 ItemInfo *itemPtr = it->second;
-                auto index = itemPtr->index;
                 itemInstance->updateItemOffset(itemPtr->offsetX,
                                                itemPtr->offsetY +
                                                this->fastScrollOffset);
@@ -552,14 +659,15 @@ namespace recycle_waterflow {
             this->lastPlaceholderSize = _placeholderSize;
         }
 
-        if (renderInfoChanged) {
+        if (renderInfoChanged || this->forceRenderInfoUpdate) {
+            this->forceRenderInfoUpdate = false;
             auto sharedData = this->_sharedData;
             if (!canCallVueComponentMethod(this)) {
                 return;
             }
 #if defined(OS_ANDROID)
             auto weakThis = this->weak_from_this();
-            vue::shared::napi::node_v8::RunWithV8ScopeNoLocker(sharedData->_env, [weakThis, sharedData]() {
+            napi::v8_bridge::RunWithV8ScopeNoLocker(sharedData->_env, [weakThis, sharedData]() {
                 auto selfHolder = weakThis.lock();
                 auto self = selfHolder
                             ? dynamic_cast<RecycleWaterflow *>(selfHolder.get())
@@ -597,26 +705,34 @@ namespace recycle_waterflow {
     }
 
     void RecycleWaterflow::updateRenderList() {
-        int start = 0;
-        int end = -1;
-        for (size_t i = 0; i < this->list.size(); ++i) {
-            const auto item = &this->list[i];
-            if (this->itemEndOffset(item) < this->minRenderOffset ||
-                item->offsetY > this->maxRenderOffset) {
-                continue;
+        // 各列高度不同，按index排列的item底边可能是[1000, 100, 200, 300]。
+        // 直接对底边二分查找250可能返回index 3，漏掉仍覆盖渲染区域的高项index 0。
+        // 对应的maxEndOffset为[1000, 1000, 1000, 1000]，满足二分查找的单调性。
+        // 只有某项的maxEndOffset < minRenderOffset时，该项及之前所有项才都已越过渲染区域上边界；
+        // 查找首个不满足此条件的项作为起点，保留仍需渲染的高项，查询仍为O(log n)。
+        const auto startIt = std::lower_bound(
+            this->list.begin(),
+            this->list.end(),
+            this->minRenderOffset,
+            [](const auto& item, float offset) {
+                return item.maxEndOffset < offset;
             }
-            if (end < 0) {
-                start = static_cast<int>(i);
+        );
+
+        const auto endIt = std::upper_bound(
+            startIt,
+            this->list.end(),
+            this->maxRenderOffset,
+            [](float offset, const auto& item) {
+                return offset < item.offsetY;
             }
-            end = static_cast<int>(i);
-        }
-        if (end < 0) {
-            this->renderRangeStart = 0;
-            this->renderRangeLength = 0;
-        } else {
-            this->renderRangeStart = start;
-            this->renderRangeLength = end - start + 1;
-        }
+        );
+
+        this->renderRangeStart =
+            static_cast<int>(startIt - this->list.begin());
+        this->renderRangeLength =
+            static_cast<int>(endIt - startIt);
+
         this->preTriggerRenderListUpdate();
     }
 
@@ -625,77 +741,7 @@ namespace recycle_waterflow {
     }
 
     void RecycleWaterflow::updateRenderListOnScroll() {
-        if (this->scrollOffset > this->lastScrollOffset) {
-            this->updateRenderListForward();
-        } else if (this->scrollOffset < this->lastScrollOffset) {
-            this->updateRenderListBackward();
-        } else {
-            this->updateRenderList();
-        }
-    }
-
-    void RecycleWaterflow::updateRenderListForward() {
-        const int lastRenderIndex =
-                this->renderRangeLength == 0 ? -1 : (this->renderRangeStart +
-                                                     this->renderRangeLength -
-                                                     1);
-        // remove invisible from top
-        while (this->renderRangeLength > 0) {
-            auto currentItem = this->list[this->renderRangeStart];
-            if (this->itemEndOffset(&currentItem) < this->minRenderOffset) {
-                this->renderRangeStart++;
-                this->renderRangeLength--;
-            } else {
-                break;
-            }
-        }
-        // append visible at bottom
-        bool foundStart = this->renderRangeLength > 0;
-        auto listSize = static_cast<int>(this->list.size());
-        for (int i = lastRenderIndex + 1; i < listSize; ++i) {
-            const auto item = &this->list[i];
-            if (this->itemEndOffset(item) < this->minRenderOffset) {
-                continue;
-            } else if (item->offsetY > this->maxRenderOffset) {
-                break;
-            } else {
-                this->renderRangeLength++;
-                if (!foundStart) {
-                    foundStart = true;
-                    this->renderRangeStart = i;
-                }
-            }
-        }
-        this->preTriggerRenderListUpdate();
-    }
-
-    void RecycleWaterflow::updateRenderListBackward() {
-        const int firstRenderIndex =
-                this->renderRangeLength == 0
-                ? static_cast<int>(this->list.size()) : this->renderRangeStart;
-        // remove invisible from bottom
-        while (this->renderRangeLength > 0) {
-            auto currentItem = &this->list[this->renderRangeStart +
-                                           this->renderRangeLength - 1];
-            if (currentItem->offsetY > this->maxRenderOffset) {
-                this->renderRangeLength--;
-            } else {
-                break;
-            }
-        }
-        // prepend visible at top
-        for (int i = firstRenderIndex - 1; i >= 0; --i) {
-            const auto item = &this->list[i];
-            if (item->offsetY > this->maxRenderOffset) {
-                continue;
-            } else if (this->itemEndOffset(item) < this->minRenderOffset) {
-                break;
-            } else {
-                this->renderRangeStart = i;
-                this->renderRangeLength++;
-            }
-        }
-        this->preTriggerRenderListUpdate();
+        this->updateRenderList();
     }
 
     std::tuple<float, float>
@@ -751,6 +797,10 @@ namespace recycle_waterflow {
             }
         }
 
+        // 部分重排从上一项的前缀最大值继续计算；后续值重新计算，避免高项变矮后保留旧最大值。
+        float maxEndOffset = startIndex > 0
+                             ? this->list[startIndex - 1].maxEndOffset
+                             : 0.0f;
         for (size_t i = startIndex; i < this->list.size(); ++i) {
             auto &item = this->list[i];
             int targetColumn = 0;
@@ -765,6 +815,8 @@ namespace recycle_waterflow {
             item.offsetX = targetColumn *
                            (this->itemCrossAxisSize + this->crossAxisGap);
             item.offsetY = columnHeights[targetColumn];
+            maxEndOffset = std::max(maxEndOffset, this->itemEndOffset(&item));
+            item.maxEndOffset = maxEndOffset;
             columnHeights[targetColumn] +=
                     this->realItemSize(item.size) + this->mainAxisGap;
         }
@@ -868,23 +920,16 @@ namespace recycle_waterflow {
     };
 
     void RecycleFlowItem::initSize() {
-        if (!this->viewElement || this->sizeInited) {
+        if (!this->viewElement || this->viewElement->IsNeedLayout() || !this->viewElement->isConnected() || !this->viewElement->HasLayout()) {
             return;
         }
-        auto size = layoutPx2LogicPx(UniLayoutNodeLayoutGetHeight(
-                this->viewElement->GetLayoutNode()));
-        auto crossAxisSize = layoutPx2LogicPx(UniLayoutNodeLayoutGetWidth(
-                this->viewElement->GetLayoutNode()));
-        if (!std::isnan(crossAxisSize) && crossAxisSize <= 0.0f) {
+        auto size = layoutPx2LogicPx(this->viewElement->GetLayoutHeight());
+        auto crossAxisSize = layoutPx2LogicPx(this->viewElement->GetLayoutWidth());
+        if (std::isnan(size) || std::isnan(crossAxisSize) || crossAxisSize <= 0.0f) {
             // 等待resizeObserver通知
             return;
         }
-        if (std::isnan(size) || std::isnan(crossAxisSize)) {
-            // TODO flow-item复用后第一次获取不到尺寸，后续也不会触发resize事件。应由排版器解决此问题，临时由flow-item处理
-        } else {
-            this->sizeInited = true;
-            this->setSize(size);
-        }
+        this->setSize(size);
     }
 
     void RecycleFlowItem::startObserve() {
@@ -914,7 +959,7 @@ namespace recycle_waterflow {
     float RecycleFlowItem::getSize() { return this->size; };
 
     void RecycleFlowItem::updateItemSize() {
-        if (this->key == "" || this->size <= 0.0) {
+        if (this->key == "" || this->size < 0.0f) {
             return;
         }
         auto recycleList = this->getRecycleWaterflow();
@@ -925,50 +970,34 @@ namespace recycle_waterflow {
 
     void RecycleFlowItem::setSize(float size) {
         // TODO 排查为什么有时候会获取到NaN
-        if (!std::isnan(size) && size > 0.0) {
-            this->size = size;
-            this->updateItemSize();
-        }
-    };
-
-    void RecycleFlowItem::updateKey(std::string key) {
-        auto prevKey = this->key;
-        if (prevKey == key) {
+        if (std::isnan(size) || size < 0.0) {
             return;
         }
-        if (prevKey != "") {
-            // key更新逻辑
-            this->removeInstance(prevKey);
+        this->size = size;
+        this->updateItemSize();
+    };
+
+    /**
+     * 注意item的updateKey不能改成同步，因为updateKey在js侧是由renderEffect->renderList触发的
+     * 而在c层会触发updateKey -> updateItemSize -> updateRenderInfo->renderEffect导致任务批次混乱
+     */
+    void RecycleFlowItem::updateKey(std::string key) {
+        auto prevKey = this->key;
+        bool isKeyUpdated = prevKey != key;
+        if (isKeyUpdated) {
+            if (!prevKey.empty()) {
+                this->removeInstance(prevKey);
+            }
         }
         this->key = key;
         this->setInstance(key);
         // key变更后需要重置offset
         this->offsetY = -1.0f;
+        this->offsetX = -1.0f;
         this->getAndUpdateItemOffset();
         this->getAndUpdateItemCrossAxisSize();
-        /**
-         * key更新时优先从waterflow获取缓存的size，否则可能获取到复用的item的size
-         * 后续步骤仍会将尺寸更新为正确值，但是期间出现的错误值会导致抖动
-         */
-        auto sizeFromWaterflow = this->getItemSizeFromWaterflow();
-        if (sizeFromWaterflow > 0.0f) {
-            /**
-             * 从waterflow获取的size无需再更新到waterflow
-             */
-            this->size = sizeFromWaterflow;
-        } else {
-            // 先使用旧item的size，等待resizeObserver通知
-            this->updateItemSize();
-        }
+        this->initSize();
     };
-
-    float RecycleFlowItem::getItemSizeFromWaterflow() {
-        auto recycleWaterflow = this->getRecycleWaterflow();
-        if (recycleWaterflow) {
-            return recycleWaterflow->getItemSize(this->key);
-        }
-        return -1.0;
-    }
 
     IRecycleWaterflow *RecycleFlowItem::getRecycleWaterflow() {
         if (this->waterflowId < 1.0) {

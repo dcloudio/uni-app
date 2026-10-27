@@ -1,0 +1,6 @@
+{
+  "dependencies": [
+    "com.github.getActivity:XXPermissions:18.63"
+  ],
+  "minSdkVersion": "21"
+}

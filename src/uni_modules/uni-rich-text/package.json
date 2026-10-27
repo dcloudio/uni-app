@@ -42,6 +42,7 @@
 			"app-harmony": true
 		},
 		"dependencies": [
+			"uni-arrayBufferToBase64",
 			"uni-web-view",
 			"uni-framework"
 		],

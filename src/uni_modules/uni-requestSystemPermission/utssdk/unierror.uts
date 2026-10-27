@@ -1,0 +1,33 @@
+import { RequestSystemPermissionErrorCode, RequestSystemPermissionFail } from './interface.uts'
+
+export enum RequestSystemPermissionError {
+  PERMISSION_EMPTY = 1560601,
+  PERMISSION_NOT_SUPPORTED = 1560604
+}
+
+// #ifdef APP-HARMONY
+const RequestSystemPermissionUniErrors: Map<number, string> = new Map([
+  [RequestSystemPermissionError.PERMISSION_EMPTY, 'requestSystemPermission:fail permission is empty'],
+  [RequestSystemPermissionError.PERMISSION_NOT_SUPPORTED, 'requestSystemPermission:fail permission not supported']
+])
+// #endif
+
+// #ifdef APP-ANDROID
+const RequestSystemPermissionUniErrors: Map<number, string> = new Map([
+  [1560601, 'requestSystemPermission:fail permission is empty'],
+  [1560604, 'requestSystemPermission:fail permission not supported']
+])
+// #endif
+
+export class RequestSystemPermissionErrorImpl extends UniError implements RequestSystemPermissionFail {
+  // #ifdef APP-HARMONY
+  override errCode: RequestSystemPermissionErrorCode
+  // #endif
+
+  constructor(errCode: RequestSystemPermissionErrorCode) {
+    super()
+    this.errSubject = 'uni-requestSystemPermission'
+    this.errCode = errCode
+    this.errMsg = RequestSystemPermissionUniErrors.get(errCode) ?? ''
+  }
+}

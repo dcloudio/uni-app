@@ -136,7 +136,7 @@ export type ChooseMediaOptions = {
 	 *    "alipay": {
 	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
+	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *        "hostVer": "√",
@@ -200,7 +200,7 @@ export type ChooseMediaOptions = {
 	 */
 	count ?: number | null
 	/**
-	 * album 从相册选视频，camera 使用相机拍摄，合法值：'image'、'video'、'mix'
+	 * image 只能拍摄图片或从相册选择图片，video 只能拍摄视频或从相册选择视频，mix 可同时选择图片和视频，合法值：'image'、'video'、'mix'
 	 * @defaultValue 	['image', 'video']
 	 * @uniPlatform {
 	 * "app": {
@@ -222,7 +222,7 @@ export type ChooseMediaOptions = {
 	 */
 	mediaType ?: (string[]) | null,
 	/**
-	 * album 从相册选视频，camera 使用相机拍摄
+	 * album 从相册选择，camera 使用相机拍摄
 	 * @defaultValue ['album', 'camera']
 	 * @uniPlatform {
 	 * "app": {
@@ -271,7 +271,7 @@ export type ChooseMediaOptions = {
 	*    "alipay": {
 	*        "hostVer": "√",
 	*        "uniVer": "√",
-	*        "unixVer": "x"
+	*        "unixVer": "5.31"
 	*    },
 	*    "baidu": {
 	*        "hostVer": "√",
@@ -339,7 +339,7 @@ export type ChooseMediaOptions = {
 	*    "alipay": {
 	*        "hostVer": "√",
 	*        "uniVer": "√",
-	*        "unixVer": "x"
+	*        "unixVer": "5.31"
 	*    },
 	*    "baidu": {
 	*        "hostVer": "√",
@@ -435,7 +435,7 @@ export interface Uni {
 	 *    "alipay": {
 	 *        "hostVer": "√",
 	 *        "uniVer": "√",
-	 *        "unixVer": "x"
+	 *        "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *        "hostVer": "√",

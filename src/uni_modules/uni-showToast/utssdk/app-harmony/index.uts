@@ -1,0 +1,116 @@
+import { deviceInfo, BusinessError } from '@kit.BasicServicesKit';
+import { promptAction, PromptAction } from '@kit.ArkUI';
+
+import { ShowToast, ShowToastOptions, ShowToastSuccess, ShowToastSuccessImpl, HideToast, HideToastOptions, HideToastSuccess } from '../interface.uts'
+import { API_SHOW_TOAST, ShowToastProtocol, ShowToastApiOptions, API_HIDE_TOAST } from '../protocol.uts'
+import {
+    ShowToastOptions as ShowToastOptionsNative,
+    showToast as showToastNative,
+    hideToast as hideToastNative
+} from './toast-native.ets'
+
+let openToastPromiseTimer: number | null = null;
+let openToastPromise: Promise<number> | null = null
+
+function closeNativeToast() {
+	if (deviceInfo.sdkApiVersion >= 18) {
+		const window = UTSHarmony.getCurrentWindow();
+		const promptActionIns = window.getUIContext().getPromptAction() as PromptAction
+		if (openToastPromiseTimer != null) {
+			clearTimeout(openToastPromiseTimer)
+			openToastPromiseTimer = null
+		}
+		const promise = openToastPromise
+		openToastPromise = null
+		promise?.then(id => {
+			promptActionIns.closeToast(id)
+		})
+	}
+}
+
+export const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(
+    API_SHOW_TOAST,
+    function (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>) {
+        const window = UTSHarmony.getCurrentWindow();
+        const uiContext = window.getUIContext()
+        if (options.position != null) {
+            let appTheme = UTSHarmony.getAppTheme()
+            const osTheme = UTSHarmony.getOsTheme()
+            if (appTheme === 'auto') appTheme = osTheme
+            try {
+                const showToastOptions: promptAction.ShowToastOptions = {
+                    message: options.title,
+                    duration: options.duration == null ? undefined : options.duration,
+                    alignment: Alignment.Center
+                }
+                if (appTheme === 'dark') {
+                  showToastOptions.textColor = '#FFFFFF'
+                  showToastOptions.backgroundColor = 'rgba(76, 76, 76, 1)'
+                  showToastOptions.backgroundBlurStyle = BlurStyle.NONE
+                }
+                if (options.position) {
+                    switch (options.position) {
+                        case 'top':
+                            showToastOptions.alignment = Alignment.Top
+                            break
+                        case 'bottom':
+                            showToastOptions.alignment = Alignment.Bottom
+                            break
+                    }
+                }
+                const promptActionIns = uiContext.getPromptAction() as PromptAction
+                if (deviceInfo.sdkApiVersion >= 18) {
+                    const toastPromise = promptActionIns.openToast(showToastOptions)
+                        .then((id) => {
+                            res.resolve(new ShowToastSuccessImpl())
+                            return id
+                        })
+                        .catch((err: BusinessError) => {
+                            res.reject(err.message)
+                            return 0
+                        })
+                    openToastPromise = toastPromise
+                    openToastPromiseTimer = setTimeout(() => {
+                        if (openToastPromise === toastPromise) {
+                            openToastPromiseTimer = null
+                            openToastPromise = null
+                        }
+                    }, showToastOptions.duration ?? 1500)
+                } else {
+                    promptActionIns.showToast(showToastOptions)
+                    res.resolve(new ShowToastSuccessImpl())
+                }
+            } catch (error) {
+                let message = (error as BusinessError).message
+                res.reject(message)
+            }
+            return
+        }
+
+        const rawImage = options.image != null ? UTSHarmony.convert2AbsFullPath(options.image) : ''
+        const image = rawImage.startsWith('/') ? 'file://' + rawImage : rawImage
+        showToastNative(uiContext, {
+            title: options.title,
+            icon: options.icon != null ? options.icon : 'success',
+            image: image,
+            mask: options.mask != null ? options.mask : false,
+            duration: options.duration != null ? options.duration : 1500
+        } as ShowToastOptionsNative)
+        res.resolve(new ShowToastSuccessImpl())
+    },
+    ShowToastProtocol,
+    ShowToastApiOptions
+) as ShowToast
+
+export const hideToast: HideToast = defineAsyncApi<HideToastOptions, HideToastSuccess>(
+    API_HIDE_TOAST,
+    function (options: HideToastOptions, res: ApiExecutor<HideToastSuccess>) {
+        if (options?.allType == true) {
+            closeNativeToast()
+        }
+        const window = UTSHarmony.getCurrentWindow();
+        const uiContext = window.getUIContext()
+        hideToastNative(uiContext)
+        res.resolve()
+    }
+) as HideToast

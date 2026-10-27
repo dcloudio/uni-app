@@ -1,0 +1,11 @@
+export type LoadAnimationOptions = {
+	container: UniNativeViewElement
+	renderer: string
+	loop: boolean
+	autoplay: boolean
+	action?: string
+	repeatMode?: string
+	path: string
+	width: number
+	height: number
+}

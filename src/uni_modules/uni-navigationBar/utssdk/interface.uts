@@ -34,9 +34,9 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "x",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -110,9 +110,9 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "x",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -177,9 +177,9 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "x",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -246,7 +246,7 @@ export type SetNavigationBarColorOptions = {
      *    "alipay": {
      *        "hostVer": "x",
      *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -311,9 +311,9 @@ export type SetNavigationBarColorOptions = {
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "x",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -410,7 +410,7 @@ export type SetNavigationBarTitleOptions = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -486,7 +486,7 @@ export type SetNavigationBarTitleOptions = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -553,7 +553,7 @@ export type SetNavigationBarTitleOptions = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -620,7 +620,7 @@ export type SetNavigationBarTitleOptions = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -743,9 +743,9 @@ export interface Uni {
      *        "unixVer": "4.41"
      *    },
      *    "alipay": {
-     *        "hostVer": "x",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "hostVer": "√",
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -819,7 +819,7 @@ export interface Uni {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -893,7 +893,7 @@ export interface Uni {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -965,7 +965,7 @@ export interface Uni {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",

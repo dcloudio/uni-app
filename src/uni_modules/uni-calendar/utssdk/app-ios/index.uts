@@ -1,0 +1,125 @@
+import { AddPhoneCalendarFail, AddPhoneCalendarOptions, AddPhoneCalendarSuccess, AddPhoneRepeatCalendarFail, AddPhoneRepeatCalendarOptions, AddPhoneRepeatCalendarSuccess, CalendarErrorCode } from '../interface.uts'
+import { NormalizedCalendarOptions, normalizeCalendarOptions, normalizeRepeatCalendarOptions, validateBaseOptions, validateRepeatOptions } from '../common.uts'
+import { createAddPhoneCalendarFail, createAddPhoneRepeatCalendarFail } from '../unierror.uts'
+
+function calendarCreateAddPhoneCalendarSuccess(errMsg : string) : AddPhoneCalendarSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function calendarCreateAddPhoneRepeatCalendarSuccess(errMsg : string) : AddPhoneRepeatCalendarSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function callCalendarSuccess(options : AddPhoneCalendarOptions, errMsg : string) : void {
+	const result = calendarCreateAddPhoneCalendarSuccess(errMsg)
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function callRepeatSuccess(options : AddPhoneRepeatCalendarOptions, errMsg : string) : void {
+	const result = calendarCreateAddPhoneRepeatCalendarSuccess(errMsg)
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function callCalendarFail(options : AddPhoneCalendarOptions, fail : AddPhoneCalendarFail) : void {
+	options.fail?.(fail)
+	options.complete?.(fail)
+}
+
+function callRepeatFail(options : AddPhoneRepeatCalendarOptions, fail : AddPhoneRepeatCalendarFail) : void {
+	options.fail?.(fail)
+	options.complete?.(fail)
+}
+
+function mapAddPhoneCalendarError(code : number, errMsg : string | null = null) : AddPhoneCalendarFail {
+	let errCode : CalendarErrorCode = 608
+	if (code == 801) {
+		errCode = 607
+	} else if (code == 804) {
+		errCode = 606
+	} else if (code == 805) {
+		errCode = 609
+	}
+	const message = errMsg != null && errMsg.length > 0 ? `addPhoneCalendar:fail ${errMsg}` : 'addPhoneCalendar:fail'
+	return createAddPhoneCalendarFail(errCode, message, {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+function mapAddPhoneRepeatCalendarError(code : number, errMsg : string | null = null) : AddPhoneRepeatCalendarFail {
+	let errCode : CalendarErrorCode = 608
+	if (code == 801) {
+		errCode = 607
+	} else if (code == 804) {
+		errCode = 606
+	} else if (code == 805) {
+		errCode = 609
+	}
+	const message = errMsg != null && errMsg.length > 0 ? `addPhoneRepeatCalendar:fail ${errMsg}` : 'addPhoneRepeatCalendar:fail'
+	return createAddPhoneRepeatCalendarFail(errCode, message, {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+function toNativeOptions(normalized : NormalizedCalendarOptions) : UTSJSONObject {
+	return {
+		title: normalized.title,
+		startTime: normalized.startTime,
+		endTime: normalized.endTime,
+		allDay: normalized.allDay,
+		notes: normalized.notes,
+		location: normalized.location,
+		alarm: normalized.alarm,
+		alarmOffset: normalized.alarmOffset,
+		repeatInterval: normalized.repeatInterval,
+		repeatEndTime: normalized.repeatEndTime
+	} as UTSJSONObject
+}
+
+function performAddCalendar(options : AddPhoneCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	UniCalendarNative.addEvent(toNativeOptions(normalized), (code : number, errMsg : string | null) => {
+		if (code != 0) {
+			callCalendarFail(options, mapAddPhoneCalendarError(code, errMsg))
+			return
+		}
+		callCalendarSuccess(options, `${action}:ok`)
+	})
+}
+
+function performAddRepeat(options : AddPhoneRepeatCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	UniCalendarNative.addEvent(toNativeOptions(normalized), (code : number, errMsg : string | null) => {
+		if (code != 0) {
+			callRepeatFail(options, mapAddPhoneRepeatCalendarError(code, errMsg))
+			return
+		}
+		callRepeatSuccess(options, `${action}:ok`)
+	})
+}
+
+	export function addPhoneCalendar(options : AddPhoneCalendarOptions) : void {
+	const error = validateBaseOptions(options)
+	if (error != null) {
+		callCalendarFail(options, createAddPhoneCalendarFail(error, null))
+		return
+	}
+	performAddCalendar(options, normalizeCalendarOptions(options), 'addPhoneCalendar')
+}
+
+export function addPhoneRepeatCalendar(options : AddPhoneRepeatCalendarOptions) : void {
+	const error = validateRepeatOptions(options)
+	if (error != null) {
+		callRepeatFail(options, createAddPhoneRepeatCalendarFail(error, null))
+		return
+	}
+	performAddRepeat(options, normalizeRepeatCalendarOptions(options), 'addPhoneRepeatCalendar')
+}
+
+export {
+	AddPhoneCalendarOptions,
+	AddPhoneRepeatCalendarOptions
+} from '../interface.uts'

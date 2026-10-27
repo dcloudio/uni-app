@@ -3,6 +3,7 @@ import {
     NavigateToFail,
     ReLaunchFail,
     RedirectToFail,
+    RewriteRouteFail,
     RouteErrorCode,
     SwitchTabFail,
 } from './interface.uts'
@@ -39,5 +40,12 @@ export class SwitchTabFailImpl extends UniError implements SwitchTabFail {
     override errCode: RouteErrorCode
     constructor(errMsg: string = '', errCode: RouteErrorCode = 4) {
         super('uni-switchTab', errCode, errMsg)
+    }
+}
+
+export class RewriteRouteFailImpl extends UniError implements RewriteRouteFail {
+    override errCode: RouteErrorCode
+    constructor(errMsg: string = '', errCode: RouteErrorCode = 4) {
+        super('uni-rewriteRoute', errCode, errMsg)
     }
 }

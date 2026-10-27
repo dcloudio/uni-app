@@ -1,4 +1,4 @@
-import { ShowActionSheetOptions, ShowModalOptions, ShowToastOptions, ShowLoadingOptions, ShowToast, HideToast, ShowLoading, HideLoading, ShowModal, ShowActionSheet } from "../interface.uts"
+import { ShowActionSheetOptions, ShowModalOptions, ShowToastOptions, ShowLoadingOptions, ShowToast, HideToast, ShowLoading, HideLoading, ShowModal, ShowActionSheet, HideToastOptions } from "../interface.uts"
 import * as ToastModule from "./showToast.uts"
 // #ifndef UNI-APP-X
 import * as ModalModule from "./showModal.uts"
@@ -13,8 +13,8 @@ export const showToast : ShowToast = function (options : ShowToastOptions) {
 	ToastModule.toShowToast(options)
 }
 
-export const hideToast : HideToast = function () {
-	ToastModule.toHideToast()
+export const hideToast : HideToast = function (options : HideToastOptions | null) {
+	ToastModule.toHideToast(options)
 }
 
 // #ifndef UNI-APP-X
@@ -34,5 +34,4 @@ export const showActionSheet : ShowActionSheet = function (options : ShowActionS
 	ActionSheetModule.actionSheet(options)
 }
 // #endif
-
 

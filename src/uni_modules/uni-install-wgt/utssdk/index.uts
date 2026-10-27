@@ -1,0 +1,246 @@
+import {
+	InstallWgt,
+	InstallWgtOptions,
+	InstallWgtSuccessImpl,
+	InstallWgtFailImpl,
+} from './interface.uts'
+
+class ActiveInstall {
+	options: InstallWgtOptions
+	worker: Worker
+	transactionId: number
+
+	constructor(options: InstallWgtOptions, worker: Worker, transactionId: number) {
+		this.options = options
+		this.worker = worker
+		this.transactionId = transactionId
+	}
+}
+
+let installing: boolean = false
+let transactionId: number = 0
+let pending: InstallWgtOptions[] = []
+let activeInstall: ActiveInstall | null = null
+
+function completeInstall(): void {
+	installing = false
+	if (pending.length > 0) {
+		const next = pending.shift()
+		if (next != null) {
+			startInstall(next)
+		}
+	}
+}
+
+function succeed(options: InstallWgtOptions): void {
+	const result = new InstallWgtSuccessImpl()
+	options.success?.(result)
+	options.complete?.(result)
+	completeInstall()
+}
+
+function fail(options: InstallWgtOptions, code: number, message: string, cause: string = ''): void {
+	const result = new InstallWgtFailImpl(code, message, cause)
+	options.fail?.(result)
+	options.complete?.(result)
+	completeInstall()
+}
+
+function isInteger(value: number): boolean {
+	return value.toInt() == value
+}
+
+function isInstallWgtFailureCode(code: number): boolean {
+	return code == 1030601 || (code >= 103602 && code <= 103615) || (code >= 103617 && code <= 103619)
+}
+
+function resolveWgtPath(filePath: string): string {
+	// #ifdef APP-IOS
+	return UTSiOS.convert2AbsFullPath(filePath)
+	// #endif
+
+	// #ifdef APP-ANDROID
+	return UTSAndroid.convert2AbsFullPath(filePath)
+	// #endif
+}
+
+function resolveStagingRoot(): string {
+	const stagingRoot = uni.env.CACHE_PATH + '/uni-app-x-wgt/staging'
+	// #ifdef APP-IOS
+	return UTSiOS.convert2AbsFullPath(stagingRoot)
+	// #endif
+
+	// #ifdef APP-ANDROID
+	return UTSAndroid.convert2AbsFullPath(stagingRoot)
+	// #endif
+}
+
+@UTSiOS.keyword("private")
+function getActiveInstall(expectedTransactionId: number): ActiveInstall | null {
+	const active = activeInstall
+	if (active == null || active.transactionId != expectedTransactionId) {
+		return null
+	}
+	return active
+}
+
+@UTSiOS.keyword("private")
+function terminateActiveWorker(expectedTransactionId: number): ActiveInstall | null {
+	const active = getActiveInstall(expectedTransactionId)
+	if (active == null) {
+		return null
+	}
+	activeInstall = null
+	active.worker.terminate()
+	return active
+}
+
+function failActiveInstall(expectedTransactionId: number, code: number, message: string, cause: string = ''): void {
+	const active = terminateActiveWorker(expectedTransactionId)
+	if (active != null) {
+		fail(active.options, code, message, cause)
+	}
+}
+
+function handleWorkerMessage(message: any, expectedTransactionId: number): void {
+	const active = getActiveInstall(expectedTransactionId)
+	if (active == null) {
+		return
+	}
+
+	if (!(message instanceof UTSJSONObject)) {
+		failActiveInstall(expectedTransactionId, 103612, '', 'Worker response must be a UTSJSONObject')
+		return
+	}
+	const payload = message
+	const messageTransactionId = payload.getNumber('transactionId')
+	const type = payload.getString('type')
+	if (messageTransactionId == null || type == null) {
+		failActiveInstall(expectedTransactionId, 103612, '', 'Worker response type or transactionId is missing')
+		return
+	}
+	if (!isInteger(messageTransactionId) || messageTransactionId != expectedTransactionId) {
+		failActiveInstall(expectedTransactionId, 103612, '', 'Worker response transactionId is invalid')
+		return
+	}
+
+	if (type == 'terminal-success') {
+		const appId = payload.getString('appId')
+		const versionName = payload.getString('versionName')
+		const resourcePath = payload.getString('resourcePath')
+		const isSyncDebug = payload.getBoolean('isSyncDebug')
+		if (appId == null || versionName == null || resourcePath == null || isSyncDebug == null) {
+			failActiveInstall(expectedTransactionId, 103612, '', 'Worker success response contains invalid fields')
+			return
+		}
+		const completed = terminateActiveWorker(expectedTransactionId)  
+		if (completed == null) {
+			return
+		}
+		if (isSyncDebug) {
+			succeed(completed.options)
+			return
+		}
+		// #ifdef APP-IOS
+		const setAppPathResult = UTSiOS.setAppPath(appId!, versionName!, resourcePath!)
+		// #endif
+
+		// #ifdef APP-ANDROID
+		const setAppPathResult = UTSAndroid.setAppPath(appId, versionName, resourcePath)
+		// #endif
+		if (setAppPathResult == 0) {
+			succeed(completed.options)
+		} else {
+			fail(completed.options, 103605, '')
+		}
+		return
+	}
+
+	if (type == 'terminal-failure') {
+		const code = payload.getNumber('code')
+		const failureMessage = payload.getString('message') ?? ""
+		const failureCause = payload.getString('cause') ?? ""
+		if (code == null || failureMessage == null || failureCause == null) {
+			failActiveInstall(expectedTransactionId, 103612, '', 'Worker failure response contains invalid fields')
+			return
+		}
+		if (!isInteger(code) || !isInstallWgtFailureCode(code)) {
+			failActiveInstall(expectedTransactionId, 103612, '', 'Worker failure response contains an invalid error code')
+			return
+		}
+		const completed = terminateActiveWorker(expectedTransactionId)
+		if (completed != null) {
+			fail(completed.options, code, failureMessage, failureCause)
+		}
+		return
+	}
+
+	failActiveInstall(expectedTransactionId, 103612, '', 'Worker response type is invalid')
+}
+
+function handleWorkerError(cause: string, expectedTransactionId: number): void {
+	const active = terminateActiveWorker(expectedTransactionId)
+	if (active != null) {
+		fail(active.options, 103612, '', cause)
+	}
+}
+
+/**
+ * Main-thread coordinator. The Worker owns all staging and resource operations;
+ * This function snapshots Runtime metadata once and starts one serialized install.
+ */
+function startInstall(options: InstallWgtOptions): void {
+	if (installing) {
+		pending.push(options)
+		return
+	}
+	installing = true
+
+	if (options.filePath.trim().length == 0) {
+		fail(options, 1030601, '')
+		return
+	}
+
+	const activeTransactionId = ++transactionId
+
+	// #ifdef APP-IOS
+	const runtimeAppId = UTSiOS.getAppId()
+	const runtimeAppVersion = UTSiOS.getAppWgtVersion()
+	const runtimeCompilerRuleVersion = UTSiOS.getUniCompilerRuleVersion()
+	const isSyncDebug = UTSiOS.isSyncDebug()
+	const rootPath = UTSiOS.getAppRootPath(appId = runtimeAppId)
+	// #endif
+
+	// #ifdef APP-ANDROID
+	const runtimeAppId = UTSAndroid.getAppId()
+	const runtimeAppVersion = UTSAndroid.getAppWgtVersion()
+	const runtimeCompilerRuleVersion = UTSAndroid.getUniCompilerRuleVersion()
+	const isSyncDebug = UTSAndroid.isSyncDebug()
+	const rootPath = UTSAndroid.getAppRootPath(runtimeAppId)
+	// #endif
+
+	const worker = uni.createWorker('uni_modules/uni-install-wgt/workers/install-wgt-worker.uts')
+	activeInstall = new ActiveInstall(options, worker, activeTransactionId)
+	worker.onMessage((message: any) => {
+		handleWorkerMessage(message, activeTransactionId)
+	})
+	worker.onError((error) => {
+		handleWorkerError(error.message, activeTransactionId)
+	})
+	worker.postMessage({
+		type: 'start',
+		transactionId: activeTransactionId,
+		zipFilePath: resolveWgtPath(options.filePath),
+		stagingRoot: resolveStagingRoot(),
+		ignoreVersion: options.ignoreVersion == true,
+		runtimeAppId,
+		runtimeAppVersion,
+		runtimeCompilerRuleVersion,
+		isSyncDebug,
+		rootPath,
+	}, null)
+}
+
+export const installWgt: InstallWgt = (options: InstallWgtOptions) => {
+	startInstall(options)
+}

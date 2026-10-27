@@ -2,13 +2,16 @@ import {
     API_EXIT
 } from '../protocol.uts'
 import {
-    Exit
+    Exit,
+    ExitOptions,
+    ExitSuccess
 } from '../interface.uts'
 
-export const exit: Exit = defineSyncApi<void>(
+export const exit: Exit = defineAsyncApi<ExitOptions, ExitSuccess>(
     API_EXIT,
-    function () {
+    function (options: ExitOptions, exec: ApiExecutor<ExitSuccess>) {
         UTSHarmony.exit()
+        exec.resolve({ errMsg: 'exit:ok' } as ExitSuccess)
     }
 ) as Exit
 export {

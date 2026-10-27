@@ -1,12 +1,33 @@
 import { window } from "@kit.ArkUI";
 import type {UniInputFileOptions} from "./index"
 
+// TextDirection is not declared by compile SDKs earlier than API 22.
+const TEXT_DIRECTION_LTR = 0
+const TEXT_DIRECTION_RTL = 1
+
 export interface UniInputOptions extends UniInputFileOptions {
 	controller: TextInputController
 	type?: InputType,
 	height?: string
 	caretPosition?: number
 	customKeyboard: ESObject
+}
+
+class TextInputDirectionModifier implements AttributeModifier<TextInputAttribute> {
+	private direction?: string
+
+	constructor(direction?: string) {
+		this.direction = direction
+	}
+
+	applyNormalAttribute(instance: TextInputAttribute): void {
+		const dynamicInstance: ESObject = instance
+		if (typeof dynamicInstance.textDirection == 'function') {
+			dynamicInstance.textDirection(
+				this.direction == 'rtl' ? TEXT_DIRECTION_RTL : TEXT_DIRECTION_LTR
+			)
+		}
+	}
 }
 
 @Builder
@@ -38,6 +59,7 @@ export function InputBuilder(options: UniInputOptions) {
 		.fontFamily(options.fontFamily)
 		.fontStyle(options.fontStyle)
 		.textAlign(options.textAlign)
+		.attributeModifier(new TextInputDirectionModifier(options.textDirection))
 		.showPasswordIcon(false)
 		.customKeyboard(options.customKeyboard)
 		.onFocus(() => {

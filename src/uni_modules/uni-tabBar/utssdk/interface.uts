@@ -345,7 +345,7 @@ export type SetTabBarStyleOptions = {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -566,7 +566,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -641,7 +641,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -716,7 +716,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -791,7 +791,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -866,7 +866,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -941,7 +941,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -1016,7 +1016,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",
@@ -1091,7 +1091,7 @@ export interface Uni {
      *    "alipay": {
      *      "hostVer": "√",
      *      "uniVer": "√",
-     *      "unixVer": "x"
+     *      "unixVer": "5.31"
      *    },
      *    "baidu": {
      *      "hostVer": "√",

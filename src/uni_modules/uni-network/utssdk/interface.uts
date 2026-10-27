@@ -18,8 +18,7 @@ export type RequestOptions<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -36,7 +35,7 @@ export type RequestOptions<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -77,7 +76,7 @@ export type RequestOptions<T> = {
      */
     url: string,
     /**
-     * 请求的参数 在`app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer
+     * 请求的参数 在app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer
      * @type {RequestDataOptions}
      * @defaultValue null
      * @uniPlatform
@@ -91,8 +90,7 @@ export type RequestOptions<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -109,7 +107,7 @@ export type RequestOptions<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -163,8 +161,7 @@ export type RequestOptions<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -181,7 +178,7 @@ export type RequestOptions<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -235,8 +232,7 @@ export type RequestOptions<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -253,7 +249,7 @@ export type RequestOptions<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -307,8 +303,7 @@ export type RequestOptions<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           }
          },
       *  "mp": {
@@ -320,7 +315,7 @@ export type RequestOptions<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -517,8 +512,7 @@ export type RequestOptions<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "x",
-            "unixVer": "x",
-            "unixUtsPlugin": "x"
+            "unixVer": "x"
           },
           "harmony": {
             "uniVer": "x",
@@ -534,7 +528,7 @@ export type RequestOptions<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -588,8 +582,7 @@ export type RequestOptions<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "x",
-            "unixVer": "x",
-            "unixUtsPlugin": "x"
+            "unixVer": "x"
           },
           "harmony": {
             "uniVer": "x",
@@ -605,7 +598,7 @@ export type RequestOptions<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -659,8 +652,7 @@ export type RequestOptions<T> = {
      *     "ios": {
      *       "uniVer": "√",
      *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
+     *       "unixVer": "4.71"
      *     },
      *     "harmony": {
      *       "uniVer": "4.71",
@@ -678,7 +670,7 @@ export type RequestOptions<T> = {
      *     "alipay": {
      *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
+     *         "unixVer": "5.31"
      *     },
      *     "baidu": {
      *         "hostVer": "√",
@@ -745,7 +737,12 @@ export type RequestOptions<T> = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -781,7 +778,12 @@ export type RequestOptions<T> = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -817,7 +819,12 @@ export type RequestOptions<T> = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -843,8 +850,7 @@ export type RequestSuccess<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -861,7 +867,7 @@ export type RequestSuccess<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -914,8 +920,7 @@ export type RequestSuccess<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -932,7 +937,7 @@ export type RequestSuccess<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -985,8 +990,7 @@ export type RequestSuccess<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -1003,7 +1007,7 @@ export type RequestSuccess<T> = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -1056,8 +1060,7 @@ export type RequestSuccess<T> = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -1172,18 +1175,17 @@ export type RequestTaskOnChunkReceivedListenerResult = {
     *       "uniUtsPlugin": "4.71",
     *       "unixVer": "4.71"
     *     },
-    *     "ios": {
-    *       "uniVer": "x",
-    *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
-    *     },
-    *     "harmony": {
-    *       "uniVer": "4.71",
-    *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
-    *     },
+      *     "ios": {
+      *       "uniVer": "x",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71"
+      *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
     *   },
     *   "mp": {
     *     "weixin": {
@@ -1194,7 +1196,7 @@ export type RequestTaskOnChunkReceivedListenerResult = {
     *     "alipay": {
     *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
+    *         "unixVer": "5.31"
     *     },
     *     "baidu": {
     *         "hostVer": "√",
@@ -1251,18 +1253,17 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *       "uniUtsPlugin": "4.71",
     *       "unixVer": "4.71"
     *     },
-    *     "ios": {
-    *       "uniVer": "x",
-    *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
-    *     },
-    *     "harmony": {
-    *       "uniVer": "4.71",
-    *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
-    *     },
+      *     "ios": {
+      *       "uniVer": "x",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71"
+      *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
     *   },
     *   "mp": {
     *     "weixin": {
@@ -1273,7 +1274,7 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *     "alipay": {
     *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
+    *         "unixVer": "5.31"
     *     },
     *     "baidu": {
     *         "hostVer": "√",
@@ -1321,19 +1322,18 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *       "uniVer": "√",
     *       "uniUtsPlugin": "4.71",
     *       "unixVer": "4.71"
-    *     },
-    *     "ios": {
-    *       "uniVer": "x",
-    *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
-    *     },
-    *     "harmony": {
-    *       "uniVer": "4.71",
-    *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
-    *     },
+      *     },
+      *     "ios": {
+      *       "uniVer": "x",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71"
+      *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
     *   },
     *   "mp": {
     *     "weixin": {
@@ -1344,7 +1344,7 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *     "alipay": {
     *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
+    *         "unixVer": "5.31"
     *     },
     *     "baidu": {
     *         "hostVer": "√",
@@ -1396,15 +1396,14 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *     "ios": {
     *       "uniVer": "x",
     *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
+    *       "unixVer": "4.71"
     *     },
-    *     "harmony": {
-    *       "uniVer": "4.71",
-    *       "uniUtsPlugin": "4.71",
-    *       "unixVer": "4.71",
-    *       "unixUtsPlugin": "4.71"
-    *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
     *   },
     *   "mp": {
     *     "weixin": {
@@ -1415,7 +1414,7 @@ export type RequestTaskOnHeadersReceivedListenerResult = {
     *     "alipay": {
     *         "hostVer": "√",
     *         "uniVer": "√",
-    *         "unixVer": "x"
+    *         "unixVer": "5.31"
     *     },
     *     "baidu": {
     *         "hostVer": "√",
@@ -1478,8 +1477,7 @@ export interface RequestTask {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -1496,7 +1494,7 @@ export interface RequestTask {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -1558,18 +1556,17 @@ export interface RequestTask {
      *       "uniUtsPlugin": "4.71",
      *       "unixVer": "4.71"
      *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "4.71",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
-     *     },
+      *     "ios": {
+      *       "uniVer": "x",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71"
+      *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
      *   },
      *   "mp": {
      *     "weixin": {
@@ -1580,7 +1577,7 @@ export interface RequestTask {
      *     "alipay": {
      *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
+     *         "unixVer": "5.31"
      *     },
      *     "baidu": {
      *         "hostVer": "√",
@@ -1634,18 +1631,17 @@ export interface RequestTask {
      *       "uniUtsPlugin": "4.71",
      *       "unixVer": "4.71"
      *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "4.71",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
-     *     },
+      *     "ios": {
+      *       "uniVer": "x",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71"
+      *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
      *   },
      *   "mp": {
      *     "weixin": {
@@ -1656,7 +1652,7 @@ export interface RequestTask {
      *     "alipay": {
      *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
+     *         "unixVer": "5.31"
      *     },
      *     "baidu": {
      *         "hostVer": "√",
@@ -1689,10 +1685,10 @@ export interface RequestTask {
      *         "unixVer": "x"
      *     }
      *   },
-     *   "web": {
-     *       "uniVer": "√",
-     *       "unixVer": "4.71"
-     *   }
+      *   "web": {
+      *       "uniVer": "√",
+      *       "unixVer": "4.71"
+      *   }
      * }
      */
     offChunkReceived(listener?: number | RequestTaskOnChunkReceivedCallback | null): void
@@ -1704,23 +1700,22 @@ export interface RequestTask {
      * @uniPlatform
      * {
      *   "app": {
-     *     "android": {
-     *       "uniVer": "√",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71"
-     *     },
-     *     "ios": {
-     *       "uniVer": "x",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
-     *     },
-     *     "harmony": {
-     *       "uniVer": "4.71",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
-     *     },
+      *     "android": {
+      *       "uniVer": "√",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71"
+      *     },
+      *     "ios": {
+      *       "uniVer": "x",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71"
+      *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
      *   },
      *   "mp": {
      *     "weixin": {
@@ -1731,7 +1726,7 @@ export interface RequestTask {
      *     "alipay": {
      *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
+     *         "unixVer": "5.31"
      *     },
      *     "baidu": {
      *         "hostVer": "√",
@@ -1788,15 +1783,14 @@ export interface RequestTask {
      *     "ios": {
      *       "uniVer": "x",
      *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
+     *       "unixVer": "4.71"
      *     },
-     *     "harmony": {
-     *       "uniVer": "4.71",
-     *       "uniUtsPlugin": "4.71",
-     *       "unixVer": "4.71",
-     *       "unixUtsPlugin": "4.71"
-     *     },
+      *     "harmony": {
+      *       "uniVer": "4.71",
+      *       "uniUtsPlugin": "4.71",
+      *       "unixVer": "4.71",
+      *       "unixUtsPlugin": "4.71"
+      *     },
      *   },
      *   "mp": {
      *     "weixin": {
@@ -1807,7 +1801,7 @@ export interface RequestTask {
      *     "alipay": {
      *         "hostVer": "√",
      *         "uniVer": "√",
-     *         "unixVer": "x"
+     *         "unixVer": "5.31"
      *     },
      *     "baidu": {
      *         "hostVer": "√",
@@ -1868,8 +1862,7 @@ export type UploadFileOptionFiles = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -1886,7 +1879,7 @@ export type UploadFileOptionFiles = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -1939,8 +1932,7 @@ export type UploadFileOptionFiles = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -1957,7 +1949,7 @@ export type UploadFileOptionFiles = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2010,8 +2002,7 @@ export type UploadFileOptionFiles = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "x",
@@ -2027,7 +2018,7 @@ export type UploadFileOptionFiles = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2082,8 +2073,7 @@ export type UploadFileSuccess = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2100,7 +2090,7 @@ export type UploadFileSuccess = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2153,8 +2143,7 @@ export type UploadFileSuccess = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2171,7 +2160,7 @@ export type UploadFileSuccess = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2236,8 +2225,7 @@ export type UploadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2254,7 +2242,7 @@ export type UploadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2308,8 +2296,7 @@ export type UploadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2326,7 +2313,7 @@ export type UploadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2380,8 +2367,7 @@ export type UploadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2398,7 +2384,7 @@ export type UploadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2452,8 +2438,7 @@ export type UploadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2470,7 +2455,7 @@ export type UploadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2524,8 +2509,7 @@ export type UploadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2542,7 +2526,7 @@ export type UploadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2596,8 +2580,7 @@ export type UploadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2614,7 +2597,7 @@ export type UploadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2668,8 +2651,7 @@ export type UploadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2686,7 +2668,7 @@ export type UploadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2754,7 +2736,12 @@ export type UploadFileOptions = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -2791,7 +2778,12 @@ export type UploadFileOptions = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -2828,7 +2820,12 @@ export type UploadFileOptions = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -2852,8 +2849,7 @@ export type OnProgressUpdateResult = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2870,7 +2866,7 @@ export type OnProgressUpdateResult = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2923,8 +2919,7 @@ export type OnProgressUpdateResult = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -2941,7 +2936,7 @@ export type OnProgressUpdateResult = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -2994,8 +2989,7 @@ export type OnProgressUpdateResult = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3012,7 +3006,7 @@ export type OnProgressUpdateResult = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3072,8 +3066,7 @@ export interface UploadTask {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3090,7 +3083,7 @@ export interface UploadTask {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3154,8 +3147,7 @@ export interface UploadTask {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3172,7 +3164,7 @@ export interface UploadTask {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3239,8 +3231,7 @@ export type DownloadFileSuccess = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3257,7 +3248,7 @@ export type DownloadFileSuccess = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3310,8 +3301,7 @@ export type DownloadFileSuccess = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3328,7 +3318,7 @@ export type DownloadFileSuccess = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3393,8 +3383,7 @@ export type DownloadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3411,7 +3400,7 @@ export type DownloadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3465,8 +3454,7 @@ export type DownloadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           }
         },
       *  "mp": {
@@ -3478,7 +3466,7 @@ export type DownloadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3533,8 +3521,7 @@ export type DownloadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3551,7 +3538,7 @@ export type DownloadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3605,8 +3592,7 @@ export type DownloadFileOptions = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3623,7 +3609,7 @@ export type DownloadFileOptions = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3691,7 +3677,12 @@ export type DownloadFileOptions = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -3728,7 +3719,12 @@ export type DownloadFileOptions = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -3765,7 +3761,12 @@ export type DownloadFileOptions = {
      *         "hostVer": "√",
      *         "uniVer": "√",
      *         "unixVer": "4.41"
-     *     }
+     *     },
+     *     "alipay": {
+     *         "hostVer": "√",
+     *         "uniVer": "√",
+     *         "unixVer": "5.31"
+     *     },
      *   },
      *   "web": {
      *       "uniVer": "√",
@@ -3789,8 +3790,7 @@ export type OnProgressDownloadResult = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3807,7 +3807,7 @@ export type OnProgressDownloadResult = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3860,8 +3860,7 @@ export type OnProgressDownloadResult = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3878,7 +3877,7 @@ export type OnProgressDownloadResult = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -3931,8 +3930,7 @@ export type OnProgressDownloadResult = {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "4.11",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -3949,7 +3947,7 @@ export type OnProgressDownloadResult = {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -4008,8 +4006,7 @@ export interface DownloadTask {
             "ios": {
               "uniVer": "√",
               "uniUtsPlugin": "4.11",
-              "unixVer": "4.11",
-              "unixUtsPlugin": "4.11"
+              "unixVer": "4.11"
             },
             "harmony": {
               "uniVer": "4.23",
@@ -4026,7 +4023,7 @@ export interface DownloadTask {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -4090,8 +4087,7 @@ export interface DownloadTask {
             "ios": {
               "uniVer": "√",
               "uniUtsPlugin": "4.11",
-              "unixVer": "4.11",
-              "unixUtsPlugin": "4.11"
+              "unixVer": "4.11"
             },
             "harmony": {
               "uniVer": "4.23",
@@ -4108,7 +4104,7 @@ export interface DownloadTask {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -4328,7 +4324,7 @@ export interface Uni {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -4412,8 +4408,7 @@ export interface Uni {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "x",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -4430,7 +4425,7 @@ export interface Uni {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -4500,8 +4495,7 @@ export interface Uni {
           "ios": {
             "uniVer": "√",
             "uniUtsPlugin": "x",
-            "unixVer": "4.11",
-            "unixUtsPlugin": "4.11"
+            "unixVer": "4.11"
           },
           "harmony": {
             "uniVer": "4.23",
@@ -4518,7 +4512,7 @@ export interface Uni {
       *    "alipay": {
       *        "hostVer": "√",
       *        "uniVer": "√",
-      *        "unixVer": "x"
+      *        "unixVer": "5.31"
       *    },
       *    "baidu": {
       *        "hostVer": "√",
@@ -4584,8 +4578,7 @@ export interface Uni {
           "ios": {
             "uniVer": "3.2.7",
             "uniUtsPlugin": "x",
-            "unixVer": "x",
-            "unixUtsPlugin": "x"
+            "unixVer": "x"
           },
           "harmony": {
             "uniVer": "4.31",
@@ -4615,8 +4608,7 @@ export interface Uni {
      *           "ios": {
      *             "uniVer": "3.2.7",
      *             "uniUtsPlugin": "x",
-     *             "unixVer": "x",
-     *             "unixUtsPlugin": "x"
+     *             "unixVer": "x"
      *           },
      *           "harmony": {
      *             "uniVer": "5.0",

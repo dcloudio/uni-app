@@ -83,8 +83,6 @@ namespace recycle_waterflow {
 
         void translate(float offsetX, float offsetY);
 
-        float getItemSizeFromWaterflow();
-
     public:
         RecycleFlowItem();
 
@@ -99,7 +97,6 @@ namespace recycle_waterflow {
          */
         double waterflowId = 0.0;
         std::string key = "";
-        bool sizeInited = false;
 
         void setElement(Element *element);
 
@@ -138,12 +135,20 @@ namespace recycle_waterflow {
             float size;   // -1 means unknown, use defaultItemSize
             float offsetX;
             float offsetY;
+            // list[0..index] 的最大底边，即这些item的 offsetY + realItemSize(size) 的最大值。
+            // 未测量的item使用defaultItemSize；此值不是当前item自身的底边。
+            // 瀑布流中各item的底边不单调，但此前缀最大值随index单调不减，
+            // 可用于二分查找渲染起点，避免跳过前面仍覆盖渲染区域的高item。
+            float maxEndOffset = 0.0f;
             int type;     // reserved
         };
 
         std::vector<ItemInfo> list;
         // Fast lookup: key -> pointer to ItemInfo in `list`
         std::unordered_map<std::string, ItemInfo *> keyItemMap;
+                
+        float calcTolerance = 0.2f;
+        float calcTolerancePrecise = 0.01f;
 
         int crossAxisCount = 2;
         float mainAxisGap = 0.0f;
@@ -170,6 +175,7 @@ namespace recycle_waterflow {
         float cachedSizeEnd = 200.0f;
         float originalCachedSize = 200.0f;
         bool resetCachedSizeOnNextRender = false;
+        bool resetCachedSizeOnNextScroll = false;
         int renderRangeStart = 0;
         int renderRangeLength = 0;
         int lastRenderRangeStart = 0;
@@ -200,7 +206,19 @@ namespace recycle_waterflow {
 #endif
         bool scrolling = false;
         bool ignoreNextScroll = false;
+        bool forceRenderInfoUpdate = false;
         bool destroyed = false;
+                
+        /**
+         * 滚动到指定item
+         */
+        bool scrollingToItem = false;
+        uint64_t scrollingToItemTimestamp = 0;
+        bool scrollingToItemWithAnimation = false;
+        uint64_t scrollAnimationDuration = 300;
+        bool scrollingToItemIgnoreNextEnd = false;
+        float scrollingToItemOffset = 0.0f;
+        std::string scrollingToItemKey;
 
     public:
         RecycleWaterflow();
@@ -258,6 +276,8 @@ namespace recycle_waterflow {
 
         void setMaxCrossAxisExtent(double maxCrossAxisExtent);
 
+        void setScrollIntoViewKey(const std::string key);
+
     private:
         // helpers
         inline float realItemSize(float size) const {
@@ -292,10 +312,6 @@ namespace recycle_waterflow {
 
         void updateRenderListOnScroll();
 
-        void updateRenderListForward();
-
-        void updateRenderListBackward();
-
         bool isAllRenderItemSettled();
 
         ItemInfo *getRenderStartItem() {
@@ -320,6 +336,8 @@ namespace recycle_waterflow {
         void leaveFastScrollMode();
 
         float prepareFastScroll(float offset);
+                
+        void checkAndUpdateScrollingToItemOffset();
     };
     // RecycleWaterflow end
 

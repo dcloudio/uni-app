@@ -1,0 +1,446 @@
+import Build from 'android.os.Build'
+import Manifest from 'android.Manifest'
+import CancellationSignal from 'android.os.CancellationSignal'
+import Context from 'android.content.Context'
+import DialogInterface from 'android.content.DialogInterface'
+import PackageManager from 'android.content.pm.PackageManager'
+import Activity from 'android.app.Activity'
+import BiometricManager from 'android.hardware.biometrics.BiometricManager'
+import BiometricPrompt from 'android.hardware.biometrics.BiometricPrompt'
+import FingerprintManager from 'android.hardware.fingerprint.FingerprintManager'
+import KeyguardManager from 'android.app.KeyguardManager'
+import Locale from 'java.util.Locale'
+import {
+	CheckIsSoterEnrolledInDeviceFail,
+	CheckIsSoterEnrolledInDevice,
+	CheckIsSoterEnrolledInDeviceOptions,
+	CheckIsSoterEnrolledInDeviceSuccess,
+	CheckIsSupportSoterAuthenticationFail,
+	CheckIsSupportSoterAuthentication,
+	CheckIsSupportSoterAuthenticationOptions,
+	CheckIsSupportSoterAuthenticationSuccess,
+	SoterAuthMode,
+	StartSoterAuthentication,
+	StartSoterAuthenticationFail,
+	StartSoterAuthenticationOptions,
+	StartSoterAuthenticationSuccess
+} from '../interface.uts'
+
+import {
+	AUTH_ERR_AUTH_FAIL,
+	AUTH_ERR_ANDROID_ACTIVITY_UNAVAILABLE,
+	AUTH_ERR_ANDROID_OS_VERSION_UNSUPPORTED,
+	AUTH_ERR_ANDROID_SECURE_LOCK_DISABLED,
+	AUTH_ERR_CANCEL,
+	AUTH_ERR_GENERAL,
+	AUTH_ERR_LOCKED,
+	AUTH_ERR_NOT_AVAILABLE,
+	AUTH_ERR_NOT_ENROLLED,
+	AUTH_ERR_PERMISSION_DENIED,
+	createCheckIsSoterEnrolledInDeviceFail,
+	createCheckIsSupportSoterAuthenticationFail,
+	createStartSoterAuthenticationFail
+} from '../unierror.uts'
+
+import {
+	getBiometricPromptCancelText,
+	getBiometricPromptDescription,
+	getBiometricPromptTitle
+} from '../common.uts'
+
+const LEGACY_USE_FINGERPRINT_PERMISSION = 'android.permission.USE_FINGERPRINT'
+
+function createStartFailResult(code : number, errMsg : string) : StartSoterAuthenticationFail {
+	return createStartSoterAuthenticationFail(code, errMsg)
+}
+
+function createSupportFailResult(code : number, errMsg : string) : CheckIsSupportSoterAuthenticationFail {
+	return createCheckIsSupportSoterAuthenticationFail(code, errMsg)
+}
+
+function createEnrollFailResult(code : number, errMsg : string) : CheckIsSoterEnrolledInDeviceFail {
+	return createCheckIsSoterEnrolledInDeviceFail(code, errMsg)
+}
+
+function getCurrentLocale() : string {
+	return Locale.getDefault().toLanguageTag()
+}
+
+function resolveStartSuccess(options : StartSoterAuthenticationOptions, authMode : SoterAuthMode) : void {
+	const result : StartSoterAuthenticationSuccess = {
+		errCode: 0,
+		authMode: authMode,
+		errMsg: 'startSoterAuthentication:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectStart(options : StartSoterAuthenticationOptions, code : number, errMsg : string) : void {
+	const error = createStartFailResult(code, errMsg)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function resolveSupportSuccess(options : CheckIsSupportSoterAuthenticationOptions, supportMode : SoterAuthMode[]) : void {
+	const result : CheckIsSupportSoterAuthenticationSuccess = {
+		supportMode: supportMode,
+		errMsg: 'checkIsSupportSoterAuthentication:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectSupport(options : CheckIsSupportSoterAuthenticationOptions, code : number, errMsg : string) : void {
+	const error = createSupportFailResult(code, errMsg)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function resolveEnrollSuccess(options : CheckIsSoterEnrolledInDeviceOptions, isEnrolled : boolean) : void {
+	const result : CheckIsSoterEnrolledInDeviceSuccess = {
+		isEnrolled: isEnrolled,
+		errMsg: 'checkIsSoterEnrolledInDevice:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectEnroll(options : CheckIsSoterEnrolledInDeviceOptions, code : number, errMsg : string) : void {
+	const error = createEnrollFailResult(code, errMsg)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function getActivity() : Activity | null {
+	return UTSAndroid.getUniActivity()
+}
+
+function isAndroidVersionAtLeast(targetSdk : number) : boolean {
+	return Build.VERSION.SDK_INT >= targetSdk.toInt()
+}
+
+function hasFingerprintHardware() : boolean {
+	const activity = getActivity()
+	if (activity == null || !isAndroidVersionAtLeast(23)) {
+		return false
+	}
+	return activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)
+}
+
+function hasFaceHardware() : boolean {
+	const activity = getActivity()
+	if (activity == null || !isAndroidVersionAtLeast(29)) {
+		return false
+	}
+	return activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FACE)
+}
+
+function getBiometricManager() : BiometricManager | null {
+	const activity = getActivity()
+	if (activity == null || !isAndroidVersionAtLeast(29)) {
+		return null
+	}
+	return activity.getSystemService(Context.BIOMETRIC_SERVICE) as BiometricManager
+}
+
+function getFingerprintManager() : FingerprintManager | null {
+	const activity = getActivity()
+	if (activity == null || !isAndroidVersionAtLeast(23)) {
+		return null
+	}
+	return activity.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+}
+
+function getKeyguardManager() : KeyguardManager | null {
+	const activity = getActivity()
+	if (activity == null) {
+		return null
+	}
+	return activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+}
+
+function hasPermission(permission : string) : boolean {
+	const activity = getActivity()
+	if (activity == null) {
+		return false
+	}
+	return activity.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+}
+
+function hasBiometricPermission() : boolean {
+	if (isAndroidVersionAtLeast(28)) {
+		return hasPermission(Manifest.permission.USE_BIOMETRIC)
+	}
+	return hasPermission(LEGACY_USE_FINGERPRINT_PERMISSION)
+}
+
+function isFingerprintEnrolled() : boolean {
+	const manager = getFingerprintManager()
+	if (manager == null) {
+		return false
+	}
+	// Android 23-27 公开指纹认证能力只有 FingerprintManager，当前插件为兼容这些系统版本仍保留该分支。
+	return manager.hasEnrolledFingerprints()
+}
+
+function getSupportedModes() : SoterAuthMode[] {
+	const supportModes : SoterAuthMode[] = []
+	if (hasFingerprintHardware()) {
+		supportModes.push('fingerPrint')
+	}
+	if (hasFaceHardware()) {
+		supportModes.push('facial')
+	}
+	return supportModes
+}
+
+function resolveRequestedAuthMode(requestAuthModes : SoterAuthMode[]) : SoterAuthMode | null {
+	for (const mode of requestAuthModes) {
+		if (mode == 'fingerPrint' && hasFingerprintHardware()) {
+			return mode
+		}
+		if (mode == 'facial' && hasFaceHardware()) {
+			return mode
+		}
+	}
+	return null
+}
+
+function isGenericBiometricEnrolled() : boolean {
+	const biometricManager = getBiometricManager()
+	if (biometricManager == null) {
+		return false
+	}
+	return biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
+}
+
+class AndroidFingerprintCallback extends FingerprintManager.AuthenticationCallback {
+	private options : StartSoterAuthenticationOptions
+	private finished : boolean = false
+
+	constructor(options : StartSoterAuthenticationOptions) {
+		super()
+		this.options = options
+	}
+
+	private finishWithError(error : StartSoterAuthenticationFail) : void {
+		if (this.finished) {
+			return
+		}
+		this.finished = true
+		this.options.fail?.(error)
+		this.options.complete?.(error)
+	}
+
+	override onAuthenticationSucceeded(result : FingerprintManager.AuthenticationResult | null) : void {
+		if (this.finished) {
+			return
+		}
+		this.finished = true
+		resolveStartSuccess(this.options, 'fingerPrint')
+	}
+
+	override onAuthenticationFailed() : void {
+		this.finishWithError(createStartFailResult(AUTH_ERR_AUTH_FAIL, 'startSoterAuthentication:fail authentication failed'))
+	}
+}
+
+class AndroidBiometricCallback extends BiometricPrompt.AuthenticationCallback {
+	private options : StartSoterAuthenticationOptions
+	private authMode : SoterAuthMode
+	private finished : boolean = false
+
+	constructor(options : StartSoterAuthenticationOptions, authMode : SoterAuthMode) {
+		super()
+		this.options = options
+		this.authMode = authMode
+	}
+
+	override onAuthenticationSucceeded(result : BiometricPrompt.AuthenticationResult | null) : void {
+		if (this.finished) {
+			return
+		}
+		this.finished = true
+		resolveStartSuccess(this.options, this.authMode)
+	}
+
+	override onAuthenticationFailed() : void {
+		if (this.finished) {
+			return
+		}
+		this.finishWithError(createStartFailResult(AUTH_ERR_AUTH_FAIL, 'startSoterAuthentication:fail authentication failed'))
+	}
+
+	finishWithError(error : StartSoterAuthenticationFail) : void {
+		if (this.finished) {
+			return
+		}
+		this.finished = true
+		this.options.fail?.(error)
+		this.options.complete?.(error)
+	}
+}
+
+function startBiometricPrompt(options : StartSoterAuthenticationOptions, authMode : SoterAuthMode) : boolean {
+	const activity = getActivity()
+	if (activity == null || !isAndroidVersionAtLeast(28)) {
+		return false
+	}
+	const executor = activity.getMainExecutor()
+	const callback = new AndroidBiometricCallback(options, authMode)
+	const currentLocale = getCurrentLocale()
+	const prompt = new BiometricPrompt.Builder(activity as Context)
+		.setTitle(getBiometricPromptTitle(currentLocale, options.authContent))
+		.setDescription(getBiometricPromptDescription(currentLocale, options.challenge))
+		.setNegativeButton(getBiometricPromptCancelText(currentLocale), executor, (dialog : DialogInterface, which : Int) : void => {
+			callback.finishWithError(createStartFailResult(AUTH_ERR_CANCEL, 'startSoterAuthentication:fail cancel'))
+		})
+		.build()
+	prompt.authenticate(new CancellationSignal(), executor, callback)
+	return true
+}
+
+export const checkIsSupportSoterAuthentication : CheckIsSupportSoterAuthentication = function (options : CheckIsSupportSoterAuthenticationOptions) {
+	const activity = getActivity()
+	if (activity == null) {
+		rejectSupport(options, AUTH_ERR_ANDROID_ACTIVITY_UNAVAILABLE, 'checkIsSupportSoterAuthentication:fail activity is null')
+		return
+	}
+	if (!hasBiometricPermission()) {
+		rejectSupport(options, AUTH_ERR_PERMISSION_DENIED, 'checkIsSupportSoterAuthentication:fail missing biometric permission, please rebuild custom debug base or package')
+		return
+	}
+
+	try {
+		resolveSupportSuccess(options, getSupportedModes())
+	} catch (error) {
+		rejectSupport(options, AUTH_ERR_GENERAL, 'checkIsSupportSoterAuthentication:fail biometric service error')
+	}
+}
+
+export const checkIsSoterEnrolledInDevice : CheckIsSoterEnrolledInDevice = function (options : CheckIsSoterEnrolledInDeviceOptions) {
+	const activity = getActivity()
+	if (activity == null) {
+		rejectEnroll(options, AUTH_ERR_ANDROID_ACTIVITY_UNAVAILABLE, 'checkIsSoterEnrolledInDevice:fail activity is null')
+		return
+	}
+	if (!hasBiometricPermission()) {
+		rejectEnroll(options, AUTH_ERR_PERMISSION_DENIED, 'checkIsSoterEnrolledInDevice:fail missing biometric permission, please rebuild custom debug base or package')
+		return
+	}
+
+	try {
+		if (options.checkAuthMode == 'fingerPrint') {
+			if (isAndroidVersionAtLeast(29)) {
+				resolveEnrollSuccess(options, hasFingerprintHardware() && isGenericBiometricEnrolled())
+				return
+			}
+			resolveEnrollSuccess(options, isFingerprintEnrolled())
+			return
+		}
+
+		if (options.checkAuthMode == 'facial') {
+			// Android 标准公开 API 只能判断“是否存在可用生物认证”，无法准确区分人脸是否单独已录入，
+			// 这里改为保守返回，避免设备仅录入指纹时误报为人脸已录入。
+			resolveEnrollSuccess(options, false)
+			return
+		}
+
+		rejectEnroll(options, AUTH_ERR_NOT_AVAILABLE, 'checkIsSoterEnrolledInDevice:fail unsupported auth mode')
+	} catch (error) {
+		rejectEnroll(options, AUTH_ERR_GENERAL, 'checkIsSoterEnrolledInDevice:fail biometric service error')
+		return
+	}
+}
+
+export const startSoterAuthentication : StartSoterAuthentication = function (options : StartSoterAuthenticationOptions) {
+	const activity = getActivity()
+	if (activity == null) {
+		rejectStart(options, AUTH_ERR_ANDROID_ACTIVITY_UNAVAILABLE, 'startSoterAuthentication:fail activity is null')
+		return
+	}
+	if (!hasBiometricPermission()) {
+		rejectStart(options, AUTH_ERR_PERMISSION_DENIED, 'startSoterAuthentication:fail missing biometric permission, please rebuild custom debug base or package')
+		return
+	}
+
+	try {
+		const authMode = resolveRequestedAuthMode(options.requestAuthModes)
+		if (authMode == null) {
+			rejectStart(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail unsupported auth mode')
+			return
+		}
+
+		const keyguardManager = getKeyguardManager()
+		if (keyguardManager != null && !keyguardManager.isKeyguardSecure()) {
+			rejectStart(options, AUTH_ERR_ANDROID_SECURE_LOCK_DISABLED, 'startSoterAuthentication:fail secure lock screen is disabled')
+			return
+		}
+
+		if (authMode == 'facial') {
+			if (!hasFaceHardware()) {
+				rejectStart(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail facial recognition is unavailable')
+				return
+			}
+			if (!isGenericBiometricEnrolled()) {
+				rejectStart(options, AUTH_ERR_NOT_ENROLLED, 'startSoterAuthentication:fail facial biometric not enrolled')
+				return
+			}
+			if (startBiometricPrompt(options, authMode)) {
+				return
+			}
+			rejectStart(options, AUTH_ERR_ANDROID_OS_VERSION_UNSUPPORTED, 'startSoterAuthentication:fail facial recognition requires Android 9 or above')
+			return
+		}
+
+		if (isAndroidVersionAtLeast(28) && startBiometricPrompt(options, authMode)) {
+			return
+		}
+
+		if (!isFingerprintEnrolled()) {
+			rejectStart(options, AUTH_ERR_NOT_ENROLLED, 'startSoterAuthentication:fail fingerprint not enrolled')
+			return
+		}
+
+		const fingerprintManager = getFingerprintManager()
+		if (fingerprintManager == null) {
+			rejectStart(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail fingerprint service unavailable')
+			return
+		}
+
+		// Android 23-27 指纹启动仍依赖 FingerprintManager；若后续要彻底移除 deprecated 告警，
+		// 更合适的方案是提升兼容下限到 Android 28+，或改为单独原生层封装并在原生侧集中抑制遗留告警。
+		fingerprintManager.authenticate(null, new CancellationSignal(), 0, new AndroidFingerprintCallback(options), null)
+	} catch (error) {
+		rejectStart(options, AUTH_ERR_GENERAL, 'startSoterAuthentication:fail biometric service error')
+	}
+}
+
+export {
+	CheckIsSoterEnrolledInDevice,
+	CheckIsSoterEnrolledInDeviceComplete,
+	CheckIsSoterEnrolledInDeviceCompleteCallback,
+	CheckIsSoterEnrolledInDeviceFail,
+	CheckIsSoterEnrolledInDeviceFailCallback,
+	CheckIsSoterEnrolledInDeviceOptions,
+	CheckIsSoterEnrolledInDeviceSuccess,
+	CheckIsSoterEnrolledInDeviceSuccessCallback,
+	CheckIsSupportSoterAuthentication,
+	CheckIsSupportSoterAuthenticationComplete,
+	CheckIsSupportSoterAuthenticationCompleteCallback,
+	CheckIsSupportSoterAuthenticationFail,
+	CheckIsSupportSoterAuthenticationFailCallback,
+	CheckIsSupportSoterAuthenticationOptions,
+	CheckIsSupportSoterAuthenticationSuccess,
+	CheckIsSupportSoterAuthenticationSuccessCallback,
+	SoterAuthMode,
+	StartSoterAuthentication,
+	StartSoterAuthenticationComplete,
+	StartSoterAuthenticationCompleteCallback,
+	StartSoterAuthenticationFail,
+	StartSoterAuthenticationFailCallback,
+	StartSoterAuthenticationOptions,
+	StartSoterAuthenticationSuccess,
+	StartSoterAuthenticationSuccessCallback
+} from '../interface.uts'

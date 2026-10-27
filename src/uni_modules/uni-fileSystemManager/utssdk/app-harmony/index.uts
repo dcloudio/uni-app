@@ -5,15 +5,17 @@ import { BusinessError } from '@ohos.base';
 import Hash from '@ohos.file.hash';
 import { getEnv, getRealPath as runtimeGetRealPath, } from '@dcloudio/uni-runtime'
 import { GET_FILE_SYSTEM_MANAGER } from '../protocol.uts';
-import { AccessOptions, AppendFileOptions, CloseOptions, CloseSyncOptions, CopyFileOptions, EntriesResult, FStatOptions, FStatSuccessResult, FStatSyncOptions, FTruncateFileOptions, FTruncateFileSyncOptions, FileManagerSuccessResult, FileStats, FileSystemManager, GetFileInfoOptions, GetFileInfoSuccessResult, GetSavedFileListOptions, GetSavedFileListResult, IFileSystemManagerFail, MkDirOptions, OpenFileOptions, OpenFileSuccessResult, OpenFileSyncOptions, ReadCompressedFileOptions, ReadDirOptions, ReadDirSuccessResult, ReadFileOptions, ReadFileSuccessResult, ReadOption, ReadResult, ReadSuccessCallbackResult, ReadSyncOption, ReadZipEntryOptions, RemoveSavedFileOptions, RenameOptions, RmDirOptions, SaveFileOptions, SaveFileSuccessResult, StatOptions, StatSuccessResult, Stats, TruncateFileOptions, UnLinkOptions, UnzipFileOptions, WriteFileOptions, WriteOptions, WriteResult, WriteSyncOptions, ZipFileItem } from '../interface.uts';
+ import { AccessOptions, AppendFileOptions, CloseOptions, CloseSyncOptions, CopyFileOptions, EntriesResult, FStatOptions, FStatSuccessResult, FStatSyncOptions, FTruncateFileOptions, FTruncateFileSyncOptions, FileManagerSuccessResult, FileStats, FileSystemManager, GetFileInfoOptions, GetFileInfoSuccessResult, GetSavedFileListOptions, GetSavedFileListResult, IFileSystemManagerFail, MkDirOptions, OpenFileOptions, OpenFileSuccessResult, OpenFileSyncOptions, ReadCompressedFileOptions, ReadDirOptions, ReadDirSuccessResult, ReadFileOptions, ReadFileSuccessResult, ReadOption, ReadResult, ReadSuccessCallbackResult, ReadSyncOption, ReadZipEntryOptions, RemoveSavedFileOptions, RenameOptions, RmDirOptions, SaveFileOptions, SaveFileSuccessResult, StatOptions, StatSuccessResult, Stats, TruncateFileOptions, UnLinkOptions, UnzipFileOptions, UnzipSyncOptions, WriteFileOptions, WriteOptions, WriteResult, WriteSyncOptions, ZipFileItem } from '../interface.uts';
 import { CallBack, FileCallback } from './callback.uts';
 import { CheckFdErr, CustomValidReturn, DataType, ModeReflect, checkDataType, checkEncoding, checkFd, checkPath, checkPathExistence, checkPathExistenceSync, checkPathSync, getApiError, getFileTypeMode, getFsPath, getNoSuchFileOrDirectoryError, getOpenMode, getParameterError, getSavedDir, getSavedFilePath, isFileUri, isString, modeReflect, obtainUpperPath, ohosReadText, transformErrorCode, getAlreadyExistsError, getIsDirectoryError, getDirectoryNotEmpty, savedFileList, calculateAllPaths, CACHE_PATH, USER_DATA_PATH, TEMP_PATH, SANDBOX_PATH, normalizeFilePath } from './utils.uts';
 import { FileSystemManagerFailImpl } from "../unierror.uts"
 import buffer from '@ohos.buffer';
+import deviceInfo from '@ohos.deviceInfo';
+import { unzipSync as nativeUnzipSync } from '@ohos/unzipsync';
 
 const DEFAULT_ENCODING = 'utf-8'
 const ENCODING_SUPPORT = ["ascii", "base64", "utf-8"]
-const DIGEST_ALGORITHM_VALUES = ["md5", "sha1"]
+const DIGEST_ALGORITHM_VALUES = ["md5", "sha1", "sha256", "none"]
 const DEFAULT_POSITION = 0
 const DEFAULT_LENGTH = 0
 const DEFAULT_FLAG = 'r'
@@ -156,9 +158,10 @@ class FileSystemManagerImpl implements FileSystemManager {
       try {
         fs.readSync(file.fd, buf)
       } catch (err) {
-        console.error(err)
+        throw new Error(`readFileSync: ${(err as BusinessError).message}`)
+      } finally {
+        fs.closeSync(file)
       }
-      fs.closeSync(file)
       if (encoding === 'base64' || encoding === 'ascii') {
         return buffer.from(buf).toString(encoding)
       }
@@ -308,10 +311,10 @@ class FileSystemManagerImpl implements FileSystemManager {
         default:
           throw new Error(getParameterError(`${errMsg} encoding`).errMsg)
       }
-      fs.closeSync(file)
     } catch (err) {
-      fs.closeSync(file)
       throw new Error(`${errMsg} ${(err as BusinessError).message}`)
+    } finally {
+      if (file != null) fs.closeSync(file)
     }
   }
   read(option: ReadOption): void {
@@ -936,9 +939,22 @@ class FileSystemManagerImpl implements FileSystemManager {
       return
     }
     try {
-      const fd = fs.openSync(filePath, fs.OpenMode.READ_ONLY).fd
-      const stat = isFileUri(filePath) ? fs.statSync(fd) : fs.statSync(filePath)
+      const file = fs.openSync(filePath, fs.OpenMode.READ_ONLY)
+      let stat: fs.Stat
+      try {
+        stat = isFileUri(filePath) ? fs.statSync(file.fd) : fs.statSync(filePath)
+      } finally {
+        fs.closeSync(file)
+      }
 
+      if (digestAlgorithm == 'none') {
+        cb.success({
+          errMsg: 'getFileInfo:ok',
+          size: stat.size,
+          digest: ''
+        } as GetFileInfoSuccessResult)
+        return
+      }
       Hash.hash(filePath, digestAlgorithm, (err, hash) => {
         if (err) {
           cb.fail(getApiError((err as BusinessError).code, errMsg))
@@ -1109,7 +1125,11 @@ class FileSystemManagerImpl implements FileSystemManager {
     if (checkDataType(data, true, 'string')) writeOptions.encoding = encoding
 
     const file = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.APPEND)
-    fs.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions)
+    try {
+      fs.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions)
+    } finally {
+      fs.closeSync(file)
+    }
   }
   saveFile(options: SaveFileOptions): void {
     const errMsg = 'saveFile:fail'
@@ -1153,13 +1173,7 @@ class FileSystemManagerImpl implements FileSystemManager {
 
     function operateSuccess() {
       cb.success({
-        // #ifdef UNI-APP-X
         savedFilePath: normalizeFilePath(savedFilePath),
-        // #endif
-        // #ifndef UNI-APP-X
-        // @ts-expect-error
-        savedFilePath,
-        // #endif
       } as SaveFileSuccessResult)
     }
 
@@ -1216,22 +1230,12 @@ class FileSystemManagerImpl implements FileSystemManager {
 
     try {
       fs.renameSync(tempFilePath, savedFilePath)
-      // #ifdef UNI-APP-X
       return normalizeFilePath(savedFilePath)
-      // #endif
-      // #ifndef UNI-APP-X
-      return savedFilePath
-      // #endif
     } catch (error) {
       // 兼容用户从相册选择图片时，保存图片失败的问题，无法移动文件
       if ((error as BusinessError).code === 13900016) {
         this.copyFileSync(tempFilePath, savedFilePath)
-        // #ifdef UNI-APP-X
         return normalizeFilePath(savedFilePath)
-        // #endif
-        // #ifndef UNI-APP-X
-        return savedFilePath
-        // #endif
       } else {
         throw new Error((error as Error).message)
       }
@@ -1276,12 +1280,7 @@ class FileSystemManagerImpl implements FileSystemManager {
             if (!stat.isFile()) {
               return null
             }
-            // #ifdef UNI-APP-X
             return normalizeFilePath(fullPath)
-            // #endif
-            // #ifndef UNI-APP-X
-            return fullPath
-            // #endif
           })
             .concat(Array.from(savedFileList.values()))
             .filter((item) => !!item)
@@ -1320,7 +1319,7 @@ class FileSystemManagerImpl implements FileSystemManager {
       cb.success({ errMsg: 'truncate:ok' } as FileManagerSuccessResult)
     }).catch((err: BusinessError) => {
       cb.fail(getApiError(err.code, errMsg))
-    })
+    }).finally(() => fs.closeSync(file))
   }
   truncateSync(filePath: string, length?: number): void {
     const errMsg = 'truncateSync:fail'
@@ -1350,6 +1349,8 @@ class FileSystemManagerImpl implements FileSystemManager {
       fs.truncateSync(file.fd, length!)
     } catch (error) {
       throw new Error(getApiError((error as BusinessError).code, errMsg).errMsg)
+    } finally {
+      fs.closeSync(file)
     }
   }
   open(options: OpenFileOptions): void {
@@ -1729,17 +1730,50 @@ class FileSystemManagerImpl implements FileSystemManager {
       return
     }
 
-    const targetStat = fs.statSync(targetPath)
-    if (!targetStat.isDirectory()) {
+    let targetExists = false
+    try {
+      targetExists = fs.accessSync(targetPath)
+    } catch (_) {}
+    if (targetExists && !fs.statSync(targetPath).isDirectory()) {
       cb.fail(getApiError(1300016, errMsg))
       return
     }
 
-    zlib.decompressFile(zipFilePath, targetPath).then(() => {
+    const prepareTarget = targetExists ? Promise.resolve() : fs.mkdir(targetPath, true)
+    prepareTarget.then(() => zlib.decompressFile(zipFilePath, targetPath)).then(() => {
       cb.success({ errMsg: 'unzip:ok' } as FileManagerSuccessResult)
     }).catch((err: BusinessError) => {
       cb.fail(getApiError((err as BusinessError).code, errMsg))
     })
+  }
+  unzipSync(options: UnzipSyncOptions): boolean {
+    const errMsg = 'unzipSync:fail'
+    if (deviceInfo.sdkApiVersion < 26) {
+      throw new Error(`${errMsg} API version 26 or higher is required`)
+    }
+    let { zipFilePath, targetPath } = options
+    zipFilePath = useGetRealPath(zipFilePath)
+    targetPath = useGetRealPath(targetPath)
+    if (!checkDataType(zipFilePath, true, 'string')) {
+      throw new Error(getParameterError(`${errMsg} zipFilePath`).errMsg)
+    }
+    if (!checkDataType(targetPath, true, 'string')) {
+      throw new Error(getParameterError(`${errMsg} targetPath`).errMsg)
+    }
+    if (!fs.accessSync(zipFilePath)) {
+      throw new Error(getNoSuchFileOrDirectoryError(errMsg).errMsg)
+    }
+    let targetExists = false
+    try {
+      targetExists = fs.accessSync(targetPath)
+    } catch (_) {}
+    if (targetExists && !fs.statSync(targetPath).isDirectory()) {
+      throw new Error(getApiError(1300016, errMsg).errMsg)
+    }
+    if (!targetExists) {
+      fs.mkdirSync(targetPath, true)
+    }
+    return nativeUnzipSync(zipFilePath, targetPath)
   }
   readZipEntry(options: ReadZipEntryOptions): void {
     const errMsg = 'readZipEntry:fail'
@@ -1849,6 +1883,7 @@ class FileSystemManagerImpl implements FileSystemManager {
       cb.fail(getApiError((err as BusinessError).code, errMsg))
     })
   }
+  // TODO 鸿蒙不支持 Brotli 算法
   readCompressedFile(options: ReadCompressedFileOptions): void {
     throw new Error('Method not implemented.');
   }
@@ -1927,6 +1962,7 @@ export {
   UnLinkOptions,
   UnLinkSuccessCallback,
   UnzipFileOptions,
+  UnzipSyncOptions,
   WriteCallback,
   WriteFileOptions,
   WriteOptions,

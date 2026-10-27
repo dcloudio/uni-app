@@ -154,6 +154,9 @@ public class UniVideoPlayerView: UIView {
             self._poster = newValue
             self.configuration?.poster = newValue
             self.hasExplicitPoster = !newValue.isEmpty
+            if let objectFit = configuration?.objectFit {
+                self.posterImageView?.contentMode = objectFit.contentMode
+            }
 
             if !newValue.isEmpty {
                 let requestedPoster = newValue
@@ -170,9 +173,6 @@ public class UniVideoPlayerView: UIView {
             } else {
                 self.posterImageView?.image = nil
                 self.posterImageView?.isHidden = true
-                if let objectFit = configuration?.objectFit {
-                    self.posterImageView?.contentMode = objectFit.contentMode
-                }
             }
         }
     }
@@ -417,10 +417,8 @@ public class UniVideoPlayerView: UIView {
         // 更新配置
         self.configuration?.objectFit = objectFitEnum
 
-        // 显式 poster 是业务指定的封面，不跟随 objectFit 改变，避免封面在起播前发生一次布局/裁剪跳变。
-        if !hasExplicitPoster {
-            self.posterImageView?.contentMode = objectFitEnum.contentMode
-        }
+        // poster 与视频画面使用相同的填充模式。
+        self.posterImageView?.contentMode = objectFitEnum.contentMode
 
         // 通知播放器管理器更新 AVPlayerLayer 的 videoGravity
         Task { @MainActor in
@@ -604,6 +602,9 @@ extension UniVideoPlayerView {
         guard let posterImageView = posterImageView else { return }
 
         posterImageView.image = image
+        if let objectFit = configuration?.objectFit {
+            posterImageView.contentMode = objectFit.contentMode
+        }
         posterImageView.isHidden = false
         posterImageView.alpha = 1
         bringSubviewToFront(posterImageView)

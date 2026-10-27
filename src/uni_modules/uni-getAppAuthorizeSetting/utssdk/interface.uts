@@ -30,7 +30,7 @@ export interface Uni {
        *    "alipay": {
        *        "hostVer": "√",
        *        "uniVer": "√",
-       *        "unixVer": "x"
+       *        "unixVer": "5.31"
        *    },
        *    "baidu": {
        *        "hostVer": "√",
@@ -93,6 +93,18 @@ export type GetAppAuthorizeSettingResult = {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
+     * 		}
      * 	}
      * }
      */
@@ -126,6 +138,18 @@ export type GetAppAuthorizeSettingResult = {
      * 		"ios": {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
+     * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
      * 		}
      * 	}
      * }
@@ -161,6 +185,18 @@ export type GetAppAuthorizeSettingResult = {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
+     * 		}
      * 	}
      * }
      */
@@ -194,6 +230,18 @@ export type GetAppAuthorizeSettingResult = {
      * 		"ios": {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
+     * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
      * 		}
      * 	}
      * }
@@ -259,6 +307,18 @@ export type GetAppAuthorizeSettingResult = {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
+     * 		}
      * 	}
      * }
      */
@@ -276,6 +336,18 @@ export type GetAppAuthorizeSettingResult = {
      * 		"ios": {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
+     * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
      * 		}
      * 	}
      * }
@@ -311,6 +383,18 @@ export type GetAppAuthorizeSettingResult = {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
+     * 		}
      * 	}
      * }
      */
@@ -344,6 +428,18 @@ export type GetAppAuthorizeSettingResult = {
      * 		"ios": {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
+     * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
      * 		}
      * 	}
      * }
@@ -379,6 +475,18 @@ export type GetAppAuthorizeSettingResult = {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
      * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
+     * 		}
      * 	}
      * }
      */
@@ -412,6 +520,18 @@ export type GetAppAuthorizeSettingResult = {
      * 		"ios": {
      * 			"uniVer": "√",
      * 			"unixVer": "4.11"
+     * 		}
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
      * 		}
      * 	}
      * }
@@ -451,6 +571,18 @@ export type GetAppAuthorizeSettingResult = {
        *      "uniVer": "x",
        *      "unixVer": "x"
        *    }
+     * 	},
+     * 	"mp": {
+     * 		"weixin": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "4.41"
+     * 		},
+     * 		"alipay": {
+     * 			"hostVer": "√",
+     * 			"uniVer": "√",
+     * 			"unixVer": "5.31"
+     * 		}
      * 	}
      * }
      */

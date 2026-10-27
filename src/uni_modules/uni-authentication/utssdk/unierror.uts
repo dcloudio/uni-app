@@ -1,0 +1,130 @@
+import { ICheckIsSoterEnrolledInDeviceFail, ICheckIsSupportSoterAuthenticationFail, IStartSoterAuthenticationFail } from './interface.uts'
+
+export const AuthenticationUniErrorSubject = 'uni-authentication'
+
+export type AuthenticationCommonErrorCode =
+	61001 |
+	61002 |
+	61003 |
+	61004 |
+	61005 |
+	61006 |
+	61007 |
+	61008 |
+	61009
+
+export type AuthenticationAndroidErrorCode =
+	71001 |
+	71002 |
+	71003
+
+export type AuthenticationIOSErrorCode =
+	81001
+
+export type AuthenticationHarmonyErrorCode =
+	51001 |
+	51002
+
+export type AuthenticationErrorCode =
+	AuthenticationCommonErrorCode |
+	AuthenticationAndroidErrorCode |
+	AuthenticationIOSErrorCode |
+	AuthenticationHarmonyErrorCode
+
+export const AuthenticationUniErrors: Map<number, string> = new Map([
+	[61001, 'permission denied'],
+	[61002, 'biometric authentication is unavailable'],
+	[61003, 'invalid parameter'],
+	[61004, 'unknown error'],
+	[61005, 'user cancelled'],
+	[61006, 'authentication failed'],
+	[61007, 'biometric service locked or busy'],
+	[61008, 'biometric info not enrolled'],
+	[61009, 'screen lock credential expired'],
+	[71001, 'android activity is unavailable'],
+	[71002, 'android secure lock screen is disabled'],
+	[71003, 'android system version does not support the requested biometric mode'],
+	[81001, 'ios authentication context is invalid'],
+	[51001, 'harmony biometric authentication timed out'],
+	[51002, 'harmony authentication switched to system widget flow']
+])
+
+export const AUTH_ERR_PERMISSION_DENIED: number = 61001
+export const AUTH_ERR_NOT_AVAILABLE: number = 61002
+export const AUTH_ERR_INVALID_PARAMETER: number = 61003
+export const AUTH_ERR_GENERAL: number = 61004
+export const AUTH_ERR_CANCEL: number = 61005
+export const AUTH_ERR_AUTH_FAIL: number = 61006
+export const AUTH_ERR_LOCKED: number = 61007
+export const AUTH_ERR_NOT_ENROLLED: number = 61008
+export const AUTH_ERR_CREDENTIAL_EXPIRED: number = 61009
+
+export const AUTH_ERR_ANDROID_ACTIVITY_UNAVAILABLE: number = 71001
+export const AUTH_ERR_ANDROID_SECURE_LOCK_DISABLED: number = 71002
+export const AUTH_ERR_ANDROID_OS_VERSION_UNSUPPORTED: number = 71003
+
+export const AUTH_ERR_IOS_CONTEXT_INVALID: number = 81001
+
+export const AUTH_ERR_HARMONY_TIMEOUT: number = 51001
+export const AUTH_ERR_HARMONY_WIDGET_CANCEL: number = 51002
+
+export function getAuthenticationErrorMessage(errCode: number): string {
+	return AuthenticationUniErrors.get(errCode) ?? ''
+}
+
+export class StartSoterAuthenticationFailImpl extends UniError implements IStartSoterAuthenticationFail {
+	override errCode: number
+
+	constructor(errCode: number) {
+		super()
+		this.errSubject = AuthenticationUniErrorSubject
+		this.errCode = errCode
+		this.errMsg = getAuthenticationErrorMessage(errCode)
+	}
+}
+
+export class CheckIsSupportSoterAuthenticationFailImpl extends UniError implements ICheckIsSupportSoterAuthenticationFail {
+	override errCode: number
+
+	constructor(errCode: number) {
+		super()
+		this.errSubject = AuthenticationUniErrorSubject
+		this.errCode = errCode
+		this.errMsg = getAuthenticationErrorMessage(errCode)
+	}
+}
+
+export class CheckIsSoterEnrolledInDeviceFailImpl extends UniError implements ICheckIsSoterEnrolledInDeviceFail {
+	override errCode: number
+
+	constructor(errCode: number) {
+		super()
+		this.errSubject = AuthenticationUniErrorSubject
+		this.errCode = errCode
+		this.errMsg = getAuthenticationErrorMessage(errCode)
+	}
+}
+
+export function createStartSoterAuthenticationFail(errCode: number, errMsg: string | null = null): StartSoterAuthenticationFailImpl {
+	const error = new StartSoterAuthenticationFailImpl(errCode)
+	if (errMsg != null) {
+		error.errMsg = errMsg
+	}
+	return error
+}
+
+export function createCheckIsSupportSoterAuthenticationFail(errCode: number, errMsg: string | null = null): CheckIsSupportSoterAuthenticationFailImpl {
+	const error = new CheckIsSupportSoterAuthenticationFailImpl(errCode)
+	if (errMsg != null) {
+		error.errMsg = errMsg
+	}
+	return error
+}
+
+export function createCheckIsSoterEnrolledInDeviceFail(errCode: number, errMsg: string | null = null): CheckIsSoterEnrolledInDeviceFailImpl {
+	const error = new CheckIsSoterEnrolledInDeviceFailImpl(errCode)
+	if (errMsg != null) {
+		error.errMsg = errMsg
+	}
+	return error
+}

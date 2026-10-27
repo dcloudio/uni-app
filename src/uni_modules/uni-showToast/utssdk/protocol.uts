@@ -1,0 +1,40 @@
+import {
+  ShowToastOptions
+} from './interface.uts'
+
+export const API_SHOW_TOAST = 'showToast'
+
+export const ShowToastProtocol = new Map<string, ProtocolOptions>([
+  [
+    'title',
+    {
+      type: 'string',
+      required: true
+    }
+  ],
+  [
+    'duration',
+    {
+      type: 'number'
+    }
+  ]
+])
+
+export const ShowToastApiOptions: ApiOptions<ShowToastOptions> = {
+  formatArgs: new Map<string, Function | string | number>([
+    [
+      "title",
+      ""
+    ],
+    [
+      "duration",
+      1500
+    ],
+    [
+      "icon",
+      "success"
+    ]
+  ])
+}
+
+export const API_HIDE_TOAST = 'hideToast'

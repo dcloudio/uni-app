@@ -1,0 +1,44 @@
+import { DecompressFileErrorCode, DecompressFileFail, DecompressFileResult } from "./interface.uts"
+
+export const UniErrorSubject = "uni-zstd-decompress"
+
+export const DECOMPRESS_FILE_INVALID_MAXIMUM_OUTPUT_SIZE : DecompressFileErrorCode = 9010001
+export const DECOMPRESS_FILE_FAILED : DecompressFileErrorCode = 9010002
+export const DECOMPRESS_FILE_ANDROID_SO_LOAD_FAILED : DecompressFileErrorCode = 9010003
+export const DECOMPRESS_FILE_IOS_XCFRAMEWORK_LOAD_FAILED : DecompressFileErrorCode = 9010004
+
+export const DecompressFileUniErrors : Map<DecompressFileErrorCode, string> = new Map([
+  [DECOMPRESS_FILE_INVALID_MAXIMUM_OUTPUT_SIZE, "decompressFile:fail maximumOutputSize must be a positive integer"],
+  [DECOMPRESS_FILE_FAILED, "decompressFile:fail zstd decompression failed"],
+  [DECOMPRESS_FILE_ANDROID_SO_LOAD_FAILED, "decompressFile:fail unable to load Android so library (UnsatisfiedLinkError)"],
+  [DECOMPRESS_FILE_IOS_XCFRAMEWORK_LOAD_FAILED, "decompressFile:fail unable to find or load iOS XCFramework"],
+])
+
+export function createDecompressFileSuccess(outputPath : string) : DecompressFileResult {
+  return {
+    success: true,
+    errCode: 0,
+    errMsg: "",
+    outputPath: outputPath
+  }
+}
+
+export function createDecompressFileFailure(errCode : DecompressFileErrorCode, outputPath : string) : DecompressFileResult {
+  return {
+    success: false,
+    errCode: errCode,
+    errMsg: DecompressFileUniErrors.get(errCode) ?? "",
+    outputPath: outputPath
+  }
+}
+
+export class DecompressFileFailImpl extends UniError implements DecompressFileFail {
+  override errCode : DecompressFileErrorCode
+
+  constructor(errCode : DecompressFileErrorCode) {
+    super()
+    this.errSubject = UniErrorSubject
+    this.errCode = errCode
+    this.errMsg = DecompressFileUniErrors.get(errCode) ?? ""
+  }
+}

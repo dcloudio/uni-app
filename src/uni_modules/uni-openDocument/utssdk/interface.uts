@@ -36,9 +36,9 @@ export type OpenDocumentErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -104,9 +104,9 @@ export type OpenDocumentErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -172,9 +172,9 @@ export type OpenDocumentErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -240,9 +240,9 @@ export type OpenDocumentErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -310,9 +310,9 @@ export interface IOpenDocumentError extends IUniError {
 	*      "unixVer": "4.41"
 	*    },
 	*    "alipay": {
-	*      "hostVer": "x",
-	*      "uniVer": "x",
-	*      "unixVer": "x"
+	*      "hostVer": "√",
+	*      "uniVer": "√",
+	*      "unixVer": "5.31"
 	*    },
 	*    "baidu": {
 	*      "hostVer": "√",
@@ -399,9 +399,9 @@ export type OpenDocumentOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -467,9 +467,9 @@ export type OpenDocumentOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -535,9 +535,9 @@ export type OpenDocumentOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -603,9 +603,9 @@ export type OpenDocumentOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -671,9 +671,9 @@ export type OpenDocumentOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -746,9 +746,9 @@ export interface Uni {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",

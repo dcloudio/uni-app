@@ -18,13 +18,13 @@ export class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     private api : IWXAPI | null = null;
 
-    override onCreate(savedInstanceState : Bundle | null) {
+    protected override onCreate(savedInstanceState : Bundle | null) {
         super.onCreate(savedInstanceState);
         this.api = WXAPIFactory.createWXAPI(this, this.getWXAppId());
         this.api?.handleIntent(this.getIntent(), this);
     }
 
-    override onNewIntent(intent : Intent) {
+    protected override onNewIntent(intent : Intent) {
         super.onNewIntent(intent);
         this.setIntent(intent);
         this.api?.handleIntent(intent, this);

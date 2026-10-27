@@ -429,20 +429,20 @@ export type OpenDialogPageOptions = {
         "android": {
           "uniVer": "x",
           "uniUtsPlugin": "x",
-          "unixVer": "4.31",
-          "unixVaporVer": "5.21"
+          "unixVer": "x",
+          "unixVaporVer": "x"
         },
         "ios": {
           "uniVer": "x",
           "uniUtsPlugin": "x",
-          "unixVer": "4.31",
-          "unixUtsPlugin": "4.31",
-          "unixVaporVer": "5.11"
+          "unixVer": "x",
+          "unixUtsPlugin": "x",
+          "unixVaporVer": "x"
         },
         "harmony": {
           "uniVer": "x",
-          "unixVer": "4.61",
-          "unixVaporVer": "5.0"
+          "unixVer": "x",
+          "unixVaporVer": "x"
         }
       },
       "mp": {

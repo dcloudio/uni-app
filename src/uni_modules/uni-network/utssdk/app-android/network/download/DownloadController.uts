@@ -37,6 +37,7 @@ class NetworkDownloadTaskImpl implements DownloadTask {
 		if (this.call != null) {
 			this.call?.cancel();
 		}
+		UTSAndroid.destroyInstance(this)
 	}
 
 	public onProgressUpdate(option : DownloadFileProgressUpdateCallback) {

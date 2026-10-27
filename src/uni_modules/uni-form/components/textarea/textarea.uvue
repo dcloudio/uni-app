@@ -85,6 +85,7 @@
 	const style = useComputedStyle({
 		properties: [
 			'font-size', 'color', 'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
+			'direction',
 			// #ifndef APP-ANDROID
 			'height', 'min-height', 'max-height',
 			// #endif
@@ -156,6 +157,10 @@
 				// TODO: 该方案会导致开发者设置的组件大小对 placeholder 的字体大小影响高于 placeholder-class 中设置的字体大小
 				styleText += `font-size:${parseInt(styleFontSize)}px;`
 			}
+		}
+		const styleDirection = style.get('direction')
+		if (typeof styleDirection == 'string' && styleDirection.length > 0) {
+			styleText += `direction:${styleDirection};`
 		}
 		// #ifdef APP-IOS || APP-HARMONY
 		styleText += textareaPaddingStyle.value
@@ -236,6 +241,22 @@
 		 "harmony": {
 		   "unixVaporVer": "5.0"
 		 }
+	   },
+	   "web": {
+		 "uniVer": "x",
+		 "unixVer": "x"
+	   },
+	   "mp": {
+		 "weixin": {
+		   "hostVer": "x",
+		   "uniVer": "x",
+		   "unixVer": "x"
+		 },
+		 "alipay": {
+		   "hostVer": "x",
+		   "uniVer": "x",
+		   "unixVer": "x"
+		 }
 	   }
 	 }
 	 */
@@ -249,7 +270,7 @@
 	   }
 	 }
 	 */
-		maxlength ?: number;
+		maxlength ?: number | string;
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -473,16 +494,22 @@
 		textareaView?.updateFontStyle(style.get('font-style'))
 		textareaView?.updateFontFamily(style.get('font-family'))
 		textareaView?.updateTextAlign(style.get('text-align'))
+		textareaView?.updateDirection(style.get('direction'))
 	}
 	// #endif
 
 	function getInitValue() : string {
-		return normalizeByMaxlength(props.value.toString())
+		return normalizeByMaxLength(props.value.toString())
 	}
 
-	function normalizeByMaxlength(value : string) : string {
-		if (props.maxlength >= 0) {
-			return value.substring(0, parseInt(props.maxlength))
+	function getMaxLength(value : number | string) : number {
+		return typeof value == 'string' ? parseInt(value) : value
+	}
+
+	function normalizeByMaxLength(value : string) : string {
+		const maxlength = getMaxLength(props.maxlength)
+		if (maxlength >= 0) {
+			return value.substring(0, maxlength)
 		}
 		return value
 	}
@@ -491,6 +518,107 @@
 	const textareaValue = ref<string>(initialValue.value)
 
 	const showPlaceholder = ref<boolean>(initialValue.value == '' && props.placeholder != '')
+
+	// #ifdef APP-ANDROID
+	watch(() => props.value, (newValue : string) => {
+		if (newValue == textareaValue.value) return
+		const value = newValue != null ? newValue : ''
+		textareaValue.value = normalizeByMaxLength(value.toString())
+		textareaView?.updateValue(textareaValue.value)
+	})
+
+	watch(() => [textareaValue.value, props.placeholder, isComposing.value], ([value, placeholder, composing] : [string, string, boolean]) => {
+		showPlaceholder.value = value == '' && placeholder != '' && !composing;
+	})
+
+	watch(() => style.get('font-size'), (value : string) => {
+		textareaView?.updateFontSize(rpx2px(value))
+	})
+	watch(() => style.get('color'), (value : string) => {
+		textareaView?.updateColor(value)
+	})
+	watch(() => style.get('line-height'), (value : string) => {
+		textareaView?.updateLineHeight(rpx2px(value))
+	})
+	watch(() => style.get('letter-spacing'), (value : string) => {
+		textareaView?.updateLetterSpacing(rpx2px(value))
+	})
+	watch(() => style.get('font-weight'), (value : string) => {
+		textareaView?.updateFontWeight(value)
+	})
+	watch(() => style.get('font-style'), (value : string) => {
+		textareaView?.updateFontStyle(value)
+	})
+	watch(() => style.get('font-family'), (value : string) => {
+		textareaView?.updateFontFamily(value)
+	})
+	watch(() => style.get('text-align'), (value : string) => {
+		textareaView?.updateTextAlign(value)
+	})
+	watch(() => style.get('direction'), (value : string) => {
+		textareaView?.updateDirection(value)
+	})
+
+	watch(() => props.disabled, (newValue : boolean) => {
+		textareaView?.updateDisabled(newValue)
+	})
+	watch(() => props.maxlength, (newValue : number | string) => {
+		const oldValue = textareaValue.value
+		textareaValue.value = normalizeByMaxLength(textareaValue.value)
+		if (textareaValue.value != oldValue) {
+			textareaView?.updateValue(textareaValue.value)
+		}
+		textareaView?.updateMaxLength(getMaxLength(newValue))
+	})
+	// input 光标与键盘的距离，单位 px 。实际生效值会受可视区域高度限制
+	watch(() => props.cursorSpacing, (newValue : number) => {
+		textareaView?.updateCursorSpacing(newValue)
+	})
+	watch(() => props.cursorColor, (newValue : string) => {
+		textareaView?.updateCursorColor(newValue)
+	})
+
+	watch(() => props.focus, (newValue : boolean) => {
+		textareaView?.updateFocus(newValue)
+	})
+
+	watch(() => props.confirmType, (newValue : string) => {
+		textareaView?.updateConfirmType(newValue)
+	})
+
+	watch(() => props.confirmHold, (newValue : boolean) => {
+		textareaView?.updateConfirmHold(newValue)
+	})
+
+	watch(() => props.autoHeight, (newValue : boolean) => {
+		syncAndroidTextareaAutoHeightStyle()
+		textareaView?.updateAutoHeight(newValue)
+	})
+
+	watch(() => androidTextareaHeightStyle.get('height'), () => {
+		rememberAndroidTextareaHeightIfNeeded()
+	})
+
+	watch(() => props.cursor, (newValue : number) => {
+		textareaView?.updateCursor(newValue)
+	})
+
+	watch(() => props.selectionStart, (newValue : number) => {
+		textareaView?.updateSelectionStart(newValue)
+	})
+
+	watch(() => props.selectionEnd, (newValue : number) => {
+		textareaView?.updateSelectionEnd(newValue)
+	})
+
+	watch(() => props.adjustPosition, (newValue : boolean) => {
+		textareaView?.updateAdjustPosition(newValue)
+	})
+
+	watch(() => props.holdKeyboard, (newValue : boolean) => {
+		textareaView?.updateHoldKeyboard(newValue)
+	})
+	// #endif
 
 	const instance = getCurrentInstance()
 	function onNativeViewReady() {
@@ -548,7 +676,7 @@
 					textareaView.updateHoldKeyboard(props.holdKeyboard)
 					break
 				case 'maxlength':
-					textareaView.updateMaxLength(props.maxlength)
+					textareaView.updateMaxLength(getMaxLength(props.maxlength))
 					break
 				case 'cursor-color':
 				case 'cursorColor':
@@ -591,6 +719,11 @@
 					break
 				case 'text-align':
 					textareaView.updateTextAlign(value as string)
+					break
+				case 'direction':
+					// #ifdef APP-IOS || APP-HARMONY
+					textareaView.updateDirection(value as string)
+					// #endif
 					break
 				case 'height':
 					// #ifndef APP-ANDROID
@@ -814,6 +947,21 @@
 		})
 		// #endif
 
+		// #ifndef APP-ANDROID
+		watch(() => props.value, (newValue : string) => {
+			if (newValue == textareaValue.value) return
+			const value = newValue != null ? newValue : ''
+			textareaValue.value = normalizeByMaxLength(value.toString())
+			textareaView?.updateValue(textareaValue.value)
+			// #ifdef APP-HARMONY
+			textareaElement?.updateValue(textareaValue.value);
+			// #endif
+		})
+
+		watch(() => [textareaValue.value, props.placeholder, isComposing.value], ([value, placeholder, composing] : [string, string, boolean]) => {
+			showPlaceholder.value = value == '' && placeholder != '' && !composing;
+		})
+
 		watch(() => style.get('font-size'), (value : string) => {
 			textareaView?.updateFontSize(rpx2px(value))
 		})
@@ -838,7 +986,9 @@
 		watch(() => style.get('text-align'), (value : string) => {
 			textareaView?.updateTextAlign(value)
 		})
-		// #ifndef APP-ANDROID
+		watch(() => style.get('direction'), (value : string) => {
+			textareaView?.updateDirection(value)
+		})
 		watch(() => style.get('height'), (value : string) => {
 			textareaView?.updateHeight(rpx2px(value))
 		})
@@ -848,7 +998,6 @@
 		watch(() => style.get('max-height'), (value : string) => {
 			textareaView?.updateMaxHeight(rpx2px(value))
 		})
-		// #endif
 		// #ifdef APP-IOS || APP-HARMONY
 		watch(() => style.get('padding-top'), () => {
 			syncTextareaPaddingStyle()
@@ -864,32 +1013,19 @@
 		})
 		// #endif
 
-		watch(() => [textareaValue.value, props.placeholder, isComposing.value], ([value, placeholder, composing] : [string, string, boolean]) => {
-			showPlaceholder.value = value == '' && placeholder != '' && !composing;
-		})
-		watch(() => props.value, (newValue : string) => {
-			if (newValue == textareaValue.value) return
-			const value = newValue != null ? newValue : ''
-			textareaValue.value = normalizeByMaxlength(value.toString())
-			textareaView?.updateValue(textareaValue.value)
-			// #ifdef APP-HARMONY
-			textareaElement?.updateValue(textareaValue.value);
-			// #endif
-		})
-
 		watch(() => props.disabled, (newValue : boolean) => {
 			textareaView?.updateDisabled(newValue)
 		})
-		watch(() => props.maxlength, (newValue : number) => {
+		watch(() => props.maxlength, (newValue : number | string) => {
 			const oldValue = textareaValue.value
-			textareaValue.value = normalizeByMaxlength(textareaValue.value)
+			textareaValue.value = normalizeByMaxLength(textareaValue.value)
 			if (textareaValue.value != oldValue) {
 				textareaView?.updateValue(textareaValue.value)
 				// #ifdef APP-HARMONY
 				textareaElement?.updateValue(textareaValue.value);
 				// #endif
 			}
-			textareaView?.updateMaxLength(newValue)
+			textareaView?.updateMaxLength(getMaxLength(newValue))
 		})
 		// input 光标与键盘的距离，单位 px 。实际生效值会受可视区域高度限制
 		watch(() => props.cursorSpacing, (newValue : number) => {
@@ -912,18 +1048,8 @@
 		})
 
 		watch(() => props.autoHeight, (newValue : boolean) => {
-			// #ifdef APP-ANDROID
-			syncAndroidTextareaAutoHeightStyle()
-			textareaView?.updateAutoHeight(newValue)
-			return
-			// #endif
 			textareaView?.updateAutoHeight(newValue)
 		})
-		// #ifdef APP-ANDROID
-		watch(() => androidTextareaHeightStyle.get('height'), () => {
-			rememberAndroidTextareaHeightIfNeeded()
-		})
-		// #endif
 
 		watch(() => props.cursor, (newValue : number) => {
 			textareaView?.updateCursor(newValue)
@@ -944,6 +1070,7 @@
 		watch(() => props.holdKeyboard, (newValue : boolean) => {
 			textareaView?.updateHoldKeyboard(newValue)
 		})
+		// #endif
 
 		const formCtx = inject<TextareaInFormContext | null>(FORM_KEY, null)
 		if (formCtx && props.name) {
@@ -951,7 +1078,7 @@
 				name: props.name,
 				getValue: () => textareaValue.value,
 				reset: () => {
-					textareaValue.value = normalizeByMaxlength(initialValue.value)
+					textareaValue.value = normalizeByMaxLength(initialValue.value)
 					// #ifdef APP-IOS
 					textareaView?.updateValue(textareaValue.value)
 					// #endif

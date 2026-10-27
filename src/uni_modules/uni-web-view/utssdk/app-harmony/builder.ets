@@ -3,7 +3,8 @@ import { deviceInfo, BusinessError } from '@kit.BasicServicesKit';
 import { abilityAccessCtrl, common, Permissions } from '@kit.AbilityKit'
 import { bundleManager } from '@kit.AbilityKit';
 import { createTelSchemeHandler } from './webview'
-import { getRealPath, getAbilityContext, UTSHarmony } from '@dcloudio/uni-app-x-runtime'
+// TODO 内部包名
+import { getRealPath, getAbilityContext, UTSHarmony } from '@dcloudio/uni-app-framework'
 
 interface Detail {}
 
@@ -156,6 +157,7 @@ export struct WebView {
   @Prop @Watch('setBarAccess') horizontalScrollBarAccess?: boolean = true
   @Prop @Watch('setBarAccess') verticalScrollBarAccess?: boolean = true
   @Prop disableUserSelectMenu?: boolean = false
+  @Prop associativeContainer: string = ''
   @Prop attributeUpdater: object
   delegate!: webview.WebDownloadDelegate
   controller: webview.WebviewController = new webview.WebviewController()
@@ -197,6 +199,13 @@ export struct WebView {
       .horizontalScrollBarAccess(this.horizontalScrollBarAccess)
       .verticalScrollBarAccess(this.verticalScrollBarAccess)
       .mixedMode(MixedMode.All)
+      .nestedScroll(this.associativeContainer === 'nested-scroll-view' ? {
+        scrollForward: NestedScrollMode.PARENT_FIRST,
+        scrollBackward: NestedScrollMode.SELF_FIRST
+      } : {
+        scrollForward: NestedScrollMode.SELF_FIRST,
+        scrollBackward: NestedScrollMode.SELF_FIRST
+      })
       .editMenuOptions({
         onCreateMenu: (menuItems: Array<TextMenuItem>): Array<TextMenuItem> => {
           return this.disableUserSelectMenu ? [] : menuItems
@@ -511,11 +520,12 @@ export function buildWeb(params: ESObject) {
   Flex() {
     WebView({
       webId: params.id,
-      src: params.src,
+      src: getRealPath(params.src),
       bounces: params.bounces,
       horizontalScrollBarAccess: params.horizontalScrollBarAccess,
       verticalScrollBarAccess: params.verticalScrollBarAccess,
       disableUserSelectMenu: params.disableUserSelectMenu,
+      associativeContainer: params.associativeContainer,
       attributeUpdater: params.attributeUpdater,
       delegate: params.delegate,
       controller: params.controller,

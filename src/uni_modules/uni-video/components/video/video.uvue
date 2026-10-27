@@ -1319,6 +1319,18 @@
       toggleControlsTimer: 0
     });
 
+    let hideTiming: number = 0;
+    const autoHideStart = () => {
+      hideTiming = setTimeout(() => {
+        controlsVisible.value = false;
+      }, 3000);
+    }
+    const autoHideEnd = () => {
+      if (hideTiming != 0) {
+        clearTimeout(hideTiming);
+      }
+    }
+
     const clickProgress = (event: UniPointerEvent) => {
       if (event.target != null) {
         const clientRect = event.target!.getBoundingClientRect();
@@ -1328,6 +1340,10 @@
         if (x >= 0 && x <= w) {
           progress = x / w;
           useVideoReturn.seek(videoState.currentDuration * progress);
+          if (videoState.playing) {
+            autoHideEnd();
+            autoHideStart();
+          }
         }
       }
     }
@@ -1352,17 +1368,6 @@
         controlsVisible.value = targetVisible;
         emit('controlstoggle', new UniVideoControlsToggleEvent(rootRef.value!, targetVisible));
       }, gestureState!.doubleClickTime);
-    }
-    let hideTiming: number = 0;
-    const autoHideStart = () => {
-      hideTiming = setTimeout(() => {
-        controlsVisible.value = false;
-      }, 3000);
-    }
-    const autoHideEnd = () => {
-      if (hideTiming != 0) {
-        clearTimeout(hideTiming);
-      }
     }
     onBeforeUnmount(() => {
       if (hideTiming != 0) {
@@ -1894,13 +1899,6 @@
   const progressing = useProgressing();
   // #endregion useProgressing
 
-  // #ifdef APP-ANDROID || APP-IOS
-  uni.loadFontFace({
-    family: 'uni-video-icon',
-    source: '/uni_modules/uni-video/static/font/uni-video-icon.ttf'
-  });
-  // #endif
-
   const inited = ref<boolean>(false);
   function onInit(event: UniNativeViewInitEvent) {
     video = new Video(event.detail.element, {
@@ -2053,15 +2051,24 @@
 
   const ON_EXIT_FULLSCREEN_EVENT_NAME = `__UNIVIDEO_EXIT_FULLSCREEN_${eventSeed}`;
   const onExitFullscreen = () => {
+    // #ifdef APP-IOS
+    const fullscreenElement = containerRef.value as UniElement | null
+    // #endif
+    // #ifdef APP-ANDROID
+    const fullscreenElement = rootRef.value as UniElement | null
+    // #endif
+    let page = fullscreenElement?.uniPage
+    if (page == null) {
       const pages = getCurrentPages()
       if (pages.length > 0) {
-          const page = pages[pages.length - 1]
-          page.exitFullscreen({
-              success: () => {
-									fullscreenState.fullscreen = false
-              }
-          })
+        page = pages[pages.length - 1]
       }
+    }
+    page?.exitFullscreen({
+      success: () => {
+        fullscreenState.fullscreen = false
+      }
+    })
   };
   // #endif
 
@@ -2272,7 +2279,8 @@
   }
 
   .uni-video-fullscreen-bar_outside {
-    height: 60px;
+    height: auto;
+    min-height: 60px;
     padding-top: 15px;
     /* #ifndef APP-IOS */
     padding-bottom: var(--uni-safe-area-inset-bottom);
@@ -2281,7 +2289,7 @@
 
   .uni-video-bar_container {
     width: 100%;
-    height: 100%;
+    flex-grow: 1;
     overflow: visible;
     padding-left: var(--uni-safe-area-inset-left);
     padding-right: var(--uni-safe-area-inset-right);
@@ -2583,5 +2591,10 @@
     width: 100%;
     height: 100%;
     position: absolute;
+  }
+  
+  @font-face {
+  	font-family: 'uni-video-icon';
+  	src: url('/uni_modules/uni-video/static/font/uni-video-icon.ttf');
   }
 </style>

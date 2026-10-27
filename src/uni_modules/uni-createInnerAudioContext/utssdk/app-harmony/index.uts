@@ -1,12 +1,13 @@
 import { media } from '@kit.MediaKit';
 import { audio, } from '@kit.AudioKit';
+import { fileIo } from '@kit.CoreFileKit';
 import { BusinessError } from '@ohos.base';
 import deviceInfo from '@ohos.deviceInfo';
 import { getRealPath } from '@dcloudio/uni-runtime'
 
 import { InnerAudioContext, CreateInnerAudioContext, type ICreateInnerAudioContextFail, SetInnerAudioOption, SetInnerAudioOptionOptions, SetInnerAudioOptionSuccess } from '../interface.uts';
 import { API_CREATE_INNER_AUDIO_CONTEXT, API_SET_INNER_AUDIO_OPTION, SetInnerAudioOptionOptionsOptions, SetInnerAudioOptionProtocol } from '../protocol.uts';
-import { getFdFromUriOrSandBoxPath, isFileUri, isSandboxPath, AudioPlayerCallback, AudioPlayerError } from './utils.uts';
+import { getFileFromUriOrSandBoxPath, isFileUri, isSandboxPath, AudioPlayerCallback, AudioPlayerError } from './utils.uts';
 
 const AUDIOS: Record<string, InnerAudioContext | undefined> = {}
 const AUDIO_PLAYERS: Record<string, media.AudioPlayer | undefined> = {}
@@ -39,6 +40,9 @@ class AudioPlayer implements InnerAudioContext {
   private audioId: string = ''
   private _playbackRate: number = 1;
   private _dataloaded: boolean = false;
+  private sourceFile: fileIo.File | null = null;
+  private sourceNeedsReload: boolean = false;
+  private pausedByInterrupt: boolean = false;
 
   readonly obeyMuteSwitch: boolean = false;
 
@@ -62,6 +66,7 @@ class AudioPlayer implements InnerAudioContext {
     });
 
     AUDIO_PLAYERS[this.audioId]?.on('finish', () => {
+      this.clearSource();
       this.audioPlayerCallback.ended()
     });
 
@@ -70,6 +75,7 @@ class AudioPlayer implements InnerAudioContext {
     });
 
     AUDIO_PLAYERS[this.audioId]?.on('error', (err) => {
+      this.clearSource();
       this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code))
     });
     AUDIO_PLAYERS[this.audioId]?.on('bufferingUpdate', (infoType, value) => {
@@ -96,8 +102,16 @@ class AudioPlayer implements InnerAudioContext {
     });
     AUDIO_PLAYERS[this.audioId]?.on('audioInterrupt', (InterruptEvent) => {
       // console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
-      if (AUDIO_PLAYERS[this.audioId] && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
-        AUDIO_PLAYERS[this.audioId]!.pause();
+      const audioPlayer = AUDIO_PLAYERS[this.audioId];
+      if (audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+        this.pausedByInterrupt = audioPlayer.state === STATE_TYPE.PLAYING;
+        if (this.pausedByInterrupt) {
+          audioPlayer.pause();
+        }
+      }
+      if (audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_RESUME && this.pausedByInterrupt) {
+        this.pausedByInterrupt = false;
+        audioPlayer.play();
       }
     });
   }
@@ -114,7 +128,7 @@ class AudioPlayer implements InnerAudioContext {
   get paused() {
     const audioPlayer = AUDIO_PLAYERS[this.audioId];
     if (!audioPlayer) { return false }
-    return audioPlayer.state === STATE_TYPE.PAUSED
+    return audioPlayer.state !== STATE_TYPE.PLAYING
   }
   get loop() {
     const audioPlayer = AUDIO_PLAYERS[this.audioId];
@@ -138,9 +152,7 @@ class AudioPlayer implements InnerAudioContext {
     }
   }
   get src() {
-    const audioPlayer = AUDIO_PLAYERS[this.audioId];
-    if (!audioPlayer) { return '' }
-    return audioPlayer.src;
+    return this._src;
   }
   set src(value) {
     const audioPlayer = AUDIO_PLAYERS[this.audioId];
@@ -157,32 +169,49 @@ class AudioPlayer implements InnerAudioContext {
       value = `file://${value}`;
     }
     if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri(value) || isSandboxPath(value))) {
-      LOG(`set src: ${value} is invalid`);
+      this.audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is invalid`, 10004))
       return;
     }
     let path: string = '';
+    let sourceFile: fileIo.File | null = null;
     if (value.startsWith('http:') || value.startsWith('https:')) {
       path = value;
     }
     else if (isFileUri(value) || isSandboxPath(value)) {
       try {
-        const fd = getFdFromUriOrSandBoxPath(value);
-        path = `fd://${fd}`;
+        sourceFile = getFileFromUriOrSandBoxPath(value);
+        path = `fd://${sourceFile.fd}`;
       }
       catch (error) {
-        console.error(`${JSON.stringify(error)}`);
+        this.audioPlayerCallback.error(new AudioPlayerError((error as Error).message, 10004))
+        return;
       }
     }
-    if (audioPlayer.src && path !== audioPlayer.src) {
-      audioPlayer.reset();
-    }
-    AUDIO_PLAYERS[this.audioId]!.src = path;
-    this._src = value;
-    if (this._autoplay) {
-      audioPlayer.play();
-      if (this._startTime) {
-        audioPlayer.seek(this._startTime);
+    try {
+      if (audioPlayer.src || this.sourceNeedsReload) {
+        audioPlayer.reset();
       }
+      this.releaseSourceFile();
+      this.sourceFile = sourceFile;
+      this.pausedByInterrupt = false;
+      this._dataloaded = false;
+      this._buffered = 0;
+      audioPlayer.src = path;
+      this._src = value;
+      this.sourceNeedsReload = false;
+      if (this._autoplay) {
+        audioPlayer.play();
+        if (this._startTime) {
+          audioPlayer.seek(this._startTime);
+        }
+      }
+    } catch (error) {
+      if (this.sourceFile === sourceFile) {
+        this.releaseSourceFile();
+      } else if (sourceFile) {
+        try { fileIo.closeSync(sourceFile) } catch (ignored) { }
+      }
+      this.audioPlayerCallback.error(new AudioPlayerError((error as Error).message, 10004));
     }
   }
   get startTime() {
@@ -190,6 +219,11 @@ class AudioPlayer implements InnerAudioContext {
   }
   set startTime(time: number) {
     this._startTime = time * 1000;
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (audioPlayer && audioPlayer.state !== STATE_TYPE.PLAYING && this.ensureSource()) {
+      if (!audioPlayer.src) { return; }
+      audioPlayer.seek(this._startTime);
+    }
   }
   get autoplay() {
     return this._autoplay;
@@ -217,8 +251,9 @@ class AudioPlayer implements InnerAudioContext {
     if (![STATE_TYPE.PAUSED, STATE_TYPE.STOPPED, STATE_TYPE.IDLE].includes(state)) {
       return;
     }
-    if (this._src && audioPlayer.src === '') {
-      this.src = this._src;
+    if (!this.ensureSource()) { return; }
+    if (this._startTime && audioPlayer.state !== STATE_TYPE.PAUSED) {
+      audioPlayer.seek(this._startTime);
     }
     audioPlayer.play();
   }
@@ -226,6 +261,7 @@ class AudioPlayer implements InnerAudioContext {
     const audioPlayer = AUDIO_PLAYERS[this.audioId];
     if (!audioPlayer) { return; }
 
+    this.pausedByInterrupt = false;
     const state = audioPlayer.state;
 
     if (STATE_TYPE.PLAYING !== state) { return; }
@@ -234,11 +270,25 @@ class AudioPlayer implements InnerAudioContext {
   stop() {
     const audioPlayer = AUDIO_PLAYERS[this.audioId];
     if (!audioPlayer) { return; }
+    this.pausedByInterrupt = false;
     if (![STATE_TYPE.PAUSED, STATE_TYPE.PLAYING].includes(audioPlayer.state)) { return; }
-
-    audioPlayer.stop();
-    audioPlayer.reset()
-    audioPlayer.src = this.src
+    let sourceReloaded = false;
+    try {
+      audioPlayer.stop();
+      // audioPlayer.reset() 调用 reset 报错 failed to Reset。和 stop 调转顺序会报错 `failed to Stop`、`failed to Reset`
+      this.releaseSourceFile();
+      this.sourceNeedsReload = true;
+      sourceReloaded = this.reloadSource();
+    } catch (error) {
+      this.audioPlayerCallback.error(new AudioPlayerError((error as Error).message, 10004));
+    } finally {
+      if (!sourceReloaded) {
+        this.releaseSourceFile();
+      }
+      this.pausedByInterrupt = false;
+      this._dataloaded = false;
+      this._buffered = 0;
+    }
     this.audioPlayerCallback.stop();
   }
   seek(position: number) {
@@ -248,6 +298,7 @@ class AudioPlayer implements InnerAudioContext {
     if (![STATE_TYPE.PAUSED, STATE_TYPE.PLAYING, STATE_TYPE.IDLE].includes(state)) {
       return;
     }
+    if (!this.ensureSource()) { return; }
     this.audioPlayerCallback.seeking()
     audioPlayer.seek(position * 1000);
     this.audioPlayerCallback.seeked()
@@ -256,9 +307,53 @@ class AudioPlayer implements InnerAudioContext {
     const audioPlayer = AUDIO_PLAYERS[this.audioId];
     if (!audioPlayer) { return; }
 
-    audioPlayer.release();
-    AUDIO_PLAYERS[this.audioId] = undefined
-    AUDIOS[this.audioId] = undefined
+    try {
+      audioPlayer.release();
+    } finally {
+      this.releaseSourceFile();
+      this.audioPlayerCallback.destroy();
+      AUDIO_PLAYERS[this.audioId] = undefined
+      AUDIOS[this.audioId] = undefined
+    }
+  }
+
+  private releaseSourceFile() {
+    if (!this.sourceFile) { return; }
+    try {
+      fileIo.closeSync(this.sourceFile);
+    } catch (error) {
+      LOG(`close source file failed: ${(error as Error).message}`);
+    } finally {
+      this.sourceFile = null;
+    }
+  }
+
+  private reloadSource(): boolean {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer || !this._src) { return false; }
+    const autoplay = this._autoplay;
+    this._autoplay = false;
+    try {
+      this.src = this._src;
+    } finally {
+      this._autoplay = autoplay;
+    }
+    return audioPlayer.src !== '' && !this.sourceNeedsReload;
+  }
+
+  private ensureSource(): boolean {
+    const audioPlayer = AUDIO_PLAYERS[this.audioId];
+    if (!audioPlayer || !this._src) { return true; }
+    if (audioPlayer.src !== '' && !this.sourceNeedsReload) { return true; }
+    return this.reloadSource();
+  }
+
+  private clearSource() {
+    this.releaseSourceFile();
+    this.sourceNeedsReload = this._src !== '';
+    this.pausedByInterrupt = false;
+    this._dataloaded = false;
+    this._buffered = 0;
   }
   onCanplay(callback: (result: any) => void): void {
     this.audioPlayerCallback.onCanplay(callback)

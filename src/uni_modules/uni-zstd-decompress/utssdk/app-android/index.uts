@@ -1,0 +1,39 @@
+import {
+  DECOMPRESS_FILE_ANDROID_SO_LOAD_FAILED,
+  DECOMPRESS_FILE_FAILED,
+  DECOMPRESS_FILE_INVALID_MAXIMUM_OUTPUT_SIZE,
+  createDecompressFileFailure,
+  createDecompressFileSuccess
+} from "../unierror"
+import { DecompressFileResult } from "../interface"
+export { DecompressFileResult, DecompressFileFail, DecompressFileErrorCode } from "../interface"
+
+export function __zstdDecompressFile(fromPath : string, toPath : string, maximumOutputSize ?: number) : DecompressFileResult {
+  if (maximumOutputSize != null && maximumOutputSize <= 0) {
+    return createDecompressFileFailure(DECOMPRESS_FILE_INVALID_MAXIMUM_OUTPUT_SIZE, toPath)
+  }
+
+  try {
+    try {
+      uni.loadUasmSync("uni_modules/uni-zstd-decompress")
+    } catch (e : UnsatisfiedLinkError) {
+      return createDecompressFileFailure(DECOMPRESS_FILE_ANDROID_SO_LOAD_FAILED, toPath)
+    }
+
+    if (maximumOutputSize != null) {
+      const result : Int = UniZstdDecompress.decompress(fromPath, toPath, maximumOutputSize.toLong())
+      if (result != 0) {
+        return createDecompressFileFailure(DECOMPRESS_FILE_FAILED, toPath)
+      }
+      return createDecompressFileSuccess(toPath)
+    }
+
+    const result : Int = UniZstdDecompress.decompress(fromPath, toPath)
+    if (result != 0) {
+      return createDecompressFileFailure(DECOMPRESS_FILE_FAILED, toPath)
+    }
+    return createDecompressFileSuccess(toPath)
+  } catch (e : Exception) {
+    return createDecompressFileFailure(DECOMPRESS_FILE_FAILED, toPath)
+  }
+}

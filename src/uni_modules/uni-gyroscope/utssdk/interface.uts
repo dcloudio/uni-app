@@ -1,0 +1,437 @@
+export type GyroscopeInterval =
+  /**
+   * 	适用于更新游戏的回调频率，约 20ms/次 左右
+   */
+	'game' |
+	/**
+	 * 	适用于更新 UI 的回调频率，在 60ms/次 左右
+	 */
+	'ui' |
+	/**
+	 * 		普通的回调频率，在 200ms/次 左右
+	 */
+	'normal'
+
+export type GyroscopeErrorCode =
+	601 |
+	602 |
+	603 |
+	604 |
+	701 |
+	702 |
+	703 |
+	704 |
+	801 |
+	802 |
+	803 |
+	804 |
+	501 |
+	502 |
+	503 |
+	504 |
+	901
+
+export interface IGyroscopeError extends IUniError {
+	errCode : GyroscopeErrorCode
+}
+
+export interface IStartGyroscopeFail extends IGyroscopeError {
+}
+
+export interface IStopGyroscopeFail extends IGyroscopeError {
+}
+
+export type StartGyroscopeSuccess = {
+	errMsg ?: string | null
+}
+
+export type StartGyroscopeFail = IStartGyroscopeFail
+export type StartGyroscopeSuccessCallback = (res : StartGyroscopeSuccess) => void
+export type StartGyroscopeFailCallback = (res : StartGyroscopeFail) => void
+export type StartGyroscopeComplete = StartGyroscopeSuccess | StartGyroscopeFail
+export type StartGyroscopeCompleteCallback = (res : StartGyroscopeComplete) => void
+
+export type StopGyroscopeSuccess = {
+	errMsg ?: string | null
+}
+
+export type StopGyroscopeFail = IStopGyroscopeFail
+export type StopGyroscopeSuccessCallback = (res : StopGyroscopeSuccess) => void
+export type StopGyroscopeFailCallback = (res : StopGyroscopeFail) => void
+export type StopGyroscopeComplete = StopGyroscopeSuccess | StopGyroscopeFail
+export type StopGyroscopeCompleteCallback = (res : StopGyroscopeComplete) => void
+
+/**
+ * 开始监听陀螺仪数据的参数
+ */
+export type StartGyroscopeOptions = {
+  /**
+   * 监听陀螺仪数据回调函数的执行频率
+   */
+	interval ?: GyroscopeInterval | null
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success ?: StartGyroscopeSuccessCallback | null
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail ?: StartGyroscopeFailCallback | null
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete ?: StartGyroscopeCompleteCallback | null
+}
+
+/**
+ * 停止监听陀螺仪数据的参数
+ */
+export type StopGyroscopeOptions = {
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success ?: StopGyroscopeSuccessCallback | null
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail ?: StopGyroscopeFailCallback | null
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete ?: StopGyroscopeCompleteCallback | null
+}
+
+/**
+ * 陀螺仪数据
+ */
+export type OnGyroscopeChangeCallbackResult = {
+	/**
+	 * x 轴的角速度
+	 */
+	x : number
+	/**
+	 * y 轴的角速度
+	 */
+	y : number
+	/**
+	 * z 轴的角速度
+	 */
+	z : number
+}
+
+export type OnGyroscopeChangeCallback = (result : OnGyroscopeChangeCallbackResult) => void
+
+export type StartGyroscope = (options?: StartGyroscopeOptions | null) => void;
+export type StopGyroscope = (options?: StopGyroscopeOptions | null) => void;
+export type OnGyroscopeChange = (callback: OnGyroscopeChangeCallback) => void;
+export type OffGyroscopeChange = (callback: OnGyroscopeChangeCallback | null) => void;
+
+export interface Uni {
+ 	/**
+ 	 * 开始监听陀螺仪数据。
+	 * @param options 开始监听陀螺仪数据的参数
+ 	 *
+ 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#startgyroscope
+ 	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#startgyroscope
+ 	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/gyroscope.html#startgyroscope
+ 	 *
+ 	 * @uniPlatform {
+ 	 * 	"app": {
+ 	 * 		"android": {
+ 	 * 			"osVer": "5.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08"
+ 	 * 		},
+ 	 * 		"ios": {
+ 	 * 			"osVer": "12.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08"
+ 	 * 		},
+ 	 *    "harmony": {
+ 	 *      "osVer": "5.0.0",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "5.08",
+ 	 *      "unixvVer": "5.08"
+ 	 *    }
+ 	 * 	},
+ 	 *   "web": {
+ 	 *     "uniVer": "x",
+ 	 *     "unixVer": "x"
+ 	 *   },
+ 	 *  "mp":{
+ 	 *    "weixin": {
+ 	 *      "hostVer": "2.3.0",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "4.41"
+ 	 *    },
+ 	 *    "alipay": {
+ 	 *      "hostVer": "√",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "5.31"
+ 	 *    },
+ 	 *    "baidu": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "toutiao": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "lark": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "qq": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "kuaishou": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "jd": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    }
+ 	 *  }
+ 	 * }
+ 	 */
+	startGyroscope(options ?: StartGyroscopeOptions | null) : void;
+ 	/**
+ 	 * 停止监听陀螺仪数据变化事件。
+	 * @param options 停止监听陀螺仪数据的参数
+ 	 *
+ 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#stopgyroscope
+ 	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#stopgyroscope
+ 	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/gyroscope.html#stopgyroscope
+ 	 *
+ 	 * @uniPlatform {
+ 	 * 	"app": {
+ 	 * 		"android": {
+ 	 * 			"osVer": "5.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08"
+ 	 * 		},
+ 	 * 		"ios": {
+ 	 * 			"osVer": "12.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08"
+ 	 * 		},
+ 	 *    "harmony": {
+ 	 *      "osVer": "5.0.0",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "5.08",
+ 	 *      "unixvVer": "5.08"
+ 	 *    }
+ 	 * 	},
+ 	 *   "web": {
+ 	 *     "uniVer": "x",
+ 	 *     "unixVer": "x"
+ 	 *   },
+ 	 *  "mp":{
+ 	 *    "weixin": {
+ 	 *      "hostVer": "2.3.0",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "4.41"
+ 	 *    },
+ 	 *    "alipay": {
+ 	 *      "hostVer": "√",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "5.31"
+ 	 *    },
+ 	 *    "baidu": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "toutiao": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "lark": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "qq": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "kuaishou": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "jd": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    }
+ 	 *  }
+ 	 * }
+ 	 */
+	stopGyroscope(options ?: StopGyroscopeOptions | null) : void;
+ 	/**
+ 	 * 监听陀螺仪数据变化事件
+	 * 支付宝小程序频率为 500ms/次，微信小程序频率根据 uni.startGyroscope 的 interval 参数设置。事件只有在调用 uni.startGyroscope 后才会开始监听，使用 uni.stopGyroscope 可以停止监听。
+ 	 * @param callback 陀螺仪数据事件的监听函数
+	 *
+ 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#ongyroscopechange
+ 	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#ongyroscopechange
+ 	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/gyroscope.html#ongyroscopechange
+ 	 *
+ 	 * @uniPlatform {
+ 	 * 	"app": {
+ 	 * 		"android": {
+ 	 * 			"osVer": "5.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08"
+ 	 * 		},
+ 	 * 		"ios": {
+ 	 * 			"osVer": "12.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08",
+	 * 			"unixUtsPlugin": "x"	
+ 	 * 		},
+ 	 *    "harmony": {
+ 	 *      "osVer": "5.0.0",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "5.08",
+ 	 *      "unixvVer": "5.08"
+ 	 *    }
+ 	 * 	},
+ 	 *   "web": {
+ 	 *     "uniVer": "x",
+ 	 *     "unixVer": "x"
+ 	 *   },
+ 	 *  "mp":{
+ 	 *    "weixin": {
+ 	 *      "hostVer": "2.3.0",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "4.41"
+ 	 *    },
+ 	 *    "alipay": {
+ 	 *      "hostVer": "√",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "5.31"
+ 	 *    },
+ 	 *    "baidu": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "toutiao": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "lark": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "qq": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "kuaishou": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "jd": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    }
+ 	 *  }
+ 	 * }
+ 	 */
+	onGyroscopeChange(callback : OnGyroscopeChangeCallback) : void;
+ 	/**
+ 	 * 停止监听陀螺仪数据变化事件
+	 * @param callback onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。
+	 *
+ 	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#offgyroscopechange
+ 	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/gyroscope.html#offgyroscopechange
+ 	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/gyroscope.html#offgyroscopechange
+	 *
+ 	 * @uniPlatform {
+ 	 * 	"app": {
+ 	 * 		"android": {
+ 	 * 			"osVer": "5.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08"
+ 	 * 		},
+ 	 * 		"ios": {
+ 	 * 			"osVer": "12.0",
+ 	 * 			"uniVer": "x",
+ 	 * 			"unixVer": "5.08",
+	 * 			"unixUtsPlugin": "x"
+ 	 * 		},
+ 	 *    "harmony": {
+ 	 *      "osVer": "5.0.0",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "5.08",
+ 	 *      "unixvVer": "5.08"
+ 	 *    }
+ 	 * 	},
+ 	 *   "web": {
+ 	 *     "uniVer": "x",
+ 	 *     "unixVer": "x"
+ 	 *   },
+ 	 *  "mp":{
+ 	 *    "weixin": {
+ 	 *      "hostVer": "2.9.3",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "4.41"
+ 	 *    },
+ 	 *    "alipay": {
+ 	 *      "hostVer": "√",
+ 	 *      "uniVer": "√",
+ 	 *      "unixVer": "5.31"
+ 	 *    },
+ 	 *    "baidu": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "toutiao": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "lark": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "qq": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "kuaishou": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    },
+ 	 *    "jd": {
+ 	 *      "hostVer": "x",
+ 	 *      "uniVer": "x",
+ 	 *      "unixVer": "x"
+ 	 *    }
+ 	 *  }
+ 	 * }
+ 	 */
+	offGyroscopeChange(callback ?: OnGyroscopeChangeCallback | null) : void;
+}

@@ -62,7 +62,7 @@
   </view>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ScanCodeSupportedTypes } from "@/uni_modules/uni-scanCode";
 
 //测试用导入
@@ -923,9 +923,9 @@ watch(isShowSelectionView, (value) => {
 
 onLoad((options: UTSJSONObject) => {
   initPageOptions(options);
-  const systemInfo = uni.getSystemInfoSync();
-  const osLanguage = systemInfo.osLanguage;
-  const appLanguage = systemInfo.appLanguage;
+  const appBaseInfo = uni.getAppBaseInfo();
+  const osLanguage = appBaseInfo.language;
+  const appLanguage = appBaseInfo.appLanguage;
   if (appLanguage != null) {
     language.value = appLanguage;
   } else if (osLanguage != null) {

@@ -103,7 +103,7 @@ export const offLocationChange = defineSyncApi<void>(
     (callback?: number | OnLocationChangeCallback | null) => {
         removeCallback(API_ON_LOCATION_CHANGE, OnLocationChangeCallbacks, callback)
     }
-)
+) as OffLocationChange
 
 export const onLocationChangeError = defineSyncApi<number>(
     API_ON_LOCATION_CHANGE_ERROR,
@@ -117,7 +117,7 @@ export const offLocationChangeError = defineSyncApi<void>(
     (callback?: number | OnLocationChangeErrorCallback | null) => {
         removeCallback(API_ON_LOCATION_CHANGE_ERROR, OnLocationChangeErrorCallbacks, callback)
     }
-)
+) as OffLocationChangeError
 
 const _onLocationChange: OnLocationChangeCallback = (res: GetLocationSuccess): void => {
     getEmitter<GetLocationSuccess>().emit(API_ON_LOCATION_CHANGE, res)

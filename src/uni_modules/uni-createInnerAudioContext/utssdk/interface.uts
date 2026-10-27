@@ -32,9 +32,9 @@ export interface Uni {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -102,9 +102,9 @@ export interface Uni {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -185,9 +185,9 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -257,9 +257,9 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -329,9 +329,9 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -399,9 +399,9 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -469,9 +469,9 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -539,9 +539,9 @@ export type SetInnerAudioOptionOptions = {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -614,9 +614,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -684,9 +684,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -754,9 +754,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -824,9 +824,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -894,9 +894,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -964,9 +964,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1035,9 +1035,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1106,9 +1106,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1176,9 +1176,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1246,9 +1246,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1317,9 +1317,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1387,9 +1387,9 @@ export interface InnerAudioContext {
 	            "unixVer": "4.41"
 	        },
 	        "alipay": {
-	            "hostVer": "1.23.4",
+	            "hostVer": "√",
 	            "uniVer": "√",
-	            "unixVer": "x"
+	            "unixVer": "5.31"
 	        },
 	        "baidu": {
 	            "hostVer": "√",
@@ -1459,9 +1459,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1529,9 +1529,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1599,9 +1599,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1669,9 +1669,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1767,9 +1767,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1866,9 +1866,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -1937,9 +1937,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2007,9 +2007,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2077,9 +2077,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2147,9 +2147,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2217,9 +2217,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2287,9 +2287,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2357,9 +2357,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2427,9 +2427,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2497,9 +2497,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2567,9 +2567,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2637,9 +2637,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2707,9 +2707,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2777,9 +2777,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2847,9 +2847,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -2945,9 +2945,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",
@@ -3015,9 +3015,9 @@ export interface InnerAudioContext {
                 "unixVer": "4.41"
             },
             "alipay": {
-                "hostVer": "1.23.4",
+                "hostVer": "√",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "5.31"
             },
             "baidu": {
                 "hostVer": "√",

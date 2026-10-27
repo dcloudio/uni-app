@@ -1,0 +1,135 @@
+import { GyroscopeErrorCode, GyroscopeInterval, OnGyroscopeChangeCallback, OnGyroscopeChangeCallbackResult, StartGyroscopeFail, StartGyroscopeOptions, StartGyroscopeSuccess, StopGyroscopeFail, StopGyroscopeOptions, StopGyroscopeSuccess } from '../interface.uts'
+import { normalizeGyroscopeInterval } from '../common.uts'
+import { createStartGyroscopeFail, createStopGyroscopeFail } from '../unierror.uts'
+
+const gyroscopeCallbacks : Map<number, OnGyroscopeChangeCallback> = new Map<number, OnGyroscopeChangeCallback>()
+let gyroscopeStarted : boolean = false
+let gyroscopeNativeListenerBound : boolean = false
+let gyroscopeCallbackId = 1
+
+function gyroscopeCreateStartSuccess(errMsg : string) : StartGyroscopeSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function gyroscopeCreateStopSuccess(errMsg : string) : StopGyroscopeSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function gyroscopeCallStartSuccess(options : StartGyroscopeOptions | null) : void {
+	const result = gyroscopeCreateStartSuccess('startGyroscope:ok')
+	options?.success?.(result)
+	options?.complete?.(result)
+}
+
+function gyroscopeCallStartFail(options : StartGyroscopeOptions | null, fail : StartGyroscopeFail) : void {
+	options?.fail?.(fail)
+	options?.complete?.(fail)
+}
+
+function gyroscopeCallStopSuccess(options : StopGyroscopeOptions | null) : void {
+	const result = gyroscopeCreateStopSuccess('stopGyroscope:ok')
+	options?.success?.(result)
+	options?.complete?.(result)
+}
+
+function gyroscopeCallStopFail(options : StopGyroscopeOptions | null, fail : StopGyroscopeFail) : void {
+	options?.fail?.(fail)
+	options?.complete?.(fail)
+}
+
+function dispatchGyroscopeChange(x : number, y : number, z : number) : void {
+	const result : OnGyroscopeChangeCallbackResult = { x: x, y: y, z: z }
+	for (const cb of gyroscopeCallbacks.values) {
+		cb(result);
+	}
+}
+
+function gyroscopeEnsureNativeListener() : void {
+	if (gyroscopeNativeListenerBound) {
+		return
+	}
+	UniGyroscopeNative.setListener((x : number, y : number, z : number) : void => {
+		dispatchGyroscopeChange(x, y, z)
+	})
+	gyroscopeNativeListenerBound = true
+}
+
+function gyroscopeMapStartNativeError(code : number) : StartGyroscopeFail {
+	let errCode : GyroscopeErrorCode = 604
+	if (code == 801 || code == 802 || code == 803 || code == 804) {
+		errCode = code as GyroscopeErrorCode
+	} else {
+		errCode = 602
+	}
+	return createStartGyroscopeFail(errCode, 'startGyroscope:fail', {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+function gyroscopeMapStopNativeError(code : number) : StopGyroscopeFail {
+	let errCode : GyroscopeErrorCode = 604
+	if (code == 801 || code == 802 || code == 803 || code == 804) {
+		errCode = code as GyroscopeErrorCode
+	} else {
+		errCode = 603
+	}
+	return createStopGyroscopeFail(errCode, 'stopGyroscope:fail', {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+export function onGyroscopeChange(callback : OnGyroscopeChangeCallback) : number {
+	gyroscopeEnsureNativeListener()
+	if (!gyroscopeStarted) {
+		startGyroscope();
+	}
+	const nowId = gyroscopeCallbackId++;
+	gyroscopeCallbacks.set(nowId, callback);
+	return nowId;
+}
+
+export function offGyroscopeChange(id: number | null = null) : void {
+	if (id == null) {
+		gyroscopeCallbacks.clear();
+	}else {
+		gyroscopeCallbacks.delete(id);
+	}
+	if (gyroscopeCallbacks.count == 0) {
+		UniGyroscopeNative.removeListener()
+		gyroscopeNativeListenerBound = false
+	}
+}
+
+export function startGyroscope(options : StartGyroscopeOptions | null = null) : void {
+	gyroscopeEnsureNativeListener()
+	if (gyroscopeStarted) {
+		gyroscopeCallStartSuccess(options)
+		return
+	}
+	const interval : GyroscopeInterval = normalizeGyroscopeInterval(options?.interval ?? null)
+	const code = UniGyroscopeNative.start(interval)
+	if (code != 0) {
+		gyroscopeCallStartFail(options, gyroscopeMapStartNativeError(code))
+		return
+	}
+	gyroscopeStarted = true
+	gyroscopeCallStartSuccess(options)
+}
+
+export function stopGyroscope(options : StopGyroscopeOptions | null = null) : void {
+	if (!gyroscopeStarted) {
+		gyroscopeCallStopSuccess(options)
+		return
+	}
+	const code = UniGyroscopeNative.stop()
+	if (code != 0) {
+		gyroscopeCallStopFail(options, gyroscopeMapStopNativeError(code))
+		return
+	}
+	gyroscopeStarted = false
+	gyroscopeCallStopSuccess(options)
+}

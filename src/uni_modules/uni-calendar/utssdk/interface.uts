@@ -1,0 +1,969 @@
+export type CalendarRepeatInterval =
+	/**
+	 * 每天重复
+	 */
+	'day' |
+	/**
+	 * 每周重复
+	 */
+	'week' |
+	/**
+	 * 每月重复。该模式日期不能大于 28 日
+	 */
+	'month' |
+	/**
+	 * 每年重复
+	 */
+	'year'
+
+/**
+ * 错误码
+ */
+export type CalendarErrorCode =
+	/**
+	 * title is required
+	 */
+	601 |
+	/**
+	 * startTime is invalid
+	 */
+	602 |
+	/**
+	 * endTime is invalid
+	 */
+	603 |
+	/**
+	 * alarmOffset requires alarm
+	 */
+	604 |
+	/**
+	 * repeat rule is invalid
+	 */
+	606 |
+	/**
+	 * calendar service is unavailable
+	 */
+	607 |
+	/**
+	 * add calendar event failed
+	 */
+	608 |
+	/**
+	 * calendar creation canceled
+	 */
+	609
+
+export interface ICalendarError extends IUniError {
+	errCode : CalendarErrorCode
+}
+
+export interface IAddPhoneCalendarFail extends ICalendarError {
+}
+
+export interface IAddPhoneRepeatCalendarFail extends ICalendarError {
+}
+
+export type AddPhoneCalendarSuccess = {
+	errMsg ?: string | null
+}
+
+export type AddPhoneCalendarFail = IAddPhoneCalendarFail
+export type AddPhoneCalendarSuccessCallback = (res : AddPhoneCalendarSuccess) => void
+export type AddPhoneCalendarFailCallback = (res : AddPhoneCalendarFail) => void
+export type AddPhoneCalendarComplete = AddPhoneCalendarSuccess | AddPhoneCalendarFail
+export type AddPhoneCalendarCompleteCallback = (res : AddPhoneCalendarComplete) => void
+
+export type AddPhoneRepeatCalendarSuccess = {
+	errMsg ?: string | null
+}
+
+export type AddPhoneRepeatCalendarFail = IAddPhoneRepeatCalendarFail
+export type AddPhoneRepeatCalendarSuccessCallback = (res : AddPhoneRepeatCalendarSuccess) => void
+export type AddPhoneRepeatCalendarFailCallback = (res : AddPhoneRepeatCalendarFail) => void
+export type AddPhoneRepeatCalendarComplete = AddPhoneRepeatCalendarSuccess | AddPhoneRepeatCalendarFail
+export type AddPhoneRepeatCalendarCompleteCallback = (res : AddPhoneRepeatCalendarComplete) => void
+
+
+/**
+ * 向系统日历添加事件的参数
+ */
+export type AddPhoneCalendarOptions = {
+	/**
+	 * 日历事件标题
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.08"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.08",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.08",
+			 "unixVaporVer": "5.08"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	title : string
+	/**
+	 * 开始时间的 unix 时间戳
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	startTime : number
+	/**
+	 * 是否全天事件，默认 false
+	 * @defaultValue false
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	allDay ?: boolean | null
+	/**
+	 * 事件说明
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	notes ?: string | null
+	/**
+	 * 事件位置
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	location ?: string | null
+	/**
+	 * 结束时间的 unix 时间戳，默认与开始时间相同
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	endTime ?: number | null
+	/**
+	 * 结束时间的 unix 时间戳，默认与开始时间相同
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	alarm ?: boolean | null
+	/**
+	 * 提醒提前量，单位秒，默认 0 表示开始时提醒
+	 * @defaultValue 0
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	alarmOffset ?: number | null
+	/**
+	 * 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	path ?: string | null
+	/**
+	 * 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	signature ?: string | null
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success ?: AddPhoneCalendarSuccessCallback | null
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail ?: AddPhoneCalendarFailCallback | null
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete ?: AddPhoneCalendarCompleteCallback | null
+}
+
+/**
+ * 向系统日历添加重复事件的参数
+ */
+export type AddPhoneRepeatCalendarOptions = {
+	/**
+	 * 日历事件标题
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	title : string
+	/**
+	 * 开始时间的 unix 时间戳 (1970年1月1日开始所经过的秒数)
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	startTime : number
+	/**
+	 * 是否全天事件，默认 false
+	 * @defaultValue false
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	allDay ?: boolean | null
+	/**
+	 * 事件说明
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	notes ?: string | null
+	/**
+	 * 事件位置
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	location ?: string | null
+	/**
+	 * 结束时间的 unix 时间戳，默认与开始时间相同
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	endTime ?: number | null
+	/**
+	 * 是否提醒，默认 true
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	alarm ?: boolean | null
+	/**
+	 * 提醒提前量，单位秒，默认 0 表示开始时提醒
+	 * @defaultValue 0
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	alarmOffset ?: number | null
+	/**
+	 * 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	path ?: string | null
+	/**
+	 * 仅微信小程序支持，App 平台保留该字段但不会使用，跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 hmac_sha256(session_key, path)。
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	signature ?: string | null
+	/**
+	 * 重复周期，默认 month 每月重复
+	 * @defaultValue month
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	repeatInterval : CalendarRepeatInterval
+	/**
+	 * 重复周期结束时间的 unix 时间戳，不填表示一直重复
+	 * @uniPlatform {
+		"app": {
+		 "android": {
+			 "uniVer": "x",
+			 "unixVer": "5.09"
+		 },
+		 "ios": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+		 },
+		 "harmony": {
+			 "uniVer": "x",
+			 "unixVer": "5.09",
+			 "unixVaporVer": "5.09"
+			}
+		},
+		"mp": {
+		 "weixin": {
+				 "uniVer": "√",
+				 "unixVer": "√"
+		 }
+		},
+		"web": {
+			"uniVer": "x",
+			"unixVer": "x"
+		}
+	 * }
+	 */
+	repeatEndTime ?: number | null
+	/**
+	 * 接口调用成功的回调函数
+	 */
+	success ?: AddPhoneRepeatCalendarSuccessCallback | null
+	/**
+	 * 接口调用失败的回调函数
+	 */
+	fail ?: AddPhoneRepeatCalendarFailCallback | null
+	/**
+	 * 接口调用结束的回调函数（调用成功、失败都会执行）
+	 */
+	complete ?: AddPhoneRepeatCalendarCompleteCallback | null
+}
+
+export type AddPhoneCalendar = (options : AddPhoneCalendarOptions) => void;
+export type AddPhoneRepeatCalendar = (options : AddPhoneRepeatCalendarOptions) => void;
+
+
+export interface Uni {
+  /**
+   * 向系统日历添加事件
+   * @param options 向系统日历添加事件的参数
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/calendar.html#addphonecalendar
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/calendar.html#addphonecalendar
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/calendar.html#addphonecalendar
+   * @tutorial_mp_weixin https://developers.weixin.qq.com/miniprogram/dev/api/device/calendar/wx.addPhoneCalendar.html
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "x",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "x",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "x",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "x"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.15.0",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+	addPhoneCalendar(options : AddPhoneCalendarOptions) : void;
+  /**
+   * 向系统日历添加重复事件
+   * @param options 向系统日历添加重复事件的参数
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/calendar.html#addphonerepeatcalendar
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/calendar.html#addphonerepeatcalendar
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/calendar.html#addphonerepeatcalendar
+   * @tutorial_mp_weixin https://developers.weixin.qq.com/miniprogram/dev/api/device/calendar/wx.addPhoneRepeatCalendar.html
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "x",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "x",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "x",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "x"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.15.0",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+	addPhoneRepeatCalendar(options : AddPhoneRepeatCalendarOptions) : void;
+}

@@ -1,0 +1,178 @@
+/**
+ * 内存不足告警数据
+ */
+export type MemoryWarningCallbackResult = {
+  /**
+   * 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。
+   */
+  level?: number | null
+}
+
+export type OnMemoryWarningCallback = (result: MemoryWarningCallbackResult) => void
+
+export type OnMemoryWarning = (callback: OnMemoryWarningCallback) => void
+
+export type OffMemoryWarning = (callback: OnMemoryWarningCallback | null) => void
+
+export type MemoryWarningErrorCode = 1100601 | 1100602
+
+export interface MemoryWarningFail extends IUniError {
+  errCode: MemoryWarningErrorCode
+}
+
+export interface Uni {
+  /**
+   * 监听内存不足告警事件。当系统内存不足时，会触发该事件，开发者可以在回调函数中获取当前内存使用情况，并进行相应的处理。
+   * @param callback 内存不足告警事件的监听函数
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/memory.html#onmemorywarning
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/memory.html#onmemorywarning
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/memory.html#onmemorywarning
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08",
+   * 			"unixUtsPlugin": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "x"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.0.2",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  onMemoryWarning(callback: OnMemoryWarningCallback): void
+  /**
+   * 取消监听内存不足告警事件。
+   * @param callback onMemoryWarning 传入的监听函数。不传此参数则移除所有监听函数。
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/memory.html#offmemorywarning
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/memory.html#offmemorywarning
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/memory.html#offmemorywarning
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08",
+   * 			"unixUtsPlugin": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "x"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.9.0",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  offMemoryWarning(callback ?: OnMemoryWarningCallback | null): void
+}

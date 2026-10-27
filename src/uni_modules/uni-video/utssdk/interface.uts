@@ -38,7 +38,7 @@ export type RequestFullScreenOptions = {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -120,7 +120,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -188,7 +188,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -257,7 +257,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -325,7 +325,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -394,7 +394,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -436,8 +436,19 @@ export interface VideoContext {
      */
     sendDanmu(danmu: Danmu): void;
     /**
-     * @description 设置倍速播放
-     * @param {number} rate, 支持倍率 0.5/0.8/1.0/1.25/1.5
+     * @description 设置倍速播放，支持倍率 0.5/0.8/1.0/1.25/1.5。(5.25 起支持有效区间任意值)
+     *
+     * - HarmonyOS 平台各 API 版本对于倍速支持情况 (异常值时按 1.0 处理)
+     *   - API 7 ~ 21： 0.75、1.0、1.25、1.75、2.0
+     *   - API 22 ~ 25： 0.125、0.25、0.5、0.75、1.0、1.25、1.5、1.75、2.0、3.0
+     *   - API 26.0.0+： [0.125, 8] 任意值
+     *
+     * - iOS 平台对于倍速支持情况 (异常值时按 1.0 处理, 低于0.125取下限、高于8取上限)
+     *   - [0.125, 8] 任意值
+     *
+     * - Android 平台
+     *   - [0.1, 8] 任意值（异常值时按 1.0 处理）
+     *
      * @uniPlatform {
      *   "app": {
      *     "android": {
@@ -463,7 +474,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -532,7 +543,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -601,7 +612,7 @@ export interface VideoContext {
     *    "alipay": {
     *        "hostVer": "√",
     *        "uniVer": "√",
-    *        "unixVer": "x"
+    *        "unixVer": "5.31"
     *    },
     *    "baidu": {
     *        "hostVer": "√",
@@ -674,9 +685,9 @@ export interface Uni {
      *       "unixVer": "4.41"
      *     },
      *     "alipay": {
-     *       "hostVer": "1.10.0",
+     *       "hostVer": "√",
      *       "uniVer": "√",
-     *       "unixVer": "x"
+     *       "unixVer": "5.31"
      *     },
      *     "baidu": {
      *       "hostVer": "√",
@@ -723,8 +734,7 @@ export interface Uni {
 
 // #ifdef APP-HARMONY
 /**
- * 通用事件
- * 临时方案，规避组件Event接口无法直接继承UniEvent的问题
+ * video 通用事件，组件Event接口无法直接继承UniEvent
  */
 export interface UniVideoEvent {
     /**

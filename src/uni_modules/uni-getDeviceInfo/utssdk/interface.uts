@@ -48,7 +48,7 @@ export type GetDeviceInfoResult = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -116,8 +116,8 @@ export type GetDeviceInfoResult = {
      *    },
      *    "alipay": {
      *        "hostVer": "√",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -186,7 +186,7 @@ export type GetDeviceInfoResult = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -255,7 +255,7 @@ export type GetDeviceInfoResult = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -323,8 +323,8 @@ export type GetDeviceInfoResult = {
      *    },
      *    "alipay": {
      *        "hostVer": "√",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -392,8 +392,8 @@ export type GetDeviceInfoResult = {
      *    },
      *    "alipay": {
      *        "hostVer": "√",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -600,7 +600,7 @@ export type GetDeviceInfoResult = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -669,7 +669,7 @@ export type GetDeviceInfoResult = {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -942,8 +942,8 @@ export type GetDeviceInfoResult = {
      *    },
      *    "alipay": {
      *        "hostVer": "√",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -1011,8 +1011,8 @@ export type GetDeviceInfoResult = {
      *    },
      *    "alipay": {
      *        "hostVer": "√",
-     *        "uniVer": "x",
-     *        "unixVer": "x"
+     *        "uniVer": "√",
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",
@@ -1581,7 +1581,7 @@ export interface Uni {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",

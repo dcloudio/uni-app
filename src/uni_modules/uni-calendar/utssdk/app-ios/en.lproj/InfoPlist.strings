@@ -1,0 +1,3 @@
+"NSCalendarsUsageDescription" = "This app needs calendar access to add events.";
+"NSCalendarsFullAccessUsageDescription" = "This app needs calendar access to add events.";
+"NSCalendarsWriteOnlyAccessUsageDescription" = "This app needs calendar access to add events.";

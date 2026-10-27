@@ -167,7 +167,35 @@
      */
     disableUserSelectMenu ?: boolean,
     iosAllowsInlineMediaPlayback ?: boolean,
-    darkMode ?: boolean
+    darkMode ?: boolean,
+    /**
+     * 关联的滚动容器
+     * 
+     * @uniPlatform {
+       "app": {
+          "android": {
+            "uniVer": "x",
+            "unixVer": "5.25",
+            "unixVaporVer": "5.25"
+          },
+          "ios": {
+            "uniVer": "x",
+            "unixVer": "5.25",
+            "unixVaporVer": "5.25"
+          },
+         "harmony": {
+           "uniVer": "x",
+           "unixVer": "5.25",
+           "unixVaporVer": "5.25"
+         },
+         "web": {
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       }
+     }
+     */
+    associativeContainer ?: '' | 'nested-scroll-view',
   }>(), {
     webviewStyles: {
       progress: {
@@ -180,7 +208,8 @@
     androidNestedScroll: 'all',
     disableUserSelectMenu: false,
     iosAllowsInlineMediaPlayback: false,
-    darkMode: true
+    darkMode: true,
+    associativeContainer: ''
   });
 
   type Native = {
@@ -254,6 +283,13 @@
     const disableUserSelectMenu = props.disableUserSelectMenu
     native.webview?.setDisableUserSelectMenu(disableUserSelectMenu)
   })
+
+  // #ifdef APP-HARMONY || APP-ANDROID || APP-IOS
+  watchEffect(() => {
+    const associativeContainer = props.associativeContainer
+    native.webview?.setAssociativeContainer(associativeContainer)
+  })
+  // #endif
 
 	// #ifdef APP-IOS
   watchEffect(() => {
@@ -420,14 +456,24 @@
   const init = (e : UniNativeViewInitEvent) => {
     //获取UniNativeViewElement 传递给NativeButton对象
     // #ifdef APP-HARMONY && VUE3-VAPOR
-    native.webview = new NativeWebView(e.detail.element, {
-      onMessage,
-      onLoad,
-      onLoading,
-      onDownload,
-      onContentheightchange,
-      onError
-    });
+    native.webview = new NativeWebView(e.detail.element,
+      {
+        src: props.src,
+        horizontalScrollBarAccess: props.horizontalScrollBarAccess,
+        verticalScrollBarAccess: props.verticalScrollBarAccess,
+        bounces: props.bounces,
+        disableUserSelectMenu: props.disableUserSelectMenu,
+        associativeContainer: props.associativeContainer
+      },
+      {
+        onMessage,
+        onLoad,
+        onLoading,
+        onDownload,
+        onContentheightchange,
+        onError
+      }
+    );
     // #endif
 
     // #ifdef APP-IOS
@@ -439,7 +485,14 @@
     // #endif
 
     // #ifdef APP-HARMONY && !VUE3-VAPOR
-    native.webview = new NativeWebView(e.detail.element);
+    native.webview = new NativeWebView(e.detail.element, {
+      src: props.src,
+      horizontalScrollBarAccess: props.horizontalScrollBarAccess,
+      verticalScrollBarAccess: props.verticalScrollBarAccess,
+      bounces: props.bounces,
+      disableUserSelectMenu: props.disableUserSelectMenu,
+      associativeContainer: props.associativeContainer
+    });
     // #endif
   }
 

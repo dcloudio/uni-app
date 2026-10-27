@@ -11,5 +11,28 @@ export function camelize(str: string): string {
 
 // enum?
 export const NATIVE_CHANNEL_ACTIONS = {
-    DESTROY: 0
+    DESTROY: 0,
+    UPDATE_LIST: 1
+}
+
+export function useNativeChannelFn() {
+    let nativeChannelFn: Function | null = null;
+    let nativeChannelFnInitTask: Function[] = [];
+    function ensureNativeChannelFn(fn: Function) {
+        if (!nativeChannelFn) {
+            nativeChannelFnInitTask.push(fn);
+        } else {
+            fn(nativeChannelFn);
+        }
+    }
+    function setNativeChannelFn(fn: Function) {
+        nativeChannelFn = fn;
+        nativeChannelFnInitTask.forEach((fn) => {
+            fn(nativeChannelFn);
+        });
+    }
+    return {
+        ensureNativeChannelFn,
+        setNativeChannelFn
+    }
 }

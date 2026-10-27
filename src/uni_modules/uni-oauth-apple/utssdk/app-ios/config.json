@@ -1,0 +1,8 @@
+{
+  "frameworks": [
+    "AuthenticationServices.framework",
+    "Security.framework",
+    "LocalAuthentication.framework"
+  ],
+  "deploymentTarget": "13.0"
+}

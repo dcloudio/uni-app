@@ -54,7 +54,7 @@ export interface Uni {
 		*    "alipay": {
 		*        "hostVer": "√",
 		*        "uniVer": "√",
-		*        "unixVer": "x"
+		*        "unixVer": "5.31"
 		*    },
 		*    "baidu": {
 		*        "hostVer": "√",
@@ -453,7 +453,7 @@ export type RequestPaymentSuccess = {
 		*    "alipay": {
 		*        "hostVer": "√",
 		*        "uniVer": "√",
-		*        "unixVer": "x"
+		*        "unixVer": "5.31"
 		*    },
 		*    "baidu": {
 		*        "hostVer": "√",
@@ -622,7 +622,7 @@ export type RequestPaymentOptions = {
 		*    "alipay": {
 		*        "hostVer": "√",
 		*        "uniVer": "√",
-		*        "unixVer": "x"
+		*        "unixVer": "5.31"
 		*    },
 		*    "baidu": {
 		*        "hostVer": "√",
@@ -689,7 +689,7 @@ export type RequestPaymentOptions = {
 		*    "alipay": {
 		*        "hostVer": "√",
 		*        "uniVer": "√",
-		*        "unixVer": "x"
+		*        "unixVer": "5.31"
 		*    },
 		*    "baidu": {
 		*        "hostVer": "√",
@@ -756,7 +756,7 @@ export type RequestPaymentOptions = {
 		*    "alipay": {
 		*        "hostVer": "√",
 		*        "uniVer": "√",
-		*        "unixVer": "x"
+		*        "unixVer": "5.31"
 		*    },
 		*    "baidu": {
 		*        "hostVer": "√",

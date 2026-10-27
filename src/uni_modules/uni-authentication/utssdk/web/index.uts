@@ -1,0 +1,137 @@
+import {
+	CheckIsSoterEnrolledInDeviceFail,
+	CheckIsSoterEnrolledInDevice,
+	CheckIsSoterEnrolledInDeviceOptions,
+	CheckIsSoterEnrolledInDeviceSuccess,
+	CheckIsSupportSoterAuthenticationFail,
+	CheckIsSupportSoterAuthentication,
+	CheckIsSupportSoterAuthenticationOptions,
+	CheckIsSupportSoterAuthenticationSuccess,
+	SoterAuthMode,
+	StartSoterAuthentication,
+	StartSoterAuthenticationFail,
+	StartSoterAuthenticationOptions
+} from '../interface.uts'
+
+import { AUTH_ERR_NOT_AVAILABLE, createCheckIsSoterEnrolledInDeviceFail, createCheckIsSupportSoterAuthenticationFail, createStartSoterAuthenticationFail } from '../unierror.uts'
+
+type PublicKeyCredentialConstructor = {
+	isUserVerifyingPlatformAuthenticatorAvailable : () => Promise<boolean>
+}
+
+type GlobalWithPublicKeyCredential = {
+	PublicKeyCredential ?: PublicKeyCredentialConstructor | null
+}
+
+function createStartFailResult(code : number, errMsg : string) : StartSoterAuthenticationFail {
+	return createStartSoterAuthenticationFail(code, errMsg)
+}
+
+function createSupportFailResult(code : number, errMsg : string) : CheckIsSupportSoterAuthenticationFail {
+	return createCheckIsSupportSoterAuthenticationFail(code, errMsg)
+}
+
+function createEnrollFailResult(code : number, errMsg : string) : CheckIsSoterEnrolledInDeviceFail {
+	return createCheckIsSoterEnrolledInDeviceFail(code, errMsg)
+}
+
+function resolveSupport(options : CheckIsSupportSoterAuthenticationOptions, supportMode : SoterAuthMode[]) : void {
+	const result : CheckIsSupportSoterAuthenticationSuccess = {
+		supportMode: supportMode,
+		errMsg: 'checkIsSupportSoterAuthentication:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function resolveEnrolled(options : CheckIsSoterEnrolledInDeviceOptions, isEnrolled : boolean) : void {
+	const result : CheckIsSoterEnrolledInDeviceSuccess = {
+		isEnrolled: isEnrolled,
+		errMsg: 'checkIsSoterEnrolledInDevice:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function reject(options : StartSoterAuthenticationOptions, code : number, errMsg : string) : void {
+	const error = createStartFailResult(code, errMsg)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function getPublicKeyCredentialConstructor() : PublicKeyCredentialConstructor | null {
+	const currentGlobal = globalThis as GlobalWithPublicKeyCredential
+	if (currentGlobal.PublicKeyCredential != null) {
+		return currentGlobal.PublicKeyCredential!
+	}
+	return null
+}
+
+function checkPlatformAuthenticator(callback : (available : boolean) => void) : void {
+	const credentialConstructor = getPublicKeyCredentialConstructor()
+	if (credentialConstructor == null) {
+		callback(false)
+		return
+	}
+	credentialConstructor.isUserVerifyingPlatformAuthenticatorAvailable().then((available : boolean) => {
+		callback(available)
+		return null
+	}, (_error : Error | null) => {
+		callback(false)
+		return null
+	})
+}
+
+export const checkIsSupportSoterAuthentication : CheckIsSupportSoterAuthentication = function (options : CheckIsSupportSoterAuthenticationOptions) {
+	checkPlatformAuthenticator((available : boolean) => {
+		if (available) {
+			resolveSupport(options, ['fingerPrint', 'facial'])
+			return
+		}
+		resolveSupport(options, [])
+	})
+}
+
+export const checkIsSoterEnrolledInDevice : CheckIsSoterEnrolledInDevice = function (options : CheckIsSoterEnrolledInDeviceOptions) {
+	checkPlatformAuthenticator((available : boolean) => {
+		resolveEnrolled(options, available)
+	})
+}
+
+export const startSoterAuthentication : StartSoterAuthentication = function (options : StartSoterAuthenticationOptions) {
+	checkPlatformAuthenticator((available : boolean) => {
+		if (!available) {
+			reject(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail web platform authenticator is unavailable')
+			return
+		}
+		reject(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail web cannot trigger real biometric verification without a registered WebAuthn credential')
+	})
+}
+
+export {
+	CheckIsSoterEnrolledInDevice,
+	CheckIsSoterEnrolledInDeviceComplete,
+	CheckIsSoterEnrolledInDeviceCompleteCallback,
+	CheckIsSoterEnrolledInDeviceFail,
+	CheckIsSoterEnrolledInDeviceFailCallback,
+	CheckIsSoterEnrolledInDeviceOptions,
+	CheckIsSoterEnrolledInDeviceSuccess,
+	CheckIsSoterEnrolledInDeviceSuccessCallback,
+	CheckIsSupportSoterAuthentication,
+	CheckIsSupportSoterAuthenticationComplete,
+	CheckIsSupportSoterAuthenticationCompleteCallback,
+	CheckIsSupportSoterAuthenticationFail,
+	CheckIsSupportSoterAuthenticationFailCallback,
+	CheckIsSupportSoterAuthenticationOptions,
+	CheckIsSupportSoterAuthenticationSuccess,
+	CheckIsSupportSoterAuthenticationSuccessCallback,
+	SoterAuthMode,
+	StartSoterAuthentication,
+	StartSoterAuthenticationComplete,
+	StartSoterAuthenticationCompleteCallback,
+	StartSoterAuthenticationFail,
+	StartSoterAuthenticationFailCallback,
+	StartSoterAuthenticationOptions,
+	StartSoterAuthenticationSuccess,
+	StartSoterAuthenticationSuccessCallback
+} from '../interface.uts'

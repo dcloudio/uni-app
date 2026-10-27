@@ -1,0 +1,7 @@
+{
+  "name": "uni-animation-view-web",
+  "private": true,
+  "dependencies": {
+    "lottie-web": "5.13.0"
+  }
+}

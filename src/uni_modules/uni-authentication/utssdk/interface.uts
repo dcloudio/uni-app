@@ -1,31 +1,32 @@
 
 export interface Uni {
     /**
-     * 开始 SOTER 生物认证
+     * 开始  生物认证
+	 * @param options 开始生物认证参数
      *
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/bio-auth.html#startsoterauthentication
      * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/authentication.html#startsoterauthentication
      * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/bio-auth.html#startsoterauthentication
      *
      * @uniPlatform {
-       * 	"app": {
-       * 		"android": {
-       * 			"osVer": "5.0",
-       * 			"uniVer": "√",
-       * 			"unixVer": "x"
-       * 		},
-       * 		"ios": {
-       * 			"osVer": "12.0",
-       * 			"uniVer": "√",
-       * 			"unixVer": "x"
-       * 		},
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "2.3.8",
+     * 			"unixVer": "5.08"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "2.3.8",
+     * 			"unixVer": "5.08"
+     * 		},
      *    "harmony": {
      *      "osVer": "3.0",
-     *      "uniVer": "4.31",
-     *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *       "uniVer": "4.31",
+     *       "unixVer": "4.61",
+     *       "unixVaporVer": "5.0"
      *    }
-       * 	},
+     * 	},
      *   "web": {
      *     "uniVer": "x",
      *     "unixVer": "x"
@@ -76,31 +77,32 @@ export interface Uni {
      */
     startSoterAuthentication(options: StartSoterAuthenticationOptions): void;
     /**
-     * 获取本机支持的 SOTER 生物认证方式
+     * 获取本机支持的  生物认证方式
+	 * @param options 获取本机支持的生物认证方式的参数
      *
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/bio-auth.html#checkissupportsoterauthentication
      * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/bio-auth.html#checkissupportsoterauthentication
      * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/authentication.html#checkissupportsoterauthentication
      *
      * @uniPlatform {
-       * 	"app": {
-       * 		"android": {
-       * 			"osVer": "5.0",
-       * 			"uniVer": "√",
-       * 			"unixVer": "x"
-       * 		},
-       * 		"ios": {
-       * 			"osVer": "12.0",
-       * 			"uniVer": "√",
-       * 			"unixVer": "x"
-       * 		},
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "2.3.8",
+     * 			"unixVer": "5.08"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "2.3.8",
+     * 			"unixVer": "5.08"
+     * 		},
      *    "harmony": {
      *      "osVer": "3.0",
-     *      "uniVer": "4.31",
-     *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *       "uniVer": "4.31",
+     *       "unixVer": "4.61",
+     *       "unixVaporVer": "5.0"
      *    }
-       * 	},
+     * 	},
      *   "web": {
      *     "uniVer": "x",
      *     "unixVer": "x"
@@ -147,7 +149,7 @@ export interface Uni {
      *      "unixVer": "x"
      *    }
      *  }
-       * }
+     * }
      */
     checkIsSupportSoterAuthentication(options: CheckIsSupportSoterAuthenticationOptions): void;
     /**
@@ -158,24 +160,24 @@ export interface Uni {
      * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/authentication.html#checkissoterenrolledindevice
      *
      * @uniPlatform {
-       * 	"app": {
-       * 		"android": {
-       * 			"osVer": "5.0",
-       * 			"uniVer": "√",
-       * 			"unixVer": "x"
-       * 		},
-       * 		"ios": {
-       * 			"osVer": "12.0",
-       * 			"uniVer": "√",
-       * 			"unixVer": "x"
-       * 		},
+     * 	"app": {
+     * 		"android": {
+     * 			"osVer": "5.0",
+     * 			"uniVer": "2.3.8",
+     * 			"unixVer": "5.08"
+     * 		},
+     * 		"ios": {
+     * 			"osVer": "12.0",
+     * 			"uniVer": "2.3.8",
+     * 			"unixVer": "5.08"
+     * 		},
      *    "harmony": {
      *      "osVer": "3.0",
-     *      "uniVer": "4.31",
-     *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *       "uniVer": "4.31",
+     *       "unixVer": "4.61",
+     *       "unixVaporVer": "5.0"
      *    }
-       * 	},
+     * 	},
      *   "web": {
      *     "uniVer": "x",
      *     "unixVer": "x"
@@ -222,7 +224,7 @@ export interface Uni {
      *      "unixVer": "x"
      *    }
      *  }
-       * }
+     * }
      */
     checkIsSoterEnrolledInDevice(options: CheckIsSoterEnrolledInDeviceOptions): void;
 }
@@ -262,7 +264,7 @@ export type StartSoterAuthenticationSuccess = {
      */
     resultJSON?: string | null,
     /**
-     * 用SOTER安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20)
+     * 用安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20)
      */
     resultJSONSignature?: string | null,
     /**
@@ -271,9 +273,11 @@ export type StartSoterAuthenticationSuccess = {
     errMsg: string
 };
 export type StartSoterAuthenticationSuccessCallback = (result: StartSoterAuthenticationSuccess) => void;
-export type StartSoterAuthenticationFail = UniError;
+export interface IStartSoterAuthenticationFail extends IUniError {
+}
+export type StartSoterAuthenticationFail = IStartSoterAuthenticationFail;
 export type StartSoterAuthenticationFailCallback = (result: StartSoterAuthenticationFail) => void;
-export type StartSoterAuthenticationComplete = any;
+export type StartSoterAuthenticationComplete = StartSoterAuthenticationSuccess | StartSoterAuthenticationFail;
 export type StartSoterAuthenticationCompleteCallback = (result: StartSoterAuthenticationComplete) => void;
 export type StartSoterAuthenticationOptions = {
     /**
@@ -304,7 +308,7 @@ export type StartSoterAuthenticationOptions = {
 export type CheckIsSupportSoterAuthentication = (options: CheckIsSupportSoterAuthenticationOptions) => void;
 export type CheckIsSupportSoterAuthenticationSuccess = {
     /**
-     * 接口调用成功的回调函数
+     * 支持的生物认证方式
      */
     supportMode: SoterAuthMode[],
     /**
@@ -313,10 +317,16 @@ export type CheckIsSupportSoterAuthenticationSuccess = {
     errMsg: string
 };
 export type CheckIsSupportSoterAuthenticationSuccessCallback = (result: CheckIsSupportSoterAuthenticationSuccess) => void;
-export type CheckIsSupportSoterAuthenticationFail = UniError;
+export interface ICheckIsSupportSoterAuthenticationFail extends IUniError {
+}
+export type CheckIsSupportSoterAuthenticationFail = ICheckIsSupportSoterAuthenticationFail;
 export type CheckIsSupportSoterAuthenticationFailCallback = (result: CheckIsSupportSoterAuthenticationFail) => void;
-export type CheckIsSupportSoterAuthenticationComplete = any;
+export type CheckIsSupportSoterAuthenticationComplete = CheckIsSupportSoterAuthenticationSuccess | CheckIsSupportSoterAuthenticationFail;
 export type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIsSupportSoterAuthenticationComplete) => void;
+
+/**
+* 开始生物认证的参数
+*/
 export type CheckIsSupportSoterAuthenticationOptions = {
     /**
      * 接口调用成功的回调函数
@@ -344,10 +354,16 @@ export type CheckIsSoterEnrolledInDeviceSuccess = {
     errMsg: string
 };
 export type CheckIsSoterEnrolledInDeviceSuccessCallback = (result: CheckIsSoterEnrolledInDeviceSuccess) => void;
-export type CheckIsSoterEnrolledInDeviceFail = UniError;
+export interface ICheckIsSoterEnrolledInDeviceFail extends IUniError {
+}
+export type CheckIsSoterEnrolledInDeviceFail = ICheckIsSoterEnrolledInDeviceFail;
 export type CheckIsSoterEnrolledInDeviceFailCallback = (result: CheckIsSoterEnrolledInDeviceFail) => void;
-export type CheckIsSoterEnrolledInDeviceComplete = any;
+export type CheckIsSoterEnrolledInDeviceComplete = CheckIsSoterEnrolledInDeviceSuccess | CheckIsSoterEnrolledInDeviceFail;
 export type CheckIsSoterEnrolledInDeviceCompleteCallback = (result: CheckIsSoterEnrolledInDeviceComplete) => void;
+
+/**
+* 获取本机支持的生物认证方式的参数
+*/
 export type CheckIsSoterEnrolledInDeviceOptions = {
     /**
      * 生物认证方式
@@ -357,7 +373,7 @@ export type CheckIsSoterEnrolledInDeviceOptions = {
      */
     checkAuthMode: SoterAuthMode,
     /**
-     * 接口调用成功的回调函数
+     * 支持的生物认证方式
      */
     success?: CheckIsSoterEnrolledInDeviceSuccessCallback | null,
     /**

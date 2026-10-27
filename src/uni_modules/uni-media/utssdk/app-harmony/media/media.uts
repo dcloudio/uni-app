@@ -14,6 +14,44 @@ import {
 import {
     _compressImage
 } from './compressImage.uts'
+import { getUniMediaPath, ensureUniMediaPath } from './constant.uts'
+
+let copyFileId = 0
+export async function _copyMediaFile(uri: string): Promise<string> {
+    ensureUniMediaPath()
+    const source = await fs.open(uri, fs.OpenMode.READ_ONLY)
+    const name = source.name.split('/').pop() ?? `media-${Date.now()}`
+    const path = `${getUniMediaPath()}/${Date.now()}-${copyFileId++}-${name}`
+    try {
+        const target = await fs.open(path, fs.OpenMode.CREATE | fs.OpenMode.WRITE_ONLY)
+        try {
+            await fs.copyFile(source.fd, target.fd)
+        } finally {
+            await fs.close(target)
+        }
+        return path
+    } catch (error) {
+        try { await fs.unlink(path) } catch (ignored) { }
+        throw error as Error
+    } finally {
+        await fs.close(source)
+    }
+}
+
+export async function _copyMediaFiles(uris: string[]): Promise<string[]> {
+    const paths: string[] = []
+    try {
+        for (const uri of uris) {
+            paths.push(await _copyMediaFile(uri))
+        }
+        return paths
+    } catch (error) {
+        await Promise.all(paths.map(async (path) => {
+            try { await fs.unlink(path) } catch (ignored) { }
+        }))
+        throw error as Error
+    }
+}
 
 export interface MediaFile {
     fileType: 'video' | 'image'
@@ -185,7 +223,7 @@ export async function _chooseMedia(
     const photoPicker = new photoAccessHelper.PhotoViewPicker()
     const photoSelectResult = await photoPicker.select(photoSelectOptions)
 
-    const uris = photoSelectResult.photoUris
+    const uris = await _copyMediaFiles(photoSelectResult.photoUris)
 
     if (mimeType !== photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
         let realUris: string[] = uris
@@ -199,19 +237,22 @@ export async function _chooseMedia(
                     } as CompressImageOptions)
                 })
             )
-            realUris = compressResult.map(result => result.tempFilePath)
+            realUris = compressResult.map(result => result.tempFilePath) as string[]
         }
         return {
             tempFiles: realUris.map((uri) => {
                 const file = fs.openSync(uri, fs.OpenMode.READ_ONLY)
-                const stat = fs.statSync(file.fd)
-                fs.closeSync(file)
-                return {
-                    fileType: 'image',
-                    tempFilePath: uri,
-                    // 单位：B
-                    size: stat.size,
-                } as MediaFile
+                try {
+                    const stat = fs.statSync(file.fd)
+                    return {
+                        fileType: 'image',
+                        tempFilePath: uri,
+                        // 单位：B
+                        size: stat.size,
+                    } as MediaFile
+                } finally {
+                    fs.closeSync(file)
+                }
             }),
         }
     }

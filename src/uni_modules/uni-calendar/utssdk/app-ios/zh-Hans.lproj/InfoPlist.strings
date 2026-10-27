@@ -1,0 +1,3 @@
+"NSCalendarsUsageDescription" = "需要访问系统日历以新增日程。";
+"NSCalendarsFullAccessUsageDescription" = "需要访问系统日历以新增日程。";
+"NSCalendarsWriteOnlyAccessUsageDescription" = "需要访问系统日历以新增日程。";

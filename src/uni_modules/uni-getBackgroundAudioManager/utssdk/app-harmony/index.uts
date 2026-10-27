@@ -5,10 +5,11 @@ import { wantAgent } from '@kit.AbilityKit';
 import { uri } from '@kit.ArkTS';
 import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
 import { getRealPath } from '@dcloudio/uni-runtime'
+import { fileIo } from '@kit.CoreFileKit';
 
 import { BackgroundAudioManager, GetBackgroundAudioManager } from '../interface.uts';
 import { API_GET_BACKGROUND_AUDIO_MANAGER } from '../protocol.uts';
-import { getFdFromUriOrSandBoxPath, isFileUri, isSandboxPath, AudioPlayerCallback, AudioPlayerError } from './utils.uts';
+import { getFileFromUriOrSandBoxPath, isFileUri, isSandboxPath, AudioPlayerCallback, AudioPlayerError } from './utils.uts';
 import { BusinessError } from '@ohos.base';
 import { ICreateBackgroundAudioFail } from '../interface.uts';
 
@@ -38,41 +39,56 @@ class AVSession {
 
     async init() {
         if (this.session) return this.session
+        if (this.createSessionPromise) return await this.createSessionPromise
         this.metadata.assetId = `${id++}`
         this.createSessionPromise = avSession.createAVSession(UTSHarmony.getUIAbilityContext()!, `backgroundAudioPlayer_${id}`, 'audio')
-        this.session = await this.createSessionPromise
-        this.createSessionPromise = null
-        // this.sessionController = await this.session!.getController()
-        this.setAVMetadata();
-        this.setAVPlaybackState();
-        return this.session!
+        try {
+            this.session = await this.createSessionPromise
+            this.setAVMetadata()
+            this.setAVPlaybackState()
+            return this.session!
+        } finally {
+            this.createSessionPromise = null
+        }
     }
 
     async setAVMetadata() {
-        if (!this.session) {
-            await this.createSessionPromise
+        try {
+            if (!this.session) {
+                await this.createSessionPromise
+            }
+            await this.session?.setAVMetadata(this.metadata)
+        } catch (error) {
+            LOG(`set AV metadata failed: ${(error as Error).message}`)
         }
-        this.session?.setAVMetadata(this.metadata)
     }
 
     async setAVPlaybackState() {
-        if (!this.session) {
-            await this.createSessionPromise
+        try {
+            if (!this.session) {
+                await this.createSessionPromise
+            }
+            await this.session?.setAVPlaybackState(this.playbackState)
+        } catch (error) {
+            LOG(`set AV playback state failed: ${(error as Error).message}`)
         }
-        this.session?.setAVPlaybackState(this.playbackState);
     }
 
     async destroy() {
-        if (this.session) {
-            this.session.off('play');
-            this.session.off('pause');
-            this.session.off('stop');
-            this.session.off('playNext');
-            this.session.off('playPrevious');
-            this.session.off('seek');
-            return this.session.deactivate()
+        const session = this.session
+        if (!session) return
+        try {
+            session.off('play')
+            session.off('pause')
+            session.off('stop')
+            session.off('playNext')
+            session.off('playPrevious')
+            session.off('seek')
+        } finally {
+            try {
+                await session.deactivate()
+            }
         }
-        this.session = null
     }
 }
 
@@ -104,12 +120,20 @@ async function stopBackgroundTask() {
     });
 }
 
+let backgroundTaskPromise: Promise<void> = Promise.resolve()
+
+function queueBackgroundTask(task: () => Promise<void>): Promise<void> {
+    const next = backgroundTaskPromise.then(task, task)
+    backgroundTaskPromise = next.catch(() => { })
+    return next
+}
+
 async function START_BACKGROUND() {
-    await startBackgroundTask();
+    await queueBackgroundTask(startBackgroundTask);
 }
 
 async function STOP_BACKGROUND() {
-    await stopBackgroundTask();
+    await queueBackgroundTask(stopBackgroundTask);
 }
 
 const LOG = (msg: string): void => console.log(`[getBackgroundAudioManager]: ${msg}`)
@@ -156,7 +180,12 @@ class BGAManagerImpl implements BackgroundAudioManager {
     private _onError: Function = () => { };
     private _onBufferingUpdate: Function = () => { };
     private avSessionDestroyPromise: Promise<void> | null = null;
+    private avSessionInitPromise: Promise<avSession.AVSession | null | undefined> | null = null;
     private _cache: boolean = false;
+    private sourceFile: fileIo.File | null = null;
+    private sourceNeedsReload: boolean = false;
+    private suppressAutoPlay: boolean = false;
+    private pausedByInterrupt: boolean = false;
 
     constructor() {
         this.init()
@@ -200,16 +229,29 @@ class BGAManagerImpl implements BackgroundAudioManager {
         };
     }
     private async avSessionInit() {
+        if (this.avSessionInitPromise) return this.avSessionInitPromise
+        const initPromise = this.initAVSession()
+        this.avSessionInitPromise = initPromise
+        try {
+            await initPromise
+        } finally {
+            this.avSessionInitPromise = null
+        }
+        return initPromise
+    }
+
+    private async initAVSession() {
         const _avSession = BGAManagerImpl.avSession;
         if (!_avSession) return
+        if (this.avSessionDestroyPromise != null) {
+            await this.avSessionDestroyPromise
+            this.avSessionDestroyPromise = null
+        }
         if (_avSession.session == null) {
             await _avSession.init()
         }
-        if (this.avSessionDestroyPromise != null) {
-            await this.avSessionDestroyPromise
-        }
+        if (!this.isPlaying) return
         if (this.avSessionIsActive) return
-        this.avSessionDestroyPromise = null
         _avSession.session?.on('play', () => this.play());
         _avSession.session?.on('pause', () => this.pause());
         _avSession.session?.on('stop', () => this.stop());
@@ -247,15 +289,16 @@ class BGAManagerImpl implements BackgroundAudioManager {
         });
         _audioPlayer.on('finish', () => {
             this.isPlaying = false;
-            // 先设定 avSessionDestroyPromise 再触发 onEned 事件，用户会在回调里重新设置播放
+            this._onEnded();
+            // 先同步会话状态，再销毁会话；用户回调中重新播放会等待销毁完成
             if (BGAManagerImpl.avSession) {
-                this.avSessionDestroyPromise = BGAManagerImpl.avSession.destroy().then(() => {
-                    this.avSessionIsActive = false
-                })
+                this.destroyAVSession()
             }
-            this._onEnded()
-            STOP_BACKGROUND()
+            this.clearSource()
             audioPlayerCallback.ended()
+            if (!this.isPlaying) {
+                STOP_BACKGROUND()
+            }
         });
         _audioPlayer.on('timeUpdate', res => {
             this._onTimeUpdate(res)
@@ -264,7 +307,12 @@ class BGAManagerImpl implements BackgroundAudioManager {
         _audioPlayer.on('error', (err) => {
             this.isPlaying = false;
             this._onError()
+            this.clearSource()
+            this.destroyAVSession()
             audioPlayerCallback.error(new AudioPlayerError(err.message, err.code))
+            if (!this.isPlaying) {
+                STOP_BACKGROUND()
+            }
         });
         _audioPlayer.on('bufferingUpdate', (infoType, value) => {
             switch (infoType) {
@@ -291,13 +339,18 @@ class BGAManagerImpl implements BackgroundAudioManager {
             }
         });
         _audioPlayer.on('audioInterrupt', (InterruptEvent) => {
-            if (_audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+            if (InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                this.pausedByInterrupt = _audioPlayer.state === STATE_TYPE.PLAYING;
                 this.isPlaying = false;
-                _audioPlayer.pause();
+                if (this.pausedByInterrupt) {
+                    _audioPlayer.pause();
+                }
             }
-            if (_audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_RESUME) {
-                this.isPlaying = true;
-                _audioPlayer.play();
+            if (InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_RESUME && this.pausedByInterrupt) {
+                this.pausedByInterrupt = false;
+                this.play().catch((error: Error) => {
+                    audioPlayerCallback.error(new AudioPlayerError(error.message, 10004))
+                });
             }
         });
     }
@@ -310,11 +363,10 @@ class BGAManagerImpl implements BackgroundAudioManager {
     }
     get paused() {
         if (!BGAManagerImpl.audioPlayer) { return false }
-        return BGAManagerImpl.audioPlayer.state === STATE_TYPE.PAUSED
+        return BGAManagerImpl.audioPlayer.state !== STATE_TYPE.PLAYING
     }
     get src() {
-        if (!BGAManagerImpl.audioPlayer) { return '' }
-        return BGAManagerImpl.audioPlayer.src;
+        return this._src;
     }
     set src(value) {
         if (typeof (value) !== 'string') {
@@ -330,42 +382,73 @@ class BGAManagerImpl implements BackgroundAudioManager {
             value = `file://${value}`;
         }
         if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri(value) || isSandboxPath(value))) {
-            LOG(`set src: ${value} is invalid`);
+            audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is invalid`, 10004))
             return;
         }
         let path: string = '';
+        let sourceFile: fileIo.File | null = null;
         if (value.startsWith('http:') || value.startsWith('https:')) {
             path = value;
         } else if (isFileUri(value) || isSandboxPath(value)) {
             try {
-                const fd = getFdFromUriOrSandBoxPath(value);
-                path = `fd://${fd}`;
+                sourceFile = getFileFromUriOrSandBoxPath(value);
+                path = `fd://${sourceFile.fd}`;
             }
             catch (err) {
-                audioPlayerCallback.error(new AudioPlayerError((err as BusinessError).message, (err as BusinessError).code))
+                audioPlayerCallback.error(new AudioPlayerError((err as Error).message, 10004))
+                return;
             }
         }
-        if (BGAManagerImpl.audioPlayer.src) {
-            BGAManagerImpl.audioPlayer.reset();
+        try {
+            if (BGAManagerImpl.audioPlayer.src || this.sourceNeedsReload) {
+                BGAManagerImpl.audioPlayer.reset();
+            }
+            this.releaseSourceFile();
+            this.sourceFile = sourceFile;
+            this.pausedByInterrupt = false;
+            this._dataloaded = false;
+            this._buffered = 0;
+            this.isPlaying = false;
+            BGAManagerImpl.audioPlayer.src = path;
+            this._src = value;
+            this.sourceNeedsReload = false;
+        } catch (error) {
+            if (this.sourceFile === sourceFile) {
+                this.releaseSourceFile()
+            } else if (sourceFile) {
+                try { fileIo.closeSync(sourceFile) } catch (ignored) { }
+            }
+            audioPlayerCallback.error(new AudioPlayerError((error as Error).message, 10004))
+            return;
         }
-        BGAManagerImpl.audioPlayer.src = path;
-        this._src = value;
         if (this._startTime) {
             this.seek(this._startTime);
         }
         if (BGAManagerImpl.avSession) {
-            if (this.title.length === 0) {
-                BGAManagerImpl.avSession.metadata.title = new uri.URI(value).getLastSegment()
+            try {
+                if (this.title.length === 0) {
+                    BGAManagerImpl.avSession.metadata.title = new uri.URI(value).getLastSegment()
+                }
+                BGAManagerImpl.avSession.metadata.description = value
+            } catch (error) {
+                LOG(`update AV metadata failed: ${(error as Error).message}`)
             }
-            BGAManagerImpl.avSession.metadata.description = value
         }
-        this.play()
+        if (!this.suppressAutoPlay) {
+            this.play().catch((error: Error) => {
+                audioPlayerCallback.error(new AudioPlayerError(error.message, 10004))
+            })
+        }
     }
     get startTime() {
         return this._startTime
     }
     set startTime(time: number) {
         this._startTime = time
+        const audioPlayer = BGAManagerImpl.audioPlayer;
+        if (audioPlayer && audioPlayer.src && audioPlayer.state !== STATE_TYPE.PLAYING) {
+            audioPlayer.seek(time * 1000);
+        }
     }
     get title() {
         return this._title;
@@ -433,15 +516,38 @@ class BGAManagerImpl implements BackgroundAudioManager {
             return;
         }
         this.isPlaying = true;
-        if (this._src && BGAManagerImpl.audioPlayer.src === '') {
-            this.src = this._src;
+        if (this._src && (BGAManagerImpl.audioPlayer.src === '' || this.sourceNeedsReload)) {
+            this.suppressAutoPlay = true
+            try {
+                this.src = this._src;
+            } finally {
+                this.suppressAutoPlay = false
+            }
+            if (BGAManagerImpl.audioPlayer.src === '' || this.sourceNeedsReload) {
+                this.isPlaying = false;
+                return;
+            }
+            this.isPlaying = true;
         }
-        await this.avSessionInit()
-        BGAManagerImpl.audioPlayer.play();
-        START_BACKGROUND()
+        try {
+            await this.avSessionInit()
+            if (!this.isPlaying || BGAManagerImpl.audioPlayer.src === '') {
+                this.isPlaying = false;
+                return;
+            }
+            BGAManagerImpl.audioPlayer.play();
+            await START_BACKGROUND()
+            if (!this.isPlaying) {
+                await STOP_BACKGROUND()
+            }
+        } catch (error) {
+            this.isPlaying = false
+            audioPlayerCallback.error(new AudioPlayerError((error as Error).message, 10004))
+        }
     }
     pause() {
         if (!BGAManagerImpl.audioPlayer) { return; }
+        this.pausedByInterrupt = false;
         this.isPlaying = false;
         const state = BGAManagerImpl.audioPlayer.state;
 
@@ -450,22 +556,65 @@ class BGAManagerImpl implements BackgroundAudioManager {
     }
     stop() {
         if (!BGAManagerImpl.audioPlayer) { return; }
-        if (![STATE_TYPE.PAUSED, STATE_TYPE.PLAYING].includes(BGAManagerImpl.audioPlayer.state)) { return; }
+        this.pausedByInterrupt = false;
+        const state = BGAManagerImpl.audioPlayer.state;
         this.isPlaying = false;
-        BGAManagerImpl.audioPlayer.seek(0)
-        BGAManagerImpl.audioPlayer.stop();
-        STOP_BACKGROUND();
-        audioPlayerCallback.stop();
-        BGAManagerImpl.audioPlayer.reset();
-        //reset() 置空 src，确保 stop 后还可以继续执行 play #24202
-        BGAManagerImpl.audioPlayer.src = '';
+        try {
+            // stop 只停止播放，保留音源供后续 play() 复用，避免重置和重新加载。
+            if ([STATE_TYPE.PAUSED, STATE_TYPE.PLAYING].includes(state)) {
+                BGAManagerImpl.audioPlayer.stop();
+            }
+        } catch (error) {
+            audioPlayerCallback.error(new AudioPlayerError((error as Error).message, 10004))
+        } finally {
+            this.sourceNeedsReload = this._src !== '';
+            this.pausedByInterrupt = false;
+        }
         if (BGAManagerImpl.avSession) {
             BGAManagerImpl.avSession.playbackState.state = avSession.PlaybackState.PLAYBACK_STATE_STOP;
             BGAManagerImpl.avSession.setAVPlaybackState()
-            this.avSessionDestroyPromise = BGAManagerImpl.avSession.destroy().then(() => {
-                this.avSessionIsActive = false
-            })
+            this.destroyAVSession()
         }
+        audioPlayerCallback.stop();
+        if (!this.isPlaying) {
+            STOP_BACKGROUND();
+        }
+    }
+
+    private releaseSourceFile() {
+        if (!this.sourceFile) return
+        try {
+            fileIo.closeSync(this.sourceFile)
+        } catch (error) {
+            LOG(`close source file failed: ${(error as Error).message}`)
+        } finally {
+            this.sourceFile = null
+        }
+    }
+
+    private clearSource() {
+        this.releaseSourceFile()
+        this.sourceNeedsReload = this._src !== ''
+        this.pausedByInterrupt = false
+        this._dataloaded = false
+        this._buffered = 0
+    }
+
+    private destroyAVSession(): Promise<void> {
+        if (this.avSessionDestroyPromise) return this.avSessionDestroyPromise
+        const session = BGAManagerImpl.avSession
+        if (!session || !this.avSessionIsActive) {
+            return Promise.resolve()
+        }
+        this.avSessionDestroyPromise = session.destroy().then(() => {
+            this.avSessionIsActive = false
+        }).catch((error: Error) => {
+            this.avSessionIsActive = false
+            LOG(`destroy AV session failed: ${error.message}`)
+        }).finally(() => {
+            this.avSessionDestroyPromise = null
+        })
+        return this.avSessionDestroyPromise
     }
     seek(position: number) {
         if (!BGAManagerImpl.audioPlayer) { return; }

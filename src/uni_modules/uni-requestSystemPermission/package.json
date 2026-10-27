@@ -1,0 +1,130 @@
+{
+  "id": "uni-requestSystemPermission",
+  "displayName": "uni-requestSystemPermission",
+  "version": "1.0.0",
+  "description": "请求系统权限",
+  "keywords": [
+    "权限",
+    "permission"
+  ],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.6.8",
+    "uni-app": "^4.61",
+    "uni-app-x": "^4.61"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "无"
+    },
+    "npmurl": "",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x"
+  },
+  "uni_modules": {
+    "uni-ext-api": {
+      "uni": {
+        "requestSystemPermission": {
+          "name": "requestSystemPermission",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": false,
+            "arkts": true
+          }
+        }
+      }
+    },
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app": {
+          "vue": {
+            "vue2": "x",
+            "vue3": "√"
+          },
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "vue": "-",
+            "nvue": "-",
+            "android": {
+              "extVersion": "1.0.0",
+              "minVersion": "34"
+            },
+            "ios": {
+              "extVersion": "1.0.0",
+              "minVersion": "12"
+            },
+            "harmony": {
+              "extVersion": "1.0.0",
+              "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": "-",
+            "alipay": "-",
+            "toutiao": "-",
+            "baidu": "-",
+            "kuaishou": "-",
+            "jd": "-",
+            "harmony": "-",
+            "qq": "-",
+            "lark": "-",
+            "xhs": "-"
+          },
+          "quickapp": {
+            "huawei": "-",
+            "union": "-"
+          }
+        },
+        "uni-app-x": {
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "android": {
+              "extVersion": "1.1.0",
+              "minVersion": "34"
+            },
+            "ios": {
+              "extVersion": "1.1.0",
+              "minVersion": "12"
+            },
+            "harmony": {
+              "extVersion": "1.1.0",
+              "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": "-"
+          }
+        }
+      }
+    }
+  }
+}

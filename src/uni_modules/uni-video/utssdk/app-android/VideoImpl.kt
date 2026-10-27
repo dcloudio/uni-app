@@ -42,7 +42,7 @@ class VideoImpl @JvmOverloads constructor(
     var src: String = ""
         set(value) {
             field = value
-            if (isAvailable && value.isNotEmpty()) {
+            if ((isAvailable || player != null) && value.isNotEmpty()) {
                 setupSource(value)
             }
         }
@@ -84,8 +84,12 @@ class VideoImpl @JvmOverloads constructor(
         }
     var playbackRate: Float = 1.0f
         set(value) {
-            field = value
-            player?.setPlaybackSpeed(value)
+            field = if (value.isNaN()) {
+                1.0f
+            } else {
+                value.coerceIn(0.1f, 8.0f)
+            }
+            player?.setPlaybackSpeed(field)
         }
     var volume: Float
         get() {
@@ -131,6 +135,7 @@ class VideoImpl @JvmOverloads constructor(
     private var currentTime: Float = 0f
     private var isPrepared: Boolean = false
     private var userDuration: Float = 0f
+    private var isFirstFrameRendered: Boolean = false
 
     companion object {
         private val cacheLock = Any()
@@ -139,6 +144,7 @@ class VideoImpl @JvmOverloads constructor(
     }
 
     init {
+        alpha = 0f
         surfaceTextureListener = this
     }
 
@@ -226,6 +232,8 @@ class VideoImpl @JvmOverloads constructor(
     }
 
     private fun setupSource(url: String) {
+        alpha = 0f
+        isFirstFrameRendered = false
         setupPlayer()
         isPrepared = false
         val mediaItem = MediaItem.fromUri(url)
@@ -286,6 +294,9 @@ class VideoImpl @JvmOverloads constructor(
         }
 
         setTransform(matrix)
+        if (isFirstFrameRendered) {
+            alpha = 1f
+        }
         invalidate()
     }
 
@@ -465,7 +476,10 @@ class VideoImpl @JvmOverloads constructor(
     override fun onDeviceInfoChanged(deviceInfo: DeviceInfo) {}
     override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {}
     override fun onSurfaceSizeChanged(width: Int, height: Int) {}
-    override fun onRenderedFirstFrame() {}
+    override fun onRenderedFirstFrame() {
+        isFirstFrameRendered = true
+        applyObjectFit()
+    }
     override fun onCues(cues: MutableList<Cue>) {}
     override fun onCues(cueGroup: CueGroup) {}
     override fun onMetadata(metadata: Metadata) {}

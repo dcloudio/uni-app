@@ -40,6 +40,22 @@
         "harmony": {
            "unixVaporVer": "5.0"
          }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
        }
      }
      */

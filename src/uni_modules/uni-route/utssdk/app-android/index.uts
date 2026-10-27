@@ -1,3 +1,99 @@
+import {
+    REWRITE_ROUTE,
+    addAppRouteListener,
+    addBeforeAppRouteListener,
+    removeAppRouteListener,
+    removeBeforeAppRouteListener,
+    rewriteAppRoute,
+} from '@dcloudio/uni-runtime'
+import {
+    AppRouteCallback,
+    AppRouteEvent,
+    AppRouteOpenType,
+    BeforeAppRouteCallback,
+    BeforeAppRouteEvent,
+    OffAppRoute,
+    OffBeforeAppRoute,
+    OnAppRoute,
+    OnBeforeAppRoute,
+    RewriteRouteOptions,
+    RewriteRouteSuccess,
+} from '../interface.uts'
+import { RewriteRouteFailImpl } from '../unierror.uts'
+
+export const onAppRoute: OnAppRoute = (callback: AppRouteCallback) => {
+    addAppRouteListener(
+        callback,
+        (event: UTSJSONObject): AppRouteEvent => {
+            return {
+                path: event.getString('path')!,
+                query: event.getJSON('query')!,
+                openType: event.getString('openType')! as AppRouteOpenType,
+                notFound: event.getBoolean('notFound')!,
+                timeStamp: event.getNumber('timeStamp')!,
+                routeEventId: event.getString('routeEventId')!,
+            }
+        },
+    )
+}
+
+export function offAppRoute(callback: AppRouteCallback | null = null): void {
+    removeAppRouteListener(callback)
+}
+
+export const onBeforeAppRoute: OnBeforeAppRoute = (
+    callback: BeforeAppRouteCallback,
+) => {
+    addBeforeAppRouteListener(
+        callback,
+        (event: UTSJSONObject): BeforeAppRouteEvent => {
+            return {
+                path: event.getString('path')!,
+                query: event.getJSON('query')!,
+                openType: event.getString('openType')! as AppRouteOpenType,
+                notFound: event.getBoolean('notFound')!,
+                routeEventId: event.getString('routeEventId')!,
+            }
+        },
+    )
+}
+
+export function offBeforeAppRoute(
+    callback: BeforeAppRouteCallback | null = null,
+): void {
+    removeBeforeAppRouteListener(callback)
+}
+
+export const rewriteRoute = defineAsyncApi<
+    RewriteRouteOptions,
+    RewriteRouteSuccess
+>(
+    REWRITE_ROUTE,
+    (options: RewriteRouteOptions, res: ApiExecutor) => {
+        const errMsg = rewriteAppRoute(
+            options.url as string,
+            options.preserveQuery ?? false,
+        )
+        if (errMsg.length > 0) {
+            res.reject(new RewriteRouteFailImpl(errMsg))
+            return
+        }
+        res.resolve(null)
+    },
+    [
+        new ApiProtocol<RewriteRouteOptions>(
+            (options: RewriteRouteOptions): UniError | null => {
+                if (options.url.length == 0) {
+                    return new RewriteRouteFailImpl(
+                        'Missing required args: "url"',
+                    )
+                }
+                return null
+            },
+        ),
+    ],
+)
+
 export * from './navigateTo.uts'
 export * from './navigateBack.uts'
 export * from './redirectTo.uts'
@@ -5,6 +101,20 @@ export * from './reLaunch.uts'
 export * from './switchTab.uts'
 
 export {
+    AppRouteCallback,
+    AppRouteEvent,
+    AppRouteOpenType,
+    BeforeAppRouteCallback,
+    BeforeAppRouteEvent,
+    OffAppRoute,
+    OffBeforeAppRoute,
+    OnAppRoute,
+    OnBeforeAppRoute,
+    RewriteRoute,
+    RewriteRouteComplete,
+    RewriteRouteFail,
+    RewriteRouteOptions,
+    RewriteRouteSuccess,
     NavigateBackOptions,
     NavigateBackSuccess,
     NavigateBackFail,

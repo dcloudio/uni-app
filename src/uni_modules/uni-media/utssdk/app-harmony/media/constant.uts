@@ -1,0 +1,13 @@
+import fs from '@ohos.file.fs'
+import { getEnv } from '@dcloudio/uni-runtime'
+
+export function getUniMediaPath(): string {
+    return `${getEnv().CACHE_PATH}/uni-media`
+}
+
+export function ensureUniMediaPath(): void {
+    const uniMediaPath = getUniMediaPath()
+    if (!fs.accessSync(uniMediaPath)) {
+        fs.mkdirSync(uniMediaPath, true)
+    }
+}

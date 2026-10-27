@@ -130,6 +130,7 @@ interface BuilderWebViewParams {
   verticalScrollBarAccess: boolean
   bounces: boolean
   disableUserSelectMenu: boolean
+  associativeContainer?: '' | 'nested-scroll-view'
   controller?: webview.WebviewController
   delegate?: webview.WebDownloadDelegate
 
@@ -177,6 +178,7 @@ export class NativeWebView {
     verticalScrollBarAccess: true,
     bounces: true,
     disableUserSelectMenu: false,
+    associativeContainer: '',
   }
   // #ifdef VUE3-VAPOR
   private events: BuilderWebViewEvents = {}
@@ -186,29 +188,26 @@ export class NativeWebView {
   id = `web_view_id_${Date.now()}_${Math.floor(Math.random() * 1000000)}`
   bindWebViewController: BindWebViewController = new BindWebViewController()
 
-  // #ifdef VUE3-VAPOR
-  constructor(element: UniNativeViewElement, events: BuilderWebViewEvents = {}) {
+  constructor(element: UniNativeViewElement, params ?: BuilderWebViewParams, events: BuilderWebViewEvents = {}) {
+    // #ifdef VUE3-VAPOR
     this.events = events
     // #endif
-    // #ifndef VUE3-VAPOR
-    constructor(element: UniNativeViewElement, params ?: BuilderWebViewParams) {
-      if (params) this.params = params
-      // #endif
-      this.element = element
-      this.initParams()
-      this.element.bindHarmonyWrappedBuilder(wrapBuilder<[BuilderWebViewParams]>(buildWeb), this.params);
-      this.element.bindHarmonyController(this.bindWebViewController)
-      if (typeof this.element['getHarmonyComponentContent'] === 'function') {
-        // @ts-ignore
-        this.webComponentContent = (this.element as ESObject).getHarmonyComponentContent() as ComponentContent;
-      } else {
-        this.webComponentContent = this.element.getHarmonyBuilderNode()
-      }
-      if (this.element.parentElement) {
-        this.webviewElement = this.element.parentElement as unknown as UniWebViewElement
-        this.webviewElement.setNativeWebView(this)
-      }
+    if (params) this.params = params
+    this.element = element
+    this.initParams()
+    this.element.bindHarmonyWrappedBuilder(wrapBuilder<[BuilderWebViewParams]>(buildWeb), this.params);
+    this.element.bindHarmonyController(this.bindWebViewController)
+    if (typeof this.element['getHarmonyComponentContent'] === 'function') {
+      // @ts-ignore
+      this.webComponentContent = (this.element as ESObject).getHarmonyComponentContent() as ComponentContent;
+    } else {
+      this.webComponentContent = this.element.getHarmonyBuilderNode()
     }
+    if (this.element.parentElement) {
+      this.webviewElement = this.element.parentElement as unknown as UniWebViewElement
+      this.webviewElement.setNativeWebView(this)
+    }
+  }
 
   private dispatchEvent(type: string, event: UniNativeViewEvent) {
     // #ifdef VUE3-VAPOR
@@ -352,6 +351,14 @@ export class NativeWebView {
   setDisableUserSelectMenu(disableUserSelectMenu: boolean) {
     if (this.params.disableUserSelectMenu !== disableUserSelectMenu) {
       this.params.disableUserSelectMenu = disableUserSelectMenu
+      this.updateParams()
+    }
+  }
+
+  setAssociativeContainer(associativeContainer: string) {
+    const value = (associativeContainer === 'nested-scroll-view' ? 'nested-scroll-view' : '') as '' | 'nested-scroll-view'
+    if (this.params.associativeContainer !== value) {
+      this.params.associativeContainer = value
       this.updateParams()
     }
   }

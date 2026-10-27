@@ -2,6 +2,7 @@ import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQu
 import { CompressVideo, CompressVideoOptions, CompressVideoSuccess } from '../../interface.uts';
 import { API_COMPRESS_VIDEO, CompressVideoApiOptions, CompressVideoApiProtocol } from '../../protocol.uts';
 import { _getVideoInfo } from './media.uts';
+import { getUniMediaPath, ensureUniMediaPath } from './constant.uts';
 
 // https://gitee.com/openharmony-sig/ohos_videocompressor
 
@@ -18,7 +19,8 @@ function getQuality(quality?: string) {
 export const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(
     API_COMPRESS_VIDEO,
     async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>) => {
-        let videoCompressor = new VideoCompressor();
+        ensureUniMediaPath()
+        let videoCompressor = new VideoCompressor(getUniMediaPath());
         videoCompressor.compressVideo(UTSHarmony.getUIAbilityContext()!, args.src, getQuality(args.quality!))
             .then((data: CompressorResponse): void => {
                 if (data.code == CompressorResponseCode.SUCCESS) {

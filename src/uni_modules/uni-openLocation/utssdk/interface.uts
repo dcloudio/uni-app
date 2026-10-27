@@ -74,8 +74,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -104,8 +110,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -134,8 +146,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -164,8 +182,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -194,8 +218,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -224,8 +254,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -254,8 +290,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -284,8 +326,14 @@ export type OpenLocationOptions = {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "√"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }
@@ -368,8 +416,14 @@ export interface Uni {
    *    },
    *    "mp": {
    *      "weixin": {
-   *         "uniVer": "√",
-   *         "unixVer": "5.11"
+   *        "uniVer": "√",
+   *        "unixVer": "5.11",
+   *        "hostVer": "1.9.6"
+   *      },
+   *      "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *      }
    *    }
    * }

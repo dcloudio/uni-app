@@ -1,8 +1,8 @@
 {
 	"dependencies": [
-		"com.amap.api:3dmap-location-search:10.0.700_loc6.4.5_sea9.7.2",
-		"com.github.bumptech.glide:glide:4.16.0"
+		"com.amap.api:3dmap-location-search:11.2.100_loc11.2.100_sea9.8.1",
+		"com.facebook.fresco:fresco:3.4.0"
 	],
-	"minSdkVersion": "19"
+	"minSdkVersion": "21"
 }
 

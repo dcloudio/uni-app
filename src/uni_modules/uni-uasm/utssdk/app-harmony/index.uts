@@ -1,0 +1,21 @@
+interface UniNativeAppImpl {
+  loadUasm(module: string): Object
+}
+
+function getNativeApp(): UniNativeAppImpl {
+  return globalThis.getUniApp() as UniNativeAppImpl
+}
+
+export function loadUasm<T>(module: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    try {
+      resolve(getNativeApp().loadUasm(module) as T)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export function loadUasmSync<T>(module: string): T | null {
+  return getNativeApp().loadUasm(module) as T
+}

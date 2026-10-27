@@ -1127,6 +1127,8 @@ export class NativeInputView implements UITextFieldDelegate {
 	private state: UniEditSharedState
 	private keyboardController: UniEditKeyboardController
 	private elementImpl: UniInputElementImpl | null = null
+	private directionValue: string = 'ltr'
+	private textAlignValue: string = ''
 
 	constructor(element : UniNativeViewElement) {
 		// 接收组件传递过来的UniNativeViewElement
@@ -1241,6 +1243,7 @@ export class NativeInputView implements UITextFieldDelegate {
 	
 	// UITextFieldDelegate 相关
 	textFieldDidBeginEditing(textField: UITextField) {
+		this.applyInputTextDirection()
 	    this.state.beginEditValue = textField.text ?? ""
 		this.keyboardController.beginEditing()
 		this.state.isFocusing = true
@@ -1293,6 +1296,7 @@ export class NativeInputView implements UITextFieldDelegate {
 		if (this.textField == null) return
 		const normalizedValue = this.normalizeByMaxLength(value)
 		this.textField!.text = normalizedValue
+		this.textField!.setWritingDirectionRTL(this.directionValue == 'rtl')
 		this.elementImpl?.updateValueFromNative(normalizedValue)
 		if (this.textField!.isFirstResponder) {
 			this.applySelectionRange()
@@ -1506,17 +1510,31 @@ export class NativeInputView implements UITextFieldDelegate {
 	}
 
 	updateTextAlign(value: string) {
+		this.textAlignValue = value == 'left' || value == 'center' || value == 'right' ? value : ''
+		this.applyInputTextDirection()
+	}
+
+	updateDirection(value: string) {
+		this.directionValue = value == 'rtl' ? 'rtl' : 'ltr'
+		this.applyInputTextDirection()
+	}
+
+	private applyInputTextDirection() {
 		if (this.textField == null) return
-		switch (value) {
+		switch (this.textAlignValue) {
 			case 'right':
 				this.textField!.textAlignment = NSTextAlignment.right
 				break
 			case 'center':
 				this.textField!.textAlignment = NSTextAlignment.center
 				break
-			default:
+			case 'left':
 				this.textField!.textAlignment = NSTextAlignment.left
+				break
+			default:
+				this.textField!.textAlignment = this.directionValue == 'rtl' ? NSTextAlignment.right : NSTextAlignment.left
 		}
+		this.textField!.setWritingDirectionRTL(this.directionValue == 'rtl')
 	}
 
 	applySelectionRange() {
@@ -1564,7 +1582,8 @@ export class NativeTextareaView implements UITextViewDelegate {
 	textView : UniTextareaView | null = null;
 	private state: UniEditSharedState
 	textColor: UIColor = UIColor.black
-	textAlign: NSTextAlignment = NSTextAlignment.left
+	private directionValue: string = 'ltr'
+	private textAlignValue: string = ''
 	lineHeight: number = 0
 	letterSpacing: number = 0
 	autoHeight: boolean = false
@@ -1925,17 +1944,15 @@ export class NativeTextareaView implements UITextViewDelegate {
 	}
 
 	updateTextAlign(value: string) {
-		switch (value) {
-			case 'right':
-				this.textAlign = NSTextAlignment.right
-				break
-			case 'center':
-				this.textAlign = NSTextAlignment.center
-				break
-			default:
-				this.textAlign = NSTextAlignment.left
-		}
+		this.textAlignValue = value == 'left' || value == 'center' || value == 'right' ? value : ''
 		this.applyTextStyles()
+	}
+
+	updateDirection(value: string) {
+		this.directionValue = value == 'rtl' ? 'rtl' : 'ltr'
+		this.applyTextStyles()
+		this.updateTextareaHeight()
+		this.dispatchLineChange()
 	}
 
 	updatePadding(paddingTop?: string, paddingRight?: string, paddingBottom?: string, paddingLeft?: string) {
@@ -2018,7 +2035,16 @@ export class NativeTextareaView implements UITextViewDelegate {
 		this.textView!.styledTextColor = this.textColor
 		this.textView!.lineHeightValue = this.lineHeight > 0 ? CGFloat(this.lineHeight) : null
 		this.textView!.letterSpacingValue = this.letterSpacing != 0 ? CGFloat(this.letterSpacing) : null
-		this.textView!.textAlignment = this.textAlign
+		this.textView!.setWritingDirectionRTL(this.directionValue == 'rtl')
+		if (this.textAlignValue == 'right') {
+			this.textView!.textAlignment = NSTextAlignment.right
+		} else if (this.textAlignValue == 'center') {
+			this.textView!.textAlignment = NSTextAlignment.center
+		} else if (this.textAlignValue == 'left') {
+			this.textView!.textAlignment = NSTextAlignment.left
+		} else {
+			this.textView!.textAlignment = this.directionValue == 'rtl' ? NSTextAlignment.right : NSTextAlignment.left
+		}
 		this.textView!.applyTextStyle()
 	}
 

@@ -1,5 +1,5 @@
 import { fileIo as fs } from '@kit.CoreFileKit';
-import { _getVideoInfo, _getImageInfo } from './media.uts'
+import { _getVideoInfo, _getImageInfo, _copyMediaFile } from './media.uts'
 import { cameraPicker } from '@kit.CameraKit'
 import { camera } from '@kit.CameraKit'
 import { MediaOrientation } from '../../interface.uts'
@@ -43,11 +43,17 @@ export const takePhoto = async (errSubject: string, cameraType: CameraPosition =
         return Promise.reject(err)
     }
 
-    const file = fs.openSync(res.resultUri, fs.OpenMode.READ_ONLY)
-    const stat = fs.statSync(file.fd)
+    const tempFilePath = await _copyMediaFile(res.resultUri)
+    const file = fs.openSync(tempFilePath, fs.OpenMode.READ_ONLY)
+    let stat: fs.Stat
+    try {
+        stat = fs.statSync(file.fd)
+    } finally {
+        fs.closeSync(file)
+    }
     return {
         tempFiles: [{
-            tempFilePath: res.resultUri,
+            tempFilePath,
             size: stat.size
         }]
     } as TakePhotoRes
@@ -85,16 +91,16 @@ export const takeVideo = async (errSubject: string, args?: TakeVideoOptions) => 
         return Promise.reject(err)
     }
 
-    return _getVideoInfo(res.resultUri)
-        .then((getVideInfoRes) => {
-            return {
-                path: res.resultUri,
-                size: getVideInfoRes.size,
-                duration: getVideInfoRes.duration!,
-                width: getVideInfoRes.width!,
-                height: getVideInfoRes.height!,
-                type: getVideInfoRes.type!,
-                orientation: getVideInfoRes.orientation!,
-            } as TakeVideoRes
-        })
+    const tempFilePath = await _copyMediaFile(res.resultUri)
+    return _getVideoInfo(tempFilePath).then((getVideInfoRes) => {
+        return {
+            path: tempFilePath,
+            size: getVideInfoRes.size,
+            duration: getVideInfoRes.duration!,
+            width: getVideInfoRes.width!,
+            height: getVideInfoRes.height!,
+            type: getVideInfoRes.type!,
+            orientation: getVideInfoRes.orientation!,
+        } as TakeVideoRes
+    })
 }

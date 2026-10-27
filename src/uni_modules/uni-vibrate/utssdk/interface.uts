@@ -1,0 +1,199 @@
+export type VibrateShortType = "heavy" | "medium" | "light"
+
+export type VibrateShortSuccess = {
+  errMsg : string
+}
+
+export type VibrateLongSuccess = {
+  errMsg : string
+}
+
+export type VibrateErrorCode = 9001001 | 9001002 | 9001003
+
+export interface IVibrateShortFail extends IUniError {
+  errCode : VibrateErrorCode
+}
+
+export interface IVibrateLongFail extends IUniError {
+  errCode : VibrateErrorCode
+}
+
+export type VibrateShortFail = IVibrateShortFail
+export type VibrateLongFail = IVibrateLongFail
+export type VibrateShortSuccessCallback = (result : VibrateShortSuccess) => void
+export type VibrateLongSuccessCallback = (result : VibrateLongSuccess) => void
+export type VibrateShortFailCallback = (result : VibrateShortFail) => void
+export type VibrateLongFailCallback = (result : VibrateLongFail) => void
+export type VibrateShortComplete = VibrateShortSuccess | VibrateShortFail
+export type VibrateLongComplete = VibrateLongSuccess | VibrateLongFail
+export type VibrateShortCompleteCallback = (result : VibrateShortComplete) => void
+export type VibrateLongCompleteCallback = (result : VibrateLongComplete) => void
+
+export type VibrateShortOptions = {
+  type : VibrateShortType,
+  success ?: VibrateShortSuccessCallback,
+  fail ?: VibrateShortFailCallback,
+  complete ?: VibrateShortCompleteCallback
+}
+
+export type VibrateLongOptions = {
+  success ?: VibrateLongSuccessCallback,
+  fail ?: VibrateLongFailCallback,
+  complete ?: VibrateLongCompleteCallback
+}
+
+export type VibrateShort = (options : VibrateShortOptions) => void
+export type VibrateLong = (options : VibrateLongOptions) => void
+
+export interface Uni {
+  /**
+   * 使设备发生短时间的振动。
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/vibrate.html#vibrateshort
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/vibrate.html#vibrateshort
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/vibrate.html#vibrateshort
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "√",
+   *     "unixVer": "x"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  vibrateShort(options : VibrateShortOptions) : void
+  /**
+   * 使设备发生长时间的振动。
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/vibrate.html#vibratelong
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/vibrate.html#vibratelong
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/vibrate.html#vibratelong
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "√",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "√",
+   *     "unixVer": "x"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  vibrateLong(options : VibrateLongOptions) : void
+}

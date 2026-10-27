@@ -1,0 +1,88 @@
+import { InstallWgtErrorCode } from "../utssdk/interface.uts";
+
+/**
+ * 错误主题
+ */
+export const UniInstallWgtErrorSubject = 'uni-install-wgt'
+
+/**
+ * 安装应用错误信息
+ */
+export const InstallWgtErrors: Map<InstallWgtErrorCode, string> = new Map([
+	/**
+	 * 安装应用成功
+	 */
+	[103600, 'installWgt:ok'],
+	/**
+	 * filePath 参数为空或对应文件不存在
+	 */
+	[1030601, 'filePath must not be empty and must point to an existing file'],
+	/**
+	 * staging 目录操作失败
+	 */
+	[103602, 'staging directory operation failed'],
+	/**
+	 * WGT 资源目录结构不合法
+	 */
+	[103603, 'WGT resource directory structure is invalid'],
+	/**
+	 * WGT 资源放置到正式目录失败
+	 */
+	[103604, 'unable to place WGT resources in the final directory'],
+	/**
+	 * WGT 资源安装失败
+	 */
+	[103605, 'WGT resource installation failed'],
+	/**
+	 * Zstandard 解压失败
+	 */
+	[103606, 'Zstandard decompression failed'],
+	/**
+	 * ZIP 解压失败
+	 */
+	[103607, 'ZIP extraction failed'],
+	/**
+	 * manifest 文件缺失
+	 */
+	[103608, 'manifest file is missing'],
+	/**
+	 * WGT 必需启动资源缺失
+	 */
+	[103609, 'required WGT startup resource is missing'],
+	/**
+	 * manifest 字段不合法
+	 */
+	[103610, 'manifest fields are invalid'],
+	/**
+	 * WGT 版本低于或等于 Runtime 版本
+	 */
+	[103611, 'WGT version must be higher than the Runtime version'],
+	/**
+	 * 内部错误
+	 */
+	[103612, 'internal error'],
+	/**
+	 * manifest JSON 解析失败
+	 */
+	[103613, 'manifest JSON parsing failed'],
+	/**
+	 * WGT manifest appId 与 Runtime appId 不一致
+	 */
+	[103614, 'WGT appId does not match the Runtime appId'],
+	/**
+	 * WGT 要求的最低 Runtime 版本高于当前 Runtime 版本
+	 */
+	[103615, 'minRuntimeVersion is higher than the Runtime version'],
+	/**
+	 * manifest 缺少 uni-app-x.minRuntimeVersion
+	 */
+	[103617, 'uni-app-x.minRuntimeVersion is missing'],
+	/**
+	 * manifest 缺少 uni-app-x.compilerRuleVersion
+	 */
+	[103618, 'uni-app-x.compilerRuleVersion is missing'],
+	/**
+	 * WGT 与 Runtime 的 compilerRuleVersion 不一致
+	 */
+	[103619, 'WGT compilerRuleVersion does not match the Runtime compilerRuleVersion'],
+])

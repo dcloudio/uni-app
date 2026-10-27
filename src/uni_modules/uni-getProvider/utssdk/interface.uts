@@ -250,7 +250,7 @@ export type GetProviderSyncSuccess = {
 	 */
 	'location' |
 	/**
-	 * 授权登录 （weixin）
+	 * 授权登录 （weixin、apple(iOS HBuilderX 5.21+支持)）
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
@@ -423,7 +423,7 @@ export type GetProviderSyncOptions = {
 	 */
 	'location' |
 	/**
-	 * 授权登录 (weixin)
+	 * 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持))
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {
@@ -547,7 +547,7 @@ export type GetProviderOptions = {
 	 */
 	'location' |
 	/**
-	 * 授权登录 (weixin)
+	 * 授权登录 (weixin、apple(iOS HBuilderX 5.21+支持))
 	 * @uniPlatform {
 	 *  "app": {
 	 *    "android": {

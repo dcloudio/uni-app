@@ -1,33 +1,60 @@
 // 高德地图 UTS 插件 - Android 平台实现
-import UniElement from "io.dcloud.uniapp.runtime.UniElement";
+// #ifdef UNI-APP-X && !VUE3-VAPOR
 import PageNode from "io.dcloud.uniapp.dom.node.PageNode"
 import INodeData from "io.dcloud.uniapp.interfaces.INodeData"
+// #endif
 import View from 'android.view.View';
-import type { AmapMarker, AmapAnchor, AmapMapMarkerCallout, AmapMapMarkerLabel } from "../interface";
-import { MarkerModel } from "uts.sdk.modules.uniMapAmap.marker";
+import WeakReference from 'java.lang.ref.WeakReference';
+import type { AmapMarker, AmapAnchor, AmapMapMarkerCallout, AmapMapMarkerLabel, AmapLocationObject, Polyline, Polygon, Circle, Control, AmapContext, CreateAmapContext, MapContextFail, MapContextGetCenterLocationOptions, MapContextMoveToLocationOptions, MapContextTranslateMarkerOptions, MapContextIncludePointsOptions, MapContextGetRegionOptions, MapContextGetRegionResult, MapContextGetScaleOptions, MapContextGetScaleResult as AmapGetScaleResult, MapContextAddGroundOverlayOptions, MapContextAddMarkersOptions, MapContextMoveAlongOptions, MapContextRemoveGroundOverlayOptions, MapContextRemoveMarkersOptions, MapContextUpdateGroundOverlayOptions } from "../interface";
+import { MapContextFailImpl, getErrcode } from "../unierror";
+import { MarkerModel, CalloutModel, LabelModel } from "uts.sdk.modules.uniMapAmap.marker";
+import { PolylineModel, PolylinePointModel } from "uts.sdk.modules.uniMapAmap.polyline";
+import { PolygonModel, PolygonPointModel } from "uts.sdk.modules.uniMapAmap.polygon";
+import { CircleModel } from "uts.sdk.modules.uniMapAmap.circle";
+import { ControlModel, ControlPosition } from "uts.sdk.modules.uniMapAmap.control";
+import { IncludePointModel } from "uts.sdk.modules.uniMapAmap.includepoint";
+import { LatLngModel } from "uts.sdk.modules.uniMapAmap.latlng"
+import { GroundModel } from "uts.sdk.modules.uniMapAmap.ground";
 
-// 重新导出类型，供外部使用（不在这里导出，直接从 interface.uts 导入）
+// 重新导出类型，供外部使用
+export {
+	AmapMarker, AmapAnchor, AmapMapMarkerCallout, AmapMapMarkerLabel, AmapLocationObject,
+	AmapContext, CreateAmapContext,
+	MapContextGetCenterLocationOptions, MapContextMoveToLocationOptions,
+	MapContextTranslateMarkerOptions, MapContextIncludePointsOptions,
+	MapContextGetRegionOptions, MapContextGetRegionResult,
+	MapContextGetScaleOptions, MapContextGetScaleResult,
+	MapContextAddGroundOverlayOptions, MapContextAddMarkersOptions,
+	MapContextMoveAlongOptions, MapContextRemoveGroundOverlayOptions,
+	MapContextRemoveMarkersOptions, MapContextUpdateGroundOverlayOptions
+} from "../interface";
 
 // IInternalMap 和 ICallBack 在 IInternalMap.kt 中定义，UTS 会自动从同包中解析
 // AmapMapImpl 在 AmapMapImpl.kt 中定义，同样会自动解析
 
-export class UniMapElement
+export class UniAmapElement
 	extends UniViewElementImpl
-	implements UniBuiltInComponent {
+// #ifdef UNI-APP-X && !VUE3-VAPOR
+	implements UniBuiltInComponent
+// #endif
+{
 	// IInternalMap 在 IInternalMap.kt 中定义，UTS 会自动解析
 	private internalMap : IInternalMap | null = null;
 
+	// #ifdef UNI-APP-X && !VUE3-VAPOR
 	constructor(data : INodeData, pageNode : PageNode) {
 		super(data, pageNode);
 	}
+	// #endif
 
-	override get tagName() : string {
-		return "MAP";
+	// #ifdef VUE3-VAPOR
+	constructor() {
+		super();
 	}
+	// #endif
 
-	override get nodeName() : string {
-		return this.tagName;
-	}
+	override tagName : string = "AMAP";
+	override nodeName : string = "AMAP";
 
 	setMap(map : IInternalMap | null) {
 		this.internalMap = map
@@ -43,11 +70,9 @@ export class UniMapElement
 	}
 }
 
-// 暂时注释掉 UTSAcvitiyLifeCycleCallback，先让地图显示功能跑起来
-/*
 export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
-	internalMap : any | null = null;
-	constructor(map : any | null) {
+	internalMap : IInternalMap;
+	constructor(map : IInternalMap) {
 		super()
 		this.internalMap = map;
 	}
@@ -82,12 +107,146 @@ export class UTSAcvitiyLifeCycleCallback extends UniActivityLifeCycleCallback {
 		}
 	}
 }
-*/
+
+
+function resolveMapElement(element : UniElement | null) : UniAmapElement | null {
+	let parent = element?.parentElement
+	while (parent != null) {
+		if (parent instanceof UniAmapElement) {
+			return parent as UniAmapElement
+		}
+		parent = parent.parentElement
+	}
+	return null
+}
+
+const internalMapRegistry = new Map<string, IInternalMap>()
+
+// 高德 APIKey 是否已配置（由 AmapMap.start 写入），供 context 未就绪时区分 500013
+let amapKeyValid : boolean = true
+
+function registerInternalMap(rootElement : UniElement | null, map : IInternalMap) : string {
+	const nodeId = rootElement?.getNodeId().toString() ?? ""
+	if (nodeId.length > 0) {
+		internalMapRegistry.set(nodeId, map)
+	}
+	return nodeId
+}
+
+function unregisterInternalMap(nodeId : string) {
+	if (nodeId.length > 0) {
+		internalMapRegistry.delete(nodeId)
+	}
+}
+
+/**
+ * 图片地址转换：网络地址原样保留（由原生层 Fresco 加载），本地路径转绝对路径
+ */
+function convertImageUrl(src : string) : string {
+	if (src.startsWith("http://") || src.startsWith("https://")) {
+		return src
+	}
+	return UTSAndroid.convert2AbsFullPath(src)
+}
+
+function convertMarkers(markers : Array<AmapMarker>) : Array<MarkerModel> {
+	const markerList : Array<MarkerModel> = [];
+	const density = UTSAndroid.getAppContext()!.resources.displayMetrics.density
+	markers.forEach((value : AmapMarker) => {
+		const markerModel = new MarkerModel(
+			value.id.toInt(),
+			value.latitude.toDouble(),
+			value.longitude.toDouble(),
+			UTSAndroid.convert2AbsFullPath(value.iconPath)
+		)
+		markerModel.title = value.title
+		markerModel.rotate = value.rotate?.toDouble() ?? 0.0.toDouble()
+		markerModel.alpha = value.alpha?.toFloat() ?? 1.0.toFloat()
+		if (value.width != null) {
+			markerModel.width = value.width!.toDouble() * density
+		}
+		if (value.height != null) {
+			markerModel.height = value.height!.toDouble() * density
+		}
+		markerModel.ariaLabel = value.ariaLabel
+		const anchor = new FloatArray(2)
+		anchor[0] = 0.5.toFloat()
+		anchor[1] = 1.0.toFloat()
+		if (value.anchor != null) {
+			anchor[0] = value.anchor!.x.toFloat()
+			anchor[1] = value.anchor!.y.toFloat()
+		}
+		markerModel.anchor = anchor
+		if (value.callout != null) {
+			const callout = value.callout!
+			const calloutModel = new CalloutModel()
+			calloutModel.content = callout.content
+			if (callout.color != null) {
+				calloutModel.color = UTSAndroid.convertToNativeColor(callout.color!, 0)
+			}
+			if (callout.fontSize != null) {
+				calloutModel.fontSize = callout.fontSize!.toFloat() * density
+			}
+			if (callout.borderRadius != null) {
+				calloutModel.borderRadius = callout.borderRadius!.toFloat() * density
+			}
+			if (callout.borderWidth != null) {
+				calloutModel.borderWidth = callout.borderWidth!.toFloat() * density
+			}
+			if (callout.borderColor != null) {
+				calloutModel.borderColor = UTSAndroid.convertToNativeColor(callout.borderColor!, 0)
+			}
+			if (callout.bgColor != null) {
+				calloutModel.bgColor = UTSAndroid.convertToNativeColor(callout.bgColor!, 0)
+			}
+			if (callout.padding != null) {
+				calloutModel.padding = callout.padding!.toFloat() * density
+			}
+			calloutModel.display = callout.display ?? "BYCLICK"
+			calloutModel.textAlign = callout.textAlign ?? "left"
+			markerModel.callout = calloutModel
+		}
+		if (value.label != null) {
+			const label = value.label!
+			const labelModel = new LabelModel()
+			labelModel.content = label.content
+			if (label.color != null) {
+				labelModel.color = UTSAndroid.convertToNativeColor(label.color!, 0)
+			}
+			if (label.fontSize != null) {
+				labelModel.fontSize = label.fontSize!.toFloat() * density
+			}
+			labelModel.x = (label.x ?? 0).toFloat() * density
+			labelModel.y = (label.y ?? 0).toFloat() * density
+			if (label.borderWidth != null) {
+				labelModel.borderWidth = label.borderWidth!.toFloat() * density
+			}
+			if (label.borderColor != null) {
+				labelModel.borderColor = UTSAndroid.convertToNativeColor(label.borderColor!, 0)
+			}
+			if (label.bgColor != null) {
+				labelModel.bgColor = UTSAndroid.convertToNativeColor(label.bgColor!, 0)
+			}
+			if (label.borderRadius != null) {
+				labelModel.borderRadius = label.borderRadius!.toFloat() * density
+			}
+			if (label.padding != null) {
+				labelModel.padding = label.padding!.toFloat() * density
+			}
+			labelModel.textAlign = label.textAlign ?? "left"
+			markerModel.label = labelModel
+		}
+		markerList.push(markerModel)
+	})
+	return markerList
+}
 
 export class AmapMap {
 	$element : UniNativeViewElement;
 	internalMap = new AmapMapImpl();
-	// acvitiyLifeCycleCallback : UTSAcvitiyLifeCycleCallback | null = null;
+	acvitiyLifeCycleCallback : UTSAcvitiyLifeCycleCallback | null = null;
+	
+	private contextNodeId : string = "";
 
 	constructor(element : UniNativeViewElement) {
 		this.$element = element;
@@ -101,27 +260,118 @@ export class AmapMap {
 			// UTS 会自动从同包中解析 Kotlin 类
 			this.internalMap = new AmapMapImpl()
 		}
-		(this.$element.parentElement as UniMapElement).setMap(this.internalMap)
+		// 校验 APIKey：未配置时不中断地图创建（仍展示空地图），记录状态供 context 返回 500013
+		amapKeyValid = this.internalMap!!.hasValidAPIKey()
+		resolveMapElement(this.$element)?.setMap(this.internalMap)
 		// 使用非空断言，因为上面已经检查过 null
 		let mapView = this.internalMap!!.getMap(this.$element.getAndroidActivity()!!);
 		this.$element.bindAndroidView(mapView);
+		// 注册 context 注册表：置于 getMap 之后，确保各 Manager（marker/ground 等）初始化完成再对外暴露，
+		// 消除"context 可查到但内部 Manager 未建"的调用窗口
+		// 用 native-view 的直接父元素（UniAmapElement 根元素）注册；与 createAmapContext 的 querySelector('#id') 指向同一元素
+		this.contextNodeId = registerInternalMap(this.$element.parentElement, this.internalMap!!)
 		this.internalMap!!.onStart();
 		this.internalMap!!.onResume();
 		// 暂时注释掉生命周期回调
-		// this.acvitiyLifeCycleCallback = new UTSAcvitiyLifeCycleCallback(this.internalMap);
-		// const pages = getCurrentPages()
-		// const page = pages[pages.length - 1]
-		// UTSAndroid.onActivityCallback(this.acvitiyLifeCycleCallback!, page.route)
+		this.acvitiyLifeCycleCallback = new UTSAcvitiyLifeCycleCallback(this.internalMap);
+		const pages = getCurrentPages()
+		const page = pages[pages.length - 1]
+		UTSAndroid.onActivityCallback(this.acvitiyLifeCycleCallback!, page.route)
+		this.registerEventCallbacks()
+	}
+
+	private registerEventCallbacks() {
+		const element = this.$element
+		// 地图加载完成/渲染更新
+		this.internalMap!!.setOnMapLoadedCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const event = new UniNativeViewEvent("updated", {} as UTSJSONObject)
+				element.dispatchEvent("updated", event)
+			}
+		}))
+		// 地图点击
+		this.internalMap!!.setOnMapClickCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const map = param as Map<string, any>
+				const detail = map["detail"] as Map<string, any>
+				const event = new UniNativeViewEvent("tapNative", new UTSJSONObject(detail))
+				element.dispatchEvent("tapNative", event)
+			}
+		}))
+		// POI 点击
+		this.internalMap!!.setOnPoiTapCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const map = param as Map<string, any>
+				const detail = map["detail"] as Map<string, any>
+				const event = new UniNativeViewEvent("poitap", new UTSJSONObject(detail))
+				element.dispatchEvent("poitap", event)
+			}
+		}))
+		// 定位锚点点击
+		this.internalMap!!.setOnAnchorPointTapCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const map = param as Map<string, any>
+				const detail = map["detail"] as Map<string, any>
+				const event = new UniNativeViewEvent("anchorpointtap", new UTSJSONObject(detail))
+				element.dispatchEvent("anchorpointtap", event)
+			}
+		}))
+		// marker 点击
+		this.internalMap!!.setOnMarkerTapCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const map = param as Map<string, any>
+				const detail = map["detail"] as Map<string, any>
+				const event = new UniNativeViewEvent("markertap", new UTSJSONObject(detail))
+				element.dispatchEvent("markertap", event)
+			}
+		}))
+		// 气泡点击
+		this.internalMap!!.setOnCalloutTapCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const map = param as Map<string, any>
+				const detail = map["detail"] as Map<string, any>
+				const event = new UniNativeViewEvent("callouttap", new UTSJSONObject(detail))
+				element.dispatchEvent("callouttap", event)
+			}
+		}))
+		// 视野变化
+		this.internalMap!!.setOnRegionChangeCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const map = param as Map<string, any>
+				const detail = map["detail"] as Map<string, any>
+				const jsonObject = new UTSJSONObject(detail)
+				jsonObject["type"] = map["type"]
+				jsonObject["causedBy"] = map["causedBy"]
+				const event = new UniNativeViewEvent(map["type"] as string, jsonObject)
+				element.dispatchEvent("regionchange", event)
+			}
+		}))
+		// 控件点击
+		this.internalMap!!.setOnControlTapCallback(new (class implements ICallBack {
+			override callback(param : any | null) {
+				const map = param as Map<string, any>
+				const detail = map["detail"] as Map<string, any>
+				const event = new UniNativeViewEvent("controltap", new UTSJSONObject(detail))
+				element.dispatchEvent("controltap", event)
+			}
+		}))
 	}
 
 	destroy() {
-		if (this.internalMap != null) {
-			// 使用局部变量避免智能转换问题
-			const map = this.internalMap!!
-			map.onPause();
-			map.onStop();
-			map.onDestroy();
+		unregisterInternalMap(this.contextNodeId)
+		this.contextNodeId = ""
+		// 生命周期回调判空后再解绑，避免空指针
+		if (this.acvitiyLifeCycleCallback != null) {
+			UTSAndroid.offActivityCallback(this.acvitiyLifeCycleCallback!)
+			this.acvitiyLifeCycleCallback = null
 		}
+		// 释放原生地图（各 Manager/定位/回调在 onDestroy 内清理）
+		const map = this.internalMap!!
+		map.onPause();
+		map.onStop();
+		map.onDestroy();
+		// 断开 UTS 实例与原生视图引用，避免内存泄漏（对齐腾讯 UTSAndroid.destroyInstance）
+		UTSAndroid.destroyInstance(this)
 	}
 
 	// 设置中心点
@@ -176,6 +426,105 @@ export class AmapMap {
 		})
 	}
 	
+	// 是否展示交通流量图层
+		setEnableTraffic(enable : boolean) {
+			if (this.internalMap != null) {
+				this.internalMap!!.setEnableTraffic(enable);
+			}
+		}
+		
+		// 是否展示卫星图层
+			setEnableSatellite(enable : boolean) {
+				if (this.internalMap != null) {
+					this.internalMap!!.setEnableSatellite(enable);
+		}
+	}
+	
+	// 是否支持缩放手势
+	setEnableZoom(enable : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setEnableZoom(enable)
+		}
+	}
+
+	// 是否支持旋转手势
+	setEnableRotate(enable : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setEnableRotate(enable)
+		}
+	}
+
+	// 设置地图旋转角度
+	setRotate(rotate : number, animate : boolean = true) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setRotate(rotate.toFloat(), animate)
+		}
+	}
+
+	// 是否支持拖动手势
+	setEnableScroll(enable : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setEnableScroll(enable)
+		}
+	}
+
+	// 是否显示指南针
+	setShowCompass(show : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setShowCompass(show)
+		}
+	}
+
+	// 是否显示比例尺控件
+	setShowScale(show : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setShowScale(show)
+		}
+	}
+
+	// 是否显示 3D 建筑物
+	setEnableBuilding(enable : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setEnableBuilding(enable)
+		}
+	}
+
+	// 是否显示 POI 和地图文字
+	setEnablePoi(enable : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setEnablePoi(enable)
+		}
+	}
+
+	// 是否显示室内地图
+	setEnableIndoorMap(enable : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setEnableIndoorMap(enable)
+		}
+	}
+
+	// 是否支持俯视手势
+	setEnableOverlooking(enable : boolean) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setEnableOverlooking(enable)
+		}
+	}
+
+	// 设置地图俯仰角
+	setSkew(skew : number, animate : boolean = true) {
+		if (this.internalMap != null) {
+			this.internalMap!!.setSkew(skew.toFloat(), animate)
+		}
+	}
+
+	// 一次性设置中心点、缩放级别、俯仰角、旋转角度（单次相机更新）
+	setCameraPosition(latitude : number, longitude : number, zoom : number, skew : number, rotate : number, animate : boolean) {
+		if (this.internalMap == null) {
+			return
+		}
+		this.internalMap!!.setCameraPosition(latitude.toDouble(), longitude.toDouble(), zoom.toInt(), skew.toFloat(), rotate.toFloat(), animate)
+	}
+
 	// 请求定位权限
 	requestLocationPermission(callback : () => void) {
 		const context = UTSAndroid.getUniActivity()!
@@ -226,9 +575,526 @@ export class AmapMap {
 				anchor[1] = value.anchor!.y.toFloat()
 			}
 			markerModel.anchor = anchor
+			if (value.callout != null) {
+				const callout = value.callout!
+				const calloutModel = new CalloutModel()
+				calloutModel.content = callout.content
+				if (callout.color != null) {
+					calloutModel.color = UTSAndroid.convertToNativeColor(callout.color!, 0)
+				}
+				if (callout.fontSize != null) {
+					calloutModel.fontSize = callout.fontSize!.toFloat() * density
+				}
+				if (callout.borderRadius != null) {
+					calloutModel.borderRadius = callout.borderRadius!.toFloat() * density
+				}
+				if (callout.borderWidth != null) {
+					calloutModel.borderWidth = callout.borderWidth!.toFloat() * density
+				}
+				if (callout.borderColor != null) {
+					calloutModel.borderColor = UTSAndroid.convertToNativeColor(callout.borderColor!, 0)
+				}
+				if (callout.bgColor != null) {
+					calloutModel.bgColor = UTSAndroid.convertToNativeColor(callout.bgColor!, 0)
+				}
+				if (callout.padding != null) {
+					calloutModel.padding = callout.padding!.toFloat() * density
+				}
+				calloutModel.display = callout.display ?? "BYCLICK"
+				calloutModel.textAlign = callout.textAlign ?? "left"
+				markerModel.callout = calloutModel
+			}
+			if (value.label != null) {
+				const label = value.label!
+				const labelModel = new LabelModel()
+				labelModel.content = label.content
+				if (label.color != null) {
+					labelModel.color = UTSAndroid.convertToNativeColor(label.color!, 0)
+				}
+				if (label.fontSize != null) {
+					labelModel.fontSize = label.fontSize!.toFloat() * density
+				}
+				labelModel.x = (label.x ?? 0).toFloat() * density
+				labelModel.y = (label.y ?? 0).toFloat() * density
+				if (label.borderWidth != null) {
+					labelModel.borderWidth = label.borderWidth!.toFloat() * density
+				}
+				if (label.borderColor != null) {
+					labelModel.borderColor = UTSAndroid.convertToNativeColor(label.borderColor!, 0)
+				}
+				if (label.bgColor != null) {
+					labelModel.bgColor = UTSAndroid.convertToNativeColor(label.bgColor!, 0)
+				}
+				if (label.borderRadius != null) {
+					labelModel.borderRadius = label.borderRadius!.toFloat() * density
+				}
+				if (label.padding != null) {
+					labelModel.padding = label.padding!.toFloat() * density
+				}
+				labelModel.textAlign = label.textAlign ?? "left"
+				markerModel.label = labelModel
+			}
 			markerList.push(markerModel)
 		})
 		this.internalMap!!.setMarkers(markerList)
 	}
+
+	// 设置折线
+	setPolyline(polylines : Array<Polyline>) {
+		if (this.internalMap == null) {
+			return
+		}
+		const polylineList : Array<PolylineModel> = [];
+		const density = UTSAndroid.getAppContext()!.resources.displayMetrics.density
+		polylines.forEach((value : Polyline) => {
+			const pointList : Array<PolylinePointModel> = [];
+			value.points.forEach((point : AmapLocationObject) => {
+				pointList.push(new PolylinePointModel(point.latitude.toDouble(), point.longitude.toDouble()))
+			})
+
+			const polylineModel = new PolylineModel(pointList)
+			if (value.color != null) {
+				polylineModel.color = UTSAndroid.convertToNativeColor(value.color!, 0)
+			}
+			if (value.colorList != null) {
+				const convertedColorList : Array<Int> = []
+				value.colorList!.forEach((color : string) => {
+					convertedColorList.push(UTSAndroid.convertToNativeColor(color, 0))
+				})
+				polylineModel.colorList = convertedColorList
+			}
+			if (value.width != null) {
+				polylineModel.width = value.width!.toFloat() * density
+			}
+			polylineModel.dottedLine = value.dottedLine ?? false
+			polylineModel.arrowLine = value.arrowLine ?? false
+			if (value.arrowIconPath != null && value.arrowIconPath!.length > 0) {
+				// 网络地址原样保留（由原生层 Fresco 加载），本地路径转绝对路径
+				polylineModel.arrowIconPath = convertImageUrl(value.arrowIconPath!)
+			}
+			if (value.borderColor != null) {
+				polylineModel.borderColor = UTSAndroid.convertToNativeColor(value.borderColor!, 0)
+			}
+			if (value.borderWidth != null) {
+				polylineModel.borderWidth = value.borderWidth!.toFloat() * density
+			}
+			polylineList.push(polylineModel)
+		})
+		this.internalMap!!.setPolyline(polylineList)
+	}
+
+	// 设置多边形
+	setPolygons(polygons : Array<Polygon>) {
+		if (this.internalMap == null) {
+			return
+		}
+		const polygonList : Array<PolygonModel> = [];
+		const density = UTSAndroid.getAppContext()!.resources.displayMetrics.density
+		polygons.forEach((value : Polygon) => {
+			const pointList : Array<PolygonPointModel> = [];
+			value.points.forEach((point : AmapLocationObject) => {
+				pointList.push(new PolygonPointModel(point.latitude.toDouble(), point.longitude.toDouble()))
+			})
+
+			const polygonModel = new PolygonModel(pointList)
+			if (value.strokeWidth != null) {
+				polygonModel.strokeWidth = value.strokeWidth!.toFloat() * density
+			}
+			if (value.strokeColor != null) {
+				polygonModel.strokeColor = UTSAndroid.convertToNativeColor(value.strokeColor!, 0)
+			}
+			if (value.fillColor != null) {
+				polygonModel.fillColor = UTSAndroid.convertToNativeColor(value.fillColor!, 0)
+			}
+			if (value.zIndex != null) {
+				polygonModel.zIndex = value.zIndex!.toFloat()
+			}
+			polygonList.push(polygonModel)
+		})
+		this.internalMap!!.setPolygons(polygonList)
+	}
+
+	// 设置圆
+	setCircles(circles : Array<Circle>) {
+		if (this.internalMap == null) {
+			return
+		}
+		const circleList : Array<CircleModel> = [];
+		const density = UTSAndroid.getAppContext()!.resources.displayMetrics.density
+		circles.forEach((value : Circle) => {
+			const circleModel = new CircleModel(value.latitude.toDouble(), value.longitude.toDouble(), value.radius.toDouble())
+			if (value.color != null) {
+				circleModel.strokeColor = UTSAndroid.convertToNativeColor(value.color!, 0)
+			}
+			if (value.fillColor != null) {
+				circleModel.fillColor = UTSAndroid.convertToNativeColor(value.fillColor!, 0)
+			}
+			if (value.strokeWidth != null) {
+				circleModel.strokeWidth = value.strokeWidth!.toFloat() * density
+			}
+			circleList.push(circleModel)
+		})
+		this.internalMap!!.setCircles(circleList)
+	}
+
+	// 设置控件
+	setControls(controls : Array<Control>) {
+		if (this.internalMap == null) {
+			return
+		}
+		const controlList : Array<ControlModel> = [];
+		const density = UTSAndroid.getAppContext()!.resources.displayMetrics.density
+		controls.forEach((value : Control) => {
+			const position = new ControlPosition(
+				(value.position.left ?? 0).toFloat() * density,
+				(value.position.top ?? 0).toFloat() * density,
+				(value.position.width ?? 0).toFloat() * density,
+				(value.position.height ?? 0).toFloat() * density
+			)
+			const controlModel = new ControlModel(position, UTSAndroid.convert2AbsFullPath(value.iconPath))
+			if (value.id != null) {
+				controlModel.id = value.id!.toInt()
+			}
+			controlModel.clickable = value.clickable ?? false
+			controlList.push(controlModel)
+		})
+		this.internalMap!!.setControls(controlList)
+	}
+
+	// 缩放视野以包含所有给定坐标点
+	setIncludePoints(points : Array<AmapLocationObject>, animate : boolean) {
+		if (this.internalMap == null) {
+			return
+		}
+		const pointList : Array<IncludePointModel> = [];
+		points.forEach((point : AmapLocationObject) => {
+			pointList.push(new IncludePointModel(point.latitude.toDouble(), point.longitude.toDouble()))
+		})
+		this.internalMap!!.setIncludePoints(pointList, animate)
+	}
 }
 
+
+
+export const createAmapContext : CreateAmapContext = function (mapId : string, component : ComponentPublicInstance | null) : AmapContext | null {
+	let rootElement : UniElement | null = null
+	if (component == null) {
+		const pages = getCurrentPages()
+		if (pages.length > 0) {
+			rootElement = pages[pages.length - 1].querySelector('#' + mapId)
+		}
+	} else {
+		// 先在组件自身子树查找，找不到再向父级借域查找（扩大到兄弟节点范围）
+		const el = component.$el
+		rootElement = el?.querySelector('#' + mapId) ?? el?.parentElement?.querySelector('#' + mapId)
+	}
+	if (rootElement == null) {
+		return null
+	}
+	const nodeId = rootElement.getNodeId().toString()
+	if (nodeId.length == 0) {
+		return null
+	}
+	const internalMap = internalMapRegistry.get(nodeId)
+	if (internalMap == null) {
+		return null
+	}
+	return new AmapContextImpl(internalMap!)
+}
+
+class AmapContextImpl implements AmapContext {
+	private internalMap : WeakReference<IInternalMap>
+
+	constructor(map : IInternalMap) {
+		this.internalMap = new WeakReference(map)
+	}
+
+	/**
+	 * 地图实例未就绪（registry 未注册/实例已销毁回收）：未配置 APIKey 回 500013，否则回 500012
+	 */
+	private notifyMapNotReady(fail : ((result : MapContextFail) => void) | null, complete : ((result : any) => void) | null) : void {
+		// 未配置 APIKey 优先返回 500013，否则回 500012（错误仅通过回调返回，不打印 console）
+		const errCode = amapKeyValid ? 500012 : 500013
+		const error = new MapContextFailImpl(getErrcode(errCode))
+		fail?.(error)
+		complete?.(error)
+	}
+
+	getCenterLocation(options : MapContextGetCenterLocationOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const center = map.getCenterLocation()
+		// 中心经纬度为 0,0 视为获取失败（对齐腾讯 Android index.uts / iOS）
+		if (center.latitude == 0.0 || center.longitude == 0.0) {
+			const error = new MapContextFailImpl(getErrcode(500001))
+			options.fail?.(error)
+			options.complete?.(error)
+			return
+		}
+		const result : AmapLocationObject = {
+			latitude: center.latitude,
+			longitude: center.longitude
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	moveToLocation(options : MapContextMoveToLocationOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		// 经纬度必须成对出现（对齐 iOS 校验）
+		const hasLatitude = options.latitude != null
+		const hasLongitude = options.longitude != null
+		if (hasLatitude != hasLongitude) {
+			const error = new MapContextFailImpl(getErrcode(500012))
+			options.fail?.(error)
+			options.complete?.(error)
+			return
+		}
+		let latLng : LatLngModel | null = null
+		if (hasLatitude && hasLongitude) {
+			latLng = new LatLngModel(options.latitude!.toDouble(), options.longitude!.toDouble())
+		}
+		map.moveToLocation(latLng, new (class implements ICallBack {
+			override callback(param : any | null) {
+				if (param == true) {
+					const result = { "errMsg": "moveToLocation:ok" } as UTSJSONObject
+					options.success?.(result)
+					options.complete?.(result)
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500002))
+					options.fail?.(error)
+					options.complete?.(error)
+				}
+			}
+		}))
+	}
+
+	translateMarker(options : MapContextTranslateMarkerOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		map.translateMarker(
+			options.markerId.toInt(),
+			new LatLngModel(options.destination.latitude.toDouble(), options.destination.longitude.toDouble()),
+			options.rotate?.toDouble(),
+			options.moveWithRotate,
+			options.autoRotate ?? false,
+			options.duration?.toDouble(),
+			new (class implements ICallBack {
+				override callback(param : any | null) {
+					if (param == true) {
+						const result = { "errMsg": "translateMarker:ok" } as UTSJSONObject
+						options.success?.(result)
+						options.complete?.(result)
+					} else {
+						const error = new MapContextFailImpl(getErrcode(500003))
+						options.fail?.(error)
+						options.complete?.(error)
+					}
+				}
+			})
+		)
+	}
+
+	includePoints(options : MapContextIncludePointsOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const pointList : Array<IncludePointModel> = [];
+		options.points.forEach((point : AmapLocationObject) => {
+			pointList.push(new IncludePointModel(point.latitude.toDouble(), point.longitude.toDouble()))
+		})
+		map.setIncludePoints(pointList, true)
+		const result = { "errMsg": "includePoints:ok" } as UTSJSONObject
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	getRegion(options : MapContextGetRegionOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const bounds = map.getRegion()
+		const result : MapContextGetRegionResult = {
+			southwest: {
+				latitude: bounds.southwest.latitude,
+				longitude: bounds.southwest.longitude
+			},
+			northeast: {
+				latitude: bounds.northeast.latitude,
+				longitude: bounds.northeast.longitude
+			}
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	getScale(options : MapContextGetScaleOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const result : AmapGetScaleResult = {
+			scale: map.getScale() as number
+		}
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	addGroundOverlay(options : MapContextAddGroundOverlayOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const ground = new GroundModel(
+			options.id,
+			convertImageUrl(options.src),
+			new LatLngModel(options.bounds.southwest.latitude.toDouble(), options.bounds.southwest.longitude.toDouble()),
+			new LatLngModel(options.bounds.northeast.latitude.toDouble(), options.bounds.northeast.longitude.toDouble()),
+			options.visible ?? false,
+			(options.zIndex ?? 0).toDouble(),
+			(options.opacity ?? 1).toDouble()
+		)
+		map.addGroundOverlay(ground, new (class implements ICallBack {
+			override callback(param : any | null) {
+				if (param == true) {
+					const result = { "errMsg": "addGroundOverlay:ok" } as UTSJSONObject
+					options.success?.(result)
+					options.complete?.(result)
+				} else {
+					// 图片加载失败 → 500006，其他创建失败 → 500012（对齐腾讯）
+					const errCode = param == "network image loading failed" ? 500006 : 500012
+					const error = new MapContextFailImpl(getErrcode(errCode))
+					options.fail?.(error)
+					options.complete?.(error)
+				}
+			}
+		}))
+	}
+
+	addMarkers(options : MapContextAddMarkersOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const markerList = convertMarkers(options.markers)
+		if (options.clear == true) {
+			map.setMarkers(markerList)
+		} else {
+			map.addMarkers(markerList)
+		}
+		const result = { "errMsg": "addMarkers:ok" } as UTSJSONObject
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	moveAlong(options : MapContextMoveAlongOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const path : Array<LatLngModel> = []
+		options.path.forEach((point : AmapLocationObject) => {
+			path.push(new LatLngModel(point.latitude.toDouble(), point.longitude.toDouble()))
+		})
+		map.moveAlong(options.markerId.toInt(), path, options.duration?.toDouble(), new (class implements ICallBack {
+			override callback(param : any | null) {
+				if (param == true) {
+					const result = { "errMsg": "moveAlong:ok" } as UTSJSONObject
+					options.success?.(result)
+					options.complete?.(result)
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500003))
+					options.fail?.(error)
+					options.complete?.(error)
+				}
+			}
+		}))
+	}
+
+	removeGroundOverlay(options : MapContextRemoveGroundOverlayOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		map.removeGroundOverlay(options.id, new (class implements ICallBack {
+			override callback(param : any | null) {
+				if (param == true) {
+					const result = { "errMsg": "removeGroundOverlay:ok" } as UTSJSONObject
+					options.success?.(result)
+					options.complete?.(result)
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500005))
+					options.fail?.(error)
+					options.complete?.(error)
+				}
+			}
+		}))
+	}
+
+	removeMarkers(options : MapContextRemoveMarkersOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const ids : Array<Int> = []
+		options.markerIds.forEach((value : number) => {
+			ids.push(value.toInt())
+		})
+		map.removeMarkers(ids)
+		const result = { "errMsg": "removeMarkers:ok" } as UTSJSONObject
+		options.success?.(result)
+		options.complete?.(result)
+	}
+
+	updateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : void {
+		const map = this.internalMap.get()
+		if (map == null) {
+			this.notifyMapNotReady(options.fail, options.complete)
+			return
+		}
+		const ground = new GroundModel(
+			options.id,
+			convertImageUrl(options.src),
+			new LatLngModel(options.bounds.southwest.latitude.toDouble(), options.bounds.southwest.longitude.toDouble()),
+			new LatLngModel(options.bounds.northeast.latitude.toDouble(), options.bounds.northeast.longitude.toDouble()),
+			options.visible ?? false,
+			(options.zIndex ?? 0).toDouble(),
+			(options.opacity ?? 1).toDouble()
+		)
+		map.updateGroundOverlay(ground, new (class implements ICallBack {
+			override callback(param : any | null) {
+				if (param == true) {
+					const result = { "errMsg": "updateGroundOverlay:ok" } as UTSJSONObject
+					options.success?.(result)
+					options.complete?.(result)
+				} else {
+					// 图片加载失败 → 500006，其他创建失败 → 500012（对齐腾讯）
+					const errCode = param == "network image loading failed" ? 500006 : 500012
+					const error = new MapContextFailImpl(getErrcode(errCode))
+					options.fail?.(error)
+					options.complete?.(error)
+				}
+			}
+		}))
+	}
+}

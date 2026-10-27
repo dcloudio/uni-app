@@ -24,6 +24,7 @@ import {
     getClientCertificate,
     parseUrl,
 } from './utils.uts'
+import { InterceptorType, HttpInterceptorChain } from './polyfill.js'
 import {
     getCookieSync,
     setCookieSync,
@@ -290,9 +291,6 @@ export const request = defineTaskApi<UniRequestOptions<Object>, UniRequestSucces
             const realHeaders = headers as Record<string, string | string[]>
             const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie']
             const location = realHeaders['location'] || realHeaders['Location']
-            if (location) {
-                lastUrl = location as string
-            }
             if (setCookieHeader) {
                 try {
                     setCookieSync(lastUrl, setCookieHeader as string[])
@@ -302,9 +300,28 @@ export const request = defineTaskApi<UniRequestOptions<Object>, UniRequestSucces
                     console.log('setCookieSync error setCookieHeader:', JSON.stringify(setCookieHeader))
                 }
             }
-            // TODO headersReceive存在bug，暂不支持回调给用户。
-            // emitter.emit('headersReceive', headers);
+            if (location) {
+                lastUrl = location as string
+            }
         })
+
+        if (HttpInterceptorChain) {
+            const interceptorChain = new HttpInterceptorChain()
+            class RedirectInterceptor {
+                interceptorType: ESObject = InterceptorType.REDIRECTION;
+
+                async interceptorHandle(reqContext: ESObject, rspContext: ESObject): Promise<ESObject> {
+                    const url: string = rspContext.header['Location'] || rspContext.header['location']
+                    if (!url) {
+                        return true
+                    }
+                    reqContext.header['Cookie'] = getCookieSync(url)
+                    return true;
+                }
+            }
+            interceptorChain.addChain([new RedirectInterceptor()])
+            interceptorChain.apply(httpRequest)
+        }
 
         let headersReceiveTriggered = false
         const bufs = [] as buffer.Buffer[]

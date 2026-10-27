@@ -1,0 +1,62 @@
+export const UniAnimationViewErrorSubject = 'uni-animation-view'
+
+export const UNI_ANIMATION_VIEW_ERR_INVALID_PATH : number = 1100601
+export const UNI_ANIMATION_VIEW_ERR_LOTTIE_FAILED : number = 1100602
+
+export const UniAnimationViewUniErrors : Map<number, string> = new Map([
+	[UNI_ANIMATION_VIEW_ERR_INVALID_PATH, 'animation-view:fail invalid path'],
+	[UNI_ANIMATION_VIEW_ERR_LOTTIE_FAILED, 'animation-view:fail lottie load failed']
+])
+
+export class AnimationViewFailImpl extends UniError {
+	override errCode : number
+
+	constructor(errCode : number) {
+		super()
+		this.errSubject = UniAnimationViewErrorSubject
+		this.errCode = errCode
+	}
+}
+
+export class AnimationViewSourceError extends SourceError {
+	constructor(message : string, subject : string | null = null, code : number | null = null) {
+		// #ifdef APP-IOS
+		super()
+		this.message = message
+		// #endif      
+		// #ifndef APP-IOS
+		super(message)
+		// #endif
+		if (subject != null) {
+			this.subject = subject
+		}
+		if (code != null) {
+			this.code = code
+		}
+	}
+}
+
+function normalizeMessage(errCode : number, errMsg : string | null) : string {
+	if (errMsg != null && errMsg.length > 0) {
+		return errMsg
+	}
+	const defaultMessage = UniAnimationViewUniErrors.get(errCode)
+	return defaultMessage != null ? defaultMessage! : ''
+}
+
+export function createAnimationViewInvalidPathError(
+	errMsg : string | null = null
+) : AnimationViewFailImpl {
+	const error = new AnimationViewFailImpl(UNI_ANIMATION_VIEW_ERR_INVALID_PATH)
+	error.errMsg = normalizeMessage(UNI_ANIMATION_VIEW_ERR_INVALID_PATH, errMsg)
+	return error
+}
+
+export function createAnimationViewLottieError(
+	sourceMessage : string
+) : AnimationViewFailImpl {
+	const error = new AnimationViewFailImpl(UNI_ANIMATION_VIEW_ERR_LOTTIE_FAILED)
+	error.errMsg = normalizeMessage(UNI_ANIMATION_VIEW_ERR_LOTTIE_FAILED, null)
+	error.cause = new AnimationViewSourceError(sourceMessage, 'lottie') as Error
+	return error
+}

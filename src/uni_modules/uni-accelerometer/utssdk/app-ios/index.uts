@@ -1,0 +1,199 @@
+import {
+	AccelerometerErrorCode,
+	AccelerometerInterval,
+	OnAccelerometerChangeCallback,
+	OnAccelerometerChangeCallbackResult,
+	StartAccelerometerComplete,
+	StartAccelerometerCompleteCallback,
+	StartAccelerometerFail,
+	StartAccelerometerFailCallback,
+	StartAccelerometerOptions,
+	StartAccelerometerSuccess,
+	StartAccelerometerSuccessCallback,
+	StopAccelerometerComplete,
+	StopAccelerometerCompleteCallback,
+	StopAccelerometerFail,
+	StopAccelerometerFailCallback,
+	StopAccelerometerSuccess,
+	StopAccelerometerSuccessCallback,
+	StopAccelerometerOptions
+} from '../interface.uts'
+import { createStartAccelerometerFail, createStopAccelerometerFail } from '../unierror.uts'
+
+const accelerometerStartOkMsg = 'startAccelerometer:ok'
+const accelerometerStopOkMsg = 'stopAccelerometer:ok'
+const defaultAccelerometerInterval : AccelerometerInterval = 'normal'
+
+
+let accelerometerStarted : boolean = false
+let accelerometerNativeListenerBound : boolean = false
+const accelerometerCallbacks : Map<number, OnAccelerometerChangeCallback> = new Map<number, OnAccelerometerChangeCallback>()
+let accelerometerCallbackId = 1;
+
+function accelerometerCreateStartSuccess(errMsg : string) : StartAccelerometerSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function accelerometerCreateStopSuccess(errMsg : string) : StopAccelerometerSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function AccelerometerNormalizeInterval(interval : AccelerometerInterval | null) : string {
+	if (interval != null) {
+		if (interval == 'game') {
+			return 'game'
+		}
+		if (interval == 'ui') {
+			return 'ui'
+		}
+	}
+	return defaultAccelerometerInterval
+}
+
+function dispatchAccelerometerChange(x : number, y : number, z : number) : void {
+	const result : OnAccelerometerChangeCallbackResult = {
+		x: x,
+		y: y,
+		z: z
+	}
+	for (const cb of accelerometerCallbacks.values) {
+		cb(result);
+	}
+}
+
+function accelerometerEnsureNativeListener() : void {
+	if (accelerometerNativeListenerBound) {
+		return
+	}
+	AccelerometerNative.setListener((x : number, y : number, z : number) : void => {
+		dispatchAccelerometerChange(x, y, z)
+	})
+	accelerometerNativeListenerBound = true
+}
+
+function accelerometerCallStartSuccess(options : StartAccelerometerOptions | null) : void {
+	const result = accelerometerCreateStartSuccess(accelerometerStartOkMsg)
+	options?.success?.(result)
+	options?.complete?.(result)
+}
+
+function accelerometerCallStartFail(options : StartAccelerometerOptions | null, fail : StartAccelerometerFail) : void {
+	options?.fail?.(fail)
+	options?.complete?.(fail)
+}
+
+function accelerometerCallStopSuccess(options : StopAccelerometerOptions | null) : void {
+	const result = accelerometerCreateStopSuccess(accelerometerStopOkMsg)
+	options?.success?.(result)
+	options?.complete?.(result)
+}
+
+function accelerometerCallStopFail(options : StopAccelerometerOptions | null, fail : StopAccelerometerFail) : void {
+	options?.fail?.(fail)
+	options?.complete?.(fail)
+}
+
+function accelerometerCreateNativeData(nativeCode : number, action : string) : UTSJSONObject {
+	return {
+		platformCode: nativeCode,
+		action: action
+	} as UTSJSONObject
+}
+
+function accelerometerMapStartNativeError(nativeCode : number) : StartAccelerometerFail {
+	const data = accelerometerCreateNativeData(nativeCode, 'startAccelerometer')
+	let errCode : AccelerometerErrorCode = 604
+	if (nativeCode == 801 || nativeCode == 802 || nativeCode == 803 || nativeCode == 804) {
+		errCode = nativeCode as AccelerometerErrorCode
+	} else {
+		errCode = 602
+	}
+	return createStartAccelerometerFail(errCode, 'startAccelerometer:fail', data)
+}
+
+function accelerometerMapStopNativeError(nativeCode : number) : StopAccelerometerFail {
+	const data = accelerometerCreateNativeData(nativeCode, 'stopAccelerometer')
+	let errCode : AccelerometerErrorCode = 604
+	if (nativeCode == 801 || nativeCode == 802 || nativeCode == 803 || nativeCode == 804) {
+		errCode = nativeCode as AccelerometerErrorCode
+	} else {
+		errCode = 603
+	}
+	return createStopAccelerometerFail(errCode, 'stopAccelerometer:fail', data)
+}
+
+export function onAccelerometerChange(callback : OnAccelerometerChangeCallback) : number {
+	accelerometerEnsureNativeListener()
+	if (!accelerometerStarted) {
+		startAccelerometer()
+	}
+	const nowId = accelerometerCallbackId++;
+	accelerometerCallbacks.set(nowId, callback);
+	return nowId;
+}
+
+export function offAccelerometerChange(id : number | null = null) : void {
+	if (id == null) {
+		accelerometerCallbacks.clear();
+	}else {
+		accelerometerCallbacks.delete(id);
+	}
+	if (accelerometerCallbacks.count == 0) {
+		AccelerometerNative.removeListener()
+		accelerometerNativeListenerBound = false
+	}
+}
+
+export function startAccelerometer(options : StartAccelerometerOptions | null = null) : void {
+	accelerometerEnsureNativeListener()
+	if (accelerometerStarted) {
+		accelerometerCallStartSuccess(options)
+		return
+	}
+	const interval = AccelerometerNormalizeInterval(options?.interval ?? null)
+	const nativeCode = AccelerometerNative.start(interval)
+	if (nativeCode != 0) {
+		accelerometerCallStartFail(options, accelerometerMapStartNativeError(nativeCode))
+		return
+	}
+	accelerometerStarted = true
+	accelerometerCallStartSuccess(options)
+}
+
+export function stopAccelerometer(options : StopAccelerometerOptions | null = null) : void {
+	if (!accelerometerStarted) {
+		accelerometerCallStopSuccess(options)
+		return
+	}
+	const nativeCode = AccelerometerNative.stop()
+	if (nativeCode != 0) {
+		accelerometerCallStopFail(options, accelerometerMapStopNativeError(nativeCode))
+		return
+	}
+	accelerometerStarted = false
+	accelerometerCallStopSuccess(options)
+}
+
+export {
+	AccelerometerInterval,
+	OnAccelerometerChangeCallback,
+	OnAccelerometerChangeCallbackResult,
+	StartAccelerometerComplete,
+	StartAccelerometerCompleteCallback,
+	StartAccelerometerFail,
+	StartAccelerometerFailCallback,
+	StartAccelerometerOptions,
+	StartAccelerometerSuccess,
+	StartAccelerometerSuccessCallback,
+	StopAccelerometerComplete,
+	StopAccelerometerCompleteCallback,
+	StopAccelerometerFail,
+	StopAccelerometerFailCallback,
+	StopAccelerometerSuccess,
+	StopAccelerometerSuccessCallback,
+	StopAccelerometerOptions
+} from '../interface.uts'

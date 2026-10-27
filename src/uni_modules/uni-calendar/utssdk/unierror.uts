@@ -1,0 +1,64 @@
+import { CalendarErrorCode, IAddPhoneCalendarFail, IAddPhoneRepeatCalendarFail } from './interface.uts'
+
+export const CalendarUniErrorSubject = 'uni-calendar'
+
+export const CalendarUniErrors : Map<number, string> = new Map([
+	[601, 'title is required'],
+	[602, 'startTime is invalid'],
+	[603, 'endTime is invalid'],
+	[604, 'alarmOffset requires alarm'],
+	[606, 'repeat rule is invalid'],
+	[607, 'calendar service is unavailable'],
+	[608, 'add calendar event failed'],
+	[609, 'calendar creation canceled']
+])
+
+export function getCalendarErrorMessage(errCode : CalendarErrorCode) : string {
+	return CalendarUniErrors.get(errCode) ?? ''
+}
+
+export class AddPhoneCalendarFailImpl extends UniError implements IAddPhoneCalendarFail {
+	override errCode : CalendarErrorCode
+
+	constructor(errCode : CalendarErrorCode) {
+		super()
+		this.errCode = errCode
+		this.errSubject = CalendarUniErrorSubject
+		this.errMsg = getCalendarErrorMessage(errCode)
+	}
+}
+
+export class AddPhoneRepeatCalendarFailImpl extends UniError implements IAddPhoneRepeatCalendarFail {
+	override errCode : CalendarErrorCode
+
+	constructor(errCode : CalendarErrorCode) {
+		super()
+		this.errCode = errCode
+		this.errSubject = CalendarUniErrorSubject
+		this.errMsg = getCalendarErrorMessage(errCode)
+	}
+}
+
+export function createAddPhoneCalendarFail(errCode : CalendarErrorCode, errMsg : string | null = null, data : UTSJSONObject | null = null, cause : Error | null = null) : AddPhoneCalendarFailImpl {
+	const fail = new AddPhoneCalendarFailImpl(errCode)
+	if (errMsg != null) {
+		fail.errMsg = errMsg
+	}
+	fail.data = data
+	if (cause != null) {
+		fail.cause = cause
+	}
+	return fail
+}
+
+export function createAddPhoneRepeatCalendarFail(errCode : CalendarErrorCode, errMsg : string | null = null, data : UTSJSONObject | null = null, cause : Error | null = null) : AddPhoneRepeatCalendarFailImpl {
+	const fail = new AddPhoneRepeatCalendarFailImpl(errCode)
+	if (errMsg != null) {
+		fail.errMsg = errMsg
+	}
+	fail.data = data
+	if (cause != null) {
+		fail.cause = cause
+	}
+	return fail
+}

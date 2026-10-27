@@ -1,0 +1,994 @@
+import { JSExport } from "JavaScriptCore";
+import { UIColor, UIView } from "UIKit";
+import { UTSiOS } from "DCloudUTSFoundation";
+import type {
+	AmapAnchor,
+	AmapLocationObject,
+	AmapMapMarkerCallout,
+	AmapMapMarkerLabel,
+	AmapMarker,
+	AmapContext,
+	CreateAmapContext,
+	Circle,
+	Control,
+	ControlPosition,
+	MapContextAddGroundOverlayOptions,
+	MapContextAddMarkersOptions,
+	MapContextFail,
+	MapContextGetCenterLocationOptions,
+	MapContextGetRegionOptions,
+	MapContextGetRegionResult,
+	MapContextGetScaleOptions,
+	MapContextGetScaleResult,
+	MapContextIncludePointsOptions,
+	MapContextMoveAlongOptions,
+	MapContextMoveToLocationOptions,
+	MapContextRemoveGroundOverlayOptions,
+	MapContextRemoveMarkersOptions,
+	MapContextTranslateMarkerOptions,
+	MapContextUpdateGroundOverlayOptions,
+	Polygon,
+	Polyline
+} from "../interface";
+import { MapContextFailImpl, getErrcode } from "../unierror";
+
+export {
+	AmapAnchor,
+	AmapLocationObject,
+	AmapMapMarkerCallout,
+	AmapMapMarkerLabel,
+	AmapMarker,
+	AmapContext,
+	CreateAmapContext,
+	Circle,
+	Control,
+	MapContextAddGroundOverlayOptions,
+	MapContextAddMarkersOptions,
+	MapContextFail,
+	MapContextGetCenterLocationOptions,
+	MapContextGetRegionOptions,
+	MapContextGetRegionResult,
+	MapContextGetScaleOptions,
+	MapContextGetScaleResult,
+	MapContextIncludePointsOptions,
+	MapContextMoveAlongOptions,
+	MapContextMoveToLocationOptions,
+	MapContextRemoveGroundOverlayOptions,
+	MapContextRemoveMarkersOptions,
+	MapContextTranslateMarkerOptions,
+	MapContextUpdateGroundOverlayOptions,
+	Polygon,
+	Polyline
+} from "../interface";
+
+@UTSiOS.keyword("private")
+class AmapContextRegistry {
+	private static mapViews = new Map<string, InnerAmapMap>();
+
+	static set(contextId : string, mapView : InnerAmapMap) : void {
+		this.mapViews.set(contextId, mapView);
+	}
+
+	static get(contextId : string) : InnerAmapMap | null {
+		return this.mapViews.get(contextId) ?? null;
+	}
+
+	static remove(contextId : string) : void {
+		this.mapViews.delete(contextId);
+	}
+}
+
+export interface UniAmapElement extends JSExport {
+	moveAlong(options : MapContextMoveAlongOptions) : void;
+	translateMarker(options : MapContextTranslateMarkerOptions) : void;
+	addGroundOverlay(options : MapContextAddGroundOverlayOptions) : void;
+	updateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : void;
+	removeGroundOverlay(options : MapContextRemoveGroundOverlayOptions) : void;
+	getCenterLocation(options : MapContextGetCenterLocationOptions) : void;
+	addMarkers(options : MapContextAddMarkersOptions) : void;
+	removeMarkers(options : MapContextRemoveMarkersOptions) : void;
+	getScale(options : MapContextGetScaleOptions) : void;
+	moveToLocation(options : MapContextMoveToLocationOptions) : void;
+	getRegion(options : MapContextGetRegionOptions) : void;
+	includePoints(options : MapContextIncludePointsOptions) : void;
+}
+
+export class UniAmapElementImpl extends UniElementImpl implements UniAmapElement {
+	override tagName : string = "AMAP";
+	override nodeName : string = "AMAP";
+
+	override getIOSView() : UIView | null {
+		const child = this.firstChild;
+		if (child == null) {
+			return null;
+		}
+		const isNativeViewElement = child instanceof UniNativeViewElement;
+		if (!isNativeViewElement) {
+			return null;
+		}
+		const nativeView = (child as UniNativeViewElement).getIOSView();
+		return nativeView;
+	}
+
+	private unsupported(
+		fail : ((result : MapContextFail) => void) | null,
+		complete : ((result : any) => void) | null
+	) : void {
+		const error = new MapContextFailImpl(getErrcode(500012));
+		fail?.(error);
+		complete?.(error);
+	}
+
+	moveAlong(options : MapContextMoveAlongOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	translateMarker(options : MapContextTranslateMarkerOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	addGroundOverlay(options : MapContextAddGroundOverlayOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	updateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	removeGroundOverlay(options : MapContextRemoveGroundOverlayOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	getCenterLocation(options : MapContextGetCenterLocationOptions) : void {
+		const nativeView = this.getIOSView();
+		const isInnerAmapMap = nativeView != null && nativeView instanceof InnerAmapMap;
+		if (!isInnerAmapMap) {
+			const error = new MapContextFailImpl(getErrcode(500001));
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+		const center = (nativeView as InnerAmapMap).getCenterLocation();
+		const result : AmapLocationObject = {
+			latitude: center.latitude,
+			longitude: center.longitude
+		};
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	addMarkers(options : MapContextAddMarkersOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	removeMarkers(options : MapContextRemoveMarkersOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	getScale(options : MapContextGetScaleOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	moveToLocation(options : MapContextMoveToLocationOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	getRegion(options : MapContextGetRegionOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+
+	includePoints(options : MapContextIncludePointsOptions) : void {
+		this.unsupported(options.fail ?? null, options.complete ?? null);
+	}
+}
+
+function convertMarkerCallout(callout : AmapMapMarkerCallout) : AmapMarkerCalloutModel {
+	const model = new AmapMarkerCalloutModel();
+	model.content = callout.content;
+	if (callout.color != null) {
+		model.color = UTSiOS.colorWithString(callout.color!);
+	}
+	if (callout.fontSize != null) {
+		model.fontSize = callout.fontSize!.toDouble();
+	}
+	if (callout.borderRadius != null) {
+		model.borderRadius = callout.borderRadius!.toDouble();
+	}
+	if (callout.borderWidth != null) {
+		model.borderWidth = callout.borderWidth!.toDouble();
+	}
+	if (callout.borderColor != null) {
+		model.borderColor = UTSiOS.colorWithString(callout.borderColor!);
+	}
+	if (callout.bgColor != null) {
+		model.bgColor = UTSiOS.colorWithString(callout.bgColor!);
+	}
+	if (callout.padding != null) {
+		model.padding = callout.padding!.toDouble();
+	}
+	model.display = callout.display ?? "BYCLICK";
+	model.textAlign = callout.textAlign ?? "left";
+	return model;
+}
+
+function convertMarkerLabel(label : AmapMapMarkerLabel) : AmapMarkerLabelModel {
+	const model = new AmapMarkerLabelModel();
+	model.content = label.content;
+	if (label.color != null) {
+		model.color = UTSiOS.colorWithString(label.color!);
+	}
+	if (label.fontSize != null) {
+		model.fontSize = label.fontSize!.toDouble();
+	}
+	model.x = label.x?.toDouble() ?? 0.0;
+	model.y = label.y?.toDouble() ?? 0.0;
+	if (label.borderWidth != null) {
+		model.borderWidth = label.borderWidth!.toDouble();
+	}
+	if (label.borderColor != null) {
+		model.borderColor = UTSiOS.colorWithString(label.borderColor!);
+	}
+	if (label.bgColor != null) {
+		model.bgColor = UTSiOS.colorWithString(label.bgColor!);
+	}
+	if (label.borderRadius != null) {
+		model.borderRadius = label.borderRadius!.toDouble();
+	}
+	if (label.padding != null) {
+		model.padding = label.padding!.toDouble();
+	}
+	model.textAlign = label.textAlign ?? "left";
+	return model;
+}
+
+function convertMarkers(markers : Array<AmapMarker>) : Array<AmapMarkerModel> {
+	return markers.map((marker : AmapMarker) : AmapMarkerModel => {
+		let iconPath = marker.iconPath ?? "";
+		if (!iconPath.startsWith("http://") && !iconPath.startsWith("https://")) {
+			iconPath = UTSiOS.convert2AbsFullPath(iconPath);
+		}
+
+		const model = new AmapMarkerModel(
+			id = marker.id.toInt(),
+			latitude = marker.latitude.toDouble(),
+			longitude = marker.longitude.toDouble(),
+			iconPath = iconPath
+		);
+		model.title = marker.title;
+		model.rotate = marker.rotate?.toDouble() ?? 0.0;
+		model.alpha = marker.alpha?.toDouble() ?? 1.0;
+		model.width = marker.width?.toDouble();
+		model.height = marker.height?.toDouble();
+		model.ariaLabel = marker.ariaLabel;
+		model.anchorX = marker.anchor?.x.toDouble() ?? 0.5;
+		model.anchorY = marker.anchor?.y.toDouble() ?? 1.0;
+		model.clusterId = marker.clusterId?.toInt();
+		model.joinCluster = marker.joinCluster ?? false;
+		const label = marker.label;
+		if (label != null) {
+			model.label = convertMarkerLabel(label!);
+		}
+		const callout = marker.callout;
+		if (callout != null) {
+			model.callout = convertMarkerCallout(callout!);
+		}
+		return model;
+	});
+}
+
+function convertPolylines(polylines : Array<Polyline>) : Array<AmapPolylineModel> {
+	return polylines.map((polyline : Polyline) : AmapPolylineModel => {
+		const pointModels = polyline.points.map((point : AmapLocationObject) : AmapPolylinePointModel => {
+			return new AmapPolylinePointModel(
+				latitude = point.latitude.toDouble(),
+				longitude = point.longitude.toDouble()
+			);
+		});
+		const model = new AmapPolylineModel(points = pointModels);
+		if (polyline.color != null) {
+			model.color = UTSiOS.colorWithString(polyline.color!);
+		}
+		model.width = polyline.width?.toDouble();
+		model.dottedLine = polyline.dottedLine ?? false;
+		model.arrowLine = polyline.arrowLine ?? false;
+		if (polyline.arrowIconPath != null && polyline.arrowIconPath!.length > 0) {
+			var arrowIconPath = polyline.arrowIconPath!;
+			if (!arrowIconPath.startsWith("http://") && !arrowIconPath.startsWith("https://")) {
+				arrowIconPath = UTSiOS.convert2AbsFullPath(arrowIconPath);
+			}
+			model.arrowIconPath = arrowIconPath;
+		}
+		if (polyline.borderColor != null) {
+			model.borderColor = UTSiOS.colorWithString(polyline.borderColor!);
+		}
+		model.borderWidth = polyline.borderWidth?.toDouble();
+		if (polyline.colorList != null) {
+			model.colorList = polyline.colorList!.map((color : string) : UIColor => {
+				return UTSiOS.colorWithString(color);
+			});
+		}
+		return model;
+	});
+}
+
+function convertMoveAlongPath(path : Array<AmapLocationObject>) : Array<AmapPolylinePointModel> {
+	return path.map((point : AmapLocationObject) : AmapPolylinePointModel => {
+		return new AmapPolylinePointModel(
+			latitude = point.latitude.toDouble(),
+			longitude = point.longitude.toDouble()
+		);
+	});
+}
+
+function convertGroundOverlay(options : MapContextAddGroundOverlayOptions) : AmapGroundOverlayModel {
+	let src = options.src ?? "";
+	if (!src.startsWith("http://") && !src.startsWith("https://")) {
+		src = UTSiOS.convert2AbsFullPath(src);
+	}
+	return new AmapGroundOverlayModel(
+		id = options.id,
+		src = src,
+		southwest = new AmapGroundOverlayPointModel(
+			latitude = options.bounds.southwest.latitude.toDouble(),
+			longitude = options.bounds.southwest.longitude.toDouble()
+		),
+		northeast = new AmapGroundOverlayPointModel(
+			latitude = options.bounds.northeast.latitude.toDouble(),
+			longitude = options.bounds.northeast.longitude.toDouble()
+		),
+		visible = options.visible ?? false,
+		zIndex = options.zIndex?.toDouble() ?? 0.0,
+		opacity = options.opacity?.toDouble() ?? 1.0
+	);
+}
+
+function convertUpdateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : AmapGroundOverlayModel {
+	let src = options.src ?? "";
+	if (!src.startsWith("http://") && !src.startsWith("https://")) {
+		src = UTSiOS.convert2AbsFullPath(src);
+	}
+	return new AmapGroundOverlayModel(
+		id = options.id,
+		src = src,
+		southwest = new AmapGroundOverlayPointModel(
+			latitude = options.bounds.southwest.latitude.toDouble(),
+			longitude = options.bounds.southwest.longitude.toDouble()
+		),
+		northeast = new AmapGroundOverlayPointModel(
+			latitude = options.bounds.northeast.latitude.toDouble(),
+			longitude = options.bounds.northeast.longitude.toDouble()
+		),
+		visible = options.visible ?? false,
+		zIndex = options.zIndex?.toDouble() ?? 0.0,
+		opacity = options.opacity?.toDouble() ?? 1.0
+	);
+}
+
+function convertPolygons(polygons : Array<Polygon>) : Array<AmapPolygonModel> {
+	return polygons.map((polygon : Polygon) : AmapPolygonModel => {
+		const pointModels = polygon.points.map((point : AmapLocationObject) : AmapPolygonPointModel => {
+			return new AmapPolygonPointModel(
+				latitude = point.latitude.toDouble(),
+				longitude = point.longitude.toDouble()
+			);
+		});
+		const model = new AmapPolygonModel(points = pointModels);
+		model.strokeWidth = polygon.strokeWidth?.toDouble();
+		if (polygon.strokeColor != null) {
+			model.strokeColor = UTSiOS.colorWithString(polygon.strokeColor!);
+		}
+		if (polygon.fillColor != null) {
+			model.fillColor = UTSiOS.colorWithString(polygon.fillColor!);
+		}
+		model.zIndex = polygon.zIndex?.toDouble() ?? 0.0;
+		return model;
+	});
+}
+
+function convertCircles(circles : Array<Circle>) : Array<AmapCircleModel> {
+	return circles.map((circle : Circle) : AmapCircleModel => {
+		const model = new AmapCircleModel(
+			latitude = circle.latitude.toDouble(),
+			longitude = circle.longitude.toDouble(),
+			radius = circle.radius.toDouble()
+		);
+		if (circle.color != null) {
+			model.strokeColor = UTSiOS.colorWithString(circle.color!);
+		}
+		if (circle.fillColor != null) {
+			model.fillColor = UTSiOS.colorWithString(circle.fillColor!);
+		}
+		model.strokeWidth = circle.strokeWidth?.toDouble();
+		return model;
+	});
+}
+
+function convertIncludePoints(points : Array<AmapLocationObject>) : Array<AmapIncludePointModel> {
+	return points.map((point : AmapLocationObject) : AmapIncludePointModel => {
+		return new AmapIncludePointModel(
+			latitude = point.latitude.toDouble(),
+			longitude = point.longitude.toDouble()
+		);
+	});
+}
+
+export class AmapMap {
+	$element : UniNativeViewElement;
+	private mapView : InnerAmapMap | null = null;
+	private contextId : string = "";
+
+	constructor(element : UniNativeViewElement) {
+		this.$element = element;
+		super.init();
+		this.bindView();
+	}
+
+	private bindView() {
+		if (this.mapView != null) {
+			return;
+		}
+		if (!InnerAmapMap.hasValidAPIKey()) {
+			console.error("未在 Info.plist 中配置 AMapAPIKey，地图初始化已跳过。请在项目 Info.plist设置 AMapAPIKey 后重新打包自定义基座")
+			return;
+		}
+		this.mapView = new InnerAmapMap();
+		this.$element.bindIOSView(this.mapView!);
+		const contextElement : UniElement | null = this.$element.parentElement;
+		this.contextId = contextElement?.getNodeId().toString() ?? "";
+		if (this.contextId.length > 0) {
+			AmapContextRegistry.set(this.contextId, this.mapView!);
+		}
+		this.setOnMapLoadedCallback();
+		this.setOnMapClickCallback();
+		this.setOnMapMarkerTap();
+		this.setOnMapPoiTap();
+		this.setOnMapControlTap();
+		this.setOnMapRegionChange();
+		this.setOnMapCalloutTap();
+		this.setOnMapAnchorPointTap();
+	}
+
+	private setOnMapLoadedCallback() {
+		const element = this.$element
+		this.mapView?.setOnMapLoadedCallback(iCallBack = (param : [String: Any]) : void => {
+			const event = new UniNativeViewEvent("updated", {} as UTSJSONObject)
+			element.dispatchEvent("updated", event)
+		})
+	}
+
+	private setOnMapClickCallback() {
+		const element = this.$element
+		this.mapView?.setOnMapClickCallback(iCallBack = (param : [String: Any]) : void => {
+			const map = param as Map<string, any>
+			const detail = map["detail"] as Map<string, any>
+			const event = new UniNativeViewEvent(map["type"] as string, new UTSJSONObject(detail))
+			element.dispatchEvent("tapNative", event)
+		})
+	}
+
+	private setOnMapMarkerTap() {
+		const element = this.$element
+		this.mapView?.setOnMarkerTapCallback(iCallBack = (param : [String: Any]) : void => {
+			const map = param as Map<string, any>
+			const detail = map["detail"] as Map<string, any>
+			const event = new UniNativeViewEvent(map["type"] as string, new UTSJSONObject(detail))
+			element.dispatchEvent("markertap", event)
+		})
+	}
+
+	private setOnMapCalloutTap() {
+		const element = this.$element
+		this.mapView?.setOnCalloutTapCallback(iCallBack = (param : [String: Any]) : void => {
+			const map = param as Map<string, any>
+			const detail = map["detail"] as Map<string, any>
+			const event = new UniNativeViewEvent(map["type"] as string, new UTSJSONObject(detail))
+			element.dispatchEvent("callouttap", event)
+		})
+	}
+
+	private setOnMapRegionChange() {
+		const element = this.$element
+		this.mapView?.setOnRegionChangeCallback(iCallBack = (param : [String: Any]) : void => {
+			const map = param as Map<string, any>
+			const detail = map["detail"] as Map<string, any>
+			const jsonObject = new UTSJSONObject(detail)
+			jsonObject["type"] = map["type"]
+			jsonObject["causedBy"] = map["causedBy"]
+			const event = new UniNativeViewEvent(map["type"] as string, jsonObject)
+			element.dispatchEvent("regionchange", event)
+		})
+	}
+
+	private setOnMapPoiTap() {
+		const element = this.$element
+		this.mapView?.setOnPoiTapCallback(iCallBack = (param : [String: Any]) : void => {
+			const map = param as Map<string, any>
+			const detail = map["detail"] as Map<string, any>
+			const event = new UniNativeViewEvent(map["type"] as string, new UTSJSONObject(detail))
+			element.dispatchEvent("poitap", event)
+		})
+	}
+
+	private setOnMapControlTap() {
+		const element = this.$element
+		this.mapView?.setOnControlTapCallback(iCallBack = (param : [String: Any]) : void => {
+			const map = param as Map<string, any>
+			const detail = map["detail"] as Map<string, any>
+			const event = new UniNativeViewEvent(map["type"] as string, new UTSJSONObject(detail))
+			element.dispatchEvent("controltap", event)
+		})
+	}
+
+	private setOnMapAnchorPointTap() {
+		const element = this.$element
+		this.mapView?.setOnAnchorPointTapCallback(iCallBack = (param : [String: Any]) : void => {
+			const map = param as Map<string, any>
+			const detail = map["detail"] as Map<string, any>
+			const event = new UniNativeViewEvent(map["type"] as string, new UTSJSONObject(detail))
+			element.dispatchEvent("anchorpointtap", event)
+		})
+	}
+
+	start() {
+		this.bindView();
+	}
+
+	destroy() {
+		if (this.contextId.length > 0) {
+			AmapContextRegistry.remove(this.contextId);
+		}
+		this.mapView?.prepareForDestroy();
+		this.mapView = null;
+		UTSiOS.destroyInstance(this);
+	}
+
+	setCenter(latitude : number, longitude : number, animate : boolean = true) {
+		this.mapView?.setCenter(latitude = latitude.toDouble(), longitude = longitude.toDouble(), animated = animate);
+	}
+
+	setScale(scale : number, animate : boolean = true) {
+		this.mapView?.setScale(scale = scale.toDouble(), animated = animate);
+	}
+
+	setMinScale(zoom : number) {
+		this.mapView?.setMinScale(zoom = zoom.toDouble());
+	}
+
+	setMaxScale(zoom : number) {
+		this.mapView?.setMaxScale(zoom = zoom.toDouble());
+	}
+
+	getScale() : number {
+		return Number.from(this.mapView?.getScale() ?? 16.0);
+	}
+
+	setTheme(theme : string) {
+		this.mapView?.setTheme(theme = theme);
+	}
+
+	setLayerStyle(id : string) {
+		this.mapView?.setLayerStyle(id = id);
+	}
+
+	setShowLocation(show : boolean) {
+		this.mapView?.setShowLocation(show = show);
+	}
+
+	setEnableTraffic(enable : boolean) {
+		this.mapView?.setEnableTraffic(enable = enable);
+	}
+
+	setEnableSatellite(enable : boolean) {
+		this.mapView?.setEnableSatellite(enable = enable);
+	}
+
+	setEnableRotate(enable : boolean) {
+		this.mapView?.setEnableRotate(enable = enable);
+	}
+
+	setEnableZoom(enable : boolean) {
+		this.mapView?.setEnableZoom(enable = enable);
+	}
+
+	setEnableScroll(enable : boolean) {
+		this.mapView?.setEnableScroll(enable = enable);
+	}
+
+	setShowCompass(show : boolean) {
+		this.mapView?.setShowCompass(show = show);
+	}
+
+	setShowScale(show : boolean) {
+		this.mapView?.setShowScale(show = show);
+	}
+
+	setEnable3D(enable : boolean) {
+		this.mapView?.setEnable3D(enable = enable);
+	}
+
+	setEnablePoi(enable : boolean) {
+		this.mapView?.setEnablePoi(enable = enable);
+	}
+
+	setControls(controls : Array<Control>) {
+		this.mapView?.setControls(controls = controls.map((control : Control) : AmapControlModel => {
+			const controlPosition = new AmapControlPosition(
+				left = (control.position.left ?? 0).toDouble(),
+				top = (control.position.top ?? 0).toDouble(),
+				width = (control.position.width ?? 0).toDouble(),
+				height = (control.position.height ?? 0).toDouble()
+			)
+			return new AmapControlModel(
+				position = controlPosition,
+				iconPath = control.iconPath,
+				id = control.id?.toInt(),
+				clickable = control.clickable ?? false
+			)
+		}))
+	}
+
+	setEnableBuilding(enable : boolean) {
+		this.mapView?.setEnableBuilding(enable = enable);
+	}
+
+	setEnableIndoorMap(enable : boolean) {
+		this.mapView?.setEnableIndoorMap(enable = enable);
+	}
+
+	setEnableOverlooking(enable : boolean) {
+		this.mapView?.setEnableOverlooking(enable = enable);
+	}
+
+	setRotate(rotate : number, animate : boolean = true) {
+		this.mapView?.setRotate(rotate = rotate.toDouble(), animated = animate);
+	}
+
+	setSkew(skew : number, animate : boolean = true) {
+		this.mapView?.setSkew(skew = skew.toDouble(), animated = animate);
+	}
+
+	setCameraPosition(latitude : number, longitude : number, zoom : number, skew : number, rotate : number, animate : boolean) {
+		this.mapView?.setCameraPosition(
+			latitude = latitude.toDouble(),
+			longitude = longitude.toDouble(),
+			zoom = zoom.toDouble(),
+			skew = skew.toDouble(),
+			rotate = rotate.toDouble(),
+			animated = animate
+		);
+	}
+
+	requestLocationPermission(callback : () => void) {
+		this.mapView?.requestLocationPermission();
+		callback();
+	}
+
+	setMarkers(markers : Array<AmapMarker>) {
+		this.mapView?.setMarkers(markers = convertMarkers(markers));
+	}
+
+	setPolyline(polylines : Array<Polyline>) {
+		this.mapView?.setPolyline(models = convertPolylines(polylines));
+	}
+
+	setPolygons(polygons : Array<Polygon>) {
+		this.mapView?.setPolygons(models = convertPolygons(polygons));
+	}
+
+	setCircles(circles : Array<Circle>) {
+		this.mapView?.setCircles(models = convertCircles(circles));
+	}
+
+	setIncludePoints(points : Array<AmapLocationObject>, animate : boolean = true) {
+		this.mapView?.setIncludePoints(
+			points = convertIncludePoints(points),
+			animated = animate
+		);
+	}
+}
+
+export function createAmapContext(mapId : string, component : ComponentPublicInstance | null) : AmapContext | null {
+	let element : UniElement | null = null;
+	if (component == null) {
+		element = uni.getElementById(mapId) as UniElement | null;
+	} else {
+		element = component!.$el(mapId) as UniElement | null;
+	}
+	if (element == null) {
+		return null;
+	}
+	const contextId : string = element.getNodeId().toString();
+	if (contextId.length == 0) {
+		return null;
+	}
+	return new AmapContextImpl(contextId);
+}
+
+@UTSiOS.keyword("private")
+class AmapContextImpl implements AmapContext {
+	constructor(private contextId : string) {}
+
+	// mapView 未就绪时区分原因：APIKey 未配置返回 500013，否则返回 fallback 错误码
+	private mapViewError(fallback : number) : MapContextFailImpl {
+		return new MapContextFailImpl(getErrcode(InnerAmapMap.hasValidAPIKey() ? fallback : 500013));
+	}
+
+	getCenterLocation(options : MapContextGetCenterLocationOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+		const center = mapView!.getCenterLocation();
+		const result : AmapLocationObject = {
+			latitude: center.latitude,
+			longitude: center.longitude
+		};
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	moveToLocation(options : MapContextMoveToLocationOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		const hasLatitude = options.latitude != null;
+		const hasLongitude = options.longitude != null;
+		if (hasLatitude != hasLongitude) {
+			const error = new MapContextFailImpl(getErrcode(500012));
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		if (hasLatitude && hasLongitude) {
+			mapView!.setCenter(
+				latitude = options.latitude!.toDouble(),
+				longitude = options.longitude!.toDouble(),
+				animated = true
+			);
+		} else if (!mapView!.moveToCurrentLocation()) {
+			const error = new MapContextFailImpl(getErrcode(500002));
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		const result = { "errMsg": "moveToLocation:ok" } as UTSJSONObject;
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	translateMarker(options : MapContextTranslateMarkerOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		// duration 毫秒；rotate 度；autoRotate 优先（iconView 隔离版，含 includePoints）
+		const animationDuration = options.duration?.toDouble() ?? 1000.0;
+		mapView!.translateMarker(
+			markerId = options.markerId.toInt(),
+			latitude = options.destination.latitude.toDouble(),
+			longitude = options.destination.longitude.toDouble(),
+			duration = animationDuration,
+			rotate = options.rotate?.toDouble(),
+			moveWithRotate = options.moveWithRotate ?? false,
+			autoRotate = options.autoRotate ?? false,
+			callback = (success : boolean) : void => {
+				if (success) {
+					const result = { "errMsg": "translateMarker:ok" } as UTSJSONObject;
+					options.success?.(result);
+					options.complete?.(result);
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500003));
+					options.fail?.(error);
+					options.complete?.(error);
+				}
+			}
+		);
+	}
+
+	includePoints(options : MapContextIncludePointsOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		mapView!.setIncludePoints(
+			points = convertIncludePoints(options.points),
+			animated = true
+		);
+		const result = { "errMsg": "includePoints:ok" } as UTSJSONObject;
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	getRegion(options : MapContextGetRegionOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		const bounds = mapView!.getRegion();
+		const result : MapContextGetRegionResult = {
+			southwest: {
+				latitude: bounds.southwestLatitude,
+				longitude: bounds.southwestLongitude
+			},
+			northeast: {
+				latitude: bounds.northeastLatitude,
+				longitude: bounds.northeastLongitude
+			}
+		};
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	getScale(options : MapContextGetScaleOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		const result : MapContextGetScaleResult = {
+			scale: mapView!.getScale()
+		};
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	addGroundOverlay(options : MapContextAddGroundOverlayOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		mapView!.addGroundOverlay(
+			model = convertGroundOverlay(options),
+			callback = (success : boolean) : void => {
+				if (success) {
+					const result = { "errMsg": "addGroundOverlay:ok" } as UTSJSONObject;
+					options.success?.(result);
+					options.complete?.(result);
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500004));
+					options.fail?.(error);
+					options.complete?.(error);
+				}
+			}
+		);
+	}
+
+	addMarkers(options : MapContextAddMarkersOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		mapView!.addMarkers(
+			markers = convertMarkers(options.markers),
+			clear = options.clear ?? false
+		);
+		const result = { "errMsg": "addMarkers:ok" } as UTSJSONObject;
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	moveAlong(options : MapContextMoveAlongOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		mapView!.moveAlong(
+			markerId = options.markerId.toInt(),
+			path = convertMoveAlongPath(options.path),
+			duration = options.duration?.toDouble() ?? 1000.0,
+			callback = (success : boolean) : void => {
+				if (success) {
+					const result = { "errMsg": "moveAlong:ok" } as UTSJSONObject;
+					options.success?.(result);
+					options.complete?.(result);
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500003));
+					options.fail?.(error);
+					options.complete?.(error);
+				}
+			}
+		);
+	}
+
+	removeGroundOverlay(options : MapContextRemoveGroundOverlayOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		mapView!.removeGroundOverlay(
+			id = options.id,
+			callback = (success : boolean) : void => {
+				if (success) {
+					const result = { "errMsg": "removeGroundOverlay:ok" } as UTSJSONObject;
+					options.success?.(result);
+					options.complete?.(result);
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500005));
+					options.fail?.(error);
+					options.complete?.(error);
+				}
+			}
+		);
+	}
+
+	removeMarkers(options : MapContextRemoveMarkersOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		mapView!.removeMarkers(ids = options.markerIds);
+		const result = { "errMsg": "removeMarkers:ok" } as UTSJSONObject;
+		options.success?.(result);
+		options.complete?.(result);
+	}
+
+	updateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : void {
+		const mapView = AmapContextRegistry.get(this.contextId);
+		if (mapView == null) {
+			const error = this.mapViewError(500012);
+			options.fail?.(error);
+			options.complete?.(error);
+			return;
+		}
+
+		mapView!.updateGroundOverlay(
+			model = convertUpdateGroundOverlay(options),
+			callback = (success : boolean) : void => {
+				if (success) {
+					const result = { "errMsg": "updateGroundOverlay:ok" } as UTSJSONObject;
+					options.success?.(result);
+					options.complete?.(result);
+				} else {
+					const error = new MapContextFailImpl(getErrcode(500005));
+					options.fail?.(error);
+					options.complete?.(error);
+				}
+			}
+		);
+	}
+}

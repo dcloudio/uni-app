@@ -1,7 +1,3 @@
 {
-	"deploymentTarget": "11",
-	"validArchitectures": [
-		"arm64",
-		"x86_64"
-	]
+	"deploymentTarget": "13"
 }

@@ -1,0 +1,430 @@
+export type AccelerometerInterval =
+  /**
+   * 	适用于更新游戏的回调频率，约 20ms/次 左右
+   */
+	'game' |
+  /**
+   * 适用于更新 UI 的回调频率，约 60ms/次 左右
+   */
+	'ui' |
+  /**
+   * 普通的回调频率，约 200ms/次 左右
+   */
+	'normal'
+
+export type AccelerometerErrorCode =
+	601 |
+	602 |
+	603 |
+	604 |
+	701 |
+	702 |
+	703 |
+	801 |
+	802 |
+	803 |
+	804 |
+	501 |
+	502 |
+	503 |
+	901
+
+export interface IAccelerometerError extends IUniError {
+	errCode : AccelerometerErrorCode
+}
+
+export interface IStartAccelerometerFail extends IAccelerometerError {
+}
+
+export interface IStopAccelerometerFail extends IAccelerometerError {
+}
+
+export type StartAccelerometerSuccess = {
+	errMsg ?: string | null
+}
+
+export type StartAccelerometerFail = IStartAccelerometerFail
+export type StartAccelerometerSuccessCallback = (res : StartAccelerometerSuccess) => void
+export type StartAccelerometerFailCallback = (res : StartAccelerometerFail) => void
+export type StartAccelerometerComplete = StartAccelerometerSuccess | StartAccelerometerFail
+export type StartAccelerometerCompleteCallback = (res : StartAccelerometerComplete) => void
+
+export type StopAccelerometerSuccess = {
+	errMsg ?: string | null
+}
+
+export type StopAccelerometerFail = IStopAccelerometerFail
+export type StopAccelerometerSuccessCallback = (res : StopAccelerometerSuccess) => void
+export type StopAccelerometerFailCallback = (res : StopAccelerometerFail) => void
+export type StopAccelerometerComplete = StopAccelerometerSuccess | StopAccelerometerFail
+export type StopAccelerometerCompleteCallback = (res : StopAccelerometerComplete) => void
+
+/**
+ * 开始监听加速度数据的参数
+ */
+export type StartAccelerometerOptions = {
+  /**
+   * 监听加速度数据回调函数的执行频率
+   */
+	interval ?: AccelerometerInterval | null
+  /**
+   * 监听加速度数据调用成功的回调函数
+   */
+	success ?: StartAccelerometerSuccessCallback | null
+  /**
+   * 监听加速度数据调用失败的回调函数
+   */
+	fail ?: StartAccelerometerFailCallback | null
+  /**
+   * 监听加速度数据调用结束的回调函数（调用成功、失败都会执行）
+   */
+	complete ?: StartAccelerometerCompleteCallback | null
+}
+
+/**
+ * 停止监听加速度数据的参数
+ */
+export type StopAccelerometerOptions = {
+  /**
+   * 停止监听加速度数据调用成功的回调函数
+   */
+	success ?: StopAccelerometerSuccessCallback | null
+  /**
+   * 停止监听加速度数据调用失败的回调函数
+   */
+	fail ?: StopAccelerometerFailCallback | null
+  /**
+   * 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行）
+   */
+	complete ?: StopAccelerometerCompleteCallback | null
+}
+
+/**
+ * 加速度数据
+ */
+export type OnAccelerometerChangeCallbackResult = {
+  /**
+   * X 轴加速度数据
+   */
+	x : number
+  /**
+   * Y 轴加速度数据
+   */
+	y : number
+  /**
+   * Z 轴加速度数据
+   */
+	z : number
+}
+
+export type OnAccelerometerChangeCallback = (result : OnAccelerometerChangeCallbackResult) => void
+
+export type OnAccelerometerChange = (callback : OnAccelerometerChangeCallback) => void
+export type OffAccelerometerChange = (callback : OnAccelerometerChangeCallback | null) => void
+export type StartAccelerometer = (options ?: StartAccelerometerOptions | null) => void
+export type StopAccelerometer = (options ?: StopAccelerometerOptions | null) => void
+
+export interface Uni {
+  /**
+   * 监听加速度数据变化事件
+   * @param callback 加速度数据事件的监听函数
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#onaccelerometerchange
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#onaccelerometerchange
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/accelerometer.html#onaccelerometerchange
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "2.9.6",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+	onAccelerometerChange(callback : OnAccelerometerChangeCallback) : void;
+  /**
+   * 监听加速度数据变化事件
+   * @param callback onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#offaccelerometerchange
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#offaccelerometerchange
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/accelerometer.html#offaccelerometerchange
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "2.9.6",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.9.3",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+	offAccelerometerChange(callback ?: OnAccelerometerChangeCallback | null) : void;
+  /**
+   * 开始监听加速度数据变化事件
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#startaccelerometer
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#startaccelerometer
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/accelerometer.html#startaccelerometer
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "2.9.6",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.9.3",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+	startAccelerometer(options ?: StartAccelerometerOptions | null) : void;
+  /**
+   * 停止监听加速度数据变化事件
+   *
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#stopaccelerometer
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/accelerometer.html#stopaccelerometer
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/accelerometer.html#stopaccelerometer
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "2.9.6",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "2.9.6",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.9.3",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+	stopAccelerometer(options ?: StopAccelerometerOptions | null) : void;
+}

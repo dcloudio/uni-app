@@ -1,0 +1,4 @@
+/**
+ * 编译器注入的 UASM 模块实例加载器。
+ */
+export type UASMLoader<T> = () => T

@@ -44,6 +44,18 @@ import DCloudUniappRuntime
 @available(iOS 13.0, *)
 @MainActor
 public class UniVideoPlayerManager {
+
+    /// uni-video 的倍率参数保护策略
+    private enum PlaybackRatePolicy {
+        static let minimum: Float = 0.125
+        static let maximum: Float = 8.0
+        static let defaultValue: Float = 1.0
+
+        static func normalize(_ rate: Float) -> Float {
+            guard !rate.isNaN else { return defaultValue }
+            return min(max(rate, minimum), maximum)
+        }
+    }
     
     // MARK: - AVPlayer 相关属性 (MainActor 持有)
     
@@ -106,6 +118,9 @@ public class UniVideoPlayerManager {
     
     /// 当前 seek 操作的唯一标识
     private var currentSeekID = UUID()
+
+    /// 最新倍率请求版本，避免 await 后恢复的旧请求覆盖新倍率。
+    private var playbackRateRevision: UInt64 = 0
     
     /// 等待 ready 状态的 continuation 列表（prepare、play 可能同时等待同一次 loading 完成）
     private var readyContinuations: [CheckedContinuation<Void, Error>] = []
@@ -141,8 +156,13 @@ public class UniVideoPlayerManager {
     /// 初始化播放器管理器
     /// - Parameter configuration: 播放器配置
     public init(configuration: UniVideoPlayerConfiguration) {
-        self.configuration = configuration
-        self.stateActor = UniVideoPlayerActor(configuration: configuration)
+        var normalizedConfiguration = configuration
+        normalizedConfiguration.rate = Double(
+            PlaybackRatePolicy.normalize(Float(configuration.rate))
+        )
+
+        self.configuration = normalizedConfiguration
+        self.stateActor = UniVideoPlayerActor(configuration: normalizedConfiguration)
         
         // 启动状态流监听
         startStateObservation()
@@ -515,22 +535,29 @@ public class UniVideoPlayerManager {
         }
     }
     
-    /// 设置播放速率
-    /// - Parameter rate: 播放速率 (0.5 - 2.0)
+    /// 设置期望播放速率
+    /// - Parameter rate: 播放速率；产品保护范围内支持任意连续值，越界时使用对应边界值
     public func setPlaybackRate(_ rate: Float) async {
-        let clampedRate = max(0.5, min(2.0, rate))
-        
-        configuration.rate = Double(clampedRate)
-        
+        let normalizedRate = PlaybackRatePolicy.normalize(rate)
+
+        playbackRateRevision &+= 1
+        let revision = playbackRateRevision
+
+        configuration.rate = Double(normalizedRate)
+
         if #available(iOS 16.0, *) {
-            player?.defaultRate = clampedRate
+            player?.defaultRate = normalizedRate
         }
-        
+
         guard let player = player else { return }
         let currentState = await stateActor.getState()
+
+        // await 期间可能收到更新的倍率请求，旧请求不得覆盖最新结果。
+        guard revision == playbackRateRevision else { return }
+
         let isCurrentlyPlaying = currentState == .playing || currentState == .loading
         if isCurrentlyPlaying {
-            player.rate = clampedRate
+            player.rate = normalizedRate
         }
     }
     

@@ -128,7 +128,7 @@ function saveExif(oldFilePath : string, newFilePath : string) {
 		if (oldFilePath.startsWith("content://")) {
 			oldExif = new ExifInterface((UTSAndroid.getAppContext() as Context).contentResolver.openInputStream(Uri.parse(oldFilePath)))
 		} else if (oldFilePath.startsWith("/android_asset/")) {
-			oldExif = new ExifInterface(UTSAndroid.getAppContext()!.assets.open(oldFilePath.replace(ASSETS_PATH, ""))))
+			oldExif = new ExifInterface(UTSAndroid.getAppContext()!.assets.open(oldFilePath.replace(ASSETS_PATH, "")))
 		} else {
 			if (oldFilePath.startsWith("file://")) {
 				oldFilePath = oldFilePath.replace("file://", "")

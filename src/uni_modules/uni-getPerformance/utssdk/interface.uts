@@ -4,6 +4,75 @@ export type PerformanceObserverCallback = (
     entries: PerformanceObserverEntryList,
 ) => void
 
+
+/**
+ * 性能数据对象
+ * @uniPlatform {
+ *  "app": {
+ *    "android": {
+ *      "uniVer": "x",
+ *      "unixVer": "3.91",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "ios": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.25",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "harmony": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.61",
+ *      "unixVaporVer": "x"
+ *    }
+ *  },
+ *  "mp": {
+ *    "weixin": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "4.41"
+ *    },
+ *    "alipay": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "5.31"
+ *    },
+ *    "baidu": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "toutiao": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "lark": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "qq": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "kuaishou": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "jd": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    }
+ *  },
+ *  "web": {
+ *    "uniVer": "x",
+ *    "unixVer": "x"
+ *  }
+ * }
+ */
 export type PerformanceEntry = {
     /**
      * 指标类型
@@ -67,12 +136,148 @@ export type PerformanceEntry = {
     viewLayerRenderEndTime: number | null
 }
 
+/**
+ * 性能监听参数
+ * @uniPlatform {
+ *  "app": {
+ *    "android": {
+ *      "uniVer": "x",
+ *      "unixVer": "3.91",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "ios": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.25",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "harmony": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.61",
+ *      "unixVaporVer": "x"
+ *    }
+ *  },
+ *  "mp": {
+ *    "weixin": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "4.41"
+ *    },
+ *    "alipay": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "5.31"
+ *    },
+ *    "baidu": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "toutiao": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "lark": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "qq": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "kuaishou": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "jd": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    }
+ *  },
+ *  "web": {
+ *    "uniVer": "x",
+ *    "unixVer": "x"
+ *  }
+ * }
+ */
 export type PerformanceObserverOptions = {
     buffered?: boolean
     entryTypes?: string[]
     type?: string
 }
 
+/**
+ * 性能事件监听器对象
+ * @uniPlatform {
+ *  "app": {
+ *    "android": {
+ *      "uniVer": "x",
+ *      "unixVer": "3.91",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "ios": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.25",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "harmony": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.61",
+ *      "unixVaporVer": "x"
+ *    }
+ *  },
+ *  "mp": {
+ *    "weixin": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "4.41"
+ *    },
+ *    "alipay": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "5.31"
+ *    },
+ *    "baidu": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "toutiao": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "lark": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "qq": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "kuaishou": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "jd": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    }
+ *  },
+ *  "web": {
+ *    "uniVer": "x",
+ *    "unixVer": "x"
+ *  }
+ * }
+ */
 export interface PerformanceObserver {
     /**
      * 开始监听
@@ -84,6 +289,74 @@ export interface PerformanceObserver {
     disconnect(): void
 }
 
+/**
+ * 性能数据对象
+ * @uniPlatform {
+ *  "app": {
+ *    "android": {
+ *      "uniVer": "x",
+ *      "unixVer": "3.91",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "ios": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.25",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "harmony": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.61",
+ *      "unixVaporVer": "x"
+ *    }
+ *  },
+ *  "mp": {
+ *    "weixin": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "4.41"
+ *    },
+ *    "alipay": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "5.31"
+ *    },
+ *    "baidu": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "toutiao": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "lark": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "qq": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "kuaishou": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "jd": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    }
+ *  },
+ *  "web": {
+ *    "uniVer": "x",
+ *    "unixVer": "x"
+ *  }
+ * }
+ */
 export interface PerformanceObserverEntryList {
     /**
      * 该方法返回当前列表中的所有性能数据
@@ -99,23 +372,96 @@ export interface PerformanceObserverEntryList {
     getEntriesByName(name: string, entryType: string): PerformanceEntry[]
 }
 
+/**
+ * 性能管理对象
+ * @uniPlatform {
+ *  "app": {
+ *    "android": {
+ *      "uniVer": "x",
+ *      "unixVer": "3.91",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "ios": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.25",
+ *      "unixVaporVer": "x"
+ *    },
+ *    "harmony": {
+ *      "uniVer": "x",
+ *      "unixVer": "4.61",
+ *      "unixVaporVer": "x"
+ *    }
+ *  },
+ *  "mp": {
+ *    "weixin": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "4.41"
+ *    },
+ *    "alipay": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "5.31"
+ *    },
+ *    "baidu": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "toutiao": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "lark": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "qq": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "kuaishou": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    },
+ *    "jd": {
+ *        "hostVer": "√",
+ *        "uniVer": "√",
+ *        "unixVer": "x"
+ *    }
+ *  },
+ *  "web": {
+ *    "uniVer": "x",
+ *    "unixVer": "x"
+ *  }
+ * }
+ */
 export interface Performance {
     /**
      * 创建全局性能事件监听器
      */
     createObserver(callback: PerformanceObserverCallback): PerformanceObserver
+
     /**
      * 该方法返回当前缓冲区中的所有性能数据
+     * @uniPlatform {
      */
     getEntries(): PerformanceEntry[]
+
     /**
      * 获取当前缓冲区中所有类型为 [entryType] 的性能数据
      */
     getEntriesByType(entryType: string): PerformanceEntry[]
+
     /**
      * 获取当前缓冲区中所有名称为 [name] 且类型为 [entryType] 的性能数据
      */
     getEntriesByName(name: string, entryType: string): PerformanceEntry[]
+
     /**
      * 设置缓冲区大小，默认缓冲 30 条性能数据
      */
@@ -124,7 +470,7 @@ export interface Performance {
 
 export interface Uni {
     /**
-     * 返回一个Performance对象实例
+     * 获取性能管理对象 Performance 实例
      *
      * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/get-performance.html
      * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/get-performance.html
@@ -132,11 +478,13 @@ export interface Uni {
      *  "app": {
      *    "android": {
      *      "uniVer": "x",
-     *      "unixVer": "3.91"
+     *      "unixVer": "3.91",
+     *      "unixVaporVer": "x"
      *    },
      *    "ios": {
      *      "uniVer": "x",
-     *      "unixVer": "4.25"
+     *      "unixVer": "4.25",
+     *      "unixVaporVer": "x"
      *    },
      *    "harmony": {
      *      "uniVer": "x",
@@ -153,7 +501,7 @@ export interface Uni {
      *    "alipay": {
      *        "hostVer": "√",
      *        "uniVer": "√",
-     *        "unixVer": "x"
+     *        "unixVer": "5.31"
      *    },
      *    "baidu": {
      *        "hostVer": "√",

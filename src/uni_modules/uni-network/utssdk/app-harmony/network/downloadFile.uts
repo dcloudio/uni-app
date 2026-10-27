@@ -26,6 +26,7 @@ import {
     parseUrl,
     getFsPath,
 } from './utils.uts'
+import { InterceptorType, HttpInterceptorChain } from './polyfill.js'
 import {
     getCookieSync,
     setCookieSync
@@ -216,6 +217,25 @@ export const downloadFile = defineTaskApi<UniDownloadFileOptions, UniDownloadFil
             // TODO headersReceive存在bug，暂不支持回调给用户。注意重定向时会多次触发，但是只需要给用户回调最后一次
             // emitter.emit('headersReceive', header);
         })
+
+        if (HttpInterceptorChain) {
+            const interceptorChain = new HttpInterceptorChain()
+            class RedirectInterceptor {
+                interceptorType: ESObject = InterceptorType.REDIRECTION;
+
+                async interceptorHandle(reqContext: ESObject, rspContext: ESObject): Promise<ESObject> {
+                    const url: string = rspContext.header['Location'] || rspContext.header['location']
+                    if (!url) {
+                        return true
+                    }
+                    reqContext.header['Cookie'] = getCookieSync(url)
+                    return true;
+                }
+            }
+            interceptorChain.addChain([new RedirectInterceptor()])
+            interceptorChain.apply(httpRequest)
+        }
+
         httpRequest.on('dataReceiveProgress', ({ receiveSize, totalSize }) => {
             emitter.emit('progress', {
                 progress: Math.floor((receiveSize / totalSize) * 100),

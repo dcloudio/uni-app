@@ -17,6 +17,7 @@ public class UniFileDigest: NSObject {
         case sha1
         case md5
         case sha256
+        case none
     }
 
     public static func toDigest(forFileAtPath path: String, type: DigestType) -> String? {
@@ -27,6 +28,8 @@ public class UniFileDigest: NSObject {
             return UniFileDigest.toSha1(path)
         case .sha256:
             return UniFileDigest.toSha256(path)
+        case .none:
+            return ""
         }
     }
 
@@ -160,7 +163,12 @@ public class UniFileDecompressTool: NSObject {
 
         // 将路径字符串转换为 URL
         let zipURL = URL(fileURLWithPath: zipFilePath)
-        let destinationURL = URL(fileURLWithPath: destinationPath)
+        let destinationURL = URL(fileURLWithPath: destinationPath).standardizedFileURL
+        let destinationDirectoryPath = destinationURL.path.hasSuffix("/")
+            ? destinationURL.path : destinationURL.path + "/"
+        let resolvedDestinationURL = destinationURL.resolvingSymlinksInPath().standardizedFileURL
+        let resolvedDestinationDirectoryPath = resolvedDestinationURL.path.hasSuffix("/")
+            ? resolvedDestinationURL.path : resolvedDestinationURL.path + "/"
 
         do {
             // 尝试打开 ZIP 文件
@@ -174,15 +182,46 @@ public class UniFileDecompressTool: NSObject {
                 }
 
                 let destinationEntryURL = destinationURL.appendingPathComponent(entry.path)
+                    .standardizedFileURL
+
+                guard destinationEntryURL.path.hasPrefix(destinationDirectoryPath) else {
+                    throw UniArchiveError.entryExtractionFailed(
+                        entryPath: entry.path, underlyingError: UniArchiveError.invalidPath)
+                }
 
                 // 确保目标路径父目录存在
                 let parentDirectory = destinationEntryURL.deletingLastPathComponent()
+                let resolvedParentDirectory = parentDirectory.resolvingSymlinksInPath()
+                    .standardizedFileURL
+                guard resolvedParentDirectory.path == resolvedDestinationURL.path
+                    || resolvedParentDirectory.path.hasPrefix(resolvedDestinationDirectoryPath)
+                else {
+                    throw UniArchiveError.entryExtractionFailed(
+                        entryPath: entry.path, underlyingError: UniArchiveError.invalidPath)
+                }
                 if !fileManager.fileExists(atPath: parentDirectory.path) {
                     try fileManager.createDirectory(
                         at: parentDirectory, withIntermediateDirectories: true)
                 }
 
                 do {
+                    var isDirectory: ObjCBool = false
+                    let destinationExists = fileManager.fileExists(
+                        atPath: destinationEntryURL.path, isDirectory: &isDirectory)
+                    let destinationIsSymbolicLink =
+                        (try? fileManager.destinationOfSymbolicLink(
+                            atPath: destinationEntryURL.path)) != nil
+
+                    if entry.type == .directory {
+                        if destinationExists && isDirectory.boolValue
+                            && !destinationIsSymbolicLink
+                        {
+                            continue
+                        }
+                    } else if destinationExists || destinationIsSymbolicLink {
+                        try fileManager.removeItem(at: destinationEntryURL)
+                    }
+
                     // 解压当前条目
                     _ = try archive.extract(entry, to: destinationEntryURL)
                 } catch {

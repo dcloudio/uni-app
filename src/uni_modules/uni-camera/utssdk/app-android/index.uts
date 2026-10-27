@@ -6,6 +6,7 @@ import ByteBuffer from 'java.nio.ByteBuffer'
 import CompressVideoSuccess from "uts.sdk.modules.DCloudUniMedia.CompressVideoSuccess"
 import { CameraContextFailImpl, getErrcode } from "../unierror.uts"
 import ImageProxy from "androidx.camera.core.ImageProxy";
+import WeakReference from "java.lang.ref.WeakReference";
 
 // #ifndef VUE3-VAPOR
 import { getCurrentPage } from "@dcloudio/uni-runtime";
@@ -365,6 +366,7 @@ export class CameraInstance {
 			this.cameraImpl?.stopCamera()
 		}
 		this.cameraImpl = null
+		UTSAndroid.destroyInstance(this)
 	}
 
 	switchCamera(position: string) {
@@ -550,7 +552,12 @@ export const createCameraContext: CreateCameraContext = function (): CameraConte
 
 class CameraContextCameraFrameListenerImpl implements CameraContextCameraFrameListener {
 
-	constructor(private element: UniCameraElement, private callback: (frame: CameraContextOnCameraFrame) => void) {
+	private elementRef: WeakReference<UniCameraElement> | null = null
+	private callback: (frame: CameraContextOnCameraFrame) => void
+
+	constructor(element: UniCameraElement, callback: (frame: CameraContextOnCameraFrame) => void) {
+		this.elementRef = new WeakReference(element)
+		this.callback = callback
 		element.setFrameCallback(callback)
 	}
 
@@ -558,8 +565,8 @@ class CameraContextCameraFrameListenerImpl implements CameraContextCameraFrameLi
 	 * 开始监听帧数据
 	 */
 	start(options: CameraContextCameraFrameListenerStartOptions): void {
-		this.element.setFrameCallback(this.callback)
-		this.element.startOnFrame()
+		this.elementRef?.get()?.setFrameCallback(this.callback)
+		this.elementRef?.get()?.startOnFrame()
 		const result = "start on camera frame"
 		options.success?.(result)
 		options.complete?.(result)
@@ -568,7 +575,7 @@ class CameraContextCameraFrameListenerImpl implements CameraContextCameraFrameLi
 	 * 停止监听帧数据
 	 */
 	stop(options: CameraContextCameraFrameListenerStopOptions): void {
-		this.element.stopOnFrame()
+		this.elementRef?.get()?.stopOnFrame()
 		const result = "stop on camera frame"
 		options.success?.(result)
 		options.complete?.(result)
@@ -577,42 +584,49 @@ class CameraContextCameraFrameListenerImpl implements CameraContextCameraFrameLi
 
 
 class CameraContextImpl implements CameraContext {
-	constructor(private element: UniCameraElement) {
+
+	private elementRef: WeakReference<UniCameraElement> | null = null
+
+	constructor(element: UniCameraElement) {
+		this.elementRef = new WeakReference(element)
 	}
 
 	onCameraFrame(callback: (frame: CameraContextOnCameraFrame) => void): CameraContextCameraFrameListener | null {
-		const listener = new CameraContextCameraFrameListenerImpl(this.element, callback)
-		return listener
+		const element = this.elementRef?.get()
+		if (element == null) {
+			return null
+		}
+		return new CameraContextCameraFrameListenerImpl(element, callback)
 	}
 
 	onAndroidCameraOriginalFrame(callback: (imageProxy: ImageProxy) => void): void {
-		this.element.startAnalysis(callback)
+		this.elementRef?.get()?.startAnalysis(callback)
 	}
 
 	offAndroidCameraOriginalFrame() {
-		this.element.stopAnalysis()
+		this.elementRef?.get()?.stopAnalysis()
 	}
 
 	setZoom(options: CameraContextSetZoomOptions): void {
-		this.element.setZoom(options.zoom)
+		this.elementRef?.get()?.setZoom(options.zoom)
 		const result = "setZoom success"
 		options.success?.(result)
 		options.complete?.(result)
 	}
 
 	getCurrentZoom(): number {
-		return this.element.getCurrentZoom()
+		return this.elementRef?.get()?.getCurrentZoom() ?? 1
 	}
 
 	takePhoto(options: CameraContextTakePhotoOptions): void {
-		this.element.takePhoto(options)
+		this.elementRef?.get()?.takePhoto(options)
 	}
 
 	startRecord(options: CameraContextStartRecordOptions): void {
-		this.element.startRecord(options)
+		this.elementRef?.get()?.startRecord(options)
 	}
 
 	stopRecord(options: CameraContextStopRecordOptions): void {
-		this.element.stopRecord(options)
+		this.elementRef?.get()?.stopRecord(options)
 	}
 }

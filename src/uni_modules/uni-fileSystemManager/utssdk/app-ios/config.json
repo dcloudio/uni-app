@@ -1,5 +1,9 @@
 {
-	"deploymentTarget": "12.0",
+	"deploymentTarget": "15.0",
+	"frameworks": [
+		"libz.tbd",
+		"libcompression.tbd"
+	],
 	"dependencies-pods": [
 		{
 			"name": "ZIPFoundation",

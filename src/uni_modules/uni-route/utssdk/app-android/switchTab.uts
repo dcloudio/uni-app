@@ -5,9 +5,12 @@ import {
     __uniConfig,
     changeTabBarIndex,
     entryPageState,
+    findPageRoute,
+    getCurrentPage,
     getTabBarIndex,
     isTabPage,
     parseUrl,
+    resolveAppRoute,
     switchTabPagesBeforeEntryPages,
 } from '@dcloudio/uni-runtime'
 import { SwitchTabOptions, SwitchTabSuccess } from '../interface.uts'
@@ -21,18 +24,43 @@ export const switchTab = defineAsyncApi<SwitchTabOptions, SwitchTabSuccess>(
             switchTabPagesBeforeEntryPages.push({ options } as SwitchTabPage)
             return
         }
-        const url = options.url
-        const info = parseUrl(url as string)
-        const path = info.path
-        const query = info.query
+        let url = options.url as string
+        let info = parseUrl(url)
+        let path = info.path
+        if (findPageRoute(path) == null) {
+            res.reject(new SwitchTabFailImpl(`page ${path} is not found`))
+            return
+        }
         let selected: number = getTabBarIndex(path)
         if (selected == -1) {
             res.reject(new SwitchTabFailImpl(`page ${path} is not tab page`))
             return
         }
+        const currentPage = getCurrentPage()
+        const shouldDispatchAppRoute =
+            currentPage == null ||
+            !isTabPage(currentPage!) ||
+            getTabBarIndex(currentPage!.route) != selected
+        const appRoute = shouldDispatchAppRoute
+            ? resolveAppRoute(url, SWITCH_TAB)
+            : null
+        if (appRoute != null) {
+            url = appRoute!.url
+            info = parseUrl(url)
+            path = info.path
+            selected = getTabBarIndex(path)
+        }
+        const query = info.query
         const pages = getCurrentPages()
         setTimeout(() => {
-            changeTabBarIndex(selected, path, query)
+            changeTabBarIndex(
+                selected,
+                path,
+                query,
+                false,
+                SWITCH_TAB,
+                appRoute?.context,
+            )
             for (let index = 0; index < pages.length; index++) {
                 const page = pages[index]
                 if (!isTabPage(page.vm!)) {

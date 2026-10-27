@@ -1,0 +1,480 @@
+<template>
+	<!-- #ifndef VUE3-VAPOR -->
+	<uni-amap-element ref="mapElem" class="uni-root">
+	<!-- #endif -->
+	<!-- #ifdef VUE3-VAPOR -->
+	<view ref="mapElem" class="uni-root">
+	<!-- #endif -->
+		<!-- #ifndef APP-HARMONY -->
+		<native-view @init="onObjectInit" @updated="onMapLoadedCallback" @tapNative="onMapTapCallback" @markertap="onMapMarkerTap" @poitap="onMapPoiTap" @regionchange="onMapRegionChange" @controltap="onMapControlTap" @callouttap="onMapCalloutTap" @anchorpointtap="onMapAnchorPointTap" style="width: 100%;height: 100%;"></native-view>
+		<!-- #endif -->
+
+	<!-- #ifdef VUE3-VAPOR -->
+	</view>
+	<!-- #endif -->
+	<!-- #ifndef VUE3-VAPOR -->
+	</uni-amap-element>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	import { AmapMap, UniAmapElement, AmapMarker } from "@/uni_modules/uni-map-amap";
+	import type { AmapLocationObject, Circle, Control, Polygon, Polyline } from "@/uni_modules/uni-map-amap/utssdk/interface";
+	// #ifndef APP-HARMONY
+	import { UniMapUpdatedEvent, UniMapUpdatedEventDetail, UniMapTapEvent, UniMapTapEventDetail, UniMapRegionChangeEvent, UniMapRegionChangeEventDetail, UniMapControlTapEvent, UniMapControlTapEventDetail, UniMapPoiTapEvent, UniMapPoiTapEventDetail, UniMapAnchorPointTapEvent, UniMapAnchorPointTapEventDetail, UniMapMarkerTapEvent, UniMapMarkerTapEventDetail, UniMapCalloutTapEvent, UniMapCalloutTapEventDetail } from './global.uts';
+	// #endif
+
+	const mapElem = ref<UniAmapElement | null>(null)
+	const props = withDefaults(defineProps<{
+		latitude ?: number,
+		longitude ?: number,
+		scale ?: number,
+		theme ?: string,
+		minScale ?: number,
+		maxScale ?: number,
+		layerStyle ?: string,
+		showLocation ?: boolean,
+		enableTraffic ?: boolean,
+		enableSatellite ?: boolean,
+		enableRotate ?: boolean,
+		enableZoom ?: boolean,
+		enableScroll ?: boolean,
+		showCompass ?: boolean,
+		showScale ?: boolean,
+		enable3D ?: boolean,
+		enablePoi ?: boolean,
+		enableBuilding ?: boolean,
+		enableIndoorMap ?: boolean,
+		enableOverlooking ?: boolean,
+		rotate ?: number,
+		skew ?: number,
+		markers ?: Array<AmapMarker> | null,
+		polylines ?: Array<Polyline> | null,
+		polygons ?: Array<Polygon> | null,
+		circles ?: Array<Circle> | null,
+		includePoints ?: Array<AmapLocationObject> | null,
+		controls ?: Array<Control> | null,
+	}>(), {
+		latitude: 0,  // 北京天安门
+		longitude: 0,
+		scale: 16,
+		theme: "normal",
+		minScale: 3,
+		maxScale: 20,
+		layerStyle: "1",
+		showLocation: false,
+		enableTraffic: false,
+		enableSatellite: false,
+		enableRotate: true,
+		enableZoom: true,
+		enableScroll: true,
+		showCompass: false,
+		showScale: false,
+		enable3D: false,
+		enablePoi: false,
+		enableBuilding: false,
+		enableIndoorMap: false,
+		enableOverlooking: false,
+		rotate: 0,
+		skew: 0,
+		markers: null,
+		polylines: null,
+		polygons: null,
+		circles: null,
+		includePoints: null,
+		controls: null,
+	})
+
+	let map : AmapMap | null = null
+	const emit = defineEmits(['updated', 'click', 'tap', 'regionchange', 'markertap', 'poitap', 'controltap', 'callouttap', 'anchorpointtap'])
+
+	defineOptions({
+		name: "AmapMap",
+		rootElement: {
+			name: 'uni-amap-element',
+			class: UniAmapElement
+		}
+	})
+
+	const setDefaultOptions = () => {
+		// 单次相机更新，避免 setCenter/setScale/setRotate/setSkew 多次相机设置重复触发 updated
+		map?.setCameraPosition(props.latitude, props.longitude, props.scale, props.skew, props.rotate, false)
+		map?.setTheme(props.theme)
+		map?.setMinScale(props.minScale)
+		map?.setMaxScale(props.maxScale)
+		map?.setLayerStyle(props.layerStyle)
+		map?.setShowLocation(props.showLocation)
+		map?.setEnableTraffic(props.enableTraffic)
+		// theme 为 satellite 时同样开启卫星图；放在 setLayerStyle 之后，避免 layerStyle 默认值("1")覆盖 theme（对齐腾讯 map.uvue）
+		const satellite = props.theme == "satellite"
+		map?.setEnableSatellite(satellite || props.enableSatellite)
+		map?.setEnableZoom(props.enableZoom)
+		map?.setEnableRotate(props.enableRotate)
+		map?.setEnableScroll(props.enableScroll)
+		map?.setShowCompass(props.showCompass)
+		if (props.markers != null) {
+			map?.setMarkers(props.markers)
+		}
+		// #ifndef APP-HARMONY
+		map?.setEnableOverlooking(props.enableOverlooking)
+		map?.setEnableBuilding(props.enable3D || props.enableBuilding)
+		map?.setShowScale(props.showScale)
+		map?.setEnablePoi(props.enablePoi)
+		map?.setEnableIndoorMap(props.enableIndoorMap)
+		const polylines = props.polylines
+		if (polylines == null) {
+			map?.setPolyline([] as Polyline[])
+		} else {
+			map?.setPolyline(polylines)
+		}
+		const polygons = props.polygons
+		if (polygons == null) {
+			map?.setPolygons([] as Polygon[])
+		} else {
+			map?.setPolygons(polygons)
+		}
+		const circles = props.circles
+		if (circles == null) {
+			map?.setCircles([] as Circle[])
+		} else {
+			map?.setCircles(circles)
+		}
+		if (props.controls != null) {
+			map?.setControls(props.controls!)
+		}
+		if (props.includePoints != null) {
+			map?.setIncludePoints(props.includePoints!, false)
+		}
+		// #endif
+	}
+
+	watchEffect(() => {
+		const latitude = props.latitude
+		const longitude = props.longitude
+		// 使用可选链调用，避免智能转换问题
+		map?.setCenter(latitude, longitude, true)
+	})
+
+	// #ifndef APP-HARMONY
+	watchEffect(() => {
+		const polylines = props.polylines
+		if (polylines == null) {
+			map?.setPolyline([] as Polyline[])
+		} else {
+			map?.setPolyline(polylines)
+		}
+	})
+
+	watchEffect(() => {
+		const polygons = props.polygons
+		if (polygons == null) {
+			map?.setPolygons([] as Polygon[])
+		} else {
+			map?.setPolygons(polygons)
+		}
+	})
+
+	watchEffect(() => {
+		const circles = props.circles
+		if (circles == null) {
+			map?.setCircles([] as Circle[])
+		} else {
+			map?.setCircles(circles)
+		}
+	})
+
+	watchEffect(() => {
+		const includePoints = props.includePoints
+		if (includePoints != null) {
+			map?.setIncludePoints(includePoints, true)
+		}
+	})
+
+	watchEffect(() => {
+		const enableOverlooking = props.enableOverlooking
+		map?.setEnableOverlooking(enableOverlooking)
+	})
+
+	watchEffect(() => {
+		const rotate = props.rotate
+		map?.setRotate(rotate, true)
+	})
+
+	watchEffect(() => {
+		const skew = props.skew
+		map?.setSkew(skew, true)
+	})
+
+	watchEffect(() => {
+		const enable3D = props.enable3D
+		const enableBuilding = props.enableBuilding
+		map?.setEnableBuilding(enable3D || enableBuilding)
+	})
+
+	watchEffect(() => {
+		const showScale = props.showScale
+		map?.setShowScale(showScale)
+	})
+
+	watchEffect(() => {
+		const enablePoi = props.enablePoi
+		map?.setEnablePoi(enablePoi)
+	})
+
+	watchEffect(() => {
+		const enableIndoorMap = props.enableIndoorMap
+		map?.setEnableIndoorMap(enableIndoorMap)
+	})
+
+	watchEffect(() => {
+		const controls = props.controls
+		if (controls == null) {
+			map?.setControls([] as Control[])
+		} else {
+			map?.setControls(controls)
+		}
+	})
+	// #endif
+
+	watchEffect(() => {
+		const scale = props.scale
+		map?.setScale(scale, true)
+	})
+
+	watchEffect(() => {
+		const theme = props.theme
+		map?.setTheme(theme)
+	})
+
+	watchEffect(() => {
+		const minScale = props.minScale
+		map?.setMinScale(minScale)
+	})
+
+	watchEffect(() => {
+		const maxScale = props.maxScale
+		map?.setMaxScale(maxScale)
+	})
+
+	watchEffect(() => {
+		const layerStyle = props.layerStyle
+		map?.setLayerStyle(layerStyle)
+	})
+
+	watchEffect(() => {
+		const showLocation = props.showLocation
+		map?.setShowLocation(showLocation)
+	})
+
+	watchEffect(() => {
+		const enableTraffic = props.enableTraffic
+		map?.setEnableTraffic(enableTraffic)
+	})
+
+	watchEffect(() => {
+		const enableSatellite = props.enableSatellite
+		map?.setEnableSatellite(enableSatellite)
+	})
+
+	watchEffect(() => {
+		const enableZoom = props.enableZoom
+		map?.setEnableZoom(enableZoom)
+	})
+
+	watchEffect(() => {
+		const enableRotate = props.enableRotate
+		map?.setEnableRotate(enableRotate)
+	})
+
+	watchEffect(() => {
+		const enableScroll = props.enableScroll
+		map?.setEnableScroll(enableScroll)
+	})
+
+	watchEffect(() => {
+		const showCompass = props.showCompass
+		map?.setShowCompass(showCompass)
+	})
+
+	watchEffect(() => {
+		const markers = props.markers
+		if (markers == null) {
+			map?.setMarkers([] as AmapMarker[])
+		} else {
+			map?.setMarkers(markers!)
+		}
+	})
+
+	function onObjectInit(event : UniNativeViewInitEvent) {
+		map = new AmapMap(event.detail.element)
+		setTimeout(() => {
+			setDefaultOptions()
+		}, 200);
+	}
+
+	// #ifndef APP-HARMONY
+	function onMapLoadedCallback(customEvent : UniNativeViewEvent) {
+		const detail : UniMapUpdatedEventDetail = {}
+		const event = new UniMapUpdatedEvent(customEvent.type, detail)
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("updated", event)
+	}
+	// #endif
+
+	// #ifndef APP-HARMONY
+	function getDetailNumber(detail : any, key : string) : number | null {
+		return (detail as UTSJSONObject)[key] as number | null
+	}
+
+	function onMapTapCallback(customEvent : UniNativeViewEvent) {
+		const detail = customEvent.detail
+		const mapTapEventDetail : UniMapTapEventDetail = {
+			latitude: getDetailNumber(detail, "latitude"),
+			longitude: getDetailNumber(detail, "longitude")
+		}
+		const eventX = getDetailNumber(detail, "x") ?? 0
+		const eventY = getDetailNumber(detail, "y") ?? 0
+		const domRect = mapElem.value!.getBoundingClientRect()
+		const x = domRect.x + eventX
+		const y = domRect.y + eventY
+		const screenX = getDetailNumber(detail, "screenX") ?? x
+		const screenY = getDetailNumber(detail, "screenY") ?? y
+		const event = new UniMapTapEvent(customEvent.type, x, y, x, y, x, y, screenX, screenY)
+		event.detail = mapTapEventDetail
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("click", event)
+		emit("tap", event)
+	}
+
+	function getDetailString(detail : any, key : string) : string | null {
+		return (detail as UTSJSONObject)[key] as string | null
+	}
+
+	function onMapRegionChange(customEvent : UniNativeViewEvent) {
+		const detail = customEvent.detail
+		const type = getDetailString(detail, "type") ?? customEvent.type
+		const eventDetail : UniMapRegionChangeEventDetail = {
+			skew: getDetailNumber(detail, "skew"),
+			rotate: getDetailNumber(detail, "rotate")
+		}
+		const event = new UniMapRegionChangeEvent(type, eventDetail)
+		const causedBy = detail["causedBy"]
+		if (causedBy != null) {
+			event.causedBy = causedBy as string | null
+		}
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("regionchange", event)
+	}
+	// #endif
+
+	// #ifndef APP-HARMONY
+	function onMapControlTap(customEvent : UniNativeViewEvent) {
+		const eventDetail : UniMapControlTapEventDetail = {
+			controlId: getDetailNumber(customEvent.detail, "controlId")
+		}
+		const event = new UniMapControlTapEvent(customEvent.type, eventDetail)
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("controltap", event)
+	}
+
+	function onMapPoiTap(customEvent : UniNativeViewEvent) {
+		const detail = customEvent.detail
+		const mapPoiTapEventDetail : UniMapPoiTapEventDetail = {
+			latitude: getDetailNumber(detail, "latitude"),
+			longitude: getDetailNumber(detail, "longitude"),
+			name: getDetailString(detail, "name")
+		}
+		const eventX = getDetailNumber(detail, "x") ?? 0
+		const eventY = getDetailNumber(detail, "y") ?? 0
+		const domRect = mapElem.value!.getBoundingClientRect()
+		const x = domRect.x + eventX
+		const y = domRect.y + eventY
+		const dx = getDetailNumber(detail, "dx") ?? 0
+		const dy = getDetailNumber(detail, "dy") ?? 0
+		const screenX = getDetailNumber(detail, "screenX") ?? x
+		const screenY = getDetailNumber(detail, "screenY") ?? y
+		const event = new UniMapPoiTapEvent(customEvent.type, x, y, x, y, x + dx, y + dy, screenX, screenY)
+		event.detail = mapPoiTapEventDetail
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("poitap", event)
+	}
+
+	function onMapAnchorPointTap(customEvent : UniNativeViewEvent) {
+		const detail = customEvent.detail
+		const mapAnchorPointTapEventDetail : UniMapAnchorPointTapEventDetail = {
+			latitude: getDetailNumber(detail, "latitude"),
+			longitude: getDetailNumber(detail, "longitude")
+		}
+		const eventX = getDetailNumber(detail, "x") ?? 0
+		const eventY = getDetailNumber(detail, "y") ?? 0
+		const domRect = mapElem.value!.getBoundingClientRect()
+		const x = domRect.x + eventX
+		const y = domRect.y + eventY
+		const clientX = x
+		const clientY = y
+		const dx = getDetailNumber(detail, "dx") ?? 0
+		const dy = getDetailNumber(detail, "dy") ?? 0
+		const pageX = x + dx
+		const pageY = y + dy
+		const screenX = getDetailNumber(detail, "screenX") ?? 0
+		const screenY = getDetailNumber(detail, "screenY") ?? 0
+		const event = new UniMapAnchorPointTapEvent(customEvent.type, x, y, clientX, clientY, pageX, pageY, screenX, screenY)
+		event.detail = mapAnchorPointTapEventDetail
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("anchorpointtap", event)
+	}
+
+	function onMapMarkerTap(customEvent : UniNativeViewEvent) {
+		const detail = customEvent.detail
+		const mapMarkerTapEventDetail : UniMapMarkerTapEventDetail = {
+			markerId: getDetailNumber(detail, "markerId")
+		}
+		const eventX = getDetailNumber(detail, "x") ?? 0
+		const eventY = getDetailNumber(detail, "y") ?? 0
+		const domRect = mapElem.value!.getBoundingClientRect()
+		const x = domRect.x + eventX
+		const y = domRect.y + eventY
+		const clientX = x
+		const clientY = y
+		const dx = getDetailNumber(detail, "dx") ?? 0
+		const dy = getDetailNumber(detail, "dy") ?? 0
+		const pageX = x + dx
+		const pageY = y + dy
+		const screenX = getDetailNumber(detail, "screenX") ?? 0
+		const screenY = getDetailNumber(detail, "screenY") ?? 0
+		const event = new UniMapMarkerTapEvent(customEvent.type, x, y, clientX, clientY, pageX, pageY, screenX, screenY)
+		event.detail = mapMarkerTapEventDetail
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("markertap", event)
+	}
+
+	function onMapCalloutTap(customEvent : UniNativeViewEvent) {
+		const detail : UniMapCalloutTapEventDetail = {
+			markerId: getDetailNumber(customEvent.detail, "markerId")
+		}
+		const event = new UniMapCalloutTapEvent(customEvent.type, detail)
+		event.target = mapElem.value!
+		event.currentTarget = mapElem.value!
+		emit("callouttap", event)
+	}
+	// #endif
+
+	onUnmounted(() => {
+		map?.destroy()
+		map = null
+	})
+</script>
+
+<style scoped>
+	.uni-root {
+		width: 100%;
+		height: 100%;
+	}
+</style>

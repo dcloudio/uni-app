@@ -1,0 +1,26 @@
+export type DecompressFileErrorCode = 9010001 | 9010002 | 9010003 | 9010004
+
+export interface DecompressFileFail extends IUniError {
+  errCode : DecompressFileErrorCode
+}
+
+export type DecompressFileResult = {
+  success : boolean
+  errCode : number
+  errMsg : string
+  outputPath : string
+}
+
+export type DecompressFile = (
+  fromPath : string,
+  toPath : string,
+  maximumOutputSize ?: number
+) => DecompressFileResult
+
+export interface Uni {
+  __zstdDecompressFile: (
+    fromPath: string,
+    toPath: string,
+    maximumOutputSize?: number
+  ) => DecompressFileResult
+}

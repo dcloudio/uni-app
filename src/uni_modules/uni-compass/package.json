@@ -1,0 +1,119 @@
+{
+  "id": "uni-compass",
+  "displayName": "uni-compass",
+  "version": "1.0.0",
+  "description": "uni-compass",
+  "keywords": [
+    "uni-compass"
+  ],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^5.08.0"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "",
+      "data": "",
+      "permissions": ""
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "uni-ext-api": {
+      "uni": {
+        "onCompassChange": {
+          "name": "onCompassChange",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        },
+        "offCompassChange": {
+          "name": "offCompassChange",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        },
+        "startCompass": {
+          "name": "startCompass",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        },
+        "stopCompass": {
+          "name": "stopCompass",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        }
+      }
+    },
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "u",
+        "aliyun": "u"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "u",
+          "vue3": "u"
+        },
+        "App": {
+          "app-android": "u",
+          "app-ios": "u",
+          "app-harmony": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+export function convert2AbsFullPath(inputPath: string) : string {
+  // #ifdef APP-IOS
+  return UTSiOS.convert2AbsFullPath(inputPath)
+  // #endif
+  // #ifdef APP-ANDROID
+  return UTSAndroid.convert2AbsFullPath(inputPath)
+  // #endif
+  // #ifdef APP-HARMONY
+  return UTSHarmony.convert2AbsFullPath(inputPath)
+  // #endif
+  console.log('Unsupported platform')
+  return inputPath
+}

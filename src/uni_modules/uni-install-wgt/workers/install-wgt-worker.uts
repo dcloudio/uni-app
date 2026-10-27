@@ -1,0 +1,1177 @@
+// #ifdef APP-IOS
+import { } from "CommonCrypto"
+// #endif
+// #ifdef APP-ANDROID
+import File from 'java.io.File'
+import MessageDigest from 'java.security.MessageDigest'
+import UUID from 'java.util.UUID'
+// #endif
+
+export class InstallWgtWorker extends WorkerTaskImpl {
+	private transactionId: number = 0
+	private zipFilePath: string = ''
+	private decompressedZipPath: string = ''
+	private stagingRoot: string = ''
+	private ignoreVersion: boolean = false
+	private isSyncDebug: boolean = false
+	private runtimeAppId: string = ''
+	private runtimeAppVersion: string = ''
+	private runtimeCompilerRuleVersion: number = 0
+	private rootPath: string = ''
+	private txnPath: string = ''
+	private unzipPath: string = ''
+	private unzippedResourcePath: string = ''
+	private appId: string = ''
+	private versionName: string = ''
+	private versionCode: string = ''
+	private compilerRuleVersion: number = 0
+	private finished: boolean = false
+	private lastFileSystemErrorMessage: string = ''
+
+	constructor() {
+		super()
+	}
+
+	override entry(): void {
+	}
+
+	override onMessage(message: any): void {
+		if (!(message instanceof UTSJSONObject)) {
+			this.failInvalidMessage('Worker start message must be a UTSJSONObject')
+			return
+		}
+		const payload = message
+		const type = payload.getString('type')
+		const messageTransactionId = payload.getNumber('transactionId')
+		if (type == null || messageTransactionId == null) {
+			this.failInvalidMessage('Worker start message type or transactionId is missing')
+			return
+		}
+		if (!this.isInteger(messageTransactionId) || messageTransactionId <= 0) {
+			this.failInvalidMessage('Worker start message transactionId is invalid')
+			return
+		}
+
+		if (type == 'start') {
+			if (this.transactionId != 0) {
+				this.failInvalidMessage('Worker received a duplicate start message')
+				return
+			}
+			this.start(payload, messageTransactionId)
+			return
+		}
+		this.failInvalidMessage('Worker start message type is invalid')
+	}
+
+	private start(payload: UTSJSONObject, messageTransactionId: number): void {
+		const zipFilePath = payload.getString('zipFilePath')
+		const stagingRoot = payload.getString('stagingRoot')
+		const ignoreVersion = payload.getBoolean('ignoreVersion')
+		const isSyncDebug = payload.getBoolean('isSyncDebug')
+		const runtimeAppId = payload.getString('runtimeAppId')
+		const runtimeAppVersion = payload.getString('runtimeAppVersion')
+		const runtimeCompilerRuleVersion = payload.getNumber('runtimeCompilerRuleVersion')
+		const rootPath = payload.getString('rootPath')
+		if (zipFilePath == null || zipFilePath.length == 0
+			|| stagingRoot == null || stagingRoot.length == 0
+			|| ignoreVersion == null || isSyncDebug == null
+			|| runtimeAppId == null || runtimeAppVersion == null
+			|| runtimeCompilerRuleVersion == null
+			|| rootPath == null || rootPath.length == 0) {
+			this.failInvalidMessage('Worker start message contains invalid fields')
+			return
+		}
+
+		this.transactionId = messageTransactionId
+		this.zipFilePath = zipFilePath
+		this.stagingRoot = stagingRoot
+		this.ignoreVersion = ignoreVersion
+		this.isSyncDebug = isSyncDebug
+		this.runtimeAppId = runtimeAppId
+		this.runtimeAppVersion = runtimeAppVersion
+		this.runtimeCompilerRuleVersion = runtimeCompilerRuleVersion
+		this.rootPath = rootPath
+		this.txnPath = this.stagingRoot + '/txn-' + this.transactionId.toString()
+		this.unzipPath = this.txnPath + '/unzip'
+		this.decompressedZipPath = this.txnPath + '/payload.zip'
+		const inputIsLocalFile = this.isFile(this.zipFilePath)
+		// #ifdef APP-IOS
+		if (!inputIsLocalFile) {
+			this.terminalFailure(1030601, '')
+			return
+		}
+		// #endif
+		if (!this.removeDirectoryIfPresent(this.stagingRoot)) {
+			this.terminalFailure(
+				103602,
+				'installWgt:fail unable to remove the previous staging directory',
+				this.fileSystemFailureCause(this.stagingRoot)
+			)
+			return
+		}
+		if (!this.ensureDirectory(this.txnPath)) {
+			this.terminalFailure(
+				103602,
+				'installWgt:fail unable to create the staging transaction directory',
+				this.fileSystemFailureCause(this.txnPath)
+			)
+			return
+		}
+		// #ifdef APP-ANDROID
+		if (!inputIsLocalFile && !this.materializeAndroidInputFile()) {
+			this.cleanupAndFail(1030601, '')
+			return
+		}
+		// #endif
+		if (!this.ensureDirectory(this.unzipPath)) {
+			this.cleanupAndFail(
+				103602,
+				'installWgt:fail unable to create the staging unzip directory',
+				this.fileSystemFailureCause(this.unzipPath)
+			)
+			return
+		}
+
+		const decompressResult = this.decompressWgt()
+		if (decompressResult.success != true) {
+			this.cleanupAndFail(103606, decompressResult.errMsg)
+			return
+		}
+		this.decompressedZipPath = decompressResult.outputPath
+
+		const unzipOption: UnzipSyncOptions = {
+			zipFilePath: this.decompressedZipPath,
+			targetPath: this.unzipPath
+		}
+		const unzipSucceeded = uni.getFileSystemManager().unzipSync(unzipOption)
+		if (unzipSucceeded != true) {
+			this.cleanupAndFail(103607, '')
+			return
+		}
+		this.validateAndInstall()
+	}
+
+	private validateAndInstall(): void {
+		const resourcePath = this.getUnzippedResourcePath()
+		if (resourcePath == null) {
+			this.cleanupAndFail(103608, '')
+			return
+		}
+
+		const manifestContent = this.readUtf8File(resourcePath + '/manifest.json')
+		if (manifestContent == null) {
+			this.cleanupAndFail(103608, '')
+			return
+		}
+		const manifest = JSON.parseObject(manifestContent)
+		if (manifest == null) {
+			this.cleanupAndFail(103613, '')
+			return
+		}
+		if (!this.requireFile(resourcePath + '/app-config.js') || !this.requireFile(resourcePath + '/app-service.js')) {
+			this.cleanupAndFail(103609, '')
+			return
+		}
+
+		const appId = manifest.getString('id')
+		const version = manifest.getJSON('version')
+		const uniAppX = manifest.getJSON('uni-app-x')
+		if (appId == null || version == null || uniAppX == null) {
+			this.cleanupAndFail(103610, '')
+			return
+		}
+		const versionName = version.getString('name')
+		const versionCode = this.normalizeVersionCode(version)
+		const compilerRuleVersion = this.normalizeCompilerRuleVersion(uniAppX)
+		if (compilerRuleVersion == null) {
+			this.cleanupAndFail(103618, '')
+			return
+		}
+		if (versionName == null || versionCode == null
+			|| !this.isSafeAppId(appId) || !this.isVersionName(versionName)
+			|| !this.isVersionCode(versionCode)) {
+			this.cleanupAndFail(103610, '')
+			return
+		}
+
+		this.appId = appId
+		this.versionName = versionName
+		this.versionCode = versionCode
+		this.compilerRuleVersion = compilerRuleVersion
+		this.unzippedResourcePath = resourcePath
+		this.validateRuntimeAndInstall()
+	}
+
+	private validateRuntimeAndInstall(): void {
+		if (this.appId != this.runtimeAppId) {
+			this.cleanupAndFail(103614, '')
+			return
+		}
+		if (this.compilerRuleVersion != this.runtimeCompilerRuleVersion) {
+			this.cleanupAndFail(103619, '')
+			return
+		}
+		if (!this.ignoreVersion && (!this.isVersionName(this.runtimeAppVersion) || this.isVersionNotHigher(this.versionName, this.runtimeAppVersion))) {
+			this.cleanupAndFail(103611, '')
+			return
+		}
+
+		if (!this.ensureDirectory(this.rootPath)) {
+			this.cleanupAndFail(103604, '')
+			return
+		}
+		if (this.isSyncDebug) {
+			const stagingWwwPath = this.txnPath + '/www'
+			if (!this.renameResource(this.unzippedResourcePath, stagingWwwPath) || !this.isDirectory(stagingWwwPath) || this.isDirectory(this.unzippedResourcePath)) {
+				this.cleanupAndFail(103604, '')
+				return
+			}
+			this.removeDirectoryIfPresent(this.unzipPath)
+
+			// #ifdef APP-ANDROID
+			this.installAndroidSyncDebugResources(stagingWwwPath)
+			return
+			// #endif
+
+			// #ifdef APP-IOS
+			const finalWwwPath = this.rootPath + '/www'
+			if (!this.removeDirectoryIfPresent(finalWwwPath)
+				|| !this.renameResource(stagingWwwPath, finalWwwPath)
+				|| !this.isDirectory(finalWwwPath)
+				|| this.isDirectory(stagingWwwPath)) {
+				this.cleanupAndFail(103604, '')
+				return
+			}
+
+			this.removeDirectoryIfPresent(this.txnPath)
+			this.terminalSuccess(finalWwwPath)
+			return
+			// #endif
+		}
+
+		const resourceId = this.createUnusedResourceId(this.rootPath)
+		const candidatePath = this.txnPath + '/' + resourceId
+		const candidateWwwPath = candidatePath + '/www'
+		if (!this.ensureDirectory(candidatePath)) {
+			this.cleanupAndFail(103604, '')
+			return
+		}
+
+		if (!this.renameResource(this.unzippedResourcePath, candidateWwwPath) || !this.isDirectory(candidateWwwPath) || this.isDirectory(this.unzippedResourcePath)) {
+			this.cleanupAndFail(103604, '')
+			return
+		}
+		this.removeDirectoryIfPresent(this.unzipPath)
+
+		const finalPath = this.rootPath + '/' + resourceId
+		if (!this.renameResource(candidatePath, finalPath) || !this.isDirectory(finalPath + '/www') || this.isDirectory(candidatePath)) {
+			this.cleanupAndFail(103604, '')
+			return
+		}
+
+		this.removeDirectoryIfPresent(this.txnPath)
+		this.terminalSuccess(finalPath + '/www')
+	}
+
+	private terminalSuccess(resourcePath: string): void {
+		if (this.finished) {
+			return
+		}
+		this.finished = true
+		this.postMessage({
+			type: 'terminal-success',
+			transactionId: this.transactionId,
+			appId: this.appId,
+			versionName: this.versionName,
+			resourcePath,
+			isSyncDebug: this.isSyncDebug,
+		}, options = null)
+	}
+
+	private cleanupAndFail(code: number, message: string, cause: string = ''): void {
+		this.removeDirectoryIfPresent(this.txnPath)
+		this.terminalFailure(code, message, cause)
+	}
+
+	private terminalFailure(code: number, message: string, cause: string = ''): void {
+		if (this.finished) {
+			return
+		}
+		this.finished = true
+		this.postMessage({
+			type: 'terminal-failure',
+			transactionId: this.transactionId,
+			code,
+			message,
+			cause,
+		}, options = null)
+	}
+
+	private failInvalidMessage(cause: string): void {
+		if (this.txnPath.length > 0) {
+			this.cleanupAndFail(103612, '', cause)
+			return
+		}
+		this.terminalFailure(103612, '', cause)
+	}
+
+	private ensureDirectory(path: string): boolean {
+		this.lastFileSystemErrorMessage = ''
+		if (this.isDirectory(path)) {
+			return true
+		}
+
+		// #ifdef APP-ANDROID
+		try {
+			uni.getFileSystemManager().mkdirSync(path, true)
+			if (this.isDirectory(path)) {
+				return true
+			}
+			this.lastFileSystemErrorMessage = 'directory was not created'
+			return false
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown mkdirSync exception')
+			return false
+		}
+		// #endif
+
+		// #ifdef APP-IOS
+		try {
+			UTSiOS.try(FileManager.default.createDirectory(
+				atPath = path,
+				withIntermediateDirectories = true,
+				attributes = null
+			))
+			if (this.isDirectory(path)) {
+				return true
+			}
+			this.lastFileSystemErrorMessage = 'directory was not created'
+			return false
+		} catch (error) {
+			this.lastFileSystemErrorMessage = error.message
+			return false
+		}
+		// #endif
+	}
+
+	private removeDirectoryIfPresent(path: string): boolean {
+		this.lastFileSystemErrorMessage = ''
+		if (!this.isDirectory(path)) {
+			return true
+		}
+
+		// #ifdef APP-ANDROID
+		try {
+			uni.getFileSystemManager().rmdirSync(path, true)
+			if (!this.isDirectory(path)) {
+				return true
+			}
+			this.lastFileSystemErrorMessage = 'directory still exists after removal'
+			return false
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown rmdirSync exception')
+			return false
+		}
+		// #endif
+
+		// #ifdef APP-IOS
+		try {
+			UTSiOS.try(FileManager.default.removeItem(atPath = path))
+			if (!this.isDirectory(path)) {
+				return true
+			}
+			this.lastFileSystemErrorMessage = 'directory still exists after removal'
+			return false
+		} catch (error) {
+			this.lastFileSystemErrorMessage = error.message
+			return false
+		}
+		// #endif
+	}
+
+	private fileSystemFailureCause(path: string): string {
+		return this.lastFileSystemErrorMessage.length > 0
+			? this.lastFileSystemErrorMessage + '; path: ' + path
+			: 'path: ' + path
+	}
+
+	private isDirectory(path: string): boolean {
+		// #ifdef APP-ANDROID
+		return this.readDirectory(path) != null
+		// #endif
+
+		// #ifdef APP-IOS
+		var isDirectory: ObjCBool = false
+		return FileManager.default.fileExists(
+			atPath = path,
+			isDirectory = UTSiOS.getPointer(isDirectory)
+		) && isDirectory.boolValue
+		// #endif
+	}
+
+	private isFile(path: string): boolean {
+		// #ifdef APP-ANDROID
+		return new File(path).isFile() == true
+		// #endif
+
+		// #ifdef APP-IOS
+		var isDirectory: ObjCBool = false
+		return FileManager.default.fileExists(
+			atPath = path,
+			isDirectory = UTSiOS.getPointer(isDirectory)
+		) && !isDirectory.boolValue
+		// #endif
+	}
+
+	// #ifdef APP-ANDROID
+	/**
+	 * The native Zstandard bridge opens its input with a filesystem path. Android
+	 * assets and content URIs are readable through FileSystemManager but are not
+	 * java.io.File instances, so only those non-local inputs are streamed once
+	 * into the transaction directory before decompression.
+	 */
+	private materializeAndroidInputFile(): boolean {
+		this.lastFileSystemErrorMessage = ''
+		const sourcePath = this.zipFilePath
+		const localInputPath = this.txnPath + '/input.wgt'
+		try {
+			uni.getFileSystemManager().copyFileSync(sourcePath, localInputPath)
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown copyFileSync exception')
+			return false
+		}
+		if (!this.isFile(localInputPath)) {
+			this.lastFileSystemErrorMessage = 'copyFileSync did not create a regular local input file'
+			return false
+		}
+		this.zipFilePath = localInputPath
+		return true
+	}
+	// #endif
+
+	private readDirectory(path: string): string[] | null {
+		// #ifdef APP-ANDROID
+		try {
+			return uni.getFileSystemManager().readdirSync(path)
+		} catch (error) {
+			return null
+		}
+		// #endif
+
+		// #ifdef APP-IOS
+		return uni.getFileSystemManager().readdirSync(path)
+		// #endif
+	}
+
+	private requireFile(path: string): boolean {
+		const content = this.readUtf8File(path)
+		return content != null && content.length > 0
+	}
+
+	private readUtf8File(path: string): string | null {
+		// #ifdef APP-ANDROID
+		try {
+			const content = uni.getFileSystemManager().readFileSync(path, 'utf-8')
+			return typeof content == 'string' ? content : null
+		} catch (error) {
+			return null
+		}
+		// #endif
+
+		// #ifdef APP-IOS
+		const content = uni.getFileSystemManager().readFileSync(path, 'utf-8')
+		return typeof content == 'string' ? content : null
+		// #endif
+	}
+
+	// #ifdef APP-ANDROID
+	/**
+	 * Installs a sync-debug Android resource tree without losing UTS plugin DEX and
+	 * config.json files. Missing files are copied into staging and verified before the
+	 * old www tree is backed up. A file from the new WGT wins only when it has the same
+	 * relative path as an old file.
+	 */
+	private installAndroidSyncDebugResources(stagingWwwPath: string): void {
+		const finalWwwPath = this.rootPath + '/www'
+		const oldWwwBackupPath = this.txnPath + '/old-www'
+		const hadOldWww = this.isDirectory(finalWwwPath)
+
+		const oldResourcePaths: string[] = []
+		const oldDexPaths: string[] = []
+		if (!this.collectAndroidSyncDebugResourcePaths(finalWwwPath, oldResourcePaths, oldDexPaths)) {
+			this.failAndroidSyncDebugPreparation(
+				'scan-old-resources',
+				finalWwwPath + '/uni_modules',
+				this.lastFileSystemErrorMessage
+			)
+			return
+		}
+		const incomingResourcePaths: string[] = []
+		const incomingDexPaths: string[] = []
+		if (!this.collectAndroidSyncDebugResourcePaths(stagingWwwPath, incomingResourcePaths, incomingDexPaths)) {
+			this.failAndroidSyncDebugPreparation(
+				'scan-incoming-resources',
+				stagingWwwPath + '/uni_modules',
+				this.lastFileSystemErrorMessage
+			)
+			return
+		}
+		const expectedResourcePaths: string[] = []
+		for (const relativePath of incomingResourcePaths) {
+			expectedResourcePaths.push(relativePath)
+		}
+
+		if (!this.makeDexFilesReadOnly(stagingWwwPath, incomingDexPaths)) {
+			this.failAndroidSyncDebugPreparation(
+				'prepare-incoming-dex-permissions',
+				stagingWwwPath,
+				this.lastFileSystemErrorMessage
+			)
+			return
+		}
+
+		for (const relativePath of oldResourcePaths) {
+			const sourcePath = finalWwwPath + '/' + relativePath
+			const targetPath = stagingWwwPath + '/' + relativePath
+			if (this.isRegularFile(targetPath)) {
+				continue
+			}
+			const targetParentPath = this.parentPath(targetPath)
+			if (!this.ensureAndroidDirectory(targetParentPath)) {
+				const failureCause = this.fileSystemFailureCause(targetParentPath)
+					+ '; source=' + sourcePath
+					+ '; target=' + targetPath
+				this.failAndroidSyncDebugPreparation(
+					'merge-old-resource-parent',
+					targetParentPath,
+					failureCause
+				)
+				return
+			}
+			if (!this.copyFileAndVerify(sourcePath, targetPath)) {
+				const failureCause = this.androidCopyFailureCause(sourcePath, targetPath)
+				this.failAndroidSyncDebugPreparation(
+					'merge-old-resource-copy',
+					targetPath,
+					failureCause
+				)
+				return
+			}
+			expectedResourcePaths.push(relativePath)
+		}
+		expectedResourcePaths.sort()
+
+		if (!this.verifyResourceFiles(stagingWwwPath, expectedResourcePaths)) {
+			this.failAndroidSyncDebugPreparation(
+				'verify-prepared-resources',
+				stagingWwwPath,
+				this.fileSystemFailureCause(stagingWwwPath)
+			)
+			return
+		}
+
+		if (hadOldWww && !this.renameDirectoryAndVerify(finalWwwPath, oldWwwBackupPath)) {
+			const failureCause = this.androidRenameFailureCause(finalWwwPath, oldWwwBackupPath)
+			this.rollbackAndFailAndroidSyncDebug(
+				'backup-old-www',
+				finalWwwPath,
+				failureCause,
+				stagingWwwPath,
+				finalWwwPath,
+				oldWwwBackupPath,
+				oldResourcePaths,
+				hadOldWww
+			)
+			return
+		}
+
+		if (!this.renameDirectoryAndVerify(stagingWwwPath, finalWwwPath)) {
+			const failureCause = this.androidRenameFailureCause(stagingWwwPath, finalWwwPath)
+			this.rollbackAndFailAndroidSyncDebug(
+				'activate-new-www',
+				finalWwwPath,
+				failureCause,
+				stagingWwwPath,
+				finalWwwPath,
+				oldWwwBackupPath,
+				oldResourcePaths,
+				hadOldWww
+			)
+			return
+		}
+
+		if (!this.verifyResourceFiles(finalWwwPath, expectedResourcePaths)) {
+			this.rollbackAndFailAndroidSyncDebug(
+				'verify-installed-resources',
+				finalWwwPath,
+				this.fileSystemFailureCause(finalWwwPath),
+				stagingWwwPath,
+				finalWwwPath,
+				oldWwwBackupPath,
+				oldResourcePaths,
+				hadOldWww
+			)
+			return
+		}
+
+		// The new tree is committed. Cleanup is best-effort and must not undo it.
+		this.removeDirectoryIfPresent(oldWwwBackupPath)
+		this.removeDirectoryIfPresent(this.txnPath)
+		this.terminalSuccess(finalWwwPath)
+	}
+
+	private collectAndroidSyncDebugResourcePaths(
+		wwwPath: string,
+		resourcePaths: string[],
+		dexPaths: string[]
+	): boolean {
+		const uniModulesPath = wwwPath + '/uni_modules'
+		const uniModulesFile = new File(uniModulesPath)
+		if (uniModulesFile.exists() != true) {
+			return true
+		}
+		if (uniModulesFile.isDirectory() != true) {
+			this.lastFileSystemErrorMessage = 'uni_modules is not a directory'
+			return false
+		}
+		if (!this.collectAndroidSyncDebugResourcePathsFromDirectory(
+			uniModulesPath,
+			'uni_modules',
+			resourcePaths,
+			dexPaths
+		)) {
+			return false
+		}
+		resourcePaths.sort()
+		dexPaths.sort()
+		return true
+	}
+
+	private collectAndroidSyncDebugResourcePathsFromDirectory(
+		path: string,
+		relativePath: string,
+		resourcePaths: string[],
+		dexPaths: string[]
+	): boolean {
+		let entries: string[]
+		try {
+			entries = uni.getFileSystemManager().readdirSync(path) ?? []
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			const exceptionDescription = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown readdirSync exception')
+			this.lastFileSystemErrorMessage = 'unable to read Android sync-debug resource directory; exception='
+				+ exceptionDescription
+				+ '; directory=' + path
+			return false
+		}
+		entries.sort()
+		for (const entry of entries) {
+			if (entry.length == 0 || entry == '.' || entry == '..' || entry.indexOf('/') >= 0) {
+				this.lastFileSystemErrorMessage = 'invalid directory entry while searching for Android sync-debug resources: ' + entry
+				return false
+			}
+			const childPath = path + '/' + entry
+			const childRelativePath = relativePath + '/' + entry
+			const childFile = new File(childPath)
+			if (childFile.isDirectory() == true) {
+				if (!this.collectAndroidSyncDebugResourcePathsFromDirectory(
+					childPath,
+					childRelativePath,
+					resourcePaths,
+					dexPaths
+				)) {
+					return false
+				}
+				continue
+			}
+			const isDexFile = entry.endsWith('.dex')
+			if (isDexFile || entry == 'config.json') {
+				if (childFile.isFile() != true) {
+					this.lastFileSystemErrorMessage = 'Android sync-debug resource path is not a regular file: ' + childPath
+					return false
+				}
+				resourcePaths.push(childRelativePath)
+				if (isDexFile) {
+					dexPaths.push(childRelativePath)
+				}
+			}
+		}
+		return true
+	}
+
+	private androidRenameFailureCause(sourcePath: string, targetPath: string): string {
+		const reason = this.lastFileSystemErrorMessage.length > 0
+			? this.lastFileSystemErrorMessage
+			: 'rename failed without a filesystem error message'
+		return 'reason=' + reason
+			+ '; source=' + sourcePath
+			+ '; target=' + targetPath
+	}
+
+	private androidCopyFailureCause(sourcePath: string, targetPath: string): string {
+		const reason = this.lastFileSystemErrorMessage.length > 0
+			? this.lastFileSystemErrorMessage
+			: 'copy failed without a filesystem error message'
+		return 'reason=' + reason
+			+ '; source=' + sourcePath
+			+ '; target=' + targetPath
+	}
+
+	private rollbackAndroidSyncDebugResources(
+		stagingWwwPath: string,
+		finalWwwPath: string,
+		oldWwwBackupPath: string,
+		oldResourcePaths: string[],
+		hadOldWww: boolean
+	): boolean {
+		const backupExists = this.isDirectory(oldWwwBackupPath)
+		const finalExists = this.isDirectory(finalWwwPath)
+		const stagingExists = this.isDirectory(stagingWwwPath)
+
+		if (backupExists) {
+			// The old tree reached the backup path. Move an activated new tree aside,
+			// then put the old tree back at its original path.
+			if (finalExists) {
+				if (stagingExists) {
+					this.lastFileSystemErrorMessage = 'rollback cannot move final www aside because staging www already exists'
+					return false
+				}
+				if (!this.renameDirectoryAndVerify(finalWwwPath, stagingWwwPath)) {
+					return false
+				}
+			} else if (!stagingExists || this.pathExists(finalWwwPath)) {
+				this.lastFileSystemErrorMessage = 'rollback directory state is inconsistent before restoring old www'
+				return false
+			}
+			if (!this.renameDirectoryAndVerify(oldWwwBackupPath, finalWwwPath)) {
+				return false
+			}
+		} else if (hadOldWww) {
+			// The backup rename did not take effect; the old tree must still be final.
+			if (!finalExists) {
+				this.lastFileSystemErrorMessage = 'old www backup is absent and final www is not a directory'
+				return false
+			}
+		} else {
+			// There was no old tree. Undo activation if it already took effect.
+			if (finalExists) {
+				if (stagingExists) {
+					this.lastFileSystemErrorMessage = 'rollback staging conflict when no old www existed'
+					return false
+				}
+				if (!this.renameDirectoryAndVerify(finalWwwPath, stagingWwwPath)) {
+					return false
+				}
+			} else if (this.pathExists(finalWwwPath)) {
+				this.lastFileSystemErrorMessage = 'final www exists but is not a directory during rollback'
+				return false
+			}
+		}
+
+		for (const relativePath of oldResourcePaths) {
+			if (!this.isRegularFile(finalWwwPath + '/' + relativePath)) {
+				this.lastFileSystemErrorMessage = 'rollback verification found a missing old resource: ' + relativePath
+				return false
+			}
+		}
+		return true
+	}
+
+	private makeDexFilesReadOnly(wwwPath: string, relativePaths: string[]): boolean {
+		this.lastFileSystemErrorMessage = ''
+		for (const relativePath of relativePaths) {
+			const path = wwwPath + '/' + relativePath
+			const file = new File(path)
+			if (file.isFile() != true) {
+				this.lastFileSystemErrorMessage = 'DEX does not exist or is not a regular file: ' + path
+				return false
+			}
+			if (file.canWrite() == true && (file.setReadOnly() != true || file.canWrite() == true)) {
+				this.lastFileSystemErrorMessage = 'unable to make DEX read-only: ' + path
+				return false
+			}
+		}
+		return true
+	}
+
+	private verifyResourceFiles(wwwPath: string, relativePaths: string[]): boolean {
+		this.lastFileSystemErrorMessage = ''
+		for (const relativePath of relativePaths) {
+			if (!this.isRegularFile(wwwPath + '/' + relativePath)) {
+				this.lastFileSystemErrorMessage = 'expected Android sync-debug resource is missing: ' + relativePath
+				return false
+			}
+		}
+		return true
+	}
+
+	private copyFileAndVerify(sourcePath: string, targetPath: string): boolean {
+		this.lastFileSystemErrorMessage = ''
+		if (!this.isRegularFile(sourcePath)) {
+			this.lastFileSystemErrorMessage = 'copy source does not exist or is not a regular file; source='
+				+ sourcePath
+			return false
+		}
+		if (this.pathExists(targetPath)) {
+			this.lastFileSystemErrorMessage = 'target path already exists before file copy; target='
+				+ targetPath
+			return false
+		}
+
+		const sourceFile = new File(sourcePath)
+		const targetFile = new File(targetPath)
+		const sourceWasWritable = sourceFile.canWrite() == true
+		try {
+			const copiedFile = sourceFile.copyTo(targetFile, false)
+			if (copiedFile.isFile() != true) {
+				this.lastFileSystemErrorMessage = 'java.io.File copyTo did not create a regular target file'
+				return false
+			}
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown java.io.File copyTo exception')
+			return false
+		}
+
+		if (targetFile.isFile() != true
+			|| sourceFile.isFile() != true
+			|| targetFile.length() != sourceFile.length()) {
+			this.lastFileSystemErrorMessage = 'file copy verification failed; source='
+				+ sourcePath
+				+ '; target=' + targetPath
+			return false
+		}
+		if (!sourceWasWritable && targetFile.canWrite() == true) {
+			if (targetFile.setReadOnly() != true || targetFile.canWrite() == true) {
+				this.lastFileSystemErrorMessage = 'unable to preserve read-only file permission; source='
+					+ sourcePath
+					+ '; target=' + targetPath
+				return false
+			}
+		}
+		return true
+	}
+
+	private ensureAndroidDirectory(path: string): boolean {
+		this.lastFileSystemErrorMessage = ''
+		const directory = new File(path)
+		if (directory.exists() == true) {
+			if (directory.isDirectory() == true) {
+				return true
+			}
+			this.lastFileSystemErrorMessage = 'native directory target exists but is not a directory: ' + path
+			return false
+		}
+
+		try {
+			const created = directory.mkdirs() == true
+			if (!created && directory.isDirectory() != true) {
+				this.lastFileSystemErrorMessage = 'java.io.File.mkdirs returned false'
+				return false
+			}
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown java.io.File.mkdirs exception')
+			return false
+		}
+		return true
+	}
+
+	private renameDirectoryAndVerify(sourcePath: string, targetPath: string): boolean {
+		this.lastFileSystemErrorMessage = ''
+		if (!this.isDirectory(sourcePath)) {
+			this.lastFileSystemErrorMessage = 'source directory does not exist; source='
+				+ sourcePath
+			return false
+		}
+		if (this.pathExists(targetPath)) {
+			this.lastFileSystemErrorMessage = 'target path already exists before directory rename; target='
+				+ targetPath
+			return false
+		}
+		try {
+			const renamed = new File(sourcePath).renameTo(new File(targetPath)) == true
+			if (!renamed) {
+				this.lastFileSystemErrorMessage = 'java.io.File.renameTo returned false'
+				return false
+			}
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown java.io.File.renameTo exception')
+			return false
+		}
+		if (!this.isDirectory(targetPath) || this.pathExists(sourcePath)) {
+			this.lastFileSystemErrorMessage = 'directory rename verification failed; source='
+				+ sourcePath
+				+ '; target=' + targetPath
+			return false
+		}
+		return true
+	}
+
+	private isRegularFile(path: string): boolean {
+		return new File(path).isFile() == true
+	}
+
+	private pathExists(path: string): boolean {
+		return new File(path).exists() == true
+	}
+
+	private parentPath(path: string): string {
+		const separatorIndex = path.lastIndexOf('/')
+		return separatorIndex > 0 ? path.substring(0, separatorIndex) : path
+	}
+
+	private failAndroidSyncDebugPreparation(phase: string, path: string, cause: string): void {
+		const detail = cause.length > 0 ? cause : 'path: ' + path
+		const message = 'installWgt:fail Android sync-debug resource preparation failed'
+			+ '; phase: ' + phase
+			+ '; ' + detail
+			+ '; rollback: not-required'
+		this.cleanupAndFail(103604, message)
+	}
+
+	private rollbackAndFailAndroidSyncDebug(
+		phase: string,
+		path: string,
+		cause: string,
+		stagingWwwPath: string,
+		finalWwwPath: string,
+		oldWwwBackupPath: string,
+		oldResourcePaths: string[],
+		hadOldWww: boolean
+	): void {
+		const rollbackSucceeded = this.rollbackAndroidSyncDebugResources(
+			stagingWwwPath,
+			finalWwwPath,
+			oldWwwBackupPath,
+			oldResourcePaths,
+			hadOldWww
+		)
+		this.failAndroidSyncDebugPlacement(
+			phase,
+			path,
+			cause,
+			rollbackSucceeded,
+			rollbackSucceeded
+		)
+	}
+
+	private failAndroidSyncDebugPlacement(
+		phase: string,
+		path: string,
+		cause: string,
+		rollbackSucceeded: boolean,
+		cleanupTransaction: boolean
+	): void {
+		const detail = cause.length > 0 ? cause : 'path: ' + path
+		const message = 'installWgt:fail Android sync-debug resource placement failed'
+			+ '; phase: ' + phase
+			+ '; ' + detail
+			+ '; rollback: ' + (rollbackSucceeded ? 'success' : 'failed')
+		if (cleanupTransaction) {
+			this.cleanupAndFail(103604, message)
+			return
+		}
+		this.terminalFailure(103604, message)
+	}
+	// #endif
+
+	private renameResource(sourcePath: string, targetPath: string): boolean {
+		// #ifdef APP-ANDROID
+		this.lastFileSystemErrorMessage = ''
+		try {
+			uni.getFileSystemManager().renameSync(sourcePath, targetPath)
+			return true
+		} catch (error) {
+			const errorMessage = error.message ?? ''
+			const throwableDescription = error.toString()
+			this.lastFileSystemErrorMessage = throwableDescription.length > 0
+				? throwableDescription
+				: (errorMessage.length > 0 ? errorMessage : 'unknown renameSync exception')
+			return false
+		}
+		// #endif
+
+		// #ifdef APP-IOS
+		try {
+			UTSiOS.try(FileManager.default.moveItem(atPath = sourcePath, toPath = targetPath))
+			return true
+		} catch (error) {
+			return false
+		}
+		// #endif  
+	}
+
+	private decompressWgt(): DecompressFileResult {
+		return uni.__zstdDecompressFile(this.zipFilePath, this.decompressedZipPath, null)
+	}
+
+	private isInteger(value: number): boolean {
+		return value.toInt() == value
+	}
+
+	private isSafeAppId(value: string): boolean {
+		if (value.length == 0) {
+			return false
+		}
+		return /^[A-Za-z0-9._-]+$/.test(value) && value != '.' && value != '..'
+	}
+
+	private isVersionName(value: string): boolean {
+		return /^[0-9]+(\.[0-9]+)*$/.test(value)
+	}
+
+	private isVersionCode(value: string): boolean {
+		return /^[0-9]+$/.test(value)
+	}
+
+	private normalizeVersionCode(version: UTSJSONObject): string | null {
+		const stringValue = version.getString('code')
+		if (stringValue != null) {
+			return stringValue
+		}
+		const numberValue = version.getNumber('code')
+		if (numberValue == null || numberValue < 0 || !this.isInteger(numberValue)) {
+			return null
+		}
+		return numberValue.toInt().toString()
+	}
+
+	private normalizeCompilerRuleVersion(uniAppX: UTSJSONObject): number | null {
+		const numberValue = uniAppX.getNumber('compilerRuleVersion')
+		if (numberValue != null) {
+			return numberValue
+		}
+		const stringValue = uniAppX.getString('compilerRuleVersion')
+		if (stringValue == null || !/^[0-9]+$/.test(stringValue)) {
+			return null
+		}
+		return parseInt(stringValue, 10)
+	}
+
+	private createResourceId(): string {
+		const timestampMs = Date.now().toString()
+		const nonce = this.createInstallNonce()
+		const canonical = 'wgt-v1\n'
+			+ this.appId.length.toString() + ':' + this.appId + '\n'
+			+ this.versionName.length.toString() + ':' + this.versionName + '\n'
+			+ this.versionCode.length.toString() + ':' + this.versionCode + '\n'
+			+ timestampMs + '\n'
+			+ nonce
+		return this.md5(canonical)
+	}
+
+	private createUnusedResourceId(appRootPath: string): string {
+		let resourceId = this.createResourceId()
+		while (this.isDirectory(appRootPath + '/' + resourceId)) {
+			resourceId = this.createResourceId()
+		}
+		return resourceId
+	}
+
+	private createInstallNonce(): string {
+		// #ifdef APP-IOS
+		return new UUID().uuidString.lowercased()
+		// #endif
+
+		// #ifdef APP-ANDROID
+		return UUID.randomUUID().toString()
+		// #endif
+	}
+
+	private md5(value: string): string {
+		// #ifdef APP-IOS
+		const data = value.data(using = String.Encoding.utf8)!
+		const digest = new Array<UInt8>(repeating = 0, count = new Int(CC_MD5_DIGEST_LENGTH))
+		data.withUnsafeBytes((body: UnsafeRawBufferPointer) => {
+			CC_MD5(body.baseAddress, new UInt32(data.count), UTSiOS.getPointer(digest))
+		})
+		let result = ''
+		digest.forEach((byte: UInt8) => {
+			result += new String(format = '%02x', new UInt8(byte))
+		})
+		return result
+		// #endif
+
+		// #ifdef APP-ANDROID
+		const digest = MessageDigest.getInstance('MD5').digest(value.toByteArray())
+		let result = ''
+		digest.forEach((byte: Byte) => {
+			const value = (byte.toInt() & 0xff).toString(16)
+			result += value.length == 1 ? '0' + value : value
+		})
+		return result
+		// #endif
+	}
+
+	private getUnzippedResourcePath(): string | null {
+		return this.findManifestDirectory(this.unzipPath)
+	}
+
+	private findManifestDirectory(path: string): string | null {
+		const entries = this.readDirectory(path)
+		if (entries == null) {
+			return null
+		}
+		if (entries.indexOf('manifest.json') >= 0) {
+			return path
+		}
+		for (const entry of entries) {
+			const childPath = path + '/' + entry
+			if (this.isDirectory(childPath)) {
+				const resourcePath = this.findManifestDirectory(childPath)
+				if (resourcePath != null) {
+					return resourcePath
+				}
+			}
+		}
+		return null
+	}
+
+	private isVersionNotHigher(left: string, right: string): boolean {
+		const leftParts = left.split('.')
+		const rightParts = right.split('.')
+		const length = leftParts.length > rightParts.length ? leftParts.length : rightParts.length
+		for (let i = 0; i < length; i++) {
+			const leftPart = this.normalizeVersionPart(leftParts[i] ?? '0')
+			const rightPart = this.normalizeVersionPart(rightParts[i] ?? '0')
+			if (leftPart.length != rightPart.length) {
+				return leftPart.length < rightPart.length
+			}
+			if (leftPart != rightPart) {
+				return leftPart < rightPart
+			}
+		}
+		return true
+	}
+
+	private normalizeVersionPart(value: string): string {
+		const normalized = value.replace(/^0+/, '')
+		return normalized.length > 0 ? normalized : '0'
+	}
+}

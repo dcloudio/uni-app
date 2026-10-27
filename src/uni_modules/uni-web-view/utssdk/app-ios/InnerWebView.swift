@@ -444,6 +444,7 @@ public class InnerWebView: UniBaseWebView, UIGestureRecognizerDelegate {
     public var wvStyles: InnerWebViewStyles?
     public var disableUserSelectMenu: Bool = false
     public var allowsInlineMediaPlayback: Bool = false
+    private var nestedScrollCoordinator: WebViewNestedScrollCoordinator?
     
     public var needRemoveObserver: Bool = false
     public var horizontalScrollBarAccess: Bool = true {
@@ -950,6 +951,8 @@ public class InnerWebView: UniBaseWebView, UIGestureRecognizerDelegate {
     
     /// 销毁前释放 WKWebView 与宿主之间的引用关系。
     public func prepareForDestroy() {
+        self.nestedScrollCoordinator?.invalidate()
+        self.nestedScrollCoordinator = nil
         self.stopLoading()
         self.navigationDelegate = nil
         self.uiDelegate = nil
@@ -959,6 +962,18 @@ public class InnerWebView: UniBaseWebView, UIGestureRecognizerDelegate {
         self.progressView?.removeFromSuperview()
         self.progressView = nil
         self.removeFromSuperview()
+    }
+
+    public func setAssociativeContainer(_ type: String) {
+        if type == "nested-scroll-view" {
+            if self.nestedScrollCoordinator == nil {
+                self.nestedScrollCoordinator = WebViewNestedScrollCoordinator(webView: self)
+            }
+            self.nestedScrollCoordinator?.setEnabled(true)
+        } else {
+            self.nestedScrollCoordinator?.invalidate()
+            self.nestedScrollCoordinator = nil
+        }
     }
     
     private func cleanupWebViewResources() {
@@ -1576,6 +1591,9 @@ extension InnerWebView: InnerWebViewInterface {
     
     public func setWebViewStyles(isShow: Bool, color: UIColor) {
         self.wvStyles?.update(isShow: isShow, color: color)
+        if !isShow {
+            self.closeProgress()
+        }
     }
     
     public func setHorizontalScrollBarAccess(_ horizontalScrollBarAccess : Bool) {

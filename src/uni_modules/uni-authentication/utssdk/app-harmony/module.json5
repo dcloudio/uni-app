@@ -1,0 +1,18 @@
+{
+  "module": {
+    "requestPermissions": [
+      // {
+      //   "name": "ohos.permission.READ_CALENDAR",
+      //   "usedScene": {
+      //     "when": "inuse"
+      //   }
+      // },
+      // {
+      //   "name": "ohos.permission.WRITE_CALENDAR",
+      //   "usedScene": {
+      //     "when": "inuse"
+      //   }
+      // }
+    ]
+  }
+}

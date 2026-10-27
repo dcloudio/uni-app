@@ -1,98 +1,126 @@
 {
-	"id": "uni-map-amap",
-	"displayName": "uni-map-amap",
-	"version": "1.0.0",
-	"description": "uni-map-amap - 高德地图 UTS 插件",
-	"keywords": [
-		"uni-map-amap",
-		"amap",
-		"高德地图"
-	],
-	"repository": "",
-	"engines": {
-		"HBuilderX": "^3.7.0"
-	},
-	"dcloudext": {
-		"type": "component-uts",
-		"sale": {
-			"regular": {
-				"price": "0.00"
-			},
-			"sourcecode": {
-				"price": "0.00"
-			}
-		},
-		"contact": {
-			"qq": ""
-		},
-		"declaration": {
-			"ads": "",
-			"data": "",
-			"permissions": ""
-		},
-		"npmurl": ""
-	},
-	"uni_modules": {
-		"dependencies": ["uni-framework", "app-ios:uni-getElementById"],
-		"uni-ext-api": {
-			"uni": {
-				"createMapContext": {
-					"name": "createMapContext",
-					"app": {
-						"js": false,
-						"kotlin": true,
-						"swift": true,
-						"arkts": true
-					}
-				}
-			}
-		},
-		"encrypt": [],
-		"platforms": {
-			"cloud": {
-				"tcb": "u",
-				"aliyun": "u",
-				"alipay": "u"
-			},
-			"client": {
-				"Vue": {
-					"vue2": "u",
-					"vue3": "u"
-				},
-				"App": {
-					"app-android": "u",
-					"app-ios": "u"
-				},
-				"H5-mobile": {
-					"Safari": "u",
-					"Android Browser": "u",
-					"微信浏览器(Android)": "u",
-					"QQ浏览器(Android)": "u"
-				},
-				"H5-pc": {
-					"Chrome": "u",
-					"IE": "u",
-					"Edge": "u",
-					"Firefox": "u",
-					"Safari": "u"
-				},
-				"小程序": {
-					"微信": "u",
-					"阿里": "u",
-					"百度": "u",
-					"字节跳动": "u",
-					"QQ": "u",
-					"钉钉": "u",
-					"快手": "u",
-					"飞书": "u",
-					"京东": "u"
-				},
-				"快应用": {
-					"华为": "u",
-					"联盟": "u"
-				}
-			}
-		}
-	}
+  "id": "uni-map-amap",
+  "displayName": "uni-map-amap",
+  "version": "1.4.0",
+  "description": "uni-map-amap - 高德地图 UTS 插件",
+  "keywords": [
+    "uni-map-amap",
+    "amap",
+    "高德地图"
+],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.7.0",
+    "uni-app": "",
+    "uni-app-x": "^4.31"
+  },
+  "dcloudext": {
+    "type": "uts-vue-component",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "<!--允许访问网络，必选权限-->\n<uses-permission android:name=\"android.permission.INTERNET\" />  \n\n<!--允许获取粗略位置，若用GPS实现定位小蓝点功能则必选-->\n<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" /> \n\n<!--允许获取网络状态，用于网络定位，若无gps但仍需实现定位小蓝点功能则此权限必选-->\n<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />    \n\n<!--允许获取wifi网络信息，用于网络定位，若无gps但仍需实现定位小蓝点功能则此权限必选-->\n<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" /> \n\n<!--允许获取wifi状态改变，用于网络定位，若无gps但仍需实现定位小蓝点功能则此权限必选-->\n<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\" /> \n\n<!--允许写设备缓存，用于问题排查-->\n<uses-permission android:name=\"android.permission.WRITE_SETTINGS\" />  \n\n\niOS： 需要配置NSLocationWhenInUseUsageDescription"
+    },
+    "npmurl": "",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x",
+    "vapor": "x"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "uni-ext-api": {
+      "uni": {
+        "createAmapContext": {
+          "name": "createAmapContext",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": false
+          }
+        }
+      }
+    },
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app": {
+          "vue": {
+            "vue2": "x",
+            "vue3": "x"
+          },
+          "web": {
+            "safari": "x",
+            "chrome": "x"
+          },
+          "app": {
+            "vue": "x",
+            "nvue": "x",
+            "android": {
+              "extVersion": "1.0.0",
+              "minVersion": "21"
+            },
+            "ios": {
+              "minVersion": "15",
+              "extVersion": "1.1.0"
+            },
+            "harmony": "x"
+          },
+          "mp": {
+            "weixin": "x",
+            "alipay": "x",
+            "toutiao": "x",
+            "baidu": "x",
+            "kuaishou": "x",
+            "jd": "x",
+            "harmony": "x",
+            "qq": "x",
+            "lark": "x",
+            "xhs": "-"
+          },
+          "quickapp": {
+            "huawei": "x",
+            "union": "x"
+          }
+        },
+        "uni-app-x": {
+          "web": {
+            "safari": "x",
+            "chrome": "x"
+          },
+          "app": {
+            "android": {
+              "extVersion": "1.0.0",
+              "minVersion": "21"
+            },
+            "ios": {
+              "extVersion": "1.1.0",
+              "minVersion": "13"
+            },
+            "harmony": "x"
+          },
+          "mp": {
+            "weixin": "x"
+          }
+        }
+      }
+    }
+  }
 }
-

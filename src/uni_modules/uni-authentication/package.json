@@ -5,7 +5,7 @@
   "description": "uni-authentication",
   "keywords": [
     "uni-authentication"
-],
+  ],
   "repository": "",
   "engines": {
     "HBuilderX": "^3.6.8"
@@ -26,7 +26,7 @@
     "declaration": {
       "ads": "",
       "data": "",
-      "permissions": ""
+      "permissions": "android.permission.USE_BIOMETRIC,android.permission.USE_FINGERPRINT"
     },
     "npmurl": ""
   },
@@ -38,8 +38,8 @@
           "name": "startSoterAuthentication",
           "app": {
             "js": false,
-            "kotlin": false,
-            "swift": false,
+            "kotlin": true,
+            "swift": true,
             "arkts": true
           }
         },
@@ -47,8 +47,8 @@
           "name": "checkIsSupportSoterAuthentication",
           "app": {
             "js": false,
-            "kotlin": false,
-            "swift": false,
+            "kotlin": true,
+            "swift": true,
             "arkts": true
           }
         },
@@ -56,8 +56,8 @@
           "name": "checkIsSoterEnrolledInDevice",
           "app": {
             "js": false,
-            "kotlin": false,
-            "swift": false,
+            "kotlin": true,
+            "swift": true,
             "arkts": true
           }
         }

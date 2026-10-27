@@ -1,6 +1,10 @@
 import { window } from "@kit.ArkUI";
 import type {UniInputFileOptions} from "./index"
 
+// TextDirection is not declared by compile SDKs earlier than API 22.
+const TEXT_DIRECTION_LTR = 0
+const TEXT_DIRECTION_RTL = 1
+
 export interface UniTextareaOptions extends UniInputFileOptions {
 	controller: TextAreaController
 	lineHeight?: string
@@ -14,6 +18,23 @@ export interface UniTextareaPadding {
 	right: string
 	bottom: string
 	left: string
+}
+
+class TextareaDirectionModifier implements AttributeModifier<TextAreaAttribute> {
+	private direction?: string
+
+	constructor(direction?: string) {
+		this.direction = direction
+	}
+
+	applyNormalAttribute(instance: TextAreaAttribute): void {
+		const dynamicInstance: ESObject = instance
+		if (typeof dynamicInstance.textDirection == 'function') {
+			dynamicInstance.textDirection(
+				this.direction == 'rtl' ? TEXT_DIRECTION_RTL : TEXT_DIRECTION_LTR
+			)
+		}
+	}
 }
 
 @Builder
@@ -38,6 +59,7 @@ export function TextareaBuilder(options: UniTextareaOptions) {
 		.fontFamily(options.fontFamily)
 		.fontStyle(options.fontStyle)
 		.textAlign(options.textAlign)
+		.attributeModifier(new TextareaDirectionModifier(options.textDirection))
 		.onFocus(() => {
 			options.handleFocus?.()
 		})

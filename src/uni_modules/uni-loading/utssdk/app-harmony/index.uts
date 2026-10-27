@@ -1,8 +1,11 @@
+// #ifndef VUE3-VAPOR
 import { buildLoading } from "./builder.ets";
+// #endif
 // #ifndef VUE3-VAPOR
 import { formatColorSync } from '@dcloudio/uni-runtime'
 // #endif
 
+// #ifndef VUE3-VAPOR
 type BorderWidth = 'normal' | 'bold'
 type AnimationTimingFunction = 'ease' | 'linear'
 
@@ -102,11 +105,12 @@ export class NativeLoading {
     this.harmonyBuilderNode?.dispose()
   }
 }
+// #endif
 
 // #ifndef VUE3-VAPOR
 class _Element extends UniViewElementImpl { }
 // #endif
 // #ifdef VUE3-VAPOR
-class _Element extends UniNativeViewElementImpl { }
+class _Element extends UniViewElementImpl { }
 // #endif
 export class UniLoadingElement extends _Element { }

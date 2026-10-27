@@ -1,0 +1,32 @@
+/**
+ * Apple 登录错误码与错误消息的映射。
+ * 复用 uni-oauth 现有 OauthErrorCode，方便和微信登录的 fail/complete 结构保持一致。
+ */
+export const OauthAppleUniErrors : Map<OauthErrorCode, string> = new Map([
+  [1310503, '未获取到 Apple 授权凭证'],
+  [1310504, 'Apple 授权未返回 authorizationCode'],
+  [1310507, 'Apple 登录请求失败'],
+  [1310508, 'Apple 登录 state 校验失败'],
+  [1310509, '用户取消 Apple 登录'],
+  [1310510, '超时时间必须为正整数'],
+  [1310511, 'Apple 登录请求超时'],
+  [1310514, '当前系统不支持 Apple 登录，请使用 iOS 13.0 及以上系统']
+]);
+
+/**
+ * Apple 登录错误主题
+ */
+export const OauthAppleUniErrorSubject = 'uni-oauth-apple';
+
+/**
+ * Apple 登录失败错误类
+ */
+export class OauthAppleFailImpl extends UniError implements IOauthFail {
+	constructor(errCode : OauthErrorCode, errMsg : string | null = null) {
+		super();
+		this.errSubject = OauthAppleUniErrorSubject;
+		this.errCode = errCode;
+		const error = OauthAppleUniErrors.get(errCode) ?? "";
+		this.errMsg = error;
+	}
+}

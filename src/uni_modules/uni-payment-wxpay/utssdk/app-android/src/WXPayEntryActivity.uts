@@ -17,7 +17,7 @@ export class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 		super()
 	}
 
-	override onCreate(savedInstanceState : Bundle | null) {
+	protected override onCreate(savedInstanceState : Bundle | null) {
 		super.onCreate(savedInstanceState)
 		let api = WXAPIFactory.createWXAPI(this, '');
 		api.handleIntent(this.getIntent(), this);

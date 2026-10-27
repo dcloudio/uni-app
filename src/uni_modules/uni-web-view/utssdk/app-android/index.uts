@@ -8,8 +8,8 @@ import PageNode from "io.dcloud.uniapp.dom.node.PageNode";
 import INodeData from "io.dcloud.uniapp.interfaces.INodeData";
 // #endif
 
-import { CreateWebViewContext, CreateWebviewContext, WebViewContext, WebviewContext, UniWebViewContextLoadDataOptions, UniWebViewElementLoadDataOptions, WebViewStyles, WebViewProgressStyles } from '../interface.uts';
-export { WebViewStyles }
+import { CreateWebViewContext, CreateWebviewContext, WebViewContext, WebviewContext, UniWebViewContextLoadDataOptions, UniWebviewContextLoadDataOptions, UniWebViewElementLoadDataOptions, WebViewStyles, WebViewProgressStyles } from '../interface.uts';
+export { WebViewStyles, UniWebviewContextLoadDataOptions }
 
 export class UniWebViewElement
 // #ifndef VUE3-VAPOR
@@ -213,6 +213,10 @@ export class NativeWebView {
 		this.webViewImpl?.setNestedScroll(type);
 	}
 
+	setAssociativeContainer(type : string) {
+		this.webViewImpl?.setAssociativeContainer(type);
+	}
+
 	setDarkMode(enable : boolean) {
 		this.webViewImpl?.enableDarkMode(enable);
 	}
@@ -257,6 +261,7 @@ export class NativeWebView {
 		}
 		this.webViewImpl?.destroy();
     	this.webViewImpl = null;
+		UTSAndroid.destroyInstance(this)
 	}
 }
 

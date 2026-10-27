@@ -1,87 +1,120 @@
 {
-	"id": "uni-animation-view",
-	"displayName": "animation-view",
-	"version": "1.0.7",
-	"description": "使用uts组件开发，实现animation-view组件",
-	"keywords": [
-        "animation-view",
-        "lottie"
-    ],
-	"repository": "",
-	"engines": {
-		"HBuilderX": "^3.7.0"
-	},
-	"dcloudext": {
-		"type": "component-uts",
-		"sale": {
-			"regular": {
-				"price": "0.00"
-			},
-			"sourcecode": {
-				"price": "0.00"
-			}
-		},
-		"contact": {
-			"qq": ""
-		},
-		"declaration": {
-			"ads": "无",
-			"data": "插件不采集任何数据",
-			"permissions": "无"
-		},
-		"npmurl": ""
-	},
-	"uni_modules": {
-		"dependencies": [],
-		"encrypt": [],
-		"platforms": {
-			"cloud": {
-				"tcb": "y",
-                "aliyun": "y",
-                "alipay": "n"
-			},
-			"client": {
-				"Vue": {
-					"vue2": "y",
-					"vue3": "y"
-				},
-				"App": {
-					"app-android": {
-						"minVersion": "21"
-					},
-					"app-ios": {
-						"minVersion": "11"
-					}
-				},
-				"H5-mobile": {
-					"Safari": "u",
-					"Android Browser": "u",
-					"微信浏览器(Android)": "u",
-					"QQ浏览器(Android)": "u"
-				},
-				"H5-pc": {
-					"Chrome": "u",
-					"IE": "u",
-					"Edge": "u",
-					"Firefox": "u",
-					"Safari": "u"
-				},
-				"小程序": {
-					"微信": "u",
-					"阿里": "u",
-					"百度": "u",
-					"字节跳动": "u",
-					"QQ": "u",
-					"钉钉": "u",
-					"快手": "u",
-					"飞书": "u",
-					"京东": "u"
-				},
-				"快应用": {
-					"华为": "u",
-					"联盟": "u"
-				}
-			}
-		}
-	}
+  "id": "uni-animation-view-x",
+  "displayName": "animation-view",
+  "version": "2.0.0",
+  "description": "uts标准组件开发的animation-view组件，仅支持Uni-APP X，Uni-APP 的适配插件请使用https://ext.dcloud.net.cn/plugin?id=10674",
+  "keywords": [
+    "animation-view",
+    "lottie"
+],
+  "repository": "",
+  "dependencies": {
+    "lottie-miniprogram": "^1.0.12",
+    "lottie-web": "5.13.0"
+  },
+  "engines": {
+    "HBuilderX": "^3.7.0",
+    "uni-app": "",
+    "uni-app-x": "^4.07"
+  },
+  "dcloudext": {
+    "type": "uts-vue-component",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "无"
+    },
+    "npmurl": "",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "√",
+        "aliyun": "√",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app": {
+          "vue": {
+            "vue2": "x",
+            "vue3": "x"
+          },
+          "web": {
+            "safari": "-",
+            "chrome": "-"
+          },
+          "app": {
+            "vue": "-",
+            "nvue": "-",
+            "android": {
+                "extVersion": "",
+                "minVersion": "21"
+            },
+            "ios": {
+                "extVersion": "",
+                "minVersion": "12"
+            },
+            "harmony": "-"
+          },
+          "mp": {
+            "weixin": "-",
+            "alipay": "-",
+            "toutiao": "-",
+            "baidu": "-",
+            "kuaishou": "-",
+            "jd": "-",
+            "harmony": "-",
+            "qq": "-",
+            "lark": "-"
+          },
+          "quickapp": {
+            "huawei": "-",
+            "union": "-"
+          }
+        },
+        "uni-app-x": {
+          "web": {
+            "safari": "√",
+            "chrome": "√"
+          },
+          "app": {
+            "android": {
+                "extVersion": "2.0.0",
+                "minVersion": "21"
+            },
+            "ios": {
+                "extVersion": "2.0.0",
+                "minVersion": "13"
+            },
+            "harmony": {
+                "extVersion": "2.0.0",
+                "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": {
+                "extVersion": "2.0.0",
+                "minVersion": ""
+            }
+          }
+        }
+      }
+    }
+  }
 }

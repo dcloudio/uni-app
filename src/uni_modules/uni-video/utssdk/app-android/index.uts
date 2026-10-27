@@ -272,6 +272,7 @@ export class Video {
         this.videoImpl?.destroy();
         this.videoImpl = null;
         this.rootElement = null;
+        UTSAndroid.destroyInstance(this);
     }
 }
 

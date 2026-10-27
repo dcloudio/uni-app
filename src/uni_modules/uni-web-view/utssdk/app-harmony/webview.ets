@@ -2,7 +2,8 @@ import harmonyWebView from '@ohos.web.webview'
 import { picker } from '@kit.CoreFileKit'
 import fs from '@ohos.file.fs'
 import call from '@ohos.telephony.call'
-import { getAbilityContext, getEnv } from '@dcloudio/uni-app-x-runtime'
+// TODO 内部包名
+import { getAbilityContext, getEnv } from '@dcloudio/uni-app-framework'
 
 interface IDownloadTask {
   downloadItemSaveUri: string

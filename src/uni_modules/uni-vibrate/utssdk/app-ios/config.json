@@ -1,0 +1,7 @@
+{
+  "frameworks": [
+    "AudioToolbox",
+    "CoreHaptics"
+  ],
+  "deploymentTarget": "12.0"
+}

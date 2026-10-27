@@ -1,0 +1,85 @@
+import { NotificationCenter } from 'Foundation';
+import { UIApplication } from "UIKit"
+import { Selector } from "ObjectiveC"
+import { OnMemoryWarningCallback, MemoryWarningCallbackResult } from '../interface.uts'
+import { createMemoryWarningNativeError } from '../unierror.uts'
+
+class MemoryWarningTool {
+	static isObserving: boolean = false
+	
+	static memoryWarningCallbackId = 1
+	static listeners: Map<number, OnMemoryWarningCallback> = new Map<number, OnMemoryWarningCallback>()
+	
+	// 监听内存警告
+	static ensureListenMemoryWarning(callback: OnMemoryWarningCallback) {
+		if (this.isObserving == true) {
+			return
+		}
+		// 只有首次才需要注册监听事件
+		try {
+			const method = Selector("receiveMemoryWarning")
+			NotificationCenter.default.addObserver(this, selector = method, name = UIApplication.didReceiveMemoryWarningNotification, object = null)
+			this.isObserving = true
+		} catch (e) {
+			const error = createMemoryWarningNativeError(1100601, 801, (e as Error).message)
+			console.error('onMemoryWarning', error)
+		}
+	}
+	
+	// 内存警告回调的方法
+	// target-action 的方法前需要添加 @objc 前缀
+	@objc static receiveMemoryWarning() {
+		const result: MemoryWarningCallbackResult = {level: 0}
+		for (const cb of listeners.values) {
+			cb(result);
+		}
+	}
+	
+	static removeListen(id: number) {
+		listeners.delete(id);
+		if (listeners.size == 0) {
+			if (this.isObserving == false) {
+				return
+			}
+			try {
+				NotificationCenter.default.removeObserver(this)
+				this.isObserving = false
+			} catch (e) {
+				const error = createMemoryWarningNativeError(1100602, 802, (e as Error).message)
+				console.error('offMemoryWarning', error)
+			}
+		}
+	}
+	
+	static cleanListen() {
+		listeners.clear();
+		if (this.isObserving == false) {
+			return
+		}
+		try {
+			NotificationCenter.default.removeObserver(this)
+			this.isObserving = false
+		} catch (e) {
+			const error = createMemoryWarningNativeError(1100602, 802, (e as Error).message)
+			console.error('offMemoryWarning', error)
+		}
+	}
+}
+
+// 开启监听内存警告
+export function onMemoryWarning(callback: OnMemoryWarningCallback) : number {
+	MemoryWarningTool.ensureListenMemoryWarning(callback)
+	let nowId = MemoryWarningTool.memoryWarningCallbackId++
+	MemoryWarningTool.listeners.set(nowId, callback);
+	return nowId;
+}
+
+// 关闭监听内存警告
+export function offMemoryWarning(id: number | null = null): void {
+	if (id == null) {
+		MemoryWarningTool.cleanListen();
+	}else {
+		MemoryWarningTool.removeListen(id);
+	}
+}
+  

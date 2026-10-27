@@ -1,0 +1,73 @@
+import { UIApplication, UIScreen } from 'UIKit'
+import {
+	SetScreenBrightness,
+	SetScreenBrightnessOptions,
+	SetScreenBrightnessSuccess,
+	GetScreenBrightness,
+	GetScreenBrightnessOptions,
+	GetScreenBrightnessSuccess,
+	SetKeepScreenOn,
+	SetKeepScreenOnOptions,
+	SetKeepScreenOnSuccess
+} from '../interface.uts'
+
+function normalizeBrightness(value : number) : number {
+	if (value < 0) {
+		return 0
+	}
+	if (value > 1) {
+		return 1
+	}
+	return value
+}
+
+export const setScreenBrightness : SetScreenBrightness = function (options : SetScreenBrightnessOptions) {
+	UIScreen.main.brightness = CGFloat(normalizeBrightness(options.value).toFloat())
+	const result : SetScreenBrightnessSuccess = {}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export const getScreenBrightness : GetScreenBrightness = function (options : GetScreenBrightnessOptions) {
+	const result : GetScreenBrightnessSuccess = {
+		value: Number(UIScreen.main.brightness)
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export const setKeepScreenOn : SetKeepScreenOn = function (options : SetKeepScreenOnOptions) {
+	UIApplication.shared.isIdleTimerDisabled = options.keepScreenOn == true
+	const result : SetKeepScreenOnSuccess = {
+		errMsg: 'setKeepScreenOn:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+export {
+	GetScreenBrightness,
+	GetScreenBrightnessComplete,
+	GetScreenBrightnessCompleteCallback,
+	GetScreenBrightnessFail,
+	GetScreenBrightnessFailCallback,
+	GetScreenBrightnessOptions,
+	GetScreenBrightnessSuccess,
+	GetScreenBrightnessSuccessCallback,
+	SetKeepScreenOn,
+	SetKeepScreenOnComplete,
+	SetKeepScreenOnCompleteCallback,
+	SetKeepScreenOnFail,
+	SetKeepScreenOnFailCallback,
+	SetKeepScreenOnOptions,
+	SetKeepScreenOnSuccess,
+	SetKeepScreenOnSuccessCallback,
+	SetScreenBrightness,
+	SetScreenBrightnessComplete,
+	SetScreenBrightnessCompleteCallback,
+	SetScreenBrightnessFail,
+	SetScreenBrightnessFailCallback,
+	SetScreenBrightnessOptions,
+	SetScreenBrightnessSuccess,
+	SetScreenBrightnessSuccessCallback
+} from '../interface.uts'

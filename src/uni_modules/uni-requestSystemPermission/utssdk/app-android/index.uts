@@ -1,0 +1,132 @@
+import XXPermissions from 'com.hjq.permissions.XXPermissions'
+import OnPermissionCallback from 'com.hjq.permissions.OnPermissionCallback'
+import {
+  RequestSystemPermission,
+  RequestSystemPermissionFail,
+  RequestSystemPermissionOptions,
+  RequestSystemPermissionSuccess
+} from '../interface.uts'
+import { RequestSystemPermissionErrorImpl } from '../unierror.uts'
+
+class RequestSystemPermissionSuccessImpl implements RequestSystemPermissionSuccess {
+  grantedList : string[] = []
+  deniedList : string[] = []
+  doNotAskAgainList : string[] = []
+
+  constructor(
+    grantedList : string[],
+    deniedList : string[],
+    doNotAskAgainList : string[]
+  ) {
+    this.grantedList = grantedList
+    this.deniedList = deniedList
+    this.doNotAskAgainList = doNotAskAgainList
+  }
+}
+
+function filterAndroidPermissions(permissions : string[]) : string[] {
+  return permissions.filter((permission : string) : boolean => {
+    return !permission.startsWith('ohos.')
+  })
+}
+
+function toPermissionArray(permissions : MutableList<String>) : string[] {
+  const result : string[] = []
+  permissions.forEach((permission : String) => {
+    result.push(permission)
+  })
+  return result
+}
+
+function toPermissionList(permission:string[]) : MutableList<String> {
+	const result = mutableListOf<String>()
+	permission.forEach((p:string)=>{
+		result.add(p)
+	})
+	return result
+}
+
+function notifySuccess(
+  options : RequestSystemPermissionOptions,
+  grantedList : string[],
+  deniedList : string[],
+  doNotAskAgainList : string[]
+) : void {
+  const result : RequestSystemPermissionSuccess = new RequestSystemPermissionSuccessImpl(
+    grantedList,
+    deniedList,
+    doNotAskAgainList
+  )
+  options.success?.(result)
+  options.complete?.(result)
+}
+
+function notifyFail(
+  options : RequestSystemPermissionOptions,
+  result : RequestSystemPermissionFail
+) : void {
+  options.fail?.(result)
+  options.complete?.(result)
+}
+
+export const requestSystemPermission : RequestSystemPermission = function (
+  options : RequestSystemPermissionOptions
+) : void {
+  const androidPermissions = filterAndroidPermissions(options.permissions)
+  if (androidPermissions.length == 0) {
+    notifyFail(options, new RequestSystemPermissionErrorImpl(
+      1560601
+    ))
+    return
+  }
+
+  const activity = UTSAndroid.getUniActivity()
+  if (activity == null) {
+    notifyFail(options, new RequestSystemPermissionErrorImpl(
+      1560604
+    ))
+    return
+  }
+  UTSAndroid.dispatchPermissionRequestEvent("request", androidPermissions)
+
+  let grantedList : string[] = []
+  try {
+	  var permissionList = toPermissionList(androidPermissions)
+	  var deniedPermissions = XXPermissions.getDenied(activity, permissionList)
+	  permissionList.removeAll(deniedPermissions)
+	  if(permissionList.size > 0) {
+		  UTSAndroid.dispatchPermissionRequestEvent("complete", toPermissionArray(permissionList))
+	  }
+        UTSAndroid.dispatchPermissionRequestEvent(
+            "confirm",
+            toPermissionArray(deniedPermissions)
+        )
+    XXPermissions.with(activity)
+      .permission(androidPermissions)
+      .request(new (class implements OnPermissionCallback {
+        override onGranted(permissions : MutableList<String>, allGranted : boolean) : void {
+          grantedList = toPermissionArray(permissions)
+          if (allGranted) {
+            notifySuccess(options, grantedList, [], [])
+          }
+		  UTSAndroid.dispatchPermissionRequestEvent("complete", grantedList)
+        }
+
+        override onDenied(permissions : MutableList<String>, doNotAskAgain : boolean) : void {
+          const deniedList = toPermissionArray(permissions)
+          const doNotAskAgainList : string[] = doNotAskAgain ? deniedList : []
+          notifySuccess(
+            options,
+            grantedList,
+            deniedList,
+            doNotAskAgainList
+          )
+		  UTSAndroid.dispatchPermissionRequestEvent("complete", deniedList)
+        }
+      }))
+  } catch (_ : Exception) {
+    notifyFail(options, new RequestSystemPermissionErrorImpl(
+      1560604
+    ))
+  }
+}

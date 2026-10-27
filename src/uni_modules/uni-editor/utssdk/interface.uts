@@ -1545,12 +1545,12 @@ export interface Uni {
    *    "android": {
    *        "uniVer": "x",
    *        "unixVer": "5.08",
-   *        "unixVaporVer": "x"
+   *        "unixVaporVer": "5.21"
    *      },
    *      "ios": {
    *        "uniVer": "x",
    *        "unixVer": "5.08",
-   *        "unixVaporVer": "x"
+   *        "unixVaporVer": "5.11"
    *      },
    *      "harmony": {
    *        "uniVer": "x",

@@ -1,0 +1,15 @@
+{
+	"simulatorArchitectures": [
+		"x86_64"
+	],
+	"deploymentTarget": "15.0",
+	"dependencies-pods": [
+		{
+			"name": "AMap3DMap",
+			"version": "11.2.000"
+		}
+	],
+	"thirdSDKs": [
+		"amap"
+	]
+}

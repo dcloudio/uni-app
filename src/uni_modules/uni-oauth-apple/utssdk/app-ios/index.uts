@@ -1,0 +1,110 @@
+import { NSDictionary, NSNumber } from "Foundation";
+import { UniOAuthAppleProvider } from '../interface.uts';
+import { OauthAppleFailImpl } from '../unierror.uts';
+
+export class UniOAuthAppleProviderImpl implements UniOAuthAppleProvider {
+
+	id : string = "apple"
+
+	override description : string = "苹果登录"
+
+	login(options : LoginOptions) {
+		AppleLogin.login(options)
+	}
+
+	getUserInfo(options : GetUserInfoOptions) {
+		
+	}
+
+	get isAppExist() : boolean {
+		return AppleLogin.share.isAppleLoginAvailable()
+	}
+	
+	set isAppExist(newValue : boolean) {
+	
+	}
+
+	checkAppExist() {
+		this.isAppExist = AppleLogin.share.isAppleLoginAvailable()
+	}
+
+	toJSON() : Map<string, any> {
+		const dict = new Map<string, any>()
+		dict.set('id', this.id)
+		dict.set('description', this.description)
+		dict.set('isAppExist', this.isAppExist)
+		return dict
+	}
+
+	constructor() {
+
+	}
+}
+
+export class AppleLogin implements AppleLoginNativeDelegate {
+	static share = new AppleLogin()
+
+	private options ?: LoginOptions
+	
+	// UTS 层串行化登录入口，避免后续请求覆盖当前请求的回调上下文。
+	private isAuthorizing : boolean = false
+
+	isAppleLoginAvailable() : boolean {
+		return AppleLoginNativeManager.shared.isAppleLoginAvailable()
+	}
+	
+	appleLoginNativeDidSucceed(@argumentLabel("_") result : NSDictionary) {
+		const currentOptions = this.options
+		if (currentOptions == null) return
+		this.options = null
+		this.isAuthorizing = false
+
+		const nativeResult = result as Map<string, any>
+		const code = nativeResult.get('code') as string
+		const rawAppleInfo = nativeResult.get('appleInfo') as Map<string, any> | null
+		const appleLoginAppleInfo : AppleLoginAppleInfo = {
+			authorizationCode: rawAppleInfo?.get('authorizationCode') as string | null,
+			fullName: rawAppleInfo?.get('fullName') ?? null,
+			identityToken: rawAppleInfo?.get('identityToken') as string | null,
+			realUserStatus: rawAppleInfo?.get('realUserStatus') as number | null,
+			user: (rawAppleInfo?.get('user') ?? rawAppleInfo?.get('userIdentifier')) as string | null
+		}
+		let authResult : any = {}
+		if (!(currentOptions.onlyAuthorize ?? false)) {
+			authResult = appleLoginAppleInfo
+		}
+		const success : LoginSuccess = {
+			errMsg: 'login:ok',
+			code: code,
+			authResult: authResult,
+			appleInfo: appleLoginAppleInfo
+		}
+		currentOptions.success?.(success)
+		currentOptions.complete?.(success)
+	}
+
+	appleLoginNativeDidFail(@argumentLabel("_") code : NSNumber, @argumentLabel("message") message : string) {
+		const currentOptions = this.options
+		if (currentOptions == null) return
+		this.options = null
+		this.isAuthorizing = false
+
+		const fail = new OauthAppleFailImpl(code.intValue as OauthErrorCode, message)
+		currentOptions.fail?.(fail)
+		currentOptions.complete?.(fail)
+	}
+
+	static login(options : LoginOptions) {
+		if (AppleLogin.share.isAuthorizing) {
+			const fail = new OauthAppleFailImpl(1310507, 'UTS 层检测到已有 Apple 登录请求正在进行')
+			options.fail?.(fail)
+			options.complete?.(fail)
+			return
+		}
+		AppleLogin.share.options = options
+		AppleLogin.share.isAuthorizing = true
+		const onlyAuthorize = options.onlyAuthorize ?? false
+		const timeout = options.timeout ?? 0
+		AppleLoginNativeManager.shared.startLogin(onlyAuthorize, timeout.toDouble(), AppleLogin.share)
+	}
+}

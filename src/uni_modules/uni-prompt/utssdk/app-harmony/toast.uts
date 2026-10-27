@@ -9,11 +9,19 @@ let openToastPromise: Promise<number> | null = null
 export const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(
     API_SHOW_TOAST,
     function (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>) {
+        let appTheme = UTSHarmony.getAppTheme()
+        const osTheme = UTSHarmony.getOsTheme()
+        if (appTheme === 'auto') appTheme = osTheme
         try {
             const showToastOptions: promptAction.ShowToastOptions = {
                 message: options.title,
                 duration: options.duration == null ? undefined : options.duration, // 鸿蒙取值范围 [1500, 100000]
                 alignment: Alignment.Center
+            }
+            if (appTheme === 'dark') {
+              showToastOptions.textColor = '#FFFFFF'
+              showToastOptions.backgroundColor = 'rgba(76, 76, 76, 1)'
+              showToastOptions.backgroundBlurStyle = BlurStyle.NONE
             }
             if (options.position) {
                 switch (options.position) {

@@ -1,0 +1,73 @@
+import { MapErrorCode, MapContextFail } from "./interface.uts"
+
+/**
+ * 错误主题
+ */
+export const UniMapErrorSubject = 'uni-map';
+/**
+ * 错误码
+ * @UniError
+ */
+const MapUniErrors : Map<MapErrorCode, string> = new Map([
+
+	/**
+	 * 获取当前地图中心的经纬度失败
+	 */
+	[500001, 'failed to obtain the latitude and longitude of the current map center'],
+	/**
+	 * 未找到当前定位位置
+	 */
+	[500002, 'current location not found'],
+	/**
+	 * 未找到marker
+	 */
+	[500003, 'marker not found'],
+	/**
+	 * 创建自定义图片图层失败
+	 */
+	[500004, 'create groundOverlay fail'],
+	/**
+	 * 未找到自定义图层id
+	 */
+	[500005, 'id not found'],
+	/**
+	 * 网络图片加载失败
+	 */
+	[500006, 'network image loading failed'],
+	/**
+	 * 地图内部错误
+	 */
+	[500012, 'system error'],
+	/**
+	 * AMapAPIKey 未配置
+	 */
+	[500013, 'AMapAPIKey not configured']
+]);
+
+// #ifdef APP-IOS
+@UTSiOS.keyword("fileprivate")
+// #endif
+export function getErrcode(errCode : number) : MapErrorCode {
+	// #ifdef APP-HARMONY
+	const res : string | null = MapUniErrors[errCode];
+	return (res == null ? 500012 : errCode) as MapErrorCode;
+	// #endif
+	// #ifndef APP-HARMONY
+	const res = MapUniErrors[errCode];
+	return res == null ? 500012 : errCode;
+	// #endif
+}
+
+
+export class MapContextFailImpl extends UniError implements MapContextFail {
+// #ifdef APP-ANDROID || APP-HARMONY
+	override errCode: MapErrorCode
+// #endif
+	constructor(errCode : MapErrorCode) {
+		super();
+		this.errSubject = UniMapErrorSubject;
+		this.errCode = errCode;
+		this.errMsg = MapUniErrors[errCode] ?? "";
+	}
+}
+

@@ -1,0 +1,376 @@
+import { UTSiOS } from "DCloudUTSFoundation"
+import {
+	createAnimationViewInvalidPathError,
+	createAnimationViewLottieError
+} from '../unierror.uts'
+import { LoadAnimationOptions } from '../interface.uts'
+export {
+	createAnimationViewInvalidPathError,
+	createAnimationViewLottieError
+}
+
+/**
+ * 事件监听器类型
+ */
+type AnimationEventListener = () => void
+type AnimationErrorListener = (error : UniError) => void
+
+type RepeatMode = 'RESTART' | 'REVERSE'
+
+/**
+ * 解析动画资源路径：网络地址直接返回，本地路径转为绝对路径
+ */
+function resolveIOSAnimationPath(path: string): string | null {
+	let s = path.trim()
+	if (s.length == 0) {
+		return null
+	}
+	if (s.startsWith("http://") || s.startsWith("https://")) {
+		return s
+	}
+	// 去掉 query / hash
+	const q = s.indexOf('?')
+	if (q >= 0) {
+		s = s.substring(0, q)
+	}
+	const h = s.indexOf('#')
+	if (h >= 0) {
+		s = s.substring(0, h)
+	}
+	if (s.startsWith('./')) {
+		s = s.substring(2)
+	}
+
+	let abs: string | null = null
+	try {
+		const res = UTSiOS.getResourcePath(s)
+		if (res != null && res != '') {
+			abs = UTSiOS.convert2AbsFullPath(res)
+		}
+	} catch (_err) {
+	}
+	if (abs == null || abs == '') {
+		try {
+			abs = UTSiOS.convert2AbsFullPath(s)
+		} catch (_err) {
+		}
+	}
+	if (abs == null || abs == '') {
+		return null
+	}
+	return abs!
+}
+
+function normalizeNativeErrorMessage(message: string): string {
+	if (message.length > 0) {
+		return message
+	}
+	return 'lottie load failed'
+}
+
+/**
+ * 动画实例类
+ */
+export class AnimationInstanceImpl {
+	private _nativeView: UniAnimationViewNative | null = null
+	private _loop: boolean = false
+	private _autoplay: boolean = false
+	private _action: string = 'stop'
+	private _repeatMode: RepeatMode = 'RESTART'
+	private _destroyed: boolean = false
+	private _direction: number = 1
+	private _dataReady: boolean = false
+	private _stopped: boolean = true
+	private _paused: boolean = false
+	private _endedCallback: AnimationEventListener | null = null
+	private _errorCallback: AnimationErrorListener | null = null
+
+	constructor(container: UniNativeViewElement, loop: boolean) {
+		this._loop = loop
+		super.init()
+		this._bindNativeView(container)
+	}
+
+	private _bindNativeView(container: UniNativeViewElement): void {
+		const nativeView = new UniAnimationViewNative()
+		this._nativeView = nativeView
+		nativeView.setDataReadyCallback((): void => {
+			if (!this._destroyed) {
+				this._handleDataReady()
+			}
+		})
+		nativeView.setCompleteCallback((): void => {
+			if (!this._destroyed) {
+				this._handleComplete()
+			}
+		})
+		nativeView.setErrorCallback((kind: string, message: string): void => {
+			if (!this._destroyed) {
+				if (kind == 'invalid_path') {
+					this._emitError(createAnimationViewInvalidPathError())
+					return
+				}
+				this._emitError(createAnimationViewLottieError(normalizeNativeErrorMessage(message)))
+			}
+		})
+		container.bindIOSView(nativeView.getView())
+	}
+
+	get loop(): boolean {
+		return this._loop
+	}
+
+	set loop(value: boolean) {
+		this.updateLoop(value)
+	}
+
+	get currentFrame(): number {
+		const nativeView = this._nativeView
+		if (nativeView == null) {
+			return 0
+		}
+		return nativeView!.getCurrentFrame()
+	}
+
+	get totalFrames(): number {
+		const nativeView = this._nativeView
+		if (nativeView == null) {
+			return 0
+		}
+		return nativeView!.getTotalFrames()
+	}
+
+	@UTSJS.keepAlive
+	setEndedCallback(callback: AnimationEventListener): void {
+		this._endedCallback = callback
+	}
+
+	@UTSJS.keepAlive
+	setErrorCallback(callback: AnimationErrorListener): void {
+		this._errorCallback = callback
+	}
+
+	updateLoop(value: boolean): void {
+		this._loop = value
+		this._applyNativeLoop()
+		this._restorePlayingIfNeeded()
+	}
+
+	setOptions(loop: boolean, autoplay: boolean, action: string, repeatMode: string): void {
+		this._loop = loop
+		this._autoplay = autoplay
+		this.setAction(action)
+		if (repeatMode == 'RESTART' || repeatMode == 'REVERSE') {
+			this._repeatMode = repeatMode as RepeatMode
+		}
+		this._applyNativeLoop()
+	}
+
+	setAutoplay(value: boolean): void {
+		this._autoplay = value
+		if (value && this._dataReady) {
+			this.applyAction('play')
+		}
+	}
+
+	setAction(value: string): void {
+		if (value == 'play' || value == 'pause' || value == 'stop') {
+			this._action = value
+		}
+	}
+
+	setRepeatMode(value: string): void {
+		if (value != 'RESTART' && value != 'REVERSE') {
+			return
+		}
+		this._repeatMode = value as RepeatMode
+		if (!this._dataReady || this._destroyed) {
+			this._applyNativeLoop()
+			return
+		}
+		this._applyNativeLoop()
+		this._resetAnimationFrame()
+		if (this._autoplay || this._action == 'play') {
+			this._replayAnimation(this._direction)
+		}
+	}
+
+	applyAction(action: string): void {
+		if (action != 'play' && action != 'pause' && action != 'stop') {
+			return
+		}
+		this._action = action
+		if (this._destroyed) {
+			return
+		}
+		if (action == 'play') {
+			if (this._paused) {
+				this._nativeView?.resume()
+				this._paused = false
+				this._stopped = false
+			} else if (this._stopped) {
+				this._replayAnimation(this._direction)
+			} else {
+				this._nativeView?.play()
+				this._paused = false
+			}
+			return
+		}
+		if (action == 'pause') {
+			this._nativeView?.pause()
+			this._paused = true
+			this._stopped = false
+			return
+		}
+		this._nativeView?.stop()
+		this._resetAnimationFrame()
+	}
+
+	destroy(): void {
+		this._destroyed = true
+		this._endedCallback = null
+		this._errorCallback = null
+		this._nativeView?.destroy()
+		this._nativeView = null
+	}
+
+	play(): void {
+		this.applyAction('play')
+	}
+
+	resume(): void {
+		this.applyAction('play')
+	}
+
+	pause(): void {
+		this.applyAction('pause')
+	}
+
+	stop(): void {
+		this.applyAction('stop')
+	}
+
+	goToAndStop(value: number, isFrame: boolean): void {
+		if (this._destroyed) {
+			return
+		}
+		this._nativeView?.goToAndStop(value, isFrame)
+	}
+
+	goToAndPlay(value: number, isFrame: boolean): void {
+		if (this._destroyed) {
+			return
+		}
+		this._nativeView?.goToAndStop(value, isFrame)
+		this.applyAction('play')
+	}
+
+	setDirection(value: number): void {
+		this._direction = value
+		if (this._destroyed) {
+			return
+		}
+		this._nativeView?.setDirection(value)
+	}
+
+	load(path: string, width: number, height: number): void {
+		if (this._nativeView == null || this._destroyed) {
+			return
+		}
+		this._dataReady = false
+		this._stopped = true
+		this._paused = false
+		const resolvedPath = resolveIOSAnimationPath(path)
+		if (resolvedPath == null) {
+			this._emitError(createAnimationViewInvalidPathError())
+			return
+		}
+		const animationPath = resolvedPath as string
+		if (animationPath.length == 0) {
+			this._emitError(createAnimationViewInvalidPathError())
+			return
+		}
+		this._nativeView?.load(animationPath)
+	}
+
+	private _emitError(error: UniError): void {
+		const callback = this._errorCallback
+		if (callback != null) {
+			callback!(error)
+		}
+	}
+
+	private _handleDataReady(): void {
+		this._dataReady = true
+		this._applyNativeLoop()
+		this._resetAnimationFrame()
+		if (this._autoplay || this._action == 'play') {
+			this._replayAnimation(this._direction)
+		}
+	}
+
+	private _handleComplete(): void {
+		if (this._repeatMode == 'REVERSE' && this._loop) {
+			const nextDirection: number = this._direction == 1 ? -1 : 1
+			this._replayAnimation(nextDirection)
+			return
+		}
+		this._stopped = true
+		this._paused = false
+		const callback = this._endedCallback
+		if (callback != null) {
+			callback!()
+		}
+	}
+
+	private _applyNativeLoop(): void {
+		if (this._destroyed) {
+			return
+		}
+		this._nativeView?.setLoop(this._loop && this._repeatMode == 'RESTART')
+	}
+
+	private _restorePlayingIfNeeded(): void {
+		if (!this._dataReady || this._destroyed) {
+			return
+		}
+		if ((this._autoplay || this._action == 'play') && !this._paused) {
+			this.applyAction('play')
+		}
+	}
+
+	private _resetAnimationFrame(): void {
+		const direction: number = this._repeatMode == 'REVERSE' ? -1 : 1
+		this.setDirection(direction)
+		this._moveToBoundaryFrame(direction)
+		this._stopped = true
+		this._paused = false
+	}
+
+	private _replayAnimation(direction: number): void {
+		this.setDirection(direction)
+		this._moveToBoundaryFrame(direction)
+		this._nativeView?.play()
+		this._stopped = false
+		this._paused = false
+	}
+
+	private _moveToBoundaryFrame(direction: number): void {
+		const targetFrame = direction == -1 ? this._getLastFrame() : 0
+		this._nativeView?.goToAndStop(targetFrame, true)
+	}
+
+	private _getLastFrame(): number {
+		const total = this.totalFrames
+		return total > 1 ? total - 1 : 0
+	}
+}
+
+export function loadAnimation(options: LoadAnimationOptions): AnimationInstanceImpl {
+	const instance = new AnimationInstanceImpl(options.container, options.loop)
+	const action = options.action != null ? options.action! : (options.autoplay ? 'play' : 'stop')
+	const repeatMode = options.repeatMode != null ? options.repeatMode! : 'RESTART'
+	instance.setOptions(options.loop, options.autoplay, action, repeatMode)
+	instance.load(options.path, options.width, options.height)
+	return instance
+}

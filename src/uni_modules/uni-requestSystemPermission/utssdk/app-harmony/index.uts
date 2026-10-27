@@ -1,0 +1,78 @@
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl'
+import type { PermissionRequestResult, Permissions } from '@ohos.abilityAccessCtrl'
+import {
+  RequestSystemPermission,
+  RequestSystemPermissionErrorCode,
+  RequestSystemPermissionOptions,
+  RequestSystemPermissionSuccess
+} from '../interface.uts'
+import { RequestSystemPermissionError, RequestSystemPermissionErrorImpl } from '../unierror.uts'
+
+/*interface PermissionRequestResultWithReasons {
+    errorReasons?: number[];
+}*/
+
+function fail(
+  executor: ApiExecutor<RequestSystemPermissionSuccess>,
+  errCode: RequestSystemPermissionErrorCode
+): void {
+  const error = new RequestSystemPermissionErrorImpl(errCode)
+  executor.reject(error.errMsg, error as ApiError)
+}
+
+function handleResult(
+  data: PermissionRequestResult,
+  executor: ApiExecutor<RequestSystemPermissionSuccess>
+): void {
+  const grantedList = data.permissions.filter((_, index) => data.authResults[index] === 0)
+  const deniedList = data.permissions.filter((_, index) => data.authResults[index] !== 0)
+  const doNotAskAgainList = data.permissions.filter((_, index) =>
+    data.authResults[index] === -1 &&
+    data.dialogShownResults?.[index] === false
+  )
+  /*const errorReasons = (data as PermissionRequestResultWithReasons).errorReasons
+  const hasUnconfiguredPermission = data.authResults.some((result, index) =>
+    result !== 0 && errorReasons?.[index] === 2
+  )
+  const hasUnsupportedPermission = data.authResults.some((result, index) => {
+    if (result === 0) return false
+    const reason = errorReasons?.[index] ?? 0
+    return reason !== 2 && (result !== -1 || reason !== 0)
+  })*/
+  executor.resolve({ grantedList, deniedList, doNotAskAgainList } as RequestSystemPermissionSuccess)
+}
+
+export const requestSystemPermission: RequestSystemPermission = defineAsyncApi<RequestSystemPermissionOptions, RequestSystemPermissionSuccess>(
+  'requestSystemPermission',
+  (options: RequestSystemPermissionOptions, executor: ApiExecutor<RequestSystemPermissionSuccess>): void => {
+    if (options.permissions.length === 0) {
+      fail(executor, RequestSystemPermissionError.PERMISSION_EMPTY)
+      return
+    }
+
+    try {
+      abilityAccessCtrl.createAtManager().requestPermissionsFromUser(
+        UTSHarmony.getUIAbilityContext(),
+        options.permissions as Permissions[],
+        (error, data) => {
+          if (error) {
+            fail(executor, RequestSystemPermissionError.PERMISSION_NOT_SUPPORTED)
+          } else {
+            handleResult(data, executor)
+          }
+        }
+      )
+    } catch (_error) {
+      fail(executor, RequestSystemPermissionError.PERMISSION_NOT_SUPPORTED)
+    }
+  }
+) as RequestSystemPermission
+
+export {
+  RequestSystemPermission,
+  RequestSystemPermissionComplete,
+  RequestSystemPermissionErrorCode,
+  RequestSystemPermissionFail,
+  RequestSystemPermissionOptions,
+  RequestSystemPermissionSuccess
+} from '../interface.uts'

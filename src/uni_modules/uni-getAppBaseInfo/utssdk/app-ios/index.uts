@@ -33,6 +33,9 @@ export const getAppBaseInfo : GetAppBaseInfo = (config : GetAppBaseInfoOptions |
       "signature",
       "isUniAppX",
       "uniCompilerVersion",
+      // #ifdef VUE3-VAPOR
+      "uniCompilerRuleVersion",
+      // #endif
       "uniPlatform",
       "uniRuntimeVersion",
       "uniCompilerVersionCode",
@@ -88,7 +91,7 @@ function getBaseInfo(filterArray : Array<string>) : GetAppBaseInfoResult {
     result.version = AppBaseInfoDeviceUtil.getAppInnerVersion();
   }
   if (filterArray.indexOf("appWgtVersion") != -1) {
-    result.appWgtVersion = AppBaseInfoDeviceUtil.getAppVersion();
+    result.appWgtVersion = AppBaseInfoDeviceUtil.getAppWgtVersion();
   }
   if (filterArray.indexOf("packageName") != -1) {
     result.packageName = AppBaseInfoDeviceUtil.getBundleId();
@@ -106,6 +109,12 @@ function getBaseInfo(filterArray : Array<string>) : GetAppBaseInfoResult {
   if (filterArray.indexOf("uniCompilerVersion") != -1) {
     result.uniCompilerVersion = UTSiOS.getCompileVersion();
   }
+
+  // #ifdef VUE3-VAPOR
+  if (filterArray.indexOf("uniCompilerRuleVersion") != -1) {
+    result.uniCompilerRuleVersion = UTSiOS.getUniCompilerRuleVersion();
+  }
+  // #endif
 
   if (filterArray.indexOf("uniPlatform") != -1) {
     result.uniPlatform = "app";

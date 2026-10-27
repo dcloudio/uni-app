@@ -13,6 +13,7 @@ public class UniTextareaView: UITextView {
     public var letterSpacingValue: CGFloat?
     public var styledTextColor: UIColor = .black
     public var holdKeyboardEnabled = false
+    private var baseWritingDirection: NSWritingDirection = .leftToRight
     private lazy var outsideTapGesture: UITapGestureRecognizer = {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
         gesture.cancelsTouchesInView = false
@@ -57,6 +58,11 @@ public class UniTextareaView: UITextView {
         selectedTextRange = textRange(from: startPosition, to: endPosition)
     }
 
+    public func setWritingDirectionRTL(_ isRTL: Bool) {
+        baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
+        semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
+    }
+
     public func caretBottomOffset() -> CGFloat {
         let fallbackBottom = bounds.height - textContainerInset.bottom
         guard let selectedTextRange else { return fallbackBottom }
@@ -73,6 +79,7 @@ public class UniTextareaView: UITextView {
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
+        paragraphStyle.baseWritingDirection = baseWritingDirection
         paragraphStyle.lineBreakMode = .byWordWrapping
         if let lineHeightValue {
             paragraphStyle.minimumLineHeight = lineHeightValue

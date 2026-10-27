@@ -1,0 +1,247 @@
+import {
+  CompassAccuracy,
+  OnCompassChangeCallback,
+  OnCompassChangeCallbackResult,
+  StartCompassComplete,
+  StartCompassCompleteCallback,
+  StartCompassFail,
+  StartCompassFailCallback,
+  StartCompassOptions,
+  StartCompassSuccess,
+  StartCompassSuccessCallback,
+  StopCompassComplete,
+  StopCompassCompleteCallback,
+  StopCompassFail,
+  StopCompassFailCallback,
+  StopCompassSuccess,
+  StopCompassSuccessCallback,
+  StopCompassOptions
+} from '../interface.uts'
+import { createStartCompassFail } from '../unierror.uts'
+
+type DeviceOrientationPayload = {
+  alpha ?: number | null
+  webkitCompassHeading ?: number | null
+  webkitCompassAccuracy ?: number | null
+}
+
+type DeviceOrientationEventConstructor = {
+  requestPermission ?: (() => Promise<string>) | null
+}
+
+type WebGlobal = {
+  DeviceOrientationEvent ?: DeviceOrientationEventConstructor | null
+  addEventListener : (type : string, listener : (event : DeviceOrientationPayload) => void) => void
+  removeEventListener : (type : string, listener : (event : DeviceOrientationPayload) => void) => void
+}
+
+const startOkMsg = 'startCompass:ok'
+const stopOkMsg = 'stopCompass:ok'
+const changeOkMsg = 'onCompassChange:ok'
+const startEnabledErrMsg = 'startCompass:fail, has enable, should stop pre operation'
+const sampleIntervalMs = 200
+const callbacks : Array<OnCompassChangeCallback> = []
+let started : boolean = false
+let lastDispatchTime : number = 0
+
+function resetDispatchState() : void {
+  lastDispatchTime = 0
+}
+
+function shouldDispatch() : boolean {
+  const now = Date.now()
+  if (lastDispatchTime != 0 && now - lastDispatchTime < sampleIntervalMs) {
+    return false
+  }
+  lastDispatchTime = now
+  return true
+}
+
+const orientationListener = (event : DeviceOrientationPayload) : void => {
+  if (!shouldDispatch()) {
+    return
+  }
+  const direction = normalizeDirection(resolveDirection(event))
+  const result : OnCompassChangeCallbackResult = {
+    direction: direction,
+    accuracy: resolveAccuracy(event),
+    errMsg: changeOkMsg
+  }
+  let index = 0
+  while (index < callbacks.length) {
+    callbacks[index](result)
+    index++
+  }
+}
+
+function getWebGlobal() : WebGlobal {
+  return globalThis as unknown as WebGlobal
+}
+
+function createStartCompassSuccess(errMsg : string) : StartCompassSuccess {
+  return {
+    errMsg: errMsg
+  }
+}
+
+function createStopCompassSuccess(errMsg : string) : StopCompassSuccess {
+  return {
+    errMsg: errMsg
+  }
+}
+
+function createStartedFail() : StartCompassFail {
+  return createStartCompassFail(602, startEnabledErrMsg)
+}
+
+function hasCallback(callback : OnCompassChangeCallback) : boolean {
+  let index = 0
+  while (index < callbacks.length) {
+    if (callbacks[index] == callback) {
+      return true
+    }
+    index++
+  }
+  return false
+}
+
+function createStartCompassWebFail(detail : string) : StartCompassFail {
+  return createStartCompassFail(901, `startCompass:fail ${detail}`)
+}
+
+function resolveDirection(event : DeviceOrientationPayload) : number {
+  if (event.webkitCompassHeading != null) {
+    return event.webkitCompassHeading
+  }
+  if (event.alpha != null) {
+    return 360 - event.alpha
+  }
+  return 0
+}
+
+function resolveAccuracy(event : DeviceOrientationPayload) : CompassAccuracy {
+  if (event.webkitCompassAccuracy != null) {
+    return event.webkitCompassAccuracy
+  }
+  return null
+}
+
+function normalizeDirection(value : number) : number {
+  let result = value % 360
+  if (result < 0) {
+    result += 360
+  }
+  if (result == 360) {
+    return 0
+  }
+  return result
+}
+
+function bindOrientationListener() : void {
+  const webGlobal = getWebGlobal()
+  webGlobal.addEventListener('deviceorientation', orientationListener)
+  started = true
+  resetDispatchState()
+}
+
+function callStartSuccess(options : StartCompassOptions | null) : void {
+  const result = createStartCompassSuccess(startOkMsg)
+  options?.success?.(result)
+  options?.complete?.(result)
+}
+
+function callStartFail(options : StartCompassOptions | null, fail : StartCompassFail) : void {
+  options?.fail?.(fail)
+  options?.complete?.(fail)
+}
+
+function callStopSuccess(options : StopCompassOptions | null) : void {
+  const result = createStopCompassSuccess(stopOkMsg)
+  options?.success?.(result)
+  options?.complete?.(result)
+}
+
+export function onCompassChange(callback : OnCompassChangeCallback) : void {
+  if (hasCallback(callback)) {
+    return
+  }
+  callbacks.push(callback)
+  if (!started) {
+    startCompass()
+  }
+}
+
+export function offCompassChange(id : number) : void {
+  if (callback == null) {
+    callbacks.length = 0
+  } else {
+    let index = 0
+    while (index < callbacks.length) {
+      if (callbacks[index] == callback) {
+        callbacks.splice(index, 1)
+        return
+      }
+      index++
+    }
+  }
+}
+
+export function startCompass(options : StartCompassOptions | null = null) : void {
+  if (started) {
+    callStartSuccess(options)
+    return
+  }
+  const webGlobal = getWebGlobal()
+  const constructor = webGlobal.DeviceOrientationEvent
+  if (constructor == null) {
+    callStartFail(options, createStartCompassWebFail('device orientation is unsupported'))
+    return
+  }
+  const requestPermission = constructor.requestPermission
+  if (requestPermission != null) {
+    requestPermission().then((state : string) => {
+      if (state == 'granted') {
+        bindOrientationListener()
+        callStartSuccess(options)
+        return null
+      }
+      callStartFail(options, createStartCompassWebFail('device orientation permission denied'))
+      return null
+    }, (_error : Error | null) => {
+      callStartFail(options, createStartCompassWebFail('device orientation permission request rejected'))
+      return null
+    })
+    return
+  }
+  bindOrientationListener()
+  callStartSuccess(options)
+}
+
+export function stopCompass(options : StopCompassOptions | null = null) : void {
+  if (started) {
+    const webGlobal = getWebGlobal()
+    webGlobal.removeEventListener('deviceorientation', orientationListener)
+    started = false
+    resetDispatchState()
+  }
+  callStopSuccess(options)
+}
+
+export {
+  OnCompassChangeCallback,
+  OnCompassChangeCallbackResult,
+  StartCompassComplete,
+  StartCompassCompleteCallback,
+  StartCompassFail,
+  StartCompassFailCallback,
+  StartCompassOptions,
+  StartCompassSuccess,
+  StartCompassSuccessCallback,
+  StopCompassComplete,
+  StopCompassCompleteCallback,
+  StopCompassFail,
+  StopCompassFailCallback,
+  StopCompassSuccess,
+  StopCompassSuccessCallback,
+  StopCompassOptions
+} from '../interface.uts'

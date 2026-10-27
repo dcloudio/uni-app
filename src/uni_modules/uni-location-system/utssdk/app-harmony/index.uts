@@ -41,6 +41,7 @@ async function _getLocation(options: GetLocationOptions): Promise<string | GetLo
     const enableHighAccuracy = options.isHighAccuracy
     const type = options.type
     const geocode = options.geocode
+    const altitude = options.altitude
     if (enableHighAccuracy) {
         permissions.push('ohos.permission.LOCATION')
     }
@@ -67,8 +68,8 @@ async function _getLocation(options: GetLocationOptions): Promise<string | GetLo
         longitude: location.longitude,
         speed: location.speed,
         accuracy: location.accuracy,
-        altitude: location.altitude,
-        verticalAccuracy: location.altitudeAccuracy || 0,
+        altitude: altitude ? location.altitude : 0,
+        verticalAccuracy: altitude ? (location.altitudeAccuracy || 0) : 0,
         horizontalAccuracy: location.directionAccuracy || 0,
         address: null,
     }

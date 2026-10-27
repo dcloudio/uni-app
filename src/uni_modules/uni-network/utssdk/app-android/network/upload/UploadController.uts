@@ -51,6 +51,7 @@ class NetworkUploadTaskImpl implements UploadTask {
 		if (this.call != null) {
 			this.call?.cancel();
 		}
+		UTSAndroid.destroyInstance(this)
 	}
 
 	public onProgressUpdate(option : UploadFileProgressUpdateCallback) {

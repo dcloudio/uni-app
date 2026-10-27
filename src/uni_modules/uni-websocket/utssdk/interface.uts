@@ -33,7 +33,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -119,7 +119,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -201,7 +201,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -283,7 +283,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -365,7 +365,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -447,7 +447,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -527,7 +527,7 @@ export interface Uni {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -628,7 +628,7 @@ export type ConnectSocketOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -692,7 +692,7 @@ export type ConnectSocketOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -756,7 +756,7 @@ export type ConnectSocketOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -876,7 +876,7 @@ export type SendSocketMessageOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -965,7 +965,7 @@ export type CloseSocketOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1034,7 +1034,7 @@ export type CloseSocketOptions = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1122,7 +1122,7 @@ export type OnSocketOpenCallbackResult = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1193,7 +1193,7 @@ export type OnSocketMessageCallbackResult = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1266,7 +1266,7 @@ export interface SocketTask {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1345,7 +1345,7 @@ export interface SocketTask {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1424,7 +1424,7 @@ export interface SocketTask {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1503,7 +1503,7 @@ export interface SocketTask {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1585,7 +1585,7 @@ export interface SocketTask {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1665,7 +1665,7 @@ export interface SocketTask {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1762,7 +1762,7 @@ export type OnSocketCloseCallbackResult = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",
@@ -1830,7 +1830,7 @@ export type OnSocketCloseCallbackResult = {
         "alipay": {
           "hostVer": "√",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "5.31"
         },
         "baidu": {
           "hostVer": "√",

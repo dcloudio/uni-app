@@ -4,7 +4,7 @@ import { compressedImage } from './compressImageUtil.uts';
 import { image } from '@kit.ImageKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { fileIo } from '@kit.CoreFileKit';
-import { getEnv } from '@dcloudio/uni-runtime';
+import { getUniMediaPath, ensureUniMediaPath } from './constant.uts';
 
 export interface _CompressImageSuccess {
     size: number,
@@ -45,6 +45,7 @@ export function _compressImage(args: CompressImageOptions): Promise<_CompressIma
     const originalImageSize: number = fileIo.statSync(file2.fd).size
 
     if (imageSource == null) {
+        fileIo.closeSync(file2)
         throw new Error('create image source failed')
     }
 
@@ -94,12 +95,9 @@ export function _compressImage(args: CompressImageOptions): Promise<_CompressIma
         }
 
         const tempFileName = `${Date.now()}_${id++}.${imageExt}`
-        const tempDirPath = `${getEnv().CACHE_PATH}/uni-media`
-        if (!fileIo.accessSync(tempDirPath)) {
-            fileIo.mkdirSync(tempDirPath, true)
-        }
+        ensureUniMediaPath()
 
-        const tempFilePath: string = `${tempDirPath}/${tempFileName}`
+        const tempFilePath: string = `${getUniMediaPath()}/${tempFileName}`
         const file = fileIo.openSync(tempFilePath, fileIo.OpenMode.CREATE | fileIo.OpenMode.READ_WRITE);
 
         return imagePacker.packToFile(pixelMap, file.fd, packOptions)
@@ -109,13 +107,16 @@ export function _compressImage(args: CompressImageOptions): Promise<_CompressIma
                     return compressedImage(pixelMap, originalImageSize, packOptions.quality)
                         .then((buffer): _CompressImageSuccess => {
                             const file = fileIo.openSync(tempFilePath, fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.TRUNC);
-                            fileIo.writeSync(file.fd, buffer)
-                            const size = fileIo.statSync(file.fd).size
-                            fileIo.closeSync(file.fd)
-                            return {
-                                size,
-                                tempFilePath
-                            } as _CompressImageSuccess
+                            try {
+                                fileIo.writeSync(file.fd, buffer)
+                                const size = fileIo.statSync(file.fd).size
+                                return {
+                                    size,
+                                    tempFilePath
+                                } as _CompressImageSuccess
+                            } finally {
+                                fileIo.closeSync(file.fd)
+                            }
                         })
                 }
                 return Promise.resolve({
@@ -125,6 +126,8 @@ export function _compressImage(args: CompressImageOptions): Promise<_CompressIma
             })
             .finally(() => {
                 fileIo.closeSync(file.fd)
+                imageSource.release()
+                fileIo.closeSync(file2)
                 imagePacker.release()
             })
     })

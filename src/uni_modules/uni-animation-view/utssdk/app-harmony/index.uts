@@ -1,0 +1,787 @@
+import { BuilderNode } from "@kit.ArkUI"
+import { LottieBuildParams, buildLottieView, createLottieController, createLottieListener, normalizeLottiePath, reloadLottieWithAnimationData, reloadLottieWithPath } from "./builder.ets"
+import {
+	createAnimationViewInvalidPathError,
+	createAnimationViewLottieError
+} from '../unierror.uts'
+import { LoadAnimationOptions } from '../interface.uts'
+export {
+	createAnimationViewInvalidPathError,
+	createAnimationViewLottieError
+}
+
+type AnimationEventListener = () => void
+type AnimationErrorListener = (error : UniError) => void
+type RepeatMode = 'RESTART' | 'REVERSE'
+
+type AnimationInstance = {
+	loop: boolean
+	currentFrame: number
+	totalFrames: number
+	load: (path: string, width: number, height: number) => void
+	setEndedCallback: (callback: AnimationEventListener) => void
+	setErrorCallback: (callback: AnimationErrorListener) => void
+	setOptions: (loop: boolean, autoplay: boolean, action: string, repeatMode: string) => void
+	updateLoop: (value: boolean) => void
+	setAutoplay: (value: boolean) => void
+	setAction: (value: string) => void
+	setRepeatMode: (value: string) => void
+	applyAction: (action: string) => void
+	destroy: () => void
+	play: () => void
+	pause: () => void
+	stop: () => void
+	goToAndStop: (value: number, isFrame: boolean) => void
+	goToAndPlay: (value: number, isFrame: boolean) => void
+	resetSegments: (forceFlag: boolean) => void
+	setDirection: (value: number) => void
+}
+
+class AnimationState {
+	builder: BuilderNode<[LottieBuildParams]> | null = null
+	destroyed: boolean = false
+	loopEnabled: boolean = false
+	autoplay: boolean = false
+	action: string = 'stop'
+	repeatMode: RepeatMode = 'RESTART'
+	dataReady: boolean = false
+	stopped: boolean = true
+	paused: boolean = false
+	direction: number = 1
+	currentPath: string | null = null
+	completeEmitted: boolean = false
+	usingControllerReload: boolean = false
+	endedCallback: AnimationEventListener | null = null
+	errorCallback: AnimationErrorListener | null = null
+	params: LottieBuildParams | null = null
+	element: UniNativeViewElement | null = null
+	listener: ESObject | null = null
+}
+
+let idCounter = 0
+function generateLottieId(): string {
+	idCounter++
+	return 'lottie_' + idCounter.toString() + '_' + Date.now().toString()
+}
+
+function resolveHarmonyAnimationPath(path: string): string | null {
+	const animationPath = path.trim()
+	if (animationPath == '') {
+		return null
+	}
+	if (animationPath.startsWith('http://') || animationPath.startsWith('https://')) {
+		return animationPath
+	}
+	const realPath = UTSHarmony.getResourcePath(animationPath)
+	if (realPath == null) {
+		return null
+	}
+	const resolvedPath = realPath as string
+	if (resolvedPath.length == 0) {
+		return null
+	}
+	return resolvedPath
+}
+
+function emitComplete(state: AnimationState): void {
+	const callback = state.endedCallback
+	if (callback != null) {
+		callback()
+	}
+}
+
+function emitError(state: AnimationState, error: UniError): void {
+	const callback = state.errorCallback
+	if (callback != null) {
+		callback(error)
+	}
+}
+
+function emitInvalidPath(state: AnimationState): void {
+	emitError(state, createAnimationViewInvalidPathError())
+}
+
+function emitLottieError(state: AnimationState, message: string): void {
+	const sourceMessage = message.length > 0 ? message : 'lottie load failed'
+	emitError(state, createAnimationViewLottieError(sourceMessage))
+}
+
+function getNativeLoop(state: AnimationState): boolean {
+	return state.loopEnabled && state.repeatMode == 'RESTART'
+}
+
+function shouldPlayWhenReady(state: AnimationState): boolean {
+	return state.autoplay || state.action == 'play'
+}
+
+function getReloadAutoplay(): boolean {
+	// Native autoplay advances one frame during reload with the previous timestamp.
+	return false
+}
+
+function applyNativeLoop(state: AnimationState): boolean {
+	const params = state.params
+	if (params == null || state.destroyed) {
+		return false
+	}
+	const nativeLoop = getNativeLoop(state)
+	const changed = params.loop != nativeLoop
+	params.loop = nativeLoop
+	params.controller.loop = nativeLoop
+	return changed
+}
+
+function getLastFrame(state: AnimationState): number {
+	const params = state.params
+	if (params == null) {
+		return 0
+	}
+	const totalFrames = params.controller.totalFrames as number
+	return totalFrames > 1 ? totalFrames - 1 : 0
+}
+
+function moveToBoundaryFrame(state: AnimationState, direction: number): void {
+	const params = state.params
+	if (params == null || !state.dataReady || state.destroyed) {
+		return
+	}
+	const targetFrame = direction < 0 ? getLastFrame(state) : 0
+	params.controller.goToAndStop(targetFrame, true)
+}
+
+function setPlaybackDirection(state: AnimationState, direction: number): void {
+	const params = state.params
+	state.direction = direction < 0 ? -1 : 1
+	if (params != null && state.dataReady && !state.destroyed) {
+		params.controller.setDirection(state.direction)
+	}
+}
+
+function resetAnimationFrame(state: AnimationState): void {
+	const direction = state.repeatMode == 'REVERSE' ? -1 : 1
+	setPlaybackDirection(state, direction)
+	moveToBoundaryFrame(state, direction)
+	state.stopped = true
+	state.paused = false
+}
+
+function replayAnimation(state: AnimationState, direction: number): void {
+	const params = state.params
+	if (params == null || !state.dataReady || state.destroyed) {
+		return
+	}
+	setPlaybackDirection(state, direction)
+	moveToBoundaryFrame(state, state.direction)
+	params.controller.play()
+	params.playing = true
+	state.stopped = false
+	state.paused = false
+	state.completeEmitted = false
+}
+
+function handleDataReady(state: AnimationState): void {
+	if (state.destroyed || state.dataReady) {
+		return
+	}
+	if (state.params == null) {
+		return
+	}
+	state.dataReady = true
+	state.usingControllerReload = false
+	state.completeEmitted = false
+	resetAnimationFrame(state)
+	if (shouldPlayWhenReady(state)) {
+		replayAnimation(state, state.direction)
+	}
+}
+
+function resetBeforeLoad(state: AnimationState): void {
+	const params = state.params
+	if (params != null && state.dataReady && !state.destroyed) {
+		params.controller.pause()
+		params.playing = false
+	}
+	state.dataReady = false
+	state.usingControllerReload = true
+	state.completeEmitted = false
+	state.stopped = true
+	state.paused = false
+	state.direction = state.repeatMode == 'REVERSE' ? -1 : 1
+}
+
+function reloadCurrentPath(state: AnimationState): void {
+	const params = state.params
+	if (params == null || state.destroyed) {
+		return
+	}
+	if (params.animationData != null) {
+		reloadLottieWithAnimationData(params.controller, params.animationData, params.autoplay, params.loop)
+	} else {
+		reloadLottieWithPath(params.controller, params.path != null ? normalizeLottiePath(params.path) : '', params.autoplay, params.loop)
+	}
+}
+
+function reloadForNativeLoopChange(state: AnimationState): void {
+	const params = state.params
+	if (params == null || state.destroyed || !state.dataReady) {
+		return
+	}
+	resetBeforeLoad(state)
+	params.autoplay = getReloadAutoplay()
+	reloadCurrentPath(state)
+}
+
+function createAnimationInstance(state: AnimationState): AnimationInstance {
+	const load = (path: string, width: number, height: number): void => {
+		const realPath = resolveHarmonyAnimationPath(path)
+		const params = state.params
+		if (params == null || state.destroyed) {
+			return
+		}
+		if (realPath == null) {
+			emitInvalidPath(state)
+			return
+		}
+		const resolvedPath = realPath as string
+		if (resolvedPath.length == 0) {
+			emitInvalidPath(state)
+			return
+		}
+		const nativeLoop = getNativeLoop(state)
+		const pathChanged = state.currentPath != resolvedPath
+		params.loop = nativeLoop
+		params.autoplay = getReloadAutoplay()
+		params.useCache = true
+		params.playing = false
+		params.path = resolvedPath
+		params.animationData = null
+		if (!pathChanged) {
+			if (applyNativeLoop(state)) {
+				reloadForNativeLoopChange(state)
+			}
+			return
+		}
+		state.currentPath = resolvedPath
+		resetBeforeLoad(state)
+		reloadCurrentPath(state)
+	}
+
+	const setOptions = (loop: boolean, autoplay: boolean, action: string, repeatMode: string): void => {
+		state.loopEnabled = loop
+		state.autoplay = autoplay
+		if (action == 'play' || action == 'pause' || action == 'stop') {
+			state.action = action
+		}
+		if (repeatMode == 'RESTART' || repeatMode == 'REVERSE') {
+			state.repeatMode = repeatMode as RepeatMode
+		}
+	}
+
+	const setEndedCallback = (callback: AnimationEventListener): void => {
+		state.endedCallback = callback
+	}
+
+	const setErrorCallback = (callback: AnimationErrorListener): void => {
+		state.errorCallback = callback
+	}
+
+	const updateLoop = (value: boolean): void => {
+		const oldNativeLoop = getNativeLoop(state)
+		state.loopEnabled = value
+		applyNativeLoop(state)
+		if (oldNativeLoop != getNativeLoop(state)) {
+			reloadForNativeLoopChange(state)
+		}
+	}
+
+	const setAutoplay = (value: boolean): void => {
+		state.autoplay = value
+		if (value && state.dataReady) {
+			applyAction('play')
+		}
+	}
+
+	const setAction = (value: string): void => {
+		if (value == 'play' || value == 'pause' || value == 'stop') {
+			state.action = value
+		}
+	}
+
+	const setRepeatMode = (value: string): void => {
+		if (value != 'RESTART' && value != 'REVERSE') {
+			return
+		}
+		const oldNativeLoop = getNativeLoop(state)
+		state.repeatMode = value as RepeatMode
+		applyNativeLoop(state)
+		if (oldNativeLoop != getNativeLoop(state)) {
+			reloadForNativeLoopChange(state)
+			return
+		}
+		if (!state.dataReady || state.destroyed) {
+			return
+		}
+		resetAnimationFrame(state)
+		if (state.autoplay || state.action == 'play') {
+			replayAnimation(state, state.direction)
+		}
+	}
+
+	const applyAction = (action: string): void => {
+		if (action != 'play' && action != 'pause' && action != 'stop') {
+			return
+		}
+		state.action = action
+		if (state.destroyed) {
+			return
+		}
+		const params = state.params
+		if (action == 'play') {
+			if (!state.dataReady) {
+				if (params != null) {
+					params.playing = true
+				}
+				state.paused = false
+				state.stopped = false
+				return
+			}
+			if (params == null) {
+				state.paused = false
+				state.stopped = false
+				return
+			}
+			if (state.paused) {
+				params.controller.play()
+				params.playing = true
+				state.paused = false
+				state.stopped = false
+			} else if (state.stopped) {
+				replayAnimation(state, state.direction)
+			} else {
+				params.controller.play()
+				params.playing = true
+				state.paused = false
+			}
+			return
+		}
+		if (action == 'pause') {
+			if (state.dataReady && params != null) {
+				params.controller.pause()
+				params.playing = false
+			}
+			state.paused = true
+			state.stopped = false
+			return
+		}
+		if (params != null) {
+			params.controller.stop()
+			params.playing = false
+		}
+		if (state.dataReady) {
+			resetAnimationFrame(state)
+		} else {
+			state.stopped = true
+			state.paused = false
+		}
+	}
+
+	const destroy = (): void => {
+		state.destroyed = true
+		if (state.params != null) {
+			state.params.controller.destroy()
+		}
+		state.endedCallback = null
+		state.errorCallback = null
+		state.params = null
+		state.builder = null
+	}
+
+	const goToAndStop = (value: number, isFrame: boolean): void => {
+		const params = state.params
+		if (!state.destroyed && state.dataReady && params != null) {
+			params.controller.goToAndStop(value, isFrame)
+		}
+	}
+
+	const goToAndPlay = (value: number, isFrame: boolean): void => {
+		const params = state.params
+		if (!state.destroyed && state.dataReady && params != null) {
+			params.controller.goToAndStop(value, isFrame)
+			applyAction('play')
+		}
+	}
+
+	const resetSegments = (forceFlag: boolean): void => {
+		const params = state.params
+		if (!state.destroyed && state.dataReady && params != null) {
+			params.controller.resetSegments(forceFlag)
+		}
+	}
+
+	const setDirection = (value: number): void => {
+		setPlaybackDirection(state, value)
+	}
+
+	const instance: AnimationInstance = {
+		get loop(): boolean {
+			return state.loopEnabled
+		},
+		set loop(value: boolean) {
+			const oldNativeLoop = getNativeLoop(state)
+			state.loopEnabled = value
+			applyNativeLoop(state)
+			if (oldNativeLoop != getNativeLoop(state)) {
+				reloadForNativeLoopChange(state)
+			}
+		},
+		get currentFrame(): number {
+			const params = state.params
+			if (params == null) {
+				return 0
+			}
+			return params.controller.currentFrame as number
+		},
+		get totalFrames(): number {
+			const params = state.params
+			if (params == null) {
+				return 0
+			}
+			return params.controller.totalFrames as number
+		},
+		load: load,
+		setEndedCallback: setEndedCallback,
+		setErrorCallback: setErrorCallback,
+		setOptions: setOptions,
+		updateLoop: updateLoop,
+		setAutoplay: setAutoplay,
+		setAction: setAction,
+		setRepeatMode: setRepeatMode,
+		applyAction: applyAction,
+		destroy: destroy,
+		play: (): void => applyAction('play'),
+		pause: (): void => applyAction('pause'),
+		stop: (): void => applyAction('stop'),
+		goToAndStop: goToAndStop,
+		goToAndPlay: goToAndPlay,
+		resetSegments: resetSegments,
+		setDirection: setDirection
+	}
+	return instance
+}
+
+export function loadAnimation(options: LoadAnimationOptions): AnimationInstance {
+	const realPath = resolveHarmonyAnimationPath(options.path)
+
+	const existingState = options.container.getHarmonyController<AnimationState>()
+	const canReuseState = existingState != null && !existingState.destroyed
+	const state = canReuseState && existingState != null ? existingState : new AnimationState()
+	state.element = options.container
+	state.destroyed = false
+	state.loopEnabled = options.loop
+	state.autoplay = options.autoplay
+	const action = options.action != null ? options.action! : (options.autoplay ? 'play' : 'stop')
+	const repeatMode = options.repeatMode != null ? options.repeatMode! : 'RESTART'
+	if (action == 'play' || action == 'pause' || action == 'stop') {
+		state.action = action
+	}
+	if (repeatMode == 'RESTART' || repeatMode == 'REVERSE') {
+		state.repeatMode = repeatMode as RepeatMode
+	}
+	state.direction = state.repeatMode == 'REVERSE' ? -1 : 1
+
+	if (state.listener == null) {
+		state.listener = createLottieListener(
+			() => {
+			},
+			() => {
+				const isReverseLoop = state.loopEnabled && state.repeatMode == 'REVERSE'
+				if (!state.dataReady || (!isReverseLoop && state.completeEmitted) || (state.loopEnabled && state.repeatMode == 'RESTART')) {
+					return
+				}
+				if (!isReverseLoop) {
+					state.completeEmitted = true
+					state.stopped = true
+					state.paused = false
+				}
+				emitComplete(state)
+			},
+			() => {
+			},
+			() => {
+			},
+			() => {
+				if (!state.usingControllerReload) {
+					handleDataReady(state)
+				}
+			},
+			() => {
+				console.error('[animation-view][harmony] data load failed')
+				emitLottieError(state, 'data load failed')
+			},
+			() => {
+			},
+			() => {
+				if (state.usingControllerReload) {
+					handleDataReady(state)
+				}
+			}
+		)
+	}
+
+	const instance = createAnimationInstance(state)
+	if (state.params == null) {
+		const nativeLoop = getNativeLoop(state)
+		const params = new LottieBuildParams()
+		params.lottieId = generateLottieId()
+		params.loop = nativeLoop
+		params.autoplay = getReloadAutoplay()
+		params.autoSkip = true
+		params.useCache = true
+		params.playing = false
+		params.path = realPath
+		params.animationData = null
+		params.controller = createLottieController()
+		params.listener = state.listener
+		state.params = params
+		state.currentPath = realPath
+		state.dataReady = false
+		state.stopped = true
+		state.paused = false
+		state.builder = options.container.bindHarmonyWrappedBuilder(
+			wrapBuilder<[LottieBuildParams]>(buildLottieView),
+			state.params
+		)
+		options.container.bindHarmonyController(state)
+		return instance
+	}
+
+	instance.load(options.path, options.width, options.height)
+	options.container.bindHarmonyController(state)
+	return instance
+}
+
+export class AnimationInstanceImpl {
+	private _container: UniNativeViewElement | null = null
+	private _animation: AnimationInstance | null = null
+	private _loop: boolean = false
+	private _autoplay: boolean = false
+	private _action: string = 'stop'
+	private _repeatMode: RepeatMode = 'RESTART'
+	private _endedCallback: AnimationEventListener | null = null
+	private _errorCallback: AnimationErrorListener | null = null
+
+	constructor(container: UniNativeViewElement, loop: boolean) {
+		this._container = container
+		this._loop = loop
+	}
+
+	get loop(): boolean {
+		const animation = this._animation
+		if (animation != null) {
+			return animation.loop
+		}
+		return this._loop
+	}
+
+	set loop(value: boolean) {
+		this.updateLoop(value)
+	}
+
+	get currentFrame(): number {
+		const animation = this._animation
+		if (animation == null) {
+			return 0
+		}
+		return animation.currentFrame
+	}
+
+	get totalFrames(): number {
+		const animation = this._animation
+		if (animation == null) {
+			return 0
+		}
+		return animation.totalFrames
+	}
+
+	load(path: string, width: number, height: number): void {
+		const resolvedPath = resolveHarmonyAnimationPath(path)
+		if (resolvedPath == null) {
+			this._emitError(createAnimationViewInvalidPathError())
+			return
+		}
+		const realPath = resolvedPath as string
+		if (realPath.length == 0) {
+			this._emitError(createAnimationViewInvalidPathError())
+			return
+		}
+		const animation = this._animation
+		if (animation != null) {
+			animation.setOptions(this._loop, this._autoplay, this._action, this._repeatMode)
+			animation.load(path, width, height)
+			return
+		}
+		const container = this._container
+		if (container == null) {
+			return
+		}
+		const nextAnimation = loadAnimation({
+			container,
+			renderer: 'canvas',
+			loop: this._loop,
+			autoplay: this._autoplay,
+			action: this._action,
+			repeatMode: this._repeatMode,
+			path,
+			width,
+			height
+		})
+		const callback = this._endedCallback
+		if (callback != null) {
+			nextAnimation.setEndedCallback(callback)
+		}
+		const errorCallback = this._errorCallback
+		if (errorCallback != null) {
+			nextAnimation.setErrorCallback(errorCallback)
+		}
+		this._animation = nextAnimation
+	}
+
+	setEndedCallback(callback: AnimationEventListener): void {
+		this._endedCallback = callback
+		const animation = this._animation
+		if (animation != null) {
+			animation.setEndedCallback(callback)
+		}
+	}
+
+	setErrorCallback(callback: AnimationErrorListener): void {
+		this._errorCallback = callback
+		const animation = this._animation
+		if (animation != null) {
+			animation.setErrorCallback(callback)
+		}
+	}
+
+	setOptions(loop: boolean, autoplay: boolean, action: string, repeatMode: string): void {
+		this._loop = loop
+		this._autoplay = autoplay
+		if (action == 'play' || action == 'pause' || action == 'stop') {
+			this._action = action
+		}
+		if (repeatMode == 'RESTART' || repeatMode == 'REVERSE') {
+			this._repeatMode = repeatMode as RepeatMode
+		}
+		const animation = this._animation
+		if (animation != null) {
+			animation.setOptions(this._loop, this._autoplay, this._action, this._repeatMode)
+		}
+	}
+
+	updateLoop(value: boolean): void {
+		this._loop = value
+		const animation = this._animation
+		if (animation != null) {
+			animation.updateLoop(value)
+		}
+	}
+
+	setAutoplay(value: boolean): void {
+		this._autoplay = value
+		const animation = this._animation
+		if (animation != null) {
+			animation.setAutoplay(value)
+		}
+	}
+
+	setAction(value: string): void {
+		if (value == 'play' || value == 'pause' || value == 'stop') {
+			this._action = value
+		}
+		const animation = this._animation
+		if (animation != null) {
+			animation.setAction(value)
+		}
+	}
+
+	setRepeatMode(value: string): void {
+		if (value != 'RESTART' && value != 'REVERSE') {
+			return
+		}
+		this._repeatMode = value as RepeatMode
+		const animation = this._animation
+		if (animation != null) {
+			animation.setRepeatMode(value)
+		}
+	}
+
+	applyAction(action: string): void {
+		if (action == 'play' || action == 'pause' || action == 'stop') {
+			this._action = action
+		}
+		const animation = this._animation
+		if (animation != null) {
+			animation.applyAction(action)
+		}
+	}
+
+	destroy(): void {
+		const animation = this._animation
+		if (animation != null) {
+			animation.destroy()
+		}
+		this._animation = null
+		this._endedCallback = null
+		this._errorCallback = null
+	}
+
+	private _emitError(error: UniError): void {
+		const callback = this._errorCallback
+		if (callback != null) {
+			callback(error)
+		}
+	}
+
+	play(): void {
+		this.applyAction('play')
+	}
+
+	resume(): void {
+		this.applyAction('play')
+	}
+
+	pause(): void {
+		this.applyAction('pause')
+	}
+
+	stop(): void {
+		this.applyAction('stop')
+	}
+
+	goToAndStop(value: number, isFrame: boolean): void {
+		const animation = this._animation
+		if (animation != null) {
+			animation.goToAndStop(value, isFrame)
+		}
+	}
+
+	goToAndPlay(value: number, isFrame: boolean): void {
+		const animation = this._animation
+		if (animation != null) {
+			animation.goToAndPlay(value, isFrame)
+		}
+	}
+
+	resetSegments(forceFlag: boolean): void {
+		const animation = this._animation
+		if (animation != null) {
+			animation.resetSegments(forceFlag)
+		}
+	}
+
+	setDirection(value: number): void {
+		const animation = this._animation
+		if (animation != null) {
+			animation.setDirection(value)
+		}
+	}
+}

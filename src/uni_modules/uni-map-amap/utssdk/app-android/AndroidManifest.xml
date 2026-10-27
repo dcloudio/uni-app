@@ -9,5 +9,9 @@
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<application>
+		<!-- 高德地图 SDK 需要的 API Key 配置，请在项目根目录中配置 -->
+		<!-- <meta-data android:name="com.amap.api.v2.apikey" android:value="your_api_key" /> -->
+	</application>
 </manifest>
 

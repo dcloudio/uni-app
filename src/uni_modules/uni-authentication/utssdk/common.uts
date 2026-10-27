@@ -1,0 +1,51 @@
+function normalizeLocale(locale : string) : string {
+	const lowerLocale = locale.toLowerCase()
+	if (lowerLocale.startsWith('zh-hant') || lowerLocale.startsWith('zh-tw') || lowerLocale.startsWith('zh-hk') || lowerLocale.startsWith('zh-mo')) {
+		return 'zh-Hant'
+	}
+	if (lowerLocale.startsWith('zh')) {
+		return 'zh-Hans'
+	}
+	if (lowerLocale.startsWith('fr')) {
+		return 'fr'
+	}
+	if (lowerLocale.startsWith('la')) {
+		return 'la'
+	}
+	return 'en'
+}
+
+function resolveText(locale : string, zhHans : string, zhHant : string, fr : string, la : string, en : string) : string {
+	const normalizedLocale = normalizeLocale(locale)
+	if (normalizedLocale == 'zh-Hans') {
+		return zhHans
+	}
+	if (normalizedLocale == 'zh-Hant') {
+		return zhHant
+	}
+	if (normalizedLocale == 'fr') {
+		return fr
+	}
+	if (normalizedLocale == 'la') {
+		return la
+	}
+	return en
+}
+
+export function getBiometricPromptTitle(locale : string, authContent : string | null = null) : string {
+	if (authContent != null && authContent.length > 0) {
+		return authContent
+	}
+	return resolveText(locale, '请完成生物认证', '請完成生物認證', 'Veuillez terminer l\'authentification biométrique', 'Perage authenticationem biometricam', 'Biometric Authentication Required')
+}
+
+export function getBiometricPromptDescription(locale : string, challenge : string | null = null) : string {
+	if (challenge != null && challenge.length > 0) {
+		return challenge
+	}
+	return resolveText(locale, '请验证设备已录入的生物信息', '請驗證裝置已錄入的生物資訊', 'Veuillez verifier les donnees biometriques enregistrees sur cet appareil', 'Quaeso notitias biometricae in hoc artificio iam inscriptas verifica', 'Verify with stored biometrics')
+}
+
+export function getBiometricPromptCancelText(locale : string) : string {
+	return resolveText(locale, '取消', '取消', 'Annuler', 'Cancella', 'Cancel')
+}

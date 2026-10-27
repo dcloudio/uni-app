@@ -11,71 +11,61 @@ import {
     API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, CheckIsSoterEnrolledInDeviceApiOptions, CheckIsSoterEnrolledInDeviceProtocols,
     API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION
 } from '../protocol.uts';
+import {
+    AUTH_ERR_AUTH_FAIL,
+    AUTH_ERR_CANCEL,
+    AUTH_ERR_CREDENTIAL_EXPIRED,
+    AUTH_ERR_GENERAL,
+    AUTH_ERR_HARMONY_TIMEOUT,
+    AUTH_ERR_HARMONY_WIDGET_CANCEL,
+    AUTH_ERR_INVALID_PARAMETER,
+    AUTH_ERR_LOCKED,
+    AUTH_ERR_NOT_AVAILABLE,
+    AUTH_ERR_NOT_ENROLLED,
+    AUTH_ERR_PERMISSION_DENIED,
+    getAuthenticationErrorMessage
+} from '../unierror.uts';
 
-function getErrorMessage(code: number): string {
+function getErrorCode(code: number): number {
     switch (code) {
         case 201:
-            return "权限认证失败";
+            return AUTH_ERR_PERMISSION_DENIED;
         case 401:
-            return "参数不正确。可能的一个原因: 强制参数未指定";
+            return AUTH_ERR_INVALID_PARAMETER;
         case userAuth.UserAuthResultCode.FAIL:
-            return "认证失败";
+            return AUTH_ERR_AUTH_FAIL;
         case userAuth.UserAuthResultCode.GENERAL_ERROR:
-            return "操作通用错误";
+            return AUTH_ERR_GENERAL;
         case userAuth.UserAuthResultCode.CANCELED:
-            return "操作取消";
+            return AUTH_ERR_CANCEL;
         case userAuth.UserAuthResultCode.TIMEOUT:
-            return "操作超时";
+            return AUTH_ERR_HARMONY_TIMEOUT;
         case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
-            return "不支持的认证类型";
+            return AUTH_ERR_NOT_AVAILABLE;
         case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
-            return "不支持的认证等级";
+            return AUTH_ERR_NOT_AVAILABLE;
         case userAuth.UserAuthResultCode.BUSY:
-            return "忙碌状态";
+            return AUTH_ERR_LOCKED;
         case userAuth.UserAuthResultCode.LOCKED:
-            return "认证器已锁定";
+            return AUTH_ERR_LOCKED;
         case userAuth.UserAuthResultCode.NOT_ENROLLED:
-            return "用户未录入认证信息";
+            return AUTH_ERR_NOT_ENROLLED;
         case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
-            return "切换到自定义身份验证过程";
+            return AUTH_ERR_HARMONY_WIDGET_CANCEL;
         case 12500013:
-            return "系统锁屏密码过期";
+            return AUTH_ERR_CREDENTIAL_EXPIRED;
         default:
-            return '';
+            return AUTH_ERR_GENERAL;
     }
 }
 
-function getUniErrMsg(code: number): number {
-    switch (code) {
-        case 201:
-            return 90002;
-        case 401:
-            return 90004;
-        case userAuth.UserAuthResultCode.FAIL:
-            return 90009;
-        case userAuth.UserAuthResultCode.GENERAL_ERROR:
-            return 90007;
-        case userAuth.UserAuthResultCode.CANCELED:
-            return 90008;
-        case userAuth.UserAuthResultCode.TIMEOUT:
-            return 90007;
-        case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
-            return 90003;
-        case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
-            return 90003;
-        case userAuth.UserAuthResultCode.BUSY:
-            return 90010;
-        case userAuth.UserAuthResultCode.LOCKED:
-            return 90010;
-        case userAuth.UserAuthResultCode.NOT_ENROLLED:
-            return 90011;
-        case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
-            return userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET;
-        case 12500013:
-            return 12500013;
-        default:
-            return -1;
-    }
+function getRejectMessage(apiName: string, errCode: number): string {
+    return apiName + ':fail ' + getAuthenticationErrorMessage(errCode)
+}
+
+function rejectExecutor<T>(executor: ApiExecutor<T>, apiName: string, nativeCode: number): void {
+    const errCode = getErrorCode(nativeCode)
+    executor.reject(getRejectMessage(apiName, errCode), { errCode } as ApiError)
 }
 
 function toUint8Arr(str: string) {
@@ -101,9 +91,9 @@ export const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi
     (args: StartSoterAuthenticationOptions, executor: ApiExecutor<StartSoterAuthenticationSuccess>) => {
         const authType: userAuth.UserAuthType[] = []
         args.requestAuthModes.forEach((item) => {
-            if (item === 'fingerPrint') {
+            if (item == 'fingerPrint') {
                 authType.push(userAuth.UserAuthType.FINGERPRINT)
-            } else if (item === 'facial') {
+            } else if (item == 'facial') {
                 authType.push(userAuth.UserAuthType.FACE)
             }
         })
@@ -125,20 +115,18 @@ export const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi
 
             auth.on("result", {
                 onResult: (result: userAuth.UserAuthResult) => {
-                    if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+                    if (result.result == userAuth.UserAuthResultCode.SUCCESS) {
                         executor.resolve({
                             errCode: 0,
-                            authMode: result.authType === userAuth.UserAuthType.FINGERPRINT ? 'fingerPrint' : 'facial'
+                            authMode: result.authType == userAuth.UserAuthType.FINGERPRINT ? 'fingerPrint' : 'facial'
                         } as StartSoterAuthenticationSuccess);
                     } else {
-                        const errMsg = getErrorMessage(result.result)
-                        const errCode = getUniErrMsg(result.result)
-                        executor.reject(errMsg, { errCode } as ApiError);
+                        rejectExecutor(executor, 'startSoterAuthentication', result.result)
                     }
                 }
             } as userAuth.IAuthCallback);
 
-            if (authContent) {
+            if (authContent.length > 0) {
                 promptAction.showToast({
                     message: authContent
                 } as promptAction.ShowToastOptions)
@@ -146,7 +134,7 @@ export const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi
             auth.start();
         } catch (error) {
             const code = (error as BusinessError).code
-            executor.reject(getErrorMessage(code), { errCode: getUniErrMsg(code) } as ApiError);
+            rejectExecutor(executor, 'startSoterAuthentication', code)
         }
     },
     StartSoterAuthenticationApiProtocols,
@@ -190,13 +178,13 @@ export const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthenticatio
                     executor.resolve({ supportMode, errMsg: '' } as CheckIsSupportSoterAuthenticationSuccess)
                 } catch (error) {
                     const code = (error as BusinessError).code
-                    executor.reject(getErrorMessage(code), { errCode: getUniErrMsg(code) } as ApiError);
+                    rejectExecutor(executor, 'checkIsSupportSoterAuthentication', code)
                 }
             } else {
-                executor.reject(getErrorMessage(201))
+                rejectExecutor(executor, 'checkIsSupportSoterAuthentication', 201)
             }
         }, () => {
-            executor.reject(getErrorMessage(201))
+            rejectExecutor(executor, 'checkIsSupportSoterAuthentication', 201)
         })
     }
 ) as CheckIsSupportSoterAuthentication
@@ -214,9 +202,9 @@ function getFaceEnrolledState() {
 }
 
 function harmonyCheckIsSoterEnrolledInDevice(checkAuthMode: SoterAuthMode): boolean {
-    if (checkAuthMode === 'fingerPrint') {
+    if (checkAuthMode == 'fingerPrint') {
         return getFingerPrintEnrolledState()
-    } else if (checkAuthMode === 'facial') {
+    } else if (checkAuthMode == 'facial') {
         return getFaceEnrolledState()
     }
     return false
@@ -234,13 +222,13 @@ export const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = define
                     } as CheckIsSoterEnrolledInDeviceSuccess)
                 } catch (error) {
                     const code = (error as BusinessError).code
-                    executor.reject(getErrorMessage(code), { errCode: getUniErrMsg(code) } as ApiError);
+                    rejectExecutor(executor, 'checkIsSoterEnrolledInDevice', code)
                 }
             } else {
-                executor.reject(getErrorMessage(201))
+                rejectExecutor(executor, 'checkIsSoterEnrolledInDevice', 201)
             }
         }, () => {
-            executor.reject(getErrorMessage(201))
+            rejectExecutor(executor, 'checkIsSoterEnrolledInDevice', 201)
         })
     },
     CheckIsSoterEnrolledInDeviceProtocols,

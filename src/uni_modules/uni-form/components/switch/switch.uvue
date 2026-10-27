@@ -94,6 +94,22 @@
         "harmony": {
            "unixVaporVer": "5.0"
          }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
        }
      }
      */
@@ -111,6 +127,22 @@
         "harmony": {
            "unixVaporVer": "5.0"
          }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
        }
      }
      */
@@ -127,6 +159,22 @@
          },
         "harmony": {
            "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
          }
        }
      }
@@ -285,5 +333,15 @@
 
   .uni-switch-active-thumb {
     transform: translateX(20px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-switch {
+      background-color: #3b3b3f;
+    }
+
+    .uni-switch-active {
+      background-color: #007aff;
+    }
   }
 </style>

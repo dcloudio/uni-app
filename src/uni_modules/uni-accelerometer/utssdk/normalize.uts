@@ -1,0 +1,13 @@
+const gravityAcceleration : number = -9.8
+
+export function normalizeMetersPerSecondSquared(value : number) : number {
+	return value / gravityAcceleration
+}
+
+export function normalizeMetersPerSecondSquaredAxes(x : number, y : number, z : number) : number[] {
+	return [
+		normalizeMetersPerSecondSquared(x),
+		normalizeMetersPerSecondSquared(y),
+		normalizeMetersPerSecondSquared(z)
+	]
+}

@@ -1,25 +1,14 @@
 import OHWindow from '@ohos.window'
 import fs, { ReadOptions } from '@ohos.file.fs'
 import { audio } from '@kit.AudioKit';
-import { font } from '@kit.ArkUI'
+import { deviceInfo } from '@kit.BasicServicesKit';
 import { media } from '@kit.MediaKit';
+import { BuilderNode } from '@kit.ArkUI';
 // @ts-ignore
 import { getCurrentMP, getRealPath } from "@dcloudio/uni-runtime";
 import { buildVideo, AVVolumePanelOptions } from "./builder.ets";
 import { CreateVideoContext, VideoContext, RequestFullScreenOptions, Danmu } from '../interface.uts';
 import { UniVideoTimeUpdateEvent, UniVideoTimeUpdateEventDetail, UniVideoFullScreenChangeEvent, UniVideoFullScreenChangeEventDetail, UniVideoErrorEvent, UniVideoProgressEvent, UniVideoProgressEventDetail, UniVideoFullScreenClickEvent, UniVideoFullScreenClickEventDetail, UniVideoControlsToggleEvent, UniVideoControlsToggleEventDetail } from '../interface.uts';
-
-const FONT_REGISTRATION_DELAY_MS = 40
-
-UTSHarmony.onAppAbilityWindowStageCreate((window) => {
-  setTimeout(async () => {
-    const mainWindow = await window.getMainWindow()
-    mainWindow.getUIContext().getFont().registerFont({
-      familyName: 'uni-video-icon',
-      familySrc: $rawfile('uni-video/uni-video-icon.ttf')
-    } as font.FontOptions);
-  }, FONT_REGISTRATION_DELAY_MS);
-});
 
 export { AVVolumePanelOptions }
 
@@ -220,14 +209,20 @@ export class Video {
       show: false
     } as AVVolumePanelOptions
 
-    element.bindHarmonyWrappedBuilder(wrapBuilder<[BuilderVideoParams]>(buildVideo), this.params);
-    element.bindHarmonyController(this.bindVideoController)
-    if (typeof element['getHarmonyComponentContent'] === 'function') {
-      // @ts-ignore
-      this.harmonyBuilderNode = (element as ESObject).getHarmonyComponentContent() as ComponentContent;
-    } else {
-      this.harmonyBuilderNode = element.getHarmonyBuilderNode()
-    }
+    const _wrapBuilder = wrapBuilder<[BuilderVideoParams]>(buildVideo)
+
+    element.bindHarmonyController(this.bindVideoController);
+
+    // #ifdef VUE3-VAPOR
+    const builderNode = new BuilderNode<[BuilderVideoParams]>(globalThis.getUniApp()?.context! as UIContext)
+    builderNode.build(_wrapBuilder, this.params)
+    element.bindHarmonyFrameNode(builderNode.getFrameNode()!)
+    this.harmonyBuilderNode = builderNode
+    // #endif
+    // #ifndef VUE3-VAPOR
+    element.bindHarmonyWrappedBuilder(_wrapBuilder, this.params);
+    this.harmonyBuilderNode = element.getHarmonyBuilderNode();
+    // #endif
 
     this._currentMP.window?.on('windowStatusChange', this.windowStatusChange)
   }
@@ -255,8 +250,19 @@ export class Video {
   }
 
   private formatPlaybackRate(rate : number) : number {
-    // NOTE 鸿蒙仅支持 0.75，1.0，1.25，1.75，2.0
-    const validValues = [0.75, 1.0, 1.25, 1.75, 2.0];
+    /**
+    * 由于不同平台支持的播放速率不同，取最接近的有效值
+    * 鸿蒙(异常值时按默认值处理)
+    *    API 7 ~ 21	0.75、1.0、1.25、1.75、2.0
+    *    API 22 ~ 25	0.125、0.25、0.5、0.75、1.0、1.25、1.5、1.75、2.0、3.0
+    *    API 26.0.0+	[0.125, 8] 任意值
+    */
+    if (!Number.isFinite(rate)) return 1.0
+    if (deviceInfo.sdkApiVersion >= 26) return Math.min(Math.max(rate, 0.125), 8.0)
+
+    const validValues = deviceInfo.sdkApiVersion >= 22
+      ? [0.125, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0]
+      : [0.75, 1.0, 1.25, 1.75, 2.0]
     let closest = validValues[0];
     let closestDiff = Math.abs(rate - closest);
 

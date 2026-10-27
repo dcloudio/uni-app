@@ -1,0 +1,205 @@
+import { LAContext, LAPolicy, LABiometryType } from 'LocalAuthentication'
+import NSError from 'Foundation.NSError'
+import NSLocale from 'Foundation.NSLocale'
+import {
+	CheckIsSoterEnrolledInDevice,
+	CheckIsSoterEnrolledInDeviceOptions,
+	CheckIsSoterEnrolledInDeviceSuccess,
+	CheckIsSupportSoterAuthenticationFail,
+	CheckIsSupportSoterAuthentication,
+	CheckIsSupportSoterAuthenticationOptions,
+	CheckIsSupportSoterAuthenticationSuccess,
+	SoterAuthMode,
+	StartSoterAuthentication,
+	StartSoterAuthenticationFail,
+	StartSoterAuthenticationOptions,
+	StartSoterAuthenticationSuccess
+} from '../interface.uts'
+
+import {
+	AUTH_ERR_AUTH_FAIL,
+	AUTH_ERR_CANCEL,
+	AUTH_ERR_GENERAL,
+	AUTH_ERR_IOS_CONTEXT_INVALID,
+	AUTH_ERR_LOCKED,
+	AUTH_ERR_NOT_AVAILABLE,
+	AUTH_ERR_NOT_ENROLLED,
+	createCheckIsSupportSoterAuthenticationFail,
+	createStartSoterAuthenticationFail
+} from '../unierror.uts'
+
+import { getBiometricPromptTitle } from '../common.uts'
+
+function createStartFailResult(code : number, errMsg : string) : StartSoterAuthenticationFail {
+	return createStartSoterAuthenticationFail(code, errMsg)
+}
+
+function createSupportFailResult(code : number, errMsg : string) : CheckIsSupportSoterAuthenticationFail {
+	return createCheckIsSupportSoterAuthenticationFail(code, errMsg)
+}
+
+function getCurrentLocale() : string {
+	const preferredLanguages = NSLocale.preferredLanguages
+	if (preferredLanguages.count > 0) {
+		return preferredLanguages[0]
+	}
+	return 'en'
+}
+
+function resolveStartSuccess(options : StartSoterAuthenticationOptions, authMode : SoterAuthMode) : void {
+	const result : StartSoterAuthenticationSuccess = {
+		errCode: 0,
+		authMode: authMode,
+		errMsg: 'startSoterAuthentication:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectStart(options : StartSoterAuthenticationOptions, code : number, errMsg : string) : void {
+	const error = createStartFailResult(code, errMsg)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function resolveSupportSuccess(options : CheckIsSupportSoterAuthenticationOptions, supportMode : SoterAuthMode[]) : void {
+	const result : CheckIsSupportSoterAuthenticationSuccess = {
+		supportMode: supportMode,
+		errMsg: 'checkIsSupportSoterAuthentication:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function resolveEnrollSuccess(options : CheckIsSoterEnrolledInDeviceOptions, isEnrolled : boolean) : void {
+	const result : CheckIsSoterEnrolledInDeviceSuccess = {
+		isEnrolled: isEnrolled,
+		errMsg: 'checkIsSoterEnrolledInDevice:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+function createContext() : LAContext {
+	return LAContext()
+}
+
+function canEvaluateBiometrics(context : LAContext) : boolean {
+	return context.canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error = null)
+}
+
+function getSupportedModes() : SoterAuthMode[] {
+	const context = createContext()
+	if (!canEvaluateBiometrics(context)) {
+		return []
+	}
+	const supportModes : SoterAuthMode[] = []
+	if (context.biometryType == LABiometryType.touchID) {
+		supportModes.push('fingerPrint')
+	}
+	if (context.biometryType == LABiometryType.faceID) {
+		supportModes.push('facial')
+	}
+	return supportModes
+}
+
+function getRequestedMode(requestAuthModes : SoterAuthMode[]) : SoterAuthMode | null {
+	const supportModes = getSupportedModes()
+	for (const mode of requestAuthModes) {
+		if (supportModes.includes(mode)) {
+			return mode
+		}
+	}
+	return null
+}
+
+function mapErrorAuth(code : number, prefix : string) : StartSoterAuthenticationFail {
+	const userCancelCode = -2
+	const appCancelCode = -9
+	const systemCancelCode = -4
+	const userFallbackCode = -3
+	if (code == userCancelCode || code == appCancelCode || code == systemCancelCode || code == userFallbackCode) {
+		return createStartFailResult(AUTH_ERR_CANCEL, prefix + ':fail cancel')
+	}
+	if (code == -8) {
+		return createStartFailResult(AUTH_ERR_LOCKED, prefix + ':fail biometry locked')
+	}
+	if (code == -7) {
+		return createStartFailResult(AUTH_ERR_NOT_ENROLLED, prefix + ':fail biometry not enrolled')
+	}
+	if (code == -6) {
+		return createStartFailResult(AUTH_ERR_NOT_AVAILABLE, prefix + ':fail biometry unavailable')
+	}
+	if (code == -10) {
+		return createStartFailResult(AUTH_ERR_IOS_CONTEXT_INVALID, prefix + ':fail invalid authentication context')
+	}
+	if (code == -1) {
+		return createStartFailResult(AUTH_ERR_AUTH_FAIL, prefix + ':fail authentication failed')
+	}
+	return createStartFailResult(AUTH_ERR_GENERAL, prefix + ':fail biometric error')
+}
+
+export const checkIsSupportSoterAuthentication : CheckIsSupportSoterAuthentication = function (options : CheckIsSupportSoterAuthenticationOptions) {
+	resolveSupportSuccess(options, getSupportedModes())
+}
+
+export const checkIsSoterEnrolledInDevice : CheckIsSoterEnrolledInDevice = function (options : CheckIsSoterEnrolledInDeviceOptions) {
+	const supportModes = getSupportedModes()
+	resolveEnrollSuccess(options, supportModes.includes(options.checkAuthMode))
+}
+
+export const startSoterAuthentication : StartSoterAuthentication = function (options : StartSoterAuthenticationOptions) {
+	const authMode = getRequestedMode(options.requestAuthModes)
+	if (authMode == null) {
+		rejectStart(options, AUTH_ERR_NOT_AVAILABLE, 'startSoterAuthentication:fail unsupported auth mode')
+		return
+	}
+
+	const context = createContext()
+	if (!canEvaluateBiometrics(context)) {
+		rejectStart(options, AUTH_ERR_NOT_ENROLLED, 'startSoterAuthentication:fail biometry not enrolled or unavailable')
+		return
+	}
+
+	const reason = getBiometricPromptTitle(getCurrentLocale(), options.authContent)
+	context.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason = reason, reply = (success, error) : void => {
+		if (success) {
+			resolveStartSuccess(options, authMode)
+			return
+		}
+		let nativeErrorCode = 0
+		if (error != null) {
+			nativeErrorCode = Number((error as NSError).code)
+		}
+		const failResult = mapErrorAuth(nativeErrorCode, 'startSoterAuthentication')
+		options.fail?.(failResult)
+		options.complete?.(failResult)
+	})
+}
+
+export {
+	CheckIsSoterEnrolledInDevice,
+	CheckIsSoterEnrolledInDeviceComplete,
+	CheckIsSoterEnrolledInDeviceCompleteCallback,
+	CheckIsSoterEnrolledInDeviceFail,
+	CheckIsSoterEnrolledInDeviceFailCallback,
+	CheckIsSoterEnrolledInDeviceOptions,
+	CheckIsSoterEnrolledInDeviceSuccess,
+	CheckIsSoterEnrolledInDeviceSuccessCallback,
+	CheckIsSupportSoterAuthentication,
+	CheckIsSupportSoterAuthenticationComplete,
+	CheckIsSupportSoterAuthenticationCompleteCallback,
+	CheckIsSupportSoterAuthenticationFail,
+	CheckIsSupportSoterAuthenticationFailCallback,
+	CheckIsSupportSoterAuthenticationOptions,
+	CheckIsSupportSoterAuthenticationSuccess,
+	CheckIsSupportSoterAuthenticationSuccessCallback,
+	SoterAuthMode,
+	StartSoterAuthentication,
+	StartSoterAuthenticationComplete,
+	StartSoterAuthenticationCompleteCallback,
+	StartSoterAuthenticationFail,
+	StartSoterAuthenticationFailCallback,
+	StartSoterAuthenticationOptions,
+	StartSoterAuthenticationSuccess,
+	StartSoterAuthenticationSuccessCallback
+} from '../interface.uts'

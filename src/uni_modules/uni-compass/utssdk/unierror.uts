@@ -1,0 +1,65 @@
+import { CompassErrorCode, IStartCompassFail, IStopCompassFail } from './interface.uts'
+
+export const CompassUniErrorSubject = 'uni-compass'
+
+export const CompassUniErrors : Map<number, string> = new Map([
+	[601, 'compass not supported'],
+	[602, 'start compass failed'],
+	[603, 'stop compass failed'],
+	[604, 'native internal error'],
+	[701, 'android sensor manager unavailable'],
+	[702, 'android accelerometer unavailable'],
+	[703, 'android magnetic sensor unavailable'],
+	[704, 'android register listener failed'],
+	[801, 'ios heading unavailable'],
+	[802, 'ios location manager init failed'],
+	[803, 'ios start heading failed'],
+	[804, 'ios stop heading failed'],
+	[501, 'harmony orientation sensor unavailable'],
+	[502, 'harmony subscribe orientation failed'],
+	[503, 'harmony unsubscribe orientation failed'],
+	[504, 'harmony sensor internal error'],
+	[901, 'web compass unsupported']
+])
+
+export class StartCompassFailImpl extends UniError implements IStartCompassFail {
+	override errCode : CompassErrorCode
+
+	constructor(errCode : CompassErrorCode) {
+		super()
+		this.errCode = errCode
+		this.errSubject = CompassUniErrorSubject
+	}
+}
+
+export class StopCompassFailImpl extends UniError implements IStopCompassFail {
+	override errCode : CompassErrorCode
+
+	constructor(errCode : CompassErrorCode) {
+		super()
+		this.errCode = errCode
+		this.errSubject = CompassUniErrorSubject
+	}
+}
+
+export function createStartCompassFail(errCode : CompassErrorCode, errMsg : string | null = null, data : UTSJSONObject | null = null, cause : Error | null = null) : StartCompassFailImpl {
+	const error = new StartCompassFailImpl(errCode)
+	const defaultMessage = CompassUniErrors.get(errCode)
+	error.errMsg = errMsg != null ? errMsg : (defaultMessage != null ? defaultMessage : '')
+	error.data = data
+	if (cause != null) {
+		error.cause = cause
+	}
+	return error
+}
+
+export function createStopCompassFail(errCode : CompassErrorCode, errMsg : string | null = null, data : UTSJSONObject | null = null, cause : Error | null = null) : StopCompassFailImpl {
+	const error = new StopCompassFailImpl(errCode)
+	const defaultMessage = CompassUniErrors.get(errCode)
+	error.errMsg = errMsg != null ? errMsg : (defaultMessage != null ? defaultMessage : '')
+	error.data = data
+	if (cause != null) {
+		error.cause = cause
+	}
+	return error
+}

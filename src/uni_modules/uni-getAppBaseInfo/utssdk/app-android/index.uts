@@ -31,11 +31,18 @@ export const getAppBaseInfo : GetAppBaseInfo = (config : GetAppBaseInfoOptions |
 			"hostSDKVersion",
 			"hostTheme",
 			"isUniAppX",
+			// #ifndef VUE3-VAPOR
 			"uniCompileVersion",
+			// #endif
 			"uniCompilerVersion",
+			// #ifdef VUE3-VAPOR
+			"uniCompilerRuleVersion",
+			// #endif
 			"uniPlatform",
 			"uniRuntimeVersion",
+			// #ifndef VUE3-VAPOR
 			"uniCompileVersionCode",
+			// #endif
 			"uniCompilerVersionCode",
 			"uniRuntimeVersionCode",
 			"packageName",
@@ -97,43 +104,52 @@ function getBaseInfo(filterArray : Array<string>) : GetAppBaseInfoResult {
 		result.version = AppBaseInfoDeviceUtil.getAppInnerVersion();
 	}
 	if (filterArray.indexOf("appWgtVersion") != -1) {
+		// #ifdef VUE3-VAPOR
+		result.appWgtVersion = UTSAndroid.getAppWgtVersion();
+		// #endif
+		// #ifndef VUE3-VAPOR
 		result.appWgtVersion = AppBaseInfoDeviceUtil.getAppVersionName();
+		// #endif
 	}
 	if (filterArray.indexOf("isUniAppX") != -1) {
 		result.isUniAppX = UTSAndroid.isUniAppX();
 	}
-	
+	// #ifndef VUE3-VAPOR
 	if (filterArray.indexOf("uniCompileVersion") != -1) {
 		result.uniCompileVersion = UTSAndroid.getUniCompileVersion();
 	}
+	// #endif
 	if (filterArray.indexOf("uniCompilerVersion") != -1) {
 		result.uniCompilerVersion = UTSAndroid.getUniCompileVersion();
 	}
-	
-	
+	// #ifdef VUE3-VAPOR
+	if (filterArray.indexOf("uniCompilerRuleVersion") != -1) {
+		result.uniCompilerRuleVersion = UTSAndroid.getUniCompilerRuleVersion();
+	}
+	// #endif
 	if (filterArray.indexOf("uniPlatform") != -1) {
 		result.uniPlatform = "app";
 	}
-	
 	if (filterArray.indexOf("uniRuntimeVersion") != -1) {
 		result.uniRuntimeVersion = UTSAndroid.getUniRuntimeVersion();
 	}
-	
+	// #ifndef VUE3-VAPOR
 	if (filterArray.indexOf("uniCompileVersionCode") != -1) {
 		result.uniCompileVersionCode = convertVersionCode(UTSAndroid.getUniCompileVersion());
 	}
+	// #endif
 	if (filterArray.indexOf("uniCompilerVersionCode") != -1) {
 		result.uniCompilerVersionCode = convertVersionCode(UTSAndroid.getUniCompileVersion());
 	}
-	
+
 	if (filterArray.indexOf("uniRuntimeVersionCode") != -1) {
 		result.uniRuntimeVersionCode = convertVersionCode(UTSAndroid.getUniRuntimeVersion());
 	}
-	
+
 	if (filterArray.indexOf("packageName") != -1) {
 		result.packageName =  AppBaseInfoDeviceUtil.getPackageName(activity);
 	}
-	
+
 	if (filterArray.indexOf("signature") != -1) {
 		result.signature = AppBaseInfoDeviceUtil.getAppSignatureSHA1(activity);
 	}

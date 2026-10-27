@@ -1,0 +1,162 @@
+export type LoadUasm = (module: string) => Promise<any>
+export type LoadUasmSync = (module: string) => any | null
+
+export interface Uni {
+    /**
+     * 异步加载 UASM 模块
+     *
+     * module 必须是编译时可确定的 uni_modules 插件路径，模块类型由编译器推导。
+     *
+     * @param {string} module UASM 插件路径
+     * @return {Promise<any>} UASM 模块实例
+     * @example
+     * ```uts
+     * const uasm = await uni.loadUasm('uni_modules/zstd')
+     * ```
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.31"
+     *    },
+     *    "ios": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.31"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.31"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "5.31"
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "5.31"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "5.31"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    loadUasm(module: string): Promise<any>
+
+    /**
+     * 同步加载 UASM 模块
+     *
+     * module 必须是编译时可确定的 uni_modules 插件路径，模块类型由编译器推导。
+     *
+     * @param {string} module UASM 插件路径
+     * @return {any | null} UASM 模块实例
+     * @example
+     * ```uts
+     * const uasm = uni.loadUasmSync('uni_modules/zstd')
+     * ```
+     * @uniPlatform {
+     *  "app": {
+     *    "android": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.31"
+     *    },
+     *    "ios": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.31"
+     *    },
+     *    "harmony": {
+     *      "uniVer": "x",
+     *      "unixVer": "x",
+     *      "unixVaporVer": "5.31"
+     *    }
+     *  },
+     *  "web": {
+     *    "uniVer": "x",
+     *    "unixVer": "x"
+     *  },
+     *  "mp": {
+     *    "weixin": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "alipay": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "baidu": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "toutiao": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "lark": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "qq": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "kuaishou": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    },
+     *    "jd": {
+     *      "hostVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+     *  }
+     * }
+     */
+    loadUasmSync(module: string): any | null
+}

@@ -1,0 +1,170 @@
+import { GyroscopeErrorCode, GyroscopeInterval, OnGyroscopeChangeCallback, OnGyroscopeChangeCallbackResult, StartGyroscopeFail, StartGyroscopeOptions, StartGyroscopeSuccess, StopGyroscopeFail, StopGyroscopeOptions, StopGyroscopeSuccess } from '../interface.uts'
+import { normalizeGyroscopeInterval } from '../common.uts'
+import { createStartGyroscopeFail, createStopGyroscopeFail } from '../unierror.uts'
+import { GyroscopeNative } from './GyroscopeNative.ets'
+
+const permissions = ['ohos.permission.GYROSCOPE']
+const callbacks : Array<OnGyroscopeChangeCallback> = []
+let started : boolean = false
+let nativeListenerBound : boolean = false
+
+function createStartGyroscopeSuccess(errMsg : string) : StartGyroscopeSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function createStopGyroscopeSuccess(errMsg : string) : StopGyroscopeSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function callStartSuccess(options : StartGyroscopeOptions | null) : void {
+	const result = createStartGyroscopeSuccess('startGyroscope:ok')
+	options?.success?.(result)
+	options?.complete?.(result)
+}
+
+function callStartFail(options : StartGyroscopeOptions | null, fail : StartGyroscopeFail) : void {
+	options?.fail?.(fail)
+	options?.complete?.(fail)
+}
+
+function callStopSuccess(options : StopGyroscopeOptions | null) : void {
+	const result = createStopGyroscopeSuccess('stopGyroscope:ok')
+	options?.success?.(result)
+	options?.complete?.(result)
+}
+
+function callStopFail(options : StopGyroscopeOptions | null, fail : StopGyroscopeFail) : void {
+	options?.fail?.(fail)
+	options?.complete?.(fail)
+}
+
+function hasCallback(callback : OnGyroscopeChangeCallback) : boolean {
+	let index = 0
+	while (index < callbacks.length) {
+		if (callbacks[index] == callback) {
+			return true
+		}
+		index++
+	}
+	return false
+}
+
+function removeCallback(callback : OnGyroscopeChangeCallback) : void {
+	let index = 0
+	while (index < callbacks.length) {
+		if (callbacks[index] == callback) {
+			callbacks.splice(index, 1)
+			return
+		}
+		index++
+	}
+}
+
+
+function dispatchGyroscopeChange(x : number, y : number, z : number) : void {
+	const result : OnGyroscopeChangeCallbackResult = { x: x, y: y, z: z }
+	let index = 0
+	while (index < callbacks.length) {
+		callbacks[index](result)
+		index++
+	}
+}
+
+function ensureNativeListener() : void {
+	if (nativeListenerBound) {
+		return
+	}
+	GyroscopeNative.setListener((x : number, y : number, z : number) => {
+		dispatchGyroscopeChange(x, y, z)
+	})
+	nativeListenerBound = true
+}
+
+function mapStartNativeError(code : number) : StartGyroscopeFail {
+	let errCode : GyroscopeErrorCode = 604
+	if (code == 501 || code == 502 || code == 503 || code == 504) {
+		errCode = code as GyroscopeErrorCode
+	} else {
+		errCode = 602
+	}
+	return createStartGyroscopeFail(errCode, 'startGyroscope:fail', {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+function mapStopNativeError(code : number) : StopGyroscopeFail {
+	let errCode : GyroscopeErrorCode = 604
+	if (code == 501 || code == 502 || code == 503 || code == 504) {
+		errCode = code as GyroscopeErrorCode
+	} else {
+		errCode = 603
+	}
+	return createStopGyroscopeFail(errCode, 'stopGyroscope:fail', {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+export function onGyroscopeChange(callback : OnGyroscopeChangeCallback) : void {
+	ensureNativeListener()
+	if (!started) {
+		startGyroscope();
+	}
+	if (hasCallback(callback)) {
+		return
+	}
+	callbacks.push(callback)
+}
+
+export function offGyroscopeChange(callback : OnGyroscopeChangeCallback | null = null) : void {
+	if (callback == null) {
+		callbacks.length = 0
+	} else {
+		removeCallback(callback)
+	}
+	if (callbacks.length == 0) {
+		GyroscopeNative.removeListener()
+		nativeListenerBound = false
+	}
+}
+
+export function startGyroscope(options : StartGyroscopeOptions | null = null) : void {
+	ensureNativeListener()
+	if (started) {
+		callStartSuccess(options)
+		return
+	}
+	const interval : GyroscopeInterval = normalizeGyroscopeInterval(options?.interval ?? null)
+	UTSHarmony.requestSystemPermission(permissions, (allRight : boolean, _ : Array<string>) => {
+		if (!allRight) {
+			callStartFail(options, createStartGyroscopeFail(602, 'startGyroscope:fail permission denied'))
+			return
+		}
+		const code = GyroscopeNative.start(interval)
+		if (code != 0) {
+			callStartFail(options, mapStartNativeError(code))
+			return
+		}
+		started = true
+		callStartSuccess(options)
+	}, (_granted : boolean, _permissions : Array<string>) => {
+		callStartFail(options, createStartGyroscopeFail(502, 'startGyroscope:fail permission request failed'))
+	})
+}
+
+export function stopGyroscope(options : StopGyroscopeOptions | null = null) : void {
+	if (!started) {
+		callStopSuccess(options)
+		return
+	}
+	const code = GyroscopeNative.stop()
+	if (code != 0) {
+		callStopFail(options, mapStopNativeError(code))
+		return
+	}
+	started = false
+	callStopSuccess(options)
+}

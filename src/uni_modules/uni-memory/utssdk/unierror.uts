@@ -1,0 +1,34 @@
+import { MemoryWarningErrorCode, MemoryWarningFail } from './interface.uts'
+
+export const MemoryWarningUniErrorSubject = 'uni-memorywarning'
+
+export const MemoryWarningUniErrors: Map<MemoryWarningErrorCode, string> = new Map([
+  [1100601, 'memory warning listener registration failed'],
+  [1100602, 'memory warning listener removal failed']
+])
+
+export class MemoryWarningFailImpl extends UniError implements MemoryWarningFail {
+  // #ifndef APP-IOS
+  override errCode: MemoryWarningErrorCode
+  // #endif
+
+  constructor(errCode: MemoryWarningErrorCode) {
+    super()
+    this.errSubject = MemoryWarningUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = MemoryWarningUniErrors.get(errCode) ?? ''
+  }
+}
+
+export function createMemoryWarningNativeError(errCode: MemoryWarningErrorCode, platformCode: number | null, detail: string | null = null): MemoryWarningFailImpl {
+  const fail = new MemoryWarningFailImpl(errCode)
+  if (detail != null) {
+    fail.errMsg = detail
+  }
+  if (platformCode != null) {
+    fail.data = {
+      platformCode: platformCode
+    }
+  }
+  return fail
+}

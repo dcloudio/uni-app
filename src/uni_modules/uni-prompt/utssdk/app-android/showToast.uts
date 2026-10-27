@@ -2,7 +2,7 @@
 import Gravity from 'android.view.Gravity';
 import Toast from "android.widget.Toast";
 import { WaitingView } from "./WaitingView.uts"
-import { ShowToastOptions, ShowLoadingOptions, ShowToastSuccess, ShowLoadingSuccess } from '../interface.uts'
+import { ShowToastOptions, ShowLoadingOptions, ShowToastSuccess, ShowLoadingSuccess, HideToastOptions, HideToastSuccess } from '../interface.uts'
 import { PromptErrorImpl } from "../unierror.uts"
 import WeakReference from 'java.lang.ref.WeakReference';
 
@@ -35,8 +35,45 @@ export function showToastImpl(style : ShowToastOptions) {
 	
 }
 
-export function hideToastImpl() {
-	closeToast("toast")
+export function hideToastImpl(options : HideToastOptions | null) {
+	try {
+		if (options?.allType == true) {
+			closeToast("toast")
+		} else {
+			closePageRelatedToast("toast")
+		}
+		const res : HideToastSuccess = {
+			errMsg: "hideToast:ok"
+		}
+		options?.success?.(res)
+		options?.complete?.(res)
+	} catch (e : Exception) {
+		const err = new PromptErrorImpl(1001, "hideToast:fail")
+		options?.fail?.(err)
+		options?.complete?.(err)
+	}
+}
+
+function closePageRelatedToast(type : string | null) {
+	if (type != null && type !== toastType) {
+		return
+	}
+	// #ifdef UNI-APP-X && !VUE3-VAPOR
+	let pages = getCurrentPages();
+	if (pages.length > 0) {
+		let page = pages[pages.length - 1].vm!;
+		onReadyToast.remove(page)
+	}
+	// #endif
+	if (timeout != null && (timeout as number) > 0) {
+		clearTimeout(timeout as number)
+		timeout = null
+	}
+	if (toast != null) {
+		(toast as WaitingView).close()
+		toast = null
+	}
+	toastType = null
 }
 
 export function showLoadingImpl(option : ShowLoadingOptions) {

@@ -1,0 +1,418 @@
+export type CompassErrorCode =
+  601 |
+  602 |
+  603 |
+  604 |
+  701 |
+  702 |
+  703 |
+  704 |
+  801 |
+  802 |
+  803 |
+  804 |
+  501 |
+  502 |
+  503 |
+  504 |
+  901
+
+export interface ICompassError extends IUniError {
+  errCode : CompassErrorCode
+}
+
+export interface IStartCompassFail extends ICompassError {
+}
+
+export interface IStopCompassFail extends ICompassError {
+}
+
+export type StartCompassSuccess = {
+  errMsg ?: string | null
+}
+
+export type CompassAccuracy = number | string | null
+
+export type StartCompassFail = IStartCompassFail
+export type StartCompassSuccessCallback = (res : StartCompassSuccess) => void
+export type StartCompassFailCallback = (res : StartCompassFail) => void
+export type StartCompassComplete = StartCompassSuccess | StartCompassFail
+export type StartCompassCompleteCallback = (res : StartCompassComplete) => void
+
+export type StopCompassSuccess = {
+  errMsg ?: string | null
+}
+
+export type StopCompassFail = IStopCompassFail
+export type StopCompassSuccessCallback = (res : StopCompassSuccess) => void
+export type StopCompassFailCallback = (res : StopCompassFail) => void
+export type StopCompassComplete = StopCompassSuccess | StopCompassFail
+export type StopCompassCompleteCallback = (res : StopCompassComplete) => void
+
+/**
+ * 开始监听罗盘数据的参数
+ */
+export type StartCompassOptions = {
+  /**
+   * 开始监听罗盘数据调用成功的回调函数
+   */
+  success ?: StartCompassSuccessCallback | null
+  /**
+   * 开始监听罗盘数据调用失败的回调函数
+   */
+  fail ?: StartCompassFailCallback | null
+  /**
+   * 开始监听罗盘数据调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete ?: StartCompassCompleteCallback | null
+}
+
+/**
+ * 停止监听罗盘数据的参数
+ */
+export type StopCompassOptions = {
+  /**
+   * 停止监听罗盘数据调用成功的回调函数
+   */
+  success ?: StopCompassSuccessCallback | null
+  /**
+   * 停止监听罗盘数据调用失败的回调函数
+   */
+  fail ?: StopCompassFailCallback | null
+  /**
+   * 停止监听罗盘数据调用结束的回调函数（调用成功、失败都会执行）
+   */
+  complete ?: StopCompassCompleteCallback | null
+}
+
+/**
+ * 罗盘数据
+ */
+export type OnCompassChangeCallbackResult = {
+  /**
+   * 面对的方向度数
+   */
+  direction : number
+  /**
+   * 精度
+   */
+  accuracy ?: CompassAccuracy
+  /**
+   * 错误信息
+   */
+  errMsg ?: string | null
+}
+
+export type OnCompassChangeCallback = (result : OnCompassChangeCallbackResult) => void
+
+export type OnCompassChange = (callback : OnCompassChangeCallback) => void
+export type OffCompassChange = (callback : OnCompassChangeCallback) => void
+export type StartCompass = (options ?: StartCompassOptions | null) => void
+export type StopCompass = (options ?: StopCompassOptions | null) => void
+
+export interface Uni {
+  /**
+   * 监听罗盘数据变化事件。频率：5 次/秒，接口调用后会自动开始监听
+   * @param callback 罗盘数据变化事件的监听函数
+   * 
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/compass.html#oncompasschange
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/compass.html#oncompasschange
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/compass.html#oncompasschange
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08",
+   * 			"unixUtsPlugin": "x"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "√",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  onCompassChange(callback : OnCompassChangeCallback) : void;
+  /**
+   * 取消监听罗盘数据
+   * @param callback onCompassChange 传入的监听函数。不传此参数则移除所有监听函数。
+   * 
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/compass.html#offcompasschange
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/compass.html#offcompasschange
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/compass.html#offcompasschange
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08",
+   * 			"unixUtsPlugin": "x"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "√",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "2.9.3",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  offCompassChange(callback ?: OnCompassChangeCallback | null) : void;
+  /**
+   * 开始监听罗盘数据
+   * 
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/compass.html#startcompass
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/compass.html#startcompass
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/compass.html#startcompass
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "√",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  startCompass(options ?: StartCompassOptions | null) : void;
+  /**
+   * 停止监听罗盘数据
+   * 
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/compass.html#stopcompass
+   * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/system/compass.html#stopcompass
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/compass.html#stopcompass
+   *
+   * @uniPlatform {
+   * 	"app": {
+   * 		"android": {
+   * 			"osVer": "5.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08"
+   * 		},
+   * 		"ios": {
+   * 			"osVer": "12.0",
+   * 			"uniVer": "5.08",
+   * 			"unixVer": "5.08"
+   * 		},
+   *    "harmony": {
+   *      "osVer": "5.0.0",
+   *      "uniVer": "5.08",
+   *      "unixVer": "5.08",
+   *      "unixvVer": "5.08"
+   *    }
+   * 	},
+   *   "web": {
+   *     "uniVer": "√",
+   *     "unixVer": "4.0"
+   *   },
+   *  "mp":{
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "5.31"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+   *  }
+   * }
+   */
+  stopCompass(options ?: StopCompassOptions | null) : void;
+}

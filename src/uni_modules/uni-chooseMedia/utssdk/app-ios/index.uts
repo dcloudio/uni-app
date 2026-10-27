@@ -136,15 +136,15 @@ class ChooseMediaUtil {
 		return isSuccess;
 	}
 	//获取视频首桢图片
-	static getFristFrameWithVideo(url : URL) : UIImage | null {
-		const asset = new AVURLAsset(url = url);
-		let imageGenerator = new AVAssetImageGenerator(asset = asset);
+	static getFristFrameWithVideo(mediaUrl : URL) : UIImage | null {
+		const videoAsset = new AVURLAsset(url = mediaUrl);
+		let imageGenerator = new AVAssetImageGenerator(asset = videoAsset);
 		imageGenerator.appliesPreferredTrackTransform = true;
 		let image : UIImage | null = null;
 		try {
-			const cgImage : CGImage | null = UTSiOS.try(imageGenerator.copyCGImage(at = CMTime.zero, actualTime = null));
-			if (cgImage != null) {
-				image = new UIImage(cgImage = cgImage!);
+			const generatedCGImage : CGImage | null = UTSiOS.try(imageGenerator.copyCGImage(at = CMTime.zero, actualTime = null));
+			if (generatedCGImage != null) {
+				image = new UIImage(cgImage = generatedCGImage!);
 			}
 		} catch (e) {
 
@@ -152,8 +152,8 @@ class ChooseMediaUtil {
 		return image;
 	}
 	//获取视频大小、时长等信息
-	static getVideoInfo(url : URL) : Map<string, any> {
-		const asset = new AVURLAsset(url = url);
+	static getVideoInfo(mediaUrl : URL) : Map<string, any> {
+		const asset = new AVURLAsset(url = mediaUrl);
 		const track = asset.tracks(withMediaType = AVMediaType.video).first;
 		let width : number = 0;
 		let height : number = 0;
@@ -394,22 +394,44 @@ class ChooseMediaImagePickerManager implements UIImagePickerControllerDelegate, 
 @UTSiOS.available("iOS 14.0, *")
 class ChooseMediaPHPickerManager implements PHPickerViewControllerDelegate,UIAdaptivePresentationControllerDelegate {
 	private options : ChooseMediaOptions;
+	private isProcessing : boolean = false;
+	private isSettled : boolean = false;
 	constructor(options : ChooseMediaOptions) {
 		this.options = options;
 	}
+
+	finishSuccess(success : ChooseMediaSuccess) {
+		if (this.isSettled) {
+			return;
+		}
+		this.isSettled = true;
+		this.options.success?.(success)
+		this.options.complete?.(success)
+	}
+
+	finishFail() {
+		if (this.isSettled) {
+			return;
+		}
+		this.isSettled = true;
+		const error = new ChooseMediaErrorImpl(1101001, UniError_ChooseMedia);
+		this.options.fail?.(error)
+		this.options.complete?.(error)
+	}
+
 	chooseMediaWithAlbum() {
 		DispatchQueue.main.async(execute = () : void => {
-			const configuration = new PHPickerConfiguration()
+			const pickerConfiguration = new PHPickerConfiguration()
 			if (this.options.count != null) {
-				configuration.selectionLimit = this.options.count!.intValue;
+				pickerConfiguration.selectionLimit = this.options.count!.intValue;
 			} else {
-				configuration.selectionLimit = 9;
+				pickerConfiguration.selectionLimit = 9;
 			}
 			const filter : PHPickerFilter | null = this.getMediaTypes(this.options.mediaType);
 			if (filter != null) {
-				configuration.filter = filter!;
+				pickerConfiguration.filter = filter!;
 			}
-			const pickerController = new PHPickerViewController(configuration = configuration);
+			const pickerController = new PHPickerViewController(configuration = pickerConfiguration);
 			pickerController.delegate = this;
 			if(pickerController.presentationController != null){
 				pickerController.presentationController!.delegate = this;
@@ -440,7 +462,14 @@ class ChooseMediaPHPickerManager implements PHPickerViewControllerDelegate,UIAda
 	}
 
 	picker(picker : PHPickerViewController, @argumentLabel('didFinishPicking') results : [PHPickerResult]) {
+		if (this.isSettled) {
+			return;
+		}
 		if (results.length > 0) {
+			if (this.isProcessing) {
+				return;
+			}
+			this.isProcessing = true;
 			let tempFiles : ChooseMediaTempFile[] = [];
 			let group = new DispatchGroup();
 			let types : string[] = [];
@@ -486,35 +515,34 @@ class ChooseMediaPHPickerManager implements PHPickerViewControllerDelegate,UIAda
 			}
 
 			group.notify(queue = DispatchQueue.main, execute = () => {
+				if (this.isSettled) {
+					return;
+				}
 				this.dismiss(picker);
 				const success : ChooseMediaSuccess = {
 					tempFiles: tempFiles,
 					type: this.getFileType(types)
 				}
-				this.options.success?.(success)
-				this.options.complete?.(success)
+				this.finishSuccess(success)
 			});
 
 		} else {
+			this.finishFail()
 			DispatchQueue.main.async(execute = () : void => {
 				this.dismiss(picker);
-				const error = new ChooseMediaErrorImpl(1101001, UniError_ChooseMedia);
-				this.options.fail?.(error)
-				this.options.complete?.(error)
 			});
 		}
 	}
 
 	dismiss(picker : PHPickerViewController) {
-		picker.dismiss(animated = true, completion = null);
 		picker.delegate = null;
+		if(picker.presentationController != null){
+			picker.presentationController!.delegate = null;
+		}
+		picker.dismiss(animated = true, completion = null);
 	}
 	
 	presentationControllerDidDismiss(presentationController: UIPresentationController){
-		DispatchQueue.main.async(execute = () : void => {
-			const error = new ChooseMediaErrorImpl(1101001, UniError_ChooseMedia);
-			this.options.fail?.(error)
-			this.options.complete?.(error)
-		});
+		this.finishFail()
 	}
 }

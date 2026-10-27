@@ -95,6 +95,22 @@
         "harmony": {
            "unixVaporVer": "5.0"
          }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
        }
      }
      */
@@ -112,6 +128,22 @@
         "harmony": {
            "unixVaporVer": "5.0"
          }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
        }
      }
      */
@@ -128,6 +160,22 @@
          },
         "harmony": {
            "unixVaporVer": "5.0"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       },
+       "mp": {
+         "weixin": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         },
+         "alipay": {
+           "hostVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
          }
        }
      }
@@ -282,5 +330,24 @@
     font-size: 16px;
     font-family: uni-icon;
     color: #ffffff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-radio-view,
+    .uni-radio-disabled {
+      background-color: #2c2c2c;
+      border-color: #656565;
+    }
+
+    .uni-radio-disabled {
+      border-color: #373737;
+      color: #656565;
+    }
+
+    .uni-radio-active {
+      background-color: #007AFF;
+      border-color: #007AFF;
+      color: #ffffff;
+    }
   }
 </style>

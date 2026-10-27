@@ -113,14 +113,30 @@ export class NativeLoading {
 			newDrawableId = R.drawable.animated_ring_loading_normal_linear
 		}
 
-		this.progressBarView!.setIndeterminate(true)
-		this.currentAnimatedVectorDrawable = ContextCompat.getDrawable(this.$element.getAndroidActivity()!, newDrawableId)!.mutate() as AnimatedVectorDrawable
+		// 组件已销毁时 progressBarView 会被置空，直接返回
+		const progressBarView = this.progressBarView
+		if (progressBarView == null) {
+			return
+		}
+		// 组件与 activity 已分离（如页面切换过程中异步触发的样式更新）时 getAndroidActivity() 返回 null，
+		// 直接返回，避免空指针崩溃
+		const activity = this.$element.getAndroidActivity()
+		if (activity == null) {
+			return
+		}
+		const drawable = ContextCompat.getDrawable(activity, newDrawableId)
+		if (drawable == null) {
+			return
+		}
+
+		progressBarView.setIndeterminate(true)
+		this.currentAnimatedVectorDrawable = drawable.mutate() as AnimatedVectorDrawable
 
 		if (this.currentAnimatedVectorDrawable!.bounds == null || this.currentAnimatedVectorDrawable!.bounds!.width() < 1 || this.currentAnimatedVectorDrawable!.bounds!.height() < 1) {
 			// view 被分离回收的情况下，会导致bounds 为 缺省值，此时用 progressbar 的宽高 兜底
-			this.currentAnimatedVectorDrawable!.setBounds(0, 0, this.progressBarView!.width, this.progressBarView!.height)
+			this.currentAnimatedVectorDrawable!.setBounds(0, 0, progressBarView.width, progressBarView.height)
 		}
-		this.progressBarView!.setIndeterminateDrawable(this.currentAnimatedVectorDrawable)
+		progressBarView.setIndeterminateDrawable(this.currentAnimatedVectorDrawable)
 		this.currentAnimatedVectorDrawable!.setColorFilter(this.newColor, PorterDuff.Mode.SRC_IN)
 		this.currentAnimatedVectorDrawable!.start()
 		// 这里20ms延迟模拟的是Android原生的post操作
@@ -133,5 +149,6 @@ export class NativeLoading {
 		//数据回收
 		this.pbContainer = null
 		this.progressBarView = null
+		UTSAndroid.destroyInstance(this)
 	}
 }

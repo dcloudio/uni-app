@@ -1,0 +1,119 @@
+{
+  "id": "uni-gyroscope",
+  "displayName": "uni-gyroscope",
+  "version": "1.0.0",
+  "description": "uni-gyroscope",
+  "keywords": [
+    "uni-gyroscope"
+  ],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^5.08.0"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "",
+      "data": "",
+      "permissions": ""
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "uni-ext-api": {
+      "uni": {
+        "startGyroscope": {
+          "name": "startGyroscope",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        },
+        "stopGyroscope": {
+          "name": "stopGyroscope",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        },
+        "onGyroscopeChange": {
+          "name": "onGyroscopeChange",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        },
+        "offGyroscopeChange": {
+          "name": "offGyroscopeChange",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          },
+          "web": {
+            "js": true
+          }
+        }
+      }
+    },
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "u",
+        "aliyun": "u"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "u",
+          "vue3": "u"
+        },
+        "App": {
+          "app-android": "u",
+          "app-ios": "u",
+          "app-harmony": "u"
+        },
+        "H5-mobile": {
+          "Safari": "u",
+          "Android Browser": "u",
+          "微信浏览器(Android)": "u",
+          "QQ浏览器(Android)": "u"
+        },
+        "H5-pc": {
+          "Chrome": "u",
+          "IE": "u",
+          "Edge": "u",
+          "Firefox": "u",
+          "Safari": "u"
+        }
+      }
+    }
+  }
+}

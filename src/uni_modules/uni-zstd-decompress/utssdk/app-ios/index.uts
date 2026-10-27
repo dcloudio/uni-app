@@ -1,0 +1,52 @@
+import {
+  DECOMPRESS_FILE_FAILED,
+  DECOMPRESS_FILE_INVALID_MAXIMUM_OUTPUT_SIZE,
+  DECOMPRESS_FILE_IOS_XCFRAMEWORK_LOAD_FAILED,
+  createDecompressFileFailure,
+  createDecompressFileSuccess
+} from "../unierror"
+import { DecompressFileResult } from "../interface"
+export { DecompressFileResult, DecompressFileFail, DecompressFileErrorCode } from "../interface"
+
+export function __zstdDecompressFile(fromPath : string, toPath : string, maximumOutputSize ?: number) : DecompressFileResult {
+  if (maximumOutputSize != null && maximumOutputSize <= 0) {
+    return createDecompressFileFailure(DECOMPRESS_FILE_INVALID_MAXIMUM_OUTPUT_SIZE, toPath)
+  }
+
+  // TODO 后续需要移除 UTSiOS.convert2AbsFullPath
+  const fromURL = new URL(fileURLWithPath = fromPath)
+  const toURL = new URL(fileURLWithPath = toPath)
+
+  try {
+    UTSiOS.try(UniZstdDecompress.loadFramework())
+  } catch (e) {
+    return createDecompressFileFailure(DECOMPRESS_FILE_IOS_XCFRAMEWORK_LOAD_FAILED, toPath)
+  }
+
+  if (maximumOutputSize != null) {
+    const result : Int | null = UTSiOS.try(
+      UniZstdDecompress.decompress(
+        from = fromURL,
+        to = toURL,
+        maximumOutputSize = maximumOutputSize.toInt()
+      ),
+      "?"
+    )
+    if (result != null) {
+      return createDecompressFileSuccess(toPath)
+    }
+    return createDecompressFileFailure(DECOMPRESS_FILE_FAILED, toPath)
+  }
+
+  const result : Int | null = UTSiOS.try(
+    UniZstdDecompress.decompress(
+      from = fromURL,
+      to = toURL
+    ),
+    "?"
+  )
+  if (result != null) {
+    return createDecompressFileSuccess(toPath)
+  }
+  return createDecompressFileFailure(DECOMPRESS_FILE_FAILED, toPath)
+}

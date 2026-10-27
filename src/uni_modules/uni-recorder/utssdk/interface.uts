@@ -34,7 +34,7 @@ export interface Uni {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -103,9 +103,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -171,9 +171,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -240,9 +240,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -309,9 +309,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -378,9 +378,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -446,9 +446,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -514,9 +514,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -566,9 +566,9 @@ export type RecorderManagerStartOptions = {
 	 * 			"unixUtsPlugin": "4.61"
 	 * 		},
 	 *    "harmony": {
-	 *      "uniVer": "4.31",
-	 *      "unixVer": "4.61",
-	 *      "unixVaporVer": "5.0"
+	 *      "uniVer": "x",
+	 *      "unixVer": "x",
+	 *      "unixVaporVer": "x"
 	 *    }
 	 * 	},
 	 *   "web": {
@@ -582,9 +582,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -650,9 +650,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -718,9 +718,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -785,9 +785,9 @@ export type RecorderManagerStartOptions = {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -856,9 +856,9 @@ export interface RecorderManagerOnStopResult {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -932,7 +932,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1004,7 +1004,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1076,7 +1076,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1147,7 +1147,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1218,7 +1218,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1289,7 +1289,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1361,7 +1361,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1433,7 +1433,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1505,7 +1505,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1576,7 +1576,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1646,7 +1646,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1717,7 +1717,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1789,7 +1789,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1860,7 +1860,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -1933,7 +1933,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2005,7 +2005,7 @@ export interface RecorderManager {
 	 *    "alipay": {
 	 *      "hostVer": "√",
 	 *      "uniVer": "√",
-	 *      "unixVer": "x"
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2075,9 +2075,9 @@ export interface RecorderManager {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2146,9 +2146,9 @@ export interface RecorderManager {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2217,9 +2217,9 @@ export interface RecorderManager {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2288,9 +2288,9 @@ export interface RecorderManager {
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2363,9 +2363,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2431,9 +2431,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2499,9 +2499,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2567,9 +2567,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2635,9 +2635,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2703,9 +2703,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2771,9 +2771,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",
@@ -2838,9 +2838,9 @@ export type RecorderManagerErrorCode =
 	 *      "unixVer": "4.41"
 	 *    },
 	 *    "alipay": {
-	 *      "hostVer": "x",
-	 *      "uniVer": "x",
-	 *      "unixVer": "x"
+	 *      "hostVer": "√",
+	 *      "uniVer": "√",
+	 *      "unixVer": "5.31"
 	 *    },
 	 *    "baidu": {
 	 *      "hostVer": "√",

@@ -3,6 +3,20 @@ export type AmapAnchor = {
 	y : number;
 };
 
+export type ControlPosition = {
+	left ?: number | null;
+	top ?: number | null;
+	width ?: number | null;
+	height ?: number | null;
+};
+
+export type Control = {
+	position : ControlPosition;
+	iconPath : string;
+	id ?: number | null;
+	clickable ?: boolean | null;
+};
+
 export type AmapMapMarkerCallout = {
 	content : string;
 	color ?: string | null;
@@ -93,9 +107,242 @@ export type AmapMarker = {
 	 */
 	label ?: AmapMapMarkerLabel | null;
 	/**
+	 * 是否参与点聚合。当前 iOS 仅保留该字段，暂未实现聚合算法。
+	 * @defaultValue false
+	 */
+	joinCluster ?: boolean | null;
+	/**
 	 * 自定义点聚合簇效果时使用
 	 * @defaultValue null
 	 */
 	clusterId ?: number | null;
 };
+
+export type AmapLocationObject = {
+	/**
+	 * 纬度，浮点数，范围为-90~90，负数表示南纬
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.31"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.31"
+	 *     },
+	 *     "harmony": {
+	 *       "osVer": "√",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     }
+	 *   },
+	 * }
+	 *
+	 */
+	latitude : number;
+	/**
+	 * 经度，范围为-180~180，负数表示西经
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "osVer": "4.4",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.31"
+	 *     },
+	 *     "ios": {
+	 *       "osVer": "12.0",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.31"
+	 *     },
+	 *     "harmony": {
+	 *       "osVer": "√",
+	 *       "uniVer": "x",
+	 *       "unixVer": "4.61"
+	 *     }
+	 *   },
+	 * }
+	 *
+	 */
+	longitude : number;
+};
+
+export type Polyline = {
+	points : AmapLocationObject[];
+	color ?: string | null;
+	width ?: number | null;
+	dottedLine ?: boolean | null;
+	arrowLine ?: boolean | null;
+	arrowIconPath ?: string | null;
+	borderColor ?: string | null;
+	borderWidth ?: number | null;
+	colorList ?: string[] | null;
+};
+
+export type Polygon = {
+	points : AmapLocationObject[];
+	strokeWidth ?: number | null;
+	strokeColor ?: string | null;
+	fillColor ?: string | null;
+	zIndex ?: number | null;
+};
+
+export type Circle = {
+	latitude : number;
+	longitude : number;
+	radius : number;
+	color ?: string | null;
+	fillColor ?: string | null;
+	strokeWidth ?: number | null;
+};
+
+export type Bounds = {
+	southwest : AmapLocationObject;
+	northeast : AmapLocationObject;
+};
+
+export type MapErrorCode =
+	500001 |
+	500002 |
+	500003 |
+	500004 |
+	500005 |
+	500006 |
+	500012 |
+	500013;
+
+export interface MapContextFail extends IUniError {
+	errCode : MapErrorCode;
+};
+
+export type MapContextGetCenterLocationOptions = {
+	success ?: ((result : AmapLocationObject) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextMoveToLocationOptions = {
+	latitude ?: number | null;
+	longitude ?: number | null;
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextTranslateMarkerOptions = {
+	markerId : number;
+	destination : AmapLocationObject;
+	autoRotate ?: boolean | null;
+	rotate ?: number | null;
+	moveWithRotate ?: boolean | null;
+	duration ?: number | null;
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextIncludePointsOptions = {
+	points : AmapLocationObject[];
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextGetRegionResult = {
+	southwest : AmapLocationObject;
+	northeast : AmapLocationObject;
+};
+
+export type MapContextGetRegionOptions = {
+	success ?: ((result : MapContextGetRegionResult) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextGetScaleResult = {
+	scale : number;
+};
+
+export type MapContextGetScaleOptions = {
+	success ?: ((result : MapContextGetScaleResult) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextAddGroundOverlayOptions = {
+	id : string;
+	src : string;
+	bounds : Bounds;
+	visible ?: boolean | null;
+	zIndex ?: number | null;
+	opacity ?: number | null;
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextAddMarkersOptions = {
+	markers : AmapMarker[];
+	clear ?: boolean | null;
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextMoveAlongOptions = {
+	markerId : number;
+	path : AmapLocationObject[];
+	duration ?: number | null;
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextRemoveGroundOverlayOptions = {
+	id : string;
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextRemoveMarkersOptions = {
+	markerIds : number[];
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export type MapContextUpdateGroundOverlayOptions = {
+	id : string;
+	src : string;
+	bounds : Bounds;
+	visible ?: boolean | null;
+	zIndex ?: number | null;
+	opacity ?: number | null;
+	success ?: ((result : any) => void) | null;
+	fail ?: ((result : MapContextFail) => void) | null;
+	complete ?: ((result : any) => void) | null;
+};
+
+export interface AmapContext {
+	getCenterLocation(options : MapContextGetCenterLocationOptions) : void;
+	moveToLocation(options : MapContextMoveToLocationOptions) : void;
+	translateMarker(options : MapContextTranslateMarkerOptions) : void;
+	includePoints(options : MapContextIncludePointsOptions) : void;
+	getRegion(options : MapContextGetRegionOptions) : void;
+	getScale(options : MapContextGetScaleOptions) : void;
+	addGroundOverlay(options : MapContextAddGroundOverlayOptions) : void;
+	addMarkers(options : MapContextAddMarkersOptions) : void;
+	moveAlong(options : MapContextMoveAlongOptions) : void;
+	removeGroundOverlay(options : MapContextRemoveGroundOverlayOptions) : void;
+	removeMarkers(options : MapContextRemoveMarkersOptions) : void;
+	updateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : void;
+};
+
+export type CreateAmapContext = (
+	mapId : string,
+	component : ComponentPublicInstance | null
+) => AmapContext | null;
 

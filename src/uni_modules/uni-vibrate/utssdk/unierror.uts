@@ -1,0 +1,31 @@
+import { IVibrateLongFail, IVibrateShortFail, VibrateErrorCode } from './interface.uts'
+
+export const VibrateUniErrorSubject = 'uni-vibrate'
+
+export const VibrateUniErrors : Map<VibrateErrorCode, string> = new Map([
+  [9001001, 'vibrate:fail app context is null'],
+  [9001002, 'vibrate:fail system not support'],
+  [9001003, 'vibrate:fail trigger vibrator failed']
+])
+
+export class VibrateShortFailImpl extends UniError implements IVibrateShortFail {
+  override errCode : VibrateErrorCode
+
+  constructor(errCode : VibrateErrorCode) {
+    super()
+    this.errSubject = VibrateUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = VibrateUniErrors.get(errCode) ?? ''
+  }
+}
+
+export class VibrateLongFailImpl extends UniError implements IVibrateLongFail {
+  override errCode : VibrateErrorCode
+
+  constructor(errCode : VibrateErrorCode) {
+    super()
+    this.errSubject = VibrateUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = VibrateUniErrors.get(errCode) ?? ''
+  }
+}

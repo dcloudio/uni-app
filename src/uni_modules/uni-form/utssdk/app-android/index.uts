@@ -1031,15 +1031,17 @@ class UniAndroidAdjustPositionHelper {
 /**
  * 输入类型映射
  */
+const TEXT_INPUT_TYPE_NO_SUGGESTIONS: Int = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
 const INPUT_TYPES: Map<string, Int> = new Map([
-	['text', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL],
+	['text', TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_NORMAL],
 	['number', InputType.TYPE_CLASS_NUMBER],
 	['digit', InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL],
 	['tel', InputType.TYPE_CLASS_PHONE],
-	['email', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS],
-	['url', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI],
-	['password', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD],
-	['safe-password', InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD],
+	['email', TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS],
+	['url', TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_URI],
+	['password', TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_PASSWORD],
+	['safe-password', TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_PASSWORD],
 ])
 
 /**
@@ -1092,7 +1094,8 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 	/** 当前输入类型 */
 	private currentType: string = 'text'
 	/** 当前文字水平对齐方式 */
-	private textAlignValue: string = 'left'
+	private textAlignValue: string | null = null
+	private directionValue: string = 'ltr'
 	private initialFontSize: string | null = null
 	private initialColor: string | null = null
 	private initialLetterSpacing: string | null = null
@@ -1100,6 +1103,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 	private initialFontStyle: string | null = null
 	private initialFontFamily: string | null = null
 	private initialTextAlign: string | null = null
+	private initialDirection: string | null = null
 	private fontWeightStyleValue: string | null = null
 	private fontStyleStyleValue: string | null = null
 	private fontFamilyStyleValue: string | null = null
@@ -1136,6 +1140,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		initialFontStyle: string | null,
 		initialFontFamily: string | null,
 		initialTextAlign: string | null,
+		initialDirection: string | null,
 		initialValue: string,
 		initialType: string,
 		initialDisabled: any,
@@ -1161,6 +1166,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		this.initialFontStyle = initialFontStyle
 		this.initialFontFamily = initialFontFamily
 		this.initialTextAlign = initialTextAlign
+		this.initialDirection = initialDirection
 		let parentElement = this.element.parentElement
 		while (parentElement != null) {
 			if (parentElement instanceof UniInputElement) {
@@ -1308,6 +1314,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		this.editText!.setTextColor(Color.BLACK)
 		this.editText!.setGravity(Gravity.CENTER_VERTICAL)
 		this.editText!.setPadding(0, 0, 0, 0)
+		this.editText!.setIncludeFontPadding(false)
 
 		// 设置单行模式
 		this.editText!.setMaxLines(1)
@@ -1375,6 +1382,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		this.fontFamilyStyleValue = this.initialFontFamily
 		this.applyTypeface()
 		this.updateTextAlign(this.initialTextAlign)
+		this.updateDirection(this.initialDirection)
 	}
 
 	private setTouchListener() {
@@ -1393,22 +1401,45 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 
 	private setInputScrollListener() {
 		if (this.editText == null || Build.VERSION.SDK_INT < 23) return
+		const self = this
 		this.editText!.setOnScrollChangeListener(new (class implements View.OnScrollChangeListener {
 			override onScrollChange(v: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-				if (scrollY != 0 && v instanceof EditText) {
-					(v as EditText).scrollTo(scrollX, 0)
+				if (v instanceof EditText) {
+					const editText = v as EditText
+					const targetScrollY = self.resolveInputVerticalScrollY(editText)
+					if (scrollY != targetScrollY) {
+						editText.setScrollY(targetScrollY)
+					}
 				}
 			}
 		}))
 	}
 
+	private resolveInputVerticalScrollY(editText: EditText): Int {
+		const layout = editText.getLayout()
+		if (layout == null) return 0
+		const viewportHeight = editText.getHeight()
+			- editText.getCompoundPaddingTop()
+			- editText.getCompoundPaddingBottom()
+		if (viewportHeight <= 0) return 0
+		return Math.max(0, layout.getHeight() - viewportHeight).toInt()
+	}
+
 	private syncInputSingleLineState() {
 		if (this.editText == null) return
 
+		const selectionStart = this.editText!.getSelectionStart()
+		const selectionEnd = this.editText!.getSelectionEnd()
 		this.editText!.setSingleLine(true)
 		this.editText!.setMaxLines(1)
 		this.editText!.setHorizontallyScrolling(true)
 		this.applyPasswordTransformationIfNeeded()
+		if (selectionStart >= 0 && selectionEnd >= 0) {
+			const length = this.editText!.getText()?.length ?? 0
+			const start = Math.min(Math.max(0, selectionStart), length).toInt()
+			const end = Math.min(Math.max(0, selectionEnd), length).toInt()
+			this.editText!.setSelection(start, end)
+		}
 		this.syncInputTextScrollIfNeeded()
 	}
 
@@ -1431,6 +1462,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 	}
 
 	private syncInputTextScrollIfNeeded() {
+		if (this.directionValue == 'rtl') return
 		if (this.shouldSyncInputTextScroll()) {
 			this.scheduleInputTextScrollSync()
 			return
@@ -1440,7 +1472,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 
 	private syncLeftInputCursorScroll() {
 		const editText = this.editText
-		if (this.destroyed || editText == null || this.textAlignValue != 'left') return
+		if (this.destroyed || editText == null || this.resolveInputHorizontalGravity() != Gravity.LEFT) return
 		const layout = editText.getLayout()
 		if (layout == null) return
 		const hspace = editText.getWidth() - editText.getCompoundPaddingLeft() - editText.getCompoundPaddingRight()
@@ -1487,7 +1519,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 
 	private applyInputTextScroll() {
 		const editText = this.editText
-		if (this.destroyed || editText == null || !this.shouldSyncInputTextScroll()) return
+		if (this.destroyed || editText == null || this.directionValue == 'rtl' || !this.shouldSyncInputTextScroll()) return
 		const layout = editText.getLayout()
 		if (layout == null) return
 
@@ -1841,7 +1873,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 			this.editText!.setShowSoftInputOnFocus(value != 'none')
 		}
 		if (value == 'none') {
-			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT)
+			this.editText!.setInputType(TEXT_INPUT_TYPE_NO_SUGGESTIONS)
 			this.syncInputSingleLineState()
 			this.applyCursorColorIfNeeded()
 			return
@@ -1849,7 +1881,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		
 		// 如果是密码类型，使用密码输入类型
 		if (this.isPassword) {
-			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+			this.editText!.setInputType(TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_PASSWORD)
 			this.syncInputSingleLineState()
 			this.applyCursorColorIfNeeded()
 			return
@@ -1860,7 +1892,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 			this.editText!.setInputType(inputType)
 		} else {
 			// 默认使用文本类型
-			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT)
+			this.editText!.setInputType(TEXT_INPUT_TYPE_NO_SUGGESTIONS)
 		}
 		this.syncInputSingleLineState()
 		this.applyCursorColorIfNeeded()
@@ -1874,7 +1906,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		
 		this.isPassword = toBoolean(value)
 		if (this.isPassword) {
-			this.editText!.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+			this.editText!.setInputType(TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_PASSWORD)
 			this.syncInputSingleLineState()
 			this.applyCursorColorIfNeeded()
 		} else {
@@ -2294,24 +2326,33 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 	 * 更新文字对齐方式
 	 */
 	updateTextAlign(value: string | null) {
-		if (this.editText == null || value == null) return
+		if (this.editText == null) return
+		this.textAlignValue = value == 'left' || value == 'center' || value == 'right' ? value : null
+		this.applyInputTextDirection()
+	}
 
-		this.textAlignValue = value
-		switch (value) {
-			case 'left':
-				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT)
-				this.editText!.scrollTo(0, 0)
-				break
-			case 'center':
-				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL)
-				break
-			case 'right':
-				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-				break
-			default:
-				this.textAlignValue = 'left'
-				this.editText!.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT)
-				this.editText!.scrollTo(0, 0)
+	updateDirection(value: string | null) {
+		if (this.editText == null) return
+		this.directionValue = value == 'rtl' ? 'rtl' : 'ltr'
+		this.applyInputTextDirection()
+	}
+
+	private resolveInputHorizontalGravity(): Int {
+		if (this.textAlignValue == 'center') return Gravity.CENTER_HORIZONTAL
+		if (this.textAlignValue == 'left') return Gravity.LEFT
+		if (this.textAlignValue == 'right') return Gravity.RIGHT
+		return this.directionValue == 'rtl' ? Gravity.RIGHT : Gravity.LEFT
+	}
+
+	private applyInputTextDirection() {
+		if (this.editText == null) return
+		const isRtl = this.directionValue == 'rtl'
+		this.editText!.setLayoutDirection(isRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR)
+		this.editText!.setTextDirection(isRtl ? View.TEXT_DIRECTION_FIRST_STRONG_RTL : View.TEXT_DIRECTION_FIRST_STRONG_LTR)
+		const horizontalGravity = this.resolveInputHorizontalGravity()
+		this.editText!.setGravity(Gravity.CENTER_VERTICAL | horizontalGravity)
+		if (!isRtl && horizontalGravity == Gravity.LEFT) {
+			this.editText!.scrollTo(0, 0)
 		}
 		this.syncInputSingleLineState()
 	}
@@ -2429,6 +2470,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		}
 		this.rootView = null
 		this.editText = null
+		UTSAndroid.destroyInstance(this)
 	}
 }
 
@@ -2565,6 +2607,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	private fontWeightStyleValue: string | null = null
 	private fontStyleStyleValue: string | null = null
 	private fontFamilyStyleValue: string | null = null
+	private textAlignValue: string | null = null
+	private directionValue: string = 'ltr'
 	private defaultCursorColor: string = '#3393E2'
 	private cursorColorValue: string = ''
 	private cursorDrawable: GradientDrawable | null = null
@@ -2691,9 +2735,9 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.editText!.setMinLines(1)
 		this.editText!.setMaxLines(100)
 		this.editText!.setHorizontallyScrolling(false)
-		this.editText!.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+		this.editText!.setInputType(TEXT_INPUT_TYPE_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_MULTI_LINE)
 		this.editText!.setImeOptions(EditorInfo.IME_ACTION_UNSPECIFIED)
-		this.editText!.setRawInputType(InputType.TYPE_CLASS_TEXT)
+		this.editText!.setRawInputType(TEXT_INPUT_TYPE_NO_SUGGESTIONS)
 		this.editText!.setVerticalScrollBarEnabled(true)
 		this.editText!.setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS)
 		this.editText!.setScrollContainer(true)
@@ -3230,17 +3274,31 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	}
 
 	updateTextAlign(value: string | null) {
-		if (this.editText == null || value == null) return
-		switch (value) {
-			case 'center':
-				this.editText!.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL)
-				break
-			case 'right':
-				this.editText!.setGravity(Gravity.TOP | Gravity.RIGHT)
-				break
-			default:
-				this.editText!.setGravity(Gravity.TOP | Gravity.LEFT)
+		if (this.editText == null) return
+		this.textAlignValue = value == 'left' || value == 'center' || value == 'right' ? value : null
+		this.applyTextareaTextDirection()
+	}
+
+	updateDirection(value: string | null) {
+		if (this.editText == null) return
+		this.directionValue = value == 'rtl' ? 'rtl' : 'ltr'
+		this.applyTextareaTextDirection()
+	}
+
+	private applyTextareaTextDirection() {
+		if (this.editText == null) return
+		const isRtl = this.directionValue == 'rtl'
+		this.editText!.setLayoutDirection(isRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR)
+		this.editText!.setTextDirection(isRtl ? View.TEXT_DIRECTION_FIRST_STRONG_RTL : View.TEXT_DIRECTION_FIRST_STRONG_LTR)
+		let horizontalGravity = isRtl ? Gravity.RIGHT : Gravity.LEFT
+		if (this.textAlignValue == 'center') {
+			horizontalGravity = Gravity.CENTER_HORIZONTAL
+		} else if (this.textAlignValue == 'left') {
+			horizontalGravity = Gravity.LEFT
+		} else if (this.textAlignValue == 'right') {
+			horizontalGravity = Gravity.RIGHT
 		}
+		this.editText!.setGravity(Gravity.TOP | horizontalGravity)
 	}
 
 	cacheEditorTouchEnd(clientX: number, clientY: number) {
@@ -3292,6 +3350,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		}
 		this.rootView = null
 		this.editText = null
+		UTSAndroid.destroyInstance(this)
 	}
 
 	private scheduleApplySelectionRequest() {

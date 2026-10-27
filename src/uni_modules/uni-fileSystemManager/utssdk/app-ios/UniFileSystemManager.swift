@@ -12,7 +12,7 @@ import DCloudUTSFoundation
 
 /*
  文件描述符相关概念：
- 
+
  1. Flag概念：
  a: 打开文件用于追加。 如果文件不存在，则创建该文件。   O_CREAT && O_APPEND && O_WRONLY
  a+: 打开文件用于读取和追加。 如果文件不存在，则创建该文件   O_CREAT && O_APPEND && O_RDWR
@@ -26,8 +26,8 @@ import DCloudUTSFoundation
  w+: 打开文件用于读取和写入。 如果文件不存在则创建文件，如果文件存在则截断文件   O_RDWR && O_CREAT && O_TRUNC
  wx: 类似于 'w'，但如果路径存在，则失败 O_WRONLY && O_CREAT && O_EXCL
  wx+: 类似于 'w+'，但如果路径存在，则失败   O_RDWR && O_CREAT && O_EXCL
- 
- 
+
+
  2. POSIX 文件标志位
  1. O_RDONLY： 以只读方式打开文件（r）。
  2. O_WRONLY： 以只写方式打开文件（w）。
@@ -37,12 +37,12 @@ import DCloudUTSFoundation
  6. O_EXCL： 与 O_CREAT 一起使用时，如果文件已存在则操作失败（x）。
  7. O_TRUNC： 如果文件存在，打开时清空文件内容（w）。
  8. O_DSYNC / O_SYNC： 打开文件时启用同步写入模式。
- 
+
  O_SYNC:
  作用：确保数据和元数据（metadata）都被同步写入到存储设备。
  •    当使用 O_SYNC 标志打开文件时，写入操作（例如 write() 系统调用）会等待，直到数据和相关元数据都被实际写入到磁盘，保证数据的完整性。
  •    场景：适用于需要强一致性和数据安全的场景，比如数据库写入或日志文件。
- 
+
  O_DSYNC:
  •    作用：确保数据被同步写入存储设备，但不保证元数据的同步。
  •    O_DSYNC 比 O_SYNC 更高效，因为它只同步数据部分，而文件元数据（例如文件修改时间、文件大小）不一定会立即同步。
@@ -62,7 +62,7 @@ public enum UniFileSystemManagerFlag: Int {
     case wplus
     case wx
     case wxplus
-    
+
     public func toString() -> String {
         switch self {
         case .a: return "a"
@@ -86,7 +86,7 @@ public enum UniFilePermission: Int {
     case readOnly = 0
     case writeOnly
     case readWrite
-    
+
     var permissionFlag: Int32 {
         switch self {
         case .readOnly: return O_RDONLY
@@ -99,7 +99,7 @@ public enum UniFilePermission: Int {
 
 public class UniFileOpenOptions: NSObject {
     public let rawValue: Int32
-    
+
     // 定义选项值
     public static let create = UniFileOpenOptions(rawValue: O_CREAT)
     public static let exclusive = UniFileOpenOptions(rawValue: O_EXCL)
@@ -107,18 +107,18 @@ public class UniFileOpenOptions: NSObject {
     public static let append = UniFileOpenOptions(rawValue: O_APPEND)
     public static let sync = UniFileOpenOptions(rawValue: O_SYNC)
     public static let dsync = UniFileOpenOptions(rawValue: O_DSYNC)
-    
+
     // 初始化方法
     public init(rawValue: Int32) {
         self.rawValue = rawValue
     }
-    
+
     // 合并选项
     public class func combine(options: [UniFileOpenOptions]) -> UniFileOpenOptions {
         let combinedRawValue = options.reduce(0) { $0 | $1.rawValue }
         return UniFileOpenOptions(rawValue: combinedRawValue)
     }
-    
+
     // 检查选项是否包含
     public func contains(option: UniFileOpenOptions) -> Bool {
         return (self.rawValue & option.rawValue) != 0
@@ -140,10 +140,10 @@ public class UniFileSystemManager: NSObject {
         flag: String
     ) -> (Int32?, UniFileSystemManagerError?) {
         let path = UTSiOS.convert2AbsFullPath(path)
-        
+
         var permission: UniFilePermission = .readWrite
         var options: UniFileOpenOptions?
-        
+
         if flag == UniFileSystemManagerFlag.a.toString() {
             // a: 打开文件用于追加。 如果文件不存在，则创建该文件。   O_CREAT && O_APPEND && O_WRONLY
             permission = .writeOnly
@@ -191,34 +191,34 @@ public class UniFileSystemManager: NSObject {
             permission = .readWrite
             options = UniFileOpenOptions.combine(options: [.exclusive, .create])
         }
-        
+
         var combinedFlags = permission.permissionFlag
         if let options = options {
             combinedFlags = combinedFlags | options.rawValue
         }
-        
+
         if isDirectory(path) {
             combinedFlags = combinedFlags | O_DIRECTORY
         }
-        
+
         // 使用darwin底层open函数
         let fd = Darwin.open(
             path,
             combinedFlags,
             S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
         )
-        
+
         guard fd >= 0 else {
             let errorMessage = String(cString: strerror(errno))
             UNILogDebug("文件打开失败: \(errorMessage) (\(errno))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (nil, error)
         }
-        
+
         return (fd, nil)
     }
-    
+
     /// 底层文件打开方法
     /// - Parameters:
     ///   - path: 文件路径
@@ -232,22 +232,22 @@ public class UniFileSystemManager: NSObject {
     ) -> Int32 {
         let path = UTSiOS.convert2AbsFullPath(path)
         let combinedFlags = permission.permissionFlag | options.rawValue
-        
+
         // 使用darwin底层open函数
         let fd = Darwin.open(
             path,
             combinedFlags,
             S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
         )
-        
+
         guard fd >= 0 else {
             UNILogDebug("文件打开失败: \(String(cString: strerror(errno)))")
             return -1
         }
-        
+
         return fd
     }
-    
+
     /// 高性能文件读取
     /// - Parameters:
     ///   - fileDescriptor: 文件描述符
@@ -261,47 +261,47 @@ public class UniFileSystemManager: NSObject {
         defer {
             buffer.deallocate()
         }
-        
+
         var readData = Data()
-        
+
         while true {
             let bytesRead = Darwin.read(fileDescriptor, buffer, bufferSize)
-            
+
             guard bytesRead > 0 else {
                 if bytesRead == 0 { break }  // 文件读取完毕
                 UNILogDebug("读取错误: \(String(cString: strerror(errno)))")
                 return nil
             }
-            
+
             readData.append(buffer.assumingMemoryBound(to: UInt8.self), count: bytesRead)
         }
-        
+
         return readData
     }
-    
+
     /// 关闭文件描述符
     /// - Parameter fileDescriptor: 文件描述符
     @discardableResult
     private static func close(
         fileDescriptor: Int32
     ) -> (Bool, UniFileSystemManagerError?) {
-        
+
         guard let _ = getPath(fileDescriptor: fileDescriptor)  else {
             return (false, .badFileDescriptor)
         }
-        
+
         let result = Darwin.close(fileDescriptor)
-        
+
         guard result == 0 else {
             UNILogDebug("关闭文件描述符失败: \(String(cString: strerror(errno)))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (false, error)
         }
-        
+
         return (true, nil)
     }
-    
+
     /// 获取文件元信息
     /// - Parameter path: 文件路径
     /// - Returns: 文件元信息
@@ -311,40 +311,40 @@ public class UniFileSystemManager: NSObject {
     ) -> (Darwin.stat?, UniFileSystemManagerError?) {
         let path = UTSiOS.convert2AbsFullPath(path)
         var fileStat = Darwin.stat()
-        
+
         guard stat(path, &fileStat) == 0 else {
             UNILogDebug("获取文件元信息失败: \(String(cString: strerror(errno)))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (nil, error)
         }
-        
+
         return (fileStat, nil)
     }
-    
+
     /// 获取文件元信息
     /// - Parameter fileDescriptor: 文件描述符
     /// - Returns: 文件元信息
     private static func fstat(
         fileDescriptor: Int32
     ) -> (Darwin.stat?, UniFileSystemManagerError?) {
-        
+
         guard let _ = getPath(fileDescriptor: fileDescriptor)  else {
             return (nil, .badFileDescriptor)
         }
-        
+
         var fileStat = Darwin.stat()
-        
+
         guard Darwin.fstat(fileDescriptor, &fileStat) == 0 else {
             UNILogDebug("获取文件元信息失败: \(String(cString: strerror(errno)))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (nil, error)
         }
-        
+
         return (fileStat, nil)
     }
-    
+
     /// 创建目录
     /// - Parameters:
     ///   - path: 目录路径
@@ -359,14 +359,14 @@ public class UniFileSystemManager: NSObject {
         let result = Darwin.mkdir(path, mode)
         guard result == 0 else {
             UNILogDebug("创建目录失败: \(String(cString: strerror(errno)))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (false, error)
         }
-        
+
         return (true, nil)
     }
-    
+
     /// 删除文件
     /// - Parameter path: 文件路径
     /// - Returns: 是否删除成功
@@ -376,18 +376,18 @@ public class UniFileSystemManager: NSObject {
     ) -> (Bool, UniFileSystemManagerError?) {
         let path = UTSiOS.convert2AbsFullPath(path)
         let result = Darwin.unlink(path)
-        
+
         guard result == 0 else {
             let errorMessage = String(cString: strerror(errno))
             UNILogDebug("删除文件失败: \(errorMessage) (\(errno))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (false, error)
         }
-        
+
         return (true, nil)
     }
-    
+
     /// 删除目录
     /// - Parameter path: 目录路径
     /// - Returns: 是否删除成功
@@ -396,17 +396,17 @@ public class UniFileSystemManager: NSObject {
         path: String
     ) -> (Bool, UniFileSystemManagerError?) {
         let result = Darwin.rmdir(path)
-        
+
         guard result == 0 else {
             let errorMessage = String(cString: strerror(errno))
             UNILogDebug("删除目录失败: \(errorMessage) (\(errno))")
             let error = UniFileSystemManagerError.from(errno: errno)
             return (false, error)
         }
-        
+
         return (true, nil)
     }
-    
+
     /// 截断文件内容
     /// - Parameters:
     ///   - path: 文件路径
@@ -418,19 +418,19 @@ public class UniFileSystemManager: NSObject {
         length: off_t
     ) -> (Bool, UniFileSystemManagerError?) {
         let result = Darwin.truncate(path, length)
-        
+
         guard result == 0 else {
             let errorMessage = String(cString: strerror(errno))
             UNILogDebug("截断文件内容失败: \(errorMessage) (\(errno))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (false, error)
         }
-        
+
         return (true, nil)
     }
-    
-    
+
+
     /// 截断文件内容
     /// - Parameters:
     ///   - fd: 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
@@ -441,24 +441,24 @@ public class UniFileSystemManager: NSObject {
         fileDescriptor: Int32,
         length: off_t
     ) -> (Bool, UniFileSystemManagerError?) {
-        
+
         guard let _ = getPath(fileDescriptor: fileDescriptor)  else {
             return (false, .badFileDescriptor)
         }
-        
+
         let result = Darwin.ftruncate(fileDescriptor, length)
-        
+
         guard result == 0 else {
             let errorMessage = String(cString: strerror(errno))
             UNILogDebug("截断文件内容失败: \(errorMessage) (\(errno))")
-            
+
             let error = UniFileSystemManagerError.from(errno: errno)
             return (false, error)
         }
-        
+
         return (true, nil)
     }
-    
+
     private static func getPath(fileDescriptor: Int32) -> String? {
         var buffer = [CChar](repeating: 0, count: Int(PATH_MAX)) // 缓冲区大小
         if fcntl(fileDescriptor, F_GETPATH, &buffer) == 0 { // 使用 F_GETPATH 获取路径
@@ -468,6 +468,16 @@ public class UniFileSystemManager: NSObject {
             print("Failed to get file path. Error: \(String(cString: strerror(error)))")
             return nil
         }
+    }
+}
+
+public final class UniFileOperationResult {
+    public let success: Bool
+    public let error: UniFileSystemManagerError?
+
+    public init(success: Bool, error: UniFileSystemManagerError?) {
+        self.success = success
+        self.error = error
     }
 }
 
@@ -482,7 +492,7 @@ public enum UniFileSystemManagerError: Error, Equatable {
     public static func == (lhs: UniFileSystemManagerError, rhs: UniFileSystemManagerError) -> Bool {
         return lhs.description == rhs.description
     }
-    
+
     case argumentInvalid
     case encodingNotSupport
     case encodingFailed
@@ -510,7 +520,7 @@ public enum UniFileSystemManagerError: Error, Equatable {
     case badFileDescriptor
     case unknownError
     case navtiveError(Error?)
-    
+
     public var nativeErrorDescription: String? {
         switch self {
         case .navtiveError(let error):
@@ -521,7 +531,7 @@ public enum UniFileSystemManagerError: Error, Equatable {
             return nil
         }
     }
-    
+
     /// 从 NSError 转换为 UniFileSystemManagerError
     public static func from(originalError: NSError) -> UniFileSystemManagerError {
         switch originalError.code {
@@ -537,7 +547,7 @@ public enum UniFileSystemManagerError: Error, Equatable {
         default: return .navtiveError(originalError as Error)
         }
     }
-    
+
     /// 从 errno 转换为 UniFileSystemManagerError
     public static func from(errno: Int32) -> UniFileSystemManagerError {
         switch errno {
@@ -556,7 +566,7 @@ public enum UniFileSystemManagerError: Error, Equatable {
         default: return .unknownError
         }
     }
-    
+
     /// 转换为interface中定义的对应错误码
     public var errorCode: NSNumber {
         switch self {
@@ -589,7 +599,7 @@ public enum UniFileSystemManagerError: Error, Equatable {
         default: return 1300015
         }
     }
-    
+
     /// 获取对应的错误描述
     public var description: String {
         switch self {
@@ -632,7 +642,7 @@ extension UniFileSystemManager {
     public typealias intCallback = (Int32?, UniFileSystemManagerError?) -> Void
     public typealias stringCallback = (String?, UniFileSystemManagerError?) -> Void
     public typealias stringArrayCallback = ([String]?, UniFileSystemManagerError?) -> Void
-    
+
     private static let fileManager = FileManager.default
     private static let fileGlobalQueue = DispatchQueue.global(qos: .userInteractive)
     private static var fileQueues: [String: DispatchQueue] = [:]
@@ -642,23 +652,23 @@ extension UniFileSystemManager {
         if let existingQueue = fileQueueLock.sync(execute: { fileQueues[path] }) {
             return existingQueue
         }
-        
+
         // 创建新队列时需要加独占写锁
         let newQueue = DispatchQueue(label: "com.uni.fileoperation.\(path.hashValue)", qos: .userInteractive)
         fileQueueLock.async(flags: .barrier) {
             fileQueues[path] = newQueue
         }
-        
+
         return newQueue
     }
-    
+
     private static func cleanFileQueue(for filePath: String) {
         fileQueueLock.async(flags: .barrier) {
             fileQueues.removeValue(forKey: filePath)
         }
     }
-    
-    
+
+
     /// 分片读取文件
     /// - Parameters:
     ///   - encoding: 编码类型
@@ -671,16 +681,16 @@ extension UniFileSystemManager {
         chunkSize: Int = 1024 * 256, // 默认 256KB 分片大小
         completionHandler: anyCallback? = nil
     ) {
-        
+
         if let encoding = encoding {
             if encoding != UniFileEncoding.utf8.rawValue && encoding != UniFileEncoding.ascii.rawValue && encoding != UniFileEncoding.base64.rawValue {
                 completionHandler?(false, .encodingNotSupport)
                 return
             }
         }
-        
+
         let absolutePath = UTSiOS.convert2AbsFullPath(path)
-        
+
         switch validatePath(atPath: absolutePath) {
         case .invalid(let ststus):
             completionHandler?(false, ststus.toError())
@@ -690,34 +700,34 @@ extension UniFileSystemManager {
                 completionHandler?(false, .permissionDenied)
                 return
             }
-            
+
             safeRead()
         }
-        
+
         func safeRead() {
             let fileQueue = getFileQueue(for: absolutePath)
-            
+
             fileQueue.async {
                 let fileUrl = URL(fileURLWithPath: absolutePath)
-                
+
                 guard let fileHandle = try? FileHandle(forReadingFrom: fileUrl) else {
                     completionHandler?(nil, .badAddress)
                     return
                 }
-                
+
                 defer {
                     if #available(iOS 13.0, *) {
                         try? fileHandle.close()
                     } else {
                         fileHandle.closeFile()
                     }
-                    
+
                     // 清理文件队列
                     cleanFileQueue(for: absolutePath)
                 }
-                
+
                 var result: Any?
-                
+
                 if encoding == UniFileEncoding.base64.rawValue {
                     let data = fileHandle.readDataToEndOfFile()
                     result = data.base64EncodedString()
@@ -728,7 +738,7 @@ extension UniFileSystemManager {
                         if chunkData.isEmpty { break }
                         aggregatedData.append(chunkData)
                     }
-                    
+
                     if encoding == UniFileEncoding.utf8.rawValue {
                         func safeUTF8String(from data: Data) -> String {
                             var validData = data
@@ -742,7 +752,7 @@ extension UniFileSystemManager {
                             }
                             return ""
                         }
-                        
+
                         result = safeUTF8String(from: aggregatedData)
                     } else if encoding == UniFileEncoding.ascii.rawValue {
                         result = String(data: aggregatedData, encoding: .ascii)
@@ -750,7 +760,7 @@ extension UniFileSystemManager {
                         result = ArrayBuffer.fromData(aggregatedData)
                     }
                 }
-                
+
                 if result == nil {
                     completionHandler?(nil, .encodingFailed)
                 } else {
@@ -759,7 +769,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 同步读取文件
     /// - Parameters:
     ///   - filePath: 文件路径
@@ -767,19 +777,19 @@ extension UniFileSystemManager {
     /// - Returns: 返回结果
     public static func readFileSync(_ filePath: String, _ encoding: String?) -> (Any?, UniFileSystemManagerError?) {
         let semaphore = DispatchSemaphore(value: 0)
-        
+
         var result: (data: Any?, error: UniFileSystemManagerError?) = (nil, nil)
-        
+
         UniFileSystemManager.readFile(encoding: encoding, path: filePath) { data, error in
             result = (data, error)
             semaphore.signal()
         }
-        
+
         _ = semaphore.wait(timeout: .distantFuture)
-        
+
         return result
     }
-    
+
     /// 分片写入文件
     /// - Parameters:
     ///   - encoding: 编码类型
@@ -800,9 +810,9 @@ extension UniFileSystemManager {
                 return
             }
         }
-        
+
         let absolutePath = UTSiOS.convert2AbsFullPath(path)
-        
+
         switch validatePath(atPath:  absolutePath) {
         case .invalid(let status):
             if status.toError() == UniFileSystemManagerError.fileNotFound {
@@ -823,44 +833,44 @@ extension UniFileSystemManager {
                 completionHandler?(false, .permissionDenied)
                 return
             }
-            
+
             //存在的先remove，再create
             let (success, _) = unlink(path: absolutePath)
-            
+
             if success, creatFile(absolutePath) {
                 safeWrite()
             } else {
                 completionHandler?(false, .systemError)
             }
         }
-        
+
         func safeWrite() {
             let fileQueue = getFileQueue(for: absolutePath)
-            
+
             fileQueue.async {
                 let fileUrl = URL(fileURLWithPath: absolutePath)
-                
+
                 guard let fileHandle = try? FileHandle(forWritingTo: fileUrl) else {
                     completionHandler?(false, .fileNotFound)
                     return
                 }
-                
+
                 defer {
                     if #available(iOS 13.0, *) {
                         try? fileHandle.close()
                     } else {
                         fileHandle.closeFile()
                     }
-                    
+
                     // 清理文件队列
                     cleanFileQueue(for: absolutePath)
                 }
-                
+
                 // 分片写入逻辑
                 func writeChunks(_ chunkData: Data) {
                     var offsetTemp = 0
                     let totalSize = chunkData.count
-                    
+
                     while offsetTemp < totalSize {
                         let length = min(chunkSize, totalSize - offsetTemp)
                         let chunk = chunkData.subdata(in: offsetTemp..<(offsetTemp + length))
@@ -868,7 +878,7 @@ extension UniFileSystemManager {
                         offsetTemp += length
                     }
                 }
-                
+
                 // 处理不同数据类型
                 if let buffer = data as? ArrayBuffer {
                     let bufferData = buffer.toData()
@@ -889,7 +899,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 删除文件
     /// - Parameters:
     ///   - filePath: 文件路径
@@ -898,31 +908,37 @@ extension UniFileSystemManager {
         filePath: String,
         completionHandler: boolCallback? = nil
     ) {
-        
-        let filePath = UTSiOS.convert2AbsFullPath(filePath)
-        
-        switch validatePath(atPath: filePath){
-        case .invalid(let status):
-            completionHandler?(false, status.toError())
-        case .valid(let status):
-            if status.isDirectory {
-                completionHandler?(false, .isDirectory)
-                return
-            } else if status.isDeletable == false {
-                completionHandler?(false, .permissionDenied)
-                return
-            }
-            fileGlobalQueue.async {
-                do {
-                    try fileManager.removeItem(atPath: filePath)
-                    completionHandler?(true, nil)
-                } catch let error as NSError {
-                    completionHandler?(false, UniFileSystemManagerError.from(originalError: error))
-                }
-            }
+        fileGlobalQueue.async {
+            let result = removeFileSync(filePath: filePath)
+            completionHandler?(result.success, result.error)
         }
     }
-    
+
+    /// 同步删除文件
+    /// - Parameter filePath: 文件路径
+    /// - Returns: 删除结果
+    public static func removeFileSync(filePath: String) -> UniFileOperationResult {
+        let filePath = UTSiOS.convert2AbsFullPath(filePath)
+
+        switch validatePath(atPath: filePath) {
+        case .invalid(let status):
+            return UniFileOperationResult(success: false, error: status.toError())
+        case .valid(let status):
+            if status.isDirectory {
+                return UniFileOperationResult(success: false, error: .isDirectory)
+            } else if status.isDeletable == false {
+                return UniFileOperationResult(success: false, error: .permissionDenied)
+            }
+        }
+
+        do {
+            try fileManager.removeItem(atPath: filePath)
+            return UniFileOperationResult(success: true, error: nil)
+        } catch let error as NSError {
+            return UniFileOperationResult(success: false, error: UniFileSystemManagerError.from(originalError: error))
+        }
+    }
+
     /// 创建文件
     /// - Parameter path: 文件路径
     /// - Returns: 是否创建成功
@@ -930,7 +946,7 @@ extension UniFileSystemManager {
     public static func creatFile(_ path: String) -> Bool {
         let path = UTSiOS.convert2AbsFullPath(path)
         if isExist(path) { return true }
-        
+
         let dir = (path as NSString).deletingLastPathComponent
         if !isExist(dir) {
             let group = DispatchGroup()
@@ -947,10 +963,10 @@ extension UniFileSystemManager {
         } else {
             fileManager.createFile(atPath: path, contents: nil, attributes: nil)
         }
-        
+
         return isExist(path)
     }
-    
+
     /// 创建目录
     /// - Parameters:
     ///   - filePath: 目录路径
@@ -965,19 +981,19 @@ extension UniFileSystemManager {
             completionHandler?(false, .argumentInvalid)
             return
         }
-        
+
         guard isSandbox(path) else {
             completionHandler?(false, .permissionDenied)
             return
         }
-        
+
         let absolutePath = UTSiOS.convert2AbsFullPath(path)
-        
+
         guard !isExist(path) else {
             completionHandler?(false, .alreadyExist)
             return
         }
-        
+
         fileGlobalQueue.async {
             do {
                 try fileManager.createDirectory(atPath: absolutePath, withIntermediateDirectories: recursive, attributes: nil)
@@ -987,8 +1003,8 @@ extension UniFileSystemManager {
             }
         }
     }
-    
-    
+
+
     /// 同步创建目录
     /// - Parameters:
     ///   - filePath: 目录路径
@@ -998,20 +1014,20 @@ extension UniFileSystemManager {
     public static func createDirectorySync(_ dirPath: String, _ recursive: Bool) -> Bool {
         let semaphore = DispatchSemaphore(value: 0)
         var result: (success: Bool, error: UniFileSystemManagerError?) = (false, nil)
-        
+
         UniFileSystemManager.createDirectory(path: dirPath, recursive: recursive) { success, error in
             result = (success, error)
             semaphore.signal()
         }
         _ = semaphore.wait(timeout: .distantFuture)
-        
+
         if result.success {
             return true
         }
         return false
     }
-    
-    
+
+
     /// 删除目录
     /// - Parameters:
     ///   - filePath: 目录路径
@@ -1022,9 +1038,9 @@ extension UniFileSystemManager {
         recursive: Bool,
         completionHandler: boolCallback? = nil
     ) {
-        
+
         let filePath = UTSiOS.convert2AbsFullPath(filePath)
-        
+
         switch validatePath(atPath: filePath) {
         case .invalid(let status):
             completionHandler?(false, status.toError())
@@ -1047,7 +1063,7 @@ extension UniFileSystemManager {
                         }
                         return
                     }
-                    
+
                     //递归删除
                     do {
                         try fileManager.removeItem(atPath: filePath)
@@ -1065,8 +1081,8 @@ extension UniFileSystemManager {
             }
         }
     }
-    
-    
+
+
     /// 同步删除目录
     /// - Parameters:
     ///   - dirPath: 目录路径
@@ -1076,16 +1092,16 @@ extension UniFileSystemManager {
     public static func removeDirectorySync(_ dirPath: String, _ recursive: Bool) -> (Bool, UniFileSystemManagerError?){
         let semaphore = DispatchSemaphore(value: 0)
         var result: (success: Bool, error: UniFileSystemManagerError?) = (false, nil)
-        
+
         UniFileSystemManager.removeDirectory(filePath: dirPath, recursive: recursive) { success, error in
             result = (success, error)
             semaphore.signal()
         }
         _ = semaphore.wait(timeout: .distantFuture)
-        
+
         return result
     }
-    
+
     /// 读取目录内文件列表
     /// - Parameter path: 目录路径
     /// - Returns: 读取结果
@@ -1108,7 +1124,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 读取目录内文件列表
     /// - Parameters:
     ///   - path: 目录路径
@@ -1129,7 +1145,7 @@ extension UniFileSystemManager {
                 completionHandler?(nil, .permissionDenied)
                 return
             }
-            
+
             fileGlobalQueue.async {
                 do {
                     let list = try fileManager.contentsOfDirectory(atPath: filePath)
@@ -1140,7 +1156,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 重命名文件, 可以把文件从 oldPath 移动到 newPath
     /// - Parameters:
     ///   - oldPath: 源文件路径
@@ -1153,7 +1169,7 @@ extension UniFileSystemManager {
     ) {
         let oldPath = UTSiOS.convert2AbsFullPath(oldPath)
         let newPath = UTSiOS.convert2AbsFullPath(newPath)
-        
+
         switch validatePath(atPath: oldPath) {
         case .invalid(let status):
             completionHandler?(false, status.toError())
@@ -1164,22 +1180,22 @@ extension UniFileSystemManager {
                 return
             }
         }
-        
+
         if oldPath == newPath {
             completionHandler?(true, nil)
             return
         }
-        
+
         switch validatePath(atPath: newPath) {
         case .invalid(let status):
             /// 和 Android、微信小程序保持一致，rename 新路径如果上一级别目录不存在，返回错误 1300002；上一级别目录存在，不管file是否存在都能rename成功，file存在就覆盖
-            
+
             let dir = (newPath as NSString).deletingLastPathComponent
             if !isExist(dir) {
                 completionHandler?(false, status.toError())
                 return
             }
-            
+
         case .valid(let status):
             if status.isWritable == false {
                 completionHandler?(false, .permissionDenied)
@@ -1197,9 +1213,9 @@ extension UniFileSystemManager {
                 return
             }
         }
-        
+
         rename()
-        
+
         func rename() {
             fileGlobalQueue.async {
                 do {
@@ -1211,7 +1227,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 复制文件
     /// - Parameters:
     ///   - oldPath: 源文件路径
@@ -1227,7 +1243,7 @@ extension UniFileSystemManager {
         if destPath.hasSuffix("/") {
             destPath = String(destPath.dropLast())
         }
-        
+
         switch validatePath(atPath: srcPath) {
         case .invalid(let status):
             completionHandler?(false, status.toError())
@@ -1241,12 +1257,12 @@ extension UniFileSystemManager {
                 return
             }
         }
-        
+
         if srcPath == destPath {
             completionHandler?(true, nil)
             return
         }
-        
+
         switch validatePath(atPath: destPath) {
         case .invalid(let status):
             if status.toError() == UniFileSystemManagerError.fileNotFound {
@@ -1254,7 +1270,7 @@ extension UniFileSystemManager {
                 if !isExist(dir) {
                     createDirectorySync(dir, true)
                 }
-                
+
             } else {
                 completionHandler?(false, status.toError())
                 return
@@ -1267,17 +1283,17 @@ extension UniFileSystemManager {
                 completionHandler?(false, .permissionDenied)
                 return
             }
-            
+
             //存在的先remove
             let (success, _) = unlink(path: destPath)
-            
+
             if !success {
                 completionHandler?(false, .systemError)
             }
         }
-        
+
         copy()
-        
+
         func copy() {
             fileGlobalQueue.async {
                 do {
@@ -1289,7 +1305,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 获取该本地临时文件 或 本地缓存文件 信息
     /// - Parameters:
     ///   - filePath: 文件路径
@@ -1301,7 +1317,7 @@ extension UniFileSystemManager {
         completionHandler: fileInfoCallback? = nil
     ) {
         let filePath = UTSiOS.convert2AbsFullPath(filePath)
-        
+
         switch validatePath(atPath: filePath) {
         case .invalid(let status):
             completionHandler?(nil, status.toError())
@@ -1313,23 +1329,23 @@ extension UniFileSystemManager {
                 completionHandler?(nil, .permissionDenied)
                 return
             }
-            
+
             fileGlobalQueue.async {
                 var digest = ""
-                let digestAlgorithm = digestAlgorithm ?? "md5"
-                if digestAlgorithm.lowercased() == UniFileDigest.DigestType.md5.rawValue {
+                let digestAlgorithm = (digestAlgorithm ?? "md5").lowercased()
+                if digestAlgorithm == UniFileDigest.DigestType.md5.rawValue {
                     digest = UniFileDigest.toDigest(forFileAtPath: filePath, type: .md5) ?? ""
-                } else if digestAlgorithm.lowercased() == UniFileDigest.DigestType.sha1.rawValue {
+                } else if digestAlgorithm == UniFileDigest.DigestType.sha1.rawValue {
                     digest = UniFileDigest.toDigest(forFileAtPath: filePath, type: .sha1) ?? ""
-                }
-                //                else if digestAlgorithm.lowercased() == UniFileDigest.DigestType.sha256.rawValue {
-                //                    digest = UniFileDigest.toDigest(forFileAtPath: filePath, type: .sha256) ?? ""
-                //                }
-                else {
+                } else if digestAlgorithm == UniFileDigest.DigestType.sha256.rawValue {
+                    digest = UniFileDigest.toDigest(forFileAtPath: filePath, type: .sha256) ?? ""
+                } else if digestAlgorithm == UniFileDigest.DigestType.none.rawValue {
+                    digest = UniFileDigest.toDigest(forFileAtPath: filePath, type: .none) ?? ""
+                } else {
                     completionHandler?(nil, .argumentInvalid)
                     return
                 }
-                
+
                 let (stat, error) = getFileAttributes(path: filePath)
                 if let stat = stat {
                     let result = GetFileInfoSuccessResult()
@@ -1339,12 +1355,12 @@ extension UniFileSystemManager {
                     completionHandler?(result, nil)
                     return
                 }
-                
+
                 completionHandler?(nil, error)
             }
         }
     }
-    
+
     /// 获取文件 Stats 对象
     /// - Parameters:
     ///   - filePath: 文件/目录路径 (本地路径)
@@ -1356,7 +1372,7 @@ extension UniFileSystemManager {
         completionHandler: fileStatsArrayCallback? = nil
     ) {
         let absolutePath = UTSiOS.convert2AbsFullPath(filePath)
-        
+
         switch validatePath(atPath: absolutePath) {
         case .invalid(let status):
             completionHandler?(nil, status.toError())
@@ -1367,7 +1383,7 @@ extension UniFileSystemManager {
             }
             get()
         }
-        
+
         func get() {
             fileGlobalQueue.async {
                 var list = [FileStats]()
@@ -1382,10 +1398,10 @@ extension UniFileSystemManager {
                     } else {
                         completionHandler?(nil, error)
                     }
-                    
+
                     return
                 }
-                
+
                 if recursive && isDirectory(absolutePath) {
                     let fileStats = FileStats()
                     let (stat, error) = getFileAttributes(path: absolutePath)
@@ -1394,7 +1410,7 @@ extension UniFileSystemManager {
                         fileStats.stats = stat.toStat()
                         list.append(fileStats)
                     }
-                    
+
                     if let enumerator = fileManager.enumerator(atPath: absolutePath) {
                         for case let path as String in enumerator {
                             let fullPath = (absolutePath as NSString).appendingPathComponent(path)
@@ -1408,13 +1424,13 @@ extension UniFileSystemManager {
                             }
                         }
                     }
-                    
+
                     completionHandler?(list, nil)
                 }
             }
         }
     }
-    
+
     /// 在文件结尾追加内容
     /// - Parameters:
     ///   - encoding: 编码类型
@@ -1435,9 +1451,9 @@ extension UniFileSystemManager {
                 return
             }
         }
-        
+
         let absolutePath = UTSiOS.convert2AbsFullPath(path)
-        
+
         switch validatePath(atPath:  absolutePath) {
         case .invalid(let status):
             completionHandler?(false, status.toError())
@@ -1450,37 +1466,37 @@ extension UniFileSystemManager {
                 completionHandler?(false, .permissionDenied)
                 return
             }
-            
+
             safeWrite()
         }
-        
+
         func safeWrite() {
             let fileQueue = getFileQueue(for: absolutePath)
-            
+
             fileQueue.async {
                 let fileUrl = URL(fileURLWithPath: absolutePath)
-                
+
                 guard let fileHandle = try? FileHandle(forWritingTo: fileUrl) else {
                     completionHandler?(false, .fileNotFound)
                     return
                 }
-                
+
                 defer {
                     if #available(iOS 13.0, *) {
                         try? fileHandle.close()
                     } else {
                         fileHandle.closeFile()
                     }
-                    
+
                     // 清理文件队列
                     cleanFileQueue(for: absolutePath)
                 }
-                
+
                 // 分片写入逻辑
                 func writeChunks(_ chunkData: Data) {
                     var offset = 0
                     let totalSize = chunkData.count
-                    
+
                     while offset < totalSize {
                         let length = min(chunkSize, totalSize - offset)
                         let chunk = chunkData.subdata(in: offset..<(offset + length))
@@ -1488,7 +1504,7 @@ extension UniFileSystemManager {
                         offset += length
                     }
                 }
-                
+
                 // 处理不同数据类型
                 if let buffer = data as? ArrayBuffer {
                     let bufferData = buffer.toData()
@@ -1509,7 +1525,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 保存临时文件到本地
     /// - Parameters:
     ///   - tempFilePath: 临时存储文件路径 (本地路径)
@@ -1531,7 +1547,7 @@ extension UniFileSystemManager {
             let fileName = URL(fileURLWithPath: tempFilePath).lastPathComponent
             destPath = defaultPath + fileName
         }
-        
+
         copyFile(srcPath: tempFilePath, destPath: destPath) { success, error in
             if let error = error, !success {
                 completionHandler?(nil, error)
@@ -1541,7 +1557,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 删除已保存的本地缓存文件
     /// - Parameters:
     ///   - filePath: 需要删除的文件路径 (本地路径)
@@ -1554,8 +1570,8 @@ extension UniFileSystemManager {
             completionHandler?(success, error)
         }
     }
-    
-    
+
+
     /// 解压文件
     /// - Parameters:
     ///   - zipFilePath: 源文件路径，支持本地路径, 只可以是 zip 压缩文件
@@ -1566,70 +1582,81 @@ extension UniFileSystemManager {
         targetPath: String,
         completionHandler: boolCallback? = nil
     ) {
+        fileGlobalQueue.async {
+            let result = unzipSync(zipFilePath: zipFilePath, targetPath: targetPath)
+            completionHandler?(result.success, result.error)
+        }
+    }
+
+    /// 同步解压文件
+    /// - Parameters:
+    ///   - zipFilePath: 源 zip 文件路径
+    ///   - targetPath: 目标目录路径
+    /// - Returns: 解压结果
+    public static func unzipSync(
+        zipFilePath: String,
+        targetPath: String
+    ) -> UniFileOperationResult {
         let zipFilePath = UTSiOS.convert2AbsFullPath(zipFilePath)
         let targetPath = UTSiOS.convert2AbsFullPath(targetPath)
-        
-        //保证源文件路径的合理性
+
         switch validatePath(atPath: zipFilePath) {
         case .invalid(let status):
-            completionHandler?(false, status.toError())
-            return
+            return UniFileOperationResult(success: false, error: status.toError())
         case .valid(let status):
             if status.isReadable == false {
-                completionHandler?(false, .permissionDenied)
-                return
+                return UniFileOperationResult(success: false, error: .permissionDenied)
             }
             if !zipFilePath.hasSuffix(".zip") {
-                completionHandler?(false, .argumentInvalid)
-                return
+                return UniFileOperationResult(success: false, error: .argumentInvalid)
             }
         }
-        
-        //保证目标目录路径的合理性
+
         switch validatePath(atPath: targetPath) {
         case .invalid(let status):
-            if status.toError() == UniFileSystemManagerError.fileNotFound {
-                if createDirectorySync(targetPath, true) == false {
-                    completionHandler?(false, .fileNotFound)
-                }
-            } else {
-                completionHandler?(false, status.toError())
-                return
+            let error = status.toError()
+            if error != .fileNotFound {
+                return UniFileOperationResult(success: false, error: error)
+            }
+            do {
+                try fileManager.createDirectory(
+                    atPath: targetPath,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
+            } catch let error as NSError {
+                return UniFileOperationResult(
+                    success: false,
+                    error: UniFileSystemManagerError.from(originalError: error)
+                )
             }
         case .valid(let status):
             if status.isDirectory == false {
-                completionHandler?(false, .notDirectory)
-                return
-            } else if status.isWritable == false {
-                completionHandler?(false, .permissionDenied)
-                return
+                return UniFileOperationResult(success: false, error: .notDirectory)
+            }
+            if status.isWritable == false {
+                return UniFileOperationResult(success: false, error: .permissionDenied)
             }
         }
-        
-        unzip()
-        
-        func unzip() {
-            fileGlobalQueue.async {
-                do {
-                    try UniFileDecompressTool.unzip(at: zipFilePath, to: targetPath)
-                    completionHandler?(true, nil)
-                } catch let error as UniFileDecompressTool.UniArchiveError {
-                    switch error {
-                    case .unableToOpenArchive:
-                        completionHandler?(false, .unzip_UnableToOpen)
-                    case .entryExtractionFailed(_, let error):
-                        completionHandler?(false, .unzip_EntryFailed(error))
-                    default:
-                        completionHandler?(false, .unzip_Failed)
-                    }
-                } catch {
-                    completionHandler?(false, .navtiveError(error))
-                }
+
+        do {
+            try UniFileDecompressTool.unzip(at: zipFilePath, to: targetPath)
+            return UniFileOperationResult(success: true, error: nil)
+        } catch let error as UniFileDecompressTool.UniArchiveError {
+            switch error {
+            case .unableToOpenArchive:
+                return UniFileOperationResult(success: false, error: .unzip_UnableToOpen)
+            case .entryExtractionFailed(_, let error):
+                return UniFileOperationResult(success: false, error: .unzip_EntryFailed(error))
+            default:
+                return UniFileOperationResult(success: false, error: .unzip_Failed)
             }
+        } catch {
+            return UniFileOperationResult(success: false, error: .navtiveError(error))
         }
     }
-    
-    
+
+
     /// 获取该已保存的本地缓存文件列表
     /// - Parameter completionHandler: 完成回调
     public static func getSavedFileList(
@@ -1637,7 +1664,7 @@ extension UniFileSystemManager {
     ) {
         let storePath = UniResource.CACHE_PATH + "uni-store/"
         let filePath = UTSiOS.convert2AbsFullPath(storePath)
-        
+
         readDirectoryList(filePath) { list, error in
             let dict = list?.map {
                 return storePath + $0
@@ -1645,8 +1672,8 @@ extension UniFileSystemManager {
             completionHandler?(dict, error)
         }
     }
-    
-    
+
+
     /// 对文件内容进行截断操作
     /// - Parameters:
     ///   - filePath: 要截断的文件路径
@@ -1658,7 +1685,7 @@ extension UniFileSystemManager {
         completionHandler: boolCallback? = nil
     ) {
         let absolutePath = UTSiOS.convert2AbsFullPath(filePath)
-        
+
         switch validatePath(atPath: absolutePath) {
         case .invalid(let status):
             completionHandler?(false, status.toError())
@@ -1678,8 +1705,8 @@ extension UniFileSystemManager {
             }
         }
     }
-    
-    
+
+
     /// 打开文件，返回文件描述符
     /// - Parameters:
     ///   - filePath: 文件路径 (本地路径)
@@ -1699,12 +1726,12 @@ extension UniFileSystemManager {
             && flag != UniFileSystemManagerFlag.wx.toString()
             && flag != UniFileSystemManagerFlag.wplus.toString()
             && flag != UniFileSystemManagerFlag.wxplus.toString() {
-            
+
             completionHandler?(nil, .invalidFlag)
         }
-        
+
         let absolutePath = UTSiOS.convert2AbsFullPath(filePath)
-        
+
         switch validatePath(atPath: absolutePath) {
         case .invalid(let status):
             if status.toError() == .fileNotFound {
@@ -1727,8 +1754,8 @@ extension UniFileSystemManager {
             }
         }
     }
-    
-    
+
+
     /// 关闭文件
     /// - Parameters:
     ///   - fd: 需要被关闭的文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
@@ -1742,8 +1769,8 @@ extension UniFileSystemManager {
             completionHandler?(success, error)
         }
     }
-    
-    
+
+
     /// 获取文件的状态信息
     /// - Parameters:
     ///   - fd: 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
@@ -1757,8 +1784,8 @@ extension UniFileSystemManager {
             completionHandler?(stat?.toStat(), error)
         }
     }
-    
-    
+
+
     /// 对文件内容进行截断操作
     /// - Parameters:
     ///   - fd: 文件描述符。fd 通过 FileSystemManager.open 或 FileSystemManager.openSync 接口获得
@@ -1775,7 +1802,7 @@ extension UniFileSystemManager {
             completionHandler?(success, error)
         }
     }
-    
+
     /// 分片写入文件
     /// - Parameters:
     ///   - encoding: 编码类型
@@ -1799,78 +1826,78 @@ extension UniFileSystemManager {
             completionHandler?(nil, .badFileDescriptor)
             return
         }
-        
+
         if let encoding = encoding {
             if encoding != UniFileEncoding.utf8.rawValue && encoding != UniFileEncoding.ascii.rawValue && encoding != UniFileEncoding.base64.rawValue {
                 completionHandler?(nil, .encodingNotSupport)
                 return
             }
         }
-        
+
         func isInvalidNonNegativeNumber(_ value: NSNumber?) -> Bool {
             guard let value = value else {
                 return false
             }
-            
+
             let doubleValue = value.doubleValue
             return !doubleValue.isFinite || doubleValue < 0
         }
-        
+
         if chunkSize <= 0 {
             completionHandler?(nil, .argumentInvalid)
             return
         }
-        
+
         if isInvalidNonNegativeNumber(offset) {
             completionHandler?(nil, .argumentInvalid)
             return
         }
-        
+
         if isInvalidNonNegativeNumber(length) {
             completionHandler?(nil, .argumentInvalid)
             return
         }
-        
+
         if isInvalidNonNegativeNumber(position) {
             completionHandler?(nil, .argumentInvalid)
             return
         }
-        
+
         safeWrite()
-        
+
         func safeWrite() {
             let fileQueue = getFileQueue(for: absolutePath)
-            
+
             fileQueue.async {
                 let fileUrl = URL(fileURLWithPath: absolutePath)
-                
+
                 guard let fileHandle = try? FileHandle(forWritingTo: fileUrl) else {
                     completionHandler?(nil, .fileNotFound)
                     return
                 }
-                
+
                 defer {
                     if #available(iOS 13.0, *) {
                         try? fileHandle.close()
                     } else {
                         fileHandle.closeFile()
                     }
-                    
+
                     // 清理文件队列
                     cleanFileQueue(for: absolutePath)
                 }
-                
+
                 // 归一化本次实际写入的 Data 区间：String 写全部内容，ArrayBuffer 才应用 offset/length。
                 // 返回 nil 表示没有可写字节，调用方应直接返回 0，避免空写入仍触发 seek 或扩展文件。
                 func normalizedWriteRange(_ chunkData: Data, isArrayBuffer: Bool? = false) -> Range<Int>? {
                     let isArrayBuffer = isArrayBuffer ?? false
-                    
+
                     // offset参数：ArrayBuffer 中的索引，只在 data 类型是 ArrayBuffer 时有效
                     let startIndex = isArrayBuffer ? Int(truncating: offset ?? 0) : 0
                     if startIndex >= chunkData.count {
                         return nil
                     }
-                    
+
                     // length参数：写入的字节数，只在 data 类型是 ArrayBuffer 时有效
                     let endIndex: Int
                     if let length = length, isArrayBuffer {
@@ -1880,14 +1907,14 @@ extension UniFileSystemManager {
                     } else {
                         endIndex = chunkData.count
                     }
-                    
+
                     if startIndex >= endIndex {
                         return nil
                     }
-                    
+
                     return startIndex..<endIndex
                 }
-                
+
                 // 根据 position 定位写入位置：未传 position 时追加到文件末尾。
                 // 当 position 超过文件末尾时显式分片补 0，保证 String 和 ArrayBuffer 的空洞填充语义一致。
                 func seekAndFillGapIfNeeded() {
@@ -1895,10 +1922,10 @@ extension UniFileSystemManager {
                         fileHandle.seekToEndOfFile()
                         return
                     }
-                    
+
                     let targetPosition = position.uint64Value
                     let currentFileSize = fileHandle.seekToEndOfFile()
-                    
+
                     // position 超过当前文件末尾时，两种 data 类型都显式补 0；分片补零避免大 position 一次性分配过多内存。
                     if targetPosition > currentFileSize {
                         var remainingEmptyBytes = targetPosition - currentFileSize
@@ -1910,16 +1937,16 @@ extension UniFileSystemManager {
                             remainingEmptyBytes -= writeLength
                         }
                     }
-                    
+
                     fileHandle.seek(toFileOffset: targetPosition)
                 }
-                
+
                 // 分片写入逻辑
                 func writeChunks(_ chunkData: Data, in range: Range<Int>) -> UInt64 {
                     var offsetTemp = range.lowerBound
                     let endIndex = range.upperBound
                     var bytesWritten: UInt64 = 0
-                    
+
                     while offsetTemp < endIndex {
                         let writeLength = min(chunkSize, endIndex - offsetTemp)
                         let chunk = chunkData.subdata(in: offsetTemp..<(offsetTemp + writeLength))
@@ -1930,7 +1957,7 @@ extension UniFileSystemManager {
 
                     return bytesWritten
                 }
-                
+
                 // 处理不同数据类型
                 if let buffer = data as? ArrayBuffer {
                     let bufferData = buffer.toData()
@@ -1959,7 +1986,7 @@ extension UniFileSystemManager {
             }
         }
     }
-    
+
     /// 分片读取文件
     /// - Parameters:
     ///   - encoding: 编码类型
@@ -1979,21 +2006,21 @@ extension UniFileSystemManager {
             completionHandler?(nil, .badFileDescriptor)
             return
         }
-        
+
         safeRead()
-        
+
         func safeRead() {
             let fileQueue = getFileQueue(for: absolutePath)
-            
+
             let workItem = DispatchWorkItem {
-                
+
                 let fileUrl = URL(fileURLWithPath: absolutePath)
-                
+
                 guard let fileHandle = try? FileHandle(forReadingFrom: fileUrl) else {
                     completionHandler?(nil, .badAddress)
                     return
                 }
-                
+
                 defer {
                     if #available(iOS 13.0, *) {
                         try? fileHandle.close()
@@ -2003,30 +2030,30 @@ extension UniFileSystemManager {
                     // 清理文件队列
                     cleanFileQueue(for: absolutePath)
                 }
-                
+
                 if let position = position {
                     fileHandle.seek(toFileOffset: position.toUInt64())
                 }
-                
+
                 var aggregatedData = Data()
                 while true {
                     let chunkData = fileHandle.readData(ofLength: chunkSize)
                     if chunkData.isEmpty { break }
                     aggregatedData.append(chunkData)
                 }
-                
+
                 var _length: NSNumber = length ?? 0
                 let _offset: NSNumber = offset ?? 0
-                
+
                 //需要被写入arrayBuffer的数据指针指向的区域指针
                 if let bufferPointer = arrayBuffer.buffer {
                     // 确定要写入的长度
                     let writeLength = min(Int(truncating: _length), aggregatedData.count, Int(truncating: arrayBuffer.byteLength) - Int(truncating: _offset))
                     _length = NSNumber(writeLength)
-                    
+
                     //截取读取文件中需要被写入arrayBuffer的数据
                     let sourceData = aggregatedData.subdata(in: 0..<writeLength)
-                    
+
                     //                    aggregatedData.withUnsafeBytes { buffer in
                     //                        let floatArray = buffer.bindMemory(to: Double.self)
                     //                        for (index, value) in floatArray.enumerated() {
@@ -2036,29 +2063,29 @@ extension UniFileSystemManager {
                     //                    let temp = sourceData.withUnsafeBytes { $0.load(fromByteOffset: 0, as: Double.self) }
                     //                    let dataView = DataView(arrayBuffer, _offset, _length)
                     //                    dataView.setFloat64(0, temp)
-                    
+
                     // 将数据写入当前arrayBuffer实例对应的内存地址中
                     sourceData.withUnsafeBytes { (sourceBytes: UnsafeRawBufferPointer) in
                         let  targetPointer = bufferPointer.advanced(by: Int(truncating: _offset))
-                        
+
                         if let sourcePointer = sourceBytes.baseAddress {
                             memcpy(targetPointer, sourcePointer, writeLength)
                         }
                     }
-                    
+
                     completionHandler?(Int32(truncating: _length), nil)
-                    
+
                     print("写入完成，arrayBuffer 内容已更新")
                 } else {
                     completionHandler?(nil, .systemError)
                 }
             }
-            
+
             fileQueue.async(execute: workItem)
         }
     }
-    
-    
+
+
     /// 读取指定压缩类型的本地文件内容
     /// - Parameters:
     ///   - filePath: 要读取的文件的路径
@@ -2070,12 +2097,12 @@ extension UniFileSystemManager {
         completionHandler: stringCallback? = nil
     ) {
         let filePath = UTSiOS.convert2AbsFullPath(filePath)
-        
+
         if compressionAlgorithm.toLowerCase() != "br" {
             completionHandler?(nil, .brotli_failed)
             return
         }
-        
+
         switch validatePath(atPath: filePath) {
         case .invalid(let status):
             completionHandler?(nil, status.toError())
@@ -2090,7 +2117,7 @@ extension UniFileSystemManager {
                 brotli()
             }
         }
-        
+
         //brotli
         func brotli() {
             fileGlobalQueue.async {
@@ -2103,8 +2130,8 @@ extension UniFileSystemManager {
             }
         }
     }
-    
-    
+
+
     /// 读取压缩包内的文件
     /// - Parameters:
     ///   - filePath: 要读取的压缩包的路径 (本地路径)
@@ -2132,21 +2159,21 @@ extension UniFileSystemManager {
                 readZip()
             }
         }
-        
+
         func readZip() {
             let base64String = encodeBase64(filePath)
             var targetPath = UniResource.CACHE_PATH + base64String
             targetPath = UTSiOS.convert2AbsFullPath(targetPath)
-            
+
             if isExist(targetPath) {
                 removeDirectorySync(targetPath, true)
             } else {
                 createDirectorySync(targetPath, true)
             }
-            
-            
+
+
             var dict: [String: ZipFileItem] = [:]
-            
+
             unzip(zipFilePath: filePath, targetPath: targetPath) { success, error in
                 if let error = error, !success {
                     completionHandler?(nil, error)
@@ -2189,19 +2216,19 @@ extension UniFileSystemManager {
                             }
                         }
                     }
-                    
+
                     completionHandler?(dict, nil)
                     removeDirectorySync(targetPath, true)
                 }
             }
         }
-        
+
         func encodeBase64(_ input: String) -> String {
             let string = UniFileDigest.toDigest(forFileAtPath: filePath, type: .md5) ?? ""
             return string
         }
     }
-    
+
 }
 
 extension Darwin.stat {
@@ -2220,13 +2247,13 @@ extension UniFileSystemManager {
     public static func isEmpty(_ path: String) -> Bool {
         return path.trimmingCharacters(in: .whitespaces).isEmpty
     }
-    
+
     /// 目录或者文件是否存在
     public static func isExist(_ path: String) -> Bool {
         let path = UTSiOS.convert2AbsFullPath(path)
         return fileManager.fileExists(atPath: path)
     }
-    
+
     /// 判断是否为目录
     public static func isDirectory(_ path: String) -> Bool {
         let path = UTSiOS.convert2AbsFullPath(path)
@@ -2238,19 +2265,19 @@ extension UniFileSystemManager {
         if path.hasSuffix("/") {
             return true
         }
-        
+
         // 使用 FileManager 判断实际存在的文件/目录
         let fileManager = FileManager.default
         var isDirectory: ObjCBool = false
-        
+
         // 如果文件存在，判断是文件还是目录
         if fileManager.fileExists(atPath: path, isDirectory: &isDirectory) {
             return isDirectory.boolValue
         }
-        
+
         return false
     }
-    
+
     /// 是否为沙盒路径
     public static func isSandbox(_ path: String) -> Bool {
         let sandboxPath = NSHomeDirectory()
@@ -2271,7 +2298,7 @@ extension UniFileSystemManager {
             return string.data(using: .utf8)
         } else if encoding == UniFileEncoding.ascii.rawValue {
             // 与微信保持一致，以Unicode码点为ascii
-            
+
             /*
              方式                          Swift代码                                        适用范围
              ASCII asciiValue           char.asciiValue                         仅限 ASCII（0~127），中文返回 nil
@@ -2293,19 +2320,19 @@ extension UniFileSystemManager {
             return nil
         }
     }
-    
+
     private enum UniFilePathValidationResult {
         /// 路径无效(为空、非沙盒、不存在)
         case invalid(_ status: InvalidElement)
         /// 路径有效
         case valid(_ status: ValidElement)
-        
+
         struct InvalidElement {
             var isEmpty: Bool = false
             var isExist: Bool = false
             var isDirectory: Bool = false
             var isSandbox: Bool = false
-            
+
             //about: remove dir
             func toError() -> UniFileSystemManagerError {
                 if self.isEmpty {
@@ -2317,7 +2344,7 @@ extension UniFileSystemManager {
                 }
             }
         }
-        
+
         struct ValidElement {
             var isReadable: Bool = false  //是否可读取
             var isWritable: Bool = false //是否可写入
@@ -2326,12 +2353,12 @@ extension UniFileSystemManager {
             var isDirectory: Bool = false //是否是目录
         }
     }
-    
+
     /// 路径检验
     private static func validatePath(atPath absolutePath: String) -> UniFilePathValidationResult {
-        
+
         let absolutePath = absolutePath.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         if absolutePath.isEmpty {
             return .invalid(UniFilePathValidationResult.InvalidElement(isEmpty: true))
         }
@@ -2339,7 +2366,7 @@ extension UniFileSystemManager {
         var isDirectory: ObjCBool = false
         let isExist = fileManager.fileExists(atPath: absolutePath, isDirectory: &isDirectory)
         let isSandbox = absolutePath.starts(with: sandboxPath) // 检查路径是否在沙盒范围内
-        
+
         var isPackage = false
         if  UniSDKEngine.shared.config.ipaType == .package {
             isPackage = true
@@ -2357,16 +2384,15 @@ extension UniFileSystemManager {
             let isWritable = fileManager.isWritableFile(atPath: absolutePath)
             let isExecutable = fileManager.isExecutableFile(atPath: absolutePath)
             let isDeletable = fileManager.isDeletableFile(atPath: absolutePath)
-            
+
             var status = UniFilePathValidationResult.ValidElement()
             status.isReadable = isReadable
             status.isWritable = isWritable
             status.isExecutable = isExecutable
             status.isDeletable = isDeletable
             status.isDirectory = isDirectory.boolValue
-            
+
             return .valid(status)
         }
     }
 }
-

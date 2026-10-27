@@ -6,6 +6,6 @@
 		"com.google.android.exoplayer:exoplayer-dash:2.18.5",
 		"com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.5",
 		"androidx.media:media:1.4.3",
-		"com.github.bumptech.glide:glide:4.9.0"
+		"com.facebook.fresco:fresco:3.4.0"
 	]
 }

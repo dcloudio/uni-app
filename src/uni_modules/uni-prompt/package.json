@@ -39,7 +39,7 @@
 						"js": false,
 						"kotlin": true,
 						"swift": true,
-						"arkts": true
+						"arkts": "uni1"
 					}
 				},
 				"hideToast": {
@@ -47,7 +47,8 @@
 					"app": {
 						"js": false,
 						"kotlin": true,
-						"swift": true
+						"swift": true,
+						"arkts": "uni1"
 					}
 				},
 				"showLoading": {

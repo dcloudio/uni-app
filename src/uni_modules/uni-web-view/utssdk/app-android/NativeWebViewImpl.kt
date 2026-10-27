@@ -24,9 +24,8 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewConfiguration
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.webkit.ConsoleMessage
 import android.webkit.GeolocationPermissions
 import android.webkit.JavascriptInterface
@@ -46,6 +45,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.FileProvider
+import androidx.core.view.NestedScrollingChildHelper
+import androidx.core.view.ViewCompat
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import uts.sdk.modules.uniWebView.R
@@ -211,6 +212,10 @@ class NativeWebViewImpl @JvmOverloads constructor(
 
     fun setNestedScroll(type: String) {
         mWebView.mNestedScrollType = type
+    }
+
+    fun setAssociativeContainer(type: String) {
+        mWebView.mAssociativeContainer = type
     }
 
     fun enableDarkMode(enable: Boolean) {
@@ -796,6 +801,7 @@ class UniInternalWebView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : WebView(context, attrs) {
     internal var mNestedScrollType = "all"
+    internal var mAssociativeContainer = ""
     internal var mScale = scale
     internal var mContentHeight = 0f
     internal var mDisableUserSelectMenu = false
@@ -803,6 +809,12 @@ class UniInternalWebView @JvmOverloads constructor(
     private var mContentWidth = 0f
     private var lastX = 0f
     private var lastY = 0f
+    private var downX = 0f
+    private var downY = 0f
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private val offsetInWindow = IntArray(2)
+    private var scrollAxis = ViewCompat.SCROLL_AXIS_NONE
+    private val nestedScrollingHelper = NestedScrollingChildHelper(this).apply { isNestedScrollingEnabled = true }
 
     override fun startActionMode(callback: ActionMode.Callback?): ActionMode? {
         return if (mDisableUserSelectMenu) {
@@ -823,6 +835,70 @@ class UniInternalWebView @JvmOverloads constructor(
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (mNestedScrollType == "none") {
             parent?.requestDisallowInterceptTouchEvent(true)
+            return super.dispatchTouchEvent(event)
+        }
+        if (mAssociativeContainer == "nested-scroll-view") {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    downX = event.rawX
+                    downY = event.rawY
+                    lastX = event.rawX
+                    lastY = event.rawY
+                    scrollAxis = ViewCompat.SCROLL_AXIS_NONE
+                    parent?.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val scrollX = lastX.roundToInt() - event.rawX.roundToInt()
+                    val scrollY = lastY.roundToInt() - event.rawY.roundToInt()
+                    lastX = event.rawX
+                    lastY = event.rawY
+                    if (scrollAxis == ViewCompat.SCROLL_AXIS_NONE) {
+                        val totalScrollX = abs(event.rawX - downX)
+                        val totalScrollY = abs(event.rawY - downY)
+                        if (totalScrollY > touchSlop && totalScrollY > totalScrollX * 2 && (mNestedScrollType == "all" || mNestedScrollType == "vertical")) {
+                            scrollAxis = ViewCompat.SCROLL_AXIS_VERTICAL
+                            nestedScrollingHelper.startNestedScroll(scrollAxis, ViewCompat.TYPE_TOUCH)
+                        } else if (totalScrollX > touchSlop && totalScrollX > totalScrollY * 2 && (mNestedScrollType == "all" || mNestedScrollType == "horizontal")) {
+                            scrollAxis = ViewCompat.SCROLL_AXIS_HORIZONTAL
+                            nestedScrollingHelper.startNestedScroll(scrollAxis, ViewCompat.TYPE_TOUCH)
+                        }
+                    }
+                    if (scrollAxis != ViewCompat.SCROLL_AXIS_NONE) {
+                        val verticalScroll = scrollAxis == ViewCompat.SCROLL_AXIS_VERTICAL
+                        val touchOffset = if (verticalScroll) scrollY else scrollX
+                        val childOffset = if (verticalScroll) this@UniInternalWebView.scrollY else this@UniInternalWebView.scrollX
+                        val parentOffset = if (touchOffset > 0) {
+                            touchOffset
+                        } else if (touchOffset < 0 && -touchOffset > childOffset) {
+                            touchOffset + childOffset
+                        } else {
+                            0
+                        }
+                        if (parentOffset != 0) {
+                            offsetInWindow.fill(0)
+                            nestedScrollingHelper.dispatchNestedScroll(
+                                0,
+                                0,
+                                if (verticalScroll) 0 else parentOffset,
+                                if (verticalScroll) parentOffset else 0,
+                                offsetInWindow,
+                                ViewCompat.TYPE_TOUCH
+                            )
+                            if (offsetInWindow[0] != 0 || offsetInWindow[1] != 0) {
+                                val ev = MotionEvent.obtain(event)
+                                ev.offsetLocation(-offsetInWindow[0].toFloat(), -offsetInWindow[1].toFloat())
+                                val handled = super.dispatchTouchEvent(ev)
+                                ev.recycle()
+                                return handled
+                            }
+                        }
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    nestedScrollingHelper.stopNestedScroll(ViewCompat.TYPE_TOUCH)
+                    scrollAxis = ViewCompat.SCROLL_AXIS_NONE
+                }
+            }
             return super.dispatchTouchEvent(event)
         }
         when (event.action) {

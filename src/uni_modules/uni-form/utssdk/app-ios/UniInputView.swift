@@ -50,6 +50,21 @@ public class UniInputView : UITextField {
         selectedTextRange = textRange(from: startPosition, to: endPosition)
     }
 
+    public func setWritingDirectionRTL(_ isRTL: Bool) {
+        semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = textAlignment
+        paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
+        var attributes = defaultTextAttributes
+        attributes[.paragraphStyle] = paragraphStyle
+        defaultTextAttributes = attributes
+
+        if let range = textRange(from: beginningOfDocument, to: endOfDocument) {
+            setBaseWritingDirection(isRTL ? .rightToLeft : .leftToRight, for: range)
+        }
+    }
+
     public func caretBottomOffset() -> CGFloat {
         let fallbackBottom = editingRect(forBounds: bounds).maxY
         guard let selectedTextRange else { return fallbackBottom }

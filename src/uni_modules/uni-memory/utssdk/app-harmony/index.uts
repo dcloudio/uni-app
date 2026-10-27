@@ -1,0 +1,71 @@
+import { MemoryWarningNative } from './MemoryWarningNative.ets'
+import { OnMemoryWarningCallback, MemoryWarningCallbackResult, OffMemoryWarning, OnMemoryWarning } from '../interface.uts'
+import { createMemoryWarningNativeError } from '../unierror.uts'
+
+let listeners: OnMemoryWarningCallback[] = []
+let nativeWrappers: Map<OnMemoryWarningCallback, (event: MemoryWarningCallbackResult) => void> = new Map()
+
+export const onMemoryWarning: OnMemoryWarning = function (callback: OnMemoryWarningCallback) {
+  if (listeners.indexOf(callback) != -1) {
+    return
+  }
+  const wrapper = (event: MemoryWarningCallbackResult): void => {
+    callback(event)
+  }
+
+  const shouldStartNativeListen = listeners.length == 0
+
+  try {
+    if (shouldStartNativeListen) {
+      const uiAbilityContext = UTSHarmony.getUIAbilityContext()
+      MemoryWarningNative.startListen(uiAbilityContext)
+    }
+    MemoryWarningNative.addListener(wrapper)
+  } catch (e) {
+    throw createMemoryWarningNativeError(1100601, 501, (e as Error).message)
+  }
+
+  listeners.push(callback)
+  nativeWrappers.set(callback, wrapper)
+}
+
+export const offMemoryWarning: OffMemoryWarning = function (callback: OnMemoryWarningCallback | null = null) {
+  if (callback == null) {
+    try {
+      listeners.forEach((item) => {
+        const wrapper = nativeWrappers.get(item)
+        if (wrapper != null) {
+          MemoryWarningNative.removeListener(wrapper)
+        }
+      })
+      const uiAbilityContext = UTSHarmony.getUIAbilityContext()
+      MemoryWarningNative.stopListen(uiAbilityContext)
+      listeners = []
+      nativeWrappers.clear()
+    } catch (e) {
+      throw createMemoryWarningNativeError(1100602, 502, (e as Error).message)
+    }
+      return
+  }
+
+  const wrapper = nativeWrappers.get(callback)
+  if (wrapper == null) {
+    return
+  }
+
+  try {
+    MemoryWarningNative.removeListener(wrapper)
+    if (listeners.length == 1) {
+      const uiAbilityContext = UTSHarmony.getUIAbilityContext()
+      MemoryWarningNative.stopListen(uiAbilityContext)
+    }
+  } catch (e) {
+    throw createMemoryWarningNativeError(1100602, 502, (e as Error).message)
+  }
+
+  nativeWrappers.delete(callback)
+  const index = listeners.indexOf(callback)
+  if (index != -1) {
+    listeners.splice(index, 1)
+  }
+}

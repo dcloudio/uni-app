@@ -1,0 +1,9 @@
+{
+	"module": {
+		"requestPermissions": [
+			{
+				"name": "ohos.permission.VIBRATE"
+			}
+		]
+	}
+}

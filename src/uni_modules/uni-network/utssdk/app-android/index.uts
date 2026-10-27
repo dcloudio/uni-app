@@ -49,12 +49,29 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 	private looper : Looper | null = null;
 	private type : Type | null = null;
 	private clzName : string | null = null;
+	private task : RequestTask | null = null;
 	constructor(param : RequestOptions<T>, type : Type, clzName : string) {
 		super();
 		this.param = param;
 		this.type = type;
 		this.clzName = clzName;
-		this.looper = Looper.myLooper();
+		this.looper = Looper.myLooper() ?? Looper.getMainLooper();
+	}
+	public setTask(task : RequestTask) {
+		this.task = task
+	}
+	private executeCompletionTask(callback : () => void) {
+		new RunnableTask(this.looper, () => {
+			try {
+				callback()
+			} finally {
+				const task = this.task
+				if (task != null) {
+					UTSAndroid.destroyInstance(task)
+					this.task = null
+				}
+			}
+		}).execute()
 	}
 	override onStart() : void {
 	}
@@ -122,7 +139,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 
 				let failResult = new RequestFailImpl(getErrcode(errCode));
 				failResult.cause = new SourceError(cause);
-				new RunnableTask(this.looper, () => {
+				this.executeCompletionTask(() => {
 					if (kParam != null) {
 						let fail = kParam.fail;
 						if (fail != null) {
@@ -133,7 +150,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 							complete(failResult);
 						}
 					}
-				}).execute();
+					});
 			} else {
 				result['statusCode'] = option['statusCode'];
 				if (option['originalData'] == null) {
@@ -167,7 +184,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 								let failResult = new RequestFailImpl(getErrcode(100002));
 								failResult.data = errMsg
 								failResult.cause = new SourceError("Error message parsing failed")
-								new RunnableTask(this.looper, () => {
+								this.executeCompletionTask(() => {
 									if (kParam != null) {
 										let fail = kParam.fail;
 										if (fail != null) {
@@ -178,7 +195,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 											complete(failResult);
 										}
 									}
-								}).execute();
+								});
 								return;
 							}
 						}
@@ -214,7 +231,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 								failResult = new RequestFailImpl(getErrcode(100003));
 							}
 
-							new RunnableTask(this.looper, () => {
+							this.executeCompletionTask(() => {
 								if (kParam != null) {
 									let fail = kParam.fail;
 									if (fail != null) {
@@ -225,7 +242,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 										complete(failResult);
 									}
 								}
-							}).execute();
+							});
 							return;
 						}
 
@@ -243,7 +260,7 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 					header: result['header']!,
 					cookies: NetworkUtil.parseCookie(this.headers)
 				};
-				new RunnableTask(this.looper, () => {
+				this.executeCompletionTask(() => {
 					if (kParam != null) {
 						let success = kParam.success;
 						if (success != null) {
@@ -254,8 +271,10 @@ class RequestNetworkListener<T> extends NetworkRequestListener {
 							complete(tmp);
 						}
 					}
-				}).execute();
+				});
 			}
+		} else {
+			this.executeCompletionTask(() => {})
 		}
 	}
 
@@ -344,9 +363,26 @@ class UploadNetworkListener implements NetworkUploadFileListener {
 	private param : UploadFileOptions | null = null;
 	public progressListeners = new ArrayList<UploadFileProgressUpdateCallback>();
 	private looper : Looper | null = null;
+	private task : UploadTask | null = null;
 	constructor(param : UploadFileOptions) {
 		this.param = param;
-		this.looper = Looper.myLooper();
+		this.looper = Looper.myLooper() ?? Looper.getMainLooper();
+	}
+	public setTask(task : UploadTask) {
+		this.task = task
+	}
+	private executeCompletionTask(callback : () => void) {
+		new RunnableTask(this.looper, () => {
+			try {
+				callback()
+			} finally {
+				const task = this.task
+				if (task != null) {
+					UTSAndroid.destroyInstance(task)
+					this.task = null
+				}
+			}
+		}).execute()
 	}
 
 	onProgress(progressUpdate : OnProgressUpdateResult) {
@@ -376,7 +412,7 @@ class UploadNetworkListener implements NetworkUploadFileListener {
 					failResult.cause = cause as SourceError;
 				}
 
-				new RunnableTask(this.looper, () => {
+				this.executeCompletionTask(() => {
 					if (kParam != null) {
 						let fail = kParam.fail;
 						if (fail != null) {
@@ -387,7 +423,7 @@ class UploadNetworkListener implements NetworkUploadFileListener {
 							complete(failResult);
 						}
 					}
-				}).execute();
+				});
 
 			} else {
 				let kData = option["data"];
@@ -400,7 +436,7 @@ class UploadNetworkListener implements NetworkUploadFileListener {
 					data: data,
 					statusCode: statusCode
 				}
-				new RunnableTask(this.looper, () => {
+				this.executeCompletionTask(() => {
 					if (kParam != null) {
 						let success = kParam.success;
 						if (success != null) {
@@ -411,10 +447,11 @@ class UploadNetworkListener implements NetworkUploadFileListener {
 							complete(successResult);
 						}
 					}
-				}).execute();
+				});
 			}
+		} else {
+			this.executeCompletionTask(() => {})
 		}
-
 	}
 }
 class DownloadNetworkListener implements NetworkDownloadFileListener {
@@ -422,9 +459,26 @@ class DownloadNetworkListener implements NetworkDownloadFileListener {
 	private param : DownloadFileOptions | null = null;
 	public progressListeners = new ArrayList<DownloadFileProgressUpdateCallback>();
 	private looper : Looper | null = null;
+	private task : DownloadTask | null = null;
 	constructor(param : DownloadFileOptions) {
 		this.param = param;
-		this.looper = Looper.myLooper();
+		this.looper = Looper.myLooper() ?? Looper.getMainLooper();
+	}
+	public setTask(task : DownloadTask) {
+		this.task = task
+	}
+	private executeCompletionTask(callback : () => void) {
+		new RunnableTask(this.looper, () => {
+			try {
+				callback()
+			} finally {
+				const task = this.task
+				if (task != null) {
+					UTSAndroid.destroyInstance(task)
+					this.task = null
+				}
+			}
+		}).execute()
 	}
 
 	onProgress(progressUpdate : OnProgressDownloadResult) {
@@ -454,7 +508,7 @@ class DownloadNetworkListener implements NetworkDownloadFileListener {
 					failResult.cause = cause as SourceError;
 				}
 
-				new RunnableTask(this.looper, () => {
+				this.executeCompletionTask(() => {
 					if (kParam != null) {
 						let fail = kParam.fail;
 						if (fail != null) {
@@ -465,7 +519,7 @@ class DownloadNetworkListener implements NetworkDownloadFileListener {
 							complete(failResult);
 						}
 					}
-				}).execute();
+				});
 			} else {
 				let kTempFilePath = option["tempFilePath"];
 				let tempFilePath = "";
@@ -478,7 +532,7 @@ class DownloadNetworkListener implements NetworkDownloadFileListener {
 					statusCode: statusCode
 				}
 
-				new RunnableTask(this.looper, () => {
+				this.executeCompletionTask(() => {
 					if (kParam != null) {
 						let success = kParam.success;
 						if (success != null) {
@@ -489,8 +543,10 @@ class DownloadNetworkListener implements NetworkDownloadFileListener {
 							complete(successResult);
 						}
 					}
-				}).execute();
+				});
 			}
+		} else {
+			this.executeCompletionTask(() => {})
 		}
 	}
 }
@@ -501,13 +557,22 @@ class DownloadNetworkListener implements NetworkDownloadFileListener {
 export function request<T>(options : RequestOptions<T>) : RequestTask {
 	const type = UTSAndroid.getGenericType<T>();
 	const clzName = UTSAndroid.getGenericClassName<T>();
-	return NetworkManager.getInstance().request<T>(options, new RequestNetworkListener<T>(options, type, clzName));
+	const listener = new RequestNetworkListener<T>(options, type, clzName)
+	const task = NetworkManager.getInstance().request<T>(options, listener)
+	listener.setTask(task)
+	return task
 }
 
 export const uploadFile : UploadFile = (options : UploadFileOptions) : UploadTask => {
-	return NetworkManager.getInstance().uploadFile(options, new UploadNetworkListener(options));
+	const listener = new UploadNetworkListener(options)
+	const task = NetworkManager.getInstance().uploadFile(options, listener)
+	listener.setTask(task)
+	return task
 }
 
 export const downloadFile : DownloadFile = (options : DownloadFileOptions) : DownloadTask => {
-	return NetworkManager.getInstance().downloadFile(options, new DownloadNetworkListener(options));
+	const listener = new DownloadNetworkListener(options)
+	const task = NetworkManager.getInstance().downloadFile(options, listener)
+	listener.setTask(task)
+	return task
 }

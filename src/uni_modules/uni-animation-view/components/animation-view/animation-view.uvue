@@ -1,0 +1,540 @@
+<template>
+  <!-- #ifdef APP -->
+  <native-view v-if="renderNativeViewRef" v-bind="$attrs" :class="rootClass" @init="onviewinit"></native-view>
+  <!-- #endif -->
+  <!-- #ifdef WEB -->
+  <div ref="containerRef" v-bind="$attrs" :class="rootClass"></div>
+  <!-- #endif -->
+  <!-- #ifdef MP-WEIXIN -->
+  <canvas type="2d" v-bind="$attrs" :class="mpCanvasClass"></canvas>
+  <!-- #endif -->
+</template>
+
+<script lang="uts" setup>
+defineOptions({
+  inheritAttrs: false
+})
+
+// #ifdef WEB
+import lottieRuntime from '../../utssdk/web/lottie-runtime.js'
+// #endif
+// #ifdef MP-WEIXIN
+import lottieRuntime from '../../utssdk/mp-weixin/lottie-runtime.js'
+// #endif
+// #ifdef APP
+import { AnimationInstanceImpl } from '@/uni_modules/uni-animation-view-x'
+// #endif
+
+type AnimationDirection = 1 | -1
+type RepeatMode = 'RESTART' | 'REVERSE'
+type AnimationAction = 'play' | 'pause' | 'stop'
+
+// #ifndef APP
+type LottieLoadOptions = {
+  container: Element
+  renderer: string
+  loop: boolean
+  autoplay: boolean
+  path: string | string.URIString
+  width?: number
+  height?: number
+}
+
+type LottieAnimationInstance = {
+  loop: boolean
+  currentFrame: number
+  totalFrames: number
+  destroy: () => void
+  play: () => void
+  pause: () => void
+  stop: () => void
+  goToAndStop: (value: number, isFrame: boolean) => void
+  setDirection: (value: number) => void
+  addEventListener: (name: string, callback: any) => void
+  removeEventListener: (name: string, callback: any) => void
+}
+
+type LottieModule = {
+  loadAnimation: (options: LottieLoadOptions) => LottieAnimationInstance
+}
+
+const UNI_ANIMATION_VIEW_ERR_SUBJECT = 'uni-animation-view'
+const UNI_ANIMATION_VIEW_ERR_INVALID_PATH = 1100601
+const UNI_ANIMATION_VIEW_ERR_LOTTIE_FAILED = 1100602
+const UNI_ANIMATION_VIEW_ERR_MSG_INVALID_PATH = 'animation-view:fail invalid path'
+const UNI_ANIMATION_VIEW_ERR_MSG_LOTTIE_FAILED = 'animation-view:fail lottie load failed'
+
+const createAnimationViewInvalidPathError = (): UniError => {
+  return new UniError(UNI_ANIMATION_VIEW_ERR_SUBJECT, UNI_ANIMATION_VIEW_ERR_INVALID_PATH, UNI_ANIMATION_VIEW_ERR_MSG_INVALID_PATH)
+}
+
+const createAnimationViewLottieError = (sourceMessage: string): UniError => {
+  const errMsg = sourceMessage.length > 0 ? UNI_ANIMATION_VIEW_ERR_MSG_LOTTIE_FAILED + ': ' + sourceMessage : UNI_ANIMATION_VIEW_ERR_MSG_LOTTIE_FAILED
+  return new UniError(UNI_ANIMATION_VIEW_ERR_SUBJECT, UNI_ANIMATION_VIEW_ERR_LOTTIE_FAILED, errMsg)
+}
+// #endif
+
+// #ifdef MP-WEIXIN
+type MpCanvasQueryResult = {
+  node: Element
+}
+
+type MpCanvasSizeResult = {
+  width: number
+  height: number
+}
+// #endif
+
+type AnimationViewProps = {
+  path: string
+  autoplay: boolean
+  loop: boolean
+  hidden: boolean
+  action: string
+}
+
+// #ifdef WEB || MP-WEIXIN
+const lottie = lottieRuntime as LottieModule
+// #endif
+// #ifdef MP-WEIXIN
+const mpCanvasSelectorClass = `uni-lottie-canvas-${Date.now()}-${Math.floor(Math.random() * 1000000)}`
+// #endif
+
+const props = withDefaults(defineProps<AnimationViewProps>(), {
+  path: '',
+  autoplay: false,
+  loop: false,
+  hidden: false,
+  action: 'stop'
+})
+
+const emit = defineEmits(['bindended', 'error'])
+
+// #ifdef APP
+const nativeElementRef = ref<UniNativeViewElement | null>(null)
+const renderNativeViewRef = ref(false)
+const animationRef = ref<AnimationInstanceImpl | null>(null)
+// #endif
+// #ifndef APP
+const containerRef = ref<Element | null>(null)
+const animationRef = ref<LottieAnimationInstance | null>(null)
+// #endif
+const repeatModeRef = ref<RepeatMode>('RESTART')
+const currentDirectionRef = ref<AnimationDirection>(1)
+const stoppedRef = ref(true)
+const pausedRef = ref(false)
+// #ifdef MP-WEIXIN
+const buildTokenRef = ref(0)
+const currentInstance = getCurrentInstance()
+// #endif
+
+const rootClass = computed((): string => {
+  let classValue = 'defaultWidth defaultHeight'
+  if (props.hidden) {
+    classValue += ' isHidden'
+  }
+  return classValue
+})
+
+// #ifdef MP-WEIXIN
+const mpCanvasClass = computed((): string => {
+  const classValue = rootClass.value
+  return classValue.length > 0 ? mpCanvasSelectorClass + ' ' + classValue : mpCanvasSelectorClass
+})
+// #endif
+
+const shouldUseNativeLoop = (): boolean => {
+  return props.loop && repeatModeRef.value == 'RESTART'
+}
+
+// #ifndef APP
+const getLastFrame = (animation: LottieAnimationInstance): number => {
+  return animation.totalFrames > 1 ? animation.totalFrames - 1 : 0
+}
+
+const moveToBoundaryFrame = (animation: LottieAnimationInstance, direction: AnimationDirection) => {
+  const targetFrame = direction == -1 ? getLastFrame(animation) : 0
+  animation.goToAndStop(targetFrame, true)
+}
+
+const setPlaybackDirection = (animation: LottieAnimationInstance, direction: AnimationDirection) => {
+  currentDirectionRef.value = direction
+  animation.setDirection(direction)
+}
+
+const resetAnimationFrame = (animation: LottieAnimationInstance) => {
+  const direction: AnimationDirection = repeatModeRef.value == 'REVERSE' ? -1 : 1
+  setPlaybackDirection(animation, direction)
+  moveToBoundaryFrame(animation, direction)
+  stoppedRef.value = true
+  pausedRef.value = false
+}
+
+const replayAnimation = (animation: LottieAnimationInstance, direction: AnimationDirection) => {
+  setPlaybackDirection(animation, direction)
+  moveToBoundaryFrame(animation, direction)
+  animation.play()
+  stoppedRef.value = false
+  pausedRef.value = false
+}
+
+const handleAnimationReady = () => {
+  const animation = animationRef.value
+  if (animation == null) {
+    return
+  }
+  animation.loop = shouldUseNativeLoop()
+  resetAnimationFrame(animation)
+  if (props.autoplay || props.action == 'play') {
+    replayAnimation(animation, currentDirectionRef.value)
+  }
+}
+
+const handleAnimationComplete = () => {
+  const animation = animationRef.value
+  if (animation == null) {
+    return
+  }
+  if (repeatModeRef.value == 'REVERSE' && props.loop) {
+    const nextDirection: AnimationDirection = currentDirectionRef.value == 1 ? -1 : 1
+    replayAnimation(animation, nextDirection)
+    return
+  }
+  stoppedRef.value = true
+  pausedRef.value = false
+  emit('bindended')
+}
+
+const getLottieErrorMessage = (event: any | null): string => {
+  if (event == null) {
+    return 'lottie load failed'
+  }
+  try {
+    const eventObject = event as UTSJSONObject
+    const message = eventObject.getString('message')
+    if (message != null && message.length > 0) {
+      return message
+    }
+  } catch (_err) {
+  }
+  try {
+    const jsonMessage = JSON.stringify(event)
+    if (jsonMessage.length > 0 && jsonMessage != '{}') {
+      return jsonMessage
+    }
+  } catch (_err) {
+  }
+  return String(event)
+}
+
+const emitLottieError = (event: any | null) => {
+  const message = getLottieErrorMessage(event)
+  console.error('animation-view lottie load failed:', message)
+  emit('error', createAnimationViewLottieError(message))
+}
+
+const emitInvalidPathError = () => {
+  emit('error', createAnimationViewInvalidPathError())
+}
+// #endif
+
+const disposeAnimation = () => {
+  const animation = animationRef.value
+  if (animation == null) {
+    return
+  }
+  // #ifndef APP
+  animation.removeEventListener('DOMLoaded', handleAnimationReady)
+  animation.removeEventListener('complete', handleAnimationComplete)
+  animation.removeEventListener('data_failed', emitLottieError)
+  animation.removeEventListener('error', emitLottieError)
+  // #endif
+  animation.destroy()
+  animationRef.value = null
+  stoppedRef.value = true
+  pausedRef.value = false
+}
+
+// #ifdef APP
+const attachAnimation = (animation: AnimationInstanceImpl) => {
+  animationRef.value = animation
+  animation.setEndedCallback((): void => {
+    stoppedRef.value = true
+    pausedRef.value = false
+    emit('bindended')
+  })
+  animation.setErrorCallback((error: UniError): void => {
+    emit('error', error)
+  })
+}
+// #endif
+
+// #ifndef APP
+const attachAnimation = (animation: LottieAnimationInstance) => {
+  animationRef.value = animation
+  animation.addEventListener('DOMLoaded', handleAnimationReady)
+  animation.addEventListener('complete', handleAnimationComplete)
+  animation.addEventListener('data_failed', emitLottieError)
+  animation.addEventListener('error', emitLottieError)
+}
+// #endif
+
+// #ifdef MP-WEIXIN
+const queryMpCanvas = (callback: (canvas: Element | null, width: number, height: number) => void) => {
+  const component = currentInstance?.proxy
+  if (component == null) {
+    console.warn('animation-view mp canvas query failed: component is null')
+    callback(null, 0, 0)
+    return
+  }
+  uni.createSelectorQuery().in(component)
+    .select(`.${mpCanvasSelectorClass}`).node()
+    .select(`.${mpCanvasSelectorClass}`).boundingClientRect()
+    .exec((result: Array<any>) => {
+      if (result.length < 2 || result[0] == null || result[1] == null) {
+        console.warn('animation-view mp canvas query failed: result is invalid')
+        callback(null, 0, 0)
+        return
+      }
+      const nodeResult = result[0] as MpCanvasQueryResult
+      const sizeResult = result[1] as MpCanvasSizeResult
+      callback(nodeResult.node, sizeResult.width, sizeResult.height)
+    })
+}
+// #endif
+
+function buildAnimation(): void {
+  // #ifdef MP-WEIXIN
+  buildTokenRef.value += 1
+  const currentBuildToken = buildTokenRef.value
+  // #endif
+  const animationPath = props.path.trim()
+  // #ifndef APP
+  if (animationPath.length == 0) {
+    disposeAnimation()
+    emitInvalidPathError()
+    return
+  }
+  // #endif
+
+  // #ifdef APP
+  const currentAnimation = animationRef.value
+  if (currentAnimation != null) {
+    currentAnimation.setOptions(props.loop, props.autoplay, props.action, repeatModeRef.value)
+    currentAnimation.load(animationPath, 0, 0)
+    return
+  }
+  const nativeElement = nativeElementRef.value
+  if (nativeElement == null) {
+    return
+  }
+  const animation = new AnimationInstanceImpl(nativeElement, props.loop)
+  animation.setOptions(props.loop, props.autoplay, props.action, repeatModeRef.value)
+  attachAnimation(animation)
+  animation.load(animationPath, 0, 0)
+  // #endif
+
+  // #ifdef WEB
+  disposeAnimation()
+  const container = containerRef.value
+  if (container == null) {
+    console.warn('animation-view web container is null')
+    console.error('animation-view lottie load failed: container is null')
+    emit('error', createAnimationViewLottieError('container is null'))
+    return
+  }
+  try {
+    const animation = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: shouldUseNativeLoop(),
+      autoplay: false,
+      path: animationPath
+    })
+    attachAnimation(animation)
+  } catch (error) {
+    emitLottieError(error)
+  }
+  // #endif
+
+  // #ifdef MP-WEIXIN
+  disposeAnimation()
+  queryMpCanvas((canvas: Element | null, width: number, height: number) => {
+    if (currentBuildToken != buildTokenRef.value) {
+      console.warn('animation-view mp build canceled by token')
+      return
+    }
+    if (canvas == null || props.path.trim() != animationPath) {
+      console.warn('animation-view mp build canceled: canvas missing or path changed')
+      if (canvas == null) {
+        console.error('animation-view lottie load failed: canvas is null')
+        emit('error', createAnimationViewLottieError('canvas is null'))
+      }
+      return
+    }
+    try {
+      const animation = lottie.loadAnimation({
+        container: canvas,
+        renderer: 'canvas',
+        loop: shouldUseNativeLoop(),
+        autoplay: props.autoplay || props.action == 'play',
+        path: animationPath,
+        width,
+        height
+      })
+      attachAnimation(animation)
+    } catch (error) {
+      emitLottieError(error)
+    }
+  })
+  // #endif
+}
+
+// #ifdef APP
+const onviewinit = (event: UniNativeViewInitEvent) => {
+  nativeElementRef.value = event.detail.element
+  buildAnimation()
+}
+// #endif
+
+const applyAction = (action: string) => {
+  const animation = animationRef.value
+  if (animation == null) {
+    console.warn('animation-view applyAction animation is null')
+    return
+  }
+
+  // #ifdef APP
+  animation.applyAction(action)
+  if (action == 'play') {
+    pausedRef.value = false
+    stoppedRef.value = false
+    return
+  }
+  if (action == 'pause') {
+    pausedRef.value = true
+    stoppedRef.value = false
+    return
+  }
+  if (action == 'stop') {
+    pausedRef.value = false
+    stoppedRef.value = true
+  }
+  // #endif
+
+  // #ifndef APP
+  if (action == 'play') {
+    if (pausedRef.value) {
+      animation.play()
+      pausedRef.value = false
+      stoppedRef.value = false
+    } else if (stoppedRef.value) {
+      replayAnimation(animation, currentDirectionRef.value)
+    } else {
+      animation.play()
+      pausedRef.value = false
+    }
+    return
+  }
+  if (action == 'pause') {
+    animation.pause()
+    pausedRef.value = true
+    stoppedRef.value = false
+    return
+  }
+  if (action == 'stop') {
+    animation.stop()
+    resetAnimationFrame(animation)
+  }
+  // #endif
+}
+
+watch(
+  (): string => props.path,
+  () => {
+    nextTick(() => {
+      buildAnimation()
+    })
+  }
+)
+
+watch(
+  (): boolean => props.loop,
+  (newValue: boolean) => {
+    const animation = animationRef.value
+    if (animation == null) {
+      return
+    }
+    // #ifdef APP
+    animation.updateLoop(newValue)
+    // #endif
+    // #ifndef APP
+    animation.loop = shouldUseNativeLoop()
+    // #endif
+  }
+)
+
+watch(
+  (): boolean => props.autoplay,
+  (newValue: boolean) => {
+    const animation = animationRef.value
+    if (animation == null) {
+      return
+    }
+    // #ifdef APP
+    animation.setAutoplay(newValue)
+    // #endif
+    // #ifndef APP
+    if (newValue) {
+      applyAction('play')
+    }
+    // #endif
+  }
+)
+
+watch(
+  (): string => props.action,
+  (newValue: string) => {
+    const animation = animationRef.value
+    if (animation == null) {
+      return
+    }
+    if (newValue == 'play' || newValue == 'pause' || newValue == 'stop') {
+      applyAction(newValue as AnimationAction)
+      return
+    }
+    // #ifdef APP
+    animation.setAction(newValue)
+    // #endif
+  }
+)
+
+onMounted(() => {
+  // #ifdef APP
+  renderNativeViewRef.value = true
+  // #endif
+  // #ifndef APP
+  nextTick(() => {
+    buildAnimation()
+  })
+  // #endif
+})
+
+onBeforeUnmount(() => {
+  disposeAnimation()
+})
+</script>
+
+<style>
+.defaultWidth {
+  width: 300px;
+}
+
+.defaultHeight {
+  height: 300px;
+}
+
+.isHidden {
+  display: none;
+}
+</style>

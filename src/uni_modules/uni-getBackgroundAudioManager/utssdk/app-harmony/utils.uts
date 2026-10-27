@@ -1,5 +1,4 @@
 import { fileIo } from '@kit.CoreFileKit';
-import { getEnv } from '@dcloudio/uni-runtime';
 
 export function isFileUri(path: string) {
   return path && typeof (path) === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
@@ -9,19 +8,18 @@ export function isSandboxPath(path: string) {
   return path && typeof (path) === 'string' && path.startsWith('/data/storage/');
 }
 
-export function getFdFromUriOrSandBoxPath(uri: string) {
-  try {
-    const file = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
-    return file.fd;
-  } catch (error) {
-    console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
-  }
-  throw new Error('file is not exist')
+export function getFileFromUriOrSandBoxPath(uri: string): fileIo.File {
+    return fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
 }
 
 function callCallbacks(callbacks: Function[], ...args: any[]) {
   callbacks.forEach(cb => {
-    typeof cb === 'function' && cb(...args)
+    if (typeof cb !== 'function') return
+    try {
+      cb(...args)
+    } catch (error) {
+      console.error(`audio callback failed: ${(error as Error).message}`)
+    }
   })
 }
 

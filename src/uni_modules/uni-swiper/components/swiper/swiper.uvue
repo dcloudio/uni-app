@@ -385,6 +385,8 @@ const sliderCount = ref(0)
 const animating = ref(false)
 const autoPlayTimer = ref(0)
 
+let resizeObserver: UniResizeObserver | null = null
+
 // 滑动方向判断的常量配置
 const TOUCH_MOVE_THRESHOLD = 5  // 最小移动距离阈值（px）
 const DIRECTION_LOCK_THRESHOLD = 5  // 方向锁定的最小距离（px）
@@ -1678,12 +1680,22 @@ onMounted(() => {
 	})
 
 	init()
+
+	if (resizeObserver == null) {
+		resizeObserver = new UniResizeObserver((entries : Array<UniResizeObserverEntry>) => {
+			init()
+		})
+		resizeObserver!.observe(wrapper!.value)
+	}
 })
 
 onBeforeUnmount(() => {
 	destroyFlag = true
 	stopAutoPlay()
 	stopAnimationFrame()
+	if (resizeObserver != null) {
+		resizeObserver!.disconnect(wrapper!)
+	}
 })
 </script>
 

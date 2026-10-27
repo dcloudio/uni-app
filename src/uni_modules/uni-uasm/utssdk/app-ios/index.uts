@@ -1,0 +1,33 @@
+import { UASMLoader } from '../types.uts'
+
+/**
+ * loader 由编译器注入，用户态 API 仅接收 module 参数
+ */
+export function loadUasm<T>(
+    module: string,
+    loader: UASMLoader<T> | null = null,
+): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+        try {
+            if (loader == null) {
+                throw new Error(`uni.loadUasm[${module}] 参数未经过编译处理`)
+            }
+            resolve(loader!())
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+/**
+ * loader 由编译器注入，用户态 API 仅接收 module 参数
+ */
+export function loadUasmSync<T>(
+    module: string,
+    loader: UASMLoader<T> | null = null,
+): T | null {
+    if (loader == null) {
+        return null
+    }
+    return loader!()
+}

@@ -11,6 +11,7 @@ import {
     parseUrl,
     reLaunchPagesBeforeEntryPages,
     removePages,
+    resolveAppRoute,
 } from '@dcloudio/uni-runtime'
 
 import { ReLaunchOptions, ReLaunchSuccess } from '../interface.uts'
@@ -19,41 +20,68 @@ import { ReLaunchFailImpl } from '../unierror.uts'
 export const reLaunch = defineAsyncApi<ReLaunchOptions, ReLaunchSuccess>(
     RE_LAUNCH,
     (options: ReLaunchOptions, res: ApiExecutor) => {
-        if (!entryPageState.handledBeforeEntryPageRoutes) {
-            reLaunchPagesBeforeEntryPages.push({ options } as ReLaunchPage)
-            return
-        }
-        const navigationStart = Date.now()
-        const normalizeRouteOptionsResult = normalizeRouteOptions(
-            APP_LAUNCH,
-            options.url as string,
-        )
-        if (normalizeRouteOptionsResult.errMsg.length > 0) {
-            res.reject(new ReLaunchFailImpl(normalizeRouteOptionsResult.errMsg))
-            return
-        }
-        options.url = normalizeRouteOptionsResult.url
-        const urlInfo = parseUrl(options.url as string)
-        const path = urlInfo.path
-        const selected: number = getTabBarIndex(path)
-        setTimeout(() => {
-            if (selected == -1) {
-                navigate(
-                    options.url as string,
-                    new Map<string, any | null>([[ANIMATION_TYPE, 'none']]),
-                    // TODO use 'reLaunch'
-                    APP_LAUNCH,
-                    () => removePages(0, -1),
-                    navigationStart
-                )
-            } else {
-                changeTabBarIndex(selected, path, urlInfo.query, true)
-                // TODO use changeTabBarIndex callback
-                setTimeout(() => {
-                    removePages(0, -1)
-                }, 100)
-            }
-            res.resolve(null)
-        }, 0)
+        _reLaunch(options, res, RE_LAUNCH)
     },
 )
+
+export function _reLaunch(
+    options: ReLaunchOptions,
+    res: ApiExecutor | null,
+    appRouteOpenType: string,
+): void {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+        reLaunchPagesBeforeEntryPages.push({
+            options,
+            execute: () => {
+                _reLaunch(options, res, appRouteOpenType)
+            },
+        } as ReLaunchPage)
+        return
+    }
+    const navigationStart = Date.now()
+    const normalizeRouteOptionsResult = normalizeRouteOptions(
+        APP_LAUNCH,
+        options.url as string,
+    )
+    if (normalizeRouteOptionsResult.errMsg.length > 0) {
+        if (res != null) {
+            res.reject(new ReLaunchFailImpl(normalizeRouteOptionsResult.errMsg))
+        }
+        return
+    }
+    options.url = normalizeRouteOptionsResult.url
+    const appRoute = resolveAppRoute(options.url as string, appRouteOpenType)
+    options.url = appRoute.url
+    const urlInfo = parseUrl(options.url as string)
+    const path = urlInfo.path
+    const selected: number = getTabBarIndex(path)
+    setTimeout(() => {
+        if (selected == -1) {
+            navigate(
+                options.url as string,
+                new Map<string, any | null>([[ANIMATION_TYPE, 'none']]),
+                RE_LAUNCH,
+                () => removePages(0, -1),
+                navigationStart,
+                appRouteOpenType,
+                appRoute.context,
+            )
+        } else {
+            changeTabBarIndex(
+                selected,
+                path,
+                urlInfo.query,
+                true,
+                appRouteOpenType,
+                appRoute.context,
+            )
+            // TODO use changeTabBarIndex callback
+            setTimeout(() => {
+                removePages(0, -1)
+            }, 100)
+        }
+        if (res != null) {
+            res.resolve(null)
+        }
+    }, 0)
+}

@@ -1,0 +1,27 @@
+import { SetScreenBrightnessFail, GetScreenBrightnessFail, SetKeepScreenOnFail } from './interface.uts'
+
+const SetScreenBrightnessUniErrorSubject = 'uni-screenBrightness'
+export class SetScreenBrightnessFailImpl extends UniError implements SetScreenBrightnessFail {
+  constructor(errCode: number, errMsg: string) {
+    super()
+    this.errSubject = SetScreenBrightnessUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = errMsg
+  }
+}
+export class GetScreenBrightnessFailImpl extends UniError implements GetScreenBrightnessFail {
+  constructor(errCode: number, errMsg: string) {
+    super()
+    this.errSubject = SetScreenBrightnessUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = errMsg
+  }
+}
+export class SetKeepScreenOnFailImpl extends UniError implements SetKeepScreenOnFail {
+  constructor(errCode: number, errMsg: string) {
+    super()
+    this.errSubject = SetScreenBrightnessUniErrorSubject
+    this.errCode = errCode
+    this.errMsg = errMsg
+  }
+}

@@ -31,7 +31,7 @@ export interface Uni {
    *    "alipay": {
    *        "hostVer": "√",
    *        "uniVer": "√",
-   *        "unixVer": "x"
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "√",
@@ -112,7 +112,7 @@ export interface Uni {
    *    "alipay": {
    *        "hostVer": "√",
    *        "uniVer": "√",
-   *        "unixVer": "x"
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "√",
@@ -384,7 +384,7 @@ export type LoginSuccess = {
    *  }
    * }
    */
-  authErrorScope?: any | null,
+  authErrorScopes?: any | null,
   /**
    * 支付宝小程序登录成功的授权 scope
    * @uniPlatform {
@@ -404,7 +404,7 @@ export type LoginSuccess = {
    *  }
    * }
    */
-  authSucessScope?: (string[]) | null,
+  authSuccessScopes?: (string[]) | null,
   /**
    * 苹果登录成功返回的信息
    * @uniPlatform {
@@ -433,7 +433,7 @@ export type LoginComplete = any;
 export type LoginCompleteCallback = (result: LoginComplete) => void;
 export type LoginOptions = {
   /**
-   * 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)
+   * 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)、苹果登录(apple)
    *
    * @uniPlatform {
    *  "app": {
@@ -1297,7 +1297,7 @@ export type GetUserInfoSuccess = {
    *    "alipay": {
    *        "hostVer": "√",
    *        "uniVer": "√",
-   *        "unixVer": "x"
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "√",
@@ -1370,9 +1370,9 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "hostVer": "x",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1445,9 +1445,9 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "hostVer": "x",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1520,9 +1520,9 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "hostVer": "x",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1595,9 +1595,9 @@ export type GetUserInfoSuccess = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "hostVer": "x",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1881,9 +1881,9 @@ export type GetUserInfoOptions = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "hostVer": "x",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -1956,9 +1956,9 @@ export type GetUserInfoOptions = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "hostVer": "x",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "x",
@@ -2031,9 +2031,9 @@ export type GetUserInfoOptions = {
    *        "unixVer": "4.41"
    *    },
    *    "alipay": {
-   *        "hostVer": "x",
-   *        "uniVer": "x",
-   *        "unixVer": "x"
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "5.31"
    *    },
    *    "baidu": {
    *        "hostVer": "x",

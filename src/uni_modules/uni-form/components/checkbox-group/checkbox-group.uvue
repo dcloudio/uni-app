@@ -1,5 +1,5 @@
 <template>
-  <view flatten>
+  <view>
     <slot></slot>
   </view>
 </template>

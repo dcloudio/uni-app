@@ -1,0 +1,125 @@
+import { AddPhoneCalendarOptions, AddPhoneRepeatCalendarOptions, CalendarErrorCode, CalendarRepeatInterval } from './interface.uts'
+
+export type NormalizedCalendarOptions = {
+	title : string
+	startTime : number
+	endTime : number
+	allDay : boolean
+	notes : string | null
+	location : string | null
+	alarm : boolean
+	alarmOffset : number | null
+	path : string | null
+	repeatInterval : CalendarRepeatInterval | null
+	repeatEndTime : number | null
+}
+
+function hasText(value : string | null) : boolean {
+	return value != null && value.length > 0
+}
+
+function appendDescriptionLine(lines : Array<string>, value : string | null) : Array<string> {
+	let set = lines;
+	if (hasText(value)) {
+		set.push(value as string)
+	}
+	return set;  
+}
+
+export function buildCalendarDescription(description : string | null, path : string | null) : string | null {
+	let lines = new Array<string>()
+	lines = appendDescriptionLine(lines, description)
+	if (hasText(path)) {
+		lines.push('[source]')
+		lines.push(`path: ${path as string}`)
+	}
+	if (lines.length == 0) {
+		return null
+	}
+	return lines.join('\n')
+}
+
+export function validateBaseOptions(options : AddPhoneCalendarOptions) : CalendarErrorCode | null {
+	if (options.title.length == 0) {
+		return 601
+	}
+	if (options.startTime <= 0) {
+		return 602
+	}
+	if (options.endTime != null && options.endTime! < options.startTime) {
+		return 603
+	}
+	if (options.alarmOffset != null && options.alarm != true) {
+		return 604
+	}
+	return null
+}
+
+export function validateRepeatOptions(options : AddPhoneRepeatCalendarOptions) : CalendarErrorCode | null {
+	if (options.title.length == 0) {
+		return 601
+	}
+	if (options.startTime <= 0) {
+		return 602
+	}
+	if (options.endTime != null && options.endTime! < options.startTime) {
+		return 603
+	}
+	if (options.alarmOffset != null && options.alarm != true) {
+		return 604
+	}
+	if (options.repeatEndTime != null && options.repeatEndTime! < options.startTime) {
+		return 606
+	}
+	if (options.repeatInterval == 'month') {
+		const day = new Date(options.startTime).getDate()
+		if (day > 28) {
+			return 606
+		}
+	}
+	return null
+}
+
+export function normalizeCalendarOptions(options : AddPhoneCalendarOptions) : NormalizedCalendarOptions {
+	const allDay = options.allDay == true
+	const startTime = options.startTime!
+	let endTime = options.endTime != null ? options.endTime! : 0
+	if (endTime <= 0) {
+		endTime = allDay ? startTime + 24 * 60 * 60 * 1000 : startTime + 60 * 60 * 1000
+	}  
+	return {
+		title: options.title,
+		startTime: startTime,
+		endTime: endTime,
+		allDay: allDay,
+		notes: buildCalendarDescription(options.notes ?? null, options.path ?? null),
+		location: options.location ?? null,
+		alarm: options.alarm == true,
+		alarmOffset: options.alarm == true ? (options.alarmOffset != null ? options.alarmOffset : 0) : null,
+		path: options.path ?? null,
+		repeatInterval: null,
+		repeatEndTime: null
+	}
+}
+
+export function normalizeRepeatCalendarOptions(options : AddPhoneRepeatCalendarOptions) : NormalizedCalendarOptions {
+	const allDay = options.allDay == true
+	const startTime = options.startTime!
+	let endTime = options.endTime != null ? options.endTime! : 0
+	if (endTime <= 0) {
+		endTime = allDay ? startTime + 24 * 60 * 60 * 1000 : startTime + 60 * 60 * 1000
+	}
+	return {
+		title: options.title,
+		startTime: startTime,
+		endTime: endTime,
+		allDay: allDay,
+		notes: buildCalendarDescription(options.notes ?? null, options.path ?? null),
+		location: options.location ?? null,
+		alarm: options.alarm == true,
+		alarmOffset: options.alarm == true ? (options.alarmOffset != null ? options.alarmOffset : 0) : null,
+		path: options.path ?? null,
+		repeatInterval: options.repeatInterval,
+		repeatEndTime: options.repeatEndTime ?? null
+	}
+}

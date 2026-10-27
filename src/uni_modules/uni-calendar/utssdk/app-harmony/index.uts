@@ -1,0 +1,193 @@
+import { 
+	AddPhoneCalendarComplete,
+	AddPhoneCalendarCompleteCallback,
+	AddPhoneCalendarFail,
+	AddPhoneCalendarFailCallback,
+	AddPhoneCalendarOptions, 
+	AddPhoneCalendarSuccess,
+	AddPhoneCalendarSuccessCallback,
+	AddPhoneRepeatCalendarComplete,
+	AddPhoneRepeatCalendarCompleteCallback,
+	AddPhoneRepeatCalendarFail,
+	AddPhoneRepeatCalendarFailCallback,
+	AddPhoneRepeatCalendarOptions, 
+	AddPhoneRepeatCalendarSuccess,
+	AddPhoneRepeatCalendarSuccessCallback,
+	CalendarErrorCode, 
+	CalendarRepeatInterval,
+	ICalendarError,
+	AddPhoneCalendar,
+	AddPhoneRepeatCalendar
+	
+} from '../interface.uts'
+
+import {
+	NormalizedCalendarOptions, 
+	normalizeCalendarOptions,
+	normalizeRepeatCalendarOptions, 
+	validateBaseOptions, 
+	validateRepeatOptions 
+} from '../common.uts'
+
+import { createAddPhoneCalendarFail, createAddPhoneRepeatCalendarFail } from '../unierror.uts'
+
+import { CalendarNative, NativeCalendarOptions } from './CalendarNative.ets'
+
+const HARMONY_NATIVE_CANCEL_CODE = 509
+
+function createAddPhoneCalendarSuccess(errMsg : string) : AddPhoneCalendarSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function createAddPhoneRepeatCalendarSuccess(errMsg : string) : AddPhoneRepeatCalendarSuccess {
+	return {
+		errMsg: errMsg
+	}
+}
+
+function callCalendarSuccess(options : AddPhoneCalendarOptions, errMsg : string) : void {
+	const result = createAddPhoneCalendarSuccess(errMsg)
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function callRepeatSuccess(options : AddPhoneRepeatCalendarOptions, errMsg : string) : void {
+	const result = createAddPhoneRepeatCalendarSuccess(errMsg)
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function callCalendarFail(options : AddPhoneCalendarOptions, fail : AddPhoneCalendarFail) : void {
+	options.fail?.(fail)
+	options.complete?.(fail)
+}
+
+function callRepeatFail(options : AddPhoneRepeatCalendarOptions, fail : AddPhoneRepeatCalendarFail) : void {
+	options.fail?.(fail)
+	options.complete?.(fail)
+}
+
+function mapAddPhoneCalendarNativeCode(code : number) : AddPhoneCalendarFail {
+	if (code == HARMONY_NATIVE_CANCEL_CODE) {
+		return createAddPhoneCalendarFail(609, 'addPhoneCalendar:fail cancel', {
+			platformCode: code
+		} as UTSJSONObject)
+	}
+	let errCode : CalendarErrorCode = 608
+	if (code == 501) {
+		errCode = 607
+	}
+	return createAddPhoneCalendarFail(errCode, 'addPhoneCalendar:fail', {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+function mapAddPhoneRepeatCalendarNativeCode(code : number) : AddPhoneRepeatCalendarFail {
+	if (code == HARMONY_NATIVE_CANCEL_CODE) {
+		return createAddPhoneRepeatCalendarFail(609, 'addPhoneRepeatCalendar:fail cancel', {
+			platformCode: code
+		} as UTSJSONObject)
+	}
+	let errCode : CalendarErrorCode = 608
+	if (code == 501) {
+		errCode = 607
+	}
+	return createAddPhoneRepeatCalendarFail(errCode, 'addPhoneRepeatCalendar:fail', {
+		platformCode: code
+	} as UTSJSONObject)
+}
+
+function toNativeOptions(normalized : NormalizedCalendarOptions) : NativeCalendarOptions {
+	return new NativeCalendarOptions(
+		normalized.title,
+		normalized.startTime,
+		normalized.endTime,
+		normalized.allDay,
+		normalized.notes,
+		normalized.location,
+		normalized.alarm,
+		normalized.alarmOffset,
+		normalized.repeatInterval,
+		normalized.repeatEndTime
+	)
+}
+
+function performAddCalendarByEditor(options : AddPhoneCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	const nativeOptions = toNativeOptions(normalized)
+	CalendarNative.editEvent(nativeOptions).then((code : number) => {
+		if (code != 0) {
+			callCalendarFail(options, mapAddPhoneCalendarNativeCode(code))
+			return null
+		}
+		callCalendarSuccess(options, `${action}:ok`)
+		return null
+	}, (_ : Error | null) => {
+		callCalendarFail(options, createAddPhoneCalendarFail(608, `${action}:fail harmony native rejected`))
+		return null
+	})
+}
+
+function performAddCalendar(options : AddPhoneCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	performAddCalendarByEditor(options, normalized, action)
+}
+
+function performAddRepeatByEditor(options : AddPhoneRepeatCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	const nativeOptions = toNativeOptions(normalized)
+	CalendarNative.editEvent(nativeOptions).then((code : number) => {
+		if (code != 0) {
+			callRepeatFail(options, mapAddPhoneRepeatCalendarNativeCode(code))
+			return null
+		}
+		callRepeatSuccess(options, `${action}:ok`)
+		return null
+	}, (_ : Error | null) => {
+		callRepeatFail(options, createAddPhoneRepeatCalendarFail(608, `${action}:fail harmony native rejected`))
+		return null
+	})
+}
+
+function performAddRepeat(options : AddPhoneRepeatCalendarOptions, normalized : NormalizedCalendarOptions, action : string) : void {
+	performAddRepeatByEditor(options, normalized, action)
+}
+
+export function addPhoneCalendar(options : AddPhoneCalendarOptions) : void {
+	const error = validateBaseOptions(options)
+	if (error != null) {
+		callCalendarFail(options, createAddPhoneCalendarFail(error, null))
+		return
+	}
+	performAddCalendar(options, normalizeCalendarOptions(options), 'addPhoneCalendar')
+}
+
+export function addPhoneRepeatCalendar(options : AddPhoneRepeatCalendarOptions) : void {
+	const error = validateRepeatOptions(options)
+	if (error != null) {
+		callRepeatFail(options, createAddPhoneRepeatCalendarFail(error, null))
+		return
+	}
+	performAddRepeat(options, normalizeRepeatCalendarOptions(options), 'addPhoneRepeatCalendar')
+}
+
+export {
+	AddPhoneCalendarOptions, 
+	AddPhoneRepeatCalendarOptions, 
+	AddPhoneCalendarSuccess,
+	AddPhoneCalendarSuccessCallback,
+	AddPhoneCalendarFail,
+	AddPhoneCalendarFailCallback,
+	AddPhoneCalendarComplete,
+	AddPhoneCalendarCompleteCallback,
+	AddPhoneRepeatCalendarSuccess,
+	AddPhoneRepeatCalendarSuccessCallback,
+	AddPhoneRepeatCalendarFail,
+	AddPhoneRepeatCalendarFailCallback,
+	AddPhoneRepeatCalendarComplete,
+	AddPhoneRepeatCalendarCompleteCallback,
+	CalendarErrorCode, 
+	CalendarRepeatInterval,
+	ICalendarError,
+	AddPhoneCalendar,
+	AddPhoneRepeatCalendar
+}

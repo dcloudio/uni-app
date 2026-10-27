@@ -295,17 +295,29 @@ export class NativeWebView {
 	}
 
 	setWebViewStyles(wvStyles : WebViewStyles | null) {
+		let progressValue : any = wvStyles?.progress
+
 		let showProgress : boolean = true
 		let progressColor : string = "#00FF00"
-		if (wvStyles?.progress != null && typeof wvStyles?.progress! == "boolean") {
-			showProgress = wvStyles as Bool
-		} else if (wvStyles?.progress instanceof Map<string, any>) {
-			let progress = wvStyles?.progress! as Map<string, any>
+		if (progressValue instanceof NSNumber) {
+			let progressNumber = progressValue as NSNumber
+			showProgress = progressNumber.boolValue
+		} else if (typeof progressValue == "boolean") {
+			showProgress = progressValue as boolean
+		} else if (progressValue instanceof Map<string, any>) {
+			let progress = progressValue as Map<string, any>
 			if (typeof progress["color"] == "string") {
 				const colorHex = progress["color"] as string
 				progressColor = colorHex ?? "#00FF00"
 			}
+		} else if (progressValue instanceof UTSJSONObject) {
+			let progress = progressValue as UTSJSONObject
+			const colorHex = progress.getString("color")
+			if (colorHex != null) {
+				progressColor = colorHex
+			}
 		}
+
 		this.webView?.setWebViewStyles(isShow = showProgress, color = UTSiOS.colorWithString(progressColor))
 	}
 
@@ -319,6 +331,10 @@ export class NativeWebView {
 
 	setBounces(bounces : boolean) {
 		this.webView?.setBounces(bounces)
+	}
+
+	setAssociativeContainer(type : string) {
+		this.webView?.setAssociativeContainer(type)
 	}
 
 	setDisableUserSelectMenu(disableUserSelectMenu : boolean) {

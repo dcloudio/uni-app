@@ -1,0 +1,3 @@
+export interface UniOAuthAppleProvider extends UniOAuthProvider, JSExport {
+		toJSON() : Map<String, Any>
+}

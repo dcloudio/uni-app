@@ -29,17 +29,26 @@ async function saveResource(src: Resource, dest: string) {
     const resourceManager = context.resourceManager
     const srcPath: string = src.params?.[0] as string
     const destFile = fs.openSync(dest, fs.OpenMode.WRITE_ONLY)
-    const content = await resourceManager.getRawFileContent(srcPath)
-    await fs.write(destFile.fd, content.buffer as ArrayBuffer)
-    await fs.close(destFile)
+    try {
+        const content = await resourceManager.getRawFileContent(srcPath)
+        await fs.write(destFile.fd, content.buffer as ArrayBuffer)
+    } finally {
+        await fs.close(destFile)
+    }
 }
 
 async function saveUri(src: string, dest: string) {
     const srcFile = fs.openSync(src, fs.OpenMode.READ_ONLY)
-    const destFile = fs.openSync(dest, fs.OpenMode.WRITE_ONLY)
-    await fs.copyFile(srcFile.fd, destFile.fd)
-    await fs.close(srcFile)
-    await fs.close(destFile)
+    try {
+        const destFile = fs.openSync(dest, fs.OpenMode.WRITE_ONLY)
+        try {
+            await fs.copyFile(srcFile.fd, destFile.fd)
+        } finally {
+            await fs.close(destFile)
+        }
+    } finally {
+        await fs.close(srcFile)
+    }
 }
 
 /**
@@ -114,10 +123,16 @@ async function saveMediaToAlbum(fromUri: string, type: 'image' | 'video'): Promi
         if (fileExists(cachedFileName)) {
             await fs.unlink(cachedFileName)
         }
-        const destFile = await fs.open(saveMediaCachePath + '/' + fileName, fs.OpenMode.WRITE_ONLY | fs.OpenMode.CREATE)
-        await fs.copyFile(srcFile.fd, destFile.fd)
-        await fs.close(srcFile)
-        await fs.close(destFile)
+        try {
+            const destFile = await fs.open(saveMediaCachePath + '/' + fileName, fs.OpenMode.WRITE_ONLY | fs.OpenMode.CREATE)
+            try {
+                await fs.copyFile(srcFile.fd, destFile.fd)
+            } finally {
+                await fs.close(destFile)
+            }
+        } finally {
+            await fs.close(srcFile)
+        }
         showUri = fileUri.getUriFromPath(cachedFileName)
     }
     const desFileUris: Array<string> = await phAccessHelper.showAssetsCreationDialog([

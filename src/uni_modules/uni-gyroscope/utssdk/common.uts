@@ -1,0 +1,22 @@
+import { GyroscopeInterval } from './interface.uts'
+
+const defaultGyroscopeInterval : GyroscopeInterval = 'normal'
+
+export function normalizeGyroscopeInterval(interval : GyroscopeInterval | null) : GyroscopeInterval {
+	if (interval != null) {
+		if (interval == 'game') {
+			return 'game'
+		}
+		if (interval == 'ui') {
+			return 'ui'
+		}
+	}
+	return defaultGyroscopeInterval
+}
+
+export function degreesPerSecondToRadians(value : number | null) : number {
+	if (value == null) {
+		return 0
+	}
+	return value * Math.PI / 180
+}

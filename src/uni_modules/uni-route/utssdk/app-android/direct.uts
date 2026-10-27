@@ -1,6 +1,12 @@
-import { Page, __uniConfig, getRealPath, parseUrl } from '@dcloudio/uni-runtime'
+import {
+    NAVIGATE_BACK,
+    Page,
+    __uniConfig,
+    getRealPath,
+    parseUrl,
+} from '@dcloudio/uni-runtime'
 import { ReLaunchOptions } from '../interface.uts'
-import { reLaunch } from './reLaunch.uts'
+import { _reLaunch } from './reLaunch.uts'
 // 是否处于直达页面
 export function isDirectPage(page: Page): boolean {
     return (
@@ -13,7 +19,11 @@ export function isDirectPage(page: Page): boolean {
 export function reLaunchEntryPage() {
     __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
     __uniConfig.realEntryPagePath = ''
-    reLaunch({
-        url: __uniConfig.entryPagePath,
-    } as ReLaunchOptions)
+    _reLaunch(
+        {
+            url: __uniConfig.entryPagePath,
+        } as ReLaunchOptions,
+        null,
+        NAVIGATE_BACK,
+    )
 }
