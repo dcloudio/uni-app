@@ -127,6 +127,7 @@
     * [安卓、鸿蒙厂商推送配置](uni-push/vendor_config.md)
     * [谷歌FCM配置](uni-push/google-fcm.md)
   * [uni统计](https://uniapp.dcloud.net.cn/uni-stat-uniappx)
+  * [App升级中心](https://doc.dcloud.net.cn/uniCloud/upgrade-center.html)
 * 教程
 	* [性能优化](performance.md)
 	* [复杂列表开发指南](tutorial/stickynestlist.md)
