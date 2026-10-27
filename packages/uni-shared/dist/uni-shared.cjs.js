@@ -2726,6 +2726,18 @@ function createUniDOMStringMap(source, options) {
     });
 }
 
+const uniElementPageMap = new WeakMap();
+function setUniElementPage(pageElement, page) {
+    uniElementPageMap.set(pageElement, page);
+}
+function getUniElementPage(element) {
+    var _a;
+    const pageElement = element.closest('uni-page');
+    return pageElement
+        ? (_a = uniElementPageMap.get(pageElement)) !== null && _a !== void 0 ? _a : null
+        : null;
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -2914,6 +2926,7 @@ exports.getEnvLocale = getEnvLocale;
 exports.getGlobal = getGlobal;
 exports.getLen = getLen;
 exports.getPartClass = getPartClass;
+exports.getUniElementPage = getUniElementPage;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
@@ -2971,6 +2984,7 @@ exports.resolveOwnerEl = resolveOwnerEl;
 exports.resolveOwnerVm = resolveOwnerVm;
 exports.sanitise = sanitise;
 exports.scrollTo = scrollTo;
+exports.setUniElementPage = setUniElementPage;
 exports.sortObject = sortObject;
 exports.stringifyQuery = stringifyQuery;
 exports.updateElementStyle = updateElementStyle;
