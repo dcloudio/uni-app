@@ -265,6 +265,17 @@
   let isReady = false
   let callbackId = 0
   const callbackMap = new Map<number, UTSJSONObject>()
+  const computedStyle = useComputedStyle({
+    properties: ['caret-color'],
+    filterProperties: true
+  } as UseComputedStyleOptions)
+  const caretColor = computed<string | null>(() => computedStyle.get('caret-color')?.toString() ?? null)
+
+  function updateCaretColor() {
+    if (isReady) {
+      evalJS(`editorSetCaretColor(${JSON.stringify(caretColor.value)})`)
+    }
+  }
 
   // #ifdef VUE3-VAPOR
   let formValue = ''
@@ -355,6 +366,7 @@
       case 'ready':
         // 编辑器初始化完成
         isReady = true
+        updateCaretColor()
         emit('ready')
         break
 
@@ -501,7 +513,8 @@
       showImgToolbar: props.showImgToolbar,
       showImgResize: props.showImgResize,
       readOnly: props.readOnly,
-      type: props.type
+      type: props.type,
+      caretColor: caretColor.value
     }
 
     evalJS(`editorInit(${JSON.stringify(config)})`)
@@ -811,6 +824,8 @@
       evalJS(`editorSetPlaceholder({placeholder: '${escapeString(newVal)}'})`)
     }
   })
+
+  watch(caretColor, updateCaretColor)
 
   // #ifndef VUE3-VAPOR
   const __UNIEDITOR_FORMAT_EVENT_NAME__ = createEditorEventName('format', eventSeed)

@@ -15,8 +15,10 @@ export function getPickerPopupStyle(
     windowHeight: number,
     contentHeight: number
 ) {
-    const width = Math.min(POPUP_WIDTH, windowWidth - POPUP_EDGE * 2)
-    let height = Math.min(contentHeight, windowHeight - POPUP_EDGE * 2)
+    const availableWidth = Math.max(0, windowWidth - POPUP_EDGE * 2)
+    const availableHeight = Math.max(0, windowHeight - POPUP_EDGE * 2)
+    const width = Math.min(POPUP_WIDTH, availableWidth)
+    let height = Math.min(Math.max(0, contentHeight), availableHeight)
     let left = (windowWidth - width) / 2
     let top = (windowHeight - height) / 2
 

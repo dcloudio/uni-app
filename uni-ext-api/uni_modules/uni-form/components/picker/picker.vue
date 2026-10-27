@@ -128,7 +128,7 @@
          */
         mode ?: Mode
         // #ifdef WEB
-        /** 宽屏单列选择器的展示方式，默认 iPad 使用 picker，其他设备使用 select */
+        /** 宽屏单列选择器的展示方式，默认与 H5 一致，Apple 触控设备使用 picker，其他设备使用 select */
         selectorType ?: 'picker' | 'select' | ''
         // #endif
         /**
@@ -347,9 +347,9 @@
             mode: props.mode,
         }
         // #ifdef WEB
-        const isIPad = navigator.vendor.indexOf('Apple') === 0 && navigator.maxTouchPoints > 0
+        const isAppleTouchDevice = navigator.vendor.indexOf('Apple') === 0 && navigator.maxTouchPoints > 0
         baseParams.selectorType = props.selectorType === 'picker' || props.selectorType === 'select'
-            ? props.selectorType : (isIPad ? 'picker' : 'select')
+            ? props.selectorType : (isAppleTouchDevice ? 'picker' : 'select')
         baseParams.popover = getPopover()
         // #endif
         const currentValue = innerValue.value

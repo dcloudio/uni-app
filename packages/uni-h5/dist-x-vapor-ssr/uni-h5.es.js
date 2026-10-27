@@ -1,6 +1,6 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, isVNode, createBlock, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, getCurrentInstance, createVNode, defineComponent as defineComponent$2, inject, onMounted, onBeforeUnmount, watch, setAttr, template, warn, unref, ref, mergeProps, reactive, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, markRaw, onUnmounted, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, renderSlot, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, isVNode, createBlock, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, getCurrentInstance, createVNode, defineComponent as defineComponent$2, inject, onMounted, onBeforeUnmount, watch, setAttr, template, warn, unref, ref, mergeProps, reactive, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, onUnmounted, markRaw, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, renderSlot, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderDynamicComponent, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
@@ -5466,6 +5466,95 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
+let UniVueElement$2 = class UniVueElement extends Object {
+};
+let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
+};
+function useLoadingStyle$1(targetElement, bold) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
+  const calculateLoadingWidth = (element, bold2) => {
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
+  };
+  onMounted(() => {
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
+    });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement$1
+    }
+  },
+  __name: "index-x",
+  __ssrInlineRender: true,
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  __vapor: true,
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle$1(LoadingRef, computed(() => props2.bold)));
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<uni-loading-element${ssrRenderAttrs(mergeProps({
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, _attrs), "uni-loading-element")}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></uni-loading-element>`);
+    };
+  }
+});
+const _sfc_setup$s = _sfc_main$s.setup;
+_sfc_main$s.setup = (props2, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/loading/index-x.vue");
+  return _sfc_setup$s ? _sfc_setup$s(props2, ctx) : void 0;
+};
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -5563,7 +5652,7 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -5576,6 +5665,7 @@ const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
     const hasPages = __UNI_FEATURE_PAGES__;
     const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
     const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const isXVapor = true;
     const ICON_PATHS = {
       none: "",
       forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -5785,8 +5875,10 @@ const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
           fontSize: unref(navigationBar).titleSize,
           opacity: unref(navigationBar).type === "transparent" ? 0 : 1
         })}">`);
-        if (unref(navigationBar).loading) {
+        if (!unref(isXVapor) && unref(navigationBar).loading) {
           _push(`<i class="uni-loading"></i>`);
+        } else if (unref(isXVapor) && unref(navigationBar).loading) {
+          _push(ssrRenderComponent(_sfc_main$s, { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }, null, _parent));
         } else if (unref(navigationBar).titleImage) {
           _push(`<img${ssrRenderAttr("src", unref(navigationBar).titleImage)} class="uni-page-head__title_image">`);
         } else {
@@ -5862,13 +5954,13 @@ const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$s = _sfc_main$s.setup;
-_sfc_main$s.setup = (props2, ctx) => {
+const _sfc_setup$r = _sfc_main$r.setup;
+_sfc_main$r.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageHead.vue");
-  return _sfc_setup$s ? _sfc_setup$s(props2, ctx) : void 0;
+  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
 };
-const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
   ...{ name: "PageRefresh" },
   __name: "component",
   __ssrInlineRender: true,
@@ -5882,13 +5974,13 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$r = _sfc_main$r.setup;
-_sfc_main$r.setup = (props2, ctx) => {
+const _sfc_setup$q = _sfc_main$q.setup;
+_sfc_main$q.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/page-refresh/component.vue");
-  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
+  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
 };
-const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -5922,7 +6014,7 @@ const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
     return (_ctx, _push, _parent, _attrs) => {
       _push(`<!--[-->`);
       if (unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh)) {
-        _push(ssrRenderComponent(_sfc_main$r, {
+        _push(ssrRenderComponent(_sfc_main$q, {
           ref_key: "refreshRef",
           ref: refreshRef
         }, null, _parent));
@@ -5944,13 +6036,13 @@ const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$q = _sfc_main$q.setup;
-_sfc_main$q.setup = (props2, ctx) => {
+const _sfc_setup$p = _sfc_main$p.setup;
+_sfc_main$p.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageBody.vue");
-  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
+  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
 };
-const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "Page",
     __reserved: true,
@@ -6060,11 +6152,11 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
         style: pageStyle
       }, _attrs), "uni-page")}>`);
       if (unref(hasNavigationBar) && unref(navigationBar).style !== "custom") {
-        _push(ssrRenderComponent(_sfc_main$s, null, null, _parent));
+        _push(ssrRenderComponent(_sfc_main$r, null, null, _parent));
       } else {
         _push(`<!---->`);
       }
-      _push(ssrRenderComponent(_sfc_main$q, null, {
+      _push(ssrRenderComponent(_sfc_main$p, null, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
             ssrRenderDynamicComponent(_push2, resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, _parent2, _scopeId);
@@ -6089,14 +6181,14 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$p = _sfc_main$p.setup;
-_sfc_main$p.setup = (props2, ctx) => {
+const _sfc_setup$o = _sfc_main$o.setup;
+_sfc_main$o.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/index-vapor.vue");
-  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
+  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
 };
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$p, {
+  return Object.assign({}, _sfc_main$o, {
     __uniPageComponent: pageComponent
   });
 }
@@ -8950,95 +9042,6 @@ const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-let UniVueElement$2 = class UniVueElement extends Object {
-};
-let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
-};
-function useLoadingStyle$1(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement$1
-    }
-  },
-  __name: "index-x",
-  __ssrInlineRender: true,
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  __vapor: true,
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle$1(LoadingRef, computed(() => props2.bold)));
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<uni-loading-element${ssrRenderAttrs(mergeProps({
-        class: "default __uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, _attrs), "uni-loading-element")}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></uni-loading-element>`);
-    };
-  }
-});
-const _sfc_setup$o = _sfc_main$o.setup;
-_sfc_main$o.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/loading/index-x.vue");
-  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
-};
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -9098,7 +9101,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         }, [props2.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", {
           key: 0,
           class: "uni-scroll-view-refresh"
-        }, [(openBlock(), createBlock(Fragment, { key: 0 }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? (openBlock(), createBlock(_sfc_main$o, {
+        }, [(openBlock(), createBlock(Fragment, { key: 0 }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? (openBlock(), createBlock(_sfc_main$s, {
           key: "refresh__loading",
           class: "uni-scroll-view-refresh__loading",
           paused: props2.refreshState == "pulling",
@@ -11531,8 +11534,8 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent$2({
       const baseParams = {
         mode: props2.mode
       };
-      const isIPad = navigator.vendor.indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
-      baseParams.selectorType = props2.selectorType === "picker" || props2.selectorType === "select" ? props2.selectorType : isIPad ? "picker" : "select";
+      const isAppleTouchDevice = navigator.vendor.indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+      baseParams.selectorType = props2.selectorType === "picker" || props2.selectorType === "select" ? props2.selectorType : isAppleTouchDevice ? "picker" : "select";
       baseParams.popover = getPopover();
       const currentValue = innerValue.value;
       switch (props2.mode) {
@@ -18597,7 +18600,7 @@ export {
   indexVapor$6 as MovableArea,
   indexVapor$5 as MovableView,
   _sfc_main$e as Navigator,
-  _sfc_main$p as PageComponent,
+  _sfc_main$o as PageComponent,
   _sfc_main$d as PageContainer,
   _sfc_main$c as Picker,
   _sfc_main$b as PickerView,

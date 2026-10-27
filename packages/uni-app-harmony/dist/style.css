@@ -1160,6 +1160,7 @@ uni-textarea[auto-height="true"] {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-overflow-scrolling: touch;
+  caret-color: inherit;
 }
 
 .ql-container .ql-editor::-webkit-scrollbar {

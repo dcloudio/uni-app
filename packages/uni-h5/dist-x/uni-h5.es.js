@@ -10416,6 +10416,93 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
+class UniVueElement extends HTMLElement {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
+  const calculateLoadingWidth = (element, bold2) => {
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
+  };
+  onMounted(() => {
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
+    });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$c = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
+    }
+  },
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_3;
+      return openBlock(), createElementBlock("uni-loading-element", {
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, [
+        createVNode(_component_view, {
+          class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+          style: normalizeStyle(loadingStyle)
+        }, null, 8, ["class", "style"])
+      ], 512);
+    };
+  }
+});
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -10560,7 +10647,7 @@ const _hoisted_23 = {
 };
 const _hoisted_24 = ["d"];
 const _hoisted_25 = ["innerHTML"];
-const _sfc_main$c = /* @__PURE__ */ defineComponent({
+const _sfc_main$b = /* @__PURE__ */ defineComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -10571,6 +10658,7 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent({
     const hasPages = __UNI_FEATURE_PAGES__;
     const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
     const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const isXVapor = false;
     const ICON_PATHS = {
       none: "",
       forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -10837,11 +10925,14 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent({
                 opacity: unref(navigationBar).type === "transparent" ? 0 : 1
               })
             }, [
-              unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(navigationBar).titleImage ? (openBlock(), createElementBlock("img", {
+              !unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createBlock(_sfc_main$c, {
                 key: 1,
+                style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" }
+              })) : unref(navigationBar).titleImage ? (openBlock(), createElementBlock("img", {
+                key: 2,
                 src: unref(navigationBar).titleImage,
                 class: "uni-page-head__title_image"
-              }, null, 8, _hoisted_14)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+              }, null, 8, _hoisted_14)) : (openBlock(), createElementBlock(Fragment, { key: 3 }, [
                 createTextVNode(toDisplayString(unref(navigationBar).titleText), 1)
               ], 64))
             ], 4)
@@ -10965,7 +11056,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-const _sfc_main$b = /* @__PURE__ */ defineComponent({
+const _sfc_main$a = /* @__PURE__ */ defineComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
@@ -11259,7 +11350,7 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const _sfc_main$a = /* @__PURE__ */ defineComponent({
+const _sfc_main$9 = /* @__PURE__ */ defineComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -11297,7 +11388,7 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent({
     }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
-        unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh) ? (openBlock(), createBlock(_sfc_main$b, {
+        unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh) ? (openBlock(), createBlock(_sfc_main$a, {
           key: 0,
           ref_key: "refreshRef",
           ref: refreshRef
@@ -11375,7 +11466,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(_sfc_main$c),
+        createVNode(_sfc_main$b),
         createPageBodyVNode(ctx),
         createDialogPageVNode(
           currentInstance.$dialogPages,
@@ -11412,7 +11503,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
 }
 function createPageBodyVNode(ctx) {
   return openBlock(), createBlock(
-    _sfc_main$a,
+    _sfc_main$9,
     { key: 0 },
     {
       default: withCtx(() => [renderSlot(ctx.slots, "page")]),
@@ -17212,93 +17303,6 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     return result;
-  }
-});
-class UniVueElement extends HTMLElement {
-}
-class UniLoadingElement extends UniVueElement {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const _sfc_main$9 = /* @__PURE__ */ defineComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement
-    }
-  },
-  __name: "index-x",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    return (_ctx, _cache) => {
-      const _component_view = __syscom_3;
-      return openBlock(), createElementBlock("uni-loading-element", {
-        class: "default __uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, [
-        createVNode(_component_view, {
-          class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-          style: normalizeStyle(loadingStyle)
-        }, null, 8, ["class", "style"])
-      ], 512);
-    };
   }
 });
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
@@ -30532,7 +30536,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       const _component_text = __syscom_2$1;
       const _component_view = __syscom_3;
       const _component_input = __syscom_3$2;
-      const _component_loading = _sfc_main$9;
+      const _component_loading = _sfc_main$c;
       const _component_scroll_view = __syscom_3$1;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
@@ -31735,7 +31739,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
     });
     return (_ctx, _cache) => {
-      const _component_loading = _sfc_main$9;
+      const _component_loading = _sfc_main$c;
       const _component_text = __syscom_2$1;
       const _component_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
@@ -32784,7 +32788,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     return (_ctx, _cache) => {
       const _component_image = __syscom_0$2;
       const _component_view = __syscom_3;
-      const _component_loading = _sfc_main$9;
+      const _component_loading = _sfc_main$c;
       return openBlock(), createBlock(_component_view, {
         style: { "flex": "1" },
         class: "uni-preview-image-item-background"
@@ -34265,7 +34269,7 @@ export {
   index$h as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
-  _sfc_main$9 as Loading,
+  _sfc_main$c as Loading,
   __syscom_0 as Map,
   MatchMedia,
   MovableArea,

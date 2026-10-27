@@ -1,4 +1,4 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, openBlock, createElementBlock, defineComponent, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, renderSlot, logError, createElementVNode, toDisplayString, unref, onBeforeActivate, onBeforeDeactivate, createBlock, onDeactivated, createApp, Transition, effectScope, renderList, normalizeClass, normalizeStyle, createCommentVNode, withCtx, KeepAlive, resolveDynamicComponent } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, openBlock, createElementBlock, defineComponent, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, isReactive, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, createTextVNode, h, resolveComponent, createBlock, unref, withCtx, normalizeClass, normalizeStyle, renderSlot, logError, createElementVNode, toDisplayString, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, Transition, effectScope, renderList, createCommentVNode, KeepAlive, resolveDynamicComponent } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, passive, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_THEME_CHANGE, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, onCreateVueApp, formatDateTime, RESPONSIVE_MIN_WIDTH, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -14802,6 +14802,96 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
+class UniVueElement extends HTMLElement {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
+  const calculateLoadingWidth = (element, bold2) => {
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
+  };
+  onMounted(() => {
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
+    });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$6 = /* @__PURE__ */ defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
+    }
+  },
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
+    return (_ctx, _cache) => {
+      const _component_view = resolveComponent("view");
+      return openBlock(), createBlock(unref(UniLoadingElement), {
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+            style: normalizeStyle(loadingStyle)
+          }, null, 8, ["class", "style"])
+        ]),
+        _: 1
+      }, 512);
+    };
+  }
+});
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   name: "Refresher",
   props: {
@@ -27623,6 +27713,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     const hasPages = __UNI_FEATURE_PAGES__;
     const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
     const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const isXVapor = false;
     const ICON_PATHS = {
       none: "",
       forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -27889,11 +27980,14 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
                 opacity: unref(navigationBar).type === "transparent" ? 0 : 1
               })
             }, [
-              unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(navigationBar).titleImage ? (openBlock(), createElementBlock("img", {
+              !unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createElementBlock("i", _hoisted_13)) : unref(isXVapor) && unref(navigationBar).loading ? (openBlock(), createBlock(_sfc_main$6, {
                 key: 1,
+                style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" }
+              })) : unref(navigationBar).titleImage ? (openBlock(), createElementBlock("img", {
+                key: 2,
                 src: unref(navigationBar).titleImage,
                 class: "uni-page-head__title_image"
-              }, null, 8, _hoisted_14)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+              }, null, 8, _hoisted_14)) : (openBlock(), createElementBlock(Fragment, { key: 3 }, [
                 createTextVNode(toDisplayString(unref(navigationBar).titleText), 1)
               ], 64))
             ], 4)

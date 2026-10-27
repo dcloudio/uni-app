@@ -3836,6 +3836,57 @@ function useBackgroundColorContent(pageMeta) {
   onThemeChange(update);
   vue.watchEffect(update);
 }
+class UniVueElement extends Object {
+}
+class UniLoadingElement extends UniVueElement {
+}
+function useLoadingStyle(targetElement, bold) {
+  const loadingSize = vue.ref("16px");
+  const loadingBorderWidth = vue.ref("1px");
+  vue.ref("8px");
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const _sfc_main$5 = /* @__PURE__ */ vue.defineComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement
+    }
+  },
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = vue.ref(null);
+    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
+    return (_ctx, _cache) => {
+      const _component_view = __syscom_0;
+      return vue.openBlock(), vue.createElementBlock("uni-loading-element", {
+        class: "default __uni_loading_container__",
+        ref_key: "LoadingRef",
+        ref: LoadingRef,
+        style: { "display": "flex" }
+      }, [
+        vue.createVNode(_component_view, {
+          class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
+          style: vue.normalizeStyle(loadingStyle)
+        }, null, 8, ["class", "style"])
+      ], 512);
+    };
+  }
+});
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -3927,7 +3978,7 @@ const _hoisted_23 = {
 };
 const _hoisted_24 = ["d"];
 const _hoisted_25 = ["innerHTML"];
-const _sfc_main$5 = /* @__PURE__ */ vue.defineComponent({
+const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -3938,6 +3989,7 @@ const _sfc_main$5 = /* @__PURE__ */ vue.defineComponent({
     const hasPages = __UNI_FEATURE_PAGES__;
     const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
     const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const isXVapor = false;
     const ICON_PATHS = {
       none: "",
       forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -4198,11 +4250,14 @@ const _sfc_main$5 = /* @__PURE__ */ vue.defineComponent({
                 opacity: vue.unref(navigationBar).type === "transparent" ? 0 : 1
               })
             }, [
-              vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_13)) : vue.unref(navigationBar).titleImage ? (vue.openBlock(), vue.createElementBlock("img", {
+              !vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createElementBlock("i", _hoisted_13)) : vue.unref(isXVapor) && vue.unref(navigationBar).loading ? (vue.openBlock(), vue.createBlock(_sfc_main$5, {
                 key: 1,
+                style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" }
+              })) : vue.unref(navigationBar).titleImage ? (vue.openBlock(), vue.createElementBlock("img", {
+                key: 2,
                 src: vue.unref(navigationBar).titleImage,
                 class: "uni-page-head__title_image"
-              }, null, 8, _hoisted_14)) : (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 2 }, [
+              }, null, 8, _hoisted_14)) : (vue.openBlock(), vue.createElementBlock(vue.Fragment, { key: 3 }, [
                 vue.createTextVNode(vue.toDisplayString(vue.unref(navigationBar).titleText), 1)
               ], 64))
             ], 4)
@@ -4326,7 +4381,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent({
+const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
@@ -4365,7 +4420,7 @@ const _sfc_main$4 = /* @__PURE__ */ vue.defineComponent({
     };
   }
 });
-const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent({
+const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -4396,7 +4451,7 @@ const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent({
     }
     return (_ctx, _cache) => {
       return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
-        vue.unref(hasPullDownRefresh) && !!vue.unref(pageMeta) && (vue.unref(isX) || !!vue.unref(pageMeta).enablePullDownRefresh) ? (vue.openBlock(), vue.createBlock(_sfc_main$4, {
+        vue.unref(hasPullDownRefresh) && !!vue.unref(pageMeta) && (vue.unref(isX) || !!vue.unref(pageMeta).enablePullDownRefresh) ? (vue.openBlock(), vue.createBlock(_sfc_main$3, {
           key: 0,
           ref_key: "refreshRef",
           ref: refreshRef
@@ -4474,7 +4529,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
         style: pageStyle
       },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        vue.createVNode(_sfc_main$5),
+        vue.createVNode(_sfc_main$4),
         createPageBodyVNode(ctx),
         createDialogPageVNode(
           currentInstance.$dialogPages,
@@ -4511,7 +4566,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
 }
 function createPageBodyVNode(ctx) {
   return vue.openBlock(), vue.createBlock(
-    _sfc_main$3,
+    _sfc_main$2,
     { key: 0 },
     {
       default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
@@ -8056,57 +8111,6 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     }
     const result = renderRichText(props2, rootRef, triggerItemClick);
     return result;
-  }
-});
-class UniVueElement extends Object {
-}
-class UniLoadingElement extends UniVueElement {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = vue.ref("16px");
-  const loadingBorderWidth = vue.ref("1px");
-  vue.ref("8px");
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement
-    }
-  },
-  __name: "index-x",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = vue.ref(null);
-    const loadingStyle = vue.reactive(useLoadingStyle(LoadingRef, vue.computed(() => props2.bold)));
-    return (_ctx, _cache) => {
-      const _component_view = __syscom_0;
-      return vue.openBlock(), vue.createElementBlock("uni-loading-element", {
-        class: "default __uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, [
-        vue.createVNode(_component_view, {
-          class: vue.normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props2.paused }]),
-          style: vue.normalizeStyle(loadingStyle)
-        }, null, 8, ["class", "style"])
-      ], 512);
-    };
   }
 });
 const Refresher = /* @__PURE__ */ defineBuiltInComponent({
@@ -16289,7 +16293,7 @@ exports.ListItem = index$f;
 exports.ListView = index$g;
 exports.LivePlayer = index$1;
 exports.LivePusher = index;
-exports.Loading = _sfc_main$2;
+exports.Loading = _sfc_main$5;
 exports.Map = index$9;
 exports.MovableArea = index$r;
 exports.MovableView = index$q;

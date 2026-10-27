@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, insert, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, syncSelectValue, useAttrs as useAttrs$1, useSlots, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -12222,6 +12222,93 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
+let UniVueElement$2 = class UniVueElement extends HTMLElement {
+};
+let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
+};
+function useLoadingStyle$1(targetElement, bold) {
+  const loadingSize = ref("16px");
+  const loadingBorderWidth = ref("1px");
+  const loadingBorderRadius = ref("8px");
+  let observer = null;
+  const calculateLoadingWidth = (element, bold2) => {
+    const { width, height } = element.getBoundingClientRect();
+    const coefficient = bold2 ? 2 : 1;
+    const minSide = Math.min(width, height);
+    const calculatedWidth = minSide / 16 * coefficient;
+    loadingSize.value = `${minSide}px`;
+    loadingBorderWidth.value = `${calculatedWidth}px`;
+    loadingBorderRadius.value = `${minSide / 2}px`;
+  };
+  const setupObserver = (cb) => {
+    const el = targetElement.value;
+    if (!el)
+      return;
+    observer = new ResizeObserver((entries2) => {
+      cb(el);
+    });
+    observer.observe(el);
+  };
+  onMounted(() => {
+    setupObserver((el) => {
+      calculateLoadingWidth(el, bold.value);
+    });
+    watchEffect(() => {
+      const _bold = bold.value;
+      const el = targetElement.value;
+      if (el !== null) {
+        calculateLoadingWidth(el, _bold);
+      }
+    });
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
+  return {
+    width: loadingSize,
+    height: loadingSize,
+    borderWidth: loadingBorderWidth
+    // borderRadius: loadingBorderRadius,
+  };
+}
+const t0$B = template("<div data-v-212d40c7 uni-view>", 256);
+const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
+  ...{
+    name: "loading",
+    styleIsolation: "app-and-page",
+    // @ts-ignore
+    rootElement: {
+      name: "uni-loading-element",
+      class: UniLoadingElement$1
+    }
+  },
+  __name: "index-x",
+  props: {
+    paused: { type: Boolean, default: false },
+    bold: { type: Boolean, default: false },
+    iosSpinner: { type: Boolean, default: false }
+  },
+  setup(__props) {
+    const props2 = __props;
+    const LoadingRef = ref(null);
+    const loadingStyle = reactive(useLoadingStyle$1(LoadingRef, computed(() => props2.bold)));
+    const n1 = createPlainElement("uni-loading-element", {
+      class: "default __uni_loading_container__",
+      style: "display: flex;"
+    }, null, true);
+    setInsertionState(n1);
+    const n0 = t0$B();
+    insert(n0, n1);
+    setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
+    renderEffect(() => {
+      setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
+      setStyle(n0, loadingStyle);
+    });
+    return n1;
+  }
+});
 function hexToRgba(hex) {
   if (!hex) {
     return {
@@ -12319,7 +12406,7 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const t0$B = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
+const t0$A = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
 const t1$i = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$9 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
 const t3$6 = template("<i class=uni-btn-icon></i>");
@@ -12331,7 +12418,7 @@ const t8 = template("<div class=uni-page-head-bd><div class=uni-page-head__title
 const t9 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
 const t11 = template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
-const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -12342,6 +12429,7 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
     const hasPages = __UNI_FEATURE_PAGES__;
     const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__;
     const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__;
+    const isXVapor = true;
     const ICON_PATHS = {
       none: "",
       forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
@@ -12530,19 +12618,19 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
       };
       return { focus, text: text2, composing, onFocus, onBlur, onInput, onConfirm };
     }
-    const n64 = t11();
-    const n60 = child(n64);
-    const n19 = child(n60);
-    const n59 = next(n19);
-    const n58 = next(n59);
+    const n66 = t11();
+    const n62 = child(n66);
+    const n19 = child(n62);
+    const n61 = next(n19);
+    const n60 = next(n61);
     renderEffect(() => {
-      setAttr(n64, "uni-page-head-type", unref(navigationBar).type || "default");
-      setClass(n60, unref(clazz));
-      setStyle(n60, unref(style));
+      setAttr(n66, "uni-page-head-type", unref(navigationBar).type || "default");
+      setClass(n62, unref(clazz));
+      setStyle(n62, unref(style));
     });
     setInsertionState(n19);
     createIf(() => unref(hasPages) && !unref(pageMeta).isQuit, () => {
-      const n3 = t0$B();
+      const n3 = t0$A();
       const n2 = child(child(n3));
       on$1(n3, "click", onPageHeadBackButton);
       renderEffect(() => {
@@ -12624,83 +12712,92 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
       );
       return n6;
     });
-    setInsertionState(n60, n59);
+    setInsertionState(n62, n61);
     createIf(
       () => !unref(hasSearchInput) || !unref(navigationBar).searchInput,
       () => {
-        const n30 = t8();
-        const n29 = child(n30);
+        const n32 = t8();
+        const n31 = child(n32);
         renderEffect(() => {
           const _navigationBar = unref(navigationBar);
-          setStyle(n29, {
+          setStyle(n31, {
             fontSize: _navigationBar.titleSize,
             opacity: _navigationBar.type === "transparent" ? 0 : 1
           });
         });
-        setInsertionState(n29);
+        setInsertionState(n31);
         createIf(
-          () => unref(navigationBar).loading,
+          () => !unref(isXVapor) && unref(navigationBar).loading,
           () => {
             const n24 = t5$2();
             return n24;
           },
           () => createIf(
-            () => unref(navigationBar).titleImage,
+            () => unref(isXVapor) && unref(navigationBar).loading,
             () => {
-              const n26 = t6$2();
-              renderEffect(() => setProp(n26, "src", unref(navigationBar).titleImage));
+              const n26 = withComponentId("96682308", () => createComponent$1(_sfc_main$B, { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
               return n26;
             },
-            () => {
-              const n28 = t7$1();
-              renderEffect(() => setText(n28, toDisplayString(unref(navigationBar).titleText)));
-              return n28;
-            },
-            1545
-            /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_5 */
+            () => createIf(
+              () => unref(navigationBar).titleImage,
+              () => {
+                const n28 = t6$2();
+                renderEffect(() => setProp(n28, "src", unref(navigationBar).titleImage));
+                return n28;
+              },
+              () => {
+                const n30 = t7$1();
+                renderEffect(() => setText(n30, toDisplayString(unref(navigationBar).titleText)));
+                return n30;
+              },
+              1801
+              /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_6 */
+            ),
+            1541
+            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_5 */
           ),
           1285
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_4 */
         );
-        return n30;
+        return n32;
       },
       () => {
-        const n42 = t9();
-        const n36 = child(n42);
-        const n32 = child(child(child(n36)));
+        const n44 = t9();
+        const n38 = child(n44);
+        const n34 = child(child(child(n38)));
         renderEffect(() => {
           const _navigationBar = unref(navigationBar);
           const _navigationBar_searchInput = _navigationBar.searchInput;
-          setStyle(n42, {
+          setStyle(n44, {
             borderRadius: _navigationBar_searchInput.borderRadius,
             backgroundColor: _navigationBar_searchInput.backgroundColor
           });
-          setStyle(n36, { color: _navigationBar_searchInput.placeholderColor });
-          setClass(n36, [
+          setStyle(n38, { color: _navigationBar_searchInput.placeholderColor });
+          setClass(n38, [
             "uni-page-head-search-placeholder",
             `uni-page-head-search-placeholder-${unref(searchFocus) || unref(searchText) ? "left" : _navigationBar_searchInput.align}`
           ]);
-          setAttr(n32, "d", unref(ICON_PATH_SEARCH), true);
-          setAttr(n32, "fill", _navigationBar_searchInput.placeholderColor, true);
+          setAttr(n34, "d", unref(ICON_PATH_SEARCH), true);
+          setAttr(n34, "fill", _navigationBar_searchInput.placeholderColor, true);
         });
-        setInsertionState(n36, 1);
+        setInsertionState(n38, 1);
         createIf(
           () => !(unref(searchText) || unref(searchComposing)),
           () => {
-            const n35 = t7$1();
-            renderEffect(() => setText(n35, toDisplayString(unref(navigationBar).searchInput.placeholder)));
-            return n35;
+            const n37 = t7$1();
+            renderEffect(() => setText(n37, toDisplayString(unref(navigationBar).searchInput.placeholder)));
+            return n37;
           },
           null,
           2
           /* TRUE_MULTI_ROOT */
         );
-        setInsertionState(n42, 1);
+        setInsertionState(n44, 1);
         createIf(
           () => unref(navigationBar).searchInput.disabled,
           () => {
             const _on_click = ($event) => unref(searchOnClick) && unref(searchOnClick)($event);
-            const n39 = withComponentId("96672950", () => createComponent$1(unref(__syscom_0$2), {
+            const n41 = withComponentId("96671b3c", () => createComponent$1(unref(__syscom_0$2), {
               disabled: true,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -12708,14 +12805,14 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
               "confirm-type": "search",
               onClick: () => _on_click
             }));
-            return n39;
+            return n41;
           },
           () => {
             const _on_focus = ($event) => unref(searchOnFocus) && unref(searchOnFocus)($event);
             const _on_blur = ($event) => unref(searchOnBlur) && unref(searchOnBlur)($event);
             const _on_input = ($event) => unref(searchOnInput) && unref(searchOnInput)($event);
             const _on_confirm = ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event);
-            const n41 = withComponentId("96666d5c", () => createComponent$1(unref(__syscom_0$2), {
+            const n43 = withComponentId("96665f1e", () => createComponent$1(unref(__syscom_0$2), {
               focus: () => unref(navigationBar).searchInput.autoFocus,
               style: () => ({ color: unref(navigationBar).searchInput.color }),
               "placeholder-style": () => "color: " + unref(navigationBar).searchInput.placeholderColor,
@@ -12726,102 +12823,102 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
               onInput: () => _on_input,
               onConfirm: () => _on_confirm
             }));
-            return n41;
+            return n43;
           },
-          2309
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
+          2565
+          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_9 */
         );
-        return n42;
+        return n44;
       },
-      1797
-      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_6 */
+      2053
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_7 */
     );
-    setInsertionState(n58);
+    setInsertionState(n60);
     createIf(() => unref(hasButtons) && unref(buttons), () => {
-      const n45 = createFor(
+      const n47 = createFor(
         () => unref(buttons).right,
         (_for_item0, _for_key0) => {
-          const n57 = t4$3();
+          const n59 = t4$3();
           renderEffect(() => {
             const _button = _for_item0.value;
-            setClass(n57, _button.btnClass);
-            setStyle(n57, _button.btnStyle);
-            setAttr(n57, "badge-text", _button.badgeText);
+            setClass(n59, _button.btnClass);
+            setStyle(n59, _button.btnStyle);
+            setAttr(n59, "badge-text", _button.badgeText);
           });
-          setInsertionState(n57);
+          setInsertionState(n59);
           createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n50 = t1$i();
-              const n49 = child(n50);
+              const n52 = t1$i();
+              const n51 = child(n52);
               renderEffect(() => {
                 const _button = _for_item0.value;
                 const _button_iconStyle = _button.iconStyle;
                 const _getSvgSize_button_iconStyle_fontSize = getSvgSize(_button_iconStyle.fontSize);
-                setAttr(n50, "width", _getSvgSize_button_iconStyle_fontSize, true);
-                setAttr(n50, "height", _getSvgSize_button_iconStyle_fontSize, true);
-                setAttr(n49, "d", _button.btnIconPath, true);
-                setAttr(n49, "fill", getSvgColor(_button_iconStyle.color), true);
+                setAttr(n52, "width", _getSvgSize_button_iconStyle_fontSize, true);
+                setAttr(n52, "height", _getSvgSize_button_iconStyle_fontSize, true);
+                setAttr(n51, "d", _button.btnIconPath, true);
+                setAttr(n51, "fill", getSvgColor(_button_iconStyle.color), true);
               });
-              return n50;
+              return n52;
             },
             () => createIf(
               () => _for_item0.value.btnSelect,
               () => {
-                const n54 = t10();
-                const n52 = child(n54);
-                const n53 = child(next(n52));
-                renderEffect(() => {
-                  const _button = _for_item0.value;
-                  setStyle(n54, _button.iconStyle);
-                  setHtml(n52, _button.btnText);
-                  setAttr(n53, "d", ICON_PATHS.select, true);
-                });
-                return n54;
-              },
-              () => {
-                const n56 = t3$6();
+                const n56 = t10();
+                const n54 = child(n56);
+                const n55 = child(next(n54));
                 renderEffect(() => {
                   const _button = _for_item0.value;
                   setStyle(n56, _button.iconStyle);
-                  setHtml(n56, _button.btnText);
+                  setHtml(n54, _button.btnText);
+                  setAttr(n55, "d", ICON_PATHS.select, true);
                 });
                 return n56;
               },
-              2821
-              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_10 */
+              () => {
+                const n58 = t3$6();
+                renderEffect(() => {
+                  const _button = _for_item0.value;
+                  setStyle(n58, _button.iconStyle);
+                  setHtml(n58, _button.btnText);
+                });
+                return n58;
+              },
+              3077
+              /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_11 */
             ),
-            2565
-            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_9 */
+            2821
+            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_10 */
           );
-          on$1(n57, "click", (e2) => _for_item0.value.onClick(e2));
-          return n57;
+          on$1(n59, "click", (e2) => _for_item0.value.onClick(e2));
+          return n59;
         },
         (button, index2) => index2,
         8
         /* IS_SINGLE_NODE */
       );
-      return n45;
+      return n47;
     });
-    setStaticTemplateRef(n60, headRef, null, "headRef");
-    setInsertionState(n64, 1);
+    setStaticTemplateRef(n62, headRef, null, "headRef");
+    setInsertionState(n66, 1);
     createIf(() => unref(navigationBar).type !== "transparent" && unref(navigationBar).type !== "float", () => {
-      const n63 = t4$3();
-      renderEffect(() => setClassName(n63, 1 | (unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
-      return n63;
+      const n65 = t4$3();
+      renderEffect(() => setClassName(n65, 1 | (unref(navigationBar).titlePenetrate ? 2 : 0), [" uni-placeholder", " uni-placeholder-titlePenetrate"]));
+      return n65;
     });
-    return n64;
+    return n66;
   }
 });
-const t0$A = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
+const t0$z = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$A();
+    const n3 = t0$z();
     const n2 = child(n3);
     const n0 = child(child(n2));
     const n1 = child(next(n0));
@@ -13089,8 +13186,8 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const t0$z = template("<uni-page-wrapper><uni-page-body>");
-const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
+const t0$y = template("<uni-page-wrapper><uni-page-body>");
+const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -13128,11 +13225,11 @@ const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = withComponentId("2d14e6de", () => createComponent$1(_sfc_main$A));
+      const n2 = withComponentId("2d14e6de", () => createComponent$1(_sfc_main$z));
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
-    const n8 = t0$z();
+    const n8 = t0$y();
     const n4 = child(n8);
     renderEffect(() => setDynamicProps(n8, [pageRefresh.value]));
     setInsertionState(n4);
@@ -13146,8 +13243,8 @@ const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
     return [n0, n8];
   }
 });
-const t0$y = template("<uni-page>", 1);
-const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
+const t0$x = template("<uni-page>", 1);
+const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "Page",
     __reserved: true,
@@ -13249,18 +13346,18 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
         }
       }
     }
-    const n8 = t0$y();
+    const n8 = t0$x();
     renderEffect(() => {
       setAttr(n8, "data-page", unref(pageMeta).route);
       setStyle(n8, pageStyle);
     });
     setInsertionState(n8);
     createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = withComponentId("6ae207a0", () => createComponent$1(_sfc_main$B));
+      const n2 = withComponentId("6ae207a0", () => createComponent$1(_sfc_main$A));
       return n2;
     });
     setInsertionState(n8, 1);
-    withComponentId("f15f11c4", () => createComponent$1(_sfc_main$z, null, extend$1(() => {
+    withComponentId("f15f11c4", () => createComponent$1(_sfc_main$y, null, extend$1(() => {
       const n3 = withComponentId("f15f1178", () => createDynamicComponent(
         () => unref(pageComponent),
         { $: [
@@ -13295,7 +13392,7 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
   }
 });
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$y, {
+  return Object.assign({}, _sfc_main$x, {
     __uniPageComponent: pageComponent
   });
 }
@@ -16207,93 +16304,6 @@ const indexVapor$3 = /* @__PURE__ */ defineBuiltInComponent({
     return result;
   }
 });
-let UniVueElement$2 = class UniVueElement extends HTMLElement {
-};
-let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
-};
-function useLoadingStyle$1(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const t0$x = template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement$1
-    }
-  },
-  __name: "index-x",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle$1(LoadingRef, computed(() => props2.bold)));
-    const n1 = createPlainElement("uni-loading-element", {
-      class: "default __uni_loading_container__",
-      style: "display: flex;"
-    }, null, true);
-    setInsertionState(n1);
-    const n0 = t0$x();
-    insert(n0, n1);
-    setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
-    renderEffect(() => {
-      setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
-      setStyle(n0, loadingStyle);
-    });
-    return n1;
-  }
-});
 const _t0$9 = template('<svg fill=#2BD009 class=uni-scroll-view-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none>', false, 1);
 const _t1$3 = template('<svg class=uni-scroll-view-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle cx=50 cy=50 r=20 fill=none style="color: #2bd009" stroke-width=3>', false, 1);
 const _t2$2 = template("<div class=uni-scroll-view-refresh-inner>");
@@ -16360,7 +16370,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           setInsertionState(_n21);
           createIf(() => true, () => {
             const _n4 = createIf(() => props2.refreshState == "pulling" || props2.refreshState == "refreshing", () => {
-              const _n6 = createComponent(_sfc_main$x, {
+              const _n6 = createComponent(_sfc_main$B, {
                 class: "uni-scroll-view-refresh__loading",
                 paused: () => props2.refreshState == "pulling",
                 style: () => ({
@@ -19057,8 +19067,8 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
       const baseParams = {
         mode: props2.mode
       };
-      const isIPad = navigator.vendor.indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
-      baseParams.selectorType = props2.selectorType === "picker" || props2.selectorType === "select" ? props2.selectorType : isIPad ? "picker" : "select";
+      const isAppleTouchDevice = navigator.vendor.indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+      baseParams.selectorType = props2.selectorType === "picker" || props2.selectorType === "select" ? props2.selectorType : isAppleTouchDevice ? "picker" : "select";
       baseParams.popover = getPopover();
       const currentValue = innerValue.value;
       switch (props2.mode) {
@@ -29481,8 +29491,10 @@ const createEditorContextAsync = function(options) {
 const POPUP_WIDTH = 300;
 const POPUP_EDGE = 6;
 function getPickerPopupStyle(popover, windowWidth, windowHeight, contentHeight) {
-  const width = Math.min(POPUP_WIDTH, windowWidth - POPUP_EDGE * 2);
-  let height = Math.min(contentHeight, windowHeight - POPUP_EDGE * 2);
+  const availableWidth = Math.max(0, windowWidth - POPUP_EDGE * 2);
+  const availableHeight = Math.max(0, windowHeight - POPUP_EDGE * 2);
+  const width = Math.min(POPUP_WIDTH, availableWidth);
+  let height = Math.min(Math.max(0, contentHeight), availableHeight);
   let left = (windowWidth - width) / 2;
   let top = (windowHeight - height) / 2;
   if (popover != null) {
@@ -29594,7 +29606,9 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
     const selectorType = ref("select");
     const windowWidth = ref(0);
     const windowHeight = ref(0);
+    const containerRef = ref(null);
     const selectRef = ref(null);
+    let layoutFrame = null;
     let closing = false;
     const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500);
     const isSelect = computed(() => isDesktop.value && mode.value == "selector" && selectorType.value == "select");
@@ -29608,6 +29622,20 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       windowWidth.value = window.innerWidth;
       windowHeight.value = window.innerHeight;
       uni.$emit(`${optionsEventName.value}_layout`);
+    };
+    const scheduleLayout = () => {
+      if (layoutFrame != null)
+        return;
+      layoutFrame = window.requestAnimationFrame(() => {
+        layoutFrame = null;
+        updateLayout();
+      });
+    };
+    const handleScroll = (event) => {
+      var _a;
+      if (event.target instanceof Node && ((_a = containerRef.value) == null ? void 0 : _a.contains(event.target)))
+        return;
+      scheduleLayout();
     };
     const selectItem = (index2) => {
       eventValue.value = [index2];
@@ -30043,8 +30071,8 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
         calculateRanges();
       });
       updateLayout();
-      window.addEventListener("resize", updateLayout);
-      document.addEventListener("scroll", updateLayout, true);
+      window.addEventListener("resize", scheduleLayout);
+      document.addEventListener("scroll", handleScroll, true);
       uni.$emit(readyEventName.value);
       initLanguageAndTheme();
       switchTheme(theme.value);
@@ -30057,8 +30085,12 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       show.value = true;
     });
     onUnload(() => {
-      window.removeEventListener("resize", updateLayout);
-      document.removeEventListener("scroll", updateLayout, true);
+      window.removeEventListener("resize", scheduleLayout);
+      document.removeEventListener("scroll", handleScroll, true);
+      if (layoutFrame != null) {
+        window.cancelAnimationFrame(layoutFrame);
+        layoutFrame = null;
+      }
       uni.$off(optionsEventName.value, null);
       if (timer.value) {
         clearTimeout(timer.value);
@@ -30085,7 +30117,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
     createIf(
       () => unref(isSelect),
       () => {
-        const n6 = withComponentId("3e320916", () => createComponentWithFallback(_component_scroll_view, {
+        const n6 = withComponentId("3e32089c", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-picker__select",
           direction: "vertical",
           "show-scrollbar": true
@@ -30135,7 +30167,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
           setText(x9, normalizeUniText(toDisplayString(unref(confirmText))));
         });
         setInsertionState(n54);
-        withComponentId("3bf70f3e", () => createComponentWithFallback(_component_picker_view, {
+        withComponentId("3bf71206", () => createComponentWithFallback(_component_picker_view, {
           style: { "flex": "1" },
           onChange: () => handleChange,
           "mask-top-style": () => unref(maskTopStyle),
@@ -30146,7 +30178,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
           const n11 = createIf(
             () => unref(mode) == "selector",
             () => {
-              const n16 = withComponentId("3bf71985", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n16 = withComponentId("3bf719c2", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n13 = createFor(
                   () => unref(range),
                   (_for_item0, _for_key0) => {
@@ -30181,7 +30213,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
               const n19 = createFor(
                 () => unref(range),
                 (_for_item0, _for_key0) => {
-                  const n24 = withComponentId("3bf7288e-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                  const n24 = withComponentId("3bf728cb-" + _for_key0.value, () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                     const n21 = createFor(
                       () => _for_item0.value,
                       (_for_item1, _for_key1) => {
@@ -30219,7 +30251,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
           const n25 = createIf(
             () => unref(mode) == "time",
             () => {
-              const n30 = withComponentId("3bf7833d", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n30 = withComponentId("3bf7837a", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n27 = createFor(
                   () => unref(hours),
                   (_for_item0, _for_key0) => {
@@ -30240,7 +30272,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
                 _: 1
                 /* NON_STABLE */
               })));
-              const n34 = withComponentId("3bf78a86", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n34 = withComponentId("3bf78ac3", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n31 = createFor(
                   () => unref(minutes),
                   (_for_item0, _for_key0) => {
@@ -30270,7 +30302,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
           const n35 = createIf(
             () => unref(mode) == "date",
             () => {
-              const n40 = withComponentId("3bf7929b", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+              const n40 = withComponentId("3bf7954e", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                 const n37 = createFor(
                   () => unref(years),
                   (_for_item0) => {
@@ -30292,7 +30324,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
                 /* NON_STABLE */
               })));
               const n41 = createIf(() => unref(fields) != "year", () => {
-                const n46 = withComponentId("3bf79a07", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n46 = withComponentId("3bf79ccf", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                   const n43 = createFor(
                     () => unref(monthsText),
                     (_for_item0) => {
@@ -30316,7 +30348,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
                 return n46;
               });
               const n47 = createIf(() => unref(fields) == "day", () => {
-                const n52 = withComponentId("3bf7f380", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
+                const n52 = withComponentId("3bf7f3bd", () => createComponentWithFallback(_component_picker_view_column, null, extend$1(() => {
                   const n49 = createFor(
                     () => unref(days),
                     (_for_item0) => {
@@ -30355,6 +30387,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
       265
       /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_0 */
     );
+    setStaticTemplateRef(n56, containerRef, null, "containerRef");
     return n56;
   }
 });
@@ -34988,7 +35021,7 @@ export {
   indexVapor$5 as MovableArea,
   indexVapor$4 as MovableView,
   _sfc_main$n as Navigator,
-  _sfc_main$y as PageComponent,
+  _sfc_main$x as PageComponent,
   _sfc_main$m as PageContainer,
   _sfc_main$l as Picker,
   _sfc_main$k as PickerView,

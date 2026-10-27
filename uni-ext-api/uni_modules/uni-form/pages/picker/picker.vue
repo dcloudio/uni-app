@@ -1,6 +1,6 @@
 <template>
 	<!-- #ifdef WEB -->
-	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme, {'uni-picker__container--desktop': isDesktop}]">
+	<view ref="containerRef" class="uni-picker__container" :class="['uni-picker-theme--'+theme, {'uni-picker__container--desktop': isDesktop}]">
 		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
 		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme, {'uni-picker__inner-box--desktop': isDesktop}]" :style="popupStyle.content">
 			<scroll-view v-if="isSelect" ref="selectRef" class="uni-picker__select" direction="vertical" :show-scrollbar="true">
@@ -158,7 +158,9 @@
 	const selectorType = ref('select')
 	const windowWidth = ref(0)
 	const windowHeight = ref(0)
+	const containerRef = ref<HTMLElement | null>(null)
 	const selectRef = ref<UniScrollViewElement | null>(null)
+	let layoutFrame: number | null = null
 	let closing = false
 	const isDesktop = computed(() => windowWidth.value >= 500 && windowHeight.value >= 500)
 	const isSelect = computed(() => isDesktop.value && mode.value == 'selector' && selectorType.value == 'select')
@@ -172,6 +174,20 @@
 		windowWidth.value = window.innerWidth
 		windowHeight.value = window.innerHeight
 		uni.$emit(`${optionsEventName.value}_layout`)
+	}
+
+	const scheduleLayout = () => {
+		if (layoutFrame != null) return
+		layoutFrame = window.requestAnimationFrame(() => {
+			layoutFrame = null
+			updateLayout()
+		})
+	}
+
+	const handleScroll = (event: Event) => {
+		// 弹层内部滚动不改变触发元素的位置，无需重新测量锚点。
+		if (event.target instanceof Node && containerRef.value?.contains(event.target)) return
+		scheduleLayout()
 	}
 
 	const selectItem = (index: number) => {
@@ -690,8 +706,8 @@
 
 		// #ifdef WEB
 		updateLayout()
-		window.addEventListener('resize', updateLayout)
-		document.addEventListener('scroll', updateLayout, true)
+		window.addEventListener('resize', scheduleLayout)
+		document.addEventListener('scroll', handleScroll, true)
 		// #endif
 
 		uni.$emit(readyEventName.value)
@@ -724,8 +740,12 @@
 
 	onUnload(() => {
 		// #ifdef WEB
-		window.removeEventListener('resize', updateLayout)
-		document.removeEventListener('scroll', updateLayout, true)
+		window.removeEventListener('resize', scheduleLayout)
+		document.removeEventListener('scroll', handleScroll, true)
+		if (layoutFrame != null) {
+			window.cancelAnimationFrame(layoutFrame)
+			layoutFrame = null
+		}
 		// #endif
 		uni.$off(optionsEventName.value, null)
 		if (timer.value) {
