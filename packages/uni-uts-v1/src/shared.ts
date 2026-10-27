@@ -24,11 +24,14 @@ export function resolveHBuilderXPluginPath(
   ...subpaths: string[]
 ): string | undefined {
   const pluginPaths = getHBuilderXPluginPaths()
-  const pluginPath = pluginPaths
-    ? pluginPaths[pluginName]
-    : process.env.UNI_HBUILDERX_PLUGINS
-    ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS, pluginName)
-    : undefined
+  const mappedPath = pluginPaths?.[pluginName]
+  // 缺少 key 时使用旧目录；空字符串表示显式未配置，不回退。
+  const pluginPath =
+    mappedPath !== undefined
+      ? mappedPath
+      : process.env.UNI_HBUILDERX_PLUGINS
+      ? path.resolve(process.env.UNI_HBUILDERX_PLUGINS, pluginName)
+      : undefined
   return pluginPath ? path.resolve(pluginPath, ...subpaths) : undefined
 }
 

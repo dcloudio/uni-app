@@ -8,7 +8,11 @@ import type {
   UniXCompilerOptions,
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
-import { getHBuilderXPluginPaths, normalizePath } from '../shared'
+import {
+  getHBuilderXPluginPaths,
+  normalizePath,
+  resolveHBuilderXPluginPath,
+} from '../shared'
 import { SPECIAL_CHARS, isEnableGenericsParameterDefaults } from '../utils'
 import { COLORS, generateCodeFrame } from '../stacktrace/utils'
 
@@ -60,7 +64,7 @@ export function createUniXCompiler(
     ? process.env.UNI_HBUILDERX_PLUGINS
     : path.resolve(process.cwd(), '../')
   const hxLanguageServiceDir = hbuilderxPluginPaths
-    ? hbuilderxPluginPaths['hbuilderx-language-services']
+    ? resolveHBuilderXPluginPath('hbuilderx-language-services')
     : path.resolve(legacyPluginPath, 'hbuilderx-language-services')
 
   const tsFactory = require(path.resolve(
@@ -98,7 +102,9 @@ export function createUniXCompiler(
     mode,
     targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
     tsFactory,
-    hxPluginDir: hbuilderxPluginPaths ? undefined : legacyPluginPath,
+    hxPluginDir: hbuilderxPluginPaths
+      ? process.env.UNI_HBUILDERX_PLUGINS
+      : legacyPluginPath,
     hxPluginPaths: hbuilderxPluginPaths,
     paths: options.paths,
     utsLibDir,

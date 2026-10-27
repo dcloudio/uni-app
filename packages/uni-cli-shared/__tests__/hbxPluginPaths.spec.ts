@@ -1,5 +1,91 @@
 import path from 'path'
 
+describe.each([
+  [
+    '本机',
+    path,
+    path.resolve('/插件 [旧]/plugins'),
+    path.resolve('/插件 [新]/missing'),
+  ],
+  ['POSIX', path.posix, '/插件 [旧]/plugins', '/插件 [新]/missing'],
+  [
+    'Windows 盘符',
+    path.win32,
+    path.win32.normalize('C:/插件 [旧]/plugins'),
+    path.win32.normalize('D:/插件 [新]/missing'),
+  ],
+  [
+    'Windows UNC',
+    path.win32,
+    path.win32.normalize('//server/share/插件 [旧]'),
+    path.win32.normalize('//server/share/插件 [新]/missing'),
+  ],
+] as const)('插件路径回退：%s', (_name, pathApi, legacyRoot, mappedRoot) => {
+  const savedPaths = process.env.HX_PLUGIN_PATHS
+  const savedRoot = process.env.UNI_HBUILDERX_PLUGINS
+
+  afterEach(() => {
+    if (savedPaths === undefined) delete process.env.HX_PLUGIN_PATHS
+    else process.env.HX_PLUGIN_PATHS = savedPaths
+    if (savedRoot === undefined)
+      Reflect.deleteProperty(process.env, 'UNI_HBUILDERX_PLUGINS')
+    else process.env.UNI_HBUILDERX_PLUGINS = savedRoot
+    jest.dontMock('path')
+    jest.resetModules()
+  })
+
+  function resolve(raw: string | undefined, withLegacyRoot = true) {
+    if (raw === undefined) delete process.env.HX_PLUGIN_PATHS
+    else process.env.HX_PLUGIN_PATHS = raw
+    if (withLegacyRoot) process.env.UNI_HBUILDERX_PLUGINS = legacyRoot
+    else Reflect.deleteProperty(process.env, 'UNI_HBUILDERX_PLUGINS')
+    // 显式使用对应平台的路径 API，避免在 POSIX 下误解析 Windows 路径。
+    jest.doMock('path', () => pathApi)
+    let result: string | undefined
+    jest.isolateModules(() => {
+      result = require('../src/hbx/pluginPaths').resolveHBuilderXPluginPath(
+        'compile-less',
+        'node_modules',
+        'less'
+      )
+    })
+    return result
+  }
+
+  test.each([undefined, '', '{}', '{"compile-sass":""}'])(
+    '缺少 key 时回退：%s',
+    (raw) => {
+      expect(resolve(raw)).toBe(
+        pathApi.resolve(legacyRoot, 'compile-less/node_modules/less')
+      )
+    }
+  )
+
+  test('显式空值不回退', () => {
+    expect(resolve('{"compile-less":""}')).toBeUndefined()
+  })
+
+  test('指定路径即使不存在也保持优先', () => {
+    expect(resolve(JSON.stringify({ 'compile-less': mappedRoot }))).toBe(
+      pathApi.resolve(mappedRoot, 'node_modules/less')
+    )
+  })
+
+  test('缺少旧根目录时不推导当前目录', () => {
+    expect(resolve('{}', false)).toBeUndefined()
+  })
+
+  test('没有旧根目录仍可使用映射', () => {
+    expect(resolve(JSON.stringify({ 'compile-less': mappedRoot }), false)).toBe(
+      pathApi.resolve(mappedRoot, 'node_modules/less')
+    )
+  })
+
+  test.each(['{', '[]', 'null'])('无效配置保留报错：%s', (raw) => {
+    expect(() => resolve(raw)).toThrow()
+  })
+})
+
 function loadPluginPaths() {
   let pluginPaths!: typeof import('../src/hbx/pluginPaths')
   jest.isolateModules(() => {
@@ -44,12 +130,14 @@ describe('HBuilderX plugin paths', () => {
     )
   })
 
-  test('新配置缺少插件时不回退旧插件根目录', () => {
+  test('新配置缺少插件时回退旧插件根目录', () => {
     process.env.HX_PLUGIN_PATHS = JSON.stringify({})
     process.env.UNI_HBUILDERX_PLUGINS = path.resolve('/legacy/plugins')
     const { resolveHBuilderXPluginPath } = loadPluginPaths()
 
-    expect(resolveHBuilderXPluginPath('uni_helpers')).toBeUndefined()
+    expect(resolveHBuilderXPluginPath('uni_helpers')).toBe(
+      path.resolve('/legacy/plugins/uni_helpers')
+    )
   })
 
   test('没有新配置时使用旧插件根目录', () => {
