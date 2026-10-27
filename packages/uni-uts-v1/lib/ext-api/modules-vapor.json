@@ -699,22 +699,6 @@
     "easycom": [],
     "customElements": []
   },
-  "uni-createIntersectionObserver": {
-    "uni": {
-      "createIntersectionObserver": {
-        "name": "createIntersectionObserver",
-        "app": {
-          "js": false,
-          "kotlin": "dom2",
-          "swift": false,
-          "arkts": false
-        }
-      }
-    },
-    "components": [],
-    "easycom": [],
-    "customElements": []
-  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
