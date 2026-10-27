@@ -1,24 +1,14 @@
 <template>
 
 
-
-
-
   <uni-loading-element class="default __uni_loading_container__" ref="LoadingRef" style="display: flex;">
     <view class="__uni-loading__ __loading-4-3__" :class="{ '__uni-loading__paused': props.paused }" :style="loadingStyle"></view>
   </uni-loading-element>
-
 </template>
 
 
-
 <script setup lang="ts">
-
-
-
 import { UniLoadingElement } from './element';
-
-
 
 const props = withDefaults(defineProps<{
   /**
@@ -76,12 +66,11 @@ defineOptions({
   }
 });
 
+// 当没有设置显式颜色时，遵循系统主题
 
 
 const LoadingRef = ref<HTMLElement | null>(null)
 const loadingStyle = reactive({})
-
-
 
 </script>
 <style>
@@ -93,13 +82,10 @@ const loadingStyle = reactive({})
   width: 100%;
   height: 100%;
 }
-
 .__uni_loading_container__ {
   justify-content: center;
   align-items: center;
-
   flex-shrink: 0;
-
 }
 
 .__uni-loading__ {
@@ -136,6 +122,10 @@ const loadingStyle = reactive({})
   }
 }
 
-
+@media (prefers-color-scheme: dark) {
+  .default {
+    color: #fff;
+  }
+}
 
 </style>
