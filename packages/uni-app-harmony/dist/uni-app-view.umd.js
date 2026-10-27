@@ -20364,7 +20364,10 @@
       },
       refresherDefaultStyle: {
         type: String,
-        default: "black"
+        /**
+         * auto为内部值，蒸汽模式下用户未设置时使用该值
+         */
+        default: __X_VAPOR__ ? "auto" : "black"
       },
       refresherBackground: {
         type: String,
@@ -20401,6 +20404,16 @@
         var route = props2.refresherHeight / props2.refresherThreshold;
         return (route > 1 ? 1 : route) * 360;
       });
+      var refreshColor = computed(() => {
+        switch (props2.refresherDefaultStyle) {
+          case "black":
+          case "white":
+            return props2.refresherDefaultStyle;
+          case "auto":
+          default:
+            return void 0;
+        }
+      });
       return () => {
         return createVNode("div", {
           "ref": rootRef,
@@ -20414,7 +20427,7 @@
           "paused": props2.refreshState == "pulling",
           "style": {
             transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-            color: props2.refresherDefaultStyle
+            color: refreshColor.value
           }
         }, null, 8, ["paused", "style"]) : null : createVNode("div", {
           "class": "uni-scroll-view-refresh-inner"
@@ -20571,7 +20584,10 @@
     },
     refresherDefaultStyle: {
       type: String,
-      default: "black"
+      /**
+       * auto为内部值，蒸汽模式下用户未设置时使用该值
+       */
+      default: __X_VAPOR__ ? "auto" : "black"
     },
     refresherBackground: {
       type: String,

@@ -9059,7 +9059,10 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     },
     refresherDefaultStyle: {
       type: String,
-      default: "black"
+      /**
+      * auto为内部值，蒸汽模式下用户未设置时使用该值
+      */
+      default: "auto"
     },
     refresherBackground: {
       type: String,
@@ -9091,6 +9094,16 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       const route = props2.refresherHeight / props2.refresherThreshold;
       return (route > 1 ? 1 : route) * 360;
     });
+    const refreshColor = computed(() => {
+      switch (props2.refresherDefaultStyle) {
+        case "black":
+        case "white":
+          return props2.refresherDefaultStyle;
+        case "auto":
+        default:
+          return void 0;
+      }
+    });
     return () => {
       return (() => {
         createVNodeCache("e32a47e2");
@@ -9107,7 +9120,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           paused: props2.refreshState == "pulling",
           style: {
             transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-            color: props2.refresherDefaultStyle
+            color: refreshColor.value
           }
         })) : normalizeVNode(() => null)], 64))])) : normalizeVNode(() => null), props2.refresherDefaultStyle === "none" ? (openBlock(), createBlock("div", {
           key: 2,
@@ -9238,7 +9251,10 @@ const props$5 = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: "black"
+    /**
+     * auto为内部值，蒸汽模式下用户未设置时使用该值
+     */
+    default: "auto"
   },
   refresherBackground: {
     type: String,
@@ -9936,7 +9952,11 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [!__props.disabled && !unref(isChecked), __props.checkboxClass],
             [!__props.disabled, __props.iconClass]
           )],
-          style: unref(activeStyle)
+          style: unref(activeStyle),
+          tabindex: __props.disabled ? -1 : 0,
+          role: "checkbox",
+          "aria-checked": unref(isChecked),
+          "aria-disabled": __props.disabled
         }, _attrs))}>`);
         if (unref(isChecked)) {
           _push(`<svg class="uni-checkbox-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath$1)}${ssrRenderAttr("fill", unref(iconColor))}></path></svg>`);
@@ -9947,7 +9967,11 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
       } else {
         _push(`<div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
-          class: "uni-checkbox"
+          class: "uni-checkbox",
+          tabindex: __props.disabled ? -1 : 0,
+          role: "checkbox",
+          "aria-checked": unref(isChecked),
+          "aria-disabled": __props.disabled
         }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
           [__props.disabled, "uni-checkbox-disabled"],
           [!__props.disabled && unref(isChecked), __props.checkboxActiveClass],
@@ -10341,7 +10365,12 @@ const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
     const ctx = { register: register2, unregister };
     provide(LABEL_KEY, ctx);
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ "uni-view": "" }, _attrs))}>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({
+        "uni-view": "",
+        tabindex: __props.disabled ? -1 : 0,
+        class: "uni-label",
+        "aria-disabled": __props.disabled
+      }, _attrs))}>`);
       ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
       _push(`</div>`);
     };
@@ -11969,7 +11998,8 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent$2({
         "uni-view": "",
         class: "picker-view-column",
         ref_key: "rootRef",
-        ref: rootRef
+        ref: rootRef,
+        tabindex: "0"
       }, _attrs))}>`);
       _push(ssrRenderComponent(_component_scroll_view, {
         ref_key: "scrollViewRef",
@@ -12285,7 +12315,11 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
             [!__props.disabled && !unref(isChecked), __props.radioClass],
             [!__props.disabled, __props.iconClass]
           )],
-          style: unref(activeStyle)
+          style: unref(activeStyle),
+          tabindex: __props.disabled ? -1 : 0,
+          role: "radio",
+          "aria-checked": unref(isChecked),
+          "aria-disabled": __props.disabled
         }, _attrs))}>`);
         if (unref(isChecked)) {
           _push(`<svg class="uni-radio-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath)} fill="currentColor"></path></svg>`);
@@ -12296,7 +12330,11 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
       } else {
         _push(`<div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
-          class: "uni-radio"
+          class: "uni-radio",
+          tabindex: __props.disabled ? -1 : 0,
+          role: "radio",
+          "aria-checked": unref(isChecked),
+          "aria-disabled": __props.disabled
         }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
           [__props.disabled, "uni-radio-disabled"],
           [!__props.disabled && unref(isChecked), "uni-radio-active"],
@@ -14029,7 +14067,11 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent$2({
           [unref(isChecked), "uni-switch-active"],
           [unref(isChecked), __props.switchActiveClass]
         )],
-        style: unref(activeStyle)
+        style: unref(activeStyle),
+        tabindex: __props.disabled ? -1 : 0,
+        role: "switch",
+        "aria-checked": unref(isChecked),
+        "aria-disabled": __props.disabled
       }, _attrs))}><div uni-view class="${ssrRenderClass([unref(classes)(
         [unref(enableTransition), "thumb-transition-enabled"],
         [unref(isChecked), "uni-switch-active-thumb"],

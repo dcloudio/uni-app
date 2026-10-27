@@ -14909,6 +14909,9 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     },
     refresherDefaultStyle: {
       type: String,
+      /**
+       * auto为内部值，蒸汽模式下用户未设置时使用该值
+       */
       default: "black"
     },
     refresherBackground: {
@@ -14944,6 +14947,16 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     const refreshRotate = computed(() => {
       const route = props2.refresherHeight / props2.refresherThreshold;
       return (route > 1 ? 1 : route) * 360;
+    });
+    computed(() => {
+      switch (props2.refresherDefaultStyle) {
+        case "black":
+        case "white":
+          return props2.refresherDefaultStyle;
+        case "auto":
+        default:
+          return void 0;
+      }
     });
     return () => {
       return createVNode("div", {
@@ -15106,6 +15119,9 @@ const props$k = {
   },
   refresherDefaultStyle: {
     type: String,
+    /**
+     * auto为内部值，蒸汽模式下用户未设置时使用该值
+     */
     default: "black"
   },
   refresherBackground: {

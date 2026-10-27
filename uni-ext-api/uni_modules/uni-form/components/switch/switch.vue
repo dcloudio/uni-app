@@ -8,6 +8,15 @@
       [isChecked, switchActiveClass]
     )"
     :style="activeStyle"
+    <!-- #ifdef WEB -->
+    :tabindex="disabled ? -1 : 0"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    role="switch"
+    :aria-checked="isChecked"
+    :aria-disabled="disabled"
+    <!-- #endif -->
     @click.stop="handleTap"
   >
     <view
@@ -22,6 +31,9 @@
 </template>
 
 <script lang="ts" setup>
+  // #ifdef WEB
+  import { createSpaceKeyHandlers } from '../common.ts'
+  // #endif
   import { FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, classes } from '../common.ts'
   import { UniSwitchElement } from './global.ts'
   import { ActivatableChild, FormContext, LabelContext } from '../types.ts'
@@ -205,6 +217,10 @@
     thumbActiveClass: '',
     switchActiveClass: ''
   })
+
+  // #ifdef WEB
+  const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+  // #endif
 
   defineOptions({
     name: 'switch',

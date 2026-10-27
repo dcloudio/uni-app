@@ -99,3 +99,43 @@ export function classes(...classList : Array<ClassItem>) : Array<string.ClassStr
     return className ?? ''
   })
 }
+
+// #ifdef WEB
+// Only activate the focused root. Slotted inputs and nested controls own their keys.
+export function createSpaceKeyHandlers(isDisabled: () => boolean) {
+  let spacePressed = false
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key !== ' ' || event.target !== event.currentTarget || event.defaultPrevented ||
+        event.altKey || event.ctrlKey || event.metaKey) {
+      return
+    }
+    event.preventDefault()
+    if (!event.repeat) {
+      spacePressed = !isDisabled()
+    }
+  }
+
+  function handleKeyup(event: KeyboardEvent) {
+    if (event.key !== ' ' || event.target !== event.currentTarget) {
+      return
+    }
+    const shouldActivate = spacePressed
+    spacePressed = false
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return
+    }
+    event.preventDefault()
+    if (shouldActivate && !isDisabled()) {
+      // Dispatch through click so business listeners, groups and labels share one path.
+      event.currentTarget?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    }
+  }
+
+  function handleBlur() {
+    spacePressed = false
+  }
+
+  return { handleKeydown, handleKeyup, handleBlur }
+}
+// #endif

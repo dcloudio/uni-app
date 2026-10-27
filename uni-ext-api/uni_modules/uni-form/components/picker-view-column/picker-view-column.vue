@@ -1,5 +1,14 @@
 <template>
-  <view class="picker-view-column" ref="rootRef" @click="handleClick">
+  <view class="picker-view-column" ref="rootRef"
+    <!-- #ifdef WEB -->
+    tabindex="0"
+    @keydown="handleKeydown"
+    @mousedown="clearKeyboardTarget"
+    @touchstart="clearKeyboardTarget"
+    @wheel="clearKeyboardTarget"
+    <!-- #endif -->
+    @click="handleClick"
+  >
     <scroll-view ref="scrollViewRef" class="picker-view-scroll" direction="vertical" :show-scrollbar="false" :scroll-with-animation="scrollWithAnimation" @scrollend="onScrollEnd" @scroll="onScroll">
       <view ref="contentRef" :style="{ 'padding-top': containerPaddingPx, 'padding-bottom': containerPaddingPx }">
         <slot></slot>
@@ -41,6 +50,35 @@
   const contentRef = ref<UniElement | null>(null)
   const scrollWithAnimation = ref(false)
 
+  // #ifdef WEB
+  let keyboardTargetIndex: number | null = null
+
+  function clearKeyboardTarget() {
+    keyboardTargetIndex = null
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.target !== event.currentTarget || event.defaultPrevented ||
+        event.altKey || event.ctrlKey || event.metaKey ||
+        (event.key !== 'ArrowUp' && event.key !== 'ArrowDown')) {
+      return
+    }
+    event.preventDefault()
+    const itemCount = contentRef.value?.children.length ?? 0
+    if (itemCount === 0 || scrollViewRef.value == null) {
+      return
+    }
+    const step = event.key === 'ArrowUp' ? -1 : 1
+    const targetIndex = Math.max(0, Math.min(itemCount - 1, selectedIndex.value + step))
+    if (targetIndex === selectedIndex.value) {
+      return
+    }
+    keyboardTargetIndex = targetIndex
+    setScrollTop(targetIndex)
+    ctx?.onColumnIndexChange(columnIndex, targetIndex)
+  }
+  // #endif
+
   const EPSILON = 1
 
   let isAdjusting = false
@@ -53,6 +91,11 @@
     if (idx < 0) {
       idx = 0
     }
+    // #ifdef WEB
+    if (keyboardTargetIndex != null && keyboardTargetIndex !== idx) {
+      clearKeyboardTarget()
+    }
+    // #endif
     selectedIndex.value = idx
     const scrollTop = Math.max(0, idx * itemHeight.value)
     scrollViewRef.value?.scrollTo(0, scrollTop)
@@ -96,6 +139,22 @@
 
     // top may be negative, so we need to clamp it to 0
     const top = Math.max(e.detail.scrollTop, 0)
+    // #ifdef WEB
+    // A previous animation may finish after another key press. Keep the latest target.
+    if (keyboardTargetIndex != null) {
+      const itemCount = contentRef.value?.children.length ?? 0
+      if (keyboardTargetIndex < itemCount) {
+        if (Math.abs(top - keyboardTargetIndex * itemHeight.value) > EPSILON) {
+          setScrollTop(keyboardTargetIndex)
+        } else {
+          clearKeyboardTarget()
+        }
+        return
+      }
+      // Linked columns may remove the target item while scrolling.
+      clearKeyboardTarget()
+    }
+    // #endif
     // compute nearest index
     const idx = Math.round(top / itemHeight.value)
     const valueChanged = selectedIndex.value !== idx

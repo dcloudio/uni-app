@@ -92,6 +92,7 @@
 	// #endif
 	import { LABEL_KEY, dispatchLabelClick, registerLabelTarget } from "../common.ts"
 	import { ActivatableChild, LabelContext } from "../types.ts"
+	import { useFormThemeIsDark, resolveFormTokens, FormThemeTokens } from "../theme.ts"
 
 	const keyboardHeight = ref(0)
 	const isFocusing = ref(false)
@@ -147,7 +148,20 @@
 		],
 		filterProperties: true
 	})
-	
+
+	// #ifdef APP-ANDROID
+	// 暗黑默认值：开发者未设置 color（useComputedStyle 读到 null）时，使用主题默认色
+	const isDarkTheme = useFormThemeIsDark()
+	const formThemeTokens = computed(() : FormThemeTokens => resolveFormTokens(isDarkTheme.value))
+	const resolvedTextColor = computed(() : string => {
+		const styleColor = style.get('color')
+		return (styleColor == null || styleColor == '') ? formThemeTokens.value.inputText : styleColor
+	})
+	watch(resolvedTextColor, (value : string) => {
+		inputView?.updateColor(value)
+	})
+	// #endif
+
 	const rpx2px = (value: string | null): string => {
 		if (value == null) {
 			return ''
@@ -489,7 +503,7 @@
 	// #ifdef APP-ANDROID
 	function syncAndroidInputStyleProps() {
 		inputView?.updateFontSize(rpx2px(style.get('font-size')))
-		inputView?.updateColor(style.get('color'))
+		inputView?.updateColor(resolvedTextColor.value)
 		inputView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		inputView?.updateFontWeight(style.get('font-weight'))
 		inputView?.updateFontStyle(style.get('font-style'))
@@ -800,7 +814,7 @@
 		inputView = new NativeInputView(
 			e.detail.element,
 			rpx2px(style.get('font-size')),
-			style.get('color'),
+			resolvedTextColor.value,
 			rpx2px(style.get('letter-spacing')),
 			style.get('font-weight'),
 			style.get('font-style'),
@@ -1566,9 +1580,21 @@
 </script>
 
 <style>
-	/* #ifdef APP-IOS || APP-HARMONY */
 	.uni-input-wrapper {
+		/* #ifdef APP-IOS || APP-HARMONY */
 		justify-content: center;
+		/* #endif */
+		/* #ifdef APP-ANDROID */
+		/* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
+		background-color: #ffffff;
+		/* #endif */
+	}
+
+	/* #ifdef APP-ANDROID */
+	@media (prefers-color-scheme: dark) {
+		.uni-input-wrapper {
+			background-color: #3b3b3b;
+		}
 	}
 	/* #endif */
 

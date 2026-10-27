@@ -12,6 +12,13 @@
       [!disabled, iconClass]
     )"
     :style="activeStyle"
+    :tabindex="disabled ? -1 : 0"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    role="radio"
+    :aria-checked="isChecked"
+    :aria-disabled="disabled"
     @click.stop="handleTap"
   >
     <svg v-if="isChecked" class="uni-radio-svg" viewBox="0 0 32 32">
@@ -36,7 +43,18 @@
     {{ isChecked ? fontUnicode : '' }}
   </text>
   <!-- #endif -->
-  <view v-else class="uni-radio" @click.stop="handleTap">
+  <view v-else class="uni-radio"
+    <!-- #ifdef WEB -->
+    :tabindex="disabled ? -1 : 0"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    role="radio"
+    :aria-checked="isChecked"
+    :aria-disabled="disabled"
+    <!-- #endif -->
+    @click.stop="handleTap"
+  >
     <!-- #ifdef WEB -->
     <view
       class="uni-radio-view uni-radio-icon"
@@ -75,6 +93,9 @@
 </template>
 
 <script lang="ts" setup>
+  // #ifdef WEB
+  import { createSpaceKeyHandlers } from '../common.ts'
+  // #endif
   import { LABEL_KEY, RADIO_GROUP_KEY, dispatchLabelClick, registerLabelTarget, classes, toStringOrEmpty } from '../common.ts'
   import { UniRadioElement } from './global.ts'
   import { ActivatableChild, LabelContext } from '../types.ts'
@@ -264,6 +285,10 @@
     radioClass: '',
     radioActiveClass: ''
   })
+
+  // #ifdef WEB
+  const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+  // #endif
 
   defineOptions({
     name: 'radio',

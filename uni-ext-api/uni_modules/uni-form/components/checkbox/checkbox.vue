@@ -11,6 +11,13 @@
       [!disabled, iconClass]
     )"
     :style="activeStyle"
+    :tabindex="disabled ? -1 : 0"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    role="checkbox"
+    :aria-checked="isChecked"
+    :aria-disabled="disabled"
     @click.stop="handleTap"
   >
     <svg v-if="isChecked" class="uni-checkbox-svg" viewBox="0 0 32 32">
@@ -34,7 +41,18 @@
     {{ isChecked ? fontUnicode : '' }}
   </text>
   <!-- #endif -->
-  <view v-else class="uni-checkbox" @click.stop="handleTap">
+  <view v-else class="uni-checkbox"
+    <!-- #ifdef WEB -->
+    :tabindex="disabled ? -1 : 0"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    role="checkbox"
+    :aria-checked="isChecked"
+    :aria-disabled="disabled"
+    <!-- #endif -->
+    @click.stop="handleTap"
+  >
     <!-- #ifdef WEB -->
     <view
       class="uni-checkbox-view uni-checkbox-icon"
@@ -71,6 +89,9 @@
 </template>
 
 <script lang="ts" setup>
+  // #ifdef WEB
+  import { createSpaceKeyHandlers } from '../common.ts'
+  // #endif
   import { CHECKBOX_GROUP_KEY, FORM_KEY, LABEL_KEY, dispatchLabelClick, registerLabelTarget, classes, toStringOrEmpty } from '../common.ts'
   import { UniCheckboxElement } from './global.ts'
   import { ActivatableChild, LabelContext, CheckboxGroupContext } from '../types.ts'
@@ -254,6 +275,10 @@
     checkboxClass: '',
     checkboxActiveClass: ''
   })
+
+  // #ifdef WEB
+  const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+  // #endif
 
   defineOptions({
     name: 'checkbox',

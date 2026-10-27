@@ -8277,7 +8277,10 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     },
     refresherDefaultStyle: {
       type: String,
-      default: "black"
+      /**
+      * auto为内部值，蒸汽模式下用户未设置时使用该值
+      */
+      default: "auto"
     },
     refresherBackground: {
       type: String,
@@ -8309,6 +8312,16 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
       const route = props2.refresherHeight / props2.refresherThreshold;
       return (route > 1 ? 1 : route) * 360;
     });
+    const refreshColor = Vue.computed(() => {
+      switch (props2.refresherDefaultStyle) {
+        case "black":
+        case "white":
+          return props2.refresherDefaultStyle;
+        case "auto":
+        default:
+          return void 0;
+      }
+    });
     return () => {
       return (() => {
         const _setTemplateRef = Vue.createTemplateRefSetter();
@@ -8325,7 +8338,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
                 paused: () => props2.refreshState == "pulling",
                 style: () => ({
                   transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-                  color: props2.refresherDefaultStyle
+                  color: refreshColor.value
                 })
               });
               Vue.setBlockKey(_n6, "refresh__loading");
@@ -8440,7 +8453,10 @@ const props$5 = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: "black"
+    /**
+     * auto为内部值，蒸汽模式下用户未设置时使用该值
+     */
+    default: "auto"
   },
   refresherBackground: {
     type: String,
@@ -8823,6 +8839,37 @@ function classes(...classList) {
     return className ?? "";
   });
 }
+function createSpaceKeyHandlers(isDisabled) {
+  let spacePressed = false;
+  function handleKeydown(event) {
+    if (event.key !== " " || event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (!event.repeat) {
+      spacePressed = !isDisabled();
+    }
+  }
+  function handleKeyup(event) {
+    var _a;
+    if (event.key !== " " || event.target !== event.currentTarget) {
+      return;
+    }
+    const shouldActivate = spacePressed;
+    spacePressed = false;
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (shouldActivate && !isDisabled()) {
+      (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    }
+  }
+  function handleBlur() {
+    spacePressed = false;
+  }
+  return { handleKeydown, handleKeyup, handleBlur };
+}
 class UniCheckboxElement extends UniViewElement {
   constructor() {
     super(...arguments);
@@ -8844,9 +8891,9 @@ class UniCheckboxElement extends UniViewElement {
   }
 }
 const t0$n = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
-const t1$9 = Vue.template("<div uni-view>", 1);
+const t1$9 = Vue.template("<div uni-view role=checkbox>", 1);
 const t2$1 = Vue.template("<span uni-text>");
-const t3$1 = Vue.template("<div uni-view class=uni-checkbox><div uni-view></div>", 1);
+const t3$1 = Vue.template("<div uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -8870,6 +8917,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   setup(__props, { expose: __expose }) {
     var _a, _b;
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     const slots = Vue.useSlots();
@@ -8934,6 +8982,9 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
             [!_disabled, __props.iconClass]
           )]);
           Vue.setStyle(n6, Vue.unref(activeStyle));
+          Vue.setProp(n6, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n6, "aria-checked", _isChecked);
+          Vue.setAttr(n6, "aria-disabled", _disabled);
         });
         Vue.setInsertionState(n6);
         Vue.createIf(() => Vue.unref(isChecked), () => {
@@ -8943,6 +8994,9 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.renderEffect(() => Vue.setAttr(n4, "fill", Vue.unref(iconColor), true));
           return n5;
         });
+        Vue.on(n6, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n6, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n6, "blur", (e2) => Vue.unref(handleBlur)(e2));
         Vue.on(n6, "click", Vue.withModifiers(handleTap, ["stop"]));
         return n6;
       },
@@ -8952,6 +9006,9 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
+          Vue.setProp(n19, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n19, "aria-checked", _isChecked);
+          Vue.setAttr(n19, "aria-disabled", _disabled);
           Vue.setClass(n12, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
@@ -8990,6 +9047,9 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
           1029
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
+        Vue.on(n19, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n19, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n19, "blur", (e2) => Vue.unref(handleBlur)(e2));
         Vue.on(n19, "click", Vue.withModifiers(handleTap, ["stop"]));
         return n19;
       },
@@ -9261,7 +9321,7 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniLabelElement extends UniViewElement {
 }
-const t0$j = Vue.template("<div uni-view>", 1);
+const t0$j = Vue.template("<div uni-view class=uni-label>", 1);
 const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "label",
@@ -9277,6 +9337,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   setup(__props) {
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const children = [];
     function register(child) {
       if (child.id && child.id.length > 0) {
@@ -9335,8 +9396,16 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
       target.activate(event);
     };
     const n1 = t0$j();
+    Vue.renderEffect(() => {
+      const _disabled = __props.disabled;
+      Vue.setProp(n1, "tabindex", _disabled ? -1 : 0);
+      Vue.setAttr(n1, "aria-disabled", _disabled);
+    });
     Vue.setInsertionState(n1);
     Vue.createSlot();
+    Vue.on(n1, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+    Vue.on(n1, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+    Vue.on(n1, "blur", (e2) => Vue.unref(handleBlur)(e2));
     Vue.on(n1, "click", handleTap);
     return n1;
   }
@@ -10647,7 +10716,7 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
 class UniPickerViewColumnElement extends UniViewElement {
 }
 const t0$a = Vue.template("<div uni-view>");
-const t1$5 = Vue.template("<div uni-view class=picker-view-column><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
+const t1$5 = Vue.template("<div uni-view class=picker-view-column tabindex=0><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
 const EPSILON = 1;
 const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -10673,12 +10742,38 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const rootRef = Vue.ref(null);
     const contentRef = Vue.ref(null);
     const scrollWithAnimation = Vue.ref(false);
+    let keyboardTargetIndex = null;
+    function clearKeyboardTarget() {
+      keyboardTargetIndex = null;
+    }
+    function handleKeydown(event) {
+      var _a;
+      if (event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.key !== "ArrowUp" && event.key !== "ArrowDown") {
+        return;
+      }
+      event.preventDefault();
+      const itemCount = ((_a = contentRef.value) == null ? void 0 : _a.children.length) ?? 0;
+      if (itemCount === 0 || scrollViewRef.value == null) {
+        return;
+      }
+      const step = event.key === "ArrowUp" ? -1 : 1;
+      const targetIndex = Math.max(0, Math.min(itemCount - 1, selectedIndex.value + step));
+      if (targetIndex === selectedIndex.value) {
+        return;
+      }
+      keyboardTargetIndex = targetIndex;
+      setScrollTop(targetIndex);
+      ctx == null ? void 0 : ctx.onColumnIndexChange(columnIndex, targetIndex);
+    }
     let isAdjusting = false;
     let columnIndex = -1;
     function setScrollTop(idx) {
       var _a;
       if (idx < 0) {
         idx = 0;
+      }
+      if (keyboardTargetIndex != null && keyboardTargetIndex !== idx) {
+        clearKeyboardTarget();
       }
       selectedIndex.value = idx;
       const scrollTop = Math.max(0, idx * itemHeight.value);
@@ -10690,11 +10785,24 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     function onScrollEnd(e2) {
+      var _a;
       isScrolling.value = false;
       if (isAdjusting) {
         return;
       }
       const top = Math.max(e2.detail.scrollTop, 0);
+      if (keyboardTargetIndex != null) {
+        const itemCount = ((_a = contentRef.value) == null ? void 0 : _a.children.length) ?? 0;
+        if (keyboardTargetIndex < itemCount) {
+          if (Math.abs(top - keyboardTargetIndex * itemHeight.value) > EPSILON) {
+            setScrollTop(keyboardTargetIndex);
+          } else {
+            clearKeyboardTarget();
+          }
+          return;
+        }
+        clearKeyboardTarget();
+      }
       const idx = Math.round(top / itemHeight.value);
       const valueChanged = selectedIndex.value !== idx;
       if (Math.abs(top - idx * itemHeight.value) > EPSILON) {
@@ -10740,7 +10848,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n3);
     const n5 = Vue.next(n4);
     Vue.setInsertionState(n7, n6);
-    const n2 = Vue.withComponentId("0e386488", () => Vue.createComponent(__syscom_0, {
+    const n2 = Vue.withComponentId("8e57cce2", () => Vue.createComponent(__syscom_0, {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -10759,6 +10867,10 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
       return n1;
     }));
     Vue.setStaticTemplateRef(n2, scrollViewRef, null, "scrollViewRef");
+    Vue.on(n7, "keydown", handleKeydown);
+    Vue.on(n7, "mousedown", clearKeyboardTarget);
+    Vue.on(n7, "touchstart", clearKeyboardTarget);
+    Vue.on(n7, "wheel", clearKeyboardTarget);
     Vue.on(n7, "click", handleClick);
     Vue.setStaticTemplateRef(n7, rootRef, null, "rootRef");
     Vue.renderEffect(() => {
@@ -10926,9 +11038,9 @@ class UniRadioElement extends UniViewElement {
   }
 }
 const t0$8 = Vue.template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
-const t1$3 = Vue.template("<div uni-view>", 1);
+const t1$3 = Vue.template("<div uni-view role=radio>", 1);
 const t2 = Vue.template("<span uni-text>");
-const t3 = Vue.template("<div uni-view class=uni-radio><div uni-view></div>", 1);
+const t3 = Vue.template("<div uni-view class=uni-radio role=radio><div uni-view></div>", 1);
 const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -10952,6 +11064,7 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   setup(__props, { expose: __expose }) {
     var _a, _b;
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     const slots = Vue.useSlots();
@@ -11027,6 +11140,9 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
             [!_disabled, __props.iconClass]
           )]);
           Vue.setStyle(n6, Vue.unref(activeStyle));
+          Vue.setProp(n6, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n6, "aria-checked", _isChecked);
+          Vue.setAttr(n6, "aria-disabled", _disabled);
         });
         Vue.setInsertionState(n6);
         Vue.createIf(() => Vue.unref(isChecked), () => {
@@ -11035,6 +11151,9 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.setAttr(n4, "d", iconPath, true);
           return n5;
         });
+        Vue.on(n6, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n6, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n6, "blur", (e2) => Vue.unref(handleBlur)(e2));
         Vue.on(n6, "click", Vue.withModifiers(handleTap, ["stop"]));
         return n6;
       },
@@ -11044,6 +11163,9 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
+          Vue.setProp(n19, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n19, "aria-checked", _isChecked);
+          Vue.setAttr(n19, "aria-disabled", _disabled);
           Vue.setClass(n12, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [!_disabled && _isChecked, "uni-radio-active"],
@@ -11082,6 +11204,9 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
           1029
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
+        Vue.on(n19, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n19, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n19, "blur", (e2) => Vue.unref(handleBlur)(e2));
         Vue.on(n19, "click", Vue.withModifiers(handleTap, ["stop"]));
         return n19;
       },
@@ -12338,7 +12463,7 @@ class UniSwitchElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setSwitchChecked(val);
   }
 }
-const t0$1 = Vue.template("<div uni-view><div uni-view>", 1);
+const t0$1 = Vue.template("<div uni-view role=switch><div uni-view>", 1);
 const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "switch",
@@ -12362,6 +12487,7 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
   setup(__props, { expose: __expose, emit: __emit }) {
     var _a;
     const props2 = __props;
+    const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
     const attrs2 = Vue.useAttrs();
     attrs2.id;
     (_a = Vue.getCurrentInstance()) == null ? void 0 : _a.proxy;
@@ -12410,18 +12536,25 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     const n1 = t0$1();
     const n0 = Vue.child(n1);
+    Vue.on(n1, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+    Vue.on(n1, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+    Vue.on(n1, "blur", (e2) => Vue.unref(handleBlur)(e2));
     Vue.on(n1, "click", Vue.withModifiers(handleTap, ["stop"]));
     Vue.renderEffect(() => {
       const _classes = Vue.unref(classes);
       const _enableTransition = Vue.unref(enableTransition);
+      const _disabled = __props.disabled;
       const _isChecked = Vue.unref(isChecked);
       Vue.setClass(n1, ["uni-switch", _classes(
         [_enableTransition, "transition-enabled"],
-        [__props.disabled, "uni-switch-disabled"],
+        [_disabled, "uni-switch-disabled"],
         [_isChecked, "uni-switch-active"],
         [_isChecked, __props.switchActiveClass]
       )]);
       Vue.setStyle(n1, Vue.unref(activeStyle));
+      Vue.setProp(n1, "tabindex", _disabled ? -1 : 0);
+      Vue.setAttr(n1, "aria-checked", _isChecked);
+      Vue.setAttr(n1, "aria-disabled", _disabled);
       Vue.setClass(n0, ["uni-switch-thumb", _classes(
         [_enableTransition, "thumb-transition-enabled"],
         [_isChecked, "uni-switch-active-thumb"],

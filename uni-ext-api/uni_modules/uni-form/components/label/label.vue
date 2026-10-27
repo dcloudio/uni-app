@@ -1,10 +1,23 @@
 <template>
-  <view @click="handleTap">
+  <view
+    <!-- #ifdef WEB -->
+    :tabindex="disabled ? -1 : 0"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    class="uni-label"
+    :aria-disabled="disabled"
+    <!-- #endif -->
+    @click="handleTap"
+  >
     <slot></slot>
   </view>
 </template>
 
 <script lang="ts" setup>
+  // #ifdef WEB
+  import { createSpaceKeyHandlers } from '../common.ts'
+  // #endif
   // Label that supports internal form controls (checkbox/radio/switch)
   // via provide/inject registration. Clicking the label will activate
   // the first registered control, or the one matching `for` if provided.
@@ -53,6 +66,10 @@
     disabled: false,
     for: ''
   })
+
+  // #ifdef WEB
+  const { handleKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+  // #endif
 
   defineOptions({
     name: 'label',

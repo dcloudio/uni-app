@@ -50,6 +50,7 @@
 	// #endif
 	import { LABEL_KEY, dispatchLabelClick, registerLabelTarget } from "../common.ts"
 	import { ActivatableChild, LabelContext } from "../types.ts"
+	import { useFormThemeIsDark, resolveFormTokens, FormThemeTokens } from "../theme.ts"
 
 	const keyboardHeight = ref(0)
 	const isFocusing = ref(false)
@@ -101,6 +102,16 @@
 		],
 		filterProperties: true
 	})
+
+	// #ifdef APP-ANDROID
+	// 暗黑默认值：开发者未设置 color（useComputedStyle 读到 null）时，使用主题默认色
+	const isDarkTheme = useFormThemeIsDark()
+	const formThemeTokens = computed(() : FormThemeTokens => resolveFormTokens(isDarkTheme.value))
+	const resolvedTextColor = computed(() : string => {
+		const styleColor = style.get('color')
+		return (styleColor == null || styleColor == '') ? formThemeTokens.value.inputText : styleColor
+	})
+	// #endif
 
 	const rpx2px = (value : string) : string => {
 		if (value == null) return ''
@@ -500,7 +511,7 @@
 	// #ifdef APP-ANDROID
 	function syncAndroidTextareaStyleProps() {
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
-		textareaView?.updateColor(style.get('color'))
+		textareaView?.updateColor(resolvedTextColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		textareaView?.updateFontWeight(style.get('font-weight'))
@@ -560,7 +571,7 @@
 	watch(() => style.get('font-size'), (value : string) => {
 		textareaView?.updateFontSize(rpx2px(value))
 	})
-	watch(() => style.get('color'), (value : string) => {
+	watch(resolvedTextColor, (value : string) => {
 		textareaView?.updateColor(value)
 	})
 	watch(() => style.get('line-height'), (value : string) => {
@@ -1170,8 +1181,18 @@
 		width: 300px;
 		/* #ifdef APP-ANDROID */
 		height: 150px;
+		/* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
+		background-color: #ffffff;
 		/* #endif */
 	}
+
+	/* #ifdef APP-ANDROID */
+	@media (prefers-color-scheme: dark) {
+		.uni-textarea-wrapper {
+			background-color: #3b3b3b;
+		}
+	}
+	/* #endif */
 
 	.uni-textarea-container {
 		height: 100%;
