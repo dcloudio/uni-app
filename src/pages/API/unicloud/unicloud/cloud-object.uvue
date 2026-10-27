@@ -1,40 +1,34 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @tap="addTodo">添加Todo</button>
-        </view>
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @tap="addTodoWithGeneric">
-            添加Todo传入泛型
-          </button>
-        </view>
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @tap="randomFail">随机触发失败重试</button>
-        </view>
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @tap="fail">云对象失败调用</button>
-        </view>
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @tap="failWithNumberErrCode">
-            云对象数字错误码
-          </button>
-        </view>
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @tap="success">云对象成功调用</button>
-        </view>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @tap="addTodo">添加Todo</button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @tap="addTodoWithGeneric">
+          添加Todo传入泛型
+        </button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @tap="randomFail">随机触发失败重试</button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @tap="fail">云对象失败调用</button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @tap="failWithNumberErrCode">
+          云对象数字错误码
+        </button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @tap="success">云对象成功调用</button>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
   type DataType = {
@@ -131,7 +125,7 @@
       notify(res['showMessage'] as string, '提示')
     }).catch((err : any | null) => {
       const error = err as UniCloudError
-      console.error(error)
+      console.log(error)
     })
   }
 
@@ -150,7 +144,7 @@
       if (detail != null && detail['tips'] != null) {
         data.failErrDetailTips = detail['tips'] as string
       }
-      console.error(error)
+      console.log(error)
     })
   }
 
@@ -164,7 +158,7 @@
     }).catch((err : any | null) => {
       const error = err as UniCloudError
       data.failNumberErrCode = error.errCode as number
-      console.error(error)
+      console.log(error)
     })
   }
 

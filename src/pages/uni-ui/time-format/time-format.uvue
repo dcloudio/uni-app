@@ -1,0 +1,257 @@
+<template>
+  <scroll-view class="page uni-theme-root">
+    <view class="section">
+      <text class="section-title">当前时间不同格式</text>
+      <view class="row">
+        <text class="row-label">date</text>
+        <uni-time-format :timestamp="data.currentTimestamp" format="date"></uni-time-format>
+      </view>
+      <view class="row">
+        <text class="row-label">time</text>
+        <uni-time-format :timestamp="data.currentTimestamp" format="time"></uni-time-format>
+      </view>
+      <view class="row">
+        <text class="row-label">datetime</text>
+        <uni-time-format :timestamp="data.currentTimestamp" format="datetime"></uni-time-format>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">输入时间动态计算相对时间</text>
+      <view class="input-block">
+        <text class="row-label">输入格式</text>
+        <text class="tip-text">yyyy-mm-dd hh:mm:ss</text>
+        <input
+          class="datetime-input"
+          v-model="data.relativeDateTimeText"
+          placeholder="yyyy-mm-dd hh:mm:ss"
+        />
+      </view>
+      <view class="row">
+        <text class="row-label">输出相对时间</text>
+        <uni-time-format :timestamp="inputRelativeTimestamp" format="relative"></uni-time-format>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">固定 5 分支示例（不随输入变化）</text>
+      <view class="row">
+        <text class="row-label">刚刚</text>
+        <uni-time-format :timestamp="fixedJustNowTimestamp" format="relative"></uni-time-format>
+      </view>
+      <view class="row">
+        <text class="row-label">分钟前</text>
+        <uni-time-format :timestamp="fixedFiveMinutesAgoTimestamp" format="relative"></uni-time-format>
+      </view>
+      <view class="row">
+        <text class="row-label">小时前</text>
+        <uni-time-format :timestamp="fixedHourBranchTimestamp" format="relative"></uni-time-format>
+      </view>
+      <view class="row">
+        <text class="row-label">昨天 HH:mm</text>
+        <uni-time-format :timestamp="fixedYesterdayTimestamp" format="relative"></uni-time-format>
+      </view>
+      <view class="row">
+        <text class="row-label">超过昨天</text>
+        <uni-time-format :timestamp="fixedOlderThanYesterdayTimestamp" format="relative"></uni-time-format>
+      </view>
+      <text class="tip-text">固定示例基于页面打开时刻计算，不随输入变化。</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">秒级时间戳自动换算</text>
+      <view class="row">
+        <text class="row-label">timestamp(s)</text>
+        <uni-time-format :timestamp="secondTimestamp" format="datetime"></uni-time-format>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">非法时间戳</text>
+      <view class="row">
+        <uni-time-format :timestamp="data.invalidTimestamp" format="datetime"></uni-time-format>
+      </view>
+      <text class="tip-text">非法时间会显示为空字符串。</text>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  type Data = {
+    currentTimestamp: number
+    invalidTimestamp: number
+    relativeDateTimeText: string
+  }
+
+  const data = reactive<Data>({
+    currentTimestamp: Date.now(),
+    invalidTimestamp: NaN,
+    relativeDateTimeText: ''
+  })
+  let timer : number | null = null
+
+  const DAY_MS = 24 * 60 * 60 * 1000
+  const pageOpenTimestamp = Date.now()
+  const pageOpenDate = new Date(pageOpenTimestamp)
+
+  function padZero(value : number) : string {
+    return value < 10 ? `0${value}` : `${value}`
+  }
+
+  function formatDateTimeText(date : Date) : string {
+    return `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`
+  }
+
+  function toSafeInt(text : string) : number | null {
+    const value = parseInt(text)
+    if (isNaN(value)) {
+      return null
+    }
+    return value
+  }
+
+  function parseDateTimeText(text : string) : number | null {
+    if (text.length != 19) {
+      return null
+    }
+    if (text.substring(4, 5) != '-' || text.substring(7, 8) != '-' || text.substring(10, 11) != ' ' || text.substring(13, 14) != ':' || text.substring(16, 17) != ':') {
+      return null
+    }
+
+    const year = toSafeInt(text.substring(0, 4))
+    const month = toSafeInt(text.substring(5, 7))
+    const day = toSafeInt(text.substring(8, 10))
+    const hours = toSafeInt(text.substring(11, 13))
+    const minutes = toSafeInt(text.substring(14, 16))
+    const seconds = toSafeInt(text.substring(17, 19))
+
+    if (year == null || month == null || day == null || hours == null || minutes == null || seconds == null) {
+      return null
+    }
+
+    const date = new Date(year, month - 1, day, hours, minutes, seconds)
+    if (date.getFullYear() != year || date.getMonth() != month - 1 || date.getDate() != day || date.getHours() != hours || date.getMinutes() != minutes || date.getSeconds() != seconds) {
+      return null
+    }
+    return date.getTime()
+  }
+
+  const pageOpenDateText = formatDateTimeText(pageOpenDate)
+  data.relativeDateTimeText = pageOpenDateText
+
+  const inputRelativeTimestamp = computed(() : number => {
+    const parsed = parseDateTimeText(data.relativeDateTimeText)
+    if (parsed != null) {
+      return parsed
+    }
+    return NaN
+  })
+
+  const fixedDayStartTimestamp = new Date(
+    pageOpenDate.getFullYear(),
+    pageOpenDate.getMonth(),
+    pageOpenDate.getDate()
+  ).getTime()
+
+  const fixedJustNowTimestamp = pageOpenTimestamp - 20 * 1000
+  const fixedFiveMinutesAgoTimestamp = pageOpenTimestamp - 5 * 60 * 1000
+  const fixedHourBranchTimestamp = (() : number => {
+    const fiveHoursAgo = pageOpenTimestamp - 5 * 60 * 60 * 1000
+    if (fiveHoursAgo >= fixedDayStartTimestamp) {
+      return fiveHoursAgo
+    }
+    const oneHourAgo = pageOpenTimestamp - 60 * 60 * 1000
+    if (oneHourAgo >= fixedDayStartTimestamp) {
+      return oneHourAgo
+    }
+    return pageOpenTimestamp - 60 * 1000
+  })()
+  const fixedYesterdayTimestamp = fixedDayStartTimestamp - 50 * 60 * 1000
+  const fixedOlderThanYesterdayTimestamp = fixedDayStartTimestamp - 2 * DAY_MS - 30 * 60 * 1000
+
+  const secondTimestamp = computed(() : number => {
+    return Math.floor(data.currentTimestamp / 1000)
+  })
+
+  onMounted(() => {
+    timer = setInterval(() => {
+      data.currentTimestamp = Date.now()
+    }, 1000)
+  })
+
+  onUnmounted(() => {
+    const currentTimer = timer
+    if (currentTimer != null) {
+      clearInterval(currentTimer)
+      timer = null
+    }
+  })
+
+  defineExpose({
+    data,
+    inputRelativeTimestamp,
+    secondTimestamp
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    padding: 12px;
+  }
+
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    color: var(--text-color, #333333);
+  }
+
+  .input-block {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .datetime-input {
+    margin-top: 8px;
+    margin-bottom: 6px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dddddd;
+    height: 38px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .row-label {
+    font-size: 14px;
+    color: var(--text-color, #333333);
+    opacity: 0.75;
+  }
+
+  .tip-text {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-color, #333333);
+    opacity: 0.6;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .datetime-input {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      background-color: #2d2d2d;
+    }
+  }
+</style>

@@ -1,14 +1,16 @@
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-
-const CURRENT_PAGE_PATH = "/pages/API/set-navigation-bar-title/set-navigation-bar-title";
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe("setNavigationBarColor", () => {
-  if (isAppWebView) {
-    it('not support', () => {
+  if (isAppWebView || isMP) {
+    it('skip', () => {
       expect(1).toBe(1)
     })
     return
   }
+
+  const CURRENT_PAGE_PATH = "/pages/API/set-navigation-bar-title/set-navigation-bar-title";
   let page;
   let originLifeCycleNum;
   beforeAll(async () => {

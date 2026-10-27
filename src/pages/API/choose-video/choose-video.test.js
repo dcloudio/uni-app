@@ -1,9 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 describe('choose-video', () => {
-  if (isAppWebView || isWeb) {
+  if (isAppWebView || isWeb || isMP) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})

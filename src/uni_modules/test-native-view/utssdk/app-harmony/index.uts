@@ -1,0 +1,61 @@
+import { BuilderNode } from "@kit.ArkUI"
+// 导入混编实现的声明式UI构建函数
+import { buildView } from "./builder.ets"
+
+
+/**
+ * 颜色转换，仅支持#开头的格式
+ *  uni-app x 蒸汽模式8位时格式为 #RRGGBBAA
+ *  鸿蒙平台需要的是 #AARRGGBB
+ */
+class ColorUtils {
+  static fromUniColor(color: string): string | null {
+    if(color.startsWith("#")){
+      const len = color.length
+      if(len >= 9){
+        let rgb = color.substring(1, 7)
+        let a = color.substring(7, 9)
+        return `#${a}${rgb}`
+      }
+      return color;
+    }
+    return null
+  }
+}
+
+// Harmony 侧直接传递颜色字符串，避免依赖当前 SDK 未导出的颜色类型。
+type NativeViewOptions = {
+  backgroundColor: string
+}
+
+export class TestNativeView {
+  private $element : UniNativeViewElement;
+  private builder : BuilderNode<[NativeViewOptions]> | null = null
+  // 初始化 buildButton 默认参数
+  private params : NativeViewOptions = {
+    backgroundColor: '#FFFFFF'
+  }
+
+  constructor(element : UniNativeViewElement) {
+    // 绑定 wrapBuilder 函数
+    this.builder = element.bindHarmonyWrappedBuilder(wrapBuilder<[NativeViewOptions]>(buildView), this.params)
+    this.$element = element
+    // 绑定当前实例为自定义的controller，方便其他地方通过 element 获取使用
+    this.$element.bindHarmonyController(this)
+  }
+
+  /**
+   * 更新背景颜色
+   * 仅支持#RRGGBB格式颜色字符串
+   */
+  updateBackground(color : string) {
+    this.params.backgroundColor = UTSHarmony.colorWithString(color)
+    this.builder?.update(this.params)
+  }
+
+  /**
+   * 用于拉齐差异，鸿蒙平台无需实现
+   */
+  destroy() {
+  }
+}

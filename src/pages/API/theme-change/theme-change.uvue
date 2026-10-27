@@ -3,12 +3,12 @@
     <!-- #ifdef APP -->
     <view class="uni-common-mt item-box">
       <text>osTheme:</text>
-      <text id="theme">{{ osTheme }}</text>
+      <text id="theme">{{ data.osTheme }}</text>
     </view>
     <!-- #endif -->
     <view class="uni-common-mt item-box">
       <text>应用当前主题:</text>
-      <text id="theme">{{ appTheme }}</text>
+      <text id="theme">{{ data.appTheme }}</text>
     </view>
 
     <!-- #ifdef APP -->
@@ -17,51 +17,54 @@
         <text class="uni-title-text"> 修改appTheme主题（此处仅为演示API，本应用并未完整适配暗黑模式） </text>
       </view>
     </view>
-    <view class="uni-list uni-common-pl">
-      <radio-group @change="radioChange" class="radio-group">
-        <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item"
-          :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item" :checked="index === current">
-          {{ item }}
-        </radio>
-      </radio-group>
-    </view>
+    <enum-data :items="data.items" title="appTheme" @change="radioChange"></enum-data>
     <!-- #endif -->
 
   </view>
 </template>
 
-<script setup lang="uts">
-  
+<script setup lang="ts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const osThemeChangeId = ref(0)
-  const appThemeChangeId = ref(0)
-  const osTheme = ref("light" as string)
-  const appTheme = ref("light" as string)
-  const originalTheme = ref("light" as string)
-  const current = ref(0)
-  const items = ref([
-    "light",
-    "dark",
-    "auto"
-  ] as string[])
+  type Data = {
+    osThemeChangeId: number;
+    appThemeChangeId: number;
+    osTheme: string;
+    appTheme: string;
+    originalTheme: string;
+    current: number;
+    items: ItemType[];
+  }
+
+  const data = reactive({
+    osThemeChangeId: 0,
+    appThemeChangeId: 0,
+    osTheme: 'light',
+    appTheme: 'light',
+    originalTheme: 'light',
+    current: 0,
+    items: [
+      { value: 0, name: 'light', checked: false },
+      { value: 1, name: 'dark', checked: false },
+      { value: 2, name: 'auto', checked: false }
+    ] as ItemType[]
+  } as Data)
 
   function bindOsThemeChange() : number {
-    //注册osTheme变化监听
     return uni.onOsThemeChange((res : OsThemeChangeResult) => {
-      osTheme.value = res.osTheme
+      data.osTheme = res.osTheme
     })
   }
 
   function bindAppThemeChange() : number {
     // #ifdef APP
-    //注册appTheme变化监听
     return uni.onAppThemeChange((res : AppThemeChangeResult) => {
-      appTheme.value = res.appTheme
+      data.appTheme = res.appTheme
     })
     // #endif
     // #ifdef WEB || MP
     return uni.onHostThemeChange((res : OnHostThemeChangeCallbackResult) => {
-      appTheme.value = res.hostTheme
+      data.appTheme = res.hostTheme
     })
     // #endif
   }
@@ -70,57 +73,59 @@
     uni.setAppTheme({
       theme: value as 'light' | 'dark' | 'auto',
       success: function () {
-        console.log("设置appTheme为", value, "成功")
+        console.log('设置appTheme为', value, '成功')
       },
       fail: function (e : IAppThemeFail) {
-        console.log("设置appTheme为", value, "失败,原因:", e.errMsg)
+        console.log('设置appTheme为', value, '失败,原因:', e.errMsg)
       }
     })
   }
 
-  function radioChange(e : UniRadioGroupChangeEvent) {
-    const theme = e.detail.value
+  function radioChange(value : number) {
+    const theme = data.items[value].name
     setAppTheme(theme)
-    uni.showToast({
-      icon: 'none',
-      title: '当前选中:' + theme,
-    })
   }
 
   onReady(() => {
     uni.getSystemInfo({
       success: (res : GetSystemInfoResult) => {
         // #ifdef APP
-        osTheme.value = res.osTheme!
-        originalTheme.value = res.appTheme!
-        appTheme.value = res.appTheme == "auto" ? res.osTheme! : res.appTheme!
-        current.value = items.value.indexOf(res.appTheme!)
+        data.osTheme = res.osTheme!
+        data.originalTheme = res.appTheme!
+        data.appTheme = res.appTheme == 'auto' ? res.osTheme! : res.appTheme!
+        data.current = data.items.findIndex((item : ItemType) : boolean => {
+          const currentItem = item.name == res.appTheme!
+          if (currentItem) {
+            item.checked = true
+          }
+          return currentItem
+        })
         // #endif
         // #ifdef WEB || MP
-        appTheme.value = res.hostTheme!
+        data.appTheme = res.hostTheme!
         // #endif
       }
     })
     // #ifdef APP
-    osThemeChangeId.value = bindOsThemeChange()
+    data.osThemeChangeId = bindOsThemeChange()
     // #endif
-    appThemeChangeId.value = bindAppThemeChange()
+    data.appThemeChangeId = bindAppThemeChange()
   })
 
   onUnload(() => {
-    //注销监听
     // #ifdef APP
-    uni.offAppThemeChange(appThemeChangeId.value)
-    uni.offOsThemeChange(osThemeChangeId.value)
+    uni.offAppThemeChange(data.appThemeChangeId)
+    uni.offOsThemeChange(data.osThemeChangeId)
     // #endif
     // #ifdef WEB || MP
-    uni.offHostThemeChange(appThemeChangeId.value)
+    uni.offHostThemeChange(data.appThemeChangeId)
     // #endif
-    //暂时屏蔽 避免5.1安卓设备自动化测试不过
-    // uni.showToast({
-    //   "position": "bottom",
-    //   "title": "已停止监听主题切换"
-    // })
+  })
+
+  defineExpose({
+    data,
+    setAppTheme,
+    radioChange
   })
 </script>
 
@@ -129,9 +134,5 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-  }
-
-  .uni-list-cell {
-    justify-content: flex-start;
   }
 </style>

@@ -1,14 +1,21 @@
-let page
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
-beforeAll(async () => {
-  // if (!process.env.uniTestPlatformInfo.toLowerCase().startsWith('web')) {
-  //   return
-  // }
-  page = await program.reLaunch('/pages/component/canvas/canvas')
-  await page.waitFor(500)
-})
 
 describe('Canvas.uvue', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/canvas/canvas')
+    await page.waitFor(500)
+  })
+
   it('toBlob', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('web')) {
       const testToBlobResult = await page.data('data.testToBlobResult')

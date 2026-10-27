@@ -15,11 +15,6 @@
     </view>
   </view>
 </template>
-
-<script>
-
-</script>
-
 <style>
   .common {
     width: 250px;

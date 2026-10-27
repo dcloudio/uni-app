@@ -31,6 +31,10 @@
     {
     	"name": "permission_read_accessbiometric",
     	"value": "正在申请访问设备的生物识别功能权限，以便为您提供相应的服务"
+    },
+    {
+    	"name": "write_calendar_reason",
+    	"value": "正在申请写入日历权限，以便为您提供相应的服务"
     }
   ]
 }

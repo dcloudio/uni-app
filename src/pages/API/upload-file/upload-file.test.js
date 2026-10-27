@@ -5,9 +5,15 @@ const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isAndroid = platformInfo.startsWith('android')
 
-const PAGE_PATH = '/pages/API/upload-file/upload-file'
-
 describe('ExtApi-UploadFile', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
+  const PAGE_PATH = '/pages/API/upload-file/upload-file'
   let page;
   let res;
   beforeAll(async () => {

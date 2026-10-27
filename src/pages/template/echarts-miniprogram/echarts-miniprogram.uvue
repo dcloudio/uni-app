@@ -1,0 +1,159 @@
+<template>
+  <view class="page">
+    <view class="header">
+      <text class="eyebrow">echarts-miniprogram版，可以在web、小程序、app蒸汽下运行</text>
+      <text class="title">Weekly sales</text>
+      <text class="subtitle">Mini program canvas example</text>
+    </view>
+
+    <view class="chart-card">
+      <EchartsMiniprogramCanvas class="chart" canvas-id="sales-chart" height="300px" :ec="ec"
+        @inited="onChartInited"></EchartsMiniprogramCanvas>
+    </view>
+
+    <button class="action-button" @click="toggleData">Switch data set</button>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import EchartsMiniprogramCanvas from "./echarts-miniprogram-canvas/components/echarts-miniprogram-canvas/echarts-miniprogram-canvas.vue"
+
+  const FIRST_WEEK = [120, 210, 180, 260, 310, 220, 350]
+  const SECOND_WEEK = [260, 180, 320, 210, 280, 360, 300]
+  const activeDataSet = ref(0)
+  const chartInited = ref(false)
+
+  function createChartOption(values) {
+    return {
+      grid: {
+        left: 36,
+        right: 20,
+        top: 24,
+        bottom: 32
+      },
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        axisLine: {
+          lineStyle: {
+            color: '#CBD5E1'
+          }
+        },
+        axisTick: {
+          show: false
+        }
+      },
+      yAxis: {
+        type: 'value',
+        splitLine: {
+          lineStyle: {
+            color: '#E2E8F0'
+          }
+        }
+      },
+      series: [{
+        type: 'bar',
+        data: values,
+        barWidth: '56%',
+        itemStyle: {
+          color: '#0F766E',
+          borderRadius: [6, 6, 0, 0]
+        }
+      }]
+    }
+  }
+
+  const ec = ref({ option: createChartOption(FIRST_WEEK) })
+
+  function onChartInited() {
+    chartInited.value = true
+  }
+
+  function toggleData() {
+    activeDataSet.value = activeDataSet.value == 0 ? 1 : 0
+    ec.value.option = createChartOption(activeDataSet.value == 0 ? FIRST_WEEK : SECOND_WEEK)
+  }
+
+  function jest_getState() {
+    return {
+      activeDataSet: activeDataSet.value,
+      chartInited: chartInited.value
+    }
+  }
+
+  defineExpose({
+    toggleData,
+    jest_getState
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    flex-direction: column;
+    padding: 24px 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    margin-bottom: 24px;
+  }
+
+  .eyebrow {
+    color: #0F766E;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .title {
+    color: #0F172A;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: #64748B;
+    font-size: 15px;
+  }
+
+  .chart-card {
+    flex-direction: column;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .chart {
+    height: 300px;
+  }
+
+  .action-button {
+    background-color: #0F766E;
+    border-radius: 8px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .eyebrow {
+      color: #5EEAD4;
+    }
+
+    .title {
+      color: #F8FAFC;
+    }
+
+    .subtitle {
+      color: #CBD5E1;
+    }
+
+    .chart-card {
+      background-color: #1E293B;
+    }
+  }
+</style>

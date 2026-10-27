@@ -1,29 +1,23 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @click="dbAdd">新增单条数据</button>
-          <button type="primary" @click="dbBatchAdd">新增多条数据</button>
-          <button type="primary" @click="dbUpdate">更新数据</button>
-          <button type="primary" @click="dbGet">where传字符串获取数据</button>
-          <button type="primary" @click="dbGetWithCommand">where传对象获取数据</button>
-          <button type="primary" @click="dbRemove">删除数据</button>
-          <button type="primary" @click="dbLookupInit">初始化联表查询数据</button>
-          <button type="primary" @click="dbLookup">联表查询</button>
-          <button type="primary" @click="dbMultiSend">合并查询查询</button>
-        </view>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="dbAdd">新增单条数据</button>
+        <button type="primary" @click="dbBatchAdd">新增多条数据</button>
+        <button type="primary" @click="dbUpdate">更新数据</button>
+        <button type="primary" @click="dbGet">where传字符串获取数据</button>
+        <button type="primary" @click="dbGetWithCommand">where传对象获取数据</button>
+        <button type="primary" @click="dbRemove">删除数据</button>
+        <button type="primary" @click="dbLookupInit">初始化联表查询数据</button>
+        <button type="primary" @click="dbLookup">联表查询</button>
+        <button type="primary" @click="dbMultiSend">合并查询查询</button>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
   type DataType = {
@@ -85,7 +79,6 @@
       })
       .then(res => {
         uni.hideLoading()
-        console.log(res)
         data.addId = res.id
         notify(`新增成功，id: ${res.id}`, '提示')
       })
@@ -111,8 +104,6 @@
       }])
       .then((res) => {
         uni.hideLoading()
-        console.log(res)
-        console.log('JSON.stringify(res.inserted)', JSON.stringify(res.inserted))
         data.batchAddIds = res.ids
         data.batchAddinserted = res.inserted
         notify(`新增成功条数${res.inserted}, id列表: ${res.ids.join(',')}`, '提示')
@@ -140,7 +131,6 @@
       .get()
       .then(res => {
         uni.hideLoading()
-        console.log(res)
         data.getData = res.data
         notify(`获取成功，取到了${res.data.length}条数据`, '提示')
       })
@@ -168,7 +158,6 @@
       .get()
       .then(res => {
         uni.hideLoading()
-        console.log(res)
         data.getWithCommandData = res.data
         notify(`获取成功，取到了${res.data.length}条数据`, '提示')
       })
@@ -193,7 +182,6 @@
       })
       .then(res => {
         uni.hideLoading()
-        console.log(res)
         data.updateUpdated = res.updated
         notify(`更新成功，更新了${res.updated}条数据`, '提示')
       })
@@ -216,7 +204,6 @@
       .remove()
       .then(res => {
         uni.hideLoading()
-        console.log(res)
         data.removeDeleted = res.deleted
         notify(`删除成功，删掉了${res.deleted}条数据`, '提示')
       })
@@ -293,7 +280,6 @@
       .get()
       .then(res => {
         uni.hideLoading()
-        console.log(res)
         data.lookupData = res.data
         notify(`联表查询成功，取到了${res.data.length}条数据`, '提示')
       })

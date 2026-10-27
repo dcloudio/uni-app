@@ -1,0 +1,29 @@
+{
+  "id": "uts-worker-sendable",
+  "displayName": "uts-worker-sendable",
+  "version": "1.0.0",
+  "description": "UTS Worker Sendable 示例插件",
+  "keywords": ["uts", "worker", "sendable"],
+  "engines": {
+    "HBuilderX": "^3.99",
+    "uni-app-x": "^3.1.0"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "darkmode": "-",
+    "i18n": "-",
+    "widescreen": "-"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "platforms": {
+      "client": {
+        "uni-app-x": {
+          "app": {
+            "harmony": "y"
+          }
+        }
+      }
+    }
+  }
+}

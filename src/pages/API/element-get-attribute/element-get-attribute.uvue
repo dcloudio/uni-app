@@ -20,7 +20,7 @@
       <!-- #endif -->
       <button @click="getPropertyValue">getPropertyValue获取背景色值</button>
 
-      <child id="child" ref="childRef"></child>
+      <child id="child"></child>
       <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
       <view class="rect-info" v-if="data.rectInfo">
         <view class="node-info-item">
@@ -56,6 +56,7 @@
           <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
         </view>
       </view>
+      <!-- #ifndef MP-ALIPAY -->
       <scroll-view ref="scrollViewRef" class="scroll-view_H" direction="horizontal">
         <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
         <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
@@ -64,16 +65,18 @@
       <!-- #ifndef WEB -->
       <button @click="scrollTo">scrollTo设置left滚动200px</button>
       <!-- #endif -->
+      <button style="margin-top: 8px" @click="getUniElementScrollOffset">打印 scroll-view 滚动属性</button>
 
       <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
 
       <button type="default" @click="handleGetScaledViewSize" style="margin-top: 30px;">获取scale后的view尺寸信息</button>
+      <!-- #endif -->
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 
   import child from './child.uvue'
 
@@ -97,6 +100,14 @@
     scaledViewHeight: number
   }
 
+  type ScrollOffset = {
+    scrollTop: number,
+    scrollHeight: number,
+    scrollWidth: number,
+    scrollLeft: number,
+    width: number
+  }
+
   const boxRef = ref<UniElement | null>(null)
   const scrollViewRef = ref<UniScrollViewElement | null>(null)
   const data = reactive({
@@ -116,6 +127,13 @@
     scaledViewWidth: 0,
     scaledViewHeight: 0
   } as DataType)
+  const scrollOffset = reactive<ScrollOffset>({
+    scrollTop: 0,
+    scrollHeight: 0,
+    scrollWidth: 0,
+    scrollLeft: 0,
+    width: 0
+  })
 
   function getBoundingClientRectAsyncChild(){
     const childEl = uni.getElementById('child')!
@@ -171,6 +189,22 @@
     }
   }
 
+  function getUniElementScrollOffset() {
+    if (scrollViewRef.value != null) {
+      const scrollView = scrollViewRef.value!
+      console.log("scrollTop: ", scrollView.scrollTop)
+      console.log("scrollHeight: ", scrollView.scrollHeight)
+      console.log("scrollWidth: ", scrollView.scrollWidth)
+      console.log("scrollLeft: ", scrollView.scrollLeft)
+      const screenWidth = uni.getWindowInfo().screenWidth
+      scrollOffset.width = (screenWidth - 30) * 3
+      scrollOffset.scrollTop = scrollView.scrollTop
+      scrollOffset.scrollHeight = scrollView.scrollHeight
+      scrollOffset.scrollWidth = scrollView.scrollWidth
+      scrollOffset.scrollLeft = scrollView.scrollLeft
+    }
+  }
+
   //scrollView元素获取class中的margin-top属性值 仅自动化测试使用
   function getScrollViewStyleMarginTop() : string {
     if (scrollViewRef.value != null) {
@@ -195,6 +229,7 @@
 
   defineExpose({
     data,
+    scrollOffset,
     getAttributeId,
     setStyle,
     getAttributeStyle,

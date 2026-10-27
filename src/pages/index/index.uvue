@@ -1,0 +1,204 @@
+<template>
+	<scroll-view class="scroll" direction="vertical">
+		<view class="page">
+			<view class="hero">
+				<image class="logo" src="/static/logo.png"></image>
+				<view class="hero-copy">
+					<text class="eyebrow">UNI-APP X · UNI-DRAMA</text>
+					<text class="title">短剧示例</text>
+					<text class="caption">选择接入路径：API 模式（自建聚合页，可深度定制）或组件模式（内嵌渠道短剧首页，快速上线）。</text>
+				</view>
+			</view>
+			<text class="section-title">选择接入方式</text>
+			<view class="nav-list">
+
+				<view class="nav-item drama-entry-item" @click="openAdDramaApiDemo">
+					<view class="item-copy"><text class="item-title">短剧场首页（API 模式）</text><text class="item-desc">uni.createDramaAd（uni-drama 插件）：推荐/榜单/收藏/记录频道、下拉刷新与上滑分页、搜索、打开原生播放页——当前应用的启动页</text></view>
+					<text class="item-arrow">›</text>
+				</view>
+				<view class="nav-item drama-entry-item" @click="openSearchDemo">
+					<view class="item-copy"><text class="item-title">短剧搜索页</text><text class="item-desc">独立搜索页：搜索历史本地持久化、结果分页加载、点击直接播放</text></view>
+					<text class="item-arrow">›</text>
+				</view>
+				<view class="nav-item drama-entry-item" @click="openAdDramaComponentDemo">
+					<view class="item-copy"><text class="item-title">短剧组件模式</text><text class="item-desc">ad-drama 组件（uni-drama 插件）：native-view 内嵌渠道短剧首页，参数弹窗配置后立即重载</text></view>
+					<text class="item-arrow">›</text>
+				</view>
+			</view>
+
+		</view>
+
+	</scroll-view>
+
+</template>
+
+<script setup lang="uts">
+
+
+	function openAdDramaApiDemo() {
+		// redirectTo 替换当前页（不压栈），短剧场在栈底，播放页关闭后回短剧场而不是退出 App
+		uni.redirectTo({ url: "/pages/ad-drama-demo/ad-drama-demo" })
+	}
+
+	function openSearchDemo() {
+		uni.navigateTo({ url: "/pages/ad-drama-search/ad-drama-search" })
+	}
+
+	function openAdDramaComponentDemo() {
+		uni.navigateTo({ url: "/pages/ad-drama-component-demo/ad-drama-component-demo" })
+	}
+
+
+
+</script>
+
+<style>
+/* 页面滚动容器。 */
+.scroll {
+	flex: 1; /* 占满页面剩余高度。 */
+	background-color: #F6F7F5; /* 使用浅灰绿背景。 */
+}
+
+/* 首页内容区域。 */
+.page {
+	padding: 20px 20px 36px 20px; /* 四周留白，底部增加安全距离。 */
+}
+
+/* 首页顶部介绍区域。 */
+.hero {
+	flex-direction: row; /* Logo 与文案水平排列。 */
+	padding: 20px; /* 增加内部留白。 */
+	border-radius: 18px; /* 使用统一大圆角。 */
+	background-color: #FFFFFF; /* 使用白色卡片。 */
+	border-width: 1px; /* 添加细边框。 */
+	border-color: #E4E7E0; /* 使用浅灰绿边框。 */
+	margin-bottom: 24px; /* 与接入方式标题分隔。 */
+	align-items: center; /* Logo 与文案垂直居中。 */
+}
+
+/* 首页品牌图片。 */
+.logo {
+	height: 72px; /* 固定 Logo 高度。 */
+	width: 72px; /* 固定 Logo 宽度。 */
+	margin-right: 16px; /* 与右侧文案保持间距。 */
+}
+
+/* 顶部文案容器。 */
+.hero-copy {
+	flex: 1; /* 占据剩余可用宽度。 */
+}
+
+/* 品牌辅助标题。 */
+.eyebrow {
+	color: #2F7D5B; /* 使用品牌绿色。 */
+	font-size: 11px; /* 使用小号文字。 */
+	margin-bottom: 8px; /* 与主标题分隔。 */
+}
+
+/* 首页主标题。 */
+.title {
+	color: #1F2421; /* 使用主文字颜色。 */
+	font-size: 30px; /* 保持标题醒目。 */
+	font-weight: 600; /* 使用半粗字重。 */
+	margin-bottom: 8px; /* 与说明文字分隔。 */
+}
+
+/* 首页说明文案。 */
+.caption {
+	color: #5A635D; /* 使用副文字颜色。 */
+	font-size: 14px; /* 使用正文级字号。 */
+	line-height: 21px; /* 提升多行文字可读性。 */
+}
+
+/* 分组标题。 */
+.section-title {
+	color: #1F2421; /* 使用主文字颜色。 */
+	font-size: 17px; /* 使用区块标题字号。 */
+	font-weight: 600; /* 使用半粗字重。 */
+	margin-bottom: 12px; /* 与列表保持距离。 */
+}
+
+/* 接入方式列表。 */
+.nav-list {
+	margin-bottom: 24px; /* 与基础示例分组分隔。 */
+}
+
+/* 接入方式列表项。 */
+.nav-item {
+	flex-direction: row; /* 内容和箭头水平排列。 */
+	align-items: center; /* 内容垂直居中。 */
+	padding: 16px; /* 列表项内部留白。 */
+	border-radius: 16px; /* 使用列表卡片圆角。 */
+	background-color: #FFFFFF; /* 使用白色卡片。 */
+	border-width: 1px; /* 添加细边框。 */
+	border-color: #E4E7E0; /* 使用浅灰绿边框。 */
+	margin-bottom: 10px; /* 列表项之间留白。 */
+}
+
+/* 三种入口统一使用中性边框，不再并列使用高饱和色。 */
+.component-item,
+.api-item,
+.hybrid-item,
+.drama-entry-item {
+	border-left-color: #E4E7E0; /* 保持左侧边框与整体一致。 */
+}
+
+/* 列表项文案容器。 */
+.item-copy {
+	flex: 1; /* 占据列表项剩余宽度。 */
+}
+
+/* 列表项标题。 */
+.item-title {
+	color: #1F2421; /* 使用主文字颜色。 */
+	font-size: 16px; /* 使用列表标题字号。 */
+	font-weight: 600; /* 使用半粗字重。 */
+	margin-bottom: 5px; /* 与说明文字分隔。 */
+}
+
+/* 列表项说明。 */
+.item-desc {
+	color: #5A635D; /* 使用副文字颜色。 */
+	font-size: 13px; /* 使用辅助字号。 */
+	line-height: 19px; /* 允许说明自然换行。 */
+}
+
+/* 列表项右侧箭头。 */
+.item-arrow {
+	color: #8A938D; /* 使用中性灰绿。 */
+	font-size: 28px; /* 保持箭头易于识别。 */
+	margin-left: 10px; /* 与文案保持距离。 */
+}
+
+/* 基础示例标题。 */
+.secondary-title {
+	margin-bottom: 10px; /* 与基础按钮列表分隔。 */
+}
+
+/* 基础示例容器。 */
+.secondary-list {
+	background-color: #FFFFFF; /* 使用白色卡片。 */
+	padding: 12px 16px; /* 设置列表内部留白。 */
+	border-radius: 18px; /* 使用统一卡片圆角。 */
+	border-width: 1px; /* 添加细边框。 */
+	border-color: #E4E7E0; /* 使用浅灰绿边框。 */
+}
+
+/* 基础示例次按钮。 */
+.secondary-btn {
+	height: 44px; /* 固定按钮高度。 */
+	padding: 0 8px; /* 保留左右安全内边距。 */
+	border-radius: 14px; /* 使用统一按钮圆角。 */
+	background-color: #F1F3EF; /* 使用浅灰绿次按钮底色。 */
+	color: #1F2421; /* 使用深色按钮文字。 */
+	font-size: 14px; /* 使用统一按钮字号。 */
+	margin: 0 0 10px 0; /* 按钮之间保留间距。 */
+	text-align: center; /* 水平居中文案。 */
+	line-height: 44px; /* 行高等于高度，实现上下居中。 */
+}
+
+/* 最后一个按钮不需要额外底部间距。 */
+.last-btn {
+	margin-bottom: 0; /* 去掉列表末尾多余空白。 */
+}
+</style>

@@ -16,7 +16,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const navigateToInterceptor = {
     invoke: function (options : NavigateToOptions) {
       console.log('拦截 navigateTo 接口传入参数为：', options)
@@ -127,8 +127,8 @@
 
   onUnload(() => {
     // 移除 navigateTo 所有拦截器
-    uni.removeInterceptor('navigateTo')
-    uni.removeInterceptor('switchTab')
+    uni.removeInterceptor('navigateTo', navigateToInterceptor)
+    uni.removeInterceptor('switchTab', switchTabInterceptor)
   })
 
   defineExpose({

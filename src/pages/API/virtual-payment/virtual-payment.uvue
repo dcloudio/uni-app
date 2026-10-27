@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <page-head title="虚拟支付"></page-head>
     <view style="padding-left: 20px; padding-right: 20px;">
       <text>
@@ -32,13 +29,10 @@
       <button style="margin-top: 20px; margin-bottom: 50px;" type="primary"
         @click="getUnfinishedTransactions">获取未结束的订单列表</button>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
 
-<script setup lang="uts">
+<script setup lang="ts">
   export type PayItem = { id : string, name : string, quantity ?: number }
 
   const productList = ref<PayItem[]>([])

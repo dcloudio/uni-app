@@ -1,0 +1,70 @@
+
+import { UniUTSJS } from 'DCloudUniappRuntime'
+import { NSNumber } from 'Foundation';
+
+let MessageChannel : string = "UtsMessage"
+var revFromJS = ""
+
+export function uts_getMessageChannel() : string {
+  return MessageChannel
+}
+
+export function uts_getRevJsMessage() : string {
+  return revFromJS
+}
+
+export function uts_emitUtsMessage(arg : string) {
+  uni.$emit(MessageChannel, arg);
+}
+
+export function uts_emitUtsMessageUTSObject(arg : UTSJSONObject) {
+  uni.$emit(MessageChannel, arg);
+}
+
+export function uts_emitUtsMessages(arg : UTSJSONObject, arg2 : string ){
+  uni.$emit(MessageChannel, arg, arg2);
+}
+
+export function uts_emitUtsMessageNoArgument(){
+   uni.$emit(MessageChannel);
+}
+
+var callbackId : NSNumber | null = null
+export function uts_onJsMessage (messageChannel : string ) {
+  revFromJS = ""
+  if (callbackId != null) {
+    uni.$off(messageChannel, callbackId!)
+    callbackId  = null
+  }
+  callbackId = uni.$on(messageChannel, function (...spreadArgs : Any) {
+    if (spreadArgs.length > 0) {
+      let arg0 = JSON.stringify(spreadArgs[0])
+      if ( typeof arg0 == "string" ) {
+        revFromJS = arg0!
+      }
+    }
+  })
+}
+
+export function uts_onJsMessageOnce (messageChannel : string ) {
+  revFromJS = ""
+  uni.$once(messageChannel, function (...spreadArgs : Any) {
+    if (spreadArgs.length > 0) {
+      let arg0 = JSON.stringify(spreadArgs[0])
+      if ( typeof arg0 == "string" ) {
+        revFromJS = arg0!
+      }
+    }
+  })
+}
+
+export function uts_offJsMessage(messageChannel : string) {
+  if (callbackId != null) {
+    uni.$off(messageChannel, callbackId!)
+    callbackId = null
+  }
+}
+
+export function uts_clearJsMessage() {
+  revFromJS = ""
+}

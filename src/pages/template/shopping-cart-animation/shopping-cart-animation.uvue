@@ -1,0 +1,939 @@
+<template>
+	<list-view class="food-list">
+			<list-item :type="0">
+				<view class="page-header">
+					<text class="header-kicker">FAST ORDER</text>
+					<text class="header-title">今日鲜食 50 选</text>
+				</view>
+			</list-item>
+
+			<list-item v-for="item in foods" :key="item.id" :type="item.id" class="food-card">
+				<!-- <view class="food-card"> -->
+					<image class="food-cover" :src="item.cover" mode="aspectFill"></image>
+					<view class="food-info">
+						<text class="food-name">{{ item.name }}</text>
+						<view class="rating-row">
+							<uni-rate :value="item.rating" full></uni-rate>
+							<text class="rating-text">{{ formatRating(item.rating) }}</text>
+						</view>
+					</view>
+					<view class="food-side">
+						<view class="price-row">
+							<text class="price-unit">￥</text>
+							<text class="price-value">{{ formatPrice(item.price) }}</text>
+						</view>
+						<view :id="getAnchorId(item.id)" class="qty-anchor">
+							<view v-if="item.count <= 0" class="add-button" @click="onFirstAdd(item.id)">
+								<view class="plus-bar plus-bar-horizontal"></view>
+								<view class="plus-bar plus-bar-vertical"></view>
+							</view>
+							<uni-number-box v-else :modelValue="item.count" :min="0" :max="99"
+								btn-class="qty-btn" input-class="qty-input" icon-class="qty-icon"
+								@change="onCountChange(item.id, $event as number)"></uni-number-box>
+						</view>
+					</view>
+				<!-- </view> -->
+			</list-item>
+		</list-view>
+
+		<view class="cart-bar">
+			<view class="cart-main" @click="toggleCartPopup">
+				<view class="cart-badge-wrap">
+				<uni-badge-view :text="badgeText" :alwaysWrapWithContent="true"
+					badge-style="min-width: 20px; height: 20px; line-height: 20px; border-radius: 10px; background-color: #ff5d2a; color: #ffffff; font-size: 11px; font-weight: 700;"
+					style="align-self: center;">
+					<view id="cart-target" class="cart-icon">
+						<view class="cart-handle"></view>
+						<view class="cart-basket"></view>
+						<view class="cart-base"></view>
+					</view>
+				</uni-badge-view>
+				</view>
+				<text class="cart-total-text">共{{ totalPriceText }}元</text>
+			</view>
+			<view class="checkout-button" :class="canCheckout ? 'checkout-button-active' : 'checkout-button-disabled'" @click="submitOrder">
+				<text class="checkout-button-text">下单</text>
+			</view>
+		</view>
+
+		<page-container :show="cartPopupVisible" position="bottom" :overlay="true"
+			:overlay-style="overlayStyle" @beforeleave="onCartPopupBeforeLeave"
+			@clickoverlay="closeCartPopup" @afterleave="onCartPopupAfterLeave">
+			<view class="popup-panel">
+				<view class="popup-header">
+					<text class="popup-title">{{ popupTitle }}</text>
+					<view class="popup-actions">
+						<view class="popup-action-button" @click="clearCart">
+							<text class="popup-action-text">清空</text>
+						</view>
+						<view class="popup-action-button" @click="closeCartPopup">
+							<text class="popup-action-text">收起</text>
+						</view>
+					</view>
+				</view>
+
+				<scroll-view class="popup-scroll" direction="vertical" :show-scrollbar="false">
+					<view v-if="cartItems.length > 0" class="popup-list">
+						<view v-for="item in cartItems" :key="item.id" class="popup-item">
+							<text class="popup-item-name">{{ item.name }}</text>
+							<text class="popup-item-count">x{{ item.count }}</text>
+							<text class="popup-item-price">￥{{ formatPrice(item.price * item.count) }}</text>
+						</view>
+					</view>
+					<view v-else class="popup-empty">
+						<text class="popup-empty-text">购物车还是空的，先去加几样喜欢的吧</text>
+					</view>
+				</scroll-view>
+
+				<view class="popup-footer">
+					<text class="popup-footer-text">共 {{ totalCount }} 件，合计 ￥{{ totalPriceText }}</text>
+				</view>
+			</view>
+		</page-container>
+
+		<view class="fly-layer">
+			<view id="fly-ball" class="fly-ball">
+				<image class="fly-ball-image" :src="flyBallImage" mode="aspectFill"></image>
+			</view>
+		</view>
+
+</template>
+
+<script setup lang="ts">
+	import foodListRaw from './foods.json'
+
+	type FoodSeed = {
+		id: number
+		name: string
+		price: number
+		rating: number
+		cover: string
+	}
+
+	type FoodItem = {
+		id: number
+		name: string
+		price: number
+		rating: number
+		cover: string
+		count: number
+	}
+
+	const seeds = foodListRaw as FoodSeed[]
+	const initialFoods = seeds.map((item: FoodSeed): FoodItem => {
+		return {
+			id: item.id,
+			name: item.name,
+			price: item.price,
+			rating: item.rating,
+			cover: item.cover,
+			count: 0
+		}
+	}) as FoodItem[]
+
+	const foods = ref<FoodItem[]>(initialFoods)
+	const cartPopupVisible = ref(false)
+	const flyBallImage = ref(initialFoods[0].cover)
+	const displayedBadgeCount = ref(0)
+	let overlayStyle = 'background-color: rgba(0, 0, 0, 0.4);'
+	// #ifdef MP
+	const flyBallDuration = 260
+	// #endif
+	// #ifndef MP
+	const flyBallDuration = 100
+	// #endif
+
+	// #ifdef MP-ALIPAY
+	overlayStyle += ' z-index: 0;'
+	// #endif
+
+	let cartTargetElement: UniElement | null = null
+	let flyBallElement: UniElement | null = null
+	let currentBallAnimation: UniAnimation | null = null
+	let latestFlyAnimationRequestId = 0
+	let pendingBadgeCount = 0
+
+	const cartItems = computed((): FoodItem[] => {
+		const items: FoodItem[] = []
+		for (let index = 0; index < foods.value.length; index++) {
+			const currentFood = foods.value[index]
+			if (currentFood.count > 0) {
+				items.push(currentFood)
+			}
+		}
+		return items
+	})
+
+	const totalCount = computed((): number => {
+		let sum = 0
+		for (let index = 0; index < foods.value.length; index++) {
+			sum += foods.value[index].count
+		}
+		return sum
+	})
+
+	const totalPrice = computed((): number => {
+		let sum = 0
+		for (let index = 0; index < foods.value.length; index++) {
+			const currentFood = foods.value[index]
+			sum += currentFood.price * currentFood.count
+		}
+		return sum
+	})
+
+	const totalPriceText = computed((): string => {
+		return totalPrice.value.toFixed(2)
+	})
+
+	const badgeText = computed((): string => {
+		return displayedBadgeCount.value > 0 ? `${displayedBadgeCount.value}` : '0'
+	})
+
+	const canCheckout = computed((): boolean => {
+		return totalCount.value > 0
+	})
+
+	const popupTitle = computed((): string => {
+		return cartItems.value.length > 0 ? '已选商品明细' : '购物车为空'
+	})
+
+	function formatPrice(price: number): string {
+		return price.toFixed(2)
+	}
+
+	function formatRating(rating: number): string {
+		return rating.toFixed(1)
+	}
+
+	function getAnchorId(foodId: number): string {
+		return `qty-anchor-${foodId}`
+	}
+
+	function getFoodIndex(foodId: number): number {
+		for (let index = 0; index < foods.value.length; index++) {
+			if (foods.value[index].id == foodId) {
+				return index
+			}
+		}
+		return -1
+	}
+
+	function flushPendingBadgeCount(): void {
+		if (pendingBadgeCount <= 0) {
+			return
+		}
+		displayedBadgeCount.value += pendingBadgeCount
+		pendingBadgeCount = 0
+	}
+
+	function syncBadgeCountForDecrease(delta: number): void {
+		if (delta <= 0) {
+			return
+		}
+		if (pendingBadgeCount >= delta) {
+			pendingBadgeCount -= delta
+			return
+		}
+
+		const visibleDecrease = delta - pendingBadgeCount
+		pendingBadgeCount = 0
+		let nextBadgeCount = displayedBadgeCount.value - visibleDecrease
+		if (nextBadgeCount < 0) {
+			nextBadgeCount = 0
+		}
+		displayedBadgeCount.value = nextBadgeCount
+	}
+
+	function resetFlyBall(): void {
+		const animation = currentBallAnimation
+		if (animation != null) {
+			animation.onfinish = null
+			animation.oncancel = null
+			animation.cancel()
+			currentBallAnimation = null
+		}
+		const ballElement = flyBallElement
+		if (ballElement != null) {
+			ballElement.style.setProperty('transition', 'none')
+			ballElement.style.setProperty('left', '-999px')
+			ballElement.style.setProperty('top', '-999px')
+			ballElement.style.setProperty('opacity', '0')
+			ballElement.style.setProperty('transform', 'translate(0px, 0px) scale(1)')
+		}
+	}
+
+	function finalizeFlyBallAnimation(animation: UniAnimation): void {
+		if (currentBallAnimation != animation) {
+			return
+		}
+		currentBallAnimation = null
+		flushPendingBadgeCount()
+		const ballElement = flyBallElement
+		if (ballElement != null) {
+			ballElement.style.setProperty('transition', 'none')
+			ballElement.style.setProperty('left', '-999px')
+			ballElement.style.setProperty('top', '-999px')
+			ballElement.style.setProperty('opacity', '0')
+			ballElement.style.setProperty('transform', 'translate(0px, 0px) scale(1)')
+		}
+	}
+
+	async function getElementRect(element: UniElement): Promise<DOMRect | null> {
+		const rectPromise = element.getBoundingClientRectAsync()
+		if (rectPromise == null) {
+			return null
+		}
+		return await rectPromise
+	}
+
+	async function playFlyToCartAnimation(sourceElement: UniElement): Promise<boolean> {
+		const requestId = latestFlyAnimationRequestId + 1
+		latestFlyAnimationRequestId = requestId
+		const cartElement = cartTargetElement
+		const ballElement = flyBallElement
+		if (cartElement == null || ballElement == null) {
+			return false
+		}
+
+		resetFlyBall()
+
+		const startRect = await getElementRect(sourceElement)
+		const endRect = await getElementRect(cartElement)
+		if (startRect == null || endRect == null) {
+			return latestFlyAnimationRequestId != requestId
+		}
+		if (latestFlyAnimationRequestId != requestId) {
+			return true
+		}
+		const startLeft = startRect.left + startRect.width / 2 - 16
+		const startTop = startRect.top + startRect.height / 2 - 16
+		const endLeft = endRect.left + endRect.width / 2 - 16
+		const endTop = endRect.top + endRect.height / 2 - 16
+		const deltaX = endLeft - startLeft
+		const deltaY = endTop - startTop
+		const crestX = deltaX * 0.24
+		const crestY = -34
+		const midX = deltaX * 0.68
+		const midY = deltaY * 0.58
+
+		ballElement.style.setProperty('left', `${startLeft}px`)
+		ballElement.style.setProperty('top', `${startTop}px`)
+		ballElement.style.setProperty('transition', 'none')
+		ballElement.style.setProperty('opacity', '1')
+		ballElement.style.setProperty('transform', 'translate(0px, 0px) scale(1)')
+
+		if (latestFlyAnimationRequestId != requestId) {
+			return true
+		}
+		// #ifdef MP
+		const firstLegDuration = 110
+		const secondLegDuration = flyBallDuration - firstLegDuration
+		setTimeout((): void => {
+			if (latestFlyAnimationRequestId != requestId) {
+				return
+			}
+			ballElement.style.setProperty('transition', `transform ${firstLegDuration}ms ease-out, opacity ${firstLegDuration}ms linear`)
+			ballElement.style.setProperty('transform', `translate(${crestX.toFixed(1)}px, ${crestY.toFixed(1)}px) scale(0.94)`)
+			ballElement.style.setProperty('opacity', '0.98')
+		}, 16)
+		setTimeout((): void => {
+			if (latestFlyAnimationRequestId != requestId) {
+				return
+			}
+			ballElement.style.setProperty('transition', `transform ${secondLegDuration}ms ease-in, opacity ${secondLegDuration}ms linear`)
+			ballElement.style.setProperty('transform', `translate(${deltaX.toFixed(1)}px, ${deltaY.toFixed(1)}px) scale(0.42)`)
+			ballElement.style.setProperty('opacity', '0.12')
+		}, firstLegDuration + 16)
+		setTimeout((): void => {
+			if (latestFlyAnimationRequestId != requestId) {
+				return
+			}
+			resetFlyBall()
+		}, flyBallDuration + 40)
+		return true
+		// #endif
+		let animation: UniAnimation | null = null
+		// #ifndef MP
+		animation = ballElement.animate([
+			{
+				offset: 0,
+				transform: 'translate(0px, 0px) scale(1)',
+				opacity: '1'
+			},
+			{
+				offset: 0.34,
+				transform: `translate(${crestX.toFixed(1)}px, ${crestY.toFixed(1)}px) scale(0.94)`,
+				opacity: '0.98'
+			},
+			{
+				offset: 0.74,
+				transform: `translate(${midX.toFixed(1)}px, ${midY.toFixed(1)}px) scale(0.66)`,
+				opacity: '0.88'
+			},
+			{
+				offset: 1,
+				transform: `translate(${deltaX.toFixed(1)}px, ${deltaY.toFixed(1)}px) scale(0.22)`,
+				opacity: '0.12'
+			}
+		], {
+			duration: flyBallDuration,
+			easing: 'ease-in-out',
+			fill: 'forwards'
+		})
+		// #endif
+		if (animation == null) {
+			resetFlyBall()
+			return false
+		}
+		// #ifndef MP
+		animation.onfinish = (_event: UniAnimationPlaybackEvent) => {
+			if(animation != null) {
+				finalizeFlyBallAnimation(animation)
+			}
+		}
+		animation.oncancel = (_event: UniAnimationPlaybackEvent) => {
+			if (currentBallAnimation == animation) {
+				currentBallAnimation = null
+			}
+		}
+		// #endif
+		currentBallAnimation = animation
+		setTimeout((): void => {
+			if(animation != null) {
+				finalizeFlyBallAnimation(animation)
+			}
+		}, flyBallDuration + 20)
+
+		return true
+	}
+
+	async function playFlyFromFood(foodId: number): Promise<boolean> {
+		const anchorId = getAnchorId(foodId)
+		const sourceElement = uni.getElementById(anchorId)
+		if (sourceElement != null) {
+			return await playFlyToCartAnimation(sourceElement)
+		}
+		return false
+	}
+
+	async function updateFoodCount(foodId: number, nextCount: number): Promise<void> {
+		const foodIndex = getFoodIndex(foodId)
+		if (foodIndex < 0) {
+			return
+		}
+
+		const targetFood = foods.value[foodIndex]
+		const previousCount = targetFood.count
+		let safeCount = nextCount
+		if (safeCount < 0) {
+			safeCount = 0
+		}
+		if (safeCount > 99) {
+			safeCount = 99
+		}
+		if (safeCount == previousCount) {
+			return
+		}
+
+		targetFood.count = safeCount
+		if (safeCount > previousCount) {
+			pendingBadgeCount += safeCount - previousCount
+			flyBallImage.value = targetFood.cover
+			const animationStarted = await playFlyFromFood(foodId)
+			// #ifdef MP
+			// TODO 微信小程序上动画finish事件未支持，暂时需条件编译，改成不等动画结束就加角标
+			if (animationStarted) {
+				flushPendingBadgeCount()
+			}
+			// #endif
+			if (!animationStarted) {
+				flushPendingBadgeCount()
+			}
+		} else {
+			syncBadgeCountForDecrease(previousCount - safeCount)
+		}
+		if (safeCount == 0 && totalCount.value == 0) {
+			cartPopupVisible.value = false
+		}
+	}
+
+	async function onFirstAdd(foodId: number): Promise<void> {
+		await updateFoodCount(foodId, 1)
+	}
+
+	async function onCountChange(foodId: number, nextCount: number): Promise<void> {
+		await updateFoodCount(foodId, nextCount)
+	}
+
+	function toggleCartPopup(): void {
+		cartPopupVisible.value = !cartPopupVisible.value
+	}
+
+	function closeCartPopup(): void {
+		cartPopupVisible.value = false
+	}
+
+	function onCartPopupBeforeLeave(): void {
+		cartPopupVisible.value = false
+	}
+
+	function onCartPopupAfterLeave(): void {
+		cartPopupVisible.value = false
+	}
+
+	function clearCart(): void {
+		for (let index = 0; index < foods.value.length; index++) {
+			foods.value[index].count = 0
+		}
+		pendingBadgeCount = 0
+		displayedBadgeCount.value = 0
+		resetFlyBall()
+		cartPopupVisible.value = false
+	}
+
+	function submitOrder(): void {
+		if (!canCheckout.value) {
+			uni.showToast({
+				title: '请先选择商品',
+				icon: 'none'
+			})
+			return
+		}
+		uni.showToast({
+			title: `已提交 ${totalCount.value} 件，合计 ${totalPriceText.value} 元`,
+			icon: 'none'
+		})
+	}
+
+	onReady(() => {
+		cartTargetElement = uni.getElementById('cart-target')
+		flyBallElement = uni.getElementById('fly-ball')
+		resetFlyBall()
+	})
+
+	onUnload(() => {
+		resetFlyBall()
+	})
+</script>
+
+<style>
+	.food-list {
+		--shopping-border-color: #e8edf4;
+		--shopping-item-border-color: #edf2f7;
+		--shopping-cover-background: #edf2f8;
+		--shopping-name-color: #16202f;
+		--shopping-secondary-color: #738396;
+		--shopping-surface-background: #ffffff;
+		--shopping-popup-title-color: #132238;
+		--shopping-action-background: #eef3f8;
+		--shopping-action-text-color: #31445d;
+		--shopping-count-color: #65768b;
+		--shopping-empty-color: #6f8095;
+		--shopping-footer-background: #f7f9fc;
+		flex: 1;
+	}
+
+	.page-header {
+		padding: 12px 14px 10px 14px;
+		background-color: #132238;
+		flex-direction: column;
+	}
+
+	.header-kicker {
+		font-size: 11px;
+		letter-spacing: 1.5px;
+		color: #7eb7ff;
+	}
+
+	.header-title {
+		margin-top: 4px;
+		font-size: 22px;
+		font-weight: 700;
+		color: #ffffff;
+	}
+
+	.header-subtitle {
+		margin-top: 5px;
+		font-size: 12px;
+		line-height: 17px;
+		color: #bfd2ea;
+	}
+
+	.food-card {
+		padding: 10px 12px;
+		/* background-color: #ffffff; */
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--shopping-border-color, #e8edf4);
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.food-cover {
+		width: 58px;
+		height: 58px;
+		background-color: var(--shopping-cover-background, #edf2f8);
+	}
+
+	.food-info {
+		margin-left: 10px;
+		flex: 1;
+		flex-direction: column;
+	}
+
+	.food-name {
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--shopping-name-color, #16202f);
+	}
+
+	.rating-row {
+		margin-top: 5px;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.rating-text {
+		margin-left: 6px;
+		font-size: 12px;
+		color: var(--shopping-secondary-color, #738396);
+	}
+
+	.food-side {
+		width: 108px;
+		margin-left: 8px;
+		flex-direction: column;
+		align-items: flex-end;
+	}
+
+	.price-row {
+		flex-direction: row;
+		align-items: flex-end;
+	}
+
+	.price-unit {
+		margin-bottom: 1px;
+		font-size: 12px;
+		font-weight: 700;
+		color: #ff5d2a;
+	}
+
+	.price-value {
+		margin-left: 1px;
+		font-size: 20px;
+		font-weight: 700;
+		color: #ff5d2a;
+	}
+
+	.qty-anchor {
+		width: 104px;
+		height: 30px;
+		margin-top: 8px;
+		align-items: flex-end;
+		justify-content: center;
+	}
+
+	.add-button {
+		width: 28px;
+		height: 28px;
+		background-color: #132238;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.plus-bar {
+		position: absolute;
+		width: 14px;
+		height: 2px;
+		background-color: #ffffff;
+	}
+
+	.plus-bar-horizontal {
+		transform: rotate(0deg);
+	}
+
+	.plus-bar-vertical {
+		transform: rotate(90deg);
+	}
+
+	.qty-btn {
+		background-color: #132238;
+		width: 28px;
+		height: 28px;
+	}
+
+	.qty-input {
+		width: 42px;
+		height: 28px;
+		margin: 0px 1px;
+		background-color: #eef3f8;
+		color: #132238;
+		font-size: 13px;
+	}
+
+	.qty-icon {
+		background-color: #ffffff;
+	}
+
+
+	.cart-bar {
+		height: 60px;
+		padding: 0px 12px;
+		background-color: #132238;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #243653;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		overflow: visible;
+	}
+
+	.cart-main {
+		flex: 1;
+		flex-direction: row;
+		align-items: center;
+		overflow: visible;
+	}
+
+	.cart-badge-wrap {
+		overflow: visible;
+		align-self: center;
+	}
+
+	.cart-icon {
+		width: 36px;
+		height: 36px;
+		position: relative;
+	}
+
+	.cart-handle {
+		position: absolute;
+		left: 8px;
+		top: 4px;
+		width: 16px;
+		height: 8px;
+		border-width: 2px;
+		border-style: solid;
+		border-color: #ffffff;
+		border-bottom-width: 0px;
+	}
+
+	.cart-basket {
+		position: absolute;
+		left: 5px;
+		top: 12px;
+		width: 24px;
+		height: 15px;
+		border-width: 2px;
+		border-style: solid;
+		border-color: #ffffff;
+	}
+
+	.cart-base {
+		position: absolute;
+		left: 10px;
+		top: 29px;
+		width: 14px;
+		height: 2px;
+		background-color: #ffffff;
+	}
+
+	.cart-total-text {
+		margin-left: 10px;
+		font-size: 17px;
+		font-weight: 700;
+		color: #ffffff;
+	}
+
+	.checkout-button {
+		width: 94px;
+		height: 38px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.checkout-button-active {
+		background-color: #ffb21f;
+	}
+
+	.checkout-button-disabled {
+		background-color: #51647f;
+	}
+
+	.checkout-button-text {
+		font-size: 15px;
+		font-weight: 700;
+		color: #132238;
+	}
+
+	.popup-panel {
+		width: 100%;
+		height: 360px;
+		background-color: #ffffff;
+		flex-direction: column;
+	}
+
+	.popup-header {
+		padding: 14px 12px 10px 12px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--shopping-border-color, #e8edf4);
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.popup-title {
+		font-size: 17px;
+		font-weight: 700;
+		color: var(--shopping-popup-title-color, #132238);
+	}
+
+	.popup-actions {
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.popup-action-button {
+		padding: 4px 8px;
+		margin-left: 6px;
+		background-color: var(--shopping-action-background, #eef3f8);
+	}
+
+	.popup-action-text {
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--shopping-action-text-color, #31445d);
+	}
+
+	.popup-scroll {
+		flex: 1;
+		background-color: var(--shopping-surface-background, #ffffff);
+	}
+
+	/* #ifdef MP-ALIPAY */
+	.popup-scroll::-webkit-scrollbar {
+		display: none;
+	}
+	/* #endif */
+
+	.popup-list {
+		padding: 0px 12px;
+		flex-direction: column;
+	}
+
+	.popup-item {
+		height: 48px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--shopping-item-border-color, #edf2f7);
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.popup-item-name {
+		flex: 1;
+		font-size: 14px;
+		color: var(--shopping-popup-title-color, #132238);
+	}
+
+	.popup-item-count {
+		width: 40px;
+		font-size: 13px;
+		text-align: center;
+		color: var(--shopping-count-color, #65768b);
+	}
+
+	.popup-item-price {
+		width: 84px;
+		font-size: 14px;
+		font-weight: 700;
+		text-align: right;
+		color: #ff5d2a;
+	}
+
+	.popup-empty {
+		height: 220px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.popup-empty-text {
+		font-size: 14px;
+		color: var(--shopping-empty-color, #6f8095);
+	}
+
+	.popup-footer {
+		height: 52px;
+		padding: 0px 12px;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: var(--shopping-border-color, #e8edf4);
+		background-color: var(--shopping-footer-background, #f7f9fc);
+		align-items: flex-end;
+		justify-content: center;
+	}
+
+	.popup-footer-text {
+		font-size: 15px;
+		font-weight: 700;
+		color: var(--shopping-popup-title-color, #132238);
+	}
+
+	.fly-layer {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+		width: 100%;
+		height: 100%;
+		flex-direction: column;
+		overflow: visible;
+		pointer-events: none;
+		z-index: 999;
+	}
+
+	.fly-ball {
+		position: absolute;
+		left: -999px;
+		top: -999px;
+		width: 32px;
+		height: 32px;
+		overflow: hidden;
+		opacity: 0;
+		z-index: 999;
+		background-color: #ffffff;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #ffffff;
+	}
+
+	.fly-ball-image {
+		width: 100%;
+		height: 100%;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.food-list,
+		.popup-panel {
+			--shopping-border-color: rgba(255, 255, 255, 0.1);
+			--shopping-item-border-color: rgba(255, 255, 255, 0.1);
+			--shopping-cover-background: #3b3b3b;
+			--shopping-name-color: #ffffff;
+			--shopping-secondary-color: #a0a0a0;
+			--shopping-surface-background: #2d2d2d;
+			--shopping-popup-title-color: #ffffff;
+			--shopping-action-background: #3b3b3b;
+			--shopping-action-text-color: #d0d0d0;
+			--shopping-count-color: #a0a0a0;
+			--shopping-empty-color: #a0a0a0;
+			--shopping-footer-background: #1f1f1f;
+		}
+
+		.popup-panel {
+			background-color: #2d2d2d;
+		}
+	}
+</style>

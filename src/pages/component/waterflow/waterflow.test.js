@@ -3,11 +3,10 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-waterflow', () => {
-  // 鸿蒙平台api 20支持滚动相关事件，api 18支持load-more。目前先手动测试，后续升级测试机后再放开测试
-  if (isMP || isWeb || isAppWebView || isHarmony) {
+  if (isMP || isWeb || isAppWebView) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
@@ -21,8 +20,18 @@ describe('component-native-waterflow', () => {
     await page.waitFor(600)
   })
 
+  async function isHarmonyOSLowerThanApi20() {
+    // 非蒸汽模式鸿蒙平台api 20支持waterflow滚动相关事件
+    const osHarmonySDKAPIVersion = await page.data('data.osHarmonySDKAPIVersion')
+    return isHarmony && osHarmonySDKAPIVersion < 20
+  }
+
   //检测竖向scrolltop属性赋值
   it('check_scroll_top', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('confirm_scroll_top_input', 600)
     await page.waitFor(600)
     const listElement = await page.$('#waterflow')
@@ -32,6 +41,10 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event check_scroll', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('confirm_scroll_top_input', 300)
     await page.waitFor(600)
     const scrollDetail = await page.data('data.scrollDetailTest')
@@ -50,6 +63,10 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     //隐藏加载更多元素
     await page.callMethod('change_load_more_boolean', false)
     await page.waitFor(600)
@@ -63,6 +80,10 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     // 滚动到顶部50,是否触发scrolltoupper事件
     await page.callMethod('confirm_scroll_top_input', 50)
     await page.waitFor(1000)
@@ -70,6 +91,10 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event scrollend-滚动结束时触发',async()=>{
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     // 仅App端支持,向上滑动页面
     await program.swipe({
       startPoint: { x: 100, y: 300 },
@@ -87,15 +112,26 @@ describe('component-native-waterflow', () => {
     expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
 
-  //检测竖向可滚动区域
-  it('check_scroll_height', async () => {
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_height')
-    expect(value).toBe(true)
-  })
+  // 蒸汽模式不会对所有item排版并渲染，无法计算准确scrollHeight，屏蔽此测试
+  if(!isVapor) {
+    //检测竖向可滚动区域
+    it('check_scroll_height', async () => {
+      if (await isHarmonyOSLowerThanApi20()) {
+        expect(1).toBe(1)
+        return
+      }
+      await page.waitFor(600)
+      const value = await page.callMethod('check_scroll_height')
+      expect(value).toBe(true)
+    })
+  }
 
   //检测下拉刷新
   it('check_refresher', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('confirm_scroll_top_input', 0)
     await page.setData({
         data:{
@@ -109,8 +145,8 @@ describe('component-native-waterflow', () => {
     await page.waitFor(2000)
   })
 
-  if(!isHarmony) {
-    // 鸿蒙平台waterflow不支持scroll-into-view
+  if(!isHarmony && !isVapor) {
+    // 鸿蒙平台或蒸汽模式waterflow不支持scroll-into-view
     //检测竖向scroll_into_view属性赋值
     it('check_scroll_into_view_top', async () => {
       await page.callMethod('setScrollIntoView', 'item---3')
@@ -137,6 +173,10 @@ describe('component-native-waterflow', () => {
 
   //检测waterflow属性变化 截图校验
   it('check_waterflow_view_props', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('testModifyWaterflowProps')
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: false});
@@ -146,6 +186,10 @@ describe('component-native-waterflow', () => {
 
   //检测waterflow 单列 截图校验
   it('check_waterflow_single_row', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('testModifyWaterflowSingleRow')
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: false});

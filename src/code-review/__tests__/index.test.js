@@ -1,6 +1,4 @@
 const { loadProjectConfig, generateReviewPrompt, getAIReview, getChanges, addReviewComment, processReview } = require('../index');
-const fs = require('fs');
-const path = require('path');
 
 // 输出环境变量
 console.log('测试环境变量:');
@@ -165,4 +163,4 @@ describe('Code Review System', () => {
       console.log('推送评审完成');
     }, 120000);
   });
-}); 
+});

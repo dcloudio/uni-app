@@ -4,7 +4,7 @@
       <text>check-box设置background-color</text>
       <view class="case">
         <view class="warp">
-          <checkbox>select</checkbox>
+          <view><checkbox /><text>select</text></view>
         </view>
       </view>
     </view>

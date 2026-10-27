@@ -3,12 +3,12 @@ const PAGE_PATH = '/pages/component/scroll-view/scroll-view-custom-refresher-pro
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isiOS = platformInfo.startsWith('ios')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isIos = platformInfo.startsWith('ios')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('scroll-view-custom-refresher-props-test', () => {
-
   //TODO：临时方案
   if (isWeb || isMP) {
     // 不支持program.swipe
@@ -115,105 +115,136 @@ describe('scroll-view-custom-refresher-props-test', () => {
   }
 
   async function screenshot() {
-    await page.waitFor(500)
     const windowInfo = await program.callUniMethod('getWindowInfo')
-    const image = await program.screenshot({
+    let topSafeArea = windowInfo.safeAreaInsets.top;
+    if (isAppWebView) {
+      if (isIos) {
+        topSafeArea = 59
+        if (platformInfo.includes('26')) {
+          topSafeArea = 62
+        }
+      } else if (isAndroid) {
+        topSafeArea = 24
+        windowInfo.safeArea.bottom = 867
+        if (platformInfo.startsWith('android 5')) {
+          topSafeArea = 25
+        }if (platformInfo.startsWith('android 6')) {
+          windowInfo.safeArea.bottom = 592
+        }if (platformInfo.startsWith('android 8')) {
+          windowInfo.safeArea.bottom = 534
+        } else if (platformInfo.startsWith('android 11')) {
+          topSafeArea = 52
+        } else if (platformInfo.startsWith('android 12')) {
+          topSafeArea = 24
+          windowInfo.safeArea.bottom = 716
+        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 14') || platformInfo.startsWith('android 15')) {
+          topSafeArea = 49
+          windowInfo.safeArea.bottom = 891
+        }
+      } else if (isHarmony) {
+        topSafeArea = 39
+        if (platformInfo.includes('nova_12')) {
+          topSafeArea = 35
+        }
+      }
+    }
+    const top = topSafeArea + 44
+    const bottom = Math.min(top + windowInfo.windowHeight, windowInfo.safeArea.bottom)
+    const left = windowInfo.safeArea.left
+    const right = windowInfo.safeArea.right
+    const screenShotOptions = {
       deviceShot: true,
       area: {
-        x: 0,
-        y: windowInfo.safeAreaInsets.top + 44
-      }
-    })
+        x: left,
+        y: top,
+        width: right - left,
+        height: bottom - top
+      },
+    }
+    const image = await program.screenshot(screenShotOptions)
     expect(image).toSaveImageSnapshot()
   }
 
   it('test-initial-screenshot', async () => {
-    await page.waitFor(500)
-    const windowInfo = await program.callUniMethod('getWindowInfo')
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: windowInfo.safeAreaInsets.top + 44
-      }
+    await screenshot()
+  })
+
+  if (!isAppWebView) {
+    // ==================== 第1个下拉刷新功能测试 ====================
+    it('test-refresher-1-pull-to-refresh', async () => {
+      const initialCount = await getPageData('listCount1')
+
+      await performPullRefresh('refreshing1', 180)
+
+      // 使用轮询等待刷新完成
+      const refreshSuccess = await waitForRefreshComplete('refreshing1', 'listCount1', 5, 6000)
+      expect(refreshSuccess).toBe(true)
+
+      // 验证列表数量增加了5个
+      const finalCount = await getPageData('listCount1')
+      expect(finalCount).toBe(initialCount + 5)
     })
-    expect(image).toSaveImageSnapshot()
-  })
 
-  // ==================== 第1个下拉刷新功能测试 ====================
-  it('test-refresher-1-pull-to-refresh', async () => {
-    const initialCount = await getPageData('listCount1')
+    // ==================== 第2个下拉刷新功能测试 ====================
+    it('test-refresher-2-pull-to-refresh', async () => {
+      const initialCount = await getPageData('listCount2')
 
-    await performPullRefresh('refreshing1', 180)
+      await performPullRefresh('refreshing2', 180)
 
-    // 使用轮询等待刷新完成
-    const refreshSuccess = await waitForRefreshComplete('refreshing1', 'listCount1', 5, 6000)
-    expect(refreshSuccess).toBe(true)
+      const refreshSuccess = await waitForRefreshComplete('refreshing2', 'listCount2', 5, 6000)
+      expect(refreshSuccess).toBe(true)
 
-    // 验证列表数量增加了5个
-    const finalCount = await getPageData('listCount1')
-    expect(finalCount).toBe(initialCount + 5)
-  })
+      const finalCount = await getPageData('listCount2')
+      expect(finalCount).toBe(initialCount + 5)
+    })
 
-  // ==================== 第2个下拉刷新功能测试 ====================
-  it('test-refresher-2-pull-to-refresh', async () => {
-    const initialCount = await getPageData('listCount2')
+    // ==================== 第3个下拉刷新功能测试 ====================
+    it('test-refresher-3-pull-to-refresh', async () => {
+      const initialCount = await getPageData('listCount3')
 
-    await performPullRefresh('refreshing2', 180)
+      await performPullRefresh('refreshing3', 180)
 
-    const refreshSuccess = await waitForRefreshComplete('refreshing2', 'listCount2', 5, 6000)
-    expect(refreshSuccess).toBe(true)
+      const refreshSuccess = await waitForRefreshComplete('refreshing3', 'listCount3', 5, 6000)
+      expect(refreshSuccess).toBe(true)
 
-    const finalCount = await getPageData('listCount2')
-    expect(finalCount).toBe(initialCount + 5)
-  })
+      const finalCount = await getPageData('listCount3')
+      expect(finalCount).toBe(initialCount + 5)
+    })
 
-  // ==================== 第3个下拉刷新功能测试 ====================
-  it('test-refresher-3-pull-to-refresh', async () => {
-    const initialCount = await getPageData('listCount3')
+    // ==================== 第4个下拉刷新功能测试 ====================
+    it('test-refresher-4-pull-to-refresh', async () => {
+      const initialCount = await getPageData('listCount4')
 
-    await performPullRefresh('refreshing3', 180)
+      await performPullRefresh('refreshing4', 180)
 
-    const refreshSuccess = await waitForRefreshComplete('refreshing3', 'listCount3', 5, 6000)
-    expect(refreshSuccess).toBe(true)
+      const refreshSuccess = await waitForRefreshComplete('refreshing4', 'listCount4', 5, 6000)
+      expect(refreshSuccess).toBe(true)
 
-    const finalCount = await getPageData('listCount3')
-    expect(finalCount).toBe(initialCount + 5)
-  })
+      const finalCount = await getPageData('listCount4')
+      expect(finalCount).toBe(initialCount + 5)
+    })
 
-  // ==================== 第4个下拉刷新功能测试 ====================
-  it('test-refresher-4-pull-to-refresh', async () => {
-    const initialCount = await getPageData('listCount4')
+    // ==================== 测试部分下拉（不触发刷新）====================
+    it('test-partial-pull-not-trigger-refresh', async () => {
+      // 记录初始列表数量
+      const initialCount = await getPageData('listCount1')
 
-    await performPullRefresh('refreshing4', 180)
+      // 验证初始pullingDistance为0
+      const initialDistance = await getPageData('pullingDistance1')
+      expect(initialDistance).toBe(0)
 
-    const refreshSuccess = await waitForRefreshComplete('refreshing4', 'listCount4', 5, 6000)
-    expect(refreshSuccess).toBe(true)
+      // 执行部分下拉 (只下拉30px，小于threshold 45，不应触发刷新)
+      await performPullRefresh('refreshing1', 30)
 
-    const finalCount = await getPageData('listCount4')
-    expect(finalCount).toBe(initialCount + 5)
-  })
+      await page.waitFor(1000)
 
-  // ==================== 测试部分下拉（不触发刷新）====================
-  it('test-partial-pull-not-trigger-refresh', async () => {
-    // 记录初始列表数量
-    const initialCount = await getPageData('listCount1')
+      // 验证列表数量没有变化（因为没有触发刷新）
+      const finalCount = await getPageData('listCount1')
+      expect(finalCount).toBe(initialCount) // 数量应该保持不变
 
-    // 验证初始pullingDistance为0
-    const initialDistance = await getPageData('pullingDistance1')
-    expect(initialDistance).toBe(0)
-
-    // 执行部分下拉 (只下拉30px，小于threshold 45，不应触发刷新)
-    await performPullRefresh('refreshing1', 30)
-
-    await page.waitFor(1000)
-
-    // 验证列表数量没有变化（因为没有触发刷新）
-    const finalCount = await getPageData('listCount1')
-    expect(finalCount).toBe(initialCount) // 数量应该保持不变
-
-    // 验证pullingDistance已重置为0
-    const finalDistance = await getPageData('pullingDistance1')
-    expect(finalDistance).toBe(0)
-  })
+      // 验证pullingDistance已重置为0
+      const finalDistance = await getPageData('pullingDistance1')
+      expect(finalDistance).toBe(0)
+    })
+  }
 })

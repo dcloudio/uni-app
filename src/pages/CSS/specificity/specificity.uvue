@@ -1,8 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view>
       <view class="uni-common-mt">
         <text>多类名优先级测试 (.s1.s2 > .s1)</text>
         <view class="test-box s1" id="spec-multi-1">
@@ -80,13 +77,17 @@
           <text>Expect Green (2024)</text>
         </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text>自定义组件标签使用 .a.b 测试</text>
+        <specificity-ab-custom class="specificity-component-box spec-component-box-base"></specificity-ab-custom>
+        <specificity-ab-custom class="specificity-component-box specificity-component-box--dark spec-component-box-dark"></specificity-ab-custom>
+      </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+import specificityAbCustom from './specificity-ab-custom.uvue'
 </script>
 
 <style>
@@ -210,5 +211,22 @@
   }
   .year-2024.month-01 {
     border-color: green;
+  }
+
+  .specificity-component-box {
+    width: 300px;
+    margin: 10px;
+    padding: 8px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d0d0d0;
+    background-color: #f6f6f6;
+    color: #000000;
+  }
+
+  .specificity-component-box.specificity-component-box--dark {
+    border-color: #3d3d3d;
+    background-color: #3d3d3d;
+    color: #cfcfcf;
   }
 </style>

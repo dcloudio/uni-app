@@ -2,7 +2,8 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
-const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
+const isIOS = platformInfo.startsWith('ios')
+const isVapor = process.env.UNI_APP_X_DOM2 == 'true'
 const PAGE_PATH = '/pages/component/switch/switch'
 
 describe('switch', () => {
@@ -34,8 +35,8 @@ describe('switch', () => {
     expect(newValue2.toString()).toBe(true + '')
   })
   it('color', async () => {
-    if (isHarmony && isDom2) {
-      console.log('Switch Harmony Dom2 not support props color')
+    if ((isHarmony || isIOS || isAndroid) && isVapor) {
+      console.log('Switch Harmony or iOS or Android not support props color')
       expect(1).toBe(1)
       return
     }
@@ -50,8 +51,8 @@ describe('switch', () => {
   })
   if(!isMP) {
     it('dark', async () => {
-      if (isHarmony && isDom2) {
-        console.log('Switch Harmony Dom2 not support props background-color、fore-color、active-background-color、active-fore-color')
+      if ((isHarmony || isIOS || isAndroid) && isVapor) {
+        console.log('Switch Harmony or iOS or Android not support props background-color、fore-color、active-background-color、active-fore-color')
         expect(1).toBe(1)
         return
       }
@@ -66,7 +67,7 @@ describe('switch', () => {
   it('click', async () => {
     let switchElement
     // TODO 暂时通过获取组件内部的 class 触发模拟点击
-    if (isAndroid) {
+    if (isAndroid && !isVapor) {
       switchElement = await page.$('.uni-switch-input')
       await switchElement.tap()
       await page.waitFor(200)
@@ -86,7 +87,7 @@ describe('switch', () => {
     // expect(testVerifyEvent).toBe(true)
   })
 
-  if (isDom2 && isHarmony) {
+  if (isVapor && !isMP) {
     it('externalClasses', async () => {
       const switchElement = await page.$('#darkChecked')
       expect(await switchElement.attribute('switch-active-class')).toContain('custom-switch-active')

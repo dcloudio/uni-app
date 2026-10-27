@@ -1,0 +1,102 @@
+<template>
+  <view class="page">
+    <button id="toggle-list-button" class="toggle-button" @click="toggleList">toggleList</button>
+    <list-view
+      v-if="showList"
+      id="initial-scroll-bottom-list"
+      ref="listViewRef"
+      class="list"
+      :initial-scroll-bottom="true"
+      :scroll-anchoring="true"
+    >
+      <list-item
+        v-for="item in 200"
+        :id="'item-' + item.toString()"
+        :key="item"
+        class="list-item"
+      >
+        <text class="item-text">{{ item }}</text>
+        <image
+          v-if="item % 5 == 0"
+          class="item-image"
+          src="/static/test-image/logo.png"
+          mode="widthFix"
+        ></image>
+      </list-item>
+    </list-view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  type ScrollMetrics = {
+    showList: boolean,
+    scrollTop: number,
+    scrollHeight: number,
+    viewportHeight: number,
+    distanceFromBottom: number
+  }
+
+  const showList = ref(false)
+  const listViewRef = ref<UniListViewElement | null>(null)
+
+  function toggleList() {
+    showList.value = !showList.value
+  }
+
+  function getScrollMetrics(): ScrollMetrics {
+    const list = listViewRef.value
+    const viewportHeight = list?.getBoundingClientRect().height ?? 0
+    const scrollTop = list?.scrollTop ?? 0
+    const scrollHeight = list?.scrollHeight ?? 0
+    const metrics: ScrollMetrics = {
+      showList: showList.value,
+      scrollTop,
+      scrollHeight,
+      viewportHeight,
+      distanceFromBottom: scrollHeight - scrollTop - viewportHeight
+    }
+    return metrics
+  }
+
+  defineExpose({
+    getScrollMetrics,
+    toggleList
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .toggle-button {
+    flex-shrink: 0;
+  }
+
+  .list {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .list-item {
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    align-items: center;
+    border-width: 1px;
+    border-style: dashed;
+    border-color: #000000;
+  }
+
+  .item-text {
+    line-height: 30px;
+    text-align: center;
+    color: #000000;
+  }
+
+  .item-image {
+    width: 80px;
+  }
+</style>

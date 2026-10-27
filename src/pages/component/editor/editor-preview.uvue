@@ -1,0 +1,183 @@
+<template>
+  <!-- #ifdef APP -->
+  <view class="preview-page preview-page-app">
+    <web-view id="editor-preview-webview" :class="appPreviewLoaded ? 'preview-webview preview-webview-visible' : 'preview-webview preview-webview-hidden'" src="about:blank"></web-view>
+    <view v-if="!appPreviewLoaded" class="preview-loading-mask">
+      <text class="preview-loading-text">预览加载中...</text>
+    </view>
+  </view>
+  <!-- #endif -->
+  <!-- #ifndef APP -->
+  <view class="preview-page preview-page-rich">
+    <rich-text class="preview-rich-text" :nodes="previewHtml"></rich-text>
+  </view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+const DEFAULT_PREVIEW_HTML = '<p style="color:#94a3b8;">暂无内容</p>'
+const previewHtml = ref(DEFAULT_PREVIEW_HTML)
+
+let previewStorageKey = 'editor-preview-html'
+const appPreviewLoaded = ref(false)
+let previewWebviewElement: UniWebViewElement | null = null
+
+const BLOCKQUOTE_STYLE = 'margin:12px 0;padding:12px 16px;border-left:4px solid var(--editor-preview-quote-border,#cbd5e1);background:var(--editor-preview-quote-background,#ffffff);color:var(--editor-preview-quote-color,#475569);'
+const PRE_STYLE = 'margin:12px 0;padding:12px;border-radius:10px;background:#0f172a;color:#e2e8f0;overflow:auto;white-space:pre-wrap;word-break:break-word;font-family:Menlo,Monaco,Consolas,monospace;'
+const INLINE_CODE_STYLE = 'padding:2px 6px;border-radius:6px;background:var(--editor-preview-code-background,#e2e8f0);color:var(--editor-preview-code-color,#0f172a);font-family:Menlo,Monaco,Consolas,monospace;'
+
+function appendTagStyle(html: string, tagName: string, style: string) : string {
+  const tagWithStylePattern = new RegExp(`<${tagName}([^>]*)style="([^"]*)"([^>]*)>`, 'gi')
+  const tagPattern = new RegExp(`<${tagName}(?![^>]*style=)([^>]*)>`, 'gi')
+  let nextHtml = html.replace(tagWithStylePattern, `<${tagName}$1style="$2;${style}"$3>`)
+  nextHtml = nextHtml.replace(tagPattern, `<${tagName}$1 style="${style}">`)
+  return nextHtml
+}
+
+function appendClassStyle(html: string, className: string, style: string) : string {
+  const classWithStylePattern = new RegExp(`<([a-z0-9-]+)([^>]*)class="([^"]*${className}[^"]*)"([^>]*)style="([^"]*)"([^>]*)>`, 'gi')
+  const classPattern = new RegExp(`<([a-z0-9-]+)(?![^>]*style=)([^>]*)class="([^"]*${className}[^"]*)"([^>]*)>`, 'gi')
+  let nextHtml = html.replace(classWithStylePattern, `<$1$2class="$3"$4style="$5;${style}"$6>`)
+  nextHtml = nextHtml.replace(classPattern, `<$1$2class="$3"$4 style="${style}">`)
+  return nextHtml
+}
+
+function enhancePreviewHtml(html: string) : string {
+  let nextHtml = html
+  nextHtml = appendTagStyle(nextHtml, 'blockquote', BLOCKQUOTE_STYLE)
+  nextHtml = appendTagStyle(nextHtml, 'pre', PRE_STYLE)
+  nextHtml = appendTagStyle(nextHtml, 'code', INLINE_CODE_STYLE)
+  nextHtml = appendClassStyle(nextHtml, 'ql-blockquote', BLOCKQUOTE_STYLE)
+  nextHtml = appendClassStyle(nextHtml, 'ql-code-block', PRE_STYLE)
+  nextHtml = appendClassStyle(nextHtml, 'code-block', PRE_STYLE)
+  return nextHtml
+}
+
+function normalizePreviewHtml(html: string) : string {
+  const trimmedHtml = html.trim()
+  if (trimmedHtml == '') {
+    return DEFAULT_PREVIEW_HTML
+  }
+  return enhancePreviewHtml(trimmedHtml)
+}
+
+function buildPreviewDocument(html: string) : string {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><style>:root{--editor-preview-background:#f8fafc;--editor-preview-color:#1f2937;--editor-preview-border:#dbe3eb;--editor-preview-link:#2563eb;--editor-preview-quote-border:#cbd5e1;--editor-preview-quote-background:#ffffff;--editor-preview-quote-color:#475569;--editor-preview-code-background:#e2e8f0;--editor-preview-code-color:#0f172a;}html,body{margin:0;padding:0;background:var(--editor-preview-background);color:var(--editor-preview-color);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}body{padding:20px 16px 28px;line-height:1.7;word-break:break-word;}img,video{max-width:100%;height:auto;}pre,.ql-code-block,.code-block{${PRE_STYLE}}blockquote,.ql-blockquote{${BLOCKQUOTE_STYLE}}code{${INLINE_CODE_STYLE}}table{width:100%;border-collapse:collapse;}td,th{border:1px solid var(--editor-preview-border);padding:8px;}a{color:var(--editor-preview-link);text-decoration:none;}@media (prefers-color-scheme:dark){:root{--editor-preview-background:#1a1a1a;--editor-preview-color:#f5f5f5;--editor-preview-border:#4a4a4a;--editor-preview-link:#7db0ff;--editor-preview-quote-border:#64748b;--editor-preview-quote-background:#2d2d2d;--editor-preview-quote-color:#d8dee9;--editor-preview-code-background:#3b3b3b;--editor-preview-code-color:#f5f5f5;}}</style></head><body>${html}</body></html>`
+}
+
+function readPreviewHtml(storageKey: string) : string {
+  const storageValue = uni.getStorageSync(storageKey)
+  if (typeof storageValue == 'string') {
+    return normalizePreviewHtml(storageValue as string)
+  }
+  return DEFAULT_PREVIEW_HTML
+}
+
+function loadAppPreview() {
+  // #ifdef APP
+  if (previewWebviewElement == null) {
+    previewWebviewElement = uni.getElementById('editor-preview-webview') as UniWebViewElement | null
+  }
+  const webviewElement = previewWebviewElement
+  if (webviewElement == null) {
+    return
+  }
+  webviewElement.loadData({
+    data: buildPreviewDocument(previewHtml.value)
+  })
+  appPreviewLoaded.value = true
+  // #endif
+}
+
+onLoad((options: OnLoadOptions) => {
+  const storageKeyValue = options['storageKey']
+  if (storageKeyValue != null) {
+    const nextStorageKey = storageKeyValue as string
+    if (nextStorageKey.length > 0) {
+      previewStorageKey = nextStorageKey
+    }
+  }
+  previewHtml.value = readPreviewHtml(previewStorageKey)
+})
+
+onReady(() => {
+  loadAppPreview()
+})
+
+onUnload(() => {
+  uni.removeStorageSync(previewStorageKey)
+  previewWebviewElement = null
+})
+</script>
+
+<style>
+.preview-page-app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.preview-page-rich {
+  padding-top: 16px;
+  padding-right: 16px;
+  padding-bottom: 28px;
+  padding-left: 16px;
+}
+
+.preview-webview {
+  flex: 1;
+}
+
+.preview-webview-hidden {
+  opacity: 0;
+}
+
+.preview-webview-visible {
+  opacity: 1;
+}
+
+.preview-loading-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+}
+
+.preview-loading-text {
+  color: #64748b;
+  font-size: 15px;
+}
+
+.preview-rich-text {
+  width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .preview-page {
+    --editor-preview-quote-border: #64748b;
+    --editor-preview-quote-background: #2d2d2d;
+    --editor-preview-quote-color: #d8dee9;
+    --editor-preview-code-background: #3b3b3b;
+    --editor-preview-code-color: #f5f5f5;
+  }
+
+  .preview-loading-mask {
+    background-color: #1a1a1a;
+  }
+
+  .preview-loading-text {
+    color: #a0a0a0;
+  }
+
+  .preview-rich-text {
+    color: #f5f5f5;
+  }
+}
+</style>

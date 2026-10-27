@@ -3,7 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-list-view', () => {
   if (isMP) {
@@ -33,22 +33,24 @@ describe('component-native-list-view', () => {
   })
 
 
-  //检测横向scrollLeft属性赋值 备注：iOS不支持list-view横向滚动
-  it('check_scroll_left', async () => {
-    if(await page.data('data.scroll_x_boolean') === false) {
-        await page.callMethod('change_scroll_x_boolean', true)
-        await page.callMethod('change_scroll_y_boolean', false)
-        await page.waitFor(600)
-    }
-    await page.callMethod('confirm_scroll_left_input', 600)
-    await page.waitFor(600)
-    const listElement = await page.$('#listview')
-    const scrollLeft = await listElement.attribute("scrollLeft")
-    console.log("check_scroll_left---"+scrollLeft)
-    expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
-    await page.callMethod('confirm_scroll_left_input', 0)
-    await page.waitFor(600)
-  })
+  //检测横向scrollLeft属性赋值 备注：iOS不支持list-view横向滚动、dom2不支持横向滚动
+  if (!isVapor) {
+    it('check_scroll_left', async () => {
+      if(await page.data('data.scroll_x_boolean') === false) {
+          await page.callMethod('change_scroll_x_boolean', true)
+          await page.callMethod('change_scroll_y_boolean', false)
+          await page.waitFor(600)
+      }
+      await page.callMethod('confirm_scroll_left_input', 600)
+      await page.waitFor(600)
+      const listElement = await page.$('#listview')
+      const scrollLeft = await listElement.attribute("scrollLeft")
+      console.log("check_scroll_left---"+scrollLeft)
+      expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
+      await page.callMethod('confirm_scroll_left_input', 0)
+      await page.waitFor(600)
+    })
+  }
 
   it('Event check_scroll', async () => {
     await page.callMethod('change_scroll_y_boolean', true)
@@ -116,33 +118,34 @@ describe('component-native-list-view', () => {
     expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
 
-  //检测竖向可滚动区域
-  it('check_scroll_height', async () => {
-    await page.callMethod('change_scroll_y_boolean', true)
-    await page.callMethod('change_scroll_x_boolean', false)
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_height')
-    expect(value).toBe(true)
-  })
+  // 蒸汽模式不会对所有item排版并渲染，无法计算准确scrollHeight，屏蔽此测试
+  if(!isVapor) {
+    //检测竖向可滚动区域
+    it('check_scroll_height', async () => {
+      await page.callMethod('change_scroll_y_boolean', true)
+      await page.callMethod('change_scroll_x_boolean', false)
+      await page.waitFor(600)
+      const value = await page.callMethod('check_scroll_height')
+      expect(value).toBe(true)
+    })
+  }
 
-  //检测横向可滚动区域 备注：iOS不支持list-view横向滚动
-  it('check_scroll_width', async () => {
-    if(isHarmony) {
-      // 鸿蒙平台list-view的暂不支持一次计算出scrollWidth
-      expect(1).toBe(1)
-      return
-    }
-    if(await page.data('data.scroll_x_boolean') === false) {
-        await page.callMethod('change_scroll_x_boolean', true)
-        await page.callMethod('change_scroll_y_boolean', false)
-        await page.waitFor(600)
-    }
-    await page.callMethod('change_scroll_y_boolean', false)
-    await page.callMethod('change_scroll_x_boolean', true)
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_width')
-    expect(value).toBe(true)
-  })
+
+  //检测横向可滚动区域 备注：iOS不支持list-view横向滚动、鸿蒙非蒸汽模式暂不支持一次计算出scrollWidth、蒸汽模式不支持横向滚动。
+  if(!isHarmony && !isIOS && !isVapor) {
+    it('check_scroll_width', async () => {
+      if(await page.data('data.scroll_x_boolean') === false) {
+          await page.callMethod('change_scroll_x_boolean', true)
+          await page.callMethod('change_scroll_y_boolean', false)
+          await page.waitFor(600)
+      }
+      await page.callMethod('change_scroll_y_boolean', false)
+      await page.callMethod('change_scroll_x_boolean', true)
+      await page.waitFor(600)
+      const value = await page.callMethod('check_scroll_width')
+      expect(value).toBe(true)
+    })
+  }
 
   //检测下拉刷新 备注：iOS本地测试结果正确，但是自动化测试结果错误
   it('check_refresher', async () => {
@@ -163,7 +166,7 @@ describe('component-native-list-view', () => {
     await page.waitFor(2000)
   })
 
-  if(!isDom2) {
+  if(!isVapor) {
     // TODO attribute、property规范化
     //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
     it('check_scroll_into_view_top', async () => {

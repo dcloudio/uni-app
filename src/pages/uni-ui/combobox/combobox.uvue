@@ -1,0 +1,355 @@
+<template>
+	<scroll-view class="page">
+		<view class="section">
+			<text class="page-title">uni-combobox 组合框</text>
+			<text class="page-desc">默认单选模式只能从候选项中选择；传入 input 插槽后，可输入并按左侧匹配过滤候选项。</text>
+		</view>
+
+		<view class="section">
+			<text class="group-title">属性示例</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">options：候选字符串数组</text>
+			<uni-combobox
+				:options="gradeOptions"
+				placeholder="请选择年级"
+				v-model="optionsValue"
+			/>
+			<text class="result-text">当前选择：{{ optionsValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">input 插槽：可输入可选择</text>
+			<uni-combobox
+				:options="cityOptions"
+				v-model="city"
+				placeholder="选择或输入城市"
+				@selectchange="onCityChange"
+			>
+				<template #input="{ value, input, focus, disabled }">
+					<input
+						class="custom-input"
+						:value="value"
+						:disabled="disabled"
+						placeholder="选择或输入城市"
+						@focus="focus"
+						@input="input"
+					/>
+				</template>
+			</uni-combobox>
+			<text class="result-text">当前输入：{{ city }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">placeholder：占位文字</text>
+			<uni-combobox
+				:options="cityOptions"
+				placeholder="这里展示 placeholder"
+				v-model="placeholderValue"
+			/>
+			<text class="result-text">未选择时展示占位文字</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">disabled：禁用状态</text>
+			<uni-combobox
+				:options="gradeOptions"
+				v-model="disabledValue"
+				disabled
+			/>
+			<text class="result-text">禁用时不可展开或修改：{{ disabledValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">无边框：class 覆盖</text>
+			<uni-combobox
+				field-class="borderless-combobox"
+				:options="cityOptions"
+				v-model="borderlessValue"
+				placeholder="无边框组合框"
+			/>
+			<text class="result-text">当前选择：{{ borderlessValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">arrow-class：右侧箭头样式</text>
+			<uni-combobox
+				:options="statusOptions"
+				placeholder="请选择状态"
+				v-model="arrowClassValue"
+				arrow-class="demo-arrow"
+			/>
+			<text class="result-text">当前选择：{{ arrowClassValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">options-view-class：候选浮层样式</text>
+			<uni-combobox
+				:options="cityOptions"
+				placeholder="打开查看浮层样式"
+				v-model="optionsViewClassValue"
+				options-view-class="demo-options-view"
+			/>
+			<text class="result-text">当前选择：{{ optionsViewClassValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">option-text-class：候选项文字样式</text>
+			<uni-combobox
+				:options="statusOptions"
+				placeholder="打开查看候选文字"
+				v-model="optionTextClassValue"
+				option-text-class="demo-option-text"
+			/>
+			<text class="result-text">当前选择：{{ optionTextClassValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">option-text-highlight-class：高亮项文字样式</text>
+			<uni-combobox
+				:options="cityOptions"
+				v-model="optionTextHighlightClassValue"
+				option-text-highlight-class="demo-option-highlight"
+			/>
+			<text class="result-text">打开后当前匹配项会使用高亮文字样式：{{ optionTextHighlightClassValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">option-row-highlight-class：高亮项背景样式</text>
+			<uni-combobox
+				:options="cityOptions"
+				v-model="optionRowHighlightValue"
+				options-content-class="demo-full-highlight-content"
+				option-row-highlight-class="demo-option-row-highlight"
+			/>
+			<text class="result-text">打开后当前选中项背景铺满候选区域并去除圆角：{{ optionRowHighlightValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">result-text-class：单选结果文字样式</text>
+			<uni-combobox
+				:options="gradeOptions"
+				v-model="resultTextClassValue"
+				result-text-class="demo-result-text"
+			/>
+			<text class="result-text">当前选择：{{ resultTextClassValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">大量候选</text>
+			<uni-combobox
+				:options="largeOptions"
+				placeholder="请选择编号"
+				v-model="largeValue"
+			/>
+			<text class="result-text">当前选择：{{ largeValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="group-title">事件示例</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">update:modelValue：值更新时触发</text>
+			<uni-combobox
+				:options="cityOptions"
+				v-model="updateEventValue"
+				placeholder="请选择城市"
+				@update:modelValue="onUpdateModelValue"
+			/>
+			<text class="result-text">事件值：{{ updateEventText }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">selectchange：从候选项选中时触发</text>
+			<uni-combobox
+				:options="statusOptions"
+				v-model="selectEventValue"
+				placeholder="请选择状态"
+				@selectchange="onSelectChange"
+			/>
+			<text class="result-text">事件值：{{ selectEventText }}</text>
+		</view>
+
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+const optionsValue = ref<string>('')
+const placeholderValue = ref<string>('')
+const disabledValue = ref<string>('三年级')
+const borderlessValue = ref<string>('')
+const arrowClassValue = ref<string>('')
+const optionsViewClassValue = ref<string>('')
+const optionTextClassValue = ref<string>('')
+const optionTextHighlightClassValue = ref<string>('杭州')
+const optionRowHighlightValue = ref<string>('杭州')
+const resultTextClassValue = ref<string>('三年级')
+const updateEventValue = ref<string>('')
+const updateEventText = ref<string>('未触发')
+const selectEventValue = ref<string>('')
+const selectEventText = ref<string>('未触发')
+const city = ref<string>('杭州')
+const largeValue = ref<string>('')
+
+const gradeOptions: string[] = [
+	'一年级',
+	'二年级',
+	'三年级',
+	'四年级',
+	'五年级',
+	'六年级',
+	'初一',
+	'初二',
+	'初三'
+]
+
+const cityOptions: string[] = [
+	'北京',
+	'上海',
+	'广州',
+	'深圳',
+	'杭州',
+	'南京',
+	'苏州',
+	'成都',
+	'重庆',
+	'武汉',
+	'西安',
+	'郑州'
+]
+
+const statusOptions: string[] = [
+	'待处理',
+	'处理中',
+	'已完成',
+	'已取消'
+]
+
+const largeOptions = computed(() : string[] => {
+	const list: string[] = []
+	for (let i = 1; i <= 120; i++) {
+		const value = i < 10 ? `编号 00${i}` : (i < 100 ? `编号 0${i}` : `编号 ${i}`)
+		list.push(value)
+	}
+	return list
+})
+
+function onUpdateModelValue(value : string) {
+	updateEventText.value = value == '' ? '空字符串' : value
+	console.log('combobox update:modelValue:', value)
+}
+
+function onSelectChange(value : string) {
+	selectEventText.value = value
+	console.log('combobox selectchange:', value)
+}
+
+function onCityChange(value : string) {
+	console.log('city selectchange:', value)
+}
+</script>
+
+<style>
+.page {
+	flex: 1;
+	padding: 16px;
+}
+
+.section {
+	margin-bottom: 24px;
+}
+
+.page-title {
+	font-size: 20px;
+	font-weight: bold;
+	color: var(--text-color, #1f2937);
+	margin-bottom: 8px;
+}
+
+.page-desc {
+	font-size: 14px;
+	line-height: 22px;
+	color: var(--text-color, #64748b);
+	opacity: 0.7;
+}
+
+.group-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #111827);
+	margin-top: 4px;
+}
+
+.section-title {
+	font-size: 16px;
+	font-weight: bold;
+	color: var(--text-color, #1f2937);
+	margin-bottom: 10px;
+}
+
+.result-text {
+	font-size: 13px;
+	color: var(--text-color, #64748b);
+	opacity: 0.7;
+	margin-top: 8px;
+}
+
+.custom-input {
+	flex: 1;
+	width: 100%;
+	height: 22px;
+	font-size: 14px;
+	color: var(--text-color, #1f2937);
+	background-color: transparent;
+}
+
+.borderless-combobox {
+	border-width: 0;
+}
+
+.demo-arrow {
+	border-right-color: var(--tips-color, #16a34a);
+	border-bottom-color: var(--tips-color, #16a34a);
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+}
+
+.demo-options-view {
+	border-color: var(--tips-border-color, #2563eb);
+	border-width: 2px;
+	background-color: var(--tips-background-color, #eff6ff);
+}
+
+.demo-option-text {
+	color: var(--tips-color, #7c3aed);
+	font-weight: bold;
+}
+
+.demo-option-highlight {
+	color: var(--tips-color, #dc2626);
+	font-weight: bold;
+}
+
+.demo-full-highlight-content {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.demo-option-row-highlight {
+	border-radius: 0;
+	background-color: #dbeafe;
+}
+
+@media (prefers-color-scheme: dark) {
+	.demo-option-row-highlight {
+		background-color: #3b3b3b;
+	}
+}
+
+.demo-result-text {
+	color: var(--tips-color, #2563eb);
+	font-weight: bold;
+}
+</style>

@@ -5,7 +5,6 @@ const RECT_HEIGHT = 100;
 const RECT_LEFT = 15;
 
 describe('element-get-bounding-client-rect-async', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

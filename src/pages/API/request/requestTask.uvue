@@ -19,26 +19,40 @@
         <text>添加或者移除流式监听</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onHeadersReceived_observe_1"
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @tap="onHeadersReceived_observe_1"
             id="onHeadersReceived_observe_1">onHeadersReceived监听1</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onHeadersReceived_observe_2"
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @tap="onHeadersReceived_observe_2"
             id="onHeadersReceived_observe_2">onHeadersReceived监听2</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onChunkReceived_observe_1"
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @tap="onChunkReceived_observe_1"
             id="onChunkReceived_observe_1">onChunkReceived监听1</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onChunkReceived_observe_2"
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @tap="onChunkReceived_observe_2"
             id="onChunkReceived_observe_2">onChunkReceived监听2</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="offHeadersReceived_id"
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @tap="offHeadersReceived_id"
             id="offHeadersReceived_id">offHeadersReceived(id)</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="offHeadersReceived_observe"
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @tap="offHeadersReceived_observe"
             id="offHeadersReceived_observe">offHeadersReceived移除所有</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="offChunkReceived_observe"
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @tap="offChunkReceived_observe"
             id="offChunkReceived_observe">offChunkReceived移除所有</button>
         </view>
       </view>
     </scroll-view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 
   const res = ref('')
   const task = ref<RequestTask | null>(null)
@@ -98,6 +112,9 @@
       timeout: 600000,
       method: method,
       enableChunked: true,
+      // #ifndef APP-ANDROID && UNI-APP-X && !VUE3-VAPOR
+      dataType: 'text',
+      // #endif
       success: (response) => {
         console.log('request success', JSON.stringify(response.data))
         console.log('request success header is :', JSON.stringify(response.header))

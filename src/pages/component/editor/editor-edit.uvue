@@ -1,0 +1,3381 @@
+<template>
+  <view id="editor-page-shell" :class="pageShellClass">
+    <view id="editor-layout" :class="editorLayoutClass">
+    <view
+      class="toolbar-wrap"
+      <!--#ifdef WEB -->
+      @mousedown="onToolbarMouseDown"
+      <!--#endif-->
+    >
+      <view class="toolbar-frame">
+        <view :class="desktopToolbarShellClass" @mousemove="hideToolbarTooltip">
+          <view :class="desktopToolbarLeadingGroupClass">
+            <view id="toolbar-button-undo" @tap="undo" @mousemove.stop="showToolbarTooltip('toolbar-button-undo', '撤回')" class="toolbar-icon-button">
+              <text class="toolbar-icon-text iconfont">{{"&#xe6a3;"}}</text>
+            </view>
+            <view id="toolbar-button-redo" @tap="redo" @mousemove.stop="showToolbarTooltip('toolbar-button-redo', '重做')" class="toolbar-icon-button">
+              <text class="toolbar-icon-text iconfont">{{"&#xe6a5;"}}</text>
+            </view>
+            <view id="toolbar-button-clear-format" @tap="clearFormatting" @mousemove.stop="showToolbarTooltip('toolbar-button-clear-format', '清除格式')" class="toolbar-icon-button">
+              <text class="toolbar-icon-text iconfont">{{"&#xe6b9;"}}</text>
+            </view>
+          </view>
+
+          <view :class="desktopToolbarDividerClass"></view>
+
+          <view :class="desktopToolbarGroupClass">
+            <view id="toolbar-button-font-size" @tap="openFontSizeSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-font-size', '设置字号')" :class="fontSizeSheetHighlighted ? 'toolbar-select toolbar-select-active' : 'toolbar-select'">
+              <text :class="fontSizeSheetHighlighted ? 'toolbar-select-label toolbar-select-label-active toolbar-size-label' : 'toolbar-select-label toolbar-size-label'">{{ getDesktopFontSizeLabel() }}</text>
+              <text :class="fontSizeSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-font-family" @tap="openFontFamilySheet" @mousemove.stop="showToolbarTooltip('toolbar-button-font-family', '设置字体')" :class="fontFamilySheetHighlighted ? 'toolbar-select toolbar-select-font toolbar-select-active' : 'toolbar-select toolbar-select-font'">
+              <text :class="fontFamilySheetHighlighted ? 'toolbar-select-label toolbar-select-label-active toolbar-select-font-label' : 'toolbar-select-label toolbar-select-font-label'">{{ getDesktopFontFamilyLabel() }}</text>
+              <text :class="fontFamilySheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-bold" @tap="toggleBold" @mousemove.stop="showToolbarTooltip('toolbar-button-bold', '加粗')" :class="data.formats.bold ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
+              <text :class="data.formats.bold ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont relative-top-1' : 'toolbar-icon-text toolbar-font-action iconfont relative-top-1'">{{"&#xe6ae;"}}</text>
+            </view>
+            <view id="toolbar-button-italic" @tap="toggleItalic" @mousemove.stop="showToolbarTooltip('toolbar-button-italic', '斜体')" :class="data.formats.italic ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
+              <text :class="data.formats.italic ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont relative-top-1' : 'toolbar-icon-text toolbar-font-action iconfont relative-top-1'">{{"&#xe6af;"}}</text>
+            </view>
+            <view id="toolbar-button-underline" @tap="toggleUnderline" @mousemove.stop="showToolbarTooltip('toolbar-button-underline', '下划线')" :class="data.formats.underline ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
+              <text :class="data.formats.underline ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont' : 'toolbar-icon-text toolbar-font-action iconfont'">{{"&#xe6a7;"}}</text>
+            </view>
+            <view id="toolbar-button-strike" @tap="toggleStrike" @mousemove.stop="showToolbarTooltip('toolbar-button-strike', '删除线')" :class="data.formats.strike ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
+              <text :class="data.formats.strike ? 'toolbar-icon-text toolbar-icon-text-active toolbar-font-action iconfont relative-top-1' : 'toolbar-icon-text toolbar-font-action iconfont relative-top-1'">{{"&#xe6aa;"}}</text>
+            </view>
+          </view>
+
+          <view :class="desktopToolbarDividerClass"></view>
+
+          <view :class="desktopToolbarGroupClass">
+            <view id="toolbar-button-text-color" @tap="openTextColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-text-color', '字体颜色')" :class="textColorSheetHighlighted ? 'toolbar-color-button toolbar-color-button-active' : 'toolbar-color-button'">
+              <view class="toolbar-color-stack">
+                <text :class="textColorSheetHighlighted ? 'toolbar-color-symbol toolbar-color-symbol-active iconfont' : 'toolbar-color-symbol iconfont'">{{"&#xe6b8;"}}</text>
+                <view class="toolbar-color-underline" :style="toolbarTextColorChipStyle"></view>
+              </view>
+              <text :class="textColorSheetHighlighted ? 'toolbar-color-arrow toolbar-color-arrow-active iconfont' : 'toolbar-color-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-background-color" @tap="openBackgroundColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-background-color', '背景颜色')" :class="backgroundColorSheetHighlighted ? 'toolbar-color-button toolbar-color-button-active' : 'toolbar-color-button'">
+              <view class="toolbar-color-stack">
+                <text :class="backgroundColorSheetHighlighted ? 'toolbar-color-symbol toolbar-color-symbol-active iconfont' : 'toolbar-color-symbol iconfont'">{{"&#xe6bb;"}}</text>
+                <view class="toolbar-color-underline" :style="toolbarBackgroundColorChipStyle"></view>
+              </view>
+              <text :class="backgroundColorSheetHighlighted ? 'toolbar-color-arrow toolbar-color-arrow-active iconfont' : 'toolbar-color-arrow iconfont'" style="margin-left: 2px">{{"&#xe6be;"}}</text>
+            </view>
+          </view>
+          <view :class="desktopToolbarDividerClass"></view>
+
+          <view :class="desktopToolbarGroupClass">
+            <view id="toolbar-button-align" @tap="openAlignSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-align', '对齐方式')" :class="alignSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-active' : 'toolbar-select toolbar-select-compact'">
+              <text :class="alignSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{ desktopAlignIconGlyph }}</text>
+              <text :class="alignSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-text-indent" @tap="toggleTextIndent" @mousemove.stop="showToolbarTooltip('toolbar-button-text-indent', '首行缩进')" :class="textIndentHighlighted ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
+              <text :class="textIndentHighlighted ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6ad;"}}</text>
+            </view>
+            <view id="toolbar-button-block-indent" @tap="openBlockIndentSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-block-indent', '两端缩进')" :class="blockIndentSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-active' : 'toolbar-select toolbar-select-compact'">
+              <text :class="blockIndentSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6ba;"}}</text>
+              <text :class="blockIndentSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-line-height" @tap="openLineHeightSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-line-height', '行间距')" :class="lineHeightSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-value toolbar-select-active' : 'toolbar-select toolbar-select-compact toolbar-select-value'">
+              <text :class="lineHeightSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6b0;"}}</text>
+              <text :class="lineHeightSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-letter-spacing" @tap="openLetterSpacingSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-letter-spacing', '字间距')" :class="letterSpacingSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-value toolbar-select-active' : 'toolbar-select toolbar-select-compact toolbar-select-value'">
+              <text :class="letterSpacingSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6ac;"}}</text>
+              <text :class="letterSpacingSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <view id="toolbar-button-list" @tap="openListSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-list', '列表')" :class="listSheetHighlighted ? 'toolbar-select toolbar-select-compact toolbar-select-active' : 'toolbar-select toolbar-select-compact'">
+              <text :class="listSheetHighlighted ? 'toolbar-icon-text toolbar-icon-text-active toolbar-select-glyph iconfont' : 'toolbar-icon-text toolbar-select-glyph iconfont'">{{"&#xe6a4;"}}</text>
+              <text :class="listSheetHighlighted ? 'toolbar-select-arrow toolbar-select-arrow-active iconfont' : 'toolbar-select-arrow iconfont'">{{"&#xe6be;"}}</text>
+            </view>
+            <!-- #ifndef MP -->
+            <view id="toolbar-button-blockquote" @tap="toggleBlockquote" @mousemove.stop="showToolbarTooltip('toolbar-button-blockquote', '引用')" :class="data.formats.blockquote ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
+              <text :class="data.formats.blockquote ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6b5;"}}</text>
+            </view>
+            <view id="toolbar-button-code-block" @tap="toggleCodeBlock" @mousemove.stop="showToolbarTooltip('toolbar-button-code-block', '代码块')" :class="data.formats.codeBlock ? 'toolbar-icon-button toolbar-icon-button-active' : 'toolbar-icon-button'">
+              <text :class="data.formats.codeBlock ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6a9;"}}</text>
+            </view>
+            <!-- #endif -->
+            <view id="toolbar-button-divider" @tap="insertDivider" @mousemove.stop="showToolbarTooltip('toolbar-button-divider', '分割线')" class="toolbar-icon-button">
+              <text class="toolbar-icon-text iconfont">{{"&#xe6b4;"}}</text>
+            </view>
+          </view>
+
+          <view :class="desktopToolbarDividerClass"></view>
+
+          <view :class="desktopToolbarGroupClass">
+            <view id="toolbar-button-image" @tap="chooseInsertImage" @mousemove.stop="showToolbarTooltip('toolbar-button-image', '图片')" class="toolbar-icon-button toolbar-icon-button-action">
+              <text class="toolbar-icon-text iconfont">{{"&#xe6bc;"}}</text>
+            </view>
+            <!-- #ifndef MP -->
+            <view id="toolbar-button-link" @tap="openLinkModal" @mousemove.stop="showToolbarTooltip('toolbar-button-link', data.formats.link != '' ? '编辑超链接' : '插入超链接')" :class="data.formats.link != '' ? 'toolbar-icon-button toolbar-icon-button-action toolbar-icon-button-active' : 'toolbar-icon-button toolbar-icon-button-action'">
+              <text :class="data.formats.link != '' ? 'toolbar-icon-text toolbar-icon-text-active iconfont' : 'toolbar-icon-text iconfont'">{{"&#xe6bd;"}}</text>
+            </view>
+            <!-- #endif -->
+            <view id="toolbar-button-preview" @tap="openPreview" @mousemove.stop="showToolbarTooltip('toolbar-button-preview', '预览')" class="toolbar-preview-button">
+              <text class="toolbar-preview-label">预览</text>
+            </view>
+          </view>
+        </view>
+        <!-- #ifdef WEB -->
+        <view v-if="data.tooltipVisible" class="toolbar-tooltip" :style="toolbarTooltipStyle">
+          <view class="toolbar-tooltip-arrow"></view>
+          <view class="toolbar-tooltip-bubble">
+            <text class="toolbar-tooltip-text">{{ data.tooltipText }}</text>
+          </view>
+        </view>
+        <!-- #endif -->
+        <view v-if="!data.isFocused && data.activeSheet == ''" class="desktop-toolbar-mask"></view>
+      </view>
+    </view>
+
+    <view v-if="data.activeSheet != ''" class="sheet-backdrop" @tap="closeSheets"></view>
+
+    <view
+     id="editor-sheet-host"
+      <!-- #ifdef WEB -->
+     :class="sheetHostClass"
+     :style="sheetHostStyle"
+      <!-- #endif -->
+      <!-- #ifndef WEB -->
+      class="sheet-host"
+      <!-- #endif -->
+     v-if="data.activeSheet != ''"
+      <!--#ifdef WEB -->
+      @mousedown="onToolbarMouseDown"
+      <!--#endif-->
+    >
+      <view
+        <!-- #ifdef WEB -->
+        :class="toolbarPanelClass"
+        <!-- #endif -->
+        <!-- #ifndef WEB -->
+        class="toolbar-panel toolbar-panel-attached"
+        <!-- #endif -->
+      >
+        <!-- #ifdef WEB -->
+        <view v-if="!webPhoneLayout" class="toolbar-panel-arrow" :style="toolbarPanelArrowStyle"></view>
+        <!-- #endif -->
+        <view
+          <!-- #ifdef WEB -->
+          :class="toolbarPanelHeaderClass"
+          <!-- #endif -->
+          <!-- #ifndef WEB -->
+          class="toolbar-panel-header"
+          <!-- #endif -->
+        >
+          <view class="toolbar-panel-title-wrap">
+            <text
+              <!-- #ifdef WEB -->
+              :class="toolbarPanelTitleClass"
+              <!-- #endif -->
+              <!-- #ifndef WEB -->
+              class="toolbar-panel-title"
+              <!-- #endif -->
+            >{{ getPanelTitle() }}</text>
+            <text
+              <!-- #ifdef WEB -->
+              :class="toolbarPanelSubtitleClass"
+              <!-- #endif -->
+              <!-- #ifndef WEB -->
+              class="toolbar-panel-subtitle"
+              <!-- #endif -->
+            >{{ getPanelSubtitle() }}</text>
+          </view>
+        </view>
+
+        <scroll-view
+          <!-- #ifdef WEB -->
+          :class="toolbarPanelScrollClass"
+          <!-- #endif -->
+          <!-- #ifndef WEB -->
+          class="toolbar-panel-scroll"
+          <!-- #endif -->
+          direction="vertical"
+          :show-scrollbar="false"
+        >
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'title'">
+            <view :class="data.toolbarChipRowClass">
+              <view :class="data.toolbarChipCellClass"><view @tap="setParagraph" :class="(paragraphActive) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(paragraphActive) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">P</text><text :class="(paragraphActive) ? desktopMenuTextActiveClass : desktopMenuTextClass">正文</text></view></view>
+              <!-- #ifndef MP -->
+              <view :class="data.toolbarChipCellClass"><view @tap="toggleBlockquote" :class="(data.formats.blockquote) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.blockquote) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">BQ</text><text :class="(data.formats.blockquote) ? desktopMenuTextActiveClass : desktopMenuTextClass">引用</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="toggleCodeBlock" :class="(data.formats.codeBlock) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.codeBlock) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">&lt;/&gt;</text><text :class="(data.formats.codeBlock) ? desktopMenuTextActiveClass : desktopMenuTextClass">代码</text></view></view>
+              <!-- #endif -->
+              <view v-for="level in 6" :key="level" :class="data.toolbarChipCellClass"><view @tap="setHeadingLevel(level)" :class="data.formats.header == level ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="data.formats.header == level ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ 'H' + level }}</text><text :class="data.formats.header == level ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ '大标题' + level }}</text></view></view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'style'">
+            <view :class="data.toolbarChipRowClass">
+              <view :class="data.toolbarChipCellClass"><view @tap="toggleBoldAndClose" :class="(data.formats.bold) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.bold) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">B</text><text :class="(data.formats.bold) ? desktopMenuTextActiveClass : desktopMenuTextClass">加粗</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="toggleItalicAndClose" :class="(data.formats.italic) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.italic) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">I</text><text :class="(data.formats.italic) ? desktopMenuTextActiveClass : desktopMenuTextClass">斜体</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="toggleUnderlineAndClose" :class="(data.formats.underline) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.underline) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">U</text><text :class="(data.formats.underline) ? desktopMenuTextActiveClass : desktopMenuTextClass">下划线</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="toggleStrikeAndClose" :class="(data.formats.strike) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.strike) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">S</text><text :class="(data.formats.strike) ? desktopMenuTextActiveClass : desktopMenuTextClass">删除线</text></view></view>
+            </view>
+
+            <view class="toolbar-color-section">
+              <text class="toolbar-color-title">文字颜色</text>
+              <view class="color-row color-row-panel">
+                <view @tap="setTextColorAndClose('')" :class="(data.formats.color == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
+                <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @tap="setTextColorAndClose(color)" :class="(data.formats.color == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
+              </view>
+            </view>
+
+            <view class="toolbar-color-section">
+              <text class="toolbar-color-title">背景颜色</text>
+              <view class="color-row color-row-panel">
+                <view @tap="setBackgroundColorAndClose('')" :class="(data.formats.backgroundColor == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
+                <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @tap="setBackgroundColorAndClose(color)" :class="(data.formats.backgroundColor == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
+              </view>
+            </view>
+
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'line-height'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">行间距</text>
+              <view :class="data.toolbarChipRowClass">
+                <view v-for="(value, index) in LINE_HEIGHT_PRESETS" :key="value" :class="data.toolbarChipCellClass"><view @tap="setLineHeightAndClose(value)" :class="data.formats.lineHeight == value ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="data.formats.lineHeight == value ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ LINE_HEIGHT_BADGES[index] }}</text><text :class="data.formats.lineHeight == value ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ LINE_HEIGHT_LABELS[index] }}</text></view></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'letter-spacing'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">字间距</text>
+              <view :class="data.toolbarChipRowClass">
+                <view v-for="(value, index) in LETTER_SPACING_PRESETS" :key="value" :class="data.toolbarChipCellClass"><view @tap="setLetterSpacingAndClose(value)" :class="data.formats.letterSpacing == value ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="data.formats.letterSpacing == value ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ LETTER_SPACING_BADGES[index] }}</text><text :class="data.formats.letterSpacing == value ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ LETTER_SPACING_LABELS[index] }}</text></view></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'font-size'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">字号</text>
+              <view :class="data.toolbarChipRowClass">
+                <view v-for="size in FONT_SIZE_PRESETS" :key="size" :class="data.toolbarChipCellClass"><view @tap="setFontSizeAndClose(size + 'px')" :class="(data.formats.fontSize == size + 'px' || (size == '17' && data.formats.fontSize == '')) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.fontSize == size + 'px' || (size == '17' && data.formats.fontSize == '')) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ size }}</text><text :class="(data.formats.fontSize == size + 'px' || (size == '17' && data.formats.fontSize == '')) ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ size == '17' ? '默认' : size + 'px' }}</text></view></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'font-family'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">字体</text>
+              <view :class="data.toolbarChipRowClass">
+                <view v-for="(font, index) in FONT_FAMILY_PRESETS" :key="font" :class="data.toolbarChipCellClass"><view @tap="setFontFamilyAndClose(font)" :class="data.formats.fontFamily == font ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="data.formats.fontFamily == font ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ FONT_FAMILY_BADGES[index] }}</text><text :class="data.formats.fontFamily == font ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ FONT_FAMILY_LABELS[index] }}</text></view></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'align'">
+            <view :class="data.toolbarChipRowClass">
+              <view :class="data.toolbarChipCellClass"><view @tap="clearAlign" :class="(data.formats.align == '') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.align == '') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">D</text><text :class="(data.formats.align == '') ? desktopMenuTextActiveClass : desktopMenuTextClass">默认</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="setAlignLeft" :class="(data.formats.align == 'left') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.align == 'left') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">L</text><text :class="(data.formats.align == 'left') ? desktopMenuTextActiveClass : desktopMenuTextClass">居左</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="setAlignCenter" :class="(data.formats.align == 'center') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.align == 'center') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">C</text><text :class="(data.formats.align == 'center') ? desktopMenuTextActiveClass : desktopMenuTextClass">居中</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="setAlignRight" :class="(data.formats.align == 'right') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.align == 'right') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">R</text><text :class="(data.formats.align == 'right') ? desktopMenuTextActiveClass : desktopMenuTextClass">居右</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="setAlignJustify" :class="(data.formats.align == 'justify') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.align == 'justify') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">J</text><text :class="(data.formats.align == 'justify') ? desktopMenuTextActiveClass : desktopMenuTextClass">两端</text></view></view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'block-indent'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">两端缩进</text>
+              <view :class="data.toolbarChipRowClass">
+                <view v-for="indent in BLOCK_INDENT_PRESETS" :key="indent" :class="data.toolbarChipCellClass"><view @tap="setBlockIndentAndClose(indent + 'px')" :class="((indent == '0' && data.formats.marginLeft == '' && data.formats.marginRight == '') || (data.formats.marginLeft == indent + 'px' && data.formats.marginRight == indent + 'px')) ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="((indent == '0' && data.formats.marginLeft == '' && data.formats.marginRight == '') || (data.formats.marginLeft == indent + 'px' && data.formats.marginRight == indent + 'px')) ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">{{ indent }}</text><text :class="((indent == '0' && data.formats.marginLeft == '' && data.formats.marginRight == '') || (data.formats.marginLeft == indent + 'px' && data.formats.marginRight == indent + 'px')) ? desktopMenuTextActiveClass : desktopMenuTextClass">{{ indent + 'px' }}</text></view></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'list'">
+            <view :class="data.toolbarChipRowClass">
+              <view :class="data.toolbarChipCellClass"><view @tap="clearListFormat" :class="(data.formats.list == '') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.list == '') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">D</text><text :class="(data.formats.list == '') ? desktopMenuTextActiveClass : desktopMenuTextClass">默认</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="setBulletList" :class="(data.formats.list == 'bullet') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.list == 'bullet') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">•</text><text :class="(data.formats.list == 'bullet') ? desktopMenuTextActiveClass : desktopMenuTextClass">无序列表</text></view></view>
+              <view :class="data.toolbarChipCellClass"><view @tap="setOrderedList" :class="(data.formats.list == 'ordered') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.list == 'ordered') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">1.</text><text :class="(data.formats.list == 'ordered') ? desktopMenuTextActiveClass : desktopMenuTextClass">有序列表</text></view></view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'text-color'">
+            <view class="toolbar-color-section">
+              <view class="desktop-color-sheet-label">
+                <view class="desktop-color-sheet-icon"></view>
+                <text class="desktop-color-sheet-label-text">默认颜色</text>
+              </view>
+              <view class="color-row color-row-panel">
+                <view @tap="setTextColorAndClose('')" :class="(data.formats.color == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
+                <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @tap="setTextColorAndClose(color)" :class="(data.formats.color == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'background-color'">
+            <view class="toolbar-color-section">
+              <view class="desktop-color-sheet-label">
+                <view class="desktop-color-sheet-icon"></view>
+                <text class="desktop-color-sheet-label-text">默认背景</text>
+              </view>
+              <view class="color-row color-row-panel">
+                <view @tap="setBackgroundColorAndClose('')" :class="(data.formats.backgroundColor == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
+                <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @tap="setBackgroundColorAndClose(color)" :class="(data.formats.backgroundColor == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'more'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">插入内容</text>
+              <view :class="data.toolbarChipRowClass">
+                <view :class="data.toolbarChipCellClass"><view @tap="toggleChecklistTool" :class="(data.formats.list == 'check') ? desktopMenuItemActiveClass : desktopMenuItemClass"><text :class="(data.formats.list == 'check') ? desktopMenuBadgeActiveClass : desktopMenuBadgeClass">TODO</text><text :class="(data.formats.list == 'check') ? desktopMenuTextActiveClass : desktopMenuTextClass">TODO</text></view></view>
+                <view :class="data.toolbarChipCellClass"><view @tap="insertDivider" :class="desktopMenuItemClass"><text :class="desktopMenuBadgeClass">---</text><text :class="desktopMenuTextClass">分割线</text></view></view>
+                <!-- #ifndef MP -->
+                <!-- #endif -->
+              </view>
+            </view>
+
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">编辑操作</text>
+              <view :class="data.toolbarChipRowClass">
+                <view :class="data.toolbarChipCellClass"><view @tap="clearFormatting" :class="desktopMenuItemClass"><text :class="desktopMenuBadgeClass">CLR</text><text :class="desktopMenuTextClass">清除样式</text></view></view>
+                <view :class="data.toolbarChipCellClass"><view @tap="undo" :class="desktopMenuItemClass"><text :class="desktopMenuBadgeClass">↶</text><text :class="desktopMenuTextClass">撤销</text></view></view>
+                <view :class="data.toolbarChipCellClass"><view @tap="redo" :class="desktopMenuItemClass"><text :class="desktopMenuBadgeClass">↷</text><text :class="desktopMenuTextClass">重做</text></view></view>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+
+    <!-- #ifndef MP -->
+    <!-- #ifdef WEB -->
+    <view v-if="data.linkModalVisible" class="link-modal-mask link-modal-mask-floating" @tap="closeLinkModal">
+      <view class="link-modal-card link-modal-card-floating" @tap.stop>
+        <view class="link-modal-header">
+          <text class="link-modal-title">{{ data.linkOriginalHref != '' ? '编辑超链接' : '插入超链接' }}</text>
+          <text class="link-modal-subtitle">{{ data.linkOriginalHref != '' ? '需选中超链接文本后修改/删除链接地址' : (data.linkUseSelectionText ? '将为选中文本添加链接' : '填写显示文本与链接地址') }}</text>
+        </view>
+        <view class="link-modal-form">
+          <view v-if="data.linkOriginalHref == '' && !data.linkUseSelectionText" class="link-modal-field">
+            <text class="link-modal-label">显示文本</text>
+            <input class="link-modal-input" v-model="data.linkDraftText" placeholder="请输入显示文本" :maxlength="-1" />
+          </view>
+          <view v-if="data.linkOriginalHref == '' && data.linkUseSelectionText" class="link-modal-field">
+            <text class="link-modal-label">已选中文本</text>
+            <view class="link-modal-selection-chip">
+              <text class="link-modal-selection-text">{{ data.linkDraftText }}</text>
+            </view>
+          </view>
+          <view class="link-modal-field">
+            <text class="link-modal-label">链接地址</text>
+            <input class="link-modal-input" v-model="data.linkDraftHref" placeholder="https://example.com" :maxlength="-1" />
+          </view>
+        </view>
+        <view class="link-modal-actions">
+          <view v-if="data.linkOriginalHref != ''" class="link-modal-danger" @tap="removeLink">
+            <text class="link-modal-danger-text">删除链接</text>
+          </view>
+          <view class="link-modal-action-group">
+            <view class="link-modal-button link-modal-button-secondary" @tap="closeLinkModal">
+              <text class="link-modal-button-text link-modal-button-text-secondary">取消</text>
+            </view>
+            <view class="link-modal-button link-modal-button-primary" @tap="confirmLinkModal">
+              <text class="link-modal-button-text">确定</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- #endif -->
+    <!-- #ifndef WEB -->
+    <view v-if="data.linkModalVisible" class="link-modal-mask link-modal-mask-app" @tap="closeLinkModal">
+      <view class="link-modal-card link-modal-card-app" @tap.stop>
+        <view class="link-modal-header">
+          <text class="link-modal-title link-modal-title-app">{{ data.linkOriginalHref != '' ? '编辑超链接' : '插入超链接' }}</text>
+          <text class="link-modal-subtitle link-modal-subtitle-app">{{ data.linkOriginalHref != '' ? '需选中超链接文本后修改/删除链接地址' : (data.linkUseSelectionText ? '将为选中文本添加链接' : '填写显示文本与链接地址') }}</text>
+        </view>
+        <view class="link-modal-form">
+          <view v-if="data.linkOriginalHref == '' && !data.linkUseSelectionText" class="link-modal-field">
+            <text class="link-modal-label link-modal-label-app">显示文本</text>
+            <input class="link-modal-input link-modal-input-app" v-model="data.linkDraftText" placeholder="请输入显示文本" :maxlength="-1" />
+          </view>
+          <view v-if="data.linkOriginalHref == '' && data.linkUseSelectionText" class="link-modal-field">
+            <text class="link-modal-label link-modal-label-app">已选中文本</text>
+            <view class="link-modal-selection-chip link-modal-selection-chip-app">
+              <text class="link-modal-selection-text link-modal-selection-text-app">{{ data.linkDraftText }}</text>
+            </view>
+          </view>
+          <view class="link-modal-field">
+            <text class="link-modal-label link-modal-label-app">链接地址</text>
+            <input class="link-modal-input link-modal-input-app" v-model="data.linkDraftHref" placeholder="https://example.com" :maxlength="-1" />
+          </view>
+        </view>
+        <view class="link-modal-actions link-modal-actions-app">
+          <!-- 蒸汽模式下闪退 暂时屏蔽 -->
+          <!-- #ifndef VUE3-VAPOR -->
+          <view v-if="data.linkOriginalHref != ''" class="link-modal-danger link-modal-danger-app" @tap="removeLink">
+            <text class="link-modal-danger-text link-modal-danger-text-app">删除链接</text>
+          </view>
+          <!-- #endif -->
+          <view class="link-modal-action-group link-modal-action-group-app">
+            <view class="link-modal-button link-modal-button-secondary link-modal-button-secondary-app" @tap="closeLinkModal">
+              <text class="link-modal-button-text link-modal-button-text-secondary link-modal-button-text-secondary-app">取消</text>
+            </view>
+            <view class="link-modal-button link-modal-button-primary link-modal-button-primary-app" @tap="confirmLinkModal">
+              <text class="link-modal-button-text link-modal-button-text-app">确定</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- #endif -->
+    <!-- #endif -->
+
+    <view class="editor-stage">
+      <editor
+        id="editor"
+        class="editor-field"
+        placeholder="请输入正文内容..."
+        style="padding: 20px;"
+        show-img-size
+        show-img-toolbar
+        show-img-resize
+        :read-only="data.editorReadOnly"
+        @ready="onEditorReady"
+        @focus="onEditorFocus"
+        @blur="onEditorBlur"
+        @statuschange="onStatusChange"
+      />
+    </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+
+type Formats = {
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  strike: boolean;
+  blockquote: boolean;
+  codeBlock: boolean;
+  link: string;
+  header: number;
+  list: string;
+  align: string;
+  textIndent: string;
+  marginLeft: string;
+  marginRight: string;
+  lineHeight: string;
+  letterSpacing: string;
+  fontFamily: string;
+  fontSize: string;
+  color: string;
+  backgroundColor: string;
+}
+
+// Compact encoding avoids per-item syntax overhead in unminified mini-program builds.
+const TEXT_COLOR_PRESETS: string[] = '#000000,#3f3f3f,#6a6a6a,#949494,#bfbfbf,#d8d8d8,#ececec,#f5f5f5,#ffffff,#f03a37,#f26c2e,#f59a33,#f7d447,#7bc943,#59c3c3,#4a90e2,#3d5ed7,#6f42c1,#d13f96,#f3ddd8,#f7e8da,#f7ecd3,#fbf4d0,#e5f1d4,#d9eeea,#d8eaf6,#dbe3f4,#e4ddf1,#f1dde8,#ff9d9a,#ffb389,#ffcf8a,#fff17a,#b8e986,#7ed6d4,#8cc8f6,#9fb6f0,#c3a5ea,#f09ac5,#ff4d57,#ff7a45,#ffad47,#ffe44d,#7edc3f,#32c5c0,#4aa8f0,#5b7bea,#9556d9,#ec4fa3,#d0021b,#d9480f,#df7b00,#d9b300,#38a000,#1398a0,#1769d2,#2946c7,#5b2db5,#c2187a,#98001a,#952700,#9a4b00,#8a6a00,#1f6f00,#0d5c63,#0d47a1,#16269a,#3c177c,#8e105f'.split(',')
+const BACKGROUND_COLOR_PRESETS: string[] = '#ffffff,#e8e8e8,#d9d9d9,#c4c4c4,#a8a8a8,#8a8a8a,#6d6d6d,#4f4f4f,#2f2f2f,#fff1f0,#fff4ec,#fff7e8,#fffbe6,#f4fde8,#edfdfb,#eef7ff,#f1f4ff,#f5f0ff,#fff0f7,#ffd9d6,#ffe3cf,#ffecc8,#fff5bf,#e6f7c9,#d8f3f2,#d9ecff,#dfe6ff,#eadfff,#ffd9ee,#ffb8b5,#ffc89f,#ffd997,#fff08a,#d0f0a8,#b8e9e7,#b8dcff,#c4d2ff,#d9c2ff,#ffb9de,#ff8b87,#ffa96f,#ffc15f,#ffe65c,#a9e45f,#86d9d5,#8fc4ff,#9eb5ff,#c29af5,#ff8cc8,#ff5f5b,#ff8a3d,#ffaa2b,#ffd400,#7fd13b,#42bebc,#5da9ff,#738ef5,#9a68e0,#ef5aae,#ffdede,#ffe9dd,#fff1e0,#fff7db,#edf8df,#e1f5f3,#e3f0ff,#e7ebff,#efe8ff,#ffe5f3'.split(',')
+const FONT_SIZE_PRESETS: string[] = '12,14,15,16,17,19,20,24,32,48'.split(',')
+const BLOCK_INDENT_PRESETS: string[] = '0,8,16,24,32,40,48'.split(',')
+const FONT_FAMILY_PRESETS: string[] = ',Microsoft YaHei,SimHei,SimSun,KaiTi,FangSong,Georgia,Times New Roman,Courier New'.split(',')
+const FONT_FAMILY_BADGES: string[] = 'D,雅黑,黑,宋,楷,仿宋,Geo,TNR,Mono'.split(',')
+const FONT_FAMILY_LABELS: string[] = '默认,微软雅黑,黑体,宋体,楷体,仿宋,Georgia,Times,Courier'.split(',')
+const LINE_HEIGHT_PRESETS: string[] = ',1.5,1.8,2'.split(',')
+const LINE_HEIGHT_BADGES: string[] = 'A,1.5,1.8,2.0'.split(',')
+const LINE_HEIGHT_LABELS: string[] = '默认,紧凑,舒适,宽松'.split(',')
+const LETTER_SPACING_PRESETS: string[] = ',0px,1px,2px'.split(',')
+const LETTER_SPACING_BADGES: string[] = 'Aa,0,+1,+2'.split(',')
+const LETTER_SPACING_LABELS: string[] = '默认,标准,微松,通透'.split(',')
+
+const EDITOR_PREVIEW_STORAGE_KEY = 'editor-preview-html'
+const EDITOR_PREVIEW_PAGE_URL = '/pages/component/editor/editor-preview'
+const EMPTY_PREVIEW_HTML = '<p style="color:#94a3b8;">暂无内容</p>'
+const DEFAULT_INSERT_IMAGE_URL = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png'
+
+type DataType = {
+  pageWindowHeight: number;
+  pageWindowWidth: number;
+  toolbarChipRowClass: string;
+  toolbarChipCellClass: string;
+  // #ifdef WEB
+  tooltipVisible: boolean;
+  tooltipText: string;
+  tooltipLeft: number;
+  tooltipTop: number;
+  // #endif
+  // #ifdef WEB
+  sheetTop: number;
+  sheetLeft: number;
+  sheetArrowLeft: number;
+  sheetAnimated: boolean;
+  // #endif
+  editorReadOnly: boolean;
+  isFocused: boolean;
+  // #ifdef WEB
+  ignoreNextBlur: boolean;
+  // #endif
+  activeSheet: string;
+  // MP editor tests are skipped, so do not ship their state bridge.
+  // #ifndef MP
+  autoTest: boolean;
+  editorReadyTest: boolean;
+  undoTest: boolean;
+  redoTest: boolean;
+  removeFormatTest: boolean;
+  insertImageTest: boolean;
+  blurTest: boolean;
+  clearTest: boolean;
+  getContentDeltaTest: any | null;
+  // #endif
+  formats: Formats;
+  // #ifndef MP
+  linkModalVisible: boolean;
+  linkUseSelectionText: boolean;
+  linkDraftText: string;
+  linkDraftHref: string;
+  linkSelectionText: string;
+  linkOriginalHref: string;
+  // #endif
+}
+
+function createDefaultFormats() : Formats {
+  return {
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false,
+    blockquote: false,
+    codeBlock: false,
+    link: '',
+    header: 0,
+    list: '',
+    align: '',
+    textIndent: '',
+    marginLeft: '',
+    marginRight: '',
+    lineHeight: '',
+    letterSpacing: '',
+    fontFamily: '',
+    fontSize: '',
+    color: '',
+    backgroundColor: ''
+  }
+}
+
+function assignFormats(target: Formats, source: Formats) {
+  target.bold = source.bold
+  target.italic = source.italic
+  target.underline = source.underline
+  target.strike = source.strike
+  target.blockquote = source.blockquote
+  target.codeBlock = source.codeBlock
+  target.link = source.link
+  target.header = source.header
+  target.list = source.list
+  target.align = source.align
+  target.textIndent = source.textIndent
+  target.marginLeft = source.marginLeft
+  target.marginRight = source.marginRight
+  target.lineHeight = source.lineHeight
+  target.letterSpacing = source.letterSpacing
+  target.fontFamily = source.fontFamily
+  target.fontSize = source.fontSize
+  target.color = source.color
+  target.backgroundColor = source.backgroundColor
+}
+
+const data = reactive<DataType>({
+  pageWindowHeight: 0,
+  pageWindowWidth: 0,
+  toolbarChipRowClass: 'toolbar-chip-row',
+  toolbarChipCellClass: 'toolbar-chip-cell',
+  // #ifdef WEB
+  tooltipVisible: false,
+  tooltipText: '',
+  tooltipLeft: 0,
+  tooltipTop: 0,
+  // #endif
+  // #ifdef WEB
+  sheetTop: 74,
+  sheetLeft: 12,
+  sheetArrowLeft: 32,
+  sheetAnimated: false,
+  // #endif
+  editorReadOnly: false,
+  isFocused: false,
+  // #ifdef WEB
+  ignoreNextBlur: false,
+  // #endif
+  activeSheet: '',
+  // #ifndef MP
+  autoTest: false,
+  editorReadyTest: false,
+  undoTest: false,
+  redoTest: false,
+  removeFormatTest: false,
+  insertImageTest: false,
+  blurTest: false,
+  clearTest: false,
+  getContentDeltaTest: null,
+  // #endif
+  formats: createDefaultFormats(),
+  // #ifndef MP
+  linkModalVisible: false,
+  linkUseSelectionText: false,
+  linkDraftText: '',
+  linkDraftHref: '',
+  linkSelectionText: '',
+  linkOriginalHref: ''
+  // #endif
+})
+
+const editorContext = ref<EditorContext | null>(null)
+
+let statusSyncLockedUntil = 0
+
+// #ifdef WEB
+let toolbarHideTimer = 0
+
+function clearToolbarHideTimer() {
+  if (toolbarHideTimer > 0) {
+    clearTimeout(toolbarHideTimer)
+    toolbarHideTimer = 0
+  }
+}
+
+function scheduleToolbarHide() {
+  clearToolbarHideTimer()
+  // 工具栏改为公共常驻模式，这里仅重置计时器状态。
+  toolbarHideTimer = 0
+}
+// #endif
+
+function getEditor() : EditorContext | null {
+  return editorContext.value
+}
+
+function hasInlineStyleActive() : boolean {
+  return data.formats.bold || data.formats.italic || data.formats.underline || data.formats.strike || data.formats.lineHeight != '' || data.formats.letterSpacing != '' || data.formats.fontSize != '' || data.formats.fontFamily != '' || data.formats.color != '' || data.formats.backgroundColor != ''
+}
+
+// #ifdef WEB
+function getToolbarTooltipStyle() : string {
+  return `left:${data.tooltipLeft}px;top:${data.tooltipTop}px;`
+}
+// #endif
+
+function isWideLayout() : boolean {
+  return data.pageWindowWidth >= 1120
+}
+
+// #ifdef WEB
+function isWebPhoneLayout() : boolean {
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  return windowWidth < 760
+}
+// #endif
+
+
+function getPageShellClass() : string {
+  if (isWideLayout()) {
+    return 'page-shell page-shell-wide'
+  }
+  return 'page-shell'
+}
+
+function getEditorLayoutClass() : string {
+  if (isWideLayout()) {
+    return 'editor-layout editor-layout-wide'
+  }
+  return 'editor-layout'
+}
+
+function getSheetWidth() : number {
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  let maxWidth = windowWidth - 24
+  if (maxWidth < 240) {
+    maxWidth = windowWidth - 12
+  }
+  if (maxWidth < 220) {
+    return maxWidth
+  }
+  if (data.activeSheet == 'title') {
+    return maxWidth < 280 ? maxWidth : 280
+  }
+  if (data.activeSheet == 'style') {
+    return maxWidth < 440 ? maxWidth : 440
+  }
+  if (data.activeSheet == 'text-color' || data.activeSheet == 'background-color') {
+    return maxWidth < 372 ? maxWidth : 372
+  }
+  if (data.activeSheet == 'line-height' || data.activeSheet == 'letter-spacing') {
+    return maxWidth < 220 ? maxWidth : 220
+  }
+  if (data.activeSheet == 'align') {
+    return maxWidth < 220 ? maxWidth : 220
+  }
+  return maxWidth < 260 ? maxWidth : 260
+}
+
+function syncToolbarChipClasses() {
+  const panelWidth = getSheetWidth()
+  if (panelWidth <= 300) {
+    data.toolbarChipRowClass = 'toolbar-chip-row toolbar-chip-row-panel toolbar-chip-row-panel-compact'
+  } else {
+    data.toolbarChipRowClass = 'toolbar-chip-row toolbar-chip-row-panel'
+  }
+
+  if (data.activeSheet == 'title' || data.activeSheet == 'align' || data.activeSheet == 'more' || data.activeSheet == 'line-height' || data.activeSheet == 'letter-spacing' || data.activeSheet == 'font-size' || data.activeSheet == 'font-family' || data.activeSheet == 'block-indent' || data.activeSheet == 'list') {
+    data.toolbarChipCellClass = 'toolbar-chip-cell toolbar-chip-cell-full'
+    return
+  }
+  if (data.activeSheet == 'style') {
+    data.toolbarChipCellClass = 'toolbar-chip-cell toolbar-chip-cell-third'
+    return
+  }
+  data.toolbarChipCellClass = 'toolbar-chip-cell toolbar-chip-cell-quarter'
+}
+
+function getSheetHostStyle() : string {
+  // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    syncToolbarChipClasses()
+    return ''
+  }
+  syncToolbarChipClasses()
+  return `left:${data.sheetLeft}px;top:${data.sheetTop}px;width:${getSheetWidth()}px;`
+  // #endif
+  return ''
+}
+
+function getSheetHostClass() : string {
+  // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    return 'sheet-host sheet-host-mobile-web'
+  }
+  return 'sheet-host sheet-host-floating'
+  // #endif
+  return 'sheet-host'
+}
+
+// #ifdef WEB
+function getToolbarPanelArrowStyle() : string {
+  return `left:${data.sheetArrowLeft}px;`
+}
+// #endif
+
+function isCompactToolbar() : boolean {
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  return windowWidth < 1240
+}
+
+function isDenseToolbar() : boolean {
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  return windowWidth < 980
+}
+
+function isStyleSheetHighlighted() : boolean {
+  return data.activeSheet == 'style' || hasInlineStyleActive()
+}
+function getDesktopFontFamilyLabel() : string {
+  switch (data.formats.fontFamily) {
+    case 'Microsoft YaHei': return '雅黑'
+    case 'SimHei': return '黑体'
+    case 'SimSun': return '宋体'
+    case 'KaiTi': return '楷体'
+    case 'FangSong': return '仿宋'
+    case 'Georgia': return 'Geo'
+    case 'Times New Roman': return 'Times'
+    case 'Courier New': return 'Mono'
+    default: return '字体'
+  }
+}
+
+function getDesktopToolbarShellClass() : string {
+  let className = 'toolbar-shell'
+  if (isCompactToolbar()) {
+    className += ' toolbar-shell-compact'
+  }
+  if (isDenseToolbar()) {
+    className += ' toolbar-shell-dense'
+  }
+
+  return className
+}
+
+function getDesktopToolbarGroupClass(isLeading: boolean) : string {
+  let className = 'toolbar-group'
+  if (isLeading) {
+    className += ' toolbar-group-leading'
+  }
+  if (isCompactToolbar()) {
+    className += ' toolbar-group-compact'
+    if (isLeading) {
+      className += ' toolbar-group-leading-compact'
+    }
+  }
+  if (isDenseToolbar()) {
+    className += ' toolbar-group-dense'
+  }
+  return className
+}
+
+function getDesktopToolbarDividerClass() : string {
+  if (isCompactToolbar()) {
+    return 'toolbar-divider toolbar-divider-hidden'
+  }
+  return 'toolbar-divider'
+}
+
+function getToolbarPanelClass() : string {
+  // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel toolbar-panel-mobile-web'
+  }
+  if (data.sheetAnimated) {
+    return 'toolbar-panel toolbar-panel-attached toolbar-panel-floating toolbar-panel-floating-attached toolbar-panel-floating-entered'
+  }
+  return 'toolbar-panel toolbar-panel-attached toolbar-panel-floating toolbar-panel-floating-attached'
+  // #endif
+  return 'toolbar-panel toolbar-panel-attached'
+}
+
+function getToolbarPanelHeaderClass() : string {
+  // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-header toolbar-panel-header-mobile-web'
+  }
+  return 'toolbar-panel-header toolbar-panel-header-floating'
+  // #endif
+  return 'toolbar-panel-header'
+}
+
+function getToolbarPanelTitleClass() : string {
+  // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-title toolbar-panel-title-mobile-web'
+  }
+  return 'toolbar-panel-title toolbar-panel-title-floating'
+  // #endif
+  return 'toolbar-panel-title'
+}
+
+function getToolbarPanelSubtitleClass() : string {
+  // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-subtitle toolbar-panel-subtitle-mobile-web'
+  }
+  return 'toolbar-panel-subtitle toolbar-panel-subtitle-floating'
+  // #endif
+  return 'toolbar-panel-subtitle'
+}
+
+function getToolbarPanelScrollClass() : string {
+  // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-scroll toolbar-panel-scroll-mobile-web'
+  }
+  return 'toolbar-panel-scroll toolbar-panel-scroll-floating'
+  // #endif
+  return 'toolbar-panel-scroll'
+}
+
+function getDesktopMenuItemClass(active: boolean) : string {
+  return active ? 'desktop-menu-item desktop-menu-item-active' : 'desktop-menu-item'
+}
+
+function getDesktopMenuBadgeClass(active: boolean) : string {
+  return active ? 'desktop-menu-badge desktop-menu-badge-active' : 'desktop-menu-badge'
+}
+
+function getDesktopMenuTextClass(active: boolean) : string {
+  return active ? 'desktop-menu-text desktop-menu-text-active' : 'desktop-menu-text'
+}
+
+function closeSheets() {
+  // #ifdef WEB
+  data.sheetAnimated = false
+  // #endif
+  data.editorReadOnly = false
+
+  // #ifdef WEB
+  hideToolbarTooltip()
+  // #endif
+  data.activeSheet = ''
+  syncToolbarChipClasses()
+}
+
+function getClearColorSwatchClass(isActive: boolean) : string {
+  let className = 'color-swatch color-swatch-panel'
+  className += ' color-swatch-clear'
+  if (isActive) {
+    className += ' color-swatch-active'
+  }
+  return className
+}
+
+function getFilledColorSwatchClass(isActive: boolean) : string {
+  let className = 'color-swatch color-swatch-panel'
+  if (isActive) {
+    className += ' color-swatch-active'
+  }
+  return className
+}
+
+function updatePageWindowHeight() {
+  const windowInfo = uni.getWindowInfo()
+  data.pageWindowHeight = windowInfo.windowHeight
+  data.pageWindowWidth = windowInfo.windowWidth
+  syncToolbarChipClasses()
+}
+
+// #ifdef WEB
+function getSheetButtonId(sheet: string) : string {
+  if (sheet == 'more') {
+    return 'toolbar-button-align'
+  }
+  if (sheet == 'title') {
+    return 'toolbar-button-title'
+  }
+  if (sheet == 'style') {
+    return 'toolbar-button-style'
+  }
+  if (sheet == 'font-size') {
+    return 'toolbar-button-font-size'
+  }
+  if (sheet == 'font-family') {
+    return 'toolbar-button-font-family'
+  }
+  if (sheet == 'text-color') {
+    return 'toolbar-button-text-color'
+  }
+  if (sheet == 'background-color') {
+    return 'toolbar-button-background-color'
+  }
+  if (sheet == 'line-height') {
+    return 'toolbar-button-line-height'
+  }
+  if (sheet == 'letter-spacing') {
+    return 'toolbar-button-letter-spacing'
+  }
+  if (sheet == 'block-indent') {
+    return 'toolbar-button-block-indent'
+  }
+  if (sheet == 'list') {
+    return 'toolbar-button-list'
+  }
+  return 'toolbar-button-align'
+}
+
+function updateSheetAnchor(sheet: string) {
+  updatePageWindowHeight()
+  const layoutElement = uni.getElementById('editor-layout')
+  const buttonElement = uni.getElementById(getSheetButtonId(sheet))
+  if (buttonElement == null || layoutElement == null) {
+    data.sheetTop = 74
+    data.sheetLeft = 12
+    data.sheetArrowLeft = 32
+    return
+  }
+  const pageRect = layoutElement!.getBoundingClientRect()
+  const rect = buttonElement!.getBoundingClientRect()
+  const panelWidth = getSheetWidth()
+  let panelLeft = rect.left - pageRect.left + rect.width / 2 - panelWidth / 2
+  let maxLeft = pageRect.width - panelWidth - 12
+  if (maxLeft < 12) {
+    maxLeft = 12
+  }
+  if (panelLeft < 12) {
+    panelLeft = 12
+  }
+  if (panelLeft > maxLeft) {
+    panelLeft = maxLeft
+  }
+  let arrowLeft = rect.left - pageRect.left + rect.width / 2 - panelLeft - 8
+  if (arrowLeft < 18) {
+    arrowLeft = 18
+  }
+  if (arrowLeft > panelWidth - 30) {
+    arrowLeft = panelWidth - 30
+  }
+  data.sheetTop = rect.bottom - pageRect.top + 12
+  data.sheetLeft = panelLeft
+  data.sheetArrowLeft = arrowLeft
+}
+// #endif
+
+function onEditorReady() {
+  const options: CreateEditorContextAsyncOptions = {
+    id: 'editor',
+    success: (context: EditorContext) => {
+      editorContext.value = context
+      // #ifndef MP
+      data.editorReadyTest = true
+      // #endif
+    },
+    fail: (error: UniError) => {
+      console.log('createEditorContextAsync fail', error)
+    }
+  }
+  uni.createEditorContextAsync(options)
+}
+
+function applyFormat(name: string, value: string | number | null | undefined) {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  // Web 端 statuschange 可能先回流旧的选区状态，短暂锁定可避免覆盖本地工具栏状态。
+  statusSyncLockedUntil = Date.now() + 400
+  setTimeout(() => {
+    editor.format(name, value)
+    editor.scrollIntoView(null)
+  }, 0)
+}
+
+function setLocalFormat(name: string, value: string | number | boolean | null) {
+  switch (name) {
+    case 'bold': data.formats.bold = value == true; break
+    case 'italic': data.formats.italic = value == true; break
+    case 'underline': data.formats.underline = value == true; break
+    case 'strike': data.formats.strike = value == true; break
+    case 'blockquote': data.formats.blockquote = value == true; break
+    case 'header': data.formats.header = value != null ? value as number : 0; break
+    case 'code-block': data.formats.codeBlock = value == true; break
+    case 'link': data.formats.link = value != null ? value as string : ''; break
+    case 'list': data.formats.list = value != null ? value as string : ''; break
+    case 'align': data.formats.align = value != null ? value as string : ''; break
+    case 'textIndent': data.formats.textIndent = value != null ? value as string : ''; break
+    case 'marginLeft': data.formats.marginLeft = value != null ? value as string : ''; break
+    case 'marginRight': data.formats.marginRight = value != null ? value as string : ''; break
+    case 'lineHeight': data.formats.lineHeight = value != null ? value as string : ''; break
+    case 'letterSpacing': data.formats.letterSpacing = value != null ? value as string : ''; break
+    case 'fontFamily': data.formats.fontFamily = value != null ? value as string : ''; break
+    case 'fontSize': data.formats.fontSize = value != null ? value as string : ''; break
+    case 'color': data.formats.color = value != null ? value as string : ''; break
+    case 'backgroundColor': data.formats.backgroundColor = value != null ? value as string : ''; break
+  }
+}
+
+function applyFormatWithState(name: string, value: string | number | null | undefined) {
+  setLocalFormat(name, value)
+  applyFormat(name, value)
+}
+
+// #ifndef MP
+function setToolbarFormatsForTest(header: number, list: string) {
+  setLocalFormat('header', header)
+  setLocalFormat('list', list)
+}
+
+function applyToolbarPresetForTest(preset: string) {
+  if (preset == 'title-h2') {
+    setToolbarFormatsForTest(2, '')
+    return
+  }
+  if (preset == 'title-h1') {
+    setToolbarFormatsForTest(1, '')
+    return
+  }
+  if (preset == 'list-bullet') {
+    setToolbarFormatsForTest(0, 'bullet')
+    return
+  }
+  if (preset == 'list-ordered') {
+    setToolbarFormatsForTest(0, 'ordered')
+    return
+  }
+  if (preset == 'list-unchecked') {
+    setToolbarFormatsForTest(0, 'unchecked')
+    return
+  }
+  if (preset == 'list-none') {
+    setToolbarFormatsForTest(0, '')
+  }
+}
+// #endif
+
+function toggleInlineFormat(name: string) {
+  switch (name) {
+    case 'bold': setLocalFormat(name, !data.formats.bold); break
+    case 'italic': setLocalFormat(name, !data.formats.italic); break
+    case 'underline': setLocalFormat(name, !data.formats.underline); break
+    case 'strike': setLocalFormat(name, !data.formats.strike); break
+    default: return
+  }
+  applyFormat(name, null)
+}
+
+function resetLocalFormats() {
+  assignFormats(data.formats, createDefaultFormats())
+}
+
+// #ifndef MP
+function resetFormatsForTest() {
+  assignFormats(data.formats, createDefaultFormats())
+}
+// #endif
+
+function hideKeyboardForSheet() {
+  data.editorReadOnly = true
+  data.isFocused = false
+}
+
+function toggleSheet(sheet: string) {
+  if (data.activeSheet == sheet) {
+    closeSheets()
+    return
+  }
+
+  // // #ifdef APP-ANDROID
+  // uni.showToast({
+  //   title: '请手动收起键盘后选择操作',
+  //   icon: 'none'
+  // })
+  // // #endif
+
+  // #ifdef WEB
+  updateSheetAnchor(sheet)
+  // #endif
+  // #ifndef WEB
+  updatePageWindowHeight()
+  // #endif
+  data.activeSheet = sheet
+  syncToolbarChipClasses()
+  // #ifdef WEB
+  data.sheetAnimated = false
+  setTimeout(() => {
+    if (data.activeSheet == sheet) {
+      data.sheetAnimated = true
+    }
+  }, 16)
+  // #endif
+
+  hideKeyboardForSheet()
+}
+
+function openMoreSheet() {
+  toggleSheet('more')
+}
+
+function openTitleSheet() {
+  toggleSheet('title')
+}
+
+function openStyleSheet() {
+  toggleSheet('style')
+}
+
+function openTextColorSheet() {
+  toggleSheet('text-color')
+}
+
+function openBackgroundColorSheet() {
+  toggleSheet('background-color')
+}
+
+function openLineHeightSheet() {
+  toggleSheet('line-height')
+}
+
+function openLetterSpacingSheet() {
+  toggleSheet('letter-spacing')
+}
+
+function openBlockIndentSheet() {
+  toggleSheet('block-indent')
+}
+
+function openListSheet() {
+  toggleSheet('list')
+}
+
+function openFontSizeSheet() {
+  toggleSheet('font-size')
+}
+
+function openFontFamilySheet() {
+  toggleSheet('font-family')
+}
+
+function openAlignSheet() {
+  toggleSheet('align')
+}
+
+function getPanelTitle() : string {
+  switch (data.activeSheet) {
+    case 'title': return '设置标题'
+    case 'style': return '设置字格式'
+    case 'text-color': return '设置文字颜色'
+    case 'background-color': return '设置背景颜色'
+    case 'line-height': return '设置行间距'
+    case 'letter-spacing': return '设置字间距'
+    case 'font-size': return '设置字号'
+    case 'font-family': return '设置字体'
+    case 'block-indent': return '设置两端缩进'
+    case 'align': return '对齐方式'
+    case 'list': return '设置列表'
+    default: return '更多操作'
+  }
+}
+
+function getTitleSummary() : string {
+  if (data.formats.codeBlock) {
+    return '当前为代码块'
+  }
+  if (data.formats.blockquote) {
+    return '当前为引用'
+  }
+  if (data.formats.header > 0) {
+    return `当前为大标题${data.formats.header}`
+  }
+  return '当前为正文'
+}
+
+// #ifndef MP
+function openLinkModal() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  data.linkSelectionText = ''
+  data.linkOriginalHref = data.formats.link
+  data.linkDraftText = ''
+  data.linkDraftHref = data.formats.link
+  data.linkModalVisible = true
+  data.linkUseSelectionText = false
+
+  closeSheets()
+
+  // #ifdef WEB
+  clearToolbarHideTimer()
+  // #endif
+  const options: UniEditorElementGetSelectionTextOptions = {
+    success: (res: UniEditorElementGetSelectionTextOptionsRes) => {
+      const selectionText = res.text.trim()
+      if (selectionText == '') {
+        return
+      }
+      data.linkSelectionText = selectionText
+      data.linkDraftText = selectionText
+      data.linkUseSelectionText = data.formats.link == ''
+    },
+    fail: () => {},
+    complete: () => {}
+  }
+  editor.getSelectionText(options)
+
+  data.editorReadOnly = true
+}
+
+function closeLinkModal() {
+  data.linkModalVisible = false
+  data.linkUseSelectionText = false
+  data.linkDraftText = ''
+  data.linkDraftHref = ''
+  data.linkSelectionText = ''
+  data.linkOriginalHref = ''
+}
+// #endif
+
+function getDesktopAlignIconGlyph() : string {
+  switch (data.formats.align) {
+    case 'center': return "\ue6b6"
+    case 'right': return "\ue6a6"
+    case 'justify': return "\ue6a8"
+    default: return "\ue6b7"
+  }
+}
+
+function getStyleSummary() : string {
+  const names: string[] = []
+  if (data.formats.bold) {
+    names.push('加粗')
+  }
+  if (data.formats.italic) {
+    names.push('斜体')
+  }
+  if (data.formats.underline) {
+    names.push('下划线')
+  }
+  if (data.formats.strike) {
+    names.push('删除线')
+  }
+  if (data.formats.lineHeight != '') {
+    names.push(`行间距 ${data.formats.lineHeight}`)
+  }
+  if (data.formats.letterSpacing != '') {
+    names.push(`字间距 ${data.formats.letterSpacing}`)
+  }
+  if (data.formats.fontSize != '') {
+    names.push(`字号 ${data.formats.fontSize}`)
+  }
+  if (data.formats.fontFamily != '') {
+    names.push(`字体 ${getDesktopFontFamilyLabel()}`)
+  }
+  if (names.length == 0) {
+    return '当前未设置字格式'
+  }
+  return names.join(' / ')
+}
+
+function getAlignSummary() : string {
+  switch (data.formats.align) {
+    case '': return '当前为默认对齐'
+    case 'center': return '当前为居中'
+    case 'right': return '当前为居右'
+    case 'justify': return '当前为两端对齐'
+    default: return '当前为居左'
+  }
+}
+
+function getDesktopListLabel() : string {
+  switch (data.formats.list) {
+    case 'ordered': return '有序列表'
+    case 'bullet': return '无序列表'
+    default: return '列表'
+  }
+}
+
+function getDesktopFontSizeLabel() : string {
+  if (data.formats.fontSize != '') {
+    return data.formats.fontSize
+  }
+  return '17px'
+}
+
+function getToolbarTextColorChipStyle() : string {
+  const color = data.formats.color != '' ? data.formats.color : '#111827'
+  return `background-color:${color};`
+}
+
+function getToolbarBackgroundColorChipStyle() : string {
+  const color = data.formats.backgroundColor != '' ? data.formats.backgroundColor : '#f3f4f6'
+  return `background-color:${color};`
+}
+
+function getPanelSubtitle() : string {
+  switch (data.activeSheet) {
+    case 'title': return getTitleSummary()
+    case 'style': return getStyleSummary()
+    case 'text-color': return data.formats.color == '' ? '当前使用默认文字颜色' : `当前文字颜色 ${data.formats.color}`
+    case 'background-color': return data.formats.backgroundColor == '' ? '当前未设置文字背景颜色' : `当前背景颜色 ${data.formats.backgroundColor}`
+    case 'line-height': return data.formats.lineHeight == '' ? '当前使用默认行间距' : `当前行间距 ${data.formats.lineHeight}`
+    case 'letter-spacing': return data.formats.letterSpacing == '' ? '当前使用默认字间距' : `当前字间距 ${data.formats.letterSpacing}`
+    case 'font-size': return data.formats.fontSize == '' ? '当前使用默认字号 17px' : `当前字号 ${data.formats.fontSize}`
+    case 'font-family': return data.formats.fontFamily == '' ? '当前使用默认字体' : `当前字体 ${getDesktopFontFamilyLabel()}`
+    case 'block-indent': return data.formats.marginLeft == '' || data.formats.marginLeft != data.formats.marginRight ? '当前未设置两端缩进' : `当前两端缩进 ${data.formats.marginLeft}`
+    case 'align': return getAlignSummary()
+    case 'list': return data.formats.list == '' ? '当前未设置列表' : `当前列表 ${getDesktopListLabel()}`
+    default: return '插入与编辑快捷操作'
+  }
+}
+
+function hasTitleFormatActive() : boolean {
+  return data.formats.header > 0 || data.formats.blockquote || data.formats.codeBlock
+}
+
+function isTitleSheetHighlighted() : boolean {
+  return data.activeSheet == 'title' || hasTitleFormatActive()
+}
+
+function isAlignSheetHighlighted() : boolean {
+  return data.activeSheet == 'align' || data.formats.align != ''
+}
+
+function isLineHeightSheetHighlighted() : boolean {
+  return data.activeSheet == 'line-height' || data.formats.lineHeight != ''
+}
+
+function isLetterSpacingSheetHighlighted() : boolean {
+  return data.activeSheet == 'letter-spacing' || data.formats.letterSpacing != ''
+}
+
+function isFontSizeSheetHighlighted() : boolean {
+  return data.activeSheet == 'font-size' || data.formats.fontSize != ''
+}
+
+function isFontFamilySheetHighlighted() : boolean {
+  return data.activeSheet == 'font-family' || data.formats.fontFamily != ''
+}
+
+function isTextIndentHighlighted() : boolean {
+  return data.formats.textIndent != ''
+}
+
+function isBlockIndentSheetHighlighted() : boolean {
+  return data.activeSheet == 'block-indent' || (data.formats.marginLeft != '' && data.formats.marginLeft == data.formats.marginRight)
+}
+
+function isListSheetHighlighted() : boolean {
+  return data.activeSheet == 'list' || data.formats.list == 'ordered' || data.formats.list == 'bullet'
+}
+
+function isTextColorSheetHighlighted() : boolean {
+  return data.activeSheet == 'text-color' || data.formats.color != ''
+}
+
+function isBackgroundColorSheetHighlighted() : boolean {
+  return data.activeSheet == 'background-color' || data.formats.backgroundColor != ''
+}
+
+function isParagraphActive() : boolean {
+  return data.formats.header == 0 && data.formats.list == '' && !data.formats.blockquote && !data.formats.codeBlock
+}
+
+
+const pageShellClass = computed((): string => getPageShellClass())
+const editorLayoutClass = computed((): string => getEditorLayoutClass())
+const desktopToolbarShellClass = computed((): string => getDesktopToolbarShellClass())
+const desktopToolbarLeadingGroupClass = computed((): string => getDesktopToolbarGroupClass(true))
+const desktopToolbarGroupClass = computed((): string => getDesktopToolbarGroupClass(false))
+const desktopToolbarDividerClass = computed((): string => getDesktopToolbarDividerClass())
+const fontSizeSheetHighlighted = computed((): boolean => isFontSizeSheetHighlighted())
+const fontFamilySheetHighlighted = computed((): boolean => isFontFamilySheetHighlighted())
+const textColorSheetHighlighted = computed((): boolean => isTextColorSheetHighlighted())
+const backgroundColorSheetHighlighted = computed((): boolean => isBackgroundColorSheetHighlighted())
+const alignSheetHighlighted = computed((): boolean => isAlignSheetHighlighted())
+const desktopAlignIconGlyph = computed((): string => getDesktopAlignIconGlyph())
+const textIndentHighlighted = computed((): boolean => isTextIndentHighlighted())
+const blockIndentSheetHighlighted = computed((): boolean => isBlockIndentSheetHighlighted())
+const lineHeightSheetHighlighted = computed((): boolean => isLineHeightSheetHighlighted())
+const letterSpacingSheetHighlighted = computed((): boolean => isLetterSpacingSheetHighlighted())
+const listSheetHighlighted = computed((): boolean => isListSheetHighlighted())
+const styleSheetHighlighted = computed((): boolean => isStyleSheetHighlighted())
+const titleSheetHighlighted = computed((): boolean => isTitleSheetHighlighted())
+const toolbarTextColorChipStyle = computed((): string => getToolbarTextColorChipStyle())
+const toolbarBackgroundColorChipStyle = computed((): string => getToolbarBackgroundColorChipStyle())
+// #ifdef WEB
+const toolbarTooltipStyle = computed((): string => getToolbarTooltipStyle())
+const sheetHostClass = computed((): string => getSheetHostClass())
+const sheetHostStyle = computed((): string => getSheetHostStyle())
+const toolbarPanelArrowStyle = computed((): string => getToolbarPanelArrowStyle())
+const toolbarPanelClass = computed((): string => getToolbarPanelClass())
+const toolbarPanelHeaderClass = computed((): string => getToolbarPanelHeaderClass())
+const toolbarPanelTitleClass = computed((): string => getToolbarPanelTitleClass())
+const toolbarPanelSubtitleClass = computed((): string => getToolbarPanelSubtitleClass())
+const toolbarPanelScrollClass = computed((): string => getToolbarPanelScrollClass())
+// #endif
+const paragraphActive = computed((): boolean => isParagraphActive())
+const desktopMenuItemClass = computed((): string => getDesktopMenuItemClass(false))
+const desktopMenuItemActiveClass = computed((): string => getDesktopMenuItemClass(true))
+const desktopMenuBadgeClass = computed((): string => getDesktopMenuBadgeClass(false))
+const desktopMenuBadgeActiveClass = computed((): string => getDesktopMenuBadgeClass(true))
+const desktopMenuTextClass = computed((): string => getDesktopMenuTextClass(false))
+const desktopMenuTextActiveClass = computed((): string => getDesktopMenuTextClass(true))
+const clearColorSwatchClass = computed((): string => getClearColorSwatchClass(false))
+const clearColorSwatchActiveClass = computed((): string => getClearColorSwatchClass(true))
+const filledColorSwatchClass = computed((): string => getFilledColorSwatchClass(false))
+const filledColorSwatchActiveClass = computed((): string => getFilledColorSwatchClass(true))
+// #ifdef WEB
+const webPhoneLayout = computed((): boolean => isWebPhoneLayout())
+// #endif
+
+function clearTitleFormats() {
+  applyFormat('blockquote', null)
+  if (data.formats.codeBlock) {
+    setLocalFormat('code-block', false)
+    applyFormat('code-block', null)
+  }
+  applyFormatWithState('list', null)
+}
+
+function setParagraph() {
+  clearTitleFormats()
+  applyFormatWithState('header', 0)
+  closeSheets()
+}
+
+function setHeadingLevel(level: number) {
+  clearTitleFormats()
+  if (data.formats.header == level) {
+    applyFormatWithState('header', 0)
+  } else {
+    applyFormatWithState('header', level)
+  }
+  closeSheets()
+}
+
+function setOrderedList() {
+  applyFormat('blockquote', null)
+  if (data.formats.codeBlock) {
+    setLocalFormat('code-block', false)
+    applyFormat('code-block', null)
+  }
+  applyFormatWithState('header', 0)
+  applyFormatWithState('list', data.formats.list == 'ordered' ? null : 'ordered')
+  closeSheets()
+}
+
+function setBulletList() {
+  applyFormat('blockquote', null)
+  if (data.formats.codeBlock) {
+    setLocalFormat('code-block', false)
+    applyFormat('code-block', null)
+  }
+  applyFormatWithState('header', 0)
+  applyFormatWithState('list', data.formats.list == 'bullet' ? null : 'bullet')
+  closeSheets()
+}
+
+function clearListFormat() {
+  applyFormatWithState('list', null)
+  closeSheets()
+}
+
+function toggleBlockquote() {
+  const nextValue = !data.formats.blockquote
+  const isListFormat = data.formats.list != ''
+  const isHeadFormat = data.formats.header != 0
+  const isCodeBlock = data.formats.codeBlock
+
+  if (nextValue && isListFormat) {
+    applyFormatWithState('list', null)
+  }
+  if (nextValue && isHeadFormat) {
+    applyFormatWithState('header', 0)
+  }
+  if (nextValue && isCodeBlock) {
+    setLocalFormat('code-block', false)
+    applyFormat('code-block', null)
+  }
+
+  setLocalFormat('blockquote', nextValue)
+  applyFormat('blockquote', null)
+  closeSheets()
+}
+
+function toggleCodeBlock() {
+  const nextValue = !data.formats.codeBlock
+  if (nextValue) {
+    if (data.formats.list != '') {
+      applyFormatWithState('list', null)
+    }
+    if (data.formats.header != 0) {
+      applyFormatWithState('header', 0)
+    }
+    if (data.formats.blockquote) {
+      applyFormatWithState('blockquote', null)
+    }
+  }
+  setLocalFormat('code-block', nextValue)
+  applyFormat('code-block', null)
+  closeSheets()
+}
+
+function toggleBold() {
+  toggleInlineFormat('bold')
+}
+
+function toggleItalic() {
+  toggleInlineFormat('italic')
+}
+
+function toggleUnderline() {
+  toggleInlineFormat('underline')
+}
+
+function toggleStrike() {
+  toggleInlineFormat('strike')
+}
+
+function toggleBoldAndClose() {
+  toggleBold()
+  closeSheets()
+}
+
+function toggleItalicAndClose() {
+  toggleItalic()
+  closeSheets()
+}
+
+function toggleUnderlineAndClose() {
+  toggleUnderline()
+  closeSheets()
+}
+
+function toggleStrikeAndClose() {
+  toggleStrike()
+  closeSheets()
+}
+
+function setTextColor(color: string) {
+  applyFormatWithState('color', color == '' ? null : color)
+}
+
+function setTextColorAndClose(color: string) {
+  setTextColor(color)
+  closeSheets()
+}
+
+function setBackgroundColor(color: string) {
+  applyFormatWithState('backgroundColor', color == '' ? null : color)
+}
+
+function setBackgroundColorAndClose(color: string) {
+  setBackgroundColor(color)
+  closeSheets()
+}
+
+function setLineHeight(value: string) {
+  applyFormatWithState('lineHeight', value == '' ? null : value)
+}
+
+function setLineHeightAndClose(value: string) {
+  setLineHeight(value)
+  closeSheets()
+}
+
+function setLetterSpacing(value: string) {
+  applyFormatWithState('letterSpacing', value == '' ? null : value)
+}
+
+function setLetterSpacingAndClose(value: string) {
+  setLetterSpacing(value)
+  closeSheets()
+}
+
+function setFontSize(value: string) {
+  applyFormatWithState('fontSize', value == '' ? null : value)
+}
+
+function setFontSizeAndClose(value: string) {
+  setFontSize(value)
+  closeSheets()
+}
+
+function setFontFamily(value: string) {
+  applyFormatWithState('fontFamily', value == '' ? null : value)
+}
+
+function setFontFamilyAndClose(value: string) {
+  setFontFamily(value)
+  closeSheets()
+}
+
+function toggleTextIndent() {
+  const nextValue = data.formats.textIndent == '' ? '2em' : ''
+  applyFormatWithState('textIndent', nextValue == '' ? null : nextValue)
+}
+
+function setBlockIndent(value: string) {
+  const indentValue = value == '0px' ? '' : value
+  applyFormatWithState('marginLeft', indentValue == '' ? null : indentValue)
+  applyFormatWithState('marginRight', indentValue == '' ? null : indentValue)
+}
+
+function setBlockIndentAndClose(value: string) {
+  setBlockIndent(value)
+  closeSheets()
+}
+
+function setAlignLeft() {
+  applyFormatWithState('align', 'left')
+  closeSheets()
+}
+
+function setAlignCenter() {
+  applyFormatWithState('align', 'center')
+  closeSheets()
+}
+
+function setAlignRight() {
+  applyFormatWithState('align', 'right')
+  closeSheets()
+}
+
+function setAlignJustify() {
+  applyFormatWithState('align', 'justify')
+  closeSheets()
+}
+
+function clearAlign() {
+  applyFormatWithState('align', null)
+  closeSheets()
+}
+
+function clearFormatting() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.removeFormat(null)
+  resetLocalFormats()
+  closeSheets()
+}
+
+function toggleChecklistTool() {
+  applyFormatWithState('list', data.formats.list == 'check' ? null : 'check')
+  closeSheets()
+}
+
+function insertDivider() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.insertDivider(null)
+  closeSheets()
+}
+
+function normalizePreviewHtml(html: string) : string {
+  const trimmedHtml = html.trim()
+  if (trimmedHtml == '') {
+    return EMPTY_PREVIEW_HTML
+  }
+  return trimmedHtml
+}
+
+function getPreviewHtmlFromContents(result: UniEditorElementGetContentsOptionsRes) : string {
+  const htmlValue = result.html
+  if (htmlValue != null) {
+    return normalizePreviewHtml(htmlValue)
+  }
+  return EMPTY_PREVIEW_HTML
+}
+
+function openPreviewPage(html: string) {
+  uni.setStorageSync(EDITOR_PREVIEW_STORAGE_KEY, html)
+  uni.navigateTo({
+    url: `${EDITOR_PREVIEW_PAGE_URL}?storageKey=${EDITOR_PREVIEW_STORAGE_KEY}`
+  })
+}
+
+function openPreview() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  closeSheets()
+  editor.getContents({
+    success: (res: UniEditorElementGetContentsOptionsRes) => {
+      openPreviewPage(getPreviewHtmlFromContents(res))
+    },
+    fail: (err: any) => {
+      console.log(err)
+      uni.showToast({
+        title: '预览加载失败',
+        icon: 'none'
+      })
+    }
+  })
+}
+
+// #ifndef MP
+function getCon () {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.getContents({
+    success: (res: UniEditorElementGetContentsOptionsRes) => {
+      console.log('文本详情：', res)
+      data.getContentDeltaTest = res.delta
+    },
+    fail: (err: any) => {
+      console.log(err)
+    }
+  })
+}
+
+// 自动化测试专用
+const setContents = (options: any) => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.setContents({
+    delta: {
+      ops: options
+    },
+    success: (res: any) => {
+      console.log('setContents-success', res)
+    },
+    fail: (err: any) => {
+      console.log(err)
+    }
+  })
+}
+
+const blur = () => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.blur({
+    success: (res: any) => {
+      console.log('编辑器失焦：', res)
+      data.blurTest = true
+    },
+    fail: (err: any) => {
+      console.log(err)
+      data.blurTest = false
+    }
+  })
+}
+
+const clear = () => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.clear({
+    success: function (res: any) {
+      console.log("clear success",res)
+      data.clearTest = true
+    },
+    fail: (err: any) => {
+      console.log(err)
+      data.clearTest = false
+    }
+  })
+}
+
+const removeFormat = () => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.removeFormat(null)
+  data.removeFormatTest = true
+}
+// #endif
+
+function insertImage(path: string) {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  const options: UniEditorElementInsertImageOptions = {
+    src: path,
+    alt: 'image',
+    success: () => {
+      // #ifndef MP
+      data.insertImageTest = true
+      // #endif
+    },
+    fail: () => {
+      // #ifndef MP
+      data.insertImageTest = false
+      // #endif
+    }
+  }
+  editor.insertImage(options)
+  closeSheets()
+}
+
+// #ifndef MP
+function insertLink(text: string, href: string) {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+
+  const trimmedText = text.trim()
+  const linkText = trimmedText != '' ? trimmedText : href
+  const options: UniEditorElementInsertLinkOptions = {
+    href,
+    text: linkText,
+    success: () => {
+      data.formats.link = href
+    },
+    fail: () => {
+      uni.showToast({
+        title: '插入链接失败',
+        icon: 'none'
+      })
+    }
+  }
+
+  closeSheets()
+  closeLinkModal()
+  setTimeout(() => editor.insertLink(options), 0)
+}
+
+function confirmLinkModal() {
+  const href = data.linkDraftHref.trim()
+  if (href == '') {
+    uni.showToast({
+      title: '链接地址不能为空',
+      icon: 'none'
+    })
+    return
+  }
+
+  insertLink(data.linkDraftText, href)
+}
+
+function removeLink() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+
+  applyFormatWithState('link', null)
+  closeSheets()
+  closeLinkModal()
+}
+// #endif
+
+function chooseInsertImage() {
+  insertImage(DEFAULT_INSERT_IMAGE_URL)
+}
+
+function undo() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.undo({
+    success: () => {
+      // #ifndef MP
+      data.undoTest = true
+      // #endif
+    },
+    fail: () => {
+      // #ifndef MP
+      data.undoTest = false
+      // #endif
+    }
+  })
+  closeSheets()
+}
+
+function redo() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.redo({
+    success: () => {
+      // #ifndef MP
+      data.redoTest = true
+      // #endif
+    },
+    fail: () => {
+      // #ifndef MP
+      data.redoTest = false
+      // #endif
+    }
+  })
+  closeSheets()
+}
+
+function showToolbarTooltip(buttonId: string, text: string) {
+  // #ifndef WEB
+  return
+  // #endif
+  const buttonElement = uni.getElementById(buttonId)
+  if (buttonElement == null) {
+    return
+  }
+  const rect = buttonElement!.getBoundingClientRect()
+  data.tooltipText = text
+  data.tooltipVisible = true
+  data.tooltipLeft = rect.left + rect.width / 2
+  data.tooltipTop = rect.bottom + 8
+}
+
+function hideToolbarTooltip() {
+  // #ifndef WEB
+  return
+  // #endif
+  if (!data.tooltipVisible && data.tooltipText == '') {
+    return
+  }
+  data.tooltipVisible = false
+  data.tooltipText = ''
+}
+
+// #ifdef WEB
+function onToolbarMouseDown(event: UniMouseEvent) {
+  clearToolbarHideTimer()
+  hideToolbarTooltip()
+  data.ignoreNextBlur = true
+  data.isFocused = true
+  setTimeout(() => {
+    data.ignoreNextBlur = false
+  }, 0)
+  event.preventDefault()
+}
+// #endif
+
+function onEditorFocus(event: UniEditorFocusEvent) {
+  // #ifdef WEB
+  clearToolbarHideTimer()
+  // #endif
+  data.editorReadOnly = false
+  // #ifdef WEB
+  hideToolbarTooltip()
+  // #endif
+  if (data.activeSheet != '') {
+    data.activeSheet = ''
+    syncToolbarChipClasses()
+  }
+  data.isFocused = true
+}
+
+function onEditorBlur(event: UniEditorBlurEvent) {
+  // #ifdef WEB
+  if (data.ignoreNextBlur) {
+    data.isFocused = true
+    return
+  }
+  // #endif
+  data.editorReadOnly = false
+  data.isFocused = false
+  if (data.activeSheet == '') {
+    // #ifdef WEB
+    scheduleToolbarHide()
+    // #endif
+  }
+}
+
+function onStatusChange(event: UniEditorStatusChangeEvent) {
+  if (Date.now() < statusSyncLockedUntil) {
+    return
+  }
+  const formats = event.detail
+  const formatObject = JSON.parse<UTSJSONObject>(JSON.stringify(formats))
+
+  if (formatObject == null) {
+    return
+  }
+  const nextFormats = createDefaultFormats()
+
+  nextFormats.bold = formats.bold == true
+  nextFormats.italic = formats.italic == true
+  nextFormats.underline = formats.underline == true
+  nextFormats.strike = formats.strike == true
+  nextFormats.blockquote = formats.blockquote == true
+  const codeBlockValue = formatObject['codeBlock']
+  nextFormats.codeBlock = codeBlockValue == true
+  const linkValue = formatObject['link']
+  if (linkValue != null) {
+    nextFormats.link = linkValue as string
+  }
+  // #ifndef MP
+  else if (data.linkModalVisible) {
+    nextFormats.link = data.formats.link
+  }
+  // #endif
+  if (formats.header != null) {
+    nextFormats.header = formats.header
+  }
+  if (formats.list != null) {
+    nextFormats.list = formats.list
+  }
+  if (formats.align != null) {
+    nextFormats.align = formats.align
+  }
+  const textIndentValue = formatObject['textIndent']
+  if (textIndentValue != null) {
+    nextFormats.textIndent = textIndentValue as string
+  }
+  const marginLeftValue = formatObject['marginLeft']
+  if (marginLeftValue != null) {
+    nextFormats.marginLeft = marginLeftValue as string
+  } else {
+    nextFormats.marginLeft = data.formats.marginLeft
+  }
+  const marginRightValue = formatObject['marginRight']
+  if (marginRightValue != null) {
+    nextFormats.marginRight = marginRightValue as string
+  } else {
+    nextFormats.marginRight = data.formats.marginRight
+  }
+  if (formats.lineHeight != null) {
+    nextFormats.lineHeight = formats.lineHeight
+  }
+  if (formats.letterSpacing != null) {
+    nextFormats.letterSpacing = formats.letterSpacing
+  }
+  if (formats.fontFamily != null) {
+    nextFormats.fontFamily = formats.fontFamily
+  }
+  if (formats.fontSize != null) {
+    nextFormats.fontSize = formats.fontSize
+  }
+  if (formats.color != null) {
+    nextFormats.color = formats.color
+  }
+  if (formats.backgroundColor != null) {
+    nextFormats.backgroundColor = formats.backgroundColor
+  }
+  assignFormats(data.formats, nextFormats)
+}
+
+onReady(() => {
+  updatePageWindowHeight()
+})
+
+onResize((options: OnResizeOptions) => {
+  data.pageWindowHeight = options.size.windowHeight
+  data.pageWindowWidth = options.size.windowWidth
+  // #ifdef WEB
+  if (data.activeSheet != '') {
+    updateSheetAnchor(data.activeSheet)
+  }
+  // #endif
+})
+
+onUnload(() => {
+  // #ifdef WEB
+  clearToolbarHideTimer()
+  // #endif
+})
+
+defineExpose({
+  data,
+  openMoreSheet,
+  openTitleSheet,
+  openStyleSheet,
+  openTextColorSheet,
+  openBackgroundColorSheet,
+  openLineHeightSheet,
+  openLetterSpacingSheet,
+  openBlockIndentSheet,
+  openListSheet,
+  openFontSizeSheet,
+  openFontFamilySheet,
+  openAlignSheet,
+  closeSheets,
+  getPanelTitle,
+  getPanelSubtitle,
+  getTitleSummary,
+  // #ifndef MP
+  setToolbarFormatsForTest,
+  applyToolbarPresetForTest,
+  resetFormatsForTest,
+  // #endif
+  setParagraph,
+  setHeadingLevel,
+  toggleBold,
+  toggleItalic,
+  toggleUnderline,
+  toggleStrike,
+  setTextColorAndClose,
+  setBackgroundColorAndClose,
+  setLineHeightAndClose,
+  setLetterSpacingAndClose,
+  setFontSizeAndClose,
+  setFontFamilyAndClose,
+  toggleTextIndent,
+  setBlockIndentAndClose,
+  setAlignLeft,
+  setAlignCenter,
+  setAlignRight,
+  setAlignJustify,
+  toggleBlockquote,
+  toggleCodeBlock,
+  setBulletList,
+  setOrderedList,
+  toggleChecklistTool,
+  // #ifndef MP
+  openLinkModal,
+  closeLinkModal,
+  confirmLinkModal,
+  removeLink,
+  insertLink,
+  // #endif
+  // #ifndef MP
+  setContents,
+  blur,
+  clear,
+  removeFormat,
+  getCon,
+  // #endif
+  insertDivider,
+  undo,
+  redo,
+  insertImage,
+})
+</script>
+
+<style>
+@import './editor-icon.css';
+
+.page-shell,
+.editor-layout,
+.editor-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-shell {
+  position: relative;
+  padding-top: 16px;
+  padding-right: 12px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+}
+
+.page-shell-wide {
+  padding-top: 24px;
+  padding-right: 24px;
+  padding-bottom: 20px;
+  padding-left: 24px;
+}
+
+.editor-layout {
+  position: relative;
+  width: 100%;
+  max-width: 1320px;
+  align-self: center;
+}
+
+.editor-layout-wide {
+  max-width: 1360px;
+}
+
+.editor-stage {
+  width: 100%;
+  /* max-width: 1120px; */
+  align-self: center;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #d6dde4;
+  border-radius: 0;
+  /* box-shadow: 0 18px 36px rgba(15, 23, 42, 0.07); */
+  overflow: hidden;
+  margin-top: 50px;
+}
+
+/* #ifdef WEB */
+.editor-stage {
+  border-top-width: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+/* #endif */
+
+.editor-field {
+  flex: 1;
+  background-color: #ffffff;
+}
+
+.toolbar-wrap {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 130;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+.toolbar-frame,
+.toolbar-shell {
+  align-self: center;
+  display: flex;
+  background-color: #fafafa;
+  border-radius: 0;
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+
+.toolbar-frame {
+  width: 100%;
+  flex-direction: column;
+  border-width: 1px;
+  border-color: #ebebeb;
+  border-bottom-width: 1px;
+}
+
+.sheet-host {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 131;
+}
+
+.sheet-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 129;
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+/* #ifdef WEB */
+.sheet-host-floating {
+  position: absolute;
+  left: 12px;
+  right: auto;
+  top: 58px;
+  bottom: auto;
+  z-index: 160;
+  box-shadow: 0 10px 24px rgba(25, 25, 25, 0.05);
+  border-radius: 14px;
+}
+
+.sheet-host-mobile-web {
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+/* #endif */
+
+.toolbar-panel {
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.98);
+  border-width: 1px;
+  border-color: #d6dde4;
+  padding-top: 14px;
+  padding-right: 14px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  /* box-shadow: 0 10px 24px rgba(25, 25, 25, 0.12); */
+}
+
+.toolbar-panel-attached {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top-width: 0;
+  /* box-shadow: 0 10px 20px rgba(25, 25, 25, 0.08); */
+}
+
+.toolbar-shell {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  border-width: 0;
+  min-height: 40px;
+  box-shadow: none;
+}
+
+.toolbar-shell-compact {
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.toolbar-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.toolbar-group-compact {
+  justify-content: center;
+  margin-top: 0;
+}
+
+.toolbar-group-leading {
+  min-width: 70px;
+}
+
+.toolbar-group-leading-compact {
+  margin-top: 0;
+}
+
+.toolbar-icon-button-action {
+  margin-left: 2px;
+  margin-right: 0;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background-color: #d8d8d8;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.toolbar-divider-hidden {
+  display: none;
+}
+
+.toolbar-select,
+.toolbar-icon-button,
+.toolbar-color-button {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 4px;
+  background-color: transparent;
+  transition-property: background-color, border-color;
+  transition-duration: 160ms;
+}
+
+.toolbar-select,
+.toolbar-color-button {
+  flex-direction: row;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.toolbar-select {
+  justify-content: space-between;
+  margin-right: 1px;
+}
+
+.toolbar-select-value {
+  min-width: 40px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.toolbar-select-compact {
+  min-width: 40px;
+}
+
+.toolbar-select-active,
+.toolbar-icon-button-active {
+  background-color: #e7eaee;
+  border-color: #d7dde5;
+}
+
+.toolbar-select-label {
+  color: #50565f;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.toolbar-select-glyph {
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.toolbar-size-label {
+  font-size: 14px;
+  line-height: 18px;
+  /* padding: 0 5px; */
+}
+
+.toolbar-select-font-label {
+  font-size: 11px;
+  line-height: 16px;
+  /* padding: 0 5px; */
+}
+
+.toolbar-select-label-active,
+.toolbar-icon-text-active {
+  color: #2b3137;
+}
+
+.toolbar-select-arrow,
+.toolbar-color-arrow {
+  min-width: 8px;
+  color: #6b7280;
+  font-size: 8px;
+  line-height: 12px;
+  text-align: center;
+  margin-top: 1px;
+  transform: scale(0.5);
+}
+
+.toolbar-select-arrow {
+  margin-left: 2px;
+}
+
+.toolbar-select-arrow.iconfont,
+.toolbar-color-arrow.iconfont {
+  font-size: 8px;
+  line-height: 12px;
+}
+
+.toolbar-select-arrow-active,
+.toolbar-color-arrow-active {
+  color: #475569;
+}
+
+.toolbar-icon-button {
+  width: 28px;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 1px;
+}
+
+.toolbar-preview-button {
+  height: 28px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.toolbar-preview-label {
+  color: #2f3b47;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.toolbar-color-button {
+  justify-content: center;
+  margin-left: 1px;
+}
+
+.toolbar-color-button-active {
+  border-color: #d7dde5;
+  background-color: #e7eaee;
+}
+
+.toolbar-color-symbol {
+  color: #50565f;
+  font-size: 15px;
+  line-height: 15px;
+  font-weight: 600;
+}
+
+.toolbar-color-symbol-active {
+  color: #111827;
+}
+
+.toolbar-color-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-color-underline {
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+  margin-top: -1px;
+  margin-left: 1px;
+}
+
+.toolbar-color-arrow {
+  margin-left: 0;
+}
+
+.toolbar-icon-text {
+  color: #50565f;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+/* #ifndef MP */
+.link-modal-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 220;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.26);
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.link-modal-mask-floating {
+  background-color: rgba(15, 23, 42, 0.26);
+}
+
+.link-modal-mask-app {
+  background-color: rgba(15, 23, 42, 0.38);
+}
+
+.link-modal-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding-top: 20px;
+  padding-right: 18px;
+  padding-bottom: 18px;
+  padding-left: 18px;
+}
+
+.link-modal-card-floating {
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.16);
+}
+
+.link-modal-card-app {
+  width: 84%;
+  border-width: 1px;
+  border-color: #dbe4ee;
+  background-color: #ffffff;
+}
+
+.link-modal-title-app {
+  color: #111827;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+.link-modal-subtitle-app {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.link-modal-label-app {
+  color: #0f172a;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+}
+
+.link-modal-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.link-modal-title {
+  color: #111827;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.link-modal-subtitle {
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.link-modal-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.link-modal-field {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+}
+
+.link-modal-label {
+  color: #374151;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.link-modal-input {
+  height: 40px;
+  margin-top: 8px;
+  border-width: 1px;
+  border-color: #d1d5db;
+  border-radius: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  background-color: #f8fafc;
+  color: #111827;
+  font-size: 14px;
+}
+
+.link-modal-input-app {
+  border-color: #cbd5e1;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.link-modal-selection-chip {
+  min-height: 40px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  background-color: #eef2ff;
+}
+
+.link-modal-selection-text {
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.link-modal-selection-chip-app {
+  border-width: 1px;
+  border-color: #c7d2fe;
+  background-color: #eef2ff;
+}
+
+.link-modal-selection-text-app {
+  color: #1d4ed8;
+}
+
+.link-modal-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.link-modal-actions-app {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.link-modal-danger {
+  min-height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.link-modal-danger-app {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 12px;
+  border-width: 1px;
+  border-color: #fecaca;
+  border-radius: 10px;
+  background-color: #fff5f5;
+}
+
+.link-modal-danger-text {
+  color: #dc2626;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.link-modal-danger-text-app {
+  color: #dc2626;
+}
+
+.link-modal-action-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.link-modal-action-group-app {
+  flex: 1;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.link-modal-button {
+  min-width: 74px;
+  min-height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.link-modal-button-secondary {
+  background-color: #eef2f7;
+}
+
+.link-modal-button-primary {
+  margin-left: 10px;
+  background-color: #2563eb;
+}
+
+.link-modal-button-secondary-app {
+  flex: 1;
+  border-width: 1px;
+  border-color: #d6dde8;
+  background-color: #f8fafc;
+}
+
+.link-modal-button-primary-app {
+  flex: 1;
+  background-color: #1d4ed8;
+}
+
+.link-modal-button-text {
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.link-modal-button-text-app {
+  color: #ffffff;
+}
+
+.link-modal-button-text-secondary,
+.link-modal-button-text-secondary-app {
+  color: #334155;
+}
+/* #endif */
+
+.relative-top-1 {
+  position: relative;
+  top: 1px;
+}
+.desktop-toolbar-mask {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.5);
+}
+/* #ifdef WEB */
+.toolbar-tooltip {
+  position: fixed;
+  z-index: 131;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transform: translateX(-50%);
+  overflow: visible;
+}
+
+.toolbar-tooltip-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.92);
+  border-radius: 4px;
+  padding-top: 5px;
+  padding-right: 8px;
+  padding-bottom: 5px;
+  padding-left: 8px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.toolbar-tooltip-text {
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.toolbar-tooltip-arrow {
+  width: 8px;
+  height: 8px;
+  margin-bottom: -4px;
+  background-color: rgba(15, 23, 42, 0.92);
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+.toolbar-select:hover,
+.toolbar-icon-button:hover,
+.toolbar-color-button:hover {
+  background-color: #f3f4f6;
+  border-color: #e4e7eb;
+}
+/* #endif */
+
+/* #ifdef WEB */
+.toolbar-panel-floating {
+  position: relative;
+  height: auto;
+  border-width: 1px;
+  border-color: #cfd6dd;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  transition-property: transform, opacity;
+  transition-duration: 180ms;
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.toolbar-panel-floating-attached {
+  border-top-width: 1px;
+}
+
+.toolbar-panel-floating-entered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toolbar-panel-mobile-web {
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-width: 1px;
+  padding-top: 16px;
+  padding-right: 12px;
+  padding-bottom: 16px;
+  padding-left: 12px;
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.12);
+}
+
+.toolbar-panel-arrow {
+  position: absolute;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  background-color: #ffffff;
+  border-width: 0;
+  box-shadow: none;
+  transform: rotate(45deg);
+}
+
+.toolbar-panel-header-floating {
+  margin-bottom: 6px;
+}
+
+.toolbar-panel-header-mobile-web {
+  margin-bottom: 10px;
+}
+
+.toolbar-panel-title-floating {
+  font-size: 12px;
+}
+
+.toolbar-panel-title-mobile-web {
+  font-size: 15px;
+}
+
+.toolbar-panel-subtitle-floating {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.toolbar-panel-subtitle-mobile-web {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.toolbar-panel-scroll-floating,
+.toolbar-panel-scroll-mobile-web {
+  flex: 0;
+  /* max-height: 62vh; */
+}
+/* #endif */
+
+.toolbar-chip-row-panel,
+.toolbar-chip-row-panel-compact {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.desktop-color-sheet-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.desktop-color-sheet-icon {
+  width: 14px;
+  height: 14px;
+  border-width: 1px;
+  border-color: #6b7280;
+  border-radius: 2px;
+  margin-right: 10px;
+  transform: rotate(45deg);
+}
+
+.desktop-color-sheet-label-text {
+  color: #374151;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.desktop-menu-item {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding-top: 8px;
+  padding-right: 10px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 4px;
+}
+
+.desktop-menu-item-active {
+  background-color: #eef3f8;
+  border-color: #ccd6e0;
+}
+
+.desktop-menu-badge {
+  min-width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 10px;
+}
+
+.desktop-menu-badge-active {
+  background-color: #dbe7f3;
+  color: #0f172a;
+}
+
+.desktop-menu-text {
+  color: #1f2937;
+  font-size: 13px;
+  text-align: left;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+
+.desktop-menu-text-active {
+  color: #0f172a;
+}
+
+.toolbar-panel-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.toolbar-panel-title-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.toolbar-panel-title {
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.toolbar-panel-subtitle {
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 4px;
+  line-height: 16px;
+}
+
+.toolbar-panel-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-panel-scroll {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-panel-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.toolbar-chip-row,
+.color-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.toolbar-chip-row {
+  justify-content: flex-start;
+}
+
+.toolbar-chip-cell {
+  width: 25%;
+  padding-left: 3px;
+  padding-right: 3px;
+  margin-bottom: 6px;
+}
+
+.toolbar-color-section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.toolbar-color-title {
+  color: #64748b;
+  font-size: 11px;
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
+.toolbar-chip-cell-quarter {
+  width: 25%;
+}
+
+.toolbar-chip-cell-full {
+  width: 100%;
+}
+
+.toolbar-chip-cell-third {
+  width: 33.33%;
+}
+
+.color-row-panel {
+  width: 340px;
+  align-self: center;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.color-row {
+  align-items: center;
+}
+
+.color-swatch {
+  width: 48px;
+  height: 36px;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgba(15, 23, 42, 0.08);
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 10px;
+}
+
+.color-swatch.color-swatch-panel {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border-width: 1px;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom: 10px;
+}
+
+.color-swatch-active {
+  border-color: #111827;
+  border-width: 3px;
+  /* box-shadow: 0 0 0 2px rgba(31, 31, 31, 0.12); */
+}
+
+.color-swatch-clear {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .editor-stage,
+  .editor-field {
+    background-color: #222222;
+    border-color: #444444;
+    color: #f5f5f5;
+  }
+
+  .toolbar-frame,
+  .toolbar-shell {
+    background-color: #2d2d2d;
+    border-color: #444444;
+  }
+
+  .sheet-backdrop {
+    background-color: rgba(0, 0, 0, 0.38);
+  }
+
+  .toolbar-panel,
+  .toolbar-panel-floating,
+  .toolbar-panel-arrow {
+    background-color: #2d2d2d;
+    border-color: #4a4a4a;
+  }
+
+  .toolbar-divider {
+    background-color: #555555;
+  }
+
+  .toolbar-select-active,
+  .toolbar-icon-button-active,
+  .toolbar-color-button-active {
+    background-color: #414141;
+    border-color: #595959;
+  }
+
+  .toolbar-select-label,
+  .toolbar-color-symbol,
+  .toolbar-icon-text {
+    color: #d0d0d0;
+  }
+
+  .toolbar-select-label-active,
+  .toolbar-icon-text-active,
+  .toolbar-color-symbol-active {
+    color: #ffffff;
+  }
+
+  .toolbar-select-arrow,
+  .toolbar-color-arrow {
+    color: #a0a0a0;
+  }
+
+  .toolbar-select-arrow-active,
+  .toolbar-color-arrow-active {
+    color: #d8d8d8;
+  }
+
+  .toolbar-preview-button {
+    background-color: #3b3b3b;
+  }
+
+  .toolbar-preview-label {
+    color: #ffffff;
+  }
+
+  .link-modal-card,
+  .link-modal-card-app {
+    background-color: #2d2d2d;
+    border-color: #4a4a4a;
+  }
+
+  .link-modal-title,
+  .link-modal-title-app,
+  .link-modal-label,
+  .link-modal-label-app {
+    color: #ffffff;
+  }
+
+  .link-modal-subtitle,
+  .link-modal-subtitle-app {
+    color: #a0a0a0;
+  }
+
+  .link-modal-input,
+  .link-modal-input-app {
+    background-color: #222222;
+    border-color: #555555;
+    color: #ffffff;
+  }
+
+  .link-modal-selection-chip,
+  .link-modal-selection-chip-app {
+    background-color: #263653;
+    border-color: #48668f;
+  }
+
+  .link-modal-selection-text,
+  .link-modal-selection-text-app {
+    color: #9fc3ff;
+  }
+
+  .link-modal-danger-app {
+    background-color: #421f24;
+    border-color: #7a343d;
+  }
+
+  .link-modal-button-secondary,
+  .link-modal-button-secondary-app {
+    background-color: #3b3b3b;
+    border-color: #555555;
+  }
+
+  .link-modal-button-text-secondary,
+  .link-modal-button-text-secondary-app {
+    color: #f0f0f0;
+  }
+
+  .desktop-toolbar-mask {
+    background-color: rgba(26, 26, 26, 0.55);
+  }
+
+  .desktop-color-sheet-icon {
+    border-color: #a0a0a0;
+  }
+
+  .desktop-color-sheet-label-text,
+  .desktop-menu-text,
+  .toolbar-panel-title {
+    color: #f0f0f0;
+  }
+
+  .desktop-menu-item {
+    background-color: #2d2d2d;
+  }
+
+  .desktop-menu-item-active {
+    background-color: #3b4652;
+    border-color: #566677;
+  }
+
+  .desktop-menu-badge {
+    background-color: #3b3b3b;
+    color: #d0d0d0;
+  }
+
+  .desktop-menu-badge-active {
+    background-color: #4b5968;
+    color: #ffffff;
+  }
+
+  .desktop-menu-text-active {
+    color: #ffffff;
+  }
+
+  .toolbar-panel-subtitle,
+  .toolbar-color-title {
+    color: #a0a0a0;
+  }
+
+  .color-swatch {
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+
+  .color-swatch-active {
+    border-color: #ffffff;
+  }
+}
+
+/* #ifdef WEB */
+@media (prefers-color-scheme: dark) {
+  .toolbar-select:hover,
+  .toolbar-icon-button:hover,
+  .toolbar-color-button:hover {
+    background-color: #3b3b3b;
+    border-color: #555555;
+  }
+}
+/* #endif */
+</style>

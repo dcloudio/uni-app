@@ -1,0 +1,146 @@
+<template>
+	<view class="uni-theme-root" style="flex: 1; flex-direction: column; position: relative;">
+		<!-- 控制条 -->
+			<view class="control-bar">
+				<button class="control-btn" @click="toggleStyle">{{ data.useCustomStyle ? '默认样式' : '自定义样式' }}</button>
+				<button class="control-btn" @click="toggleIndexs">{{ data.useCustomIndexs ? '根据数据设索引' : '自定义索引' }}</button>
+			</view>
+			<list-view ref="listRef" style="flex: 1;" class="city-list" :scroll-into-view="data.indexViewID" :scroll-with-animation="data.scrollWithAnimation">
+			<sticky-section v-for="group in cityGroups" :key="group.index" :id="'idx-' + group.index"
+			<!-- #ifdef APP && VUE3-VAPOR -->
+			:preload="true"
+			<!-- #endif -->
+			>
+				<sticky-header>
+					<view class="group-header">
+						<text class="group-header-text">{{ group.index }}</text>
+					</view>
+				</sticky-header>
+				<!-- 每个城市作为独立的 list-item -->
+				<list-item v-for="city in group.cities" :key="city.pinyin" type="city">
+					<view class="city-item">
+						<text class="city-name">{{ city.name }}</text>
+					</view>
+				</list-item>
+			</sticky-section>
+		</list-view>
+			<uni-index-bar
+				:indexs="currentIndexs"
+				:indicator-view-class="data.useCustomStyle ? 'custom-indicator' : ''"
+				:indicator-text-class="data.useCustomStyle ? 'custom-indicator-text' : ''"
+				:style="data.useCustomStyle ? 'color: aqua;' : ''"
+				@select="onSelect">
+			</uni-index-bar>
+	</view>
+</template>
+
+<script lang="ts" setup>
+	import { cityGroups } from './cities.ts'
+
+	// 默认索引列表
+	const defaultIndexs = cityGroups.map((g) : string => g.index).join('\n')
+	// 自定义索引列表
+	const customIndexs = '☆\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ\n#'
+
+	type Data = {
+		useCustomStyle: boolean
+		useCustomIndexs: boolean
+		indexViewID: string
+		scrollWithAnimation: boolean
+	}
+
+	const data = reactive<Data>({
+		useCustomStyle: false,
+		useCustomIndexs: false,
+		indexViewID: "",
+		scrollWithAnimation: false
+	})
+
+	// 当前使用的索引
+	const currentIndexs = computed(() : string => data.useCustomIndexs ? customIndexs : defaultIndexs)
+
+	const listRef = ref<UniListViewElement | null>(null)
+
+	const toggleStyle = () => {
+		data.useCustomStyle = !data.useCustomStyle
+	}
+
+	const toggleIndexs = () => {
+		data.useCustomIndexs = !data.useCustomIndexs
+	}
+
+	const onSelect = (index : string) => {
+		const list = listRef.value
+		if (list == null) {
+			return
+		}
+		// console.log('选择了索引：', index)
+		data.scrollWithAnimation = false
+		const childId = 'idx-' + index
+		data.indexViewID = childId
+	}
+
+	defineExpose({
+		data,
+		currentIndexs,
+		toggleStyle,
+		toggleIndexs,
+		onSelect
+	})
+</script>
+
+<style>
+	.control-bar {
+		flex-direction: row;
+		padding: 10px;
+		background-color: var(--background-color, #f5f5f5);
+	}
+
+	.control-btn {
+		flex: 1;
+		margin: 0 5px;
+		font-size: 14px;
+	}
+
+	.group-header {
+		background-color: var(--background-color, #f5f5f5);
+		padding-left: 16px;
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
+
+	.group-header-text {
+		font-size: 14px;
+		color: var(--text-color, #333333);
+		opacity: 0.7;
+		font-weight: bold;
+	}
+
+	.city-list {
+		background-color: var(--list-background-color, #ffffff);
+		/* scrollbar-width: thin; */
+	}
+
+	.city-item {
+		padding-left: 16px;
+		padding-top: 14px;
+		padding-bottom: 14px;
+		background-color: var(--list-background-color, #ffffff);
+		border-bottom-width: 1px;
+		border-bottom-color: var(--border-color, #eeeeee);
+		border-bottom-style: solid;
+	}
+
+	.city-name {
+		font-size: 16px;
+		color: var(--text-color, #333333);
+	}
+
+	.custom-indicator {
+		background-color: #007aff;
+	}
+
+	.custom-indicator-text {
+		color: #ffff00;
+	}
+</style>

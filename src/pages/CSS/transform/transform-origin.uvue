@@ -1,14 +1,11 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <view ref="transformView" class="view" @click="changetransform"></view>
 
       <view class="text-container">
         <text class="uni-title-text">text 组件 transform-origin ：</text>
         <text class="uni-subtitle-text">点击下方 text 组件，不同 transform-origin 值（60px 30px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
-        <text ref="textTransformView" class="text-view" @click="changeTextTransform">点击 text 测试 transform-origin</text>
+        <text ref="textTransformView" class="text-view cyan-text" @click="changeTextTransform">点击 text 测试 transform-origin</text>
       </view>
 
       <view class="image-container">
@@ -22,13 +19,13 @@
         <text class="uni-subtitle-text">点击下方 scroll-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
         <view class="scroll-view-item">
           <scroll-view ref="scrollViewTransformView" class="scroll-view-base transform" @click="changeScrollViewTransform">
-            <text>点击 scroll-view 测试 transform-origin</text>
+            <text class="cyan-text">点击 scroll-view 测试 transform-origin</text>
           </scroll-view>
         </view>
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform-origin </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -99,33 +96,33 @@
         <input-data :defaultValue="data.transformOrigin" title="transform-origin 自定义值" type="text" @confirm="inputChangeTransformOrigin"></input-data>
       </view>
 
-      <view class="scroll-view-container">
-        <text class="uni-title-text">native-view 组件 transform-origin ：</text>
-        <text class="uni-subtitle-text">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
-        <view class="scroll-view-item">
-          <native-view ref="nativeViewTransformView" class="scroll-view-base transform" @click="changeNativeViewTransform"></native-view>
+      <!-- #ifndef MP-ALIPAY -->
+        <view class="scroll-view-container">
+          <text class="uni-title-text">native-view 组件 transform-origin ：</text>
+          <text class="uni-subtitle-text">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+          <view class="scroll-view-item">
+            <test-native-view ref="nativeViewTransformView" class="scroll-view-base transform-native" @click="changeNativeViewTransform"></test-native-view>
+          </view>
         </view>
-      </view>
+      <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const transformView = ref(null as UniElement | null)
   const textTransformView = ref(null as UniElement | null)
   const imageTransformView = ref(null as UniElement | null)
   const scrollViewTransformView = ref(null as UniElement | null)
-  const nativeViewTransformView = ref(null as UniElement | null)
+  const nativeViewTransformView = ref<ComponentPublicInstance|null>(null)
   const count = ref(0)
   const textCount = ref(0)
   const imageCount = ref(0)
   const scrollViewCount = ref(0)
   const nativeViewCount = ref(0)
+
 
   const changetransform = () => {
     const element = transformView.value
@@ -135,8 +132,8 @@
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (count.value == 1) {
@@ -144,8 +141,8 @@
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
 
@@ -160,8 +157,8 @@
       element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (textCount.value == 1) {
@@ -169,8 +166,8 @@
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -178,8 +175,8 @@
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       textCount.value = -1
     }
@@ -195,8 +192,8 @@
       element?.style.setProperty("transform", "translate(50px, 50px) scale(2)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (imageCount.value == 1) {
@@ -204,8 +201,8 @@
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -213,8 +210,8 @@
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       imageCount.value = -1
     }
@@ -230,8 +227,8 @@
       element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (scrollViewCount.value == 1) {
@@ -239,8 +236,8 @@
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -248,8 +245,8 @@
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       scrollViewCount.value = -1
     }
@@ -258,15 +255,15 @@
   }
 
   const changeNativeViewTransform = () => {
-    const element = nativeViewTransformView.value
+    const element = nativeViewTransformView.value?.$el
 
     if (nativeViewCount.value == 0) {
       element?.style.setProperty("transform-origin", "60px 60px")
       element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else if (nativeViewCount.value == 1) {
@@ -274,8 +271,8 @@
       element?.style.setProperty("transform", "rotate(-20deg)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
     }
     else {
@@ -283,8 +280,8 @@
       element?.style.setProperty("transform", "scale(1)")
 
       nextTick(() => {
-        const originActual = element?.style.getPropertyValue("transform-origin")
-        const transformActual = element?.style.getPropertyValue("transform")
+        element?.style.getPropertyValue("transform-origin")
+        element?.style.getPropertyValue("transform")
       })
       nativeViewCount.value = -1
     }
@@ -358,6 +355,7 @@
   })
 
   defineExpose({
+    radioChangeTransformOrigin,
     data
   })
 </script>
@@ -476,6 +474,14 @@
     border-style: solid;
     text-align: center;
     position: relative;
+  }
+
+  .transform-native {
+    background-color: #00FFFF80;
+  }
+
+  .cyan-text {
+    color: #1a1a1a;
   }
 
 </style>

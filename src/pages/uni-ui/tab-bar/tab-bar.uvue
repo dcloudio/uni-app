@@ -1,0 +1,229 @@
+<template>
+	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+		<!-- 内容区域 -->
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent1 ref="tabContent1Ref" @contentscroll="handleTabContent1Scroll" />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent2 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent3 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent4 />
+		</uni-tab-content>
+
+		<!-- 底部选项卡 -->
+		<uni-tab-bar>
+			<!-- 图标高度24，文字字号10px，文字高度是12~14px，角标不能在图标的正右上角，需要向下偏移1px，避免角标画出tab-list之外) -->
+			<uni-tab-item>
+				<view class="first-tab-button" @click="handleFirstTabClick">
+					<view class="first-tab-animator">
+						<view class="first-tab-face"
+							:class="showBackToTop ? 'first-tab-default-hidden' : 'first-tab-default-visible'">
+							<image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image"></image>
+							<text class="tab-label" :class="activeIndex == 0 ? 'tab-label-active' : ''">首页</text>
+						</view>
+						<view class="first-tab-face"
+							:class="showBackToTop ? 'first-tab-backtop-visible' : 'first-tab-backtop-hidden'">
+							<text class="tab-arrow-icon" :class="activeIndex == 0 ? 'tab-arrow-icon-active' : ''">↑</text>
+							<text class="tab-label" :class="activeIndex == 0 ? 'tab-label-active' : ''">回到顶部</text>
+						</view>
+					</view>
+				</view>
+			</uni-tab-item>
+			<uni-tab-item :badge-text="apiTabBadgeText" :badge-class="apiTabBadgeClass">  <!-- 需要角标时使用 badge-text="99+" 详见 uni-badge 组件 -->
+				<image :src="activeIndex == 1 ? '/static/apiHL.png' : '/static/api.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 1 ? 'tab-label-active' : ''">API</text>
+			</uni-tab-item>
+			<uni-tab-item>
+				<image :src="activeIndex == 2 ? '/static/cssHL.png' : '/static/css.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 2 ? 'tab-label-active' : ''">CSS</text>
+			</uni-tab-item>
+			<uni-tab-item badge-text="">
+				<image :src="activeIndex == 3 ? '/static/templateHL.png' : '/static/template.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 3 ? 'tab-label-active' : ''">模板</text>
+			</uni-tab-item>
+
+		</uni-tab-bar>
+	</uni-tab>
+</template>
+
+<script setup lang="ts">
+	import tabContent1 from './tab-content1.uvue'
+	import tabContent2 from './tab-content-api.uvue'
+	// import tabContent2 from './tab-content2.uvue'
+	import tabContent3 from './tab-content3.uvue'
+	import tabContent4 from './tab-content4.uvue'
+	const TAB_CONTENT1_SWITCH_OFFSET = 100 // 当 tab-content1 滚动超过这个距离（单位px）时显示回到顶部按钮，如需调节请自行定义
+	const TAB_CONTENT2_INDEX = 1
+	const tabContent1Ref = ref<ComponentPublicInstance | null>(null)
+	let tabContentHeightFull = false
+	// #ifdef MP-WEIXIN
+	tabContentHeightFull = true
+	// #endif
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentStyle = 'flex: 1; min-height: 0px;'
+	// #endif
+
+	  // 当前激活的索引
+	const activeIndex = ref<number>(0)
+	const showBackToTop = ref<boolean>(false)
+	const apiTabBadgeText = ref<string>('99+')
+	const apiTabBadgeClass = ref<string.ClassString>('')
+	let lastTabContent1ScrollTop = 0
+
+	function updateTabContent2Badge(text : string, badgeClass : string.ClassString) : void {
+		apiTabBadgeText.value = text
+		apiTabBadgeClass.value = badgeClass
+	}
+
+	function setTabContent2BadgeNumber() : void {
+		updateTabContent2Badge('8', '')
+	}
+
+	function setTabContent2BadgeDot() : void {
+		updateTabContent2Badge('', '')
+	}
+
+	function clearTabContent2Badge() : void {
+		updateTabContent2Badge('0', '')
+	}
+
+	function setTabContent2BadgeClass() : void {
+		updateTabContent2Badge('NEW', 'api-tab-badge-custom')
+	}
+
+	function handleTabContent1Scroll(scrollTop : number) : void {
+		lastTabContent1ScrollTop = scrollTop
+		if (activeIndex.value == 0) {
+			showBackToTop.value = scrollTop > TAB_CONTENT1_SWITCH_OFFSET
+		}
+	}
+
+	function handleFirstTabClick() : void {
+		if (activeIndex.value == 0 && showBackToTop.value) {
+			const tabContent1Instance = tabContent1Ref.value
+			if (tabContent1Instance != null) {
+				tabContent1Instance.$callMethod('scrollToTop')
+			}
+		}
+	}
+
+	// 处理 tab 的切换
+	function handleChange(index : number) : void {
+		activeIndex.value = index
+		if (index == 0) {
+			showBackToTop.value = lastTabContent1ScrollTop > TAB_CONTENT1_SWITCH_OFFSET
+		} else {
+			showBackToTop.value = false
+		}
+		switch (index) {
+			case 0:
+				uni.setNavigationBarTitle({ title: '组件' })
+				break
+			case 1:
+				uni.setNavigationBarTitle({ title: 'API' })
+				break
+			case 2:
+				uni.setNavigationBarTitle({ title: 'CSS' })
+				break
+			case 3:
+				uni.setNavigationBarTitle({ title: '模板' })
+				break
+		}
+	}
+
+	provide('tabContent2Index', TAB_CONTENT2_INDEX)
+	provide('tabContent2SetBadgeNumber', setTabContent2BadgeNumber)
+	provide('tabContent2SetBadgeDot', setTabContent2BadgeDot)
+	provide('tabContent2ClearBadge', clearTabContent2Badge)
+	provide('tabContent2SetBadgeClass', setTabContent2BadgeClass)
+</script>
+
+<style>
+	.api-tab-badge-custom {
+		background-color: #1f6feb;
+		color: #ffffff;
+	}
+
+	.first-tab-button {
+		width: 100%;
+		height: 100%;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.first-tab-animator {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.first-tab-face {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		top: 0;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		transition-property: opacity, transform;
+		transition-duration: 220ms;
+		transition-timing-function: ease;
+	}
+
+	.first-tab-default-visible {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+
+	.first-tab-default-hidden {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+
+	.first-tab-backtop-visible {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+
+	.first-tab-backtop-hidden {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+
+	.tab-icon-image {
+		height: 24px;
+		width: 24px;
+	}
+
+	.tab-arrow-icon {
+		line-height: 20px;
+		margin-bottom: 2px;
+	}
+
+	.tab-arrow-icon-active {
+		color: #007aff;
+	}
+
+	.tab-label {
+		font-size: 10px;
+		color: rgb(122, 126, 131);
+	}
+
+	.tab-label-active {
+		color: #007aff;
+	}
+
+	.blue-dot{
+		background-color: #1f6feb;
+	}
+</style>

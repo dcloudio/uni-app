@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <view style="align-items: center;align-self: center;">
       <view class="iconContainer">
         <view class="iconItem" v-for="item in uniIcons">
@@ -12,12 +9,9 @@
       </view>
 
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   type Icon = {
     name : string,

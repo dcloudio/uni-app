@@ -5,7 +5,7 @@
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   defineOptions({
     externalClasses: ['arrow-class']
   })
@@ -45,5 +45,16 @@
     transform: rotate(45deg);
     border-left: 2px solid #000000;
     border-bottom: 2px solid #000000;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .back-circle {
+      background-color: rgba(80, 80, 80, 0.45);
+    }
+
+    .back-arrow {
+      border-left-color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
   }
 </style>

@@ -44,10 +44,17 @@
       <button class="btn btn-red" type="button" id="postMessage">postMessage</button>
     </div>
     <p class="desc"></p>本地视频</p>
-    <video id="videoLocal" src="../../static/test-video/10second-demo.mp4" controls style="width: 100%;"></video>
+    <video id="videoLocal" src="../../static/test-video/10second-demo.mp4" controls playsinline webkit-playsinline style="width: 100%;"></video>
     <p class="desc"></p>网络视频</p>
-    <video id="videoWeb" src="https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" controls style="width: 100%;"></video>
-    <video id="videoCamera" style="width: 100%;"></video>
+    <video id="videoWeb" src="https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" controls playsinline webkit-playsinline style="width: 100%;"></video>
+    <!--
+      iOS web-view 需要同时满足原生的 allowsInlineMediaPlayback 和网页 video 的内联声明。
+      alpha-5.08 起（release-5.14 及之后）web-view 默认禁止内联播放，也不再自动注入 playsinline。
+      首次 getUserMedia 可能弹出权限框并打断原始点击的用户激活，授权后的异步 video.play() 可能无法触发预期的媒体展示；
+      权限缓存后再次点击的行为可能不同。摄像头预览页面应显式声明这些属性，并将 web-view 的
+      ios-allows-inline-media-playback 配置为 true。
+    -->
+    <video id="videoCamera" autoplay muted playsinline webkit-playsinline style="width: 100%;"></video>
     <div class="btn-list">
       <button class="btn" type="button" data-action="openCamera">打开摄像头</button>
       <button class="btn" type="button" data-action="closeCamera">关闭摄像头</button>
@@ -163,10 +170,14 @@
                   .getUserMedia(constraints)
                   .then(function(mediaStream) {
                     var video = document.getElementById("videoCamera");
+                    // 显式声明内联播放属性，避免依赖 web-view 的自动注入
+                    video.setAttribute('playsinline', 'playsinline');
+                    video.setAttribute('webkit-playsinline', 'webkit-playsinline');
+                    video.playsInline = true;
                     video.srcObject = mediaStream;
-                    video.onloadedmetadata = function(e) {
-                      video.play();
-                    };
+                    return video.play().catch(function(err) {
+                      console.log('video.play failed: ' + err.name + ': ' + err.message);
+                    });
                   })
                   .catch(function(err) {
                     console.log(err.name + ": " + err.message);

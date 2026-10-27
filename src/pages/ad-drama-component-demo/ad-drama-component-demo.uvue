@@ -1,0 +1,542 @@
+<template>
+  <view class="page-root">
+    <!-- #ifdef APP-ANDROID -->
+    <!-- 工具行：说明 + 右上角参数入口（标题由系统导航栏展示）。 -->
+    <view class="tool-row">
+      <text class="tool-tip">解锁广告由短剧 SDK 内部完成，参数改动立即重载</text>
+      <view class="nav-btn" @click="openConfig">
+        <text class="nav-btn-text">参数</text>
+      </view>
+    </view>
+
+    <!-- 状态提示行。 -->
+    <view class="state-line" v-if="stateText.length > 0" @click="retryLast">
+      <text class="state-text">{{ stateText }}</text>
+    </view>
+
+    <!-- 短剧首页组件：占满剩余空间。 -->
+    <view class="drama-host-wrap">
+      <ad-drama
+        :key="dramaKey"
+        class="drama-host"
+        :adpid="appliedAdpid"
+        :free="appliedFree"
+        :lock="appliedLock"
+        :url-callback="appliedUrlCallback"
+        @load="onComponentLoad"
+        @error="onComponentError"
+        @click="onComponentClick"
+        @close="onComponentClose"
+      ></ad-drama>
+    </view>
+
+    <!-- 全局 loading 页：组件加载 / 重载期间全屏展示。 -->
+    <view class="global-loading" v-if="componentLoading">
+      <view class="loading-ring"></view>
+      <text class="loading-text">{{ loadingText }}</text>
+      <text class="loading-sub">正在初始化短剧首页，请耐心等待</text>
+    </view>
+
+    <!-- 错误面板：超时 / 加载失败时覆盖组件区展示原因 + 重试。 -->
+    <view class="error-panel" v-if="showErrorPanel">
+      <text class="error-icon">⚠️</text>
+      <text class="error-reason">{{ errorReason }}</text>
+      <view class="error-btn" @click="retryLast">
+        <text class="error-btn-text">重新加载</text>
+      </view>
+    </view>
+
+    <!-- 参数配置弹窗（开发者调试用：修改后组件自动重载）。 -->
+    <view class="mask" v-if="showConfig" @click="closeConfig">
+      <view class="dialog" @click.stop="noop">
+        <text class="dialog-title">组件参数</text>
+        <text class="field-label">短剧广告位 ID（adpid）</text>
+        <input class="config-input" v-model="adpidInput" placeholder="uni-ad 后台申请的短剧广告位" />
+        <view class="field-row">
+          <view class="field-col">
+            <text class="field-label">免费集数</text>
+            <input class="config-input" v-model="freeInput" placeholder="1" />
+          </view>
+          <view class="field-col field-col-last">
+            <text class="field-label">单次解锁集数</text>
+            <input class="config-input" v-model="lockInput" placeholder="1" />
+          </view>
+        </view>
+        <view class="field-row">
+          <view class="field-col">
+            <text class="field-label">回调 userId（选填）</text>
+            <input class="config-input" v-model="callbackUserIdInput" placeholder="服务器校验用" />
+          </view>
+          <view class="field-col field-col-last">
+            <text class="field-label">回调 extra（选填）</text>
+            <input class="config-input" v-model="callbackExtraInput" placeholder="业务透传参数" />
+          </view>
+        </view>
+        <text class="field-hint">userId/extra 都为空则不走服务器回调；保存后组件立即重载生效。</text>
+        <view class="dialog-btn-row">
+          <button class="dialog-btn dialog-btn-cancel" @click="closeConfig">取消</button>
+          <button class="dialog-btn dialog-btn-ok" @click="saveConfig">保存并重载</button>
+        </view>
+      </view>
+    </view>
+    <!-- #endif -->
+
+    <!-- #ifndef APP-ANDROID -->
+    <view class="unsupported-box">
+      <text class="unsupported-title">仅支持 Android</text>
+      <text class="unsupported-text">短剧能力来自 uni-ad 原生库（Android），请在 Android 平台运行。</text>
+    </view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="uts">
+  // #ifdef APP-ANDROID
+  import { DramaUrlCallback, IUniDramaError } from "@/uni_modules/uni-drama"
+
+  /** 上架前替换为你自己在 uni-ad 后台申请的短剧广告位 ID。 */
+  const DEFAULT_ADPID = "1158231135"
+  /** 组件加载兜底超时（毫秒）：load/error 均未回调时展示错误界面。 */
+  const MODULE_TIMEOUT = 20000
+
+  const stateText = ref("正在加载短剧首页...")
+
+  /** 组件加载中（全局 loading 展示中）。 */
+  const componentLoading = ref(true)
+  /** 模块加载失败标记：失败后重试 = 变更 key 重建组件。 */
+  let moduleFailed = false
+  /** 组件加载兜底超时定时器。 */
+  let moduleTimeoutTimer: number | null = null
+  /** 错误面板可见性（覆盖组件区域展示错误原因 + 重试）。 */
+  const showErrorPanel = ref(false)
+  /** 错误详情（多行，含可能原因）。 */
+  const errorReason = ref("")
+
+  // ---- 全局 loading 动态文案：点点动画 + 已等待秒数 ----
+  const loadingDots = ref("")
+  const loadingSeconds = ref(0)
+  let dotsTimer: number | null = null
+
+  const loadingText = computed(() : string => {
+    const base = moduleFailed ? "正在重新加载短剧首页" : "正在加载短剧首页"
+    return base + loadingDots.value + "（" + loadingSeconds.value + "s）"
+  })
+
+  function stopDots() {
+    const timer = dotsTimer
+    if (timer != null) {
+      clearInterval(timer)
+      dotsTimer = null
+    }
+    loadingDots.value = ""
+    loadingSeconds.value = 0
+  }
+
+  /** 组件加载超时：关闭全局 loading，展示错误面板与可能原因。 */
+  function onModuleTimeout() {
+    if (!componentLoading.value) {
+      return
+    }
+    moduleFailed = true
+    componentLoading.value = false
+    stopDots()
+    showErrorPanel.value = true
+    errorReason.value = "等待 " + (MODULE_TIMEOUT / 1000) + " 秒仍未收到短剧首页加载结果\n\n可能原因：\n1. 网络连接异常\n2. adpid 未开通短剧能力或配置有误\n3. 打包包名与 gm_SDK_Setting.json 中 license 包名不一致\n4. 渠道服务暂时不可用"
+    stateText.value = "组件加载超时，请检查网络后重试"
+    console.error("[drama-component] 组件加载超时（" + MODULE_TIMEOUT + "ms 无响应）")
+  }
+
+  /** 启动秒表：动态点点 + 已等待秒数；到达兜底时间触发超时错误面板。 */
+  function startDots() {
+    stopDots()
+    loadingSeconds.value = 0
+    dotsTimer = setInterval(() => {
+      loadingSeconds.value = loadingSeconds.value + 1
+      if (loadingDots.value.length >= 3) {
+        loadingDots.value = ""
+      } else {
+        loadingDots.value = loadingDots.value + "."
+      }
+      if (loadingSeconds.value >= MODULE_TIMEOUT / 1000) {
+        onModuleTimeout()
+      }
+    }, 1000)
+  }
+
+  // ---- 弹窗可配置参数 ----
+  const showConfig = ref(false)
+  const adpidInput = ref(DEFAULT_ADPID)
+  const freeInput = ref("1")
+  const lockInput = ref("1")
+  const callbackUserIdInput = ref("")
+  const callbackExtraInput = ref("")
+
+  /** 已生效参数：保存弹窗后更新，传给 ad-drama 组件。 */
+  const appliedAdpid = ref(DEFAULT_ADPID)
+  const appliedFree = ref(1)
+  const appliedLock = ref(1)
+  const appliedUrlCallback = ref<DramaUrlCallback | null>(null)
+
+  /** 组件 key：变更后组件整体重建，触发一次干净的重新加载。 */
+  const dramaKey = ref(0)
+
+  function toNumber(value: string, fallback: number): number {
+    const parsed = parseInt(value)
+    return isNaN(parsed) ? fallback : parsed
+  }
+
+  /** 组装 urlCallback：两项都为空时返回 null（不走服务器回调）。 */
+  function buildUrlCallback(uid: string, ext: string): DramaUrlCallback | null {
+    const u = uid.trim()
+    const e = ext.trim()
+    if (u.length == 0 && e.length == 0) {
+      return null
+    }
+    return { userId: u, extra: e } as DramaUrlCallback
+  }
+
+  /** 打开参数弹窗：回填当前生效参数。 */
+  function openConfig() {
+    adpidInput.value = appliedAdpid.value
+    freeInput.value = "" + appliedFree.value
+    lockInput.value = "" + appliedLock.value
+    callbackUserIdInput.value = appliedUrlCallback.value?.userId ?? ""
+    callbackExtraInput.value = appliedUrlCallback.value?.extra ?? ""
+    showConfig.value = true
+  }
+
+  function closeConfig() {
+    showConfig.value = false
+  }
+
+  /** 空函数：拦截弹窗卡片点击冒泡。 */
+  function noop() {
+  }
+
+  /** 重载组件：全局 loading + 超时兜底 + 变更 key 重建。 */
+  function reloadComponent() {
+    stateText.value = "正在重载短剧首页..."
+    moduleFailed = false
+    errorReason.value = ""
+    showErrorPanel.value = false
+    componentLoading.value = true
+    startDots()
+    dramaKey.value = dramaKey.value + 1
+  }
+
+  /** 保存参数并重载组件：变更 key 触发组件重建。 */
+  function saveConfig() {
+    const pid = adpidInput.value.trim()
+    if (pid.length == 0) {
+      uni.showToast({ title: "adpid 不能为空", icon: "error", position: "bottom" })
+      return
+    }
+    appliedAdpid.value = pid
+    appliedFree.value = Math.max(1, toNumber(freeInput.value, 1))
+    appliedLock.value = Math.max(1, toNumber(lockInput.value, 1))
+    appliedUrlCallback.value = buildUrlCallback(callbackUserIdInput.value, callbackExtraInput.value)
+    showConfig.value = false
+    reloadComponent()
+    uni.showToast({ title: "参数已生效", position: "bottom" })
+  }
+
+  /** 错误状态重试：重建组件（变更 key）。 */
+  function retryLast() {
+    reloadComponent()
+  }
+
+  function onComponentLoad(e: UniNativeViewEvent) {
+    stateText.value = ""
+    moduleFailed = false
+    errorReason.value = ""
+    showErrorPanel.value = false
+    componentLoading.value = false
+    stopDots()
+    console.log("[drama-component] load -> " + JSON.stringify(e.detail))
+  }
+
+  function onComponentError(e: UniNativeViewEvent) {
+    const detail = e.detail
+    const code = detail["errCode"] ?? ""
+    const msg = detail["errMsg"] ?? ""
+    stateText.value = "加载失败：" + msg + "（" + code + "），点击重试"
+    moduleFailed = true
+    componentLoading.value = false
+    stopDots()
+    showErrorPanel.value = true
+    errorReason.value = "错误码 " + code + "\n\n" + msg + "\n\n可能原因：\n1. adpid 未开通短剧能力或配置有误\n2. 当前基座缺少短剧运行时（需自定义基座）\n3. 网络连接异常"
+    console.error("[drama-component] error -> " + JSON.stringify(detail))
+  }
+
+  function onComponentClick(e: UniNativeViewEvent) {
+    console.log("[drama-component] click -> " + JSON.stringify(e.detail))
+  }
+
+  function onComponentClose(e: UniNativeViewEvent) {
+    console.log("[drama-component] close -> " + JSON.stringify(e.detail))
+  }
+
+  // 组件加载秒表：必须在 setup 顶层同步启动（早于组件挂载）。
+  // AAR 已就绪时组件 load 事件可能早于 onMounted 到达，
+  // 若在 onMounted 才启动秒表，load 已过、秒表永不停（"已加载但还在转圈"的根因）。
+  startDots()
+
+  onUnmounted(() => {
+    stopDots()
+  })
+  // #endif
+</script>
+
+<style>
+  /* 页面根容器：顶栏固定，组件占满剩余。 */
+  .page-root {
+    flex: 1;
+    flex-direction: column;
+    background-color: #F6F7F5;
+  }
+
+  /* 工具行：说明文字 + 参数按钮。 */
+  .tool-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #FFFFFF;
+  }
+
+  .tool-tip {
+    flex: 1;
+    font-size: 12px;
+    color: #9aa7b4;
+  }
+
+  /* 右上角参数按钮。 */
+  .nav-btn {
+    padding: 6px 14px;
+    border-radius: 16px;
+    background-color: #EAF3EE;
+  }
+
+  .nav-btn-text {
+    font-size: 13px;
+    color: #2F7D5B;
+  }
+
+  /* 状态提示行。 */
+  .state-line {
+    padding: 8px 16px;
+    background-color: #FDF0EE;
+  }
+
+  .state-text {
+    font-size: 12px;
+    color: #B4544A;
+  }
+
+  /* 组件宿主容器：占满页面剩余高度。 */
+  .drama-host-wrap {
+    flex: 1;
+    background-color: #FFFFFF;
+  }
+
+  /* ad-drama 组件本体：flex 撑满宿主容器。 */
+  .drama-host {
+    flex: 1;
+    width: 100%;
+  }
+
+  /* 全局 loading 页。 */
+  .global-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #F6F7F5;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 转环。 */
+  .loading-ring {
+    width: 42px;
+    height: 42px;
+    border-radius: 21px;
+    border-width: 4px;
+    border-style: solid;
+    border-color: #DDE5DF;
+    border-top-color: #2F7D5B;
+    margin-bottom: 16px;
+    animation: ring-spin 0.9s linear infinite;
+  }
+
+  @keyframes ring-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 8px;
+  }
+
+  .loading-sub {
+    font-size: 12px;
+    color: #9aa7b4;
+  }
+
+  /* 错误面板：覆盖组件区展示错误原因与重试入口。 */
+  .error-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #F6F7F5;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+  }
+
+  .error-icon {
+    font-size: 44px;
+    margin-bottom: 14px;
+  }
+
+  .error-reason {
+    font-size: 13px;
+    color: #5A635D;
+    line-height: 22px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .error-btn {
+    padding: 10px 32px;
+    border-radius: 20px;
+    background-color: #2F7D5B;
+  }
+
+  .error-btn-text {
+    font-size: 14px;
+    color: #FFFFFF;
+  }
+
+  /* 弹窗遮罩。 */
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 弹窗卡片。 */
+  .dialog {
+    width: 620rpx;
+    border-radius: 16px;
+    background-color: #FFFFFF;
+    padding: 20px;
+  }
+
+  .dialog-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 14px;
+  }
+
+  .field-label {
+    font-size: 13px;
+    color: #1F2421;
+    margin-bottom: 6px;
+  }
+
+  .config-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    margin-bottom: 12px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #E4E7E0;
+    border-radius: 10px;
+    background-color: #F6F7F5;
+    color: #1F2421;
+    font-size: 14px;
+  }
+
+  .field-row {
+    flex-direction: row;
+  }
+
+  .field-col {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .field-col-last {
+    margin-right: 0px;
+  }
+
+  .field-hint {
+    font-size: 12px;
+    color: #5A635D;
+    line-height: 18px;
+    margin-bottom: 12px;
+  }
+
+  .dialog-btn-row {
+    flex-direction: row;
+    margin-top: 4px;
+  }
+
+  .dialog-btn {
+    flex: 1;
+    height: 42px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+
+  .dialog-btn-cancel {
+    background-color: #EEF1F4;
+    color: #405366;
+    margin-right: 10px;
+  }
+
+  .dialog-btn-ok {
+    background-color: #2F7D5B;
+    color: #FFFFFF;
+    margin-right: 0px;
+  }
+
+  /* 非 Android 提示。 */
+  .unsupported-box {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .unsupported-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 10px;
+  }
+
+  .unsupported-text {
+    font-size: 13px;
+    color: #5A635D;
+    text-align: center;
+  }
+</style>

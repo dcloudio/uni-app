@@ -1,3 +1,5 @@
+jest.setTimeout(30000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')

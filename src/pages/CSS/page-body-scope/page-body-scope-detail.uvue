@@ -1,0 +1,59 @@
+<template>
+  <view class="page-content">
+    <text class="page-title">Page Body Scope - Page 2</text>
+    <view class="scope-test-box">
+      <text class="scope-test-text">App CSS variable indicator</text>
+      <text class="scope-test-hint">Teal: normal | Red: broken</text>
+    </view>
+    <button class="navigate-button" @click="goBack">Back</button>
+  </view>
+</template>
+
+<script setup lang="ts">
+function goBack() {
+  uni.navigateBack()
+}
+
+defineExpose({
+  goBack,
+})
+</script>
+
+<style>
+.page-content {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 20px;
+}
+
+.page-title {
+  margin-bottom: 20px;
+  color: #17202a;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.scope-test-box {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 2px solid var(--page-body-scope-test-color, #dc2626);
+  border-radius: 8px;
+}
+
+.scope-test-text {
+  color: var(--page-body-scope-test-color, #dc2626);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.scope-test-hint {
+  margin-top: 8px;
+  color: var(--page-body-scope-test-color, #dc2626);
+  font-size: 14px;
+}
+
+.navigate-button {
+  margin-top: 24px;
+}
+</style>

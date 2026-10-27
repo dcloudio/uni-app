@@ -4,7 +4,7 @@
     <!-- #endif -->
     <view class="page-container">
       <!-- #ifndef MP -->
-      <fps />
+      <fps v-if="autoData.showFps" />
       <!-- #endif -->
       <!-- 控制按钮区域 -->
       <view class="control-panel padding-2 flex-row flex-wrap">
@@ -40,7 +40,8 @@
   <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+  const autoData = reactive({ showFps: true })
   const sharedValue = ref('')
   const sharedDisabled = ref(false)
 
@@ -58,6 +59,7 @@
     sharedDisabled.value = !sharedDisabled.value
     console.log('disabled:', sharedDisabled.value)
   }
+  defineExpose({ autoData })
 </script>
 
 <style>

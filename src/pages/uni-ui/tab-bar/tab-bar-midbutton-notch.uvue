@@ -1,0 +1,187 @@
+<template>
+	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent1 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent2 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent3 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent4 />
+		</uni-tab-content>
+
+		<uni-tab-bar :style="tabBarStyle">
+			<uni-tab-item class="tab-bg">
+				<!-- <image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image"></image> -->
+				<text :class="activeIndex == 0 ? 'tab-label-active' : ''">🏠</text>
+				<text class="tab-label" :class="activeIndex == 0 ? 'tab-label-active' : ''">首页</text>
+			</uni-tab-item>
+			<uni-tab-item class="tab-bg">
+				<!-- <image :src="activeIndex == 1 ? '/static/apiHL.png' : '/static/api.png'" class="tab-icon-image"></image> -->
+				<text :class="activeIndex == 0 ? 'tab-label-active' : ''">💬</text>
+				<text class="tab-label" :class="activeIndex == 1 ? 'tab-label-active' : ''">消息</text>
+			</uni-tab-item>
+			<uni-tab-midbutton :width="106" :height="94">
+				<view class="floating-ball" hover-class="floating-ball-hover" :hover-stop-propagation="true" @click="handleMidButtonClick">
+					<view flatten class="floating-ball-plus" style="position: absolute;"></view>
+					<view flatten class="floating-ball-plus" style="position: absolute;transform: rotate(90deg);"></view>
+				</view>
+				<image class="notch-svg" src="/static/tab-bar-midbutton-notch.svg" mode="scaleToFill"></image>
+			</uni-tab-midbutton>
+			<uni-tab-item class="tab-bg">
+				<!-- <image :src="activeIndex == 2 ? '/static/cssHL.png' : '/static/css.png'" class="tab-icon-image"></image> -->
+				<text :class="activeIndex == 0 ? 'tab-label-active' : ''">🔔</text>
+				<text class="tab-label" :class="activeIndex == 2 ? 'tab-label-active' : ''">通知</text>
+			</uni-tab-item>
+			<uni-tab-item class="tab-bg" badge-text="8">
+				<!-- <image :src="activeIndex == 3 ? '/static/templateHL.png' : '/static/template.png'" class="tab-icon-image"></image> -->
+				<text :class="activeIndex == 0 ? 'tab-label-active' : ''">👤</text>
+				<text class="tab-label" :class="activeIndex == 3 ? 'tab-label-active' : ''">我的</text>
+			</uni-tab-item>
+		</uni-tab-bar>
+		<view class="tab-bg tab-safe-area-bg"></view> <!-- 因为要镂空，tabbar不能整体设背景色，只能加一个占位view覆盖安全区的颜色，-->
+	</uni-tab>
+</template>
+
+<script setup lang="ts">
+	import tabContent1 from './tab-content1.uvue'
+	import tabContent2 from './tab-content2.uvue'
+	import tabContent3 from './tab-content3.uvue'
+	import tabContent4 from './tab-content4.uvue'
+
+	const activeIndex = ref<number>(0)
+	const midButtonClickCount = ref<number>(0)
+	let tabBarStyle = 'border-top: 0px;background-color: rgba(0, 0, 0, 0);'
+	let tabContentHeightFull = true
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentHeightFull = false
+	tabContentStyle = 'flex: 1; min-height: 0px;'
+    tabBarStyle = 'border-top: 0px;background-color: #f5f5f5;'
+	// #endif
+
+	function handleChange(index : number) : void {
+		activeIndex.value = index
+		switch (index) {
+			case 0:
+				uni.setNavigationBarTitle({ title: '首页' })
+				break
+			case 1:
+				uni.setNavigationBarTitle({ title: '消息' })
+				break
+			case 2:
+				uni.setNavigationBarTitle({ title: '通知' })
+				break
+			case 3:
+				uni.setNavigationBarTitle({ title: '我的' })
+				break
+		}
+	}
+
+	function handleMidButtonClick() : void {
+		midButtonClickCount.value = midButtonClickCount.value + 1
+		uni.showToast({
+			title: '悬浮球点击 ' + midButtonClickCount.value + ' 次',
+			icon: 'none'
+		})
+	}
+</script>
+
+<style>
+	.tab-icon-image {
+		width: 24px;
+		height: 24px;
+	}
+
+	.tab-label {
+		font-size: 10px;
+		color: rgb(220, 220, 220);
+	}
+
+	.tab-label-active {
+		color: #FFFFFF;
+	}
+
+	.tab-bg {
+		background-color: #2196F3;
+		/* 宽度用transform调宽1点，不然在某些屏幕上，item之间会出现半像素的间隙 */
+		transform: scaleX(1.005);
+		/* margin-left: -1px; */
+		/* margin-right: -1px; */
+	}
+
+	/* #ifdef MP-ALIPAY */
+	.tab-bg {
+		transform: none;
+		margin-left: -1px;
+		margin-right: -1px;
+	}
+	/* #endif */
+
+	.tab-safe-area-bg {
+		width: 100%;
+		height: var(--uni-safe-area-inset-bottom);
+		position: absolute;
+		bottom: 0;
+	}
+
+	/* #ifdef MP-ALIPAY */
+	.tab-safe-area-bg {
+		height: calc(var(--uni-safe-area-inset-bottom) + 1px);
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 9;
+	}
+	/* #endif */
+
+	.notch-svg {
+		width: 108px;
+		height: 50px;
+		position: absolute;
+		margin-left: -1px; /* 为了防止边线漏出半像素 */
+		margin-right: -1px; /* 为了防止边线漏出半像素 */
+		bottom: 0;
+		pointer-events: none; /* 不拦截点击。 TODO 鸿蒙上有bug，svg图仍然遮挡了点击区，导致加号的下半部分点不着*/
+	}
+
+	/* #ifdef MP-ALIPAY */
+	.notch-svg {
+		width: 112px;
+		height: 51px;
+		margin-left: -3px;
+		margin-right: -3px;
+		bottom: -1px;
+	}
+	/* #endif */
+
+	.floating-ball {
+		position: relative;
+		width: 70px;
+		height: 70px;
+		border-radius: 50%;
+		background-color: #ff5a24;
+		justify-content: center;
+		align-items: center;
+		border-width: 1px;
+		border-style: solid;
+		border-color: #ffffff;
+		box-shadow: 0px 4px 10px rgba(28, 98, 183, 0.16);
+	}
+
+	.floating-ball-hover {
+		opacity: 0.92;
+		transform: scale(0.96);
+	}
+
+	.floating-ball-plus {
+		background-color: #ffffff;
+		border-radius: 2px;
+		width: 40%;
+		height: 2px;
+	}
+</style>

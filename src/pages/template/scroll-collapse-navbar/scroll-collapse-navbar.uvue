@@ -1,0 +1,270 @@
+<template>
+  <scroll-view :scroll-top="testState.scrollTop" @scroll="onScroll" class="page" show-scrollbar="false">
+    <view ref="seatbarRef" class="seatbar"></view>
+    <view class="content">
+      <view class="content-item">
+        <text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
+        <text class="text">2. 使用 ref 直接获取元素的节点，并在 scroll 事件中通过节点的 setProperty
+          方法来修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
+        <text class="text">3. 请向上\向下滚动页面观察效果。</text>
+      </view>
+      <view class="content-item" v-for="(item,index) in 20" :key="index">
+        <text class="text">content-{{item}}</text>
+      </view>
+    </view>
+
+    <view ref="navigatorbarRef" class="navigatorbar">
+      <view class="titlebar">
+        <!-- #ifndef MP-ALIPAY -->
+        <uni-back-arrow-circle style="background-color: transparent;" arrow-class="arrow"></uni-back-arrow-circle>
+        <!-- #endif -->
+        <!-- #ifdef MP-ALIPAY -->
+        <view style="width:36px;"></view>
+        <!-- #endif -->
+        <text ref="titleRef" class="title">DCloud 为开发者而生</text>
+      </view>
+      <view :style="inputWidthStyle" ref="searchbarRef" class="searchbar" @tap="search">
+        <image class="searchimg" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
+        <text class="searchinput">请输入你要搜索的内容</text>
+        <text class="searchbutton">搜索</text>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+/**
+ * @description: 支持页面滚动时让顶部搜索导航栏逐步折叠收起，并保留搜索入口的自定义导航栏页面。
+ * @logic: 页面在滚动过程中实时计算 scrollTop，并直接更新导航栏高度、标题透明度和搜索栏位置，形成折叠过渡效果。
+ * @optimization: 通过复用同一组导航栏节点并直接更新样式属性，避免滚动过程中重复创建吸顶节点带来的额外开销。
+ */
+//导航栏高度
+const NAVIBARHEIGHT = 88;
+//搜索栏高度
+const SEARCHBARHEIGHT = 40;
+//返回键按钮宽度
+const BACKWIDTH = 32;
+
+let statusBarHeight = 0
+let nviBarHeight = 0
+const navigatorbarRef = ref<UniElement | null>(null)
+const searchbarRef = ref<UniElement | null>(null)
+const titleRef = ref<UniElement | null>(null)
+const seatbarRef = ref<UniElement | null>(null)
+const inputWidth = ref<string | null>(null)
+const inputWidthStyle = computed(() : string => {
+  return inputWidth.value == null ? '' : 'width: ' + inputWidth.value + ';'
+})
+let hasInitMenuButtonInputWidth = false
+
+type ScrollCollapseNavbarTestState = {
+  scrollTop: number;
+  currentScrollTop: number;
+}
+
+const testState = reactive({
+  scrollTop: 0,
+  currentScrollTop: 0,
+} as ScrollCollapseNavbarTestState)
+
+function updateNavbarByScrollTop(scrollTop : number) {
+  testState.currentScrollTop = scrollTop
+  let offset = scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:scrollTop;//(scrollTop<0?0:scrollTop)
+  navigatorbarRef.value?.style?.setProperty('height', (nviBarHeight -offset)+'px');
+  titleRef.value?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
+  searchbarRef.value?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
+}
+
+// #ifdef MP
+function updateMenuButtonInputWidth(scrollTop : number) {
+  if (scrollTop < SEARCHBARHEIGHT) {
+    inputWidth.value = null
+    hasInitMenuButtonInputWidth = false
+    return
+  }
+  // 这里的阈值和导航栏折叠动画一致，先在折叠到位时取一次宽度，后续继续滚动则恢复为 null
+  if (hasInitMenuButtonInputWidth) {
+    return
+  }
+  const menuButton = uni.getMenuButtonBoundingClientRect();
+  // #ifdef MP-ALIPAY
+  const leftButton = my.getLeftButtonsBoundingClientRect();
+  inputWidth.value = ((menuButton.optionMenuLeft || menuButton.left) - leftButton.backButtonInteractive.right - 20) + 'px'
+  // #endif
+  // #ifdef MP-WEIXIN
+  inputWidth.value = Math.max(menuButton.left - BACKWIDTH - 24, 0) + 'px'
+  // #endif
+  hasInitMenuButtonInputWidth = true
+}
+// #endif
+
+function onScroll(e : ScrollEvent) {
+  const scrollTop = e.detail.scrollTop
+  updateNavbarByScrollTop(scrollTop)
+  // #ifdef MP
+  updateMenuButtonInputWidth(scrollTop)
+  // #endif
+}
+
+function search() {
+  uni.showToast({
+    title: '暂不支持',
+    icon: 'none'
+  });
+}
+
+function setStyle() {
+  navigatorbarRef.value?.style?.setProperty('padding-top', statusBarHeight + 'px');
+  navigatorbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight) + 'px');
+  seatbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight) + 'px');
+}
+
+onLoad(() => {
+  // #ifdef APP || MP
+    statusBarHeight = uni.getWindowInfo().statusBarHeight;
+  // #endif
+
+  nviBarHeight = NAVIBARHEIGHT + statusBarHeight;
+})
+
+onReady(() => {
+  setStyle();
+})
+
+
+onPageShow(() => {
+  // #ifdef MP-ALIPAY
+  // 支付宝小程序导航栏返回图标不可隐藏,当导航栏背景透明时，系统会默认使用白色前景色（即返回箭头为白色）通过frontColor设置黑色。
+  // frontColor 必须和 backgroundColor 一起传才能生效
+  uni.setNavigationBar({
+    frontColor: '#000000',
+    backgroundColor: '#ffffff',
+  })
+  // #endif
+})
+
+onResize((event : OnResizeOptions) => {
+  // #ifdef APP-ANDROID
+  // 监听多窗口模式
+  statusBarHeight = uni.getWindowInfo().statusBarHeight;
+  nviBarHeight = NAVIBARHEIGHT + statusBarHeight;
+  setStyle();
+  // #endif
+})
+
+function jest_scrollTo(scrollTop : number) : boolean {
+  testState.scrollTop = scrollTop
+  return true
+}
+
+function jest_getScrollTop() : number {
+  return testState.currentScrollTop
+}
+
+defineExpose({
+  jest_scrollTo,
+  jest_getScrollTop,
+})
+</script>
+
+<style>
+.page {
+  flex: 1;
+}
+.navigatorbar {
+  position: fixed;
+/* #ifdef APP */
+  padding-top: 35px;
+  height: 124px;
+/* #endif */
+/* #ifdef WEB */
+  height: 88px;
+/* #endif */
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--border-color, #efefef);
+  width: 100%;
+  background-color: var(--background-color, #f5f5f5);
+}
+.titlebar {
+  flex-direction: row;
+  align-items: center;
+  height: 44px;
+}
+
+/* uni-back-arrow-circle组件 自定义样式 */
+.arrow {
+  border-left: 2px solid #555!important;
+  border-bottom: 2px solid #555!important;
+}
+
+.title {
+  margin: 0px 2px;
+  color: var(--text-color, #333333);
+}
+.searchbar {
+  position: absolute;
+  bottom: 2px;
+  left: 0px;
+  right: 0px;
+  background-color: var(--list-background-color, #ffffff);
+  border: 1px solid #fbdf0d;
+  height: 32px;
+  border-radius: 100px;
+  margin: 6px 12px;
+  padding: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.searchimg {
+  width: 15px;
+}
+.searchinput {
+  flex-grow: 1;
+  font-size: 12px;
+  color: #666;
+}
+.searchbutton {
+  font-size: 12px;
+  background-color: #ff6900;
+  color: #FFF;
+  padding: 5px 8px;
+  border-radius: 100px;
+}
+.seatbar {
+/* #ifdef APP */
+  height: 124px;
+/* #endif */
+/* #ifdef WEB */
+  height: 88px;
+/* #endif */
+}
+.content {
+  padding: 5px 15px;
+}
+.content-item {
+  padding: 15px;
+  margin: 5px 0;
+  background-color: var(--list-background-color, #ffffff);
+  border-radius: 5px;
+}
+.text {
+  font-size: 14px;
+  color: var(--text-color, #666666);
+  opacity: 0.75;
+  line-height: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .arrow {
+    border-left-color: #ffffff !important;
+    border-bottom-color: #ffffff !important;
+  }
+
+  .searchinput {
+    color: #b8b8b8;
+  }
+}
+
+</style>

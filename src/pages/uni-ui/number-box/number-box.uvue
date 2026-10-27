@@ -1,0 +1,164 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1; padding: 15px;">
+	<!-- #endif -->
+	<!-- #ifndef APP -->
+	<view style="padding: 15px;">
+	<!-- #endif -->
+		<text class="page-title">NumberBox 数字输入框</text>
+
+		<!-- 基础用法 -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">基础用法：</text>
+			<uni-number-box v-model="data.value1" @change="onChange" />
+			<text class="hint">当前值：{{ data.value1 }}</text>
+		</view>
+
+		<!-- 设置最小值和最大值 -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">设置范围 (min=5, max=20)：</text>
+			<uni-number-box v-model="data.value2" :min="5" :max="20" />
+			<text class="hint">当前值：{{ data.value2 }}</text>
+		</view>
+
+		<!-- 设置步长 -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">步长为5 (step=5)：</text>
+			<uni-number-box v-model="data.value3" :step="5" />
+			<text class="hint">当前值：{{ data.value3 }}</text>
+		</view>
+
+		<!-- 小数步长 -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">小数步长 (step=0.1)：</text>
+			<uni-number-box v-model="data.value4" :step="0.1" :min="0" :max="10" />
+			<text class="hint">当前值：{{ data.value4 }}</text>
+		</view>
+
+		<!-- 禁用状态 -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">禁用状态：</text>
+			<uni-number-box :value="5" :disabled="true" />
+		</view>
+
+		<!-- 自定义样式 btn-class -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">自定义按钮样式 (btn-class)：</text>
+			<uni-number-box v-model="data.value5" btn-class="custom-btn" />
+		</view>
+
+		<!-- 自定义样式 input-class -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">自定义输入框样式 (input-class)：</text>
+			<uni-number-box v-model="data.value6" input-class="custom-input" />
+		</view>
+
+		<!-- 自定义样式组合 -->
+		<view style="margin-bottom: 20px;">
+			<text class="label">自定义样式组合 (蓝色主题)：</text>
+			<uni-number-box v-model="data.value7" btn-class="blue-btn" input-class="blue-input" icon-class="blue-icon" />
+		</view>
+
+		<!-- 暗黑模式外观演示：此区域固定展示深色外观，不跟随系统主题 -->
+		<view style="margin-bottom: 20px; background-color: #1a1a1a; padding: 15px; border-radius: 8px;">
+			<text style="color: #fff; margin-bottom: 10px;">暗黑模式：</text>
+			<uni-number-box v-model="data.value8" btn-class="dark-btn" input-class="dark-input" icon-class="dark-icon" />
+			<text style="color: #999; margin-top: 5px;">当前值：{{ data.value8 }}</text>
+		</view>
+
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+	<!-- #ifndef APP -->
+	</view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+type Data = {
+	value1 : number
+	value2 : number
+	value3 : number
+	value4 : number
+	value5 : number
+	value6 : number
+	value7 : number
+	value8 : number
+}
+
+const data = reactive<Data>({
+	value1: 1,
+	value2: 10,
+	value3: 0,
+	value4: 0.5,
+	value5: 1,
+	value6: 1,
+	value7: 1,
+	value8: 1
+})
+
+const onChange = (value : number) : void => {
+	console.log('number-box change:', value)
+}
+
+defineExpose({
+	data
+})
+</script>
+
+<style>
+.page-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--text-color, #333333);
+	margin-bottom: 20px;
+}
+
+.label {
+	color: var(--text-color, #333333);
+	opacity: 0.75;
+	margin-bottom: 10px;
+}
+
+.hint {
+	color: var(--text-color, #333333);
+	opacity: 0.6;
+	margin-top: 5px;
+}
+
+.custom-btn {
+	background-color: #28a745;
+}
+
+.custom-input {
+	background-color: #fff3cd;
+	color: #856404;
+	width: 80px;
+}
+
+.dark-btn {
+	background-color: #333;
+}
+
+.dark-input {
+	background-color: #333;
+	color: #fff;
+}
+
+.dark-icon {
+	background-color: #fff;
+}
+
+.blue-btn {
+	background-color: #007aff;
+}
+
+.blue-input {
+	background-color: #e8f4ff;
+	color: #007aff;
+}
+
+.blue-icon {
+	background-color: #fff;
+}
+</style>

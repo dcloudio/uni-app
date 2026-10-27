@@ -1,3 +1,5 @@
+jest.setTimeout(50000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
@@ -6,12 +8,19 @@ const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
+const ACTION_SHEET_SETTLE_TIME = 1000
 
 describe('showActionSheet', () => {
-  let screenShotOptions = {};
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
+  let screenShotOptions = { fullPage: true };
   let page;
   let topSafeArea = 0
   
@@ -20,15 +29,32 @@ describe('showActionSheet', () => {
     return await page.setData({ data: newData });
   }
 
-  async function showActionSheet(page) {
-    const btn = await page.$('#btn-action-sheet-show')
-    await btn.tap()
-    await page.waitFor(1000);
+  async function hideActionSheet(page) {
+    await page.callMethod('hideActionSheet')
+    await page.waitFor(ACTION_SHEET_SETTLE_TIME)
   }
 
-  async function screenshot() {
-    const image = await program.screenshot(screenShotOptions);
-    expect(image).toSaveImageSnapshot();
+  async function showActionSheet(page) {
+    await hideActionSheet(page)
+    const btn = await page.$('#btn-action-sheet-show')
+    await btn.tap()
+    await page.waitFor(ACTION_SHEET_SETTLE_TIME)
+  }
+
+  async function screenshot(fileName) {
+    const image = isWeb ? await program.screenshot(screenShotOptions) : await program.device.screenshot(screenShotOptions);
+    const options = fileName ? {
+      customSnapshotIdentifier() {
+        return fileName
+      }
+    } : {}
+    if (!isAppWebView) {
+      expect(image).toMatchImageSnapshot({ ...options,
+        failureThresholdType: 'percent',
+        failureThreshold: 0.1,
+      });
+    }
+    expect(image).toSaveImageSnapshot(options);
   }
 
   beforeAll(async () => {
@@ -37,56 +63,67 @@ describe('showActionSheet', () => {
     if (isAppWebView) {
       if (isIos) {
         topSafeArea = 59
+        if (platformInfo.includes('26')) {
+          topSafeArea = 62
+        }
       } else if (isAndroid) {
         topSafeArea = 24
+        windowInfo.safeArea.bottom = 867
         if (platformInfo.startsWith('android 5')) {
           topSafeArea = 25
+        }if (platformInfo.startsWith('android 6')) {
+          windowInfo.safeArea.bottom = 592
+        }if (platformInfo.startsWith('android 8')) {
+          windowInfo.safeArea.bottom = 534
         } else if (platformInfo.startsWith('android 11')) {
           topSafeArea = 52
-        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
+        } else if (platformInfo.startsWith('android 12')) {
+          topSafeArea = 24
+          windowInfo.safeArea.bottom = 716
+        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 14') || platformInfo.startsWith('android 15')) {
           topSafeArea = 49
+          windowInfo.safeArea.bottom = 891
         }
       } else if (isHarmony) {
-        // mate 60
-        // topSafeArea = 33
-        // mate 60 pro
-        topSafeArea = 38
+        topSafeArea = 39
+        if (platformInfo.includes('nova_12')) {
+          topSafeArea = 35
+        }
       }
     }
-    deviceShotOptions = {
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44,
-      },
-    };
 
-    page = await program.reLaunch(isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/API');
+		page = await program.reLaunch('/pages/tabBar/API');
     await page.waitFor('view');
 
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view');
-    if (isApp && !isAppWebView) {
-      if(isAndroid || isIos){
+    if (isApp) {
+      if((isAndroid || isIos) && !isAppWebView){
         await page.callMethod('setThemeAuto')
       }
-
+      const top = topSafeArea + 44
+      // actionSheet overlays the page window and can extend below its content area.
+      const bottom = windowInfo.safeArea.bottom
+      const left = windowInfo.safeArea.left
+      const right = windowInfo.safeArea.right - 10
       screenShotOptions = {
         deviceShot: true,
         area: {
-          x: 0,
-          y: topSafeArea + 44
+          x: left,
+          y: top,
+          width: right - left,
+          height: bottom - top
         },
-      }
-    } else if (isWeb){
-      screenShotOptions = {
-        fullPage: true
       }
     }
   });
 
   it("onload showActionSheet", async () => {
-    await page.waitFor(isWeb ? 3000 : 1000);
+    await page.waitFor(async () => {
+      const pageData = await page.data('data')
+      return pageData.onReadyActionSheetCalled === true
+    })
+    await page.waitFor(isWeb ? 3000 : ACTION_SHEET_SETTLE_TIME);
     await screenshot();
     // 非交互关闭应触发 fail 回调
     if (!isMP) {
@@ -94,6 +131,7 @@ describe('showActionSheet', () => {
       await program.navigateBack();
       await page.waitFor(1000);
       page = await program.navigateTo(PAGE_PATH)
+      await page.waitFor('view');
       const newLifeCycleNum = await page.callMethod('getLifeCycleNum');
       expect(newLifeCycleNum).toBe(originLifeCycleNum + 2);
     }
@@ -166,19 +204,17 @@ describe('showActionSheet', () => {
     })
   }
   it("showActionSheet 并在回调中再次 showActionSheet", async () => {
+    await hideActionSheet(page)
     await page.callMethod('showActionSheetAndShowAgainInCallback')
     await page.waitFor(1000);
-    await screenshot();
+    await screenshot('showActionSheetAndShowAgainInCallback1');
     if (isApp) {
-      await program.tap({
-        x: 200,
-        y: 700,
-      })
+      await program.device.tap(200, 700)
     } else if (isWeb) {
       await page.callMethod('closeWebActionSheet')
     }
     await page.waitFor(1000);
-    await screenshot();
+    await screenshot('showActionSheetAndShowAgainInCallback2');
   })
   if (!isMP) {
     it("hideActionSheet", async () => {
@@ -194,10 +230,7 @@ describe('showActionSheet', () => {
       const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
       await page.callMethod('showActionSheetAndNavigateBackInSuccessCallback');
       await page.waitFor(1000);
-      await program.tap({
-        x: 100,
-        y: 700 + topSafeArea,
-      });
+      await program.device.tap(100, 700 + topSafeArea);
       // success callback + 1
       // 等待 back 完成
       await page.waitFor(1000);

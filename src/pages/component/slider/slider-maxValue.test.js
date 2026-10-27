@@ -1,3 +1,5 @@
+jest.setTimeout(30000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
@@ -6,7 +8,6 @@ const isMP = platformInfo.startsWith('mp')
 const PAGE_PATH = '/pages/component/slider/slider-maxValue'
 
 describe('touch-events-test', () => {
-
   if (isAndroid || isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('not support', () => {
       expect(1).toBe(1)

@@ -1,0 +1,21 @@
+export class TestWorkerTask extends WorkerTaskImpl {
+  constructor() {
+    super()
+    console.log("[TestWorkerTask] 构造器初始化")
+  }
+
+  override entry() {
+    console.log("[TestWorkerTask] 启动完成，等待主线程消息")
+  }
+
+  override onMessage(message: any) {
+    console.log('[TestWorkerTask] 收到主线程消息: ', message)
+    const data = message as string
+    const inputNumber = parseInt(data)
+    if (isNaN(inputNumber)) {
+      this.postMessage(`输入"${data}"不是有效数字`)
+      return
+    }
+    this.postMessage((inputNumber + 1).toString())
+  }
+}

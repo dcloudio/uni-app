@@ -1,11 +1,9 @@
 <template>
-  <view>
-    <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd"></canvas>
-    <button @click="doClear()">清空</button>
-  </view>
+    <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd" @ready="onCanvasReady"></canvas>
+    <button style="margin-bottom: 20px" @click="doClear()">清空</button>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 type Point = {
   x : number
   y : number
@@ -21,14 +19,14 @@ let renderingContext: CanvasRenderingContext2D | null = null
 // Methods
 function getPosition(event : TouchEvent) : Point {
   const touch = event.touches[0]
-  // #ifndef MP-WEIXIN
+  // #ifndef MP
   return {
     x: touch.clientX - offsetX,
     y: touch.clientY - offsetY
   } as Point
   // #endif
 
-  // #ifdef MP-WEIXIN
+  // #ifdef MP
   return {
     x: touch.x,
     y: touch.y
@@ -69,12 +67,34 @@ function doClear() {
   }
 }
 
-// Lifecycle
-onReady(() => {
+function onCanvasReady() {
+  // #ifdef MP-ALIPAY
   uni.createCanvasContextAsync({
     id: 'tablet',
     success: (context : CanvasContext) => {
-      console.log('success')
+      renderingContext = context.getContext('2d')!
+      const canvas = renderingContext!.canvas
+
+      uni.createSelectorQuery().select('#tablet').boundingClientRect().exec((ret) => {
+        const rect = ret.length > 0 ? ret[0] as NodeInfo : null
+        const canvasWidth = rect != null ? rect.width : 0
+        const canvasHeight = rect != null ? rect.height : 0
+        const dpr = uni.getWindowInfo().pixelRatio
+        canvas.width = canvasWidth * dpr
+        canvas.height = canvasHeight * dpr
+        renderingContext!.scale(dpr, dpr)
+      })
+    }
+  })
+  // #endif
+}
+
+// Lifecycle
+onReady(() => {
+  // #ifndef MP-ALIPAY
+  uni.createCanvasContextAsync({
+    id: 'tablet',
+    success: (context : CanvasContext) => {
       renderingContext = context.getContext('2d')!
       const canvas = renderingContext!.canvas
 
@@ -88,16 +108,20 @@ onReady(() => {
       offsetX = elRect.left
       offsetY = elRect.top
       // #endif
+      canvas.addEventListener('contextrestored', (event : Event)=>{
+        renderingContext!.scale(dpr, dpr)
+      })
     }
   })
+  // #endif
 })
 </script>
 
 <style>
   .drawing {
     width: 100%;
-    height: 500px;
+    flex-grow: 1;
     background-color: lightgray;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 </style>

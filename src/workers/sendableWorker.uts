@@ -1,0 +1,29 @@
+// #ifdef APP-HARMONY
+import { SendableObject } from '@/uni_modules/uts-worker-sendable';
+
+export class SendableWorker extends WorkerTaskImpl {
+  override entry() {
+    console.log('[SendableWorker] Worker启动完成');
+  }
+
+  override onMessage(message : any) {
+    console.log('[SendableWorker] 收到主线程消息:', JSON.stringify(message));
+    // #ifdef APP-HARMONY
+    const sendable = new SendableObject();
+    sendable.a = 666;
+    this.postMessage(sendable, {
+      harmonySendable: true,
+      transfer: []
+    } as WorkerPostMessageOptions);
+    // #endif
+  }
+}
+// #endif
+
+// #ifndef APP-HARMONY
+export class SendableWorker extends WorkerTaskImpl {
+  override entry() {
+    console.log('[SendableWorker] Worker启动完成');
+  }
+}
+// #endif

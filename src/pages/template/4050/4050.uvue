@@ -1,8 +1,9 @@
 <template>
-    <text>初始化时1帧内显示110个元素。勿使用debug方式运行来测试性能</text>
+    <text>1帧内显示110个元素。勿使用debug方式运行来测试性能</text>
+    <text>当前页面：拍平示例（启用 flatten）</text>
 		<view>
-		    <view style="flex-direction: row;" v-for="(_,index) in 5" :key="index" flatten>
-		        <view v-for="(_,i) in 10" :key="index+'-'+i" style="background-color: #85d8b4;margin: 0.5px;" flatten>
+		    <view style="flex-direction: row;" v-for="(_) in 5" flatten>
+		        <view v-for="(_,i) in 10" style="background-color: #85d8b4;margin: 0.5px;" flatten>
 		            <text flatten>{{i}}</text>
 		        </view>
 		    </view>
@@ -11,8 +12,8 @@
         <text class="btnText">同屏显示4050个元素</text>
     </view>
 		<view>
-        <view v-if="show" style="flex-direction: row;" v-for="(_,index) in 50" :key="index" flatten>
-            <view v-for="(_,i) in 40" :key="index+'-'+i" style="background-color: #85d8b4;margin: 0.5px;" flatten>
+        <view v-if="show" style="flex-direction: row;" v-for="(_) in 50" flatten>
+            <view v-for="(_,i) in 40" style="background-color: #85d8b4;margin: 0.5px;" flatten>
                 <text style="font-size: 5px;line-height: 5px;" flatten>{{i}}</text>
             </view>
         </view>
@@ -20,10 +21,10 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
     const show = ref(false);
-    var isBackPress = false;
-    var startime = Date.now();
+    let isBackPress = false;
+    let startime = Date.now();
     const ShowEvent = (() => {
 			startime = Date.now();
       show.value = !show.value

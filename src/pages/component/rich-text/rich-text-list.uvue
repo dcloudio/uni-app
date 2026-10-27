@@ -9,7 +9,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
 const text = ref("<h2>uni-app x，终极跨平台方案</h2>")

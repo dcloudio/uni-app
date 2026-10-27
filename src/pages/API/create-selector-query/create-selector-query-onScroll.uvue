@@ -6,7 +6,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const instance = getCurrentInstance()!.proxy!
 
@@ -22,9 +22,12 @@
   function onScroll() {
     count.value++
     console.log("scroll: ", count.value)
-    uni.createSelectorQuery()
-      .in(instance)
-      .selectAll('content-item')
+    // #ifdef MP-ALIPAY
+    uni.createSelectorQuery().selectAll('.content-item')
+    // #endif
+    // #ifndef MP-ALIPAY
+    uni.createSelectorQuery().in(instance).selectAll('content-item')
+    // #endif
       .boundingClientRect()
       .exec((result) => {
         count.value--
@@ -37,7 +40,7 @@
   }
 
   onLoad(() => {
-
+   
   })
 
   defineExpose({

@@ -1,0 +1,140 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h2">联系人选择 uni.chooseContact</text>
+		<text>调用系统的联系人选择界面</text>
+
+		<text class="uni-h3">快捷操作</text>
+		<text class="margin-v">调用状态：{{ invokeState }}</text>
+		<button class="margin-v" @tap="choosePhoneContact">选择联系人</button>
+		<button class="margin-v" @tap="clearResult">清空结果</button>
+		<button class="margin-v" @tap="clearLogs">清空日志</button>
+
+		<text class="uni-h3">选择结果</text>
+		<text class="field-label">displayName</text>
+		<text class="log-text">{{ displayName }}</text>
+		<text class="field-label">phoneNumber</text>
+		<text class="log-text">{{ phoneNumber }}</text>
+		<text class="field-label">phoneNumberList（{{ phoneNumberList.length }}）</text>
+		<view class="log-list" v-if="phoneNumberList.length > 0">
+			<text class="log-item" v-for="item in phoneNumberList" :key="item">{{ item }}</text>
+		</view>
+		<text class="log-text" v-else>尚未返回手机号列表</text>
+
+		<text class="uni-h3">回调信息</text>
+		<text class="margin-v">success：{{ successText }}</text>
+		<text class="margin-v">fail：{{ failText }}</text>
+		<text class="margin-v">complete：{{ completeText }}</text>
+
+		<text class="uni-h3">最近日志</text>
+		<view class="log-list" v-if="logs.length > 0">
+			<text class="log-item" v-for="item in logs" :key="item">{{ item }}</text>
+		</view>
+		<text class="log-text" v-else>暂无日志</text>
+	<!-- #ifdef APP -->
+		</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+	const invokeState = ref<string>('尚未调用')
+	const displayName = ref<string>('尚未选择联系人')
+	const phoneNumber = ref<string>('尚未选择手机号')
+	const phoneNumberList = ref<Array<string>>(new Array<string>())
+	const successText = ref<string>('尚未触发')
+	const failText = ref<string>('尚未触发')
+	const completeText = ref<string>('尚未触发')
+	const logs = ref<Array<string>>(new Array<string>())
+
+	function appendLog(text : string) : void {
+		logs.value.unshift(`${Date.now()} ${text}`)
+		if (logs.value.length > 10) {
+			logs.value.pop()
+		}
+	}
+
+	function resetCallbackTexts() : void {
+		successText.value = '尚未触发'
+		failText.value = '尚未触发'
+		completeText.value = '尚未触发'
+	}
+
+	function clearResult() : void {
+		invokeState.value = '尚未调用'
+		displayName.value = '尚未选择联系人'
+		phoneNumber.value = '尚未选择手机号'
+		phoneNumberList.value = new Array<string>()
+		resetCallbackTexts()
+		appendLog('已清空 chooseContact 结果')
+	}
+
+	function clearLogs() : void {
+		logs.value = new Array<string>()
+	}
+
+	function describeComplete(result : ChooseContactComplete) : string {
+		if (result instanceof UniError) {
+			return `${result.errMsg} (${result.errCode})`
+		}
+		const successResult = result as ChooseContactSuccess
+		return `${successResult.errMsg} / ${successResult.displayName} / ${successResult.phoneNumber}`
+	}
+
+	function choosePhoneContact() : void {
+		invokeState.value = '调用中'
+		resetCallbackTexts()
+		appendLog('开始调用 chooseContact')
+		uni.chooseContact({
+			success: (result : ChooseContactSuccess) => {
+				invokeState.value = 'success'
+				displayName.value = result.displayName
+				phoneNumber.value = result.phoneNumber
+				phoneNumberList.value = result.phoneNumberList
+				successText.value = `${result.errMsg} / ${result.displayName} / ${result.phoneNumber}`
+				failText.value = '本次未触发'
+				appendLog(`chooseContact success ${result.displayName} ${result.phoneNumber}`)
+			},
+			fail: (err : ChooseContactFail) => {
+				invokeState.value = 'fail'
+				failText.value = `${err.errMsg} (${err.errCode})`
+				appendLog(`chooseContact fail ${err.errMsg}`)
+			},
+			complete: (result : ChooseContactComplete) => {
+				completeText.value = describeComplete(result)
+				appendLog(`chooseContact complete ${completeText.value}`)
+			}
+		})
+	}
+</script>
+
+<style>
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.field-label {
+		margin-top: 6px;
+		font-size: 14px;
+	}
+
+	.log-text {
+		margin: 5px 0;
+		padding: 10px;
+		font-size: 14px;
+		border: 1px solid #ccc;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
+	}
+</style>

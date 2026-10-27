@@ -1,5 +1,4 @@
-<script setup lang="uts">
-import { state } from '@/store/index.uts'
+<script setup lang="ts">
 // 样式隔离配置: 受全局样式影响
 defineOptions({
   styleIsolation: 'app'
@@ -14,17 +13,16 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  defaultValue: {
+  value: {
     type: Boolean,
     default: false
   }
 })
 
-const isDarkMode = computed(() => state.isDarkMode)
-const _checked = ref(false)
+const _checked = ref(props.value)
 
-onMounted(() => {
-  _checked.value = props.defaultValue
+watch((): boolean => props.value, (value : boolean) => {
+  _checked.value = value
 })
 
 // @ts-ignore
@@ -35,9 +33,9 @@ function _change(e : UniSwitchChangeEvent) {
 </script>
 
 <template>
-  <view class="button-data-main uni-flex" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="button-data-main uni-row">
     <text class="uni-title" style="width:80%">{{ title }}</text>
-    <switch :checked="_checked" :disabled="disabled" :color="isDarkMode ? '#a8a8b7' : '#007AFF'" @change="_change" />
+    <switch :checked="_checked" :disabled="disabled" @change="_change" />
   </view>
 </template>
 

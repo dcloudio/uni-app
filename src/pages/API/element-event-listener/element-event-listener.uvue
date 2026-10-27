@@ -1,0 +1,182 @@
+<template>
+	<view class="page">
+		<text class="title">UniElement EventListener 示例</text>
+		<text class="desc">点击下方红色区域前，先注册 click 监听；移除后再次点击将不再计数。</text>
+		<text class="support-text">{{ data.supportText }}</text>
+
+		<view ref="targetRef" class="listener-target">
+			<text class="listener-target-text">点按这里触发元素 click 事件</text>
+		</view>
+
+		<view class="panel">
+			<text class="panel-text">监听状态：{{ data.listenerStatusText }}</text>
+			<text class="panel-text">触发次数：{{ data.triggerCount }}</text>
+			<text class="panel-text">最近事件：{{ data.lastEventType }}</text>
+			<text class="panel-text">最近结果：{{ data.lastAction }}</text>
+		</view>
+
+		<text class="button btn-add" @click="add">addEventListener</text>
+		<text class="button btn-remove" @click="remove">removeEventListener</text>
+		<text class="button btn-reset" @click="reset">reset</text>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type EventListenerData = {
+		supportText: string;
+		listenerStatusText: string;
+		triggerCount: number;
+		lastEventType: string;
+		lastAction: string;
+		listenerAdded: boolean;
+	}
+
+	const targetRef = ref<UniViewElement | null>(null)
+	const data = reactive<EventListenerData>({
+		supportText: '当前平台暂不支持此 API。',
+		listenerStatusText: '未注册',
+		triggerCount: 0,
+		lastEventType: '尚未触发',
+		lastAction: '等待操作',
+		listenerAdded: false,
+	})
+
+	let callbackWrapper : UniCallbackWrapper | null = null
+
+	onReady(() => {
+		// #ifdef WEB
+		data.supportText = '当前平台支持 addEventListener/removeEventListener，可直接验证元素事件监听。'
+		// #endif
+		// #ifndef WEB
+		data.supportText = '当前平台不支持 UniElement.addEventListener，本页仅展示调用方式。'
+		// #endif
+	})
+
+	function eventCallback(event : UniEvent) : void {
+		data.triggerCount += 1
+		data.lastEventType = event.type
+		data.lastAction = '监听回调已执行'
+	}
+
+	function add() {
+		if (data.listenerAdded) {
+			data.lastAction = '监听已存在，无需重复注册'
+			return
+		}
+
+		const element = targetRef.value
+		if (element == null) {
+			data.lastAction = '目标元素未就绪'
+			return
+		}
+
+		callbackWrapper = element.addEventListener<UniEvent, void>('click', eventCallback)
+		data.listenerAdded = true
+		data.listenerStatusText = '已注册'
+		data.lastAction = '已注册 click 监听'
+	}
+
+	function remove() {
+		const element = targetRef.value
+		if (element == null || callbackWrapper == null) {
+			data.lastAction = '暂无可移除的监听'
+			data.listenerAdded = false
+			data.listenerStatusText = '未注册'
+			return
+		}
+
+		element.removeEventListener('click', callbackWrapper)
+		callbackWrapper = null
+		data.listenerAdded = false
+		data.listenerStatusText = '未注册'
+		data.lastAction = '已移除 click 监听'
+	}
+
+	function reset() {
+		remove()
+		data.triggerCount = 0
+		data.lastEventType = '尚未触发'
+		data.lastAction = '状态已重置'
+	}
+
+	onUnload(() => {
+		remove()
+	})
+
+	defineExpose({
+		data,
+		add,
+		remove,
+		reset,
+	})
+</script>
+
+<style>
+	.page {
+		padding: 15px;
+	}
+
+	.title {
+		font-size: 18px;
+		font-weight: bold;
+		color: var(--event-title-color, #222222);
+	}
+
+	.desc {
+		margin-top: 10px;
+		color: var(--event-desc-color, #666666);
+		line-height: 22px;
+	}
+
+	.support-text {
+		margin-top: 10px;
+		color: #007aff;
+		line-height: 22px;
+	}
+
+	.listener-target {
+		margin-top: 16px;
+		padding: 50px 12px;
+		border-radius: 10px;
+		background-color: #f04f4f;
+	}
+
+	.listener-target-text {
+		color: #ffffff;
+	}
+
+	.panel {
+		margin-top: 16px;
+		padding: 12px;
+		border-radius: 10px;
+		background-color: var(--event-panel-background, #f5f7fa);
+	}
+
+	.panel-text {
+		margin-top: 6px;
+		color: var(--event-panel-text-color, #333333);
+	}
+
+	.button {
+		position: relative;
+		box-sizing: border-box;
+		border-radius: 5px;
+		overflow: hidden;
+		background-color: #007aff;
+		border-style: solid;
+		border-width: 0.5px;
+		border-color: rgba(0, 0, 0, 0.2);
+		color: #ffffff;
+		padding: 10px 5px;
+		margin-top: 15px;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page {
+			--event-title-color: #ffffff;
+			--event-desc-color: #a0a0a0;
+			--event-panel-background: #2d2d2d;
+			--event-panel-text-color: #ffffff;
+		}
+	}
+</style>

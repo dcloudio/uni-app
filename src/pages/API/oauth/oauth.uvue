@@ -1,46 +1,43 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
-    <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-container">
-        <view class="uni-center">登录状态</view>
-        <view v-if="userInfo == null">
-          <template v-if="logging">
-            <view class="uni-center uni-common-mt">登录中...</view>
-          </template>
-          <template v-else>
-            <view class="uni-center uni-common-mt">未登录</view>
-            <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
-          </template>
-        </view>
-        <view v-else>
-          <view class="uni-center uni-common-mt">
-            <image :src="userInfo.avatarUrl" style="width: 60px;height: 60px;border-radius: 30px;"></image>
-          </view>
-          <view class="uni-center uni-common-mt">Hello, {{userInfo.nickName}}</view>
-        </view>
+  <page-head :title="title"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
+    <view class="uni-container">
+      <view class="uni-center">登录状态</view>
+      <view v-if="userInfo == null">
+        <template v-if="logging">
+          <view class="uni-center uni-common-mt">登录中...</view>
+        </template>
+        <template v-else>
+          <view class="uni-center uni-common-mt">未登录</view>
+          <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
+        </template>
       </view>
-      <view class="uni-btn-v uni-common-mt">
-        <!-- #ifdef APP-HARMONY -->
-        <button type="primary" @click="hwLogin">华为登录</button>
-        <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
-        <!-- #endif -->
-        <button class="uni-common-mt" @click="clear">清空</button>
+      <view v-else>
+        <view class="uni-center uni-common-mt">
+          <image :src="userInfo!.avatarUrl" style="width: 60px;height: 60px;border-radius: 30px;"></image>
+        </view>
+        <view class="uni-center uni-common-mt">Hello, {{userInfo!.nickName}}</view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <view class="uni-btn-v uni-common-mt">
+      <!-- #ifdef APP-HARMONY -->
+      <button type="primary" @click="hwLogin">华为登录</button>
+      <!-- #endif -->
+      <!-- #ifdef APP-IOS -->
+      <button type="primary" @click="appleLogin">Apple 登录</button>
+      <!-- #endif -->
+      <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
+      <button class="uni-common-mt" @click="clear">清空</button>
+    </view>
+  </view>
 </template>
 
-<script setup lang="uts">
-  import { state, setUserInfo, UserInfo } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, setUserInfo, UserInfo } from '@/store/index.ts'
 
   const title = ref('OAuth')
   const logging = ref(false)
-  const userInfo = computed(() => state.userInfo)
+  const userInfo = computed(() : UserInfo | null => state.userInfo)
   const testUserInfo = ref<UserInfo | null>(null)
 
   const clear = () => {
@@ -48,6 +45,15 @@
     testUserInfo.value = null
     logging.value = false
   }
+
+  // #ifdef APP-IOS
+  const appleLogin = () => {
+    uni.navigateTo({
+      url: '/pages/API/oauth/oauth-apple'
+    })
+  }
+  // #endif
+
 
   const hwLogin = () => {
     logging.value = true
@@ -81,28 +87,43 @@
   }
 
   const wxLogin = () => {
-    uni.showLoading({
-      title: '微信登录...'
-    })
+    logging.value = true;
+    if (userInfo.value != null) return;
     uni.login({
       provider: 'weixin',
       success(res) {
-        uni.hideLoading()
-        uni.showModal({
-          title: '微信登录成功',
-          content: `code: ${res.code}`
-        })
+        uniCloud.importObject('uni-login-test-co').loginByWeixin({
+          "code": res.code,
+          "appid": "wxd569c7238830733b"
+        }).then((res : UTSJSONObject) => {
+          console.log(JSON.stringify(res));
+          const info : UserInfo = {
+            nickName: (res.nickname as string) ?? '',
+            avatarUrl: (res.headimgurl as string) ?? ''
+          };
+          testUserInfo.value = info;
+          setUserInfo(info);
+          logging.value = false;
+        }).catch(err => {
+          console.error(JSON.stringify(err));
+          uni.showModal({
+            title: '微信登录失败',
+            content: (err as Error).message
+          });
+          clear();
+        });
       },
       fail(err) {
-        uni.hideLoading()
-        uni.showToast({
-          title: err.errMsg
-        })
+        uni.showModal({
+          title: '微信登录失败',
+          content: err.errMsg
+        });
+        clear();
       }
     })
   }
 
-  function getTestUserInfo() {
+  function getTestUserInfo() : UserInfo | null {
     return testUserInfo.value
   }
 

@@ -1,0 +1,205 @@
+<template>
+  <!-- #ifdef APP -->
+  <text>查看getFileInfo各摘要算法(digestAlgorithm)的测试日志</text>
+  <button size="mini" @click="log=''">清空日志</button>
+  <scroll-view style="max-height: 300px;">
+    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+  </scroll-view>
+
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <button class="btnstyle" type="primary" @tap="createTestFile"
+      id="btn-create-test-file">创建测试文件(内容:{{ data.writeFileContent }})</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest('md5')"
+      id="btn-get-file-info-md5">getFileInfo(digestAlgorithm: md5)</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest('sha1')"
+      id="btn-get-file-info-sha1">getFileInfo(digestAlgorithm: sha1)</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest('sha256')"
+      id="btn-get-file-info-sha256">getFileInfo(digestAlgorithm: sha256)</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest('none')"
+      id="btn-get-file-info-none">getFileInfo(digestAlgorithm: none)</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest()"
+      id="btn-get-file-info-default">getFileInfo(不传digestAlgorithm)</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest('unsupported-digest')"
+      id="btn-get-file-info-invalid">getFileInfo(无效算法)</button>
+    <button class="btnstyle" type="primary" @tap="readFileTest"
+      id="btn-read-file">readFile(编码:{{ data.readFileEncoding }})</button>
+    <!-- #ifdef APP -->
+    <button class="btnstyle" type="primary" @tap="getFileInfoByContent"
+      id="btn-get-file-info-content">getFileInfo(content://)</button>
+    <!-- #endif -->
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  type DataType = {
+    logAble : boolean,
+    writeFilePath : string,
+    writeFileContent : string,
+    writeFileEncoding :  "ascii" | "base64" | "utf-8",
+    readFileEncoding : "ascii" | "base64" | "utf-8",
+    readFileRet : string,
+    getFileInfoAlgorithm : string,
+    getFileInfoSize : number,
+    getFileInfoDigest : string,
+    lastFailError : UniError,
+    done : boolean,
+  }
+
+  const log = ref('')
+  const data = reactive({
+    /**
+     * 自动化测试需要关闭log
+     */
+    logAble: true,
+    writeFilePath: 'getFileInfo-hello.txt',
+    writeFileContent: 'hello',
+    writeFileEncoding: 'utf-8',
+    readFileEncoding: 'utf-8',
+    readFileRet: '',
+    getFileInfoAlgorithm: 'md5',
+    getFileInfoSize: -1,
+    getFileInfoDigest: '',
+    lastFailError: new UniError('uni-file-manager', 1300000, 'mock error'),
+    done: false,
+  } as DataType)
+
+  // 创建内容固定的测试文件，供各摘要算法计算使用
+  function createTestFile() {
+    const fileManager = uni.getFileSystemManager()
+    data.done = false
+    const options : WriteFileOptions = {
+      filePath: `${uni.env.USER_DATA_PATH}/${data.writeFilePath}`,
+      data: data.writeFileContent,
+      encoding: data.writeFileEncoding,
+      success: (res) => {
+        if (data.logAble) {
+          log.value += 'createTestFile success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('createTestFile success', res)
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          log.value += 'createTestFile fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('createTestFile fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: () => {
+        data.done = true
+      }
+    }
+    fileManager.writeFile(options)
+  }
+
+  // 获取文件信息并计算摘要，digestAlgorithm 可为 md5 / sha1 / sha256 / none；不传时使用平台默认算法
+  function getFileInfoTest(algorithm ?: string) {
+    const fileManager = uni.getFileSystemManager()
+    data.done = false
+    data.getFileInfoAlgorithm = algorithm ?? ''
+    data.getFileInfoSize = -1
+    data.getFileInfoDigest = ''
+    const options : GetFileInfoOptions = {
+      filePath: `${uni.env.USER_DATA_PATH}/${data.writeFilePath}`,
+      success: (res : GetFileInfoSuccessResult) => {
+        if (data.logAble) {
+          log.value += `getFileInfo(${algorithm ?? 'default'}) success:` + JSON.stringify(res) + '\n\n'
+        }
+        console.log('getFileInfoTest success', res)
+        data.getFileInfoSize = res.size
+        data.getFileInfoDigest = res.digest
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          log.value += `getFileInfo(${algorithm ?? 'default'}) fail:` + JSON.stringify(res) + '\n\n'
+        }
+        console.log('getFileInfoTest fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: () => {
+        data.done = true
+      }
+    }
+    if (algorithm != null) {
+      options.digestAlgorithm = algorithm
+    }
+    fileManager.getFileInfo(options)
+  }
+
+  // 按指定编码读取测试文件内容，用于验证摘要对应的原始字节
+  function readFileTest() {
+    const fileManager = uni.getFileSystemManager()
+    data.done = false
+    const options : ReadFileOptions = {
+      filePath: `${uni.env.USER_DATA_PATH}/${data.writeFilePath}`,
+      encoding: data.readFileEncoding,
+      success: (res : ReadFileSuccessResult) => {
+        if (data.logAble) {
+          log.value += 'readFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('readFileTest success', res)
+        data.readFileRet = res.data.toString()
+      },
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          log.value += 'readFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('readFileTest fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+      },
+      complete: () => {
+        data.done = true
+      }
+    }
+    fileManager.readFile(options)
+  }
+
+  // #ifdef APP
+  // 选择系统文件(content://)后获取其文件信息
+  function getFileInfoByContent() {
+    uni.chooseFile({
+      count: 1,
+      success: (e) => {
+        const filePath = e.tempFiles[0].path
+        if (data.logAble) {
+          log.value += 'getFileInfoByContent file:' + filePath + '\n\n'
+        }
+        console.log('getFileInfoByContent file', filePath)
+        uni.getFileSystemManager().getFileInfo({
+          filePath: filePath,
+          success: (res : GetFileInfoSuccessResult) => {
+            if (data.logAble) {
+              log.value += 'getFileInfo(content://) success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('getFileInfoByContent success', res)
+          },
+          fail: (res : IUniError) => {
+            if (data.logAble) {
+              log.value += 'getFileInfo(content://) fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('getFileInfoByContent fail', res)
+          }
+        })
+      }
+    })
+  }
+  // #endif
+
+  defineExpose({
+    data,
+    createTestFile,
+    getFileInfoTest,
+    readFileTest,
+    // #ifdef APP
+    getFileInfoByContent
+    // #endif
+  })
+</script>
+
+<style>
+  .btnstyle {
+    margin: 4px;
+  }
+</style>

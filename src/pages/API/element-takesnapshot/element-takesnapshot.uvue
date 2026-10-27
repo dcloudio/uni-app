@@ -1,100 +1,94 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view id="snapshot-content">
-      <page-head title="对本页面根view截图"></page-head>
-      <view class="uni-padding-wrap">
-        <text>this is text</text>
-      </view>
-      <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
-        点击截图并替换显示下方图片
-      </button>
-      <image class="snapshot-original-image" :src="data.snapImage" :mode="mode" @longpress="saveToAlbum"></image>
-
-      <!-- 新增 takeSnapshot 测试 -->
-      <view class="section-divider"></view>
-      <text class="section-title">takeSnapshot 测试</text>
-
-      <!-- View 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="takeViewSnapshot">View</button>
-        </view>
-        <view class="test-elements">
-          <view id="snapshot-test-view" class="snapshot-test-small"></view>
-        </view>
-      </view>
-      <!-- View 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.viewSnapshot != null">
-        <view class="snapshot-data-col">
-          <text class="snapshot-data-subtitle">截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.viewSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-      </view>
-
-      <!-- Text 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="takeTextSnapshot">Text</button>
-        </view>
-        <view class="test-elements">
-          <text id="snapshot-test-text" class="snapshot-test-text-small">测试文本</text>
-        </view>
-      </view>
-      <!-- Text 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.textSnapshot != null">
-        <view class="snapshot-data-col">
-          <text class="snapshot-data-subtitle">截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.textSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-      </view>
-
-      <!-- Image 元素测试 -->
-      <view class="test-group">
-        <view class="test-buttons">
-          <button class="btn-small" @click="takeImageSnapshot">Image</button>
-        </view>
-        <view class="test-elements">
-          <image id="snapshot-test-image" class="snapshot-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
-        </view>
-      </view>
-      <!-- Image 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.imageSnapshot != null">
-        <view class="snapshot-data-col">
-          <text class="snapshot-data-subtitle">截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.imageSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-      </view>
-
-      <!-- ScrollView 元素测试 -->
-      <button class="btn uni-common-mt" type="default" @click="takeScrollViewSnapshot">takeSnapshot - ScrollView</button>
-      <scroll-view id="snapshot-test-scrollview" class="snapshot-test-scrollview">
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容1</text>
-        </view>
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容2</text>
-        </view>
-        <view class="scroll-content">
-          <text class="scroll-text">滚动区域内容3</text>
-        </view>
-      </scroll-view>
-      <image v-if="snapshotData.scrollViewSnapshot" class="snapshot-result-image" :src="snapshotData.scrollViewSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
-      <text v-else class="snapshot-placeholder-center">暂无截图</text>
-
-      <!-- 自定义组件测试 -->
-      <button class="btn uni-common-mt" type="default" @click="takeCustomComponentSnapshot">takeSnapshot - 自定义组件</button>
-      <child id="snapshot-test-component" class="snapshot-test-component"></child>
-      <image v-if="snapshotData.customComponentSnapshot" class="snapshot-result-image uni-common-mb" :src="snapshotData.customComponentSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
-      <text v-else class="snapshot-placeholder-center">暂无截图</text>
+  <view id="snapshot-content" class="snapshot-content">
+    <page-head title="对本页面根view截图"></page-head>
+    <view class="uni-padding-wrap">
+      <text>this is text</text>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
+      点击截图并替换显示下方图片
+    </button>
+    <image class="snapshot-original-image" :src="data.snapImage" :mode="mode" @longpress="saveToAlbum"></image>
+
+    <!-- 新增 takeSnapshot 测试 -->
+    <view class="section-divider"></view>
+    <text class="section-title">takeSnapshot 测试</text>
+
+    <!-- View 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="takeViewSnapshot">View</button>
+      </view>
+      <view class="test-elements">
+        <view id="snapshot-test-view" class="snapshot-test-small"></view>
+      </view>
+    </view>
+    <!-- View 截图展示 -->
+    <view class="snapshot-row" v-if="snapshotData.viewSnapshot != null">
+      <view class="snapshot-data-col">
+        <text class="snapshot-data-subtitle">截图结果</text>
+        <image class="snapshot-preview" :src="snapshotData.viewSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+      </view>
+    </view>
+
+    <!-- Text 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="takeTextSnapshot">Text</button>
+      </view>
+      <view class="test-elements">
+        <text id="snapshot-test-text" class="snapshot-test-text-small">测试文本</text>
+      </view>
+    </view>
+    <!-- Text 截图展示 -->
+    <view class="snapshot-row" v-if="snapshotData.textSnapshot != null">
+      <view class="snapshot-data-col">
+        <text class="snapshot-data-subtitle">截图结果</text>
+        <image class="snapshot-preview" :src="snapshotData.textSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+      </view>
+    </view>
+
+    <!-- Image 元素测试 -->
+    <view class="test-group">
+      <view class="test-buttons">
+        <button class="btn-small" @click="takeImageSnapshot">Image</button>
+      </view>
+      <view class="test-elements">
+        <image id="snapshot-test-image" class="snapshot-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
+      </view>
+    </view>
+    <!-- Image 截图展示 -->
+    <view class="snapshot-row" v-if="snapshotData.imageSnapshot != null">
+      <view class="snapshot-data-col">
+        <text class="snapshot-data-subtitle">截图结果</text>
+        <image class="snapshot-preview" :src="snapshotData.imageSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
+      </view>
+    </view>
+
+    <!-- ScrollView 元素测试 -->
+    <button class="btn uni-common-mt" type="default" @click="takeScrollViewSnapshot">takeSnapshot - ScrollView</button>
+    <scroll-view id="snapshot-test-scrollview" class="snapshot-test-scrollview">
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容1</text>
+      </view>
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容2</text>
+      </view>
+      <view class="scroll-content">
+        <text class="scroll-text">滚动区域内容3</text>
+      </view>
+    </scroll-view>
+    <image v-if="snapshotData.scrollViewSnapshot" class="snapshot-result-image" :src="snapshotData.scrollViewSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
+    <text v-else class="snapshot-placeholder-center">暂无截图</text>
+
+    <!-- 自定义组件测试 -->
+    <button class="btn uni-common-mt" type="default" @click="takeCustomComponentSnapshot">takeSnapshot - 自定义组件</button>
+    <child id="snapshot-test-component" class="snapshot-test-component"></child>
+    <image v-if="snapshotData.customComponentSnapshot" class="snapshot-result-image uni-common-mb" :src="snapshotData.customComponentSnapshot" mode="widthFix" @longpress="saveToAlbum"></image>
+    <text v-else class="snapshot-placeholder-center">暂无截图</text>
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import Child from './child.uvue'
 
   type DataType = {
@@ -236,17 +230,25 @@
 </script>
 
 <style>
+  .snapshot-content {
+    --snapshot-divider-color: #e0e0e0;
+    --snapshot-title-color: #333;
+    --snapshot-panel-background: #f5f7fa;
+    --snapshot-panel-border-color: #dcdfe6;
+    --snapshot-placeholder-color: #909399;
+  }
+
   .section-divider {
     margin-top: 30px;
     height: 1px;
-    background-color: #e0e0e0;
+    background-color: var(--snapshot-divider-color, #e0e0e0);
   }
 
   .section-title {
     margin-top: 15px;
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: var(--snapshot-title-color, #333);
   }
 
   .test-group {
@@ -298,8 +300,8 @@
   .snapshot-row {
     flex-direction: row;
     margin-top: 10px;
-    background-color: #f5f7fa;
-    border: 1px solid #dcdfe6;
+    background-color: var(--snapshot-panel-background, #f5f7fa);
+    border: 1px solid var(--snapshot-panel-border-color, #dcdfe6);
     border-radius: 4px;
     padding: 10px;
   }
@@ -327,7 +329,7 @@
 
   .snapshot-placeholder {
     font-size: 12px;
-    color: #909399;
+    color: var(--snapshot-placeholder-color, #909399);
     padding: 20px 0;
   }
 
@@ -347,7 +349,7 @@
 
   .snapshot-placeholder-center {
     font-size: 12px;
-    color: #909399;
+    color: var(--snapshot-placeholder-color, #909399);
     text-align: center;
     margin-top: 10px;
   }
@@ -375,5 +377,15 @@
 
   .snapshot-test-component {
     margin-top: 15px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .snapshot-content {
+      --snapshot-divider-color: rgba(255, 255, 255, 0.1);
+      --snapshot-title-color: #ffffff;
+      --snapshot-panel-background: #2d2d2d;
+      --snapshot-panel-border-color: rgba(255, 255, 255, 0.1);
+      --snapshot-placeholder-color: #a0a0a0;
+    }
   }
 </style>

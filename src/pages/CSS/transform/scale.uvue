@@ -1,7 +1,4 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1">
-	<!-- #endif -->
 		<view class="scale-container">
 			<view class="trace">
 				<view class="base reserve">
@@ -209,7 +206,7 @@
 			</view>
 
 			<view class="uni-common-mt">
-				<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform (scale) </text>
+				<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
 			</view>
 
 			<view class="test-container">
@@ -288,23 +285,22 @@
 					@confirm="inputChangeTransform"></input-data>
 			</view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
       <view class="demo-box">
       	<view class="scroll-view-item">
-      		<native-view class="scroll-view-base transform" style="transform: scale(1.2);"></native-view>
+      		<test-native-view class="native-view-base transform-native" style="transform: scale(1.2);"></test-native-view>
       	</view>
       	<view class="scroll-view-item">
-      		<native-view class="scroll-view-base transform" style="transform: scaleX(0.8);"></native-view>
+      		<test-native-view class="native-view-base transform-native" style="transform: scaleX(0.8);"></test-native-view>
       	</view>
       </view>
+      <!-- #endif -->
 
 		</view>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { ItemType } from '@/components/enum-data/enum-data-types'
 
 	const data = reactive({
@@ -342,6 +338,7 @@
 		data.transformActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
 	}
 
+
 	const changeTransformDynamic = (value : string) => {
 		data.transformValueDynamic = value
 		viewRefDynamic.value?.style.setProperty('transform', value)
@@ -372,6 +369,7 @@
 	})
 
 	defineExpose({
+		radioChangeTransform,
 		data
 	})
 </script>
@@ -513,5 +511,19 @@
 		margin-top: -60px;
 		margin-left: -60px;
 	}
+
+	.native-view-base {
+		width: 120px;
+		height: 120px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -60px;
+		margin-left: -60px;
+	}
+
+  .transform-native {
+    background-color: #00FFFF80;
+  }
 
 </style>

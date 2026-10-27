@@ -1,16 +1,13 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="css-page" style="flex-grow: 1;">
       <view>
-        <text>min-height: 150px</text>
+        <text class="theme-label">min-height: 150px</text>
         <view class="common" style="min-height: 150px;">
-          <text>height: 50px</text>
+          <text class="cyan-label">height: 50px</text>
         </view>
-        <text>拍平</text>
+        <text class="theme-label">拍平</text>
         <view class="common" style="min-height: 150px;" flatten>
-          <text>height: 50px</text>
+          <text class="cyan-label">height: 50px</text>
         </view>
       </view>
 
@@ -28,7 +25,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 min-height </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -39,7 +36,7 @@
           <text class="uni-info">获取值: {{data.minHeightActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ minHeight: data.minHeight }">
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -58,7 +55,8 @@
           <text class="uni-info">设置值: {{data.minHeight}}</text>
           <text class="uni-info">获取值: {{data.minHeightActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ minHeight: data.minHeight }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ minHeight: data.minHeight }"
+              src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -70,8 +68,9 @@
           <text class="uni-info">设置值: {{data.minHeight}}</text>
           <text class="uni-info">获取值: {{data.minHeightActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minHeight: data.minHeight }" flatten>
-              <text>view</text>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minHeight: data.minHeight }"
+              flatten>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -81,7 +80,8 @@
           <text class="uni-info">设置值: {{data.minHeight}}</text>
           <text class="uni-info">获取值: {{data.minHeightActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ minHeight: data.minHeight }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ minHeight: data.minHeight }"
+              flatten>text</text>
           </view>
         </view>
 
@@ -90,34 +90,40 @@
           <text class="uni-info">设置值: {{data.minHeight}}</text>
           <text class="uni-info">获取值: {{data.minHeightActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ minHeight: data.minHeight }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ minHeight: data.minHeight }"
+              flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
-        <enum-data :items="minHeightEnum" title="min-height 枚举值" @change="radioChangeMinHeight" :compact="true"></enum-data>
-        <input-data :defaultValue="data.minHeight" title="min-height 自定义值" type="text" @confirm="inputChangeMinHeight"></input-data>
+        <enum-data :items="minHeightEnum" title="min-height 枚举值" @change="radioChangeMinHeight"
+          :compact="true"></enum-data>
+        <input-data :defaultValue="data.minHeight" title="min-height 自定义值" type="text"
+          @confirm="inputChangeMinHeight"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
-        <text>native-view组件: min-height: 100px 和 min-height: 150px</text>
-        <view class="demo-box">
-          <native-view class="common" style="min-height: 100px; background-color: cyan;width:100px;"></native-view>
-          <native-view class="common" style="min-height: 150px; background-color: cyan;width:100px;"></native-view>
+        <text class="theme-label">native-view组件: min-height: 100px 和 min-height: 150px</text>
+        <view class="demo-box-native">
+          <view class="container-native">
+            <native-view style="min-height: 100px; width:100px; height: 50px;"></native-view>
+          </view>
+          <view class="container-native">
+            <native-view style="min-height: 150px; width:100px; height: 50px;"></native-view>
+          </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const minHeightEnum: ItemType[] = [
+  const minHeightEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '0' },
     { value: 2, name: '0px' },
@@ -151,7 +157,8 @@
     data.minHeightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('min-height') ?? ''
   }
 
-  const changeMinHeight = (value: string) => {
+
+  const changeMinHeight = (value : string) => {
     data.minHeight = value
     viewRef.value?.style.setProperty('min-height', value)
     viewRefFlat.value?.style.setProperty('min-height', value)
@@ -165,14 +172,14 @@
     })
   }
 
-  const radioChangeMinHeight = (index: number) => {
-    const selectedItem = minHeightEnum.find((item): boolean => item.value === index)
+  const radioChangeMinHeight = (index : number) => {
+    const selectedItem = minHeightEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeMinHeight(selectedItem.name)
     }
   }
 
-  const inputChangeMinHeight = (value: string) => {
+  const inputChangeMinHeight = (value : string) => {
     changeMinHeight(value)
   }
 
@@ -184,10 +191,18 @@
     radioChangeMinHeight,
     data
   })
-
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-label,
+  .scroll-view-label {
+    color: #1a1a1a;
+  }
+
   .common {
     width: 200px;
     height: 50px;
@@ -228,5 +243,16 @@
   .scroll-view-label {
     font-size: 12px;
     text-align: center;
+  }
+
+  .demo-box-native {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .container-native {
+    background-color: cyan;
   }
 </style>

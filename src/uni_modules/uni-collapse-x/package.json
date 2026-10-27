@@ -1,0 +1,74 @@
+{
+  "id": "uni-collapse-x",
+  "displayName": "uni-collapse 折叠面板",
+  "version": "1.0.1",
+  "description": "Collapse 折叠面板组件，可自定义折叠面板的展开和收起。",
+  "isExt": true,
+  "extUrl": "https://ext.dcloud.net.cn/plugin?id=27899",
+  "keywords": [
+    "uni-ui",
+    "uniui",
+    "collapse",
+    "折叠面板",
+    "uni-app-x"
+],
+  "engines": {
+    "HBuilderX": "",
+    "uni-app": "",
+    "uni-app-x": "^5.07"
+  },
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "directories": {
+    "example": "../../temps/example_temps"
+  },
+  "dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "type": "component-vue",
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x",
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "encrypt": [],
+    "dependencies": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": "√",
+            "chrome": "√"
+          },
+          "app": {
+            "android": "√",
+            "ios": "√",
+            "harmony": "√"
+          },
+          "mp": {
+            "weixin": "√"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,22 +1,17 @@
-jest.setTimeout(50000);
+jest.setTimeout(30000)
 
-const PAGE_PATH = '/pages/API/storage/storage'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
-
-const StorageKeysBlackList = [
-  '$$STAT__DBDATA:__UNI__HelloUniAppX',
-  '_STAT_LAST_PAGE_ROUTE',
-  'UNI_STAT_DATA:__UNI__HelloUniAppX',
-  'UNI_STAT_LAST_PAGE_ROUTE'
-]
-const filterStorageKeys = (keys) => {
-  return keys.filter(key => {
-    return !StorageKeysBlackList.includes(key)
-  })
-}
+const isMP = platformInfo.startsWith('mp')
 
 describe('ExtApi-StorageInfoTest', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
   if (
     isIOS &&
     (
@@ -33,6 +28,19 @@ describe('ExtApi-StorageInfoTest', () => {
     return
   }
 
+  const StorageKeysBlackList = [
+    '$$STAT__DBDATA:__UNI__HelloUniAppX',
+    '_STAT_LAST_PAGE_ROUTE',
+    'UNI_STAT_DATA:__UNI__HelloUniAppX',
+    'UNI_STAT_LAST_PAGE_ROUTE'
+  ]
+  const filterStorageKeys = (keys) => {
+    return keys.filter(key => {
+      return !StorageKeysBlackList.includes(key)
+    })
+  }
+
+  const PAGE_PATH = '/pages/API/storage/storage'
   let page;
   
   // 测试辅助函数
@@ -300,26 +308,26 @@ describe('ExtApi-StorageInfoTest', () => {
     expect(strRet2).toEqual("1234567.890")
   });
 
-  it('saveUTSJSONObject', async () => {
-    await page.callMethod('jest_saveUTSJSONObject')
+  it('saveObject', async () => {
+    await page.callMethod('jest_saveObject')
     await page.waitFor(600)
     const {
-      jest_saveUTSJSONObjectSyncResult,
-      jest_saveUTSJSONObjectAsyncResult
+      jest_saveObjectSyncResult,
+      jest_saveObjectAsyncResult
     } = await page.data('data')
-    expect(jest_saveUTSJSONObjectSyncResult).toBe(1)
-    expect(jest_saveUTSJSONObjectAsyncResult).toBe(1)
+    expect(jest_saveObjectSyncResult).toBe(1)
+    expect(jest_saveObjectAsyncResult).toBe(1)
   })
 
   // ios js 层与原生层通信时，原始数据类型丢失
   if (!isIOS) {
-    it('saveUTSJSONObjectArray', async () => {
-      await page.callMethod('jest_saveUTSJSONObjectArray')
+    it('saveObjectArray', async () => {
+      await page.callMethod('jest_saveObjectArray')
       await page.waitFor(600)
       const {
-        jest_saveUTSJSONObjectArraySyncResult
+        jest_saveObjectArraySyncResult
       } = await page.data('data')
-      expect(jest_saveUTSJSONObjectArraySyncResult).toBe(1)
+      expect(jest_saveObjectArraySyncResult).toBe(1)
     })
   }
 

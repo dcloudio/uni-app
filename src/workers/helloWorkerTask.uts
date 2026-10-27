@@ -1,3 +1,5 @@
+import { formatWorkerResponse } from './workerHelper.uts'
+
 export class HelloWorkerTask extends WorkerTaskImpl {
   //constructor
   constructor() {
@@ -33,14 +35,7 @@ export class HelloWorkerTask extends WorkerTaskImpl {
   private sendReply(msgData : string) {
     const response = new UTSJSONObject();
 
-    // 尝试将接收到的数据转换为数字并加1
-    const inputNumber = parseInt(msgData);
-    if (isNaN(inputNumber)) {
-      response.data = `输入"${msgData}"不是有效数字`;
-    } else {
-      const result = inputNumber + 1;
-      response.data = result.toString()
-    }
+    response.data = formatWorkerResponse(msgData)
 
     console.log('[WorkerTask] 发送回复消息:', response);
     this.postMessage(response);

@@ -1,0 +1,12 @@
+{
+    "name": "uni-map-co",
+    "dependencies": {
+        "uni-config-center": "file:..\/..\/..\/..\/uni-config-center\/uniCloud\/cloudfunctions\/common\/uni-config-center",
+        "uni-map-common": "file:..\/common\/uni-map-common"
+    },
+    "extensions": {},
+    "origin-plugin-dev-name": "uni-map-common",
+    "origin-plugin-version": "1.1.4",
+    "plugin-dev-name": "uni-map-common",
+    "plugin-version": "1.1.4"
+}

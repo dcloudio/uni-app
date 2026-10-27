@@ -1,0 +1,79 @@
+<template>
+  <boolean-data :value="false" title="associative-container（nested-scroll-view）" @change="onTypeChange"></boolean-data>
+  <scroll-view style="flex:1;" type="nested">
+    <view v-for="item in 5" class="scroll-item">
+      <text class="scroll-item-title">item{{item}}</text>
+    </view>
+    <web-view id="web-view-test" class="web-view" src="/hybrid/html/local.html" :associative-container="data.type"></web-view>
+    <view v-for="item in 5" class="scroll-item">
+      <text class="scroll-item-title">item{{item}}</text>
+    </view>
+    <view class="scroll-view_bottom-fixed"></view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  type DataType = {
+    type : string;
+    webviewX : number;
+    webviewY : number;
+    webviewWidth : number;
+    webviewHeight : number;
+  }
+
+  const initialData : DataType = {
+    type : '',
+    webviewX : 0,
+    webviewY : 0,
+    webviewWidth : 0,
+    webviewHeight : 0
+  }
+
+  const data = reactive<DataType>(initialData)
+
+  const onTypeChange = (checked : boolean) => {
+    data.type = checked ? 'nested-scroll-view' : ''
+  };
+
+  onReady(() => {
+    const webviewElement = uni.getElementById('web-view-test')
+    const rect = webviewElement?.getBoundingClientRect()
+    if (rect != null) {
+      data.webviewX = rect.x
+      data.webviewY = rect.y
+      data.webviewWidth = rect.width
+      data.webviewHeight = rect.height
+      const systemInfo = uni.getSystemInfoSync()
+      data.webviewY += systemInfo.safeAreaInsets.top + 44
+    }
+  })
+
+  defineExpose({
+    data,
+    onTypeChange
+  })
+</script>
+
+<style>
+  .web-view {
+    height: 400px;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    border: black 1px solid;
+    align-self: center;
+  }
+
+  .scroll-item {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    background-color: #fff;
+  }
+
+  .scroll-item-title {
+    line-height: 60px;
+    text-align: center;
+    color: #555;
+  }
+</style>

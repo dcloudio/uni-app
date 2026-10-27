@@ -1,4 +1,4 @@
-<script setup lang="uts">
+<script setup lang="ts">
 type InputValue = string | number
 const emit = defineEmits(['confirm'])
 // 样式隔离配置，app: 受全局样式影响
@@ -18,6 +18,10 @@ const props = defineProps({
     type: String,
     required: true,
     default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -83,13 +87,17 @@ function focus() {
     </view>
   </view>
   <view class="input-wrapper">
-    <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" :maxlength="-1" @input="input" @blur="blur"
+    <input class="uni-input _input" :type="inputType" :value="inputClearValue" :placeholder="title" :disabled="disabled"
+      <!-- #ifndef MP-ALIPAY -->
+      :maxlength="-1"
+      <!-- #endif -->
+      @input="input" @blur="blur"
       @focus="focus" />
     <!-- #ifdef WEB || MP -->
-    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @touchstart="clearIcon" @mousedown="clearIcon">
+    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon && !disabled" @touchstart="clearIcon" @mousedown="clearIcon">
     <!-- #endif -->
     <!-- #ifndef WEB || MP -->
-    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @touchstart="clearIcon">
+    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon && !disabled" @touchstart="clearIcon">
     <!-- #endif -->
     </image>
   </view>
@@ -98,13 +106,13 @@ function focus() {
 
 <style>
   .input-wrapper {
-    border: 1px solid rgba(0, 0, 0, .08);
+    border: 1px solid var(--input-data-border-color, rgba(0, 0, 0, .08));
     flex-direction: row;
     justify-content: center;
     padding: 0;
     margin: 0 10px;
     flex-wrap: nowrap;
-    background-color: #ffffff;
+    background-color: var(--input-data-background-color, #ffffff);
   }
 
   .input-wrapper_image {
@@ -112,5 +120,19 @@ function focus() {
     height: 22px;
     align-self: center;
     margin-right: 5px;
+  }
+
+  ._input {
+    color: #000;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input-wrapper {
+      --input-data-border-color: rgba(255, 255, 255, 0.1);
+      --input-data-background-color: #2d2d2d;
+    }
+    ._input {
+      color: #fff;
+    }
   }
 </style>

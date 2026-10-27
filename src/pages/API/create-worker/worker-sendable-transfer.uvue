@@ -28,7 +28,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   import { UTSWorkerAddListenerOptions, UTSWorkerReceiveEventCallback, UTSWorkerSendWorkerMessageOptions, UTSSendableWorkerImpl } from "@/uni_modules/uts-worker-sendable-transfer";
 
@@ -39,10 +39,16 @@
     sendableNumber: number,
   }
 
+  interface LogItem {
+    message: string
+    type: string
+    time: string
+  }
+
   const created_boolean = ref(false)
   const workerStatus = ref('none') // none, created, destroyed
   const isListening = ref(false)
-  const logs = ref([] as Array<UTSJSONObject>)
+  const logs = ref([] as LogItem[])
   const myBuf = ref(new ArrayBuffer(8))
   const data = reactive({
     myBufLength: -1,
@@ -66,11 +72,11 @@
   function addLog(message : string, type : string = 'info') {
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    const logItem = {
+    const logItem: LogItem = {
       message: `[${timeStr}] ${message}`,
       type: type,
       time: timeStr
-    } as UTSJSONObject;
+    }
     logs.value.unshift(logItem);
     // 限制日志数量
     if (logs.value.length > 50) {
@@ -134,8 +140,23 @@
 
 <style>
   .container {
+    --worker-surface-background: #ffffff;
+    --worker-page-background: #fafafa;
+    --worker-text-color: #333333;
+    --worker-secondary-color: #666666;
+    --worker-border-color: #dddddd;
     flex: 1;
     padding: 10px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .container {
+      --worker-surface-background: #2d2d2d;
+      --worker-page-background: #1a1a1a;
+      --worker-text-color: #ffffff;
+      --worker-secondary-color: #a0a0a0;
+      --worker-border-color: rgba(255, 255, 255, 0.1);
+    }
   }
 
   .status-section {
@@ -144,13 +165,13 @@
     justify-content: center;
     margin-bottom: 20px;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: var(--worker-surface-background, #ffffff);
     border-radius: 8px;
   }
 
   .status-label {
     font-size: 16px;
-    color: #666666;
+    color: var(--worker-secondary-color, #666666);
   }
 
   .status-text {
@@ -168,7 +189,7 @@
   .input-section {
     margin-bottom: 20px;
     padding: 15px;
-    background-color: #ffffff;
+    background-color: var(--worker-surface-background, #ffffff);
     border-radius: 8px;
   }
 
@@ -178,11 +199,11 @@
     /* #endif */
     width: 100%;
     padding: 12px;
-    border: 1px solid #dddddd;
+    border: 1px solid var(--worker-border-color, #dddddd);
     border-radius: 6px;
     font-size: 16px;
     margin: 10px 0;
-    background-color: #ffffff;
+    background-color: var(--worker-surface-background, #ffffff);
   }
 
   .btn {
@@ -194,7 +215,7 @@
   }
 
   .log-section {
-    background-color: #ffffff;
+    background-color: var(--worker-surface-background, #ffffff);
     border-radius: 8px;
     padding: 15px;
   }
@@ -202,17 +223,17 @@
   .section-title {
     font-size: 18px;
     font-weight: bold;
-    color: #333333;
+    color: var(--worker-text-color, #333333);
     margin-bottom: 10px;
   }
 
   .log-container {
     height: 300px;
-    border: 1px solid #dddddd;
+    border: 1px solid var(--worker-border-color, #dddddd);
     border-radius: 4px;
     padding: 10px;
     margin: 10px 0;
-    background-color: #fafafa;
+    background-color: var(--worker-page-background, #fafafa);
   }
 
   .log-item {
@@ -259,7 +280,7 @@
 
   .description-text {
     font-size: 14px;
-    color: #666666;
+    color: var(--worker-secondary-color, #666666);
     line-height: 1.4;
     margin-bottom: 10px;
   }

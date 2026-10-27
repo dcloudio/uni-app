@@ -1,0 +1,141 @@
+<template>
+	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent1 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent2 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent3 />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent4 />
+		</uni-tab-content>
+
+		<uni-tab-bar style="border-top: 0px;">
+			<uni-tab-item>
+				<image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 0 ? 'tab-label-active' : ''">组件</text>
+			</uni-tab-item>
+			<uni-tab-item badge-text="99+">
+				<image :src="activeIndex == 1 ? '/static/apiHL.png' : '/static/api.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 1 ? 'tab-label-active' : ''">API</text>
+			</uni-tab-item>
+			<uni-tab-midbutton :width="60" :height="60">
+				<view class="mid-button-shell">
+					<view class="mid-button-core" hover-class="mid-button-core-hover" :hover-stop-propagation="true"
+						@click="handleMidButtonClick">
+						<text class="mid-button-plus">+</text>
+						<text class="mid-button-label">发布</text>
+					</view>
+				</view>
+			</uni-tab-midbutton>
+			<uni-tab-item>
+				<image :src="activeIndex == 2 ? '/static/cssHL.png' : '/static/css.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 2 ? 'tab-label-active' : ''">CSS</text>
+			</uni-tab-item>
+			<uni-tab-item badge-text="">
+				<image :src="activeIndex == 3 ? '/static/templateHL.png' : '/static/template.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 3 ? 'tab-label-active' : ''">模板</text>
+			</uni-tab-item>
+		</uni-tab-bar>
+	</uni-tab>
+</template>
+
+<script setup lang="ts">
+	import tabContent1 from './tab-content1.uvue'
+	import tabContent2 from './tab-content2.uvue'
+	import tabContent3 from './tab-content3.uvue'
+	import tabContent4 from './tab-content4.uvue'
+
+	const activeIndex = ref<number>(0)
+	const midButtonClickCount = ref<number>(0)
+	let tabContentHeightFull = false
+	// #ifdef MP-WEIXIN
+	tabContentHeightFull = true
+	// #endif
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentStyle = 'flex: 1; min-height: 0px;'
+	// #endif
+
+	function handleChange(index : number) : void {
+		activeIndex.value = index
+		switch (index) {
+			case 0:
+				uni.setNavigationBarTitle({ title: '组件' })
+				break
+			case 1:
+				uni.setNavigationBarTitle({ title: 'API' })
+				break
+			case 2:
+				uni.setNavigationBarTitle({ title: 'CSS' })
+				break
+			case 3:
+				uni.setNavigationBarTitle({ title: '模板' })
+				break
+		}
+	}
+
+	function handleMidButtonClick() : void {
+		midButtonClickCount.value = midButtonClickCount.value + 1
+		uni.showToast({
+			title: 'mid-button 点击 ' + midButtonClickCount.value + ' 次',
+			icon: 'none'
+		})
+	}
+</script>
+
+<style>
+	.tab-icon-image {
+		width: 24px;
+		height: 24px;
+	}
+
+	.tab-label {
+		font-size: 10px;
+		color: rgb(122, 126, 131);
+	}
+
+	.tab-label-active {
+		color: #007aff;
+	}
+
+	.mid-button-shell {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		background-color: rgba(0, 0, 0, 0);
+	}
+
+	.mid-button-core {
+		width: 52px;
+		height: 52px;
+		border-radius: 26px;
+		background-color: #ff7a18;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		/* box-shadow: 0px 6px 16px rgba(255, 122, 24, 0.22); */
+	}
+
+	.mid-button-core-hover {
+		transform: scale(0.96);
+		opacity: 0.92;
+	}
+
+	.mid-button-plus {
+		font-size: 22px;
+		line-height: 22px;
+		color: #ffffff;
+	}
+
+	.mid-button-label {
+		margin-top: 1px;
+		font-size: 9px;
+		color: #ffffff;
+	}
+</style>

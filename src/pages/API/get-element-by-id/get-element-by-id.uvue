@@ -28,7 +28,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const getElementByNotExistId = (): Element | null => {
     return uni.getElementById('not-exist-id')
   }

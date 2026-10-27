@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<text>computed属性在设置duration=0的测试:</text>
-		<swiper  :current="current" :vertical="true" duration="0" style="height: 100px; width: 100%;">
+		<swiper  :current="current" :vertical="true" :duration="0" style="height: 100px; width: 100%;">
 			<swiper-item v-for="item,index in data.list" :key="item.id">
 				<view>
 					当前实际渲染的值:{{index}},指定current的值：{{current}}
@@ -21,7 +21,7 @@
 
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 export type ListType={
   id:number,

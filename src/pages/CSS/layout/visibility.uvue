@@ -1,20 +1,17 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
-    <view style="flex-grow: 1;">
+    <view class="css-page" style="flex-grow: 1;">
       <text class="uni-tips">visibility: {{data.visibility}} ，说明：点击切换</text>
       <view class="demo-box">
         <view @click="changeVisibility">
-          <text>view组件: {{data.visibility}}</text>
+          <text class="theme-label">view组件: {{data.visibility}}</text>
           <view class="common" :style="{'visibility': data.visibility}"></view>
         </view>
         <view @click="changeVisibility">
-          <text>text组件: {{data.visibility}}</text>
-          <text class="common" :style="{'visibility': data.visibility}">文本</text>
+          <text class="theme-label">text组件: {{data.visibility}}</text>
+          <text class="common cyan-label" :style="{'visibility': data.visibility}">文本</text>
         </view>
         <view @click="changeVisibility">
-          <text>image组件: {{data.visibility}}</text>
+          <text class="theme-label">image组件: {{data.visibility}}</text>
           <image class="common" :style="{'visibility': data.visibility}" src="/static/test-image/logo.png"></image>
         </view>
       </view>
@@ -23,18 +20,18 @@
         <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
         <view class="demo-box">
           <view>
-            <text>scroll-view: visible</text>
+            <text class="theme-label">scroll-view: visible</text>
             <scroll-view class="common" style="visibility: visible;"></scroll-view>
           </view>
           <view>
-            <text>scroll-view: hidden</text>
+            <text class="theme-label">scroll-view: hidden</text>
             <scroll-view class="common" style="visibility: hidden;"></scroll-view>
           </view>
         </view>
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 visibility </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -45,7 +42,7 @@
           <text class="uni-info">获取值: {{data.visibilityActual}}</text>
           <view class="test-box">
             <view ref="viewRef" class="common-dynamic test-view" :style="{ visibility: data.visibilityValue }">
-              <text>view</text>
+              <text class="cyan-label">view</text>
             </view>
           </view>
         </view>
@@ -75,26 +72,25 @@
         <input-data :defaultValue="data.visibilityValue" title="visibility 自定义值" type="text" @confirm="inputChangeVisibility"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
-        <text>native-view 组件</text>
+        <text class="theme-label">native-view 组件</text>
         <view class="demo-box">
           <view>
-            <text>native-view: visible</text>
-            <native-view class="common" style="visibility: visible;"></native-view>
+            <text class="theme-label">native-view: visible</text>
+            <test-native-view class="common" style="visibility: visible;"></test-native-view>
           </view>
           <view>
-            <text>native-view: hidden</text>
-            <native-view class="common" style="visibility: hidden;"></native-view>
+            <text class="theme-label">native-view: hidden</text>
+            <test-native-view class="common" style="visibility: hidden;"></test-native-view>
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   let flag = true
@@ -106,6 +102,7 @@
     visibilityActualImage: ''
   })
 
+
   const changeVisibility = () => {
     flag = !flag
     if (flag) {
@@ -115,7 +112,7 @@
     }
   }
 
-  const visibilityEnum: ItemType[] = [
+  const visibilityEnum : ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: 'visible' },
     { value: 2, name: 'hidden' }
@@ -131,7 +128,7 @@
     data.visibilityActualImage = imageRef.value?.style.getPropertyValue('visibility') ?? ''
   }
 
-  const changeVisibilityProperty = (value: string) => {
+  const changeVisibilityProperty = (value : string) => {
     data.visibilityValue = value
     viewRef.value?.style.setProperty('visibility', value)
     textRef.value?.style.setProperty('visibility', value)
@@ -142,14 +139,14 @@
     })
   }
 
-  const radioChangeVisibility = (index: number) => {
-    const selectedItem = visibilityEnum.find((item): boolean => item.value === index)
+  const radioChangeVisibility = (index : number) => {
+    const selectedItem = visibilityEnum.find((item) : boolean => item.value === index)
     if (selectedItem != null) {
       changeVisibilityProperty(selectedItem.name)
     }
   }
 
-  const inputChangeVisibility = (value: string) => {
+  const inputChangeVisibility = (value : string) => {
     changeVisibilityProperty(value)
   }
 
@@ -164,16 +161,26 @@
 </script>
 
 <style>
+  .theme-label {
+    color: var(--text-color, #333333);
+  }
+
+  .cyan-label {
+    color: #1a1a1a;
+  }
+
   .common {
     width: 100px;
     height: 100px;
     background-color: cyan;
   }
+
   .demo-box {
     flex-direction: row;
     margin-top: 10px;
     justify-content: space-around;
   }
+
   .common-dynamic {
     width: 100px;
     height: 100px;
@@ -198,5 +205,4 @@
     justify-content: center;
     align-items: center;
   }
-
 </style>

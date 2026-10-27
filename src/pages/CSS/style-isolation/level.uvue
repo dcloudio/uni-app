@@ -2,7 +2,7 @@
 	<levelChild></levelChild>
 </template>
 
-<script setup>
+<script setup lang="ts">
 		import levelChild from './level-child.uvue'
 </script>
 

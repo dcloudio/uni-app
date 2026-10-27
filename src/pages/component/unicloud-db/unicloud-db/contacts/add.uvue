@@ -16,14 +16,14 @@
       </view>
       <view class="form-item">
         <text class="form-item-label">备注</text>
-        <textarea class="form-item-input-comment" placeholder="备注" name="comment" maxlength="-1" />
+        <textarea class="form-item-input-comment" placeholder="备注" name="comment" :maxlength="-1" />
       </view>
       <view class="form-item">
         <text class="form-item-label">性别</text>
         <radio-group class="radio-list" name="gender">
           <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
-            <radio :value="item.value" />
-            <text>{{item.text}}</text>
+            <radio :value="item.value.toString()" />
+            <text class="radio-item-text">{{item.text}}</text>
           </view>
         </radio-group>
       </view>
@@ -32,9 +32,9 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
-  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_ADD } from './types.uts'
+  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_ADD } from './types.ts'
 
   const collection = ref(COLLECTION_NAME)
   const genderList = ref(GenderList as GenderType[])
@@ -71,6 +71,9 @@
 
 <style>
   .page {
+    --contact-text-color: #333333;
+    --contact-border-color: #e5e5e5;
+    --contact-input-color: #a1a1a1;
     padding: 15px;
   }
 
@@ -83,13 +86,14 @@
   .form-item-label {
     width: 45px;
     margin-right: 10px;
+    color: var(--contact-text-color, #333333);
   }
 
   .form-item-input {
     flex: 1;
     font-size: 14px;
-    color: #666;
-    border: 1px #e5e5e5 solid;
+    color: var(--contact-input-color, #a1a1a1);
+    border: 1px solid var(--contact-border-color, #e5e5e5);
     border-radius: 5px;
     height: 34px;
     padding-left: 8px;
@@ -99,8 +103,8 @@
   .form-item-input-comment {
     flex: 1;
     font-size: 14px;
-    color: #666;
-    border: 1px #e5e5e5 solid;
+    color: var(--contact-input-color, #a1a1a1);
+    border: 1px solid var(--contact-border-color, #e5e5e5);
     border-radius: 5px;
     padding: 8px;
   }
@@ -115,7 +119,19 @@
     align-items: center;
   }
 
+  .radio-item-text {
+    color: var(--contact-text-color, #333333);
+  }
+
   .btn-add {
     margin-top: 50px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page {
+      --contact-text-color: #ffffff;
+      --contact-border-color: rgba(255, 255, 255, 0.1);
+      --contact-input-color: #ffffff;
+    }
   }
 </style>

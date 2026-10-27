@@ -44,4 +44,12 @@ describe('component-native-list-view', () => {
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
+
+  //检测item复用后尺寸是否正常
+  it('check_reused_item_size', async () => {
+    await page.callMethod('jest_testReusedItemSize')
+    await page.waitFor(1000)
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
+  })
 })

@@ -1,0 +1,73 @@
+{
+	"id": "uni-nav-bar-x",
+	"displayName": "uni-nav-bar",
+	"version": "1.0.1",
+	"description": "uni-nav-bar",
+	"isExt": true,
+  "extUrl": "https://ext.dcloud.net.cn/plugin?id=27897",
+	"keywords": [
+        "uni-nav-bar",
+        "uni-app-x",
+        "导航栏",
+        "组件"
+    ],
+	"repository": "https://gitcode.com/dcloud/uni-ui-x",
+	"engines": {
+		"HBuilderX": "^5.0",
+        "uni-app-x": "^5.07",
+        "uni-app": ""
+	},
+	"directories": {
+		"example": "../../temps/example_temps"
+	},
+	"dcloudext": {
+		"type": "component-vue",
+		"sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+        "contact": {
+            "qq": ""
+		},
+		"declaration": {
+			"ads": "无",
+			"data": "无",
+			"permissions": "无"
+		},
+		"darkmode": "x",
+		"i18n": "x",
+        "widescreen": "x",
+        "npmurl": ""
+	},
+	"uni_modules": {
+		"dependencies": [],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "x",
+				"aliyun": "x",
+				"alipay": "x"
+			},
+			"client": {
+				"uni-app-x": {
+					"web": {
+						"safari": "√",
+						"chrome": "√"
+					},
+					"app": {
+						"android": "√",
+						"ios": "√",
+						"harmony": "√"
+					},
+					"mp": {
+						"weixin": "√"
+					}
+				}
+			}
+		}
+	}
+}

@@ -28,7 +28,7 @@
   <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   type VideoFormat = {
     format : string
     src : string
@@ -101,7 +101,7 @@
   const isError = reactive({ value: false })
 
   const onError = (format : string, e : UniVideoErrorEvent) => {
-    console.log(format + ":" + JSON.stringify(e));
+    console.log(format + ":" + JSON.stringify(e.detail));
     if (format != "错误路径") {
       isError['value'] = true;
     }

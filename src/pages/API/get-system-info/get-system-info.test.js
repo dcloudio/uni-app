@@ -1,10 +1,17 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
+const isMP = platformInfo.startsWith('mp')
 
-const PAGE_PATH = '/pages/API/get-system-info/get-system-info'
 
 describe('ExtApi-GetSystemInfo', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
 
+  const PAGE_PATH = '/pages/API/get-system-info/get-system-info'
   let page;
   let res;
   const stringProperties = [

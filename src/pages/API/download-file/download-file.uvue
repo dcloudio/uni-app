@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <page-head :title="data.title"></page-head>
       <view>
@@ -12,17 +9,10 @@
           <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
           <button type="primary" @tap="downloadImage">下载</button>
         </view>
-        <view style="margin: 10px;">
-          <text class="uni-hello-text">下载接口的Content-Disposition中的filename非法值例子</text>
-          <button type="primary" @tap="downloadErrorFilename">下载</button>
-        </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
   import {
     testInovkeDownloadFile,
@@ -84,6 +74,9 @@
       },
       fail: (err) => {
         console.log('downloadFile fail, err is:', err)
+      },
+      complete: () => {
+        data.task = null
       }
     })
   }
@@ -102,6 +95,9 @@
       fail: () => {
         data.jest_result = false
         data.jest_callback_triggred = true
+      },
+      complete: () => {
+        data.task = null
       }
     });
   }
@@ -117,6 +113,9 @@
       fail: () => {
         data.jest_result = false
         data.jest_callback_triggred = true
+      },
+      complete: () => {
+        data.task = null
       }
     });
   }
@@ -130,6 +129,9 @@
       },
       fail: () => {
         data.jest_result = needCookie ? false : true;
+      },
+      complete: () => {
+        data.task = null
       }
     });
   }
@@ -195,6 +197,9 @@
       fail: () => {
         data.jest_result = false;
         data.jest_callback_triggred = true
+      },
+      complete: () => {
+        data.task = null
       }
     });
   }
@@ -205,11 +210,31 @@
       timeout: 3000,
       fail: () => {
         data.jest_result = false;
+      },
+      complete: () => {
+        data.task = null
       }
     })
     setTimeout(() => {
       data.jest_result = true;
     }, 4000)
+  }
+
+  const jest_download_long_url = () => {
+    data.task = uni.downloadFile({
+      url: "https://request.dcloud.net.cn/WsQkvvoLPbLFRoZB3NZOhgR8bMbjvpMZMmnzhlH1UtAzbVaOqokI9NBhqgc0pUVesJVQeJoTXjCbuAHqsoGJryxzjo4xf2bR75GTfOgJ5mfDDoX31DY9HTQ0mgLwTlt43MWsRobR22r6qwJYRaZW4yLthUX1BSzckZS9OeKzyV2r3dizxkbAPV3j5toN5qjUq5gYJOHbWfOEdwCA6tftgEGzc3eb6Deed0ngLtNnYYcVOWCzXk24jhYP87g9yh1o9kowdQXUMv4mhwxbvvulLTDC470HqLT1cLm7iuh38L1c8EdMJ6xSCO8y1mxKDzczA0W29mzf54jUfuO7OodX9ZJeFQhCptm73P8oSzyc57BaP9zecVN0u1LwPa4cyj1vMleUSfI2lSzT5PIt2YCojkFEunuFWHRq5vtDQ2ZXQGYIJqSmBDDsVXMAlHAC91F1uWsuC67GgcAPMtrXAyB8HbCA4fiP9iYsKmkKKwMUFx04ehsabTuWnOO6Oms14wrqghKGUJKKXdCaYomcCrRDRUOjIm3NwRKqUN1cHiHI9cxXQbWD8FFb8qBEPrrFscog2dHhQyM8nBbdrk9Lc99ao7bE1s39qiYxSZPnSdfHVb0zfgg9vkm0DTd47pTHz3qOhtWLgNLBLTsCf3HMVG4yZgGcenX3XG2Z6OgG6Pm1DsimJfZtzYU78Cbbp395mdnX6bj3bNNzraV6JVLLiI6diJwtdipIMBFle0t0S0eWMNSGUiZHDwjVTGibHK4PTSd6VkJbBcxSxdmdApn1LiSmxJTciH0auKrSzriVxjDGyQ2bnqyStG",
+      success: () => {
+        data.jest_result = true;
+        data.jest_callback_triggred = true
+      },
+      fail: () => {
+        data.jest_result = false;
+        data.jest_callback_triggred = true
+      },
+      complete: () => {
+        data.task = null
+      }
+    });
   }
 
   defineExpose({
@@ -220,7 +245,8 @@
     jest_delete_cookie,
     jest_uts_module_invoked,
     jest_special_characters_download,
-    jest_download_call_timeout
+    jest_download_call_timeout,
+    jest_download_long_url
   })
 </script>
 

@@ -1,10 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1;padding: 8px;">
-  <!-- #endif -->
-    <!-- #ifndef APP -->
     <view style="padding: 8px;">
-    <!-- #endif -->
       <!--type-->
       <button class="margin-10 btn" :disabled="disabled_boolean">
         type-default
@@ -36,6 +31,7 @@
         plain-false
       </button>
 
+      <button id="test-button-hover-class" class="margin-10 test-hover-class" :disabled="disabled_boolean" hover-class="button-hover" :hover-stay-time="5000">hover-class button-hover</button>
       <button class="margin-10 btn custom-btn" :disabled="disabled_boolean" hover-class="is-hover">
         custom-btn
       </button>
@@ -61,7 +57,7 @@
         uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎。
       </button>
 
-      <!-- #ifdef VUE3-VAPOR -->
+      <!-- #ifdef VUE3-VAPOR && !MP -->
       <button class="margin-10 loading-class" :disabled="disabled_boolean" loading loading-class="custom-loading">
         自定义 loading 状态
       </button>
@@ -72,28 +68,77 @@
         iOS 雪花加载
       </button>
       <!-- #endif -->
-    <!-- #ifndef APP -->
     </view>
-    <!-- #endif -->
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const disabled_boolean = ref(false)
 
   function change_disabled_boolean() {
     disabled_boolean.value = !disabled_boolean.value
   }
+
+  function set_disabled_false() {
+    disabled_boolean.value = false
+  }
+
+  // #ifndef APP
+  defineExpose({
+    set_disabled_false,
+  })
+  // #endif
+
+  // #ifdef APP
+  type DomRectType = {
+    x : number,
+    y : number,
+    left : number,
+    top : number,
+    right : number,
+    bottom : number,
+    width : number,
+    height : number,
+  }
+
+  type Data = {
+    rect: DomRectType | null,
+  }
+  const data = reactive<Data>({
+    rect: null,
+  })
+
+  function getHoverButtonRect() : DomRectType | null {
+    const el = uni.getElementById('test-button-hover-class')
+    const rect = el?.getBoundingClientRect() ?? null
+    if (rect == null) {
+      return null
+    }
+    const offsetY = uni.getSystemInfoSync().safeArea.top + 44
+    return {
+      x: rect.x,
+      y: rect.y + offsetY,
+      left: rect.left,
+      top: rect.top + offsetY,
+      right: rect.right,
+      bottom: rect.bottom + offsetY,
+      width: rect.width,
+      height: rect.height,
+    }
+  }
+
+  onReady(() => {
+    data.rect = getHoverButtonRect()
+  })
+
+  defineExpose({
+    data,
+    getHoverButtonRect,
+    set_disabled_false,
+  })
+  // #endif
 </script>
 
 <style>
-  .margin-10 {
-    margin: 10px;
-  }
-
-
   .custom-btn {
     color: #ffffff;
     background-color: #1AAD19;
@@ -109,7 +154,19 @@
     border-color: rgba(26, 173, 25, 0.7);
   }
 
-  /* #ifdef VUE3-VAPOR */
+  /* #ifndef APP */
+  .test-hover-class.button-hover {
+    color: rgba(26, 173, 25, 0.7);
+  }
+  /* #endif */
+
+  /* #ifdef APP */
+  .button-hover {
+    color: rgba(26, 173, 25, 0.7);
+  }
+  /* #endif */
+
+  /* #ifdef VUE3-VAPOR && !MP */
   .loading-class {
     color: #28cc1c;
     font-size: 20px;

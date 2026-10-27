@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -56,7 +53,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin-right </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -138,28 +135,27 @@
         <input-data :defaultValue="data.marginRight" title="margin-right 自定义值" type="text" @confirm="inputChangeMarginRight"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: margin-right: 25px 和 10%</text>
         <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-right: 25px;"></native-view>
+            <test-native-view class="common" style="margin-right: 25px;"></test-native-view>
             <view class="common blue"></view>
           </view>
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-right: 10%;"></native-view>
+            <test-native-view class="common" style="margin-right: 10%;"></test-native-view>
             <view class="common blue"></view>
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const data = reactive({
@@ -197,6 +193,7 @@
     data.marginRightActualImage = imageRef.value?.style.getPropertyValue('margin-right') ?? ''
     data.marginRightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-right') ?? ''
   }
+
 
   const changeMarginRight = (value: string) => {
     data.marginRight = value

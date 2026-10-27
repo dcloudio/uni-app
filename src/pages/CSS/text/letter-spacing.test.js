@@ -1,9 +1,8 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isHarmony = platformInfo.startsWith('harmony')
 const PAGE_PATH = '/pages/CSS/text/letter-spacing'
 
 describe('text-dynamic-letterSpacing', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isHarmony = platformInfo.startsWith('harmony')
-
   if (!isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
@@ -39,7 +38,9 @@ describe('text-dynamic-letterSpacing', () => {
   })
 
   it('text-dynamic-letterSpacing-snapshot', async () => {
-    const image = await program.screenshot();
+    const image = await program.screenshot({
+      fullPage: true
+    });
     expect(image).toSaveImageSnapshot();
   })
 })

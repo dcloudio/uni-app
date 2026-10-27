@@ -1,7 +1,15 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isAndroid = platformInfo.startsWith('android')
 
 describe('component-native-scroll-view-props', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
   beforeAll(async () => {
       page = await program.reLaunch('/pages/component/scroll-view/scroll-view-props');
@@ -47,6 +55,20 @@ describe('component-native-scroll-view-props', () => {
       expect(scrollTop-570).toBeGreaterThanOrEqual(0)
   })
 
+  if(!isAndroid) {//Android scroll_into_view暂时未支持孙节点
+    //检测竖向scroll_into_view滚动到孙节点属性赋值
+    it('check_scroll_into_view_top_grand_child', async () => {
+        await setPageData({ scrollIntoView: "grand_child_item3" })
+        await page.waitFor(600)
+        const element = await page.$('#scrollViewY')
+        const scrollTop = await element.property("scrollTop")
+        console.log("check_scroll_into_view_top--"+scrollTop)
+        await setPageData({ scrollIntoView: "" })
+        expect(scrollTop-570).toBeGreaterThanOrEqual(0)
+    })
+  }
+
+
   if(!isMP) {
     //检测横向可滚动区域
     it('check_scroll_width', async () => {
@@ -79,6 +101,21 @@ describe('component-native-scroll-view-props', () => {
     await setPageData({ scrollIntoView: "" })
     expect(scrollLeft-930).toBeGreaterThanOrEqual(0)
   })
+
+
+  if(!isAndroid) {//Android scroll_into_view 暂未支持孙节点
+    //检测横向scroll_into_view滚动到孙节点属性赋值
+    it('check_scroll_into_view_left_grand_child', async () => {
+      await setPageData({ scrollX: true })
+      await setPageData({ scrollIntoView: "horizontal_grand_child__item3" })
+      await page.waitFor(600)
+      const element = await page.$('#scrollViewX')
+      const scrollLeft = await element.property("scrollLeft")
+      console.log("check_scroll_into_view_left--"+scrollLeft)
+      await setPageData({ scrollIntoView: "" })
+      expect(scrollLeft-930).toBeGreaterThanOrEqual(0)
+    })
+  }
 
   //截图对比
   it('scroll-view-props-screenshot', async () => {

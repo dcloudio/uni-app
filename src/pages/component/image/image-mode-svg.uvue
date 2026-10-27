@@ -1,0 +1,237 @@
+<template>
+  <view class="page">
+    <text class="page-tip">小尺寸 SVG（24x24）放大显示，观察各种 mode 的渲染清晰度。</text>
+    <text class="page-tip">鸿蒙平台：按九宫格方式对齐的 9 种 mode 会失去矢量能力，在使用 transform:scale() 进行放大显示的时候会变模糊，可点击观察。</text>
+
+    <view class="grid grid-top">
+      <view id="scale-to-fill-cell" class="grid-cell" :class="{ 'active-cell': isActive('scale-to-fill-image') }">
+        <text class="case-title">scaleToFill</text>
+        <image id="scale-to-fill-image" class="test-image small-image origin-top-left"
+          :class="{ 'scaled-image': isActive('scale-to-fill-image') }"
+          src="/static/test-image/logo-small.svg" mode="scaleToFill" @click="setActive('scale-to-fill-image')" />
+      </view>
+
+      <view id="aspect-fit-cell" class="grid-cell" :class="{ 'active-cell': isActive('aspect-fit-image') }">
+        <text class="case-title">aspectFit</text>
+        <image id="aspect-fit-image" class="test-image small-image origin-top"
+          :class="{ 'scaled-image': isActive('aspect-fit-image') }"
+          src="/static/test-image/logo-small.svg" mode="aspectFit" @click="setActive('aspect-fit-image')" />
+      </view>
+
+      <view id="aspect-fill-cell" class="grid-cell" :class="{ 'active-cell': isActive('aspect-fill-image') }">
+        <text class="case-title">aspectFill</text>
+        <image id="aspect-fill-image" class="test-image small-image origin-top-right"
+          :class="{ 'scaled-image': isActive('aspect-fill-image') }"
+          src="/static/test-image/logo-small.svg" mode="aspectFill" @click="setActive('aspect-fill-image')" />
+      </view>
+    </view>
+
+    <view class="grid grid-middle">
+      <view id="width-fix-cell" class="grid-cell" :class="{ 'active-cell': isActive('width-fix-image') }">
+        <text class="case-title">widthFix</text>
+        <image id="width-fix-image" class="test-image width-fix-image"
+          :class="{ 'scaled-image': isActive('width-fix-image') }"
+          src="/static/test-image/logo-small.svg" mode="widthFix" @click="setActive('width-fix-image')" />
+      </view>
+
+      <view id="height-fix-cell" class="grid-cell" :class="{ 'active-cell': isActive('height-fix-image') }">
+        <text class="case-title">heightFix</text>
+        <image id="height-fix-image" class="test-image height-fix-image"
+          :class="{ 'scaled-image': isActive('height-fix-image') }"
+          src="/static/test-image/logo-small.svg" mode="heightFix" @click="setActive('height-fix-image')" />
+      </view>
+    </view>
+
+    <view class="grid">
+      <view id="top-left-cell" class="grid-cell" :class="{ 'active-cell': isActive('top-left-image') }">
+        <text class="case-title">top left</text>
+        <image id="top-left-image" class="test-image fixed-image origin-top-left"
+          :class="{ 'scaled-image': isActive('top-left-image') }" src="/static/test-image/logo-small.svg"
+          mode="top left" @click="setActive('top-left-image')" />
+      </view>
+
+      <view id="top-cell" class="grid-cell" :class="{ 'active-cell': isActive('top-image') }">
+        <text class="case-title">top</text>
+        <image id="top-image" class="test-image fixed-image origin-top"
+          :class="{ 'scaled-image': isActive('top-image') }" src="/static/test-image/logo-small.svg"
+          mode="top" @click="setActive('top-image')" />
+      </view>
+
+      <view id="top-right-cell" class="grid-cell" :class="{ 'active-cell': isActive('top-right-image') }">
+        <text class="case-title">top right</text>
+        <image id="top-right-image" class="test-image fixed-image origin-top-right"
+          :class="{ 'scaled-image': isActive('top-right-image') }" src="/static/test-image/logo-small.svg"
+          mode="top right" @click="setActive('top-right-image')" />
+      </view>
+
+      <view id="left-cell" class="grid-cell" :class="{ 'active-cell': isActive('left-image') }">
+        <text class="case-title">left</text>
+        <image id="left-image" class="test-image fixed-image origin-left"
+          :class="{ 'scaled-image': isActive('left-image') }" src="/static/test-image/logo-small.svg"
+          mode="left" @click="setActive('left-image')" />
+      </view>
+
+      <view id="center-cell" class="grid-cell" :class="{ 'active-cell': isActive('center-image') }">
+        <text class="case-title">center</text>
+        <image id="center-image" class="test-image fixed-image origin-center"
+          :class="{ 'scaled-image': isActive('center-image') }" src="/static/test-image/logo-small.svg"
+          mode="center" @click="setActive('center-image')" />
+      </view>
+
+      <view id="right-cell" class="grid-cell" :class="{ 'active-cell': isActive('right-image') }">
+        <text class="case-title">right</text>
+        <image id="right-image" class="test-image fixed-image origin-right"
+          :class="{ 'scaled-image': isActive('right-image') }" src="/static/test-image/logo-small.svg"
+          mode="right" @click="setActive('right-image')" />
+      </view>
+
+      <view id="bottom-left-cell" class="grid-cell" :class="{ 'active-cell': isActive('bottom-left-image') }">
+        <text class="case-title">bottom left</text>
+        <image id="bottom-left-image" class="test-image fixed-image origin-bottom-left"
+          :class="{ 'scaled-image': isActive('bottom-left-image') }" src="/static/test-image/logo-small.svg"
+          mode="bottom left" @click="setActive('bottom-left-image')" />
+      </view>
+
+      <view id="bottom-cell" class="grid-cell" :class="{ 'active-cell': isActive('bottom-image') }">
+        <text class="case-title">bottom</text>
+        <image id="bottom-image" class="test-image fixed-image origin-bottom"
+          :class="{ 'scaled-image': isActive('bottom-image') }" src="/static/test-image/logo-small.svg"
+          mode="bottom" @click="setActive('bottom-image')" />
+      </view>
+
+      <view id="bottom-right-cell" class="grid-cell" :class="{ 'active-cell': isActive('bottom-right-image') }">
+        <text class="case-title">bottom right</text>
+        <image id="bottom-right-image" class="test-image fixed-image origin-bottom-right"
+          :class="{ 'scaled-image': isActive('bottom-right-image') }" src="/static/test-image/logo-small.svg"
+          mode="bottom right" @click="setActive('bottom-right-image')" />
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const data = reactive({
+    activeId: ''
+  })
+
+  const isActive = (id: string): boolean => {
+    return data.activeId == id
+  }
+
+  const setActive = (id: string) => {
+    data.activeId = data.activeId == id ? '' : id
+  }
+</script>
+
+<style>
+  .page {
+    padding: 16px;
+  }
+
+  .page-tip {
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #666666;
+  }
+
+  .case-title {
+    margin-bottom: 4px;
+    font-size: 16px;
+  }
+
+  .second-title {
+    margin-top: 16px;
+  }
+
+  .grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 340px;
+    overflow: visible;
+  }
+
+  .grid-cell {
+    flex-direction: column;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    overflow: visible;
+  }
+
+  .grid-top {
+    z-index: 2;
+  }
+
+  .grid-middle {
+    z-index: 1;
+  }
+
+  .active-cell {
+    z-index: 1;
+  }
+
+  .test-image {
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    transform-origin: 0% 0%;
+  }
+
+  .test-image.origin-top-left {
+    transform-origin: 0% 0%;
+  }
+
+  .test-image.origin-top {
+    transform-origin: 50% 0%;
+  }
+
+  .test-image.origin-top-right {
+    transform-origin: 100% 0%;
+  }
+
+  .test-image.origin-left {
+    transform-origin: 0% 50%;
+  }
+
+  .test-image.origin-center {
+    transform-origin: 50% 50%;
+  }
+
+  .test-image.origin-right {
+    transform-origin: 100% 50%;
+  }
+
+  .test-image.origin-bottom-left {
+    transform-origin: 0% 100%;
+  }
+
+  .test-image.origin-bottom {
+    transform-origin: 50% 100%;
+  }
+
+  .test-image.origin-bottom-right {
+    transform-origin: 100% 100%;
+  }
+
+  .scaled-image {
+    transform: scale(3);
+  }
+
+  .fixed-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .small-image {
+    width: 100px;
+    height: 60px;
+  }
+
+  .width-fix-image {
+    width: 100px;
+    height: 60px;
+  }
+
+  .height-fix-image {
+    width: 100px;
+    height: 60px;
+  }
+</style>

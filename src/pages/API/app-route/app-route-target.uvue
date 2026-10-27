@@ -1,0 +1,48 @@
+<template>
+  <view>
+    <page-head title="应用路由事件目标页"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-list-cell-padding result-box">
+        <text class="uni-title-text">跳转参数</text>
+        <text class="result-text">from：{{ data.from }}</text>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="navigateBack">返回</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  type DataType = {
+    from : string
+  }
+
+  const data = reactive({
+    from: ''
+  } as DataType)
+
+  onLoad((options : OnLoadOptions) => {
+    data.from = options['from'] ?? ''
+  })
+
+  const navigateBack = () => {
+    uni.navigateBack()
+  }
+
+  defineExpose({
+    data,
+    navigateBack
+  })
+</script>
+
+<style>
+  .result-box {
+    padding: 12px;
+    background-color: #ffffff;
+  }
+
+  .result-text {
+    margin-top: 8px;
+  }
+</style>

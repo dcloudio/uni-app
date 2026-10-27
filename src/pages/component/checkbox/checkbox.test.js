@@ -1,7 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isMpAlipay = platformInfo === 'mp-alipay'
 const isHarmony = platformInfo.startsWith('harmony')
-const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
+const isIOS = platformInfo.startsWith('ios')
+const isAndroid = platformInfo.startsWith('android')
+const isVapor = process.env.UNI_APP_X_DOM2 == 'true'
 
 describe('Checkbox.uvue', () => {
   let page
@@ -35,7 +38,7 @@ describe('Checkbox.uvue', () => {
   })
   it('length', async () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
-    if (isHarmony && isDom2) {
+    if ((isHarmony || isIOS || isAndroid) && isVapor) {
       expect(checkboxGroupElements.length).toBe(5)
     } else {
       expect(checkboxGroupElements.length).toBe(4)
@@ -43,12 +46,18 @@ describe('Checkbox.uvue', () => {
     const checkboxElements = await page.$$('.checkbox')
     expect(checkboxElements.length).toBe(12)
   })
-  it('text', async () => {
-    const cb = await page.$('.cb1')
-    expect(await cb.text()).toEqual('未选中')
-    await setPageData({text: 'not selected'})
-    expect(await cb.text()).toEqual('not selected')
-  })
+  // Lyra 原生 checkbox 当前不暴露内部文本，后续支持后恢复支付宝上的 text 测试。
+  if (!isMpAlipay) {
+    it('text', async () => {
+      const cb = await page.$('.cb1')
+      await page.nextTick()
+      expect(await cb.text()).toEqual('未选中')
+      await page.nextTick()
+      await setPageData({text: 'not selected'})
+      await page.nextTick()
+      expect(await cb.text()).toEqual('not selected')
+    })
+  }
   if(isMP) {
     it('disabled', async () => {
       const cb = await page.$('.cb2')
@@ -83,8 +92,8 @@ describe('Checkbox.uvue', () => {
   }
   if(!isMP) {
     it('color', async () => {
-      if (isHarmony && isDom2) {
-        console.log('Checkbox Harmony Dom2 not support props color、iconColor、fo reColor')
+      if ((isHarmony || isIOS || isAndroid) && isVapor) {
+        console.log('Checkbox Harmony or iOS or Android Dom2 not support props color、iconColor、foreColor')
         expect(1).toBe(1)
         return
       }
@@ -95,8 +104,8 @@ describe('Checkbox.uvue', () => {
     })
 
     it('icon color', async () => {
-      if (isHarmony && isDom2) {
-        console.log('Checkbox Harmony Dom2 not support props color、iconColor、foreColor')
+      if ((isHarmony || isIOS || isAndroid) && isVapor) {
+        console.log('Checkbox Harmony or iOS || Android Dom2 not support props color、iconColor、foreColor')
         expect(1).toBe(1)
         return
       }
@@ -106,8 +115,8 @@ describe('Checkbox.uvue', () => {
       expect(await cb.attribute('iconColor')).toBe('#63acfc')
     })
     it('foreColor', async () => {
-      if (isHarmony && isDom2) {
-        console.log('Checkbox Harmony Dom2 not support props color、iconColor、foreColor')
+      if ((isHarmony || isIOS || isAndroid) && isVapor) {
+        console.log('Checkbox Harmony or iOS || Android Dom2 not support props color、iconColor、foreColor')
         expect(1).toBe(1)
         return
       }
@@ -126,7 +135,7 @@ describe('Checkbox.uvue', () => {
     })
   }
 
-  if (isDom2 && isHarmony) {
+  if (isVapor && !isMP) {
     it('externalClasses', async () => {
       const checkbox = await page.$('#checkbox-vapor')
       expect(await checkbox.attribute('checkbox-class')).toContain('custom-checkbox')

@@ -1,0 +1,678 @@
+/**
+ * 处理后展示的icon列表 ，不能直接覆盖 ，需要把源数据处理后使用
+ */
+
+export type iconType = {
+	font_class : string
+	unicode : string
+}
+export const iconlist = [
+  {
+    "font_class": "arrow-down",
+    "unicode": "e6be"
+  },
+  {
+    "font_class": "arrow-left",
+    "unicode": "e6bc"
+  },
+  {
+    "font_class": "arrow-right",
+    "unicode": "e6bb"
+  },
+  {
+    "font_class": "arrow-up",
+    "unicode": "e6bd"
+  },
+  {
+    "font_class": "down",
+    "unicode": "e6b8"
+  },
+  {
+    "font_class": "left",
+    "unicode": "e6b7"
+  },
+  {
+    "font_class": "right",
+    "unicode": "e6b5"
+  },
+  {
+    "font_class": "up",
+    "unicode": "e6b6"
+  },
+  {
+    "font_class": "auth",
+    "unicode": "e6ab"
+  },
+  {
+    "font_class": "auth-filled",
+    "unicode": "e6cc"
+  },
+  
+  {
+    "font_class": "calendar",
+    "unicode": "e6a0"
+  },
+  {
+    "font_class": "calendar-filled",
+    "unicode": "e6c0"
+  },
+  {
+    "font_class": "camera",
+    "unicode": "e65a"
+  },
+  {
+    "font_class": "camera-filled",
+    "unicode": "e658"
+  },
+  {
+    "font_class": "cart",
+    "unicode": "e631"
+  },
+  {
+    "font_class": "cart-filled",
+    "unicode": "e6d0"
+  },
+  {
+    "font_class": "chat",
+    "unicode": "e65d"
+  },
+  {
+    "font_class": "chat-filled",
+    "unicode": "e659"
+  },
+  {
+    "font_class": "chatboxes",
+    "unicode": "e696"
+  },
+  {
+    "font_class": "chatboxes-filled",
+    "unicode": "e692"
+  },
+  {
+    "font_class": "chatbubble",
+    "unicode": "e697"
+  },
+  {
+    "font_class": "chatbubble-filled",
+    "unicode": "e694"
+  },
+  {
+    "font_class": "checkbox",
+    "unicode": "e62b"
+  },
+  {
+    "font_class": "checkbox-filled",
+    "unicode": "e62c"
+  },
+  
+  {
+    "font_class": "circle",
+    "unicode": "e65b"
+  },
+  {
+    "font_class": "circle-filled",
+    "unicode": "e65e"
+  },
+  {
+    "font_class": "clear",
+    "unicode": "e66d"
+  },
+  {
+    "font_class": "close",
+    "unicode": "e673"
+  },
+  {
+    "font_class": "checkmarkempty",
+    "unicode": "e65c"
+  },
+  {
+    "font_class": "closeempty",
+    "unicode": "e66c"
+  },
+  {
+    "font_class": "cloud-download",
+    "unicode": "e647"
+  },
+  {
+    "font_class": "cloud-download-filled",
+    "unicode": "e646"
+  },
+  {
+    "font_class": "cloud-upload",
+    "unicode": "e645"
+  },
+  {
+    "font_class": "cloud-upload-filled",
+    "unicode": "e648"
+  },
+  {
+    "font_class": "color",
+    "unicode": "e6cf"
+  },
+  {
+    "font_class": "color-filled",
+    "unicode": "e6c9"
+  },
+ 
+  {
+    "font_class": "contact",
+    "unicode": "e693"
+  },
+  {
+    "font_class": "contact-filled",
+    "unicode": "e695"
+  },
+  
+  {
+    "font_class": "download",
+    "unicode": "e68d"
+  },
+  {
+    "font_class": "download-filled",
+    "unicode": "e681"
+  },
+  {
+    "font_class": "email",
+    "unicode": "e69e"
+  },
+  {
+    "font_class": "email-filled",
+    "unicode": "e69a"
+  },
+  {
+    "font_class": "eye",
+    "unicode": "e651"
+  },
+  {
+    "font_class": "eye-filled",
+    "unicode": "e66a"
+  },
+  {
+    "font_class": "eye-slash",
+    "unicode": "e6b3"
+  },
+  {
+    "font_class": "eye-slash-filled",
+    "unicode": "e6b4"
+  },
+  {
+    "font_class": "fire",
+    "unicode": "e6a1"
+  },
+  {
+    "font_class": "fire-filled",
+    "unicode": "e6c5"
+  },
+  {
+    "font_class": "flag",
+    "unicode": "e65f"
+  },
+  {
+    "font_class": "flag-filled",
+    "unicode": "e660"
+  },
+  {
+    "font_class": "folder-add",
+    "unicode": "e6a9"
+  },
+  {
+    "font_class": "folder-add-filled",
+    "unicode": "e6c8"
+  },
+  
+  {
+    "font_class": "gear",
+    "unicode": "e664"
+  },
+  {
+    "font_class": "gear-filled",
+    "unicode": "e661"
+  },
+  {
+    "font_class": "gift",
+    "unicode": "e6a4"
+  },
+  {
+    "font_class": "gift-filled",
+    "unicode": "e6c4"
+  },
+  {
+    "font_class": "hand-down",
+    "unicode": "e63d"
+  },
+  {
+    "font_class": "hand-down-filled",
+    "unicode": "e63c"
+  },
+  {
+    "font_class": "hand-up",
+    "unicode": "e63f"
+  },
+  {
+    "font_class": "hand-up-filled",
+    "unicode": "e63e"
+  },
+  
+  {
+    "font_class": "heart",
+    "unicode": "e639"
+  },
+  {
+    "font_class": "heart-filled",
+    "unicode": "e641"
+  },
+  {
+    "font_class": "help",
+    "unicode": "e679"
+  },
+  {
+    "font_class": "help-filled",
+    "unicode": "e674"
+  },
+  {
+    "font_class": "home",
+    "unicode": "e662"
+  },
+  {
+    "font_class": "home-filled",
+    "unicode": "e663"
+  },
+  {
+    "font_class": "image",
+    "unicode": "e670"
+  },
+  {
+    "font_class": "image-filled",
+    "unicode": "e678"
+  },
+  {
+    "font_class": "images",
+    "unicode": "e650"
+  },
+  {
+    "font_class": "images-filled",
+    "unicode": "e64b"
+  },
+  {
+    "font_class": "info",
+    "unicode": "e669"
+  },
+  {
+    "font_class": "info-filled",
+    "unicode": "e649"
+  },
+  {
+    "font_class": "location",
+    "unicode": "e6ae"
+  },
+  {
+    "font_class": "location-filled",
+    "unicode": "e6af"
+  },
+  {
+    "font_class": "locked",
+    "unicode": "e66b"
+  },
+  {
+    "font_class": "locked-filled",
+    "unicode": "e668"
+  },
+  
+  {
+    "font_class": "mail-open",
+    "unicode": "e643"
+  },
+  {
+    "font_class": "mail-open-filled",
+    "unicode": "e63a"
+  },
+  {
+    "font_class": "map",
+    "unicode": "e667"
+  },
+  {
+    "font_class": "map-filled",
+    "unicode": "e666"
+  },
+  {
+    "font_class": "map-pin",
+    "unicode": "e6ad"
+  },
+  {
+    "font_class": "map-pin-ellipse",
+    "unicode": "e6ac"
+  },
+  {
+    "font_class": "medal",
+    "unicode": "e6a2"
+  },
+  {
+    "font_class": "medal-filled",
+    "unicode": "e6c3"
+  },
+  {
+    "font_class": "mic",
+    "unicode": "e671"
+  },
+  {
+    "font_class": "mic-filled",
+    "unicode": "e677"
+  },
+  {
+    "font_class": "micoff",
+    "unicode": "e67e"
+  },
+  {
+    "font_class": "micoff-filled",
+    "unicode": "e6b0"
+  },
+  {
+    "font_class": "minus",
+    "unicode": "e66f"
+  },
+  {
+    "font_class": "minus-filled",
+    "unicode": "e67d"
+  },
+  {
+    "font_class": "more",
+    "unicode": "e64d"
+  },
+  {
+    "font_class": "more-filled",
+    "unicode": "e64e"
+  },
+  {
+    "font_class": "navigate",
+    "unicode": "e66e"
+  },
+  {
+    "font_class": "navigate-filled",
+    "unicode": "e67a"
+  },
+  {
+    "font_class": "notification",
+    "unicode": "e6a6"
+  },
+  {
+    "font_class": "notification-filled",
+    "unicode": "e6c1"
+  },
+  {
+    "font_class": "paperplane",
+    "unicode": "e672"
+  },
+  {
+    "font_class": "paperplane-filled",
+    "unicode": "e675"
+  },
+  {
+    "font_class": "person",
+    "unicode": "e699"
+  },
+  {
+    "font_class": "person-filled",
+    "unicode": "e69d"
+  },
+  {
+    "font_class": "personadd",
+    "unicode": "e69f"
+  },
+  {
+    "font_class": "personadd-filled",
+    "unicode": "e698"
+  },
+  {
+    "font_class": "phone",
+    "unicode": "e69c"
+  },
+  {
+    "font_class": "phone-filled",
+    "unicode": "e69b"
+  },
+  {
+    "font_class": "plus",
+    "unicode": "e676"
+  },
+  {
+    "font_class": "plus-filled",
+    "unicode": "e6c7"
+  },
+  
+  {
+    "font_class": "redo",
+    "unicode": "e64a"
+  },
+  {
+    "font_class": "redo-filled",
+    "unicode": "e655"
+  },
+  {
+    "font_class": "refresh",
+    "unicode": "e657"
+  },
+  {
+    "font_class": "refresh-filled",
+    "unicode": "e656"
+  },
+  {
+    "font_class": "refreshempty",
+    "unicode": "e6bf"
+  },
+  {
+    "font_class": "reload",
+    "unicode": "e6b2"
+  },
+  {
+    "font_class": "settings",
+    "unicode": "e653"
+  },
+  {
+    "font_class": "settings-filled",
+    "unicode": "e6ce"
+  },
+  {
+    "font_class": "shop",
+    "unicode": "e62f"
+  },
+  {
+    "font_class": "shop-filled",
+    "unicode": "e6cd"
+  },
+  {
+    "font_class": "smallcircle",
+    "unicode": "e67c"
+  },
+  {
+    "font_class": "smallcircle-filled",
+    "unicode": "e665"
+  },
+  {
+    "font_class": "sound",
+    "unicode": "e684"
+  },
+  {
+    "font_class": "sound-filled",
+    "unicode": "e686"
+  },
+  
+  {
+    "font_class": "staff",
+    "unicode": "e6a7"
+  },
+  {
+    "font_class": "staff-filled",
+    "unicode": "e6cb"
+  },
+  {
+    "font_class": "trash",
+    "unicode": "e687"
+  },
+  {
+    "font_class": "trash-filled",
+    "unicode": "e685"
+  },
+  {
+    "font_class": "tune",
+    "unicode": "e6aa"
+  },
+  {
+    "font_class": "tune-filled",
+    "unicode": "e6ca"
+  },
+  {
+    "font_class": "undo",
+    "unicode": "e64f"
+  },
+  {
+    "font_class": "undo-filled",
+    "unicode": "e64c"
+  },
+  
+  {
+    "font_class": "upload",
+    "unicode": "e690"
+  },
+  {
+    "font_class": "upload-filled",
+    "unicode": "e68e"
+  },
+  {
+    "font_class": "videocam",
+    "unicode": "e68c"
+  },
+  {
+    "font_class": "videocam-filled",
+    "unicode": "e689"
+  },
+  {
+    "font_class": "vip",
+    "unicode": "e6a8"
+  },
+  {
+    "font_class": "vip-filled",
+    "unicode": "e6c6"
+  },
+  {
+    "font_class": "wallet",
+    "unicode": "e6b1"
+  },
+  {
+    "font_class": "wallet-filled",
+    "unicode": "e6c2"
+  },
+  
+  {
+    "font_class": "back",
+    "unicode": "e6b9"
+  },
+  {
+    "font_class": "forward",
+    "unicode": "e6ba"
+  },
+  {
+    "font_class": "bars",
+    "unicode": "e627"
+  },
+  {
+    "font_class": "compose",
+    "unicode": "e67f"
+  },
+  {
+    "font_class": "font",
+    "unicode": "e6a3"
+  },
+ 
+  {
+    "font_class": "headphones",
+    "unicode": "e630"
+  },
+  {
+    "font_class": "link",
+    "unicode": "e6a5"
+  },
+  {
+    "font_class": "list",
+    "unicode": "e644"
+  },
+  {
+    "font_class": "loop",
+    "unicode": "e633"
+  },
+  {
+    "font_class": "paperclip",
+    "unicode": "e652"
+  },
+  {
+    "font_class": "plusempty",
+    "unicode": "e67b"
+  },
+  {
+    "font_class": "pulldown",
+    "unicode": "e632"
+  },
+  {
+    "font_class": "weixin",
+    "unicode": "e691"
+  },
+  {
+    "font_class": "weibo",
+    "unicode": "e68b"
+  },
+  {
+    "font_class": "pyq",
+    "unicode": "e682"
+  },
+  {
+    "font_class": "qq",
+    "unicode": "e680"
+  },
+  {
+    "font_class": "scan",
+    "unicode": "e62a"
+  },
+  {
+    "font_class": "search",
+    "unicode": "e654"
+  },
+  {
+    "font_class": "spinner-cycle",
+    "unicode": "e68a"
+  },
+  {
+    "font_class": "star",
+    "unicode": "e688"
+  },
+  {
+    "font_class": "star-filled",
+    "unicode": "e68f"
+  },
+  {
+    "font_class": "starhalf",
+    "unicode": "e683"
+  },
+  {
+    "font_class": "skip-back-fill",
+    "unicode": "e818"
+  },
+  {
+    "font_class": "skip-back-line",
+    "unicode": "e819"
+  },
+  {
+    "font_class": "skip-forward-fill",
+    "unicode": "e81a"
+  },
+  {
+    "font_class": "skip-forward-line",
+    "unicode": "e81b"
+  },
+  {
+    "font_class": "skip-left-line",
+    "unicode": "e777"
+  },
+  {
+    "font_class": "skip-right-line",
+    "unicode": "e778"
+  }
+] as Array<iconType>

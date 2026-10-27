@@ -8,7 +8,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
@@ -113,7 +113,6 @@
 <style>
   .content {
     flex: 1;
-    background-color: #f0f0f0;
   }
 
   .view1 {

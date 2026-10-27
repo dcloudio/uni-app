@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
   <view style="flex-grow: 1;">
     <view>
       <text class="desc-text">content-box（标准盒模型，默认值）</text>
@@ -82,7 +79,7 @@
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 box-sizing </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       <text class="help-text">设置 width: 60px, padding: 10px, border: 10px</text>
     </view>
 
@@ -90,10 +87,10 @@
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActual}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common" :style="{ boxSizing: boxSizing }">
+          <view ref="viewRef" class="common" :style="{ boxSizing: data.boxSizing }">
             <text class="common-text font-size-12">view</text>
           </view>
         </view>
@@ -101,19 +98,19 @@
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualText}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common font-size-12" :style="{ boxSizing: boxSizing }">text</text>
+          <text ref="textRef" class="common font-size-12" :style="{ boxSizing: data.boxSizing }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualImage}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common" :style="{ boxSizing: boxSizing }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common" :style="{ boxSizing: data.boxSizing }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -122,10 +119,10 @@
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common" :style="{ boxSizing: boxSizing }" flatten>
+          <view ref="viewRefFlat" class="common" :style="{ boxSizing: data.boxSizing }" flatten>
             <text class="common-text font-size-12">view</text>
           </view>
         </view>
@@ -133,19 +130,19 @@
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common font-size-12" :style="{ boxSizing: boxSizing }" flatten>text</text>
+          <text ref="textRefFlat" class="common font-size-12" :style="{ boxSizing: data.boxSizing }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common" :style="{ boxSizing: boxSizing }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common" :style="{ boxSizing: data.boxSizing }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -153,24 +150,23 @@
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="boxSizingEnum" title="box-sizing 枚举值" @change="radioChangeBoxSizing" :compact="true"></enum-data>
-      <input-data :defaultValue="boxSizing" title="box-sizing 自定义值" type="text" @confirm="inputChangeBoxSizing"></input-data>
+      <input-data :defaultValue="data.boxSizing" title="box-sizing 自定义值" type="text" @confirm="inputChangeBoxSizing"></input-data>
     </view>
 
-    <view class="uni-common-mb">
-      <text>native-view组件: box-sizing: content-box 和 border-box</text>
-      <text class="help-text">设置 width: 100px, padding: 10px, border: 10px</text>
-      <view class="demo-box">
-        <native-view class="scroll-view-box-sizing" style="box-sizing: content-box;"></native-view>
-        <native-view class="scroll-view-box-sizing" style="box-sizing: border-box;"></native-view>
+    <!-- #ifndef MP-ALIPAY -->
+      <view class="uni-common-mb">
+        <text>native-view组件: box-sizing: content-box 和 border-box</text>
+        <text class="help-text">设置 width: 100px, padding: 10px, border: 10px</text>
+        <view class="demo-box">
+          <test-native-view class="native-view-box-sizing" style="box-sizing: content-box;"></test-native-view>
+          <test-native-view class="native-view-box-sizing" style="box-sizing: border-box;"></test-native-view>
+        </view>
       </view>
-    </view>
+    <!-- #endif -->
   </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const boxSizingEnum: ItemType[] = [
@@ -179,13 +175,15 @@
     { value: 2, name: 'border-box' }
   ]
 
-  const boxSizing = ref('content-box')
-  const boxSizingActual = ref('')
-  const boxSizingActualText = ref('')
-  const boxSizingActualImage = ref('')
-  const boxSizingActualFlat = ref('')
-  const boxSizingActualTextFlat = ref('')
-  const boxSizingActualImageFlat = ref('')
+  const data = reactive({
+    boxSizing: 'content-box',
+    boxSizingActual: '',
+    boxSizingActualText: '',
+    boxSizingActualImage: '',
+    boxSizingActualFlat: '',
+    boxSizingActualTextFlat: '',
+    boxSizingActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -194,16 +192,16 @@
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    boxSizingActual.value = viewRef.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualFlat.value = viewRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualText.value = textRef.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualImage.value = imageRef.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActual = viewRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualFlat = viewRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualText = textRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualTextFlat = textRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualImage = imageRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualImageFlat = imageRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
   }
 
   const changeBoxSizing = (value: string) => {
-    boxSizing.value = value
+    data.boxSizing = value
     viewRef.value?.style.setProperty('box-sizing', value)
     viewRefFlat.value?.style.setProperty('box-sizing', value)
     textRef.value?.style.setProperty('box-sizing', value)
@@ -230,25 +228,30 @@
   onReady(() => {
     getPropertyValues()
   })
+
+  defineExpose({
+    radioChangeBoxSizing,
+    data
+  })
 </script>
 
 <style>
   .desc-text {
     font-size: 14px;
-    color: #333;
+    color: var(--text-color, #333);
     font-weight: bold;
     line-height: 22px;
   }
 
   .title-text {
     font-size: 16px;
-    color: #333;
+    color: var(--text-color, #333);
     font-weight: bold;
   }
 
   .help-text {
     font-size: 12px;
-    color: #666;
+    color: var(--active-color, #666);
     margin-top: 5px;
     line-height: 18px;
   }
@@ -267,7 +270,7 @@
   }
 
   .compare-container {
-    background-color: #f5f5f5;
+    background-color: var(--active-background-color, #f5f5f5);
     padding: 10px;
     border: 1px dashed #999;
   }
@@ -284,21 +287,21 @@
 
   .box-label {
     font-size: 13px;
-    color: #fff;
+    color: #1a1a1a;
     font-weight: bold;
     text-align: center;
   }
 
   .box-label-small {
     font-size: 12px;
-    color: #fff;
+    color: #1a1a1a;
     font-weight: bold;
     text-align: center;
   }
 
   .box-info {
     font-size: 10px;
-    color: #fff;
+    color: #1a1a1a;
     text-align: center;
     margin-top: 3px;
   }
@@ -309,10 +312,12 @@
     background-color: cyan;
     padding: 10px;
     border: 10px solid #d8dde5;
+    color: #1a1a1a;
   }
 
   .common-text {
     width: 50px;
+    color: #1a1a1a;
   }
   .font-size-12{
     font-size: 12px;
@@ -347,6 +352,15 @@
     padding: 10px;
     border: 10px solid cyan;
     background-color: #4ecdc4;
+    color: #1a1a1a;
+  }
+
+  .native-view-box-sizing {
+    width: 100px;
+    height: 80px;
+    padding: 10px;
+    border: 10px solid cyan;
+    background-color: cyan;
   }
 
 </style>

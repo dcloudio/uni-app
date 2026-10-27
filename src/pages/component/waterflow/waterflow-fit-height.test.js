@@ -2,11 +2,12 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIOS || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('waterflow-fit-height', () => {
-  if (!(isAndroid || isIOS || isHarmony) || isAppWebView || isDom2) {
+  if (!isApp || isAppWebView || isVapor) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})

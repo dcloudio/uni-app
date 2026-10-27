@@ -1,4 +1,13 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 describe('background-image-test', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/CSS/background/background-image');

@@ -44,8 +44,8 @@ describe('component-native-list-view-refresh', () => {
     // 仅App端支持手势下拉刷新
     await program.swipe({
       startPoint: {x: 100,y: 400},
-      endPoint: {x: 100,y: 420},
-      duration: 100
+      endPoint: {x: 100,y: 430},
+      duration: 300
     })
     await page.waitFor(1500)
     expect(await page.data('data.onRefresherabortTest')).toBe('refresherabort:Success')

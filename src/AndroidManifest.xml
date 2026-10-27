@@ -11,17 +11,6 @@
     android:roundIcon="@drawable/icon_round"
   >
 
-    <!-- 注册 url schemes -->
-    <activity android:name="io.dcloud.uniapp.UniLaunchProxyActivity" android:exported="true">
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="hellouniappx"></data> <!-- 注册 hellouniappx:// 链接打开应用 -->
-        <data android:scheme="uniappxhello"></data> <!-- 注册 uniappxhello:// 链接打开应用 -->
-      </intent-filter>
-    </activity>
-
   </application>
 
 

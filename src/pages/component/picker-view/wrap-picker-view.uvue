@@ -5,7 +5,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import MyPickerView from './picker-view.uvue'
 
   const visible = ref(false)

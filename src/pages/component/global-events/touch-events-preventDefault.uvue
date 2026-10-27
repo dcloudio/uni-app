@@ -12,7 +12,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   const scrollTop = reactive({
     value: 0
   })

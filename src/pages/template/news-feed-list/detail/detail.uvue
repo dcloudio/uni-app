@@ -1,0 +1,32 @@
+<template>
+  <detail-content
+    :post_id="postId"
+    :cover="cover"
+    :title="title"
+    :isWideScreen="isWideScreen"
+    :shareKey="shareKey"
+    :firstDetailContent="firstDetailContent"
+  />
+</template>
+
+<script setup lang="ts">
+  import DetailContent from './detail-content.uvue'
+
+  // 作为页面渲染时，props会接收url中的参数
+  const props = defineProps({
+    post_id: { type: String, default: '' },
+    cover: { type: String, default: '' },
+    title: { type: String, default: '' },
+    isWideScreen: { type: Boolean, default: false },
+    shareKey: { type: String, default: '' },
+    // news-feed-list 预加载传入的详情内容，仅用于宽屏第一个新闻
+    firstDetailContent: { type: String, default: '' }
+  })
+
+  const postId = computed(() : string => props.post_id ?? '')
+  const cover = computed(() : string => props.cover ?? '')
+  const title = computed(() : string => props.title ?? '')
+  const isWideScreen = computed(() : boolean => props.isWideScreen ?? false)
+  const shareKey = computed(() : string => props.shareKey ?? '')
+  const firstDetailContent = computed(() : string => props.firstDetailContent ?? '')
+</script>

@@ -13,8 +13,8 @@
   </view>
 </template>
 
-<script setup lang="uts">
-  import { state } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state } from '@/store/index.ts'
 
   type DataType = {
     checked: boolean;
@@ -24,18 +24,13 @@
     testResult: boolean;
   }
 
-  const data = reactive({
-    checked: false,
-    // #ifdef VUE3-VAPOR
-    homePagePath: 'pages/tabBar/tab-bar',
-    // #endif
-    // #ifndef VUE3-VAPOR
-    homePagePath: 'pages/tabBar/component',
-    // #endif
-    launchOptionsPath: '',
-    launchOptionsString: '',
-    testResult: false
-  } as DataType)
+	const data = reactive<DataType>({
+		checked: false,
+		homePagePath: 'pages/tabBar/component',
+		launchOptionsPath: '',
+		launchOptionsString: '',
+		testResult: false
+	})
 
   const compareOnLaunchRes = () => {
     const launchOptions = uni.getLaunchOptionsSync();

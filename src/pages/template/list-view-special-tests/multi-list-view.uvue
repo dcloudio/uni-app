@@ -1,0 +1,249 @@
+<template>
+	<view id="multi-list-view-page" class="page">
+		<view class="toolbar">
+			<view class="toolbar-copy">
+				<text class="title">Multi List View</text>
+				<text class="subtitle">横向均分布局，每列独立纵向滚动</text>
+			</view>
+			<button id="toggle-list-count" class="toggle-button" type="primary" @click="cycleListCount">
+				切换为 {{nextListCount()}} 个列表
+			</button>
+		</view>
+
+		<view class="list-area">
+			<list-view
+				v-for="column in data.columns"
+				:key="column.id"
+				:id="getListId(column.id)"
+				class="column-list"
+				direction="vertical"
+				show-scrollbar="false"
+				:scroll-top="data.scrollTops[column.id - 1]"
+			>
+				<list-item v-for="item in data.items" :key="item.id" class="column-list-item">
+					<view class="item-content">
+						<view class="item-index">
+							<text class="item-index-text">{{item.id + 1}}</text>
+						</view>
+						<view class="item-copy">
+							<text class="item-title">列表 {{column.id}} · {{item.title}}</text>
+							<text class="item-description">{{item.description}}</text>
+						</view>
+					</view>
+				</list-item>
+			</list-view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type MultiColumn = {
+		id: number
+	}
+
+	type MultiListItem = {
+		id: number
+		title: string
+		description: string
+	}
+
+	type ScrollRequest = {
+		columnId: number
+		top: number
+	}
+
+	function createColumns(count: number): MultiColumn[] {
+		const columns: MultiColumn[] = []
+		for (let index = 0; index < count; index++) {
+			columns.push({
+				id: index + 1
+			})
+		}
+		return columns
+	}
+
+	function createItems(): MultiListItem[] {
+		const items: MultiListItem[] = []
+		for (let index = 0; index < 36; index++) {
+			items.push({
+				id: index,
+				title: `项目 ${index + 1}`,
+				description: '每个 list-view 拥有独立的纵向滚动区域'
+			})
+		}
+		return items
+	}
+
+	const data = reactive({
+		listCount: 4,
+		columns: createColumns(4),
+		scrollTops: [0, 0, 0, 0, 0, 0],
+		items: createItems()
+	})
+
+	function getListId(columnId: number): string {
+		return `column-list-${columnId}`
+	}
+
+	function nextListCount(): number {
+		return data.listCount >= 6 ? 4 : data.listCount + 1
+	}
+
+	function cycleListCount() {
+		data.listCount = nextListCount()
+		data.columns = createColumns(data.listCount)
+		for (let index = 0; index < data.scrollTops.length; index++) {
+			data.scrollTops[index] = 0
+		}
+	}
+
+	function scrollList(request: ScrollRequest): boolean {
+		if (request.columnId < 1 || request.columnId > data.listCount || request.top < 0) {
+			return false
+		}
+		data.scrollTops[request.columnId - 1] = request.top
+		return true
+	}
+
+	defineExpose({
+		data,
+		cycleListCount,
+		scrollList
+	})
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		--list-demo-page-background: #f5f7fb;
+		--list-demo-panel-background: #ffffff;
+		--list-demo-title-color: #1f2937;
+		--list-demo-text-color: #4b5563;
+		--list-demo-secondary-color: #6b7280;
+		--list-demo-border-color: #e5e7eb;
+		--list-demo-divider-color: #eef0f4;
+		--list-demo-badge-background: #e8f0ff;
+		--list-demo-badge-color: #2563eb;
+		background-color: var(--list-demo-page-background);
+		padding: 12px 12px 0;
+	}
+
+	.toolbar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding-bottom: 12px;
+	}
+
+	.toolbar-copy {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.title {
+		font-size: 20px;
+		font-weight: bold;
+		color: var(--list-demo-title-color);
+	}
+
+	.subtitle {
+		margin-top: 4px;
+		font-size: 12px;
+		color: var(--list-demo-secondary-color);
+	}
+
+	.toggle-button {
+		margin: 0 0 0 8px;
+		font-size: 12px;
+	}
+
+	.list-area {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: stretch;
+		min-height: 0;
+		width: 100%;
+	}
+
+	.column-list {
+		flex: 1;
+		height: 100%;
+		min-width: 0;
+		background-color: var(--list-demo-panel-background);
+		border-right-width: 1px;
+		border-right-style: solid;
+		border-right-color: var(--list-demo-border-color);
+	}
+
+	.column-list-item {
+		height: 54px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--list-demo-divider-color);
+	}
+
+	.item-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		height: 100%;
+		padding: 0 8px;
+	}
+
+	.item-index {
+		width: 22px;
+		height: 22px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border-radius: 11px;
+		background-color: var(--list-demo-badge-background);
+	}
+
+	.item-index-text {
+		font-size: 11px;
+		font-weight: bold;
+		color: var(--list-demo-badge-color);
+	}
+
+	.item-copy {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		margin-left: 6px;
+	}
+
+	.item-title {
+		font-size: 12px;
+		color: var(--list-demo-title-color);
+	}
+
+	.item-description {
+		margin-top: 3px;
+		font-size: 10px;
+		color: var(--list-demo-secondary-color);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page {
+			--list-demo-page-background: #1a1a1a;
+			--list-demo-panel-background: #2d2d2d;
+			--list-demo-title-color: #ffffff;
+			--list-demo-text-color: #b8b8b8;
+			--list-demo-secondary-color: #8a8a8a;
+			--list-demo-border-color: #3a3a3a;
+			--list-demo-divider-color: #3a3a3a;
+			--list-demo-badge-background: #26344a;
+			--list-demo-badge-color: #7aa7e0;
+		}
+	}
+</style>

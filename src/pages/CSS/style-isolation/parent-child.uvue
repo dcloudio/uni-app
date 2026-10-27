@@ -1,10 +1,15 @@
 <template>
-  <view class="child-box">
-    <text class="child-text">{{ text }}</text>
+<!--  默认策略下，父组件的样式不会影响子组件。
+  但在web下子组件的根节点依然可能会受父组件的影响，
+  所以需要尽可能避免在子组件的根节点加父组件的样式。 -->
+  <view>
+    <view class="child-box">
+      <text class="child-text">{{ text }}</text>
+    </view>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   defineProps({
     text: {
       type: String,

@@ -1,18 +1,30 @@
 <template>
   <page-head title="websocket通讯示例"></page-head>
-  <view class="uni-padding-wrap">
+  <view class="uni-padding-wrap websocket-page">
     <view class="uni-btn-v">
       <text class="websocket-msg">{{ showMsg }}</text>
-      <button class="uni-btn-v" type="primary" @click="connect">
+      <button <!-- #ifndef MP-ALIPAY -->
+        class="uni-btn-v"
+        <!-- #endif -->
+        type="primary" @click="connect">
         连接websocket服务
       </button>
-      <button class="uni-btn-v" v-show="connected" type="primary" @click="send">
+      <button <!-- #ifndef MP-ALIPAY -->
+        class="uni-btn-v"
+        <!-- #endif -->
+        v-show="connected" type="primary" @click="send">
         发送一条消息
       </button>
-	  <button class="uni-btn-v" v-show="connected" type="primary" @click="sendArrayBuffer">
+	  <button <!-- #ifndef MP-ALIPAY -->
+	    class="uni-btn-v"
+	    <!-- #endif -->
+	    v-show="connected" type="primary" @click="sendArrayBuffer">
 	    发送一条ArrayBuffer消息,返回也是ArrayBuffer
 	  </button>
-      <button class="uni-btn-v" type="primary" @click="close">
+      <button <!-- #ifndef MP-ALIPAY -->
+        class="uni-btn-v"
+        <!-- #endif -->
+        type="primary" @click="close">
         断开websocket服务
       </button>
       <text class="websocket-tips">发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</text>
@@ -20,7 +32,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const connected = ref(false)
   const connecting = ref(false)
@@ -226,7 +238,7 @@
     text-align: center;
     font-size: 14px;
     line-height: 40px;
-    color: #666666;
+    color: var(--websocket-secondary-color, #666666);
   }
 
   .websocket-tips {
@@ -234,6 +246,16 @@
     text-align: center;
     font-size: 14px;
     line-height: 24px;
-    color: #666666;
+    color: var(--websocket-secondary-color, #666666);
+  }
+
+  .websocket-page {
+    --websocket-secondary-color: #666666;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .websocket-page {
+      --websocket-secondary-color: #a0a0a0;
+    }
   }
 </style>

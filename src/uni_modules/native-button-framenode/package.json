@@ -1,0 +1,49 @@
+{
+  "id": "native-button-framenode",
+  "displayName": "native-button-framenode",
+  "version": "0.0.1",
+  "description": "使用 FrameNode 实现的鸿蒙原生按钮组件",
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^5.32"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "无"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "n",
+        "aliyun": "n"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "n",
+          "vue3": "y"
+        },
+        "App": {
+          "app-harmony": "y"
+        }
+      }
+    }
+  }
+}

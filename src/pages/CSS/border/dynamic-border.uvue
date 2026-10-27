@@ -1,30 +1,26 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
-    <view style="margin: 15px;border-radius: 10px;background-color: white;">
+  <view class="dynamic-border-page">
+    <view class="border-list">
       <view v-for="index in [0,1,2,3,4,5,6,7,8,9]" :key="index"
         :class="(index < 9 ? 'bb1' : '') + ' ' + (currentIndex == 0 ? 'btlr10 btrr10' : currentIndex == 9 ? 'bblr10 bbrr10' : '')"
         style="flex-direction: row;align-items: center;padding: 15px"
         :style="index == currentIndex ? 'background-color :#57BE6A;' : ''" @tap="changeIndex(index)">
         <view>
-          <text style="font-size: 14px;" :style="index == currentIndex ? 'color: #FFFFFF;' : ''">{{ index }}</text>
+          <text class="border-index" :style="index == currentIndex ? 'color: #FFFFFF;' : ''">{{ index }}</text>
         </view>
       </view>
     </view>
 
-    <view style="margin: 15px;margin-top: 20px;">
-      <text>动态切换 border 为空值</text>
-      <text @click="setBorderBlank" class="common" :style="style">
+    <view class="border-demo">
+      <text class="theme-text">动态切换 border 为空值</text>
+      <text @click="setBorderBlank" :class="['common', isSelect ? 'selected-border-text' : 'theme-text']" :style="style">
         {{isSelect?'选中':'未选中'}}
       </text>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const defaultStyle = 'border:2px solid black;background :#57BE6A;'
 
@@ -49,6 +45,29 @@
 </script>
 
 <style>
+  .border-list {
+    margin: 15px;
+    border-radius: 10px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .border-demo {
+    margin: 20px 15px 15px 15px;
+  }
+
+  .border-index {
+    font-size: 14px;
+    color: var(--text-color, #333333);
+  }
+
+  .theme-text {
+    color: var(--text-color, #333333);
+  }
+
+  .selected-border-text {
+    color: #1a1a1a;
+  }
+
   .common {
     padding: 15px;
     border-radius: 4px;

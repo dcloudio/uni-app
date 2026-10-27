@@ -1,49 +1,52 @@
 const PAGE_PATH = '/pages/API/report/report'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
+const isApp = platformInfo.startsWith('android') ||
+  platformInfo.startsWith('ios') ||
+  platformInfo.startsWith('harmony')
+const isVapor = process.env.UNI_APP_X_DOM2 === 'true'
 
-describe('report', () => {
-  if (isMP || isHarmony || process.env.NODE_ENV != 'production') {
-  	it('not support', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
+describe('uni-stat report', () => {
+  if (isApp && !isVapor) {
+    it('not support in app vdom', () => {
+      expect(1).toBe(1)
+    })
+    return
   }
 
   let page = null
+
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
   })
-  it('Report - onLaunch', async () => {
-    await page.callMethod('handleAppLaunch')
-    const msg = await page.data('msg.value')
-    expect(msg).toBe('onLaunch --> report:ok')
+
+  it('reports an object event', async () => {
+    await page.callMethod('reportObject')
+    expect(await page.data('state.message')).toMatch(/^object_probe：\d+$/)
   })
-  it('Report - onShow', async () => {
-    await page.callMethod('handleAppShow')
-    const msg = await page.data('msg.value')
-    expect(msg).toBe('onAppShow --> report:ok')
+
+  it('reports a string event', async () => {
+    await page.callMethod('reportString')
+    expect(await page.data('state.message')).toBe('string_probe：特殊字符')
   })
-  it('Report - onHide', async () => {
-    await page.callMethod('handleAppHide')
-    const msg = await page.data('msg.value')
-    expect(msg).toBe('onAppHide --> report:ok')
+
+  it('reports an event without value', async () => {
+    await page.callMethod('reportEmpty')
+    expect(await page.data('state.message')).toBe('empty_probe：无参数')
   })
-  it('Report - onError', async () => {
-    await page.callMethod('handleAppError')
-    const msg = await page.data('msg.value')
-    expect(msg).toBe('onAppError --> report:ok')
+
+  it('keeps two same-name events', async () => {
+    await page.callMethod('reportPair')
+    expect(await page.data('state.message')).toMatch(/^duplicate_probe：连续两次 \d+$/)
   })
-  it('Report - customTitle', async () => {
-    await page.callMethod('handleTitle')
-    const msg = await page.data('msg.value')
-    expect(msg).toBe('自定义title --> report:ok')
+
+  it('reports title context', async () => {
+    await page.callMethod('reportTitle')
+    expect(await page.data('state.message')).toMatch(/^title_context_probe：\d+$/)
   })
-  it('Report - customEvent', async () => {
-    await page.callMethod('handleEvent')
-    const msg = await page.data('msg.value')
-    expect(msg).toBe('自定义事件 --> report:ok')
+
+  it('reports runtime base information', async () => {
+    await page.callMethod('reportBaseInfo')
+    expect(await page.data('state.message')).toMatch(/^base_info_probe：\d+$/)
   })
 })

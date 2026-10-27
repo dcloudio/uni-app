@@ -2,11 +2,6 @@
 
 # 项目基本信息
 project:
-  provider: "ablai"  # AI 服务商，可选值：ablai（阿波罗）, bailian（阿里百炼）。如果要使用国外的大模型，请选择 ablai；如果使用国内的大模型，请选择 bailian。
-  # 阿波罗支持的模型列表：https://api.ablai.top/models
-  # 阿里百炼支持的模型列表：https://bailian.console.aliyun.com/?tab=model#/model-market
-  aiModel: "gemini-2.5-pro"  # AI 模型，可选值：qwen-turbo-2025-04-28, deepseek-v3, gemini-2.5-pro-preview-05-06
-  maxTokens: 5000  # AI 模型最大输出 token 数。不同的模型支持的 token 数不同，请根据实际情况调整。输出 token 数越多，评审结果越准确，但成本也越高。
   reviewGuidelines: |
     **请扮演一位经验丰富的 uni-app x 高级开发者，专注于对 Git Commit 进行代码评审。**
 
@@ -36,6 +31,7 @@ project:
         * 是否存在潜在的资源泄漏或错误处理不当？
     * **代码规范与最佳实践：**
         * 新代码是否遵循 UTS 编码标准和项目内部的编码规范？
+        * 不允许存在已声明但从未使用的变量；发现此类变量时必须指出具体文件和代码位置，并要求删除或合理使用。
         * 是否考虑到多端适配性(如 iOS、Android、H5、小程序等)?
         * 是否遵循了 uni-app x 的最佳实践（如组件化、状态管理等）？
         * 是否遵循了 jest 的最佳实践？
@@ -52,6 +48,16 @@ project:
     ### 4. 整体变更结构
     * 这次提交的变更范围是否合理（即，只包含了与提交目的相关的修改，没有混入其他不相关的改动）？
     * 如果变更跨越多个文件，它们之间的逻辑联系是否清晰？
+
+    ### 5. 测试文件变更
+    * 如果修改的是 .test.js 文件，需要验证测试用例是否合理、覆盖了相关功能，并且符合 jest 的最佳实践。
+    * 如果测试中涉及到截图测试(program.screenshot) 且没有在 app webview 模式（通过 process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' 判断）时跳过，则需要设置为截长图模式，即 program.screenshot 配置参数 fullPage: true。
+
+    ### 6. 文件语言与扩展名限制（强制）
+    * 检查本次提交新增或修改的文件。仅路径位于任意 `utssdk` 或 `workers` 目录内的文件可以不遵循本节限制，例如 `uni_modules/example/utssdk/**`、`workers/**`。
+    * 除上述例外外，所有 `.uvue`、`.vue` 文件都必须使用精确的 `<script setup lang="ts">`。缺少 script 块，或使用普通 `<script>`、非 setup 写法、其他 lang 值，均属于不符合规范。
+    * 除上述例外及 `.uvue`、`.vue` 文件外，独立源码文件只允许使用 `.ts` 或 `.js` 后缀；不得新增或修改 `.uts`、`.tsx`、`.jsx`、`.mjs`、`.cjs` 等其他后缀的源码文件。JSON/YAML 配置、样式、资源、文档和测试快照不属于这里的独立源码文件。
+    * 发现违反本节的变更时必须指出具体文件，并将推荐级别标记为“必须修改”。
 
     ---
 

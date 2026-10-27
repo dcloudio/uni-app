@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap">
@@ -26,19 +23,15 @@
       </view>
       <input-data defaultValue="80" title="压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）" type="number"
         @confirm="onQualityConfirm"></input-data>
-      <input-data title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
-      <input-data title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
+      <input-data defaultValue="" title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
+      <input-data defaultValue="" title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
       <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+
+    <view class="scroll-view_bottom-fixed"></view>
 </template>
 
-<script setup lang="uts">
-  // #ifdef APP-ANDROID
-  import FileInputStream from 'java.io.FileInputStream';
-  // #endif
+<script setup lang="ts">
 
   type DataType = {
     imageInfoForTest: UTSJSONObject | null,
@@ -52,7 +45,12 @@
   const afterCompressImageInfo = ref("")
   const beforeCompressPath = ref("")
   const afterCompressPath = ref("")
+  // #ifndef MP-ALIPAY
   const quality = ref(80)
+  // #endif
+  // #ifdef MP-ALIPAY
+  const quality = ref(60)
+  // #endif  
   const rotate = ref(0)
   // 自动化测试
   const data = reactive({
@@ -90,11 +88,7 @@
           src: res.tempFilePath,
           success: (_res) => {
             afterCompressImageInfo.value = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
-            // #ifdef APP-ANDROID
-            const size = new FileInputStream(res.tempFilePath.substring("file://".length)).available() / 1024;
-            afterCompressImageInfo.value = afterCompressImageInfo.value.concat(`图片大小: ${size}KB`);
-            // #endif
-            // #ifdef APP-HARMONY
+            // #ifdef APP-HARMONY || APP-ANDROID
             const fsm = uni.getFileSystemManager()
             fsm.getFileInfo({
               filePath: res.tempFilePath,
@@ -124,6 +118,9 @@
     uni.chooseImage({
       count: 1,
       sizeType: ["original"],
+      // #ifdef APP-ANDROID
+      albumMode:"system",
+      // #endif
       sourceType: ["album"],
       success: (res) => {
         beforeCompressPath.value = res.tempFilePaths[0];
@@ -131,11 +128,7 @@
           src: res.tempFilePaths[0],
           success: (_res) => {
             beforeCompressImageInfo.value = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
-            // #ifdef APP-ANDROID
-            const size = new FileInputStream(res.tempFilePaths[0].substring("file://".length)).available() / 1024;
-            beforeCompressImageInfo.value = beforeCompressImageInfo.value.concat(`图片大小: ${size}KB`);
-            // #endif
-            // #ifdef APP-HARMONY
+            // #ifdef APP-HARMONY || APP-ANDROID
             const fsm = uni.getFileSystemManager()
             fsm.getFileInfo({
               filePath: res.tempFilePaths[0],

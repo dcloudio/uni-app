@@ -1,0 +1,85 @@
+<template>
+  <view class="page">
+    <page-intro
+      style="margin: 10px 0;"
+      content="本页演示微信小程序自定义组件：父组件通过属性向 my-counter 传值，监听 change 事件更新计数，并通过 ref 调用子组件 increment/decrement 方法。"
+    ></page-intro>
+    <view class="demo-section">
+      <text class="status-text">父组件中的值：{{ data.count }}</text>
+      <text class="status-text">已收到 change 事件：{{ data.changeCount }} 次</text>
+
+      <view class="counter-row">
+        <my-counter
+          ref="nativeCounter"
+          :initial-count="data.count"
+          :step="data.step"
+          :min="0"
+          :max="20"
+          @change="onCounterChange($event.detail)"
+        ></my-counter>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  type CounterChangeDetail = {
+    value : number
+  }
+
+  type DataType = {
+    count : number
+    step : number
+    changeCount : number
+  }
+
+  const instance = getCurrentInstance()?.proxy
+  const nativeCounter = ref(null)
+
+  const data = reactive<DataType>({
+    count: 4,
+    step: 2,
+    changeCount: 0
+  })
+
+  function onCounterChange(detail : CounterChangeDetail) {
+    data.count = detail.value
+    data.changeCount++
+  }
+
+  function decrement() {
+    nativeCounter.value?.decrement() 
+  }
+
+  function increment() {
+    nativeCounter.value?.increment()
+  }
+
+  defineExpose({
+    data,
+    decrement,
+    increment
+  })
+</script>
+
+<style>
+  .page {
+    padding: 0 24px 32px;
+  }
+
+  .demo-section {
+    padding-top: 20px;
+  }
+
+  .status-text {
+    margin-top: 10px;
+    color: var(--text-color, #333333);
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .counter-row {
+    margin-top: 20px;
+    align-items: flex-start;
+  }
+</style>

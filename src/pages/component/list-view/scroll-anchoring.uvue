@@ -1,0 +1,290 @@
+<template>
+	<view class="page-root">
+		<view class="summary-panel">
+			<text class="summary-title">list-view scroll-anchoring</text>
+			<text class="summary-text">验证头部插入和尾部追加数据时，当前阅读位置是否保持稳定。</text>
+			<text class="summary-target">scrollTop: {{ currentScrollTop }}</text>
+		</view>
+		<scroll-view class="toolbar-panel" direction="horizontal" :show-scrollbar="false">
+			<button class="toolbar-button" @click="scrollToProbePosition">滚动到测试位置</button>
+			<button class="toolbar-button" @click="prependItems">头部插入20项</button>
+			<button class="toolbar-button" @click="appendItems">尾部追加20项</button>
+			<button class="toolbar-button" @click="resetList">重置数据</button>
+			<button class="toolbar-button" @click="resetScrollPosition">回到顶部</button>
+		</scroll-view>
+		<list-view
+			id="scroll-anchoring-list"
+			ref="listRef"
+			class="list-root"
+			direction="vertical"
+			:scroll-anchoring="true"
+			:show-scrollbar="true"
+			:scroll-top="scrollTop"
+			@scroll="onScroll"
+		>
+			<list-item v-for="item in items" :key="item.id" :id="item.id" class="list-item">
+				<view class="item-card">
+					<text class="item-title">{{ item.label }}</text>
+					<text class="item-desc">{{ item.desc }}</text>
+				</view>
+			</list-item>
+		</list-view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type DemoItem = {
+		id : string
+		value : number
+		label : string
+		desc : string
+	}
+
+	type ItemMetrics = {
+		listTop : number
+		itemTop : number
+		itemBottom : number
+		relativeTop : number
+		scrollTop : number
+	}
+
+	const BATCH_SIZE = 20
+	const INITIAL_START = 0
+	const INITIAL_END = 39
+	const PROBE_ITEM_ID = 'item-10'
+	const PROBE_SCROLL_TOP = 520
+
+	function createItem(value : number) : DemoItem {
+		const item : DemoItem = {
+			id: 'item-' + value,
+			value,
+			label: 'Item ' + value,
+			desc: 'anchoring probe ' + value,
+		}
+		return item
+	}
+
+	function createItems(start : number, end : number) : DemoItem[] {
+		const result = [] as DemoItem[]
+		for (let value = start; value <= end; value++) {
+			result.push(createItem(value))
+		}
+		return result
+	}
+
+	const items = ref(createItems(INITIAL_START, INITIAL_END))
+	const scrollTop = ref(0)
+	const currentScrollTop = ref(0)
+	const listRef = ref<UniListViewElement | null>(null)
+	let start = INITIAL_START
+	let end = INITIAL_END
+
+	function onScroll(event : UniScrollEvent) {
+		currentScrollTop.value = Math.round(event.detail.scrollTop)
+	}
+
+	function resetData() {
+		start = INITIAL_START
+		end = INITIAL_END
+		items.value = createItems(start, end)
+	}
+
+	function prependItems() {
+		const nextStart = start - BATCH_SIZE
+		const prependList = createItems(nextStart, start - 1)
+		items.value = prependList.concat(items.value)
+		start = nextStart
+	}
+
+	function appendItems() {
+		const nextEnd = end + BATCH_SIZE
+		const appendList = createItems(end + 1, nextEnd)
+		items.value = items.value.concat(appendList)
+		end = nextEnd
+	}
+
+	function scrollToProbePosition() {
+		scrollTop.value = PROBE_SCROLL_TOP - 1
+		nextTick(() => {
+			scrollTop.value = PROBE_SCROLL_TOP
+		})
+	}
+
+	function resetScrollPosition() {
+		scrollTop.value = 1
+		nextTick(() => {
+			scrollTop.value = 0
+		})
+		currentScrollTop.value = 0
+	}
+
+	function resetList() {
+		resetData()
+		resetScrollPosition()
+	}
+
+	function getProbeItemId() : string {
+		return PROBE_ITEM_ID
+	}
+
+	function getItemMetrics(itemId : string) : ItemMetrics {
+		const listRect = uni.getElementById('scroll-anchoring-list')?.getBoundingClientRect()
+		const itemRect = uni.getElementById(itemId)?.getBoundingClientRect()
+		const metrics : ItemMetrics = {
+			listTop: listRect?.top ?? 0,
+			itemTop: itemRect?.top ?? 0,
+			itemBottom: (itemRect?.top ?? 0) + (itemRect?.height ?? 0),
+			relativeTop: (itemRect?.top ?? 0) - (listRect?.top ?? 0),
+			scrollTop: currentScrollTop.value,
+		}
+		return metrics
+	}
+
+	function getScrollTop() : number {
+		return listRef.value?.scrollTop ?? currentScrollTop.value
+	}
+
+	function jest_reset() {
+		resetList()
+	}
+
+	function jest_scrollToProbePosition() {
+		scrollToProbePosition()
+	}
+
+	function jest_prependItems() {
+		prependItems()
+	}
+
+	function jest_appendItems() {
+		appendItems()
+	}
+
+	function jest_getProbeItemId() : string {
+		return getProbeItemId()
+	}
+
+	function jest_getItemMetrics(itemId : string) : ItemMetrics {
+		return getItemMetrics(itemId)
+	}
+
+	function jest_getScrollTop() : number {
+		return getScrollTop()
+	}
+
+	defineExpose({
+		jest_reset,
+		jest_scrollToProbePosition,
+		jest_prependItems,
+		jest_appendItems,
+		jest_getProbeItemId,
+		jest_getItemMetrics,
+		jest_getScrollTop,
+	})
+</script>
+
+<style>
+	.page-root {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		--list-demo-panel-background: #ffffff;
+		--list-demo-background: #eef2f7;
+		--list-demo-title-color: #1f2329;
+		--list-demo-text-color: #4e5969;
+		--list-demo-card-background: #ffffff;
+	}
+
+	.summary-panel {
+		padding-top: 12px;
+		padding-right: 16px;
+		padding-bottom: 12px;
+		padding-left: 16px;
+		background-color: var(--list-demo-panel-background);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.summary-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--list-demo-title-color);
+	}
+
+	.summary-text {
+		margin-top: 4px;
+		font-size: 13px;
+		line-height: 20px;
+		color: var(--list-demo-text-color);
+	}
+
+	.summary-target {
+		margin-top: 6px;
+		font-size: 13px;
+		color: #1677ff;
+	}
+
+	.toolbar-panel {
+		padding-top: 12px;
+		padding-right: 12px;
+		padding-bottom: 12px;
+		padding-left: 12px;
+		background-color: var(--list-demo-panel-background);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.toolbar-button {
+		margin-right: 6px;
+	}
+
+	.list-root {
+		flex: 1;
+		background-color: var(--list-demo-background);
+		padding-top: 8px;
+		padding-right: 12px;
+		padding-bottom: 24px;
+		padding-left: 12px;
+	}
+
+	.list-item {
+		height: 88px;
+		padding-bottom: 12px;
+	}
+
+	.item-card {
+		height: 76px;
+		padding-top: 14px;
+		padding-right: 16px;
+		padding-bottom: 14px;
+		padding-left: 16px;
+		background-color: var(--list-demo-card-background);
+		border-radius: 8px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.item-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--list-demo-title-color);
+	}
+
+	.item-desc {
+		margin-top: 6px;
+		font-size: 13px;
+		color: var(--list-demo-text-color);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page-root {
+			--list-demo-panel-background: #2d2d2d;
+			--list-demo-background: #1a1a1a;
+			--list-demo-title-color: #ffffff;
+			--list-demo-text-color: #b8b8b8;
+			--list-demo-card-background: #2d2d2d;
+		}
+	}
+</style>

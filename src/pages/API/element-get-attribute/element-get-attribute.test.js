@@ -1,4 +1,3 @@
-jest.setTimeout(30000);
 describe('test element-get-attribute', () => {
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
@@ -7,8 +6,9 @@ describe('test element-get-attribute', () => {
   const isApp = isAndroid || isIos
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
+  const isMpAlipay = platformInfo === 'mp-alipay'
   const isHarmony = platformInfo.startsWith('harmony')
-  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+  const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/element-get-attribute/element-get-attribute')
@@ -20,6 +20,7 @@ describe('test element-get-attribute', () => {
   });
   it('check setStyle getAttributeStyle', async () => {
     await page.callMethod('setStyle')
+    await page.waitFor(500)
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
       const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
@@ -30,12 +31,8 @@ describe('test element-get-attribute', () => {
     await page.callMethod('getPropertyValue')
     await page.waitFor(1000)
     const propertyValueData = await page.data('data.propertyValue')
-    if (isDom2) {
-      expect(['#FFF000FF', 'rgb(255,240,0)']).toContain(propertyValueData)
-    } else {
-      const propertyValue = isWeb?'rgb(255, 240, 0)': '#FFF000'
-      expect(propertyValueData).toEqual(propertyValue);
-    }
+    const value = isVapor || isWeb ? 'rgb(255, 240, 0)' : '#FFF000'
+    expect(propertyValueData).toBe(value)
   });
 
   //暂时仅处理android平台和鸿蒙平台
@@ -43,8 +40,7 @@ describe('test element-get-attribute', () => {
 		it('check getScrollViewStyleMarginTop', async () => {
 			await page.waitFor(1000)
 		  const marginTop = await page.callMethod('getScrollViewStyleMarginTop')
-			console.log("getScrollViewStyleMarginTop", marginTop)
-		  expect(marginTop).toEqual(isDom2 ? "15px" : "15");
+		  expect(marginTop).toEqual(isVapor ? "15px" : "15");
 		})
 	}
 
@@ -63,7 +59,7 @@ describe('test element-get-attribute', () => {
     expect(width - 15 - Math.round(rectInfo.right) >= 0).toBe(true)
     expect(Math.round(rectInfo.bottom) >= 342).toBe(true)
   })
-  if(isApp||isMP){
+  if((isApp||isMP) && !isMpAlipay){
     it('check scrollTo', async () => {
       await page.callMethod('scrollTo')
       await page.waitFor(100);
@@ -81,4 +77,12 @@ describe('test element-get-attribute', () => {
       expect(scaledViewHeight).toBeGreaterThan(99.5);
     })
   }
+
+  it('scroll offset', async () => {
+    const scrollOffset = await page.data("scrollOffset")
+    expect(scrollOffset.scrollTop).toBe(0)
+    // expect(scrollOffset.scrollHeight).toBe(150)
+    expect(scrollOffset.scrollWidth).toBe(scrollOffset.width)
+    expect(scrollOffset.scrollLeft).toBe(0)
+  })
 });

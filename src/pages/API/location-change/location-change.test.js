@@ -1,7 +1,6 @@
 const PAGE_PATH = "/pages/API/location-change/location-change";
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
-const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isHarmonySimulator = isHarmony && platformInfo.includes('模拟器')
 const isWeb = platformInfo.startsWith('web')

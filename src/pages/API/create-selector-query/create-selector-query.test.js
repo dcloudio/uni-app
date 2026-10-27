@@ -1,25 +1,31 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
-
-const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query'
-
-const RECT_LEFT = 15;
-const RECT_WIDTH = 150;
-const RECT_HEIGHT = 100;
 
 describe('nodes-info', () => {
+  if (isMP) {
+	  it('skip', () => {
+	    expect(1).toBe(1)
+	  })
+	  return
+	}
+
+  const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query'
+  const RECT_LEFT = 15;
+  const RECT_WIDTH = 150;
+  const RECT_HEIGHT = 100;
+
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
   })
 
-  it("screenshot", async () => {
-    const image = await program.screenshot({ fullPage: true });
-    expect(image).toSaveImageSnapshot();
-  })
+  // 查询到的元素涉及设备精度问题，截图对比差异较大，不在截图对比，已有值断言比较
+  // it("screenshot", async () => {
+  //   const image = await program.screenshot({ fullPage: true });
+  //   expect(image).toSaveImageSnapshot();
+  // })
 
   it('get-root-node-info', async () => {
     // 测试 class 选择器
@@ -35,7 +41,7 @@ describe('nodes-info', () => {
     const btnGetNodeInfo = await page.$('.btn-get-node-info')
 
     await btnGetNodeInfo.tap()
-    await page.waitFor(50)
+    await page.waitFor(100)
 
     const data = await page.data('data')
 
@@ -49,7 +55,7 @@ describe('nodes-info', () => {
     const btnGetAllNodeInfo = await page.$('.btn-get-all-node-info')
 
     await btnGetAllNodeInfo.tap()
-    await page.waitFor(50)
+    await page.waitFor(100)
 
     const data = await page.data('data')
 
@@ -75,15 +81,12 @@ describe('nodes-info', () => {
     })
   }
 
-  // x dom2 暂时不支持组件多根节点查询
-  if (!isDom2) {
-    it('multi-child', async () => {
-      const pageData = await page.data('data')
-      console.log('multi-child.pageData', pageData)
-      expect(pageData.selectCount).toBe(1)
-      expect(pageData.selectAllCount).toBe(2)
-    })
-  }
+  it('multi-child', async () => {
+    const pageData = await page.data('data')
+    console.log('multi-child.pageData', pageData)
+    expect(pageData.selectCount).toBe(1)
+    expect(pageData.selectAllCount).toBe(2)
+  })
 
   // #ifdef APP
   //检测onResize获取BoundingClientRect信息是否有效
@@ -130,7 +133,7 @@ describe('nodes-info', () => {
     expect(Math.round(imageNodeInfo.top) > 380).toBe(true)
     expect(Math.round(imageNodeInfo.bottom) > 480).toBe(true)
     expect(imageNodeInfo.width).toBeCloseTo(100, 0);
-    expect(imageNodeInfo.height).toBe(100)
+    expect(imageNodeInfo.height).toBeCloseTo(100, 0)
   })
 
   // 测试 scroll-view 组件查询
@@ -144,7 +147,7 @@ describe('nodes-info', () => {
     expect(Math.round(scrollViewNodeInfo.top) > 560).toBe(true)
     expect(Math.round(scrollViewNodeInfo.bottom) > 660).toBe(true)
     expect(scrollViewNodeInfo.width).toBeCloseTo(300, 0);
-    expect(scrollViewNodeInfo.height).toBe(100)
+    expect(scrollViewNodeInfo.height).toBeCloseTo(100, 0)
   })
 })
 

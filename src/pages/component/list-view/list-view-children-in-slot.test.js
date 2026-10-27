@@ -1,10 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('list-view-children-in-slot', () => {
-  if (isMP || isDom2 && isHarmony) {
+  if (isMP) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
@@ -22,6 +21,11 @@ describe('list-view-children-in-slot', () => {
     const image = await program.screenshot({fullPage: true})
     expect(image).toSaveImageSnapshot();
   });
+
+  // 蒸汽模式下非可回收模式下list-view下的list-item不会作为list-item渲染，而是作为view渲染，此页面list-item计数测试暂不支持在蒸汽模式下进行
+  if (isVapor) {
+    return
+  }
 
   it('basic', async () => {
     let listItems = await page.$$('list-item')

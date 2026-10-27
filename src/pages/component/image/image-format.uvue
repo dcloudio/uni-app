@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
 
@@ -9,8 +6,8 @@
         <text class="uni-title-text">支持的图片格式示例</text>
       </view> -->
       <view v-for="(item,index) in supportFormats" :key="index">
-        <text class="uni-subtitle-text">{{item.format}}，右边为拍平测试</text>
-        <view class="uni-center" style="background:#FFFFFF;">
+        <text class="uni-subtitle-text image-description">{{item.format}}，右边为拍平测试</text>
+        <view class="uni-center image-bg">
           <!-- <image class="image" mode="widthFix" :src="item.src"></image> -->
           <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
             @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
@@ -31,12 +28,9 @@
         </view>
       </view> -->
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   type ImageFormat = {
     format : string
@@ -84,7 +78,7 @@
       src: '/static/test-image/logo.heic'
     },
     {
-      format: 'avif（iOS16+）',
+      format: 'avif（iOS16+，Android12+）',
       src: '/static/test-image/logo.avif'
     },
     {
@@ -97,7 +91,7 @@
     },
     {
       format: 'svg网络路径（iOS13+）',
-      src: 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/w3c.svg',
+      src: 'https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/image/logo.svg',
     }
   ] as Array<ImageFormat>)
   /* notSupportFormats: [
@@ -127,5 +121,19 @@
   .image {
     margin: 40px auto;
     width: 100px;
+  }
+
+  .image-bg {
+    background-color: #ffffff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .image-description {
+      color: #e5e5e5;
+    }
+
+    .image-bg {
+      background-color: #2d2d2d;
+    }
   }
 </style>

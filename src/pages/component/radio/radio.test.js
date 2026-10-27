@@ -1,7 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isMpAlipay = platformInfo === 'mp-alipay'
 const isHarmony = platformInfo.startsWith('harmony')
-const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
+const isIOS = platformInfo.startsWith('ios')
+const isAndroid = platformInfo.startsWith('android')
+const isVapor = process.env.UNI_APP_X_DOM2 == 'true'
 
 describe('Radio.uvue', () => {
   let page
@@ -34,14 +37,18 @@ describe('Radio.uvue', () => {
     const radioElements = await page.$$('.radio')
     expect(radioElements.length).toBe(12)
   })
-  it('text', async () => {
-    const radio = await page.$('.r1')
-    expect(await radio.text()).toEqual('未选中')
-    await setPageData({
-      text: 'not selected'
+  // Lyra 原生 radio 当前不暴露内部文本，后续支持后恢复支付宝上的 text 测试。
+  if (!isMpAlipay) {
+    it('text', async () => {
+      const radio = await page.$('.r1')
+      expect(await radio.text()).toEqual('未选中')
+      await setPageData({
+        text: 'not selected'
+      })
+      await page.nextTick()
+      expect(await radio.text()).toEqual('not selected')
     })
-    expect(await radio.text()).toEqual('not selected')
-  })
+  }
   if(!isMP) {
     // TODO property('checked')应取到实际显示的值（微信小程序）还是绑定的值（web、app）
     it('checked', async () => {
@@ -57,8 +64,8 @@ describe('Radio.uvue', () => {
     })
   }
   it('color', async () => {
-    if (isHarmony && isDom2) {
-      console.log('Radio Harmony Dom2 not support props color')
+    if ((isHarmony || isIOS || isAndroid) && isVapor) {
+      console.log('Radio Harmony or iOS or Android Dom2 not support props color')
       expect(1).toBe(1)
       return
     }
@@ -92,7 +99,7 @@ describe('Radio.uvue', () => {
     it('trigger UniRadioGroupChangeEvent', async () => {
       const { current } = await page.data('data')
       const nextCurrent = current == 0 ? 1 : 0
-      const elements = await page.$$('.recommand')
+      const elements = await page.$$('.recommend')
       await elements[nextCurrent].tap()
       await page.waitFor(500)
       const { eventTest } = await page.data('data')
@@ -100,7 +107,7 @@ describe('Radio.uvue', () => {
     })
   }
 
-  if (isDom2 && isHarmony) {
+  if (isVapor && !isMP) {
     it('externalClasses', async () => {
       const radio = await page.$('#radio-vapor')
       expect(await radio.attribute('radio-active-class')).toContain('radio-active')

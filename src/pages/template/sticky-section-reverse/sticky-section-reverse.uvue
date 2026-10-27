@@ -1,0 +1,592 @@
+<template>
+  <view class="page">
+    <view class="control-panel">
+      <view class="summary-row">
+        <view class="summary-main">
+          <view class="status-dot"></view>
+          <view class="summary-copy">
+            <text class="summary-label">当前分组顺序</text>
+            <text class="summary-value">{{state.reversed ? '倒序排列' : '原始顺序'}}</text>
+          </view>
+        </view>
+        <view class="section-count">
+          <text class="section-count-value">{{state.sections.length}}</text>
+          <text class="section-count-label">组</text>
+        </view>
+      </view>
+
+      <view class="order-switch">
+        <view id="normal-order" class="order-option"
+          :class="state.reversed ? 'order-option-default' : 'order-option-active'"
+          hover-class="order-option-hover" @click="applyOrder(false)">
+          <text class="order-option-text"
+            :class="state.reversed ? 'order-option-text-default' : 'order-option-text-active'">原始顺序</text>
+        </view>
+        <view id="reverse-order" class="order-option"
+          :class="state.reversed ? 'order-option-active' : 'order-option-default'"
+          hover-class="order-option-hover" @click="applyOrder(true)">
+          <text class="order-option-text"
+            :class="state.reversed ? 'order-option-text-active' : 'order-option-text-default'">倒序排列</text>
+        </view>
+      </view>
+
+      <view class="range-row">
+        <view class="range-item">
+          <text class="range-label">首组</text>
+          <text class="range-value">{{firstSectionKey}}</text>
+        </view>
+        <view class="range-divider"></view>
+        <view class="range-item range-item-right">
+          <text class="range-label">末组</text>
+          <text class="range-value">{{lastSectionKey}}</text>
+        </view>
+      </view>
+    </view>
+
+    <list-view id="section-list" ref="listViewRef" class="section-list" :bounces="false"
+      :show-scrollbar="false">
+      <sticky-section v-for="section in state.sections" :key="section.key" :preload="true"
+        :push-pinned-header="true">
+        <sticky-header :id="`section-${section.key}`">
+          <view class="section-header">
+            <view class="section-header-main">
+              <text class="section-title">{{section.title}}</text>
+              <text class="section-meta">{{section.items.length}} 笔支出</text>
+            </view>
+            <text class="section-total">{{formatAmount(section.total)}}</text>
+          </view>
+        </sticky-header>
+
+        <list-item v-for="item in section.items" :key="item.id" class="expense-item" :type="10">
+          <view class="expense-card">
+            <view class="date-block">
+              <text class="date-day">{{item.day}}</text>
+              <text class="date-label">日</text>
+            </view>
+            <view class="expense-content">
+              <text class="expense-vendor">{{item.vendor}}</text>
+              <view class="expense-detail-row">
+                <text class="expense-category">{{item.category}}</text>
+                <text class="expense-id">#{{item.id}}</text>
+              </view>
+            </view>
+            <text class="expense-amount">{{formatAmount(item.amount)}}</text>
+          </view>
+        </list-item>
+      </sticky-section>
+    </list-view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 验证 sticky-section 分组数据整体倒序后，section 与列表项是否按新顺序正确渲染。
+   * @logic: 每次切换顺序都根据同一份固定数据创建全新的分组对象并整体替换数组，以稳定 key 模拟业务数据重新加载。
+   * @platform: 仅 App 平台蒸汽模式支持。
+   */
+  type ExpenseMockData = {
+    id : number
+    day : string
+    vendor : string
+    category : string
+    amount : number
+  }
+
+  type SectionMockData = {
+    key : string
+    title : string
+    items : ExpenseMockData[]
+  }
+
+  type ExpenseItem = {
+    id : number
+    day : string
+    vendor : string
+    category : string
+    amount : number
+  }
+
+  type ExpenseSection = {
+    key : string
+    title : string
+    total : number
+    items : ExpenseItem[]
+  }
+
+  type PageState = {
+    reversed : boolean
+    updateCount : number
+    sections : ExpenseSection[]
+  }
+
+  const fixedSectionMockData : SectionMockData[] = [
+    {
+      key: '2024-09',
+      title: '2024 年 09 月',
+      items: [
+        { id: 240901, day: '06', vendor: 'A公司', category: '交通费', amount: 28.00 },
+        { id: 240902, day: '18', vendor: 'B公司', category: '住宿费', amount: 468.00 },
+        { id: 240903, day: '27', vendor: 'C公司', category: '软件服务', amount: 128.00 }
+      ] as ExpenseMockData[]
+    },
+    {
+      key: '2024-12',
+      title: '2024 年 12 月',
+      items: [
+        { id: 241201, day: '03', vendor: 'D公司', category: '交通费', amount: 553.50 },
+        { id: 241202, day: '14', vendor: 'E公司', category: '办公费', amount: 196.00 },
+        { id: 241203, day: '22', vendor: 'F公司', category: '会议费', amount: 880.00 }
+      ] as ExpenseMockData[]
+    },
+    {
+      key: '2025-03',
+      title: '2025 年 03 月',
+      items: [
+        { id: 250301, day: '05', vendor: 'G公司', category: '交通费', amount: 75.00 },
+        { id: 250302, day: '16', vendor: 'H公司', category: '餐饮费', amount: 326.00 },
+        { id: 250303, day: '29', vendor: 'I公司', category: '技术服务费', amount: 1200.00 }
+      ] as ExpenseMockData[]
+    },
+    {
+      key: '2025-08',
+      title: '2025 年 08 月',
+      items: [
+        { id: 250801, day: '02', vendor: 'J公司', category: '差旅费', amount: 1460.00 },
+        { id: 250802, day: '13', vendor: 'K公司', category: '办公费', amount: 238.00 },
+        { id: 250803, day: '25', vendor: 'L公司', category: '设计服务费', amount: 399.00 }
+      ] as ExpenseMockData[]
+    },
+    {
+      key: '2026-01',
+      title: '2026 年 01 月',
+      items: [
+        { id: 260101, day: '07', vendor: 'M公司', category: '交通费', amount: 980.00 },
+        { id: 260102, day: '19', vendor: 'N公司', category: '住宿费', amount: 688.00 },
+        { id: 260103, day: '26', vendor: 'O公司', category: '软件服务', amount: 360.00 }
+      ] as ExpenseMockData[]
+    },
+    {
+      key: '2026-07',
+      title: '2026 年 07 月',
+      items: [
+        { id: 260701, day: '04', vendor: 'P公司', category: '交通费', amount: 97.84 },
+        { id: 260702, day: '17', vendor: 'Q公司', category: '差旅费', amount: 2150.00 },
+        { id: 260703, day: '28', vendor: 'R公司', category: '技术服务费', amount: 598.00 }
+      ] as ExpenseMockData[]
+    }
+  ] as SectionMockData[]
+
+  function createSections(reversed : boolean) : ExpenseSection[] {
+    const sections : ExpenseSection[] = []
+    for (let i = 0; i < fixedSectionMockData.length; i++) {
+      const sourceIndex = reversed ? fixedSectionMockData.length - i - 1 : i
+      const sectionMockData = fixedSectionMockData[sourceIndex]
+      const items : ExpenseItem[] = []
+      let total = 0
+
+      for (let j = 0; j < sectionMockData.items.length; j++) {
+        const itemMockData = sectionMockData.items[j]
+        const item : ExpenseItem = {
+          id: itemMockData.id,
+          day: itemMockData.day,
+          vendor: itemMockData.vendor,
+          category: itemMockData.category,
+          amount: itemMockData.amount
+        }
+        items.push(item)
+        total += item.amount
+      }
+
+      const section : ExpenseSection = {
+        key: sectionMockData.key,
+        title: sectionMockData.title,
+        total: total,
+        items: items
+      }
+      sections.push(section)
+    }
+    return sections
+  }
+
+  const state = reactive<PageState>({
+    reversed: false,
+    updateCount: 0,
+    sections: createSections(false)
+  })
+  const listViewRef = ref<UniElement | null>(null)
+
+  const firstSectionKey = computed<string>(() : string => {
+    return state.sections.length > 0 ? state.sections[0].key : '-'
+  })
+
+  const lastSectionKey = computed<string>(() : string => {
+    return state.sections.length > 0 ? state.sections[state.sections.length - 1].key : '-'
+  })
+
+  function applyOrder(reversed : boolean) : void {
+    state.reversed = reversed
+    state.sections = createSections(reversed)
+    state.updateCount++
+    nextTick(() => {
+      if (listViewRef.value != null) {
+        listViewRef.value!.scrollTop = 0
+      }
+    })
+  }
+
+  function formatAmount(amount : number) : string {
+    return `¥${amount.toFixed(2)}`
+  }
+
+  function jest_scrollTo(scrollTop : number) : boolean {
+    if (listViewRef.value == null) {
+      return false
+    }
+    listViewRef.value!.scrollTop = scrollTop
+    return true
+  }
+
+  function jest_getState() : UTSJSONObject {
+    return {
+      reversed: state.reversed,
+      updateCount: state.updateCount,
+      sectionCount: state.sections.length,
+      firstSectionKey: firstSectionKey.value,
+      lastSectionKey: lastSectionKey.value
+    } as UTSJSONObject
+  }
+
+  defineExpose({
+    applyOrder,
+    jest_scrollTo,
+    jest_getState
+  })
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .control-panel {
+    flex-direction: column;
+    padding: 16px;
+    background-color: var(--list-background-color, #ffffff);
+    border-bottom: 1px solid var(--border-color, #e6e9ed);
+  }
+
+  .summary-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .summary-main {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #20a06b;
+  }
+
+  .summary-copy {
+    flex-direction: column;
+    margin-left: 10px;
+  }
+
+  .summary-label {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--text-color-secondary, #7a828d);
+  }
+
+  .summary-value {
+    margin-top: 2px;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+    color: var(--text-color, #1f2933);
+  }
+
+  .section-count {
+    min-width: 58px;
+    height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #edf7f2;
+  }
+
+  .section-count-value {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #147a51;
+  }
+
+  .section-count-label {
+    margin-left: 3px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #3f725f;
+  }
+
+  .order-switch {
+    height: 44px;
+    margin-top: 14px;
+    padding: 3px;
+    border-radius: 8px;
+    flex-direction: row;
+    background-color: var(--background-color, #eef1f4);
+  }
+
+  .order-option {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .order-option-default {
+    background-color: transparent;
+  }
+
+  .order-option-active {
+    background-color: var(--list-background-color, #ffffff);
+    box-shadow: 0px 2px 6px rgba(33, 45, 58, 0.12);
+  }
+
+  .order-option-hover {
+    opacity: 0.72;
+  }
+
+  .order-option-text {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  .order-option-text-default {
+    color: var(--text-color-secondary, #68717c);
+  }
+
+  .order-option-text-active {
+    color: #176b50;
+  }
+
+  .range-row {
+    margin-top: 14px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .range-item {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .range-item-right {
+    justify-content: flex-end;
+  }
+
+  .range-label {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--text-color-secondary, #8a929c);
+  }
+
+  .range-value {
+    margin-left: 7px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+    color: var(--text-color, #34404b);
+  }
+
+  .range-divider {
+    width: 1px;
+    height: 16px;
+    background-color: var(--border-color, #d9dee3);
+  }
+
+  .section-list {
+    flex: 1;
+    flex-direction: column;
+    background-color: var(--background-color, #f3f5f7);
+  }
+
+  .section-header {
+    min-height: 54px;
+    padding-left: 16px;
+    padding-right: 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--background-color, #f3f5f7);
+    border-bottom: 1px solid var(--border-color, #dde2e7);
+  }
+
+  .section-header-main {
+    flex-direction: column;
+  }
+
+  .section-title {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600;
+    color: var(--text-color, #27313a);
+  }
+
+  .section-meta {
+    margin-top: 1px;
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--text-color-secondary, #818994);
+  }
+
+  .section-total {
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 600;
+    color: #b46b13;
+  }
+
+  .expense-item {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 10px;
+  }
+
+  .expense-card {
+    min-height: 78px;
+    padding-left: 12px;
+    padding-right: 14px;
+    border-radius: 8px;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--list-background-color, #ffffff);
+    box-shadow: 0px 2px 8px rgba(36, 48, 59, 0.06);
+  }
+
+  .date-block {
+    width: 42px;
+    height: 48px;
+    border-radius: 7px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #eef4fb;
+  }
+
+  .date-day {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #295d8d;
+  }
+
+  .date-label {
+    font-size: 10px;
+    line-height: 14px;
+    color: #5f7f9d;
+  }
+
+  .expense-content {
+    flex: 1;
+    flex-direction: column;
+    margin-left: 12px;
+  }
+
+  .expense-vendor {
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 500;
+    color: var(--text-color, #2c353e);
+  }
+
+  .expense-detail-row {
+    margin-top: 5px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .expense-category {
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 16px;
+    color: #4c6b5f;
+    background-color: #edf6f2;
+  }
+
+  .expense-id {
+    margin-left: 8px;
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--text-color-secondary, #9aa1a9);
+  }
+
+  .expense-amount {
+    margin-left: 10px;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 600;
+    color: var(--text-color, #202830);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .status-dot {
+      background-color: #42c38a;
+    }
+
+    .section-count {
+      background-color: #1e3b31;
+    }
+
+    .section-count-value {
+      color: #71d3aa;
+    }
+
+    .section-count-label {
+      color: #94c8b2;
+    }
+
+    .order-option-text-active {
+      color: #70d0aa;
+    }
+
+    .section-total {
+      color: #e3a95d;
+    }
+
+    .date-block {
+      background-color: #233747;
+    }
+
+    .date-day {
+      color: #8dc1ef;
+    }
+
+    .date-label {
+      color: #9bb7cf;
+    }
+
+    .expense-category {
+      color: #a8d6c3;
+      background-color: #243b33;
+    }
+  }
+</style>

@@ -1,16 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isAndroid = platformInfo.startsWith('android')
+
 describe('/pages/CSS/transition/transition-transform.uvue', () => {
-
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-
-  // 先屏蔽 android 平台
-  if (isAndroid) {
-    it('other platform', () => {
+  if (isMP || isAndroid) {
+    it('skip', () => {
       expect(1).toBe(1)
     })
     return
   }
-
 
   let page;
   beforeAll(async () => {

@@ -39,7 +39,9 @@ describe('text-dynamic-lineHeight', () => {
   })
 
   it('text-dynamic-lineHeight-snapshot', async () => {
-    const image = await program.screenshot();
+    const image = await program.screenshot({
+      fullPage: true
+    });
     expect(image).toSaveImageSnapshot();
   })
 })

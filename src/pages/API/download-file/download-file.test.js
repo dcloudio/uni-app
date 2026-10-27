@@ -4,9 +4,16 @@ const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-const PAGE_PATH = '/pages/API/download-file/download-file'
 
 describe('ExtApi-DownloadFile', () => {
+  if (isMP) {
+	  it('skip', () => {
+	    expect(1).toBe(1)
+	  })
+	  return
+	}
+
+  const PAGE_PATH = '/pages/API/download-file/download-file'
   let page;
   let res;
   let timeout = 15000
@@ -55,6 +62,13 @@ describe('ExtApi-DownloadFile', () => {
   })
 
   if (!(isMP || isWeb)) {
+    it('Check download file long url', async () => {
+      res = await page.callMethod('jest_download_long_url')
+      await waitCallbackTriggredOrTimeout()
+      res = await page.data('data.jest_result');
+      expect(res).toBe(true)
+    });
+
     it('Check uni.env', async () => {
       await page.callMethod('jest_downloadFile_with_uni_env');
       await waitCallbackTriggredOrTimeout()

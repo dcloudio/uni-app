@@ -1,0 +1,17 @@
+<template>
+  <view>
+    <uts-button>uts button</uts-button>
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 演示通过 UTS 插件桥接原生按钮组件，并在页面中直接使用该按钮。
+   * @logic: 页面仅渲染一个 `uts-button` 组件，用最小示例验证原生按钮组件在当前页面中的接入和展示效果。
+   * @optimization: 通过最小页面结构隔离桥接能力验证，避免其他布局或状态逻辑干扰原生组件接入结果。
+   */
+</script>
+
+<style>
+
+</style>

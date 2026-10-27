@@ -1,0 +1,194 @@
+<template>
+	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+		<view class="intro" :class="{ 'surface-dark': isDarkMode }">
+			<text class="intro-text" :class="{ 'text-dark': isDarkMode }">图标组件可以减少小图片的使用，并支持自定义颜色和尺寸。</text>
+		</view>
+
+		<view class="section-header" :class="{ 'surface-dark': isDarkMode }">
+			<text class="section-title" :class="{ 'text-dark': isDarkMode }">图标</text>
+			<view class="display-mode">
+				<text class="display-mode-text" :class="{ 'text-dark': isDarkMode }">{{ checked ? 'Unicode' : '名称' }}</text>
+				<switch class="display-mode-switch" :checked="checked" @change="change" />
+			</view>
+		</view>
+
+		<view class="icon-content" :class="{ 'surface-dark': isDarkMode }">
+			<view
+				v-for="(item, index) in iconlist"
+				:key="index"
+				class="icon-item"
+				@click="switchActive(index, item)"
+			>
+				<uni-icons
+					:type="item.font_class"
+					class="icon-glyph"
+					:class="{
+						'icon-glyph-active': activeIndex == index,
+						'icon-glyph-dark': isDarkMode
+					}"
+				/>
+				<text
+					class="icon-label"
+					:class="{
+						'icon-label-active': activeIndex == index,
+						'icon-label-dark': isDarkMode
+					}"
+				>{{ checked ? item.unicode : item.font_class }}</text>
+			</view>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+	import { state } from '@/store/index.ts'
+	import { iconlist, iconType } from './icons_type.uts'
+
+	const activeIndex = ref(-1)
+	const checked = ref(false)
+	const isDarkMode = computed(() : boolean => state.isDarkMode)
+
+	const syncNavigationBar = () : void => {
+		// #ifdef APP
+		const dark = isDarkMode.value
+		uni.setNavigationBarColor({
+			frontColor: dark ? '#ffffff' : '#000000',
+			backgroundColor: dark ? '#1a1a1a' : '#efeff4'
+		})
+		// #endif
+	}
+
+	const change = (event : UniSwitchChangeEvent) => {
+		checked.value = event.detail.value
+	}
+
+	const switchActive = (index : number, item : iconType) => {
+		activeIndex.value = index
+		uni.setClipboardData({
+			data: checked.value ? item.unicode : item.font_class,
+			showToast: false,
+			success: () => {
+				uni.showToast({
+					icon: 'none',
+					title: (checked.value ? 'Unicode' : '图标名称') + '复制成功'
+				})
+			}
+		})
+	}
+
+	watch(isDarkMode, syncNavigationBar, { immediate: true })
+	onShow(syncNavigationBar)
+
+	defineExpose({
+		activeIndex,
+		checked
+	})
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		background-color: var(--background-color, #efeff4);
+	}
+
+	.page-dark {
+		background-color: #1a1a1a;
+	}
+
+	.intro {
+		padding: 16px;
+		background-color: var(--list-background-color, #ffffff);
+	}
+
+	.intro-text {
+		font-size: 14px;
+		line-height: 22px;
+		color: var(--text-color, #333333);
+	}
+
+	.section-header {
+		margin-top: 10px;
+		padding: 12px 16px;
+		background-color: var(--list-background-color, #ffffff);
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.section-title {
+		font-size: 16px;
+		font-weight: bold;
+		color: var(--text-color, #333333);
+	}
+
+	.display-mode {
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.display-mode-text {
+		margin-right: 8px;
+		font-size: 13px;
+		color: var(--text-color, #333333);
+		opacity: 0.65;
+	}
+
+	.display-mode-switch {
+		transform: scale(0.7);
+	}
+
+	.icon-content {
+		padding: 8px 0 24px;
+		background-color: var(--list-background-color, #ffffff);
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.surface-dark {
+		background-color: #2d2d2d;
+	}
+
+	.icon-item {
+		width: 25%;
+		min-height: 84px;
+		padding: 10px 4px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.icon-label {
+		margin-top: 8px;
+		font-size: 12px;
+		text-align: center;
+		color: var(--text-color, #333333);
+		opacity: 0.65;
+	}
+
+	.icon-label-dark {
+		color: #ffffff;
+	}
+
+	.icon-label-active {
+		color: #007aff;
+		opacity: 1;
+	}
+
+	.icon-glyph {
+		color: var(--text-color, #333333);
+		font-size: 30px;
+		opacity: 0.65;
+	}
+
+	.icon-glyph-dark {
+		color: #ffffff;
+	}
+
+	.icon-glyph-active {
+		color: #007aff;
+		opacity: 1;
+	}
+
+	.text-dark {
+		color: #ffffff;
+	}
+
+</style>

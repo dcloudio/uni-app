@@ -6,6 +6,13 @@ const PAGE_PATH = '/pages/API/load-font-face/load-font-face'
 const CHILD_PAGE_PATH = "/pages/API/load-font-face/load-font-face-child";
 
 describe("loadFontFace", () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
   let page
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH);
@@ -13,8 +20,6 @@ describe("loadFontFace", () => {
     await page.waitFor(4000);
   });
   if (!(
-      // 小程序部分 url 不支持
-      isMP ||
       // android 不同版本针对 woff2 字体回调触发不一致
       platformInfo.startsWith('android 5') ||
       platformInfo.startsWith('android 6') ||

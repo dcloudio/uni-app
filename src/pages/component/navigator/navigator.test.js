@@ -1,4 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 
 const PAGE_PATH = '/pages/component/navigator/navigator'
@@ -6,6 +7,13 @@ const PAGE_PATH_NAVIGATE = '/pages/component/navigator/navigate'
 const PAGE_PATH_REDIRECT = '/pages/component/navigator/redirect'
 
 describe('navigator', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     if (isWeb) {

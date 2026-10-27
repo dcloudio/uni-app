@@ -1,0 +1,226 @@
+<template>
+  <page-head title="glass-effect-view"></page-head>
+  <scroll-view style="flex: 1">
+    <view class="uni-padding-wrap uni-common-mt">
+      <text class="uni-title-text">玻璃效果预览</text>
+      <view class="stage">
+        <view class="color-row">
+          <view class="color-block color-red"></view>
+          <view class="color-block color-yellow"></view>
+          <view class="color-block color-green"></view>
+          <view class="color-block color-blue"></view>
+          <view class="color-block color-purple"></view>
+        </view>
+        <text class="stage-text stage-text-top">GLASS</text>
+        <text class="stage-text stage-text-bottom">iOS</text>
+        <glass-effect-view
+          v-if="data.glassStyle == 'regular'"
+          id="clickable-glass-effect-view"
+          class="glass-panel"
+          glass-style="regular"
+          :interactive="data.interactive"
+          :tint-color="data.tintColor"
+          @click="onGlassClick">
+          <view class="glass-content">
+            <text class="glass-title">regular</text>
+            <text class="glass-detail">interactive: {{ data.interactive }}</text>
+            <text class="glass-detail">tint: {{ data.tintColor }}</text>
+          </view>
+        </glass-effect-view>
+        <glass-effect-view
+          v-else
+          class="glass-panel"
+          glass-style="clear"
+          :interactive="data.interactive"
+          :tint-color="data.tintColor">
+          <view class="glass-content">
+            <text class="glass-title">clear</text>
+            <text class="glass-detail">interactive: {{ data.interactive }}</text>
+            <text class="glass-detail">tint: {{ data.tintColor }}</text>
+          </view>
+        </glass-effect-view>
+      </view>
+    </view>
+
+    <view class="content">
+      <enum-data
+        title="glass-style 玻璃效果样式"
+        :items="data.glassStyleItems"
+        @change="changeGlassStyle"></enum-data>
+      <boolean-data
+        title="interactive 启用交互行为"
+        :value="false"
+        @change="changeInteractive"></boolean-data>
+      <enum-data
+        title="tint-color 玻璃效果着色"
+        :items="data.tintColorItems"
+        @change="changeTintColor"></enum-data>
+      <view class="bottom-space"></view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  type DataType = {
+    glassStyle : string;
+    interactive : boolean;
+    tintColor : string;
+    clickCount : number;
+    glassStyleItems : ItemType[];
+    tintColorItems : ItemType[];
+  }
+
+  const data = reactive({
+    glassStyle: 'regular',
+    interactive: false,
+    tintColor: 'transparent',
+    clickCount: 0,
+    glassStyleItems: [
+      { value: 0, name: 'regular', checked: true },
+      { value: 1, name: 'clear' },
+    ],
+    tintColorItems: [
+      { value: 0, name: '透明', checked: true },
+      { value: 1, name: '红色' },
+      { value: 2, name: '蓝色' },
+      { value: 3, name: '绿色' },
+    ],
+  } as DataType)
+
+  function changeGlassStyle(value : number) {
+    data.glassStyle = value == 1 ? 'clear' : 'regular'
+  }
+
+  function changeInteractive(value : boolean) {
+    data.interactive = value
+  }
+
+  function changeTintColor(value : number) {
+    switch (value) {
+      case 1:
+        data.tintColor = 'rgba(255, 59, 48, 0.25)'
+        break
+      case 2:
+        data.tintColor = 'rgba(0, 122, 255, 0.25)'
+        break
+      case 3:
+        data.tintColor = 'rgba(52, 199, 89, 0.25)'
+        break
+      default:
+        data.tintColor = 'transparent'
+        break
+    }
+  }
+
+  function onGlassClick() {
+    data.clickCount++
+  }
+
+  function getGlassEffectViewRectForTest() : DOMRect | null {
+    return uni.getElementById('clickable-glass-effect-view')?.getBoundingClientRect() ?? null
+  }
+
+  defineExpose({
+    data,
+    getGlassEffectViewRectForTest,
+  })
+</script>
+
+<style>
+  .stage {
+    position: relative;
+    height: 300px;
+    margin-top: 12px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #ffffff;
+  }
+
+  .color-row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    flex-direction: row;
+  }
+
+  .color-block {
+    flex: 1;
+  }
+
+  .color-red {
+    background-color: #ff453a;
+  }
+
+  .color-yellow {
+    background-color: #ffd60a;
+  }
+
+  .color-green {
+    background-color: #30d158;
+  }
+
+  .color-blue {
+    background-color: #0a84ff;
+  }
+
+  .color-purple {
+    background-color: #bf5af2;
+  }
+
+  .stage-text {
+    position: absolute;
+    font-size: 48px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .stage-text-top {
+    left: 18px;
+    top: 18px;
+  }
+
+  .stage-text-bottom {
+    right: 18px;
+    bottom: 18px;
+  }
+
+  .glass-panel {
+    position: absolute;
+    left: 42px;
+    right: 42px;
+    top: 74px;
+    height: 152px;
+    border-radius: 28px;
+    overflow: hidden;
+  }
+
+  .glass-content {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .glass-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111111;
+  }
+
+  .glass-detail {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #222222;
+  }
+
+  .content {
+    margin-top: 10px;
+  }
+
+  .bottom-space {
+    height: 30px;
+  }
+</style>

@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!-- 视频组件 -->
-		<video id="myVideo2" :src="src" :controls="true" autoplay="false" class="video"  @play="onVideoPlay">
+		<video id="myVideo2" :src="src" :controls="true" :autoplay="false" class="video"  @play="onVideoPlay">
 			<!-- 信息流广告 - 覆盖在视频上方 -->
 			<view v-if="adVisible" class="ad-container">
 				<ad adpid="1597617406" class="ad-class" @load="loadFun" @error="errorFun" @close="closeAd"></ad>
@@ -10,7 +10,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const src = ref("https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4")
 	let showAd: boolean = false
 	const adVisible = ref(false)
@@ -28,7 +28,10 @@
 			showAd = true;
 			const direction : RequestFullScreenOptions = {direction:90} as RequestFullScreenOptions;
 			videoContext!.requestFullScreen(direction);
-			adVisible.value = true;
+      setTimeout(() => {
+        adVisible.value = true;
+      }, 100)
+
 		}
 	}
 

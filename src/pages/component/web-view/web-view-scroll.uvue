@@ -29,10 +29,12 @@
     <view v-for="item in 5" class="scroll-item">
       <text class="scroll-item-title">item{{item}}</text>
     </view>
+
+    <view class="scroll-view_bottom-fixed"></view>
   </scroll-view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
   const types : ItemType[] = [{ "value": 0, "name": "all" }, { "value": 1, "name": "vertical" }, { "value": 2, "name": "horizontal" }, { "value": 3, "name": "none" }];

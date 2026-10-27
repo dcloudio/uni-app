@@ -1,5 +1,5 @@
 <template>
-  <view style="flex: 1;">
+  <view class="waterflow-page" style="flex: 1;">
     <waterflow v-if="isShow" style="flex: 1;" cross-axis-gap="5" main-axis-gap="5">
       <flow-item v-for="(item, index) in list" :key="index" @click="itemClick(item['author_name'] as string | null)">
         <view class="item">
@@ -21,7 +21,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   const list = ref<UTSJSONObject[]>([] as UTSJSONObject[])
   const isShow = ref<boolean>(true)
 
@@ -76,11 +76,11 @@
 
 </script>
 
-<style lang="scss">
+<style>
   .item {
     width: 100%;
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .img {
@@ -97,12 +97,12 @@
   .title {
     font-size: 14px;
     margin: 0 10px;
-    color: gray;
+    color: var(--waterflow-secondary-color, gray);
   }
 
   .time {
     font-size: 14px;
-    color: gray;
+    color: var(--waterflow-secondary-color, gray);
     margin: 10px;
   }
 
@@ -113,5 +113,12 @@
     height: 45px;
     width: 100%;
     border-style: solid;
+    border-color: var(--border-color, rgba(0, 0, 0, 0.06));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .waterflow-page {
+      --waterflow-secondary-color: #a0a0a0;
+    }
   }
 </style>

@@ -41,9 +41,7 @@ describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () 
     var exitCallbackStatus = await page.data('data.exitFullscreenCallbackStatus')
     expect(exitCallbackStatus).toBe(true) // success/fail 回调已执行
 
-    const image2 = await program.screenshot({
-      fullPage: true
-    })
+    const image2 = await program.screenshot()
     expect(image2).toSaveImageSnapshot()
   })
 });

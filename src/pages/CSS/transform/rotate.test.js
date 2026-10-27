@@ -1,8 +1,16 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 const isIOS = platformInfo.startsWith('ios')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('/pages/CSS/transform/rotate.uvue', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   if (isIOS && isAppWebView) {
   	it('ios 与 web 存在差异, webview 不进行截图', () => {
       expect(1).toBe(1)

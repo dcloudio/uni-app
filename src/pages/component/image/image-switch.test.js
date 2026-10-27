@@ -19,7 +19,7 @@ describe('image switch render', () => {
   });
 
   it('screenshot', async () => {
-    const image = await program.screenshot();
+    const image = await program.screenshot({ fullPage: true });
     expect(image).toSaveImageSnapshot();
   });
 });

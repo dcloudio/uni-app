@@ -3,7 +3,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   type Data = {
     urls : Array<string>
     indicatorType : string
@@ -16,7 +16,9 @@
   function testPreviewImage() {
     uni.previewImage({
       urls: data.urls,
+      // #ifdef APP
       indicator: data.indicatorType,
+      // #endif
       complete() {
       }
     })

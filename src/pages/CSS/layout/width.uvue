@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
   <view style="flex-grow: 1;">
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
     <view>
@@ -42,7 +39,7 @@
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 width </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <!-- 普通版本 -->
@@ -53,7 +50,7 @@
         <text class="uni-info">获取值: {{data.widthActual}}</text>
         <view class="test-box">
           <view ref="viewRef" class="common test-view" :style="{ width: data.width }">
-            <text>view</text>
+            <text class="cyan-label">view</text>
           </view>
         </view>
       </view>
@@ -85,7 +82,7 @@
         <text class="uni-info">获取值: {{data.widthActualFlat}}</text>
         <view class="test-box">
           <view ref="viewRefFlat" class="common test-view-flatten" :style="{ width: data.width }" flatten>
-            <text>view</text>
+            <text class="cyan-label">view</text>
           </view>
         </view>
       </view>
@@ -154,7 +151,7 @@
       </view>
     </view>
 
-    <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-common-mb">
       <text>空 native-view - 无宽高，有背景色</text>
       <text class="uni-info">getPropertyValue: width={{emptyElementValues.emptyNativeViewWidth}}, height={{emptyElementValues.emptyNativeViewHeight}}</text>
@@ -162,15 +159,19 @@
         <native-view ref="emptyNativeViewRef" style="background-color: cyan;"></native-view>
       </view>
     </view>
-    <!-- #endif -->
 
     <view class="uni-common-mb">
       <text>native-view组件: width: 100px 和 width: 200px</text>
-      <view class="demo-box">
-        <native-view style="width: 100px; height: 100px; background-color: cyan;"></native-view>
-        <native-view style="width: 200px; height: 100px; background-color: cyan;"></native-view>
+      <view class="demo-box-native">
+        <view class="container-native">
+          <native-view style="width: 100px; height: 100px;"></native-view>
+        </view>
+        <view class="container-native">
+          <native-view style="width: 200px; height: 100px;"></native-view>
+        </view>
       </view>
     </view>
+    <!-- #endif -->
 
     <!-- #ifdef WEB -->
     <view class="container">
@@ -179,12 +180,9 @@
     </view>
     <!-- #endif -->
   </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import childWidthUvue from "./child-width.uvue"
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
@@ -272,6 +270,7 @@
     data.widthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('width') ?? ''
   }
 
+
   const changeWidth = (value: string) => {
     data.width = value
     viewRef.value?.style.setProperty('width', value)
@@ -313,6 +312,7 @@
   .common {
     height: 80px;
     background-color: cyan;
+    color: #1a1a1a;
   }
   .demo-box {
     flex-direction: row;
@@ -341,6 +341,22 @@
     font-size: 12px;
     line-height: 100px;
     text-align: center;
+    color: #1a1a1a;
+  }
+
+  .cyan-label {
+    color: #1a1a1a;
+  }
+
+  .demo-box-native {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .container-native {
+    background-color: cyan;
   }
 
   /* #ifdef WEB */

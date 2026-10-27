@@ -1,0 +1,343 @@
+<template>
+  <list-view :id="id" class="list" :bounces="false" :scroll-y="true" :custom-nested-scroll="true"
+    @scrolltolower="loadData(null)" associative-container="nested-scroll-view">
+    <list-item class="list-item" v-for="(item, _) in dataList" :key="item.plugin_id" type="10">
+      <view class="list-item-icon">
+        <image class="list-item-icon-image" :src="item.plugin_img_link"></image>
+      </view>
+      <view class="list-item-fill">
+        <view class="flex-row">
+          <text class="title">{{item.plugin_name}}</text>
+        </view>
+        <view>
+          <text class="description-text">{{item.plugin_intro}}</text>
+        </view>
+        <uni-rate :value="item.score / 10" :full="true" :readonly="true"></uni-rate>
+        <view class="tag-list">
+          <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
+        </view>
+        <view class="flex-row update-date">
+          <text class="update-date-text">更新日期</text>
+          <text class="update-date-value">{{item.update_date}}</text>
+          <text class="author">{{item.author_name}}</text>
+        </view>
+      </view>
+    </list-item type="20">
+    <list-item class="loading">
+      <!-- <uni-loading :loading="loading" color="#999" :text="loadingText"></uni-loading> -->
+      <loading v-if="loadingRef" style="color: #999"></loading>
+      <text v-if="isEnded" style="color: #999">到底了</text>
+    </list-item>
+  </list-view>
+</template>
+
+<script setup lang="ts">
+/**
+ * @description: 作为长列表容器页，支持按分类加载插件列表并在触底时继续追加数据。
+ * @logic: 页面根据父级传入的分类参数请求列表接口，首次进入按需预加载，滚动到底部后继续分页拉取并更新列表内容。
+ * @optimization: 通过 `preload` 控制是否首屏加载，避免所有标签页同时请求数据；分页追加时直接复用同一列表实例，减少重复创建。
+ */
+const SERVER_URL = "https://unidemo.dcloud.net.cn/plugin/uniappx-plugin-list"
+const PAGE_SIZE = 10
+
+type ListItem = {
+  plugin_id : number,
+  plugin_img_link : string,
+  plugin_name : string,
+  plugin_intro : string,
+  score : number,
+  tags : Array<string>,
+  update_date : string,
+  author_name : string,
+}
+
+type ResponseDataType = {
+  code : number,
+  data : ListItem[]
+}
+
+const props = defineProps({
+  type: { type: String, default: '' },
+  preload: { type: Boolean, default: false },
+  id: { type: String, default: '' }
+})
+
+const loadingRef = ref(false)
+const dataList = ref<ListItem[]>([])
+const isEnded = ref(false)
+const loadingError = ref('')
+const currentPage = ref(1)
+
+// 自动化测试辅助
+const mockEnabled = ref(false)
+
+function createMockItems(page : number) : ListItem[] {
+  if (page > 2) {
+    return []
+  }
+
+  const items : ListItem[] = []
+  const baseIndex = (page - 1) * PAGE_SIZE
+  for (let i = 0; i < PAGE_SIZE; i++) {
+    const itemIndex = baseIndex + i + 1
+    items.push({
+      plugin_id: itemIndex,
+      plugin_img_link: '/static/logo.png',
+      plugin_name: `${props.type} mock ${itemIndex}`,
+      plugin_intro: `${props.type} mock intro ${itemIndex}`,
+      score: 90,
+      tags: ['mock', props.type],
+      update_date: `2026-06-${(itemIndex < 10 ? '0' : '') + itemIndex}`,
+      author_name: 'uni-agent'
+    } as ListItem)
+  }
+  return items
+}
+
+/**
+ * 仅简单的按照最后一项进行相邻页去重，此逻辑并不完美，无法处理极端情况（比如新加载的一页都是重复项且还未加载到当前的最后一项）
+ */
+function appendPageItems(items : ListItem[]) {
+  if (items.length == 0) {
+    return
+  }
+
+  if (dataList.value.length == 0) {
+    dataList.value.push(...items)
+    return
+  }
+
+  const lastItem = dataList.value[dataList.value.length - 1]
+  let duplicateIndex = -1
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].plugin_id == lastItem.plugin_id) {
+      duplicateIndex = i
+      break
+    }
+  }
+
+  const appendStartIndex = duplicateIndex >= 0 ? duplicateIndex + 1 : 0
+  if (appendStartIndex < items.length) {
+    dataList.value.push(...items.slice(appendStartIndex))
+  }
+}
+
+function loadMockData(loadComplete : (() => void) | null) {
+  if (loadingRef.value || isEnded.value) {
+    return
+  }
+
+  loadingRef.value = true
+  const items = createMockItems(currentPage.value)
+  appendPageItems(items)
+  if (items.length == 0) {
+    isEnded.value = true
+  } else {
+    currentPage.value++
+  }
+  loadingRef.value = false
+  if (loadComplete != null) {
+    loadComplete()
+  }
+}
+
+/* const loadingText = computed((): string => {
+  if (loadingRef.value) {
+    return "加载中..."
+  } else if (isEnded.value) {
+    return "没有更多了"
+  } else if (loadingError.value.length > 0) {
+    return loadingError.value
+  } else {
+    return ""
+  }
+}) */
+
+function loadData(loadComplete : (() => void) | null) {
+  if (loadingRef.value || isEnded.value) {
+    return
+  }
+
+  if (mockEnabled.value) {
+    loadMockData(loadComplete)
+    return
+  }
+
+  loadingRef.value = true
+
+  uni.request<ResponseDataType>({
+    url: SERVER_URL,
+    data: {
+      type: props.type,
+      page: currentPage.value,
+      page_size: PAGE_SIZE
+    },
+    success: (res) => {
+      const responseData = res.data
+      // console.log('responseData',responseData)
+      if (responseData == null) {
+        return
+      }
+      appendPageItems(responseData.data)
+      if (responseData.data.length == 0) {
+        isEnded.value = true
+      } else {
+        currentPage.value++
+      }
+    },
+    fail: (err) => {
+      loadingError.value = err.errMsg
+    },
+    complete: () => {
+      loadingRef.value = false
+      if (loadComplete != null) {
+        loadComplete()
+      }
+    }
+  })
+}
+
+function refreshData(loadComplete : (() => void) | null) {
+  dataList.value.length = 0
+  currentPage.value = 1
+  isEnded.value = false
+  loadingError.value = ''
+  loadData(loadComplete)
+}
+
+onMounted(() => {
+  if (props.preload) {
+    loadData(null)
+  }
+})
+
+// 自动化测试辅助
+function jest_useMockData(reload : boolean) {
+  mockEnabled.value = true
+  dataList.value.length = 0
+  currentPage.value = 1
+  isEnded.value = false
+  loadingError.value = ''
+  loadingRef.value = false
+  if (reload) {
+    loadData(null)
+  }
+}
+
+function jest_getState() : UTSJSONObject {
+  const firstItem = dataList.value.length > 0 ? dataList.value[0] : null
+  return {
+    type: props.type,
+    renderedCount: dataList.value.length,
+    currentPage: currentPage.value,
+    loading: loadingRef.value,
+    isEnded: isEnded.value,
+    firstTitle: firstItem != null ? firstItem.plugin_name : '',
+    mockEnabled: mockEnabled.value,
+  } as UTSJSONObject
+}
+
+defineExpose({
+  loadData,
+  refreshData,
+  jest_useMockData,
+  jest_getState
+})
+</script>
+
+<style>
+  .list {
+    flex: 1;
+  }
+
+  .list-item {
+    flex-direction: row;
+    padding: 10px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .list-item-icon {
+    position: relative;
+  }
+
+  .list-item-icon-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .list-item-fill {
+    flex: 1;
+    margin-left: 15px;
+  }
+
+  .title {
+    color: var(--text-color, #333333);
+  }
+
+  .description-text {
+    font-size: 13px;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
+    line-height: 19px;
+  }
+
+  .tag-list {
+    flex-direction: row;
+    margin-top: 5px;
+  }
+
+  .tag-item {
+    font-size: 12px;
+    background-color: #EFF9F0;
+    color: #639069;
+    border-radius: 20px;
+    margin-right: 5px;
+    padding: 2px 5px;
+  }
+
+  .update-date {
+    margin-top: 10px;
+  }
+
+  .update-date-text {
+    font-size: 12px;
+    color: #888888;
+  }
+
+  .update-date-value {
+    font-size: 12px;
+    color: #777777;
+    margin-left: 5px;
+  }
+
+  .author {
+    font-size: 12px;
+    color: #008000;
+    margin-left: auto;
+  }
+
+  .loading {
+    padding: 30px;
+    align-items: center;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-item {
+      background-color: #243a29;
+      color: #9bd3a3;
+    }
+
+    .update-date-text,
+    .update-date-value {
+      color: #b8b8b8;
+    }
+
+    .author {
+      color: #72d572;
+    }
+  }
+
+  .flex-row {
+    flex-direction: row;
+  }
+</style>

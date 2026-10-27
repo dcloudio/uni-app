@@ -28,7 +28,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
 type Child = {
@@ -76,7 +76,7 @@ onLoad(() => {
   padding: 10px;
 }
 .list-view-container {
-  background-color: #fff;
+  background-color: var(--list-background-color, #fff);
 }
 .mt-5 {
   margin-top: 5px;

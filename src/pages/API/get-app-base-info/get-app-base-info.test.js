@@ -1,3 +1,5 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
 const PAGE_PATH = '/pages/API/get-app-base-info/get-app-base-info'
 
 describe('ExtApi-GetAppBaseInfo', () => {
@@ -8,6 +10,10 @@ describe('ExtApi-GetAppBaseInfo', () => {
     'appId', 'appName', 'appVersion', 'appVersionCode', 'appLanguage',
     'language', 'uniCompilerVersion', 'uniPlatform', 'uniRuntimeVersion',
   ]
+  // ios 暂不支持返回 packagename
+  if (!isIOS) {
+    stringProperties.push('packagename')
+  }
   const numberProperties = [
     'uniCompilerVersionCode', 'uniRuntimeVersionCode'
   ]

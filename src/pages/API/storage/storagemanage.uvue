@@ -71,10 +71,10 @@
 				<view class="edit-row" v-if="!isEditing">
 					<text class="edit-label">类型</text>
 					<radio-group class="edit-type-group" @change="onValueTypeChange">
-						<radio v-for="vt in valueTypeOptions" :key="vt" :value="vt" :checked="editValueType===vt"
-							class="edit-type-radio">
+						<view v-for="vt in valueTypeOptions" :key="vt" class="edit-type-radio">
+							<radio :value="vt" :checked="editValueType===vt" />
 							<text>{{ vt }}</text>
-						</radio>
+						</view>
 					</radio-group>
 				</view>
 				<view class="popup-actions">
@@ -87,7 +87,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	type StorageItem = {
 		key : string
 		value : string
@@ -382,8 +382,14 @@
 
 <style>
 	.container {
+		--storage-surface-background: #fff;
+		--storage-text-color: #333;
+		--storage-secondary-color: #888;
+		--storage-item-border-color: #e5e5e5;
+		--storage-input-border-color: #ccc;
+		--storage-dialog-title-color: #222;
+		--storage-input-text-color: #000000;
 		flex-direction: column;
-		background: #f7f8fa;
 		flex: 1;
 	}
 
@@ -406,15 +412,15 @@
 	.list-view {
 		flex: 1;
 		width: 100%;
-		background: #fff;
+		background-color: var(--storage-surface-background, #fff);
 		border-radius: 0;
 		padding: 0;
 	}
 
 	.item-block {
 		padding: 13px;
-		border-bottom: 1px solid #e5e5e5;
-		background: #fff;
+		border-bottom: 1px solid var(--storage-item-border-color, #e5e5e5);
+		background-color: var(--storage-surface-background, #fff);
 	}
 
 	.item-row {
@@ -424,14 +430,14 @@
 	}
 
 	.item-label {
-		color: #888;
+		color: var(--storage-secondary-color, #888);
 		font-size: 14px;
 		margin-right: 4px;
 		width: 50px;
 	}
 
 	.item-key {
-		color: #333;
+		color: var(--storage-text-color, #333);
 		font-size: 15px;
 		flex: 1;
 		/* #ifdef WEB */
@@ -459,7 +465,7 @@
 	}
 
 	.dialog-content {
-		background: #fff;
+		background-color: var(--storage-surface-background, #fff);
 		border-radius: 10px;
 		padding: 20px 16px 16px 16px;
 		min-width: 270px;
@@ -475,7 +481,7 @@
 		font-weight: bold;
 		margin-bottom: 14px;
 		text-align: center;
-		color: #222;
+		color: var(--storage-dialog-title-color, #222);
 		letter-spacing: 1px;
 	}
 
@@ -508,7 +514,7 @@
 
 	.edit-label {
 		min-width: 35px;
-		color: #888;
+		color: var(--storage-secondary-color, #888);
 		font-size: 15px;
 		margin-right: 6px;
 	}
@@ -516,21 +522,23 @@
 	.edit-input {
 		flex: 1;
 		height: 40px;
-		border: 1px solid #ccc;
+		border: 1px solid var(--storage-input-border-color, #ccc);
 		border-radius: 4px;
 		padding: 0 6px;
 		font-size: 15px;
-		background: #fff;
+		background-color: var(--storage-surface-background, #fff);
+		color: var(--storage-input-text-color, #000000);
 	}
 
 	.edit-textarea {
 		flex: 1;
 		min-height: 80px;
-		border: 1px solid #ccc;
+		border: 1px solid var(--storage-input-border-color, #ccc);
 		border-radius: 4px;
 		padding: 10px 6px;
 		font-size: 15px;
-		background: #fff;
+		background-color: var(--storage-surface-background, #fff);
+		color: var(--storage-input-text-color, #000000);
 	}
 
 	.edit-type-group {
@@ -539,6 +547,18 @@
 		align-items: center;
 		flex-wrap: wrap;
 		width: 90%;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.container {
+			--storage-surface-background: #2d2d2d;
+			--storage-text-color: #ffffff;
+			--storage-secondary-color: #a0a0a0;
+			--storage-item-border-color: rgba(255, 255, 255, 0.1);
+			--storage-input-border-color: rgba(255, 255, 255, 0.1);
+			--storage-dialog-title-color: #ffffff;
+			--storage-input-text-color: #ffffff;
+		}
 	}
 
 	.edit-type-radio {

@@ -1,12 +1,8 @@
-const PAGE_PATH = "/pages/API/get-element-by-id/get-element-by-id";
-let page;
-
 describe("getElementById", () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
+  const PAGE_PATH = "/pages/API/get-element-by-id/get-element-by-id";
+  let page;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH);
     await page.waitFor('view');

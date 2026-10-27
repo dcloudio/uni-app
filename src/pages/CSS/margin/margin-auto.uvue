@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1;">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -129,7 +126,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -199,24 +196,23 @@
         <input-data :defaultValue="data.margin" title="margin 自定义值" type="text" @confirm="inputChangeMargin"></input-data>
       </view>
 
+      <!-- #ifndef MP-ALIPAY -->
       <view class="uni-common-mb">
         <text>native-view组件: margin-left: auto 和 margin: auto</text>
         <view class="demo-box">
           <view class="demo-item">
-            <native-view class="common" style="width: 150px; margin-left: auto;"></native-view>
+            <test-native-view class="common" style="width: 150px; margin-left: auto;"></test-native-view>
           </view>
           <view class="demo-item">
-            <native-view class="common" style="width: 150px; margin: auto;"></native-view>
+            <test-native-view class="common" style="width: 150px; margin: auto;"></test-native-view>
           </view>
         </view>
       </view>
+      <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const data = reactive({
@@ -252,6 +248,7 @@
     data.marginActualImage = imageRef.value?.style.getPropertyValue('margin') ?? ''
     data.marginActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin') ?? ''
   }
+
 
   const changeMargin = (value: string) => {
     data.margin = value

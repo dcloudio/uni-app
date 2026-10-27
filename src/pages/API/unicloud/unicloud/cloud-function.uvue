@@ -1,42 +1,39 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-btn-v uni-common-mt">
-          <button type="primary" @click="callFunction">请求云函数</button>
-          <button type="primary" @click="callFunctionWithGeneric">请求云函数传入泛型</button>
-          <!-- #ifdef APP-ANDROID || APP-IOS -->
-          <button type="primary" @click="callEncryptionFunction">请求安全网络加密云函数</button>
-          <button type="primary" @click="callVerifyFunction">请求安全网络客户端校验云函数</button>
-          <view><text class="tips">安全网络相关功能需要打包自定义基座方可正常使用</text></view>
-          <!-- #endif -->
-        </view>
+  <view class="cloud-function-page">
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="callFunction">请求云函数</button>
+        <button type="primary" @click="callFunctionWithGeneric">请求云函数传入泛型</button>
+        <!-- #ifdef APP-ANDROID || APP-IOS -->
+        <button type="primary" @click="callEncryptionFunction">请求安全网络加密云函数</button>
+        <button type="primary" @click="callVerifyFunction">请求安全网络客户端校验云函数</button>
+        <view><text class="tips">安全网络相关功能需要打包自定义基座方可正常使用</text></view>
+        <!-- #endif -->
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
+type PlainObject = {
+  [key: string]: any
+}
 
 type DataType = {
-  callFunctionResult: UTSJSONObject,
+  callFunctionResult: PlainObject,
   callFunctionResult_Detail_functionName: string,
-  callFunctionError: UTSJSONObject,
+  callFunctionError: PlainObject,
   genericDemoShowMessage: string,
   isUniTest: boolean,
 }
 
 const title = ref('请求云函数')
 const data = reactive({
-  callFunctionResult: {} as UTSJSONObject,
+  callFunctionResult: {},
   callFunctionResult_Detail_functionName: '',
-  callFunctionError: {} as UTSJSONObject,
+  callFunctionError: {},
   genericDemoShowMessage: '',
   isUniTest: false,
 } as DataType)
@@ -76,7 +73,7 @@ async function callFunctionWithGeneric(): Promise<void> {
     data.callFunctionError = {
       errCode: error.errCode,
       errMsg: error.errMsg
-    } as UTSJSONObject
+    }
     uni.hideLoading()
     notify(error.errMsg, '错误')
   })
@@ -93,12 +90,11 @@ async function callFunction(): Promise<void> {
       str: 'ABC'
     }
   }).then(res => {
-    const result = res.result
+    const result = JSON.parse(JSON.stringify(res.result)) as PlainObject
     data.callFunctionResult = result
-    const detail = result.get('detail') as UTSJSONObject
-    data.callFunctionResult_Detail_functionName = detail.get('functionName') as string
+    const detail = result['detail'] as PlainObject
+    data.callFunctionResult_Detail_functionName = detail['functionName'] as string
     console.log('callFunctionResult_Detail_functionName: ' + data.callFunctionResult_Detail_functionName)
-    console.log(JSON.stringify(result))
     uni.hideLoading()
     notify(result['showMessage'] as string, '提示')
   }).catch((err : any | null) => {
@@ -108,7 +104,7 @@ async function callFunction(): Promise<void> {
       data.callFunctionError = {
         errCode: error.errCode,
         errMsg: error.errMsg
-      } as UTSJSONObject
+      }
       notify(error.errMsg, '错误')
     } else {
       console.error(err)
@@ -134,7 +130,7 @@ function callEncryptionFunction() {
       data.callFunctionError = {
         errCode: error.errCode,
         errMsg: error.errMsg
-      } as UTSJSONObject
+      }
       notify(error.errMsg, '错误')
     } else {
       console.error(err)
@@ -148,7 +144,8 @@ function callVerifyFunction() {
   })
   uniCloud.callFunction({
     name: 'verify-client',
-    data: {}
+    data: {},
+    secretType: 'both'
   }).then(res => {
     uni.hideLoading()
     notify(JSON.stringify(res.result), '提示')
@@ -159,7 +156,7 @@ function callVerifyFunction() {
       data.callFunctionError = {
         errCode: error.errCode,
         errMsg: error.errMsg
-      } as UTSJSONObject
+      }
       notify(error.errMsg, '错误')
     } else {
       console.error(err)
@@ -189,9 +186,19 @@ defineExpose({
 </script>
 
 <style>
+  .cloud-function-page {
+    --cloud-function-hint-color: #999999;
+  }
+
   .tips {
-    color: #999999;
+    color: var(--cloud-function-hint-color, #999999);
     font-size: 12px;
     padding: 10px 0px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .cloud-function-page {
+      --cloud-function-hint-color: #a0a0a0;
+    }
   }
 </style>

@@ -1,0 +1,8 @@
+<template>
+  <view>
+    <slot></slot>
+  </view>
+</template>
+
+<script setup lang="ts">
+</script>

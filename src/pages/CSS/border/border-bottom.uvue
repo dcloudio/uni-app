@@ -1,13 +1,18 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <view>
         <text>border-bottom: 5px dashed blue</text>
         <view class="demo-box">
           <view class="common" style="border-bottom: 5px dashed blue;"></view>
           <view class="common" style="border-bottom: 5px dashed blue;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-bottom: 6rpx dashed #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="border-bottom: 6rpx dashed #0000ff80;"></view>
+          <view class="common" style="border-bottom: 6rpx dashed #0000ff80;" flatten></view>
         </view>
       </view>
 
@@ -23,7 +28,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-bottom </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -96,20 +101,10 @@
         <input-data :defaultValue="data.borderBottom" title="border-bottom 自定义值" type="text" @confirm="inputChangeBorderBottom"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-bottom: 5px dashed blue 和 10px solid green</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-bottom: 5px dashed blue;"></native-view>
-          <native-view class="common" style="border-bottom: 10px solid green;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const borderBottomEnum: ItemType[] = [
@@ -117,11 +112,12 @@
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid black' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted green' }
+    { value: 4, name: '3px dotted green' },
+    { value: 5, name: '8rpx solid #0000ff80' },
   ]
 
   const data = reactive({
-    borderBottom: '5px solid purple',
+    borderBottom: '6rpx dashed #0000ff80',
     borderBottomActual: '',
     borderBottomActualText: '',
     borderBottomActualImage: '',

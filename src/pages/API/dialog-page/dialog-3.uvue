@@ -1,38 +1,39 @@
 <template>
   <view id="dialog3" class="dialog-container">
     <scroll-view class="dialog-content">
-      <text>title: {{ title }}</text>
+      <text class="dialog-text">title: {{ title }}</text>
       <template v-for="(item, index) in PageStyleArray">
         <view class="page-style-item" v-if="currentPageStyle[item.key] != null" :key="index">
           <view class="item-text">
-            <text class="item-text-key">{{ item.key }}:</text>
-            <text class="item-text-value">{{
+            <text class="item-text-key dialog-text">{{ item.key }}:</text>
+            <text class="item-text-value dialog-text">{{
               currentPageStyle[item.key]
             }}</text>
           </view>
           <view class="mt-10" v-if="item.type == 'boolean'">
-            <switch :checked="currentPageStyle.getBoolean(item.key)"
-              @change="switchChange(item.key, $event as UniSwitchChangeEvent)">
-            </switch>
+            <boolean-data :value="(currentPageStyle[item.key] as boolean)" :title="item.key"
+              @change="switchChange(item.key, $event as boolean)"></boolean-data>
           </view>
           <view class="mt-10" v-else-if="item.type == 'number'">
-            <slider :value="currentPageStyle.getNumber(item.key)" :show-value="true"
+            <slider :value="(currentPageStyle[item.key] as number)" :show-value="true"
               @change="sliderChange(item.key, $event as UniSliderChangeEvent)" />
           </view>
           <view class="mt-10" v-else-if="item.type == 'string'">
             <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
-              <radio class="ml-10" v-for="(item2, index2) in item.value" :key="index2" :value="item2"
-                :checked="currentPageStyle[item.key] == item2">{{ item2 }}
-              </radio>
+              <view class="ml-10 dialog-radio" v-for="(item2, index2) in item.value" :key="index2">
+                <radio :value="item2" :checked="currentPageStyle[item.key] == item2" />
+                <text>{{ item2 }}</text>
+              </view>
             </radio-group>
           </view>
         </view>
       </template>
-      <text class="mt-10 choose-close-animation-type-title">choose close dialogPage animationType</text>
+      <text class="mt-10 choose-close-animation-type-title dialog-text">choose close dialogPage animationType</text>
       <radio-group class="choose-close-animation-type-radio-group" @change="handleChooseAnimationType">
-        <radio class="ml-10 mt-10" v-for="item in closeAnimationTypeList" :key="item" :value="item"
-          :checked="closeAnimationType == item">{{ item }}
-        </radio>
+        <view class="ml-10 mt-10 dialog-radio" v-for="item in closeAnimationTypeList" :key="item">
+          <radio :value="item" :checked="closeAnimationType == item" />
+          <text>{{ item }}</text>
+        </view>
       </radio-group>
       <button class="mt-10" @click="closeThisDialog">
         closeThisDialog
@@ -41,10 +42,10 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const currentPage = getCurrentInstance()?.proxy?.$page
 
-  import { PageStyleItem, PageStyleArray } from './page-style.uts';
+  import { PageStyleItem, PageStyleArray } from './page-style.ts';
 
   type CloseAnimationType =
     'auto' |
@@ -103,8 +104,8 @@
     setStyleValue(key, e.detail.value);
   }
 
-  function switchChange(key : string, e : UniSwitchChangeEvent) {
-    setStyleValue(key, e.detail.value);
+  function switchChange(key : string, value : boolean) {
+    setStyleValue(key, value);
   }
 
   function handleChooseAnimationType(e : RadioGroupChangeEvent){
@@ -131,6 +132,10 @@
 </script>
 
 <style>
+    page {
+      background-color: #007aff;
+    }
+
   .dialog-container {
     width: 100%;
     height: 100%;
@@ -144,7 +149,7 @@
     width: 90%;
     height: 500px;
     padding: 10px 6px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 6px;
   }
 
@@ -158,7 +163,7 @@
   .page-style-item {
     padding: 6px 0;
     margin-top: 10px;
-    background-color: #ffffff;
+    background-color: var(--active-background-color, #ffffff);
     border-radius: 5px;
   }
 
@@ -184,4 +189,9 @@
     flex-direction: row;
     flex-wrap: wrap;
   }
-  </style
+
+  .dialog-text,
+  .dialog-radio {
+    color: var(--text-color, #333333);
+  }
+  </style>

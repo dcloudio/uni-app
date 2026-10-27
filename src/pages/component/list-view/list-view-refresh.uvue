@@ -1,5 +1,5 @@
 <template>
-  <list-view v-if="list_show" id="listview" style="flex: 1;" show-scrollbar=false :refresher-enabled="true"
+  <list-view v-if="list_show" id="listview" class="list-view-page" style="flex: 1;" show-scrollbar=false :refresher-enabled="true"
     :refresher-triggered="data.refresherTriggered" @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort"
     @refresherrestore="onRefresherrestore" @refresherpulling="onRefresherpulling">
     <list-item class="item">
@@ -11,7 +11,7 @@
   </list-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
 type RefresherEventTest = {
@@ -121,7 +121,7 @@ defineExpose({
   .item {
     padding: 15px;
     margin: 0 0 5px 0;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 5px;
   }
 

@@ -1,0 +1,92 @@
+{
+  "id": "uni-expandable-text",
+  "displayName": "uni-expandable-text 折叠文字组件",
+  "version": "1.0.2",
+  "description": "可以控制文字默认显示几行，然后在后面或下一行显示切换全文的文字按钮",
+  "isExt": true,
+  "extUrl": "https://ext.dcloud.net.cn/plugin?id=30267",
+  "keywords": [
+    "uniui",
+    "文字展开收起",
+    "全文显示",
+    "文本折叠"
+],
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "engines": {
+    "HBuilderX": "",
+    "uni-app": "",
+    "uni-app-x": "^5.07"
+  },
+  "directories": {
+    "example": "../../temps/example_temps"
+  },
+  "dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "type": "component-vue",
+    "darkmode": "x",
+    "i18n": "√",
+    "widescreen": "x",
+    "npmurl": "",
+    "vapor": "√"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "chrome": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          },
+          "app": {
+            "android": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "ios": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "harmony": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

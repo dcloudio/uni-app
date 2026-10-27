@@ -6,30 +6,29 @@
   </view>
 </template>
 
-<script setup lang="uts">
-const currentPage = getCurrentInstance()?.proxy?.$page
+<script setup lang="ts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
 
-function onChanged(e : UniNativeViewEvent) {
-  console.log("onchanged-----", e.detail)
-}
-
-function sure() {
-  if (currentPage != null) {
-    uni.closeDialogPage({
-      dialogPage: currentPage
-    })
+  function onChanged(e : UniNativeViewEvent) {
+    console.log("onchanged-----", e.detail)
   }
-}
+
+  function sure() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
+    }
+  }
 </script>
 
 <style>
- .native-time-picker {
+  .native-time-picker {
     margin: 10px auto 25px auto;
     border-style: solid;
     border-radius: 5px;
     background-color: white;
   }
-
 
   .dialog-container {
     width: 100%;
@@ -39,5 +38,4 @@ function sure() {
     justify-content: center;
     align-items: center;
   }
-
 </style>

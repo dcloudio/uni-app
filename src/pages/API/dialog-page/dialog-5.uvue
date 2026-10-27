@@ -1,28 +1,39 @@
 <template>
   <view class="dialog-container">
     <view class="dialog-content">
-      <text>title: {{ title }}</text>
-      <view class="uni-common-mt flex-row" v-if="pageBody != null">pageBody: {
-        top: <text id="page-body-top">{{pageBody!.top}}</text>,
-        right: <text id="page-body-right">{{pageBody!.right}}</text>,
-        bottom: <text id="page-body-bottom">{{pageBody!.bottom}}</text>,
-        left: <text id="page-body-left">{{pageBody!.left}}</text>,
-        width: <text id="page-body-width">{{pageBody!.width}}</text>,
-        height: <text id="page-body-height">{{pageBody!.height}}</text>
-        }
+      <text class="dialog-text">title: {{ title }}</text>
+      <view class="uni-common-mt flex-row" v-if="pageBody != null">
+        <text class="dialog-text">pageBody: {</text>
+        <text class="dialog-text">top: </text>
+        <text id="page-body-top" class="dialog-text">{{pageBody!.top}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">right: </text>
+        <text id="page-body-right" class="dialog-text">{{pageBody!.right}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">bottom: </text>
+        <text id="page-body-bottom" class="dialog-text">{{pageBody!.bottom}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">left: </text>
+        <text id="page-body-left" class="dialog-text">{{pageBody!.left}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">width: </text>
+        <text id="page-body-width" class="dialog-text">{{pageBody!.width}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">height: </text>
+        <text id="page-body-height" class="dialog-text">{{pageBody!.height}}</text><text class="dialog-text">}</text>
       </view>
-      <view class="uni-common-mt flex-row" v-if="safeAreaInsets != null">safeAreaInsets: {
-        top: <text id="page-safe-area-insets-top">{{safeAreaInsets!.top}}</text>,
-        right: <text id="page-safe-area-insets-right">{{safeAreaInsets!.right}}</text>,
-        bottom: <text id="page-safe-area-insets-bottom">{{safeAreaInsets!.bottom}}</text>,
-        left: <text id="page-safe-area-insets-left">{{safeAreaInsets!.left}}</text>}
+      <view class="uni-common-mt flex-row" v-if="safeAreaInsets != null">
+        <text class="dialog-text">safeAreaInsets: {</text>
+        <text class="dialog-text">top: </text>
+        <text id="page-safe-area-insets-top" class="dialog-text">{{safeAreaInsets!.top}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">right: </text>
+        <text id="page-safe-area-insets-right" class="dialog-text">{{safeAreaInsets!.right}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">bottom: </text>
+        <text id="page-safe-area-insets-bottom" class="dialog-text">{{safeAreaInsets!.bottom}}</text><text class="dialog-text">,</text>
+        <text class="dialog-text">left: </text>
+        <text id="page-safe-area-insets-left" class="dialog-text">{{safeAreaInsets!.left}}</text><text class="dialog-text">}</text>
       </view>
       <!-- #ifdef APP-ANDROID || APP-IOS || WEB -->
-      <view class="uni-common-mt flex-row" v-if="width != null">width: <text>{{width!}}</text>
+      <view class="uni-common-mt flex-row dialog-text" v-if="width != null">width: <text class="dialog-text">{{width!}}</text>
       </view>
-      <view class="uni-common-mt flex-row" v-if="height != null">height: <text>{{height!}}</text>
+      <view class="uni-common-mt flex-row dialog-text" v-if="height != null">height: <text class="dialog-text">{{height!}}</text>
       </view>
-      <view class="uni-common-mt flex-row" v-if="statusBarHeight != null">statusBarHeight: <text>{{statusBarHeight!}}</text>
+      <view class="uni-common-mt flex-row dialog-text" v-if="statusBarHeight != null">statusBarHeight: <text class="dialog-text">{{statusBarHeight!}}</text>
       </view>
       <!-- #endif -->
       <button class="mt-10" @click="closeThisDialog">
@@ -32,7 +43,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const instance = getCurrentInstance()!.proxy!
   const currentPage = instance.$page
 
@@ -80,6 +91,10 @@
 </script>
 
 <style>
+  page {
+    background-color: transparent;
+  }
+
   .dialog-container {
     width: 100%;
     height: 100%;
@@ -92,7 +107,7 @@
   .dialog-content {
     width: 80%;
     padding: 10px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 6px;
   }
 
@@ -102,5 +117,9 @@
   .flex-row{
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .dialog-text {
+    color: var(--text-color, #333333);
   }
 </style>

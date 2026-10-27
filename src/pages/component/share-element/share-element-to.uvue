@@ -16,7 +16,7 @@
     </view>
   </share-element>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 
 const shuttleOnPush = ref("to")
 const transitionOnGesture = ref(false)

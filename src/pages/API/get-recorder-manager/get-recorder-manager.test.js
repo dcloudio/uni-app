@@ -2,10 +2,11 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const args = platformInfo.split(' ')
 const version = parseFloat(args[args.length - 1])
+const isMP = platformInfo.startsWith('mp')
 
 describe('recorder', () => {
-  if (!isAndroid || (isAndroid && version < 9)) {
-    it('app', () => {
+  if (!isAndroid || (isAndroid && version < 9) || isMP) {
+    it('skip', () => {
       expect(1).toBe(1)
     })
     return

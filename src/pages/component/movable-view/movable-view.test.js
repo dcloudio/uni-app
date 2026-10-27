@@ -3,7 +3,7 @@ const isWeb = platformInfo.startsWith('web')
 let page;
 describe('movable-view.uvue', () => {
   if (!isWeb) {
-    it('app', () => {
+    it('skip', () => {
       expect(1).toBe(1)
     })
     return

@@ -22,9 +22,9 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
-  import { COLLECTION_NAME, UNICLOUD_DB_CONTACTS_ADD, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
+  import { COLLECTION_NAME, UNICLOUD_DB_CONTACTS_ADD, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.ts'
 
   const collection = ref(COLLECTION_NAME)
   const udbRef = ref<UniCloudDBElement | null>(null)
@@ -116,12 +116,19 @@
   .list-item {
     flex-direction: row;
     padding: 10px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #ffffff);
     margin-bottom: 1px;
   }
 
   .mobile {
     margin-top: 5px;
+    color: var(--active-color, #666666);
+  }
+
+  .name,
+  .pagination-item,
+  .error {
+    color: var(--text-color, #333333);
   }
 
   .btn-plus {
@@ -143,7 +150,7 @@
 
   .pagination {
     align-items: center;
-    background-color: #f8f8f8;
+    background-color: var(--background-color, #f8f8f8);
     padding: 15px;
   }
 </style>

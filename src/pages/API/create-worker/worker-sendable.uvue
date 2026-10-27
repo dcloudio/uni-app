@@ -1,0 +1,89 @@
+<template>
+  <scroll-view class="sendable-page">
+    <view class="panel">
+      <text class="title">Worker 中创建 SendableObject</text>
+      <text class="description">Worker 内部创建 @Sendable 对象，并使用 harmonySendable 传回主线程。</text>
+      <text class="result">SendableObject.a：{{data.sendableNumber}}</text>
+      <button type="primary" @click="create" :disabled="workerStatus == 'created'">创建 Worker</button>
+      <button @click="sendMessage" :disabled="workerStatus != 'created'">发送消息</button>
+      <button @click="modifySendable" :disabled="!receivedSendable">主线程修改 SendableObject</button>
+      <button @click="destroy" :disabled="workerStatus != 'created'">销毁 Worker</button>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  import { UTSWorkerSendableImpl, SendableObject } from '@/uni_modules/uts-worker-sendable'
+
+  const worker = new UTSWorkerSendableImpl()
+  const workerStatus = ref('none')
+  const receivedSendable = ref(false)
+  let sendableObject : SendableObject | null = null
+  const data = reactive({
+    sendableNumber: 0
+  })
+
+  function create() {
+    worker.create()
+    worker.onMessage((result) => {
+      sendableObject = result as SendableObject
+      data.sendableNumber = sendableObject.a
+      receivedSendable.value = true
+    })
+    workerStatus.value = 'created'
+  }
+
+  function sendMessage() {
+    worker.sendMessage({ message: 'create SendableObject in worker' })
+  }
+
+  function modifySendable() {
+    if (sendableObject == null) {
+      return
+    }
+    sendableObject.a = 888
+    data.sendableNumber = sendableObject.a
+  }
+
+  function destroy() {
+    worker.destroy()
+    workerStatus.value = 'destroyed'
+    sendableObject = null
+    receivedSendable.value = false
+  }
+
+  onUnload(() => {
+    destroy()
+  })
+
+  defineExpose({
+    data,
+    create,
+    sendMessage,
+    modifySendable
+  })
+</script>
+
+<style>
+  .sendable-page {
+    flex: 1;
+    padding: 15px;
+  }
+
+  .panel {
+    padding: 15px;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .title,
+  .description,
+  .result {
+    color: var(--text-color, #333333);
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+</style>

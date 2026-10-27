@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view class="pages">
       <view class="trace">
         <view class="base reserve">
@@ -225,7 +222,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform (rotate) </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -296,23 +293,22 @@
         <input-data :defaultValue="data.transformValueDynamic" title="transform 自定义值" type="text" @confirm="inputChangeTransform"></input-data>
       </view>
 
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
-      <view class="demo-box">
-        <view class="scroll-view-item">
-          <native-view class="scroll-view-base transform" style="transform: rotate(45deg);"></native-view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
+        <view class="demo-box">
+          <view class="scroll-view-item">
+            <test-native-view class="scroll-view-base transform-native" style="transform: rotate(45deg);"></test-native-view>
+          </view>
+          <view class="scroll-view-item">
+            <test-native-view class="scroll-view-base transform-native" style="transform: rotateX(30deg);"></test-native-view>
+          </view>
         </view>
-        <view class="scroll-view-item">
-          <native-view class="scroll-view-base transform" style="transform: rotateX(30deg);"></native-view>
-        </view>
-      </view>
+      <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const data = reactive({
@@ -353,6 +349,7 @@
     data.transformActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
   }
 
+
   const changeTransformDynamic = (value: string) => {
     console.log('value',value)
     data.transformValueDynamic = value
@@ -384,6 +381,7 @@
   })
 
   defineExpose({
+    radioChangeTransform,
     data
   })
 </script>
@@ -516,6 +514,10 @@
     height: 80px;
     padding: 10px;
     background-color: gray;
+  }
+
+  .transform-native {
+    background-color: #00FFFF80;
   }
 
 </style>

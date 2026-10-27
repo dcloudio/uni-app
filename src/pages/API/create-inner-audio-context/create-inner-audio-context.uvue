@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <view class="uni-padding-wrap">
       <page-head title="audio"></page-head>
       <view class="uni-common-mt">
@@ -22,23 +19,22 @@
       <text class="uni-subtitle-text uni-title">开始播放的位置（单位：s）</text>
       <input :value="data.startTime" type="number" placeholder="开始播放的位置（单位：s）" class="uni-input"
         @input="startTimeInput"></input>
-      <boolean-data :defaultValue="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
+      <boolean-data :value="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
+      <boolean-data :value="false" title="是否循环播放" @change="setLoop"></boolean-data>
 			<!-- #ifdef APP-IOS -->
-			<boolean-data :defaultValue="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
+			<boolean-data :value="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
 			<!-- #endif -->
 
       <text class="uni-subtitle-text uni-title"
         style="padding-left: 10px;padding-top: 10px;padding-right: 10px;">播放倍率(Web/HarmonyOS 不支持)</text>
-      <radio-group class="uni-flex uni-row radio-group" @change="playbackRateChange"
+      <radio-group class="uni-row radio-group" @change="playbackRateChange"
         style="flex-wrap: wrap;padding: 10px;">
-        <radio value="0.5" style="margin-right: 3px">0.5
-        </radio>
-        <radio value="0.8" style="margin-right: 3px">0.8</radio>
-        <radio value="1.0" style="margin-right: 3px" :checked="data.playbackRateChecked">1.0</radio>
-        <radio value="1.25" style="margin-right: 3px">1.25</radio>
-        <radio value="1.5" style="margin-right: 3px">1.5</radio>
-        <radio value="2.0">2.0</radio>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="0.5" /><text>0.5</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="0.8" /><text>0.8</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="1.0" :checked="data.playbackRateChecked" /><text>1.0</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="1.25" /><text>1.25</text></view>
+        <view class="playback-rate-item" style="margin-right: 3px"><radio value="1.5" /><text>1.5</text></view>
+        <view class="playback-rate-item"><radio value="2.0" /><text>2.0</text></view>
       </radio-group>
 
       <view class="uni-title">
@@ -70,11 +66,10 @@
         <button @click="pause">多音频同时播放</button>
       </navigator>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+
+    <view class="scroll-view_bottom-fixed"></view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   const audioUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
 
   type DataType = {
@@ -119,17 +114,20 @@
     onWaitingTest: false
   } as DataType)
 
+  const updateVolumeFromAudioContext = () => {
+    const volume = data._audioContext!.volume
+    // 避免拿到空值/无效值时 加音量计算出 NaN
+    if (typeof volume === 'number' && !isNaN(volume)) {
+      data.volume = volume
+    }
+  }
+
   const position = computed(() : number => {
     return data.isPlayEnd ? 0 : data.currentTime;
   })
 
   const stop = () => {
     console.log('stop');
-    data._audioContext!.onStop(() => {
-      // 第一次点停止时，不触发
-      data.isPaused = true;
-      console.log('音频停止事件');
-    });
     data._audioContext!.stop();
     data.isPlaying = false;
     console.log('stop', data.isPaused);
@@ -141,7 +139,7 @@
       data.isCanplay = true;
       // #ifdef MP
       // 微信小程序安卓端过早的时机获取的volume为undefine，改为在此处获取
-      data.volume = data._audioContext!.volume;
+      updateVolumeFromAudioContext()
       // #endif
       // 当音频可以播放时，获取缓冲信息
       data.buffered = data._audioContext!.buffered;
@@ -186,15 +184,11 @@
   const onchange = (e : UniSliderChangeEvent) => {
     let pos = e.detail.value;
     console.log('pos', pos);
-    onSeeking()
-    onSeeked()
     data._audioContext!.seek(pos);
     data._isChanging = false;
   }
 
   const onchangeValue = (pos : number) => {
-    onSeeking()
-    onSeeked()
     data._audioContext!.seek(pos);
     data._isChanging = false;
   }
@@ -304,12 +298,20 @@
   onReady(() => {
     data._audioContext = uni.createInnerAudioContext();
     data._audioContext!.src = audioUrl;
-    data.volume = data._audioContext!.volume;
+    updateVolumeFromAudioContext()
     onCanplay()
+    onSeeking()
+    onSeeked()
     data._audioContext!.onPlay(() => {
       data.isPaused = false;
       data.isPlaying = true;
       console.log('开始播放', data.isPaused);
+    });
+
+    data._audioContext!.onStop(() => {
+      // 第一次点停止时，不触发
+      data.isPaused = true;
+      console.log('音频停止事件');
     });
 
     onTimeUpdateCb.value = (res : any) => {
@@ -325,9 +327,11 @@
         data.duration = data._audioContext!.duration
       }
       // #endif
+      // #ifndef APP-HARMONY
       if (data.currentTime > data.buffered) {
         console.log('缓冲不足');
       }
+      // #endif
     };
 
     onWaitingCb.value = (res : any) => {
@@ -380,5 +384,11 @@
   .icon-play {
     width: 60px;
     height: 60px;
+  }
+
+  .playback-rate-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 </style>

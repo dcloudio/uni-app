@@ -1,6 +1,6 @@
 import { NotificationCenter } from 'Foundation';
-import { CGRect } from "CoreFoundation";
-import { UIApplication, UIView, UITextField, UIScreen, UIDevice } from "UIKit"
+import { CGRect, CGPoint, CGAffineTransform } from "CoreFoundation";
+import { UIApplication, UIView, UITextField, UIDevice } from "UIKit"
 import { UTSiOS } from "DCloudUTSFoundation"
 import { DispatchQueue } from 'Dispatch';
 import { SetUserCaptureScreenOptions, OnUserCaptureScreenCallbackResult, OnUserCaptureScreen, OffUserCaptureScreen, SetUserCaptureScreen, UserCaptureScreenCallback, SetUserCaptureScreenSuccess  } from "../interface.uts"
@@ -11,6 +11,15 @@ import { SetUserCaptureScreenFailImpl } from "../unierror.uts"
 class CaptureScreenTool {
 	static listener : UserCaptureScreenCallback | null;
 	static secureView : UIView | null;
+	static protectedRootView : UIView | null;
+	static originalSuperview : UIView | null;
+	static originalFrame : CGRect | null;
+	static originalBounds : CGRect | null;
+	static originalCenter : CGPoint | null;
+	static originalTransform : CGAffineTransform | null;
+	static originalAutoresizingMask : UIView.AutoresizingMask | null;
+	static originalPreviousSibling : UIView | null;
+	static originalNextSibling : UIView | null;
 
 	// 监听截屏
 	static listenCaptureScreen(callback : UserCaptureScreenCallback | null) {
@@ -55,19 +64,44 @@ class CaptureScreenTool {
 	static onAntiScreenshot(option : SetUserCaptureScreenOptions) {
 		// uts方法默认会在子线程中执行，涉及 UI 操作必须在主线程中运行，通过 DispatchQueue.main.async 方法可将代码在主线程中运行
 		DispatchQueue.main.async(execute = () : void => {
+			if (this.secureView != null) {
+				let res: SetUserCaptureScreenSuccess = {
+				}
+				option.success?.(res)
+				option.complete?.(res)
+				return
+			}
 			let secureView = this.createSecureView()
 			let window = UTSiOS.getKeyWindow()
 			let rootView = window.rootViewController == null ? null : window.rootViewController!.view
 			if (secureView != null && rootView != null) {
 				let rootSuperview = rootView!.superview
 				if (rootSuperview != null) {
-					this.secureView = secureView
-					rootSuperview!.addSubview(secureView!)
-					rootView!.removeFromSuperview()
-					secureView!.addSubview(rootView!)
-					let rect = rootView!.frame
-					secureView!.frame = UIScreen.main.bounds
-					rootView!.frame = rect
+					let targetSecureView : UIView = secureView!
+					let targetRootView : UIView = rootView!
+					let targetSuperview : UIView = rootSuperview!
+					let subviews = targetSuperview.subviews
+					let rootIndex = subviews.indexOf(targetRootView)
+
+					this.protectedRootView = targetRootView
+					this.originalSuperview = targetSuperview
+					this.originalFrame = targetRootView.frame
+					this.originalBounds = targetRootView.bounds
+					this.originalCenter = targetRootView.center
+					this.originalTransform = targetRootView.transform
+					this.originalAutoresizingMask = targetRootView.autoresizingMask
+					this.originalPreviousSibling = rootIndex > 0 ? subviews[rootIndex - 1] : null
+					this.originalNextSibling = rootIndex >= 0 && rootIndex + 1 < subviews.length ? subviews[rootIndex + 1] : null
+
+					targetSecureView.frame = targetSuperview.bounds
+					targetSecureView.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
+					targetSuperview.insertSubview(targetSecureView, belowSubview = targetRootView)
+					targetRootView.removeFromSuperview()
+					targetSecureView.addSubview(targetRootView)
+					targetRootView.transform = CGAffineTransform.identity
+					targetRootView.frame = targetSecureView.bounds
+					targetRootView.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
+					this.secureView = targetSecureView
 				}
 			}
 			let res: SetUserCaptureScreenSuccess = {
@@ -80,18 +114,40 @@ class CaptureScreenTool {
 	// 关闭防截屏
 	static offAntiScreenshot(option : SetUserCaptureScreenOptions) {
 		DispatchQueue.main.async(execute = () : void => {
-			if (this.secureView != null) {
-				let window = UTSiOS.getKeyWindow()
-				let rootView = window.rootViewController == null ? null : window.rootViewController!.view
-				if (rootView != null && this.secureView!.superview != null) {
-					let rootSuperview = this.secureView!.superview
-					if (rootSuperview != null) {
+			let secureView = this.secureView
+			let rootView = this.protectedRootView
+			let rootSuperview = this.originalSuperview
+			if (secureView != null && rootView != null && rootSuperview != null) {
+				if (rootView!.superview == secureView!) {
+					if (this.originalNextSibling != null && this.originalNextSibling!.superview == rootSuperview!) {
+						rootSuperview!.insertSubview(rootView!, belowSubview = this.originalNextSibling!)
+					} else if (this.originalPreviousSibling != null && this.originalPreviousSibling!.superview == rootSuperview!) {
+						rootSuperview!.insertSubview(rootView!, aboveSubview = this.originalPreviousSibling!)
+					} else {
 						rootSuperview!.addSubview(rootView!)
-						this.secureView!.removeFromSuperview()
+					}
+
+					if (this.originalFrame != null && this.originalBounds != null && this.originalCenter != null && this.originalTransform != null && this.originalAutoresizingMask != null) {
+						rootView!.transform = CGAffineTransform.identity
+						rootView!.frame = this.originalFrame!
+						rootView!.bounds = this.originalBounds!
+						rootView!.center = this.originalCenter!
+						rootView!.transform = this.originalTransform!
+						rootView!.autoresizingMask = this.originalAutoresizingMask!
 					}
 				}
-				this.secureView = null
+				secureView!.removeFromSuperview()
 			}
+			this.secureView = null
+			this.protectedRootView = null
+			this.originalSuperview = null
+			this.originalFrame = null
+			this.originalBounds = null
+			this.originalCenter = null
+			this.originalTransform = null
+			this.originalAutoresizingMask = null
+			this.originalPreviousSibling = null
+			this.originalNextSibling = null
 			let res: SetUserCaptureScreenSuccess = {
 			}
 			option.success?.(res)
@@ -135,4 +191,3 @@ export const setUserCaptureScreen : SetUserCaptureScreen = function (options : S
 		}
 	}
 }
-

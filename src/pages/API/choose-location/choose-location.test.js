@@ -1,11 +1,14 @@
+jest.setTimeout(30000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isHarmonySimulator = isHarmony && platformInfo.includes('模拟器')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('dialog page', () => {
-  if (isAppWebView || isMP) {
+  if (isAppWebView || isMP || isHarmonySimulator) {
   	it('skip not support', () => {
   		expect(1).toBe(1)
   	})

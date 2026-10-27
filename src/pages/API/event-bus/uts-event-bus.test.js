@@ -3,14 +3,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 
 describe('event-bus', () => {
-  if (isIos) {
-  	it('skip ios', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
-  }
-  const platformInfo = process.env.uniTestPlatformInfo.toLowerCase()
-  if (!platformInfo.startsWith('ios')) {
+  if (!isIos) {
     it('pass', async () => {
       expect(1).toBe(1);
     });

@@ -1,0 +1,20 @@
+<template>
+  <view>
+    <page-head title="getApp restart"></page-head>
+    <view class="uni-padding-wrap">
+      <text>restart from: {{ restartFrom }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const restartFrom = ref('')
+
+  onLoad((options : OnLoadOptions) => {
+    restartFrom.value = options['from'] ?? ''
+  })
+
+  defineExpose({
+    restartFrom
+  })
+</script>

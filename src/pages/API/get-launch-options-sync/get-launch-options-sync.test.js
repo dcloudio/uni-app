@@ -1,8 +1,16 @@
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
-const HOME_PATH = isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/component'
-const PAGE_PATH = '/pages/API/get-launch-options-sync/get-launch-options-sync'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('getLaunchOptionsSync', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
+  const PAGE_PATH = '/pages/API/get-launch-options-sync/get-launch-options-sync'
+
   it('getLaunchOptionsSync', async () => {
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')

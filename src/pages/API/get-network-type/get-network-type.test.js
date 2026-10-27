@@ -1,7 +1,15 @@
-const PAGE_PATH = '/pages/API/get-network-type/get-network-type'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('ExtApi-GetNetworkType', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
 
+  const PAGE_PATH = '/pages/API/get-network-type/get-network-type'
   let page;
   let res;
   beforeAll(async () => {

@@ -1,0 +1,38 @@
+<template>
+	<view class="container">
+		<text class="tip">登录页面</text>
+		<text class="redirect">uniIdRedirectUrl：{{ redirectUrl }}</text>
+	</view>
+</template>
+
+<script setup lang="ts">
+	const redirectUrl = ref('')
+
+	onLoad((options : OnLoadOptions) => {
+		const url = options['uniIdRedirectUrl']
+		if (url != null) {
+			redirectUrl.value = decodeURIComponent(url as string) || ''
+		}
+	})
+</script>
+
+<style>
+	.container {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 40px;
+	}
+
+	.tip {
+		font-size: 20px;
+		color: #333333;
+	}
+
+	.redirect {
+		margin-top: 20px;
+		font-size: 14px;
+		color: #8f8f94;
+		text-align: center;
+	}
+</style>

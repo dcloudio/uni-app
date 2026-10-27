@@ -1,6 +1,7 @@
 <template>
   <scroll-view style="flex: 1">
     <page-head title="拖拽图标测试相关事件"></page-head>
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-padding-wrap uni-common-mt" style="bottom: 20px;">
       <navigator url="/pages/component/global-events/touch-events-case" hover-class="none">
         <button type="default">
@@ -8,6 +9,7 @@
         </button>
       </navigator>
     </view>
+    <!-- #endif -->
     <view class="container">
       <view class="view-box" @touchstart="onViewTouchStart">
         <image class="icon" id="icon" src="../image/logo.png" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
@@ -28,7 +30,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 type DataType = {
   touchTargets: string,
   touchTargetsCount: number,
@@ -40,6 +42,7 @@ const posX = ref(0)
 const posY = ref(0)
 const lastX = ref(0)
 const lastY = ref(0)
+const dragTouchId = ref(-1)
 const touchEvent = ref(null as TouchEvent | null)
 const icon = ref(null as UniElement | null)
 const data = reactive({
@@ -53,22 +56,45 @@ function onViewTouchStart(e : TouchEvent) {
   data.touchTargetsCount++
 }
 
+function findTouchByIdentifier(touches : Touch[], identifier : number) : Touch | null {
+  for (let i = 0; i < touches.length; i++) {
+    const touch = touches[i]
+    if (touch.identifier == identifier) {
+      return touch
+    }
+  }
+  return null
+}
+
 function onTouchStart(e : TouchEvent) {
   data.touchTargetsCount++
   data.touchTargets += e.target!.tagName + e.currentTarget!.tagName
 
   touchEvent.value = e
   if (!move.value) {
+    const startTouch = e.changedTouches.length > 0 ? e.changedTouches[0] : e.touches[0]
+    if (startTouch == null) {
+      return
+    }
     move.value = true
-    posX.value = e.touches[0].screenX
-    posY.value = e.touches[0].screenY
+    dragTouchId.value = startTouch.identifier
+    posX.value = startTouch.screenX
+    posY.value = startTouch.screenY
+    lastX.value = startTouch.screenX
+    lastY.value = startTouch.screenY
   }
 }
 
 function onTouchMove(e : TouchEvent) {
   e.preventDefault()
   touchEvent.value = e
-  let p = e.touches[0]
+  let p = findTouchByIdentifier(e.changedTouches, dragTouchId.value)
+  if (p == null) {
+    p = findTouchByIdentifier(e.touches, dragTouchId.value)
+  }
+  if (p == null) {
+    return
+  }
   if (p.screenX == lastX.value && p.screenY == lastY.value) {
     return
   }
@@ -83,11 +109,14 @@ function resetIcon() {
   move.value = false;
   posX.value = 0;
   posY.value = 0;
+  lastX.value = 0;
+  lastY.value = 0;
+  dragTouchId.value = -1;
   icon.value?.style?.setProperty('transform', 'translate(0px,0px)')
 }
 
 function onTouchEnd(e : TouchEvent) {
-  if (e.touches.length == 0) {
+  if (findTouchByIdentifier(e.changedTouches, dragTouchId.value) != null) {
     resetIcon()
     touchEvent.value = null
   }

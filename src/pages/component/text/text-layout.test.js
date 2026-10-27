@@ -1,4 +1,3 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 describe('text-layout', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase();
   const isIos = platformInfo.startsWith('ios');
@@ -6,8 +5,9 @@ describe('text-layout', () => {
   const isWeb = platformInfo.startsWith('web');
   const isMP = platformInfo.startsWith('mp');
   const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true';
+  const isVapor = process.env.UNI_APP_X_DOM2 == 'true';
 
-  if (isIos || isHarmony || isWeb || isMP || isAppWebView) {
+  if (isIos || isHarmony || isWeb || isMP || isAppWebView || isVapor) {
     it('other platform', () => {
       expect(1).toBe(1);
     });

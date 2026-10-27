@@ -1,0 +1,139 @@
+<template>
+	<view class="uni-tab-list-root" :class="tabBarRootClass">
+		<slot></slot>
+	</view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * 底部选项卡栏
+   * @description 底部选项卡栏组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+const tabContentHeightFull = inject<Ref<boolean>>('uniTabContentHeightFull', ref(false))
+const changeTab = inject<(index: number) => void>('uniTabBarChangeTab', (index: number) => {})
+
+const itemCount = ref<number>(0)
+const hasMidButtonItem = ref<boolean>(false)
+
+const tabBarRootClass = computed(() : string => {
+	return tabContentHeightFull.value ? 'uni-tab-list-root-full' : 'uni-tab-list-root-normal'
+})
+
+const validMidButtonLayout = computed(() : boolean => {
+	return hasMidButtonItem.value == false || (itemCount.value > 0 && itemCount.value % 2 == 0)
+})
+
+function registerItem() : number {
+	const index = itemCount.value
+	itemCount.value++
+	return index
+}
+
+
+function registerMidButton(width : number, height : number) : void {
+	hasMidButtonItem.value = true
+	if (width <= 0) {
+		console.warn('uni-tab-midbutton: width 必须大于 0')
+	}
+	if (height <= 0) {
+		console.warn('uni-tab-midbutton: height 必须大于 0')
+	}
+}
+
+function syncOccupiedHeight() : void {
+	if (hasMidButtonItem.value && validMidButtonLayout.value == false) {
+		console.warn('uni-tab-bar: mid-button 需要偶数个普通 uni-tab-item，才能保持居中均分布局')
+	}
+}
+
+onMounted(() => {
+	syncOccupiedHeight()
+})
+
+watch(() : number => itemCount.value, () => {
+	syncOccupiedHeight()
+})
+
+watch(() : boolean => hasMidButtonItem.value, () => {
+	syncOccupiedHeight()
+})
+
+provide('uniTabListRegisterItem', registerItem)
+provide('uniTabListRegisterMidButton', registerMidButton)
+provide('uniTabListChangeTab', changeTab)
+</script>
+
+<style>
+	.uni-tab-list-root {
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+		height: var(--uni-tab-bar-height, 50px);
+		flex-shrink: 0;
+		box-sizing: content-box;
+		padding-bottom: var(--uni-safe-area-inset-bottom);
+		justify-content: flex-start;
+		align-items: flex-end;
+		overflow: visible;
+		border-top-width: 0.5px;
+		border-top-color: rgba(0,0,0,0.33);
+		border-top-style: solid;
+	}
+
+	.uni-tab-list-root-normal {
+		position: relative;
+		z-index: 10;
+		background-color: #ffffff;
+	}
+
+	/* #ifdef MP-ALIPAY */
+	.uni-tab-list-root-normal {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+	/* #endif */
+
+	.uni-tab-list-root-full {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 10;
+		background-color: #ffffff;
+	}
+</style>

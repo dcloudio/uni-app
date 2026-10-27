@@ -1,0 +1,129 @@
+<template>
+  <view>
+    <slot></slot>
+  </view>
+</template>
+
+<script lang="ts" setup>
+  /**
+   * 折叠面板
+   * @description 折叠面板组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  import type { ItemChildType } from '../type.ts'
+  import {
+    UNI_COLLAPSE_REGISTER_CHILD,
+    UNI_COLLAPSE_UNREGISTER_CHILD,
+    UNI_COLLAPSE_CHILD_TOGGLE
+  } from '../common.ts'
+
+  defineOptions({
+    name: 'UniCollapse'
+  })
+
+  type Props = {
+    /**
+     * @description 是否开启手风琴模式，开启后同一时间仅允许一个子项展开
+     * @default true
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    accordion? : boolean
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    accordion: true
+  })
+
+  let childNodes = [] as ItemChildType[]
+
+  function registerChild(child : ItemChildType) {
+    const existIndex = childNodes.findIndex((item : ItemChildType) : boolean => item.elId == child.elId)
+    if (existIndex == -1) {
+      childNodes.push(child)
+    }
+  }
+
+  function unregisterChild(elId : string) {
+    childNodes = childNodes.filter((item : ItemChildType) : boolean => item.elId != elId)
+  }
+
+  function toggle(elId : string) {
+    if (props.accordion && childNodes.length > 0) {
+      childNodes.forEach((item : ItemChildType) => {
+        const isOpen = item.is_open.value as boolean
+        if (isOpen && item.elId != elId) {
+          item.is_open.value = false
+          item.openOrClose(false)
+        }
+      })
+    }
+  }
+
+  provide(UNI_COLLAPSE_REGISTER_CHILD, registerChild)
+  provide(UNI_COLLAPSE_UNREGISTER_CHILD, unregisterChild)
+  provide(UNI_COLLAPSE_CHILD_TOGGLE, toggle)
+</script>

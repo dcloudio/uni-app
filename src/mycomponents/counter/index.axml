@@ -1,0 +1,13 @@
+<view class="counter">
+  <button
+    class="counter-button"
+    disabled="{{value <= min}}"
+    onTap="decrement"
+  >-</button>
+  <text class="counter-value">{{value}}</text>
+  <button
+    class="counter-button"
+    disabled="{{value >= max}}"
+    onTap="increment"
+  >+</button>
+</view>

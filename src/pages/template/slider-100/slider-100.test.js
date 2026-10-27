@@ -1,10 +1,19 @@
 const PAGE_PATH = '/pages/template/slider-100/slider-100'
+const isMpAlipay = process.env.uniTestPlatformInfo.toLocaleLowerCase() === 'mp-alipay'
 
 describe('slider', () => {
+  if (isMpAlipay) {
+    it('not support', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
+    await page.setData({ autoData: { showFps: false } });
     await page.waitFor(2000)
   })
   it('screenshot', async () => {

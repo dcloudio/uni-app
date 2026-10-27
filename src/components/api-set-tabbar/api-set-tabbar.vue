@@ -1,22 +1,24 @@
 <template>
   <view class="uni-padding-wrap">
-    <page-head :title="title"></page-head>
-    <button class="button" @click="setTabBarBadge">{{ !hasSetTabBarBadge ? '设置tab徽标' : '移除tab徽标' }}</button>
-    <button class="button" @click="showTabBarRedDot">{{ !hasShownTabBarRedDot ?  '显示红点' : '移除红点'}}</button>
-    <button class="button" @click="customStyle">{{ !hasCustomedStyle ? '自定义Tab样式' : '移除自定义样式'}}</button>
-    <button class="button" @click="customItem">{{ !hasCustomedItem ? '自定义Tab信息' : '移除自定义信息' }}</button>
-    <button class="button" @click="hideTabBar">{{ !hasHiddenTabBar ? '隐藏TabBar' : '显示TabBar' }}</button>
-    <!-- #ifdef APP-ANDROID || APP-IOS || WEB || APP-HARMONY -->
-    <button class="button" @click="hideTabBarItem">{{ !hasHiddenTabBarItem ? '隐藏接口Item' : '显示接口Item' }}</button>
-    <!-- #endif -->
-    <button class="button" @click="setTabBarTitle">{{ !hasSetLongTitle ? '自定义超长标题' : '移除自定义信息' }}</button>
-    <view class="btn-area">
-      <!-- <button class="button" type="primary" @click="navigateBack">关闭</button> -->
+    <view class="container">
+      <page-head :title="title"></page-head>
+      <button class="button" @click="setTabBarBadge">{{ !hasSetTabBarBadge ? '设置tab徽标' : '移除tab徽标' }}</button>
+      <button class="button" @click="showTabBarRedDot">{{ !hasShownTabBarRedDot ?  '显示红点' : '移除红点'}}</button>
+      <button class="button" @click="customStyle">{{ !hasCustomedStyle ? '自定义Tab样式' : '移除自定义样式'}}</button>
+      <button class="button" @click="customItem">{{ !hasCustomedItem ? '自定义Tab信息' : '移除自定义信息' }}</button>
+      <button class="button" @click="hideTabBar">{{ !hasHiddenTabBar ? '隐藏TabBar' : '显示TabBar' }}</button>
+      <!-- #ifdef APP-ANDROID || APP-IOS || WEB || APP-HARMONY -->
+      <button class="button" @click="hideTabBarItem">{{ !hasHiddenTabBarItem ? '隐藏接口Item' : '显示接口Item' }}</button>
+      <!-- #endif -->
+      <button class="button" @click="setTabBarTitle">{{ !hasSetLongTitle ? '自定义超长标题' : '移除自定义信息' }}</button>
+      <view class="btn-area">
+        <!-- <button class="button" type="primary" @click="navigateBack">关闭</button> -->
+      </view>
     </view>
   </view>
 </template>
 
-<script lang="uts" setup>
+<script lang="ts" setup>
   const title = ref('tababr')
   const hasSetTabBarBadge = ref(false)
   const hasShownTabBarRedDot = ref(false)
@@ -72,13 +74,6 @@
   })
 
   const setTabBarTitle = () => {
-    // #ifdef APP-HARMONY
-    uni.showToast({
-      title: "暂不支持"
-    })
-    // #endif
-
-    // #ifndef APP-HARMONY
     let tabBarOptions = {
       visible: true,
       index: 1,
@@ -89,8 +84,10 @@
 
     if (!hasSetLongTitle.value) {
       tabBarOptions.text = "超长标题内容超长标题内容超长标题内容超长标题测试";
+      // #ifndef MP_ALIPAY
       tabBarOptions.iconPath = "";
       tabBarOptions.selectedIconPath = "";
+      // #endif
     } else {
       tabBarOptions.text = "接口";
       tabBarOptions.iconPath = "/static/api.png";
@@ -98,7 +95,6 @@
     }
     uni.setTabBarItem(tabBarOptions)
     hasSetLongTitle.value = !hasSetLongTitle.value
-    // #endif
   }
 
   const hideTabBarItem = () => {
@@ -202,13 +198,6 @@
   }
 
   const customItem = () => {
-    // #ifdef APP-HARMONY
-    uni.showToast({
-      title: "暂不支持"
-    })
-    // #endif
-
-    // #ifndef APP-HARMONY
     let tabBarOptions = {
       index: 1,
       text: '接口',
@@ -222,13 +211,15 @@
       uni.setTabBarItem(tabBarOptions)
     }
     hasCustomedItem.value = !hasCustomedItem.value
-    // #endif
   }
 
 
 </script>
 
 <style>
+  .container {
+    background-color: var(--background-color, #fff);
+  }
   .button {
     margin-top: 15px;
     margin-left: 0;

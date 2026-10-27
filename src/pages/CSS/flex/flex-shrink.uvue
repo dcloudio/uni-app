@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -50,7 +47,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-shrink </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -153,21 +150,20 @@
         <input-data :defaultValue="data.flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
       </view>
 
-      <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
-      <view class="demo-box uni-common-mb">
-        <view class="flex-container-shrink">
-          <native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></native-view>
-          <native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></native-view>
-          <native-view class="native-view-shrink blue" style="width: 100px; flex-shrink: 3;"></native-view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
+        <view class="demo-box uni-common-mb">
+          <view class="flex-container-shrink">
+            <test-native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></test-native-view>
+            <test-native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></test-native-view>
+            <test-native-view class="native-view-shrink blue" style="width: 100px; flex-shrink: 3;"></test-native-view>
+          </view>
         </view>
-      </view>
+      <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const flexShrinkEnum: ItemType[] = [
@@ -202,6 +198,7 @@
     data.flexShrinkActualImage = imageRef.value?.style.getPropertyValue('flex-shrink') ?? ''
     data.flexShrinkActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
   }
+
 
   const changeFlexShrink = (value: string) => {
     data.flexShrink = value
@@ -335,7 +332,5 @@
 
   .native-view-shrink {
     height: 50px;
-    justify-content: center;
-    align-items: center;
   }
 </style>

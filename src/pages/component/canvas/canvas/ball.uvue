@@ -1,21 +1,22 @@
 <template>
   <view class="page-body">
-    <canvas id="canvas" class="canvas"></canvas>
+    <canvas id="canvas" class="canvas" @ready="onCanvasReady"></canvas>
     <text class="fps">FPS: {{fpsString}}</text>
+    <text class="ball-count">总球数: {{ballCount}}</text>
     <view class="item">
-      <text class="item-label">Speed</text>
+      <text class="item-label">速度</text>
       <button size="mini" @click="lessClick('speed')">-</button>
       <text class="item-value">{{ballSpeed}}</text>
       <button size="mini" @click="plusClick('speed')">+</button>
     </view>
     <view class="item">
-      <text class="item-label">Layer</text>
+      <text class="item-label">圈数</text>
       <button size="mini" @click="lessClick('layer')">-</button>
       <text class="item-value">{{ballLayer}}</text>
       <button size="mini" @click="plusClick('layer')">+</button>
     </view>
     <view class="item">
-      <text class="item-label">Inlayer</text>
+      <text class="item-label">每圈球数</text>
       <button size="mini" @click="lessClick('inLayer')">-</button>
       <text class="item-value">{{ballInlayer}}</text>
       <button size="mini" @click="plusClick('inLayer')">+</button>
@@ -23,11 +24,12 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   let fpsString = ref("-/-ms")
   let ballSpeed = ref(3)
   let ballLayer = ref(3)
   let ballInlayer = ref(20)
+  let ballCount = ref(60)
 
   class Ball {
     private width : number
@@ -69,6 +71,11 @@
     }
   }
 
+  // #ifdef MP-ALIPAY
+  let canvasLayoutWidth = 0
+  let canvasLayoutHeight = 0
+  // #endif
+
   class BallAnimation {
     private ctx : CanvasRenderingContext2D
     private canvasContext : CanvasContext
@@ -82,6 +89,10 @@
     private frameCount = 0
     private lastTime = 0
 
+    private normalizePositiveCount(value : number) : number {
+      return Math.max(1, value)
+    }
+
     constructor(canvasContext : CanvasContext) {
       this.canvasContext = canvasContext
       this.ctx = canvasContext.getContext('2d') as CanvasRenderingContext2D
@@ -94,12 +105,17 @@
     }
 
     private initBall() {
-      const canvasWidth = this.ctx.canvas.offsetWidth;
-      const canvasHeight = this.ctx.canvas.offsetHeight;
+      let canvasWidth = this.ctx.canvas.offsetWidth;
+      let canvasHeight = this.ctx.canvas.offsetHeight;
+      // #ifdef MP-ALIPAY
+      canvasWidth = canvasLayoutWidth
+      canvasHeight = canvasLayoutHeight
+      // #endif
+      const twoPI = 2 * Math.PI;
       for (let i = 0; i < this._layer; i++) {
         let radius = this.getDistance(canvasWidth / 2, canvasHeight / 2) / this._layer * i
         for (let j = 0; j < this._ballInlayer; j++) {
-          let deg = j * 2 * Math.PI / this._ballInlayer,
+          let deg = j * twoPI / this._ballInlayer,
             sin = Math.sin(deg),
             cos = Math.cos(deg),
             x = radius * cos + canvasWidth / 2,
@@ -120,7 +136,7 @@
       return this._speed
     }
     public set speed(value : number) {
-      this._speed = value
+      this._speed = this.normalizePositiveCount(value)
       this.reset()
     }
 
@@ -128,7 +144,7 @@
       return this._layer
     }
     public set layer(value : number) {
-      this._layer = value
+      this._layer = this.normalizePositiveCount(value)
       this.reset()
     }
 
@@ -136,12 +152,18 @@
       return this._ballInlayer
     }
     public set inLayer(value : number) {
-      this._ballInlayer = value
+      this._ballInlayer = this.normalizePositiveCount(value)
       this.reset()
     }
 
     public animate() {
-      this.ctx.clearRect(0, 0, this.ctx.canvas.offsetWidth, this.ctx.canvas.offsetHeight)
+      let canvasWidth = this.ctx.canvas.offsetWidth
+      let canvasHeight = this.ctx.canvas.offsetHeight
+      // #ifdef MP-ALIPAY
+      canvasWidth = canvasLayoutWidth
+      canvasHeight = canvasLayoutHeight
+      // #endif
+      this.ctx.clearRect(0, 0, canvasWidth, canvasHeight)
       this.ballList.forEach((item) => {
         item.move()
         this.ctx.beginPath()
@@ -182,7 +204,34 @@
   }
 
   let animation : BallAnimation | null = null
+
+  function onCanvasReady() {
+    // #ifdef MP-ALIPAY
+    uni.createCanvasContextAsync({
+      id: 'canvas',
+      // component: this,
+      success: (context : CanvasContext) => {
+        const renderingContext = context.getContext('2d')!;
+        const canvas = renderingContext.canvas;
+
+        uni.createSelectorQuery().select('#canvas').boundingClientRect().exec((ret) => {
+          const rect = ret.length > 0 ? ret[0] as NodeInfo : null
+          canvasLayoutWidth = rect != null ? rect.width : 0
+          canvasLayoutHeight = rect != null ? rect.height : 0
+          const dpr = uni.getWindowInfo().pixelRatio;
+          canvas.width = canvasLayoutWidth * dpr
+          canvas.height = canvasLayoutHeight * dpr
+          renderingContext.scale(dpr, dpr)
+
+          animation = new BallAnimation(context)
+          animation?.start()
+        })
+      }
+    })
+    // #endif
+  }
   onReady(() => {
+    // #ifndef MP-ALIPAY
     uni.createCanvasContextAsync({
       id: 'canvas',
       // component: this,
@@ -199,6 +248,7 @@
         animation?.start()
       }
     })
+    // #endif
   })
 
   let lessClick = (type : string) => {
@@ -212,6 +262,8 @@
       animation!.inLayer -= 5;
       ballInlayer.value = animation!.inLayer
     }
+
+    ballCount.value = ballLayer.value * ballInlayer.value
   }
 
   let plusClick = (type : string) => {
@@ -225,6 +277,8 @@
       animation!.inLayer += 5;
       ballInlayer.value = animation!.inLayer
     }
+
+    ballCount.value = ballLayer.value * ballInlayer.value
   }
 
   onUnload(() => {
@@ -259,6 +313,10 @@
 
   .fps {
     margin-top: 30px;
+  }
+
+  .ball-count {
+    margin-top: 10px;
     margin-bottom: 20px;
   }
 

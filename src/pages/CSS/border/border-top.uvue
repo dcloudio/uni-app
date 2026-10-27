@@ -1,13 +1,18 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <view>
         <text>border-top: 5px dashed blue</text>
         <view class="demo-box">
           <view class="common" style="border-top: 5px dashed blue;"></view>
           <view class="common" style="border-top: 5px dashed blue;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-top: 6rpx dashed #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="border-top: 6rpx dashed #0000ff80;"></view>
+          <view class="common" style="border-top: 6rpx dashed #0000ff80;" flatten></view>
         </view>
       </view>
 
@@ -23,7 +28,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-top </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -96,20 +101,10 @@
         <input-data :defaultValue="data.borderTop" title="border-top 自定义值" type="text" @confirm="inputChangeBorderTop"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-top: 5px dashed blue 和 10px solid cyan</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-top: 5px dashed blue;"></native-view>
-          <native-view class="common" style="border-top: 10px solid cyan;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const borderTopEnum: ItemType[] = [
@@ -117,7 +112,8 @@
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid cyan' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted yellow' }
+    { value: 4, name: '3px dotted yellow' },
+    { value: 5, name: '8rpx dashed #0000ff80' }
   ]
 
   const data = reactive({

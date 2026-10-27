@@ -1,6 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe('set-page-backgroundColorContent', () => {
   if (isMP) {

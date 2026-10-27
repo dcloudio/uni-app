@@ -1,0 +1,384 @@
+<template>
+	<!-- #ifdef MP-ALIPAY -->
+	<view class="index-text" ref="indexTextRef" v-bind="$attrs" @touchstart="onTouchStart" @touchmove.stop.prevent="onTouchMove"
+		@touchend="onTouchEnd">
+		<text v-for="(item, index) in indexList" :key="item" class="index-item">{{ item }}</text>
+	</view>
+	<!-- #endif -->
+	<!-- #ifndef MP-ALIPAY -->
+	<text class="index-text" ref="indexTextRef" v-bind="$attrs" @touchstart="onTouchStart" @touchmove.stop.prevent="onTouchMove"
+		@touchend="onTouchEnd">{{ indexs }}</text>
+	<!-- #endif -->
+	<!-- indicator with arrow -->
+	<view v-show="touching" class="indicator" :class="indicatorViewClass" :style="indicatorStyle">
+		<text class="indicator-text" :class="indicatorTextClass">{{ currentIndex }}</text>
+	</view>
+</template>
+
+<script lang="ts" setup>
+  /**
+   * 索引列表
+   * @description 索引列表组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+
+	defineOptions({
+		externalClasses: ['indicator-view-class', 'indicator-text-class']
+	})
+
+	type Props = {
+		/**
+		 * @description 索引字符列表，使用换行符 \n 分隔，每行作为一个索引项
+		 * @default "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ"
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		indexs? : string,
+		/**
+		 * @description 指示器容器的自定义样式类，触摸时显示当前索引的气泡
+		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		indicatorViewClass? : string.ClassString,
+		/**
+		 * @description 指示器内文字的自定义样式类
+		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		indicatorTextClass? : string.ClassString
+	}
+
+	const props = withDefaults(defineProps<Props>(), {
+		indexs: 'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ',
+		indicatorViewClass: '',
+		indicatorTextClass: ''
+	})
+
+	const emit = defineEmits<{
+		/**
+		 * @description 选择索引时触发，参数为当前选择的索引字符，类型为 string
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		select: [index: string]
+	}>()
+
+	// 将索引字符串按换行分割为数组
+	const indexList = computed(() : string[] => props.indexs.split('\n'))
+
+	const currentIndex = ref('')
+	const touching = ref(false)
+	const indicatorTop = ref(0)
+
+	const indicatorStyle = computed(() : string => {
+		return `top: ${indicatorTop.value}px;`
+	})
+
+	// 布局缓存变量
+	let textTop = 0
+	let itemHeight = 0
+	let indexCount = 0
+	let cachedIndexList : string[] = []
+	const navBarHeight = uni.getWindowInfo().windowTop
+
+	// #ifndef MP
+	const indexTextRef = ref<UniTextElement | null>(null)
+	// #endif
+
+	// 更新布局信息
+	const updateLayout = () => {
+		// 缓存索引数组和长度，避免在 touch 事件中重复访问 computed
+		cachedIndexList = indexList.value
+		indexCount = cachedIndexList.length
+
+		// #ifndef MP
+		// App/Web 端使用 getBoundingClientRect 同步获取
+		const textEl = indexTextRef.value
+		if (textEl != null) {
+			const rect = textEl.getBoundingClientRect()
+			textTop = rect.top
+			itemHeight = rect.height / indexCount
+		}
+		// #endif
+	}
+
+	// #ifdef MP
+	// 小程序需要在 setup 阶段保存 instance，因为异步回调中 getCurrentInstance() 返回 null
+	const instance = getCurrentInstance()
+
+	// 小程序端使用 createSelectorQuery 异步获取布局
+	const updateLayoutAsync = () => {
+		cachedIndexList = indexList.value
+		indexCount = cachedIndexList.length
+
+		if (instance == null) return
+
+		uni.createSelectorQuery()
+			.in(instance.proxy)
+			.select('.index-text')
+			.boundingClientRect((rect) => {
+				if (rect != null) {
+					textTop = rect.top as number
+					itemHeight = (rect.height as number) / indexCount
+				}
+			})
+			.exec()
+	}
+
+	onMounted(() => {
+		nextTick(() => {
+			updateLayoutAsync()
+		})
+	})
+
+	watch(() => props.indexs, () => {
+		nextTick(() => {
+			updateLayoutAsync()
+		})
+	})
+	// #endif
+
+	const getIndexFromY = (y : number) : number => {
+		const relY = y - textTop
+		let idx = Math.floor(relY / itemHeight)
+		if (idx < 0) idx = 0
+		if (idx >= indexCount) idx = indexCount - 1
+		return idx
+	}
+
+	// 更新指示器位置
+	const updateIndicator = (idx : number) => {
+		indicatorTop.value = textTop + idx * itemHeight + itemHeight / 2 - 25 - navBarHeight
+	}
+
+	const onTouchStart = (e : UniTouchEvent) => {
+		updateLayout()
+		touching.value = true
+		const touch = e.touches[0]
+		const idx = getIndexFromY(touch.clientY)
+		const selectedIndex = cachedIndexList[idx]
+		currentIndex.value = selectedIndex
+		updateIndicator(idx)
+		emit('select', selectedIndex)
+	}
+
+	const onTouchMove = (e : UniTouchEvent) => {
+		// #ifdef APP
+		e.preventDefault()
+		// #endif
+		// #ifdef WEB
+		if (e.cancelable) {
+			e.preventDefault()
+		}
+		// #endif
+		const touch = e.touches[0]
+		const idx = getIndexFromY(touch.clientY)
+		const newIndex = cachedIndexList[idx]
+		if (newIndex != currentIndex.value) {
+			currentIndex.value = newIndex
+			updateIndicator(idx)
+			emit('select', newIndex)
+		}
+	}
+
+	const onTouchEnd = (_e : UniTouchEvent) => {
+		touching.value = false
+	}
+</script>
+
+<style>
+	.index-text {
+		position: absolute;
+		right: 3px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 28px;
+		font-size: 11px;
+		color: #757575;
+		text-align: center;
+		line-height: 1.4;
+		z-index: 1000;
+	}
+
+	.index-item {
+		text-align: center;
+	}
+
+	.indicator {
+		position: absolute;
+		right: 50px;
+		width: 50px;
+		height: 50px;
+		background-color: #c9c9c9;
+		border-radius: 25px 25px 25px 0;
+		transform: rotate(225deg);
+		align-items: center;
+		justify-content: center;
+		z-index: 99;
+	}
+
+	.indicator-text {
+		font-size: 22px;
+		color: #ffffff;
+		text-align: center;
+		transform: rotate(-225deg);
+	}
+</style>

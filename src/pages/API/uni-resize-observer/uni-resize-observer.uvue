@@ -1,11 +1,11 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view" style="padding-bottom: var(--uni-safe-area-inset-bottom);">
-  <!-- #endif -->
-    <view>
+    <view style="padding-bottom: var(--uni-safe-area-inset-bottom);">
       <page-intro content="本页演示 uni.createResizeObserver：监听元素尺寸变化，回调中可获取 contentRect（x、y、width、height）。含 view 嵌套、text、image、scroll-view 等组件的监听示例；可点击方块改宽高、改变字体/图片/scroll-view 尺寸，支持停止/恢复监听、隐藏/显示元素。"></page-intro>
-      <text>点击蓝色或红色方块区域会修改元素宽高</text>
-      <view v-show="boxDisplay" style="align-items: center; justify-content: center; margin: 10px;">
+      <view class="section-heading">
+        <text class="section-title">基础监听</text>
+        <text class="section-caption">点击蓝色或红色方块，观察对应元素的尺寸变化</text>
+      </view>
+      <view v-show="boxDisplay" class="box-stage">
         <view
           style="width: 140px; height: 140px; background-color: blue; align-items: center; justify-content: center; padding: 5px;"
           id="outBox" @click="outBoxClick">
@@ -13,44 +13,71 @@
             @click="innerBoxClick"></view>
         </view>
       </view>
-      <button @click="revertBoxSize">还原修改前元素宽高</button>
-      <button @click="toggleDisplay">{{boxDisplay? '隐藏元素': '显示元素'}}</button>
-      <button @click='cancelListen'>停止监听</button>
-      <button @click='goOnListen'>恢复监听</button>
-      <view>
-        <text class="info-text">蓝色方块元素:</text>
-        <view class="info-item">
-          <text class="info-text">{{outBoxSizeInfo}}</text>
+      <view class="action-grid">
+        <button class="action-grid-button" @click="revertBoxSize">还原尺寸</button>
+        <button class="action-grid-button" @click="toggleDisplay">{{boxDisplay? '隐藏元素': '显示元素'}}</button>
+        <button class="action-grid-button" @click='cancelListen'>停止监听</button>
+        <button class="action-grid-button" @click='goOnListen'>恢复监听</button>
+      </view>
+      <view class="result-grid">
+        <view class="result-card accent-blue">
+          <text class="result-title">蓝色外层元素</text>
+          <text class="result-summary">{{outBoxSizeInfo ? outBoxSummary : '等待首次回调...'}}</text>
+          <text class="result-detail">{{outBoxSizeInfo}}</text>
         </view>
-        <text class="info-text" style="margin-top: 20px;">红色方块元素:</text>
-        <view class="info-item">
-          <text class="info-text">{{innerBoxSizeInfo}}</text>
+        <view class="result-card accent-red">
+          <text class="result-title">红色内层元素</text>
+          <text class="result-summary">{{innerBoxSizeInfo ? innerBoxSummary : '等待首次回调...'}}</text>
+          <text class="result-detail">{{innerBoxSizeInfo}}</text>
         </view>
       </view>
 
       <!-- text 组件示例 -->
       <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
-        <text class="uni-title-text">Text 组件示例:</text>
-        <text id="testText" :style="{fontSize: textFontSize + 'px', color: '#333'}">这是一个可以改变字体大小的文本</text>
+        <view class="section-heading"><text class="section-title">Text 组件</text></view>
+        <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+        <view class="flat-compare-row">
+          <text id="testText" class="flat-compare-item" :style="{fontSize: textFontSize + 'px', color: '#333'}">普通文本</text>
+          <text id="testTextFlat" class="flat-compare-item" :style="{fontSize: textFontSize + 'px', color: '#333'}" flatten>拍平文本</text>
+        </view>
         <button @click="changeTextSize">改变文本字体大小</button>
-        <view class="info-item">
-          <text class="info-text">{{data.textSizeInfo}}</text>
+        <view class="result-grid">
+          <view class="result-card"><text class="result-title">正常</text><text class="result-summary">{{infoSummary(data.textSizeInfoObj)}}</text><text class="result-detail">{{data.textSizeInfo}}</text></view>
+          <view class="result-card"><text class="result-title">拍平</text><text class="result-summary">{{infoSummary(data.textFlatSizeInfoObj)}}</text><text class="result-detail">{{data.textFlatSizeInfo}}</text></view>
+        </view>
+      </view>
+
+      <!-- flatten 拍平元素示例 -->
+      <view class="uni-common-mt" v-show="flatDisplay">
+        <view class="section-heading"><text class="section-title">View 组件</text></view>
+        <view class="flat-compare-row">
+          <view id="testViewNormal" class="flat-compare-item" style="background-color: #409eff;" :style="{width: viewFlatWidth + 'px', height: viewFlatHeight + 'px'}"></view>
+          <view id="testViewFlat" class="flat-compare-item" style="background-color: #3cb371;" :style="{width: viewFlatWidth + 'px', height: viewFlatHeight + 'px'}" flatten></view>
+        </view>
+        <button @click="changeViewFlatSize">改变 view 尺寸</button>
+        <view class="result-grid">
+          <view class="result-card"><text class="result-title">正常</text><text class="result-summary">{{infoSummary(data.viewNormalSizeInfoObj)}}</text><text class="result-detail">{{data.viewNormalSizeInfo}}</text></view>
+          <view class="result-card"><text class="result-title">拍平</text><text class="result-summary">{{infoSummary(data.viewFlatSizeInfoObj)}}</text><text class="result-detail">{{data.viewFlatSizeInfo}}</text></view>
         </view>
       </view>
 
       <!-- image 组件示例 -->
       <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
-        <text class="uni-title-text">Image 组件示例:</text>
-        <image id="testImage" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit"></image>
+        <view class="section-heading"><text class="section-title">Image 组件</text></view>
+        <view class="flat-compare-row">
+          <image id="testImage" class="flat-compare-item" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit"></image>
+          <image id="testImageFlat" class="flat-compare-item" :style="{width: imageWidth + 'px', height: imageHeight + 'px'}" src="/static/test-image/logo.png" mode="aspectFit" flatten></image>
+        </view>
         <button @click="changeImageSize">改变图片尺寸</button>
-        <view class="info-item">
-          <text class="info-text">{{data.imageSizeInfo}}</text>
+        <view class="result-grid">
+          <view class="result-card"><text class="result-title">正常</text><text class="result-summary">{{infoSummary(data.imageSizeInfoObj)}}</text><text class="result-detail">{{data.imageSizeInfo}}</text></view>
+          <view class="result-card"><text class="result-title">拍平</text><text class="result-summary">{{infoSummary(data.imageFlatSizeInfoObj)}}</text><text class="result-detail">{{data.imageFlatSizeInfo}}</text></view>
         </view>
       </view>
 
       <!-- scroll-view 组件示例 -->
       <view class="uni-common-mt" v-show="textImageScrollViewDisplay">
-        <text class="uni-title-text">Scroll-view 组件示例:</text>
+        <view class="section-heading"><text class="section-title">Scroll-view 组件</text><text class="section-caption">监听滚动容器尺寸</text></view>
         <scroll-view id="testScrollView" :style="{width: scrollViewWidth + 'px', height: '100px', border: '1px solid #ccc'}" >
           <view style="padding: 10px;">
             <text>这是 scroll-view 内的内容</text>
@@ -58,19 +85,16 @@
           </view>
         </scroll-view>
         <button @click="changeScrollViewSize">改变 scroll-view 宽度</button>
-        <view class="info-item">
-          <text class="info-text">{{data.scrollViewSizeInfo}}</text>
-        </view>
+        <view class="result-card"><text class="result-summary">{{infoSummary(data.scrollViewSizeInfoObj)}}</text><text class="result-detail">{{data.scrollViewSizeInfo}}</text></view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 const outBoxSizeInfo = ref("")
 const innerBoxSizeInfo = ref("")
+const outBoxSummary = ref("等待首次回调...")
+const innerBoxSummary = ref("等待首次回调...")
 const offset = ref(2)
 const boxDisplay = ref(false)
 let outBoxElement: UniElement | null = null
@@ -90,8 +114,20 @@ let imageElement: UniElement | null = null
 const scrollViewWidth = ref(300)
 let scrollViewElement: UniElement | null = null
 
+// 拍平（flatten）元素相关
+const viewFlatWidth = ref(100)
+const viewFlatHeight = ref(100)
+let viewFlatElement: UniElement | null = null
+let viewNormalElement: UniElement | null = null
+
+let textFlatElement: UniElement | null = null
+let imageFlatElement: UniElement | null = null
+
 // 控制 text、image、scroll-view 的显示
 const textImageScrollViewDisplay = ref(false)
+
+// 控制拍平元素的显示
+const flatDisplay = ref(false)
 
 type ContentRectType = {
   x: number,
@@ -109,7 +145,14 @@ type ResizeInfoType = {
   contentRect: ContentRectType,
   borderBoxSize: BoxSizeType,
   contentBoxSize: BoxSizeType,
+  // #ifndef WEB
   devicePixelContentBoxSize: BoxSizeType,
+  // #endif
+}
+
+function infoSummary(info : ResizeInfoType | null) : string {
+  if (info == null) return "等待首次回调..."
+  return "contentRect " + info.contentRect.width + " x " + info.contentRect.height + " px"
 }
 
 type DataType = {
@@ -120,6 +163,14 @@ type DataType = {
   textSizeInfoObj: ResizeInfoType | null,
   imageSizeInfoObj: ResizeInfoType | null,
   scrollViewSizeInfoObj: ResizeInfoType | null,
+  viewFlatSizeInfo: string,
+  viewNormalSizeInfo: string,
+  textFlatSizeInfo: string,
+  imageFlatSizeInfo: string,
+  viewFlatSizeInfoObj: ResizeInfoType | null,
+  viewNormalSizeInfoObj: ResizeInfoType | null,
+  textFlatSizeInfoObj: ResizeInfoType | null,
+  imageFlatSizeInfoObj: ResizeInfoType | null,
 }
 
 const data = reactive({
@@ -130,6 +181,14 @@ const data = reactive({
   textSizeInfoObj: null,
   imageSizeInfoObj: null,
   scrollViewSizeInfoObj: null,
+  viewFlatSizeInfo: "",
+  viewNormalSizeInfo: "",
+  textFlatSizeInfo: "",
+  imageFlatSizeInfo: "",
+  viewFlatSizeInfoObj: null,
+  viewNormalSizeInfoObj: null,
+  textFlatSizeInfoObj: null,
+  imageFlatSizeInfoObj: null,
 } as DataType)
 
 function innerBoxClick() {
@@ -172,17 +231,26 @@ function toggleDisplay() {
 function analysisResizeObserverEntry(entry : UniResizeObserverEntry) : string {
   const contentBoxSize = entry.contentBoxSize[0]
   const borderBoxSize = entry.borderBoxSize[0]
+
+  // #ifndef WEB
   const devicePixelContentBoxSize = entry.devicePixelContentBoxSize[0]
   return "borderBoxSize: \n{blockSize:" + borderBoxSize.blockSize + ", inlineSize:" + borderBoxSize.inlineSize + "}\n" +
     "contentBoxSize: \n{blockSize:" + contentBoxSize.blockSize + ", inlineSize:" + contentBoxSize.inlineSize + "}\n" +
     "devicePixelContentBoxSize: \n{blockSize:" + devicePixelContentBoxSize.blockSize + ", inlineSize:" + devicePixelContentBoxSize.inlineSize + "}\n" +
     "contentRect: \n{x:" + entry.contentRect.x + ", y:" + entry.contentRect.y + ", width:" + entry.contentRect.width + ", height:" + entry.contentRect.height + "}"
+  // #endif
+  // #ifdef WEB
+  return "borderBoxSize: \n{blockSize:" + borderBoxSize.blockSize + ", inlineSize:" + borderBoxSize.inlineSize + "}\n" +
+    "contentBoxSize: \n{blockSize:" + contentBoxSize.blockSize + ", inlineSize:" + contentBoxSize.inlineSize + "}\n" +
+    "contentRect: \n{x:" + entry.contentRect.x + ", y:" + entry.contentRect.y + ", width:" + entry.contentRect.width + ", height:" + entry.contentRect.height + "}"
+  // #endif
 }
 
 // 将 ResizeObserverEntry 转换为 ResizeInfoType 对象（用于测试）
 function convertResizeEntryToInfo(entry : UniResizeObserverEntry) : ResizeInfoType {
   const contentBoxSize = entry.contentBoxSize[0]
   const borderBoxSize = entry.borderBoxSize[0]
+  // #ifndef WEB
   const devicePixelContentBoxSize = entry.devicePixelContentBoxSize[0]
   return {
     contentRect: {
@@ -204,6 +272,25 @@ function convertResizeEntryToInfo(entry : UniResizeObserverEntry) : ResizeInfoTy
       inlineSize: devicePixelContentBoxSize.inlineSize,
     } as BoxSizeType,
   } as ResizeInfoType
+  // #endif
+  // #ifdef WEB
+  return {
+    contentRect: {
+      x: entry.contentRect.x,
+      y: entry.contentRect.y,
+      width: entry.contentRect.width,
+      height: entry.contentRect.height,
+    } as ContentRectType,
+    borderBoxSize: {
+      blockSize: borderBoxSize.blockSize,
+      inlineSize: borderBoxSize.inlineSize,
+    } as BoxSizeType,
+    contentBoxSize: {
+      blockSize: contentBoxSize.blockSize,
+      inlineSize: contentBoxSize.inlineSize,
+    } as BoxSizeType,
+  } as ResizeInfoType
+  // #endif
 }
 
 function cancelListen() {
@@ -233,6 +320,12 @@ function changeScrollViewSize() {
   scrollViewWidth.value = scrollViewWidth.value + 20
 }
 
+// 改变 view 尺寸
+function changeViewFlatSize() {
+  viewFlatWidth.value = viewFlatWidth.value + 10
+  viewFlatHeight.value = viewFlatHeight.value + 10
+}
+
 onBackPress(() : boolean => {
   if (resizeObserver != null) {
     resizeObserver!.disconnect()
@@ -247,9 +340,11 @@ onReady(() => {
       entries.forEach(entry => {
         if (entry.target == outBoxElement) {
           outBoxSizeInfo.value = analysisResizeObserverEntry(entry)
+          outBoxSummary.value = infoSummary(convertResizeEntryToInfo(entry))
           data.outBoxElementOnResize = true
         } else if (entry.target == innerBoxElement) {
           innerBoxSizeInfo.value = analysisResizeObserverEntry(entry)
+          innerBoxSummary.value = infoSummary(convertResizeEntryToInfo(entry))
         } else if (entry.target == textElement) {
           data.textSizeInfo = analysisResizeObserverEntry(entry)
           data.textSizeInfoObj = convertResizeEntryToInfo(entry)
@@ -259,6 +354,18 @@ onReady(() => {
         } else if (entry.target == scrollViewElement) {
           data.scrollViewSizeInfo = analysisResizeObserverEntry(entry)
           data.scrollViewSizeInfoObj = convertResizeEntryToInfo(entry)
+        } else if (entry.target == viewFlatElement) {
+          data.viewFlatSizeInfo = analysisResizeObserverEntry(entry)
+          data.viewFlatSizeInfoObj = convertResizeEntryToInfo(entry)
+        } else if (entry.target == viewNormalElement) {
+          data.viewNormalSizeInfo = analysisResizeObserverEntry(entry)
+          data.viewNormalSizeInfoObj = convertResizeEntryToInfo(entry)
+        } else if (entry.target == textFlatElement) {
+          data.textFlatSizeInfo = analysisResizeObserverEntry(entry)
+          data.textFlatSizeInfoObj = convertResizeEntryToInfo(entry)
+        } else if (entry.target == imageFlatElement) {
+          data.imageFlatSizeInfo = analysisResizeObserverEntry(entry)
+          data.imageFlatSizeInfoObj = convertResizeEntryToInfo(entry)
         }
       })
     })
@@ -289,8 +396,33 @@ onReady(() => {
       resizeObserver!.observe(scrollViewElement!)
     }
 
+    //监听拍平 view 组件
+    viewFlatElement = uni.getElementById("testViewFlat")
+    if (viewFlatElement != null) {
+      resizeObserver!.observe(viewFlatElement!)
+    }
+
+    //监听正常 view 组件（拍平对比）
+    viewNormalElement = uni.getElementById("testViewNormal")
+    if (viewNormalElement != null) {
+      resizeObserver!.observe(viewNormalElement!)
+    }
+
+    //监听拍平 text 组件
+    textFlatElement = uni.getElementById("testTextFlat")
+    if (textFlatElement != null) {
+      resizeObserver!.observe(textFlatElement!)
+    }
+
+    //监听拍平 image 组件
+    imageFlatElement = uni.getElementById("testImageFlat")
+    if (imageFlatElement != null) {
+      resizeObserver!.observe(imageFlatElement!)
+    }
+
     boxDisplay.value = true
     textImageScrollViewDisplay.value = true
+    flatDisplay.value = true
   }
 })
 
@@ -299,16 +431,106 @@ defineExpose({
   setOutBoxMarginLeft,
   changeTextSize,
   changeImageSize,
-  changeScrollViewSize
+  changeScrollViewSize,
+  changeViewFlatSize
 })
 </script>
 
 <style>
-  .info-item {
-    flex-direction: row;
+  .section-heading {
+    margin-top: 18px;
+    margin-bottom: 10px;
   }
 
-  .info-text {
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1f2937;
+  }
+
+  .section-caption {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .box-stage {
+    min-height: 170px;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+  }
+
+  .action-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .action-grid-button {
+    width: 48%;
+    margin-bottom: 8px;
+  }
+
+  .result-grid {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .result-card {
+    flex: 1;
+    min-width: 0;
+    margin: 0 4px 8px 0;
+    padding: 10px;
+    background-color: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .accent-blue {
+    border-left-width: 4px;
+    border-left-color: #409eff;
+  }
+
+  .accent-red {
+    border-left-width: 4px;
+    border-left-color: #ef4444;
+  }
+
+  .result-title {
     font-size: 14px;
+    font-weight: bold;
+    color: #374151;
+  }
+
+  .result-summary {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #111827;
+  }
+
+  .result-detail {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 17px;
+    color: #6b7280;
+  }
+
+  .flat-compare-row {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 110px;
+    margin: 10px 0 6px;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+  }
+
+  .flat-compare-item {
+    margin: 0 5px;
   }
 </style>

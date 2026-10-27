@@ -1,0 +1,14 @@
+<template>
+  <image
+    class="foot-icon"
+    mode="aspectFit"
+    src="data:image/svg+xml,%3Csvg%20width%3D%2228%22%20height%3D%2228%22%20viewBox%3D%220%200%2028%2028%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Ccircle%20cx%3D%2214%22%20cy%3D%2214%22%20r%3D%2210.5%22%20stroke%3D%22%23333333%22%20stroke-width%3D%222.2%22/%3E%3Ccircle%20cx%3D%2210.5%22%20cy%3D%2211.5%22%20r%3D%221.4%22%20fill%3D%22%23333333%22/%3E%3Ccircle%20cx%3D%2217.5%22%20cy%3D%2211.5%22%20r%3D%221.4%22%20fill%3D%22%23333333%22/%3E%3Cpath%20d%3D%22M9.5%2016.3C10.7%2018.6%2012.4%2019.7%2014%2019.7C15.6%2019.7%2017.3%2018.6%2018.5%2016.3%22%20stroke%3D%22%23333333%22%20stroke-width%3D%222.1%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E"
+  />
+</template>
+
+<style>
+.foot-icon {
+  width: 28px;
+  height: 28px;
+}
+</style>

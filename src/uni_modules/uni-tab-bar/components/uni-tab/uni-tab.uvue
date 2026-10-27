@@ -1,0 +1,222 @@
+<template>
+	<view class="uni-tab-bar-root"> <!-- 如果 tab 是一个非全屏的组件，需要套一层。如果是全屏场景，这一层可以省略 -->
+		<slot></slot>
+	</view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * 选项卡
+   * @description 选项卡容器组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+type Props = {
+	/**
+	 * @description 当前激活的选项卡索引
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	activeIndex: number,
+	/**
+	 * @description tab-content 的高度是否通到tab-bar下面
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	tabContentHeightFull?: boolean
+}
+
+// 定义组件属性
+const props = withDefaults(defineProps<Props>(), {
+	tabContentHeightFull: false
+})
+
+// 定义事件
+const emit = defineEmits<{
+	/**
+	 * @description 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	change: [index: number]
+}>()
+
+// 当前激活的索引
+const currentIndex = ref<number>(props.activeIndex)
+
+const tabContentHeightFull = ref<boolean>(props.tabContentHeightFull)
+
+// tab-content 的数量计数器
+const contentCount = ref<number>(0)
+
+// 监听 activeIndex 变化
+watch((): number => {
+	return props.activeIndex
+}, (newIndex: number) => {
+	currentIndex.value = newIndex
+})
+
+watch(() : boolean => {
+	return props.tabContentHeightFull
+}, () => {
+	tabContentHeightFull.value = props.tabContentHeightFull
+})
+
+// 切换选项卡
+function changeTab(index: number): void {
+	if (currentIndex.value != index) {
+		currentIndex.value = index
+		emit('change', index)
+	}
+}
+
+// 注册 tab-content
+function registerContent() : number {
+	const index = contentCount.value
+	contentCount.value++
+	return index
+}
+
+// 通过 provide 向子组件提供数据和方法
+provide('uniTabBarCurrentIndex', currentIndex)
+provide('uniTabBarChangeTab', changeTab)
+provide('uniTabBarRegisterContent', registerContent)
+provide('uniTabContentHeightFull', tabContentHeightFull)
+</script>
+
+<style>
+	.uni-tab-bar-root {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+		flex: 1;
+		min-height: 0px;
+		position: relative;
+		overflow: visible;
+	}
+</style>

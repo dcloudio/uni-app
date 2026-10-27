@@ -34,7 +34,7 @@
   </scroll-view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   const title = 'text-layout';
   // #ifdef APP-ANDROID
   const info = ref('');

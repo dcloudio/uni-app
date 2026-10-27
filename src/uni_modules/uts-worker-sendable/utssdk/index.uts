@@ -1,0 +1,48 @@
+import { SendableWorkerListener, SendableWorkerMessage } from './interface.uts';
+export * from './interface.uts';
+// #ifdef APP-HARMONY
+import { SendableObject } from './app-harmony/sendable.ets';
+export { SendableObject };
+// #endif
+
+type WorkerPostMessageOptions = {
+  harmonySendable : boolean
+  transfer : any[]
+}
+
+export class UTSWorkerSendableImpl {
+  private worker : Worker | null = null;
+  private listener : SendableWorkerListener | null = null;
+
+  create() {
+    this.destroy();
+    this.worker = uni.createWorker('workers/sendableWorker.uts');
+  }
+
+  onMessage(listener : SendableWorkerListener) {
+    this.listener = listener;
+    this.worker?.onMessage((result) => {
+      if (this.listener != null) {
+        this.listener(result);
+      }
+    });
+  }
+
+  sendMessage(message : SendableWorkerMessage) {
+    if (this.worker == null) {
+      return;
+    }
+    // #ifdef APP-HARMONY
+    this.worker!.postMessage(message, {
+      harmonySendable: false,
+      transfer: []
+    } as WorkerPostMessageOptions);
+    // #endif
+  }
+
+  destroy() {
+    this.worker?.terminate();
+    this.worker = null;
+    this.listener = null;
+  }
+}

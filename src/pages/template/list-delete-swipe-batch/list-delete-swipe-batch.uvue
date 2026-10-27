@@ -1,0 +1,740 @@
+<template>
+  <view class="container" id="container">
+    <list-view ref="listRef" class="list" @scroll="onListScroll" @scrollend="onScrollEnd" :scroll-with-animation="true">
+      <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
+        :style="{ backgroundColor: item.bgColor, transform: 'translateY(' + itemMetas[index].translateY + 'px)', transition: itemMetas[index].wrapperTransition, zIndex: itemMetas[index].zIndex }"
+        @touchstart="(e: TouchEvent) => onTouchStart(e, index)" @touchmove="onTouchMove" @touchend="onTouchEnd"
+        @touchcancel="onTouchEnd" @longpress="onLongPress">
+        <!-- 多选模式下显示 checkbox -->
+        <checkbox v-if="isMultiSelectMode" style="margin-left: 10px;" :checked="selectedIds.includes(item.id)"
+          @click="toggleSelect(item.id)" />
+        <view class="item-content"
+          :style="{ height: item.height + 'px', transform: 'translateX(' + itemMetas[index].translateX + 'px)', transition: itemMetas[index].contentTransition }">
+          <text class="item-text">试试左滑和长按 {{ item.id + 1 }}</text>
+          <text class="item-info">高度: {{ item.height }}px</text>
+          <view class="item-sub-items">
+            <view v-for="subItem in item.subItems" :key="subItem.index" :style="{ backgroundColor: subItem.bgColor }">
+              <text class="item-info">{{ subItem.index + 1 }}</text>
+            </view>
+          </view>
+        </view>
+      </list-item>
+    </list-view>
+    <!-- 全局侧滑菜单（始终渲染，通过 visibility 控制显示） -->
+    <view class="swipe-menu"
+      :style="{ transform: menuTransform, transition: menuTransition, height: menuHeight + 'px' }">
+      <view class="menu-item delete-btn" @click="onDeleteClick">
+        <text class="menu-text">删除</text>
+      </view>
+    </view>
+    <!-- 多选模式底部工具栏 -->
+    <view v-if="isMultiSelectMode" class="bottom-toolbar">
+      <view class="toolbar">
+        <checkbox :checked="isAllSelected" @click="toggleSelectAll">
+          <text>{{ isAllSelected ? '取消全选' : '全选' }}</text>
+        </checkbox>
+        <text style="margin: 0px 10px;">已选 {{ selectedIds.length }} 项</text>
+        <button style="margin: 0px 10px;" @click="exitMultiSelectMode">取消</button>
+        <button type="warn" :disabled="selectedIds.length == 0" @click="onBatchDelete">删除</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 支持“左滑删除”与“多选批量删除”的列表。侧滑和删除都支持动画
+   * @logic: 用不等高、背景色不同的列表项，可以看到侧滑菜单和删除动画覆盖在不同列表项上的效果。长按进入多选模式，支持全选和批量删除。
+   * @optimization: 全局只有一个侧滑菜单，在拖动列表项时动态改变侧滑菜单的translateY和Height以覆盖在列表项上。这样避免每个列表项一个侧滑菜单，减少大量的view创建
+   */
+  // 定义列表项数据类型
+  type SubItemData = {
+    index : number,
+    bgColor : string
+  }
+  type ListItemData = {
+    id : number,
+    height : number,
+    bgColor : string,
+    subItems : SubItemData[]
+  }
+
+  type ListItemMeta = {
+    translateX : number,
+    translateY : number,
+    zIndex : number,
+    wrapperTransition : string,
+    contentTransition : string
+  }
+
+  const createListItemMeta = () : ListItemMeta => {
+    const meta : ListItemMeta = {
+      translateX: 0,
+      translateY: 0,
+      zIndex: 0,
+      wrapperTransition: '',
+      contentTransition: ''
+    }
+    return meta
+  }
+
+  // 10个主色的基础RGB值（深色版本）
+  // 红、橙、黄、绿、青、蓝、紫、粉、棕、灰
+  const baseColors : number[][] = [
+    [180, 40, 40],    // 红色
+    [200, 120, 40],   // 橙色
+    [180, 160, 40],   // 黄色
+    [40, 140, 60],    // 绿色
+    [40, 140, 160],   // 青色
+    [40, 80, 160],    // 蓝色
+    [120, 60, 160],   // 紫色
+    [180, 80, 120],   // 粉色
+    [140, 90, 60],    // 棕色
+    [100, 100, 100]   // 灰色
+  ]
+
+  // 生成颜色：根据主色组和组内索引生成从深到浅的颜色
+  // 通过与白色混合实现深浅变化
+  const generateColor = (groupIndex : number, itemInGroup : number) : string => {
+    const base = baseColors[groupIndex]
+    // 混合因子从 0（最深）到 0.6（较浅），每个增加 0.067
+    const factor = itemInGroup * 0.067
+    // 与白色混合：result = base + (255 - base) * factor
+    const r = Math.floor(base[0] + (255 - base[0]) * factor)
+    const g = Math.floor(base[1] + (255 - base[1]) * factor)
+    const b = Math.floor(base[2] + (255 - base[2]) * factor)
+    return `rgba(${r}, ${g}, ${b}, 1)`
+  }
+
+  // 生成 100 个列表项数据
+  const generateItems = () : ListItemData[] => {
+    const result : ListItemData[] = []
+    for (let i = 0; i < 100; i++) {
+      const groupIndex = Math.floor(i / 10) // 0-9，共10组
+      const itemInGroup = i % 10 // 0-9，组内索引
+      const height = 60 + i * 2 // 第一个 60px，依次增加 2px
+      const bgColor = generateColor(groupIndex, itemInGroup)
+      const subItems : SubItemData[] = []
+      for (let j = 0; j < itemInGroup; j++) {
+        subItems.push({
+          index: j,
+          bgColor: generateColor(groupIndex, j)
+        })
+      }
+      const item : ListItemData = {
+        id: i,
+        height: height,
+        bgColor: bgColor,
+        subItems: subItems
+      }
+      result.push(item)
+    }
+    return result
+  }
+
+  const items = ref<ListItemData[]>(generateItems())
+  const itemMetas = ref<ListItemMeta[]>(items.value.map((item) : ListItemMeta => createListItemMeta()))
+  const listRef = ref<UniElement | null>(null)
+
+  // 侧滑相关状态
+  const MENU_WIDTH = 80 // 菜单宽度
+  const MIN_ITEM_HEIGHT = 60 // 最小列表项高度，用于估算可见区域
+
+  // 删除动画相关变量
+  let deleteAnimationTargetBelow = 0
+  let deleteAnimationTargetAbove = 0
+  let deleteAnimationTargetHorizontal = 0
+  let deleteAnimationIndexToDelete = -1
+  const DELETE_ANIMATION_DURATION = 280
+  const DELETE_ANIMATION_TRANSITION = 'transform ' + DELETE_ANIMATION_DURATION + 'ms ease-out'
+  let deleteAnimationInitialScrollTop = 0
+
+  // 滚动状态
+  let isScrolling = false
+  let isDeleteScrolling = false
+  let scrollEndTimer : number | null = null
+  const SCROLL_END_DELAY = 150 // 滚动结束判定延迟(ms)
+
+  // 触摸状态
+  let startX = 0
+  let startY = 0
+  let currentIndex = -1
+  let isSwiping = false
+  let swipeStarted = false
+  let currentListItemElement : UniElement | null = null
+
+  // 菜单状态
+  const menuTop = ref(0)
+  const menuHeight = ref(0)
+  const menuVisible = ref(false)
+  const menuShowWidth = ref(0) // 菜单显示宽度，用于同步滑出效果
+  const menuTransition = ref('')
+  const activeIndex = ref(-1)
+
+  // 删除动画状态
+  let isDeleting = false
+  let deletingIndex = -1 // 正在删除的索引
+  let deletedItemHeight = 0 // 被删除项的高度
+
+  // 多选模式状态
+  const isMultiSelectMode = ref(false)
+  const selectedIds = ref<number[]>([])
+
+  // 计算是否全选
+  const isAllSelected = computed(() : boolean => {
+    return items.value.length > 0 && selectedIds.value.length == items.value.length
+  })
+
+  let visibleStartIndex = 0
+  let visibleEndIndex = -1
+  const VISIBLE_RANGE_BUFFER = 2
+
+  function resetItemMeta(index : number) {
+    if (index < 0 || index >= itemMetas.value.length) return
+    const meta = itemMetas.value[index]
+    meta.translateX = 0
+    meta.translateY = 0
+    meta.zIndex = 0
+    meta.wrapperTransition = 'none'
+    meta.contentTransition = 'none'
+  }
+
+  function resetAllItemMetas() {
+    for (let i = 0; i < itemMetas.value.length; i++) {
+      resetItemMeta(i)
+    }
+  }
+
+  // 删除动画完成处理
+  const finishDeleteAnimation = () => {
+    const indexToDelete = deleteAnimationIndexToDelete
+    // 重置动画状态
+    deletingIndex = -1
+    deletedItemHeight = 0
+    isDeleting = false
+    menuTransition.value = 'none'
+    deleteAnimationIndexToDelete = -1
+    deleteAnimationInitialScrollTop = 0
+    currentListItemElement = null
+
+    items.value.splice(indexToDelete, 1)
+    itemMetas.value.splice(indexToDelete, 1)
+    resetAllItemMetas()
+
+    // #ifdef VUE3-VAPOR && APP-ANDROID
+    // hack写法，临时方案避免闪烁
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const listItemElements = listRef.value!.querySelectorAll('.item-wrapper')
+        for (let i = 0; i < listItemElements.length; i++) {
+          const element = listItemElements[i]
+          element.style.setProperty('transition', 'none')
+          element.style.setProperty('transform', `translateY(0px)`)
+        }
+      })
+    })
+    // #endif
+  }
+
+  const applyDeleteAnimationMetas = () => {
+    if (deletingIndex == -1) return
+    const start = Math.max(0, visibleStartIndex - VISIBLE_RANGE_BUFFER)
+    const end = Math.min(itemMetas.value.length - 1, visibleEndIndex + VISIBLE_RANGE_BUFFER)
+    for (let i = start; i <= end; i++) {
+      const meta = itemMetas.value[i]
+      if (i > deletingIndex) {
+        meta.zIndex = 1
+        // #ifndef VUE3-VAPOR && APP-ANDROID
+        if (deleteAnimationTargetAbove == 0) {
+          meta.wrapperTransition = DELETE_ANIMATION_TRANSITION
+          meta.translateY = -deleteAnimationTargetBelow
+        } else {
+          meta.wrapperTransition = 'none'
+          // 设置一个极小值，以便后续reset能正常触发
+          meta.translateY = -0.01
+        }
+        // #endif
+      } else {
+        meta.zIndex = 0
+      }
+    }
+    if (deleteAnimationTargetAbove > 0) {
+      isDeleteScrolling = true;
+      listRef.value!.scrollTop = deleteAnimationInitialScrollTop - deleteAnimationTargetAbove
+    } else {
+      // #ifdef VUE3-VAPOR && APP-ANDROID
+      const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
+      sortedListItems.sort((a, b) => {
+        return a.getBoundingClientRect().top - b.getBoundingClientRect().top
+      })
+      const currentListItemRenderIndex = sortedListItems.findIndex(el => el === currentListItemElement)
+      if (currentListItemRenderIndex === -1) {
+        return
+      }
+      for (let i = 0; i < sortedListItems.length; i++) {
+        if (i > currentListItemRenderIndex) {
+          sortedListItems[i].style.setProperty('transition', DELETE_ANIMATION_TRANSITION)
+          sortedListItems[i].style.setProperty('transform', `translateY(${-deleteAnimationTargetBelow}px)`)
+        }
+      }
+      // #endif
+      setTimeout(() => {
+        finishDeleteAnimation()
+      }, DELETE_ANIMATION_DURATION + 50)
+    }
+  }
+
+  let containerTop = 0
+  // #ifdef WEB
+  // swipe-menu未使用fixed定位，而是相对于父元素（container）定位。按照现有布局仅web平台需要额外计算。如果后续调整布局，也需要同步的调整此处逻辑
+  onMounted(() => {
+    // 获取 安全区高度
+    const containerEle = uni.getElementById('container')
+    const containerRect = containerEle?.getBoundingClientRect()
+    if (containerRect != null) {
+      containerTop = containerRect.top
+    }
+  })
+  // #endif
+
+  // 计算菜单的 transform
+  const menuTransform = computed(() : string => {
+    return `translateY(${menuTop.value}px) translateX(${-menuShowWidth.value}px)`
+  })
+
+  // 关闭菜单（需要在调用之前定义）
+  const closeMenu = () => {
+    if (activeIndex.value != -1) {
+      resetItemMeta(activeIndex.value)
+    }
+    menuVisible.value = false
+    menuShowWidth.value = 0
+    menuTransition.value = 'none'
+    activeIndex.value = -1
+    currentListItemElement = null
+  }
+
+  // 更新菜单位置（需要在调用之前定义）
+  const updateMenuPosition = () => {
+    if (currentListItemElement == null) return
+    if (currentIndex == -1 || currentIndex >= items.value.length) return
+
+    if (!menuVisible.value) {
+      // 获取列表项的位置，如下值在一次menu显示期间仅需更新一次
+      menuVisible.value = true
+      const rect = currentListItemElement!.getBoundingClientRect()
+      const item = items.value[currentIndex]
+      menuTop.value = rect.top - containerTop
+      menuHeight.value = item.height
+    }
+  }
+
+  // 长按事件 - 进入多选模式
+  const onLongPress = () => {
+    if (isDeleting || isMultiSelectMode.value) return
+
+    // 关闭可能打开的侧滑菜单
+    closeMenu()
+
+    // 进入多选模式
+    isMultiSelectMode.value = true
+    selectedIds.value = []
+  }
+
+  // 退出多选模式
+  const exitMultiSelectMode = () => {
+    isMultiSelectMode.value = false
+    selectedIds.value = []
+  }
+
+  // 切换选中状态
+  const toggleSelect = (id : number) => {
+    const index = selectedIds.value.indexOf(id)
+    if (index == -1) {
+      selectedIds.value.push(id)
+    } else {
+      selectedIds.value.splice(index, 1)
+    }
+  }
+
+  // 切换全选状态
+  const toggleSelectAll = () => {
+    if (isAllSelected.value) {
+      // 取消全选
+      selectedIds.value = []
+    } else {
+      // 全选
+      selectedIds.value = items.value.map((item) : number => item.id)
+    }
+  }
+
+  // 批量删除
+  const onBatchDelete = () => {
+    if (selectedIds.value.length == 0) return
+
+    // 从后往前删除，避免索引错位
+    const idsToDelete = [...selectedIds.value]
+    items.value = items.value.filter((item) : boolean => !idsToDelete.includes(item.id))
+    itemMetas.value = items.value.map((item) : ListItemMeta => createListItemMeta())
+
+    // 清空选中列表
+    selectedIds.value = []
+
+    // 如果删除完了所有项，退出多选模式
+    if (items.value.length == 0) {
+      exitMultiSelectMode()
+    }
+  }
+
+  // 触摸开始
+  const onTouchStart = (e : TouchEvent, index : number) => {
+    // 如果正在滚动或正在删除，不响应触摸
+    if (isScrolling || isDeleting) return
+
+    // 多选模式下不响应侧滑
+    if (isMultiSelectMode.value) return
+
+    const touch = e.touches[0]
+    startX = touch.screenX
+    startY = touch.screenY
+    currentIndex = index
+    isSwiping = false
+    swipeStarted = false
+
+
+    // 如果点击的不是当前展开的项，先关闭菜单
+    if (activeIndex.value != -1 && activeIndex.value != index) {
+      closeMenu()
+    }
+
+    // 保存当前列表项元素引用
+    const target = e.currentTarget as UniElement | null
+    currentListItemElement = target!
+
+    // 如果当前项已展开，从展开位置开始
+    if (activeIndex.value == index) {
+      const meta = itemMetas.value[index]
+      meta.translateX = -MENU_WIDTH
+      menuShowWidth.value = MENU_WIDTH
+    }
+  }
+
+  // 触摸移动
+  const onTouchMove = (e : TouchEvent) => {
+    // 如果正在滚动或正在删除，不响应触摸
+    if (isScrolling || isDeleting) return
+    if (currentIndex == -1) return
+
+    // 多选模式下不响应侧滑
+    if (isMultiSelectMode.value) return
+
+    const touch = e.touches[0]
+    const deltaX = touch.screenX - startX
+    const deltaY = touch.screenY - startY
+
+    // 判断是否开始侧滑（水平滑动距离大于垂直滑动距离）
+    if (!swipeStarted) {
+      if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+        swipeStarted = true
+        isSwiping = Math.abs(deltaX) > Math.abs(deltaY)
+      }
+    }
+
+    if (!isSwiping) {
+      return
+    } else {
+      // #ifdef WEB
+      // 滚动已经开始等情况时，web端不可阻止默认行为。去除此if会在控制台告警
+      if (e.cancelable) {
+        e.preventDefault()
+      }
+      // #endif
+      // #ifndef WEB
+      e.preventDefault()
+      // #endif
+    }
+
+    // 计算偏移量
+    let offsetX : number
+    if (activeIndex.value == currentIndex) {
+      // 当前项已展开，从展开位置开始计算
+      offsetX = -MENU_WIDTH + deltaX
+    } else {
+      offsetX = deltaX
+    }
+
+    // 限制范围：最多左滑菜单宽度，不能右滑超过0
+    offsetX = Math.max(-MENU_WIDTH, Math.min(0, offsetX))
+    const meta = itemMetas.value[currentIndex]
+    meta.translateX = offsetX
+
+    // 更新菜单位置和宽度（同步滑出效果）
+    if (offsetX < 0) {
+      updateMenuPosition()
+      // 菜单宽度与列表项偏移量同步
+      menuShowWidth.value = Math.abs(offsetX)
+    } else {
+      menuVisible.value = false
+      menuShowWidth.value = 0
+    }
+  }
+
+  // 触摸结束
+  const onTouchEnd = (_ : TouchEvent) => {
+    // 如果正在滚动或正在删除，不响应触摸
+    if (isScrolling || isDeleting) return
+    if (currentIndex == -1) return
+
+    // 多选模式下不响应侧滑
+    if (isMultiSelectMode.value) return
+
+    if (isSwiping) {
+      // 判断是否展开菜单
+      if (itemMetas.value[currentIndex].translateX < -MENU_WIDTH / 2) {
+        // 展开菜单
+        itemMetas.value[currentIndex].translateX = -MENU_WIDTH
+        menuShowWidth.value = MENU_WIDTH
+        activeIndex.value = currentIndex
+        menuVisible.value = true
+      } else {
+        // 关闭菜单
+        closeMenu()
+      }
+    }
+
+    currentIndex = -1
+    isSwiping = false
+    swipeStarted = false
+  }
+
+  function realScrollEnd() {
+    // 标记滚动结束
+    isScrolling = false
+    if (isDeleteScrolling) {
+      isDeleteScrolling = false
+      setTimeout(() => {
+        finishDeleteAnimation()
+      }, 0)
+    }
+  }
+
+  // 列表滚动事件
+  const onListScroll = (e : UniScrollEvent) => {
+    // 标记正在滚动
+    isScrolling = true
+    // 清除之前的定时器
+    if (scrollEndTimer != null) {
+      clearTimeout(scrollEndTimer!)
+      scrollEndTimer = null
+    }
+
+    // 设置滚动结束检测定时器（作为备用方案）
+    scrollEndTimer = setTimeout(() => {
+      scrollEndTimer = null
+      realScrollEnd()
+    }, SCROLL_END_DELAY) as number
+
+    // 滚动时关闭菜单
+    if (menuVisible.value) {
+      closeMenu()
+    }
+    if (isDeleteScrolling) {
+      const scrollTop = e.detail.scrollTop
+      const delta = deleteAnimationInitialScrollTop - scrollTop
+      const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
+      // #ifdef VUE3-VAPOR
+      sortedListItems.sort((a, b) => {
+        return a.getBoundingClientRect().top - b.getBoundingClientRect().top
+      })
+      // #endif
+      const currentListItemRenderIndex = sortedListItems.findIndex(el => el === currentListItemElement)
+      if (currentListItemRenderIndex == -1) {
+        return
+      }
+      for (let i = 0; i < sortedListItems.length; i++) {
+        if (i > currentListItemRenderIndex) {
+          sortedListItems[i].style.setProperty('transition', 'none')
+          const translateY = delta / deleteAnimationTargetAbove * deletedItemHeight
+          sortedListItems[i].style.setProperty('transform', `translateY(${-translateY}px)`)
+        }
+      }
+    }
+  }
+
+  // 滚动结束事件
+  const onScrollEnd = (_ : ScrollEvent) => {
+    // 清除定时器
+    if (scrollEndTimer != null) {
+      clearTimeout(scrollEndTimer!)
+      scrollEndTimer = null
+    }
+    realScrollEnd()
+  }
+
+  // 删除按钮点击
+  const onDeleteClick = () => {
+    if (activeIndex.value == -1 || isDeleting) return
+
+    const indexToDelete = activeIndex.value
+
+    // 保存删除项信息用于动画
+    deletingIndex = indexToDelete
+    const currentListItemRect = currentListItemElement!.getBoundingClientRect()
+    deletedItemHeight = currentListItemRect.height
+    isDeleting = true
+    menuVisible.value = false
+    activeIndex.value = -1
+
+    const listElement = listRef.value!
+    const listRect = listElement.getBoundingClientRect()
+    const scrollTop = listElement.scrollTop
+    const scrollOffsetBottom = Math.max(0, listElement.scrollHeight - scrollTop - listRect.height)
+    const scrollOffsetTop = scrollTop
+    deleteAnimationInitialScrollTop = scrollTop
+    if (scrollOffsetBottom < deletedItemHeight) {
+      deleteAnimationTargetBelow = scrollOffsetBottom
+      deleteAnimationTargetAbove = Math.min(scrollOffsetTop, deletedItemHeight - scrollOffsetBottom)
+    } else {
+      deleteAnimationTargetBelow = deletedItemHeight
+      deleteAnimationTargetAbove = 0
+    }
+    deleteAnimationTargetHorizontal = -(MENU_WIDTH + 400)
+    deleteAnimationIndexToDelete = indexToDelete
+
+    const visibleHeightTop = Math.max(0, currentListItemRect.top - listRect.top)
+    const visibleHeightBottom = Math.max(0, listRect.bottom - currentListItemRect.bottom)
+    const visibleItemCountTop = Math.ceil(visibleHeightTop / MIN_ITEM_HEIGHT)
+    const visibleItemCountBottom = Math.ceil(visibleHeightBottom / MIN_ITEM_HEIGHT)
+
+    // 减少计算量，直接推测可见区域
+    visibleStartIndex = Math.max(0, indexToDelete - visibleItemCountTop)
+    visibleEndIndex = Math.min(items.value.length - 1, indexToDelete + visibleItemCountBottom)
+    menuTransition.value = DELETE_ANIMATION_TRANSITION
+    menuShowWidth.value = 0
+    applyDeleteAnimationMetas()
+  }
+
+  type DataType = {
+    listTop : number
+    listWidth : number
+  }
+  const data = reactive({
+    listTop: 0,
+    listWidth: 0
+  })
+  function jest_getListRect() {
+    const listRect = listRef.value!.getBoundingClientRect()
+    data.listTop = listRect.top
+    data.listWidth = listRect.width
+  }
+  async function jest_batchDeleteItem() {
+    listRef.value!.scrollTop = 1000000
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true)
+      }, 1000)
+    })
+    const itemsToDelete = items.value.slice(0, items.value.length - 1)
+    const idsToDelete = itemsToDelete.map((item) : number => item.id)
+    items.value = items.value.filter((item) : boolean => {
+      return !idsToDelete.includes(item.id)
+    })
+    itemMetas.value = items.value.map((item) : ListItemMeta => createListItemMeta())
+  }
+  defineExpose({
+    jest_getListRect,
+    jest_batchDeleteItem,
+    data
+  })
+</script>
+
+<style>
+  .container {
+    flex: 1;
+  }
+
+  .list {
+    flex: 1;
+  }
+
+  .item-wrapper {
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .item-content {
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .item-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .item-info {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 5px;
+  }
+
+  .item-sub-items {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  /* 侧滑菜单样式 */
+  .swipe-menu {
+    position: absolute;
+    right: -80px;
+    top: 0;
+    width: 80px;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .menu-item {
+    width: 80px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .delete-btn {
+    background-color: #ff4d4f;
+  }
+
+  .menu-text {
+    color: #ffffff;
+  }
+
+  /* 底部工具栏样式 */
+  .bottom-toolbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: var(--uni-safe-area-inset-bottom);
+    border-top-width: 1px;
+    border-top-color: #e5e5e5;
+    border-top-style: solid;
+  }
+
+  .toolbar {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px 0px;
+  }
+</style>

@@ -1,6 +1,5 @@
-<script setup lang="uts">
+<script setup lang="ts">
 import { ItemType } from './enum-data-types'
-import { state } from '@/store/index.uts'
 // 样式隔离配置，app: 受全局样式影响
 defineOptions({
   styleIsolation: 'app'
@@ -19,15 +18,22 @@ const props = defineProps({
   compact: {
     type: Boolean,
     default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  itemClass: {
+    type: String,
+    default: ''
   }
 })
 
-const isDarkMode = computed(() => state.isDarkMode)
 const current = ref(0)
 
 // @ts-ignore
 function _change(e : RadioGroupChangeEvent) {
-  const selected = props.items.find((item : ItemType) : boolean => {
+  const selected = props.items!.find((item : ItemType) : boolean => {
     return item.value.toString() == e.detail.value
   })
   if (selected != null) {
@@ -41,23 +47,27 @@ function _change(e : RadioGroupChangeEvent) {
 </script>
 
 <template>
-  <view class="uni-padding-wrap" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="uni-padding-wrap">
     <view class="uni-title uni-common-mt">
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="uni-list uni-common-pl" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="uni-list uni-common-pl">
     <radio-group @change="_change" :class="[{'compact-container': compact}]">
-      <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
-        :class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
-         :value="item.value + ''" :checked="item.checked" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
+      <label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
+        :class="[itemClass, {'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]">
+        <radio :disabled="props.disabled" :value="item.value + ''" :checked="item.checked" />
         <text class="radio-text">{{ item.name }}</text>
-      </radio>
+      </label>
     </radio-group>
   </view>
 </template>
 
 <style>
+.uni-list {
+  border-bottom: 0px;
+}
+
 .radio-text {
   color: var(--text-color, #333333);
 }

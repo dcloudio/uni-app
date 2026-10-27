@@ -1,30 +1,41 @@
-image: node:18
-
+image: node:22
 stages:
   - review
-
+  - uni_autotest
 variables:
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
   DEEPSEEK_API_KEY: $DEEPSEEK_API_KEY
-  NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
-  NPM_CONFIG_REGISTRY: https://registry.npmmirror.com
   GIT_STRATEGY: fetch
-
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - .npm/
-    - code-review/node_modules/
-  policy: pull-push
-
-before_script:
-  - cd code-review
-  - npm ci --cache .npm --prefer-offline
-
 code_review:
   stage: review
   script:
-    - node index.js
+    - node /app/code-review/index.js
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main" && $CI_COMMIT_BRANCH != "master"
+  image:
+    name: uni-ai-code-review:latest
+    pull_policy: if-not-present
+uni_autotest:
+  stage: uni_autotest
+  only:
+    - dev
+  script:
+    - |
+      echo "Sending webhook to $UNI_AUTOTEST_API_URL..."
+      COMMIT_MESSAGE_ESCAPED=$(printf '%s' "$CI_COMMIT_MESSAGE" | sed 's/\\/\\\\/g; s/"/\\"/g; s/$/\\n/' | tr -d '\n' | sed 's/\\n$//')
+      COMMIT_AUTHOR_ESCAPED=$(printf '%s' "$CI_COMMIT_AUTHOR" | sed 's/\\/\\\\/g; s/"/\\"/g')
+      curl -sS -X POST "$UNI_AUTOTEST_API_URL" \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"repo\": \"$CI_PROJECT_PATH\",
+          \"project_id\": \"$CI_PROJECT_ID\",
+          \"project_name\": \"$CI_PROJECT_NAME\",
+          \"branch\": \"$CI_COMMIT_BRANCH\",
+          \"commit_sha\": \"$CI_COMMIT_SHA\",
+          \"commit_url\": \"$CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA\",
+          \"commit_author\": \"$COMMIT_AUTHOR_ESCAPED\",
+          \"commit_timestamp\": \"$CI_COMMIT_TIMESTAMP\",
+          \"commit_message\": \"$COMMIT_MESSAGE_ESCAPED\",
+          \"pipeline_id\": \"$CI_PIPELINE_ID\"
+        }"

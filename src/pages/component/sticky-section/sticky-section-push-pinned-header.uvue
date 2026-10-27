@@ -1,0 +1,78 @@
+<template>
+  <view style="flex: 1;">
+    <button @click="testScroll">滚动测试</button>
+    <list-view style="flex: 1;" :scroll-top="scrollTop" :scroll-with-animation="true">
+      <sticky-section :push-pinned-header="false">
+        <sticky-header>
+          <text class="header">A</text>
+        </sticky-header>
+        <list-item v-for="item in 20" :key="item">
+          <text class="item">item-{{item}}</text>
+        </list-item>
+      </sticky-section>
+      <sticky-section>
+        <sticky-header>
+          <text class="header">B</text>
+        </sticky-header>
+        <list-item v-for="item in 20" :key="item">
+          <text class="item">item-{{item}}</text>
+        </list-item>
+      </sticky-section>
+      <sticky-section :push-pinned-header="false">
+        <sticky-header>
+          <text class="header">C</text>
+        </sticky-header>
+        <list-item v-for="item in 20" :key="item">
+          <text class="item">item-{{item}}</text>
+        </list-item>
+      </sticky-section>
+      <sticky-section>
+        <sticky-header>
+          <text class="header">D</text>
+        </sticky-header>
+        <list-item v-for="item in 20" :key="item">
+          <text class="item">item-{{item}}</text>
+        </list-item>
+      </sticky-section>
+      <sticky-section>
+        <sticky-header>
+          <text class="header">E</text>
+        </sticky-header>
+        <list-item v-for="item in 20" :key="item">
+          <text class="item">item-{{item}}</text>
+        </list-item>
+      </sticky-section>
+    </list-view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const scrollTop = ref(0)
+  const sectionHeight = 30 * 20 + 40;
+  const sectionCount = 5
+  let currentSection = 0
+  function testScroll() {
+    currentSection++
+    if (currentSection > sectionCount) {
+      currentSection = 0
+    }
+    scrollTop.value = currentSection * sectionHeight;
+  }
+  defineExpose({
+    testScroll
+  })
+</script>
+
+<style>
+  .header {
+    background-color: #cccccc;
+    font-size: 18px;
+    line-height: 40px;
+  }
+
+  .item {
+    font-size: 14px;
+    line-height: 30px;
+    background-color: #eeeeee;
+  }
+</style>

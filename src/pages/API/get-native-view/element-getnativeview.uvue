@@ -1,5 +1,5 @@
 <template>
-  <view id="view" style="flex: 1;">
+  <view id="view">
     <input id="input" value="input" class="input" />
     <textarea id="textarea" value="textarea" class="textarea" />
     <web-view id="webview" src="/hybrid/html/local.html" class="web-view"></web-view>
@@ -11,7 +11,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { checkWebViewNativeView as checkWebView, checkInputNativeView as checkInput, checkTextareaNativeView as checkTextarea, checkViewNativeView as checkView } from '@/uni_modules/uts-get-native-view';
 
   function showTip(title : string) {
@@ -23,11 +23,14 @@
   }
 
   function checkViewNativeView() : boolean {
-    var viewName = "ViewGroup"
-    // #ifdef APP-IOS
-    viewName = "UIView"
+    var msg = "检测view组件对应原生"
+    // #ifdef APP-ANDROID
+    msg += "ViewGroup"
     // #endif
-    const msg = "检测view组件对应原生" + viewName
+    // #ifdef APP-IOS
+    msg += "UIView"
+    // #endif
+
     if (checkView("view")) {
       showTip(msg + "成功")
       return true
@@ -37,11 +40,14 @@
   }
 
   function checkInputNativeView() : boolean {
-    var viewName = "AppCompatEditText"
-    // #ifdef APP-IOS
-    viewName = "UITextField"
+    var msg = "检测input组件对应原生"
+    // #ifdef APP-ANDROID
+    msg += "EditText"
     // #endif
-    const msg = "检测input组件对应原生" + viewName
+    // #ifdef APP-IOS
+    msg += "UITextField"
+    // #endif
+
     if (checkInput("input")) {
       showTip(msg + "成功")
       return true
@@ -51,11 +57,14 @@
   }
 
   function checkTextareaNativeView() : boolean {
-    var viewName = "AppCompatEditText"
-    // #ifdef APP-IOS
-    viewName = "UITextView"
+    var msg = "检测textarea组件对应原生"
+    // #ifdef APP-ANDROID
+    msg += "EditText"
     // #endif
-    const msg = "检测textarea组件对应原生" + viewName
+    // #ifdef APP-IOS
+    msg += "UITextView"
+    // #endif
+
     if (checkTextarea("textarea")) {
       showTip(msg + "成功")
       return true
@@ -65,11 +74,14 @@
   }
 
   function checkWebViewNativeView() : boolean {
-    var viewName = "WebView"
-    // #ifdef APP-IOS
-    viewName = "WKWebView"
+    var msg = "检测web-view组件对应原生"
+    // #ifdef APP-ANDROID
+    msg += "WebView"
     // #endif
-    const msg = "检测webview组件对应原生" + viewName
+    // #ifdef APP-IOS
+    msg += "WKWebView"
+    // #endif
+
     if (checkWebView("webview")) {
       showTip(msg + "成功")
       return true

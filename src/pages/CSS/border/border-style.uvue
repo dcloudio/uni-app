@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -25,6 +22,14 @@
         <view class="demo-box">
           <view class="common" style="border-top-width: 5px; border-top-style: dashed"></view>
           <view class="common" style="border-top-width: 5px; border-top-style: dashed" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-style: dashed; border-radius: 10px</text>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-style: dashed; border-radius: 10px"></view>
+          <view class="common" style="border-width: 5px; border-style: dashed; border-radius: 10px" flatten></view>
         </view>
       </view>
 
@@ -80,7 +85,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-style </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -153,20 +158,10 @@
         <input-data :defaultValue="data.borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-style: dashed 和 dotted</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-width: 5px; border-style: dashed;"></native-view>
-          <native-view class="common" style="border-width: 5px; border-style: dotted;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   let isSolid = false

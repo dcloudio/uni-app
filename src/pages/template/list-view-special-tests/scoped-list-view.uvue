@@ -1,0 +1,175 @@
+<template>
+	<view class="page">
+		<view class="header">
+			<view class="header-copy">
+				<text class="title">Scoped Slot List</text>
+				<text class="subtitle">列表内容由作用域插槽提供</text>
+			</view>
+		</view>
+
+		<scoped-list-source>
+			<template #default="{ items, appendItems }">
+				<view class="list-section">
+					<view class="toolbar">
+						<text id="item-count" class="count">共 {{items.length}} 条</text>
+						<button id="add-button" class="add-button" type="primary" @click="appendItems">增加 10 条</button>
+					</view>
+
+					<list-view id="scoped-list-view" class="list-view" show-scrollbar="false">
+						<list-item v-for="item in items" :key="item.id" class="list-item">
+							<view class="item-content">
+								<view class="item-index">
+									<text class="item-index-text">{{item.id + 1}}</text>
+								</view>
+								<view class="item-copy">
+									<text class="item-title">{{item.title}}</text>
+									<text class="item-description">{{item.description}}</text>
+								</view>
+							</view>
+						</list-item>
+					</list-view>
+				</view>
+			</template>
+		</scoped-list-source>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import ScopedListSource from './scoped-list-source.uvue'
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		--list-demo-page-background: #f5f7fb;
+		--list-demo-panel-background: #ffffff;
+		--list-demo-title-color: #1f2937;
+		--list-demo-text-color: #4b5563;
+		--list-demo-secondary-color: #6b7280;
+		--list-demo-border-color: #e5e7eb;
+		--list-demo-divider-color: #eef0f4;
+		--list-demo-badge-background: #e8f0ff;
+		--list-demo-badge-color: #2563eb;
+		background-color: var(--list-demo-page-background);
+		padding: 24px 16px 16px;
+	}
+
+	.header {
+		padding: 8px 4px 20px;
+	}
+
+	.header-copy {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.title {
+		font-size: 24px;
+		font-weight: bold;
+		color: var(--list-demo-title-color);
+	}
+
+	.subtitle {
+		margin-top: 6px;
+		font-size: 14px;
+		color: var(--list-demo-secondary-color);
+	}
+
+	.list-section {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		background-color: var(--list-demo-panel-background);
+		border-radius: 8px;
+	}
+
+	.toolbar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 12px 12px 12px 16px;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--list-demo-border-color);
+	}
+
+	.count {
+		font-size: 14px;
+		color: var(--list-demo-text-color);
+	}
+
+	.add-button {
+		margin: 0;
+		font-size: 14px;
+	}
+
+	.list-view {
+		flex: 1;
+	}
+
+	.list-item {
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--list-demo-divider-color);
+	}
+
+	.item-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 14px 16px;
+	}
+
+	.item-index {
+		width: 34px;
+		height: 34px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border-radius: 17px;
+		background-color: var(--list-demo-badge-background);
+	}
+
+	.item-index-text {
+		font-size: 14px;
+		font-weight: bold;
+		color: var(--list-demo-badge-color);
+	}
+
+	.item-copy {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		margin-left: 12px;
+	}
+
+	.item-title {
+		font-size: 16px;
+		color: var(--list-demo-title-color);
+	}
+
+	.item-description {
+		margin-top: 4px;
+		font-size: 13px;
+		color: var(--list-demo-secondary-color);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page {
+			--list-demo-page-background: #1a1a1a;
+			--list-demo-panel-background: #2d2d2d;
+			--list-demo-title-color: #ffffff;
+			--list-demo-text-color: #b8b8b8;
+			--list-demo-secondary-color: #8a8a8a;
+			--list-demo-border-color: #3a3a3a;
+			--list-demo-divider-color: #3a3a3a;
+			--list-demo-badge-background: #26344a;
+			--list-demo-badge-color: #7aa7e0;
+		}
+	}
+</style>

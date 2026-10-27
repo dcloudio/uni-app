@@ -3,9 +3,8 @@ const PAGE_PATH = '/pages/API/connect-event-source/connect-event-source'
 describe('sse', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
-  const isWeb = platformInfo.startsWith('web')
   const isIOS = platformInfo.startsWith('ios')
-  if (!isAndroid || !isIOS) {
+  if (!(isAndroid || isIOS)) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -14,15 +13,15 @@ describe('sse', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(600);
+    await page.waitFor('view');
   });
 
   it('sse_open', async () => {
     await page.callMethod('connect')
-    await page.waitFor(2000)
-    const data = await page.data('data')
-    expect(data.open).toBe(true)
-    await page.waitFor(500)
-    expect(data.receiveMessage).toBe(true)
+    await page.waitFor(2500)
+
+    expect(await page.data('data.open')).toBe(true)
+    expect(await page.data('data.receiveMessage')).toBe(true)
+    await page.callMethod('close')
   })
 })

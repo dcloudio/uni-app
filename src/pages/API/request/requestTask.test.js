@@ -1,17 +1,17 @@
-jest.setTimeout(50000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith('android')
-const isIOS = platformInfo.startsWith('ios')
-const isHarmony = platformInfo.startsWith('harmony')
-const isWeb = platformInfo.startsWith('web')
-const isMp = platformInfo.startsWith('mp')
-const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isMP = platformInfo.startsWith('mp')
 
-const PAGE_PATH = '/pages/API/request/requestTask'
 
 describe('ExtApi-RequestTask', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
+  const PAGE_PATH = '/pages/API/request/requestTask'
   let page;
-  let res;
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

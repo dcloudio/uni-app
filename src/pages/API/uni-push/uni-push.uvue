@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
   <view>
     <!-- #ifdef APP-ANDROID -->
     <button class="normal-button" type="default" @click="handleCreateChannel(true)">
@@ -35,15 +32,17 @@
       获取cid | getPushClientId
     </button>
     <button class="normal-button" type="default" @click="handleOnPushMessage">
-      注册回调 | onPushMessage
+      注册回调（默认不申请通知权限） | onPushMessage
     </button>
+    <!-- #ifdef APP-ANDROID -->
+    <button class="normal-button" type="default" @click="handleOnPushMessageWithPermission">
+      注册回调（申请通知权限） | onPushMessage
+    </button>
+    <!-- #endif -->
     <button class="normal-button" type="default" @click="handleOffPushMessage">
       注销回调 | offPushMessage
     </button>
   </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
 <script setup>
@@ -74,9 +73,8 @@
   try {
     bundleManager.getBundleInfoForSelf(bundleFlags).then((data) => {
       jestResult.hasGetuiAppId = data.appInfo?.metadata?.entry?.find(item=>item.name === 'GETUI_APPID') != null;
-      console.error('jestResult.hasGetuiAppId:', jestResult.hasGetuiAppId);
     }).catch((err) => {
-      console.error('Promise 捕获错误:', err);
+      console.warn('Promise 捕获错误:', err);
     });
   } catch (_) {}
   // #endif
@@ -114,6 +112,23 @@
       return
     }
     uni.onPushMessage(onPushMessageCallback)
+    isRegister.state = true
+    uni.showToast({
+      title: "成功注册"
+    })
+  }
+
+  const handleOnPushMessageWithPermission = () => {
+    if (isRegister.state) {
+      uni.showToast({
+        icon: "error",
+        title: "无需重复注册"
+      })
+      return
+    }
+    uni.onPushMessage(onPushMessageCallback, {
+      requestPermission: true
+    })
     isRegister.state = true
     uni.showToast({
       title: "成功注册"
@@ -215,7 +230,7 @@
 
   async function getPushClientId(): Promise<string>{
     let pushClientId = '';
-    let res:void = await new Promise<void>(resolve => {
+    await new Promise<void>(resolve => {
       uni.getPushClientId({
         success: (res: GetPushClientIdSuccess) => {
           console.log(res.cid)
@@ -224,7 +239,6 @@
         },
         fail: (err: GetPushClientIdFail) => {
           resolve()
-          console.error(err);
           if (err.message.includes('uniPush is not enabled')) {
             uni.showModal({
               title: '获取cid失败',
@@ -348,6 +362,17 @@
     handleGetClientId,
     handleOnPushMessage,
     handleOffPushMessage
+  })
+
+  onUnload(() => {
+    // 页面销毁时注销推送回调，避免全局回调持有页面引用导致内存泄漏
+    if (isRegister.state) {
+      uni.offPushMessage(onPushMessageCallback)
+      isRegister.state = false
+    }
+    // 兜底关闭可能与页面绑定、尚未关闭的弹窗，避免窗口/弹窗在页面销毁后残留
+    uni.hideLoading()
+    uni.hideToast()
   })
 </script>
 

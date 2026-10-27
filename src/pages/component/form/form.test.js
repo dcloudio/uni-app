@@ -18,14 +18,28 @@ const CHANGE_AGE = 50
 const CHANGE_SWITCH = false
 const CHANGE_COMMENT = '备注'
 
+const SCREENSHOT_DATE = '2024-01-02'
+const SCREENSHOT_START_DATE = '2014-01-02'
+const SCREENSHOT_END_DATE = '2034-01-02'
+const SCREENSHOT_TIME_PICKER = '12:01'
+const SCREENSHOT_PICKER_VIEW_TIME = [11, 0]
+
 describe('form', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
-  beforeAll(async () => {
+  beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
   })
 
   it('screenshot', async () => {
+    await setScreenshotData(page)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
@@ -92,6 +106,19 @@ describe('form', () => {
     expect(testVerifyReset).toBe(true)
   })
 })
+
+async function setScreenshotData(page) {
+  await page.setData({
+    data: {
+      datePickerValue: SCREENSHOT_DATE,
+      startDate: SCREENSHOT_START_DATE,
+      endDate: SCREENSHOT_END_DATE,
+      timePickerValue: SCREENSHOT_TIME_PICKER,
+      time: SCREENSHOT_PICKER_VIEW_TIME
+    }
+  })
+  await page.waitFor(100)
+}
 
 async function changeData(page) {
   await page.setData({

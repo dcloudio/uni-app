@@ -1,0 +1,93 @@
+{
+  "id": "uni-index-bar",
+  "displayName": "uni-index-bar 索引栏",
+  "version": "1.0.2",
+  "description": "uni-index-bar 索引栏组件，用于显示索引栏，支持自定义索引栏的样式和内容。",
+  "isExt": true,
+  "extUrl": "https://ext.dcloud.net.cn/plugin?id=27847",
+  "keywords": [
+    "uni-index-bar",
+    "索引栏",
+    "index-bar",
+    "uni-app-x",
+    "组件"
+],
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "engines": {
+    "HBuilderX": "^5.08",
+    "uni-app-x": "^5.08",
+    "uni-app": ""
+  },
+  "directories": {
+    "example": "../../temps/example_temps"
+  },
+  "dcloudext": {
+    "type": "component-vue",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x",
+    "npmurl": "",
+    "vapor": "x"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "chrome": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          },
+          "app": {
+            "android": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "ios": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "harmony": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

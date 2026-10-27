@@ -1,13 +1,14 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('web-cover-view', () => {
-  if (isAppWebView) {
+  if (isAppWebView || isMP) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
@@ -27,7 +28,7 @@ describe('web-cover-view', () => {
       }
       let isCoverImageExist, isMapExist = true;
       // harmony ios cover-view 会被转换为 view
-      const isCoverViewExist = isHarmony || isIos || await page.$('cover-view');
+      const isCoverViewExist = isHarmony || isIos || (isAndroid && isVapor) || await page.$('cover-view');
       if(isApp){
       // app 端 cover-image 会被转换为 image
         isCoverImageExist = !!(await page.$('image'));

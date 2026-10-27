@@ -1,5 +1,5 @@
 <template>
-  <view style="flex: 1;">
+  <view class="swiper-list-page">
     <view class="content-item">
       <text class="text">左右滑动页面，体验swiper嵌套list-view效果。</text>
     </view>
@@ -7,21 +7,23 @@
       <swiper-item v-for="index in 3">
         <list-view :id="'list'+index" style="flex: 1;  border: 3px solid lime;" refresher-enabled="true" @refresherrefresh="onRefresherrefresh"
           :refresher-triggered="data.refresherTriggeredArray[index-1]" :scroll-top="data.scrollTop">
-          <!-- #ifndef VUE3-VAPOR -->
-          <sticky-header>
-            <text class="header">上下滑动体验吸顶效果 swiper-item{{index}}</text>
-          </sticky-header>
-          <!-- #endif -->
-          <list-item v-for="itemIndex in 40" :key="itemIndex" class="item">
-            <text>item----------{{itemIndex}}</text>
-          </list-item>
+          <sticky-section>
+            <sticky-header>
+              <text class="header">上下滑动体验吸顶效果 swiper-item{{index}}</text>
+            </sticky-header>
+            <list-item v-for="itemIndex in 40" :key="itemIndex" >
+              <view class="item">
+                <text class="item-text">item----------{{itemIndex}}</text>
+              </view>
+            </list-item>
+          </sticky-section>
         </list-view>
       </swiper-item>
     </swiper>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type DataType = {
   swiperCurrentIndex: number,
@@ -59,20 +61,20 @@ defineExpose({
   .item {
     padding: 15px;
     margin: 0 0 5px 0;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 5px;
   }
 
   .text {
     font-size: 14px;
-    color: #666;
+    color: var(--active-color, #666);
     line-height: 20px;
   }
 
   .content-item {
     padding: 15px;
     margin-bottom: 10px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
   }
 
   .header {
@@ -80,5 +82,13 @@ defineExpose({
     padding: 15px;
     text-align: center;
     color: #fff;
+  }
+
+  .swiper-list-page {
+    flex: 1;
+  }
+
+  .item-text {
+    color: var(--text-color, #333333);
   }
 </style>

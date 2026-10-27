@@ -1,0 +1,359 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h2">联系人写入 uni.addPhoneContact</text>
+		<text class="notice">有权限时直接写入联系人，无权限时呼起系统的联系人新建界面</text>
+
+		<view class="section-block">
+			<text class="uni-h3">头像与姓名</text>
+			<text class="field-label">头像本地路径</text>
+			<view class="uni-row">
+				<button class="margin-v" @tap="chooseAvatar" size="mini">选择头像</button>
+				<button class="margin-v" style="margin-left: 10px;" @tap="clearAvatar" size="mini">清空头像</button>
+			</view>
+			<text class="log-text">{{ photoFilePath.length > 0 ? photoFilePath : '尚未选择头像文件' }}</text>
+			<text class="field-label">昵称</text>
+			<input class="field-input" v-model="nickName" placeholder="请输入昵称" />
+			<text class="field-label">姓氏</text>
+			<input class="field-input" v-model="lastName" placeholder="请输入姓氏" />
+			<text class="field-label">中间名</text>
+			<input class="field-input" v-model="middleName" placeholder="请输入中间名" />
+			<text class="field-label">名字（必填）</text>
+			<input class="field-input" v-model="firstName" placeholder="请输入名字" />
+		</view>
+
+		<view class="section-block">
+			<text class="uni-h3">联系方式</text>
+			<text class="field-label">手机号</text>
+			<input class="field-input" v-model="mobilePhoneNumber" placeholder="请输入手机号" />
+			<text class="field-label">工作电话</text>
+			<input class="field-input" v-model="workPhoneNumber" placeholder="请输入工作电话" />
+			<text class="field-label">公司电话</text>
+			<input class="field-input" v-model="hostNumber" placeholder="请输入公司电话" />
+			<text class="field-label">住宅电话</text>
+			<input class="field-input" v-model="homePhoneNumber" placeholder="请输入住宅电话" />
+			<text class="field-label">工作传真</text>
+			<input class="field-input" v-model="workFaxNumber" placeholder="请输入工作传真" />
+			<text class="field-label">住宅传真</text>
+			<input class="field-input" v-model="homeFaxNumber" placeholder="请输入住宅传真" />
+			<text class="field-label">电子邮箱</text>
+			<input class="field-input" v-model="email" placeholder="请输入邮箱" />
+			<text class="field-label">网站</text>
+			<input class="field-input" v-model="url" placeholder="请输入网站地址" />
+			<text class="field-label">即时消息</text>
+			<input class="field-input" v-model="weChatNumber" placeholder="请输入即时消息账号" />
+		</view>
+
+		<view class="section-block">
+			<text class="uni-h3">工作信息</text>
+			<text class="field-label">公司</text>
+			<input class="field-input" v-model="organization" placeholder="请输入公司名称" />
+			<text class="field-label">职位</text>
+			<input class="field-input" v-model="title" placeholder="请输入职位" />
+			<text class="field-label">工作地址国家</text>
+			<input class="field-input" v-model="workAddressCountry" placeholder="请输入工作地址国家" />
+			<text class="field-label">工作地址省份</text>
+			<input class="field-input" v-model="workAddressState" placeholder="请输入工作地址省份" />
+			<text class="field-label">工作地址城市</text>
+			<input class="field-input" v-model="workAddressCity" placeholder="请输入工作地址城市" />
+			<text class="field-label">工作地址</text>
+			<input class="field-input" v-model="workAddressStreet" placeholder="请输入工作地址" />
+			<text class="field-label">工作地址邮编</text>
+			<input class="field-input" v-model="workAddressPostalCode" placeholder="请输入工作地址邮编" />
+		</view>
+
+		<view class="section-block">
+			<text class="uni-h3">个人地址</text>
+			<text class="field-label">联系地址国家</text>
+			<input class="field-input" v-model="addressCountry" placeholder="请输入联系地址国家" />
+			<text class="field-label">联系地址省份</text>
+			<input class="field-input" v-model="addressState" placeholder="请输入联系地址省份" />
+			<text class="field-label">联系地址城市</text>
+			<input class="field-input" v-model="addressCity" placeholder="请输入联系地址城市" />
+			<text class="field-label">联系地址街道</text>
+			<input class="field-input" v-model="addressStreet" placeholder="请输入联系地址街道" />
+			<text class="field-label">联系地址邮编</text>
+			<input class="field-input" v-model="addressPostalCode" placeholder="请输入联系地址邮编" />
+		</view>
+
+		<view class="section-block">
+			<text class="uni-h3">家庭地址与备注</text>
+			<text class="field-label">住宅地址国家</text>
+			<input class="field-input" v-model="homeAddressCountry" placeholder="请输入住宅地址国家" />
+			<text class="field-label">住宅地址省份</text>
+			<input class="field-input" v-model="homeAddressState" placeholder="请输入住宅地址省份" />
+			<text class="field-label">住宅地址城市</text>
+			<input class="field-input" v-model="homeAddressCity" placeholder="请输入住宅地址城市" />
+			<text class="field-label">住宅地址街道</text>
+			<input class="field-input" v-model="homeAddressStreet" placeholder="请输入住宅地址街道" />
+			<text class="field-label">住宅地址邮编</text>
+			<input class="field-input" v-model="homeAddressPostalCode" placeholder="请输入住宅地址邮编" />
+			<text class="field-label">备注</text>
+			<input class="field-input" v-model="remark" placeholder="例如：uni-app x 插件示例联系人" />
+		</view>
+
+		<text class="uni-h3">快捷操作</text>
+		<button class="margin-v" @tap="fillPreset">填充示例数据</button>
+		<button class="margin-v" @tap="submitContact" type="primary">写入联系人</button>
+		<button class="margin-v" @tap="clearForm">清空表单</button>
+		<button class="margin-v" @tap="clearLogs">清空日志</button>
+		<text class="margin-v">success：{{ successText }}</text>
+		<text class="margin-v">fail：{{ failText }}</text>
+		<text class="margin-v">complete：{{ completeText }}</text>
+
+		<text class="uni-h3">最近日志</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in logs" :key="item">{{ item }}</text>
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+
+	const photoFilePath = ref<string>('')
+	const nickName = ref<string>('')
+	const middleName = ref<string>('')
+	const firstName = ref<string>('')
+	const lastName = ref<string>('')
+	const mobilePhoneNumber = ref<string>('')
+	const workPhoneNumber = ref<string>('')
+	const hostNumber = ref<string>('')
+	const homePhoneNumber = ref<string>('')
+	const workFaxNumber = ref<string>('')
+	const homeFaxNumber = ref<string>('')
+	const email = ref<string>('')
+	const addressCountry = ref<string>('')
+	const addressState = ref<string>('')
+	const addressCity = ref<string>('')
+	const addressStreet = ref<string>('')
+	const addressPostalCode = ref<string>('')
+	const organization = ref<string>('')
+	const title = ref<string>('')
+	const workAddressCountry = ref<string>('')
+	const workAddressState = ref<string>('')
+	const workAddressCity = ref<string>('')
+	const workAddressStreet = ref<string>('')
+	const workAddressPostalCode = ref<string>('')
+	const homeAddressCountry = ref<string>('')
+	const homeAddressState = ref<string>('')
+	const homeAddressCity = ref<string>('')
+	const homeAddressStreet = ref<string>('')
+	const homeAddressPostalCode = ref<string>('')
+	const remark = ref<string>('')
+	const url = ref<string>('')
+	const weChatNumber = ref<string>('')
+	const successText = ref<string>('尚未调用')
+	const failText = ref<string>('尚未调用')
+	const completeText = ref<string>('尚未调用')
+	const logs = ref<Array<string>>([])
+
+	function appendLog(text : string) : void {
+		logs.value.unshift(`${Date.now()} ${text}`)
+		if (logs.value.length > 8) {
+			logs.value.pop()
+		}
+	}
+
+	function clearForm() : void {
+		photoFilePath.value = ''
+		nickName.value = ''
+		middleName.value = ''
+		firstName.value = ''
+		lastName.value = ''
+		mobilePhoneNumber.value = ''
+		workPhoneNumber.value = ''
+		hostNumber.value = ''
+		homePhoneNumber.value = ''
+		workFaxNumber.value = ''
+		homeFaxNumber.value = ''
+		email.value = ''
+		addressCountry.value = ''
+		addressState.value = ''
+		addressCity.value = ''
+		addressStreet.value = ''
+		addressPostalCode.value = ''
+		organization.value = ''
+		title.value = ''
+		workAddressCountry.value = ''
+		workAddressState.value = ''
+		workAddressCity.value = ''
+		workAddressStreet.value = ''
+		workAddressPostalCode.value = ''
+		homeAddressCountry.value = ''
+		homeAddressState.value = ''
+		homeAddressCity.value = ''
+		homeAddressStreet.value = ''
+		homeAddressPostalCode.value = ''
+		remark.value = ''
+		url.value = ''
+		weChatNumber.value = ''
+		successText.value = '尚未调用'
+		failText.value = '尚未调用'
+		completeText.value = '尚未调用'
+	}
+
+	function fillPreset() : void {
+		nickName.value = '测试-昵称'
+		middleName.value = '测试-中间名'
+		firstName.value = '测试-名'
+		lastName.value = '测试-姓'
+		mobilePhoneNumber.value = '13800138000'
+		workPhoneNumber.value = '020-12345678'
+		hostNumber.value = '020-87654321'
+		homePhoneNumber.value = '0755-22334455'
+		workFaxNumber.value = '020-11112222'
+		homeFaxNumber.value = '0755-33334444'
+		email.value = 'hello@example.com'
+		addressCountry.value = '中国'
+		addressState.value = '广东省'
+		addressCity.value = '广州市'
+		addressStreet.value = '测试-xx路xx号'
+		addressPostalCode.value = '100000'
+		organization.value = '测试-组织'
+		title.value = '测试-职务'
+		workAddressCountry.value = '中国'
+		workAddressState.value = '广东省'
+		workAddressCity.value = '广州市'
+		workAddressStreet.value = '测试-工作地址-xx路xx号'
+		workAddressPostalCode.value = '100001'
+		homeAddressCountry.value = '中国'
+		homeAddressState.value = '广东省'
+		homeAddressCity.value = '深圳市'
+		homeAddressStreet.value = '测试-家庭地址-xx路xx号'
+		homeAddressPostalCode.value = '100002'
+		remark.value = '测试-备注'
+		url.value = 'https://www.dcloud.net.cn'
+		weChatNumber.value = '测试-即时消息'
+	}
+
+	function clearLogs() : void {
+		logs.value = new Array<string>()
+	}
+
+	function clearAvatar() : void {
+		photoFilePath.value = ''
+	}
+
+	function chooseAvatar() : void {
+		uni.chooseImage({
+			count: 1,
+			sizeType: ['compressed'],
+			sourceType: ['album', 'camera'],
+			success: (result) => {
+				const files = result.tempFilePaths
+				if (files.length > 0) {
+					photoFilePath.value = files[0]
+				}
+			},
+			fail: (_) => {}
+		})
+	}
+
+	function describeComplete(result : any) : string {
+		if (result instanceof UniError) {
+			return `${result.errMsg} (${result.errCode})`
+		}
+		return '已完成'
+	}
+
+	function submitContact() : void {
+		uni.addPhoneContact({
+			photoFilePath: photoFilePath.value,
+			nickName: nickName.value,
+			middleName: middleName.value,
+			firstName: firstName.value,
+			lastName: lastName.value,
+			mobilePhoneNumber: mobilePhoneNumber.value,
+			workPhoneNumber: workPhoneNumber.value,
+			hostNumber: hostNumber.value,
+			homePhoneNumber: homePhoneNumber.value,
+			workFaxNumber: workFaxNumber.value,
+			homeFaxNumber: homeFaxNumber.value,
+			email: email.value,
+			addressCountry: addressCountry.value,
+			addressState: addressState.value,
+			addressCity: addressCity.value,
+			addressStreet: addressStreet.value,
+			addressPostalCode: addressPostalCode.value,
+			organization: organization.value,
+			title: title.value,
+			workAddressCountry: workAddressCountry.value,
+			workAddressState: workAddressState.value,
+			workAddressCity: workAddressCity.value,
+			workAddressStreet: workAddressStreet.value,
+			workAddressPostalCode: workAddressPostalCode.value,
+			homeAddressCountry: homeAddressCountry.value,
+			homeAddressState: homeAddressState.value,
+			homeAddressCity: homeAddressCity.value,
+			homeAddressStreet: homeAddressStreet.value,
+			homeAddressPostalCode: homeAddressPostalCode.value,
+			remark: remark.value,
+			url: url.value,
+			weChatNumber: weChatNumber.value,
+			success: (_result : any) => {
+				successText.value = '联系人写入成功'
+				failText.value = '本次未触发'
+				appendLog('addPhoneContact success')
+			},
+			fail: (err : AddPhoneContactFail) => {
+				failText.value = `${err.errMsg} (${err.errCode})`
+				appendLog(`addPhoneContact fail ${err.errMsg}`)
+			},
+			complete: (result : AddPhoneContactComplete) => {
+				completeText.value = describeComplete(result)
+			}
+		})
+	}
+</script>
+
+<style>
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.notice {
+		color: #550000;
+		font-size: 14px;
+		font-style: italic;
+	}
+
+	.section-block {
+		margin: 8px 0;
+	}
+
+	.field-label {
+		margin-top: 6px;
+		font-size: 14px;
+	}
+
+	.field-input {
+		height: 40px;
+		margin: 5px 0;
+		padding-left: 10px;
+		padding-right: 10px;
+		border: 1px solid #ccc;
+	}
+
+	.log-text {
+		margin: 5px 0;
+		padding: 10px;
+		font-size: 14px;
+		border: 1px solid #ccc;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
+	}
+</style>

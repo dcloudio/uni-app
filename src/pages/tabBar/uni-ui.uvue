@@ -1,0 +1,348 @@
+<template>
+  <view class="uni-container">
+    <view v-if="!hasLeftWin" class="uni-header-logo">
+      <image class="uni-header-image" src="/static/extuiIndex.png"></image>
+    </view>
+    <view v-if="!hasLeftWin" class="uni-text-box">
+      <text class="hello-text">uni-ui x 扩展组件示例，文档详见：</text>
+      <uni-link class="hello-text" href="https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x"
+      <!-- #ifndef MP -->
+      target="_blank"
+      <!-- #endif -->
+      >
+        https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x
+      </uni-link>
+    </view>
+    <uni-collapse>
+      <template v-for="(item, index) in list" :key="item.id">
+        <uni-collapse-item v-if="item.pages.length > 0" class="uni-panel" :open="item.open" :title="item.name"
+          title-wrap-class="component-collapse-title-wrap" title-class="component-collapse-title"
+          content-wrap-class="component-collapse-content-wrap" arrow-class="component-collapse-arrow"
+          @change="syncCollapseState(index, $event as boolean)">
+          <view style="padding-left: 18px;" class="uni-navigate-item"
+            :hover-class="page.enable == false ? '' : 'is--active'" v-for="(page, key) in item.pages" :key="key"
+            @click="goDetailPage(page)">
+            <text class="uni-navigate-text"
+              :class="{'left-win-active': leftWinActive === getPageKey(page.url) && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
+            <view class="right_arrow"></view>
+          </view>
+        </uni-collapse-item>
+        <view v-else class="uni-panel">
+          <view hover-class="is--active" class="uni-panel-h" @click="triggerCollapse(index, item)">
+            <text class="uni-panel-text"
+              :class="{
+                'text-disabled': item.enable == false || item.open == true,
+                'left-win-active': getPageKey(item.url!) == leftWinActive && hasLeftWin
+              }">{{ item.name }}</text>
+            <view class="right_arrow"></view>
+          </view>
+        </view>
+      </template>
+    </uni-collapse>
+  </view>
+</template>
+
+<script setup lang="ts">
+  defineOptions({
+    styleIsolation: 'app'
+  })
+
+  const instance = getCurrentInstance()?.proxy
+
+  type Page = {
+    name : string
+    enable ?: boolean
+    url : string
+  }
+
+  type ListItem = {
+    id : string
+    name : string
+    open : boolean
+    pages : Page[]
+    url ?: string
+    enable ?: boolean
+  }
+
+  import { state } from '@/store/index.ts'
+
+  const list = ref<ListItem[]>([
+    {
+      id: 'badge',
+      name: 'uni-badge-view 数字角标',
+      open: false,
+      url: '/pages/uni-ui/badge-view/badge-view',
+      pages: [] as Page[]
+    },
+    {
+      id: 'collapse',
+      name: 'uni-collapse 折叠面板',
+      open: false,
+      url: '/pages/uni-ui/collapse/collapse',
+      pages: [] as Page[]
+    },
+    // #ifndef (APP-IOS || APP-HARMONY) && !VUE3-VAPOR
+    {
+      id: 'combox',
+      name: 'uni-combox 组合框',
+      open: false,
+      url: '/pages/uni-ui/combox/combox',
+      pages: [] as Page[]
+    },
+    // #endif
+    {
+      id: 'drag-cell',
+      name: 'uni-drag-cell 拖拽排序',
+      open: false,
+      url: '/pages/uni-ui/drag-cell/drag-cell',
+      pages: [] as Page[]
+    },
+    // #ifdef VUE3-VAPOR || MP
+    {
+      id: 'expandable-text',
+      name: 'uni-expandable-text 展开文本',
+      open: false,
+      url: '/pages/uni-ui/expandable-text/expandable-text',
+      pages: [] as Page[]
+    },
+    // #endif
+    {
+      id: 'fab-button',
+      name: 'uni-fab-button 悬浮按钮',
+      open: false,
+      url: '/pages/uni-ui/fab-button/fab-button',
+      pages: [] as Page[]
+    },
+    {
+      id: 'index-bar',
+      name: 'uni-index-bar 索引栏',
+      open: false,
+      url: '/pages/uni-ui/index-bar/index-bar',
+      pages: [] as Page[]
+    },
+    {
+      id: 'link',
+      name: 'uni-link 链接',
+      open: false,
+      url: '/pages/uni-ui/link/link',
+      pages: [] as Page[]
+    },
+    {
+      id: 'nav-bar',
+      name: 'uni-nav-bar 导航栏',
+      open: false,
+      url: '/pages/uni-ui/nav-bar/nav-bar',
+      pages: [] as Page[]
+    },
+    {
+      id: 'number-box',
+      name: 'uni-number-box 数字输入框',
+      open: false,
+      url: '/pages/uni-ui/number-box/number-box',
+      pages: [] as Page[]
+    },
+    {
+      id: 'rate',
+      name: 'uni-rate 评分组件',
+      open: false,
+      url: '/pages/uni-ui/rate/rate',
+      pages: [] as Page[]
+    },
+    // #ifndef MP-ALIPAY
+    {
+      id: 'refresh-box',
+      name: 'uni-refresh-box 下拉刷新组件',
+      open: false,
+      url: '/pages/uni-ui/refresh-box/refresh-box',
+      pages: [] as Page[]
+    },
+    // #endif
+    {
+      id: 'tab-bar',
+      name: 'uni-tab-bar 底部选项卡',
+      open: false,
+      pages: [
+        {
+          name: '默认样式',
+          url: '/pages/uni-ui/tab-bar/tab-bar'
+        },
+        {
+          name: '暗色风格',
+          url: '/pages/uni-ui/tab-bar/tab-bar-dark'
+        },
+        {
+          name: '自定义样式',
+          url: '/pages/uni-ui/tab-bar/tab-bar-custom'
+        },
+        // #ifndef APP && !VUE3-VAPOR
+        {
+          name: '半透明毛玻璃',
+          url: '/pages/uni-ui/tab-bar/tab-bar-blur'
+        },
+        // #endif
+        {
+          name: '中间按钮',
+          url: '/pages/uni-ui/tab-bar/tab-bar-midbutton'
+        },
+        {
+          name: '中间按钮镂空',
+          url: '/pages/uni-ui/tab-bar/tab-bar-midbutton-notch'
+        }
+      ] as Page[]
+    },
+    {
+      id: 'time-format',
+      name: 'uni-time-format 时间格式化',
+      open: false,
+      url: '/pages/uni-ui/time-format/time-format',
+      pages: [] as Page[]
+    },
+    {
+      id: 'icons',
+      name: 'uni-icons 图标',
+      open: false,
+      url: '/pages/uni-ui/icons/icons',
+      pages: [] as Page[]
+    },
+  ] as ListItem[])
+
+  const hasLeftWin = computed(() : boolean => {
+    return !state.noMatchLeftWindow
+  })
+  const leftWinActive = computed(() : string => {
+    const parts = state.leftWinActive.split('/').filter((item) : boolean => {
+      return item.length > 0
+    })
+    return parts.length > 0 ? parts[parts.length - 1] : ''
+  })
+  function getPageKey(url : string) : string {
+    const parts = url.split('/').filter((item) : boolean => {
+      return item.length > 0
+    })
+    return parts.length > 0 ? parts[parts.length - 1] : url
+  }
+
+  function goDetailPage(page : Page) {
+    if (page.enable == false) {
+      uni.showToast({
+        icon: 'none',
+        title: '暂不支持',
+      })
+      return
+    }
+    if (hasLeftWin.value) {
+      uni.reLaunch({ url: page.url })
+    } else {
+      uni.navigateTo({
+        url: page.url,
+        fail() {
+          console.log('页面跳转失败：' + page.url)
+        }
+      })
+    }
+  }
+
+  function triggerCollapse(index : number, item : ListItem) {
+    if (item.pages.length == 0) {
+      const page : Page = {
+        name: item.name,
+        enable: item.enable,
+        url: item.url!
+      }
+      goDetailPage(page)
+      return
+    }
+    for (let i = 0; i < list.value.length; i++) {
+      list.value[i].open = index == i ? !list.value[i].open : false
+    }
+  }
+
+  function syncCollapseState(index : number, open : boolean) {
+    for (let i = 0; i < list.value.length; i++) {
+      list.value[i].open = open && index == i
+    }
+  }
+
+  function syncActiveGroup(path : string) {
+    const matchedIndex = list.value.findIndex((item) : boolean => {
+      for (const page of item.pages) {
+        if (getPageKey(page.url) == path) {
+          return true
+        }
+      }
+      if (item.url != null && getPageKey(item.url!) == path) {
+        return true
+      }
+      return false
+    })
+
+    if (matchedIndex == -1) {
+      return
+    }
+
+    for (let i = 0; i < list.value.length; i++) {
+      list.value[i].open = matchedIndex == i && list.value[i].pages.length > 0
+    }
+  }
+
+  watch(() : string => leftWinActive.value, (path : string) => {
+    syncActiveGroup(path)
+  }, { immediate: true })
+
+  // #ifdef WEB
+  watch(() => (instance as any).$route, (newRoute) => {
+    if (newRoute && newRoute.matched.length) {
+      syncActiveGroup(newRoute.path.split('/')[3])
+    }
+  }, { immediate: true })
+  // #endif
+</script>
+
+<style>
+  page {
+    background-color: var(--tabbar-background-color) !important;
+    /* #ifdef APP && VUE3-VAPOR */
+    padding-bottom: var(--uni-safe-area-inset-bottom);
+    /* #endif */
+  }
+
+  .uni-panel-h {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 18px;
+  }
+
+  .uni-ui-navigate-item {
+    border-top-style: none;
+  }
+
+  .right_arrow {
+    width: 8px;
+    height: 8px;
+    margin-left: 12px;
+    transform: rotate(-45deg);
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: var(--arrow-color, #999999);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--arrow-color, #999999);
+  }
+
+  .component-collapse-title-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-title {
+    color: var(--text-color, #333333);
+  }
+
+  .component-collapse-content-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-arrow {
+    border-right-color: var(--arrow-color, #999999);
+    border-bottom-color: var(--arrow-color, #999999);
+  }
+</style>

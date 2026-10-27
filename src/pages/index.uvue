@@ -1,0 +1,99 @@
+<template>
+  <view class="page">
+    <text class="title">convert2AbsFullPath 演示</text>
+    <text class="desc">将项目相对路径转换为运行期绝对路径</text>
+
+    <view class="field">
+      <text class="label">输入路径</text>
+      <input class="input" v-model="inputPath" type="text" placeholder="例如：static/logo.png" />
+    </view>
+
+    <button class="btn" type="primary" @click="onConvert">转换</button>
+
+    <view class="result">
+      <text class="label">输入</text>
+      <text class="value" :selectable="true">{{ inputResult }}</text>
+    </view>
+
+    <view class="result">
+      <text class="label">输出</text>
+      <text class="value" :selectable="true">{{ outputResult }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { convert2AbsFullPath } from '@/uni_modules/uni-convert2AbsFullPath'
+
+  const inputPath = ref<string>('static/logo.png')
+  const inputResult = ref<string>('')
+  const outputResult = ref<string>('')
+
+  const onConvert = () => {
+    inputResult.value = inputPath.value
+    outputResult.value = convert2AbsFullPath(inputPath.value)
+  }
+
+  onReady(() => {
+    onConvert()
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .desc {
+    font-size: 13px;
+    color: #888888;
+    margin-bottom: 15px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .label {
+    font-size: 13px;
+    color: #666666;
+    margin-bottom: 5px;
+  }
+
+  .input {
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #DDDDDD;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .btn {
+    margin-bottom: 15px;
+  }
+
+  .result {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .value {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px;
+    background-color: #F5F5F5;
+    border-radius: 6px;
+  }
+</style>

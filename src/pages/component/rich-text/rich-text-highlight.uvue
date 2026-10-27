@@ -1,0 +1,274 @@
+<template>
+    <page-head title="rich-text-highlight"></page-head>
+    <page-intro content="本页用于测试 rich-text 手动选择文本时，高亮背景色、操作手柄色与文字颜色、文字背景色相同或交叉组合时的显示效果。"></page-intro>
+    <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) || (APP-IOS && VUE3-VAPOR) -->
+    <enum-data title="设置mode（app平台 蒸汽模式支持）" :items="modeItemTypes" @change="onModeChange"></enum-data>
+    <!-- #endif -->
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="toolbar">
+        <view class="toolbar-row">
+          <text class="toolbar-label">当前模式：{{ data.mode }}</text>
+          <text class="toolbar-label">当前用例：{{ data.caseName }}</text>
+        </view>
+        <view class="color-reference">
+          <text class="reference-text">高亮背景色：{{ highlightBackgroundColor }}</text>
+          <text class="reference-text">操作手柄色：{{ highlightHandleColor }}</text>
+        </view>
+        <view class="case-grid">
+          <button v-for="(item, index) in highlightCases" :key="item.name" :class="data.currentCaseIndex == index ? 'case-button case-button-active' : 'case-button'" @click="setCase(index)">{{ item.name }}</button>
+        </view>
+        <text class="tip-text">操作方式：切换用例后，长按下方 rich-text 文本并拖动选择范围，观察选区背景和左右操作手柄在同色、近色、交叉配色下是否仍然清晰可见。</text>
+      </view>
+
+      <view class="content-card">
+        <rich-text id="highlight-rich-text" class="rich-text-content" :nodes="htmlString" :selectable="true" :mode="data.mode"></rich-text>
+      </view>
+
+      <view class="legend">
+        <text class="legend-text">观察点：</text>
+        <text class="legend-text">1. 高亮背景色固定为 #33B5E566，操作手柄色固定为 #4285F4FF。</text>
+        <text class="legend-text">2. 每个用例只改变目标文本的 color 和 background-color。</text>
+        <text class="legend-text">3. 重点检查高亮背景、操作手柄、文字颜色、文字背景色两两相同或交叉时是否互相遮挡。</text>
+        <text class="legend-text">4. 切换 web/native mode 后重复手动划选，比较不同渲染模式的覆盖效果。</text>
+      </view>
+    </view>
+</template>
+
+<script setup lang="ts">
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+
+  type DataType = {
+    mode : string,
+    currentCaseIndex : number,
+    caseName : string,
+    caseDescription : string,
+    textColor : string,
+    textBackgroundColor : string
+  }
+
+  type HighlightCase = {
+    name : string,
+    description : string,
+    textColor : string,
+    textBackgroundColor : string
+  }
+
+  const highlightBackgroundColor = '#33B5E566'
+  const highlightHandleColor = '#4285F4FF'
+  const normalTextColor = '#202124FF'
+  const normalTextBackgroundColor = '#FFFFFFFF'
+  const contrastTextColor = '#111111FF'
+  const contrastTextBackgroundColor = '#FFE082FF'
+
+  const highlightCases = [
+    {
+      name: '高亮背景=文字色',
+      description: '文字颜色使用高亮背景色，文字背景保持白色。',
+      textColor: highlightBackgroundColor,
+      textBackgroundColor: normalTextBackgroundColor
+    },
+    {
+      name: '高亮背景=文字背景',
+      description: '文字背景使用高亮背景色，文字颜色保持普通深色。',
+      textColor: normalTextColor,
+      textBackgroundColor: highlightBackgroundColor
+    },
+    {
+      name: '手柄色=文字色',
+      description: '文字颜色使用操作手柄色，文字背景保持白色。',
+      textColor: highlightHandleColor,
+      textBackgroundColor: normalTextBackgroundColor
+    },
+    {
+      name: '手柄色=文字背景',
+      description: '文字背景使用操作手柄色，文字颜色保持普通深色。',
+      textColor: normalTextColor,
+      textBackgroundColor: highlightHandleColor
+    },
+    {
+      name: '文字色=文字背景',
+      description: '文字颜色与文字背景色相同，用于验证选择后文字是否能被高亮区分。',
+      textColor: contrastTextBackgroundColor,
+      textBackgroundColor: contrastTextBackgroundColor
+    },
+    {
+      name: '文字色=高亮背景 背景=手柄色',
+      description: '文字颜色等于高亮背景色，文字背景等于操作手柄色。',
+      textColor: highlightBackgroundColor,
+      textBackgroundColor: highlightHandleColor
+    },
+    {
+      name: '文字色=手柄色 背景=高亮背景',
+      description: '文字颜色等于操作手柄色，文字背景等于高亮背景色。',
+      textColor: highlightHandleColor,
+      textBackgroundColor: highlightBackgroundColor
+    },
+    {
+      name: '文字/背景=高亮背景',
+      description: '文字颜色与文字背景色都等于高亮背景色。',
+      textColor: highlightBackgroundColor,
+      textBackgroundColor: highlightBackgroundColor
+    },
+    {
+      name: '文字/背景=手柄色',
+      description: '文字颜色与文字背景色都等于操作手柄色。',
+      textColor: highlightHandleColor,
+      textBackgroundColor: highlightHandleColor
+    },
+    {
+      name: '普通对照',
+      description: '文字颜色和文字背景色都避开高亮背景色与操作手柄色。',
+      textColor: contrastTextColor,
+      textBackgroundColor: contrastTextBackgroundColor
+    }
+  ] as HighlightCase[]
+
+  const modeItems = ['web', 'native']
+  const modeItemTypes = ref([{ 'value': 0, 'name': 'web', 'checked': true }, { 'value': 1, 'name': 'native' }] as ItemType[])
+
+  const data = reactive({
+    mode: 'web',
+    currentCaseIndex: 0,
+    caseName: highlightCases[0].name,
+    caseDescription: highlightCases[0].description,
+    textColor: highlightCases[0].textColor,
+    textBackgroundColor: highlightCases[0].textBackgroundColor
+  } as DataType)
+
+  const htmlString = ref('')
+
+  watch(() : string => data.mode, (mode : string) : void => {
+    modeItemTypes.value.forEach((item : ItemType) : void => {
+      item.checked = item.name == mode
+    })
+  })
+
+  function buildHtml() : string {
+    const targetStyle = 'color: ' + data.textColor + '; background-color: ' + data.textBackgroundColor + ';'
+    const highlightBackgroundStyle = 'color: #202124FF; background-color: ' + highlightBackgroundColor + ';'
+    const highlightHandleStyle = 'color: #FFFFFF; background-color: ' + highlightHandleColor + ';'
+    return '<p><span>当前用例：</span><span style="' + targetStyle + '">' + data.caseName + '</span></p>' +
+      '<p><span>用例说明：</span><span>' + data.caseDescription + '</span></p>' +
+      '<p><span>高亮背景色参考：</span><span style="' + highlightBackgroundStyle + '">' + highlightBackgroundColor + '</span><span> 操作手柄色参考：</span><span style="' + highlightHandleStyle + '">' + highlightHandleColor + '</span></p>' +
+      '<p><span>目标配置：</span><span>文字颜色 ' + data.textColor + '，文字背景色 ' + data.textBackgroundColor + '</span></p>' +
+      '<p><span>选择目标：</span><span style="' + targetStyle + '">长按并拖动选择这一段文字，检查高亮背景是否覆盖原文字色与文字背景色，操作手柄是否仍然容易辨认。</span></p>' +
+      '<p><span style="' + targetStyle + '">这是一段更长的目标文本，用于扩大选区；请从句首拖动到句尾，观察选区边界、半透明高亮背景、操作手柄和文字背景之间的叠加效果。</span></p>' +
+      '<p><span style="color: #444444; background-color: #FFFFFFFF;">普通文本区域：用于对比无特殊颜色组合时的默认选择效果。</span></p>'
+  }
+
+  function updateHtmlString() {
+    htmlString.value = buildHtml()
+  }
+
+  function setCase(index : number) {
+    if (index < 0 || index >= highlightCases.length) {
+      return
+    }
+    const item = highlightCases[index]
+    data.currentCaseIndex = index
+    data.caseName = item.name
+    data.caseDescription = item.description
+    data.textColor = item.textColor
+    data.textBackgroundColor = item.textBackgroundColor
+    updateHtmlString()
+  }
+
+  function onModeChange(value : number) {
+    data.mode = modeItems[value]
+  }
+
+  updateHtmlString()
+
+  defineExpose({
+    data,
+    highlightCases,
+    setCase
+  })
+</script>
+
+<style>
+  .toolbar {
+    padding: 12px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 8px;
+  }
+
+  .toolbar-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .toolbar-label {
+    font-size: 14px;
+    color: var(--text-color, #333333);
+  }
+
+  .color-reference {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .reference-text {
+    margin-right: 12px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: var(--text-color, #555555);
+    line-height: 20px;
+  }
+
+  .case-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .case-button {
+    width: 31%;
+    margin-right: 6px;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+
+  .case-button-active {
+    background-color: #4285F4;
+    color: #ffffff;
+  }
+
+  .tip-text {
+    font-size: 13px;
+    color: var(--active-color, #666666);
+    line-height: 20px;
+  }
+
+  .content-card {
+    margin-top: 12px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d8d8d8;
+    border-radius: 8px;
+  }
+
+  .rich-text-content {
+    width: 100%;
+    min-height: 240px;
+    color: #202124;
+  }
+
+  .legend {
+    margin-top: 12px;
+    padding: 12px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 8px;
+  }
+
+  .legend-text {
+    font-size: 13px;
+    color: var(--text-color, #555555);
+    line-height: 22px;
+  }
+</style>

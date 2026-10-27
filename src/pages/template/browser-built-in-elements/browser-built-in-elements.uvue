@@ -1,0 +1,73 @@
+<template>
+  <view class="page">
+    <page-head :title="title"></page-head>
+    <view class="page-body">
+      <text class="title">使用浏览器内置的 a 标签</text>
+      <view>
+        <a class="browser-native-link" href="https://doc.dcloud.net.cn/uni-app-x/" target="uni-app-x">uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎</a>
+      </view>
+
+      <text class="title">使用浏览器内置的 button 标签(浏览器内置标签和 uni-app 重名的情况)</text>
+      <view class="html-element-area" ref="htmlElementAreaRef"></view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 演示在 Web 平台中混合使用浏览器原生 HTML 元素与 uni-app x 页面内容。
+   * @logic: 页面先展示原生 a 标签链接，再在 onReady 阶段动态创建浏览器原生 button 元素并挂载到占位容器中。
+   * @optimization: 使用独立占位容器承接原生元素插入，减少对页面其他结构的影响，便于隔离浏览器内置元素的行为验证。
+   */
+
+  const title = '浏览器内置元素'
+  const htmlElementAreaRef = ref<HTMLElement | null>(null)
+
+  type JestNativeState = {
+    linkText : string;
+    linkHref : string;
+    linkTarget : string;
+    buttonText : string;
+    buttonCount : number;
+  }
+
+  function jest_getNativeState() : JestNativeState {
+    const linkElement = document.querySelector('.browser-native-link') as HTMLAnchorElement | null
+    const buttonElement = document.querySelector('.browser-native-button') as HTMLButtonElement | null
+    let buttonCount = 0
+    if (htmlElementAreaRef.value != null) {
+      buttonCount = htmlElementAreaRef.value!.childElementCount
+    }
+    return {
+      linkText: linkElement?.innerText ?? '',
+      linkHref: linkElement?.getAttribute('href') ?? '',
+      linkTarget: linkElement?.getAttribute('target') ?? '',
+      buttonText: buttonElement?.innerText ?? '',
+      buttonCount,
+    } as JestNativeState
+  }
+
+  onReady(() => {
+    if (htmlElementAreaRef.value != null) {
+      const buttonElement = document.createElement('button') as HTMLButtonElement;
+      // 自动化测试辅助：补充稳定 class 选择器，便于测试读取原生 button 状态。
+      buttonElement.className = 'browser-native-button';
+      buttonElement.innerText = 'browser button';
+      htmlElementAreaRef.value!.appendChild(buttonElement);
+    }
+  })
+
+  defineExpose({
+    jest_getNativeState,
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .title {
+    margin-top: 15px;
+  }
+</style>

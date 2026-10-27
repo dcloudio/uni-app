@@ -1,0 +1,38 @@
+import View from "android.view.View"
+import Color from "android.graphics.Color"
+
+
+export class TestNativeView {
+  $element : UniNativeViewElement
+  view : View | null = null
+
+  constructor(element : UniNativeViewElement) {
+    this.$element = element
+    this.bindView()
+  }
+
+  bindView() {
+    // 构建原生view
+    this.view = new View(this.$element.getAndroidActivity()!)
+    this.view.setBackgroundColor(Color.WHITE)
+    // 绑定原生view
+    this.$element.bindAndroidView(this.view!)
+  }
+
+  destroy() {
+    this.view = null
+    UTSAndroid.destroyInstance(this)
+  }
+
+  /**
+   * 更新背景颜色
+   * 仅支持#RRGGBB格式颜色字符串
+   */
+  updateBackground(color: string) {
+    try{
+      this.view?.setBackgroundColor(UTSAndroid.colorWithString(color))
+    }catch(e){
+      //Nothing to do
+    }
+  }
+}

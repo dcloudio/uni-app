@@ -18,7 +18,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   function getNode1Info() : DOMRect {
     const info = uni.getElementById('node1')?.getBoundingClientRect()
     if (info != null) {
@@ -56,7 +56,6 @@
 <style>
   .container {
     flex: 1;
-    background-color: #f8f8f8;
   }
 
   .node {

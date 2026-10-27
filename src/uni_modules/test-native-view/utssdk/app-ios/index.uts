@@ -1,0 +1,35 @@
+import { UIView, UIColor } from "UIKit"
+import { CGFloat } from 'CoreFoundation';
+
+
+export class TestNativeView {
+  $element : UniNativeViewElement;
+  view : UIView | null = null;
+
+  constructor(element : UniNativeViewElement) {
+    this.$element = element;
+    super.init()
+    this.bindView();
+  }
+
+  bindView() {
+    // 构建原生view
+    this.view = new UIView()
+    this.view!.backgroundColor = UIColor.white
+    // 绑定原生view
+    this.$element.bindIOSView(this.view!)
+  }
+
+  destroy() {
+    // 释放 UTS 实例对象，避免内存泄露
+    UTSiOS.destroyInstance(this)
+  }
+
+  /**
+   * 更新背景颜色
+   * 仅支持#RRGGBB格式颜色字符串
+   */
+  updateBackground(color : string) {
+    this.view!.backgroundColor = UTSiOS.colorWithString(color)
+  }
+}

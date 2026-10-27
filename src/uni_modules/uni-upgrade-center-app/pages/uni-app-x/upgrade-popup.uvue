@@ -1,0 +1,698 @@
+<template>
+  <view class="mask flex-center">
+    <view class="content">
+      <view class="content-top">
+        <text class="content-top-text">{{title}}</text>
+        <image class="content-top-image" mode="widthFix"
+          src="/uni_modules/uni-upgrade-center-app/static/app/bg_top.png"></image>
+      </view>
+
+      <view class="content-space"></view>
+
+      <view class="content-body">
+        <view class="content-body-title">
+          <text class="text title content-body-title_title">{{subTitle}}</text>
+          <text class="text version content-body-title_version">v{{version}}</text>
+        </view>
+        <view class="body">
+          <scroll-view class="box-des-scroll">
+            <text class="text box-des">
+              {{contents}}
+            </text>
+          </scroll-view>
+        </view>
+        <view class="footer flex-center">
+          <!-- 跳转应用商店：鸿蒙暂不支持热更新；iOS 仅整包更新跳转，vapor 模式的 wgt 走下载安装 -->
+          <template v-if="needJumpToStore">
+            <button class="content-button" style="border: none;color:#fff;background-color: #1785ff;" type="primary" plain
+              @click="jumpToAppStore">
+              {{downLoadBtnTextiOS}}
+            </button>
+          </template>
+          <template v-else>
+            <template v-if="!downloadSuccess">
+              <view class="progress-box flex-column" v-if="downloading">
+                <progress class="progress" :percent="downLoadPercent" activeColor="#3DA7FF" :show-info="true"
+                  :stroke-width="10" />
+                <view style="width:100%;display: flex;justify-content: space-around;flex-direction: row;">
+                  <text class="text" style="font-size: 14px;">{{downLoadingText}}</text>
+                  <text class="text" style="font-size: 14px;">({{downloadedSize}}/{{packageFileSize}}M)</text>
+                </view>
+              </view>
+
+              <button v-else class="content-button" @click="updateApp">
+                {{downLoadBtnText}}
+              </button>
+            </template>
+
+            <button v-else-if="downloadSuccess && !installed" class="content-button" :loading="installing"
+              :disabled="installing" @click="installPackage">
+              {{installing ? '正在安装……' : '下载完成，立即安装'}}
+            </button>
+
+            <button v-else-if="installed && !isWgt" class="content-button" @click="installPackage">
+              安装未完成，点击安装
+            </button>
+
+            <button v-else-if="installed && !readyPromptHandled" class="content-button" @click="restartApp">
+              安装完毕，点击重启
+            </button>
+          </template>
+        </view>
+      </view>
+
+      <view class="content-bottom">
+        <image v-if="!is_mandatory" class="close-img" mode="widthFix"
+          src="/uni_modules/uni-upgrade-center-app/static/app/app_update_close.png" @click="closeUpdate">
+        </image>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  import { openSchema as utsOpenSchema } from '@/uni_modules/uts-openSchema'
+  import { UniUpgradeCenterResult, StoreListItem, isWgtPackage } from '../../utils/call-check-version'
+  import { platform_iOS, platform_Android, platform_Harmony, probeFileSize, restart } from '../../utils'
+  import { createUpdateManager } from '../../utils/update-manager'
+  // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
+  import { installVaporWgt, getWgtCacheFilePath, getWgtCacheRecord, saveWgtCacheRecord, clearWgtCache, isSameWgtPackage } from '../../utils/install-wgt'
+  // #endif
+  // #ifdef APP-ANDROID
+  import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress, CreateNotificationProgressOptions, FinishNotificationProgressOptions } from '@/uni_modules/uts-progressNotification'
+  // #endif
+
+  const requiredKey = ['version', 'url', 'type']
+  let downloadTask : DownloadTask | null = null;
+  let openSchemePromise : Promise<boolean> | null = null;
+  // 支付宝云等 chunked 响应不返回 Content-Length，onProgressUpdate 的 totalBytesExpectedToWrite 为 -1、progress 为负数，
+  // 需复用 download.ts 的 probeFileSize 探测安装包总大小来计算进度
+  let packageTotalSize : number = 0;
+
+  const openSchema = (url : string) : Promise<boolean> => new Promise<boolean>((resolve, reject) => {
+    try {
+      utsOpenSchema(url)
+      resolve(true)
+    } catch (e) {
+      reject(false)
+    }
+  })
+
+  // 安装
+  const installed = ref<boolean>(false)
+  const readyPromptHandled = ref<boolean>(false)
+  const installing = ref<boolean>(false)
+
+  // 下载
+  const downloadSuccess = ref<boolean>(false)
+  const downloading = ref<boolean>(false)
+
+  const downLoadPercent = ref<number>(0)
+  const downloadedSize = ref<number>(0)
+  const packageFileSize = ref<number>(0)
+
+  // 要安装的本地包地址
+  const tempFilePath = ref<string>('')
+
+  // 默认安装包信息
+  const title = ref<string>('更新日志')
+  const contents = ref<string>('')
+  const version = ref<string>('')
+  const is_mandatory = ref<boolean>(false)
+  const url = ref<string>("")
+  const platform = ref<string[]>([])
+  const store_list = ref<StoreListItem[] | null>(null)
+  // 完整安装包信息（vapor wgt 安装时使用）
+  const packageInfo = ref<UniUpgradeCenterResult | null>(null)
+  const updateManager = createUpdateManager()
+
+  function restartApp() : void {
+    restart()
+  }
+
+  // 可自定义属性
+  const subTitle = ref<string>('发现新版本')
+  const downLoadBtnTextiOS = ref<string>('立即跳转更新')
+  const downLoadBtnText = ref<string>('立即下载更新')
+  const downLoadingText = ref<string>('安装包下载中，请稍后')
+
+  const isiOS = computed(() : boolean => platform.value.includes(platform_iOS))
+  const isHarmony = computed(() : boolean => platform.value.includes(platform_Harmony))
+  const isAndroid = computed(() : boolean => platform.value.includes(platform_Android))
+  const needNotificationProgress = computed(() : boolean => isAndroid.value && !is_mandatory.value)
+  // 是否跳转应用商店更新：
+  // - 鸿蒙：暂不支持热更新，apk 与 wgt 统一跳转
+  // - Android：apk 与 wgt 都下载安装
+  // - iOS：整包更新跳转 AppStore；wgt 在 vapor 模式下支持下载安装热更新
+  const needJumpToStore = computed(() : boolean => {
+    if (isHarmony.value) return true
+    if (isAndroid.value) return false
+    // iOS：整包更新跳转 AppStore
+    if (!isWgtPackage(packageInfo.value)) return true
+    // iOS 的 wgt：vapor 模式支持下载安装热更新，非 vapor 模式维持跳转
+    let vaporSupported = false
+    // #ifdef VUE3-VAPOR
+    vaporSupported = true
+    // #endif
+    return !vaporSupported
+  })
+  const isWgt = computed(() : boolean => isWgtPackage(packageInfo.value))
+
+  function getCurrentDialogPage() : UniPage | null {
+    const pages = getCurrentPages()
+    if (pages.length > 0) {
+      const dialogPages = pages[pages.length - 1].getDialogPages()
+      if (dialogPages.length > 0) {
+        return dialogPages[dialogPages.length - 1]
+      }
+    }
+    return null
+  }
+
+  function closePopup() {
+    downloadSuccess.value = false
+    downloading.value = false
+    downLoadPercent.value = 0
+    downloadedSize.value = 0
+    packageFileSize.value = 0
+    tempFilePath.value = ''
+
+    installing.value = false
+    installed.value = false
+    readyPromptHandled.value = false
+
+    uni.closeDialogPage({
+      dialogPage: getCurrentDialogPage(),
+      fail(e) {
+        console.log('e: ', e);
+      }
+    })
+  }
+
+  function askAbortDownload() {
+    uni.showModal({
+      title: '是否取消下载？',
+      cancelText: '否',
+      confirmText: '是',
+      success: res => {
+        if (res.confirm) {
+          if (downloadTask !== null) downloadTask!.abort()
+          if (needNotificationProgress.value) {
+            // #ifdef APP-ANDROID
+            cancelNotificationProgress();
+            // #endif
+          }
+          closePopup()
+        }
+      }
+    });
+  }
+
+  function closeUpdate() {
+    if (downloading.value && !needNotificationProgress.value) {
+      askAbortDownload()
+      return;
+    }
+    closePopup()
+  }
+
+  function jumpToAppStore() {
+    openSchema(url.value)
+  }
+
+  function show(localPackageInfo : UniUpgradeCenterResult | null) {
+    if (localPackageInfo === null) return;
+    for (let key in localPackageInfo) {
+      if (requiredKey.indexOf(key) != -1 && localPackageInfo[key] === null) {
+        console.error(`参数 ${key} 必填，请检查后重试`)
+        closePopup()
+        return;
+      }
+    }
+    title.value = localPackageInfo.title
+    url.value = localPackageInfo.url
+    contents.value = localPackageInfo.contents
+    is_mandatory.value = (localPackageInfo.effective_is_mandatory ?? false) || localPackageInfo.is_mandatory
+    platform.value = localPackageInfo.platform
+    version.value = localPackageInfo.version
+    store_list.value = localPackageInfo.store_list
+    packageInfo.value = localPackageInfo
+    readyPromptHandled.value = false
+    // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
+    // 校验本地 wgt 缓存：同一个资源包直接复用，避免重复下载（apk 不参与）
+    checkWgtCache()
+    // #endif
+  }
+
+  // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
+  /**
+   * 校验本地 wgt 缓存：
+   * - 与远端包（版本/链接）一致且文件存在时直接进入"下载完成，立即安装"
+   * - 版本过期、与远端不一致或文件缺失（CACHE_PATH 可能被系统清理）时清除缓存
+   */
+  function checkWgtCache() {
+    if (!isWgtPackage(packageInfo.value) || needJumpToStore.value) return
+    const record = getWgtCacheRecord()
+    if (record == null) return
+    const localPath = `${uni.env.CACHE_PATH}${record.fileName}`
+    if (!isSameWgtPackage(record, packageInfo.value!)) {
+      clearWgtCache(localPath)
+      return
+    }
+    try {
+      // 同步校验文件存在性，避免与用户操作的异步窗口
+      uni.getFileSystemManager().accessSync(localPath)
+    } catch (e) {
+      clearWgtCache(localPath)
+      return
+    }
+    tempFilePath.value = localPath
+    downloadSuccess.value = true
+    uni.showToast({
+      icon: 'none',
+      title: '使用已下载的安装包',
+      duration: 1000
+    })
+  }
+  // #endif
+
+  function checkStoreScheme() : Promise<boolean> | null {
+    if (store_list.value !== null) {
+      const storeList : StoreListItem[] = store_list.value!.filter((item : StoreListItem) : boolean => item.enable)
+      if (storeList.length > 0) {
+        if (openSchemePromise === null) {
+          openSchemePromise = Promise.reject() as Promise<boolean>
+        }
+        storeList
+          .sort((cur : StoreListItem, next : StoreListItem) : number => next.priority - cur.priority)
+          .map((item : StoreListItem) : string => item.scheme)
+          .reduce((promise : Promise<boolean>, cur : string) : Promise<boolean> => {
+            openSchemePromise = promise.catch<boolean>(() : Promise<boolean> => openSchema(cur))
+            return openSchemePromise!
+          }, openSchemePromise!)
+        return openSchemePromise!
+      }
+    }
+    return null
+  }
+
+  function downloadFail() {
+    const errMsg = '下载失败，请点击重试'
+    downloadSuccess.value = false;
+    downloading.value = false;
+    downLoadPercent.value = 0;
+    downloadedSize.value = 0;
+    packageFileSize.value = 0;
+    downLoadBtnText.value = errMsg
+    downloadTask = null;
+    if (needNotificationProgress.value) {
+      // #ifdef APP-ANDROID
+      finishNotificationProgress({
+        title: '升级包下载失败',
+        content: '请重新检查更新',
+        onClick() { }
+      } as FinishNotificationProgressOptions);
+      // #endif
+    }
+  }
+
+  function installPackage() {
+    installing.value = true;
+    // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
+    // vapor wgt：先做 SHA256 完整性校验再安装（vapor-harmony 暂不支持热更新）
+    if (isWgtPackage(packageInfo.value)) {
+      installVaporWgt({
+        packageInfo: packageInfo.value!,
+        filePath: tempFilePath.value,
+        onFail: (message : string) => {
+          installing.value = false;
+          installed.value = false;
+          updateManager.notifyUpdateFailed({ taskId: `${version.value}:install`, checkId: 0, packageInfo: packageInfo.value, stage: 'install', code: message.includes('不支持') ? 'UNSUPPORTED_INSTALL_WGT' : null, message, retryable: !message.includes('不支持') })
+          uni.showModal({
+            title: '更新失败',
+            content: message,
+            showCancel: false
+          });
+          // 校验失败需重新下载安装包
+          downloadFail();
+        },
+		onAlreadyLatest: () => { closePopup() },
+         onSuccess: () => {
+           installing.value = false;
+           installed.value = true;
+           readyPromptHandled.value = packageInfo.value!.is_update_prompt ?? false
+           updateManager.notifyUpdateReady(packageInfo.value!)
+        }
+      });
+      return;
+    }
+    // #endif
+    // #ifdef APP
+    uni.installApk({
+      filePath: tempFilePath.value,
+      success: _ => {
+        installing.value = false;
+        installed.value = true;
+      },
+      fail: err => {
+        console.error('installApk fail', err);
+        // 安装失败需要重新下载安装包
+        installing.value = false;
+        installed.value = false;
+        uni.showModal({
+          title: '更新失败，请重新下载',
+          content: `uni.installApk 错误码 ${err.errCode}`,
+          showCancel: false
+        });
+      }
+    });
+    // 不是强制更新直接关闭
+    if (!is_mandatory.value) {
+      closeUpdate()
+    }
+    // #endif
+  }
+
+  function downLoadComplete() {
+    downloadSuccess.value = true;
+    // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
+    // wgt 下载完成：记录缓存信息，供下次进入弹窗时比对复用（apk 不参与）
+    if (isWgtPackage(packageInfo.value)) {
+      saveWgtCacheRecord(packageInfo.value!)
+    }
+    // #endif
+    downloading.value = false;
+    downLoadPercent.value = 0
+    downloadedSize.value = 0
+    packageFileSize.value = 0
+    downloadTask = null;
+    if (needNotificationProgress.value) {
+      // #ifdef APP-ANDROID
+      finishNotificationProgress({
+        title: "安装升级包",
+        content: "下载完成",
+        onClick() { }
+      } as FinishNotificationProgressOptions)
+      installPackage();
+      // #endif
+      return
+    }
+    // 强制更新，直接安装
+    if (is_mandatory.value) {
+      installPackage();
+    }
+  }
+
+  function downloadPackage() {
+    // #ifdef APP-ANDROID
+    if (needNotificationProgress.value && packageInfo.value != null) {
+      updateManager.startNotificationDownload(packageInfo.value!)
+      closePopup()
+      return
+    }
+    // #endif
+    //下载包
+    packageTotalSize = 0;
+    // vapor 的 wgt 资源包指定落盘路径（后缀跟随下载链接）
+    let downloadFilePath = ''
+    // #ifdef VUE3-VAPOR && APP && !APP-HARMONY
+    if (isWgtPackage(packageInfo.value)) {
+      downloadFilePath = getWgtCacheFilePath(url.value)
+      // 下载前清除旧缓存记录与残留文件（命中缓存复用不会走到下载流程）
+      clearWgtCache(downloadFilePath)
+    }
+    // #endif
+
+    const handleDownloadSuccess = (res : DownloadFileSuccess) => {
+      if (res.statusCode == 200) {
+        // 传 filePath 时部分平台 tempFilePath 为空，回退使用落盘路径
+        tempFilePath.value = res.tempFilePath.length > 0 ? res.tempFilePath : downloadFilePath
+        downLoadComplete()
+      } else {
+        console.log('downloadFile err: ', res);
+        downloadFail()
+      }
+    }
+    const handleDownloadFail = (err : any) => {
+      console.log('downloadFile err: ', err);
+      downloadFail()
+    }
+
+    if (downloadFilePath.length > 0) {
+      downloadTask = uni.downloadFile({
+        url: url.value,
+        filePath: downloadFilePath,
+        success: handleDownloadSuccess,
+        fail: handleDownloadFail
+      });
+    } else {
+      downloadTask = uni.downloadFile({
+        url: url.value,
+        success: handleDownloadSuccess,
+        fail: handleDownloadFail
+      });
+    }
+    if (downloadTask !== null) {
+      downloading.value = true;
+      if (needNotificationProgress.value) {
+        closePopup()
+      }
+      // 支付宝云等 chunked 响应无 Content-Length，并行探测安装包总大小
+      probeFileSize(url.value, (size : number) => {
+        if (size > 0) {
+          packageTotalSize = size
+        }
+      })
+      downloadTask!.onProgressUpdate(res => {
+        // chunked 响应 totalBytesExpectedToWrite 为 -1，用探测到的总大小计算进度
+        const totalSize = res.totalBytesExpectedToWrite > 0 ? res.totalBytesExpectedToWrite : packageTotalSize
+        downloadedSize.value = parseFloat((res.totalBytesWritten / Math.pow(1024, 2)).toFixed(2));
+        if (totalSize > 0) {
+          downLoadPercent.value = parseFloat((res.totalBytesWritten / totalSize * 100).toFixed(0));
+          packageFileSize.value = parseFloat((totalSize / Math.pow(1024, 2)).toFixed(2));
+        } else {
+          downLoadPercent.value = 0;
+          packageFileSize.value = 0;
+        }
+        if (needNotificationProgress.value) {
+          // #ifdef APP-ANDROID
+          createNotificationProgress({
+            title: "升级中心正在下载安装包……",
+            content: `${downLoadPercent.value}%`,
+            progress: downLoadPercent.value,
+            onClick: () => {
+              if (!downloadSuccess.value) {
+                askAbortDownload()
+              }
+            }
+          } as CreateNotificationProgressOptions)
+          // #endif
+        }
+      });
+    }
+  }
+
+  function updateApp() {
+    // 应用市场 scheme 跳转仅 Android 支持（store_list 为 Android 应用市场），其他平台直接下载安装
+    if (!isAndroid.value) {
+      downloadPackage()
+      return
+    }
+    const checkStoreSchemeResult = checkStoreScheme()
+    if (checkStoreSchemeResult !== null) {
+      checkStoreSchemeResult
+        .then(_ => { })
+        .catch(() => { downloadPackage() })
+        .finally(() => {
+          openSchemePromise = null
+        })
+    } else { downloadPackage() }
+  }
+
+  onLoad((onLoadOptions : OnLoadOptions) => {
+    const local_storage_key : string | null = onLoadOptions['local_storage_key']
+    if (local_storage_key == null) {
+      console.error('local_storage_key为空，请检查后重试')
+      closePopup()
+      return;
+    };
+    const localPackageInfo = uni.getStorageSync(local_storage_key);
+    if (localPackageInfo == null) {
+      console.error('安装包信息为空，请检查后重试')
+      closePopup()
+      return;
+    };
+    show(JSON.parse<UniUpgradeCenterResult>(JSON.stringify(localPackageInfo)) as UniUpgradeCenterResult)
+  })
+
+  onBackPress((options : OnBackPressOptions) : boolean | null => {
+    if (is_mandatory.value) return true
+    if (!needNotificationProgress.value) {
+      if (downloadTask !== null) {
+        downloadTask!.abort()
+      }
+    }
+    return false
+  })
+</script>
+
+<style>
+  page {
+    background-color: transparent;
+  }
+
+  .flex-center {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .65);
+  }
+
+  .content {
+    position: relative;
+    top: 0;
+    width: 600rpx;
+    background-color: transparent;
+  }
+
+  .text {
+    font-family: Source Han Sans CN;
+  }
+
+  .content-top {
+    width: 100%;
+    border-bottom-color: #fff;
+    border-bottom-width: 15px;
+    border-bottom-style: solid;
+  }
+
+  .content-space {
+    width: 100%;
+    height: 120px;
+    background-color: #fff;
+    position: absolute;
+    top: 30%;
+    z-index: -1;
+  }
+
+  .content-top-image {
+    width: 100%;
+    position: relative;
+    bottom: -10%;
+  }
+
+  .content-top-text {
+    font-size: 22px;
+    font-weight: bold;
+    color: #F8F8FA;
+    position: absolute;
+    width: 65%;
+    top: 50%;
+    left: 25px;
+    z-index: 1;
+  }
+
+  .content-body {
+    box-sizing: border-box;
+    padding: 0 25px;
+    width: 100%;
+    background-color: #fff;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  .content-body-title {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .content-body-title_version {
+    padding-left: 10px;
+    color: #fff;
+    font-size: 10px;
+    margin-left: 5px;
+    padding: 2px 4px;
+    border-radius: 10px;
+    background: #50aefd;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #3DA7FF;
+    line-height: 38px;
+  }
+
+  .footer {
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .box-des-scroll {
+    box-sizing: border-box;
+    padding: 0 15px;
+    height: 100px;
+  }
+
+  .box-des {
+    font-size: 13px;
+    color: #000000;
+    line-height: 25px;
+  }
+
+  .progress-box {
+    width: 100%;
+  }
+
+  .progress {
+    width: 90%;
+    height: 20px;
+  }
+
+  .content-bottom {
+    height: 75px;
+  }
+
+  .close-img {
+    width: 35px;
+    height: 35px;
+    z-index: 1000;
+    position: relative;
+    bottom: -30%;
+    left: 50%;
+    margin-left: -17px;
+  }
+
+  .content-button {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    /* 在蒸汽上使用 height、line-height 居中时，需要设置 padding: 0; */
+    padding: 0;
+
+    font-size: 15px;
+    font-weight: 400;
+    border-radius: 20px;
+    border: none;
+    color: #fff;
+
+    text-align: center;
+
+    background-color: #1785ff;
+  }
+
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

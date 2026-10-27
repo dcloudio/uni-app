@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view class="uni-padding-wrap">
       <page-head title="onLoad 生命周期调用 uni api 测试" />
       <text v-if="isTrueValue">v-if with true</text>
@@ -10,16 +7,14 @@
       <text v-show="isFalseValue">v-show with false</text>
       <text>msg: {{ msg }}</text>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const isTrueValue = ref(false)
   const isFalseValue = ref(true)
   const msg = ref('default msg')
+  const AUTO_TEST_TOAST_DURATION = 20000
 
   function adjustData() {
     isTrueValue.value = true
@@ -55,21 +50,23 @@
     })
   }
 
-  function showToast() {
+  function showToast(autoTest : boolean = false) {
     uni.showToast({
       title: 'test title',
       icon: 'success',
-      duration: 2000
+      duration: autoTest ? AUTO_TEST_TOAST_DURATION : 2000
     })
   }
 
-  function showLoading() {
+  function showLoading(autoTest : boolean = false) {
     uni.showLoading({
       title: 'test title',
     })
-    setTimeout(() => {
-      uni.hideLoading()
-    }, 2000)
+    if (!autoTest) {
+      setTimeout(() => {
+        uni.hideLoading()
+      }, 2000)
+    }
   }
 
   function showModal() {
@@ -90,8 +87,17 @@
     uni.hideActionSheet()
   }
 
+  function hideToast() {
+    uni.hideToast()
+  }
+
+  function hideLoading() {
+    uni.hideLoading()
+  }
+
   onLoad((options : OnLoadOptions) => {
     const type = options['type']
+    const autoTest = options['autoTest'] == 'true'
     switch (type) {
       case 'adjustData':
         adjustData()
@@ -112,10 +118,10 @@
         switchTab()
         break;
       case 'showToast':
-        showToast()
+        showToast(autoTest)
         break;
       case 'showLoading':
-        showLoading()
+        showLoading(autoTest)
         break;
       case 'showModal':
         showModal()
@@ -126,8 +132,10 @@
     }
   })
 
-  // #ifdef WEB
   onUnload(() => {
+    hideToast()
+    hideLoading()
+    // #ifdef WEB
     // web 端页面销毁前,关闭 modal 和 actionsheet
     // @ts-ignore
     const modalBtn = document.querySelector('.uni-modal__btn')
@@ -139,8 +147,8 @@
     if (actionSheetBtn) {
       actionSheetBtn.click()
     }
+    // #endif
   })
-  // #endif
 
-  defineExpose({hideActionSheet})
+  defineExpose({hideActionSheet, hideToast, hideLoading})
 </script>

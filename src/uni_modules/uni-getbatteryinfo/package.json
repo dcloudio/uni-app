@@ -1,7 +1,7 @@
 {
   "id": "uni-getbatteryinfo",
   "displayName": "uni-getbatteryinfo",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "使用uts开发，实现在多个平台获取电池电量功能",
   "keywords": [
     "battery"
@@ -44,7 +44,8 @@
     "platforms": {
       "cloud": {
         "tcb": "y",
-        "aliyun": "y"
+        "aliyun": "y",
+        "alipay": "n"
       },
       "client": {
         "Vue": {

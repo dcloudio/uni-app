@@ -1,0 +1,32 @@
+<template>
+  <view>
+    <view id="longPressView" style="width: 100%;height: 400px;background-color: aquamarine;" @longpress="onLongPress">
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  type DataType = {
+    isLongPressTrigger : boolean,
+    eventDomRect : DOMRect | null
+  }
+
+  // 使用reactive包装数据，便于自动化测试获取
+  const data = reactive({ isLongPressTrigger: false, eventDomRect: null as DOMRect | null } as DataType)
+
+  onReady(() => {
+    let element = uni.getElementById("longPressView")
+    data.eventDomRect = element?.getBoundingClientRect();
+  })
+  function onLongPress() {
+    data.isLongPressTrigger = true
+    console.log("longPress")
+  }
+  defineExpose({
+    data
+  })
+</script>
+
+<style>
+
+</style>

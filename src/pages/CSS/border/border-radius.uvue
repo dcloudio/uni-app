@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -13,10 +10,18 @@
       </view>
 
       <view>
+        <text>border-radius: 10rpx</text>
+        <view class="demo-box">
+          <view class="common" style="border-radius: 10rpx;"></view>
+          <view class="common" style="border-radius: 10rpx;" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>border-radius: 10% 和阴影</text>
         <view class="demo-box" style="height: 60px;">
-          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px  rgba(0, 0, 0, .3);"></view>
-          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px  rgba(0, 0, 0, .3);" flatten></view>
+          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px rgba(0, 0, 0, .3);"></view>
+          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px rgba(0, 0, 0, .3);" flatten></view>
         </view>
       </view>
 
@@ -53,6 +58,38 @@
       </view>
 
       <view>
+        <text>border-top-left-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-top-left-radius: 20%"></view>
+          <view class="common" style="border-top-left-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-top-right-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-top-right-radius: 20%"></view>
+          <view class="common" style="border-top-right-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-bottom-left-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-bottom-left-radius: 20%"></view>
+          <view class="common" style="border-bottom-left-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-bottom-right-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-bottom-right-radius: 20%"></view>
+          <view class="common" style="border-bottom-right-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>border-radius: 150px（长宽不同形成扁圆）</text>
         <view class="demo-box">
           <view class="common" style="border-radius: 150px"></view>
@@ -65,6 +102,14 @@
         <view class="demo-box">
           <view class="common-square" style="border-radius: 150px"></view>
           <view class="common-square" style="border-radius: 150px" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-radius: 999px（border-radius超出边界形成正圆）</text>
+        <view class="demo-box">
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;"></view>
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;" flatten></view>
         </view>
       </view>
 
@@ -130,7 +175,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-radius </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -203,21 +248,10 @@
         <input-data :defaultValue="data.borderRadius" title="border-radius 自定义值" type="text" @confirm="inputChangeBorderRadius"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-radius: 10px 和 border-top-left-radius: 10px</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-radius: 10px"></native-view>
-          <native-view class="common" style="border-top-left-radius: 10px"></native-view>
-        </view>
-      </view>
-
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const borderRadiusEnum: ItemType[] = [
@@ -225,8 +259,10 @@
     { value: 1, name: '0' },
     { value: 2, name: '5px' },
     { value: 3, name: '20px' },
-    { value: 4, name: '0%' },
-    { value: 5, name: '50%' }
+    { value: 4, name: '10rpx' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '50%' },
+    { value: 7, name: '100%' }
   ]
 
   const data = reactive({
@@ -306,6 +342,11 @@
     width: 150px;
     height: 150px;
     background-color: gray;
+  }
+
+  .square {
+    width: 150px;
+    height: 150px;
   }
 
   .text-radius {

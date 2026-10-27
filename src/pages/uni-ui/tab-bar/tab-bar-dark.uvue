@@ -1,0 +1,217 @@
+<template>
+	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-content-height-full="tabContentHeightFull" @change="handleChange">
+		<!-- 内容区域 -->
+		<uni-tab-content :style="tabContentStyle">
+			<!-- TODO 小程序下这些Class不生效，界面没有变黑！ -->
+			<tabContent1 ref="tabContent1Ref" class="dark-tab-content dark-tab-content-home" @contentscroll="handleTabContent1Scroll" />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent2 class="dark-tab-content dark-tab-content-api" />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent3 class="dark-tab-content dark-tab-content-css" />
+		</uni-tab-content>
+		<uni-tab-content :style="tabContentStyle">
+			<tabContent4 class="dark-tab-content dark-tab-content-template" />
+		</uni-tab-content>
+
+		<!-- 底部选项卡 -->
+		<uni-tab-bar class="dark-tab-list">
+			<!-- 图标高度24，文字字号10px，文字高度是12~14px，角标不能在图标的正右上角，需要向下偏移1px，避免角标画出tab-list之外) -->
+			<uni-tab-item>
+				<view class="first-tab-button" @click="handleFirstTabClick">
+					<view class="first-tab-animator">
+						<view class="first-tab-face"
+							:class="showBackToTop ? 'first-tab-default-hidden' : 'first-tab-default-visible'">
+							<image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image"></image>
+							<text class="tab-label" :class="activeIndex == 0 ? 'tab-label-active' : ''">首页</text>
+						</view>
+						<view class="first-tab-face"
+							:class="showBackToTop ? 'first-tab-backtop-visible' : 'first-tab-backtop-hidden'">
+							<text class="tab-arrow-icon" :class="activeIndex == 0 ? 'tab-arrow-icon-active' : ''">↑</text>
+							<text class="tab-label" :class="activeIndex == 0 ? 'tab-label-active' : ''">回到顶部</text>
+						</view>
+					</view>
+				</view>
+			</uni-tab-item>
+			<uni-tab-item badge-text="99+">
+				<image :src="activeIndex == 1 ? '/static/apiHL.png' : '/static/api.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 1 ? 'tab-label-active' : ''">API</text>
+			</uni-tab-item>
+			<uni-tab-item>
+				<image :src="activeIndex == 2 ? '/static/cssHL.png' : '/static/css.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 2 ? 'tab-label-active' : ''">CSS</text>
+			</uni-tab-item>
+			<uni-tab-item badge-text="">
+				<image :src="activeIndex == 3 ? '/static/templateHL.png' : '/static/template.png'" class="tab-icon-image"></image>
+				<text class="tab-label" :class="activeIndex == 3 ? 'tab-label-active' : ''">模板</text>
+			</uni-tab-item>
+		</uni-tab-bar>
+	</uni-tab>
+</template>
+
+<script setup lang="ts">
+	import tabContent1 from './tab-content1.uvue'
+	import tabContent2 from './tab-content2.uvue'
+	import tabContent3 from './tab-content3.uvue'
+	import tabContent4 from './tab-content4.uvue'
+	const TAB_CONTENT1_SWITCH_OFFSET = 100
+	const tabContent1Ref = ref<ComponentPublicInstance | null>(null)
+	let tabContentHeightFull = false
+	// #ifdef MP-WEIXIN
+	tabContentHeightFull = true
+	// #endif
+	let tabContentStyle = ''
+	// #ifdef MP-ALIPAY
+	tabContentStyle = 'flex: 1; min-height: 0px;'
+	// #endif
+
+	const activeIndex = ref<number>(0)
+	const showBackToTop = ref<boolean>(false)
+	let lastTabContent1ScrollTop = 0
+
+	function handleTabContent1Scroll(scrollTop : number) : void {
+		lastTabContent1ScrollTop = scrollTop
+		if (activeIndex.value == 0) {
+			showBackToTop.value = scrollTop > TAB_CONTENT1_SWITCH_OFFSET
+		}
+	}
+
+	function handleFirstTabClick() : void {
+		if (activeIndex.value == 0 && showBackToTop.value) {
+			const tabContent1Instance = tabContent1Ref.value
+			if (tabContent1Instance != null) {
+				tabContent1Instance.$callMethod('scrollToTop')
+			}
+		}
+	}
+
+	function handleChange(index : number) : void {
+		activeIndex.value = index
+		if (index == 0) {
+			showBackToTop.value = lastTabContent1ScrollTop > TAB_CONTENT1_SWITCH_OFFSET
+		} else {
+			showBackToTop.value = false
+		}
+		switch (index) {
+			case 0:
+				uni.setNavigationBarTitle({ title: '组件' })
+				break
+			case 1:
+				uni.setNavigationBarTitle({ title: 'API' })
+				break
+			case 2:
+				uni.setNavigationBarTitle({ title: 'CSS' })
+				break
+			case 3:
+				uni.setNavigationBarTitle({ title: '模板' })
+				break
+		}
+	}
+</script>
+
+	<style>
+		page {
+			background-color: #0f172a;
+		}
+
+	.first-tab-button {
+		width: 100%;
+		height: 100%;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.first-tab-animator {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.first-tab-face {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		top: 0;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		transition-property: opacity, transform;
+		transition-duration: 220ms;
+		transition-timing-function: ease;
+	}
+
+	.first-tab-default-visible {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+
+	.first-tab-default-hidden {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+
+	.first-tab-backtop-visible {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+
+	.first-tab-backtop-hidden {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+
+	.dark-tab-list {
+		background-color: #0f172a;
+		border-top-color: rgba(255,255,255,0.33);
+	}
+
+	.dark-tab-content {
+		background-color: #111827;
+	}
+
+	.dark-tab-content-home {
+		background-color: #111827;
+	}
+
+	.dark-tab-content-api {
+		background-color: #141c2f;
+	}
+
+	.dark-tab-content-css {
+		background-color: #102126;
+	}
+
+	.dark-tab-content-template {
+		background-color: #161a31;
+	}
+
+	.tab-icon-image {
+		height: 24px;
+		width: 24px;
+	}
+
+	.tab-arrow-icon {
+		line-height: 20px;
+		margin-bottom: 2px;
+		color: rgba(255,255,255,0.68);
+	}
+
+	.tab-arrow-icon-active {
+		color: #7ce0b8;
+	}
+
+	.tab-label {
+		font-size: 10px;
+		color: rgba(255,255,255,0.62);
+	}
+
+	.tab-label-active {
+		color: #f3f7fb;
+	}
+</style>

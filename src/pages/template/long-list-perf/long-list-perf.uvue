@@ -1,12 +1,12 @@
 <template>
   <view class="page">
-    <!-- #ifndef MP -->
-    <fps :interval="100" @updateFps="onFpsUpdate" />
+    <!-- #ifndef MP || (APP-ANDROID && VUE3-VAPOR) -->
+    <fps :interval="50" />
     <!-- #endif -->
     <view class="header">
       <text class="header-info">{{ listData.length }}行 | 每行40+元素 | 共近20万元素 | 10+层嵌套 | 圆角边框阴影 | 视频</text>
     </view>
-    <list-view ref="listViewRef" style="flex: 1;" :scroll-with-animation="true" @scroll="onScroll" @scrollend="onScrollEnd">
+    <list-view ref="listViewRef" style="flex: 1;" :scroll-with-animation="true" @scrollend="onScrollEnd" android-scrollbar-draggable>
       <list-item v-for="(item, index) in listData" :key="item.id" :type="item.type">
 
         <!-- ========== Type 1: 单图配文 ========== -->
@@ -15,7 +15,7 @@
             <text class="item-title" @click.stop="onTitleClick(item.id + 1)">#{{ item.id + 1 }} Type1 单图配文</text>
             <view class="tag-row" flatten>
               <text class="tag-sm" flatten>置顶</text>
-              <text class="tag-sm hot" flatten>热搜</text>
+              <text class="tag-sm tag-sm-hot" flatten>热搜</text>
             </view>
           </view>
           <view class="type1-body b2" flatten>
@@ -54,7 +54,7 @@
                         <view class="nest-row b9" flatten>
                           <text class="tag-pill" flatten>L9</text>
                           <view class="nest-row b10" flatten>
-                            <time-format :timestamp="item.timestamp" format="relative" flatten></time-format>
+                            <uni-time-format :timestamp="item.timestamp" format="relative" flatten></uni-time-format>
                           </view>
                         </view>
                       </view>
@@ -109,7 +109,7 @@
                         <text class="tag-pill" flatten>L8</text>
                         <view class="nest-row b9" flatten>
                           <view class="nest-row b10" flatten>
-                            <time-format :timestamp="item.timestamp" format="relative" flatten></time-format>
+                            <uni-time-format :timestamp="item.timestamp" format="relative" flatten></uni-time-format>
                           </view>
                         </view>
                       </view>
@@ -172,7 +172,7 @@
                         <text class="author-text" flatten>{{ item.author }}</text>
                         <view class="nest-row b9" flatten>
                           <view class="nest-row b10" flatten>
-                            <time-format :timestamp="item.timestamp" format="date" flatten></time-format>
+                            <uni-time-format :timestamp="item.timestamp" format="date" flatten></uni-time-format>
                           </view>
                         </view>
                       </view>
@@ -210,7 +210,7 @@
                             <text class="card-info-text" flatten>进行中</text>
                             <view class="card-row b9" flatten>
                               <view class="card-row b10" flatten>
-                                <time-format :timestamp="item.timestamp" format="time" flatten></time-format>
+                                <uni-time-format :timestamp="item.timestamp" format="time" flatten></uni-time-format>
                               </view>
                             </view>
                           </view>
@@ -256,7 +256,7 @@
                         <text class="tag-pill" flatten>L8</text>
                         <view class="nest-row b9" flatten>
                           <view class="nest-row b10" flatten>
-                            <time-format :timestamp="item.timestamp" format="datetime" flatten></time-format>
+                            <uni-time-format :timestamp="item.timestamp" format="datetime" flatten></uni-time-format>
                           </view>
                         </view>
                       </view>
@@ -275,8 +275,8 @@
   </view>
 </template>
 
-<script setup lang="uts">
-  import { generateMockList, type ListItemData } from './mock-data.uts'
+<script setup lang="ts">
+  import { generateMockList, type ListItemData } from './mock-data.ts'
 
   // 使用预生成的数据
   const listData = ref<ListItemData[]>([])
@@ -302,60 +302,77 @@
     })
   }
 
-  const fpsArr : number[] = []
-  const fpsTimeArr : number[] = []
-  let _startFpsCounter = false
   let startFpsCounter = false
-  function onFpsUpdate(fps : number) {
-    if (startFpsCounter) {
-      fpsArr.push(fps)
-      fpsTimeArr.push(Date.now())
+  type FpsMonitorResult = {
+    frameCount: number
+    duration: number
+    fpsArr: number[]
+  }
+  function startFpsMonitor(startTime: number, callback: (result: FpsMonitorResult) => void) {
+    let lastTime = startTime
+    let frameCount = 0
+    const fpsArr: number[] = []
+    function updateFPS(currentTime: number) {
+      frameCount++
+      const delta = currentTime - lastTime
+      lastTime = currentTime
+      const currentFps = Math.round(1000 / delta)
+      fpsArr.push(currentFps)
+      if (startFpsCounter) {
+        requestAnimationFrame((currentTime) => {
+          updateFPS(currentTime)
+        })
+      } else {
+        const duration = currentTime - startTime
+        callback({
+          frameCount,
+          duration,
+          fpsArr
+        })
+      }
     }
+    requestAnimationFrame((currentTime) => {
+      updateFPS(currentTime)
+    })
   }
   function scrollToTop() {
     if (listViewRef.value) {
-      fpsArr.length = 0
-      fpsTimeArr.length = 0
-      _startFpsCounter = true
-      listViewRef.value.scrollTop = 0
-    }
-  }
-  function onScroll() {
-    if(_startFpsCounter) {
-      startFpsCounter = true
-      _startFpsCounter = false
+      if(!startFpsCounter) {
+        startFpsCounter = true
+        requestAnimationFrame((currentTime) => {
+          startFpsMonitor(currentTime, (result) => {
+            const avgFps = result.frameCount / (result.duration / 1000)
+            const maxFps = Math.max(...result.fpsArr)
+            const minFps = Math.min(...result.fpsArr)
+            console.log(`平均FPS: ${avgFps.toFixed(2)}, 最高FPS: ${maxFps}, 最低FPS: ${minFps}`)
+          })
+          listViewRef.value!.scrollTop = 0
+        })
+      } else {
+        listViewRef.value!.scrollTop = 0
+      }
     }
   }
   function onScrollEnd() {
-    if (fpsArr.length === 0) {
-      return
-    }
-    // 使用fpsTimeArr计算时间加权平均fps
-    let avgFps = 0
-    if (fpsTimeArr.length > 1) {
-      const totalTime = fpsTimeArr[fpsTimeArr.length - 1] - fpsTimeArr[0]
-      let weightedSum = 0
-      for (let i = 1; i < fpsArr.length; i++) {
-        const duration = fpsTimeArr[i] - fpsTimeArr[i - 1]
-        weightedSum += fpsArr[i] * duration
-      }
-      avgFps = totalTime > 0 ? weightedSum / totalTime : 0
-    } else if (fpsArr.length > 0) {
-      avgFps = fpsArr[0]
-    }
-    const minFps = Math.min(...fpsArr)
-    const maxFps = Math.max(...fpsArr)
-    console.log(`平均FPS: ${avgFps.toFixed(2)}, 最高FPS: ${maxFps}, 最低FPS: ${minFps}`)
     startFpsCounter = false
-    fpsArr.length = 0
-    fpsTimeArr.length = 0
   }
+
+  function jest_scrollTo(scrollTop : number) : boolean {
+    if (listViewRef.value == null) {
+      return false
+    }
+    listViewRef.value.scrollTop = scrollTop
+    return true
+  }
+
+  defineExpose({
+    jest_scrollTo,
+  })
 </script>
 
 <style>
   .page {
     flex: 1;
-    background-color: #e0e0e0;
   }
 
   .header {
@@ -458,7 +475,7 @@
   .item {
     margin: 4px 6px;
     padding: 6px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
@@ -468,13 +485,13 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 4px;
-    background-color: #f9f9f9;
+    background-color: var(--active-background-color, #f9f9f9);
   }
 
   .item-title {
     font-size: 13px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color, #333333);
   }
 
   .tag-row {
@@ -493,22 +510,22 @@
 
   .tag-sm {
     font-size: 9px;
-    color: #666;
-    background-color: #eee;
+    color: var(--text-color, #666666);
+    background-color: var(--active-background-color, #eeeeee);
     padding: 1px 3px;
     border-radius: 2px;
     margin-right: 4px;
   }
 
-  .tag-sm.hot {
+  .tag-sm-hot {
     color: #e74c3c;
     background-color: #fadbd8;
   }
 
   .tag-pill {
     font-size: 9px;
-    color: #555;
-    background-color: #f0f0f0;
+    color: var(--text-color, #555555);
+    background-color: var(--active-background-color, #f0f0f0);
     padding: 1px 4px;
     border-radius: 8px;
     margin-right: 4px;
@@ -566,19 +583,14 @@
   .content-title {
     font-size: 13px;
     font-weight: bold;
-    color: #333;
-    /* #ifdef APP-ANDROID || APP-IOS  */
-    lines: 1;
-    /* #endif */
+    color: var(--text-color, #333333);
     text-overflow: ellipsis;
   }
 
   .content-desc {
     font-size: 11px;
-    color: #666;
-    /* #ifdef APP-ANDROID || APP-IOS */
-    lines: 1;
-    /* #endif */
+    color: var(--text-color, #666666);
+    opacity: 0.75;
     text-overflow: ellipsis;
   }
 
@@ -596,13 +608,13 @@
 
   .split-line {
     font-size: 9px;
-    color: #ddd;
+    color: var(--border-color, #dddddd);
     margin: 0 4px;
   }
 
   .author-text {
     font-size: 9px;
-    color: #999;
+    color: var(--active-color, #999999);
   }
 
   .filler-area {
@@ -652,7 +664,7 @@
 
   .view-count {
     font-size: 9px;
-    color: #aaa;
+    color: var(--active-color, #aaaaaa);
     margin-left: 4px;
     margin-right: 4px;
   }
@@ -693,7 +705,7 @@
   }
 
   .type4-card {
-    background-color: #fff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 8px;
     padding: 4px 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -727,16 +739,13 @@
 
   .card-title {
     font-size: 12px;
-    color: #333;
+    color: var(--text-color, #333333);
     font-weight: bold;
-    /* #ifdef APP-ANDROID */
-    lines: 1;
-    /* #endif */
   }
 
   .card-sub {
     font-size: 9px;
-    color: #999;
+    color: var(--active-color, #999999);
   }
 
   .card-info-text {
@@ -781,7 +790,21 @@
 
   .info-text {
     font-size: 9px;
-    color: #666;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-sm-hot {
+      color: #ff9a91;
+      background-color: #4a2220;
+    }
+
+    .author-text,
+    .view-count,
+    .card-sub {
+      color: #b8b8b8;
+    }
   }
 
   .scroll-top-top-btn {

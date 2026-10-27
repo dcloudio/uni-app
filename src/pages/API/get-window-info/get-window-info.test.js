@@ -1,10 +1,16 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
-
-const PAGE_PATH = '/pages/API/get-window-info/get-window-info'
+const isMP = platformInfo.startsWith('mp')
 
 describe('ExtApi-GetWindowInfo', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
 
+  const PAGE_PATH = '/pages/API/get-window-info/get-window-info'
   let page;
   let res;
   const numberProperties = [

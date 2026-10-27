@@ -1,16 +1,37 @@
+jest.setTimeout(30000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 
 const PAGE_PATH = '/pages/component/button/button'
 
 describe('Button.uvue', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
+  let screenShotOptions = { fullPage: true }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
+    const windowInfo = await program.callUniMethod('getWindowInfo')
+    screenShotOptions = {
+      fullPage: true,
+      area: {
+        x: windowInfo.safeArea.left,
+        width: windowInfo.safeArea.right - windowInfo.safeArea.left - 10
+      }
+    }
   })
 
   async function setPageData(newData) {
@@ -41,14 +62,15 @@ describe('Button.uvue', () => {
     const elements = await page.$$('.btn')
     expect(elements.length).toBe(1)
   })
-  if (!isDom2) {
-    it('text', async () => {
-      const textBtn = await page.$('.btn')
-      expect(await textBtn.text()).toEqual('uni-app-x')
-      await setPageData({text: 'uni-app-x button'})
-      expect(await textBtn.text()).toEqual('uni-app-x button')
-    })
-  }
+
+  it('text', async () => {
+    const textBtn = await page.$('.btn')
+    expect(await textBtn.text()).toEqual('uni-app-x')
+    await setPageData({text: 'uni-app-x button'})
+    await page.waitFor(100)
+    expect(await textBtn.text()).toEqual('uni-app-x button')
+  })
+
   it('type', async () => {
     const btn = await page.$('.btn')
     expect(await btn.property('type')).toBe('default')
@@ -65,22 +87,16 @@ describe('Button.uvue', () => {
   })
   it('plain', async () => {
     const btn = await page.$('.btn')
-    // TODO
-    const newValue1 = await btn.property('plain')
-    expect(newValue1.toString()).toBe(false + '')
+    expect(await btn.property('plain')).toBe(false)
     await setPageData({plain_boolean: true})
-    const newValue2 = await btn.property('plain')
-    expect(newValue2.toString()).toBe(true + '')
+    expect(await btn.property('plain')).toBe(true)
   })
   it('disabled', async () => {
     const btn = await page.$('.btn')
-    // TODO
     await setPageData({disabled_boolean: false})
-    const newValue1 = await btn.property('disabled')
-    expect(newValue1.toString()).toBe(false + '')
+    expect(await btn.property('disabled')).toBe(false)
     await setPageData({disabled_boolean: true})
-    const newValue2 = await btn.property('disabled')
-    expect(newValue2.toString()).toBe(true + '')
+    expect(await btn.property('disabled')).toBe(true)
   })
 
   it("checkUniButtonElement", async () => {
@@ -94,6 +110,7 @@ describe('Button.uvue', () => {
   it("setbuttonEmpty", async () => {
     const textBtn = await page.$('.btn')
     await setPageData({text: ''})
+    await page.waitFor(100)
     expect(await textBtn.text()).toEqual('')
   })
 
@@ -116,11 +133,9 @@ describe('Button.uvue', () => {
     })
     await page.waitFor(100);
     expect(await btn.property('size')).toBe('default')
-    expect(await btn.property('plain')).toBe('true')
+    expect(await btn.property('plain')).toBe(true)
     expect(await btn.property('type')).toBe('primary')
-    const image1 = await program.screenshot({
-      fullPage: true
-    });
+    const image1 = await program.screenshot(screenShotOptions);
     expect(image1).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'button-screenshot-plain+primary+default'
     }});
@@ -134,9 +149,7 @@ describe('Button.uvue', () => {
       default_style: true
     })
     await page.waitFor(100);
-    const image2 = await program.screenshot({
-      fullPage: true
-    });
+    const image2 = await program.screenshot(screenShotOptions);
     expect(image2).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'custom-button-screenshot-plain+primary+default'
     }});
@@ -150,9 +163,7 @@ describe('Button.uvue', () => {
       default_style: false
     })
     await page.waitFor(100);
-    const image3 = await program.screenshot({
-      fullPage: true
-    });
+    const image3 = await program.screenshot(screenShotOptions);
     expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'custom-button-screenshot-plain+primary+default-changeToDefault'
     }});
@@ -163,26 +174,33 @@ describe('Button.uvue', () => {
 
 describe('Buttonstatus.uvue', () => {
   let page
+  let screenShotOptions = { fullPage: true }
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/button/buttonstatus')
     await page.waitFor('button')
+    const windowInfo = await program.callUniMethod('getWindowInfo')
+    screenShotOptions = {
+      fullPage: true,
+      area: {
+        x: windowInfo.safeArea.left,
+        width: windowInfo.safeArea.right - windowInfo.safeArea.left - 10
+      }
+    }
   })
 
   test('newline', async () => {
-    const image = await program.screenshot({
-      fullPage: true,
-    });
+    const image = await program.screenshot(screenShotOptions);
     expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'buttonstatus-newline'
     }});
   })
 
   test('loading-class', async () => {
-    if (!isDom2) {
+    if (!isVapor || isMP) {
       expect(1).toBe(1)
       return
     }
-    
+
     const btn = await page.$('.loading-class')
     expect(await btn.attribute('loading-class')).toContain('custom-loading')
   })
@@ -193,11 +211,36 @@ describe('Buttonstatus.uvue', () => {
 
     await page.waitFor(100);
 
-    const image = await program.screenshot({
-      fullPage: true,
-    });
+    const image = await program.screenshot(screenShotOptions);
     expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'buttonstatus-disabled'
+    }});
+  })
+
+  test('button-hover', async () => {
+    await page.callMethod('set_disabled_false')
+    await page.waitFor(100)
+    const btn = await page.$('#test-button-hover-class')
+    if (isApp) {
+      const rect = await page.callMethod('getHoverButtonRect')
+      const tapPoint = {
+        x: Math.round(rect.left + rect.width / 2.0),
+        y: Math.round(rect.y + rect.height - (isVapor ? 20 : 10))
+      }
+      console.log('button rect', rect)
+      console.log('button tap point', tapPoint)
+      await program.tap({
+        x: tapPoint.x,
+        y: tapPoint.y,
+        duration: 300
+      })
+    } else {
+      await btn.longpress()
+    }
+    await page.waitFor(400)
+    const image = await program.screenshot(screenShotOptions);
+    expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'buttonstatus-button-hover-class-default-value'
     }});
   })
 })

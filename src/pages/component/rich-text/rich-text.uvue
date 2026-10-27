@@ -1,22 +1,27 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
-		<view class="uni-padding-wrap uni-common-mt">
+		<view class="rich-text-page uni-padding-wrap uni-common-mt">
       <navigator url="/pages/component/rich-text/rich-text-tags" class="uni-btn-v">
         <button>rich-text渲染单个HTML标签示例</button>
       </navigator>
       <navigator url="/pages/component/rich-text/rich-text-complex" class="uni-btn-v">
         <button>rich-text渲染复杂HTML示例</button>
       </navigator>
-      <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
-        <button class="uni-btn">组件性能测试</button>
+      <navigator url="/pages/component/rich-text/rich-text-highlight" class="uni-btn-v">
+        <button>rich-text高亮覆盖测试</button>
       </navigator>
+      <!-- #ifndef MP-ALIPAY -->
+        <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
+          <button class="uni-btn">组件性能测试</button>
+        </navigator>
+      <!-- #endif -->
 			<view class="uni-title">
 				<button type="default" @click="changeText">修改文本内容</button>
 			</view>
 			<view class="uni-title">
 				<button type="default" @click="changeFontSize">切换 font-size ({{ data.currentFontSize }})</button>
+			</view>
+			<view class="uni-title">
+				<button type="default" @click="changeColor">切换 color ({{ data.currentColor }})</button>
 			</view>
 			<view class="uni-title">
 				<button type="default" @click="changeLineHeight">切换 line-height ({{ data.currentLineHeight }})</button>
@@ -25,46 +30,46 @@
 				<button type="default" @click="changeFontFamily">切换 font-family ({{ data.currentFontFamily }})</button>
 			</view>
 			<view class="text-box" id="rich-text-parent" @click="richTextParentClick">
-				<rich-text id='rich-text' :style="data.richTextStyle" :nodes="data.text" mode="native">
+				<rich-text id='rich-text' class="rich-text-content" :style="data.richTextStyle" :nodes="data.text" mode="native">
 				</rich-text>
 				<view>
-					<text>rich-text-parent</text>
-					<text id='rich-text-str'>{{ data.richTextStr }}</text>
+					<text class="rich-text-label">rich-text-parent</text>
+					<text id='rich-text-str' class="rich-text-label">{{ data.richTextStr }}</text>
 				</view>
 			</view>
 			<view class="uni-title">
-				<text class="uni-subtitle-text">selectable</text>
+				<text class="uni-subtitle-text">user-select</text>
 			</view>
 			<view class="text-box2">
-				<rich-text style="height: 80px;" :selectable="true" :nodes="data.text"></rich-text>
+				<rich-text id="user-select-rich-text" class="rich-text-content" style="height: 80px;" :user-select="data.userSelect" :nodes="data.text"></rich-text>
 			</view>
 		</view>
-  <!-- #ifdef APP -->
-  </scroll-view style="flex: 1;">
-  <!-- #endif -->
-	<rich-text v-if="data.autoTest" id="test-rich-text" :nodes="data.testNodes" :selectable="true"
-		@itemclick="itemClickForTest" style="position: fixed;width: 100px;height: 100px;"></rich-text>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	type DataType = {
 		text : string;
 		richTextHeight : number;
 		richTextElement : UniElement | null;
-		autoTest : boolean;
-		testNodes : string;
-		isItemClickTrigger : boolean;
 		richTextStr : boolean;
 		richTextStyle : string;
 		currentFontSize : string;
+		currentColor : string;
 		currentLineHeight : string;
 		currentFontFamily : string;
 		fontSizeIndex : number;
+		colorIndex : number;
 		lineHeightIndex : number;
 		fontFamilyIndex : number;
+		userSelect : boolean;
+		userSelectRectX : number;
+		userSelectRectY : number;
+		userSelectRectWidth : number;
+		userSelectRectHeight : number;
 	}
 	// 定义各属性的可选值
 	const fontSizeList : string[] = ["默认", "12px", "16px", "20px", "24px", "32px"]
+	const colorList : string[] = ["默认", "red", "blue", "green", "#ff9800", "#8e44ad"]
 	const lineHeightList : string[] = ["默认", "1", "1.5", "2", "2.5", "3"]
 	const fontFamilyList : string[] = ["默认", "serif", "sans-serif", "monospace", "cursive"]
 
@@ -73,19 +78,26 @@
 		text: "<span>hello uni-app x!</span><br/><span>uni-app x，终极跨平台方案</span>",
 		richTextHeight: 0,
 		richTextElement: null,
-		// 自动化测试
-		autoTest: false,
-		testNodes: '<img src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"></img>',
-		isItemClickTrigger: false,
 		richTextStr: false,
 		richTextStyle: "border: 1px; border-style: solid; border-color: red;",
 		currentFontSize: "默认",
+		currentColor: "默认",
 		currentLineHeight: "默认",
 		currentFontFamily: "默认",
 		fontSizeIndex: 0,
+		colorIndex: 0,
 		lineHeightIndex: 0,
-		fontFamilyIndex: 0
+		fontFamilyIndex: 0,
+		userSelect: true,
+		userSelectRectX: 0,
+		userSelectRectY: 0,
+		userSelectRectWidth: 0,
+		userSelectRectHeight: 0
 	} as DataType)
+
+  const onUserSelectChange = (checked: boolean) => {
+    data.userSelect = checked
+  }
 
 	const updateRichTextHeight = () => {
 		if (data.richTextElement != null) {
@@ -126,6 +138,9 @@
 		if (data.currentFontSize != "默认") {
 			style += " font-size: " + data.currentFontSize + ";"
 		}
+		if (data.currentColor != "默认") {
+			style += " color: " + data.currentColor + ";"
+		}
 		if (data.currentLineHeight != "默认") {
 			style += " line-height: " + data.currentLineHeight + ";"
 		}
@@ -143,6 +158,13 @@
 		updateRichTextStyle()
 	}
 
+	const changeColor = () => {
+		data.colorIndex = (data.colorIndex + 1) % colorList.length
+		data.currentColor = colorList[data.colorIndex]
+		console.log("切换 color:", data.currentColor)
+		updateRichTextStyle()
+	}
+
 	const changeLineHeight = () => {
 		data.lineHeightIndex = (data.lineHeightIndex + 1) % lineHeightList.length
 		data.currentLineHeight = lineHeightList[data.lineHeightIndex]
@@ -157,10 +179,6 @@
 		updateRichTextStyle()
 	}
 
-	// 自动化测试
-	const itemClickForTest = (_ : UniRichTextItemClickEvent) => {
-		data.isItemClickTrigger = true;
-	}
 
 	const getBoundingClientRectForTest = () : DOMRect => {
 		return uni.getElementById('test-rich-text')?.getBoundingClientRect()!;
@@ -170,24 +188,55 @@
 		data.richTextStr = true;
 	}
 
+	const testOpenDialogPage = () => {
+		uni.openDialogPage({
+			url: '/pages/API/dialog-page/rich-text-in-dialog-page'
+		});
+	}
+
+	const testCloseDialogPage = () => {
+		uni.closeDialogPage();
+	}
+
+	function queryUserSelectRect() {
+		const el = uni.getElementById('user-select-rich-text')
+		const rect = el?.getBoundingClientRect()
+		if (rect != null) {
+			const windowInfo = uni.getWindowInfo()
+			const offsetY = windowInfo.safeAreaInsets.top + 44
+			data.userSelectRectX = rect.left
+			data.userSelectRectY = rect.top + offsetY
+			data.userSelectRectWidth = rect.width
+			data.userSelectRectHeight = rect.height
+		}
+	}
+
 	defineExpose({
 		data,
 		changeText,
 		changeFontSize,
+		changeColor,
 		changeLineHeight,
 		changeFontFamily,
-		getBoundingClientRectForTest
+		getBoundingClientRectForTest,
+		testOpenDialogPage,
+		testCloseDialogPage,
+		queryUserSelectRect
 	})
 </script>
 
 <style>
 	.text-box {
 		padding: 20px 0;
-		background-color: white;
+		background-color: #ffffff;
 	}
 
 	.text-box2 {
 		top: 20px;
-		background-color: white;
+		background-color: #ffffff;
+	}
+
+	.rich-text-label {
+		color: #333333;
 	}
 </style>

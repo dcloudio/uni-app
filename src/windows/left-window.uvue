@@ -1,5 +1,5 @@
 <template>
-  <view class="left-window-style" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="left-window-style">
     <view class="second-menu">
       <keep-alive>
         <component :is="active" :hasLeftWin="hasLeftWin" :leftWinActive="leftWinActive"></component>
@@ -8,115 +8,116 @@
   </view>
 </template>
 
-<script lang="uts">
+<script setup lang="ts">
   import componentPage from '@/pages/tabBar/component.uvue'
   import API from '@/pages/tabBar/API.uvue'
   import CSS from '@/pages/tabBar/CSS.uvue'
   import templatePage from '@/pages/tabBar/template.uvue'
-  import { state, setMatchLeftWindow, setActive, setLeftWinActive } from '@/store/index.uts'
-  let isPcObserver
-  export default {
-    data() {
-      return {
-        nav: [
-          'component',
-          'API',
-          'CSS',
-          'template'
-        ],
-        isPC: false
-      }
-    },
-    components: {
-      componentPage,
-      API,
-      CSS,
-      templatePage
-    },
-    computed: {
-      active() : string {
-        return state.active
-      },
-      hasLeftWin() : boolean {
-        return !state.noMatchLeftWindow
-      },
-      leftWinActive() : string {
-        return state.leftWinActive.split('/')[3]
-      },
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      }
-    },
-    mounted() {
-      isPcObserver = uni.createMediaQueryObserver(this)
-      isPcObserver.observe({
-        minWidth: 768
-      }, matched => {
-        this.isPC = matched
-      })
-      this.handlerRoute((this as any).$route)
-    },
-    unmounted() {
-      isPcObserver.disconnect()
-    },
-    watch: {
-      isPC: {
-        immediate: true,
-        handler(newMatches : boolean) {
-          setMatchLeftWindow(newMatches)
-        }
-      },
-      $route(newRoute) {
-        this.handlerRoute(newRoute)
-      }
-    },
-    methods: {
-      handlerRoute(newRoute) {
-        if (this.isPC) {
-          if (!newRoute.matched.length) {
-            uni.redirectTo({
-              url: '/pages/error/404'
-            })
-          } else {
-            // 检查是否为首页
-            let isHome = newRoute.path === '/' && newRoute.meta?.route === 'pages/tabBar/component'
-            if (isHome) {
-              // 自动跳转到第一个子页面
-              const defaultPage = '/pages/component/view/view'
-              setLeftWinActive(defaultPage)
-              setActive('componentPage')
-              uni.redirectTo({ url: defaultPage })
-              return
-            }
+  import uniUiPage from '@/pages/tabBar/uni-ui.uvue'
+  import { state, setMatchLeftWindow, setActive, setLeftWinActive } from '@/store/index.ts'
 
-            setLeftWinActive(newRoute.path)
-            let active = newRoute.path.split('/')[2]
-            if (!active && newRoute.meta?.route) {
-              active = newRoute.meta.route.split('/')[2]
-            }
-            if (this.nav.includes(active)) {
-              if (active === 'component') {
-                active = 'componentPage'
-              }
-              if (active === 'template') {
-                active = 'templatePage'
-              }
-              setActive(active)
-            }
+  const instance = getCurrentInstance()!.proxy!
+  const nav = [
+    'component',
+    'API',
+    'CSS',
+    'uni-ui',
+    'template'
+  ]
+  const isPC = ref(false)
+
+  const componentMap : Record<string, any> = {
+    componentPage,
+    API,
+    CSS,
+    templatePage,
+    uniUiPage
+  }
+  const active = computed(() => componentMap[state.active] || componentPage)
+
+  const hasLeftWin = computed(() : boolean => {
+    return !state.noMatchLeftWindow
+  })
+  const leftWinActive = computed(() : string => {
+    return state.leftWinActive.split('/')[3]
+  })
+
+  let isPcObserver
+
+  function handlerRoute(newRoute) {
+    if (isPC.value) {
+      if (!newRoute.matched.length) {
+        uni.redirectTo({
+          url: '/pages/error/404'
+        })
+      } else {
+        // 检查是否为首页
+        let isHome = newRoute.path === '/' && newRoute.meta?.route === 'pages/tabBar/component'
+        if (isHome) {
+          // 自动跳转到第一个子页面
+          const defaultPage = '/pages/component/view/view'
+          setLeftWinActive(defaultPage)
+          setActive('componentPage')
+          uni.redirectTo({ url: defaultPage })
+          return
+        }
+
+        setLeftWinActive(newRoute.path)
+        let active = newRoute.path.split('/')[2]
+        if (!active && newRoute.meta?.route) {
+          active = newRoute.meta.route.split('/')[2]
+        }
+        if (nav.includes(active)) {
+          if (active === 'component') {
+            active = 'componentPage'
           }
+          if (active === 'template') {
+            active = 'templatePage'
+          }
+          if (active === 'uni-ui') {
+            active = 'uniUiPage'
+          }
+          setActive(active)
         }
       }
     }
   }
+
+  onMounted(() => {
+    isPcObserver = uni.createMediaQueryObserver(instance)
+    isPcObserver.observe({
+      minWidth: 768
+    }, matched => {
+      isPC.value = matched
+    })
+    handlerRoute(instance.$route)
+  })
+
+  onUnmounted(() => {
+    isPcObserver.disconnect()
+  })
+
+  watch(isPC, newMatches => {
+    setMatchLeftWindow(newMatches)
+  }, {
+    immediate: true
+  })
+
+  watch(() => instance.$route, newRoute => {
+    handlerRoute(newRoute)
+  })
 </script>
 
 <style>
+  @import "../common/cssvar.css";
+
   .left-window-style {
     min-height: calc(100vh - var(--top-window-height));
-    background-color: var(--background-color,#ffffff);
+    background-color: var(--page-background-color, #ffffff);
   }
+
   .second-menu {
     width: 350px;
-    background-color: #F8F8F8;
+    background-color: var(--background-color, #1a1a1a);
   }
 </style>

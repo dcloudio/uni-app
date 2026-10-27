@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
@@ -10,15 +7,15 @@
         </view>
         <test-image-path />
         <view>
-          <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
-          <view class="uni-center" style="background:#FFFFFF;">
+          <text class="uni-subtitle-text image-description">非static目录的src静态路径：./logo.png</text>
+          <view class="uni-center image-bg">
             <image class="image" mode="widthFix" src="./logo.png"></image>
             <image class="image" mode="widthFix" src="./logo.png" flatten></image>
           </view>
         </view>
         <view v-for="(item,index) in data" :key="index">
-          <text class="uni-subtitle-text">{{item.description}}（右边为拍平测试）</text>
-          <view class="uni-center" style="background:#FFFFFF;">
+          <text class="uni-subtitle-text image-description">{{item.description}}（右边为拍平测试）</text>
+          <view class="uni-center image-bg">
             <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
               @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
 
@@ -28,12 +25,9 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   import logo from './logo.png';
 
@@ -100,11 +94,11 @@
             description: '非static目录的动态路径（不显示是对的）'
           },
           {
-            src: 'data:image/*;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI0LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IuWbvuWxgl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiCiAgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTk2IDE5NiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTk2IDE5NjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgICAuc3QwIHsKICAgICAgZmlsbDogIzI0OTgzQTsKICAgIH0KCiAgICAuc3QxIHsKICAgICAgZmlsbDogI0ZGRkZGRjsKICAgIH0KICA8L3N0eWxlPgogIDxlbGxpcHNlIGNsYXNzPSJzdDAiIGN4PSI5Ny45IiBjeT0iOTguMSIgcng9Ijk2LjgiIHJ5PSI5Ni44IiAvPgogIDxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iMTQyLjgsMTQ5LjggMTI1LjgsMTQ5LjggMTI1LjYsMTQ5LjggNzAuMiwxNDkuOCA3MC4yLDE0OS44IDUzLjEsMTQ5LjggNTMuMSw1Ni43IDcwLjMsNTYuNwoJNzAuMywxMzIuNiAxMjUuNiwxMzIuNiAxMjUuNiw1Ni43IDE0Mi44LDU2LjcgIiAvPgo8L3N2Zz4K',
+            src: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI0LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IuWbvuWxgl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiCiAgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTk2IDE5NiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTk2IDE5NjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgICAuc3QwIHsKICAgICAgZmlsbDogIzI0OTgzQTsKICAgIH0KCiAgICAuc3QxIHsKICAgICAgZmlsbDogI0ZGRkZGRjsKICAgIH0KICA8L3N0eWxlPgogIDxlbGxpcHNlIGNsYXNzPSJzdDAiIGN4PSI5Ny45IiBjeT0iOTguMSIgcng9Ijk2LjgiIHJ5PSI5Ni44IiAvPgogIDxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iMTQyLjgsMTQ5LjggMTI1LjgsMTQ5LjggMTI1LjYsMTQ5LjggNzAuMiwxNDkuOCA3MC4yLDE0OS44IDUzLjEsMTQ5LjggNTMuMSw1Ni43IDcwLjMsNTYuNwoJNzAuMywxMzIuNiAxMjUuNiwxMzIuNiAxMjUuNiw1Ni43IDE0Mi44LDU2LjcgIiAvPgo8L3N2Zz4K',
             description: "base64-svg",
           },
           {
-            src: 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/w3c.svg',
+            src: 'https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/image/logo.svg',
             description: '正确的svg网络路径'
           },
           // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || MP-WEIXIN
@@ -209,5 +203,15 @@
   .image {
     margin: 20px auto;
     width: 100px;
+  }
+
+  .image-bg {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .image-description {
+      color: #e5e5e5;
+    }
   }
 </style>

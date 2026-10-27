@@ -1,12 +1,11 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-sticky-section', () => {
-  if (isMP || isDom2 && isHarmony) {
+  if (isMP) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
@@ -19,6 +18,13 @@ describe('component-native-sticky-section', () => {
     await page.waitFor('sticky-section')
     await page.waitFor(2000); // 等待页面加载完成
   })
+
+  if (!isWeb && isVapor) {
+    it('check_preload', async () => {
+      const isPreloaded = await page.callMethod('jest_checkPreload');
+      expect(isPreloaded).toBe(true);
+    });
+  }
 
   it('check_delete_and_refresher', async () => {
     await page.callMethod('deleteSection')
@@ -42,6 +48,7 @@ describe('component-native-sticky-section', () => {
     });
     page.waitFor(600)
     await page.callMethod('listViewScrollByY', 1000)
+    await page.waitFor(1000)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
@@ -64,6 +71,18 @@ describe('component-native-sticky-section', () => {
     await page.waitFor(async () => {
       return await page.data('pageData.scrolling') === false;
     });
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
+  })
+
+  //检测吸顶上推效果
+  it('check_sticky_section_with_list_footer', async () => {
+    await page.waitFor(async () => {
+      return await page.data('pageData.isReady') === true;
+    });
+    page.waitFor(600)
+    await page.callMethod('listViewScrollByY', 100000)
+    await page.waitFor(1000)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })

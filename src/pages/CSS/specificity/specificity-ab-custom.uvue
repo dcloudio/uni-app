@@ -1,0 +1,20 @@
+<template>
+  <view class="specificity-component-root">
+    <text class="specificity-component-label">页面通过 class="a b" 传入样式</text>
+  </view>
+</template>
+
+<script setup lang="ts">
+</script>
+
+<style>
+  .specificity-component-root {
+    justify-content: center;
+    min-height: 80px;
+    padding: 12px;
+  }
+
+  .specificity-component-label {
+    font-size: 14px;
+  }
+</style>

@@ -1,0 +1,369 @@
+<template>
+    <view class="page-body">
+      <view class="hero-card">
+        <text class="hero-title">Sign in with Apple</text>
+        <text class="hero-subtitle">当前页面展示 Apple 登录链路，用于核对原生授权结果、用户标识和系统错误信息。</text>
+      </view>
+
+      <view class="status-card">
+        <text class="section-title">授权状态</text>
+        <text class="status-badge" :class="statusClass">{{ statusText }}</text>
+        <text class="status-hint">{{ statusHint }}</text>
+      </view>
+
+      <view class="detail-card">
+        <text class="section-title">授权信息</text>
+        <view class="detail-list">
+          <view class="detail-item">
+            <text class="detail-label">用户标识 `user`</text>
+            <text class="detail-value">{{ userIdentifierText }}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">授权码 `authorizationCode` / `code`</text>
+            <text class="detail-value">{{ authorizationCodeText }}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">身份令牌 `identityToken`</text>
+            <text class="detail-value">{{ identityTokenText }}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">真实用户状态 `realUserStatus`</text>
+            <text class="detail-value">{{ realUserStatusText }}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">Apple 返回姓名 `fullName`</text>
+            <text class="detail-value">{{ fullNameText }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view v-if="errorMessage.length > 0" class="error-card">
+        <text class="section-title">最近错误</text>
+        <view class="detail-list error-list">
+          <view class="detail-item error-item">
+            <text class="detail-label">错误码 `errCode`</text>
+            <text class="detail-value">{{ errorCodeText }}</text>
+          </view>
+          <view class="detail-item error-item">
+            <text class="detail-label">错误信息 `errMsg`</text>
+            <text class="error-message">{{ errorMessage }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="action-group">
+        <button type="primary" @click="appleLogin" :disabled="logging">{{ logging ? '授权中...' : '开始 Apple 登录' }}</button>
+        <button class="action-secondary" @click="clear" :disabled="logging">清空显示</button>
+      </view>
+    </view>
+</template>
+
+<script setup lang="ts">
+  type AppleLoginState = 'idle' | 'authorizing' | 'success' | 'error'
+
+  type AppleLoginViewData = {
+    authorizationCode: string
+    identityToken: string
+    userIdentifier: string
+    fullName: string
+    realUserStatus: string
+  }
+
+  const logging = ref(false)
+  const loginState = ref<AppleLoginState>('idle')
+  const appleData = ref<AppleLoginViewData | null>(null)
+  const errorCode = ref('')
+  const errorMessage = ref('')
+
+  const statusText = computed(() : string => {
+    if (loginState.value == 'authorizing') {
+      return '授权中'
+    }
+    if (loginState.value == 'success') {
+      return '授权成功'
+    }
+    if (loginState.value == 'error') {
+      return '授权失败'
+    }
+    return '等待授权'
+  })
+
+  const statusHint = computed(() : string => {
+    if (loginState.value == 'authorizing') {
+      return '已发起系统 Apple 授权，请在系统弹窗中完成操作。'
+    }
+    if (loginState.value == 'success') {
+      return '已收到 Apple 原始授权结果，可直接核对 code、token 与 userIdentifier。'
+    }
+    if (loginState.value == 'error') {
+      return '授权失败，请优先检查签名、Capability、Apple ID 与运行环境。'
+    }
+    return '点击按钮发起标准 Sign in with Apple 授权。'
+  })
+
+  const statusClass = computed(() : string => {
+    if (loginState.value == 'authorizing') {
+      return 'status-pending'
+    }
+    if (loginState.value == 'success') {
+      return 'status-success'
+    }
+    if (loginState.value == 'error') {
+      return 'status-error'
+    }
+    return 'status-idle'
+  })
+
+  const userIdentifierText = computed(() : string => appleData.value?.userIdentifier ?? '暂无')
+  const authorizationCodeText = computed(() : string => appleData.value?.authorizationCode ?? '暂无')
+  const fullNameText = computed(() : string => {
+    const fullName = appleData.value?.fullName ?? ''
+    return fullName.length > 0 ? fullName : '通常仅首次授权可获取'
+  })
+  const identityTokenText = computed(() : string => {
+    const token = appleData.value?.identityToken ?? ''
+    if (token.length == 0) {
+      return '暂无'
+    }
+    const tokenLengthText = `length=${token.length}`
+    if (token.length <= 32) {
+      return `${token} (${tokenLengthText})`
+    }
+    return `${token.substring(0, 32)}... (${tokenLengthText})`
+  })
+  const realUserStatusText = computed(() : string => {
+    const rawStatus = appleData.value?.realUserStatus ?? ''
+    if (rawStatus.length == 0) {
+      return '暂无'
+    }
+    if (rawStatus == '0') {
+      return 'unknown (0)'
+    }
+    if (rawStatus == '1') {
+      return 'unsupported (1)'
+    }
+    if (rawStatus == '2') {
+      return 'likelyReal (2)'
+    }
+    return `unrecognized (${rawStatus})`
+  })
+  const errorCodeText = computed(() : string => errorCode.value.length > 0 ? errorCode.value : '暂无')
+
+  const clear = () => {
+    appleData.value = null
+    errorCode.value = ''
+    errorMessage.value = ''
+    logging.value = false
+    loginState.value = 'idle'
+  }
+
+  const appleLogin = () => {
+    if (logging.value) return
+    logging.value = true
+    loginState.value = 'authorizing'
+    errorCode.value = ''
+    errorMessage.value = ''
+    appleData.value = null
+    uni.login({
+      provider: 'apple',
+      success(res) {
+				console.log("登录成功：", res)
+				const appleInfo = res.appleInfo as AppleLoginAppleInfo | null
+				const authorizationCode = res.code ?? ''
+				const fullName = appleInfo?.fullName ?? ''
+				const userIdentifier = appleInfo?.user ?? ''
+				if (authorizationCode.length == 0 || userIdentifier.length == 0) {
+					loginState.value = 'error'
+					errorCode.value = 'INVALID_SUCCESS_RESULT'
+					errorMessage.value = 'Apple 登录成功回调缺少必要字段，请检查 code 和 user 是否返回'
+					logging.value = false
+					uni.showModal({
+						title: 'Apple 登录结果异常',
+						content: 'errorCode: INVALID_SUCCESS_RESULT\nApple 登录成功回调缺少必要字段，请检查 code 和 user 是否返回'
+					})
+					return
+				}
+				appleData.value = {
+					authorizationCode: authorizationCode,
+					identityToken: appleInfo?.identityToken ?? '',
+					userIdentifier: userIdentifier,
+					fullName: fullName,
+					realUserStatus: `${appleInfo?.realUserStatus ?? -1}`
+				}
+				loginState.value = 'success'
+				logging.value = false
+      },
+      fail(err) {
+        loginState.value = 'error'
+        errorCode.value = `${err.errCode}`
+        errorMessage.value = err.errMsg
+        logging.value = false
+        uni.showModal({
+          title: 'Apple 登录失败',
+          content: `errorCode: ${err.errCode}\n${err.errMsg}`
+        })
+      }
+    })
+  }
+
+  function getTestUserInfo() : string {
+    return appleData.value?.fullName ?? ''
+  }
+
+  defineExpose({
+    getTestUserInfo,
+    appleLogin
+  })
+</script>
+
+<style>
+.page-body {
+  --apple-surface-background: #ffffff;
+  --apple-page-background: #f5f7fa;
+  --apple-active-background: #f1f3f5;
+  --apple-text-color: #111111;
+  --apple-status-hint-color: #4c5258;
+  --apple-detail-label-color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.hero-card,
+.status-card,
+.detail-card,
+.error-card {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  border-radius: 12px;
+  background-color: var(--apple-surface-background, #ffffff);
+}
+
+.status-card,
+.detail-card,
+.error-card,
+.action-group {
+  margin-top: 12px;
+}
+
+.hero-card {
+  background-color: #111111;
+}
+
+.hero-title {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  margin-top: 8px;
+  color: #d6d6d6;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.section-title {
+  color: var(--apple-text-color, #111111);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.status-badge {
+  margin-top: 10px;
+  padding-top: 6px;
+  padding-right: 12px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.status-idle {
+  color: #5f6368;
+  background-color: #eef1f4;
+}
+
+.status-pending {
+  color: #8a4b00;
+  background-color: #ffe8bf;
+}
+
+.status-success {
+  color: #0d6b3b;
+  background-color: #d9f6e5;
+}
+
+.status-error {
+  color: #a92b2b;
+  background-color: #ffdede;
+}
+
+.status-hint {
+  margin-top: 10px;
+  color: var(--apple-status-hint-color, #4c5258);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 10px;
+  background-color: var(--apple-page-background, #f5f7fa);
+  margin-top: 8px;
+}
+
+.detail-label {
+  color: var(--apple-detail-label-color, #6b7280);
+  font-size: 13px;
+}
+
+.detail-value {
+  margin-top: 6px;
+  color: var(--apple-text-color, #111111);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.error-card {
+  background-color: #fff2f2;
+}
+
+.error-message {
+  margin-top: 10px;
+  color: #8f1f1f;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.action-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-secondary {
+  margin-top: 8px;
+  color: var(--apple-text-color, #111111);
+  background-color: var(--apple-active-background, #f1f3f5);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page-body {
+    --apple-surface-background: #2d2d2d;
+    --apple-page-background: #1a1a1a;
+    --apple-active-background: #3b3b3b;
+    --apple-text-color: #ffffff;
+    --apple-status-hint-color: #b8b8b8;
+    --apple-detail-label-color: #a0a0a0;
+  }
+}
+</style>

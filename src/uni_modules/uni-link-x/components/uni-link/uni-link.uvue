@@ -1,0 +1,362 @@
+<template>
+  <text style="text-decoration-line: underline" @click="openURL">
+    <slot></slot>
+  </text>
+</template>
+<script lang="ts" setup>
+  /**
+   * 链接
+   * @description 链接组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  // #ifdef APP
+  import { openSchema } from '@/uni_modules/uts-openSchema'
+  // #endif
+
+  defineOptions({
+    name: 'UniLink',
+    styleIsolation: 'app'
+  })
+
+  type Props = {
+    /**
+     * @description 链接地址，点击组件时要打开的 URL
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    href?: string
+    /**
+     * @description 打开方式。"_self" 在当前应用内置 webview 中打开；"_blank" 在外部浏览器中打开（小程序端会复制链接提示用户外部打开）
+     * @default "_self"
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    target?: '_blank' | '_self'
+    /**
+     * @description `target="_blank"`失败时，可以通过本属性控制失败回退策略。"turn-self"使用_self方式打开；"copy-link-modal"复制链接并弹框提醒；"none"不回退，触发失败回调
+     * @default "turn-self"
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    blankFallback: 'turn-self' | 'copy-link-modal' | 'none'
+  }
+
+  type LocaleType = 'zh-Hans' | 'zh-Hant' | 'en' | 'fr' | 'la'
+
+  type LocaleMessages = {
+    emptyHref: string
+    popupBlocked: string
+    internalOpenFailed: string
+    copiedOpenInBrowserPrefix: string
+    copyFailedOpenInBrowser: string
+  }
+
+  const LINK_WEBVIEW_PAGE_PATH = '/uni_modules/uni-link-x/pages/link-webview'
+
+  const props = withDefaults(defineProps<Props>(), {
+    href: '',
+    target: '_self',
+		blankFallback: 'turn-self'
+  })
+
+  const emit = defineEmits<{
+    error: [message: string]
+  }>()
+
+  const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+
+  function resolveLocaleType() : LocaleType {
+    if (
+      appLanguage.indexOf('zh-hant') == 0 ||
+      appLanguage.indexOf('zh-tw') == 0 ||
+      appLanguage.indexOf('zh-hk') == 0 ||
+      appLanguage.indexOf('zh-mo') == 0
+    ) {
+      return 'zh-Hant'
+    }
+    if (appLanguage.indexOf('zh') == 0) {
+      return 'zh-Hans'
+    }
+    if (appLanguage.indexOf('fr') == 0) {
+      return 'fr'
+    }
+    if (appLanguage.indexOf('la') == 0 || appLanguage.indexOf('lat') == 0) {
+      return 'la'
+    }
+    return 'en'
+  }
+
+  function getLocaleMessages() : LocaleMessages {
+    const localeType = resolveLocaleType()
+
+    if (localeType == 'zh-Hans') {
+      return {
+        emptyHref: '链接地址不能为空',
+        popupBlocked: '浏览器拦截了新窗口',
+        internalOpenFailed: '应用中未找到uni-link组件下的link-webview页面',
+        copiedOpenInBrowserPrefix: '已复制链接，请使用外部浏览器打开：',
+        copyFailedOpenInBrowser: '复制链接失败，请手动复制链接并使用外部浏览器打开'
+      }
+    }
+
+    if (localeType == 'zh-Hant') {
+      return {
+        emptyHref: '連結地址不能為空',
+        popupBlocked: '瀏覽器封鎖了新視窗',
+        internalOpenFailed: '應用中未找到 uni-link 組件下的 link-webview 頁面',
+        copiedOpenInBrowserPrefix: '已複製連結，請使用外部瀏覽器開啟：',
+        copyFailedOpenInBrowser: '複製連結失敗，請手動複製連結並使用外部瀏覽器開啟'
+      }
+    }
+
+    if (localeType == 'fr') {
+      return {
+        emptyHref: 'L’URL ne peut pas être vide',
+        popupBlocked: 'Le navigateur a bloqué la nouvelle fenêtre',
+        internalOpenFailed: 'Échec de l\'ouverture de la page @uni_modules/uni-link-x/pages/link-webview',
+        copiedOpenInBrowserPrefix: 'Le lien a été copié. Veuillez l’ouvrir dans un navigateur externe :',
+        copyFailedOpenInBrowser: 'Échec de la copie du lien. Veuillez le copier manuellement et l’ouvrir dans un navigateur externe.'
+      }
+    }
+
+    if (localeType == 'la') {
+      return {
+        emptyHref: 'Inscriptio nexus vacua esse non potest',
+        popupBlocked: 'Navigator fenestram novam prohibuit',
+        internalOpenFailed: 'Pagina aperiri non potuit @uni_modules/uni-link-x/pages/link-webview',
+        copiedOpenInBrowserPrefix: 'Nexus descriptus est. Quaeso eum in navigatro externo aperi:',
+        copyFailedOpenInBrowser: 'Descriptio nexus defecit. Quaeso nexum manu describe et in navigatro externo aperi.'
+      }
+    }
+
+    return {
+      emptyHref: 'The link URL cannot be empty',
+      popupBlocked: 'The browser blocked the new window',
+      internalOpenFailed: 'Failed to open page @uni_modules/uni-link-x/pages/link-webview',
+      copiedOpenInBrowserPrefix: 'The link has been copied. Please open it in an external browser:',
+      copyFailedOpenInBrowser: 'Failed to copy the link. Please copy it manually and open it in an external browser.'
+    }
+  }
+
+  function showPrompt(content : string) {
+    uni.showModal({
+      content,
+      showCancel: false
+    })
+  }
+
+  function copyLinkAndPrompt(url : string) {
+    const messages = getLocaleMessages()
+    uni.setClipboardData({
+      data: url,
+      showToast: false,
+      success: () => {
+        showPrompt(messages.copiedOpenInBrowserPrefix + '\n' + url)
+      },
+      fail: () => {
+        showPrompt(messages.copyFailedOpenInBrowser)
+      }
+    })
+  }
+
+  function reportOpenError(message : string) {
+    emit('error', message)
+  }
+
+  function openInBuiltInWebview(url : string) {
+    uni.navigateTo({
+      url: `${LINK_WEBVIEW_PAGE_PATH}?url=${encodeURIComponent(url)}`,
+      success: () => {},
+      fail: () => {
+        // 异常情况下可能pages.json中漏配了本组件下的link-webview.uvue页面
+        reportOpenError(getLocaleMessages().internalOpenFailed)
+      }
+    })
+  }
+
+  function openURL() {
+    const url = props.href.trim()
+
+    if (url.length == 0) {
+      reportOpenError(getLocaleMessages().emptyHref)
+      return
+    }
+
+    if (props.target == '_self') {
+      openInBuiltInWebview(url)
+    }
+    else{
+      // _blank方式
+      // #ifdef WEB
+        const targetWindow = window.open(url, '_blank')
+        if (targetWindow != null) {
+          return
+        }
+        else if (props.blankFallback=="turn-self"){
+          openInBuiltInWebview(url)
+          return
+        }
+        else if(props.blankFallback=="copy-link-modal"){
+          copyLinkAndPrompt(url)
+          return
+        }
+        reportOpenError(getLocaleMessages().popupBlocked)
+      // #endif
+
+      // #ifdef MP
+        if (props.blankFallback=="turn-self"){
+          openInBuiltInWebview(url)
+        }
+        else if(props.blankFallback=="copy-link-modal"){
+          copyLinkAndPrompt(url)
+        }
+      // #endif
+
+      // #ifdef APP
+        try {
+          openSchema(url)
+        } catch (error) {
+        // 这里常见的情况是iOS设备在真机运行时缺少xcode环境编译openSchema失败
+          if (props.blankFallback=="turn-self"){
+            openInBuiltInWebview(url)
+          }
+          else if(props.blankFallback=="copy-link-modal"){
+            copyLinkAndPrompt(url)
+          }
+          else{
+            reportOpenError((error as Error).message) // 报错后发送错误事件，这里的错误原因未知，无法自行提前国际化
+          }
+      }
+      // #endif
+    }
+  }
+</script>
+
+<style>
+</style>

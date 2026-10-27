@@ -1,0 +1,30 @@
+.counter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.counter-button {
+  width: 72rpx;
+  height: 64rpx;
+  margin: 0;
+  padding: 0;
+  color: #1677ff;
+  font-size: 36rpx;
+  line-height: 64rpx;
+  background: #f2f3f5;
+  border: 0;
+  border-radius: 8rpx;
+}
+
+.counter-button::after {
+  border: 0;
+}
+
+.counter-value {
+  min-width: 96rpx;
+  color: #1f1f1f;
+  font-size: 32rpx;
+  line-height: 64rpx;
+  text-align: center;
+}

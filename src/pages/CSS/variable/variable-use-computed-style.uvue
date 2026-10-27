@@ -1,0 +1,37 @@
+<template>
+  <view>
+    <text id="useComputedStyleBackgroundColorValue">
+      background-color:: {{backgroundColor}}
+    </text>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const emit = defineEmits<{
+    colorchange: [backgroundColor: string]
+  }>()
+
+  // Style样式监听
+  const style = useComputedStyle({
+    properties: ['background-color'],
+    filterProperties: true
+  })
+
+  const normalizeBackgroundColor = (value: string): string => {
+    const normalizedValue = value.trim().toLowerCase()
+    if (normalizedValue == 'red' || normalizedValue == '#f00' || normalizedValue == 'rgb(255, 0, 0)' || normalizedValue == 'rgba(255, 0, 0, 1)') {
+      return '#ff0000'
+    }
+    return normalizedValue
+  }
+
+  const backgroundColor = computed<string>(() => {
+    return normalizeBackgroundColor(style.get('background-color')?.toString() ?? '')
+  })
+
+  watch(backgroundColor, (value: string) => {
+    emit('colorchange', value)
+  }, {
+    immediate: true
+  })
+</script>

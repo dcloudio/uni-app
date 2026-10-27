@@ -1,26 +1,20 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
-    <view class="root">
-      <view class="date">
-        <text class="date-text">{{ current_month }}</text>
-      </view>
-      <view ref="drawHeaderRef" class="calendar-header"></view>
-      <view ref="drawWeeksRef" class="calendar-week" @click="select"></view>
-      <view class="btn-group">
-        <button size="mini" @click="preDate">上个月</button>
-        <button size="mini" @click="gotoToday">回到今天</button>
-        <button size="mini" @click="nextDate">下个月</button>
-      </view>
-      <view>{{ timeData.fullDate }} {{ current_day }}</view>
+  <view class="root">
+    <view class="date">
+      <text class="date-text">{{ current_month }}</text>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <view ref="drawHeaderRef" class="calendar-header"></view>
+    <view ref="drawWeeksRef" class="calendar-week" @click="select"></view>
+    <view class="btn-group">
+      <button size="mini" @click="preDate">上个月</button>
+      <button size="mini" @click="gotoToday">回到今天</button>
+      <button size="mini" @click="nextDate">下个月</button>
+    </view>
+    <view>{{ timeData.fullDate }} {{ current_day }}</view>
+  </view>
 </template>
-<script setup lang="uts">
-  import { Calendar, DateType } from './index.uts'
+<script setup lang="ts">
+  import { Calendar, DateType } from './index.ts'
 
   type CoordsType = {
     x : number;

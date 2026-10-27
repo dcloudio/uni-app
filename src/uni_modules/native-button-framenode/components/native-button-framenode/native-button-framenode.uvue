@@ -1,0 +1,43 @@
+<template>
+  <native-view class="native-button-framenode" @init="onViewInit" @customClick="onTap"></native-view>
+</template>
+
+<script setup lang="ts">
+  import { NativeButtonFrameNode } from "@/uni_modules/native-button-framenode"
+
+  const props = defineProps<{ text : string }>()
+  const emit = defineEmits<{
+    (e : "load") : void
+    (e : "buttonTap", event : UniNativeViewEvent) : void
+  }>()
+  let button : NativeButtonFrameNode | null = null
+
+  function updateText(value : string) {
+    button?.updateText(value)
+  }
+
+  watchEffect(() => {
+    updateText(props.text)
+  })
+
+  function onViewInit(e : UniNativeViewInitEvent) {
+    button = new NativeButtonFrameNode(e.detail.element)
+    updateText(props.text)
+    emit("load")
+  }
+
+  function onTap(e : UniNativeViewEvent) {
+    emit("buttonTap", e)
+  }
+
+  onUnmounted(() => {
+    button = null
+  })
+</script>
+
+<style>
+  .native-button-framenode {
+    width: 100%;
+    height: 100%;
+  }
+</style>

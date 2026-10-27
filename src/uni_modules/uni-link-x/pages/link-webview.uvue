@@ -1,0 +1,28 @@
+<template>
+  <web-view style="flex: 1;" :src="currentUrl" @error="onWebViewError"></web-view>
+</template>
+
+<script setup lang="ts">
+  const currentUrl = ref<string>('')
+
+  onLoad((options : UTSJSONObject | null) => {
+    if (options == null) {
+      return
+    }
+    const rawUrl = options['url']
+    if (rawUrl == null) {
+      return
+    }
+    const nextUrl = rawUrl as string
+    currentUrl.value = decodeURIComponent(nextUrl) ?? nextUrl
+  })
+
+  function onWebViewError(event : UniWebViewErrorEvent) {
+    const detail = event.detail
+    const errMsg = detail.errMsg ?? ''
+    uni.showModal({
+      content: `Error: ${errMsg}`,
+      showCancel: false
+    })
+  }
+</script>

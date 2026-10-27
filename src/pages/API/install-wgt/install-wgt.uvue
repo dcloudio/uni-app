@@ -1,0 +1,42 @@
+<template>
+  <view style="margin:12px">
+    <page-head title="安装应用资源"></page-head>
+    <page-intro content="本页演示 uni.installWgt 安装应用资源的错误示例：点击更新资源按钮后因为传递资源路径不存在而报错。仅蒸汽模式支持"></page-intro>
+    <!-- #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS) -->
+    <button class="button" type="primary" @click="update">升级wgt</button>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="ts">
+
+  // #ifdef VUE3-VAPOR && (APP-ANDROID || APP-IOS)
+  function update() {
+    uni.installWgt({
+      filePath: "/static/__UNI__HelloUniAppX.wgt",
+      success: (res) => {
+        console.log(res);
+      },
+      fail: (error) => {
+        console.log(error);
+        uni.showToast({
+          title: error.errMsg,
+          icon: 'error'
+        })
+      },
+      complete: (res) => {
+        console.log(res);
+      }
+    })
+  }
+  // #endif
+
+</script>
+
+<style>
+  .button {
+    margin-bottom: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>

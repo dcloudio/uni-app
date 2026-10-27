@@ -2,8 +2,6 @@
   "light": {
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#007AFF",
-    "backgroundColorContent": "#efeff4",
-    "tabBarPagebackgroundColorContent": "#efeff4",
     "backgroundColor": "#efeff4",
     "backgroundTextStyle": "dark",
 
@@ -19,14 +17,14 @@
     "tabBarCSSIconPath": "static/css.png",
     "tabBarCSSSelectedIconPath": "static/cssHL.png",
     "tabBarTemplateIconPath": "static/template.png",
-    "tabBarTemplateSelectedIconPath": "static/templateHL.png"
+    "tabBarTemplateSelectedIconPath": "static/templateHL.png",
+    "tabBarUniUIIconPath": "static/extui.png",
+    "tabBarUniUISelectedIconPath": "static/extuiHL.png"
   },
   "dark": {
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#1F1F1F",
     "backgroundColor": "#1F1F1F",
-    "backgroundColorContent": "#646464",
-    "tabBarPagebackgroundColorContent": "#1F1F1F",
     "backgroundTextStyle": "light",
 
     "tabBarColor": "#cacaca",
@@ -41,6 +39,8 @@
     "tabBarCSSIconPath": "static/css.png",
     "tabBarCSSSelectedIconPath": "static/cssHL.png",
     "tabBarTemplateIconPath": "static/template.png",
-    "tabBarTemplateSelectedIconPath": "static/templateHL.png"
+    "tabBarTemplateSelectedIconPath": "static/templateHL.png",
+    "tabBarUniUIIconPath": "static/extui.png",
+    "tabBarUniUISelectedIconPath": "static/extuiHL.png"
   }
 }

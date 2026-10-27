@@ -35,7 +35,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type SwiperTabsItem = {
     x : number,
     w : number
@@ -256,11 +256,11 @@
   }
 
   .swiper-tabs {
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .swiper-tabs-item {
-    color: #555;
+    color: var(--text-color, #555);
     font-size: 16px;
     padding: 12px 25px;
     white-space: nowrap;

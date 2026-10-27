@@ -8,7 +8,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 const fullscreenElement = ref(null as UniElement | null)
 const isFullscreen = ref(false)

@@ -1,7 +1,7 @@
 <template>
 	<view class="page-container">
 		<!-- #ifndef MP -->
-		<fps></fps>
+		<fps v-if="showFPS"></fps>
 		<!-- #endif -->
 		<!-- 打字机效果区域 -->
 		<view class="typewriter-container">
@@ -23,7 +23,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	// 打字机效果相关 - 富文本片段定义
 	type TextSegment = {
 		text : string
@@ -64,6 +64,10 @@
 		{ text: '进行开发～', className: 'text-small-gray-15' }
 	]
 
+	const showFPS = ref(true)
+	// #ifdef WEB
+	showFPS.value = window.self == window.top
+	// #endif
 	const showCursor = ref(true)
 	const displayedSegments = ref<TextSegment[]>([])
 	let typingTimer : number | null = null
@@ -140,7 +144,6 @@
 
 <style>
 	.page-container {
-		background-color: #F8F8F8;
 		flex: 1;
 		position: relative;
 	}
@@ -148,7 +151,7 @@
 	.typewriter-container {
 		margin: 20px;
 		padding: 30px 20px;
-		background-color: #ffffff;
+		background-color: var(--list-background-color, #ffffff);
 		border-radius: 16px;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 	}
@@ -156,13 +159,13 @@
 	.typewriter-title {
 		margin-bottom: 20px;
 		padding-bottom: 15px;
-		border-bottom: 2px solid #f0f0f0;
+		border-bottom: 2px solid var(--border-color, #f0f0f0);
 	}
 
 	.title-text {
 		font-size: 20px;
 		font-weight: bold;
-		color: #333333;
+		color: var(--text-color, #333333);
 	}
 
 	.typewriter-box {
@@ -328,5 +331,29 @@
 	.text-small-gray-15 {
 		font-size: 15px;
 		color: #666666;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.text-normal,
+		.text-normal-small {
+			color: #ffffff;
+		}
+
+		.text-small-gray,
+		.text-small-gray-15 {
+			color: #c7c7c7;
+		}
+
+		.text-small-light {
+			color: #b3b3b3;
+		}
+
+		.text-ai-highlight {
+			background-color: #18352b;
+		}
+
+		.text-purple-highlight {
+			background-color: #352b1f;
+		}
 	}
 </style>

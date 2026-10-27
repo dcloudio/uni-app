@@ -1,131 +1,152 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <page-head :title="data.title"></page-head>
-    <text class="uni-title uni-common-pl">普通选择器</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">普通选择器</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
-        <view class="uni-list-cell-left">当前选择</view>
+        <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
-          <picker class="picker-selector--test" @change="bindPickerChange" :value="data.index" :range="data.selectorArray" range-key="name">
-            <text class="uni-input picker-selector--value">{{data.selectorArray[data.index].name}}</text>
+          <picker class="picker-selector--test uni-picker-container-wrap" @change="bindPickerChange" :value="data.index"
+            :range="data.selectorArray" range-key="name">
+            <view class="uni-input picker-selector--value uni-picker-text">{{data.selectorArray[data.index].name}}</view>
           </picker>
         </view>
       </view>
     </view>
 
-    <text class="uni-title uni-common-pl">多列选择器</text>
+    <!-- #ifndef MP-ALIPAY -->
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">多列选择器</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
-          <picker class="picker-multi--test" mode="multiSelector" @columnchange="bindMultiPickerColumnChange" :value="data.multiIndex" :range="data.multiArray">
-            <text class="uni-input picker-multi--value">
+          <picker class="picker-multi--test uni-picker-container-wrap"  mode="multiSelector" @columnchange="bindMultiPickerColumnChange"
+            :value="data.multiIndex" :range="data.multiArray">
+            <view class="uni-input picker-multi--value uni-picker-text">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
-            </text>
+            </view>
           </picker>
         </view>
       </view>
     </view>
+    <!-- #endif -->
 
-    <text class="uni-title uni-common-pl">time选择器</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">time选择器</text>
+      <text class="uni-picker-description">选择 09:01 ~ 21:01 之间的时间，不在区间内不能选中</text>
+    </view>
     <view class="uni-list">
-      <view class="uni-list-cell">
-        <view class="uni-list-cell-left">当前选择</view>
-        <view class="uni-list-cell-db">
-          <picker class="picker-time--test" mode="time" :value="data.time" start="09:01" end="21:01" @change="bindTimeChange">
-            <text class="uni-input">{{data.time}}</text>
-          </picker>
-        </view>
-      </view>
-    </view>
-    <text class="uni-picker-tips">注：选择 09:01 ~ 21:01 之间的时间, 不在区间内不能选中</text>
-
-    <text class="uni-title uni-common-pl">date选择器 fields = day</text>
-    <view class="uni-list">
-      <view class="uni-list-cell">
-        <text class="uni-list-cell-left">当前选择 </text>
-        <view class="uni-list-cell-db">
-          <picker class="picker-date-day--test" mode="date" :value="data.dayDate" :start="data.startDate" :end="data.endDate" @change="bindDayDateChange">
-            <text class="uni-input">{{data.dayDate}}</text>
-          </picker>
-        </view>
-      </view>
-    </view>
-    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中</text>
-
-    <text class="uni-title uni-common-pl">日期选择器 fields = month</text>
-    <view class="uni-list">
-      <view class="uni-list-cell">
-        <text class="uni-list-cell-left">当前选择 </text>
-        <view class="uni-list-cell-db">
-          <picker class="picker-date-month--test" mode="date" fields="month" :value="data.monthDate" :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
-            <text class="uni-input">{{data.monthDate}}</text>
-          </picker>
-        </view>
-      </view>
-    </view>
-    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中。且只能选年和月</text>
-
-    <text class="uni-title uni-common-pl">日期选择器 fields = year</text>
-    <view class="uni-list">
-      <view class="uni-list-cell">
-        <text class="uni-list-cell-left">当前选择 </text>
-        <view class="uni-list-cell-db">
-          <picker class="picker-date-year--test" mode="date" fields="year" :value="data.yearDate" :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
-            <text class="uni-input">{{data.yearDate}}</text>
-          </picker>
-        </view>
-      </view>
-    </view>
-    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中</text>
-
-    <text class="uni-title uni-common-pl">省市地区选择器</text>
-    <view class="uni-list" style="margin-bottom: 15px;">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择</text>
-        <view class="uni-list-cell-db" @click="initCityData">
+        <view class="uni-list-cell-db">
+          <picker class="picker-time--test uni-picker-container-wrap" mode="time" :value="data.time" start="09:01" end="21:01"
+            @change="bindTimeChange">
+            <view class="uni-input uni-picker-text">{{data.time}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">date选择器 fields = day</text>
+      <text class="uni-picker-description">选择当前时间往前90年和往后10年之间的时间，不在区间内不能选中</text>
+    </view>
+    <view class="uni-list">
+      <view class="uni-list-cell">
+        <text class="uni-list-cell-left">当前选择 </text>
+        <view class="uni-list-cell-db">
+          <picker class="picker-date-day--test uni-picker-container-wrap" mode="date" :value="data.dayDate" :start="data.startDate"
+            :end="data.endDate" @change="bindDayDateChange">
+            <view class="uni-input uni-picker-text">{{data.dayDate}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">日期选择器 fields = month</text>
+      <text class="uni-picker-description">选择当前时间往前90年和往后10年之间的时间，不在区间内不能选中。且只能选年和月</text>
+    </view>
+    <view class="uni-list">
+      <view class="uni-list-cell">
+        <text class="uni-list-cell-left">当前选择 </text>
+        <view class="uni-list-cell-db">
+          <picker class="picker-date-month--test uni-picker-container-wrap" mode="date" fields="month" :value="data.monthDate"
+            :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
+            <view class="uni-input uni-picker-text">{{data.monthDate}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">日期选择器 fields = year</text>
+      <text class="uni-picker-description">选择当前时间往前90年和往后10年之间的时间，不在区间内不能选中</text>
+    </view>
+    <view class="uni-list">
+      <view class="uni-list-cell">
+        <text class="uni-list-cell-left">当前选择 </text>
+        <view class="uni-list-cell-db">
+          <picker class="picker-date-year--test uni-picker-container-wrap" mode="date" fields="year" :value="data.yearDate"
+            :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
+            <view class="uni-input uni-picker-text">{{data.yearDate}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <!-- #ifndef MP-ALIPAY -->
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">省市地区选择器</text>
+      <text class="uni-picker-description">省市地区数据并没有内置到uni-app x框架中，仅微信下由微信内置了，其他平台需单独加载地区数据</text>
+    </view>
+    <view class="uni-list">
+      <view class="uni-list-cell">
+        <text class="uni-list-cell-left">当前选择</text>
+        <view class="uni-list-cell-db">
           <!-- #ifndef MP-WEIXIN -->
-            <picker class="picker-city--test" mode="multiSelector" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
-              <text class="uni-input picker-city--value">
-                {{data.cityArray[0][data.cityIndex[0]]}}{{data.cityArray[1][data.cityIndex[1]] ? '，' : ''}}{{data.cityArray[1][data.cityIndex[1]]}}{{data.cityArray[2][data.cityIndex[2]] ? '，' : ''}}{{data.cityArray[2][data.cityIndex[2]]}}
-              </text>
-            </picker>
+          <picker class="picker-city--test uni-picker-container-wrap picker-city-wrap" mode="multiSelector" @change="bindCityPickerChange"
+            @cancel="resetCityPicker" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
+            <view class="uni-input picker-city--value uni-picker-text picker-city-text">
+              {{getCityDisplayText()}}
+            </view>
+          </picker>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
-            <picker class="picker-city--test" mode="region" @change="bindRegionChange" :value="data.region" >
-              <text class="uni-input picker-city--value">
-                {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
-              </text>
-            </picker>
+          <picker class="picker-city--test uni-picker-container-wrap" mode="region" @change="bindRegionChange" :value="data.region">
+            <view class="uni-input picker-city--value uni-picker-text">
+              {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
+            </view>
+          </picker>
           <!-- #endif -->
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：省市地区数据并没有内置到uni-app x框架中，仅微信下由微信内置了，其他平台需单独加载地区数据</text>
+    <!-- #endif -->
 
-    <text class="uni-title uni-common-pl">已禁用的picker，点击无效</text>
+    <view class="uni-picker-section-header">
+      <text class="uni-title uni-picker-section-title">已禁用的picker，点击无效</text>
+      <text class="uni-picker-description">值与普通选择器同步，但不可选择</text>
+    </view>
     <view class="uni-list">
       <view class="uni-list-cell">
-        <view class="uni-list-cell-left">当前选择</view>
+        <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
-          <picker class="picker-disabled--test" @change="bindPickerChange" disabled :value="data.index" :range="data.selectorArray" range-key="name">
-            <text class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</text>
+          <picker class="picker-disabled--test uni-picker-container-wrap" @change="bindPickerChange" disabled :value="data.index"
+            :range="data.selectorArray" range-key="name">
+            <view class="uni-input picker-disabled--value uni-picker-text">{{data.selectorArray[data.index].name}}</view>
           </picker>
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：值与普通选择器同步，但不可选择</text>
 
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
-  import { state, setEventCallbackNum } from '@/store/index.uts'
-  // #ifndef MP-WEIXIN
-  import { cityData } from './city.uts'
+<script setup lang="ts">
+  // #ifndef MP-WEIXIN || MP-ALIPAY
+  import { cityData } from './city.ts'
   // #endif
 
   type DataType = {
@@ -133,28 +154,30 @@
   }
 
   type CityItemData = {
-    title: string
-    id: string
-    disabled?: boolean
-    children: Array<CityItemData>
+    title : string
+    id : string
+    disabled ?: boolean
+    children : Array<CityItemData>
   }
 
   type PageDataType = {
-    title: string;
-    selectorArray: DataType[];
-    index: number;
-    multiArray: Array<string[]>;
-    multiIndex: number[];
-    cityArray: Array<string[]>;
-    allCityData: CityItemData[];
-    cityIndex: number[];
-    region: string[];
-    dayDate: string;
-    monthDate: string;
-    yearDate: string;
-    startDate: string;
-    endDate: string;
-    time: string;
+    title : string;
+    selectorArray : DataType[];
+    index : number;
+    multiArray : Array<string[]>;
+    multiIndex : number[];
+    cityArray : Array<string[]>;
+    allCityData : CityItemData[];
+    cityIndex : number[];
+    selectedCityIndex : number[];
+    isCitySelected : boolean;
+    region : string[];
+    dayDate : string;
+    monthDate : string;
+    yearDate : string;
+    startDate : string;
+    endDate : string;
+    time : string;
   }
 
   function getDate(date_text : string = 'day', type ?: string) : string {
@@ -190,30 +213,66 @@
       ['北京', '上海', '广州']
     ],
     multiIndex: [0, 0, 0],
-    cityArray: [[],[],[]],
+    cityArray: [[], [], []],
     allCityData: [],
     region: [],
     cityIndex: [0, 0, 0],
-    dayDate: getDate('day'),
-    monthDate: getDate('month'),
-    yearDate: getDate('year'),
+    selectedCityIndex: [0, 0, 0],
+    isCitySelected: false,
+    dayDate: getDate('day', ''),
+    monthDate: getDate('month', ''),
+    yearDate: getDate('year', ''),
     startDate: getDate('day', 'start'),
     endDate: getDate('day', 'end'),
     time: '12:01'
   } as PageDataType)
 
-  // #ifndef MP-WEIXIN
-  function initCityData() {
-    const cityDataList = JSON.parse(cityData) as CityItemData[]
-    data.allCityData = cityDataList
-    data.cityArray[0] = cityDataList.map(item => item.title)
+  // #ifndef MP-WEIXIN || MP-ALIPAY
+  function getSafeCityValue(column : number, index : number) : string {
+    if (column < 0 || column >= data.cityArray.length) {
+      return ''
+    }
+    const columnData = data.cityArray[column]
+    if (index < 0 || index >= columnData.length) {
+      return ''
+    }
+    return columnData[index]
+  }
+
+  function getCityDisplayText() : string {
+    if (!data.isCitySelected) {
+      return ''
+    }
+    const provinceIndex = data.selectedCityIndex[0]
+    if (provinceIndex < 0 || provinceIndex >= data.allCityData.length) {
+      return ''
+    }
+    const province = data.allCityData[provinceIndex]
+    let text = province.title
+    const cityIndex = data.selectedCityIndex[1]
+    if (cityIndex >= 0 && cityIndex < province.children.length) {
+      const city = province.children[cityIndex]
+      text += '，' + city.title
+      const districtIndex = data.selectedCityIndex[2]
+      if (districtIndex >= 0 && districtIndex < city.children.length) {
+        text += '，' + city.children[districtIndex].title
+      }
+    }
+    return text
+  }
+
+  function updateCityArray() {
+    if (data.allCityData.length == 0) {
+      return
+    }
+    data.cityArray[0] = data.allCityData.map(item => item.title)
     // 使用当前选择的省份索引来初始化城市数据
     const provinceIndex = data.cityIndex[0]
-    if (cityDataList[provinceIndex] && cityDataList[provinceIndex].children) {
-      data.cityArray[1] = cityDataList[provinceIndex].children.map(item => item.title)
+    if (data.allCityData[provinceIndex] && data.allCityData[provinceIndex].children) {
+      data.cityArray[1] = data.allCityData[provinceIndex].children.map(item => item.title)
       const cityIndex = data.cityIndex[1]
-      if (cityDataList[provinceIndex].children[cityIndex] && cityDataList[provinceIndex].children[cityIndex].children) {
-        data.cityArray[2] = cityDataList[provinceIndex].children[cityIndex].children.map(item => item.title)
+      if (data.allCityData[provinceIndex].children[cityIndex] && data.allCityData[provinceIndex].children[cityIndex].children) {
+        data.cityArray[2] = data.allCityData[provinceIndex].children[cityIndex].children.map(item => item.title)
       } else {
         data.cityArray[2] = []
       }
@@ -222,6 +281,26 @@
       data.cityArray[2] = []
     }
   }
+
+  function resetCityPicker() {
+    if (data.isCitySelected) {
+      data.cityIndex = [data.selectedCityIndex[0], data.selectedCityIndex[1], data.selectedCityIndex[2]]
+    } else {
+      data.cityIndex = [0, 0, 0]
+    }
+    updateCityArray()
+  }
+
+  function initCityData() {
+    const cityDataList = JSON.parse<CityItemData[]>(cityData)
+    if (cityDataList == null) {
+      return
+    }
+    data.allCityData = cityDataList
+    resetCityPicker()
+  }
+
+  initCityData()
   // #endif
 
   // #ifdef MP-WEIXIN
@@ -233,7 +312,7 @@
 
   const bindPickerChange = (e : UniPickerChangeEvent) => {
     console.log('picker发送选择改变，携带值为：' + e.detail.value)
-    data.index = e.detail.value
+    data.index = e.detail.value as number
   }
 
   const bindMultiPickerColumnChange = (e : UniPickerColumnChangeEvent) => {
@@ -285,7 +364,14 @@
     })
   }
 
-  // #ifndef MP-WEIXIN
+  // #ifndef MP-WEIXIN || MP-ALIPAY
+  const bindCityPickerChange = (e : UniPickerChangeEvent) => {
+    console.log('picker发送选择改变，携带值为：' + e.detail.value)
+    const cityIndex = e.detail.value as number[]
+    data.selectedCityIndex = [cityIndex[0], cityIndex[1], cityIndex[2]]
+    data.isCitySelected = true
+  }
+
   const bindCityPickerColumnChange = (e : UniPickerColumnChangeEvent) => {
     console.log('修改的列为：' + e.detail.column + '，值为：' + e.detail.value)
     data.cityIndex[e.detail.column] = e.detail.value
@@ -318,11 +404,11 @@
   // #endif
 
   const bindDayDateChange = (e : UniPickerChangeEvent) => {
-    data.dayDate = e.detail.value as string
+    data.dayDate = e.detail.value.split('/').join('-')
   }
 
   const bindMonthDateChange = (e : UniPickerChangeEvent) => {
-    data.monthDate = e.detail.value as string
+    data.monthDate = e.detail.value.split('/').join('-')
   }
 
   const bindYearDateChange = (e : UniPickerChangeEvent) => {
@@ -338,15 +424,6 @@
     data.index = 2
   }
 
-  const getEventCallbackNum = () : number => {
-    return state.eventCallbackNum
-  }
-
-  // 自动化测试
-  const setEventCallbackNum = (num : number) => {
-    setEventCallbackNum(num)
-  }
-
   defineExpose({
     data,
     setSelectorValue
@@ -355,26 +432,86 @@
 
 <style>
   .uni-title {
-    font-size: 14px;
+    font-size: 15px;
   }
 
-  .uni-picker-tips {
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-    margin-bottom: 15px;
+  .uni-picker-section-header {
+    display: flex;
+    flex-direction: column;
     padding: 0 15px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+  }
+
+  .uni-picker-section-title {
+    padding: 0;
+  }
+
+  .uni-picker-description {
+    font-size: 12px;
+    color: #BEBEBE;
+    line-height: 18px;
+    min-height: 18px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .uni-list {
+    margin-bottom: 15px;
+  }
+
+  .uni-list-cell-left {
+    font-size: 13px;
+    color: #666;
+    padding-left: 15px;
+  }
+
+  .uni-picker-container-wrap {
+    height: 41px;
+    /* #ifndef APP-ANDROID && !VUE3-VAPOR */
+    line-height: 41px;
+    /* #endif */
+  }
+
+  .uni-picker-text {
+    line-height: 25px;
+    height: 25px;
+    padding: 8px 13px;
+    font-size: 14px;
+    flex: 1;
+    box-sizing: content-box;
+  }
+
+  .picker-city-wrap {
+    min-height: 41px;
+    height: auto;
+    /* #ifndef APP-ANDROID && !VUE3-VAPOR */
+    line-height: 25px;
+    /* #endif */
+  }
+
+  .picker-city-text {
+    min-height: 25px;
+    height: auto;
   }
 
   /* #ifdef WEB */
   @media (prefers-color-scheme: dark) {
-    .uni-input {
-      background-color: #2d2d2d;
+    .uni-title,
+    .uni-list-cell-left,
+    .uni-input,
+    .uni-picker-text {
       color: #ffffff;
     }
 
+    .uni-input,
+    .uni-picker-text,
     .uni-list {
       background-color: #2d2d2d;
+    }
+
+    .uni-list-cell-left {
+      color: #b0b0b0;
     }
   }
   /* #endif */

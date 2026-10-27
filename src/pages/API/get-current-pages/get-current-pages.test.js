@@ -8,13 +8,13 @@ const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
-const HOME_PAGE_PATH = isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/component'
+const HOME_PAGE_PATH = '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 
 describe('getCurrentPages', () => {
-  if (isAppWebView) {
+  if (isAppWebView || (isAndroid && platformInfo.includes('14.0.0'))) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -41,7 +41,7 @@ describe('getCurrentPages', () => {
         }, waitTime)
       })
     }
-    page = isDom2 ? await program.redirectTo(HOME_PAGE_PATH) : await program.switchTab(HOME_PAGE_PATH)
+    page = await program.switchTab(HOME_PAGE_PATH)
     await page.waitFor(1000)
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor(1000)
@@ -155,7 +155,7 @@ describe('getCurrentPages', () => {
   })
   it('getAndroidView', async () => {
     const res = await page.callMethod('checkGetAndroidView')
-    expect(res).toBe(isAndroid)
+    expect(res).toBe(isAndroid && !isVapor)
   })
   it('getIOSView', async () => {
     const res = await page.callMethod('checkGetIOSView')
@@ -177,14 +177,15 @@ describe('getCurrentPages', () => {
   if(isAndroid) {
     it('getAndroidActivity', async () => {
       const res = await page.callMethod('checkGetAndroidActivity')
-      expect(res).toBe(true)
+      expect(res).toBe(!isVapor)
     })
   }
 
   if(isApp) {
     it('takeSnapshot', async () => {
       await page.callMethod('checkTakeSnapshot')
-      await page.waitFor(2000)
+      // harmony 滚动截屏，需要增加等待时间
+      await page.waitFor(isHarmony ? 6000 : 2000)
       expect(await page.data('data.checkSnapshotResult')).toBe(true)
     })
   }

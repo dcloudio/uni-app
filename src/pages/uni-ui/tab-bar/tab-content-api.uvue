@@ -1,0 +1,163 @@
+<template>
+	<view class="content-page">
+		<text class="page-text">当前索引: {{ activeIndex }}</text>
+		<view class="panel-card">
+			<text class="panel-title">Tab 切换</text>
+			<button class="action-button primary-button" @click="switchToFirstTab">切换到第一个 tab-item</button>
+		</view>
+		<view class="panel-card">
+			<text class="panel-title">当前 tab-item 角标</text>
+			<button class="action-button" @click="setBadgeNumber">设置数字角标</button>
+			<button class="action-button" @click="setBadgeDot">设置红点角标</button>
+			<button class="action-button" @click="clearBadge">取消角标</button>
+			<button class="action-button accent-button" @click="setBadgeClass">自定义 badgeClass 样式</button>
+			<text class="panel-tip">当前操作目标 tab 索引: {{ currentTabItemIndex }}</text>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+import { inject, ref } from 'vue'
+import { Ref } from 'vue'
+
+// 从父组件注入当前激活的索引
+const activeIndex = inject<Ref<number>>('uniTabBarCurrentIndex', ref(0))
+const changeTab = inject<(index : number) => void>('uniTabBarChangeTab', (index : number) => {})
+const currentTabItemIndex = inject<number>('tabContent2Index', 1)
+const setCurrentBadgeNumber = inject<() => void>('tabContent2SetBadgeNumber', () => {})
+const setCurrentBadgeDot = inject<() => void>('tabContent2SetBadgeDot', () => {})
+const clearCurrentBadge = inject<() => void>('tabContent2ClearBadge', () => {})
+const setCurrentBadgeClass = inject<() => void>('tabContent2SetBadgeClass', () => {})
+
+function switchToFirstTab() : void {
+	changeTab(0)
+}
+
+function setBadgeNumber() : void {
+	setCurrentBadgeNumber()
+}
+
+function setBadgeDot() : void {
+	setCurrentBadgeDot()
+}
+
+function clearBadge() : void {
+	clearCurrentBadge()
+}
+
+function setBadgeClass() : void {
+	setCurrentBadgeClass()
+}
+</script>
+
+<style>
+.content-page {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	width: 100%;
+	height: 100%;
+	padding: 20px;
+}
+
+.panel-card {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding: 16px;
+	margin-top: 16px;
+	border-radius: 14px;
+	background-color: #ffffff;
+	box-shadow: 0px 6px 16px rgba(229, 102, 102, 0.12);
+}
+
+.panel-title {
+	font-size: 18px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 12px;
+}
+
+.panel-tip {
+	font-size: 14px;
+	color: #8a5a5a;
+	margin-top: 12px;
+}
+
+.action-button {
+	width: 100%;
+	height: 40px;
+	margin-top: 10px;
+	border-radius: 20px;
+	background-color: #ffffff;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #f1c7c7;
+	color: #8d4b4b;
+	font-size: 15px;
+}
+
+.primary-button {
+	background-color: #ff8a8a;
+	border-color: #ff8a8a;
+	color: #ffffff;
+}
+
+.accent-button {
+	background-color: #ffe7c7;
+	border-color: #ffd18c;
+	color: #8a4d00;
+}
+
+.page-title {
+	font-size: 28px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.page-text {
+	font-size: 16px;
+	color: #666;
+	margin-bottom: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+	.panel-card {
+		background-color: #2d2d2d;
+		box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.3);
+	}
+
+	.panel-title,
+	.page-title {
+		color: #ffffff;
+	}
+
+	.page-text {
+		color: #a0a0a0;
+	}
+
+	.panel-tip {
+		color: #d7aaaa;
+	}
+
+	.action-button {
+		background-color: #3b3b3b;
+		border-color: #765858;
+		color: #f0caca;
+	}
+
+	.primary-button {
+		background-color: #ff8a8a;
+		border-color: #ff8a8a;
+		color: #ffffff;
+	}
+
+	.accent-button {
+		background-color: #ffe7c7;
+		border-color: #ffd18c;
+		color: #8a4d00;
+	}
+}
+</style>

@@ -14,7 +14,7 @@
     <view class="button-group">
       <text class="description-text">操作步骤：1.创建Worker 2.发送数据测试（消息监听已在创建Worker时添加）</text>
       <button class="btn" type="primary" :disabled="created_boolean" @click="create">UTS插件中创建Worker</button>
-      <button class="btn" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
+      <button class="btn secondary-btn" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
     </view>
 
     <view class="input-section">
@@ -36,13 +36,19 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { onWorkerError, createWorkers, sendWorkerMessage, onWorkerMessage, destroyWorker, UTSWorkerAddListenerOptions, UTSWorkerReceiveEventCallback, UTSWorkerSendWorkerMessageOptions, UTSWorkerErrorOptions } from "@/uni_modules/uts-worker";
+
+  interface LogItem {
+    message: string
+    type: string
+    time: string
+  }
 
   const created_boolean = ref(false)
   const workerStatus = ref('none') // none, created, destroyed
   const isListening = ref(false)
-  const logs = ref([] as Array<UTSJSONObject>)
+  const logs = ref([] as LogItem[])
   const inputValue = ref('1') // 默认值为1
   const taskResult = ref('')
 
@@ -59,11 +65,11 @@
   function addLog(message: string, type: string = 'info') {
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    const logItem = {
+    const logItem: LogItem = {
       message: `[${timeStr}] ${message}`,
       type: type,
       time: timeStr
-    } as UTSJSONObject;
+    }
     logs.value.unshift(logItem);
     // 限制日志数量
     if (logs.value.length > 50) {
@@ -77,26 +83,25 @@
     workerStatus.value = 'created';
     addLog('Worker创建成功', 'success');
     created_boolean.value = true;
-    // #ifndef APP-IOS
     // 添加消息监听
     onWorkerMessage({
       success: (res : any) => {
-        const result = (JSON.parse(JSON.stringify(res)) as UTSJSONObject).getAny('result') as UTSJSONObject;
-        const resultData = result.getString('data');
-        taskResult.value = resultData as string;
+        const resultData = res.result.data as string
+        taskResult.value = resultData
         inputValue.value = taskResult.value
-        addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
+        addLog(`收到WorkerTask返回: ${resultData}`, 'receive')
       }
     });
 
     // 添加错误监听
+    // #ifndef MP-ALIPAY
     onWorkerError({
       success: (error : any) => {
-        const errorMsg = (error as UTSJSONObject).getString('message');
-        addLog(`Worker错误: ${errorMsg}`, 'error');
-        console.log("Worker错误:", error);
+        const errorMsg = error.message as string
+        addLog(`Worker错误: ${errorMsg}`, 'error')
+        console.log("Worker错误:", error)
       }
-    } as UTSWorkerErrorOptions);
+    } as UTSWorkerErrorOptions)
     // #endif
   }
 
@@ -107,31 +112,6 @@
       addLog('请输入有效的数字', 'warning');
       return;
     }
-    // #ifdef APP-IOS
-    // 添加消息监听
-    onWorkerMessage({
-      success: (res : any) => {
-        // 临时注释后续需要排查 原生Object转UTSJSONObject无效的问题
-        // const result = (res as UTSJSONObject).getAny('result') as UTSJSONObject;
-        // const resultData = result.getString('data');
-
-        const result = res["result"];
-        const resultData = result["data"];
-        taskResult.value = resultData as string;
-        inputValue.value = taskResult.value
-        addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
-      }
-    });
-
-    // 添加错误监听
-    onWorkerError({
-      success: (error : any) => {
-        const errorMsg = (error as UTSJSONObject).getString('message');
-        addLog(`Worker错误: ${errorMsg}`, 'error');
-        console.log("Worker错误:", error);
-      }
-    } as UTSWorkerErrorOptions);
-    // #endif
 
     const options = {
       data: inputValue.value,
@@ -189,19 +169,20 @@
     justify-content: center;
     margin-bottom: 20px;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 8px;
   }
 
   .status-label {
     font-size: 16px;
-    color: #666666;
+    color: var(--active-color, #666666);
   }
 
   .status-text {
     font-size: 16px;
     font-weight: bold;
     margin-left: 8px;
+    color: var(--text-color, #333333);
   }
 
 
@@ -213,12 +194,12 @@
   .input-section {
     margin-bottom: 20px;
     padding: 15px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 8px;
   }
 
   .input-field {
-    /* #ifdef MP-WEIXIN */
+    /* #ifdef MP */
     height: 3em;
     /* #endif */
     width: 100%;
@@ -227,19 +208,22 @@
     border-radius: 6px;
     font-size: 16px;
     margin: 10px 0;
+    color: #333333;
     background-color: #ffffff;
   }
 
   .btn {
     margin-bottom: 10px;
+    /* #ifndef MP-ALIPAY */
     padding: 5px 10px;
+    /* #endif */
     border-radius: 6px;
     font-size: 14px;
     text-align: center;
   }
 
   .log-section {
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 8px;
     padding: 15px;
   }
@@ -247,17 +231,17 @@
   .section-title {
     font-size: 18px;
     font-weight: bold;
-    color: #333333;
+    color: var(--text-color, #333333);
     margin-bottom: 10px;
   }
 
   .log-container {
     height: 300px;
-    border: 1px solid #dddddd;
+    border: 1px solid var(--border-color, #dddddd);
     border-radius: 4px;
     padding: 10px;
     margin: 10px 0;
-    background-color: #fafafa;
+    background-color: var(--active-background-color, #fafafa);
   }
 
   .log-item {
@@ -294,9 +278,11 @@
   }
 
   .clear-btn {
-    background-color: #ff9800;
+    background-color: #b45309;
     font-size: 12px;
+    /* #ifndef MP-ALIPAY */
     padding: 8px 12px;
+    /* #endif */
     color: #ffffff;
     border-radius: 4px;
     text-align: center;
@@ -304,7 +290,7 @@
 
   .description-text {
     font-size: 14px;
-    color: #666666;
+    color: var(--active-color, #666666);
     line-height: 1.4;
     margin-bottom: 10px;
   }
@@ -321,5 +307,28 @@
     font-size: 14px;
     color: #856404;
     line-height: 1.4;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input-field {
+      color: #ffffff;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .secondary-btn {
+      color: #ffffff;
+      background-color: #3b3b3b;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .ios-tip-section {
+      background-color: #463900;
+      border-color: #806d2a;
+    }
+
+    .ios-tip-text {
+      color: #ffe58f;
+    }
   }
 </style>

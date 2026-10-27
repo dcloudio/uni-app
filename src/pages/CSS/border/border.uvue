@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <view>
         <text>border与background-image同时设置</text>
@@ -31,6 +28,14 @@
         <view class="demo-box">
           <view class="common" style="border: 5px dotted blue;"></view>
           <view class="common" style="border: 5px dotted blue;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border: 6rpx dashed #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="border: 6rpx dashed #00f8;"></view>
+          <view class="common" style="border: 6rpx dashed #00f8;" flatten></view>
         </view>
       </view>
 
@@ -74,8 +79,17 @@
         </scroll-view>
       </view>
 
+      <view>
+        <text>父视图包含大尺寸子视图的border效果</text>
+        <view class="demo-box">
+          <view class="border-child-overlap">
+            <view style="width: 150px;height: 150px;background-color: red;"></view>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -144,21 +158,10 @@
         <input-data :defaultValue="data.border" title="border 自定义值" type="text" @confirm="inputChangeBorder"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border: 5px dotted blue 和 5px solid cyan;</text>
-        <view class="demo-box">
-          <native-view class="common" style="border: 5px dotted blue;"></native-view>
-          <native-view class="common" style="border: 5px solid cyan;"></native-view>
-        </view>
-      </view>
-
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const shown = ref(false)
@@ -171,7 +174,9 @@
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid purple' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted green' }
+    { value: 4, name: '3px dotted green' },
+    { value: 5, name: '6rpx dashed #00f8' },
+    { value: 6, name: '8rpx solid #0000ff80' }
   ]
 
   const data = reactive({
@@ -228,6 +233,11 @@
   onReady(() => {
     getPropertyValues()
   })
+
+  defineExpose({
+    radioChangeBorder,
+    data
+  })
 </script>
 
 <style>
@@ -236,6 +246,16 @@
     height: 50px;
     background-color: gray;
   }
+
+  .border-child-overlap {
+    width: 150px;
+    height: 150px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgba(255, 255, 0, 0.5);
+    border-radius: 6px;
+  }
+
   .demo-box{
     flex-direction: row;
     margin-top: 10px;

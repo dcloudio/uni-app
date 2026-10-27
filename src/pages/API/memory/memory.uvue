@@ -1,0 +1,186 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h3">内存告警监听 uni.onMemoryWarning</text>
+		<text class="margin-v notice">注意：内存不足时，系统可能直接结束应用或 activity，不一定会先触发本告警。</text>
+		<text class="margin-v">当前状态：{{ state.status }}</text>
+		<text class="margin-v">主动占用内存：{{ state.reservedMB }}MB</text>
+		<button class="margin-v" @tap="startListen">开始监听</button>
+		<button class="margin-v" @tap="stopListen">停止监听</button>
+		<button class="margin-v" @tap="addMemoryPressure">增加 32MB 内存占用</button>
+		<button class="margin-v" @tap="releaseMemory">释放已占用内存</button>
+
+		<text class="uni-h4">最近事件：</text>
+		<view class="log-list">
+			<text class="log-item" v-for="(item, index) in state.records" :key="index">{{ item }}</text>
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+  type PageState = {
+    status: string
+    records: string[]
+    listening: boolean
+    reservedMB: number
+  }
+
+  const state = reactive({
+    status: '未开始监听',
+    records: ['等待系统触发内存告警'],
+    listening: false,
+    reservedMB: 0
+  } as PageState)
+
+  let memoryWarningNativeCallback: OnMemoryWarningCallback | null = null
+  let memoryPressureBuffers: ArrayBuffer[] = []
+
+  const memoryBlockSizeMB = 32
+
+  function appendRecord(message: string): void {
+    state.records.unshift(message)
+    if (state.records.length > 8) {
+      state.records.splice(8)
+    }
+  }
+
+  function formatLevel(level: number | null): string {
+    if (level == null) {
+      return '当前平台未返回等级'
+    }
+    if (level == 5) {
+      return 'LOW(5)'
+    }
+    if (level == 10) {
+      return 'MEDIUM(10)'
+    }
+    if (level == 15) {
+      return 'CRITICAL(15)'
+    }
+    return 'LEVEL(' + level + ')'
+  }
+
+  function reserveMemoryChunk(sizeMB: number): void {
+    const buffer = new ArrayBuffer(sizeMB * 1024 * 1024)
+    const bytes = new Uint8Array(buffer)
+    let index = 0
+    while (index < bytes.length) {
+      bytes[index] = 1
+      index += 4096
+    }
+    memoryPressureBuffers.push(buffer)
+    state.reservedMB += sizeMB
+  }
+
+  function startListen(): void {
+    if (state.listening == true) {
+      appendRecord('监听已开启，无需重复注册')
+      return
+    }
+    const callback: OnMemoryWarningCallback = function (res: MemoryWarningCallbackResult): void {
+      let levelText = '当前平台未返回等级'
+      const level = res.level ?? null
+      if (level != null) {
+        levelText = formatLevel(level)
+      }
+      const message = '收到内存告警：' + levelText
+      state.status = message
+      appendRecord(message)
+      console.log('onMemoryWarning', res)
+    }
+    memoryWarningNativeCallback = callback
+    uni.onMemoryWarning(callback)
+    state.listening = true
+    state.status = '监听中，等待系统触发内存告警'
+    appendRecord('已注册 uni.onMemoryWarning')
+  }
+
+  function stopListen(): void {
+    if (memoryWarningNativeCallback == null) {
+      uni.offMemoryWarning(null)
+      state.listening = false
+      state.status = '监听已停止'
+      appendRecord('已清空所有监听器')
+      return
+    }
+    const nativeCallback = memoryWarningNativeCallback!
+    uni.offMemoryWarning(nativeCallback)
+    memoryWarningNativeCallback = null
+    state.listening = false
+    state.status = '监听已停止'
+    appendRecord('已移除当前页面监听器')
+  }
+
+  function addMemoryPressure(): void {
+    try {
+      reserveMemoryChunk(memoryBlockSizeMB)
+      const message = '手动加压成功，当前约占用 ' + state.reservedMB + 'MB'
+      state.status = message
+      appendRecord('新增 32MB 内存占用')
+    } catch (e) {
+      const message = '加压失败，当前约占用 ' + state.reservedMB + 'MB'
+      state.status = message
+      appendRecord(message)
+      console.error('addMemoryPressure', e)
+    }
+  }
+
+  function releaseMemory(): void {
+    memoryPressureBuffers = []
+    state.reservedMB = 0
+    state.status = '已释放示例页主动占用的内存'
+    appendRecord(state.status)
+  }
+
+  onLoad(() => {
+    memoryWarningNativeCallback = null
+    memoryPressureBuffers = []
+    state.listening = false
+    state.reservedMB = 0
+    state.status = '未开始监听'
+  })
+
+  onUnload(() => {
+    if (memoryWarningNativeCallback != null) {
+      const nativeCallback = memoryWarningNativeCallback!
+      uni.offMemoryWarning(nativeCallback)
+      memoryWarningNativeCallback = null
+    }
+    memoryPressureBuffers = []
+    state.reservedMB = 0
+  })
+
+  defineExpose({
+    state,
+    startListen,
+    stopListen,
+    addMemoryPressure,
+    releaseMemory
+  })
+</script>
+
+<style>
+.margin-v {
+  margin: 5px 0;
+}
+
+.notice {
+  color: #550000;
+	font-size: 14px;
+	font-style: italic;
+}
+
+.log-list {
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.log-item {
+  font-size: 14px;
+  margin: 4px 0;
+}
+</style>

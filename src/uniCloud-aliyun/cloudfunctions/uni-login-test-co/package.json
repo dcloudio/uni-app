@@ -1,0 +1,7 @@
+{
+  "name": "uni-login-test-co",
+  "dependencies": {
+    "uni-config-center": "file:../../../uni_modules/uni-config-center/uniCloud/cloudfunctions/common/uni-config-center"
+  },
+  "extensions": {}
+}

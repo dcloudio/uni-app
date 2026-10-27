@@ -1,5 +1,5 @@
-<script setup lang="uts">
-  import { state, updateGlobalData, setLifeCycleNum, checkSystemTheme } from '@/store/index.uts'
+<script setup lang="ts">
+  import { state, updateGlobalData, setLifeCycleNum } from '@/store/index.ts'
 
   // #ifdef APP-ANDROID || APP-HARMONY
   let firstBackTime = 0
@@ -22,38 +22,17 @@
       // observer1.observe({
       //   entryTypes: ['render', 'navigation'],
       // } as PerformanceObserverOptions)
-      // 统计上报 - 应用启动
-      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
-      uni.report({
-      	name: 'uni-app-launch',
-      	options: res,
-      	success(res_data) {
-      		console.log(res_data);
-      	}, fail(err) {
-      		console.log(err);
-      	}
-      })
-      // #endif
       // #ifdef APP
     if (process.env.NODE_ENV !== 'development') { //真机运行可以注释此条件
       uni.getPrivacySetting({
         success(res1){
             if(res1.needAuthorization){
-              // #ifdef VUE3-VAPOR
-              setTimeout(() => {
-                uni.openDialogPage({ url: '/pages/component/button/privacy' })
-              }, 500)
-              // #endif
-              // #ifndef VUE3-VAPOR
               uni.openDialogPage({ url: '/pages/component/button/privacy' })
-              // #endif
             }
         }
       })
     }
     // #endif
-    // 获取系统主题
-    checkSystemTheme();
   })
 
   const getRedirectUrl = (scheme : string | null, ulink : string | null) : string | null => {
@@ -105,34 +84,11 @@
     setLifeCycleNum(state.lifeCycleNum + 100)
     console.log('App Show')
 
-    // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
-    // 统计上报 - 应用显示
-    uni.report({
-    	name: 'uni-app-show',
-    	success(res_data) {
-    		console.log(res_data);
-    	}, fail(err) {
-    		console.log(err);
-    	}
-    })
-    // #endif
   })
   onAppHide(() => {
     // 自动化测试
     setLifeCycleNum(state.lifeCycleNum - 100)
     console.log('App Hide')
-
-    // 统计上报 - 应用进入后台
-    // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
-    uni.report({
-    	name: 'uni-app-hide',
-    	success(res) {
-    		console.log(res);
-    	}, fail(err) {
-    		console.log(err);
-    	}
-    })
-    // #endif
   })
   // #ifdef APP-ANDROID || APP-HARMONY
   onLastPageBackPress(() => {
@@ -160,18 +116,6 @@
   onError((err : any) => {
     console.log('App Error', err)
     setLifeCycleNum(state.lifeCycleNum + 100)
-    // 统计上报 - 应用发生错误
-    // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
-    uni.report({
-    	name: 'uni-app-error',
-    	options: err,
-    	success(res) {
-    		console.log(res);
-    	}, fail(err) {
-    		console.log(err);
-    	}
-    })
-     // #endif
   })
   const increaseLifeCycleNum = () => {
     setLifeCycleNum(state.lifeCycleNum + 100)
@@ -188,15 +132,27 @@
   @import "./common/uni.css";
 
   /* #ifdef WEB */
-  .uni-top-window uni-tabbar .uni-tabbar {
-    background-color: #fff !important;
-  }
-  /* #endif */
-  /* #ifdef MP-WEIXIN */
   page {
-    background-color: #efeff4;
+    --page-body-scope-test-color: #00cbbb;
   }
   /* #endif */
+
+  /* #ifdef VUE3-VAPOR || WEB || MP-WEIXIN */
+  page {
+    --page-padding: 16px;
+  }
+  /* #endif */
+
+  /* page 选择器背景色测试：light/dark 与公共页面背景仅保留 1 个通道的差异 */
+  page {
+    --selector-page-background: #f0eff4;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    page {
+      --selector-page-background: #1a1a1b;
+    }
+  }
 
   /* 全局样式测试 - 验证是否会影响所有页面和组件 */
   .global-text {
@@ -223,5 +179,4 @@
     background-color: #fff6c2 !important;
     border: #fcdf02 solid 3px !important;
   }
-
 </style>

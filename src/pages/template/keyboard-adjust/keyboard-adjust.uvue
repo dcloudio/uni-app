@@ -1,0 +1,209 @@
+<template>
+  <view class="content">
+    <uni-nav-bar :navigationBarTextStyle="navigationBarTextColor">
+      <template #left>
+        <uni-back-arrow-circle></uni-back-arrow-circle>
+      </template>
+      <template #mid>
+        <text class="nav-title">{{ title }}</text>
+      </template>
+    </uni-nav-bar>
+    <view style="align-items: center;height: 60px;">
+      <text class="section-title">输入框上推示例</text>
+      <radio-group class="view-radio-group" @change="ChangeView">
+        <view class="view-radio-item"><radio value="0" :checked="true" /><text>scroll-view</text></view>
+        <view class="view-radio-item"><radio value="1" /><text>list-view</text></view>
+        <!-- #ifndef MP -->
+        <view class="view-radio-item"><radio value="2" /><text>web-view</text></view>
+        <!-- #endif -->
+      </radio-group>
+    </view>
+    <scroll-view v-if="data.indexView==0" class="scroll-view" :refresher-enabled="false">
+      <view class="content-item" v-for="item in 10">
+        <view class="cell-item">
+          <text class="text">内容：{{item}}</text>
+          <input class="input-text" style="margin-top: 8px;" placeholder="备注输入框:" :id="`input-in-scroll-view-${item}`" :focus="item == 5 ? data.scrollViewInputFocus : false" />
+        </view>
+      </view>
+    </scroll-view>
+    <list-view v-if="data.indexView==1" class="scroll-view">
+      <list-item class="content-item" v-for="item in 10" :key="item">
+        <view class="cell-item">
+          <text class="text">列表项内容：{{item}}</text>
+          <input class="input-text" style="margin-top: 8px;" placeholder="备注输入框:" :id="`input-in-list-view-${item}`" :focus="item == 5 ? data.listViewInputFocus : false" />
+        </view>
+      </list-item>
+    </list-view>
+    <web-view v-if="data.indexView==2" src="/hybrid/html/local.html" id="webv" class="scroll-view"></web-view>
+    <view class="bottomInput" :style="{bottom: inputBottom}">
+      <input id="input" class="bottom-input" placeholder="滚动视图外底部输入框，焦点时手动控制显示位置" :adjust-position="false" @blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" />
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 演示软键盘弹起时，scroll-view、list-view、web-view 等容器中的输入框避让与底部输入框位置调整效果。
+   * @logic: 页面通过切换不同容器场景，对比输入框获取焦点后的页面表现，并在底部输入框中监听键盘高度变化实现手动避让。
+   * @optimization: 统一复用键盘高度变化处理逻辑，并在 iOS 与 HarmonyOS 平台扣除安全区高度，减少不同场景下的重复适配。
+   */
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  import { state, setLifeCycleNum as setLifeCycleNumStore } from '@/store/index.ts'
+
+  const title = ref('输入框上推示例')
+  const navigationBarTextColor = ref('#000')
+  const data = reactive({
+    indexView: 0,
+    scrollViewInputFocus: false,
+    listViewInputFocus: false,
+  })
+  const inputBottom = ref('0px')
+
+  // 自动化测试
+  function setLifeCycleNum(num : number) {
+    setLifeCycleNumStore(num)
+  }
+
+  function setNavigationBarColor1() {
+    uni.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#0000',
+      success: () => {
+        navigationBarTextColor.value = '#fff'
+        console.log('setNavigationBarColor success')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function setNavigationBarColor2() {
+    uni.setNavigationBarColor({
+      frontColor: '#000000',
+      backgroundColor: '#0000',
+      success: () => {
+        navigationBarTextColor.value = '#000'
+        console.log('setNavigationBarColor success')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function ChangeView(e:UniRadioGroupChangeEvent){
+    data.indexView = parseInt(e.detail.value)
+  }
+
+  function onInputBlur(event:UniInputBlurEvent) {
+    inputBottom.value = '0px';
+  }
+
+  function onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
+    let height = e.detail.height;
+    // #ifdef APP-IOS || APP-HARMONY
+    if(height>0 && currentPage != null){  //iOS与HarmonyOS平台软键盘的高度已经包含了安全区域高度，这里需要减掉
+      height -= currentPage.safeAreaInsets.bottom;
+    }
+    // #endif
+    inputBottom.value = `${height}px`;
+  }
+
+  // 自动化测试
+  function getLifeCycleNum() : number {
+    return state.lifeCycleNum
+  }
+
+  defineExpose({
+    getLifeCycleNum,
+    setLifeCycleNum,
+    setNavigationBarColor1,
+    setNavigationBarColor2,
+    data
+  })
+</script>
+
+<style>
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .nav-title,
+  .section-title,
+  .option-text {
+    color: var(--text-color, #333333);
+  }
+
+  .scroll-view {
+    flex: 1;
+    background-color: var(--background-color, #f5f5f5);
+    padding: 5px 0;
+  }
+
+  .view-radio-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .view-radio-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .content-item {
+  }
+
+  .cell-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    margin: 5px 10px;
+    background-color: var(--list-background-color, #ffffff);
+    border-radius: 5px;
+  }
+
+  .text {
+    font-size: 14px;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
+  }
+
+  .input-text,
+  .bottom-input {
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .bottomInput {
+    position: relative;
+    z-index: 1000;
+    padding: 0 5px;
+    margin-bottom: var(--uni-safe-area-inset-bottom);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input-text,
+    .bottom-input {
+      color: #ffffff;
+      background-color: #2d2d2d;
+    }
+  }
+</style>

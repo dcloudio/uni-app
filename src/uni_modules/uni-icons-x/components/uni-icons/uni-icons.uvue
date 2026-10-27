@@ -1,0 +1,66 @@
+<template>
+	<text style="font-family: UniIconsFontFamily;">{{ unicode }}</text>
+</template>
+
+<script setup lang="ts">
+	import { uniIconsMap, IconsType } from './icons.uts'
+
+	type Props = {
+		/**
+		 * @description 图标名称，取值范围见 icons.uts 导出的 IconsType，未传入或取值不存在时不显示图标
+		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		type? : IconsType
+	}
+
+	const props = defineProps<Props>()
+
+	const unicode = ref('')
+
+	const updateUnicode = () : void => {
+		const type = props.type
+		unicode.value = type != null ? uniIconsMap[type] : ''
+	}
+
+	watch(() : IconsType | undefined => props.type, updateUnicode, { immediate: true })
+</script>
+
+<style>
+	@font-face {
+		font-family: UniIconsFontFamily;
+		src: url('./uniicons.ttf');
+	}
+</style>

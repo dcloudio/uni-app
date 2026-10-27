@@ -1,16 +1,15 @@
 <template>
   <view class="container">
-    <page-intro content="本页为一键登录自定义 uvue 页面：展示号码与 slogan、本机一键登录、隐私协议与其他登录方式。"></page-intro>
     <view class="safe_content">
       <text class="close_icon" @click="closePage">{{closeIcon}}</text>
-      <text class="title">这是一个普通uvue的dialogPage页面</text>
+      <text class="title">这是一键登录自定义 uvue 页面</text>
       <view class="number">
         <text id="number-text" class="number-text" ref="number-text">{{phone}}</text>
         <text id="slogan-text" class="slogan-text">{{slogan}}</text>
       </view>
       <button id="login-button" class="login-button" @click="loginIn">本机号码一键登录</button>
       <view class="privacy">
-        <checkbox id="privacy-checkbox" class="privacy-checkbox" ref="privacy-checkbox" :checked="false"></checkbox>
+        <checkbox id="privacy-checkbox" class="privacy-checkbox" ref="privacy-checkbox" :checked="privacyChecked" />
         <text class="privacy-normal-text">登录即同意</text>
         <text id="privacy-text" class="privacy-text" @click="openLink">{{privacyName}}</text>
       </view>
@@ -19,7 +18,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const instance = getCurrentInstance()!.proxy!
 
   const uniVerifyManager = ref(null as UniVerifyManager | null)
@@ -29,6 +28,11 @@
   const privacyUrl = ref('')
   const closeIcon = ref('\uE650')
   const isLoading = ref(false)
+  const privacyChecked = ref(false)
+  const data = reactive({
+    autoTest: false,
+    onceEventName: ''
+  })
 
   function closePage() {
     uni.closeDialogPage({
@@ -69,7 +73,7 @@
       setTimeout(() => {
         uni.showModal({
           title: '取号成功',
-          content: res.result.getJSON("res")?.getString("phoneNumber"),
+          content: ((res.result.res as UTSJSONObject)?.phoneNumber as string),
           showCancel: false
         });
       }, 100);
@@ -111,6 +115,13 @@
         privacyTextElement: privacyTextElement,
         success: (res) => {
           console.log(res);
+          // #ifdef APP-HARMONY
+          if (data.autoTest) {
+            closePage()
+            uni.$emit(data.onceEventName)
+            return
+          }
+          // #endif
           takePhoneNumber(res.accessToken, res.openId);
         },
         fail: (error) => {
@@ -127,7 +138,7 @@
               duration: 2000
             })
           } else {
-            const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
+            const errorMsg = (JSON.parse(error.cause?.cause?.message ?? "")?.errorDesc as string) ?? error.errMsg;
             uni.showToast({
               title: errorMsg,
               position: "bottom",
@@ -162,12 +173,23 @@
     slogan.value = options['slogan'] as string;
     privacyName.value = options['name'] as string;
     privacyUrl.value = options['link'] as string;
+
+    data.autoTest = (options['autoTest'] as string) === 'true'
+    data.onceEventName = options['onceEventName'] as string
+
+    // #ifdef APP-HARMONY
+    if (data.autoTest) {
+      nextTick(() => {
+        privacyChecked.value = true
+        loginIn()
+      })
+    }
+    // #endif
   })
 </script>
 
 <style>
   .container {
-    background-color: white;
     flex: 1;
     width: 100%;
   }
@@ -184,11 +206,13 @@
     font-family: uni-icon;
     font-size: 24px;
     /* font-weight: bold; */
+    color: var(--text-color);
   }
 
   .title {
     align-self: center;
     top: 20px;
+    color: var(--text-color);
   }
 
   .number {
@@ -205,6 +229,7 @@
     font-weight: bold;
     align-self: center;
     height: 30px;
+    color: var(--text-color);
   }
 
   .slogan-text {
@@ -260,5 +285,6 @@
     position: absolute;
     align-self: center;
     font-size: 14px;
+    color: var(--text-color);
   }
 </style>

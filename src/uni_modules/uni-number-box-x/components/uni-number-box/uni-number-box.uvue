@@ -1,0 +1,802 @@
+<template>
+	<view class="uni-numbox">
+		<view
+			class="uni-numbox__btn uni-numbox__minus"
+			:class="btnClass"
+		<!-- #ifdef WEB -->
+			@pointerdown="onMinus"
+		<!-- #endif -->
+		<!-- #ifndef WEB -->
+			@click="onMinus"
+		<!-- #endif -->
+		>
+		<!-- Chrome 133版本上有点击响应慢的bug，为规避bug在条件编译中使用 @pointerdown-->
+			<view class="uni-numbox__icon-line" :class="[iconClass, minusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
+		</view>
+		<input
+			class="uni-numbox__input"
+			:class="inputClass"
+			:disabled="disabled"
+			:type="step < 1 ? 'digit' : 'number'"
+			v-model="inputValue"
+			@focus="onFocus"
+			@blur="onBlur"
+		/>
+		<view
+			class="uni-numbox__btn uni-numbox__plus"
+			:class="btnClass"
+			<!-- #ifdef WEB -->
+				@pointerdown="onPlus"
+			<!-- #endif -->
+			<!-- #ifndef WEB -->
+				@click="onPlus"
+			<!-- #endif -->
+		>
+			<view class="uni-numbox__icon-line" :class="[iconClass, plusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
+			<view class="uni-numbox__icon-line uni-numbox__icon-line--vertical" :class="[iconClass, plusDisabled ? 'uni-numbox__icon-line--disabled' : '']"></view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+/**
+ * NumberBox 数字输入框
+ * @description 带加减按钮的数字输入框，常见于购物车商品数量选择
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07",
+ *       "unixVaporVer": "5.21"
+ *     },
+ *     "ios": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07",
+ *       "unixVaporVer": "5.11"
+ *     },
+ *     "harmony": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07",
+ *       "unixVaporVer": "5.07"
+ *     }
+ *   },
+ *   "mp": {
+ *     "weixin": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.07"
+ *     },
+ *     "alipay": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.31"
+ *     }
+ *   },
+ *   "web": {
+ *     "uniVer": "x",
+ *     "unixVer": "5.07"
+ *   }
+ * }
+ * @property {Number} value 输入框当前值，默认值 1
+ * @property {Number} modelValue v-model 绑定值，默认值 1
+ * @property {Number} min 最小值，默认值 0
+ * @property {Number} max 最大值，默认值 100
+ * @property {Number} step 步长，每次点击改变的间隔大小，默认值 1，支持小数
+ * @property {Boolean} disabled 是否禁用，默认值 false
+ * @property {String} btnClass 按钮自定义样式类
+ * @property {String} inputClass 输入框自定义样式类
+ * @property {String} iconClass 图标自定义样式类
+ * @event {Function} change 值改变时触发，参数为当前值
+ * @event {Function} focus 输入框聚焦时触发
+ * @event {Function} blur 输入框失焦时触发
+ */
+
+defineOptions({
+	externalClasses: ['btn-class', 'input-class', 'icon-class']
+})
+
+type Props = {
+	/**
+	 * @description 输入框当前值，不使用 v-model 时通过该属性传入初始值
+	 * @default 1
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	value?: number,
+	/**
+	 * @description v-model 绑定值，支持双向绑定
+	 * @default 1
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	modelValue?: number,
+	/**
+	 * @description 允许输入的最小值
+	 * @default 0
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	min?: number,
+	/**
+	 * @description 允许输入的最大值
+	 * @default 100
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	max?: number,
+	/**
+	 * @description 每次点击加/减按钮改变的步长，支持小数
+	 * @default 1
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	step?: number,
+	/**
+	 * @description 是否禁用组件，禁用时输入框和加减按钮都不可操作
+	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	disabled?: boolean,
+	/**
+	 * @description 加减按钮的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	btnClass?: string.ClassString,
+	/**
+	 * @description 输入框的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	inputClass?: string.ClassString,
+	/**
+	 * @description 加减按钮内部图标的自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	iconClass?: string.ClassString
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	value: 1,
+	modelValue: 1,
+	min: 0,
+	max: 100,
+	step: 1,
+	disabled: false,
+	btnClass: '',
+	inputClass: '',
+	iconClass: ''
+})
+
+const emit = defineEmits<{
+	/**
+	 * @description 值改变时触发，参数为当前值，类型为 number
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	change: [value: number]
+	/**
+	 * @description v-model 绑定值变化事件，参数为当前值，类型为 number
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	'update:modelValue': [value: number]
+	/**
+	 * @description 输入框失焦时触发，参数为事件对象，类型为 UniInputBlurEvent
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	blur: [event: UniInputBlurEvent]
+	/**
+	 * @description 输入框聚焦时触发，参数为事件对象，类型为 UniInputFocusEvent
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	focus: [event: UniInputFocusEvent]
+}>()
+
+// 内部输入值
+const inputValue = ref<string>('')
+
+// 获取小数精度
+const getDecimalScale = () : number => {
+	let scale = 1
+	// 浮点型
+	if (Math.floor(props.step) != props.step) {
+		const stepStr = props.step.toString()
+		const dotIndex = stepStr.indexOf('.')
+		if (dotIndex != -1) {
+			const decimalPart = stepStr.substring(dotIndex + 1)
+			scale = Math.pow(10, decimalPart.length) as number
+		}
+	}
+	return scale
+}
+
+// 格式化数值
+const formatValue = (value : number) : string => {
+	const scale = getDecimalScale()
+	const scaleStr = scale.toString()
+	const precision = scaleStr.length - 1
+	return value.toFixed(precision)
+}
+
+// 发射变更事件
+const emitChange = (value : number) : void => {
+	emit('update:modelValue', value)
+	emit('change', value)
+}
+
+// 初始化值
+const initValue = () : void => {
+	let val : number = props.value
+	if (props.modelValue != 1) {
+		val = props.modelValue
+	}
+	inputValue.value = formatValue(val)
+}
+
+// 判断减号是否禁用
+const minusDisabled = computed(() : boolean => {
+	const currentVal = parseFloat(inputValue.value)
+	if (isNaN(currentVal)) return true
+	return currentVal <= props.min || props.disabled
+})
+
+// 判断加号是否禁用
+const plusDisabled = computed(() : boolean => {
+	const currentVal = parseFloat(inputValue.value)
+	if (isNaN(currentVal)) return true
+	return currentVal >= props.max || props.disabled
+})
+
+// 点击减号
+const onMinus = () : void => {
+	if (props.disabled) return
+
+	const scale = getDecimalScale()
+	let currentVal = parseFloat(inputValue.value)
+	if (isNaN(currentVal)) {
+		currentVal = props.min
+	}
+
+	let value = currentVal * scale
+	const stepScaled = props.step * scale
+
+	value -= stepScaled
+
+	if (value < props.min * scale) return
+	if (value > props.max * scale) {
+		value = props.max * scale
+	}
+
+	const newValue = value / scale
+	inputValue.value = formatValue(newValue)
+	emitChange(newValue)
+}
+
+// 点击加号
+const onPlus = () : void => {
+	if (props.disabled) return
+
+	const scale = getDecimalScale()
+	let currentVal = parseFloat(inputValue.value)
+	if (isNaN(currentVal)) {
+		currentVal = props.min
+	}
+
+	let value = currentVal * scale
+	const stepScaled = props.step * scale
+
+	value += stepScaled
+
+	if (value > props.max * scale) return
+	if (value < props.min * scale) {
+		value = props.min * scale
+	}
+
+	const newValue = value / scale
+	inputValue.value = formatValue(newValue)
+	emitChange(newValue)
+}
+
+// 失焦事件
+const onBlur = (event : UniInputBlurEvent) : void => {
+	emit('blur', event)
+
+	let value = parseFloat(event.detail.value)
+	if (isNaN(value)) {
+		inputValue.value = formatValue(props.value)
+		return
+	}
+
+	if (value > props.max) {
+		value = props.max
+	} else if (value < props.min) {
+		value = props.min
+	}
+
+	inputValue.value = formatValue(value)
+	emitChange(value)
+}
+
+// 聚焦事件
+const onFocus = (event : UniInputFocusEvent) : void => {
+	emit('focus', event)
+}
+
+// 监听 props 变化
+watch(() : number | null => {
+	return props.modelValue ?? props.value ?? null
+}, (newValue : number | null) => {
+	if (newValue != null) {
+		inputValue.value = formatValue(newValue)
+	}
+})
+
+// 初始化
+initValue()
+</script>
+
+<style>
+.uni-numbox {
+	flex-direction: row;
+	align-items: center;
+	/* #ifdef WEB */
+	user-select: none;
+	/* #endif */
+}
+
+.uni-numbox__btn {
+	width: 26px;
+	height: 26px;
+	background-color: #f5f5f5;
+	align-items: center;
+	justify-content: center;
+	/* #ifdef WEB */
+	cursor: pointer;
+	/* #endif */
+}
+
+.uni-numbox__minus {
+	border-top-left-radius: 2px;
+	border-bottom-left-radius: 2px;
+}
+
+.uni-numbox__plus {
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+}
+
+.uni-numbox__icon-line {
+	position: absolute;
+	width: 10px;
+	height: 1px;
+	background-color: #333;
+}
+
+.uni-numbox__icon-line--vertical {
+	transform: rotate(90deg);
+}
+
+.uni-numbox__icon-line--disabled {
+	background-color: #c0c0c0;
+}
+
+.uni-numbox__input {
+	margin: 0 2px;
+	background-color: #f5f5f5;
+	width: 40px;
+	height: 26px;
+	text-align: center;
+	font-size: 14px;
+	border-width: 0;
+	color: #333;
+}
+</style>

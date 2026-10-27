@@ -1,6 +1,7 @@
 <template>
   <scroll-view style="flex: 1">
-    <page-intro content="本页演示 page-container 页面容器，用于在页面内创建弹出层效果，支持拦截返回操作：顶部/底部/左侧/右侧/居中弹出、圆角、遮罩与透明蒙层、下滑关闭等能力，通过按钮触发不同展示。"></page-intro>
+    <page-intro
+      content="本页演示 page-container 页面容器，用于在页面内创建弹出层效果，支持拦截返回操作：顶部/底部/左侧/右侧/居中弹出、圆角、遮罩与透明蒙层、下滑关闭等能力，通过按钮触发不同展示。"></page-intro>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title uni-common-mt">
         <text class="uni-title-text"> 弹出位置 </text>
@@ -18,10 +19,22 @@
 
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 跟随元素对齐 </text>
+      </view>
+      <view>
+        <button id="align-left-button" @click="showAlignLeft">下方左对齐</button>
+        <button id="align-center-button" class="mt-5" @click="showAlignCenter">下方水平居中</button>
+        <button id="align-right-button" class="mt-5" @click="showAlignRight">下方右对齐</button>
+      </view>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
         <text class="uni-title-text"> 弹窗圆角 </text>
       </view>
       <view>
-        <button @click="showRound">圆角</button>
+        <button id="round-button" @click="showRound"> 开启圆角 </button>
+        <button id="close-round-button" class="mt-5" @click="closeRound"> 关闭圆角 </button>
       </view>
     </view>
 
@@ -34,6 +47,9 @@
         <button class="mt-5" @click="showOverlay(true)">显示蒙层</button>
         <button class="mt-5" @click="showTransparentOverlay">透明蒙层</button>
         <button class="mt-5" @click="showGreenTransparentOverlay">绿色半透明蒙层</button>
+        <!-- #ifndef APP-ANDROID -->
+        <button class="mt-5" @click="showOverlayPointerEventsNone">蒙层穿透（点击蒙层不关闭）</button>
+        <!-- #endif -->
       </view>
     </view>
 
@@ -66,6 +82,23 @@
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 其他方向滑动关闭 </text>
+      </view>
+      <view>
+        <!-- #ifndef MP -->
+        <button @click="showSlideClose('left')">左滑关闭</button>
+        <!-- #endif -->
+        <button class="mt-5" @click="showSlideClose('right')">右滑关闭</button>
+        <button class="mt-5" @click="showSlideClose('top')">上滑关闭</button>
+        <text class="slider-down-info">提示: close-on-slide-down=true 时，关闭方向由 position 决定</text>
+      </view>
+    </view>
+    <!-- #endif -->
+
+    <!-- #ifndef MP -->
     <view class="uni-padding-wrap uni-common-mt" style="margin-bottom: 30px;">
       <view class="uni-title uni-common-mt">
         <text class="uni-title-text"> 多层堆叠测试 </text>
@@ -74,24 +107,30 @@
         <button @click="showStackedLayer1">打开第1层弹层</button>
       </view>
     </view>
+    <!-- #endif -->
 
-    <page-container v-if="containerShow" :show="containerShow" :position="containerPosition" :round="containerRound"
+    <page-container <!-- #ifdef MP -->
+      v-if="containerShow"
+      <!-- #endif -->
+      :show="containerShow" :position="containerPosition" :round="containerRound"
       :overlay="containerOverlay" :overlay-style="containerOverlayStyle"
+      :custom-style="containerCustomStyle"
       :close-on-slide-down="containerCloseOnSlideDown" @afterleave="onAfterLeave">
-        <view class="container">
-          <text class="container-title">{{ containerTitle }}</text>
-          <scroll-view v-if="enableScrollThrough" style="height: 200px;margin-bottom: 15px; padding: 10px;">
-             <text class="container-content">{{ containerContent }}</text>
-          </scroll-view>
-          <text v-else class="container-content">{{ containerContent }}</text>
-          <button @click="closeContainer" type="primary">关闭容器</button>
-          <button class="mt-5" @click="navigateBack">后退页面</button>
-        </view>
+      <view class="container">
+        <text class="container-title">{{ containerTitle }}</text>
+        <scroll-view v-if="enableScrollThrough" style="height: 200px;margin-bottom: 15px; padding: 10px;">
+          <text class="container-content">{{ containerContent }}</text>
+        </scroll-view>
+        <text v-else class="container-content">{{ containerContent }}</text>
+        <button @click="closeContainer" type="primary">关闭容器</button>
+        <button class="mt-5" @click="navigateBack">后退页面</button>
+      </view>
     </page-container>
 
+    <!-- #ifndef MP -->
     <!-- 多层堆叠弹层 - 第1层 -->
     <page-container v-if="showStackedPop1" :show="showStackedPop1" position="center" @afterleave="closeStackedLayer1">
-      <view class="stacked-container" style="background-color: #fff; width: 360px;">
+      <view class="stacked-container stacked-container-level-1" style="width: 360px;">
         <text class="container-title">第1层弹层</text>
         <text class="container-content">这是第1层弹层,点击下方按钮可以打开第2层</text>
         <view style="flex-direction: row; justify-content: space-around;">
@@ -103,7 +142,7 @@
 
     <!-- 多层堆叠弹层 - 第2层 -->
     <page-container v-if="showStackedPop2" :show="showStackedPop2" position="center" @afterleave="closeStackedLayer2">
-      <view class="stacked-container" style="background-color: #f0f0f0; width: 340px;">
+      <view class="stacked-container stacked-container-level-2" style="width: 340px;">
         <text class="container-title">第2层弹层</text>
         <text class="container-content">这是第2层弹层,点击下方按钮可以打开第3层</text>
         <view style="flex-direction: row; justify-content: space-around;">
@@ -115,22 +154,48 @@
 
     <!-- 多层堆叠弹层 - 第3层 -->
     <page-container v-if="showStackedPop3" :show="showStackedPop3" position="center" @afterleave="closeStackedLayer3">
-      <view class="stacked-container" style="background-color: #e0e0e0; width: 300px;">
+      <view class="stacked-container stacked-container-level-3" style="width: 300px;">
         <text class="container-title">第3层弹层</text>
         <text class="container-content">这是第3层弹层,最顶层的弹层</text>
         <button @click="closeStackedLayer3" size="default">关闭本层</button>
       </view>
     </page-container>
+    <!-- #endif -->
+
+    <!-- 跟随元素对齐的弹层 -->
+    <page-container <!-- #ifdef MP -->
+      v-if="showAlignContainer"
+      <!-- #endif -->
+      :show="showAlignContainer" position="center" overlay-style="background-color: rgba(0, 0, 0, 0.1);"
+      :custom-style="alignContainerStyle"
+      @afterleave="closeAlignContainer">
+      <view class="align-shell">
+        <view class="align-arrow" :style="alignArrowStyle"></view>
+        <view class="align-container">
+          <view class="align-menu-item" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单1')">
+            <text class="align-menu-text">菜单1</text>
+          </view>
+          <view class="align-menu-item" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单2')">
+            <text class="align-menu-text">菜单2</text>
+          </view>
+          <view class="align-menu-item align-menu-item-last" hover-class="align-menu-item-hover"
+            @click="closeAlignContainer">
+            <text class="align-menu-text">关闭</text>
+          </view>
+        </view>
+      </view>
+    </page-container>
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const containerShow = ref<boolean>(false)
   const containerRound = ref<boolean>(false)
   const containerPosition = ref<string>('bottom')
   const containerOverlay = ref<boolean>(true)
   const containerTitle = ref<string>('Page-Container')
   const containerOverlayStyle = ref<string>('')
+  const containerCustomStyle = ref<string>('')
   const containerContent = ref<string>('这是一个 page-container 容器')
   const containerCloseOnSlideDown = ref<boolean>(false)
   const enableScrollThrough = ref<boolean>(false)
@@ -140,8 +205,13 @@
   const showStackedPop2 = ref<boolean>(false)
   const showStackedPop3 = ref<boolean>(false)
 
+  // 跟随元素对齐弹层状态
+  const showAlignContainer = ref<boolean>(false)
+  const alignContainerStyle = ref<string>('')
+  const alignArrowStyle = ref<string>('')
+
   type Data = {
-    onAfterLeaveCallCount: number
+    onAfterLeaveCallCount : number
   }
 
   // 仅用于自动化测试
@@ -150,15 +220,18 @@
   })
 
   function resetConfig() {
-    containerRound.value = false
     containerPosition.value = 'bottom'
     containerOverlay.value = true
     containerCloseOnSlideDown.value = false
     containerOverlayStyle.value = ''
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value = 'z-index: 0;'
+    // #endif
+    containerCustomStyle.value = ''
     enableScrollThrough.value = false
   }
 
-  function showContainer(position : string, text: string) {
+  function showContainer(position : string, text : string) {
     resetConfig()
     containerPosition.value = position
     containerShow.value = true
@@ -171,7 +244,15 @@
     containerRound.value = true
     containerShow.value = true
     containerTitle.value = 'Round: true'
-    containerContent.value = '弹窗圆角: true'
+    containerContent.value = `弹窗圆角: ${containerRound.value}`
+  }
+
+  function closeRound() {
+    resetConfig()
+    containerRound.value = false
+    containerShow.value = true
+    containerTitle.value = 'Round: false'
+    containerContent.value = `弹窗圆角: ${containerRound.value}`
   }
 
   function showOverlay(overlay : boolean) {
@@ -186,6 +267,9 @@
     resetConfig()
     containerOverlay.value = true
     containerOverlayStyle.value = 'background-color: rgba(0, 0, 0, 0);'
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value += ' z-index: 0;'
+    // #endif
     containerTitle.value = '透明蒙层'
     containerContent.value = '蒙层开启但完全透明，可以点击蒙层区域关闭'
     containerShow.value = true
@@ -194,10 +278,26 @@
   function showGreenTransparentOverlay() {
     resetConfig()
     containerOverlay.value = true
-    containerPosition.value = 'center'
+    containerPosition.value = 'bottom'
     containerOverlayStyle.value = 'background-color: rgba(76, 175, 80, 0.3);'
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value += ' z-index: 0;'
+    // #endif
     containerTitle.value = '绿色半透明蒙层'
     containerContent.value = '蒙层开启但为绿色半透明，可以点击蒙层区域关闭'
+    containerShow.value = true
+  }
+
+  function showOverlayPointerEventsNone() {
+    resetConfig()
+    containerOverlay.value = true
+    containerPosition.value = 'bottom'
+    containerOverlayStyle.value = 'background-color: rgba(0, 0, 0, 0.3); pointer-events: none;'
+    // #ifdef MP-ALIPAY
+    containerOverlayStyle.value += ' z-index: 0;'
+    // #endif
+    containerTitle.value = 'overlay-style: pointer-events: none'
+    containerContent.value = '蒙层已开启并设置 pointer-events: none，点击蒙层区域不会关闭容器'
     containerShow.value = true
   }
 
@@ -208,6 +308,28 @@
     containerPosition.value = 'bottom'
     containerTitle.value = 'Close-on-slide-down: true'
     containerContent.value = '下滑关闭: true'
+  }
+
+  function showSlideClose(position : string) {
+    resetConfig()
+    containerCloseOnSlideDown.value = true
+    containerPosition.value = position
+
+    if (position == 'left') {
+      containerCustomStyle.value = 'width: 300px; height: 100%; right: auto;'
+      containerTitle.value = '左滑关闭'
+      containerContent.value = '左侧弹出: 从内容区域向左滑动可关闭容器'
+    } else if (position == 'right') {
+      containerCustomStyle.value = 'width: 300px; height: 100%; left: auto;'
+      containerTitle.value = '右滑关闭'
+      containerContent.value = '右侧弹出: 从内容区域向右滑动可关闭容器'
+    } else if (position == 'top') {
+      containerCustomStyle.value = 'height: 300px;'
+      containerTitle.value = '上滑关闭'
+      containerContent.value = '顶部弹出: 从内容区域向上滑动可关闭容器'
+    }
+
+    containerShow.value = true
   }
 
   function autoClose() {
@@ -243,6 +365,86 @@
     uni.navigateBack()
   }
 
+  function showAlign(selector : string, alignType : string) {
+    const containerWidth = 200
+    const arrowStyleMap = new Map<string, string>([['left', 'left: 28px;'], ['center', 'left: 92px;'], ['right', 'left: 156px;']])
+    // #ifdef WEB
+    const elementId = selector.substring(1)
+    const targetElement = uni.getElementById(elementId)
+    if (targetElement != null) {
+      const rect = targetElement.getBoundingClientRect()
+      const nodeWidth = rect.width
+      let targetLeft = rect.left
+
+      if (alignType == 'center') {
+        targetLeft += (nodeWidth / 2 - containerWidth / 2)
+      } else if (alignType == 'right') {
+        targetLeft += (nodeWidth - containerWidth)
+      }
+
+      alignArrowStyle.value = arrowStyleMap.get(alignType) as string
+      alignContainerStyle.value = `left: ${targetLeft}px; top: ${rect.bottom}px; background-color: transparent; transform: none`
+      showAlignContainer.value = true
+      return
+    }
+    // #endif
+
+    uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {
+      if (ret.length == 1) {
+        const nodeInfo = ret[0] as NodeInfo;
+        const nodeWidth = nodeInfo.width as number
+        let targetLeft = nodeInfo.left as number
+
+        if (alignType == 'center') {
+          targetLeft += (nodeWidth / 2 - containerWidth / 2)
+        } else if (alignType == 'right') {
+          targetLeft += (nodeWidth - containerWidth)
+        }
+
+        alignArrowStyle.value = arrowStyleMap.get(alignType) as string
+
+        const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number)
+
+        // #ifdef MP-WEIXIN
+        alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; background-color: transparent; transform: none`
+        // #endif
+
+        // #ifndef MP-WEIXIN
+        const windowInfo = uni.getWindowInfo()
+        const maxLeft = Math.max(0, windowInfo.windowWidth - containerWidth)
+        const popupLeft = Math.max(0, Math.min(targetLeft, maxLeft))
+        alignContainerStyle.value = `transform: translate(${popupLeft}px, ${targetTop}px); background-color: transparent; transition: none`
+        // #endif
+
+        showAlignContainer.value = true
+      }
+    })
+  }
+
+  function showAlignLeft() {
+    showAlign('#align-left-button', 'left')
+  }
+
+  function showAlignCenter() {
+    showAlign('#align-center-button', 'center')
+  }
+
+  function showAlignRight() {
+    showAlign('#align-right-button', 'right')
+  }
+
+  function closeAlignContainer() {
+    showAlignContainer.value = false
+  }
+
+  function onAlignMenuClick(menuName : string) {
+    closeAlignContainer()
+    uni.showToast({
+      title: `点击了${menuName}`,
+      icon: 'none'
+    })
+  }
+
   // 多层堆叠弹层方法
   function showStackedLayer1() {
     showStackedPop1.value = true
@@ -271,15 +473,14 @@
   defineExpose({
     data,
     showContainer,
-    navigateBack,
-    closeContainer
+    navigateBack
   })
 </script>
 
 <style scoped>
   .container {
     padding: 20px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     min-height: 300px;
     min-width: 300px;
   }
@@ -287,13 +488,13 @@
   .container-title {
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color, #333);
     margin-bottom: 10px;
   }
 
   .container-content {
     font-size: 14px;
-    color: #666;
+    color: var(--active-color, #666);
     margin-bottom: 15px;
   }
 
@@ -303,7 +504,7 @@
 
   .slider-down-info {
     font-size: 12px;
-    color: #999;
+    color: var(--active-color, #999);
     margin-top: 5px;
     margin-bottom: 20px;
   }
@@ -312,5 +513,84 @@
     padding: 10px;
     border-radius: 8px;
     min-height: 150px;
+  }
+
+  .stacked-container-level-1 {
+    background-color: #ffffff;
+  }
+
+  .stacked-container-level-2 {
+    background-color: #f0f0f0;
+  }
+
+  .stacked-container-level-3 {
+    background-color: #e0e0e0;
+  }
+
+  .align-container {
+    background-color: var(--list-background-color, #ffffff);
+    width: 200px;
+    border-radius: 8px;
+    margin-top: -1px;
+  }
+
+  .align-menu-item {
+    padding: 12px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--border-color, #eeeeee);
+  }
+
+  .align-menu-item-last {
+    border-bottom-width: 0;
+  }
+
+  .align-menu-text {
+    font-size: 14px;
+    color: var(--text-color, #333333);
+  }
+
+  .align-menu-item-hover {
+    background-color: var(--active-background-color, #f5f5f5);
+  }
+
+  .align-shell {
+    width: 200px;
+    padding-top: 7px;
+    position: relative;
+    background-color: transparent;
+  }
+
+  .align-arrow {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ffffff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .container-content,
+    .slider-down-info {
+      color: #d0d0d0;
+    }
+
+    .stacked-container-level-1 {
+      background-color: #2d2d2d;
+    }
+
+    .stacked-container-level-2 {
+      background-color: #353535;
+    }
+
+    .stacked-container-level-3 {
+      background-color: #3b3b3b;
+    }
+
+    .align-arrow {
+      border-bottom-color: #2d2d2d;
+    }
   }
 </style>

@@ -1,18 +1,18 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith("android")
-const isIos = platformInfo.startsWith("ios")
-const isWeb = platformInfo.startsWith("web")
 const isMP = platformInfo.startsWith('mp')
-const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+const isAndroid = platformInfo.startsWith('android')
+const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIOS || isHarmony
 
 let page
 
 describe("css-custom-variable", () => {
   if (isMP) {
-  	it('skip mp or dom2', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
   }
   it("screenshot", async () => {
     page = await program.reLaunch("/pages/CSS/variable/custom_variable")
@@ -54,4 +54,53 @@ describe("css-custom-variable", () => {
     } = await element.size()
     expect(height2 == height1).toBe(false)
   })
+  // 嵌套括号 fallback 测试 - 场景1：应用后是否生效
+  // 场景1 区域 --main-color 已定义(#ff0000)，应显示红色
+  // 场景3 区域 --main-color 未定义，应 fallback 到 rgba(64,158,255,0.8) 蓝色半透明
+  it("test-nested-paren-apply", async () => {
+    await page.waitFor("view")
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+  // 嵌套括号 fallback 测试 - 场景2：修改后是否生效
+  // 点击 #changeNestedParenButton 通过 setProperty 修改 --main-color 为 #00ff00
+  it("test-nested-paren-change", async () => {
+    const button = await page.$("#changeNestedParenButton")
+    await button.tap()
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+  // 嵌套括号 fallback 测试 - 场景3：fallback 是否生效
+  // 点击 #toggleNestedParenFallbackButton 设置 --main-color 为 #ff0000，应显示红色
+  // 再点击清空 --main-color，应恢复 fallback 到 rgba(64,158,255,0.8) 蓝色半透明
+  it("test-nested-paren-fallback", async () => {
+    const button = await page.$("#toggleNestedParenFallbackButton")
+    await button.tap()
+    await page.waitFor(500)
+    const image1 = await program.screenshot({ fullPage: true })
+    expect(image1).toSaveImageSnapshot()
+    await button.tap()
+    await page.waitFor(500)
+    const image2 = await program.screenshot({ fullPage: true })
+    expect(image2).toSaveImageSnapshot()
+  })
+
+  it("test-var-important", async () => {
+    page = await program.reLaunch("/pages/CSS/variable/custom_variable")
+    await page.waitFor("view")
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+
+  if (isApp) {
+    it("test-use-computed-style-background-color", async () => {
+      page = await program.reLaunch("/pages/CSS/variable/custom_variable")
+      await page.waitFor("view")
+      await page.waitFor(async () => {
+        return await page.data('data.useComputedStyleBackgroundColor') == '#ff0000'
+      })
+      expect(await page.data('data.useComputedStyleBackgroundColor')).toBe('#ff0000')
+    })
+  }
 })

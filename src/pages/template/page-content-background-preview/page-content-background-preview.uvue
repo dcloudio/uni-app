@@ -1,0 +1,18 @@
+<template>
+    <view style="height: 3000px; border: dashed 10px #000000;"></view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 用超长内容区域配合页面背景色配置，演示页面内容背景色的显示范围和滚动后的视觉效果。
+   * @logic: 页面主体只渲染一个高内容块，并依赖 `pages.json` 中的 `backgroundColorContent` 观察首屏与滚动后的背景色覆盖表现。
+   * @optimization: 页面结构保持最小化，只保留必要内容块，便于聚焦背景色渲染结果，减少其他组件对截图和视觉验证的干扰。
+   */
+</script>
+
+  <style>
+    page {
+      background-color: transparent;
+    }
+
+</style>

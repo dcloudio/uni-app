@@ -1,0 +1,249 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h2">全景浏览</text>
+		<text>左右转动手机，超宽画卷会跟随陀螺仪横向移动，展示屏幕之外的内容。</text>
+
+		<text class="uni-h3">当前状态</text>
+		<text id="panoramaStatus" class="margin-v">{{ statusText }}</text>
+		<view class="metric-row">
+			<view class="metric-box">
+				<text class="metric-label">水平偏移</text>
+				<text class="metric-value">{{ offsetText }}</text>
+			</view>
+			<view class="metric-box metric-box-space">
+				<text class="metric-label">角速度 Y</text>
+				<text class="metric-value">{{ velocityText }}</text>
+			</view>
+		</view>
+
+		<text class="uni-h3">移动视窗</text>
+		<text class="margin-v">将手机朝左或朝右缓慢转动，观察画面边缘不断切换的色块与文字。</text>
+		<view id="panoramaViewport" class="viewport">
+			<view class="panorama-strip" :style="panoramaStyle">
+				<view class="gradient-content">
+					<text class="panel-title">渐变全景画卷</text>
+					<text class="panel-copy">从红色过渡到黄色的超宽视界</text>
+				</view>
+				<view class="end-tip">
+						<text class="end-tip-text">到达尾部了</text>
+						<text class="end-tip-sub">已展示全部内容</text>
+				</view>
+			</view>
+		</view>
+
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+	const panoramaWidth = 1400
+	const pixelsPerRadian = 320
+
+	const statusText = ref('正在初始化陀螺仪...')
+	const offsetText = ref('0 px')
+	const velocityText = ref('0.0000')
+	const panoramaStyle = ref('transform: translateX(0px)')
+	const viewportWidth = ref(0)
+	const callBackId = ref(0)
+
+	let currentOffset = 0.0
+	let lastTimestamp : number | null = null
+
+	function clamp(value : number, min : number, max : number) : number {
+		if (value < min) {
+			return min
+		}
+		if (value > max) {
+			return max
+		}
+		return value
+	}
+
+	function updatePanoramaStyle() : void {
+		const rounded = Math.round(currentOffset)
+		offsetText.value = `${rounded} px`
+		panoramaStyle.value = `transform: translateX(-${rounded}px)`
+	}
+
+	function getMaxOffset() : number {
+		const hiddenWidth = panoramaWidth - viewportWidth.value
+		if (hiddenWidth > 0) {
+			return hiddenWidth
+		}
+		return 0
+	}
+
+	function measureViewport() : void {
+		uni.createSelectorQuery().select('#panoramaViewport').boundingClientRect().exec((ret) => {
+			if (ret.length > 0) {
+				const rect = ret[0] as NodeInfo
+				const rectWidth = rect.width != null ? rect.width : 0
+				viewportWidth.value = Math.round(rectWidth)
+				currentOffset = clamp(currentOffset, 0, getMaxOffset())
+				updatePanoramaStyle()
+			}
+		})
+	}
+
+	const gyroscopeListener : OnGyroscopeChangeCallback = (result : OnGyroscopeChangeCallbackResult) => {
+		velocityText.value = result.y.toFixed(4)
+		if (viewportWidth.value <= 0) {
+			return
+		}
+
+		const now = Date.now()
+		if (lastTimestamp == null) {
+			lastTimestamp = now
+			statusText.value = '请左右转动手机查看全景'
+			return
+		}
+
+		const deltaSeconds = (now - (lastTimestamp as number)) / 1000
+		lastTimestamp = now
+
+		currentOffset = clamp(currentOffset + result.y * deltaSeconds * pixelsPerRadian, 0, getMaxOffset())
+		statusText.value = '请左右转动手机查看全景'
+		updatePanoramaStyle()
+	}
+
+	function startListen() : void {
+		uni.startGyroscope({
+			interval: 'game',
+			success: () => {
+				statusText.value = '请左右转动手机查看全景'
+			},
+			fail: (error) => {
+				statusText.value = error.errMsg != null ? error.errMsg : '陀螺仪启动失败'
+			}
+		})
+	}
+
+	function stopListen() : void {
+		uni.stopGyroscope({
+			success: () => {
+				statusText.value = '已停止监听'
+			}
+		})
+		lastTimestamp = null
+	}
+
+	onReady(() => {
+		measureViewport()
+		uni.onGyroscopeChange(gyroscopeListener)
+		startListen()
+	})
+
+	onShow(() => {
+		measureViewport()
+		startListen()
+	})
+
+	onHide(() => {
+		stopListen()
+	})
+
+	onResize(() => {
+		measureViewport()
+	})
+
+	onUnload(() => {
+		uni.offGyroscopeChange(gyroscopeListener)
+		uni.stopGyroscope()
+	})
+
+	defineExpose({
+		startListen,
+		stopListen
+	})
+</script>
+
+<style>
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.metric-row {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.metric-box {
+		flex: 1;
+		padding: 14px;
+		border: 1px solid #ccc;
+	}
+
+	.metric-box-space {
+		margin-left: 10px;
+	}
+
+	.metric-value {
+		margin-top: 4px;
+		font-size: 30px;
+	}
+
+	.viewport {
+		margin: 5px 0;
+		height: 220px;
+		border: 1px solid #ccc;
+		overflow: hidden;
+		/* 确保超出部分隐藏 */
+	}
+
+	.panorama-strip {
+		width: 1400px;
+		/* 这里的总宽度要和 script 中的 panoramaWidth 一致 */
+		height: 220px;
+		/* 核心修改：应用线性渐变背景 */
+		background-image: linear-gradient(to right, #ff4d4d, #fffa65);
+		display: flex;
+		flex-direction: row;
+		position: relative; /* 必须加这个，方便子元素绝对定位 */
+	}
+
+	.gradient-content {
+		width: 100%;
+		height: 100%;
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	}
+
+	.panel-title {
+		font-size: 30px;
+		color: #ffffff;
+		/* 渐变背景下白色文字通常更清晰 */
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+	}
+
+	.panel-copy {
+		margin-top: 6px;
+		font-size: 14px;
+		color: #ffffff;
+	}
+
+	/* 右侧提示文字容器 */
+	.end-tip {
+	    position: absolute;
+	    right: 40px;      /* 距离最右侧留点边距 */
+	    bottom: 20px;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: flex-end;
+	}
+	.end-tip-text {
+	    font-size: 24px;
+	    font-weight: bold;
+	    color: #333;      /* 尾部通常是黄色区域，用深色字更清晰 */
+	}
+	.end-tip-sub {
+	    font-size: 12px;
+	    color: #666;
+	    margin-top: 4px;
+	}
+</style>

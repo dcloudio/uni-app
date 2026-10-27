@@ -1,0 +1,624 @@
+<template>
+	<!-- TODO  Android/iOS平台不支持裁剪显示半个文字，高性能场景包裹一层view不合适，需要等App平台解决-->
+	<text v-if="props.full!=true" class="active-color" :class="props.starActiveClass ?? ''" :style="props.starActiveStyle ?? ''">{{ stars }}</text> <!-- 高性能，单层，只读，不显示灰星，不支持小数。必须给value-->
+  <view v-else
+    <!-- #ifdef MP -->
+    :id="containerId"
+    <!-- #endif -->
+    style="position: relative;align-self: flex-start;" @click="onTap">
+    <text class="stars-pos gray-stars" style="white-space: nowrap;" :class="props.starClass ?? ''" :style="props.starStyle ?? ''">{{ stars }}</text> <!-- 背景灰星-->
+    <!-- Android/iOS平台不支持裁剪显示半个文字，需通过包裹一层view裁剪实现 -->
+		<view class="stars-pos active-init-width" :style="'width:'+calculatedWidth">
+			<text v-if="props.full" class="active-color" :class="props.starActiveClass ?? ''"
+      :style="'white-space: nowrap; align-self: flex-start;' + props.starStyle + ';' + props.starActiveStyle">★★★★★</text>
+		</view>
+		<!-- 前景亮星，宽度根据value变化-->
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * Rate 评分
+   * @description 评分组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+
+defineOptions({
+  externalClasses: ['star-class', 'star-active-class']
+})
+
+const props = defineProps<{
+  /**
+   * @description 当前评分，取值范围 0~5 的数字
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  value?: number,
+  /**
+   * @description v-model 绑定值，支持双向绑定，优先级高于 value
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  modelValue?: number,
+  /**
+   * @description 是否显示完整 5 颗星。为 true 时用灰星填充未选中位置；为 false 时仅显示亮星，性能更高但不支持点击交互
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  full?: boolean,
+  /**
+   * @description 是否只读，为 true 时不响应点击评分（full 为 false 时始终只读）
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  readonly?: boolean,
+  /**
+   * @description 灰星是否使用镂空样式（☆），为 false 时使用实心灰星（★）
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  plain?: boolean,
+  /**
+   * @description 灰星（未选中）的自定义样式类
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  starClass?: string.ClassString,
+  /**
+   * @description 灰星（未选中）的内联样式
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  starStyle?: string
+  /**
+   * @description 亮星（选中）的自定义样式类
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  starActiveClass?: string.ClassString,
+  /**
+   * @description 亮星（选中）的内联样式
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  starActiveStyle?: string
+}>()
+
+// 计算星星显示
+const stars = computed(() => {
+  if (props.full!=true) {
+    const value = Math.max(0, Math.min(5, props.value ?? 0))
+    return '★'.repeat(Math.round(value)) //返回亮星数量
+  } else {
+    return props.plain == true ? '☆'.repeat(5) : '★'.repeat(5) //返回灰星数量
+  }
+})
+
+// 问题：props.full != true 时，下面的Script其实都没有意义，但却需要执行。但vue里又无法用if包裹下面的代码，不灵活
+
+const emit = defineEmits<{
+  /**
+   * @description 评分变化事件，参数为评分值，类型为 number
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  change: [value: number]
+  /**
+   * @description v-model 绑定值变化事件，参数为评分值，类型为 number
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  'update:modelValue': [value: number]
+}>()
+
+// #ifdef MP
+const instance = getCurrentInstance()
+const containerId = `uni_rate_${instance?.uid || 'default'}`
+// #endif
+
+// 响应式数据 - 优先使用modelValue，其次使用value
+const currentValue = ref<number>(0)
+currentValue.value = props.modelValue ?? props.value ?? 0
+// 安全初始化函数
+/* function safeInitValue() {
+  const initialValue = props.modelValue ?? props.value ?? 0
+  if (typeof initialValue === 'number' && !isNaN(initialValue)) {
+    currentValue.value = initialValue
+  } else {
+    currentValue.value = 0
+  }
+}
+// 初始化
+safeInitValue() */
+// 监听props变化
+watch(() : number | null => {
+  return props.modelValue ?? props.value ?? null
+}, (newValue : number | null) => {
+  if (newValue != null && typeof newValue === 'number' && !isNaN(newValue as number)) {
+    currentValue.value = newValue as number
+  }
+}, { immediate: true })
+
+// 计算点亮层的宽度
+const calculatedWidth = computed(() => {
+  // 确保在 0 到 5 之间
+  const value = currentValue.value
+  const rate = Math.max(0, Math.min(5, value))
+	// console.log('rate: ',rate);
+	// TODO Android端小数无法正常渲染，不是宽度计算的问题
+  return `${(rate / 5) * 100}%`
+})
+
+// #ifndef MP
+// 处理点击事件
+function onTap(event: UniPointerEvent) : void {
+  // 如果是禁用模式，不处理点击
+  if (props.readonly == true) {
+    return
+  }
+
+  // 获取点击位置 - 优化的事件处理
+  let clickX = event.x
+
+  // 获取容器宽度 - 使用 currentTarget 获取绑定事件的 view 容器，而不是被点击的 text 元素
+  let containerWidth = 0
+  try {
+    if (event.currentTarget?.offsetWidth != null && (event.currentTarget as UniElement).offsetWidth > 0) {
+      containerWidth = (event.currentTarget as UniElement).offsetWidth
+    }
+  } catch (e) {
+    // 忽略错误，使用默认值
+		console.log('e: ',e);
+  }
+	// console.log("containerWidth:" + 	containerWidth);
+
+  // 计算点击的是第几颗星（从0开始）
+  const finalValue = Math.round(clickX / containerWidth * 5)
+	// console.log('finalValue: ',finalValue);
+
+	// 计算每颗星的宽度
+	// const starWidth = containerWidth / 5
+  // 计算点击位置在星内的偏移量
+  // const offsetInStar = (clickX % starWidth) / starWidth
+  /* // 根据偏移量决定是整星还是半星
+  let newValue: number
+  if (offsetInStar <= 0.5) {
+    newValue = starIndex + 0.5 // 半星
+  } else {
+    newValue = starIndex + 1 // 整星
+  }
+  // 确保值在有效范围内 */
+  // const finalValue = Math.max(0.5, Math.min(5, starIndex + 1))
+
+  // 更新值
+  currentValue.value = finalValue
+
+  // 触发change事件
+  emit('change', finalValue)
+
+  // 触发v-model更新
+  emit('update:modelValue', finalValue)
+}
+// #endif
+
+// #ifdef MP
+async function onTap(event: UniPointerEvent) : Promise<void> {
+  if (props.readonly == true) {
+    return
+  }
+
+  const rect = await uni.getElementById(containerId)?.getBoundingClientRectAsync()
+  if (rect == null || rect.width <= 0) {
+    return
+  }
+
+  const localX = event.clientX - rect.left
+  if (!isFinite(localX)) {
+    return
+  }
+
+  const clampedX = Math.max(0, Math.min(rect.width, localX))
+  const finalValue = Math.max(0, Math.min(5, Math.round(clampedX / rect.width * 5)))
+
+  currentValue.value = finalValue
+  emit('change', finalValue)
+  emit('update:modelValue', finalValue)
+}
+// #endif
+
+// TODO 接入form表单规范，可以submit
+</script>
+
+<style>
+
+.stars-pos {
+  /* 确保两个 star 的位置重叠 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden; /* 关键：裁剪点亮层 */
+}
+.gray-stars {
+  color: #ccc; /* 未点亮颜色 */
+  position: relative; /* 确保底层可见 */
+}
+.active-init-width {
+  width: 0%; /* full时高亮星的初始宽度 */
+}
+.active-color{
+ color: #ffca3e; /* 点亮颜色 */
+}
+</style>

@@ -1,0 +1,41 @@
+<template>
+	<slot :items="items" :appendItems="appendItems"></slot>
+</template>
+
+<script setup lang="ts">
+	type ListEntry = {
+		id: number
+		title: string
+		description: string
+	}
+
+	const items = reactive<ListEntry[]>([
+		{
+			id: 0,
+			title: '列表项 1',
+			description: '这条数据由 scoped slot 提供'
+		},
+		{
+			id: 1,
+			title: '列表项 2',
+			description: '点击按钮可以继续追加数据'
+		},
+		{
+			id: 2,
+			title: '列表项 3',
+			description: 'list-view 在 scoped slot 内渲染'
+		}
+	])
+
+	function appendItems() {
+		const start = items.length
+		for (let index = 0; index < 10; index++) {
+			const itemIndex = start + index
+			items.push({
+				id: itemIndex,
+				title: `列表项 ${itemIndex + 1}`,
+				description: '这条数据由 scoped slot 提供'
+			})
+		}
+	}
+</script>

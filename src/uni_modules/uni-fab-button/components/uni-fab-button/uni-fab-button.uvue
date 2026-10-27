@@ -1,0 +1,152 @@
+<template>
+	<view style="align-items: center; justify-content: center;" class="fab" @click="handleClick">
+		<view flatten class="plus" :class="plusClass" style="position: absolute;"></view>
+		<view flatten class="plus" :class="plusClass" style="position: absolute;transform: rotate(90deg);"></view>
+	</view>
+</template>
+<script lang="ts" setup>
+  /**
+   * 悬浮加号按钮
+   * @description 悬浮加号按钮组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+	defineOptions({
+		externalClasses: ['plus-class']
+	})
+	const props = defineProps({
+		/**
+		 * @description 加号图标的自定义样式类，用于调整加号颜色、尺寸等样式
+		 * @default ""
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		plusClass: { type: String, default: "" }
+	})
+	const emit = defineEmits<{
+		/**
+		 * @description 点击事件，参数为事件对象，类型为 UniPointerEvent
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		click: [event: UniPointerEvent]
+	}>()
+
+	const handleClick = (event: UniPointerEvent) => {
+		emit('click', event)
+	}
+</script>
+<style>
+	.fab {
+		position: relative; 
+		width: 44px;
+		height: 44px;
+		background-color: #007AFF;
+		border-radius: 50%;
+		box-shadow: 0 1px 5px 2px rgba(0, 0, 0, .3);
+		/* #ifdef WEB */
+		cursor: pointer;
+		/* #endif */
+	}
+
+	.plus {
+		background-color: white;
+		border-radius: 2px; 	/* 给加号边缘一点圆角 */
+		width: 40%;
+		height: 2px;
+	}
+
+</style>

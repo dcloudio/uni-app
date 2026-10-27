@@ -1,9 +1,9 @@
 <template>
-  <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) -->
+  <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) || (APP-IOS && VUE3-VAPOR) -->
   <!-- <enum-data title="设置mode（仅Android和harmony平台支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data> -->
   <!-- #endif -->
   <!-- #ifndef MP -->
-  <fps />
+  <fps v-if="autoData.showFps" />
   <!-- #endif -->
 	<scroll-view style="flex: 1;padding: 4px;" :enable-back-to-top="true">
 		<!-- <view style=""> -->
@@ -13,7 +13,8 @@
 	</scroll-view>
 </template>
 
-<script setup>
+<script setup lang="ts">
+  const autoData = reactive({ showFps: true })
 
   /* import { ItemType } from '@/components/enum-data/enum-data-types';
   type ModeDataType = {
@@ -118,9 +119,6 @@
   /* defineExpose({
     modeData
   }) */
+  defineExpose({ autoData })
 
 </script>
-
-<style>
-
-</style>

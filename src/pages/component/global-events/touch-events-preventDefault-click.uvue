@@ -1,0 +1,63 @@
+<template>
+  <view>
+    <view @touchend="onParentTouchEnd" @click="onParentClick"
+      style="padding-bottom: 100px; background-color: darkgrey;">
+      <view id="eventClick" @touchend="onTouchEnd" style="width:100%;height: 300px; background-color: yellow;"
+        @click="onClick">
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  type DataType = {
+    isParentPreventDefault : boolean,
+    isPreventDefault : boolean,
+    isParentClickTrigger : boolean,
+    isClickTrigger : boolean,
+    eventDomRect : DOMRect | null
+  }
+
+  const data = reactive({
+    isParentPreventDefault: false,
+    isPreventDefault: false,
+    isParentClickTrigger: false,
+    isClickTrigger: false,
+    eventDomRect: null as DOMRect | null,
+  } as DataType)
+  defineExpose({
+    data
+  })
+
+  onReady(() => {
+    var element = uni.getElementById("eventClick")
+    data.eventDomRect = element?.getBoundingClientRect()
+  })
+  const onTouchEnd = (e : UniTouchEvent) => {
+    if (data.isPreventDefault) {
+      console.log("执行了preventDefault，不再触发点击事件")
+      e.preventDefault()
+    }
+  }
+
+  const onParentTouchEnd = (e : UniTouchEvent) => {
+    if (data.isParentPreventDefault) {
+      console.log("执行了父的preventDefault，不再触发点击事件")
+      e.preventDefault()
+    }
+  }
+
+  const onClick = () => {
+    console.log("触发了点击事件")
+    data.isClickTrigger = true
+  }
+
+  const onParentClick = () => {
+    console.log("触发了父的点击事件")
+    data.isParentClickTrigger = true
+  }
+</script>
+
+<style>
+
+</style>

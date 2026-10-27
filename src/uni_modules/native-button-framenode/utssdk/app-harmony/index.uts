@@ -1,0 +1,85 @@
+import { typeNode } from "@kit.ArkUI"
+import { INativeButtonFrameNodeContext } from "../interface.uts"
+
+export class NativeButtonFrameNode {
+  private $element : UniNativeViewElement
+  private button : typeNode.Button | null = null
+  private options : ButtonOptions = {
+    type: ButtonType.Normal,
+    stateEffect: true
+  }
+
+  constructor(element : UniNativeViewElement) {
+    this.$element = element
+
+    const uiContext = UTSHarmony.getCurrentWindow().getUIContext()
+    const button = typeNode.createNode(uiContext, "Button") as typeNode.Button
+    button.initialize("", this.options)
+    button.attribute.borderRadius(8)
+    button.attribute.backgroundColor(0x317aff)
+    button.attribute.width("100%")
+    button.attribute.height("100%")
+    button.attribute.onClick(() => {
+      const detail = {
+        value: "CustomValue"
+      }
+      this.$element.dispatchEvent(new UniNativeViewEvent("customClick", detail))
+    })
+
+    this.button = button
+    this.$element.bindHarmonyFrameNode(button)
+    this.$element.bindHarmonyController(this)
+  }
+
+  updateText(text : string) {
+    this.button?.initialize(text, this.options)
+  }
+
+}
+
+class NativeButtonFrameNodeContext implements INativeButtonFrameNodeContext {
+  private controller : NativeButtonFrameNode
+
+  constructor(element : UniNativeViewElement) {
+    this.controller = element.getHarmonyController<NativeButtonFrameNode>()!
+  }
+
+  updateText(text : string) {
+    this.controller.updateText(text)
+  }
+}
+
+function iterateElement(homeElement : UniElement) : UniNativeViewElement | null {
+  if (homeElement.nodeName == "NATIVE-VIEW") {
+    return homeElement as UniNativeViewElement
+  }
+  for (const child of homeElement.children) {
+    const nativeViewElement = iterateElement(child)
+    if (nativeViewElement != null) {
+      return nativeViewElement
+    }
+  }
+  return null
+}
+
+export function createNativeButtonFrameNodeContext(id : string, ins : ComponentPublicInstance | null = null) : INativeButtonFrameNodeContext | null {
+  if (ins == null) {
+    const pages = getCurrentPages()
+    if (pages.length > 0) {
+      const page = pages[pages.length - 1]
+      const rootElement = page.getElementById(id)
+      if (rootElement != null) {
+        const nativeViewElement = iterateElement(rootElement)
+        if (nativeViewElement != null) {
+          return new NativeButtonFrameNodeContext(nativeViewElement)
+        }
+      }
+    }
+  } else if (ins.$el != null) {
+    const nativeViewElement = iterateElement(ins.$el as UniElement)
+    if (nativeViewElement != null) {
+      return new NativeButtonFrameNodeContext(nativeViewElement)
+    }
+  }
+  return null
+}

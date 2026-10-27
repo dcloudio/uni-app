@@ -1,21 +1,18 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="scroll-view">
-  <!-- #endif -->
     <view class="page">
       <form @submit="onFormSubmit" @reset="onFormReset">
         <view class="uni-form-item">
           <text class="title">姓名</text>
-          <input class="uni-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
+          <input class="uni-input form-input" name="nickname" :value="data.nickname" placeholder="请输入姓名" :maxlength="-1" />
         </view>
         <view class="uni-form-item">
           <text class="title">性别</text>
           <radio-group name="gender" class="flex-row">
             <view class="group-item">
-              <radio value="0" :checked="data.gender=='0'" /><text>男</text>
+              <radio value="0" :checked="data.gender=='0'" /><text class="form-text">男</text>
             </view>
             <view class="group-item">
-              <radio value="1" :checked="data.gender=='1'" /><text>女</text>
+              <radio value="1" :checked="data.gender=='1'" /><text class="form-text">女</text>
             </view>
           </radio-group>
         </view>
@@ -23,10 +20,10 @@
           <text class="title">爱好</text>
           <checkbox-group name="loves" class="flex-row">
             <view class="group-item">
-              <checkbox value="0" :checked="data.loves.indexOf('0')>-1" /><text>读书</text>
+              <checkbox value="0" :checked="data.loves.indexOf('0')>-1" /><text class="form-text">读书</text>
             </view>
             <view class="group-item">
-              <checkbox value="1" :checked="data.loves.indexOf('1')>-1" /><text>写字</text>
+              <checkbox value="1" :checked="data.loves.indexOf('1')>-1" /><text class="form-text">写字</text>
             </view>
           </checkbox-group>
         </view>
@@ -36,46 +33,46 @@
         </view>
         <view class="uni-form-item">
           <text class="title">保留选项</text>
-          <view>
+          <view style="display: flex;flex-direction: row;">
             <switch name="switch" :checked="data.switch" />
           </view>
         </view>
         <view class="uni-form-item">
           <text class="title">备注</text>
-          <textarea name="comment" :value="data.comment" placeholder="请输入备注" style="background: #FFF;" />
+          <textarea class="comment-textarea" name="comment" :value="data.comment" placeholder="请输入备注" />
           <!-- <textarea class="uni-input" name="comment" :value="comment" placeholder="这个class的写法，导致iOS和Android产生了高度差异"/> -->
         </view>
         <!-- picker -->
-        <!-- #ifdef APP-HARMONY || WEB || MP -->
         <view class="uni-form-item flex-row">
           <text class="picker-title">时区</text>
           <picker class="picker" name="timeZone" @change="onTimeZoneChange" :value="data.timeZoneIndex" :range="data.timeZoneList">
             <view class="uni-picker-select-value pickerValue">{{data.timeZoneList[data.timeZoneIndex]}}</view>
           </picker>
         </view>
+        <!-- #ifndef MP-ALIPAY -->
         <view class="uni-form-item flex-row">
           <text class="picker-title">多列选择器</text>
-          <picker class="picker pickerMulti" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
+          <picker class="picker pickerMulti" name="picker-mode-multiSelector" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
             :value="data.multiIndex" :range="data.multiArray">
             <view class="uni-picker-select-value pickerMultiValue">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
             </view>
           </picker>
         </view>
+        <!-- #endif -->
         <view class="uni-form-item flex-row">
           <text class="picker-title">时间选择器</text>
-          <picker class="picker pickerTime" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
+          <picker class="picker pickerTime" name="picker-mode-time" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
             <view class="uni-picker-select-value">{{data.timePickerValue}}</view>
           </picker>
         </view>
         <view class="uni-form-item flex-row">
           <text class="picker-title">日期选择器</text>
-          <picker class="picker pickerDate" mode="date" :value="data.datePickerValue" :start="data.startDate" :end="data.endDate"
+          <picker class="picker pickerDate" name="picker-mode-date" mode="date" :value="data.datePickerValue" :start="data.startDate" :end="data.endDate"
             @change="onDateChange">
             <view class="uni-picker-select-value">{{data.datePickerValue}}</view>
           </picker>
         </view>
-        <!-- #endif -->
         <view class="uni-form-item">
           <text class="title">时间</text>
           <picker-view class="picker-view" name="time" :value="data.time" indicator-style="height:50px">
@@ -99,12 +96,9 @@
       <view class="result">提交的表单数据</view>
       <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   function getDate(type?: string): string {
     const date = new Date();
 
@@ -190,7 +184,6 @@
     return JSON.stringify(data.formData)
   })
 
-  // #ifdef APP-HARMONY
   const onTimeZoneChange = (e: UniPickerChangeEvent) => {
     data.timeZoneIndex = e.detail.value as number
     console.log('时区选择改变，携带值为：' + e.detail.value)
@@ -243,13 +236,12 @@
   }
 
   const onDateChange = (e: UniPickerChangeEvent) => {
-    data.datePickerValue = e.detail.value as string
+    data.datePickerValue = e.detail.value.split('/').join('-')
   }
 
   const onTimeChange = (e: UniPickerChangeEvent) => {
     data.timePickerValue = e.detail.value as string
   }
-  // #endif
 
   const onFormSubmit = (e: UniFormSubmitEvent) => {
     data.formData = e.detail.value
@@ -292,10 +284,12 @@
   .title {
     margin-bottom: 10px;
     opacity: 0.8;
+    color: var(--text-color, #333333);
   }
 
   .picker-title {
     opacity: 0.8;
+    color: var(--text-color, #333333);
   }
 
   .picker {
@@ -320,6 +314,7 @@
   .picker-view-text {
     line-height: 50px;
     text-align: center;
+    color: var(--text-color, #333333);
   }
 
   .btn {
@@ -336,24 +331,48 @@
 
   .result {
     margin-top: 30px;
+    color: var(--text-color, #333333);
+  }
+
+  .comment-textarea,
+  .textarea {
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .comment-textarea {
+    padding: 10px;
   }
 
   .textarea {
     margin-top: 5px;
     padding: 5px;
-    background-color: #fff;
+  }
+
+  .form-input {
+    color: #333333;
+    background-color: #ffffff;
+  }
+
+  .form-text {
+    color: var(--text-color, #333333);
   }
 
   .uni-picker-select-value {
     height: 41px;
     padding: 0 13px;
     font-size: 14px;
-    /* #ifndef VUE3-VAPOR */
-    background: var(--list-background-color,#ffffff);
-    /* #endif */
-    /* #ifdef VUE3-VAPOR */
-    background: #ffffff;
-    /* #endif */
+    color: var(--text-color, #333333);
+    background-color: var(--list-background-color,#ffffff);
     justify-content: center;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .comment-textarea,
+    .textarea,
+    .form-input {
+      color: #ffffff;
+      background-color: #2d2d2d;
+    }
   }
 </style>

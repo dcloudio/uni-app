@@ -4,7 +4,7 @@
     @refresherrefresh="onRefresherrefresh" @refresherrestore="onRefreshrestore" @scrollend="scrollEnd">
     <nested-scroll-header>
       <swiper ref="header" indicator-dots="true" circular="true">
-        <swiper-item v-for="i in 3" :item-id="i">
+        <swiper-item v-for="i in 3" :item-id="i + ''">
           <image src="/static/shuijiao.jpg" style="width:100% ;height: 240px;"></image>
         </swiper-item>
       </swiper>
@@ -36,8 +36,8 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
-  import refreshBox from '../../template/custom-refresher/refresh-box/refresh-box.uvue';
+<script setup lang="ts">
+  import refreshBox from '../../template/pull-refresh-custom-indicator/refresh-box/refresh-box.uvue';
 
   type DataType = {
     scrollData: Array<string>;
@@ -125,7 +125,7 @@
     margin-left: 6px;
     margin-right: 6px;
     margin-top: 6px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 4px;
   }
 
@@ -134,7 +134,7 @@
     height: 60px;
     line-height: 60px;
     text-align: center;
-    color: #555;
+    color: var(--text-color, #555555);
   }
 
   .scroll-header-tiem {

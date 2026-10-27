@@ -1,6 +1,5 @@
 describe('css-border-update', () => {
   let page;
-  let res;
 
   beforeAll(async () => {
     page = await program.reLaunch("/pages/CSS/border/border-update")

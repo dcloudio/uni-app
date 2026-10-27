@@ -1,0 +1,1291 @@
+<template>
+  <view class="page-root">
+    <!-- #ifdef APP-ANDROID -->
+    <!-- 工具行：搜索入口 + 右上角参数。 -->
+    <view class="tool-row">
+      <view class="nav-search" @click="goSearch">
+        <text class="nav-search-icon">🔍</text>
+        <text class="nav-search-placeholder">搜你感兴趣的短剧</text>
+      </view>
+      <view class="nav-btn" @click="openConfig">
+        <text class="nav-btn-text">参数</text>
+      </view>
+    </view>
+
+    <!-- 频道 tab：推荐 / 榜单 / 收藏 / 记录。 -->
+    <view class="tab-bar">
+      <view class="tab-row">
+        <view class="tab-item" :class="{ 'tab-item-active': currentKind == 'recommended' }" @click="switchKind('recommended')">
+          <text class="tab-text" :class="{ 'tab-text-active': currentKind == 'recommended' }">推荐</text>
+          <view class="tab-indicator" v-if="currentKind == 'recommended'"></view>
+        </view>
+        <view class="tab-item" :class="{ 'tab-item-active': currentKind == 'rank' }" @click="switchKind('rank')">
+          <text class="tab-text" :class="{ 'tab-text-active': currentKind == 'rank' }">榜单</text>
+          <view class="tab-indicator" v-if="currentKind == 'rank'"></view>
+        </view>
+        <view class="tab-item" :class="{ 'tab-item-active': currentKind == 'collection' }" @click="switchKind('collection')">
+          <text class="tab-text" :class="{ 'tab-text-active': currentKind == 'collection' }">收藏</text>
+          <view class="tab-indicator" v-if="currentKind == 'collection'"></view>
+        </view>
+        <view class="tab-item" :class="{ 'tab-item-active': currentKind == 'history' }" @click="switchKind('history')">
+          <text class="tab-text" :class="{ 'tab-text-active': currentKind == 'history' }">记录</text>
+          <view class="tab-indicator" v-if="currentKind == 'history'"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 错误 / 提示条（点击可重试）。 -->
+    <view class="state-line" v-if="stateText.length > 0" @click="retryLast">
+      <text class="state-text">{{ stateText }}</text>
+    </view>
+
+    <!-- 短剧海报流：scroll-view（无复用机制，彻底避免 list-view 复用高度错乱导致的空隙）。 -->
+    <scroll-view
+      class="drama-list"
+      direction="vertical"
+      :refresher-enabled="!globalLoading"
+      :refresher-triggered="refreshing"
+      @refresherrefresh="onRefresh"
+      @scrolltolower="onScrollToLower"
+    >
+      <!-- 首屏骨架屏：模块初始化中或首屏数据请求中（列表为空时）展示。 -->
+      <view class="skeleton-cell" v-if="firstLoading || (loading && dramaList.length == 0)">
+        <view class="skeleton-row">
+          <view class="skeleton-card">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+          <view class="skeleton-card skeleton-card-last">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+        </view>
+        <view class="skeleton-row">
+          <view class="skeleton-card">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+          <view class="skeleton-card skeleton-card-last">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 海报网格：每行 2 张海报；末行单条自动通栏补满，不留缺角。 -->
+      <view class="grid-cell" v-for="row in gridRows" :key="row.key">
+        <view class="grid-row">
+          <view class="poster-card" :class="{ 'poster-card-full': row.items.length == 1 }" v-for="item in row.items" :key="item.dramaId" @click="openDrama(item)">
+            <view class="poster-box" :class="{ 'poster-box-side': row.items.length == 1 }">
+              <image
+                v-if="item.coverUrl.length > 0"
+                class="poster-img"
+                :class="{ 'poster-img-side': row.items.length == 1 }"
+                :src="item.coverUrl"
+                mode="aspectFill"
+                @error="onImageError(item.dramaId, item.coverUrl)"
+              ></image>
+              <view class="poster-badge" v-if="item.totalEpisodes > 0">
+                <text class="poster-badge-text">{{ item.totalEpisodes }}集</text>
+              </view>
+            </view>
+            <view class="poster-info" :class="{ 'poster-info-full': row.items.length == 1 }">
+              <text class="poster-title" :max-lines="1">{{ item.title }}</text>
+              <text class="poster-sub" :max-lines="1" v-if="item.categoryName.length > 0">{{ item.categoryName }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部状态（可点击触发加载更多）。 -->
+      <view class="footer-cell" v-if="dramaList.length > 0">
+        <view class="footer-box" @click="onFooterClick">
+          <text class="footer-text" v-if="loading">正在加载...</text>
+          <text class="footer-text footer-text-action" v-else-if="hasMore">上滑或点击加载更多</text>
+          <text class="footer-text" v-else>— 已经到底啦 —</text>
+        </view>
+      </view>
+
+      <!-- 空态。 -->
+      <view class="empty-state-cell" v-if="dramaList.length == 0 && !firstLoading && !globalLoading && !loading">
+        <view class="empty-box">
+          <view class="empty-inner" v-if="errorReason.length > 0 || stateText.length > 0">
+            <text class="empty-icon">⚠️</text>
+            <text class="empty-text">{{ errorReason.length > 0 ? errorReason : stateText }}</text>
+            <view class="empty-btn" @click="retryLast">
+              <text class="empty-btn-text">重新加载</text>
+            </view>
+          </view>
+          <view class="empty-inner" v-else-if="currentKind == 'collection'">
+            <text class="empty-icon">❤️</text>
+            <text class="empty-title">还没有收藏的短剧</text>
+            <text class="empty-text">在播放短剧时收藏喜欢的剧集，就会显示在这里</text>
+            <view class="empty-btn empty-btn-outline" @click="switchKind('recommended')">
+              <text class="empty-btn-text-outline">去推荐页看看 ›</text>
+            </view>
+          </view>
+          <view class="empty-inner" v-else-if="currentKind == 'history'">
+            <text class="empty-icon">🕐</text>
+            <text class="empty-title">还没有观看记录</text>
+            <text class="empty-text">看过的短剧会记录在这里，随时回来续集</text>
+            <view class="empty-btn empty-btn-outline" @click="switchKind('recommended')">
+              <text class="empty-btn-text-outline">去推荐页开始看 ›</text>
+            </view>
+          </view>
+          <view class="empty-inner" v-else>
+            <text class="empty-icon">🎬</text>
+            <text class="empty-text">暂无内容，下拉刷新试试</text>
+            <view class="empty-btn" @click="retryLast">
+              <text class="empty-btn-text">刷新</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 全局 loading 页：短剧模块初始化 / 重建期间全屏展示，动态文案体现加载阶段。 -->
+    <view class="global-loading" v-if="globalLoading">
+      <view class="loading-ring"></view>
+      <text class="loading-text">{{ loadingText }}</text>
+      <text class="loading-sub">首次加载需要初始化短剧能力，请耐心等待</text>
+    </view>
+
+    <!-- 参数配置弹窗（开发者调试用：上架时填好默认 adpid 即可，终端用户无需感知）。 -->
+    <view class="mask" v-if="showConfig" @click="closeConfig">
+      <view class="dialog" @click.stop="noop">
+        <text class="dialog-title">开发配置</text>
+        <text class="field-label">短剧广告位 ID（adpid）</text>
+        <input class="config-input" v-model="adpidInput" placeholder="uni-ad 后台申请的短剧广告位" />
+        <view class="field-row">
+          <view class="field-col">
+            <text class="field-label">免费集数</text>
+            <input class="config-input" v-model="freeInput" placeholder="1" />
+          </view>
+          <view class="field-col field-col-last">
+            <text class="field-label">单次解锁集数</text>
+            <input class="config-input" v-model="lockInput" placeholder="1" />
+          </view>
+        </view>
+        <text class="field-label">每页数量</text>
+        <input class="config-input" v-model="pageSizeInput" placeholder="20" />
+        <view class="field-row">
+          <view class="field-col">
+            <text class="field-label">回调 userId（选填）</text>
+            <input class="config-input" v-model="callbackUserIdInput" placeholder="服务器校验用" />
+          </view>
+          <view class="field-col field-col-last">
+            <text class="field-label">回调 extra（选填）</text>
+            <input class="config-input" v-model="callbackExtraInput" placeholder="业务透传参数" />
+          </view>
+        </view>
+        <text class="field-hint">userId/extra 都为空则不走服务器回调；adpid 变更保存后会重建实例。</text>
+        <view class="dialog-btn-row">
+          <button class="dialog-btn dialog-btn-cancel" @click="closeConfig">取消</button>
+          <button class="dialog-btn dialog-btn-ok" @click="saveConfig">保存并刷新</button>
+        </view>
+      </view>
+    </view>
+    <!-- #endif -->
+
+    <!-- #ifndef APP-ANDROID -->
+    <view class="unsupported-box">
+      <text class="unsupported-title">仅支持 Android</text>
+      <text class="unsupported-text">短剧能力来自 uni-ad 原生库（Android），请在 Android 平台运行。</text>
+    </view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="uts">
+  // #ifdef APP-ANDROID
+  import { DramaAd, DramaInfo, DramaUrlCallback, IUniDramaError, DramaListResult, DramaEventResult, CreateDramaAdOptions, DramaListOptions, DramaOpenOptions } from "@/uni_modules/uni-drama"
+
+  /** 数据源：推荐（getRecommendedList）/ 收藏 / 观看记录。
+   *  注意：推荐接口的分页行为以实测为准——若翻页返回重复/空导致"提前到底"，
+   *  可将 loadPage 中 recommended 分支改为 getList（内容列表接口，确定支持分页）。 */
+  type QueryKind = 'recommended' | 'rank' | 'collection' | 'history'
+
+  /** 网格行：list-view 内两列布局的行模型。 */
+  type GridRow = {
+    key: string,
+    items: DramaInfo[]
+  }
+
+  const DEFAULT_PAGE_SIZE = 10
+  /** 上架前替换为你自己在 uni-ad 后台申请的短剧广告位 ID（也可在右上角弹窗配置）。 */
+  const DEFAULT_ADPID = "1158231135"
+  /** 模块加载兜底超时（毫秒）：超时仍未就绪则关闭 loading 并展示错误界面。 */
+  const MODULE_TIMEOUT = 20000
+  /** 单次数据请求兜底超时（毫秒）：success/fail 均未回调时按超时失败处理。 */
+  const REQUEST_TIMEOUT = 15000
+  /** 请求超时定时器。 */
+  let requestTimeoutTimer: number | null = null
+
+  // ---- 列表状态 ----
+  const dramaList = ref<DramaInfo[]>([])
+  const currentKind = ref<QueryKind>('recommended')
+  const currentPage = ref(1)
+  const hasMore = ref(true)
+  const loading = ref(false)
+  const refreshing = ref(false)
+  /** 模块初始化中（全局 loading 页展示中）。 */
+  const firstLoading = ref(true)
+  /** 错误/提示文案（空串隐藏状态条）。 */
+  const stateText = ref("")
+
+  // ---- 弹窗可配置参数 ----
+  const showConfig = ref(false)
+  const adpidInput = ref(DEFAULT_ADPID)
+  const freeInput = ref("1")
+  const lockInput = ref("1")
+  const pageSizeInput = ref("" + DEFAULT_PAGE_SIZE)
+  const callbackUserIdInput = ref("")
+  const callbackExtraInput = ref("")
+
+  /** 已生效参数：保存弹窗后更新，实例与播放都以此为准。 */
+  const appliedAdpid = ref(DEFAULT_ADPID)
+  const appliedFree = ref(1)
+  const appliedLock = ref(1)
+  const appliedPageSize = ref(DEFAULT_PAGE_SIZE)
+  const appliedUserId = ref("")
+  const appliedExtra = ref("")
+
+  /** 短剧实例：创建即自动加载短剧模块。 */
+  let dramaAd: DramaAd | null = null
+  let moduleReady = false
+  /** 模块加载是否失败：失败后重试 = 重建实例（onLoad 到达后自动拉取数据）。 */
+  let moduleFailed = false
+  /** 错误详情（多行，含可能原因；空串表示无错误详情）。 */
+  const errorReason = ref("")
+
+  /**
+   * 请求序号：每次发起新请求自增；回调到达时序号不一致说明已被更新的请求取代，
+   * 直接丢弃结果（解决快速切换频道时旧响应覆盖新频道数据的脏数据问题）。
+   */
+  let requestSeq = 0
+
+  // ---- 全局 loading 动态文案：点点动画 + 已等待秒数，让"加载流程"可见 ----
+  const loadingDots = ref("")
+  const loadingSeconds = ref(0)
+  let dotsTimer: number | null = null
+
+  /** 全局 loading 展示条件：模块初始化中或重建中。 */
+  const globalLoading = computed(() : boolean => {
+    return firstLoading.value
+  })
+
+  /** loading 主文案：区分首次初始化 / 失败重试重建，并显示已等待秒数。 */
+  const loadingText = computed(() : string => {
+    const base = moduleFailed ? "正在重新加载短剧模块" : "正在加载短剧模块"
+    return base + loadingDots.value + "（" + loadingSeconds.value + "s）"
+  })
+
+  function stopDots() {
+    const timer = dotsTimer
+    if (timer != null) {
+      clearInterval(timer)
+      dotsTimer = null
+    }
+    loadingDots.value = ""
+    loadingSeconds.value = 0
+  }
+
+  /** 模块加载超时：关闭全局 loading，展示错误界面与可能原因。 */
+  function onModuleTimeout() {
+    if (moduleReady || !firstLoading.value) {
+      return
+    }
+    moduleFailed = true
+    firstLoading.value = false
+    loading.value = false
+    refreshing.value = false
+    stopDots()
+    errorReason.value = "等待 " + (MODULE_TIMEOUT / 1000) + " 秒仍未收到模块加载结果\n\n可能原因：\n1. 网络连接异常\n2. adpid 未开通短剧能力或配置有误\n3. 打包包名与 gm_SDK_Setting.json 中 license 包名不一致\n4. 渠道服务暂时不可用"
+    stateText.value = "模块加载超时，请检查网络后重试"
+    console.error("[drama-home] 模块加载超时（" + MODULE_TIMEOUT + "ms 无响应）")
+  }
+
+  /** 启动秒表：动态点点 + 已等待秒数；到达兜底时间触发超时错误界面。 */
+  function startDots() {
+    stopDots()
+    loadingSeconds.value = 0
+    dotsTimer = setInterval(() => {
+      loadingSeconds.value = loadingSeconds.value + 1
+      if (loadingDots.value.length >= 3) {
+        loadingDots.value = ""
+      } else {
+        loadingDots.value = loadingDots.value + "."
+      }
+      if (loadingSeconds.value >= MODULE_TIMEOUT / 1000) {
+        onModuleTimeout()
+      }
+    }, 1000)
+  }
+
+  function clearRequestTimeout() {
+    const timer = requestTimeoutTimer
+    if (timer != null) {
+      clearTimeout(timer)
+      requestTimeoutTimer = null
+    }
+  }
+
+  /** 启动当前请求的兜底超时：超时按失败处理（仅对最新请求生效）。 */
+  function startRequestTimeout(seq: number) {
+    clearRequestTimeout()
+    requestTimeoutTimer = setTimeout(() => {
+       requestTimeoutTimer = null
+      if (seq != requestSeq) {
+        return
+      }
+      loading.value = false
+      refreshing.value = false
+      firstLoading.value = false
+      errorReason.value = "数据请求超过 " + (REQUEST_TIMEOUT / 1000) + " 秒未响应\n\n可能原因：\n1. 网络连接异常或不稳定\n2. 渠道服务暂时不可用"
+      stateText.value = "数据请求超时，请检查网络后重试"
+      console.error("[drama-home] 数据请求超时（seq=" + seq + "）")
+    }, REQUEST_TIMEOUT)
+  }
+
+  /** 空态文案：区分"渠道未返回数据"与"发生错误"。 */
+  const emptyText = computed(() : string => {
+    if (stateText.value.length > 0) {
+      return "加载失败了，请检查网络后重试"
+    }
+    if (currentKind.value == 'collection') {
+      return "还没有收藏短剧\n在播放页收藏后会显示在这里"
+    }
+    if (currentKind.value == 'history') {
+      return "还没有观看记录\n去推荐频道挑一部开始看吧"
+    }
+    return "暂无内容，下拉刷新试试"
+  })
+
+  /** 海报网格行模型（ref，避免 computed 在异步回调里触发 Vue effect 嵌套警告）。 */
+  const gridRows = ref<GridRow[]>([])
+
+  /**
+   * 已构建为网格行的 dramaList 条目数。
+   * 修复：增量追加不能用 "行数*2" 推算已覆盖条数——列表条数为奇数时（最后一行只有 1 条），
+   * 行数*2 会大于实际条数，导致翻页时跳过 1 条数据并多出一个补位空卡。
+   */
+  let gridBuiltCount = 0
+
+  /**
+   * 重建网格行：isRefresh=true 时整批替换（刷新/切频道），false 时从 gridBuiltCount 起增量追加（翻页）。
+   * 增量追加避免整体重建导致列表复用时产生空隙。
+   */
+  function buildGridRows(isRefresh: boolean) {
+    const list = dramaList.value
+    console.log("[drama-home][grid] buildGridRows -> isRefresh=" + isRefresh
+      + " listLen=" + list.length + " builtCount=" + gridBuiltCount
+      + " existRows=" + gridRows.value.length)
+    if (isRefresh) {
+      // 刷新：整批重建
+      const rows: GridRow[] = []
+      let i = 0
+      while (i < list.length) {
+        const items: DramaInfo[] = []
+        items.push(list[i])
+        if (i + 1 < list.length) {
+          items.push(list[i + 1])
+        }
+        rows.push({ key: list[i].dramaId, items: items })
+        i = i + 2
+      }
+      gridRows.value = rows
+      gridBuiltCount = list.length
+    } else {
+      // 翻页：只追加新增的 rows（从 gridBuiltCount 继续，精确对齐已构建条数）
+      const existing = gridRows.value
+      const newRows: GridRow[] = []
+      let i = gridBuiltCount
+      while (i < list.length) {
+        const items: DramaInfo[] = []
+        items.push(list[i])
+        if (i + 1 < list.length) {
+          items.push(list[i + 1])
+        }
+        newRows.push({ key: list[i].dramaId, items: items })
+        i = i + 2
+      }
+      gridBuiltCount = list.length
+      if (newRows.length > 0) {
+        gridRows.value = existing.concat(newRows)
+      }
+    }
+    logGridSummary(isRefresh ? "refresh" : "append")
+  }
+
+  /** 网格行结构摘要日志：行数/卡片数/每行条数 + 重复与空 dramaId 检测。 */
+  function logGridSummary(tag: string) {
+    const rows = gridRows.value
+    const rowInfo: string[] = []
+    let cardCount = 0
+    for (let r = 0; r < rows.length; r++) {
+      rowInfo.push(rows[r].items.length + "")
+      cardCount = cardCount + rows[r].items.length
+    }
+    const list = dramaList.value
+    const seenIds: string[] = []
+    let dupIds = 0
+    let emptyIds = 0
+    for (let i = 0; i < list.length; i++) {
+      const id = list[i].dramaId
+      if (id.length == 0) {
+        emptyIds = emptyIds + 1
+      }
+      if (seenIds.indexOf(id) >= 0) {
+        dupIds = dupIds + 1
+      } else {
+        seenIds.push(id)
+      }
+    }
+    console.log("[drama-home][grid] " + tag + " -> rows=" + rows.length
+      + " cards=" + cardCount + " listLen=" + list.length
+      + " rowItems=[" + rowInfo.join(",") + "]"
+      + " dupIds=" + dupIds + " emptyIds=" + emptyIds
+      + " (rowItems 含 1 的行即奇数补位行，正常最多 1 个)")
+  }
+
+  function toNumber(value: string, fallback: number): number {
+    const parsed = parseInt(value)
+    return isNaN(parsed) ? fallback : parsed
+  }
+
+  /** 组装服务器回调参数：两项都为空时返回 null。 */
+  function buildUrlCallback(): DramaUrlCallback | null {
+    const u = appliedUserId.value.trim()
+    const e = appliedExtra.value.trim()
+    if (u.length == 0 && e.length == 0) {
+      return null
+    }
+    return { userId: u, extra: e } as DramaUrlCallback
+  }
+
+  /**
+   * 分页查询：isRefresh 为 true 时整批替换（首页/切频道/下拉刷新），否则追加（触底加载）。
+   * 返回条数小于每页数量即最后一页。
+   * 刷新类请求允许打断进行中的请求（旧结果按序号丢弃），保证切频道即时响应。
+   */
+  function loadPage(page: number, isRefresh: boolean) {
+    if (!moduleReady) {
+      // 模块未就绪：复位刷新态，等待 onLoad 自动拉取。
+      refreshing.value = false
+      if (isRefresh) {
+        stateText.value = "短剧模块加载中，请稍候..."
+      }
+      return
+    }
+    if (loading.value && !isRefresh) {
+      // 加载更多不加锁打断：进行中直接忽略。
+      return
+    }
+    const seq = ++requestSeq
+    const kind = currentKind.value
+    const size = appliedPageSize.value
+    loading.value = true
+    stateText.value = ""
+    errorReason.value = ""
+    startRequestTimeout(seq)
+    const finish = () => {
+      // 仅当仍是最新请求时才复位状态，避免旧请求复位新请求的 loading。
+      if (seq == requestSeq) {
+        clearRequestTimeout()
+        loading.value = false
+        refreshing.value = false
+        firstLoading.value = false
+      }
+    }
+    const success = (res: DramaListResult) => {
+      if (seq != requestSeq) {
+        return
+      }
+      finish()
+      const infos = res.dramas
+      if (isRefresh) {
+        dramaList.value = infos
+        currentPage.value = 1
+        // 实测收敛策略：只要渠道返回数据就允许继续翻页（渠道返回空才判定到底），
+        // 不用"是否满页"提前截断——渠道侧页大小可能与请求 pageSize 不一致。
+        hasMore.value = infos.length > 0
+      } else {
+        // 翻页数据直接追加，不做去重（渠道返回什么就展示什么）。
+        currentPage.value = page
+        dramaList.value = dramaList.value.concat(infos)
+        hasMore.value = infos.length > 0
+      }
+      // 数据明细日志：逐条打印本页返回的 dramaId:title，用于排查"请求 N 条展示 N-1 条"、
+      // 渠道翻页重叠（重复数据）或返回条数不足等问题。
+      const idTitles: string[] = []
+      for (let i = 0; i < infos.length; i++) {
+        idTitles.push(infos[i].dramaId + ":" + infos[i].title)
+      }
+      console.log("[drama-home][data] " + kind + " page=" + page + " isRefresh=" + isRefresh
+        + " count=" + infos.length + " items=[" + idTitles.join(" | ") + "]")
+      // hasMore 判定打印（实测收敛：count>0 允许继续翻页，渠道返回空才到底）。
+      console.log("[drama-home][hasMore] " + kind + " page=" + page
+        + " count=" + infos.length + " pageSize=" + size
+        + " -> hasMore=" + hasMore.value + " (count=0 即到底)")
+      // 数据变化后同步重建网格行：刷新整批替换，翻页只追加新 rows（防止空隙）。
+      buildGridRows(isRefresh)
+      console.log("[drama-home] " + kind + " page=" + page + " -> count=" + infos.length
+        + " totalListLen=" + dramaList.value.length + " hasMore=" + hasMore.value)
+    }
+    const failure = (error: IUniDramaError) => {
+      if (seq != requestSeq) {
+        return
+      }
+      finish()
+      stateText.value = "加载失败：" + error.errMsg + "（" + error.errCode + "）"
+      console.error("[drama-home] " + kind + " page=" + page + " fail -> " + error.errMsg)
+    }
+    switch (kind) {
+      case 'recommended':
+        dramaAd?.getRecommendedList({ page: page, pageSize: size, success: success, fail: failure } as DramaListOptions)
+        break
+      case 'rank':
+        dramaAd?.getList({ page: page, pageSize: size, order: 'default', success: success, fail: failure } as DramaListOptions)
+        break
+      case 'collection':
+        dramaAd?.getCollectionList({ page: page, pageSize: size, success: success, fail: failure } as DramaListOptions)
+        break
+      case 'history':
+        dramaAd?.getHistoryList({ page: page, pageSize: size, success: success, fail: failure } as DramaListOptions)
+        break
+    }
+  }
+
+  /**
+   * 创建短剧实例（创建即自动加载），同时启动全局 loading。
+   * onLoad 到达：模块就绪，隐藏全局 loading 进入骨架屏，自动拉取当前频道第一页。
+   * onError 到达：标记 moduleFailed，全局 loading 关闭并给出可重试的错误提示。
+   */
+  function ensureInstance() {
+    if (dramaAd != null) {
+      return
+    }
+    moduleReady = false
+    moduleFailed = false
+    firstLoading.value = true
+    errorReason.value = ""
+    startDots()
+    const ad = uni.createDramaAd({ adpid: appliedAdpid.value } as CreateDramaAdOptions)
+    dramaAd = ad
+    ad.onLoad((res: UTSJSONObject) => {
+      const type = res["type"] ?? ""
+      if (type == "detail") {
+        return
+      }
+      moduleReady = true
+      moduleFailed = false
+      stopDots()
+      // 模块就绪立即关闭全局 loading（秒数不再回 0 停留），数据请求交给骨架屏过渡，
+      // 消除"快加载好时秒数清零卡一下才出界面"的观感问题。
+      firstLoading.value = false
+      loadPage(1, true)
+    })
+    ad.onError((err: IUniDramaError) => {
+      console.error("[drama-home] onError code=" + err.errCode + " message=" + err.errMsg)
+      // 模块加载失败：关全局 loading，展示可重试错误（重试 = 重建实例）。
+      moduleFailed = true
+      loading.value = false
+      refreshing.value = false
+      firstLoading.value = false
+      stopDots()
+      errorReason.value = "错误码 " + err.errCode + "\n\n" + err.errMsg + "\n\n可能原因：\n1. adpid 未开通短剧能力或配置有误\n2. 当前基座缺少短剧运行时（需自定义基座）\n3. 网络连接异常"
+      stateText.value = "模块加载失败：" + err.errMsg + "（" + err.errCode + "），点击重试"
+    })
+    ad.onPlayEvent((res: DramaEventResult) => {
+      console.log("[drama-home] onPlayEvent -> " + JSON.stringify(res))
+    })
+    ad.onAdEvent((res: DramaEventResult) => {
+      console.log("[drama-home] onAdEvent -> " + JSON.stringify(res))
+    })
+  }
+
+  /** 销毁并重建实例（adpid 变更 / 模块失败重试）；清空旧列表。 */
+  function rebuildInstance() {
+    stopDots()
+    clearRequestTimeout()
+    dramaAd?.destroy()
+    dramaAd = null
+    dramaList.value = []
+    gridRows.value = [] as GridRow[]
+    gridBuiltCount = 0
+    errorReason.value = ""
+    ensureInstance()
+  }
+
+  /** 切换频道：清空旧频道数据，骨架屏过渡，重置分页拉第一页。 */
+  function switchKind(kind: QueryKind) {
+    if (currentKind.value == kind) {
+      return
+    }
+    currentKind.value = kind
+    hasMore.value = true
+    dramaList.value = []
+    gridRows.value = [] as GridRow[]
+    gridBuiltCount = 0
+    console.log("[drama-home] switchKind=" + kind + " 清空列表，骨架屏过渡 loading=" + loading.value)
+    loadPage(1, true)
+  }
+
+  /** 下拉刷新。 */
+  function onRefresh() {
+    refreshing.value = true
+    loadPage(1, true)
+  }
+
+  /** 触底加载更多。 */
+  function loadMore() {
+    if (loading.value || !hasMore.value || !moduleReady) {
+      console.log("[drama-home] loadMore blocked -> loading=" + loading.value + " hasMore=" + hasMore.value + " moduleReady=" + moduleReady)
+      return
+    }
+    console.log("[drama-home] loadMore -> requesting page=" + (currentPage.value + 1))
+    loadPage(currentPage.value + 1, false)
+  }
+
+  /** scrolltolower 触发日志 + 加载更多。 */
+  function onScrollToLower() {
+    console.log("[drama-home] scrolltolower -> loading=" + loading.value + " hasMore=" + hasMore.value + " moduleReady=" + moduleReady + " page=" + currentPage.value)
+    loadMore()
+  }
+
+  /** 底部状态栏点击日志 + 加载更多。 */
+  function onFooterClick() {
+    console.log("[drama-home] footer click -> loading=" + loading.value + " hasMore=" + hasMore.value + " page=" + currentPage.value)
+    loadMore()
+  }
+
+  /** 图片加载失败标记（非响应式，避免在模板 v-for 里追踪导致 Vue warn）。 */
+  let imageErrorSet: string[] = []
+
+  function onImageError(dramaId: string, coverUrl: string) {
+    // 图片加载验证日志：区分 URL 为空 / URL 有值但加载失败 / 签名过期
+    const urlLen = coverUrl.length
+    const hasExpires = coverUrl.indexOf("x-expires=") >= 0
+    const hasSig = coverUrl.indexOf("x-signature=") >= 0
+    console.error("[图片验证] image error -> dramaId=" + dramaId
+      + " urlLen=" + urlLen
+      + " hasExpires=" + hasExpires
+      + " hasSig=" + hasSig
+      + "\n  url=" + (urlLen > 0 ? coverUrl.substring(0, Math.min(80, urlLen)) + "..." : "(空)"))
+    if (imageErrorSet.indexOf(dramaId) < 0) {
+      imageErrorSet.push(dramaId)
+    }
+  }
+
+  /**
+   * 重试入口（状态条 / 空态按钮）：
+   * 模块失败 -> 重建实例（onLoad 后自动拉取）；模块正常 -> 刷新当前频道。
+   */
+  function retryLast() {
+    if (moduleFailed || !moduleReady) {
+      rebuildInstance()
+      return
+    }
+    loadPage(1, true)
+  }
+
+  /** 正在打开播放页（防重复点击）。 */
+  const isOpening = ref(false)
+
+  /** 打开短剧播放页。 */
+  function openDrama(item: DramaInfo) {
+    if (isOpening.value) {
+      return
+    }
+    if (dramaAd == null || !moduleReady) {
+      uni.showToast({ title: "短剧模块加载中，请稍候", icon: "error", position: "bottom" })
+      return
+    }
+    isOpening.value = true
+    // 打开播放页为异步加载（先加载详情再打开独立 Activity），期间展示 loading 并拦截界面点击。
+    uni.showLoading({ title: "正在打开短剧...", mask: true })
+    console.log("[drama-home] open -> dramaId=" + item.dramaId + " title=" + item.title)
+    dramaAd?.open({
+      dramaId: item.dramaId,
+      episode: item.currentEpisode > 0 ? item.currentEpisode : 1,
+      free: appliedFree.value,
+      lock: appliedLock.value,
+      urlCallback: buildUrlCallback(),
+      success: () => {
+        console.log("[drama-home] open success -> 播放页已打开，title=" + item.title)
+        uni.hideLoading()
+        isOpening.value = false
+      },
+      fail: (error: IUniDramaError) => {
+        console.error("[drama-home] open fail -> code=" + error.errCode + " msg=" + error.errMsg)
+        uni.hideLoading()
+        isOpening.value = false
+        uni.showToast({ title: error.errMsg, icon: "error", position: "bottom" })
+      }
+    } as DramaOpenOptions)
+  }
+
+  /** 跳转独立搜索页：携带 adpid 与播放参数，搜索页播放体验与首页一致。 */
+  function goSearch() {
+    uni.navigateTo({ url: "/pages/ad-drama-search/ad-drama-search?adpid=" + appliedAdpid.value
+      + "&free=" + appliedFree.value + "&lock=" + appliedLock.value })
+  }
+
+  /** 打开参数弹窗：回填当前生效参数。 */
+  function openConfig() {
+    adpidInput.value = appliedAdpid.value
+    freeInput.value = "" + appliedFree.value
+    lockInput.value = "" + appliedLock.value
+    pageSizeInput.value = "" + appliedPageSize.value
+    callbackUserIdInput.value = appliedUserId.value
+    callbackExtraInput.value = appliedExtra.value
+    showConfig.value = true
+  }
+
+  function closeConfig() {
+    showConfig.value = false
+  }
+
+  /** 空函数：拦截弹窗卡片点击冒泡。 */
+  function noop() {
+  }
+
+  /** 保存参数：adpid 变更重建实例（onLoad 后自动刷新），否则刷新当前频道。 */
+  function saveConfig() {
+    const pid = adpidInput.value.trim()
+    if (pid.length == 0) {
+      uni.showToast({ title: "adpid 不能为空", icon: "error", position: "bottom" })
+      return
+    }
+    const size = toNumber(pageSizeInput.value, DEFAULT_PAGE_SIZE)
+    const adpidChanged = pid != appliedAdpid.value
+    appliedAdpid.value = pid
+    // 免费集数/解锁集数下限保护：至少为 1。
+    appliedFree.value = Math.max(1, toNumber(freeInput.value, 1))
+    appliedLock.value = Math.max(1, toNumber(lockInput.value, 1))
+    appliedPageSize.value = size <= 0 ? DEFAULT_PAGE_SIZE : size
+    appliedUserId.value = callbackUserIdInput.value.trim()
+    appliedExtra.value = callbackExtraInput.value.trim()
+    showConfig.value = false
+    hasMore.value = true
+    if (adpidChanged) {
+      rebuildInstance()
+    } else {
+      loadPage(1, true)
+    }
+    uni.showToast({ title: "配置已生效", position: "bottom" })
+  }
+
+  onMounted(() => {
+    ensureInstance()
+  })
+
+  onShow(() => {
+    console.log("[drama-home] onShow -> kind=" + currentKind.value + " moduleReady=" + moduleReady + " loading=" + loading.value + " dramaList.length=" + dramaList.value.length)
+    if (moduleReady && !loading.value && (currentKind.value == 'history' || currentKind.value == 'collection')) {
+      loadPage(1, true)
+    }
+  })
+
+  onUnmounted(() => {
+    stopDots()
+    clearRequestTimeout()
+    dramaAd?.destroy()
+    dramaAd = null
+  })
+  // #endif
+</script>
+
+<style>
+  /* 页面根容器：工具行/tab 固定，列表占满剩余。 */
+  .page-root {
+    flex: 1;
+    flex-direction: column;
+    background-color: #F6F7F5;
+  }
+
+  /* 工具行：搜索入口 + 参数按钮。 */
+  .tool-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #FFFFFF;
+  }
+
+  /* 搜索入口胶囊。 */
+  .nav-search {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    background-color: #F1F3F1;
+  }
+
+  .nav-search-icon {
+    font-size: 12px;
+    margin-right: 6px;
+  }
+
+  .nav-search-placeholder {
+    font-size: 13px;
+    color: #9aa7b4;
+  }
+
+  /* 右上角参数按钮。 */
+  .nav-btn {
+    height: 30px;
+    padding: 0 14px;
+    margin-left: 10px;
+    border-radius: 15px;
+    background-color: #EAF3EE;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-btn-text {
+    font-size: 13px;
+    color: #2F7D5B;
+  }
+
+  /* 频道 tab 栏。 */
+  .tab-bar {
+    background-color: #FFFFFF;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #ECEFEA;
+  }
+
+  .tab-row {
+    flex-direction: row;
+    padding: 0 10px;
+  }
+
+  .tab-item {
+    align-items: center;
+    padding: 8px 14px 6px 14px;
+  }
+
+  .tab-text {
+    font-size: 15px;
+    color: #5A635D;
+  }
+
+  .tab-text-active {
+    color: #1F2421;
+    font-weight: 700;
+  }
+
+  /* 选中 tab 底部指示条。 */
+  .tab-indicator {
+    width: 20px;
+    height: 3px;
+    margin-top: 4px;
+    border-radius: 2px;
+    background-color: #2F7D5B;
+  }
+
+  /* 状态提示条。 */
+  .state-line {
+    padding: 8px 16px;
+    background-color: #FDF0EE;
+  }
+
+  .state-text {
+    font-size: 12px;
+    color: #B4544A;
+  }
+
+  /* 海报流列表。 */
+  .drama-list {
+    flex: 1;
+    background-color: #F6F7F5;
+  }
+
+  /* 网格行单元格：list-item 不支持 margin，用 padding。 */
+  .grid-cell {
+    padding: 6px 12px;
+    background-color: #F6F7F5;
+  }
+
+  .grid-row {
+    flex-direction: row;
+  }
+
+  /* 海报卡片。 */
+  .poster-card {
+    flex: 1;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 8px;
+    margin-right: 10px;
+  }
+
+  /* 奇数补位卡片：透明占位。 */
+  .poster-card-empty {
+    background-color: #F6F7F5;
+    margin-right: 0px;
+  }
+
+  /* 末行单条通栏卡：横向左图右文自动补满整行，避免网格右下缺角。 */
+  .poster-card-full {
+    flex-direction: row;
+    align-items: center;
+    margin-right: 0px;
+  }
+
+  /* 通栏卡内的海报：保持竖图比例的固定尺寸侧排。 */
+  .poster-box-side {
+    width: 110px;
+    height: 147px;
+    margin-bottom: 0px;
+    margin-right: 12px;
+  }
+
+  .poster-img-side {
+    width: 110px;
+    height: 147px;
+  }
+
+  /* 海报文字容器：双列卡纵向排在海报下方；通栏卡 flex 占满海报右侧。 */
+  .poster-info {
+    flex-direction: column;
+  }
+
+  .poster-info-full {
+    flex: 1;
+  }
+
+  .poster-box {
+    position: relative;
+    width: 100%;
+    height: 190px;
+    border-radius: 10px;
+    background-color: #EEF1F4;
+    margin-bottom: 8px;
+  }
+
+  .poster-img {
+    width: 100%;
+    height: 190px;
+    border-radius: 10px;
+  }
+
+  /* 海报角标：总集数。 */
+  .poster-badge {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.55);
+  }
+
+  .poster-badge-text {
+    font-size: 10px;
+    color: #FFFFFF;
+  }
+
+  .poster-title {
+    font-size: 14px;
+    line-height: 20px;
+    height: 20px;
+    font-weight: 600;
+    color: #1F2421;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+  }
+
+  .poster-sub {
+    font-size: 11px;
+    line-height: 16px;
+    height: 16px;
+    color: #9aa7b4;
+    text-overflow: ellipsis;
+  }
+
+  /* 骨架屏。 */
+  .skeleton-cell {
+    padding: 6px 12px;
+    background-color: #F6F7F5;
+  }
+
+  .skeleton-row {
+    flex-direction: row;
+    margin-bottom: 10px;
+  }
+
+  .skeleton-card {
+    flex: 1;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+
+  .skeleton-card-last {
+    margin-right: 0px;
+  }
+
+  .skeleton-cover {
+    width: 100%;
+    height: 190px;
+    border-radius: 10px;
+    background-color: #E9ECE8;
+    margin-bottom: 8px;
+  }
+
+  .skeleton-line {
+    width: 60%;
+    height: 14px;
+    border-radius: 7px;
+    background-color: #E9ECE8;
+  }
+
+  /* 底部状态。 */
+  .footer-cell {
+    padding: 12px 0 30px 0;
+    align-items: center;
+    background-color: #F6F7F5;
+  }
+
+  .footer-box {
+    align-items: center;
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: #9aa7b4;
+  }
+
+  /* 可点击的加载更多提示：强调可交互。 */
+  .footer-text-action {
+    color: #2F7D5B;
+    font-weight: 600;
+  }
+
+  /* 空态。 */
+  /* 空态容器：flex 纵向，占满剩余高度居中显示。 */
+  .empty-box {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    background-color: #F6F7F5;
+  }
+
+  /* 空态内容：纵向居中排列。 */
+  .empty-inner {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 14px;
+  }
+
+  /* 空态标题（收藏/记录专用）。 */
+  .empty-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .empty-text {
+    font-size: 13px;
+    color: #9aa7b4;
+    text-align: center;
+    line-height: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* 主色按钮（重新加载/刷新）。 */
+  .empty-btn {
+    padding: 10px 28px;
+    border-radius: 20px;
+    background-color: #2F7D5B;
+  }
+
+  .empty-btn-text {
+    font-size: 14px;
+    color: #FFFFFF;
+  }
+
+  /* 描边按钮（去推荐页）。 */
+  .empty-btn-outline {
+    padding: 10px 28px;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #2F7D5B;
+  }
+
+  .empty-btn-text-outline {
+    font-size: 14px;
+    color: #2F7D5B;
+  }
+
+  /* 全局 loading 页：白底全屏，居中转环 + 动态文案。 */
+  .global-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #F6F7F5;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 转环：圆环边框 + 旋转动画。 */
+  .loading-ring {
+    width: 42px;
+    height: 42px;
+    border-radius: 21px;
+    border-width: 4px;
+    border-style: solid;
+    border-color: #DDE5DF;
+    border-top-color: #2F7D5B;
+    margin-bottom: 16px;
+    animation: ring-spin 0.9s linear infinite;
+  }
+
+  @keyframes ring-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 8px;
+  }
+
+  .loading-sub {
+    font-size: 12px;
+    color: #9aa7b4;
+  }
+
+  /* 弹窗遮罩。 */
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 弹窗卡片。 */
+  .dialog {
+    width: 620rpx;
+    border-radius: 16px;
+    background-color: #FFFFFF;
+    padding: 20px;
+  }
+
+  .dialog-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 14px;
+  }
+
+  .field-label {
+    font-size: 13px;
+    color: #1F2421;
+    margin-bottom: 6px;
+  }
+
+  .config-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    margin-bottom: 12px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #E4E7E0;
+    border-radius: 10px;
+    background-color: #F6F7F5;
+    color: #1F2421;
+    font-size: 14px;
+  }
+
+  .field-row {
+    flex-direction: row;
+  }
+
+  .field-col {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .field-col-last {
+    margin-right: 0px;
+  }
+
+  .field-hint {
+    font-size: 12px;
+    color: #5A635D;
+    line-height: 18px;
+    margin-bottom: 12px;
+  }
+
+  .dialog-btn-row {
+    flex-direction: row;
+    margin-top: 4px;
+  }
+
+  .dialog-btn {
+    flex: 1;
+    height: 42px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+
+  .dialog-btn-cancel {
+    background-color: #EEF1F4;
+    color: #405366;
+    margin-right: 10px;
+  }
+
+  .dialog-btn-ok {
+    background-color: #2F7D5B;
+    color: #FFFFFF;
+    margin-right: 0px;
+  }
+
+  /* 非 Android 提示。 */
+  .unsupported-box {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .unsupported-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 10px;
+  }
+
+  .unsupported-text {
+    font-size: 13px;
+    color: #5A635D;
+    text-align: center;
+  }
+</style>

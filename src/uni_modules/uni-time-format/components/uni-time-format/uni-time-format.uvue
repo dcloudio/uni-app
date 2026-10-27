@@ -1,0 +1,290 @@
+<template>
+  <text class="time-text">{{ formattedTime }}</text>
+</template>
+
+<script setup lang="ts">
+  /**
+   * 时间格式化
+   * @description 时间格式化展示组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  type Props = {
+    /**
+     * @description 需要格式化的时间戳，支持秒级（10 位）或毫秒级（13 位），秒级会自动换算成毫秒
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    timestamp: number
+    /**
+     * @description 输出格式。"datetime" 输出 YYYY-MM-DD HH:mm；"date" 输出 YYYY-MM-DD；"time" 输出 HH:mm:ss；"relative" 输出相对时间（刚刚 / N 分钟前 / N 小时前 / 昨天 HH:mm / 完整日期）
+     * @default "datetime"
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    format?: string
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    format: 'datetime'
+  })
+
+  const appLanguage = (uni.getAppBaseInfo().appLanguage ?? 'en').toLowerCase()
+  const formattedTime = ref<string>('')
+
+  function padZero(num : number) : string {
+    return num < 10 ? '0' + num.toString() : num.toString()
+  }
+
+  function normalizeTimestamp(timestamp : number) : number {
+    const absTimestamp = Math.abs(timestamp)
+    if (absTimestamp > 0 && absTimestamp < 100000000000) {
+      return timestamp * 1000
+    }
+    return timestamp
+  }
+
+  function isValidDate(date : Date) : boolean {
+    return !isNaN(date.getTime())
+  }
+
+  function getLocaleKey(language : string) : string {
+    if (language.indexOf('zh-hant') == 0 || language.indexOf('zh-tw') == 0 || language.indexOf('zh-hk') == 0 || language.indexOf('zh-mo') == 0) {
+      return 'zh-hant'
+    }
+    if (language.indexOf('zh') == 0) {
+      return 'zh-hans'
+    }
+    if (language.indexOf('fr') == 0) {
+      return 'fr'
+    }
+    if (language.indexOf('la') == 0) {
+      return 'la'
+    }
+    return 'en'
+  }
+
+  const localeKey = getLocaleKey(appLanguage)
+
+  function formatDateTime(date : Date) : string {
+    const year = date.getFullYear()
+    const month = padZero(date.getMonth() + 1)
+    const day = padZero(date.getDate())
+    const hours = padZero(date.getHours())
+    const minutes = padZero(date.getMinutes())
+    return `${year}-${month}-${day} ${hours}:${minutes}`
+  }
+
+  function formatTime(date : Date) : string {
+    return `${padZero(date.getHours())}:${padZero(date.getMinutes())}`
+  }
+
+  function getNowText(localeKey : string) : string {
+    if (localeKey == 'zh-hans') return '刚刚'
+    if (localeKey == 'zh-hant') return '刚刚'
+    if (localeKey == 'fr') return 'mnt.'
+    if (localeKey == 'la') return 'nunc'
+    return 'now'
+  }
+
+  function formatMinuteAgo(localeKey : string, minutes : number) : string {
+    if (localeKey == 'zh-hans') return `${minutes}分钟前`
+    if (localeKey == 'zh-hant') return `${minutes}分鐘前`
+    if (localeKey == 'fr') return `-${minutes}min`
+    if (localeKey == 'la') return `-${minutes}m`
+    return `${minutes}m ago`
+  }
+
+  function formatHourAgo(localeKey : string, hours : number) : string {
+    if (localeKey == 'zh-hans') return `${hours}小时前`
+    if (localeKey == 'zh-hant') return `${hours}小時前`
+    if (localeKey == 'fr') return `-${hours}h`
+    if (localeKey == 'la') return `-${hours}h`
+    return `${hours}h ago`
+  }
+
+  function formatYesterday(localeKey : string, timeText : string) : string {
+    if (localeKey == 'zh-hant' || localeKey == 'zh-hans') return `昨天 ${timeText}`
+    if (localeKey == 'fr') return `hier ${timeText}`
+    if (localeKey == 'la') return `heri ${timeText}`
+    return `yest ${timeText}`
+  }
+
+  function getDayStartTimestamp(date : Date) : number {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
+  }
+
+  function getRelativeTime(targetDate : Date, currentTimestamp : number) : string {
+    const targetTimestamp = targetDate.getTime()
+    if (targetTimestamp > currentTimestamp) {
+      return formatDateTime(targetDate)
+    }
+
+    const nowDate = new Date(currentTimestamp)
+    const todayStart = getDayStartTimestamp(nowDate)
+    const yesterdayStart = todayStart - 24 * 60 * 60 * 1000
+
+    if (targetTimestamp >= todayStart) {
+      const diffMs = currentTimestamp - targetTimestamp
+      if (diffMs < 60 * 1000) {
+        return getNowText(localeKey)
+      }
+      const diffMinutes = Math.floor(diffMs / (60 * 1000))
+      if (diffMinutes < 60) {
+        return formatMinuteAgo(localeKey, diffMinutes)
+      }
+      const diffHours = Math.floor(diffMs / (60 * 60 * 1000))
+      return formatHourAgo(localeKey, diffHours)
+    }
+
+    if (targetTimestamp >= yesterdayStart) {
+      return formatYesterday(localeKey, formatTime(targetDate))
+    }
+
+    return formatDateTime(targetDate)
+  }
+
+  function refreshFormattedTime() {
+    const normalizedTimestamp = normalizeTimestamp(props.timestamp)
+    const targetDate = new Date(normalizedTimestamp)
+    if (!isValidDate(targetDate)) {
+      formattedTime.value = ''
+      return
+    }
+
+    const formatType = props.format
+    if (formatType == 'relative') {
+      formattedTime.value = getRelativeTime(targetDate, Date.now())
+      return
+    }
+
+    const hours = padZero(targetDate.getHours())
+    const minutes = padZero(targetDate.getMinutes())
+    if (formatType == 'time') {
+      const seconds = padZero(targetDate.getSeconds())
+      formattedTime.value = `${hours}:${minutes}:${seconds}`
+      return
+    }
+
+    const year = targetDate.getFullYear()
+    const month = padZero(targetDate.getMonth() + 1)
+    const day = padZero(targetDate.getDate())
+    if (formatType == 'date') {
+      formattedTime.value = `${year}-${month}-${day}`
+      return
+    }
+    formattedTime.value = `${year}-${month}-${day} ${hours}:${minutes}`
+  }
+
+  watch(() : string => props.format, () => {
+    refreshFormattedTime()
+  })
+
+  watch(() : number => props.timestamp, () => {
+    refreshFormattedTime()
+  })
+
+  onMounted(() => {
+    refreshFormattedTime()
+  })
+</script>
+
+<style>
+  .time-text {
+    font-size: 12px;
+    color: #999999;
+  }
+</style>

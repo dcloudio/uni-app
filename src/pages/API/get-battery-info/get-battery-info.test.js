@@ -1,19 +1,17 @@
-const PAGE_PATH = '/pages/API/get-battery-info/get-battery-info'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isIOS = platformInfo.startsWith('ios')
 
 describe('ExtApi-GetBatteryInfo', () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
-    it('dummyTest', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if (isWeb || isIOS || isMP) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })
     return
   }
 
+  const PAGE_PATH = '/pages/API/get-battery-info/get-battery-info'
   let page;
   let res;
 

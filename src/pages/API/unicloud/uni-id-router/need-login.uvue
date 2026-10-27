@@ -1,0 +1,23 @@
+<template>
+	<view class="container">
+		<text class="tip">这是需要登录才能访问的页面</text>
+	</view>
+</template>
+
+<script setup lang="ts">
+	defineExpose({})
+</script>
+
+<style>
+	.container {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 40px;
+	}
+
+	.tip {
+		font-size: 16px;
+		color: #333333;
+	}
+</style>

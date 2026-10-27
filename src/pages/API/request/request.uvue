@@ -13,31 +13,58 @@
         <button type="primary" @click="sendRequest">发起请求</button>
       </view>
     </view>
-    <scroll-view style="flex: 1;" show-scrollbar="true">
+    <scroll-view style="flex: 1;" :show-scrollbar="true">
       <view style="padding: 20px;">
         <text>设置请求方式</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px; margin-right: 10px;"
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('GET')">GET</button>
-          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px; margin-right: 10px; "
+            <!-- #endif -->
+            <!-- #ifdef MP-ALIPAY -->
+            style="margin-right: 10px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="changeMethod('POST')">POST</button>
-          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+          <!-- #ifndef MP-ALIPAY -->
+          <button
+            style="padding: 5px; margin-right: 10px; "
+            type="primary" size="mini"
             @click="changeMethod('PUT')">PUT</button>
-          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
+          <button
+            style="padding: 5px; margin-right: 10px;"
+            type="primary" size="mini"
             @click="changeMethod('DELETE')">DELETE</button>
-          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
+          <button
+            style="padding: 5px; margin-right: 10px; "
+            type="primary" size="mini"
             @click="changeMethod('PATCH')">PATCH</button>
-          <button style="padding: 5px;margin-right: 10px;" type="primary" size="mini"
+          <button
+            style="padding: 5px;margin-right: 10px;"
+            type="primary" size="mini"
             @click="changeMethod('OPTIONS')">OPTIONS</button>
-          <button style="padding: 5px;" type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
+          <button
+            style="padding: 5px;"
+            type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
+          <!-- #endif -->
         </view>
       </view>
       <view style="padding: 20px;">
         <text>请求返回错误码的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.errorCodeUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.errorCodeUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
@@ -45,15 +72,28 @@
         <text>请求不同header的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.headerUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.headerUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
+      <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB -->
+      <view style="padding: 20px;">
+        <text>检测请求 header 键是否为小写</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" size="mini" @click="checkHeaderLowerCase">检测 header 键小写</button>
+      </view>
+      <!-- #endif -->
       <view style="padding: 20px;">
         <text>请求不同content-type的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.contentTypeUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.contentTypeUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
@@ -62,7 +102,10 @@
         <text>POST请求(有body)</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in data.postUrls" :key="index"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini" v-for="(item, index) in data.postUrls" :key="index"
             @click="changeUrlFromPost(item)">{{item}}</button>
         </view>
       </view>
@@ -71,25 +114,35 @@
         <text>ArrayBuffer 测试</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="sendArrayBuffer(false)">请求body为ArrayBuffer，response也为ArrayBuffer</button>
-          <button style="padding: 5px;" type="primary" size="mini"
+          <button <!-- #ifndef MP-ALIPAY -->
+            style="padding: 5px;"
+            <!-- #endif -->
+            type="primary" size="mini"
             @click="sendArrayBuffer(true)">请求response为ArrayBuffer</button>
         </view>
       </view>
       <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view style="padding: 20px;">
         <text>RequestTask 测试</text>
         <view class="uni-common-pb"></view>
         <button type="primary" @click="sendChunkRequest">流式请求</button>
       </view>
+      <!-- #endif -->
 
+      <!-- #ifndef MP-ALIPAY -->
       <view style="padding: 20px;">
         <text>enableQuic 测试</text>
         <view class="uni-common-pb"></view>
         <button type="primary" @click="sendH3Request">http3请求</button>
       </view>
+      <!-- #endif -->
 
       <view style="padding: 20px;">
         <text>Accept-Encoding:'gzip'测试</text>
@@ -108,7 +161,7 @@
     </scroll-view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
   import {
     testInovkeRequest,
@@ -116,8 +169,12 @@
   } from '@/uni_modules/test-invoke-network-api'
   // #endif
 
+  type PlainObject = {
+    [key: string]: any;
+  }
+
   class GETDataType {
-    data : UTSJSONObject | null = null
+    data : PlainObject | null = null
   }
 
   const duration = 2000
@@ -141,7 +198,7 @@
     url: string;
     method: RequestMethod | null;
     data: any | null;
-    header: UTSJSONObject | null;
+    header: PlainObject | null;
     errorCodeUrls: string[];
     headerUrls: string[];
     contentTypeUrls: string[];
@@ -273,6 +330,9 @@
   const checkQuery = () => {
     uni.request<string>({
       url: "https://request.dcloud.net.cn/api/http/echo/text?Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D",
+      // #ifndef APP-ANDROID && UNI-APP-X && !VUE3-VAPOR
+      dataType: 'text',
+      // #endif
       success:(res) => {
         data.jest_result = res.data == "Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D\n";
         console.log("res: ", res);
@@ -319,7 +379,55 @@
     }
   }
 
-  // #ifdef APP | MP-WEIXIN | WEB
+  function getResponseHeaderObject(header : any): PlainObject {
+    return JSON.parse(JSON.stringify(header)) as PlainObject
+  }
+
+  const checkHeaderLowerCase = () => {
+    uni.showLoading({
+      title: "请求中..."
+    })
+    uni.request<PlainObject>({
+      url: data.host + "/api/http/contentType/json",
+      method: "POST",
+      header: {
+        "Content-Type": "application/json"
+      },
+      data: {
+        "hello": "world"
+      },
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res : RequestSuccess<PlainObject>) => {
+        const responseHeader = getResponseHeaderObject(res.header)
+        const lowerCaseValue = responseHeader["content-type"] ?? ""
+        const upperCaseValue = responseHeader["Content-Type"]
+        data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
+        data.res = '请求结果 : ' + JSON.stringify(res.data)
+        uni.showToast({
+          title: data.jest_result ? '检测成功' : '检测失败',
+          icon: data.jest_result ? 'success' : 'error',
+          duration: duration
+        })
+      },
+      fail: (err : RequestFail) => {
+        data.jest_result = false
+        data.res = err.errMsg
+        uni.showToast({
+          title: '请求失败',
+          icon: 'error',
+          duration: duration
+        })
+      },
+      complete: () => {
+        uni.hideLoading()
+      }
+    })
+  }
+
+  // #ifdef APP || MP-WEIXIN || WEB
   const sendArrayBuffer = (onlyResponse : boolean) => {
     data.method = "POST"
     data.url = "/api/http/contentType/arrayBuffer/post"
@@ -519,12 +627,15 @@
       withCredentials: false,
       firstIpv4: false,
       success: (res) => {
-        const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
+        const responseData = JSON.parse(JSON.stringify(res.data)) as PlainObject
+        const requestCookie = responseData["data"]?.["requestCookie"]
         data.jest_result_data = JSON.stringify(requestCookie)
         if (requestCookie instanceof Array) {
           data.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
         } else {
-          data.jest_result = needCookie ? (requestCookie as UTSJSONObject).toMap().size > 0 : (requestCookie as UTSJSONObject).toMap().size == 0
+          const requestCookieObject = requestCookie as PlainObject
+          const requestCookieSize = Object.keys(requestCookieObject).length
+          data.jest_result = needCookie ? requestCookieSize > 0 : requestCookieSize == 0
         }
       },
       fail: () => {
@@ -641,10 +752,10 @@
   }
 
   const jest_get_array = () => {
-    uni.request<UTSJSONObject[]>({
+    uni.request<PlainObject[]>({
       url: 'https://unidemo.dcloud.net.cn/api/news?column=title,author_name,cover,published_at',
       method: "GET",
-      success: (res : RequestSuccess<UTSJSONObject[]>) => {
+      success: (res : RequestSuccess<PlainObject[]>) => {
         if (res.statusCode == 200 && Array.isArray(res.data)) {
           data.jest_result = true
         } else {
@@ -660,14 +771,15 @@
   const jest_uts_module_invoked = () => {
     // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
     data.jest_result = false
-    testInovkeRequest({
+    const options : CommonOptions = {
       success: (res : any) => {
         data.jest_result = true
       },
       fail: (err : any) => {
         data.jest_result = false
       }
-    } as CommonOptions)
+    }
+    testInovkeRequest(options)
     // #endif
   }
 
@@ -741,9 +853,37 @@
     });
   }
 
+  const jest_check_header_lowercase = () => {
+    uni.request<PlainObject>({
+      url: data.host + "/api/http/contentType/json",
+      method: "POST",
+      header: {
+        "Content-Type": "application/json"
+      },
+      data: {
+        "hello": "world"
+      },
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res : RequestSuccess<PlainObject>) => {
+        const responseHeader = getResponseHeaderObject(res.header)
+        const lowerCaseValue = responseHeader["content-type"] ?? ""
+        const upperCaseValue = responseHeader["Content-Type"]
+        data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
+      },
+      fail: () => {
+        data.jest_result = false
+      },
+    })
+  }
+
   defineExpose({
     data,
+    // #ifdef APP || MP-WEIXIN || WEB
     sendArrayBuffer,
+    // #endif
     jest_request,
     jest_set_cookie,
     jest_set_cookie_expires,
@@ -759,8 +899,10 @@
     jest_respone_with_404_and_string_generics,
     jest_issue_19687,
     jest_test_issue21823_crash,
+    jest_check_header_lowercase,
     sendGzipRequest,
-    checkQuery
+    checkQuery,
+    checkHeaderLowerCase
   })
 </script>
 

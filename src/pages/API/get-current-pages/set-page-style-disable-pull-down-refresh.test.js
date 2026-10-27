@@ -6,7 +6,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const PAGE_PATH = '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh'
 
 describe('getCurrentPages', () => {
-  if (isMP || isIos) {
+  if (isMP || isIos || (isHarmony && platformInfo.includes('模拟器'))) {
     it('not-support', async () => {
       expect(1).toBe(1)
     })

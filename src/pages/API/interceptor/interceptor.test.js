@@ -2,7 +2,7 @@ const PAGE_PATH = '/pages/API/interceptor/interceptor'
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('interceptor', () => {
   let page
@@ -89,7 +89,7 @@ describe('interceptor', () => {
     await program.navigateBack()
   })
 
-  if (!isDom2) {
+  if (!isVapor) {
   // dom2 tabbar 页面暂时为页面+组件实现，没有真正的 tabbar 故无法 switchTab
   it('addSwitchTabInterceptor', async () => {
     await page.callMethod('addSwitchTabInterceptor')

@@ -1,7 +1,6 @@
 const PAGE_PATH = '/pages/API/keyboard/keyboard'
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')

@@ -1,12 +1,12 @@
 <template>
 	<view style="flex-direction: row;" id="rootview">
 		<radio-group @change="switchCacheOrData">
-      <radio value="data" :checked="true">数据目录</radio>
-      <radio value="cache"
-      <!-- #ifdef MP-WEIXIN -->
+      <view class="radio-box"><radio value="data" :checked="true" /><text>数据目录</text></view>
+      <view class="radio-box"><radio value="cache"
+      <!-- #ifdef MP -->
       disabled
       <!-- #endif -->
-      >缓存目录</radio>
+      /><text>缓存目录</text></view>
     </radio-group>
     <button @click="refreshFile">刷新</button>
 		<!-- #ifdef APP -->
@@ -46,7 +46,7 @@
 	</view>
 </template>
 
-<script setup>
+<script setup lang="ts">
 	type fileListType = {
 		path : string,
 		shotPath : string,
@@ -77,7 +77,7 @@
 	    success: (res : StatSuccessResult) => {
 				// log.value += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
 	      console.log('statFileInfo success1')
-	      console.log('res.stats', res.stats)
+	      console.log('res.stats', res.stats, Array.isArray(res.stats))
 				console.log('uni.env.CACHE_PATH: ',uni.env.CACHE_PATH);
 				console.log('uni.env.USER_DATA_PATH: ',uni.env.USER_DATA_PATH);
 				console.log('uni.env.SANDBOX_PATH: ',uni.env.SANDBOX_PATH);
@@ -257,3 +257,11 @@
 	}
 
 </script>
+
+<style>
+.radio-box {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+</style>

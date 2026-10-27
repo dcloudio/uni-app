@@ -1,0 +1,184 @@
+<template>
+	<uni-tab style="flex: 1; --uni-tab-bar-height: 40px" :active-index="activeIndex" @change="handleChange">
+		<uni-tab-content>
+			<view class="custom-panel custom-panel-emerald">
+				<text class="custom-panel-kicker">自定义 tab-bar</text>
+				<text class="custom-panel-title">精选</text>
+				<text class="custom-panel-desc">uni-tab-bar 使用 externalClass 覆盖了渐变背景和更低的高度，整体更像一条轻量导航条。</text>
+			</view>
+		</uni-tab-content>
+		<uni-tab-content>
+			<view class="custom-panel custom-panel-sand">
+				<text class="custom-panel-kicker">自定义 tab-bar</text>
+				<text class="custom-panel-title">趋势</text>
+				<text class="custom-panel-desc">这里只有一行文字，没有图标，适合内容频道或资讯场景里的轻型底部切换。</text>
+			</view>
+		</uni-tab-content>
+		<uni-tab-content>
+			<view class="custom-panel custom-panel-ink">
+				<text class="custom-panel-kicker">自定义 tab-bar</text>
+				<text class="custom-panel-title">我的</text>
+				<text class="custom-panel-desc">激活文字色改成绿色，同时每个 uni-tab-item 只有一行文本，更紧凑也更聚焦。</text>
+			</view>
+		</uni-tab-content>
+
+		<uni-tab-bar class="custom-tab-list-shell custom-tab-list-root">
+			<uni-tab-item>
+				<view class="custom-tab-cell">
+					<text class="custom-tab-label" :class="activeIndex == 0 ? 'custom-tab-label-active' : ''">精选</text>
+				</view>
+			</uni-tab-item>
+			<uni-tab-item>
+				<view class="custom-tab-cell">
+					<text class="custom-tab-label" :class="activeIndex == 1 ? 'custom-tab-label-active' : ''">趋势</text>
+				</view>
+			</uni-tab-item>
+			<uni-tab-item>
+				<view class="custom-tab-cell">
+					<text class="custom-tab-label" :class="activeIndex == 2 ? 'custom-tab-label-active' : ''">我的</text>
+				</view>
+			</uni-tab-item>
+		</uni-tab-bar>
+	</uni-tab>
+</template>
+
+<script setup lang="ts">
+	const activeIndex = ref<number>(0)
+
+	function isDarkTheme() : boolean {
+		// #ifdef APP
+		const systemInfo = uni.getSystemInfoSync()
+		return systemInfo.appTheme == 'dark' || (systemInfo.appTheme == 'auto' && systemInfo.osTheme == 'dark')
+		// #endif
+		return false
+	}
+
+	function syncNavigationBar(index : number) : void {
+		const dark = isDarkTheme()
+		switch (index) {
+			case 0:
+				uni.setNavigationBarTitle({ title: '精选' })
+				uni.setNavigationBarColor({
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#17372a' : '#dff3e8'
+				})
+				break
+			case 1:
+				uni.setNavigationBarTitle({ title: '趋势' })
+				uni.setNavigationBarColor({
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#43331f' : '#f6ddbf'
+				})
+				break
+			case 2:
+				uni.setNavigationBarTitle({ title: '我的' })
+				uni.setNavigationBarColor({
+					frontColor: dark ? '#ffffff' : '#000000',
+					backgroundColor: dark ? '#26363b' : '#dde7ea'
+				})
+				break
+		}
+	}
+
+	function handleChange(index : number) : void {
+		activeIndex.value = index
+		syncNavigationBar(index)
+	}
+
+	onLoad(() => {
+		syncNavigationBar(activeIndex.value)
+	})
+
+	onShow(() => {
+		syncNavigationBar(activeIndex.value)
+	})
+</script>
+
+	<style>
+		page {
+			background-color: #dff3e8;
+		}
+
+	.custom-panel {
+		flex: 1;
+		padding-top: 28px;
+		padding-right: 24px;
+		padding-bottom: 24px;
+		padding-left: 24px;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.custom-panel-emerald {
+		background-color: #dff3e8;
+	}
+
+	.custom-panel-sand {
+		background-color: #f6ddbf;
+	}
+
+	.custom-panel-ink {
+		background-color: #dde7ea;
+	}
+
+	.custom-panel-kicker {
+		font-size: 12px;
+		color: rgba(34,51,59,0.56);
+	}
+
+	.custom-panel-title {
+		margin-top: 10px;
+		font-size: 30px;
+		color: #22333b;
+	}
+
+	.custom-panel-desc {
+		margin-top: 10px;
+		font-size: 15px;
+		line-height: 22px;
+		color: rgba(34,51,59,0.74);
+	}
+
+	.custom-tab-list-shell {
+		background-color: #f4efe6;
+	}
+
+	.custom-tab-list-root {
+		background: linear-gradient(to right, #f7d9a8, #c6ece3);
+		border-top-width: 0px;
+	}
+
+	.custom-tab-cell {
+		width: 100%;
+		height: 100%;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.custom-tab-label {
+		font-size: 14px;
+		color: rgba(34,51,59,0.58);
+	}
+
+	.custom-tab-label-active {
+		color: #1d9f5f;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.custom-panel-emerald { background-color: #17372a; }
+		.custom-panel-sand { background-color: #43331f; }
+		.custom-panel-ink { background-color: #26363b; }
+
+		.custom-panel-kicker,
+		.custom-panel-desc,
+		.custom-tab-label {
+			color: rgba(255, 255, 255, 0.68);
+		}
+
+		.custom-panel-title { color: #ffffff; }
+		.custom-tab-list-shell { background-color: #242424; }
+		.custom-tab-list-root { background: linear-gradient(to right, #40301e, #173b34); }
+		.custom-tab-label-active { color: #5ee29b; }
+	}
+</style>

@@ -36,7 +36,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   type StatusBarArea = {
     width : number,
     height : number

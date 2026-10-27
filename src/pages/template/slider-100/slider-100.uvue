@@ -1,21 +1,16 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page">
-  <!-- #endif -->
     <!-- #ifndef MP -->
-    <fps />
+    <fps v-if="autoData.showFps" />
     <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="grid-view">
       <slider ref="sliderRef" class="slider" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
-        @change="sliderChange" :value="sliderValue" :block-size="20"  thumb-class="thumbclass"/>
+        @change="sliderChange" :value="sliderValue" thumb-class="thumbclass"/>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+const autoData = reactive({ showFps: true })
 const title = ref('sliderx100通信性能测试(小程序卡为正常)')
 const sliderValue = ref(50)
 const sliderRef = ref<UniSliderElement[]>([])
@@ -23,7 +18,7 @@ const sliderRef = ref<UniSliderElement[]>([])
 
 function updateSliderValue(value: number) {
   // #ifndef MP
-  // TODO 跳过vue框架，直接修改原生组件
+  // NOTE 跳过vue框架，直接修改原生组件
   sliderRef.value.forEach((item) => {
     item.value = value
   })
@@ -46,15 +41,10 @@ function sliderChanging(e: UniSliderChangeEvent) {
 const updateSliderValueTest = (value : number) => {
   sliderValue.value = value
 }
-defineExpose({updateSliderValueTest})
+defineExpose({updateSliderValueTest, autoData})
 </script>
 
 <style>
-  .page {
-    flex: 1;
-    margin-bottom: var(--uni-safe-area-inset-bottom);
-  }
-
   .grid-view {
     flex-direction: row;
     flex-wrap: wrap;

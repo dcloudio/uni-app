@@ -1,26 +1,20 @@
 <template>
-  <!-- #ifdef WEB -->
-  <view>
-  <!-- #endif -->
-    <list-view class="list" @scrolltolower="onScrollTolower">
-      <list-item class="list-item" v-for="(_,index) in data.item_count" :key="index">
-        <text>第{{index + 1}}个视频</text>
-        <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
-        <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"
-        @recycle="e => _onRecycle(e, index)" @reuse="e => _onReuse(e, index)"/>
-        <!-- #endif -->
+  <list-view class="list" @scrolltolower="onScrollTolower">
+    <list-item class="list-item" v-for="(_,index) in data.item_count" :key="index">
+      <text>第{{index + 1}}个视频</text>
+      <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
+      <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"
+      @recycle="e => _onRecycle(e, index)" @reuse="e => _onReuse(e, index)"/>
+      <!-- #endif -->
 
-        <!-- #ifndef APP-HARMONY && VUE3-VAPOR -->
-        <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"/>
-        <!-- #endif -->
-      </list-item>
-    </list-view>
-  <!-- #ifdef WEB -->
-  </view>
-  <!-- #endif -->
+      <!-- #ifndef APP-HARMONY && VUE3-VAPOR -->
+      <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"/>
+      <!-- #endif -->
+    </list-item>
+  </list-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type DataType = {
   item_count: number,

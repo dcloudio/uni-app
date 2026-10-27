@@ -11,7 +11,7 @@
   <text>{{text3}}</text>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const instance =  getCurrentInstance()!.proxy!
 
   const text1 = ref("")

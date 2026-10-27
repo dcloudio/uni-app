@@ -1,0 +1,5 @@
+export type SendableWorkerListener = (result : any) => void
+
+export type SendableWorkerMessage = {
+  message : string
+}

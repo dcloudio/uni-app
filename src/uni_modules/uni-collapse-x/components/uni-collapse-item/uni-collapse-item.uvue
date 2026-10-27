@@ -1,0 +1,739 @@
+<template>
+  <view>
+    <view class="uni-collapse-item__title" :class="props.titleWrapClass" @click="openCollapse(!is_open)">
+      <view class="uni-collapse-item__title-main">
+        <slot name="title" :open="is_open" :disabled="props.disabled">
+          <text class="uni-collapse-item__title-text"
+            :class="[{'open--active': is_open, 'is-disabled': props.disabled}, props.titleClass, is_open ? props.titleOpenClass : '', props.disabled ? props.titleDisabledClass : '']">{{ props.title }}</text>
+        </slot>
+      </view>
+      <view class="down_arrow"
+        :class="[arrowPlatformClass, arrowStateClass, arrowDisabledClass, props.arrowClass, is_open ? props.arrowOpenClass : '', props.disabled ? props.arrowDisabledClass : '']"></view>
+    </view>
+    <view ref="contentWrapRef" class="uni-collapse-item__content"
+      :class="[transition_enabled ? 'content-transition--active' : '', box_is_open ? 'content-state-open' : 'content-state-close', contentWrapClass]">
+      <view ref="contentRef" class="uni-collapse-item__content-box"
+        :class="[transition_enabled ? 'content-transition--active' : '', box_is_open ? 'content-box-open' : 'content-box-close']">
+        <slot></slot>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script lang="ts" setup>
+  /**
+   * 折叠面板子项
+   * @description 折叠面板子项组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+  import type { ItemChildType } from '../type.ts'
+  import {
+    UNI_COLLAPSE_REGISTER_CHILD,
+    UNI_COLLAPSE_UNREGISTER_CHILD,
+    UNI_COLLAPSE_CHILD_TOGGLE
+  } from '../common.ts'
+
+  defineOptions({
+    name: 'UniCollapseItem',
+    styleIsolation: 'app',
+    externalClasses: ['title-wrap-class', 'title-class', 'title-open-class', 'title-disabled-class', 'content-wrap-class', 'arrow-class', 'arrow-open-class', 'arrow-disabled-class']
+  })
+
+  type Props = {
+    /**
+     * @description 折叠项标题文字
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    title? : string,
+    /**
+     * @description 是否默认展开
+     * @default false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    open? : boolean,
+    /**
+     * @description 是否禁用，禁用后点击标题不会展开或收起
+     * @default false
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    disabled? : boolean,
+    /**
+     * @description 标题行（整行容器）的样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    titleWrapClass? : string.ClassString,
+    /**
+     * @description 标题文字的基础样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    titleClass? : string.ClassString,
+    /**
+     * @description 展开状态下叠加到标题文字的样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    titleOpenClass? : string.ClassString,
+    /**
+     * @description 禁用状态下叠加到标题文字的样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    titleDisabledClass? : string.ClassString,
+    /**
+     * @description 内容外层容器的样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    contentWrapClass? : string.ClassString,
+    /**
+     * @description 箭头图标的基础样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    arrowClass? : string.ClassString,
+    /**
+     * @description 展开状态下叠加到箭头图标的样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    arrowOpenClass? : string.ClassString,
+    /**
+     * @description 禁用状态下叠加到箭头图标的样式类
+     * @default ""
+     * @uniPlatform {
+     *   "app": {
+     *     "android": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.21"
+     *     },
+     *     "ios": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.11"
+     *     },
+     *     "harmony": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07",
+     *       "unixVaporVer": "5.07"
+     *     }
+     *   },
+     *   "mp": {
+     *     "weixin": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.07"
+     *     },
+     *     "alipay": {
+     *       "uniVer": "x",
+     *       "unixVer": "5.31"
+     *     }
+     *   },
+     *   "web": {
+     *     "uniVer": "x",
+     *     "unixVer": "5.07"
+     *   }
+     * }
+     */
+    arrowDisabledClass? : string.ClassString
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    title: '',
+    open: false,
+    disabled: false,
+    titleWrapClass: '',
+    titleClass: '',
+    titleOpenClass: '',
+    titleDisabledClass: '',
+    contentWrapClass: '',
+    arrowClass: '',
+    arrowOpenClass: '',
+    arrowDisabledClass: ''
+  })
+
+  const emit = defineEmits<{
+    change: [open: boolean]
+  }>()
+
+  defineSlots<{
+    default(props : {}) : any,
+    title(props : { open : boolean, disabled : boolean }) : any
+  }>()
+
+  let is_open = ref<boolean>(props.open)
+  let box_is_open = ref<boolean>(props.open)
+  let transition_enabled = ref<boolean>(false)
+  let contentWrapRef = ref<UniViewElement | null>(null)
+  let contentRef = ref<UniViewElement | null>(null)
+
+  const elId = ref(`uni_collapse_item_${Math.ceil(Math.random() * 10e5).toString(36)}`)
+  const contentTransitionDelay = 16
+
+  let enableTransitionTimer = 0
+  let isAndroidArrowRenderFix = false
+
+  // #ifdef APP-ANDROID
+  // Android arrow fix:
+  // keep transform rotation, but avoid animating border colors for border-drawn arrows.
+  // Keep split border-* properties here. Do not use border shorthand with var().
+  isAndroidArrowRenderFix = true
+  // #endif
+
+  const registerChild = inject<((child : ItemChildType) => void) | null>(UNI_COLLAPSE_REGISTER_CHILD, null)
+  const unregisterChild = inject<((elId : string) => void) | null>(UNI_COLLAPSE_UNREGISTER_CHILD, null)
+  const collapseToggle = inject<((elId : string) => void) | null>(UNI_COLLAPSE_CHILD_TOGGLE, null)
+
+  const arrowPlatformClass = computed(() : string => {
+    return isAndroidArrowRenderFix ? 'down_arrow--android-fix' : ''
+  })
+
+  const arrowStateClass = computed(() : string => {
+    if (!is_open.value) {
+      return ''
+    }
+    return isAndroidArrowRenderFix ? 'down_arrow--android-active' : 'down_arrow--active'
+  })
+
+  const arrowDisabledClass = computed(() : string => {
+    return props.disabled ? 'down_arrow--disabled' : ''
+  })
+
+  function clearEnableTransitionTimer() {
+    if (enableTransitionTimer != 0) {
+      clearTimeout(enableTransitionTimer)
+      enableTransitionTimer = 0
+    }
+  }
+
+  function openOrClose(open : boolean) {
+    box_is_open.value = open
+  }
+
+  function applyOpenState(open : boolean, syncSiblings : boolean, triggerEmit : boolean) {
+    if (is_open.value == open && box_is_open.value == open) {
+      return
+    }
+
+    if (open && syncSiblings && collapseToggle != null) {
+      collapseToggle(elId.value)
+    }
+
+    is_open.value = open
+    openOrClose(open)
+
+    if (triggerEmit) {
+      emit('change', open)
+    }
+  }
+
+  function openCollapse(open : boolean) {
+    if (props.disabled) {
+      return
+    }
+    applyOpenState(open, true, true)
+  }
+
+  onMounted(() => {
+    if (registerChild != null) {
+      const child : ItemChildType = {
+        is_open,
+        elId: elId.value,
+        openOrClose
+      }
+      registerChild(child)
+    }
+
+    if (is_open.value && collapseToggle != null) {
+      collapseToggle(elId.value)
+    }
+
+    nextTick(() => {
+      enableTransitionTimer = setTimeout(() => {
+        enableTransitionTimer = 0
+        transition_enabled.value = true
+      }, contentTransitionDelay)
+    })
+  })
+
+  onUnmounted(() => {
+    clearEnableTransitionTimer()
+    if (unregisterChild != null) {
+      unregisterChild(elId.value)
+    }
+  })
+
+  watch(() : boolean => props.open, (value : boolean) => {
+    applyOpenState(value, false, false)
+  })
+
+  defineExpose({
+    is_open,
+    openOrClose,
+    openCollapse
+  })
+</script>
+
+<style>
+  .uni-collapse-item__title {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 18px;
+    background-color: #ffffff;
+  }
+
+  .uni-collapse-item__title-main {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .uni-collapse-item__title-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333333;
+  }
+
+  .open--active {
+    opacity: 0.78;
+  }
+
+  .is-disabled {
+    opacity: 0.45;
+  }
+
+  .down_arrow {
+    width: 8px;
+    height: 8px;
+    margin-left: 12px;
+    margin-top: -3px;
+    transform: rotate(45deg);
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #999999;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #999999;
+    transition-property: transform, border-right-color, border-bottom-color;
+    transition-duration: 150ms;
+  }
+
+  .down_arrow--active {
+    margin-top: 0px;
+    transform: rotate(-135deg);
+  }
+
+  .down_arrow--android-fix {
+    transition-property: transform;
+  }
+
+  .down_arrow--android-active {
+    margin-top: 0px;
+    transform: rotate(-135deg);
+  }
+
+  .down_arrow--disabled {
+    opacity: 0.45;
+  }
+
+  .uni-collapse-item__content {
+    overflow: hidden;
+    width: 100%;
+    max-height: 0px;
+    background-color: #ffffff;
+  }
+
+  .uni-collapse-item__content-box {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  .content-state-open {
+    max-height: 2000px;
+  }
+
+  .content-state-close {
+    max-height: 0px;
+  }
+
+  .content-box-open {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+
+  .content-box-close {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  .content-transition--active {
+    transition-duration: 180ms;
+    transition-timing-function: ease;
+  }
+
+  /* 不要恢复旧的“运行时测量高度 + 内联 style.height”方案。
+     该方案在 HarmonyOS 上会出现默认展开时外层容器仍为 0 高度，导致内容不显示。 */
+  .uni-collapse-item__content {
+    transition-property: max-height;
+  }
+
+  .uni-collapse-item__content-box {
+    transition-property: opacity, transform;
+  }
+</style>

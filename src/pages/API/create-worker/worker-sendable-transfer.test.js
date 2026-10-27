@@ -1,10 +1,7 @@
 const PAGE_PATH = '/pages/API/create-worker/worker-sendable-transfer'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 
-const isIOS = platformInfo.startsWith('ios')
-const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('Api-uts-createWorker', () => {

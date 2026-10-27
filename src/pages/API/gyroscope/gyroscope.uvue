@@ -1,0 +1,301 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h2">陀螺仪 API</text>
+		<text class="margin-v">演示 `uni.startGyroscope`、`uni.stopGyroscope`、`uni.onGyroscopeChange`、`uni.offGyroscopeChange` 的完整用法。</text>
+		<text class="margin-v">`x / y / z` 表示各轴角速度。</text>
+
+		<text class="uni-h3">实时状态</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in statusItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
+			<text class="log-item" v-for="item in axisItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
+		</view>
+
+		<text class="uni-h3">调用结果</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in resultItems" :key="item.label">{{ item.label }}：{{ item.value }}</text>
+		</view>
+
+		<text class="uni-h3">开始 / 停止</text>
+		<text class="margin-v">先注册监听函数，再按不同 interval 启动；停止后会继续保留已绑定监听，直到显式 off。</text>
+		<radio-group class="option-group" @change="handleIntervalChange">
+			<view class="option-item" v-for="item in intervalOptions" :key="item.value">
+				<view class="option-content">
+					<radio :value="item.value" :checked="activeInterval == item.value" />
+					<text class="option-text">{{ item.label }}</text>
+				</view>
+			</view>
+		</radio-group>
+		<button id="btn-start-gyroscope" class="margin-v" type="primary" @tap="startListening">开始监听</button>
+		<button id="btn-stop-gyroscope" class="margin-v" @tap="stopListening">停止监听</button>
+		<button id="btn-bind-primary-listener" class="margin-v" @tap="registerSingleListener">绑定主监听</button>
+		<button id="btn-bind-extra-listener" class="margin-v" @tap="registerExtraListener">再绑一个监听</button>
+		<button id="btn-remove-primary-listener" class="margin-v" @tap="removeSingleListener">off 指定监听</button>
+		<button id="btn-remove-all-listeners" class="margin-v" @tap="removeAllListeners">off 全部监听</button>
+		<button id="btn-open-panorama" class="margin-v" @tap="navigateToPanorama">跳转全景示例</button>
+
+		<text class="uni-h3">监听日志</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in logItems" :key="item">{{ item }}</text>
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+	type GyroscopeErrorItem = {
+		code : number
+		title : string
+		description : string
+	}
+
+	type IntervalOption = {
+		value : GyroscopeInterval
+		label : string
+	}
+
+	type DisplayItem = {
+		label : string
+		value : string
+	}
+
+	const activeInterval = ref<GyroscopeInterval>('normal')
+	const statusText = ref('未启动')
+	const axisX = ref('0.0000')
+	const axisY = ref('0.0000')
+	const axisZ = ref('0.0000')
+	const lastAction = ref('等待调用')
+	const lastStatus = ref('未执行')
+	const lastPayload = ref('请先绑定监听后开始')
+	const logItems = ref<Array<string>>([])
+	const primaryBound = ref(false)
+	const extraBound = ref(false)
+	const intervalOptions : Array<IntervalOption> = [
+		{ value: 'game', label: 'game' },
+		{ value: 'ui', label: 'ui' },
+		{ value: 'normal', label: 'normal' }
+	]
+	const statusItems = computed((): Array<DisplayItem> => {
+		return [
+			{ label: '监听状态', value: statusText.value },
+			{ label: '当前频率', value: activeInterval.value }
+		]
+	})
+	const axisItems = computed((): Array<DisplayItem> => {
+		return [
+			{ label: 'X', value: axisX.value },
+			{ label: 'Y', value: axisY.value },
+			{ label: 'Z', value: axisZ.value }
+		]
+	})
+	const resultItems = computed((): Array<DisplayItem> => {
+		return [
+			{ label: '最近动作', value: lastAction.value },
+			{ label: '状态', value: lastStatus.value },
+			{ label: '说明', value: lastPayload.value }
+		]
+	})
+
+	const errorItems : Array<GyroscopeErrorItem> = [
+		{ code: 601, title: '不支持', description: '设备或平台没有陀螺仪能力。' },
+		{ code: 602, title: '启动失败', description: '权限、初始化或浏览器授权被拒。' },
+		{ code: 603, title: '停止失败', description: '停止订阅或销毁资源失败。' },
+		{ code: 604, title: '内部错误', description: '插件内部出现未分类异常。' },
+		{ code: 701, title: 'Android SensorManager 不可用', description: 'Android 无法获取传感器服务。' },
+		{ code: 702, title: 'Android 陀螺仪不存在', description: 'Android 设备不含 TYPE_GYROSCOPE。' },
+		{ code: 703, title: 'Android 注册失败', description: 'Android 注册监听器失败。' },
+		{ code: 704, title: 'Android 数据异常', description: 'Android 原生数据回调不完整。' },
+		{ code: 801, title: 'iOS 不支持', description: 'iOS 设备没有 gyro 能力。' },
+		{ code: 802, title: 'iOS 初始化失败', description: 'iOS MotionManager 创建失败。' },
+		{ code: 803, title: 'iOS 启动失败', description: 'iOS startGyroUpdates 未成功激活。' },
+		{ code: 804, title: 'iOS 停止失败', description: 'iOS stopGyroUpdates 后状态异常。' },
+		{ code: 501, title: 'Harmony 不支持', description: '鸿蒙设备无法获取 gyroscope 传感器。' },
+		{ code: 502, title: 'Harmony 订阅失败', description: '鸿蒙订阅传感器失败。' },
+		{ code: 503, title: 'Harmony 取消订阅失败', description: '鸿蒙停止监听失败。' },
+		{ code: 504, title: 'Harmony 数据异常', description: '鸿蒙传感器数据内容异常。' },
+		{ code: 901, title: 'Web 不支持', description: '浏览器没有真实 gyroscope / rotationRate。' }
+	]
+
+	function pushLog(line : string) : void {
+		logItems.value.unshift(line)
+		if (logItems.value.length > 10) {
+			logItems.value.splice(10)
+		}
+    console.log('logItems.value.length', logItems.value.length)
+	}
+
+	function updateResult(action : string, status : string, payload : string) : void {
+		lastAction.value = action
+		lastStatus.value = status
+		lastPayload.value = payload
+		pushLog(`${action} -> ${status}`)
+	}
+
+	function formatAxisValue(value : number) : string {
+		return value.toFixed(4)
+	}
+
+	const primaryListener : OnGyroscopeChangeCallback = (result) => {
+		axisX.value = formatAxisValue(result.x)
+		axisY.value = formatAxisValue(result.y)
+		axisZ.value = formatAxisValue(result.z)
+		statusText.value = `监听中 (${activeInterval.value})`
+	}
+
+	const extraListener : OnGyroscopeChangeCallback = (result) => {
+		pushLog(`额外监听 -> ${formatAxisValue(result.x)}, ${formatAxisValue(result.y)}, ${formatAxisValue(result.z)}`)
+	}
+
+	function selectInterval(interval : GyroscopeInterval) : void {
+		activeInterval.value = interval
+		updateResult('selectInterval', '已切换', interval)
+	}
+
+	function handleIntervalChange(event : UniRadioGroupChangeEvent) : void {
+		selectInterval(event.detail.value as GyroscopeInterval)
+	}
+
+	function registerSingleListener() : void {
+		if (!primaryBound.value) {
+			uni.onGyroscopeChange(primaryListener)
+			primaryBound.value = true
+		}
+		updateResult('onGyroscopeChange(primary)', '已绑定', '主监听已注册')
+	}
+
+	function registerExtraListener() : void {
+		if (!extraBound.value) {
+			uni.onGyroscopeChange(extraListener)
+			extraBound.value = true
+		}
+		updateResult('onGyroscopeChange(extra)', '已绑定', '额外监听已注册')
+	}
+
+	function removeSingleListener() : void {
+		uni.offGyroscopeChange(primaryListener)
+		primaryBound.value = false
+		updateResult('offGyroscopeChange(listener)', '已解绑', '仅移除主监听')
+	}
+
+	function removeAllListeners() : void {
+		uni.offGyroscopeChange()
+		primaryBound.value = false
+		extraBound.value = false
+		updateResult('offGyroscopeChange()', '已解绑', '所有监听函数已移除')
+	}
+
+	function navigateToPanorama() {
+		uni.navigateTo({
+			url: '/pages/API/gyroscope/panorama'
+		})
+	}
+
+	function startListening() : void {
+		if (!primaryBound.value) {
+			registerSingleListener()
+		}
+		uni.startGyroscope({
+			interval: activeInterval.value,
+			success: (res) => {
+				const errMsg : string = res.errMsg != null ? res.errMsg as string : 'startGyroscope:ok'
+				statusText.value = `监听中 (${activeInterval.value})`
+				updateResult('startGyroscope', '成功', errMsg)
+			},
+			fail: (error) => {
+				statusText.value = '启动失败'
+				updateResult('startGyroscope', `失败 (${error.errCode})`, error.errMsg != null ? error.errMsg : 'startGyroscope:fail')
+			}
+		})
+	}
+
+	function stopListening() : void {
+		uni.stopGyroscope({
+			success: (res) => {
+				const errMsg : string = res.errMsg != null ? res.errMsg as string : 'stopGyroscope:ok'
+				statusText.value = '已停止'
+				updateResult('stopGyroscope', '成功', errMsg)
+			},
+			fail: (error) => {
+				updateResult('stopGyroscope', `失败 (${error.errCode})`, error.errMsg != null ? error.errMsg : 'stopGyroscope:fail')
+			}
+		})
+	}
+
+	onUnload(() => {
+		uni.offGyroscopeChange()
+		uni.stopGyroscope()
+	})
+</script>
+
+<style>
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.notice {
+		color: #550000;
+		font-size: 14px;
+		font-style: italic;
+	}
+
+	.option-group {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.option-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 8px;
+		margin-right: 18px;
+	}
+
+	.option-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.option-text {
+		font-size: 14px;
+	}
+
+	.error-list {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.error-item {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.error-text {
+		font-size: 14px;
+	}
+
+	.mini-button {
+		margin-top: 5px;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
+	}
+</style>

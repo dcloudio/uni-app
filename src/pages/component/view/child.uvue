@@ -5,7 +5,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 </script>
 
 <style>
@@ -27,4 +27,5 @@
     color: #007aff;
     font-weight: 500;
   }
+
 </style>

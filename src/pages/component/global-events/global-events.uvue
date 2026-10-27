@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <page-head title="组件全局事件示例"></page-head>
     <page-intro content="本页演示组件全局事件：触摸区域展示 touchstart/touchmove/touchend/touchcancel，点击区域展示 tap/click/longpress，并显示事件详情与清除；可跳转冒泡、阻止默认、transform 等子示例。"></page-intro>
     <view class="uni-padding-wrap uni-common-mt container">
@@ -515,6 +512,7 @@
             </view>
           </view>
         </template>
+        <!-- #ifndef MP-ALIPAY -->
         <text class="touches-title">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in longPressEvent!.changedTouches" :key="index">
           <view class="touch-item">
@@ -567,6 +565,7 @@
             </view>
           </view>
         </template>
+        <!-- #endif -->
       </view>
       <view v-if="tapEvent !== null" class="event-detail">
         <text class="event-title">tap Event（点击事件）</text>
@@ -683,11 +682,8 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
   const title = ref('global-events')
   const touchStartEvent = ref<TouchEvent | null>(null)
   const touchCancelEvent = ref<TouchEvent | null>(null)
@@ -788,6 +784,13 @@
 
 <style>
   .container {
+    --global-section-title-color: #333;
+    --global-section-desc-color: #666;
+    --global-detail-background: #f5f7fa;
+    --global-title-color: #303133;
+    --global-surface-background: #fff;
+    --global-body-color: #606266;
+    --global-muted-color: #909399;
     padding-bottom: 10px;
   }
 
@@ -798,20 +801,20 @@
   .section-title {
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: var(--global-section-title-color, #333);
     margin-bottom: 8px;
   }
 
   .section-desc {
     font-size: 14px;
-    color: #666;
+    color: var(--global-section-desc-color, #666);
     margin-bottom: 10px;
   }
 
   .target {
     width: 100%;
-    height: 200rpx;
-    border-radius: 10rpx;
+    height: 200px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -841,13 +844,15 @@
     width: 100%;
     background-color: #f56c6c;
     color: #fff;
+    /* #ifndef MP-ALIPAY */
     padding: 12px 0;
+    /* #endif */
     border-radius: 6px;
     font-size: 14px;
   }
 
   .event-detail {
-    background-color: #f5f7fa;
+    background-color: var(--global-detail-background, #f5f7fa);
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -856,12 +861,12 @@
   .event-title {
     font-size: 18px;
     font-weight: bold;
-    color: #303133;
+    color: var(--global-title-color, #303133);
     margin-bottom: 12px;
   }
 
   .event-base-info {
-    background-color: #fff;
+    background-color: var(--global-surface-background, #fff);
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 12px;
@@ -870,7 +875,7 @@
   .info-title {
     font-size: 15px;
     font-weight: bold;
-    color: #606266;
+    color: var(--global-body-color, #606266);
     margin-bottom: 8px;
   }
 
@@ -884,7 +889,7 @@
 
   .info-label {
     font-size: 14px;
-    color: #909399;
+    color: var(--global-muted-color, #909399);
     flex: 0 0 120px;
     max-width: 120px;
     margin-right: 10px;
@@ -893,7 +898,7 @@
 
   .info-value {
     font-size: 14px;
-    color: #303133;
+    color: var(--global-title-color, #303133);
     font-weight: bold;
     text-align: right;
     flex: 1;
@@ -904,13 +909,13 @@
   .touches-title {
     font-size: 15px;
     font-weight: bold;
-    color: #606266;
+    color: var(--global-body-color, #606266);
     margin-top: 12px;
     margin-bottom: 8px;
   }
 
   .touch-item {
-    background-color: #fff;
+    background-color: var(--global-surface-background, #fff);
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 10px;
@@ -936,7 +941,7 @@
 
   .prop-label {
     font-size: 13px;
-    color: #909399;
+    color: var(--global-muted-color, #909399);
     flex: 0 0 120px;
     max-width: 120px;
     margin-right: 8px;
@@ -945,7 +950,7 @@
 
    .prop-value {
     font-size: 13px;
-    color: #303133;
+    color: var(--global-title-color, #303133);
     font-weight: bold;
     flex: 1;
     min-width: 60px;
@@ -966,6 +971,18 @@
   .title3 {
     margin-top: 5px;
     font-size: 16px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .container {
+      --global-section-title-color: #ffffff;
+      --global-section-desc-color: #a0a0a0;
+      --global-detail-background: #1a1a1a;
+      --global-title-color: #ffffff;
+      --global-surface-background: #2d2d2d;
+      --global-body-color: #d0d0d0;
+      --global-muted-color: #a0a0a0;
+    }
   }
 
   .uni-list-cell {

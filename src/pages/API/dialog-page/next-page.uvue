@@ -6,11 +6,11 @@
   </view>
 </template>
 
-<script setup lang='uts'>
+<script setup lang='ts'>
   import {
     state,
     setLifeCycleNum
-  } from '@/store/index.uts'
+  } from '@/store/index.ts'
 
   function openDialog1() {
     uni.openDialogPage({

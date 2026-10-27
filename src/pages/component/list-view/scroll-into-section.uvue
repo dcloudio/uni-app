@@ -1,0 +1,271 @@
+<template>
+	<view class="page-root">
+		<view class="summary-panel">
+			<text class="summary-title">list-view scroll-into-section</text>
+			<text class="summary-text">list-view 带 sticky-section，验证滚动到 item、header、section。</text>
+			<text class="summary-target">current target: {{ currentTargetLabel }}</text>
+		</view>
+		<scroll-view class="toolbar-panel" direction="horizontal" :show-scrollbar="false">
+			<button class="toolbar-button" @click="scrollToTarget('item-4-8')">滚动到 item</button>
+			<button class="toolbar-button" @click="scrollToTarget('header-4')">滚动到 header</button>
+			<button class="toolbar-button" @click="scrollToTarget('section-4')">滚动到 section</button>
+			<button class="toolbar-button" @click="resetScrollPosition">回到顶部</button>
+		</scroll-view>
+		<list-view
+			id="scroll-into-section-list"
+			class="list-root"
+			direction="vertical"
+			:show-scrollbar="true"
+			:scroll-top="scrollTop"
+			:scroll-into-view="scrollIntoView"
+			:scroll-with-animation="false"
+			@scroll="onScroll"
+		>
+			<sticky-section
+				v-for="section in sections"
+				:key="section.id"
+				:id="section.id"
+				:preload="true"
+			>
+				<sticky-header :id="section.headerId">
+					<view class="header-box">
+						<text class="header-title">{{ section.title }}</text>
+					</view>
+				</sticky-header>
+				<list-item v-for="item in section.items" :key="item.id" :id="item.id" class="list-item">
+					<text class="item-title">{{ item.label }}</text>
+					<text class="item-desc">{{ item.desc }}</text>
+				</list-item>
+			</sticky-section>
+		</list-view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type SectionItem = {
+		id : string
+		label : string
+		desc : string
+	}
+
+	type SectionData = {
+		id : string
+		headerId : string
+		title : string
+		items : SectionItem[]
+	}
+
+	type ScrollMetrics = {
+		viewportTop : number
+		viewportBottom : number
+		targetTop : number
+		targetBottom : number
+		currentTarget : string
+		scrollTop : number
+	}
+
+	function createSections() : SectionData[] {
+		const result = [] as SectionData[]
+		for (let sectionIndex = 1; sectionIndex <= 6; sectionIndex++) {
+			const items = [] as SectionItem[]
+			for (let itemIndex = 1; itemIndex <= 12; itemIndex++) {
+				const item : SectionItem = {
+					id: 'item-' + sectionIndex + '-' + itemIndex,
+					label: 'Section ' + sectionIndex + ' Item ' + itemIndex,
+					desc: 'scroll target ' + sectionIndex + '-' + itemIndex,
+				}
+				items.push(item)
+			}
+			const section : SectionData = {
+				id: 'section-' + sectionIndex,
+				headerId: 'header-' + sectionIndex,
+				title: 'Section ' + sectionIndex,
+				items,
+			}
+			result.push(section)
+		}
+		return result
+	}
+
+	const sections = ref(createSections())
+	const scrollIntoView = ref('')
+	const scrollTop = ref(0)
+	const currentScrollTop = ref(0)
+	const currentTargetLabel = ref('none')
+
+	function applyScrollTarget(targetId : string) {
+		currentTargetLabel.value = targetId
+		scrollIntoView.value = ''
+		nextTick(() => {
+			scrollIntoView.value = targetId
+		})
+	}
+
+	function onScroll(event : UniScrollEvent) {
+		currentScrollTop.value = Math.round(event.detail.scrollTop)
+	}
+
+	function scrollToTarget(targetId : string) {
+		applyScrollTarget(targetId)
+	}
+
+	function resetScrollPosition() {
+		currentTargetLabel.value = 'top'
+		scrollIntoView.value = ''
+		scrollTop.value = 1
+		nextTick(() => {
+			scrollTop.value = 0
+		})
+		currentScrollTop.value = 0
+	}
+
+	function jest_reset() {
+		resetScrollPosition()
+	}
+
+	function jest_scrollToTarget(targetId : string) {
+		applyScrollTarget(targetId)
+	}
+
+	function jest_getScrollMetrics(targetId : string) : ScrollMetrics {
+		const viewportRect = uni.getElementById('scroll-into-section-list')?.getBoundingClientRect()
+		const targetRect = uni.getElementById(targetId)?.getBoundingClientRect()
+		const metrics : ScrollMetrics = {
+			viewportTop: viewportRect?.top ?? 0,
+			viewportBottom: (viewportRect?.top ?? 0) + (viewportRect?.height ?? 0),
+			targetTop: targetRect?.top ?? 0,
+			targetBottom: (targetRect?.top ?? 0) + (targetRect?.height ?? 0),
+			currentTarget: scrollIntoView.value,
+			scrollTop: currentScrollTop.value,
+		}
+		return metrics
+	}
+
+	defineExpose({
+		jest_reset,
+		jest_scrollToTarget,
+		jest_getScrollMetrics,
+	})
+</script>
+
+<style>
+	.page-root {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		--list-demo-panel-background: #ffffff;
+		--list-demo-background: #eef2f7;
+		--list-demo-title-color: #1f2329;
+		--list-demo-text-color: #4e5969;
+		--list-demo-card-background: #ffffff;
+		--list-demo-header-background: #dfe7f3;
+		--list-demo-header-border: #c5d0df;
+		--list-demo-item-border: #edf1f5;
+	}
+
+	.summary-panel {
+		padding-top: 12px;
+		padding-right: 16px;
+		padding-bottom: 12px;
+		padding-left: 16px;
+		background-color: var(--list-demo-panel-background);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.summary-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--list-demo-title-color);
+	}
+
+	.summary-text {
+		margin-top: 4px;
+		font-size: 13px;
+		line-height: 20px;
+		color: var(--list-demo-text-color);
+	}
+
+	.summary-target {
+		margin-top: 6px;
+		font-size: 13px;
+		color: #1677ff;
+	}
+
+	.toolbar-panel {
+		padding-top: 12px;
+		padding-right: 12px;
+		padding-bottom: 12px;
+		padding-left: 12px;
+		background-color: var(--list-demo-panel-background);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.toolbar-button {
+		margin-right: 6px;
+	}
+
+	.list-root {
+		flex: 1;
+		background-color: var(--list-demo-background);
+	}
+
+	.header-box {
+		padding-top: 10px;
+		padding-right: 16px;
+		padding-bottom: 10px;
+		padding-left: 16px;
+		background-color: var(--list-demo-header-background);
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--list-demo-header-border);
+	}
+
+	.header-title {
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--list-demo-title-color);
+	}
+
+	.list-item {
+		height: 76px;
+		padding-top: 12px;
+		padding-right: 16px;
+		padding-bottom: 12px;
+		padding-left: 16px;
+		background-color: var(--list-demo-card-background);
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--list-demo-item-border);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.item-title {
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--list-demo-title-color);
+	}
+
+	.item-desc {
+		margin-top: 4px;
+		font-size: 12px;
+		color: var(--list-demo-text-color);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page-root {
+			--list-demo-panel-background: #2d2d2d;
+			--list-demo-background: #1a1a1a;
+			--list-demo-title-color: #ffffff;
+			--list-demo-text-color: #b8b8b8;
+			--list-demo-card-background: #2d2d2d;
+			--list-demo-header-background: #3b3b3b;
+			--list-demo-header-border: rgba(255, 255, 255, 0.1);
+			--list-demo-item-border: rgba(255, 255, 255, 0.1);
+		}
+	}
+</style>

@@ -1,0 +1,21 @@
+<template>
+  <view style="padding: 15px;">
+    {{name}}的详情页面
+  </view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 展示回收复用长列表中某一项的简单详情文本，用于验证列表项跳转后的参数传递结果。
+   * @logic: 页面在加载时读取路由参数中的 `name`，并直接渲染为详情内容。
+   * @optimization: 详情页只保留最小展示结构，聚焦验证列表项点击跳转与参数透传，不引入额外状态和请求逻辑。
+   */
+  let name = ref("")
+  onLoad((options: OnLoadOptions) => {
+    name.value = (options["name"] as string | null) ?? ""
+  })
+</script>
+
+<style>
+
+</style>

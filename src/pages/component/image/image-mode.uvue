@@ -1,15 +1,12 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
         <text class="uni-title-text">支持的图片缩放模式示例</text>
       </view>
       <view v-for="(item,index) in data" :key="index">
-        <text class="uni-subtitle-text">{{item.mode}}: {{item.description}}</text>
-        <text class="uni-subtitle-text">右边为拍平测试</text>
+        <text class="uni-subtitle-text image-description">{{item.mode}}: {{item.description}}</text>
+        <text class="uni-subtitle-text image-description">右边为拍平测试</text>
         <view class="uni-center image-bg">
           <image class="image" :mode="item.mode" src="/static/shuijiao.jpg"></image>
           <image class="image" :mode="item.mode" src="/static/shuijiao.jpg" flatten></image>
@@ -19,14 +16,14 @@
         <text class="uni-title-text">其他示例</text>
       </view>
       <view>
-        <text class="uni-subtitle-text">同时设置mode和圆角（右边为拍平测试）</text>
+        <text class="uni-subtitle-text image-description">同时设置mode和圆角（右边为拍平测试）</text>
         <view class="uni-center image-bg">
           <image class="image radius" mode="heightFix" src="/static/shuijiao.jpg"></image>
           <image class="image radius" mode="heightFix" src="/static/shuijiao.jpg" flatten></image>
         </view>
       </view>
       <view>
-        <text class="uni-subtitle-text">设置图片width='100%'与mode='widthFix'（右边为拍平测试）</text>
+        <text class="uni-subtitle-text image-description">设置图片width='100%'与mode='widthFix'（右边为拍平测试）</text>
         <view class="uni-center image-bg">
           <view class="uni-center" style="background-color: red; width: 150px; margin: 20px;">
             <image style="width: 100%" mode="widthFix" src="/static/shuijiao.jpg"></image>
@@ -38,7 +35,7 @@
         </view>
       </view>
       <view>
-        <text class="uni-subtitle-text">image默认mode（右边为拍平测试）</text>
+        <text class="uni-subtitle-text image-description">image默认mode（右边为拍平测试）</text>
         <view class="uni-center image-bg">
           <view class="uni-center" style="margin: 20px;">
             <image style="width: 100px; height: 100px;margin-right: 20px;" src="/static/test-image/logo.png"></image>
@@ -47,12 +44,9 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
 type ImageMode = {
@@ -134,6 +128,20 @@ const data = ref([
     border-radius: 10px;
   }
   .image-bg{
-    background:#FFFFFF;
+    background-color: #FFFFFF;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .image-description {
+      color: #e5e5e5;
+    }
+
+    .image {
+      background-color: #3b3b3b;
+    }
+
+    .image-bg {
+      background-color: #2d2d2d;
+    }
   }
 </style>

@@ -1,0 +1,104 @@
+<template>
+	<view v-if="hasRendered" class="uni-tab-content-root"
+		:style="contentStyle">
+		<slot></slot>
+	</view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * 选项卡内容
+   * @description 选项卡内容组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+// 从父组件注入数据和方法
+const currentIndex = inject<Ref<number>>('uniTabBarCurrentIndex', ref(0))
+const registerContent = inject<() => number>('uniTabBarRegisterContent', () => 0)
+const tabContentHeightFull = inject<Ref<boolean>>('uniTabContentHeightFull', ref(false))
+
+// 当前 content 的索引
+const contentIndex = ref<number>(-1)
+
+// 是否已经渲染过（按需加载）
+const hasRendered = ref<boolean>(false)
+
+// 组件挂载时分配索引
+onMounted(() => {
+	contentIndex.value = registerContent()
+
+	// 如果是第一个激活的 tab-content，立即渲染
+	if (contentIndex.value == currentIndex.value) {
+		hasRendered.value = true
+	}
+})
+
+// 计算是否激活
+const isActive = computed((): boolean => {
+	return currentIndex.value == contentIndex.value
+})
+
+// 监听激活状态，首次激活时渲染
+watch((): boolean => {
+	return isActive.value
+}, (newValue: boolean) => {
+	if (newValue && hasRendered.value == false) {
+		hasRendered.value = true
+	}
+})
+
+const contentStyle = computed(() => {
+	const active = isActive.value
+	return {
+		visibility: active ? 'visible' : 'hidden',
+		position: active ? 'relative' : 'absolute',
+		left: active ? 'auto' : '0px',
+		top: active ? 'auto' : '0px',
+		right: active ? 'auto' : '0px',
+		bottom: active ? 'auto' : (tabContentHeightFull.value ? '0px' : 'auto')
+	}
+})
+</script>
+
+<style>
+.uni-tab-content-root {
+	flex: 1;
+	min-height: 0px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	z-index: 0;
+}
+</style>

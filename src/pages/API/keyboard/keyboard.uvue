@@ -11,7 +11,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type DataType = {
   inputValue: string,
@@ -53,6 +53,8 @@ defineExpose({
 
 <style>
 .container {
+	--keyboard-border-color: #ccc;
+	--keyboard-text-color: #333;
 	padding: 20px;
 }
 .input-section {
@@ -61,7 +63,7 @@ defineExpose({
 .input-box {
 	width: 100%;
 	height: 40px;
-	border: 1px solid #ccc;
+	border: 1px solid var(--keyboard-border-color, #ccc);
 	border-radius: 4px;
 	padding: 0 10px;
 	margin-bottom: 10px;
@@ -77,6 +79,13 @@ defineExpose({
 	width: 100%;
 	margin-bottom: 10px;
 	font-size: 16px;
-	color: #333;
+	color: var(--keyboard-text-color, #333);
+}
+
+@media (prefers-color-scheme: dark) {
+	.container {
+		--keyboard-border-color: rgba(255, 255, 255, 0.1);
+		--keyboard-text-color: #ffffff;
+	}
 }
 </style>

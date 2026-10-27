@@ -1,0 +1,583 @@
+<template>
+	<view class="chat-textarea-box">
+    <view class="chat-header">
+      <text class="chat-title">@ 提及演示</text>
+      <text class="chat-subtitle">在输入框中敲 @ 选择联系人</text>
+    </view>
+
+    <scroll-view class="message-area" direction="vertical" :show-scrollbar="false" @click="tapList">
+      <view class="hint-card">
+        <text class="hint-title">使用说明</text>
+        <text class="hint-item">· 在下方输入框输入 @ 唤起联系人列表</text>
+        <text class="hint-item">· 点击联系人即可插入 @提及</text>
+        <text class="hint-item">· 删除 @ 后列表会自动收起</text>
+        <boolean-data :value="enableFootBoxAnimation" title="foot-box 动画"
+          @change="onAnimationSwitchChange"></boolean-data>
+      </view>
+      <view class="preview-label">
+        <text class="preview-label-text"></text>
+      </view>
+    </scroll-view>
+
+    <view class="user-list-mask" v-if="showUserList" @click="closeUserList"></view>
+    <view class="user-list-panel" :class="{ 'user-list-panel-show': showUserList }">
+      <view class="user-list-header">
+        <text class="user-list-title">选择联系人</text>
+        <text class="user-list-count">{{ userList.length }} 人</text>
+      </view>
+      <scroll-view class="user-list-scroll" direction="vertical" :show-scrollbar="false">
+        <view class="user-list-item" v-for="item in userList" :key="item.id" @click="insertAt(item.id)">
+          <view class="user-avatar" :style="{ backgroundColor: getAvatarColor(item.name) }">
+            <text class="user-avatar-text">{{ item.name.substring(0, 1) }}</text>
+          </view>
+          <text class="user-name">{{ item.name }}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="foot-box">
+      <view class="foot-box-main">
+        <view class="input-wrapper" @click="onEditorTap">
+          <editor
+            class="preview-editor"
+            id="editor-props-demo"
+            :type="editorKeyboardType"
+            placeholder="输入消息，敲 @ 提及联系人"
+            @ready="onEditorReady"
+            @focus="onEditorFocus"
+            @click="onEditorTap"
+            @input="onEditorInput"
+          />
+        </view>
+        <view class="emoji-toggle" @click="toggleEmojiList">
+          <KeyboardIcon v-if="showEmojiList" />
+          <EmojiIcon v-else />
+        </view>
+      </view>
+      <view class="emoji-panel"
+        :class="{ 'emoji-panel-animate': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
+        :style="{ height: (showEmojiList ? emojiPanelDisplayHeight : 0) + 'px', marginTop: (showEmojiList ? emojiPanelMarginTop : 0) + 'px' }"
+      >
+        <scroll-view class="emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
+          <view class="emoji-grid">
+            <view class="emoji-item" v-for="emoji in emojiList" :key="emoji" @click="insertEmoji(emoji)">
+              <text class="emoji-item-text">{{ emoji }}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="keyboard-placeholder" :class="{ 'keyboard-placeholder-animate': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
+      <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
+    </view>
+	</view>
+</template>
+
+<script setup lang="ts">
+  import EmojiIcon from './emoji-icon.uvue'
+  import KeyboardIcon from './keyboard-icon.uvue'
+
+  const keyboardHeight = ref(0)
+  const keyboardMaxHeight = ref(0)
+  const emojiPanelMarginTop = 10
+  const enableFootBoxAnimation = ref(false)
+  const emojiPanelFallbackHeight = ref(0)
+  const showUserList = ref(false)
+  const showEmojiList = ref(false)
+  const editorKeyboardType = computed((): string | null => {
+    if (showEmojiList.value || showUserList.value) return 'none'
+    return null
+  })
+  const emojiPanelDisplayHeight = computed((): number => {
+    const targetHeight = keyboardMaxHeight.value > 0 ? keyboardMaxHeight.value : emojiPanelFallbackHeight.value
+    return targetHeight > emojiPanelMarginTop ? targetHeight - emojiPanelMarginTop : 0
+  })
+  const emojiScrollHeight = computed((): number => {
+    return emojiPanelDisplayHeight.value > 20 ? emojiPanelDisplayHeight.value - 20 : 0
+  })
+
+  let editorCtx: null | EditorContext = null
+  function onEditorReady() {
+    const options: CreateEditorContextAsyncOptions = {
+      id: 'editor-props-demo',
+      success: (context: EditorContext) => {
+        editorCtx = context
+      },
+      fail: (error: UniError) => {
+        console.error('error', `createEditorContextAsync fail: ${error.errMsg}`)
+      }
+    }
+    uni.createEditorContextAsync(options)
+  }
+  const emojiList = reactive<string[]>([
+    '😀', '😄', '😊', '😍', '😘', '😎', '😢', '😭',
+    '😡', '👍', '👏', '🙏', '💪', '🎉', '❤️', '🔥',
+    '😂', '🤔', '😴', '😋', '🤝', '👌', '🌹', '⭐',
+    '😆', '😉', '😇', '🥰', '😜', '🤪', '😬', '🙄',
+    '😮', '😱', '🥳', '😤', '🤗', '🤭', '🫡', '😵',
+    '💯', '✨', '💖', '💔', '💙', '💚', '💛', '🧡',
+    '🎁', '🍻', '☕', '🍰', '🍔', '🍟', '🍓', '🍉',
+    '🐶', '🐱', '🐼', '🐰', '🌈', '☀️', '🌙', '⚡'
+  ])
+
+  type User = {
+    id: string
+    name: string
+  }
+  const userList = reactive<User[]>([
+    { id: '000', name: '张三' },
+    { id: '001', name: '李四' },
+    { id: '002', name: '王五' },
+    { id: '003', name: '赵六' },
+    { id: '004', name: '孙七' },
+    { id: '005', name: '周八' },
+    { id: '006', name: '吴九' },
+    { id: '007', name: '郑十' }
+  ])
+
+  const avatarColors = ['#3c99ff', '#52c41a', '#fa8c16', '#722ed1', '#eb2f96', '#13c2c2', '#faad14', '#597ef7']
+
+  function updateEmojiPanelHeight() {
+    const windowInfo = uni.getWindowInfo()
+    emojiPanelFallbackHeight.value = Math.floor(windowInfo.windowHeight / 2)
+  }
+
+  function updateKeyboardMaxHeight(height: number) {
+    if (height > keyboardMaxHeight.value) {
+      keyboardMaxHeight.value = height
+    }
+  }
+
+  function getAvatarColor(name: string): string {
+    const code = name.charCodeAt(0)
+    return avatarColors[code % avatarColors.length]
+  }
+
+  function closeUserList() {
+    showUserList.value = false
+  }
+
+  function closeEmojiList() {
+    showEmojiList.value = false
+  }
+
+  function onEditorFocus() {
+    if (showEmojiList.value) {
+      showEmojiList.value = false
+      if (keyboardMaxHeight.value > 0) {
+        keyboardHeight.value = keyboardMaxHeight.value
+      }
+      return
+    }
+    if (!showUserList.value && keyboardMaxHeight.value > 0) {
+      keyboardHeight.value = keyboardMaxHeight.value
+    }
+  }
+
+  function onEditorTap() {
+    if (showEmojiList.value) {
+      showEmojiList.value = false
+      if (keyboardMaxHeight.value > 0) {
+        keyboardHeight.value = keyboardMaxHeight.value
+      }
+      return
+    }
+    if (!showUserList.value && keyboardMaxHeight.value > 0) {
+      keyboardHeight.value = keyboardMaxHeight.value
+    }
+  }
+
+  function onAnimationSwitchChange(value : boolean) {
+    enableFootBoxAnimation.value = value
+  }
+
+  function toggleEmojiList() {
+    showEmojiList.value = !showEmojiList.value
+    if (showEmojiList.value) {
+      closeUserList()
+      updateEmojiPanelHeight()
+      keyboardHeight.value = 0
+      uni.hideKeyboard()
+    }
+  }
+
+  function insertEmoji(emoji: string) {
+    editorCtx?.insertText({
+      text: emoji
+    })
+  }
+
+  function tapList() {
+    keyboardHeight.value = 0
+    closeEmojiList()
+    closeUserList()
+    uni.hideKeyboard()
+  }
+
+  function insertAt(id: string) {
+    const user = userList.find(item => item.id === id)!
+    closeUserList()
+    setTimeout(() => {
+      editorCtx?.undo()
+      editorCtx?.insertMention({
+        id: id,
+        name: user.name
+      })
+    }, 0)
+  }
+
+  let lastText = ''
+  function onEditorInput(event) {
+    if(event.detail.text.includes('@')) {
+      const lastTextAtCount = lastText.split('@').length - 1
+      const currentTextAtCount = event.detail.text.split('@').length - 1
+      if (lastTextAtCount === currentTextAtCount) {
+        // 没有新敲 @
+      } else if (lastTextAtCount > currentTextAtCount) {
+        closeUserList()
+      } else if (lastTextAtCount < currentTextAtCount) {
+        showUserList.value = true
+        showEmojiList.value = false
+        keyboardHeight.value = 0
+        uni.hideKeyboard()
+      }
+    } else {
+      closeUserList()
+    }
+    lastText = event.detail.text
+  }
+
+  onLoad(() => {
+    updateEmojiPanelHeight()
+    uni.onKeyboardHeightChange((res) => {
+      if (res.height > 0) {
+        updateKeyboardMaxHeight(res.height)
+        if (!showEmojiList.value && !showUserList.value) {
+          keyboardHeight.value = keyboardMaxHeight.value
+        }
+      } else if (!showEmojiList.value && !showUserList.value) {
+        keyboardHeight.value = 0
+      }
+    })
+  })
+
+  onResize(() => {
+    updateEmojiPanelHeight()
+  })
+
+  function jest_setShowUserList(val : boolean) {
+    showUserList.value = val
+  }
+
+  function jest_simulateAtInput(text : string) {
+    const lastAtCount = lastText.split('@').length - 1
+    const newAtCount = text.split('@').length - 1
+    if (text.includes('@')) {
+      if (newAtCount > lastAtCount) {
+        showUserList.value = true
+        showEmojiList.value = false
+      } else if (newAtCount < lastAtCount) {
+        showUserList.value = false
+      }
+    } else {
+      showUserList.value = false
+    }
+    lastText = text
+  }
+
+  defineExpose({ jest_setShowUserList, jest_simulateAtInput })
+
+  onUnload(() => {
+    keyboardHeight.value = 0
+    uni.offKeyboardHeightChange()
+  })
+</script>
+
+<style>
+.chat-textarea-box {
+  --chat-page-background: #ededed;
+  --chat-surface-background: #ffffff;
+  --chat-border-color: #ebebeb;
+  --chat-divider-color: #f0f0f0;
+  --chat-item-divider-color: #f5f5f5;
+  --chat-title-color: #1a1a1a;
+  --chat-text-color: #333333;
+  --chat-subtitle-color: #999999;
+  --chat-secondary-color: #666666;
+  --chat-muted-color: #bbbbbb;
+  --chat-foot-background: #f6f6f6;
+  flex: 1;
+  flex-direction: column;
+}
+
+.chat-header {
+  padding: 16px 16px 12px;
+  background-color: var(--chat-surface-background, #ffffff);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--chat-border-color, #ebebeb);
+}
+
+.chat-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--chat-title-color, #1a1a1a);
+  line-height: 24px;
+}
+
+.chat-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--chat-subtitle-color, #999999);
+  line-height: 18px;
+}
+
+.message-area {
+  flex: 1;
+  padding: 12px 16px;
+  background-color: var(--chat-page-background, #ededed);
+}
+
+.hint-card {
+  padding: 14px 16px;
+  background-color: var(--chat-surface-background, #ffffff);
+  border-radius: 10px;
+  flex-direction: column;
+}
+
+.hint-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--chat-text-color, #333333);
+  margin-bottom: 8px;
+}
+
+.hint-item {
+  font-size: 13px;
+  color: var(--chat-secondary-color, #666666);
+  line-height: 22px;
+}
+
+.animation-switch-row {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--chat-divider-color, #f0f0f0);
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.animation-switch-text {
+  font-size: 13px;
+  color: var(--chat-text-color, #333333);
+}
+
+.preview-label {
+  margin-top: 16px;
+  padding: 0 4px;
+}
+
+.preview-label-text {
+  font-size: 12px;
+  color: var(--chat-muted-color, #bbbbbb);
+}
+
+.user-list-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 998;
+}
+
+.user-list-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 280px;
+  background-color: var(--chat-surface-background, #ffffff);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  flex-direction: column;
+  z-index: 999;
+  transform: translateY(100%);
+  transition-property: transform;
+  transition-duration: 0.25s;
+  transition-timing-function: ease-out;
+}
+
+.user-list-panel-show {
+  transform: translateY(0);
+}
+
+.user-list-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--chat-divider-color, #f0f0f0);
+}
+
+.user-list-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--chat-text-color, #333333);
+}
+
+.user-list-count {
+  font-size: 12px;
+  color: var(--chat-muted-color, #bbbbbb);
+}
+
+.user-list-scroll {
+  flex: 1;
+  max-height: 220px;
+}
+
+.user-list-item {
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--chat-item-divider-color, #f5f5f5);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.user-name {
+  flex: 1;
+  margin-left: 12px;
+  font-size: 15px;
+  color: var(--chat-text-color, #333333);
+}
+
+.foot-box {
+  background-color: var(--chat-foot-background, #f6f6f6);
+}
+
+.foot-box-main {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
+.input-wrapper {
+  flex: 1;
+  min-height: 44px;
+  max-height: 120px;
+  padding: 8px 14px;
+  background-color: var(--chat-surface-background, #ffffff);
+  border-radius: 8px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.preview-editor {
+  flex: 1;
+  min-height: 28px;
+  font-size: 15px;
+  color: var(--chat-text-color, #333333);
+}
+
+.emoji-toggle {
+  width: 44px;
+  height: 44px;
+  margin-left: 10px;
+  border-radius: 22px;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-panel {
+  flex-direction: column;
+}
+
+.emoji-panel-animate {
+  transform: scaleY(0.92);
+  transform-origin: bottom center;
+  transition-property: height, margin-top, opacity, transform, border-top-color;
+  transition-duration: 0.24s;
+  transition-timing-function: ease-out;
+}
+
+.emoji-panel-animate-show {
+  transform: scaleY(1);
+}
+
+.emoji-scroll {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--chat-border-color, #ebebeb);
+}
+
+.emoji-grid {
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.emoji-item {
+  width: 12.5%;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-item-text {
+  font-size: 30px;
+  line-height: 44px;
+}
+
+.safe-area-inset-bottom {
+  height: env(safe-area-inset-bottom);
+  min-height: 8px;
+}
+
+.keyboard-placeholder {
+  height: 0;
+}
+
+.keyboard-placeholder-animate {
+  transition-property: height;
+  transition-duration: 0.24s;
+  transition-timing-function: ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  .chat-textarea-box {
+    --chat-page-background: #1a1a1a;
+    --chat-surface-background: #2d2d2d;
+    --chat-border-color: rgba(255, 255, 255, 0.1);
+    --chat-divider-color: rgba(255, 255, 255, 0.1);
+    --chat-item-divider-color: rgba(255, 255, 255, 0.1);
+    --chat-title-color: #ffffff;
+    --chat-text-color: #ffffff;
+    --chat-subtitle-color: #a0a0a0;
+    --chat-secondary-color: #b8b8b8;
+    --chat-muted-color: #a0a0a0;
+    --chat-foot-background: #1f1f1f;
+  }
+}
+</style>

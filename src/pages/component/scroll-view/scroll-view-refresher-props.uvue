@@ -4,11 +4,14 @@
   <!-- #endif -->
     <page-head title="下拉刷新的scroll-view属性示例"></page-head>
     <view class="uni-margin-wrap">
-      <scroll-view direction="vertical" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold"
+      <scroll-view id="refresher-scroll-view" direction="vertical" :bounces="bounces" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold"
         :refresher-default-style="refresherDefaultStyle" :refresher-background="refresherBackground"
-        :refresher-triggered="refresherTriggered" @refresherpulling="refresherpulling"
-        @refresherrefresh="refresherrefresh" @refresherrestore="refresherrestore" @refresherabort="refresherabort"
-        style="width: 100%;height: 100%;">
+        <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+        :android-overscroll="androidOverscroll"
+        :android-refresher-color="getAndroidRefresherColorBinding()"
+        <!-- #endif -->
+        :refresher-triggered="refresherTriggered" @refresherpulling="refresherpulling" @refresherrefresh="refresherrefresh"
+        @refresherrestore="refresherrestore" @refresherabort="refresherabort" style="width: 100%;height: 100%;">
         <view class="item" :id="item.id" v-for="(item,_) in items">
           <text class="uni-text">{{item.label}}</text>
         </view>
@@ -19,90 +22,241 @@
       <view class="uni-list-cell-padding">
         <text class="refresher-tips">**下拉刷新的属性设置需要先打开下拉刷新开关**</text>
       </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>是否开启下拉刷新</text>
-        <switch :checked="refresherEnabled" @change="handleTrunOnRefresher"></switch>
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>设置下拉刷新状态</text>
-        <switch :disabled="!refresherEnabled" :checked="refresherTriggered"
-          @change="refresherTriggered=!refresherTriggered"></switch>
-      </view>
+      <boolean-data :value="refresherEnabled" title="是否开启下拉刷新"
+        @change="handleTrunOnRefresher"></boolean-data>
+      <boolean-data :value="refresherTriggered" :disabled="!refresherEnabled" title="设置下拉刷新状态"
+        @change="handleRefresherTriggeredChange"></boolean-data>
 
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>设置下拉刷新阈值</text>
-        <input class="uni-list-cell-input" :disabled="!refresherEnabled" :value="refresherThreshold" type="number"
-          @input="handleRefresherThresholdInput" />
-      </view>
+      <boolean-data :value="bounces" title="是否开启回弹效果"
+        @change="handleBouncesChange"></boolean-data>
 
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>设置下拉刷新区域背景颜色</text>
-        <input class="uni-list-cell-input" :disabled="!refresherEnabled" :value="refresherBackground"
-          @input="handleRefresherBackground" />
-      </view>
+      <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      <boolean-data :value="androidOverscroll" title="是否开启弹簧回弹效果"
+        @change="setAndroidOverscroll"></boolean-data>
 
       <view class="uni-list-cell-padding">
-        <text>设置下拉刷新默认样式</text>
-        <view class="switch-refresher-group">
-          <button class="switch-refresher-style" type="primary" size="mini"
-            @click="refresherDefaultStyle = `none`">none</button>
-          <button class="switch-refresher-style" type="primary" size="mini"
-            @click="refresherDefaultStyle = `black`">black</button>
-          <button class="switch-refresher-style" type="primary" size="mini"
-            @click="refresherDefaultStyle = `white`">white</button>
-        </view>
+        <text class="refresher-background-value">当前值：{{ androidRefresherColor == null ? '未设置' : androidRefresherColor }}</text>
       </view>
+      <enum-data :items="androidRefresherColorEnum" :disabled="!refresherEnabled" title="设置默认下拉刷新前景色"
+        @change="handleAndroidRefresherColorChange"></enum-data>
+      <!-- #endif -->
+
+      <input-data :defaultValue="refresherThreshold.toString()" :disabled="!refresherEnabled" title="设置下拉刷新阈值"
+        type="number" @confirm="handleRefresherThresholdInput"></input-data>
+
+      <view class="uni-list-cell-padding">
+        <text class="refresher-background-value">当前值：{{ refresherBackground }}</text>
+      </view>
+      <enum-data :items="refresherBackgroundEnum" :disabled="!refresherEnabled" title="设置下拉刷新区域背景颜色"
+        @change="handleRefresherBackgroundChange"></enum-data>
+
+      <view class="uni-list-cell-padding">
+        <text class="refresher-background-value">当前值：{{ refresherDefaultStyle }}</text>
+      </view>
+      <enum-data :items="refresherStyleEnum" :disabled="!refresherEnabled" title="设置下拉刷新默认样式"
+        @change="handleRefresherDefaultStyleChange"></enum-data>
     </scroll-view>
   <!-- #ifdef APP -->
   </view>
   <!-- #endif -->
 </template>
 
-<script setup lang="uts">
-
+<script setup lang="ts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type Item = {
     id : string,
     label : string,
   }
 
+  type RefresherBackgroundOption = {
+    label : string,
+    value : string,
+  }
+
+  type RefresherStyleOption = {
+    label : string,
+    value : string,
+  }
+
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  type AndroidRefresherColorOption = {
+    key : string,
+    label : string,
+    value : string | null,
+  }
+  // #endif
+
   const items = ref<Item[]>([])
+  const bounces = ref(true)
   const refresherEnabled = ref(true)
   const refresherTriggered = ref(false)
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  const androidOverscroll = ref(false)
+  const androidRefresherColor = ref("#000000" as string | null)
+  // #endif
+  const refresherRefreshCount = ref(0)
   const refresherThreshold = ref(45)
   const refresherDefaultStyle = ref("black")
   const refresherBackground = ref("transparent")
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  const androidRefresherColorOptions : AndroidRefresherColorOption[] = [
+    {
+      key: "unset",
+      label: "不设置",
+      value: null
+    },
+    {
+      key: "black",
+      label: "黑色",
+      value: "#000000"
+    },
+    {
+      key: "blue",
+      label: "蓝色",
+      value: "#0000ff"
+    },
+    {
+      key: "red",
+      label: "红色",
+      value: "#ff0000"
+    },
+    {
+      key: "green",
+      label: "绿色",
+      value: "#00aa00"
+    }
+  ]
+  // #endif
+  const refresherBackgroundOptions : RefresherBackgroundOption[] = [
+    {
+      label: "透明",
+      value: "transparent"
+    },
+    {
+      label: "白色",
+      value: "#ffffff"
+    },
+    {
+      label: "灰色",
+      value: "#8f8f8f"
+    },
+    {
+      label: "蓝色",
+      value: "#0000ff"
+    }
+  ]
+  const refresherStyleOptions : RefresherStyleOption[] = [
+    {
+      label: "none",
+      value: "none"
+    },
+    {
+      label: "black",
+      value: "black"
+    },
+    {
+      label: "white",
+      value: "white"
+    }
+  ]
+
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  const androidRefresherColorEnum = computed(() : ItemType[] => {
+    return androidRefresherColorOptions.map((option, index) : ItemType => {
+      return {
+        value: index,
+        name: option.label,
+        checked: androidRefresherColor.value == option.value
+      }
+    })
+  })
+  // #endif
+
+  const refresherBackgroundEnum = computed(() : ItemType[] => {
+    return refresherBackgroundOptions.map((option, index) : ItemType => {
+      return {
+        value: index,
+        name: option.label,
+        checked: refresherBackground.value == option.value
+      }
+    })
+  })
+
+  const refresherStyleEnum = computed(() : ItemType[] => {
+    return refresherStyleOptions.map((option, index) : ItemType => {
+      return {
+        value: index,
+        name: option.label,
+        checked: refresherDefaultStyle.value == option.value
+      }
+    })
+  })
 
   onLoad(() => {
     for (let i = 0; i < 10; i++) {
-      const item = {
+      const item : Item = {
         id: "item" + i,
         label: "item" + i,
-      } as Item;
+      }
       items.value.push(item);
     }
   })
 
-  function handleTrunOnRefresher() {
+  function handleTrunOnRefresher(value : boolean) {
     refresherTriggered.value = false;
     //不能同时关闭下拉状态和关闭下拉刷新。
     setTimeout(() => {
-      refresherEnabled.value = !refresherEnabled.value;
+      refresherEnabled.value = value;
     }, 0)
   }
 
-  function handleRefresherThresholdInput(e : InputEvent) {
-    const value = e.detail.value;
-    if (value == "") {
+  function handleRefresherTriggeredChange(value : boolean) {
+    refresherTriggered.value = value
+  }
+
+  function handleRefresherThresholdInput(value : number) {
+    if (isNaN(value)) {
       refresherThreshold.value = 45;
     } else {
-      refresherThreshold.value = parseInt(e.detail.value);
+      refresherThreshold.value = Math.trunc(value);
     }
   }
 
-  function handleRefresherBackground(e : InputEvent) {
-    const value = e.detail.value;
-    refresherBackground.value = value;
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  function handleAndroidOverscrollChange() {
+    androidOverscroll.value = !androidOverscroll.value;
+  }
+
+  function setAndroidOverscroll(value : boolean) {
+    androidOverscroll.value = value
+  }
+
+  function handleAndroidRefresherColorChange(value : number) {
+    if (value >= 0 && value < androidRefresherColorOptions.length) {
+      androidRefresherColor.value = androidRefresherColorOptions[value].value
+    }
+  }
+
+  function getAndroidRefresherColorBinding() : any {
+    return androidRefresherColor.value
+  }
+  // #endif
+
+  function handleBouncesChange(value : boolean) {
+    bounces.value = value
+  }
+
+  function handleRefresherBackgroundChange(value : number) {
+    if (value >= 0 && value < refresherBackgroundOptions.length) {
+      refresherBackground.value = refresherBackgroundOptions[value].value;
+    }
+  }
+
+  function handleRefresherDefaultStyleChange(value : number) {
+    if (value >= 0 && value < refresherStyleOptions.length) {
+      refresherDefaultStyle.value = refresherStyleOptions[value].value;
+    }
   }
 
   //响应事件
@@ -112,6 +266,7 @@
 
   function refresherrefresh() {
     console.log("下拉刷新被触发");
+    refresherRefreshCount.value += 1
     refresherTriggered.value = true;
     //不能同时关闭下拉状态和关闭下拉刷新。
     setTimeout(() => {
@@ -126,6 +281,76 @@
   function refresherabort() {
     console.log("下拉刷新被中止");
   }
+
+  // 自动化测试专用
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  function toggleAndroidOverscrollForTest() {
+    handleAndroidOverscrollChange()
+  }
+
+  // 自动化测试专用
+  function setAndroidOverscrollForTest(value : boolean) {
+    androidOverscroll.value = value
+  }
+
+  // 自动化测试专用
+  function setAndroidRefresherColorForTest(value : string | null) {
+    androidRefresherColor.value = value
+  }
+  // #endif
+
+  // 自动化测试专用
+  function setRefresherEnabledForTest(value : boolean) {
+    refresherTriggered.value = false
+    refresherEnabled.value = value
+  }
+
+  // 自动化测试专用
+  // #ifdef APP-ANDROID && VUE3-VAPOR
+  function getAndroidOverscrollForTest() : boolean {
+    return androidOverscroll.value
+  }
+
+  // 自动化测试专用
+  function getAndroidRefresherColorForTest() : string | null {
+    return androidRefresherColor.value
+  }
+  // #endif
+
+  // 自动化测试专用
+  function getRefresherRefreshCountForTest() : number {
+    return refresherRefreshCount.value
+  }
+
+  // 自动化测试专用
+  function getBoundingClientRectForTest() : DOMRect {
+    return uni.getElementById('refresher-scroll-view')?.getBoundingClientRect()!
+  }
+
+  // 自动化测试专用
+  function resetAndroidOverscrollForTest() {
+    // #ifdef APP-ANDROID && VUE3-VAPOR
+    androidOverscroll.value = false
+    androidRefresherColor.value = "#000000"
+    // #endif
+    refresherEnabled.value = true
+    refresherTriggered.value = false
+    refresherRefreshCount.value = 0
+  }
+
+  defineExpose({
+    getBoundingClientRectForTest,
+    getRefresherRefreshCountForTest,
+    resetAndroidOverscrollForTest,
+    setRefresherEnabledForTest,
+    // #ifdef APP-ANDROID && VUE3-VAPOR
+    getAndroidRefresherColorForTest,
+    getAndroidOverscrollForTest,
+    setAndroidRefresherColorForTest,
+    setAndroidOverscrollForTest,
+    toggleAndroidOverscrollForTest,
+    // #endif
+  })
 </script>
 
 <style>
@@ -151,6 +376,12 @@
     color: red;
   }
 
+  .refresher-background-value {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666666;
+  }
+
   .uni-text {
     color: black;
     font-size: 50px;
@@ -160,19 +391,11 @@
     flex: 1;
   }
 
-  .uni-list-cell-input {
-    max-width: 100px;
-    border: 1px solid #ccc;
-    text-align: center;
+  @media (prefers-color-scheme: dark) {
+    .refresher-background-value {
+      color: #a0a0a0;
+    }
+
   }
 
-  .switch-refresher-group {
-    flex-direction: row;
-    margin-top: 5px;
-  }
-
-  .switch-refresher-style {
-    padding: 2px 10px;
-    margin-right: 5px;
-  }
 </style>

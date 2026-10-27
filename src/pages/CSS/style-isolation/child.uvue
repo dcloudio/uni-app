@@ -5,12 +5,12 @@
 		<text class="single-root-text">{{ text }}</text>
 		<!-- 内联style测试：这个view有内联style，外部class无法覆盖 -->
 		<view class="inline-style-box" style="border-width: 3px; background-color: #ffeb37;">
-        <text style="font-size: 10px;">内联style，外部class无法覆盖</text>
+        <text class="inline-style-text" style="font-size: 10px;">内联style，外部class无法覆盖</text>
     </view>
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	defineProps({
 	  text: {
 	    type: String,
@@ -45,5 +45,9 @@
 		margin-top: 10px;
         justify-content: center;
         align-items: center;
+	}
+
+	.inline-style-text {
+		color: #1a1a1a;
 	}
 </style>

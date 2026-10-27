@@ -11,7 +11,7 @@
     </nested-scroll-header>
     <nested-scroll-header>
       <swiper ref="headerRef" indicator-dots="true" circular="true">
-        <swiper-item v-for="i in num" :item-id="i">
+        <swiper-item v-for="i in num" :item-id="i + ''">
           <view class="scroll-header-tiem2">
             <text>如果存在多个头部节点，那么就使用多个 nested-scroll-header 来将其包裹</text>
           </view>
@@ -30,7 +30,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const scrollData = ref([] as Array<string>)
   const num = ref(0)
   const headerRef = ref<UniSwiperElement | null>(null)
@@ -54,7 +54,7 @@
     margin-left: 6px;
     margin-right: 6px;
     margin-top: 6px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 4px;
   }
 
@@ -63,7 +63,7 @@
     height: 60px;
     line-height: 60px;
     text-align: center;
-    color: #555;
+    color: var(--text-color, #555555);
   }
 
   .scroll-header-tiem1 {

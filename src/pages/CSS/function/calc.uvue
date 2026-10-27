@@ -1,0 +1,504 @@
+<template>
+  <view ref="pageRef" class="page">
+    <view class="calc-style-test">
+      <text class="calc-test-label">width: {{ calcMode ? 'calc(50% / 2 + 24px)' : '375rpx' }}; height: calc((12px + 8px) * 2);</text>
+      <view class="track ">
+        <view ref="switchRef" class="basic-case">
+          <text class="case-text">{{ calcMode ? '50% / 2 + 24px' : '375rpx' }}</text>
+        </view>
+      </view>
+    </view>
+    <button class="switch-button element-bottom" size="mini" @click="toggleCalcValue">切换 calc / 375rpx</button>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">width: calc(var(--calc-base) * 2); height: calc(var(--calc-base) + 12px);</text>
+      <view class="variable-row  element-bottom">
+        <view class="variable-case">
+          <text class="case-text">var * 2</text>
+        </view>
+        <button size="mini" @click="toggleVariable">切换变量</button>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">height/padding: calc(var(--uni-safe-area-inset-*) + px);</text>
+      <view class="safe-area-case  element-bottom">
+        <text class="safe-area-text" style="background-color: #1f9d68;">safe area</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">width: calc(375rpx + 50% - 12px);</text>
+      <view class="rpx-test element-bottom" style="background-color: #2878d0;">
+        <text style="font-size: 12px;color: #ffffff;">width:calc(375rpx + 50% - 12px);</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">padding: calc(10px);</text>
+      <view class="padding-test element-bottom" style="background-color: #2878d0;">
+        <text style="font-size: 12px;color: #ffffff;background-color: #1f9d68;">padding: calc(10px);</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">margin: calc(var(--calc-base) + 2px);</text>
+      <view class="element-bottom" style="background-color: #2878d0;">
+        <text class="margin-test" style="font-size: 12px;color: #ffffff;background-color: #1f9d68;">margin: calc(var(--calc-base) + 2px);</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-bottom-left-radius: calc(60rpx);</text>
+      <view ref="borderBottomLeftRadiusRef" class="calc-test-box">
+        <text class="case-text">bottom left</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-bottom-right-radius: calc(50% - 30px);</text>
+      <view ref="borderBottomRightRadiusRef" class="calc-test-box">
+        <text class="case-text">bottom right</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-radius: calc(var(--border-radius) - 30px);</text>
+      <view ref="borderRadiusRef" class="calc-test-box">
+        <text class="case-text">radius</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-top-left-radius: calc((12.5% + 15px)*2);</text>
+      <view ref="borderTopLeftRadiusRef" class="calc-test-box">
+        <text class="case-text">top left</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">border-top-right-radius: calc(60px);</text>
+      <view ref="borderTopRightRadiusRef" class="calc-test-box">
+        <text class="case-text">top right</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">transform: translateX(calc(10% + 12px));</text>
+      <view ref="transformRef" class="calc-test-box">
+        <text class="case-text">transform</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">transform-origin: calc(25% + 10px) calc(50% - 6px);</text>
+      <view ref="transformOriginRef" class="calc-test-box">
+        <text class="case-text">origin</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">box-shadow: calc(4px + 4rpx) calc(3px + 1rpx) calc(2px + 6rpx) #999999;</text>
+      <view ref="boxShadowRef" class="calc-test-box">
+        <text class="case-text">shadow</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">opacity: calc(0.35 + 0.35);</text>
+      <view ref="opacityRef" class="calc-test-box">
+        <text class="case-text">opacity</text>
+      </view>
+    </view>
+
+    <view class="calc-style-test element-bottom">
+      <text class="calc-test-label">hover-class: width/height/opacity 使用 calc()</text>
+      <view class="calc-hover-box" hover-class="calc-hover-class" :hover-stay-time="1000">
+        <text class="case-text">hover</text>
+      </view>
+    </view>
+
+    <view v-if="jestCalcTestVisible" class="jest-calc-test-suite">
+      <view class="jest-calc-test-stage">
+        <view class="jest-calc-target" :style="{
+          width: jestCalcTestWidth,
+          height: 'calc((12px + 8px) * 2)',
+          paddingTop: 'calc(6px + 4px)',
+          paddingRight: 'calc(5px * 2)',
+          paddingBottom: 'calc(20px / 2)',
+          paddingLeft: 'calc(var(--calc-jest-base) - 2px)',
+          marginTop: 'calc(var(--calc-jest-base) + 2px)',
+          marginRight: 'calc(8px + 4px)',
+          marginBottom: 'calc(24px / 2)',
+          marginLeft: 'calc((4px + 8px))'
+        }">
+          <text class="jest-calc-test-text">calc</text>
+        </view>
+        <view class="jest-calc-flex-row">
+          <view ref="jestFlexBasisRef" class="jest-calc-flex-basis"></view>
+        </view>
+        <view ref="jestBorderRef" class="jest-calc-test-box jest-calc-border"></view>
+        <view ref="jestBorderTopRef" class="jest-calc-test-box jest-calc-border-top"></view>
+        <view ref="jestBorderRightRef" class="jest-calc-test-box jest-calc-border-right"></view>
+        <view ref="jestBorderBottomRef" class="jest-calc-test-box jest-calc-border-bottom"></view>
+        <view ref="jestBorderLeftRef" class="jest-calc-test-box jest-calc-border-left"></view>
+        <view ref="jestBorderWidthRef" class="jest-calc-test-box jest-calc-border-width"></view>
+        <view ref="jestBorderTopWidthRef" class="jest-calc-test-box jest-calc-border-top-width"></view>
+        <view ref="jestBorderRightWidthRef" class="jest-calc-test-box jest-calc-border-right-width"></view>
+        <view ref="jestBorderBottomWidthRef" class="jest-calc-test-box jest-calc-border-bottom-width"></view>
+        <view ref="jestBorderLeftWidthRef" class="jest-calc-test-box jest-calc-border-left-width"></view>
+        <view ref="jestBorderRadiusRef" class="jest-calc-test-box jest-calc-border-radius"></view>
+        <view ref="jestBorderTopLeftRadiusRef" class="jest-calc-test-box jest-calc-border-top-left-radius"></view>
+        <view ref="jestBorderTopRightRadiusRef" class="jest-calc-test-box jest-calc-border-top-right-radius"></view>
+        <view ref="jestBorderBottomRightRadiusRef" class="jest-calc-test-box jest-calc-border-bottom-right-radius"></view>
+        <view ref="jestBorderBottomLeftRadiusRef" class="jest-calc-test-box jest-calc-border-bottom-left-radius"></view>
+        <view ref="jestTransformRef" class="jest-calc-test-box jest-calc-transform"></view>
+        <view ref="jestTransformOriginRef" class="jest-calc-test-box jest-calc-transform-origin"></view>
+        <view ref="jestBoxShadowRef" class="jest-calc-test-box jest-calc-box-shadow"></view>
+        <text ref="jestTextShadowRef" class="jest-calc-text-shadow">text shadow</text>
+        <view class="jest-calc-backdrop-stage">
+          <view class="jest-calc-backdrop-color"></view>
+          <view ref="jestBackdropFilterRef" class="jest-calc-backdrop-filter"></view>
+        </view>
+        <view ref="jestOpacityRef" class="jest-calc-test-box jest-calc-opacity"></view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const pageRef = ref(null as UniElement | null)
+  const switchRef = ref(null as UniElement | null)
+  const borderBottomLeftRadiusRef = ref(null as UniElement | null)
+  const borderBottomRightRadiusRef = ref(null as UniElement | null)
+  const borderRadiusRef = ref(null as UniElement | null)
+  const borderTopLeftRadiusRef = ref(null as UniElement | null)
+  const borderTopRightRadiusRef = ref(null as UniElement | null)
+  const transformRef = ref(null as UniElement | null)
+  const transformOriginRef = ref(null as UniElement | null)
+  const boxShadowRef = ref(null as UniElement | null)
+  const opacityRef = ref(null as UniElement | null)
+  const jestFlexBasisRef = ref(null as UniElement | null)
+  const jestBorderRef = ref(null as UniElement | null)
+  const jestBorderTopRef = ref(null as UniElement | null)
+  const jestBorderRightRef = ref(null as UniElement | null)
+  const jestBorderBottomRef = ref(null as UniElement | null)
+  const jestBorderLeftRef = ref(null as UniElement | null)
+  const jestBorderWidthRef = ref(null as UniElement | null)
+  const jestBorderTopWidthRef = ref(null as UniElement | null)
+  const jestBorderRightWidthRef = ref(null as UniElement | null)
+  const jestBorderBottomWidthRef = ref(null as UniElement | null)
+  const jestBorderLeftWidthRef = ref(null as UniElement | null)
+  const jestBorderRadiusRef = ref(null as UniElement | null)
+  const jestBorderTopLeftRadiusRef = ref(null as UniElement | null)
+  const jestBorderTopRightRadiusRef = ref(null as UniElement | null)
+  const jestBorderBottomRightRadiusRef = ref(null as UniElement | null)
+  const jestBorderBottomLeftRadiusRef = ref(null as UniElement | null)
+  const jestTransformRef = ref(null as UniElement | null)
+  const jestTransformOriginRef = ref(null as UniElement | null)
+  const jestBoxShadowRef = ref(null as UniElement | null)
+  const jestTextShadowRef = ref(null as UniElement | null)
+  const jestBackdropFilterRef = ref(null as UniElement | null)
+  const jestOpacityRef = ref(null as UniElement | null)
+  const calcMode = ref(true)
+  const jestCalcTestVisible = ref(false)
+  const jestCalcTestWidth = ref('calc(50% + 20px)')
+  let expanded = false
+
+
+  onReady(() => {
+    borderBottomLeftRadiusRef.value?.style.setProperty('border-bottom-left-radius', 'calc(60rpx)')
+    borderBottomRightRadiusRef.value?.style.setProperty('border-bottom-right-radius', 'calc(50% - 30px)')
+    borderRadiusRef.value?.style.setProperty('border-radius', 'calc(var(--border-radius) - 30px)')
+    borderTopLeftRadiusRef.value?.style.setProperty('border-top-left-radius', 'calc((12.5% + 15px)*2)')
+    borderTopRightRadiusRef.value?.style.setProperty('border-top-right-radius', '60px')
+    transformRef.value?.style.setProperty('transform', 'translateX(calc(10% + 12px))')
+    transformOriginRef.value?.style.setProperty('transform-origin', 'calc(25% + 10px) calc(50% - 6px)')
+    transformOriginRef.value?.style.setProperty('transform', 'rotate(8deg)')
+    boxShadowRef.value?.style.setProperty('box-shadow', 'calc(4px + 4rpx) calc(3px + 1rpx) calc(2px + 6rpx) #999999')
+    opacityRef.value?.style.setProperty('opacity', 'calc(0.35 + 0.35)')
+  })
+
+  const toggleCalcValue = () => {
+    calcMode.value = !calcMode.value
+    switchRef.value?.style.setProperty(
+      'width',
+      calcMode.value ? 'calc(50% / 2 + 24px)' : '375rpx'
+    )
+  }
+
+  const toggleVariable = () => {
+    expanded = !expanded
+    pageRef.value?.style.setProperty('--calc-base', expanded ? '48px' : '28px')
+  }
+
+  const jest_applyCalcTestStyles = () => {
+    jestFlexBasisRef.value?.style.setProperty('flex-basis', 'calc(80px + 20px)')
+
+    jestBorderRef.value?.style.setProperty('border', 'calc(1px + 1px) solid blue')
+    jestBorderTopRef.value?.style.setProperty('border-top', 'calc(1px + 2px) solid blue')
+    jestBorderRightRef.value?.style.setProperty('border-right', 'calc(2px + 2px) solid blue')
+    jestBorderBottomRef.value?.style.setProperty('border-bottom', 'calc(2px + 3px) solid blue')
+    jestBorderLeftRef.value?.style.setProperty('border-left', 'calc(3px + 3px) solid blue')
+
+    jestBorderWidthRef.value?.style.setProperty('border-style', 'solid')
+    jestBorderWidthRef.value?.style.setProperty('border-color', 'blue')
+    jestBorderWidthRef.value?.style.setProperty('border-width', 'calc(2px + 2px)')
+    jestBorderTopWidthRef.value?.style.setProperty('border-top-style', 'solid')
+    jestBorderTopWidthRef.value?.style.setProperty('border-top-color', 'blue')
+    jestBorderTopWidthRef.value?.style.setProperty('border-top-width', 'calc(2px + 3px)')
+    jestBorderRightWidthRef.value?.style.setProperty('border-right-style', 'solid')
+    jestBorderRightWidthRef.value?.style.setProperty('border-right-color', 'blue')
+    jestBorderRightWidthRef.value?.style.setProperty('border-right-width', 'calc(3px + 3px)')
+    jestBorderBottomWidthRef.value?.style.setProperty('border-bottom-style', 'solid')
+    jestBorderBottomWidthRef.value?.style.setProperty('border-bottom-color', 'blue')
+    jestBorderBottomWidthRef.value?.style.setProperty('border-bottom-width', 'calc(4px + 3px)')
+    jestBorderLeftWidthRef.value?.style.setProperty('border-left-style', 'solid')
+    jestBorderLeftWidthRef.value?.style.setProperty('border-left-color', 'blue')
+    jestBorderLeftWidthRef.value?.style.setProperty('border-left-width', 'calc(4px + 4px)')
+
+    jestBorderRadiusRef.value?.style.setProperty('border-radius', 'calc(20px + 10px)')
+    jestBorderTopLeftRadiusRef.value?.style.setProperty('border-top-left-radius', 'calc(10px + 8px)')
+    jestBorderTopRightRadiusRef.value?.style.setProperty('border-top-right-radius', 'calc(10px + 9px)')
+    jestBorderBottomRightRadiusRef.value?.style.setProperty('border-bottom-right-radius', 'calc(10px + 10px)')
+    jestBorderBottomLeftRadiusRef.value?.style.setProperty('border-bottom-left-radius', 'calc(10px + 11px)')
+
+    jestTransformRef.value?.style.setProperty('transform', 'translateX(calc(10px + 20px))')
+    jestTransformOriginRef.value?.style.setProperty('transform-origin', 'calc(20px + 10px) calc(10px + 5px)')
+    jestTransformOriginRef.value?.style.setProperty('transform', 'rotate(0deg)')
+    jestBoxShadowRef.value?.style.setProperty('box-shadow', 'calc(2px + 3px) calc(4px + 1px) calc(5px + 1px) black')
+    jestTextShadowRef.value?.style.setProperty('text-shadow', 'calc(2px + 3px) calc(1px + 4px) #558abb')
+    jestBackdropFilterRef.value?.style.setProperty('backdrop-filter', 'blur(calc(2px + 4px))')
+    jestOpacityRef.value?.style.setProperty('opacity', 'calc(0.35 + 0.35)')
+  }
+
+  const jest_showCalcTestElements = () => {
+    jestCalcTestVisible.value = true
+    jestCalcTestWidth.value = 'calc(50% + 20px)'
+    nextTick(() => {
+      jest_applyCalcTestStyles()
+    })
+  }
+
+  const jest_setCalcTestWidth = (width : number) => {
+    jestCalcTestWidth.value = width + 'px'
+  }
+
+  defineExpose({ jest_showCalcTestElements, jest_setCalcTestWidth })
+</script>
+
+<style>
+  .page {
+    --calc-base: 28px;
+    --border-radius: 60px;
+    --calc-surface-color: #dfe3e8;
+    --calc-text-color: #202124;
+    flex-grow: 1;
+    padding: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page {
+      --calc-surface-color: #3b3b3b;
+      --calc-text-color: #ffffff;
+    }
+  }
+
+  .element-bottom {
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--calc-text-color, #202124);
+  }
+
+  .track {
+    width: 100%;
+    height: 40px;
+    background-color: var(--calc-surface-color, #dfe3e8);
+  }
+
+  .switch-button {
+    margin-top: 6px;
+  }
+
+  .basic-case {
+    width: calc(50% / 2 + 24px);
+    height: calc((12px + 8px) * 2);
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .variable-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .variable-case {
+    width: calc(var(--calc-base) * 2);
+    height: calc(var(--calc-base) + 12px);
+    margin-right: 12px;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .case-text,
+  .safe-area-text {
+    font-size: 12px;
+    color: #ffffff;
+  }
+
+  .safe-area-case {
+    width: 100%;
+    height: calc(var(--uni-safe-area-inset-top) + var(--uni-safe-area-inset-bottom) + 48px);
+    padding-top: calc(var(--uni-safe-area-inset-top) + 6px);
+    padding-right: calc(var(--uni-safe-area-inset-right) + 6px);
+    padding-bottom: calc(var(--uni-safe-area-inset-bottom) + 6px);
+    padding-left: calc(var(--uni-safe-area-inset-left) + 6px);
+    background-color: #2878d0;
+    margin-bottom: 12px;
+  }
+
+  .fixed-test {
+    position: fixed;
+    height: 60px;
+    width: 100%;
+    background-color: #2878d0;
+    top: calc(100% - 70px);
+  }
+
+  .rpx-test {
+    width: calc(375rpx + 50% - 12px);
+  }
+
+  .padding-test {
+    background-color: var(--calc-surface-color, #dfe3e8);
+    padding: calc(10px);
+  }
+
+  .margin-test {
+    margin: calc(var(--calc-base) + 2px);
+  }
+
+  .calc-style-test {
+    flex-direction: column;
+    padding: 10px;
+    background-color: var(--calc-surface-color, #dfe3e8);
+  }
+
+  .calc-test-label {
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--calc-text-color, #202124);
+  }
+
+  .calc-test-box {
+    width: 120px;
+    height: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .calc-hover-box {
+    width: 120px;
+    height: 48px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .calc-hover-class {
+    width: calc(50% + 20px);
+    height: calc(var(--calc-base) + 36px);
+    opacity: calc(0.75 - 0.35);
+    background-color: #1f9d68;
+  }
+
+  .jest-calc-test-suite {
+    --calc-jest-base: 12px;
+    width: 200px;
+    height: 120px;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .jest-calc-test-stage {
+    width: 200px;
+    height: 100px;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .jest-calc-target {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2878d0;
+  }
+
+  .jest-calc-test-text {
+    font-size: 12px;
+    color: #ffffff;
+  }
+
+  .jest-calc-flex-row {
+    width: 160px;
+    height: 28px;
+    flex-direction: row;
+    margin-top: 4px;
+    background-color: #dfe3e8;
+  }
+
+  .jest-calc-flex-basis {
+    height: 28px;
+    flex-direction: column;
+    flex-shrink: 0;
+    background-color: #1f9d68;
+  }
+
+  .jest-calc-test-box {
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+    background-color: #2878d0;
+  }
+
+  .jest-calc-text-shadow {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #202124;
+  }
+
+  .jest-calc-backdrop-stage {
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    margin-top: 4px;
+    overflow: visible;
+  }
+
+  .jest-calc-backdrop-color {
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    background-color: #1f9d68;
+  }
+
+  .jest-calc-backdrop-filter {
+    position: absolute;
+    width: 80px;
+    height: 32px;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+</style>

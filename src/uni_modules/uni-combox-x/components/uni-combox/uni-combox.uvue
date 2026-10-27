@@ -1,0 +1,1294 @@
+<template>
+	<view :id="anchorId" class="uni-combox">
+		<view
+			class="uni-combox__field"
+			:class="[fieldClass, disabled ? 'uni-combox__field--disabled' : '']"
+			@click="onFieldClick"
+			<!-- #ifdef WEB -->
+			:tabindex="disabled ? '-1' : '0'"
+			@keydown="onInputKeydown"
+			<!-- #endif -->
+		>
+			<view v-if="inputMode" class="uni-combox__input-slot">
+				<slot
+					name="input"
+					:value="currentValue"
+					:input="onInput"
+					:focus="onInputFocus"
+					:disabled="disabled"
+				></slot>
+			</view>
+			<text
+				v-else
+				class="uni-combox__result"
+				:class="[
+					resultTextClass,
+					currentValue == '' ? 'uni-combox__result--placeholder' : '',
+					disabled ? 'uni-combox__result--disabled' : ''
+				]"
+				max-lines="1"
+			>{{ displayText }}</text>
+			<view class="uni-combox__arrow-wrap" @click.stop="toggleOptionsByArrow">
+				<view class="uni-combox__arrow" :class="[arrowClass, opened ? 'uni-combox__arrow--open' : '']"></view>
+			</view>
+			<view v-if="disabled" class="uni-combox__disabled-mask"></view>
+		</view>
+        <!-- #ifdef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
+        <teleport v-if="opened && popupReady" to="body">
+		<!-- #endif -->
+		<!-- #ifndef WEB || (APP-ANDROID && !VUE3-VAPOR) -->
+        <teleport v-if="opened && popupReady" to="page">
+		<!-- #endif -->
+			<view class="uni-combox__mask" @click="closeOptions">
+				<view
+					class="uni-combox__options"
+					:class="optionsViewClass"
+					:style="optionsStyle"
+					@click.stop="noop"
+				>
+					<scroll-view
+						direction="vertical"
+						class="uni-combox__options-scroll"
+						:scroll-into-view="scrollIntoViewId"
+					>
+						<view class="uni-combox__options-content" :class="optionsContentClass">
+							<view
+								v-if="visibleOptions.length == 0"
+								class="uni-combox__option-row"
+							>
+								<text
+									class="uni-combox__option uni-combox__option--empty"
+									:class="optionTextClass"
+									max-lines="1"
+								>无匹配项</text>
+							</view>
+							<view
+								v-for="(item, index) in visibleOptions"
+								:id="getOptionId(index)"
+								:key="item + '_' + index.toString()"
+								class="uni-combox__option-row"
+								:class="[
+									index == highlightedIndex ? 'uni-combox__option-row--highlight' : '',
+									index == highlightedIndex ? optionRowHighlightClass : ''
+								]"
+								@click.stop="selectOption(index)"
+							>
+								<text
+									class="uni-combox__option"
+									:class="[optionTextClass, index == highlightedIndex ? optionTextHighlightClass : '']"
+									max-lines="1"
+								>{{ item }}</text>
+							</view>
+						</view>
+					</scroll-view>
+				</view>
+			</view>
+		</teleport>
+	</view>
+</template>
+
+<script setup lang="ts">
+/**
+ * Combox 组合框
+ * @description 默认是单选选择框，通过 input 具名插槽切换为可输入、可选择的组合框。
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.31",
+ *       "unixVaporVer": "5.31"
+ *     },
+ *     "ios": {
+ *       "uniVer": "x",
+ *       "unixVer": "x",
+ *       "unixVaporVer": "5.31"
+ *     },
+ *     "harmony": {
+ *       "uniVer": "x",
+ *       "unixVer": "x",
+ *       "unixVaporVer": "5.31"
+ *     }
+ *   },
+ *   "mp": {
+ *     "weixin": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.31"
+ *     },
+ *     "alipay": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.31"
+ *     }
+ *   },
+ *   "web": {
+ *     "uniVer": "x",
+ *     "unixVer": "5.31"
+ *   }
+ * }
+ * @property {Array<String>} options 候选字符串数组
+ * @property {String} modelValue 当前值，支持 v-model
+ * @property {String} placeholder 占位文字
+ * @property {Boolean} disabled 是否禁用，默认值 false
+ * @property {String} arrowClass 右侧箭头自定义样式类
+ * @property {String} fieldClass 非弹出区域自定义样式类
+ * @property {String} optionsViewClass 候选浮层外层自定义样式类
+ * @property {String} optionsContentClass 候选浮层内容自定义样式类
+ * @property {String} optionTextClass 候选项文字自定义样式类
+ * @property {String} optionTextHighlightClass 候选项高亮自定义样式类
+ * @property {String} optionRowHighlightClass 候选项高亮行自定义样式类
+ * @property {String} resultTextClass 单选模式结果文字自定义样式类
+ * @event {Function} update:modelValue 值更新时触发
+ * @event {Function} selectchange 从候选项选中时触发
+ */
+
+defineOptions({
+	externalClasses: [
+		'arrow-class',
+		'field-class',
+		'options-view-class',
+		'options-content-class',
+		'option-text-class',
+		'option-text-highlight-class',
+		'option-row-highlight-class',
+		'result-text-class'
+	]
+})
+
+type Props = {
+	/**
+	 * @description 候选字符串数组
+	 * @default []
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	options? : string[],
+	/**
+	 * @description 当前值，支持 v-model 双向绑定
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	modelValue? : string,
+	/**
+	 * @description 占位文字
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	placeholder? : string,
+	/**
+	 * @description 是否禁用
+	 * @default false
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	disabled? : boolean,
+	/**
+	 * @description 非弹出区域自定义样式类
+	 * @default ""
+	 */
+	fieldClass? : string.ClassString,
+	/**
+	 * @description 右侧箭头自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	arrowClass? : string.ClassString,
+	/**
+	 * @description 候选浮层外层自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	optionsViewClass? : string.ClassString,
+	/**
+	 * @description 候选浮层内容自定义样式类
+	 * @default ""
+	 */
+	optionsContentClass? : string.ClassString,
+	/**
+	 * @description 候选项文字自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	optionTextClass? : string.ClassString,
+	/**
+	 * @description 候选项高亮自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	optionTextHighlightClass? : string.ClassString,
+	/**
+	 * @description 候选项高亮行自定义样式类
+	 * @default ""
+	 */
+	optionRowHighlightClass? : string.ClassString,
+	/**
+	 * @description 单选模式结果文字自定义样式类
+	 * @default ""
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	resultTextClass? : string.ClassString
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	options: () : string[] => [] as string[],
+	modelValue: '',
+	placeholder: '',
+	disabled: false,
+	arrowClass: '',
+	fieldClass: '',
+	optionsViewClass: '',
+	optionsContentClass: '',
+	optionTextClass: '',
+	optionTextHighlightClass: '',
+	optionRowHighlightClass: '',
+	resultTextClass: ''
+})
+
+const emit = defineEmits<{
+	/**
+	 * @description 值更新时触发，参数为当前值，类型为 string
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	'update:modelValue': [value : string],
+	/**
+	 * @description 从候选项选中时触发，参数为选中的值，类型为 string
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	selectchange: [value : string]
+}>()
+
+defineSlots<{
+	/**
+	 * @description 自定义输入框插槽，提供 value、input、focus 和 disabled，使用后启用可输入、可选择模式
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "x",
+	 *       "unixVaporVer": "5.31"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.31"
+	 *   }
+	 * }
+	 */
+	input(props : {
+		value : string,
+		input : (event : UniInputEvent) => void,
+		focus : (event : UniInputFocusEvent) => void,
+		disabled : boolean
+	}) : any
+}>()
+
+const slots = useSlots()
+const anchorId = `uni_combox_x_${Math.ceil(Math.random() * 10e8).toString(36)}`
+const optionIdPrefix = `uni_combox_x_option_${Math.ceil(Math.random() * 10e8).toString(36)}_`
+const defaultOptionHeight = 36
+// #ifdef WEB
+const pcOptionHeight = 32
+// #endif
+const defaultMaxOptionsHeight = 200
+const popupVerticalPadding = 8
+const viewportGap = 8
+const popupGap = 4
+
+function getOptionHeight() : number {
+	// #ifdef WEB
+	if (uni.getWindowInfo().windowWidth >= 768) {
+		return pcOptionHeight
+	}
+	// #endif
+	return defaultOptionHeight
+}
+
+function getOptionId(index : number) : string {
+	return optionIdPrefix + index.toString()
+}
+
+const currentValue = ref<string>(props.modelValue)
+const opened = ref<boolean>(false)
+const popupReady = ref<boolean>(false)
+const filterEnabled = ref<boolean>(false)
+const highlightedIndex = ref<number>(-1)
+const popupLeft = ref<number>(0)
+const popupTop = ref<number>(0)
+const popupWidth = ref<number>(0)
+const popupHeight = ref<number>(getOptionHeight() + popupVerticalPadding)
+const keyboardHeight = ref<number>(0)
+let positionRequestId = 0
+let isUnmounted = false
+
+const inputMode = computed(() : boolean => {
+	return slots['input'] != null
+})
+
+const displayText = computed(() : string => {
+	if (currentValue.value == '') {
+		return props.placeholder
+	}
+	return currentValue.value
+})
+
+const visibleOptions = computed(() : string[] => {
+	if (!filterEnabled.value || currentValue.value == '') {
+		return props.options
+	}
+	return props.options.filter((item : string) : boolean => {
+		return item.indexOf(currentValue.value) >= 0
+	})
+})
+
+const optionsStyle = computed(() : string => {
+	return `left: ${popupLeft.value}px; top: ${popupTop.value}px; width: ${popupWidth.value}px; height: ${popupHeight.value}px;`
+})
+
+const scrollIntoViewId = ref<string>('')
+
+function findMatchedIndex(list : string[], keyword : string) : number {
+	if (keyword == '') {
+		return -1
+	}
+	const exactIndex = list.indexOf(keyword)
+	if (exactIndex >= 0) {
+		return exactIndex
+	}
+	return list.findIndex((item : string) : boolean => {
+		return item.indexOf(keyword) == 0
+	})
+}
+
+function syncHighlight() {
+	const list = visibleOptions.value
+	if (list.length == 0) {
+		highlightedIndex.value = -1
+		return
+	}
+	const matchedIndex = findMatchedIndex(list, currentValue.value)
+	highlightedIndex.value = matchedIndex
+}
+
+function refreshScrollTarget() {
+	const targetId = highlightedIndex.value >= 0 ? getOptionId(highlightedIndex.value) : ''
+	scrollIntoViewId.value = ''
+	if (targetId == '') {
+		return
+	}
+	nextTick(() => {
+		if (opened.value) {
+			scrollIntoViewId.value = targetId
+		}
+	})
+}
+
+function emitValue(value : string) {
+	currentValue.value = value
+	emit('update:modelValue', value)
+}
+
+function noop() {
+}
+
+function applyPopupRect(rect : DOMRect) {
+	const rectTop = rect.top != null ? rect.top : 0
+	const rectLeft = rect.left != null ? rect.left : 0
+	let rectWidth = rect.width != null ? rect.width : 0
+	const rectHeight = rect.height != null ? rect.height : 0
+	const rectBottom = rect.bottom != null ? rect.bottom : rectTop + rectHeight
+	if (rectWidth <= 0) {
+		rectWidth = uni.getWindowInfo().windowWidth - 32
+	}
+
+	const windowInfo = uni.getWindowInfo()
+	const windowHeight = Math.max(0, windowInfo.windowHeight - keyboardHeight.value)
+	const optionHeight = getOptionHeight()
+	const optionCount = Math.max(1, visibleOptions.value.length)
+	const expectedHeight = Math.min(defaultMaxOptionsHeight, optionCount * optionHeight) + popupVerticalPadding
+	const minOptionsHeight = optionHeight + popupVerticalPadding
+	const belowSpace = windowHeight - rectBottom - viewportGap
+	const aboveSpace = rectTop - viewportGap
+
+	let height = expectedHeight
+	let top = rectBottom + popupGap
+	if (belowSpace < expectedHeight && aboveSpace > belowSpace) {
+		height = Math.max(minOptionsHeight, Math.min(expectedHeight, aboveSpace - popupGap))
+		top = rectTop - popupGap - height
+	} else {
+		height = Math.max(minOptionsHeight, Math.min(expectedHeight, belowSpace - popupGap))
+	}
+
+	popupLeft.value = rectLeft
+	popupTop.value = top
+	popupWidth.value = rectWidth
+	popupHeight.value = height
+}
+
+function updatePosition() {
+	const element = uni.getElementById(anchorId)
+	if (element == null) {
+		return
+	}
+	const rectPromise = element.getBoundingClientRectAsync()
+	if (rectPromise == null) {
+		return
+	}
+	rectPromise.then((rect : DOMRect) => {
+		if (isUnmounted || !opened.value) {
+			return
+		}
+		applyPopupRect(rect)
+	})
+}
+
+function updatePositionThenOpen() {
+	const requestId = positionRequestId + 1
+	positionRequestId = requestId
+	const element = uni.getElementById(anchorId)
+	if (element == null) {
+		if (isUnmounted || requestId != positionRequestId) {
+			return
+		}
+		popupReady.value = true
+		opened.value = true
+		refreshScrollTarget()
+		return
+	}
+	const rectPromise = element.getBoundingClientRectAsync()
+	if (rectPromise == null) {
+		if (isUnmounted || requestId != positionRequestId) {
+			return
+		}
+		popupReady.value = true
+		opened.value = true
+		refreshScrollTarget()
+		return
+	}
+	rectPromise.then((rect : DOMRect) => {
+		if (isUnmounted || requestId != positionRequestId) {
+			return
+		}
+		applyPopupRect(rect)
+		popupReady.value = true
+		opened.value = true
+		refreshScrollTarget()
+	})
+}
+
+function openOptionsWithMode(filter : boolean) {
+	if (props.disabled) {
+		return
+	}
+	filterEnabled.value = filter
+	syncHighlight()
+	popupReady.value = false
+	updatePositionThenOpen()
+}
+
+function openOptions() {
+	openOptionsWithMode(false)
+}
+
+function closeOptions() {
+	positionRequestId += 1
+	opened.value = false
+	popupReady.value = false
+}
+
+function toggleOptionsByArrow() {
+	if (props.disabled) {
+		return
+	}
+	if (opened.value) {
+		closeOptions()
+		return
+	}
+	openOptions()
+}
+
+function onFieldClick() {
+	if (props.disabled) {
+		return
+	}
+	if (inputMode.value) {
+		openOptionsWithMode(true)
+		return
+	}
+	openOptions()
+}
+
+function onInput(event : UniInputEvent) {
+	if (props.disabled) {
+		return
+	}
+	const value = event.detail.value
+	emitValue(value)
+	openOptionsWithMode(true)
+}
+
+function onInputFocus(_event : UniInputFocusEvent) {
+	if (props.disabled) {
+		return
+	}
+	openOptionsWithMode(true)
+}
+
+function onInputBlur() {
+}
+
+onBeforeUnmount(() => {
+	isUnmounted = true
+	positionRequestId += 1
+	opened.value = false
+	popupReady.value = false
+})
+
+// #ifndef WEB
+function onKeyboardHeightChange(res : OnKeyboardHeightChangeCallbackResult) {
+	if (isUnmounted) {
+		return
+	}
+	keyboardHeight.value = Math.max(0, res.height)
+	if (opened.value) {
+		nextTick(() => {
+			if (!isUnmounted && opened.value) {
+				updatePosition()
+			}
+		})
+	}
+}
+
+let keyboardListenerId = 0
+
+onMounted(() => {
+	keyboardListenerId = uni.onKeyboardHeightChange(onKeyboardHeightChange)
+})
+
+onUnmounted(() => {
+	if (keyboardListenerId != 0) {
+		uni.offKeyboardHeightChange(keyboardListenerId)
+		keyboardListenerId = 0
+	}
+})
+// #endif
+
+// #ifdef WEB
+function onInputKeydown(event : KeyboardEvent) {
+	if (props.disabled) {
+		return
+	}
+	const key = event.key as string
+	if (key == 'Escape') {
+		event.preventDefault()
+		closeOptions()
+		return
+	}
+	if (key == 'ArrowDown') {
+		event.preventDefault()
+		if (!opened.value) {
+			openOptions()
+			return
+		}
+		if (visibleOptions.value.length == 0) {
+			return
+		}
+		highlightedIndex.value = Math.min(visibleOptions.value.length - 1, highlightedIndex.value + 1)
+		refreshScrollTarget()
+		return
+	}
+	if (key == 'ArrowUp') {
+		event.preventDefault()
+		if (!opened.value) {
+			openOptions()
+			return
+		}
+		if (visibleOptions.value.length == 0) {
+			return
+		}
+		highlightedIndex.value = Math.max(0, highlightedIndex.value - 1)
+		refreshScrollTarget()
+		return
+	}
+	if (key == 'Enter' && opened.value && highlightedIndex.value >= 0) {
+		event.preventDefault()
+		selectOption(highlightedIndex.value)
+	}
+}
+// #endif
+
+function selectOption(index : number) {
+	if (props.disabled) {
+		return
+	}
+	if (index < 0 || index >= visibleOptions.value.length) {
+		return
+	}
+	const value = visibleOptions.value[index]
+	emitValue(value)
+	emit('selectchange', value)
+	closeOptions()
+}
+
+function setInputValue(value : string) {
+	if (props.disabled) {
+		return
+	}
+	emitValue(value)
+	openOptionsWithMode(true)
+}
+
+defineExpose({
+	setInputValue,
+	openOptions,
+	closeOptions
+})
+
+watch(() : string => props.modelValue, (value : string) => {
+	currentValue.value = value
+	if (opened.value) {
+		syncHighlight()
+		nextTick(() => {
+			updatePosition()
+			refreshScrollTarget()
+		})
+	}
+})
+
+watch(() : string[] => props.options, () => {
+	if (opened.value) {
+		syncHighlight()
+		nextTick(() => {
+			updatePosition()
+			refreshScrollTarget()
+		})
+	}
+})
+
+watch(() : boolean => props.disabled, (disabled : boolean) => {
+	if (disabled && opened.value) {
+		closeOptions()
+	}
+})
+
+onBackPress(() : boolean => {
+	if (opened.value) {
+		closeOptions()
+		return true
+	}
+	return false
+})
+</script>
+
+<style>
+.uni-combox {
+	width: 100%;
+}
+
+.uni-combox__field {
+	position: relative;
+	width: 100%;
+	box-sizing: border-box;
+	height: 40px;
+	border: 1px solid #d1d5db;
+	border-radius: 4px;
+	background-color: transparent;
+	flex-direction: row;
+	align-items: center;
+}
+
+.uni-combox__field--disabled {
+	background-color: #f7f6f6;
+}
+
+.uni-combox__disabled-mask {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+}
+
+.uni-combox__input-slot {
+	flex: 1;
+	height: 22px;
+	box-sizing: border-box;
+	flex-direction: row;
+	align-items: center;
+	padding: 0 10px;
+	margin: 0;
+}
+
+.uni-combox__result {
+	flex: 1;
+	height: 22px;
+	line-height: 22px;
+	box-sizing: border-box;
+	padding: 0 10px;
+	margin: 0;
+	font-size: 14px;
+	color: #1f2937;
+	text-overflow: ellipsis;
+}
+
+.uni-combox__result--disabled {
+	color: #d5d5d5;
+}
+
+.uni-combox__result--placeholder {
+	color: #757575;
+}
+
+.uni-combox__arrow-wrap {
+	width: 28px;
+	height: 40px;
+	align-items: center;
+	justify-content: center;
+}
+
+.uni-combox__arrow {
+	width: 6px;
+	height: 6px;
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	transform: rotate(45deg);
+	transition-property: transform;
+	transition-duration: 150ms;
+}
+
+.uni-combox__arrow--open {
+	transform: rotate(225deg);
+}
+
+.uni-combox__mask {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 999;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+.uni-combox__options {
+	position: fixed;
+	box-sizing: border-box;
+	background-color: #ffffff;
+	border: 1px solid #e4e4e7;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	z-index: 1000;
+	overflow: hidden;
+}
+
+.uni-combox__options-scroll {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.uni-combox__options-content {
+	width: 100%;
+	box-sizing: border-box;
+	padding-top: 4px;
+	padding-right: 4px;
+	padding-bottom: 4px;
+	padding-left: 4px;
+}
+
+.uni-combox__option-row {
+	width: 100%;
+	box-sizing: border-box;
+	height: 36px;
+	border-radius: 6px;
+	flex-direction: row;
+	align-items: center;
+}
+
+.uni-combox__option-row--highlight {
+	background-color: #f4f4f5;
+}
+
+.uni-combox__option {
+	flex: 1;
+	height: 36px;
+	line-height: 36px;
+	padding-left: 8px;
+	padding-right: 8px;
+	font-size: 14px;
+	color: #18181b;
+	text-overflow: ellipsis;
+}
+
+.uni-combox__option--empty {
+	color: #71717a;
+	text-align: center;
+}
+
+/* #ifdef WEB */
+@media (min-width: 768px) {
+	.uni-combox__option-row {
+		height: 32px;
+	}
+
+	.uni-combox__option {
+		height: 32px;
+		line-height: 32px;
+	}
+}
+
+.uni-combox__field {
+	outline: none;
+	transition-property: border-color, box-shadow;
+	transition-duration: 150ms;
+}
+
+.uni-combox__field:focus {
+	border-color: #2979ff;
+	box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.24);
+}
+
+.uni-combox__field--disabled:focus {
+	border-color: #d1d5db;
+	box-shadow: none;
+}
+
+.uni-combox__disabled-mask {
+	cursor: not-allowed;
+}
+
+.uni-combox__option-row:hover {
+	background-color: #f4f4f5;
+}
+/* #endif */
+
+@media (prefers-color-scheme: dark) {
+	.uni-combox__field {
+		border-color: rgba(255, 255, 255, 0.18);
+		background-color: #3b3b3b;
+	}
+
+	.uni-combox__field--disabled {
+		background-color: #3b3b3b;
+	}
+
+	.uni-combox__result {
+		color: #ffffff;
+	}
+
+	.uni-combox__result--disabled {
+		color: #8f8f8f;
+	}
+
+	.uni-combox__result--placeholder {
+		color: #757575;
+	}
+
+	.uni-combox__option {
+		color: #fafafa;
+	}
+
+	.uni-combox__option--empty {
+		color: #a1a1aa;
+	}
+
+	.uni-combox__arrow {
+		border-right-color: #ffffff;
+		border-bottom-color: #ffffff;
+	}
+
+	.uni-combox__options {
+		background-color: #18181b;
+		border-color: rgba(255, 255, 255, 0.12);
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+	}
+
+	.uni-combox__option-row--highlight {
+		background-color: #27272a;
+	}
+
+	/* #ifdef WEB */
+	.uni-combox__field:focus {
+		border-color: #2979ff;
+		box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.32);
+	}
+
+	.uni-combox__field--disabled:focus {
+		border-color: rgba(255, 255, 255, 0.18);
+		box-shadow: none;
+	}
+
+	.uni-combox__option-row:hover {
+		background-color: #27272a;
+	}
+	/* #endif */
+}
+</style>

@@ -3,6 +3,9 @@
     <page-head title="非下拉刷新的scroll-view属性示例"></page-head>
     <!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
     <scroll-view v-if="data.scrollX" direction="horizontal" :scroll-top="data.scrollTop" :scroll-left="data.scrollLeft"
+      <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      :android-overscroll="data.androidOverscroll"
+      <!-- #endif -->
       :upper-threshold="data.upperThreshold" :lower-threshold="data.lowerThreshold" :scroll-into-view="data.scrollIntoView"
       :enable-back-to-top="data.enableBackToTop" :scroll-with-animation="data.scrollWithAnimation" style="flex-direction: row;"
       class="uni-margin-wrap" :show-scrollbar="data.showScrollbar" :bounces="data.bounces" @scrolltoupper="scrolltoupper"
@@ -10,6 +13,7 @@
       <!-- h-margin-right末尾元素添加margin-right 测试bug #3866-->
       <view class="item" :id="'horizontal_'+item.id" v-for="(item,index) in data.items"
         :class="index==9 ? 'h-margin-right': ''">
+        <view :id="'horizontal_grand_child__' + item.id"></view>
         <text class="uni-text">{{item.label}}</text>
       </view>
     </scroll-view>
@@ -20,35 +24,28 @@
       @scroll="scroll" @scrollend="scrollend" ref="scrollViewYRef" id="scrollViewY" class="uni-margin-wrap">
       <!-- v-margin-bottom末尾元素添加margin-bottom 测试bug #3866-->
       <view class="item" :id="item.id" v-for="(item, index) in data.items" :class="index==9 ? 'v-margin-bottom': ''">
+        <view :id="'grand_child_' + item.id"></view>
         <text class="uni-text">{{item.label}}</text>
       </view>
     </scroll-view>
 
     <scroll-view class="uni-list">
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>点击状态栏回到顶部（仅iOS）</text>
-        <switch :checked="data.enableBackToTop" @change="data.enableBackToTop=!data.enableBackToTop"></switch>
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>是否显示滚动条</text>
-        <switch :checked="data.showScrollbar" @change="data.showScrollbar=!data.showScrollbar"></switch>
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>是否有反弹效果</text>
-        <switch :checked="data.bounces" @change="data.bounces=!data.bounces"></switch>
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>是否开启滚动时使用动画过渡</text>
-        <switch :checked="data.scrollWithAnimation" @change="data.scrollWithAnimation=!data.scrollWithAnimation"></switch>
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>是否横向滚动</text>
-        <switch :checked="data.scrollX" @change="changeDirectionX"></switch>
-      </view>
-      <view class="uni-list-cell uni-list-cell-padding">
-        <text>是否竖向滚动</text>
-        <switch :checked="data.scrollY" @change="changeDirectionY"></switch>
-      </view>
+      <boolean-data :value="data.enableBackToTop" title="点击状态栏回到顶部（仅iOS）"
+        @change="changeEnableBackToTop"></boolean-data>
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data :value="data.showScrollbar" title="是否显示滚动条"
+        @change="changeShowScrollbar"></boolean-data>
+      <boolean-data :value="data.bounces" title="是否开启回弹效果"
+        @change="handleBouncesChange"></boolean-data>
+      <!-- #endif -->
+      <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      <boolean-data :value="data.androidOverscroll" :disabled="!data.bounces"
+        title="是否开启弹簧回弹效果（仅Android蒸汽模式）" @change="handleAndroidOverscrollChange"></boolean-data>
+      <!-- #endif -->
+      <boolean-data :value="data.scrollWithAnimation" title="是否开启滚动时使用动画过渡"
+        @change="changeScrollWithAnimation"></boolean-data>
+      <boolean-data :value="data.scrollX" title="是否横向滚动" @change="changeDirectionX"></boolean-data>
+      <boolean-data :value="data.scrollY" title="是否竖向滚动" @change="changeDirectionY"></boolean-data>
       <view class="uni-slider uni-list-cell-padding">
         <text>拖动设置scroll-top</text>
       </view>
@@ -81,7 +78,7 @@
   <!-- </view> -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
 type Item = {
@@ -94,6 +91,7 @@ type DataType = {
   scrollX: boolean,
   scrollY: boolean,
   bounces: boolean,
+  androidOverscroll: boolean,
   scrollTop: number,
   scrollLeft: number,
   scrollChangeTop: number,
@@ -111,6 +109,7 @@ const data = reactive({
   scrollX: false,
   scrollY: true,
   bounces: false,
+  androidOverscroll: false,
   scrollTop: 0,
   scrollLeft: 0,
   scrollChangeTop: 0,
@@ -133,20 +132,28 @@ function handleChangeScrollTop(e : UniSliderChangeEvent) {
   data.scrollTop = e.detail.value
 }
 
-function changeDirectionX() {
-  data.scrollX = !data.scrollX
-  if (data.scrollX) {
-    data.scrollY = false
-  }
+function changeEnableBackToTop(value : boolean) {
+  data.enableBackToTop = value
+}
+
+function changeShowScrollbar(value : boolean) {
+  data.showScrollbar = value
+}
+
+function changeScrollWithAnimation(value : boolean) {
+  data.scrollWithAnimation = value
+}
+
+function changeDirectionX(value : boolean) {
+  data.scrollX = value
+  data.scrollY = !value
   data.scrollTop = 0
   data.scrollLeft = 0
 }
 
-function changeDirectionY() {
-  data.scrollY = !data.scrollY
-  if (data.scrollY) {
-    data.scrollX = false
-  }
+function changeDirectionY(value : boolean) {
+  data.scrollY = value
+  data.scrollX = !value
   data.scrollTop = 0
   data.scrollLeft = 0
 }
@@ -178,6 +185,17 @@ function handleLowerThresholdInput(e : InputEvent) {
   } else {
     data.lowerThreshold = parseInt(e.detail.value)
   }
+}
+
+function handleBouncesChange(value : boolean) {
+  data.bounces = value
+  if(!data.bounces){
+    data.androidOverscroll = false;
+  }
+}
+
+function handleAndroidOverscrollChange(value : boolean) {
+  data.androidOverscroll = value
 }
 
 function scrolltoupper() {
@@ -291,5 +309,13 @@ defineExpose({
   /*自动化测试专用*/
   .h-margin-right {
     margin-right: 50px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uni-list-cell-input {
+      border-color: rgba(255, 255, 255, 0.1);
+      background-color: #2d2d2d;
+      color: #ffffff;
+    }
   }
 </style>

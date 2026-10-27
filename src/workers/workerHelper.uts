@@ -1,0 +1,7 @@
+export function formatWorkerResponse(input : string) : string {
+  const inputNumber = parseInt(input)
+  if (isNaN(inputNumber)) {
+    return `输入"${input}"不是有效数字`
+  }
+  return (inputNumber + 1).toString()
+}

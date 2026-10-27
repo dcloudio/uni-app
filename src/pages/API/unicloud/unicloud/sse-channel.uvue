@@ -1,20 +1,14 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
+  <view>
+    <page-head :title="title"></page-head>
+    <button @click="receiveMessage">接收服务端通知</button>
     <view>
-      <page-head :title="title"></page-head>
-      <button @click="receiveMessage">接收服务端通知</button>
-      <view>
-        <view v-for="item in data.messages">{{item}}</view>
-      </view>
+      <view v-for="item in data.messages">{{item}}</view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type DataType = {
   messages: Array<string>,
@@ -48,13 +42,12 @@ async function receiveMessage() {
     console.log('sseChannel error: ' + error.message)
   })
   await sseChannel.open()
-  const res = await uniCloud.callFunction({
+  await uniCloud.callFunction({
     name: 'sse',
     data: {
       sseChannel
     }
   } as UniCloudCallFunctionOptions)
-  console.log(res)
 }
 
 defineExpose({

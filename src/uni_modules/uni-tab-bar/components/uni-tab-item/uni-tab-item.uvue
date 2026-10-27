@@ -1,0 +1,187 @@
+<template>
+	<view class="uni-tab-list-item-root" @click.stop="handleClick">
+		<slot></slot>
+		<text v-if="props.badgeText != null && props.badgeText != '0' && props.badgeText != ''" class="uni-tab-list-item-badge-position uni-tab-list-item-badge-text" :class="props.badgeClass">{{ props.badgeText }}</text>
+		<view v-else-if="props.badgeText != null && props.badgeText != '0'" class="uni-tab-list-item-badge-position uni-tab-list-item-badge-dot" :class="props.badgeClass"></view>
+	</view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * 选项卡项
+   * @description 选项卡项组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+defineOptions({
+		externalClasses: ['badge-class']
+})
+
+// 定义组件属性
+type Props = {
+	/**
+	 * @description badge 的内容
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	badgeText?: string,
+	/**
+	 * @description badge 的样式类
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 */
+	badgeClass?: string.ClassString,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	badgeClass: ''
+})
+
+const registerItem = inject<() => number>('uniTabListRegisterItem', () => 0)
+const changeTab = inject<(index: number) => void>('uniTabListChangeTab', (index: number) => {})
+const itemIndex = ref<number>(-1)
+
+
+onMounted(() => {
+	itemIndex.value = registerItem()
+})
+
+function handleClick() : void {
+	if (itemIndex.value >= 0) {
+		changeTab(itemIndex.value)
+	}
+}
+</script>
+
+<style>
+.uni-tab-list-item-root {
+	flex: 1;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	overflow: visible;
+}
+
+.uni-tab-list-item-badge-position {
+	position: absolute;
+	top: 7px;
+	left: 50%;
+	transform: translate(25%, -50%);
+}
+
+.uni-tab-list-item-badge-text {
+	background-color: rgb(225, 80, 80);
+	min-width: 14px;
+	height: 14px;
+	line-height: 14px;
+	border-radius: 7px;
+	font-size: 10px;
+	color: white;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.uni-tab-list-item-badge-dot {
+	background-color: rgb(225, 80, 80);
+	width: 8px;
+	height: 8px;
+	border-radius: 4px;
+	margin-left: 7px;
+}
+</style>

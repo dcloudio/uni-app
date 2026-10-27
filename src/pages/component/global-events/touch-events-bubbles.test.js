@@ -19,7 +19,7 @@ describe('touch-events-test', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
-    await page.waitFor(500);
+    await page.waitFor(2000);
   })
 
   it('touch-event-bubbles-test1', async () => {
@@ -50,8 +50,8 @@ describe('touch-events-test', () => {
     if (isHarmony && viewEleRect.x < 20) {
       viewEleRect.x = 144
     }
-    let x = viewEleRect.x + 10
-    let y = viewEleRect.y + 25
+    let x = Math.ceil(viewEleRect.x + 10)
+    let y = Math.ceil(viewEleRect.y + 25)
 
     // 滑动事件
     await program.swipe({

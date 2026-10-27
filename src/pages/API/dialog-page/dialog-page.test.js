@@ -1,4 +1,4 @@
-jest.setTimeout(50000)
+jest.setTimeout(30000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
@@ -8,6 +8,8 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
+const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
@@ -26,9 +28,9 @@ describe('dialog page', () => {
   let lifecycleNum;
 
   const screenShotArea = {
-    x: 342,
+    x: 355,
     y:18,
-    width: 40,
+    width: 25,
     height: 20
   };
   if (isIos) {
@@ -42,7 +44,7 @@ describe('dialog page', () => {
     screenShotArea.height = 16
   } else if (platformInfo.startsWith('android 8')) {
     screenShotArea.y = 4
-    screenShotArea.x = 336
+    screenShotArea.x = platformInfo.includes('480x800') ? 220 : 336
   } else if (platformInfo.startsWith('android 12')) {
     screenShotArea.x = 336
     screenShotArea.y = 3
@@ -56,38 +58,33 @@ describe('dialog page', () => {
   }
 
   beforeAll(async () => {
+    page = await program.reLaunch(FIRST_PAGE_PATH)
+    await page.waitFor('view');
+
+    if (isAndroid) {
+      await program.adbCommand('settings put secure immersive_mode_confirmations confirmed')
+    }
+
     const windowInfo = await program.callUniMethod('getWindowInfo');
     let topSafeArea = windowInfo.safeAreaInsets.top;
-    if (isAppWebView) {
-      if (isIos) {
-        topSafeArea = 59
-      } else if (isAndroid) {
-        topSafeArea = 24
-        if (platformInfo.startsWith('android 5')) {
-          topSafeArea = 25
-        } else if (platformInfo.startsWith('android 11')) {
-          topSafeArea = 52
-        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
-          topSafeArea = 49
-        }
-      } else if (isHarmony) {
-        // mate 60
-        // topSafeArea = 33
-        // mate 60 pro
-        topSafeArea = 38
-      }
-    }
+    const top = topSafeArea + 44
+    const bottom = windowInfo.safeArea.bottom
+    const left = windowInfo.safeArea.left
+    const right = windowInfo.safeArea.right
     deviceShotOptions = {
       deviceShot: true,
       area: {
-        x: 0,
-        y: topSafeArea + 44,
+        x: left,
+        y: top,
+        width: right - left,
+        height: bottom - top
       },
     };
 
-    page = await program.reLaunch(FIRST_PAGE_PATH)
-    await page.waitFor('view');
     initLifeCycleNum = await page.callMethod('getLifeCycleNum');
+  });
+
+  beforeEach(async () => {
     await page.callMethod('setLifeCycleNum', 0)
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(0)
@@ -119,11 +116,11 @@ describe('dialog page', () => {
     if(isWeb){
       expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
     }
-    if(isIos || isAndroid){
+    if(isApp){
       expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
     }
     pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
-    expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
+    expect(await pageSafeAreaInsetsLeft.text()).toBe((isHarmony && isPad) ? '34' : '0')
     pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
     expect(await pageSafeAreaInsetsRight.text()).toBe('0')
 
@@ -146,7 +143,6 @@ describe('dialog page', () => {
     await page.callMethod('closeDialog');
     lifecycleNum = await page.callMethod('getLifeCycleNum');
     expect(lifecycleNum).toBe(2);
-    await page.callMethod('setLifeCycleNum', 0);
   })
 
   // for issue 19676
@@ -169,7 +165,6 @@ describe('dialog page', () => {
       lifecycleNum = await page.callMethod('getLifeCycleNum')
       // closeDialog callback +2 dialog1-1 onUnload -5
       expect(lifecycleNum).toBe(-1)
-      await page.callMethod('setLifeCycleNum', 0)
     });
   }
 
@@ -187,7 +182,6 @@ describe('dialog page', () => {
     // 1. openDialogPage success & complete callback
     // 2. dialog page 生命周期
     expect(lifecycleNum).toBe(7)
-    await page.callMethod('setLifeCycleNum', 0)
 
     const dialogPageRoute = await page.callMethod('getDialogPageRoute')
     expect(dialogPageRoute).toBe('pages/API/dialog-page/dialog-1')
@@ -201,7 +195,9 @@ describe('dialog page', () => {
     dialogPageStyle = await page.callMethod('dialogPageGetPageStyle')
     expect(dialogPageStyle.backgroundColorContent).toBe('red')
     expect(await page.callMethod('dialogPageCheckGetElementById')).toBe(true)
-    expect(await page.callMethod('dialogCheckGetAndroidView')).toBe(isAndroid)
+    if (!isVapor) {
+      expect(await page.callMethod('dialogCheckGetAndroidView')).toBe(isAndroid)
+    }
     expect(await page.callMethod('dialogCheckGetIOSView')).toBe(false)
     expect(await page.callMethod('dialogCheckGetHTMLElement')).toBe(isWeb)
   })
@@ -214,14 +210,12 @@ describe('dialog page', () => {
     // dialogPage onUnload 应被触发
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(-3)
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('openDialog with wrong path', async () => {
     await page.callMethod('openDialog1WrongPath')
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(-3)
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('navigateTo nextPage & open Dialog', async () => {
@@ -240,7 +234,6 @@ describe('dialog page', () => {
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(-4)
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('dialog1 navigateBack', async () => {
@@ -253,7 +246,6 @@ describe('dialog page', () => {
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // onBackPress 生命周期应该被触发
     expect(lifecycleNum).toBe(1)
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('open dialog2', async () => {
@@ -265,7 +257,6 @@ describe('dialog page', () => {
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // 应触发前一个 dialogPage 的 onHide
     expect(lifecycleNum).toBe(4)
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('closeDialogPage', async () => {
@@ -278,7 +269,6 @@ describe('dialog page', () => {
 
     const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('open multiple dialog page', async () => {
@@ -301,7 +291,6 @@ describe('dialog page', () => {
     expect(image2).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(8)
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('openDialogPage to home page', async () => {
@@ -312,8 +301,8 @@ describe('dialog page', () => {
       await page.waitFor(2000)
     }
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(4)
-    await page.callMethod('setLifeCycleNum', 0)
+    // onload + 2 onReady +1 onShow 不应触发，因为 dialogPage 未在当前页打开
+    expect(lifecycleNum).toBe(3)
   })
 
   it('dialog2 navigateBack', async () => {
@@ -323,9 +312,8 @@ describe('dialog page', () => {
     const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    // dialogPage2 onBackPress +1 dialogPage1 show +1 dialogPage unload -5*2 firstPage show +10
-    expect(lifecycleNum).toBe(2)
-    await page.callMethod('setLifeCycleNum', 0)
+    // dialogPage2 onBackPress +1 dialogPage1 show +1 dialogPage unload -5*2 firstPage show +10 firstPage 中的 dialog1 show + 1
+    expect(lifecycleNum).toBe(3)
   })
 
   it('close specified dialogPage', async () => {
@@ -369,7 +357,6 @@ describe('dialog page', () => {
     expect(image5).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(2)
-    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('check triggerParentHide', async () => {
@@ -533,7 +520,6 @@ describe('dialog page', () => {
     expect(image).toSaveImageSnapshot()
     await page.waitFor(2000);
     await page.callMethod('closeDialogSimple')
-    await page.callMethod('setLifeCycleNum', 0);
   })
 
   if (isAndroid) {
@@ -574,13 +560,10 @@ describe('dialog page', () => {
           androidThreeButtonNavigationTranslucent: false
         });
         await page.waitFor(2000);
-        const image = await program.screenshot({
-          deviceShot: true
-        });
+        const image = await program.screenshot(deviceShotOptions);
         expect(image).toSaveImageSnapshot();
         await page.waitFor(2000);
         await page.callMethod('closeDialogSimple');
-        await page.callMethod('setLifeCycleNum', 0);
     });
   }
 
@@ -593,7 +576,6 @@ describe('dialog page', () => {
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(7)
     await page.callMethod('closeDialogSimple');
-    await page.callMethod('setLifeCycleNum', 0);
 
   })
 
@@ -610,11 +592,10 @@ describe('dialog page', () => {
       });
       expect(image).toSaveImageSnapshot();
       await page.callMethod('closeDialogSimple');
-      await page.callMethod('setLifeCycleNum', 0);
     })
   }
 
-  if (isAndroid) {
+  if (isAndroid && !isVapor) {
     it ('open dialogPage in tabBar', async () => {
       const tabPage = await program.reLaunch('/pages/tabBar/API');
       await tabPage.callMethod('testOpenDialogPage');
@@ -625,6 +606,33 @@ describe('dialog page', () => {
       page = await program.reLaunch(FIRST_PAGE_PATH);
     });
   }
+
+  it ('open dialogPage & go another page', async () => {
+    await page.callMethod('openDialog1');
+    await page.waitFor(1000);
+    if (isWeb) {
+      await page.waitFor(2000);
+    }
+
+    lifecycleNum = await page.callMethod('getLifeCycleNum');
+    expect(lifecycleNum).toBe(7);
+    await page.callMethod('setLifeCycleNum', 0);
+
+    await page.callMethod('goNextPage');
+    await page.waitFor(1000);
+    if (isWeb) {
+      await page.waitFor(2000);
+    }
+
+    page = await program.currentPage();
+    expect(page.path).toBe(NEXT_PAGE_PATH.substring(1));
+    lifecycleNum = await page.callMethod('getLifeCycleNum');
+    // 页面跳转后，父页面 onPageHide 和 dialogPage onHide 都应该被触发
+    expect(lifecycleNum).toBe(-11);
+
+    page = await program.reLaunch(FIRST_PAGE_PATH);
+    await page.waitFor('view');
+  });
 
   afterAll(async () => {
     await page.callMethod('setLifeCycleNum', initLifeCycleNum)

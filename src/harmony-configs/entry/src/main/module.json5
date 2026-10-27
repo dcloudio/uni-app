@@ -10,7 +10,8 @@
       "2in1"
     ],
     "querySchemes": [
-      "mailto"
+      "mailto",
+      "weixin"
     ],
     "deliveryWithInstall": true,
     "installationFree": false,
@@ -140,6 +141,20 @@
           "abilities": [
             "EntryAbility"
           ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.ACCELEROMETER"
+      },
+      {
+        "name": "ohos.permission.GYROSCOPE"
+      },
+      {
+        "name": "ohos.permission.WRITE_CALENDAR",
+        "reason": "$string:write_calendar_reason",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
           "when": "inuse"
         }
       }

@@ -1,0 +1,44 @@
+<template>
+	<view class="content-page">
+		<text class="page-title">通知</text>
+		<text class="page-text">这是通知页的内容</text>
+		<text class="page-text">当前索引: {{ activeIndex }}</text>
+	</view>
+</template>
+
+<script setup lang="ts">
+import { inject, ref } from 'vue'
+import { Ref } from 'vue'
+
+// 从父组件注入当前激活的索引
+const activeIndex = inject<Ref<number>>('uniTabBarCurrentIndex', ref(0))
+</script>
+
+<style>
+.content-page {
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	padding: 20px;
+}
+
+.page-title {
+	font-size: 28px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.page-text {
+	font-size: 16px;
+	color: #666;
+	margin-bottom: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+	.page-title { color: #ffffff; }
+	.page-text { color: #a0a0a0; }
+}
+</style>

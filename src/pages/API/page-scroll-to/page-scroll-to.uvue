@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1" scroll-with-animation="true">
-  <!-- #endif -->
     <view class="uni-padding-wrap">
       <page-head :title="title"></page-head>
       <button type="default" class="btn-scrollTo" @click="scrollTo">
@@ -18,12 +15,9 @@
         <view class="uni-list-cell list-item">{{ index2 }}</view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const title = ref('pageScrollTo')
 
   const scrollTo = () => {
@@ -56,5 +50,10 @@
   .list-item {
     height: 100px;
     padding-left: 30px;
+  }
+
+  .list-item,
+  .custom-element {
+    color: var(--text-color, #333333);
   }
 </style>

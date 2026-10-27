@@ -1,0 +1,16 @@
+{
+  "name": "uni-id-common",
+  "version": "1.0.16",
+  "description": "uni-id token生成、校验、刷新",
+  "main": "index.js",
+  "homepage": "https://uniapp.dcloud.io/uniCloud/uni-id-common.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitee.com/dcloud/uni-id-common.git"
+  },
+  "author": "DCloud",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "uni-config-center": "file:../../../../../uni-config-center/uniCloud/cloudfunctions/common/uni-config-center"
+  }
+}

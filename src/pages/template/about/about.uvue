@@ -1,5 +1,5 @@
 <template>
-  <scroll-view style="flex:1;" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <scroll-view style="flex:1;">
     <view class="content">
       <image class="qrcode" src="https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png"></image>
       <text class="tip">扫码体验 uni-app x</text>
@@ -35,24 +35,25 @@
         </view>
       </view>
     </view>
+
+    <button class="clear" @click="clearCache">清空缓存</button>
 <!-- #endif -->
     <text class="version">当前版本：{{version}}</text>
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+/**
+ * @description: 展示 hello uni-app x 项目的二维码、源码获取方式、协议入口和当前版本信息。
+ * @logic: 页面根据平台显示源码地址、服务协议与隐私政策入口，并在加载时读取当前应用版本号展示在底部。
+ * @optimization: 通过统一的 `openUrl` 方法处理不同平台下的链接打开或复制逻辑，减少页面内重复的平台分支代码。
+ */
 
 // #ifdef APP
 import { openSchema } from '@/uni_modules/uts-openSchema'
 // #endif
-import { state } from '@/store/index.uts'
-
 const version = ref('')
 const arrowRightIcon = '/static/icons/arrow-right.png'
-
-const isDarkMode = computed((): boolean => {
-  return state.isDarkMode
-})
 
 function openUrl(url:string) {
   // #ifdef APP
@@ -67,6 +68,35 @@ function openUrl(url:string) {
   })
   // #endif
 }
+
+// #ifdef APP
+function clearCache() {
+  const fileManager = uni.getFileSystemManager()
+  // TODO 3个App平台表现不一致 @颜伊林
+  fileManager.rmdir({
+    "dirPath":uni.env.CACHE_PATH,
+    "recursive":true,
+    success: (res : FileManagerSuccessResult) => {
+      console.log("rmdir success", res)
+      uni.showToast({
+        title:"清空缓存目录成功",
+        icon:"success"
+      })
+    },
+    fail: (res : IFileSystemManagerFail) => {
+      console.error('清空缓存目录失败', res)
+      uni.showModal({
+      	title: '清空缓存目录失败',
+      	content: res.errMsg,
+      	showCancel: false
+      })
+    },
+    complete: (res : any) => {
+      console.log("rmdir complete", res)
+    }
+  })
+}
+// #endif
 
 onLoad(() => {
   version.value = uni.getAppBaseInfo().appVersion??''
@@ -134,5 +164,9 @@ onLoad(() => {
 }
 .item {
   border-radius: 6px;
+}
+.clear {
+  margin-left: 18px;
+  margin-right: 18px;
 }
 </style>

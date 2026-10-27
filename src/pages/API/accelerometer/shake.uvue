@@ -1,0 +1,198 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h3">摇一摇</text>
+		<text>握住手机并快速摇晃，会调用加速计传感器，依据加速度变化检测动作，并弹出提示。</text>
+
+		<text class="log-text margin-v">{{ statusText }}</text>
+		<view class="uni-row margin-v">
+			<view class="metric-box">
+				<text>瞬时变化</text>
+				<text class="metric-value">{{ deltaText }}</text>
+			</view>
+			<view class="metric-box metric-box-space">
+				<text>触发次数</text>
+				<text class="metric-value">{{ shakeCountText }}</text>
+			</view>
+		</view>
+		
+		<view class="sensitivity-header">
+			<text>灵敏度</text>
+			<text class="sensitivity-value">{{ sensitivityLabel }}</text>
+		</view>
+		<slider class="sensitivity-slider" :value="sensitivityValue" :min="1" :max="5" :step="1"
+			@changing="onSensitivityChanging" @change="onSensitivityChange" />
+		<text class="sensitivity-tip">当前触发阈值：{{ thresholdText }}，数值越低灵敏度越高，越容易触发。</text>
+
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+	const statusText = ref('正在初始化传感器...')
+	const deltaText = ref('0.00')
+	const shakeCountText = ref('0')
+	const thresholdText = ref('1.35')
+	const sensitivityLabel = ref('中')
+	const sensitivityValue = ref(3)
+
+	const shakeCooldown = 1200
+	let lastMagnitude : number | null = null
+	let lastShakeTime = 0
+	let shakeCount = 0
+	let shakeThreshold = 1.35
+
+	function formatNumber(value : number) : string {
+		return value.toFixed(2)
+	}
+
+	function createMagnitude(x : number, y : number, z : number) : number {
+		return Math.sqrt(x * x + y * y + z * z)
+	}
+
+	function getSensitivityLabel(value : number) : string {
+		if (value <= 1) {
+			return '很低'
+		}
+		if (value == 2) {
+			return '较低'
+		}
+		if (value == 3) {
+			return '中'
+		}
+		if (value == 4) {
+			return '较高'
+		}
+		return '很高'
+	}
+
+	function syncSensitivity(value : number) : void {
+		sensitivityValue.value = value
+		shakeThreshold = 2.1 - value * 0.25
+		thresholdText.value = formatNumber(shakeThreshold)
+		sensitivityLabel.value = getSensitivityLabel(value)
+	}
+
+	function triggerShake(now : number) : void {
+		lastShakeTime = now
+		shakeCount = shakeCount + 1
+		shakeCountText.value = `${shakeCount}`
+		statusText.value = '检测成功，继续摇晃可再次触发'
+		uni.showToast({
+			title: '检测到摇一摇',
+			icon: 'none'
+		})
+	}
+
+	const accelerometerListener : OnAccelerometerChangeCallback = (result : OnAccelerometerChangeCallbackResult) => {
+		const magnitude = createMagnitude(result.x, result.y, result.z)
+		if (lastMagnitude == null) {
+			lastMagnitude = magnitude
+			statusText.value = '请开始摇晃手机'
+			return
+		}
+
+		const delta = Math.abs(magnitude - (lastMagnitude as number))
+		deltaText.value = formatNumber(delta)
+		lastMagnitude = magnitude
+
+		const now = Date.now()
+		const passed = now - lastShakeTime
+		if (delta > shakeThreshold && passed > shakeCooldown) {
+			triggerShake(now)
+		}
+	}
+
+	function onSensitivityChanging(event : UniSliderChangeEvent) : void {
+		syncSensitivity(event.detail.value)
+	}
+
+	function onSensitivityChange(event : UniSliderChangeEvent) : void {
+		syncSensitivity(event.detail.value)
+		statusText.value = `当前灵敏度：${sensitivityLabel.value}，请继续摇晃手机`
+	}
+
+	function startListen() : void {
+		uni.startAccelerometer({
+			interval: 'game',
+			success: () => {
+				statusText.value = '请开始摇晃手机'
+			},
+			fail: (error) => {
+				statusText.value = error.errMsg != null ? error.errMsg : '传感器启动失败'
+			}
+		})
+	}
+
+	function stopListen() : void {
+		uni.stopAccelerometer({
+			success: () => {
+				statusText.value = '已停止监听'
+			}
+		})
+	}
+
+	onReady(() => {
+		syncSensitivity(sensitivityValue.value)
+		uni.onAccelerometerChange(accelerometerListener)
+		startListen()
+	})
+
+	onShow(() => {
+		startListen()
+	})
+
+	onHide(() => {
+		stopListen()
+	})
+
+	onUnload(() => {
+		uni.offAccelerometerChange(accelerometerListener)
+		uni.stopAccelerometer()
+	})
+</script>
+
+<style>
+	.card-space {
+		margin: 5px;
+	}
+
+	.margin-v {
+	  margin: 5px 0;
+	}
+	.log-text {
+	  padding: 10px;
+		font-size: 14px;
+	  border: 1px solid #ccc;
+	}
+
+	.metric-box {
+		flex: 1;
+		padding: 14px;
+	}
+
+	.metric-box-space {
+		margin-left: 10px;
+	}
+
+	.metric-value {
+		margin-top: 4px;
+		font-size: 30px;
+	}
+
+	.sensitivity-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.sensitivity-slider {
+		margin: 15px;
+	}
+
+	
+
+</style>

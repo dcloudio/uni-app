@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!-- 视频组件 -->
-		<video id="myVideo1" :src="src" :controls="true" autoplay="false" class="video"  @play="onVideoPlay">
+		<video id="myVideo1" :src="src" :controls="true" :autoplay="false" class="video"  @play="onVideoPlay">
 			<!-- 信息流广告 - 覆盖在视频上方 -->
 			<view v-if="adVisible" class="ad-container">
 				<!-- 1204745639 1000000001-->
@@ -11,7 +11,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	const src = ref("https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4")
 	let showAd: boolean = false
 	const adVisible = ref(false)

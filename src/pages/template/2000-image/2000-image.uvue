@@ -12,17 +12,16 @@
     </view>
 		<view>
         <view v-if="show" style="flex-direction: row;" v-for="(_,index) in 50" :key="index" flatten>
-            <image v-for="(_,i) in 40" :key="index+'-'+i" style="width: 5px; height: 5px;margin: 0.5px;" flatten src="/static/test-image/logo.png"></image>
-            <!-- <view v-for="(_,i) in 40" :key="index+'-'+i"  style="width: 5px; height: 5px;margin: 0.5px;" flatten></view> -->
+           <image v-for="(_,i) in 40" :key="index+'-'+i" style="width: 5px; height: 5px;margin: 0.5px;" flatten src="/static/test-image/logo.png"></image>
         </view>
     </view>
 
 </template>
 
-<script setup>
-    var isBackPress = false;
+<script setup lang="ts">
+    let isBackPress = false;
     const show = ref(false);
-    var startime = Date.now();
+    let startime = Date.now();
     const ShowEvent = (() => {
 			startime = Date.now();
       show.value = !show.value

@@ -1,0 +1,75 @@
+{
+  "id": "uts-openSchema",
+  "displayName": "uts-openSchema",
+  "version": "1.0.0",
+  "description": "在 Android、iOS、HarmonyOS 上打开链接的 UTS API",
+  "keywords": [
+    "uts-openSchema"
+  ],
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "engines": {
+    "HBuilderX": "^4.0",
+    "uni-app-x": "^4.75"
+  },
+  "directories": {
+    "example": "../../temps/example_temps"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "darkmode": "x",
+    "i18n": "x",
+    "widescreen": "x"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "√",
+        "aliyun": "√",
+        "alipay": "√"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": "x",
+            "chrome": "x"
+          },
+          "app": {
+            "android": {
+              "extVersion": "1.0.0",
+              "minVersion": "21"
+            },
+            "ios": {
+              "extVersion": "1.0.0",
+              "minVersion": "12"
+            },
+            "harmony": {
+              "extVersion": "1.1.2",
+              "minVersion": "5.0.0"
+            }
+          },
+          "mp": {
+            "weixin": "x"
+          }
+        }
+      }
+    }
+  }
+}

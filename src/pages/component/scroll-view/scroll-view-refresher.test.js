@@ -4,16 +4,17 @@ const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 describe('component-native-scroll-view-refresher', () => {
-  if (isAppWebView) {
-    it('other platform', () => {
+  if (isMP || isAppWebView) {
+    it('skip', () => {
       expect(1).toBe(1)
     })
     return
   }
 
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape' || isPad) {
     it('跳过横屏模式', () => {
       expect(1).toBe(1)
     })

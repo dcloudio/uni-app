@@ -13,15 +13,17 @@
     <button class="btnstyle" type="primary" @tap="testReadFile" id="testReadFile">读取Static中的文件</button>
     <button class="btnstyle" type="primary" @tap="testReadDir" id="testReadDir">读取Static中filemanager目录内文件列表</button>
 
+    <!-- #ifndef MP-ALIPAY -->
     <button class="btnstyle" type="primary" @tap="testFstatFile" id="testFstatFile">获取Static中的文件状态信息</button>
     <button class="btnstyle" type="primary" @tap="testReadZipEntry" id="testReadZipEntry">获取Static中压缩包内的文件</button>
+    <!-- #endif -->
 
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   
 
   type DataType = {
@@ -45,6 +47,7 @@
     return fd
   }
 
+  // #ifndef MP-ALIPAY
   function testReadZipEntry() {
     const fileManager = uni.getFileSystemManager()
     fileManager.readZipEntry({
@@ -87,6 +90,7 @@
       }
     })
   }
+  // #endif
 
   function testAccessFile() {
     const fileManager = uni.getFileSystemManager()
@@ -203,8 +207,10 @@
     testCopyFile,
     testReadFile,
     testReadDir,
+    // #ifndef MP-ALIPAY
     testFstatFile,
     testReadZipEntry
+    // #endif
   })
 </script>
 

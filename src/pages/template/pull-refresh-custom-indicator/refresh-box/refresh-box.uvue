@@ -1,0 +1,50 @@
+<template>
+    <list-item slot="refresher" class="refresh-box">
+      <image v-if="state == 2" class="refresh-icon" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/refresh-box-run.gif" mode="widthFix"></image>
+      <text class="tip-text">{{text[state]}}</text>
+    </list-item>
+</template>
+
+<script setup lang="ts">
+  /**
+   * @description: 作为自定义下拉刷新页面的刷新指示器子组件，负责展示不同刷新状态下的图标与文案。
+   * @logic: 组件根据父页面传入的刷新状态，切换对应的提示文本和刷新动画展示。
+   * @optimization: 通过把刷新展示逻辑收敛到独立子组件中，避免父页面模板里重复处理多种刷新展示分支。
+   */
+  type Props = {
+    state: number
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    state: 0
+  })
+
+  const text = ['继续下拉执行刷新', '释放立即刷新', '刷新中', ""]
+</script>
+
+<style>
+  .refresh-box {
+    --refresh-box-text-color: #888;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 30px;
+  }
+
+  .refresh-icon {
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+  }
+
+  .tip-text {
+    color: var(--refresh-box-text-color, #888);
+    font-size: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .refresh-box {
+      --refresh-box-text-color: #a0a0a0;
+    }
+  }
+</style>

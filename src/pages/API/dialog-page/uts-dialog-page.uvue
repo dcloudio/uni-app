@@ -5,7 +5,7 @@
 
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import { testOpenDialogPage, testCloseDialogPage } from '@/uni_modules/uts-dialogpage'
 
 function doOpendDialogpage() {

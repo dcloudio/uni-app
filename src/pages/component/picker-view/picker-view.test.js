@@ -2,8 +2,11 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
+const isMpWeixin = platformInfo === 'mp-weixin'
+const isMpAlipay = platformInfo === 'mp-alipay'
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/component/picker-view/picker-view'
@@ -28,24 +31,33 @@ describe('PickerView.uvue', () => {
     await page.waitFor(500);
   }
 
+  async function getPickerViewValue() {
+    const value = await pickerViewEl.property('value')
+    return value == null ? await page.data('data.value') : value
+  }
+
+  function stringifyPickerViewValue(value) {
+    return Array.isArray(value) ? value.join(',') : String(value)
+  }
+
   it('value', async () => {
     await page.callMethod('setValue')
     await page.waitFor(1500)
-    const newValue1 = await pickerViewEl.property('value')
+    const newValue1 = await getPickerViewValue()
     // TODO
-    expect(newValue1.toString()).toEqual('0,1,30')
+    expect(stringifyPickerViewValue(newValue1)).toEqual('0,1,30')
     // 仅在App端，setValue可触发change事件
-    if (isAndroid || isIOS) {
+    if ((isAndroid && !isVapor) || (isIOS && !isVapor)) {
       const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([ 0, 1, 30 ])
     }
     await page.callMethod('setValue1')
     await page.waitFor(1500)
-    const newValue2 = await pickerViewEl.property('value')
+    const newValue2 = await getPickerViewValue()
     // TODO
-    expect(newValue2.toString()).toEqual('10,10,10')
-    if (isAndroid || isIOS) {
+    expect(stringifyPickerViewValue(newValue2)).toEqual('10,10,10')
+    if ((isAndroid && !isVapor) || (isIOS && !isVapor)) {
       const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([10, 10, 10])
@@ -61,7 +73,7 @@ describe('PickerView.uvue', () => {
 
   // indicatorStyle 属性在编译时被解析成了对象，在获取时和用户设置的值格式不一样 [object Object]
   // app-ios 同上
-  if (!isHarmony && !isIOS) {
+  if (!isHarmony && !isIOS && !isMpAlipay) {
     it('indicator-style', async () => {
       const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
       await page.callMethod('setIndicatorStyle',true)
@@ -73,8 +85,8 @@ describe('PickerView.uvue', () => {
     })
   }
 
-  if (isWeb || isMP) {
-    // indicator-class、mask-style、mask-class 仅web和MP支持
+  if (isWeb || isMpWeixin) {
+    // indicator-class、mask-style、mask-class 仅 web 和微信小程序支持
     it('indicator-class', async () => {
       //设置indicator-class
       await page.callMethod('setIndicatorClass',true)
@@ -99,7 +111,7 @@ describe('PickerView.uvue', () => {
     return
   }
 
-  if (!isAppWebView && !isMP && !isHarmony) {
+  if (!isAppWebView && !isMP && !isHarmony && !(isIOS && isVapor) && !(isAndroid && isVapor)) {
     it('mask-top-bottom-style', async () => {
       // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"

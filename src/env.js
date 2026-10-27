@@ -5,6 +5,10 @@ module.exports = {
         // "UNI_AUTOMATOR_APP_WEBVIEW": "true",
         // "UNI_WEB_SERVICE_URL": "http://xxx.com/xxx.html",
         // "UNI_AUTOMATOR_APP_WEBVIEW_SRC": "http://xxx.com/xxx.html"
+
+        // 控制是否输出运行时日志。
+        // ”UNI_AUTOMATOR_OUTPUT_RUNTIME_LOGS": "true",
+        // ”UNI_AUTOMATOR_OUTPUT_ABNORMAL_RUNTIME_LOGS": "true",
     },
     "compile": true,
     "h5": {

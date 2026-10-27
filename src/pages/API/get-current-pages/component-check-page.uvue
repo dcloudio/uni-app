@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="padding: 0 10px;">
       <button class="uni-common-mb component-check-page-btn" @click="check$page">
         component check $page
@@ -11,12 +8,9 @@
         <text class="check-page-res">{{checkPageRes}}</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const instance = getCurrentInstance()
 
   const checkPageRes = ref(false)

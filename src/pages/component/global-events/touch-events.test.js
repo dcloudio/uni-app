@@ -1,3 +1,5 @@
+jest.setTimeout(30000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isMP = platformInfo.startsWith('mp')
@@ -27,6 +29,7 @@ describe('touch-events-test', () => {
     expect(image).toSaveImageSnapshot();
   });
 
+  // iPad 没点到
   it('touchStart-tagName-touchCount', async () => {
     const pageData = await page.data('data')
     let iconRect = pageData.iconRect

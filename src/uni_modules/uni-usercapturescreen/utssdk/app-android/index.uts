@@ -1,7 +1,4 @@
 import { UTSAndroid } from "io.dcloud.uts";
-import ActivityCompat from "androidx.core.app.ActivityCompat";
-import Manifest from "android.Manifest";
-import PackageManager from "android.content.pm.PackageManager";
 import Build from "android.os.Build";
 import FileObserver from "android.os.FileObserver";
 import File from "java.io.File";
@@ -28,6 +25,7 @@ let listener : UserCaptureScreenCallback | null = null;
 /**
 	* android 文件监听实现
 	*/
+@UTSAndroid.Suppress("DEPRECATION")
 class ScreenFileObserver extends FileObserver {
 
 	/**
@@ -65,12 +63,28 @@ class ScreenFileObserver extends FileObserver {
 	* 开启截图监听
 	*/
 export const onUserCaptureScreen : OnUserCaptureScreen = function (callback : UserCaptureScreenCallback | null) {
+  	let permissions = new Array<string>()
+	if (UTSAndroid.getAppContext()!.getApplicationInfo().targetSdkVersion >= 33) {
+		permissions.push("android.permission.READ_MEDIA_IMAGES")
+	} else {
+    	permissions.push("android.permission.READ_EXTERNAL_STORAGE")
+  	}
 	// 检查相关权限是否已授予
-	if (ActivityCompat.checkSelfPermission(UTSAndroid.getAppContext()!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-		// 无权限，申请权限
-		ActivityCompat.requestPermissions(UTSAndroid.getUniActivity()!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1001);
-		return;
+	if (!UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permissions)) {
+		// 无权限，申请权限，授权成功后自动开启监听
+		UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissions, (allRight : boolean, grantedList : Array<string>) => {
+			if (allRight) {
+				startFileObserver(callback)
+			}
+		}, (_doNotAskAgain : boolean, _grantedList : Array<string>) => {
+			// 用户拒绝授权，不开启监听
+		})
+		return
 	}
+	startFileObserver(callback)
+}
+
+function startFileObserver(callback : UserCaptureScreenCallback | null) {
 	// 更新监听
 	listener = callback;
 
@@ -86,13 +100,13 @@ export const onUserCaptureScreen : OnUserCaptureScreen = function (callback : Us
 	observer?.stopWatching();
 	observer = new ScreenFileObserver(directory_screenshot.getPath());
 	observer?.startWatching();
-	
-	
+
+
 	UTSAndroid.onAppActivityDestroy(function(){
 		observer?.stopWatching()
 		observer = null
 	})
-	
+
 }
 
 /**

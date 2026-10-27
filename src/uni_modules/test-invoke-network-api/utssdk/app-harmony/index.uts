@@ -1,0 +1,67 @@
+import { CommonOptions } from '../interface.uts'
+
+
+export function testInovkeRequest(options : CommonOptions) : void {
+  uni.request({
+    url: "https://request.dcloud.net.cn/api/http/method/post",
+    method: "POST",
+    header: {
+      "Cookie": "token11222"
+    } as UTSJSONObject,
+    timeout: 6000,
+    sslVerify: false,
+    withCredentials: false,
+    dataType: 'json',
+    responseType: 'text',
+    data: {
+      "platform": {
+        "abc": "xyq"
+      },
+    },
+    firstIpv4: false,
+    success: (res) => {
+      options.success?.(res)
+    },
+    fail(e) {
+      options.fail?.(e)
+    },
+    complete: () => {},
+  })
+}
+
+export function testInovkeUploadFile(options : CommonOptions) : void {
+
+  const imageSrc = "/static/test-image/logo.png";
+  uni.uploadFile({
+    url: 'https://unidemo.dcloud.net.cn/upload',
+    files: [
+      {
+        name: "file1",
+        uri: imageSrc
+      },
+      {
+        name: "file2",
+        uri: imageSrc
+      }
+    ],
+    success: (res) => {
+      options.success?.(res)
+    },
+    fail: (err) => {
+      options.fail?.(err)
+    },
+  } as UploadFileOptions)
+}
+
+export function testInovkeDownloadFile(options : CommonOptions) : void {
+  uni.downloadFile({
+    url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+    filePath: `${uni.env.CACHE_PATH}/halo/world/`,
+    success(res) {
+      options.success?.(res)
+    },
+    fail(e) {
+      options.fail?.(e)
+    }
+  } as DownloadFileOptions);
+}

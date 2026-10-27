@@ -1,6 +1,15 @@
-const PAGE_PATH = '/pages/API/page-scroll-to/page-scroll-to'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('page-scroll-to', () => {
+  if ( isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
+  const PAGE_PATH = '/pages/API/page-scroll-to/page-scroll-to'
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

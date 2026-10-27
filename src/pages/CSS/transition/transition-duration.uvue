@@ -1,13 +1,17 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view>
       <text class="uni-title-text">view 组件 transition-duration：2s </text>
       <view :class="classValue"></view>
       <view class="button-container">
         <button class="button-item" @click="start">start</button>
         <button class="button-item" @click="reset">reset</button>
+      </view>
+
+      <text class="uni-title-text uni-common-mt">transition 简写 duration：500ms</text>
+      <view ref="durationOnlyRef" :class="durationOnlyClass" style="transition: 500ms;"></view>
+      <view class="button-container">
+        <button class="button-item" @click="durationOnlyStart">duration start</button>
+        <button class="button-item" @click="durationOnlyReset">duration reset</button>
       </view>
 
       <text class="uni-title-text uni-common-mt">text 组件 transition-duration: 2s</text>
@@ -32,7 +36,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition-duration </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -103,21 +107,21 @@
         <input-data :defaultValue="data.transitionDurationDynamic" title="transition-duration 自定义值" type="text" @confirm="inputChangeTransitionDuration"></input-data>
       </view>
 
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-duration: 2s</text>
-      <native-view :class="nativeViewClassValue"></native-view>
-      <view class="button-container">
-        <button class="button-item" @click="nativeViewStart">native-view start</button>
-        <button class="button-item" @click="nativeViewReset">native-view reset</button>
-      </view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-duration: 2s</text>
+        <test-native-view :class="nativeViewClassValue"></test-native-view>
+        <view class="button-container">
+          <button class="button-item" @click="nativeViewStart">native-view start</button>
+          <button class="button-item" @click="nativeViewReset">native-view reset</button>
+        </view>
+      <!-- #endif -->
 
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const classValue = ref('box')
+  const durationOnlyClass = ref('box')
   const textClassValue = ref('text-box')
   const imageClassValue = ref('image-box')
   const scrollViewClassValue = ref('scroll-view-box')
@@ -129,6 +133,14 @@
 
   const reset = () => {
     classValue.value = 'box'
+  }
+
+  const durationOnlyStart = () => {
+    durationOnlyClass.value = 'box duration-only-ani'
+  }
+
+  const durationOnlyReset = () => {
+    durationOnlyClass.value = 'box'
   }
 
   const textStart = () => {
@@ -165,12 +177,14 @@
 
   const jest_start = () => {
     start()
+    durationOnlyStart()
     textStart()
     imageStart()
   }
 
   const jest_reset = () => {
     reset()
+    durationOnlyReset()
     textReset()
     imageReset()
   }
@@ -193,6 +207,7 @@
   const textRefDynamicFlat = ref(null as UniTextElement | null)
   const imageRefDynamicFlat = ref(null as UniImageElement | null)
   const scrollViewRefDynamic = ref(null as UniElement | null)
+  const durationOnlyRef = ref(null as UniElement | null)
   const isExpandedDynamic = ref(false)
   const isExpandedDynamicText = ref(false)
   const isExpandedDynamicImage = ref(false)
@@ -213,6 +228,10 @@
     data.transitionDurationActualTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
     data.transitionDurationActualImage = imageRefDynamic.value?.style.getPropertyValue('transition-duration') ?? ''
     data.transitionDurationActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
+  }
+
+  const getDurationOnlyTransition = () => {
+    return durationOnlyRef.value?.style.getPropertyValue('transition-duration') ?? ''
   }
 
   const changeTransitionDurationDynamic = (value: string) => {
@@ -279,6 +298,7 @@
   defineExpose({
     jest_start,
     jest_reset,
+    getDurationOnlyTransition,
     data
   })
 
@@ -293,6 +313,10 @@
 
   .ani {
     transition-duration: 2s;
+    width: 300px;
+  }
+
+  .duration-only-ani {
     width: 300px;
   }
 

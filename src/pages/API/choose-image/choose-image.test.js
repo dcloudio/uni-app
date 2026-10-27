@@ -1,5 +1,15 @@
-let page;
-describe('web-clipboard', () => {
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
+describe('choose-image', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
+  let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/choose-image/choose-image')
     await page.waitFor('view');

@@ -16,7 +16,7 @@
   </list-view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   type Item = {
     id: number
     name: string
@@ -25,7 +25,6 @@
   }
   const list = ref<Item[]>([])
   function generateList() {
-    const types = [1, 2, 3]
     const startIndex = list.value.length + 1
     for (let i = 0; i < 50; i++) {
       const id = startIndex + i

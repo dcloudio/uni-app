@@ -30,8 +30,8 @@
 			:current="swiperCurrent"
 			@change="onSwiperChange"
 		>
-			<swiper-item v-for="(item, index) in swiperItems" :key="`${item.year}-${item.month}`">
-				<view class="calendar-grid" @click="onCalendarClick">
+			<swiper-item v-for="(item, index) in swiperItems" :key="`${item.year}-${item.month}`" class="calendar-swiper-item">
+				<view :id="'calendar-grid-' + index" class="calendar-grid" @click="onCalendarClick">
 					<text flatten
 						v-for="(day, dayIndex) in item.days"
 						:key="dayIndex"
@@ -49,7 +49,7 @@
 	</view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	/* var startTime = Date.now(); */
 	// #ifdef APP && VUE3-VAPOR
 	/* const insPage = getCurrentInstance().proxy.$page;
@@ -76,19 +76,36 @@
 		month: number
 		days: DayInfo[]
 	}
+  // 自动化测试
+	type CalendarVaporState = {
+		currentYear: number
+		currentMonth: number
+		selectedDate: string | null
+		selectedYear: number
+		selectedMonth: number
+		selectedDay: number
+		selectedWeekday: string
+		swiperCurrent: number
+		swiperItemCount: number
+		calendarWidth: number
+		calendarHeight: number
+		visibleDayCount: number
+		selectedDayCount: number
+	}
 
 	const weekdays = ['一', '二', '三', '四', '五', '六', '日']
 
-	// 中国法定节假日（2025年示例。实际使用需自行装载节假日数据）
+	// 中国法定节假日（2026年示例。实际使用需自行装载节假日数据）
 	const holidays = [
-		'2025-01-01',
-		'2025-01-28', '2025-01-29', '2025-01-30', '2025-01-31',
-		'2025-02-01', '2025-02-02', '2025-02-03', '2025-02-04',
-		'2025-04-04', '2025-04-05', '2025-04-06',
-		'2025-05-01', '2025-05-02', '2025-05-03',
-		'2025-05-31', '2025-06-01', '2025-06-02',
-		'2025-10-01', '2025-10-02', '2025-10-03',
-		'2025-10-04', '2025-10-05', '2025-10-06', '2025-10-07',
+		'2026-01-01', '2026-01-02', '2026-01-03',
+		'2026-02-15', '2026-02-16', '2026-02-17', '2026-02-18',
+		'2026-02-19', '2026-02-20', '2026-02-21', '2026-02-22', '2026-02-23',
+		'2026-04-04', '2026-04-05', '2026-04-06',
+		'2026-05-01', '2026-05-02', '2026-05-03', '2026-05-04', '2026-05-05',
+		'2026-06-19', '2026-06-20', '2026-06-21',
+		'2026-09-25', '2026-09-26', '2026-09-27',
+		'2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04',
+		'2026-10-05', '2026-10-06', '2026-10-07',
 	]
 
 	const today = new Date()
@@ -98,8 +115,19 @@
 
 	const swiperCurrent = ref(1)
 	const swiperItems = ref([] as SwiperItem[])
+	const calendarCellHeight = 60
+	const calendarHeight = 420
+	const calendarWidth = ref(uni.getWindowInfo().windowWidth)
 
 	let lastItemIndex = 1;  // 初始显示的是 index 1
+
+	function updateCalendarSize(width : number) {
+		const nextWidth = Math.floor(width)
+		if (nextWidth <= 0 || nextWidth == calendarWidth.value) {
+			return
+		}
+		calendarWidth.value = nextWidth
+	}
 
 	// Picker的值
 	const pickerValue = computed(() : string => {
@@ -309,6 +337,7 @@
 		const targetYear = currentItem.year
 		const targetMonth = currentItem.month
 
+		swiperCurrent.value = current
 		switchToMonth(targetYear, targetMonth, current)
 	}
 
@@ -331,10 +360,12 @@
 	}
 
 	// 日历点击事件（完全基于坐标计算，无需 data 属性）
-	function onCalendarClick(e : UniPointerEvent) {
+	async function onCalendarClick(e : UniPointerEvent) : Promise<void> {
 		const target = e.currentTarget as UniElement
+		const clientX = e.clientX
+		const clientY = e.clientY
 		// 获取容器宽度
-    const rect = target.getBoundingClientRect() // 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
+    const rect = await target.getBoundingClientRectAsync()! // 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
     // console.log(rect); //TODO 鸿蒙上连续滑动超过初始化的3个item后，这个事件不再触发@徐同印
 
     // const screenWidth = uni.getWindowInfo().screenWidth
@@ -342,16 +373,16 @@
 		const cellWidth = rect.width / 7
     // console.log(cellWidth2);
     // console.log(cellWidth);
-		const cellHeight = 60 //高度60在css中有重复定义，如需修改请同步修改。在不需要显示农历、假日名称等更多信息时，可以减少高度
+		const cellHeight = calendarCellHeight //高度60在css中有重复定义，如需修改请同步修改。在不需要显示农历、假日名称等更多信息时，可以减少高度
 
 		// 计算点击的列（0-6）
-    const col = Math.floor((e.clientX - rect.left) / cellWidth)
+    const col = Math.floor((clientX - rect.left) / cellWidth)
     // console.log(col2);
     // console.log(col);
 
 		// 获取日历容器（calendar-grid）的顶部位置
 		// 计算点击相对于容器顶部的位置
-		const clickY = e.clientY - rect.top
+		const clickY = clientY - rect.top
     // console.log('clickY: ',clickY);
 		// 计算点击的行（0-5）
 		const row = Math.floor(clickY / cellHeight)
@@ -386,12 +417,13 @@
 		}
 		const valueAsString = value as string
 		if (valueAsString.length > 2) {
-			const parts = valueAsString.split('-')
-			if (parts.length >= 2) {
+			const parts = valueAsString.split('/').join('-').split('-')
+			const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1)
+			if (!isNaN(date.getTime())) {
 				// 先归位，后更新数据，因为需要保持当前月在中间
 				swiperCurrent.value = 1
 				nextTick(() => {
-					switchToMonth(parseInt(parts[0]), parseInt(parts[1]), 1)
+					switchToMonth(date.getFullYear(), date.getMonth() + 1, 1)
 				})
 			}
 		}
@@ -440,12 +472,77 @@
 	// 初始化
 	selectedDate.value = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
 	initSwiperItems()
+
+  // 自动化测试
+	function jest_getState() : CalendarVaporState {
+		let visibleDayCount = 0
+		let selectedDayCount = 0
+
+		for (let i = 0; i < swiperItems.value.length; i++) {
+			const item = swiperItems.value[i]
+			for (let j = 0; j < item.days.length; j++) {
+				const day = item.days[j]
+				if (i == lastItemIndex && day.day > 0) {
+					visibleDayCount++
+				}
+				if (day.isSelected) {
+					selectedDayCount++
+				}
+			}
+		}
+
+		return {
+			currentYear: currentYear.value,
+			currentMonth: currentMonth.value,
+			selectedDate: selectedDate.value,
+			selectedYear: selectedYear.value,
+			selectedMonth: selectedMonth.value,
+			selectedDay: selectedDay.value,
+			selectedWeekday: selectedWeekday.value,
+			swiperCurrent: swiperCurrent.value,
+			swiperItemCount: swiperItems.value.length,
+			calendarWidth: calendarWidth.value,
+			calendarHeight: calendarHeight,
+			visibleDayCount: visibleDayCount,
+			selectedDayCount: selectedDayCount
+		}
+	}
+
+	function jest_pickMonth(value : string) : void {
+		swiperCurrent.value = 1
+		onPickerChange({
+			detail: {
+				value: value
+			}
+		} as UniPickerChangeEvent)
+	}
+
+	function jest_selectDay(day : number) : boolean {
+		const currentItem = swiperItems.value[lastItemIndex]
+		for (let i = 0; i < currentItem.days.length; i++) {
+			const dayInfo = currentItem.days[i]
+			if (dayInfo.day == day) {
+				const oldDate = selectedDate.value
+				selectedDate.value = dayInfo.date
+				updateSelectedStateOptimized(oldDate, dayInfo.date)
+				return true
+			}
+		}
+		return false
+	}
+
+	defineExpose({
+		prevMonth,
+		nextMonth,
+		jest_getState,
+		jest_pickMonth,
+		jest_selectDay
+	})
 </script>
 
 <style>
 	.calendar-container {
 		flex: 1;
-		background-color: #f5f5f5;
 	}
 
 	.header-selected {
@@ -476,12 +573,12 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 20px 30px;
-		background-color: #ffffff;
+		background-color: var(--list-background-color, #ffffff);
 	}
 
 	.arrow-btn {
 		font-size: 32px;
-		color: #333333;
+		color: var(--text-color, #333333);
 		width: 40px;
 		height: 40px;
 		text-align: center;
@@ -490,13 +587,13 @@
 
 	.month-text {
 		font-size: 18px;
-		color: #333333;
+		color: var(--text-color, #333333);
 		font-weight: 500;
 	}
 
 	.weekdays {
 		flex-direction: row;
-		background-color: #ffffff;
+		background-color: var(--list-background-color, #ffffff);
 		padding: 15px 0;
 		justify-content: center;
 	}
@@ -505,12 +602,13 @@
 		width: 14.28%;
 		text-align: center;
 		font-size: 14px;
-		color: #666666;
+		color: var(--text-color, #666666);
+		opacity: 0.75;
 	}
 
 	.calendar-swiper {
 		height: 420px;
-		background-color: #ffffff;
+		background-color: var(--list-background-color, #ffffff);
 	}
 
 	.calendar-grid {
@@ -524,18 +622,22 @@
 		text-align: center;
 		line-height: 60px;
 		font-size: 16px;
-		color: #333333;
+		color: var(--text-color, #333333);
 	}
 
-	.day-text.empty {
+	.empty {
 		color: transparent;
 	}
 
-	.day-text.today {
+	.today {
 		color: #1976D2;
 	}
 
-	.day-text.selected {
+	.holiday {
+		color: #ff5500;
+	}
+
+	.selected {
 		background-color: #1976D2;
 		color: #ffffff;
 		border-radius: 30px;
@@ -544,11 +646,13 @@
 		height: 40px;
 	}
 
-	.day-text.holiday {
-		color: #ff5500;
-	}
+	@media (prefers-color-scheme: dark) {
+		.today {
+			color: #64b5f6;
+		}
 
-	.day-text.selected.holiday {
-		color: #ffffff;
+		.selected {
+			color: #ffffff;
+		}
 	}
 </style>

@@ -1,8 +1,8 @@
 <template>
   <view id="dialog1" class="dialog-container">
     <view class="dialog-content">
-      <text>title: {{ title }}</text>
-      <text class="mt-10">onBackPress return true</text>
+      <text class="dialog-text">title: {{ title }}</text>
+      <text class="mt-10 dialog-text">onBackPress return true</text>
       <button class="mt-10" id="dialog1-go-next-page" @click="goNextPage">
         go next page
       </button>
@@ -29,14 +29,14 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const instance = getCurrentInstance()!.proxy!
   const currentPage = instance.$page
 
   import {
     state,
     setLifeCycleNum
-  } from '@/store/index.uts'
+  } from '@/store/index.ts'
 
   const title = ref('dialog 1')
   let backgroundColorContent = 'transparent'
@@ -218,7 +218,11 @@
 
 </script>
 
-<style>
+  <style>
+    page {
+      background-color: transparent;
+    }
+
   .dialog-container {
     width: 100%;
     height: 100%;
@@ -231,11 +235,15 @@
   .dialog-content {
     width: 80%;
     padding: 10px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 6px;
   }
 
   .mt-10 {
     margin-top: 10px;
+  }
+
+  .dialog-text {
+    color: var(--text-color, #333333);
   }
 </style>

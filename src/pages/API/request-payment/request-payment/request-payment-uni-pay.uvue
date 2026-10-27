@@ -1,31 +1,31 @@
 <template>
   <view class="app">
     <view class="uni-common-mb">
-      <text>如对当前页面的支付示例功能有任何疑问，通过在线IM联系我们 https://im.dcloud.net.cn/#/?joinGroup=662b3d7e8551460030874a5d</text>
+      <text class="body-text">如对当前页面的支付示例功能有任何疑问，通过在线IM联系我们 https://im.dcloud.net.cn/#/?joinGroup=662b3d7e8551460030874a5d</text>
     </view>
     <view v-if="errMsg != ''">
       <text class="err-msg">注意：{{ errMsg }}</text>
     </view>
     <view>
-      <view class="margin"><text>支付单号：</text></view>
+      <view class="margin"><text class="body-text">支付单号：</text></view>
       <view><input class="input" v-model="out_trade_no" placeholder="点击发起支付会自动生成" /></view>
     </view>
     <view>
-      <view class="margin"><text>支付金额（单位分，100=1元）：</text></view>
+      <view class="margin"><text class="body-text">支付金额（单位分，100=1元）：</text></view>
       <view><input class="input" v-model="total_fee" /></view>
     </view>
-    <!-- #ifdef APP || H5 -->
+    <!-- #ifdef APP || WEB -->
     <button class="button" @click="open()">打开收银台（弹窗模式）</button>
     <view v-if="!isPcCom">
       <button class="button" @click="toPayDesk">打开收银台（新页面模式）</button>
     </view>
     <!-- #endif -->
 
-    <!-- #ifdef MP-WEIXIN || H5 || APP -->
+    <!-- #ifdef MP-WEIXIN || WEB || APP -->
     <button class="button" @click="createOrder('wxpay')">发起支付（微信）</button>
     <!-- #endif -->
 
-    <!-- #ifdef MP-ALIPAY || H5 || APP -->
+    <!-- #ifdef MP-ALIPAY || WEB || APP -->
     <button class="button" @click="createOrder('alipay')">发起支付（支付宝）</button>
     <!-- #endif -->
 
@@ -63,7 +63,7 @@
             </view>
             <view class="table-tr">
               <view class="table-td label"><text class="text align-left">支付金额</text></view>
-              <view class="table-td"><text class="text align-right">{{ amountFormat(getOrderRes.getNumber('total_fee')) }}</text></view>
+              <view class="table-td"><text class="text align-right">{{ amountFormat(getOrderRes['total_fee'] as number | null) }}</text></view>
             </view>
             <view class="table-tr">
               <view class="table-td label"><text class="text align-left">支付方式</text></view>
@@ -80,7 +80,7 @@
             <view class="table-tr">
               <view class="table-td label"><text class="text align-left">回调状态</text></view>
               <view class="table-td"><text
-                  class="text align-right">{{ getOrderRes.getBoolean('user_order_success') != null && getOrderRes.getBoolean('user_order_success') == true ? "成功" : "异常" }}</text>
+                  class="text align-right">{{ getOrderRes['user_order_success'] != null && getOrderRes['user_order_success'] == true ? "成功" : "异常" }}</text>
               </view>
             </view>
           </view>
@@ -88,16 +88,7 @@
       </scroll-view>
     </uni-pay-popup>
 
-    <!-- #ifdef APP -->
-    <!-- <button class="button" v-if="isIosAppCom" @click="pageTo('/pages/iosiap/iosiap')">苹果内购示例</button> -->
-    <!-- #endif -->
-
-    <!-- <button class="button" @click="refund">发起退款</button>
-		<view><text class="tips">发起退款需要admin权限，本示例未对接登录功能</text></view>
-		<button class="button" @click="getRefund">查询退款状态</button>
-		<button class="button" @click="closeOrder">关闭订单</button> -->
-
-    <!-- #ifdef H5 -->
+    <!-- #ifdef WEB -->
     <button class="button" v-if="h5Env === 'h5-weixin'" @click="getWeiXinJsCode('snsapi_base')">公众号获取openid示例</button>
     <!-- #endif -->
     <!-- 统一支付组件，注意：vue3下ref不可以等于组件名，因此这里ref="pay" 而不能是 ref="uniPay" -->
@@ -106,7 +97,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   // 响应式数据
   const total_fee = ref("1") // 支付金额，单位分 100 = 1元
   const order_no = ref("") // 业务系统订单号（即你自己业务系统的订单表的订单号）
@@ -130,9 +121,9 @@
   const getOrderPopupRef = ref<UniPayPopupComponentPublicInstance | null>(null)
 
   // 计算属性
-  // 计算当前H5环境
+  // 计算当前WEB环境
   const h5Env = computed(() => {
-    // #ifdef H5
+    // #ifdef WEB
     const ua = window.navigator.userAgent.toLowerCase();
     const isWeixin = /micromessenger/i.test(ua);
     const isAlipay = /alipay/i.test(ua);
@@ -283,7 +274,7 @@
     }
     let res = await payInstance.getOrder(getOrderData);
     if (res['errCode'] == 0) {
-      getOrderRes.value = res.getJSON('pay_order') as UTSJSONObject;
+      getOrderRes.value = res['pay_order'] as UTSJSONObject;
       let obj = {
         "-1": "已关闭",
         "1": "已支付",
@@ -343,7 +334,7 @@
     }
   }
 
-  // #ifdef H5
+  // #ifdef WEB
   // 获取公众号code
   const getWeiXinJsCode = async (scope = "snsapi_base") : Promise<void> => {
     const payInstance = payRef.value as UniPayComponentPublicInstance;
@@ -388,7 +379,7 @@
   // 监听事件 - 支付成功
   const onSuccess = (res : UTSJSONObject) => {
     console.log('success: ', res);
-    let user_order_success = res.getBoolean('user_order_success');
+    let user_order_success = res['user_order_success'] as boolean | null;
     if (user_order_success != null && user_order_success != true) {
       // 代表用户已付款，且你自己写的回调成功并正确执行了
 
@@ -465,7 +456,7 @@
   onLoad((options) => {
     console.log('onLoad: ', options);
     useUniCloud.value = checkUniCloud();
-    // #ifdef H5
+    // #ifdef WEB
     // 微信公众号特殊逻辑开始-----------------------------------------------------------
     // 以下代码仅为获取openid，正常你自己项目应该是登录后才能支付，登录后已经拿到openid，无需编写下面的代码
     if (h5Env.value == 'h5-weixin') {
@@ -497,7 +488,7 @@
   })
 </script>
 
-<style lang="scss" scoped>
+<style>
   .app {
     padding: 15px;
   }
@@ -508,7 +499,8 @@
     width: 100%;
     box-sizing: border-box;
     height: 40px;
-    background: #FFF;
+    color: #333333;
+    background-color: #ffffff;
   }
 
   .button {
@@ -517,16 +509,21 @@
 
   .margin {
     margin: 5px 0;
+    color: var(--text-color, #333333);
+  }
+
+  .body-text {
+    color: var(--text-color, #333333);
   }
 
   .tips {
     margin: 10px 0;
     font-size: 12px;
-    color: #565656;
+    color: var(--active-color, #565656);
   }
 
   .get-order-popup {
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     padding: 15px;
     height: 450px;
     border-radius: 10px;
@@ -567,10 +564,19 @@
 
   .text {
     font-size: 12px;
+    color: var(--text-color, #333333);
   }
 
   .err-msg {
     color: red;
     font-size: 14px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input {
+      color: #ffffff;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
   }
 </style>

@@ -1,7 +1,15 @@
-const PAGE_PATH = '/pages/API/get-device-info/get-device-info'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('ExtApi-GetDeviceInfo', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
+  const PAGE_PATH = '/pages/API/get-device-info/get-device-info'
   let page;
   let res;
   const stringProperties = [

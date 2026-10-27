@@ -1,11 +1,11 @@
 <template>
-  <view style="flex-direction: column;background-color: #f5f5f5;">
+  <view style="flex-direction: column;">
     <!-- #ifndef MP -->
     <fps />
     <!-- #endif -->
 
     <!-- 控制按钮 -->
-    <view style="padding: 2px;background-color: #ffffff;flex-direction: row;flex-wrap: wrap;align-items: center;">
+    <view style="padding: 2px;flex-direction: row;flex-wrap: wrap;align-items: center;">
       <button @click="toggleChecked" :type="sharedChecked ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedChecked ? '关闭' : '开启' }}</button>
       <button @click="toggleDisabled" :type="sharedDisabled ? 'primary' : 'default'" size="mini" style="margin: 2px;">{{ sharedDisabled ? '启用' : '禁用' }}</button>
     </view>
@@ -17,7 +17,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const sharedChecked = ref(false)
   const sharedDisabled = ref(false)
 

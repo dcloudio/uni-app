@@ -1,11 +1,12 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isMpAlipay = platformInfo === 'mp-alipay'
 
 const PAGE_PATH = '/pages/API/get-app-authorize-setting/get-app-authorize-setting'
 
 describe('ExtApi-GetAppAuthorizeSetting', () => {
-  if (isWeb || isAppWebView) {
+  if (isWeb || isAppWebView || isMpAlipay) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })

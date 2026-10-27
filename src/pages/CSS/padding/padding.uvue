@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1;">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -57,7 +54,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 padding </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -159,25 +156,9 @@
       </view>
     </view>
 
-    <view>
-      <text>native-view组件: padding: 30px 和 padding: 30%</text>
-      <text class="uni-tips">说明：cyan 背景色区域的大小即为 padding 的值，灰色区域为容器背景</text>
-      <view class="demo-box" style="margin:20px;">
-        <view class="native-view-container-large">
-          <native-view class="cyan" style="padding: 30px;"></native-view>
-        </view>
-        <view class="native-view-container-large">
-          <native-view class="cyan" style="padding: 30%;"></native-view>
-        </view>
-      </view>
-    </view>
-
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const data = reactive({
@@ -216,6 +197,7 @@
     data.paddingActualImageFlat = imageRefFlat.value?.style.getPropertyValue('padding') ?? ''
     data.paddingActualScrollView = scrollViewRef.value?.style.getPropertyValue('padding') ?? ''
   }
+
 
   const changePadding = (value: string) => {
     data.padding = value
@@ -337,6 +319,7 @@
 
   .common-text {
     font-size: 12px;
+    color: #1a1a1a;
   }
 
   .native-view-container-large {

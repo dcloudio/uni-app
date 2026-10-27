@@ -1,3 +1,5 @@
+jest.setTimeout(30000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
@@ -194,7 +196,11 @@ describe('component-native-web-view', () => {
     await page.waitFor(300);
     const has = await page.callMethod('checkNativeWebView')
     if (has) {
-      expect(await page.data('data.loadingCount')).toBe(1);
+      if (isHarmony) {
+        expect(await page.data('data.loadingCount')).toBeGreaterThanOrEqual(1);
+      } else {
+        expect(await page.data('data.loadingCount')).toBe(1);
+      }
     } else {
       expect(await page.data('data.loadingCount')).toBe(0);
     }

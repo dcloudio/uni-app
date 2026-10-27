@@ -2,7 +2,7 @@
     "id": "hello-uniapp-x-alpha",
     "name": "hello-uniapp-x-alpha",
     "displayName": "hello-uniapp-x-alpha",
-    "version": "1.0.66",
+    "version": "1.0.83",
     "description": "演示 uni-app x 框架的组件、接口、模板",
     "scripts": {
         "check-commit": "node ./git-hooks/check-commit.cjs"

@@ -1,6 +1,14 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('/pages/CSS/transition/transition.uvue', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/CSS/transition/transition')
@@ -22,6 +30,7 @@ describe('/pages/CSS/transition/transition.uvue', () => {
     await page.callMethod('changeTransformWithOrigin')
     await page.callMethod('changeBorder')
     await page.callMethod('changestylePosition')
+    await page.callMethod('changeStyleBottom')
     // changeTransitionAll
     await page.callMethod('changeTransitionAll')
     await page.callMethod('changeWidthInEndFun')

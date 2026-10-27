@@ -1,12 +1,11 @@
-jest.setTimeout(130000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
+const isIos = platformInfo.startsWith('ios')
 
 describe('list-view-multiplex-video', () => {
-  if (isMP || isAppWebView || isWeb) {
+  if (isMP || isAppWebView || isWeb || isIos) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})

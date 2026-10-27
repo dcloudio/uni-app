@@ -23,17 +23,17 @@
         </view>
         <view class="form-item">
           <text class="form-item-label">性别</text>
-          <text class="form-item-input">{{displayGender(data[0].getNumber('gender'))}}</text>
+          <text class="form-item-input">{{displayGender((data[0].gender as number))}}</text>
         </view>
-        <button type="default" @click="gotoUpdatePage(data[0].getString('_id'))">编辑</button>
+        <button type="default" @click="gotoUpdatePage((data[0]._id as string))">编辑</button>
       </view>
     </unicloud-db>
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
-  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE } from './types.uts'
+  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE } from './types.ts'
 
   const collection = ref('')
   const where = ref('')
@@ -76,6 +76,8 @@
 
 <style>
   .page {
+    --contact-text-color: #333333;
+    --contact-secondary-color: #666;
     flex: 1;
     padding: 15px;
   }
@@ -94,11 +96,19 @@
   .form-item-label {
     width: 45px;
     margin-right: 10px;
+    color: var(--contact-text-color, #333333);
   }
 
   .form-item-input {
     flex: 1;
     font-size: 14px;
-    color: #666;
+    color: var(--contact-secondary-color, #666);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .page {
+      --contact-text-color: #ffffff;
+      --contact-secondary-color: #a0a0a0;
+    }
   }
 </style>

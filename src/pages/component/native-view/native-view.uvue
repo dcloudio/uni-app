@@ -1,34 +1,57 @@
 <template>
-  <scroll-view style="flex: 1;">
     <page-intro content="本页演示 native-view 原生视图与 UTS 插件组件：调用组件方法、native-button 与容器、native-view 样式；可跳转 native-time-picker 等原生能力。"></page-intro>
     <view style="padding-bottom: 50px;">
       <!-- #ifndef APP-HARMONY -->
       <text class="tips">说明：如果本地无 uts 插件编译环境请提交打包自定义基座查看效果</text>
       <!-- #endif -->
-      <!-- #ifdef APP-HARMONY -->
-      <text class="tips"> </text>
-      <!-- #endif -->
+      <text>在 uvue 页面中使用 native-button</text>
       <button type="primary" @tap="testCallMethod">调用组件方法</button>
       <!-- native-button 通过 native-view 绑定原生button 实现的UTS插件-标准模式组件 -->
       <native-button id="helloView" class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
         @load="onload"></native-button>
+      <!-- #ifdef APP-HARMONY -->
+      <native-button-framenode id="helloFrameNodeView" class="native-button" style="width: 200px; height: 100px;"
+        :text="frameNodeButtonText" @buttonTap="onFrameNodeTap" @load="onFrameNodeLoad"></native-button-framenode>
+      <button type="primary" @tap="testCallFrameNodeMethod">调用 FrameNode 组件方法</button>
+      <!-- #endif -->
       <native-button-container></native-button-container>
       <!-- #ifndef APP-HARMONY -->
       <button type="primary" @click="gotoTimePicker">调用native-time-picker</button>
       <!-- #endif -->
 
-      <text class="uni-title-text">native-view样式大合集</text>
-      <native-view class="styled-native-view"></native-view>
+      <text class="uni-title-text">native-view样式（仅支持排版相关样式）</text>
+      <view class="styled-native-container">
+        <native-view class="styled-native-view"></native-view>
+      </view>
+
+      <text class="uni-title-text">test-native-view fixed + v-if 复现</text>
+      <view class="fixed-case-panel">
+        <button id="toggle-fixed-test-native-view" type="primary" @click="toggleFixedTestNativeView">切换 fixed test-native-view</button>
+      </view>
+
+      <test-native-view v-if="showFixedTestNativeView" id="fixed-test-native-view" class="fixed-test-native-view"></test-native-view>
     </view>
-  </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 import { createNativeButtonContext } from "@/uni_modules/native-button";
+// #ifdef APP-HARMONY
+import { createNativeButtonFrameNodeContext } from "@/uni_modules/native-button-framenode";
+// #endif
 
 const buttonText = ref("native-button")
+// #ifdef APP-HARMONY
+const frameNodeButtonText = ref("native-button")
+// #endif
+const showFixedTestNativeView = ref(true)
 let isLoad = false
 let clickCount = 0
+let buttonTapValue = ""
+// #ifdef APP-HARMONY
+let frameNodeIsLoad = false
+let frameNodeClickCount = 0
+let frameNodeButtonTapValue = ""
+// #endif
 
 function ontap(e : UniNativeViewEvent) {
   uni.showToast({
@@ -36,6 +59,7 @@ function ontap(e : UniNativeViewEvent) {
   })
   clickCount ++
   buttonText.value = "native-button"+clickCount
+  buttonTapValue = e.detail["value"] as string
 }
 
 function onload() {
@@ -48,10 +72,40 @@ function getIsLoadTest():boolean {
   return isLoad
 }
 
+//用于自动化测试
+function getButtonTapValueTest():string {
+  return buttonTapValue
+}
+
 function testCallMethod() {
   let context = createNativeButtonContext("helloView")
   context?.updateText("test code")
 }
+
+// #ifdef APP-HARMONY
+function onFrameNodeTap(e : UniNativeViewEvent) {
+  frameNodeClickCount++
+  frameNodeButtonText.value = "native-button" + frameNodeClickCount
+  frameNodeButtonTapValue = e.detail["value"] as string
+}
+
+function onFrameNodeLoad() {
+  frameNodeIsLoad = true
+}
+
+function getFrameNodeIsLoadTest() : boolean {
+  return frameNodeIsLoad
+}
+
+function getFrameNodeButtonTapValueTest() : string {
+  return frameNodeButtonTapValue
+}
+
+function testCallFrameNodeMethod() {
+  const context = createNativeButtonFrameNodeContext("helloFrameNodeView")
+  context?.updateText("test FrameNode code")
+}
+// #endif
 
 function gotoTimePicker() {
   uni.openDialogPage({
@@ -60,12 +114,24 @@ function gotoTimePicker() {
   })
 }
 
-defineExpose({getIsLoadTest})
+function toggleFixedTestNativeView() {
+  showFixedTestNativeView.value = !showFixedTestNativeView.value
+}
+
+defineExpose({
+  getIsLoadTest,
+  getButtonTapValueTest,
+  showFixedTestNativeView,
+  toggleFixedTestNativeView,
+  // #ifdef APP-HARMONY
+  getFrameNodeIsLoadTest,
+  getFrameNodeButtonTapValueTest,
+  // #endif
+})
 
 </script>
 
 <style>
-
   .tips {
     font-size: 14px;
     color: #BEBEBE;
@@ -79,17 +145,28 @@ defineExpose({getIsLoadTest})
     margin: 25px auto 25px auto;
   }
 
+  .styled-native-container {
+    background-color: cyan;
+    align-self: center;
+  }
+
   .styled-native-view {
     width: 80px;
     height: 80px;
     margin: 20px 30px;
-    padding: 5px;
-    border: 2px solid #007aff;
-    border-radius: 8px;
-    background-color: #f0f8ff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    opacity: 0.95;
-    position: relative;
-    transform: rotate(45deg);
+  }
+
+  .fixed-case-panel {
+    margin-top: 20px;
+    flex-direction: column;
+  }
+
+  .fixed-test-native-view {
+    position: fixed;
+    right: 10px;
+    bottom: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: #ff0000;
   }
 </style>

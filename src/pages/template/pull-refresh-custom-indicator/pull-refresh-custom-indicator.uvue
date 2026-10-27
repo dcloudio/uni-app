@@ -1,0 +1,158 @@
+<template>
+<!-- #ifdef WEB -->
+  <view>
+  <!-- #endif -->
+    <list-view class="list-view" :refresher-enabled="true" :refresher-triggered="data.refresherTriggered"
+      refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh"
+      @refresherrestore="onRefreshrestore" :refresher-threshold="data.refresherThreshold" refresher-max-drag-distance="200px">
+
+      <page-intro content="本页演示自定义下拉刷新：sticky header、列表项与自定义 refresher 插槽（refresh-box），下拉触发刷新。"></page-intro>
+      <sticky-header>
+        <view class="header">
+          <text class="header-text">sticky header</text>
+        </view>
+      </sticky-header>
+      <list-item v-for="i in 20" :key="i" class="content-item">
+        <text class="content-item-text">item-{{i}}</text>
+      </list-item>
+      <refresh-box slot="refresher" :state="state" :pullingDistance="data.pullingDistance"></refresh-box>
+    </list-view>
+  <!-- #ifdef WEB -->
+  </view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="ts">
+/**
+ * @description: 支持为 list-view 提供自定义下拉刷新指示器，并同时演示 sticky header 与 refresher 插槽协同工作的页面。
+ * @logic: 页面监听下拉刷新过程中的 pulling、refresh、restore 事件，驱动自定义刷新状态变化，并通过 refresher 插槽展示刷新盒子。
+ * @optimization: 刷新状态统一收敛到 `state` 计算属性中，减少模板层对多种刷新状态的重复判断。
+ */
+
+import refreshBox from './refresh-box/refresh-box.uvue';
+
+type PullRefreshIndicatorData = {
+  refresherTriggered: boolean
+  refresherThreshold: number
+  pullingDistance: number
+  resetting: boolean
+}
+
+type PullRefreshState = {
+  pullingDistance: number
+  refresherTriggered: boolean
+  resetting: boolean
+  state: number
+}
+
+const data = reactive<PullRefreshIndicatorData>({
+  refresherTriggered: false,
+  refresherThreshold: 40,
+  pullingDistance: 0,
+  resetting: false
+})
+
+const state = computed(() : number => {
+  if (data.resetting) {
+    return 3;
+  }
+  if (data.refresherTriggered) {
+    return 2
+  }
+  if (data.pullingDistance > data.refresherThreshold) {
+    return 1
+  } else {
+    return 0
+  }
+})
+
+function onRefresherpulling(e : RefresherEvent) {
+  // console.log('onRefresherpulling',e.detail.dy)
+  data.pullingDistance = e.detail.dy
+}
+
+function onRefresherrefresh() {
+  data.refresherTriggered = true
+  setTimeout(() => {
+    data.refresherTriggered = false
+    data.resetting = true
+  }, 1500)
+}
+
+function onRefreshrestore() {
+  data.pullingDistance = 0
+  data.resetting = false;
+}
+
+// 自动化测试
+function jest_applyPulling(distance : number) : void {
+  data.pullingDistance = distance
+}
+
+function jest_triggerRefresh() : void {
+  onRefresherrefresh()
+}
+
+function jest_restoreRefresh() : void {
+  onRefreshrestore()
+}
+
+function jest_getRefreshState() : PullRefreshState {
+  return {
+    pullingDistance: data.pullingDistance,
+    refresherTriggered: data.refresherTriggered,
+    resetting: data.resetting,
+    state: state.value
+  }
+}
+
+defineExpose({
+  data,
+  jest_applyPulling,
+  jest_triggerRefresh,
+  jest_restoreRefresh,
+  jest_getRefreshState
+})
+</script>
+
+<style>
+  .list-view {
+    --pull-refresh-page-background: #f5f5f5;
+    --pull-refresh-surface-background: #fff;
+    --pull-refresh-title-color: #000000;
+    --pull-refresh-secondary-color: #666;
+    flex: 1;
+  }
+
+  .header {
+    justify-content: center;
+    height: 50px;
+    background-color: var(--pull-refresh-page-background, #f5f5f5);
+    padding: 15px;
+  }
+
+  .content-item {
+  }
+
+  .header-text {
+    color: var(--pull-refresh-title-color, #333333);
+  }
+
+  .content-item-text {
+    margin: 5px 0;
+    padding: 15px;
+    background-color: var(--pull-refresh-surface-background, #fff);
+    font-size: 14px;
+    color: var(--pull-refresh-secondary-color, #666);
+    line-height: 20px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .list-view {
+      --pull-refresh-page-background: #1a1a1a;
+      --pull-refresh-surface-background: #2d2d2d;
+      --pull-refresh-title-color: #ffffff;
+      --pull-refresh-secondary-color: #a0a0a0;
+    }
+  }
+</style>

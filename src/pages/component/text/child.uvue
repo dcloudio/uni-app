@@ -2,7 +2,7 @@
   <text class="child-text">child-text<text style="color: #007aff;">嵌套</text></text>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 </script>
 
 <style>

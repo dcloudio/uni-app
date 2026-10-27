@@ -1,0 +1,876 @@
+<template>
+  <view class="page-root">
+    <!-- #ifdef APP-ANDROID -->
+    <!-- 搜索栏：输入框 + 明显的搜索按钮。 -->
+    <view class="search-bar">
+      <input
+        class="search-input"
+        v-model="keyword"
+        placeholder="输入短剧名称 / 关键词"
+        :focus="inputFocus"
+        confirm-type="search"
+        @confirm="doSearch"
+      />
+      <view class="search-btn" @click="doSearch">
+        <text class="search-btn-text">搜索</text>
+      </view>
+    </view>
+
+    <!-- 搜索历史（未发起搜索时展示）。 -->
+    <view class="history-box" v-if="!hasSearched && historyList.length > 0">
+      <view class="history-head">
+        <text class="history-title">搜索历史</text>
+        <text class="history-clear" @click="clearHistory">清空</text>
+      </view>
+      <view class="history-tags">
+        <view class="history-tag" v-for="word in historyList" :key="word" @click="searchFromHistory(word)">
+          <text class="history-tag-text">{{ word }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 状态提示条（点击可重试）。 -->
+    <view class="state-line" v-if="stateText.length > 0 && hasSearched && !globalLoading" @click="retryLast">
+      <text class="state-text">{{ stateText }}</text>
+    </view>
+
+    <!-- 搜索结果海报流：list-view，下拉刷新 + 触底加载。 -->
+    <list-view
+      class="result-list"
+      :refresher-enabled="hasSearched && !globalLoading"
+      :refresher-triggered="refreshing"
+      @refresherrefresh="onRefresh"
+      @scrolltolower="loadMore"
+    >
+      <!-- 首次搜索数据骨架屏。 -->
+      <list-item class="skeleton-cell" v-if="firstSearchLoading">
+        <view class="skeleton-row">
+          <view class="skeleton-card">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+          <view class="skeleton-card skeleton-card-last">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+        </view>
+        <view class="skeleton-row">
+          <view class="skeleton-card">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+          <view class="skeleton-card skeleton-card-last">
+            <view class="skeleton-cover"></view>
+            <view class="skeleton-line"></view>
+          </view>
+        </view>
+      </list-item>
+
+      <!-- 结果网格：每行 2 张海报。 -->
+      <list-item class="grid-cell" v-for="row in gridRows" :key="row.key">
+        <view class="grid-row">
+          <view class="poster-card" v-for="item in row.items" :key="item.dramaId" @click="openDrama(item)">
+            <view class="poster-box">
+              <image class="poster-img" :src="item.coverUrl" mode="aspectFill"></image>
+              <view class="poster-badge" v-if="item.totalEpisodes > 0">
+                <text class="poster-badge-text">{{ item.totalEpisodes }}集</text>
+              </view>
+            </view>
+            <text class="poster-title" :max-lines="1">{{ item.title }}</text>
+            <text class="poster-sub" :max-lines="1" v-if="item.categoryName.length > 0">{{ item.categoryName }}</text>
+          </view>
+          <view class="poster-card poster-card-empty" v-if="row.items.length == 1"></view>
+        </view>
+      </list-item>
+
+      <!-- 底部状态（可点击触发加载更多）。 -->
+      <list-item class="footer-cell" v-if="resultList.length > 0">
+        <view class="footer-box" @click="loadMore">
+          <text class="footer-text" v-if="loading">正在加载...</text>
+          <text class="footer-text footer-text-action" v-else-if="hasMore">上滑或点击加载更多</text>
+          <text class="footer-text" v-else>— 已经到底啦 —</text>
+        </view>
+      </list-item>
+
+      <!-- 空态：未搜索 / 无结果 / 出错。 -->
+      <list-item class="footer-cell" v-if="resultList.length == 0 && !loading && hasSearched && !firstSearchLoading">
+        <view class="empty-box">
+          <text class="empty-icon">🔍</text>
+          <text class="empty-text" v-if="errorReason.length > 0">{{ errorReason }}</text>
+          <text class="empty-text" v-else-if="stateText.length == 0">没有找到相关短剧，换个词试试</text>
+          <text class="empty-text" v-else>{{ stateText }}</text>
+          <view class="empty-btn" @click="retryLast">
+            <text class="empty-btn-text">{{ errorReason.length > 0 ? "重新加载" : "换个词搜搜" }}</text>
+          </view>
+        </view>
+      </list-item>
+    </list-view>
+
+    <!-- 全局 loading 页：短剧模块初始化 / 重建期间全屏展示。 -->
+    <view class="global-loading" v-if="globalLoading">
+      <view class="loading-ring"></view>
+      <text class="loading-text">{{ loadingText }}</text>
+      <text class="loading-sub">首次搜索需要初始化短剧能力，请耐心等待</text>
+    </view>
+    <!-- #endif -->
+
+    <!-- #ifndef APP-ANDROID -->
+    <view class="unsupported-box">
+      <text class="unsupported-title">仅支持 Android</text>
+      <text class="unsupported-text">短剧能力来自 uni-ad 原生库（Android），请在 Android 平台运行。</text>
+    </view>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script setup lang="uts">
+  // #ifdef APP-ANDROID
+  import { DramaAd, DramaInfo, IUniDramaError, DramaListResult, DramaEventResult, CreateDramaAdOptions, DramaSearchOptions, DramaOpenOptions } from "@/uni_modules/uni-drama"
+
+  /** 网格行模型。 */
+  type GridRow = {
+    key: string,
+    items: DramaInfo[]
+  }
+
+  const DEFAULT_PAGE_SIZE = 10
+  /** 搜索历史最多保留条数。 */
+  const HISTORY_MAX = 10
+  /** 历史存储 key。 */
+  const HISTORY_KEY = "uni_drama_search_history"
+  /** 模块加载兜底超时（毫秒）。 */
+  const MODULE_TIMEOUT = 20000
+  /** 单次搜索请求兜底超时（毫秒）。 */
+  const REQUEST_TIMEOUT = 15000
+
+  // ---- 搜索状态 ----
+  const keyword = ref("")
+  const resultList = ref<DramaInfo[]>([])
+  const hasSearched = ref(false)
+  const currentPage = ref(1)
+  const hasMore = ref(true)
+  const loading = ref(false)
+  const refreshing = ref(false)
+  const stateText = ref("")
+  const inputFocus = ref(true)
+  /** 搜索历史（本地存储，最近在前）。 */
+  const historyList = ref<string[]>([])
+  /** 模块初始化中（全局 loading 页展示中）。 */
+  const firstSearchLoading = ref(true)
+
+  // ---- 播放参数（首页跳转携带，保持两端一致） ----
+  const appliedAdpid = ref("1158231135")
+  const appliedFree = ref(1)
+  const appliedLock = ref(1)
+
+  /** 短剧实例：搜索页独立创建（创建即自动加载）。 */
+  let dramaAd: DramaAd | null = null
+  let moduleReady = false
+  /** 模块加载失败标记：重试 = 重建实例。 */
+  let moduleFailed = false
+
+  /** 搜索请求兜底超时定时器。 */
+  let requestTimeoutTimer: number | null = null
+  /** 错误详情（多行，含可能原因；空串表示无错误详情）。 */
+  const errorReason = ref("")
+
+  /** 请求序号：新请求使旧请求结果失效（连续搜索时丢弃过期响应）。 */
+  let requestSeq = 0
+
+  // ---- 全局 loading 动态文案：点点动画 + 已等待秒数 ----
+  const loadingDots = ref("")
+  const loadingSeconds = ref(0)
+  let dotsTimer: number | null = null
+
+  /** 全局 loading 展示条件：模块初始化中。 */
+  const globalLoading = computed(() : boolean => {
+    return firstSearchLoading.value
+  })
+
+  const loadingText = computed(() : string => {
+    const base = moduleFailed ? "正在重新加载短剧模块" : "正在加载短剧模块"
+    return base + loadingDots.value + "（" + loadingSeconds.value + "s）"
+  })
+
+  function stopDots() {
+    const timer = dotsTimer
+    if (timer != null) {
+      clearInterval(timer)
+      dotsTimer = null
+    }
+    loadingDots.value = ""
+    loadingSeconds.value = 0
+  }
+
+  /** 模块加载超时：关闭全局 loading，展示错误界面与可能原因。 */
+  function onModuleTimeout() {
+    if (moduleReady || !firstSearchLoading.value) {
+      return
+    }
+    moduleFailed = true
+    firstSearchLoading.value = false
+    loading.value = false
+    refreshing.value = false
+    stopDots()
+    errorReason.value = "等待 " + (MODULE_TIMEOUT / 1000) + " 秒仍未收到模块加载结果\n\n可能原因：\n1. 网络连接异常\n2. adpid 未开通短剧能力或配置有误\n3. 打包包名与 gm_SDK_Setting.json 中 license 包名不一致\n4. 渠道服务暂时不可用"
+    stateText.value = "模块加载超时，请检查网络后重试"
+    console.error("[drama-search] 模块加载超时（" + MODULE_TIMEOUT + "ms 无响应）")
+  }
+
+  /** 启动秒表：动态点点 + 已等待秒数；到达兜底时间触发超时错误界面。 */
+  function startDots() {
+    stopDots()
+    loadingSeconds.value = 0
+    dotsTimer = setInterval(() => {
+      loadingSeconds.value = loadingSeconds.value + 1
+      if (loadingDots.value.length >= 3) {
+        loadingDots.value = ""
+      } else {
+        loadingDots.value = loadingDots.value + "."
+      }
+      if (loadingSeconds.value >= MODULE_TIMEOUT / 1000) {
+        onModuleTimeout()
+      }
+    }, 1000)
+  }
+
+  function clearRequestTimeout() {
+    const timer = requestTimeoutTimer
+    if (timer != null) {
+      clearTimeout(timer)
+      requestTimeoutTimer = null
+    }
+  }
+
+  /** 启动当前搜索请求的兜底超时（仅对最新请求生效）。 */
+  function startRequestTimeout(seq: number) {
+    clearRequestTimeout()
+    requestTimeoutTimer = setTimeout(() => {
+      requestTimeoutTimer = null
+      if (seq != requestSeq) {
+        return
+      }
+      loading.value = false
+      refreshing.value = false
+      firstSearchLoading.value = false
+      errorReason.value = "搜索请求超过 " + (REQUEST_TIMEOUT / 1000) + " 秒未响应\n\n可能原因：\n1. 网络连接异常或不稳定\n2. 渠道服务暂时不可用"
+      stateText.value = "搜索请求超时，请检查网络后重试"
+      console.error("[drama-search] 搜索请求超时（seq=" + seq + "）")
+    }, REQUEST_TIMEOUT)
+  }
+
+  /** 网格行模型：两列一行，奇数补位。 */
+  const gridRows = computed<GridRow[]>(() : GridRow[] => {
+    const rows: GridRow[] = []
+    const list = resultList.value
+    let i = 0
+    while (i < list.length) {
+      const items: DramaInfo[] = []
+      items.push(list[i])
+      if (i + 1 < list.length) {
+        items.push(list[i + 1])
+      }
+      rows.push({ key: list[i].dramaId, items: items })
+      i = i + 2
+    }
+    return rows
+  })
+
+  function toNumber(value: string | null, fallback: number): number {
+    if (value == null) {
+      return fallback
+    }
+    const parsed = parseInt(value)
+    return isNaN(parsed) ? fallback : parsed
+  }
+
+  /** 读取本地搜索历史（英文逗号分隔存储）。 */
+  function loadHistory() {
+    const saved = uni.getStorageSync(HISTORY_KEY)
+    if (saved == null) {
+      return
+    }
+    const raw = "" + saved
+    if (raw.length > 0) {
+      historyList.value = raw.split(",").filter((it: string): boolean => it.length > 0)
+    }
+  }
+
+  /** 保存搜索词：去重、置顶、超限截断。 */
+  function saveHistory(word: string) {
+    const w = word.trim()
+    if (w.length == 0) {
+      return
+    }
+    const next: string[] = []
+    next.push(w)
+    for (let i = 0; i < historyList.value.length; i++) {
+      const it = historyList.value[i]
+      if (it != w && next.length < HISTORY_MAX) {
+        next.push(it)
+      }
+    }
+    historyList.value = next
+    uni.setStorageSync(HISTORY_KEY, next.join(","))
+  }
+
+  function clearHistory() {
+    historyList.value = []
+    uni.removeStorageSync(HISTORY_KEY)
+  }
+
+  /**
+   * 分页搜索：isRefresh 为 true 整批替换，否则追加。
+   * 返回条数小于每页数量即最后一页；新请求使旧请求结果失效。
+   */
+  function searchPage(page: number, isRefresh: boolean) {
+    if (!moduleReady) {
+      refreshing.value = false
+      return
+    }
+    const word = keyword.value.trim()
+    if (word.length == 0) {
+      refreshing.value = false
+      return
+    }
+    if (loading.value && !isRefresh) {
+      return
+    }
+    const seq = ++requestSeq
+    loading.value = true
+    stateText.value = ""
+    errorReason.value = ""
+    startRequestTimeout(seq)
+    const size = DEFAULT_PAGE_SIZE
+    const finish = () => {
+      if (seq == requestSeq) {
+        clearRequestTimeout()
+        loading.value = false
+        refreshing.value = false
+        firstSearchLoading.value = false
+      }
+    }
+    const success = (res: DramaListResult) => {
+      if (seq != requestSeq) {
+        return
+      }
+      finish()
+      const infos = res.dramas
+      if (isRefresh) {
+        resultList.value = infos
+        currentPage.value = 1
+        // 不用"是否满页"推断到底：有数据就允许继续翻页，由实测翻页结果收敛。
+        hasMore.value = infos.length > 0
+      } else {
+        // 按 dramaId 去重后追加，翻页返回空或全部重复时判定没有更多。
+        const existIds: string[] = []
+        for (let i = 0; i < resultList.value.length; i++) {
+          existIds.push(resultList.value[i].dramaId)
+        }
+        const fresh: DramaInfo[] = []
+        for (let i = 0; i < infos.length; i++) {
+          const info = infos[i]
+          if (existIds.indexOf(info.dramaId) < 0) {
+            fresh.push(info)
+          }
+        }
+        currentPage.value = page
+        resultList.value = resultList.value.concat(fresh)
+        hasMore.value = infos.length > 0 && fresh.length > 0
+      }
+      console.log("[drama-search] search page=" + page + " word=" + word + " -> count=" + infos.length)
+    }
+    const failure = (error: IUniDramaError) => {
+      if (seq != requestSeq) {
+        return
+      }
+      finish()
+      stateText.value = "搜索失败：" + error.errMsg
+      console.error("[drama-search] search page=" + page + " fail -> " + error.errMsg)
+    }
+    dramaAd?.search({ searchWord: word, page: page, pageSize: size, success: success, fail: failure } as DramaSearchOptions)
+  }
+
+  /**
+   * 创建短剧实例（创建即自动加载），启动全局 loading。
+   * onLoad 到达：模块就绪，若用户已提前发起搜索则自动补发第一页。
+   * onError 到达：标记 moduleFailed，全局 loading 关闭并给出可重试错误。
+   */
+  function ensureInstance() {
+    if (dramaAd != null) {
+      return
+    }
+    moduleReady = false
+    moduleFailed = false
+    firstSearchLoading.value = true
+    errorReason.value = ""
+    startDots()
+    const ad = uni.createDramaAd({ adpid: appliedAdpid.value } as CreateDramaAdOptions)
+    dramaAd = ad
+    ad.onLoad((res: UTSJSONObject) => {
+      const type = res["type"] ?? ""
+      if (type == "detail") {
+        return
+      }
+      moduleReady = true
+      moduleFailed = false
+      stopDots()
+      if (hasSearched.value && resultList.value.length == 0 && keyword.value.trim().length > 0) {
+        searchPage(1, true)
+      } else {
+        firstSearchLoading.value = false
+      }
+    })
+    ad.onError((err: IUniDramaError) => {
+      console.error("[drama-search] onError code=" + err.errCode + " message=" + err.errMsg)
+      moduleFailed = true
+      loading.value = false
+      refreshing.value = false
+      firstSearchLoading.value = false
+      stopDots()
+      errorReason.value = "错误码 " + err.errCode + "\n\n" + err.errMsg + "\n\n可能原因：\n1. adpid 未开通短剧能力或配置有误\n2. 当前基座缺少短剧运行时（需自定义基座）\n3. 网络连接异常"
+      stateText.value = "模块加载失败：" + err.errMsg + "，点击重试"
+    })
+    ad.onPlayEvent((res: DramaEventResult) => {
+      console.log("[drama-search] onPlayEvent -> " + JSON.stringify(res))
+    })
+  }
+
+  /** 销毁并重建实例（模块失败重试）；清空旧结果避免新旧数据混显。 */
+  function rebuildInstance() {
+    stopDots()
+    clearRequestTimeout()
+    dramaAd?.destroy()
+    dramaAd = null
+    resultList.value = []
+    errorReason.value = ""
+    ensureInstance()
+  }
+
+  /** 发起搜索（读输入框）：校验关键词并记录历史。 */
+  function doSearch() {
+    const word = keyword.value.trim()
+    if (word.length == 0) {
+      uni.showToast({ title: "请输入搜索关键词", icon: "error", position: "bottom" })
+      return
+    }
+    saveHistory(word)
+    hasSearched.value = true
+    inputFocus.value = false
+    if (!moduleReady) {
+      if (moduleFailed) {
+        // 模块之前加载失败：重建实例，onLoad 后自动补发搜索。
+        rebuildInstance()
+        return
+      }
+      // 模块初始化中：提示等待，onLoad 到达后自动补发。
+      stateText.value = "正在初始化，请稍候..."
+      loading.value = true
+      return
+    }
+    searchPage(1, true)
+  }
+
+  /** 从历史标签发起搜索。 */
+  function searchFromHistory(word: string) {
+    keyword.value = word
+    doSearch()
+  }
+
+  /** 下拉刷新。 */
+  function onRefresh() {
+    refreshing.value = true
+    searchPage(1, true)
+  }
+
+  /** 触底加载更多。 */
+  function loadMore() {
+    if (loading.value || !hasMore.value || !moduleReady || !hasSearched.value) {
+      return
+    }
+    searchPage(currentPage.value + 1, false)
+  }
+
+  /** 重试入口：模块失败重建实例，否则重新搜索。 */
+  function retryLast() {
+    if (moduleFailed || !moduleReady) {
+      rebuildInstance()
+      return
+    }
+    searchPage(1, true)
+  }
+
+  /** 打开短剧播放页：free/lock 与首页保持一致。 */
+  function openDrama(item: DramaInfo) {
+    if (dramaAd == null || !moduleReady) {
+      uni.showToast({ title: "短剧模块加载中，请稍候", icon: "error", position: "bottom" })
+      return
+    }
+    // 打开播放页为异步加载，期间展示 loading 并拦截界面点击（mask 防重复点击）。
+    uni.showLoading({ title: "正在打开短剧...", mask: true })
+    dramaAd?.open({
+      dramaId: item.dramaId,
+      episode: item.currentEpisode > 0 ? item.currentEpisode : 1,
+      free: Math.max(1, appliedFree.value),
+      lock: Math.max(1, appliedLock.value),
+      urlCallback: null,
+      success: () => {
+        console.log("[drama-search] open success -> " + item.title)
+        uni.hideLoading()
+      },
+      fail: (error: IUniDramaError) => {
+        uni.hideLoading()
+        uni.showToast({ title: error.errMsg, icon: "error", position: "bottom" })
+      }
+    } as DramaOpenOptions)
+  }
+
+  onLoad((options: OnLoadOptions) => {
+    // 支持从首页携带 adpid 与播放参数；未传时用默认值，搜索页可完全独立使用。
+    const pid = options["adpid"]
+    if (pid != null && pid.length > 0) {
+      appliedAdpid.value = pid
+    }
+    appliedFree.value = Math.max(1, toNumber(options["free"], 1))
+    appliedLock.value = Math.max(1, toNumber(options["lock"], 1))
+    loadHistory()
+    ensureInstance()
+  })
+
+  onUnmounted(() => {
+    stopDots()
+    clearRequestTimeout()
+    dramaAd?.destroy()
+    dramaAd = null
+  })
+  // #endif
+</script>
+
+<style>
+  /* 页面根容器。 */
+  .page-root {
+    flex: 1;
+    flex-direction: column;
+    background-color: #F6F7F5;
+  }
+
+  /* 搜索栏。 */
+  .search-bar {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #FFFFFF;
+  }
+
+  /* 搜索输入框。 */
+  .search-input {
+    flex: 1;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 18px;
+    background-color: #F1F3F1;
+    color: #1F2421;
+    font-size: 14px;
+  }
+
+  /* 搜索按钮（醒目常驻）。 */
+  .search-btn {
+    height: 36px;
+    padding: 0 18px;
+    margin-left: 8px;
+    border-radius: 18px;
+    background-color: #2F7D5B;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-btn-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  /* 搜索历史。 */
+  .history-box {
+    padding: 14px 16px;
+    background-color: #FFFFFF;
+    margin-bottom: 8px;
+  }
+
+  .history-head {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .history-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1F2421;
+  }
+
+  .history-clear {
+    font-size: 12px;
+    color: #9aa7b4;
+  }
+
+  .history-tags {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .history-tag {
+    padding: 6px 14px;
+    border-radius: 15px;
+    background-color: #F1F3F1;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .history-tag-text {
+    font-size: 12px;
+    color: #5A635D;
+  }
+
+  /* 状态提示条。 */
+  .state-line {
+    padding: 8px 16px;
+    background-color: #FDF0EE;
+  }
+
+  .state-text {
+    font-size: 12px;
+    color: #B4544A;
+  }
+
+  /* 结果列表。 */
+  .result-list {
+    flex: 1;
+    background-color: #F6F7F5;
+  }
+
+  /* 网格单元格。 */
+  .grid-cell {
+    padding: 6px 12px;
+    background-color: #F6F7F5;
+  }
+
+  .grid-row {
+    flex-direction: row;
+  }
+
+  /* 海报卡片。 */
+  .poster-card {
+    flex: 1;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 8px;
+    margin-right: 10px;
+  }
+
+  .poster-card-empty {
+    background-color: #F6F7F5;
+    margin-right: 0px;
+  }
+
+  .poster-box {
+    position: relative;
+    width: 100%;
+    height: 190px;
+    border-radius: 10px;
+    background-color: #EEF1F4;
+    margin-bottom: 8px;
+  }
+
+  .poster-img {
+    width: 100%;
+    height: 190px;
+    border-radius: 10px;
+  }
+
+  /* 海报角标。 */
+  .poster-badge {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.55);
+  }
+
+  .poster-badge-text {
+    font-size: 10px;
+    color: #FFFFFF;
+  }
+
+  .poster-title {
+    font-size: 14px;
+    line-height: 20px;
+    height: 20px;
+    font-weight: 600;
+    color: #1F2421;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+  }
+
+  .poster-sub {
+    font-size: 11px;
+    line-height: 16px;
+    height: 16px;
+    color: #9aa7b4;
+    text-overflow: ellipsis;
+  }
+
+  /* 骨架屏。 */
+  .skeleton-cell {
+    padding: 6px 12px;
+    background-color: #F6F7F5;
+  }
+
+  .skeleton-row {
+    flex-direction: row;
+    margin-bottom: 10px;
+  }
+
+  .skeleton-card {
+    flex: 1;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+
+  .skeleton-card-last {
+    margin-right: 0px;
+  }
+
+  .skeleton-cover {
+    width: 100%;
+    height: 190px;
+    border-radius: 10px;
+    background-color: #E9ECE8;
+    margin-bottom: 8px;
+  }
+
+  .skeleton-line {
+    width: 60%;
+    height: 14px;
+    border-radius: 7px;
+    background-color: #E9ECE8;
+  }
+
+  /* 底部状态。 */
+  .footer-cell {
+    padding: 12px 0 30px 0;
+    align-items: center;
+    background-color: #F6F7F5;
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: #9aa7b4;
+  }
+
+  /* 可点击的加载更多提示。 */
+  .footer-text-action {
+    color: #2F7D5B;
+    font-weight: 600;
+  }
+
+  /* 空态。 */
+  .empty-box {
+    align-items: center;
+    padding: 60px 24px;
+  }
+
+  .empty-icon {
+    font-size: 44px;
+    margin-bottom: 12px;
+  }
+
+  .empty-text {
+    font-size: 13px;
+    color: #9aa7b4;
+    text-align: center;
+    line-height: 20px;
+    margin-bottom: 14px;
+  }
+
+  .empty-btn {
+    padding: 8px 26px;
+    border-radius: 18px;
+    background-color: #2F7D5B;
+  }
+
+  .empty-btn-text {
+    font-size: 13px;
+    color: #FFFFFF;
+  }
+
+  /* 全局 loading 页：白底全屏，居中转环 + 动态文案。 */
+  .global-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #F6F7F5;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 转环。 */
+  .loading-ring {
+    width: 42px;
+    height: 42px;
+    border-radius: 21px;
+    border-width: 4px;
+    border-style: solid;
+    border-color: #DDE5DF;
+    border-top-color: #2F7D5B;
+    margin-bottom: 16px;
+    animation: ring-spin 0.9s linear infinite;
+  }
+
+  @keyframes ring-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 8px;
+  }
+
+  .loading-sub {
+    font-size: 12px;
+    color: #9aa7b4;
+  }
+
+  /* 非 Android 提示。 */
+  .unsupported-box {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .unsupported-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1F2421;
+    margin-bottom: 10px;
+  }
+
+  .unsupported-text {
+    font-size: 13px;
+    color: #5A635D;
+    text-align: center;
+  }
+</style>

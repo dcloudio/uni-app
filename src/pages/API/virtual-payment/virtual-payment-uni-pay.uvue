@@ -19,7 +19,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const order_no = ref("") // 业务系统订单号（即你自己业务系统的订单表的订单号）
   const out_trade_no = ref("") // 插件支付单号
@@ -131,8 +131,8 @@
     let productInfo : UTSJSONObject = productList.value.find((item : UTSJSONObject) : boolean => {
       return item['product_id'] == product_id.value;
     }) || {};
-    let buy_quantity = productInfo.getNumber('buy_quantity') || 1;
-    let goods_price = productInfo.getNumber('goods_price') || 1;
+    let buy_quantity = (productInfo.buy_quantity as number) || 1;
+    let goods_price = (productInfo.goods_price as number) || 1;
     let product_type = productInfo['product_type'];
     // 发起支付
     if (payRef.value != null) {

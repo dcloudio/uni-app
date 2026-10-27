@@ -1,0 +1,81 @@
+<template>
+  <view class="root">
+    <template v-for="(color,index) in cardColors" :key="index">
+      <card :color="color" :cardIndex="index" :stackIndex="getStackIndex(index)"
+        :windowWidth="windowWidth" :windowHeight="windowHeight"></card>
+    </template>
+  </view>
+</template>
+<script setup lang="ts">
+/**
+ * @description: 支持在卡片堆叠中左右滑动当前卡片，并根据方向触发喜欢或不喜欢的划走反馈。
+ * @logic: 页面按顺序渲染多张卡片，用户拖拽顶部卡片时实时跟随手势移动，松手后根据位移决定回弹或飞出并切换到下一张卡片。
+ * @optimization: 卡片通过复用同一组位置层级和全局浮动事件维持堆叠顺序，减少每次划走后重新创建整组卡片的开销。
+ */
+
+import card from './card/card.uvue';
+
+const CARD_SWIPED_EVENT = 'swipe-card-stack-swiped'
+const cardColors = ref([
+  '#5B8E7D',
+  '#D66B5D',
+  '#4F6D9B'
+] as string[])
+
+const stackOffset = ref(0)
+const initialWindowInfo = uni.getWindowInfo()
+const windowWidth = ref(initialWindowInfo.windowWidth)
+const windowHeight = ref(initialWindowInfo.windowHeight)
+
+function getStackIndex(cardIndex : number) : number {
+  return (cardIndex + stackOffset.value) % cardColors.value.length
+}
+
+function handleCardSwiped(cardIndex : number) : void {
+  const cardCount = cardColors.value.length
+  const currentTopCardIndex = (cardCount - 1 - stackOffset.value + cardCount) % cardCount
+  // 只接受当前顶层卡片的完成通知，避免支付宝端重复/延迟事件推进多次。
+  if (cardIndex != currentTopCardIndex) {
+    return
+  }
+  stackOffset.value = (stackOffset.value + 1) % cardColors.value.length
+}
+
+function syncWindowSize() : void {
+  const windowInfo = uni.getWindowInfo()
+  windowWidth.value = windowInfo.windowWidth
+  windowHeight.value = windowInfo.windowHeight
+}
+
+onReady(() => {
+  syncWindowSize()
+})
+
+onResize(() => {
+  syncWindowSize()
+})
+
+onLoad(() => {
+  uni.$on(CARD_SWIPED_EVENT, handleCardSwiped)
+})
+
+onUnload(() => {
+  uni.$off(CARD_SWIPED_EVENT, handleCardSwiped)
+})
+</script>
+<style>
+  /* #ifdef MP */
+  page {
+    overflow: hidden
+  }
+  /* #endif */
+
+  .root {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    align-items: center;
+  }
+</style>

@@ -1,0 +1,151 @@
+<template>
+    <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-list-cell-padding status-box">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text share-text">分享内容：</text>
+      </view>
+      <textarea class="share-content"
+        :auto-height=" true" :value="shareContent"></textarea>
+    </view>
+    <view class="uni-list-cell-padding status-box">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text share-text">分享图片：</text>
+      </view>
+      <view style="flex-wrap: wrap;">
+        <image v-if="imageURL != null" style="width: 104px; height: 104px;" :src="imageURL">
+        </image>
+        <image v-else class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
+      </view>
+    </view>
+    <view class="uni-list-cell-padding status-box">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text share-text">分享类型：</text>
+      </view>
+      <radio-group class="uni-row" @change="typeChange">
+        <view class="uni-common-mt share-radio"><radio value="0" :checked="true" /><text>图文</text></view>
+        <view class="uni-common-mt share-radio"><radio value="1" /><text>纯文字</text></view>
+        <view class="uni-common-mt share-radio"><radio value="2" /><text>纯图片</text></view>
+      </radio-group>
+    </view>
+    <view class="uni-list-cell-padding status-box">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text share-text">分享到：</text>
+      </view>
+      <radio-group class="uni-row" style="flex-wrap: wrap;" @change="sceneChange">
+        <view class="uni-common-mt share-radio"><radio value="WXSceneSession" :checked="true" /><text>聊天界面</text></view>
+        <view class="uni-common-mt share-radio"><radio value="WXSceneTimeline" /><text>朋友圈</text></view>
+        <view class="uni-common-mt share-radio"><radio value="WXSceneFavorite" :disabled="true" style="color: gray;" /><text>微信收藏（暂不支持）</text></view>
+      </radio-group>
+    </view>
+
+    <view class="uni-padding-wrap uni-common-mt">
+      <button type="primary" @click="share">分享</button>
+    </view>
+    </view>
+</template>
+
+<script setup lang="ts">
+  const scene = ref('WXSceneSession')
+  const type = ref(0)
+
+  const typeChange = (e : UniRadioGroupChangeEvent) => {
+    type.value = parseInt(e.detail.value)
+  }
+  const sceneChange = (e : UniRadioGroupChangeEvent) => {
+    scene.value = e.detail.value
+  }
+
+  const title = ref('share')
+  const shareContent = ref('uni-app x 可以分享内容到微信了！')
+  const imageURL = ref<string | null>(null)
+
+  function chooseImage() {
+    uni.chooseImage({
+      count: 1,
+      success: (res) => {
+        imageURL.value = res.tempFilePaths[0]
+      },
+      fail: (err) => {
+        console.log("err: ", JSON.stringify(err));
+        uni.showToast({
+          title: "choose image error.code:" + err.errCode + ";message:" + err.errMsg,
+          position: "bottom"
+        })
+      }
+    })
+  }
+
+  function share() {
+    uni.showLoading({
+      title: "正在分享......"
+    })
+    console.log('scene.value: ', scene.value);
+    uni.share({
+      provider: 'weixin',
+      title: '微信分享',
+      scene: scene.value,
+      type: type.value,
+      href: "https://uniapp.dcloud.net.cn/api/plugins/share.html",
+      summary: shareContent.value,
+      imageUrl: imageURL.value,
+      success(res) {
+        uni.hideLoading()
+        uni.showToast({
+          title: '分享成功'
+        })
+      },
+      fail(e) {
+        uni.hideLoading()
+        uni.showToast({
+          title: e.errMsg
+        })
+      }
+    })
+  }
+</script>
+
+<style>
+  .uni-uploader__input-box {
+    margin: 5px;
+    width: 104px;
+    height: 104px;
+    border: 1px solid #D9D9D9;
+  }
+
+  .status-box {
+    background-color: var(--list-background-color, #ffffff);
+    margin: 0 20px;
+  }
+
+  .share-text,
+  .share-radio {
+    color: var(--text-color, #333333);
+  }
+
+  .share-radio {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .share-content {
+    max-height: 100px;
+    padding: 10px;
+    color: #333333;
+    background-color: aliceblue;
+    border: 1px solid black;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .share-content {
+      color: var(--text-color, #ffffff);
+      background-color: var(--list-background-color, #2d2d2d);
+      border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+    }
+
+    .uni-uploader__input-box {
+      border-color: var(--border-color, rgba(255, 255, 255, 0.1));
+    }
+  }
+</style>

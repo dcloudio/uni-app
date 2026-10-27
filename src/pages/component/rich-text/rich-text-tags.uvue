@@ -1,28 +1,22 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <page-head title="单tag测试（web模式时页面中有较多web-view）"></page-head>
-    <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) -->
-    <enum-data title="设置mode（仅Android和鸿蒙蒸汽模式支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data>
-    <!-- #endif -->
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
         <text class="uni-title-text">支持的HTML标签</text>
       </view>
       <view class="uni-common-mt" v-for="(item,index) in data" :key="index">
-        <text class="uni-subtitle-text">{{item.name}}</text>
-        <view style="background:#FFFFFF;">
-          <rich-text :nodes="item.html" @itemclick="itemClick" :mode="modeData.mode"></rich-text>
+        <text class="uni-subtitle-text rich-text-label">{{item.name}}</text>
+        <view class="rich-text-demo">
+          <rich-text class="rich-text-content" :nodes="item.html" @itemclick="itemClick" :mode="modeData.mode"></rich-text>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+    <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) || (APP-IOS && VUE3-VAPOR)-->
+    <enum-data title="设置mode（app平台 蒸汽模式支持）" :items="modeItemTypes" @change="onModeChange"></enum-data>
+    <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
@@ -309,6 +303,22 @@
       ] as Array<UTSJSONObject>
     },
     {
+      name: '特殊字符',
+      html: [
+        {
+          type: 'text',
+          text: '5个特殊字符：&、<、>、"、\''
+        },
+        {
+          name: 'br'
+        },
+        {
+          type: 'text',
+          text: 'a标签示例：<a href="https://doc.dcloud.net.cn/uni-app-x/">uni-app x</a>'
+        }
+      ] as Array<UTSJSONObject>
+    },
+    {
       name: '<img/>',
       html: [
         {
@@ -337,6 +347,7 @@
         			},
         			children: [
         				{
+                  type: "text",
         					text: "uni-app x超长链接换行测试：https://doc.dcloud.net.cn/uni-app-x/testlonglonglonglonglonglonglonglongltlonglonglonglonglonglonglonglonglononglink.com"
         				}
         			]
@@ -381,3 +392,20 @@
     modeData
   })
 </script>
+
+<style>
+  .rich-text-demo {
+    background-color: #ffffff;
+    color: #1a1a1a;
+  }
+
+  .rich-text-content {
+    color: #1a1a1a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .rich-text-label {
+      color: #e5e5e5;
+    }
+  }
+</style>

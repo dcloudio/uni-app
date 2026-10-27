@@ -7,43 +7,43 @@
       <form v-if="data.length>0" @submit="onFormSubmit">
         <view class="form-item">
           <text class="form-item-label">姓名</text>
-          <input class="form-item-input" placeholder="姓名" name="username" :value="data[0].getString('username')" />
+          <input class="form-item-input" placeholder="姓名" name="username" :value="(data[0].username as string)" />
         </view>
         <view class="form-item">
           <text class="form-item-label">电话</text>
-          <input class="form-item-input" placeholder="电话" name="mobile" :value="data[0].getString('mobile')" />
+          <input class="form-item-input" placeholder="电话" name="mobile" :value="(data[0].mobile as string)" />
         </view>
         <view class="form-item">
           <text class="form-item-label">邮箱</text>
-          <input class="form-item-input" placeholder="邮箱地址" name="email" :value="data[0].getString('email')" />
+          <input class="form-item-input" placeholder="邮箱地址" name="email" :value="(data[0].email as string)" />
         </view>
         <view class="form-item">
           <text class="form-item-label">备注</text>
-          <textarea class="form-item-input-comment" placeholder="备注" name="comment" maxlength="-1"
-            :value="data[0].getString('comment')" />
+          <textarea class="form-item-input-comment" placeholder="备注" name="comment" :maxlength="-1"
+            :value="(data[0].comment as string)" />
         </view>
         <view class="form-item">
           <text class="form-item-label">性别</text>
           <radio-group class="radio-list" name="gender">
             <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
-              <radio :value="item.value" :checked="item.value == data[0].getNumber('gender')" />
-              <text>{{item.text}}</text>
+              <radio :value="item.value.toString()" :checked="item.value == (data[0].gender as number)" />
+              <text class="radio-item-text">{{item.text}}</text>
             </view>
           </radio-group>
         </view>
         <view class="btn-group">
           <button class="btn-submit" type="primary" form-type="submit">保存</button>
           <button class="btn-delete" type="warn"
-            @click="remove(data[0].getString('_id'), data[0].getString('username'))">删除联系人</button>
+            @click="remove((data[0]._id as string), (data[0].username as string))">删除联系人</button>
         </view>
       </form>
     </unicloud-db>
   </scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
-  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
+  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.ts'
 
   const collection = ref('')
   const where = ref('')
@@ -119,6 +119,9 @@
   }
 
   .scroll-view {
+    --contact-text-color: #333333;
+    --contact-secondary-color: #666;
+    --contact-border-color: #e5e5e5;
     padding: 15px;
     flex: 1;
   }
@@ -136,13 +139,14 @@
   .form-item-label {
     width: 45px;
     margin-right: 10px;
+    color: var(--contact-text-color, #333333);
   }
 
   .form-item-input {
     flex: 1;
     font-size: 14px;
-    color: #666;
-    border: 1px #e5e5e5 solid;
+    color: var(--contact-secondary-color, #666);
+    border: 1px solid var(--contact-border-color, #e5e5e5);
     border-radius: 5px;
     height: 34px;
     padding-left: 8px;
@@ -152,8 +156,8 @@
   .form-item-input-comment {
     flex: 1;
     font-size: 14px;
-    color: #666;
-    border: 1px #e5e5e5 solid;
+    color: var(--contact-secondary-color, #666);
+    border: 1px solid var(--contact-border-color, #e5e5e5);
     border-radius: 5px;
     padding: 8px;
   }
@@ -168,11 +172,23 @@
     align-items: center;
   }
 
+  .radio-item-text {
+    color: var(--contact-text-color, #333333);
+  }
+
   .btn-group {
     margin-top: 30px;
   }
 
   .btn-delete {
     margin-top: 15px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .scroll-view {
+      --contact-text-color: #ffffff;
+      --contact-secondary-color: #a0a0a0;
+      --contact-border-color: rgba(255, 255, 255, 0.1);
+    }
   }
 </style>

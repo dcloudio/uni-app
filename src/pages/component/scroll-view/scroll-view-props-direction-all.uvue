@@ -1,0 +1,228 @@
+<template>
+  <page-head title="direction=all 属性示例"></page-head>
+  <view class="page">
+    <scroll-view
+      id="scrollViewAll"
+      ref="scrollViewAllRef"
+      class="demo-scroll-view"
+      direction="all"
+      :scroll-top="data.scrollTop"
+      :scroll-left="data.scrollLeft"
+      :scroll-into-view="data.scrollIntoView"
+      :show-scrollbar="data.showScrollbar"
+      :scroll-with-animation="data.scrollWithAnimation">
+      <view class="canvas">
+        <view class="canvas-row" v-for="(row, rowIndex) in data.rows" :key="rowIndex">
+          <view
+            class="canvas-cell"
+            v-for="(item, columnIndex) in row"
+            :key="item.id"
+            :id="item.id">
+            <view class="cell-content">
+              <text class="cell-title">{{item.label}}</text>
+              <text class="cell-subtitle">x={{columnIndex}} y={{rowIndex}}</text>
+            </view>
+            <view v-if="rowIndex == data.rows.length - 1 && columnIndex == row.length - 1" id="all_target_child"
+              class="target-anchor">
+              <text class="target-anchor-text">target</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <scroll-view class="control-panel" direction="vertical">
+      <!-- #ifndef MP-ALIPAY -->
+      <boolean-data :value="data.showScrollbar" title="是否显示滚动条"
+        @change="toggleScrollbar"></boolean-data>
+      <!-- #endif -->
+      <boolean-data :value="data.scrollWithAnimation" title="滚动时是否使用动画"
+        @change="toggleScrollWithAnimation"></boolean-data>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <button type="primary" class="button" @click="scrollToTargetCell">
+          滚动到右下角子视图
+        </button>
+      </view>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup lang="ts">
+type GridItem = {
+  id : string,
+  label : string,
+}
+
+type DataType = {
+  rows : GridItem[][],
+  scrollTop : number,
+  scrollLeft : number,
+  scrollIntoView : string,
+  showScrollbar : boolean,
+  scrollWithAnimation : boolean,
+}
+
+const data = reactive<DataType>({
+  rows: [] as GridItem[][],
+  scrollTop: 0,
+  scrollLeft: 0,
+  scrollIntoView: '',
+  showScrollbar: true,
+  scrollWithAnimation: true,
+})
+
+const scrollViewAllRef = ref<UniScrollViewElement | null>(null)
+
+function buildRows() {
+  if (data.rows.length > 0) {
+    return
+  }
+  for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+    const row = [] as GridItem[]
+    for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
+      const item : GridItem = {
+        id: 'all_item_' + rowIndex + '_' + columnIndex,
+        label: 'item ' + rowIndex + '-' + columnIndex,
+      }
+      row.push(item)
+    }
+    data.rows.push(row)
+  }
+}
+
+function toggleScrollbar(value : boolean) {
+  data.showScrollbar = value
+}
+
+function toggleScrollWithAnimation(value : boolean) {
+  data.scrollWithAnimation = value
+}
+
+function scrollToTargetCell() {
+  data.scrollIntoView = 'all_target_child'
+  setTimeout(() => {
+    data.scrollIntoView = ''
+  }, 0)
+}
+
+function resetScrollPosition() {
+  data.scrollTop = 0
+  data.scrollLeft = 0
+  data.scrollIntoView = ''
+}
+
+function checkScrollHeight() : boolean {
+  const element = scrollViewAllRef.value
+  if (element == null) {
+    return false
+  }
+  return element.scrollHeight > 900
+}
+
+function checkScrollWidth() : boolean {
+  const element = scrollViewAllRef.value
+  if (element == null) {
+    return false
+  }
+  return element.scrollWidth > 1200
+}
+
+onLoad(() => {
+  buildRows()
+})
+
+defineExpose({
+  data,
+  checkScrollHeight,
+  checkScrollWidth,
+  scrollToTargetCell,
+  resetScrollPosition,
+})
+</script>
+
+<style>
+.page {
+  flex: 1;
+  flex-direction: column;
+}
+
+.demo-scroll-view {
+  height: 280px;
+  margin-left: 24px;
+  margin-top: 24px;
+  margin-right: 24px;
+  margin-bottom: 16px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #d0d7de;
+  background-color: #f8fafc;
+}
+
+.canvas {
+  width: 1280px;
+  height: 960px;
+  flex-direction: column;
+}
+
+.canvas-row {
+  flex-direction: row;
+}
+
+.canvas-cell {
+  width: 320px;
+  height: 240px;
+  flex-direction: column;
+  padding-top: 24px;
+  padding-right: 24px;
+  padding-bottom: 24px;
+  padding-left: 24px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #94a3b8;
+  background-color: #dbeafe;
+  justify-content: space-between;
+}
+
+.cell-content {
+  flex-direction: column;
+}
+
+.cell-title {
+  font-size: 32px;
+  color: #0f172a;
+}
+
+.cell-subtitle {
+  font-size: 24px;
+  color: #334155;
+}
+
+.target-anchor {
+  width: 88px;
+  height: 88px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-end;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #2563eb;
+  background-color: #bfdbfe;
+}
+
+.target-anchor-text {
+  font-size: 20px;
+  color: #1d4ed8;
+}
+
+.control-panel {
+  flex: 1;
+  margin-left: 24px;
+  margin-right: 24px;
+  margin-bottom: 24px;
+}
+
+.button {
+  flex: 1;
+}
+</style>

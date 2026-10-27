@@ -13,7 +13,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 function goOnLoad(type: string){
   uni.navigateTo({
     url: `/pages/API/navigator/new-page/onLoad?type=${type}`

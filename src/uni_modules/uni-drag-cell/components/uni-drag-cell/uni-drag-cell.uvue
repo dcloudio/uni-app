@@ -1,0 +1,1263 @@
+<template>
+	<view class="drag-cell-host">
+	<view class="drag-cell" :class="containerClass" :style="containerStyle">
+		<view
+			v-for="(item, index) in innerList"
+			:key="itemIds.length > index ? itemIds[index] : index"
+			class="drag-cell-item"
+			:style="getItemStyle(index)"
+			@touchstart.stop="onItemTouchStart($event, index)"
+			@touchmove="onItemTouchMove($event, index)"
+			@touchend="onItemTouchEnd($event, index)"
+			@touchcancel="onItemTouchEnd($event, index)">
+			<view class="drag-cell-item-inner">
+				<view class="drag-cell-slot-content">
+					<slot :item="item" :index="index"></slot>
+				</view>
+				<view
+					v-if="handleModeEnabled"
+					class="drag-cell-handle"
+					:class="getHandleClass(index)"
+					@touchstart.stop="onHandleTouchStart($event, index)"
+					@touchend.stop="onHandleTouchEnd($event, index)"
+					@touchcancel.stop="onHandleTouchEnd($event, index)">
+					<!-- 此处item、index参数除传递参数之外，还会激活编译到小程序的scopedSlot特殊处理逻辑，使外部使用时能正常循环创建插槽内容。需要注意的是使用此插槽是也需要声明参数来激活特殊逻辑 -->
+					<slot name="handle" :item="item" :index="index"></slot>
+				</view>
+			</view>
+		</view>
+		<view v-if="showAppendSlot && dragging != true" class="drag-cell-append" :style="getAppendStyle()">
+			<slot name="append"></slot>
+		</view>
+		<view v-if="showDeleteBar" class="drag-cell-delete-bar" :class="overDeleteBar ? 'drag-cell-delete-bar-active' : ''">
+			<text class="drag-cell-delete-text">{{ deleteBarText }}</text>
+		</view>
+		<!-- #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR || APP && VUE3-VAPOR -->
+		<view
+			v-if="showDeleteProxy"
+			class="drag-cell-delete-proxy"
+			:style="getDeleteProxyStyle()">
+			<view class="drag-cell-delete-proxy-inner">
+				<slot :item="innerList[activeIndex]" :index="activeIndex"></slot>
+			</view>
+		</view>
+		<!-- #endif -->
+	</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+  /**
+   * 可拖拽单元格组件
+   * @description 可拖拽单元格组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08",
+   *       "unixVaporVer": "5.21"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.11"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07",
+   *       "unixVaporVer": "5.07"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.07"
+   *     },
+   *     "alipay": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.31"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.07"
+   *   }
+   * }
+   */
+	type ItemLayout = {
+		left: number,
+		pageTop: number,
+		width: number,
+		height: number,
+		centerX: number,
+		centerY: number
+	}
+
+	type QueryRect = {
+		left: number,
+		top: number,
+		width: number,
+		height: number,
+		right?: number,
+		bottom?: number,
+		x?: number,
+		y?: number
+	}
+
+	type DeleteBarLayout = {
+		left: number,
+		pageTop: number,
+		right: number,
+		bottom: number
+	}
+
+	type ContainerLayout = {
+		left: number,
+		pageTop: number,
+		width: number,
+		height: number
+	}
+
+	const props = defineProps({
+		/**
+		 * @description 可拖拽排序的数据源，支持 v-model 双向绑定，内部会在拖拽结束后更新顺序
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		modelValue: {
+			type: Array,
+			required: false
+		},
+		/**
+		 * @description 网格列数。大于 0 时按网格排布，等于 0 时按一行流式排布
+		 * @default 0
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		column: {
+			type: Number,
+			default: 0
+		},
+		/**
+		 * @description 是否显示拖拽到底部删除栏，开启后可将 item 拖入底部删除
+		 * @default false
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		showClose: {
+			type: Boolean,
+			default: false
+		},
+		/**
+		 * @description 是否显示末尾的 append 插槽（非拖拽状态下）
+		 * @default true
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		showAppend: {
+			type: Boolean,
+			default: true
+		},
+		/**
+		 * @description 是否启用拖拽手柄模式，仅点击 handle 插槽才能触发拖拽
+		 * @default false
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		handleMode: {
+			type: Boolean,
+			default: false
+		}
+	})
+
+	const emit = defineEmits<{
+		/**
+		 * @description v-model 绑定值变化事件，参数为最新数组，类型为数组
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		'update:modelValue': [value: any[]]
+		/**
+		 * @description 排序完成后、删除完成后触发，参数为最新数组，类型为数组
+		 * @uniPlatform {
+		 *   "app": {
+		 *     "android": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.08",
+		 *       "unixVaporVer": "5.21"
+		 *     },
+		 *     "ios": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.11"
+		 *     },
+		 *     "harmony": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07",
+		 *       "unixVaporVer": "5.07"
+		 *     }
+		 *   },
+		 *   "mp": {
+		 *     "weixin": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.07"
+		 *     },
+		 *     "alipay": {
+		 *       "uniVer": "x",
+		 *       "unixVer": "5.31"
+		 *     }
+		 *   },
+		 *   "web": {
+		 *     "uniVer": "x",
+		 *     "unixVer": "5.07"
+		 *   }
+		 * }
+		 */
+		change: [value: any[]]
+	}>()
+	const instance = getCurrentInstance()
+	const slots = useSlots()
+
+	const innerList = ref(props.modelValue != null ? props.modelValue.slice() : [])
+	const itemIds = ref<number[]>([])
+	const layouts = ref<ItemLayout[]>([])
+	const gridColumnCenters = ref<number[]>([])
+	const gridRowCenters = ref<number[]>([])
+	const previewItemIds = ref<number[]>([])
+	const settling = ref(false)
+	const dragging = ref(false)
+	// TODO XXXIndex存的太多了，后续优化
+	const activeIndex = ref(-1)
+	const hoverIndex = ref(-1)
+	const dragOffsetX = ref(0)
+	const dragOffsetY = ref(0)
+	const startTouchX = ref(0)
+	const startTouchY = ref(0)
+	const pendingIndex = ref(-1)
+	const overDeleteBar = ref(false)
+	const containerLayout = ref<ContainerLayout | null>(null)
+	const activeViewLeft = ref(0)
+	const activeViewTop = ref(0)
+	const dragCoordOffsetX = ref(0)
+	const dragCoordOffsetY = ref(0)
+	const nextItemId = ref(0)
+	let longPressTimer = 0
+	const longPressDuration = 350
+	const pressCancelDistance = 10
+	const dragActiveScale = 1.12
+	const deleteBarHeight = 56
+
+	let touchVersion = 0
+
+	class TouchContext {
+		index : number
+		version : number
+		constructor(index : number) {
+			this.index = index
+			this.version = touchVersion
+		}
+	}
+
+	const columnCount = computed(() : number => {
+		const currentColumn = props.column as number
+		if (currentColumn <= 0) {
+			return 0
+		}
+		return Math.floor(currentColumn)
+	})
+
+	const containerClass = computed(() : string => {
+		return columnCount.value > 0 ? 'drag-cell-grid' : 'drag-cell-row'
+	})
+
+	const showClose = computed(() : boolean => props.showClose == true)
+	const showAppendSlot = computed(() : boolean => props.showAppend == true && slots['append'] != null)
+	const handleModeEnabled = computed(() : boolean => props.handleMode == true && slots['handle'] != null)
+	const showDeleteBar = computed(() : boolean => showClose.value && dragging.value)
+	const activeDragScale = computed(() : number => {
+		return handleModeEnabled.value ? 1 : dragActiveScale
+	})
+	let useDeleteProxyForDeleteDrag = false
+	// #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR || APP && VUE3-VAPOR
+	// 安卓平台非蒸汽模式切换为fixed时会触发touchcancel。蒸汽模式scroll-view内的元素由fixed切换为非fixed无法回到原位置（Bug待修复）。iOS平台切换为fixed后无法通过preventDefault阻止滚动。
+	useDeleteProxyForDeleteDrag = true
+	// #endif
+	const showDeleteProxy = computed(() : boolean => {
+		return useDeleteProxyForDeleteDrag && showClose.value == true && dragging.value == true && activeIndex.value >= 0 && activeIndex.value < innerList.value.length
+	})
+	const containerStyle = computed(() : string => {
+		const currentContainerLayout = containerLayout.value
+		if (dragging.value == true && currentContainerLayout != null) {
+			return `height: ${currentContainerLayout.height}px;`
+		}
+		return ''
+	})
+	const getDeleteProxyStyle = () : string => {
+		if (showDeleteProxy.value != true || activeIndex.value < 0 || activeIndex.value >= layouts.value.length) {
+			return 'display: none;'
+		}
+		const sourceLayout = layouts.value[activeIndex.value]
+		return `position: fixed; left: ${activeViewLeft.value}px; top: ${activeViewTop.value}px; width: ${sourceLayout.width}px; height: ${sourceLayout.height}px; z-index: 30; transform: translateX(${dragOffsetX.value}px) translateY(${dragOffsetY.value}px) scale(${activeDragScale.value});`
+	}
+	const getFixedActiveItemStyle = (sourceLayout : ItemLayout) : string => {
+		return `position: fixed; left: ${activeViewLeft.value}px; top: ${activeViewTop.value}px; width: ${sourceLayout.width}px; height: ${sourceLayout.height}px; z-index: 30; transition-duration: 0ms; transform: translateX(${dragOffsetX.value}px) translateY(${dragOffsetY.value}px) scale(${activeDragScale.value});`
+	}
+	const getDeletePlaceholderStyle = (baseLeft : number, baseTop : number, sourceLayout : ItemLayout) : string => {
+		return `position: absolute; left: ${baseLeft}px; top: ${baseTop}px; width: ${sourceLayout.width}px; height: ${sourceLayout.height}px; z-index: 0; transition-duration: 0ms; opacity: 0; transform: translateX(0px) translateY(0px);`
+	}
+	const appLanguage = uni.getAppBaseInfo().appLanguage ?? 'en'
+
+	type DeleteBarLocale = {
+		idle: string,
+		active: string
+	}
+
+	const getDeleteBarLocale = () : DeleteBarLocale => {
+		const language = appLanguage.toLowerCase()
+		if (language.indexOf('zh-hant') == 0 || language.indexOf('zh-tw') == 0 || language.indexOf('zh-hk') == 0 || language.indexOf('zh-mo') == 0) {
+			return {
+				idle: '\u62d6\u5230\u6b64\u8655\u522a\u9664',
+				active: '\u9b06\u624b\u522a\u9664'
+			}
+		}
+		if (language.indexOf('zh') == 0) {
+			return {
+				idle: '\u62d6\u5230\u6b64\u5904\u5220\u9664',
+				active: '\u677e\u624b\u5220\u9664'
+			}
+		}
+		if (language.indexOf('fr') == 0) {
+			return {
+				idle: 'Faites glisser ici pour supprimer',
+				active: 'Rel\u00e2chez pour supprimer'
+			}
+		}
+		if (language.indexOf('la') == 0) {
+			return {
+				idle: 'Huc trahe ut deleas',
+				active: 'Dimitte ut deleas'
+			}
+		}
+		return {
+			idle: 'Drag here to delete',
+			active: 'Release to delete'
+		}
+	}
+
+	const deleteBarLocale = getDeleteBarLocale()
+	const deleteBarText = computed(() : string => {
+		return overDeleteBar.value ? deleteBarLocale.active : deleteBarLocale.idle
+	})
+
+	const createIdentityOrder = (length : number) : number[] => {
+		const order : number[] = []
+		for (let i = 0; i < length; i++) {
+			order.push(i)
+		}
+		return order
+	}
+
+	const applyPreviewOrder = (order : number[]) => {
+		const nextPreviewItemIds : number[] = []
+		for (let i = 0; i < order.length; i++) {
+			const sourceIndex = order[i]
+			if (sourceIndex >= 0 && sourceIndex < itemIds.value.length) {
+				nextPreviewItemIds.push(itemIds.value[sourceIndex])
+			}
+		}
+		previewItemIds.value = nextPreviewItemIds
+	}
+
+	const findPreviewPosition = (itemId : number) : number => {
+		for (let i = 0; i < previewItemIds.value.length; i++) {
+			if (previewItemIds.value[i] == itemId) {
+				return i
+			}
+		}
+		return -1
+	}
+
+	const buildIdList = (length : number) : number[] => {
+		const ids : number[] = []
+		for (let i = 0; i < length; i++) {
+			ids.push(nextItemId.value)
+			nextItemId.value = nextItemId.value + 1
+		}
+		return ids
+	}
+
+	function clearLongPressTimer() : void {
+		if (longPressTimer != 0) {
+			clearTimeout(longPressTimer)
+			longPressTimer = 0
+		}
+	}
+
+	const resetDragState = () => {
+		clearLongPressTimer()
+		dragging.value = false
+		activeIndex.value = -1
+		hoverIndex.value = -1
+		pendingIndex.value = -1
+		overDeleteBar.value = false
+		activeViewLeft.value = 0
+		activeViewTop.value = 0
+		dragCoordOffsetX.value = 0
+		dragCoordOffsetY.value = 0
+		dragOffsetX.value = 0
+		dragOffsetY.value = 0
+		applyPreviewOrder(createIdentityOrder(innerList.value.length))
+	}
+
+	const getItemLayout = (index : number) : ItemLayout | null => {
+		if (index < 0 || index >= layouts.value.length) {
+			return null
+		}
+		return layouts.value[index]
+	}
+
+	const getCurrentTargetRect = (index : number) : QueryRect | null => {
+		const itemLayout = getItemLayout(index)
+		if (itemLayout == null) {
+			return null
+		}
+		return {
+			left: itemLayout.left,
+			top: itemLayout.pageTop,
+			width: itemLayout.width,
+			height: itemLayout.height,
+			right: itemLayout.left + itemLayout.width,
+			bottom: itemLayout.pageTop + itemLayout.height
+		}
+	}
+
+	const rebuildGridAxisCache = (nextLayouts : ItemLayout[]) => {
+		const nextColumnCenters : number[] = []
+		const nextRowCenters : number[] = []
+		const length = nextLayouts.length
+		const columns = columnCount.value
+		if (columns > 0 && length > 0) {
+			const actualColumns = Math.min(columns, length)
+			for (let i = 0; i < actualColumns; i++) {
+				nextColumnCenters.push(nextLayouts[i].centerX)
+			}
+			for (let i = 0; i < length; i += actualColumns) {
+				nextRowCenters.push(nextLayouts[i].centerY)
+			}
+		}
+		gridColumnCenters.value = nextColumnCenters
+		gridRowCenters.value = nextRowCenters
+	}
+
+
+
+	function measureLayouts() : Promise<void> {
+		if (instance == null || instance.proxy == null) {
+			return Promise.resolve()
+		}
+		const query = uni.createSelectorQuery().in(instance.proxy)
+		query.select('.drag-cell').boundingClientRect((rect) => {
+			if (rect != null) {
+				const containerRect = rect as NodeInfo
+				let top = containerRect.top != null ? containerRect.top : 0
+				const height = containerRect.height != null ? containerRect.height : 0
+				if (top == 0 && containerRect.bottom != null) {
+					top = containerRect.bottom - height
+				}
+				containerLayout.value = {
+					left: containerRect.left != null ? containerRect.left : 0,
+					pageTop: top,
+					width: containerRect.width != null ? containerRect.width : 0,
+					height
+				}
+			}
+		})
+		query.selectAll('.drag-cell-item').boundingClientRect((rects) => {
+			const nextLayouts : ItemLayout[] = []
+			if (rects != null) {
+				const rectList = rects as NodeInfo[]
+				for (let i = 0; i < rectList.length; i++) {
+					const rect = rectList[i]
+					const left = rect.left != null ? rect.left : 0
+					let top = rect.top != null ? rect.top : 0
+					const width = rect.width != null ? rect.width : 0
+					const height = rect.height != null ? rect.height : 0
+					if (top == 0 && rect.bottom != null) {
+						top = rect.bottom - height
+					}
+					nextLayouts.push({
+						left,
+						pageTop: top,
+						width,
+						height,
+						centerX: left + width / 2,
+						centerY: top + height / 2
+					})
+				}
+			}
+			layouts.value = nextLayouts
+			rebuildGridAxisCache(nextLayouts)
+		})
+		return new Promise(resolve => {
+			query.exec(() => {
+				resolve()
+			})
+		})
+	}
+
+	const syncFromModel = () => {
+		if (dragging.value) {
+			return
+		}
+		innerList.value = props.modelValue != null ? props.modelValue.slice() : []
+		itemIds.value = buildIdList(innerList.value.length)
+		resetDragState()
+	}
+
+	const emitChange = () => {
+		emit('update:modelValue', innerList.value)
+		emit('change', innerList.value)
+	}
+
+	const resetItemIdsByListOrder = () => {
+		itemIds.value = createIdentityOrder(innerList.value.length)
+		applyPreviewOrder(createIdentityOrder(innerList.value.length))
+	}
+
+	watch(() : number => {
+		const list = props.modelValue
+		return list != null ? list.length : -1
+	}, (_newLength : number) => {
+		syncFromModel()
+	})
+
+	const getWebWindowTopOffset = () : number => {
+		// #ifdef WEB
+		return uni.getWindowInfo().windowTop
+		// #endif
+		// #ifndef WEB
+		return 0
+		// #endif
+	}
+
+	const buildPreviewOrder = (length : number, from : number, to : number) : number[] => {
+		const order = createIdentityOrder(length)
+		if (from == to) {
+			return order
+		}
+		order.splice(from, 1)
+		order.splice(to, 0, from)
+		return order
+	}
+
+	const findNearestAxisIndex = (centers : number[], value : number) : number => {
+		let nearestIndex = 0
+		let nearestDistance = -1.0
+		for (let i = 0; i < centers.length; i++) {
+			const distance = Math.abs(centers[i] - value)
+			if (nearestDistance < 0 || distance < nearestDistance) {
+				nearestDistance = distance
+				nearestIndex = i
+			}
+		}
+		return nearestIndex
+	}
+
+	const getGridHoverIndex = (centerX : number, centerY : number) : number => {
+		const length = layouts.value.length
+		const columns = columnCount.value
+		if (columns <= 0 || length == 0) {
+			return activeIndex.value
+		}
+
+		const actualColumns = Math.min(columns, length)
+		const columnIndex = findNearestAxisIndex(gridColumnCenters.value, centerX)
+		const rowIndex = findNearestAxisIndex(gridRowCenters.value, centerY)
+		const rowStart = rowIndex * actualColumns
+		const rowEnd = Math.min(rowStart + actualColumns, length)
+		let targetIndex = rowStart + columnIndex
+		if (targetIndex >= rowEnd) {
+			targetIndex = rowEnd - 1
+		}
+		return targetIndex
+	}
+
+	const updateHoverIndex = () => {
+		const currentActiveIndex = activeIndex.value
+		if (currentActiveIndex < 0 || currentActiveIndex >= layouts.value.length) {
+			return
+		}
+		const sourceLayout = layouts.value[currentActiveIndex]
+		const centerX = sourceLayout.left + sourceLayout.width / 2 + dragOffsetX.value
+		const centerY = sourceLayout.pageTop + sourceLayout.height / 2 + dragOffsetY.value
+		if (columnCount.value > 0) {
+			const touchX = startTouchX.value + dragOffsetX.value + dragCoordOffsetX.value
+			const touchY = startTouchY.value + dragOffsetY.value + dragCoordOffsetY.value
+			const targetIndex = getGridHoverIndex(touchX, touchY)
+			if (targetIndex != hoverIndex.value) {
+				hoverIndex.value = targetIndex
+				applyPreviewOrder(buildPreviewOrder(innerList.value.length, currentActiveIndex, targetIndex))
+			}
+			return
+		}
+		let nearestIndex = currentActiveIndex
+		let nearestDistance = -1.0
+		for (let i = 0; i < layouts.value.length; i++) {
+			const layout = layouts.value[i]
+			const deltaX = layout.centerX - centerX
+			const deltaY = layout.centerY - centerY
+			const distance = deltaX * deltaX + deltaY * deltaY
+			if (nearestDistance < 0 || distance < nearestDistance) {
+				nearestDistance = distance
+				nearestIndex = i
+			}
+		}
+		if (nearestIndex != hoverIndex.value) {
+			hoverIndex.value = nearestIndex
+			applyPreviewOrder(buildPreviewOrder(innerList.value.length, currentActiveIndex, nearestIndex))
+		}
+	}
+
+	const cancelPendingPress = () => {
+		clearLongPressTimer()
+		pendingIndex.value = -1
+	}
+
+	const setDragContext = (index : number, clientX : number, clientY : number) => {
+		startTouchX.value = clientX
+		startTouchY.value = clientY
+		const rect = getCurrentTargetRect(index)
+		activeViewLeft.value = rect != null ? rect.left : 0
+		activeViewTop.value = rect != null ? (rect.top + getWebWindowTopOffset()) : 0
+	}
+
+	const getScaledDragRect = (baseLeft : number, baseTop : number, width : number, height : number, scale : number) : QueryRect => {
+		if (scale == 1) {
+			return {
+				left: baseLeft,
+				top: baseTop,
+				width,
+				height,
+				right: baseLeft + width,
+				bottom: baseTop + height
+			}
+		}
+		const centerX = width / 2
+		const centerY = height / 2
+		const left = baseLeft + centerX + (0 - centerX) * scale
+		const top = baseTop + centerY + (0 - centerY) * scale
+		return {
+			left,
+			top,
+			width: width * scale,
+			height: height * scale,
+			right: baseLeft + centerX + (width - centerX) * scale,
+			bottom: baseTop + centerY + (height - centerY) * scale
+		}
+	}
+
+	function beginDrag(index : number, clientX : number, clientY : number) : void {
+		if (layouts.value.length != innerList.value.length || index >= layouts.value.length) {
+			cancelPendingPress()
+			return
+		}
+		clearLongPressTimer()
+		pendingIndex.value = -1
+		startTouchX.value = clientX
+		startTouchY.value = clientY
+		dragOffsetX.value = 0
+		dragOffsetY.value = 0
+		dragCoordOffsetX.value = layouts.value[index].left - activeViewLeft.value
+		dragCoordOffsetY.value = layouts.value[index].pageTop - activeViewTop.value
+		settling.value = false
+		dragging.value = true
+		activeIndex.value = index
+		hoverIndex.value = index
+		overDeleteBar.value = false
+		applyPreviewOrder(createIdentityOrder(innerList.value.length))
+	}
+
+	const beginHandleDrag = (context : TouchContext, clientX : number, clientY : number) => {
+		measureLayouts().then(() => {
+			if (context.version !== touchVersion) {
+				return
+			}
+			setDragContext(context.index, clientX, clientY)
+			beginDrag(context.index, clientX, clientY)
+		})
+	}
+
+	const updateDeleteBarState = () => {
+		if (showClose.value != true || dragging.value != true || activeIndex.value < 0 || activeIndex.value >= layouts.value.length) {
+			overDeleteBar.value = false
+			return
+		}
+		const sourceLayout = layouts.value[activeIndex.value]
+		const dragRect = getScaledDragRect(activeViewLeft.value + dragOffsetX.value, activeViewTop.value + dragOffsetY.value, sourceLayout.width, sourceLayout.height, activeDragScale.value)
+		const contentLeft = dragRect.left
+		const contentRight = dragRect.right != null ? dragRect.right : (dragRect.left + dragRect.width)
+		const contentBottom = dragRect.bottom != null ? dragRect.bottom : (dragRect.top + dragRect.height)
+		const normalizedContentBottom = contentBottom - getWebWindowTopOffset()
+		const windowInfo = uni.getWindowInfo()
+		const barTop = windowInfo.windowHeight - deleteBarHeight
+		const isInside = normalizedContentBottom >= barTop
+		if (isInside != overDeleteBar.value) {
+			overDeleteBar.value = isInside
+			if (isInside) {
+				hoverIndex.value = activeIndex.value
+				applyPreviewOrder(createIdentityOrder(innerList.value.length))
+			}
+		}
+	}
+
+	const scheduleLongPress = (context : TouchContext, clientX : number, clientY : number) => {
+		const currentTouchVersion = touchVersion
+		clearLongPressTimer()
+		pendingIndex.value = context.index
+		startTouchX.value = clientX
+		startTouchY.value = clientY
+		longPressTimer = setTimeout(() => {
+			longPressTimer = 0
+			measureLayouts().then(() => {
+				if (touchVersion !== context.version) {
+					return
+				}
+				setDragContext(context.index, clientX, clientY)
+				beginDrag(context.index, clientX, clientY)
+			})
+		}, longPressDuration)
+	}
+
+	const moveDrag = (clientX : number, clientY : number) => {
+		if (dragging.value == true && activeIndex.value >= 0) {
+			dragOffsetX.value = clientX - startTouchX.value
+			dragOffsetY.value = clientY - startTouchY.value
+			updateDeleteBarState()
+			if (overDeleteBar.value != true) {
+				updateHoverIndex()
+			}
+			return
+		}
+		if (pendingIndex.value >= 0) {
+			const deltaX = clientX - startTouchX.value
+			const deltaY = clientY - startTouchY.value
+			const distanceSquare = deltaX * deltaX + deltaY * deltaY
+			if (distanceSquare > pressCancelDistance * pressCancelDistance) {
+				cancelPendingPress()
+			}
+		}
+	}
+
+	const finishDrag = () => {
+		if (pendingIndex.value >= 0) {
+			cancelPendingPress()
+			return
+		}
+		if (dragging.value != true || activeIndex.value < 0) {
+			return
+		}
+		const currentActiveIndex = activeIndex.value
+		if (showClose.value == true) {
+			updateDeleteBarState()
+		}
+		if (showClose.value == true && overDeleteBar.value == true) {
+			const nextList = innerList.value.slice()
+			nextList.splice(currentActiveIndex, 1)
+			settling.value = true
+			resetDragState()
+			innerList.value = nextList
+			resetItemIdsByListOrder()
+			emitChange()
+			nextTick(() => {
+				settling.value = false
+			})
+			return
+		}
+		const targetIndex = hoverIndex.value
+		if (targetIndex < 0 || targetIndex == currentActiveIndex) {
+			resetDragState()
+			return
+		}
+
+		const nextList = innerList.value.slice()
+		const movedItem = nextList.splice(currentActiveIndex, 1)[0]
+		nextList.splice(targetIndex, 0, movedItem)
+
+		settling.value = true
+		resetDragState()
+		innerList.value = nextList
+		resetItemIdsByListOrder()
+		emitChange()
+		nextTick(() => {
+			settling.value = false
+		})
+	}
+
+	let currentTouchContext: TouchContext | null = null
+	const onItemTouchStart = (event : any, index : number) => {
+		if (handleModeEnabled.value == true) {
+			return
+		}
+		if (dragging.value == true) {
+			return
+		}
+		currentTouchContext = new TouchContext(index)
+		const touchEvent = event as UniTouchEvent
+		const touch = touchEvent.touches[0]
+		scheduleLongPress(currentTouchContext!, touch.clientX, touch.clientY)
+	}
+
+	const onItemTouchMove = (event : any, index : number) => {
+		const touchEvent = event as UniTouchEvent
+		const touch = touchEvent.touches[0]
+		if (dragging.value == true) {
+			touchEvent.preventDefault()
+			if (index != activeIndex.value) {
+				return
+			}
+			moveDrag(touch.clientX, touch.clientY)
+		}
+	}
+
+	const onItemTouchEnd = (_event : any, index : number) => {
+		if (currentTouchContext && currentTouchContext!.index === index) {
+			touchVersion++
+			currentTouchContext = null
+		}
+		if (index != activeIndex.value) {
+			return
+		}
+		if (dragging.value == true) {
+			finishDrag()
+		}
+	}
+
+	const onHandleTouchStart = (event : any, index : number) => {
+		if (handleModeEnabled.value != true) {
+			return
+		}
+		const touchEvent = event as UniTouchEvent
+		const touch = touchEvent.touches[0]
+		currentTouchContext = new TouchContext(index)
+		beginHandleDrag(currentTouchContext!, touch.clientX, touch.clientY)
+	}
+
+	const onHandleTouchEnd = (_event : any, index : number) => {
+		if(currentTouchContext && currentTouchContext!.index === index) {
+			touchVersion++
+			currentTouchContext = null
+		}
+		if (dragging.value == true) {
+			finishDrag()
+			return
+		}
+		cancelPendingPress()
+	}
+
+	const getHandleClass = (index : number) : string => {
+		if (handleModeEnabled.value == true && dragging.value == true && activeIndex.value == index) {
+			return 'drag-cell-handle-active'
+		}
+		return ''
+	}
+
+	const getItemStyle = (index : number) : string => {
+		let widthStyle = 'width: auto;'
+		let positionStyle = ''
+		if (columnCount.value > 0) {
+			widthStyle = `width: ${100 / columnCount.value}%;`
+		}
+
+		let zIndexStyle = 'z-index: 1;'
+		let transitionStyle = 'transition-duration: 200ms;'
+		let transformStyle = 'translateX(0px) translateY(0px)'
+
+		// #ifdef APP-ANDROID && !VUE3-VAPOR
+		// TODO 安卓平台transition动画过程中新设置的属性不生效，暂时在安卓平台屏蔽transition动画，待安卓平台修复后移除此条件编译
+		transitionStyle = 'transition-duration: 0ms;'
+		// #endif
+
+		if (settling.value == true) {
+			transitionStyle = 'transition-duration: 0ms;'
+		}
+
+		const currentContainerLayout = containerLayout.value
+		if (dragging.value == true && index < layouts.value.length && currentContainerLayout != null) {
+			const sourceLayout = layouts.value[index]
+			const baseLeft = sourceLayout.left - currentContainerLayout.left
+			const baseTop = sourceLayout.pageTop - currentContainerLayout.pageTop
+			widthStyle = ''
+			if (activeIndex.value == index) {
+				positionStyle = `position: absolute; left: ${baseLeft}px; top: ${baseTop}px; width: ${sourceLayout.width}px; height: ${sourceLayout.height}px;`
+				transitionStyle = 'transition-duration: 0ms;'
+				if (showClose.value == true) {
+					if (useDeleteProxyForDeleteDrag) {
+						return `${widthStyle}${getDeletePlaceholderStyle(baseLeft, baseTop, sourceLayout)}`
+					}
+					return `${widthStyle}${getFixedActiveItemStyle(sourceLayout)}`
+				}
+				zIndexStyle = 'z-index: 30;'
+				transformStyle = `translateX(${dragOffsetX.value}px) translateY(${dragOffsetY.value}px) scale(${activeDragScale.value})`
+			} else {
+				positionStyle = `position: absolute; left: ${baseLeft}px; top: ${baseTop}px; width: ${sourceLayout.width}px; height: ${sourceLayout.height}px;`
+				if (index < itemIds.value.length) {
+					const currentItemId = itemIds.value[index]
+					const targetPosition = findPreviewPosition(currentItemId)
+					if (targetPosition >= 0 && targetPosition < layouts.value.length) {
+						const targetLayout = layouts.value[targetPosition]
+						const deltaX = targetLayout.left - sourceLayout.left
+						const deltaY = targetLayout.pageTop - sourceLayout.pageTop
+						transformStyle = `translateX(${deltaX}px) translateY(${deltaY}px)`
+					}
+				}
+			}
+		} else if (index !== activeIndex.value) {
+			transitionStyle = 'transition-duration: 0ms;'
+		}
+
+		return `${widthStyle}${positionStyle}${zIndexStyle}${transitionStyle}transform: ${transformStyle};`
+	}
+	const getAppendStyle = () : string => {
+		if (columnCount.value > 0) {
+			return `width: ${100 / columnCount.value}%;`
+		}
+		return 'width: auto;'
+	}
+
+
+	onMounted(() => {
+		itemIds.value = buildIdList(innerList.value.length)
+		applyPreviewOrder(createIdentityOrder(innerList.value.length))
+	})
+</script>
+
+<style>
+	.drag-cell-host {
+		position: relative;
+		width: 100%;
+		overflow: visible;
+	}
+
+	.drag-cell {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		width: 100%;
+		position: relative;
+		overflow: visible;
+	}
+
+	.drag-cell-row {
+		justify-content: flex-start;
+	}
+
+	.drag-cell-grid {
+		justify-content: flex-start;
+	}
+
+	.drag-cell-item {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		transition-property: transform;
+		transition-timing-function: ease;
+		transform-origin: center center;
+		overflow: visible;
+		/* #ifdef WEB */
+		cursor: grab;
+		/* #endif */
+	}
+
+	.drag-cell-append {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		overflow: visible;
+	}
+
+	.drag-cell-item-inner {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+		transition-property: transform;
+		transition-timing-function: ease;
+		transform-origin: center center;
+	}
+
+	.drag-cell-slot-content {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+	}
+
+	.drag-cell-handle {
+		position: absolute;
+		right: 0;
+		top: 0;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		justify-content: flex-start;
+		opacity: 0.82;
+		transition-property: transform, opacity;
+		transition-duration: 160ms;
+		/* #ifdef WEB */
+		cursor: grab;
+		/* #endif */
+	}
+
+	.drag-cell-handle-active {
+		opacity: 1;
+		transform: scale(1.08);
+	}
+
+
+	.drag-cell-delete-bar {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 56px;
+		border-radius: 0px;
+		background-color: rgba(255, 59, 48, 0.92);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		transform: translateY(0px);
+		z-index: 20;
+	}
+
+	.drag-cell-delete-bar-active {
+		background-color: rgba(209, 33, 23, 0.96);
+		transform: scale(1.02);
+	}
+
+	.drag-cell-delete-text {
+		font-size: 16px;
+		font-weight: bold;
+		color: #ffffff;
+		text-align: center;
+	}
+
+	.drag-cell-delete-proxy {
+		position: fixed;
+		z-index: 30;
+		overflow: visible;
+	}
+
+	.drag-cell-delete-proxy-inner {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+	}
+
+	.drag-cell-drag-layer {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0);
+		z-index: 25;
+	}
+</style>
+
+
+
+
+
+
+

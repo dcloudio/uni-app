@@ -1,8 +1,8 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
+    <!-- #ifdef MP-ALIPAY -->
+    <text class="uni-tips">提示：支付宝小程序调用 getVideoInfo 需要真机运行</text>
+    <!-- #endif -->
     <view class="uni-padding-wrap">
       <view class="uni-title">
         <text class="uni-subtitle-text">获取本地绝对路径视频信息</text>
@@ -21,13 +21,12 @@
       <video class="video" :src="relativeVideoPath" :controls="true" :poster="relativeCoverImagePath"></video>
       <text class="margin-top-10">{{relativeVideoInfo}}</text>
     </view>
+
+    <view class="scroll-view_bottom-fixed"></view>
     <!-- #endif -->
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type TestStateType = {
     videoInfoForTest: UTSJSONObject | null
   }

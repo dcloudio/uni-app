@@ -1,3 +1,5 @@
+jest.setTimeout(30000)
+
 const PAGE_PATH = "/pages/API/get-location/get-location";
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')

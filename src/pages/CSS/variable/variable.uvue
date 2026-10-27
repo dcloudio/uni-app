@@ -1,40 +1,40 @@
 <template>
   <view class="page">
     <view class="status-bar-height">
-      <text>通过var(--status-bar-height)获取状态栏高度</text>
+      <text class="light-label">通过var(--status-bar-height)获取状态栏高度</text>
     </view>
     <view class="status-bar-window" :style="{ height: statusBarHeight + 'px' }">
-      <text>通过uni.getWindowInfo获取状态栏高度</text>
+      <text class="dark-label">通过uni.getWindowInfo获取状态栏高度</text>
     </view>
     <view class="status-bar-unipage" :style="{ height: statusBarHeight2 + 'px' }">
-      <text>通过this.$page.statusBarHeight获取状态栏高度</text>
+      <text class="dark-label">通过this.$page.statusBarHeight获取状态栏高度</text>
     </view>
     <view class="window-top">
-      <text>window top</text>
+      <text class="light-label">window top</text>
     </view>
     <view class="window-bottom">
-      <text>window bottom</text>
+      <text class="light-label">window bottom</text>
     </view>
 
     <view class="uni-safe-area-inset-top">
-      <text>height:var(--uni-safe-area-inset-top)</text>
+      <text class="dark-label">height:var(--uni-safe-area-inset-top)</text>
     </view>
     <view class="uni-safe-area-inset-left">
-      <text>height:var(--uni-safe-area-inset-left)</text>
+      <text class="dark-label">height:var(--uni-safe-area-inset-left)</text>
     </view>
     <view class="uni-safe-area-inset-right">
-      <text>height:var(--uni-safe-area-inset-right)</text>
+      <text class="light-label">height:var(--uni-safe-area-inset-right)</text>
     </view>
     <view class="uni-safe-area-inset-bottom">
-      <text>height:var(--uni-safe-area-inset-bottom)</text>
+      <text class="dark-label">height:var(--uni-safe-area-inset-bottom)</text>
     </view>
     <view class="uni-fixed-bottom">
-      <text>此区域应显示在安全区域内</text>
+      <text class="light-label">此区域应显示在安全区域内</text>
     </view>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
   const statusBarHeight = ref(0)
   const statusBarHeight2 = ref(0)
@@ -43,15 +43,21 @@
 
   onReady(() => {
     statusBarHeight.value = uni.getWindowInfo().statusBarHeight
-    // #ifndef MP-WEIXIN
     statusBarHeight2.value = instance?.proxy?.$page?.statusBarHeight ?? 0
-    // #endif
   })
 </script>
 
 <style>
   .page {
     flex: 1;
+  }
+
+  .dark-label {
+    color: #1a1a1a;
+  }
+
+  .light-label {
+    color: #ffffff;
   }
 
   .status-bar-height {

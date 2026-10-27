@@ -1,5 +1,5 @@
 <template>
-  <view style="flex-direction: column;background-color: #f5f5f5;padding: 3px;">
+  <view class="page">
     <!-- #ifndef MP -->
     <fps />
     <!-- #endif -->
@@ -8,7 +8,7 @@
       <button size="mini" @click="toggleTimer" style="margin-right:4px;">停止/启动 计时</button>
       <text>{{datetime}}</text>
     </view>
-    <text style="">计时器主线程一直占用绘制文字，但100个loading圈不卡顿</text>
+    <text>计时器主线程一直占用绘制文字，但100个loading圈不卡顿</text>
     <!-- 控制按钮区域 -->
     <button size="mini" @click="changePaused">{{ paused ? '旋转' : '暂停' }}</button>
 
@@ -19,12 +19,19 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   const paused = ref(false)
   const datetime = ref('')
 
   let timerId : number | null = null
   let timerRunning = false
+
+  let isBackPress = false;
+  let startime = Date.now();
+
+  onBackPress(() => {
+    isBackPress = true
+  });
 
   function updateTime() {
     const now = new Date()
@@ -37,9 +44,10 @@
 
   function startTimer() {
     updateTime()
+    // 每3ms更新一次时间显示。 但请注意：低于3ms（比如1ms）更新一次文字时鸿蒙系统会降低帧率至很低，导致页面卡顿，此时点击屏幕会恢复正常帧率。另外，如果低于3ms更新一次文字，但页面上同时有cavans正常绘制内容，harmony系统不会降低帧率。
     timerId = setInterval(() => {
       updateTime()
-    }, 1) // 每毫秒更新一次时间显示
+    }, 3)
     timerRunning = true
   }
 
@@ -61,6 +69,12 @@
 
   onReady(() => {
     startTimer()
+    // #ifdef APP
+    if (isBackPress) { return }
+    const endtime = Date.now();
+    console.log(`total duration(click -> render end):${endtime - startime}`)
+    // #endif
+
   })
 
   onUnload(() => {
@@ -72,3 +86,11 @@
   }
 
 </script>
+
+<style>
+  .page {
+    flex-direction: column;
+    color: var(--text-color, #333333);
+    padding: 3px;
+  }
+</style>

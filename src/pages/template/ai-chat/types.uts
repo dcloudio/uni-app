@@ -1,9 +1,0 @@
-/** 富文本节点类型定义 - 供 ai-chat.uvue 和 rich-text-msg.uvue 共享使用 */
-export type TextNode = { type : string; text : string }
-export type ElementNode = {
-  name : string;
-  attrs? : Map<string, string>;
-  children? : RichNode[];
-}
-export type RichNode = string | TextNode | ElementNode
-export type RichNodes = RichNode[]

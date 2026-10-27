@@ -1,18 +1,20 @@
 <template>
-  <view class="page" id="page-canvas">
-    <page-intro content="本页演示 CanvasContext 2D API：arc、路径、描边填充、drawImage、createPattern、getSetImageData 等绘图与导出能力。"></page-intro>
-    <canvas id="canvas" class="canvas-element"></canvas>
+  <view class="page" id="page-canvas-context">
+    <page-intro
+      content="本页演示 CanvasContext 2D API：arc、路径、描边填充、drawImage、createPattern、getSetImageData 等绘图与导出能力。"></page-intro>
+    <canvas id="canvasContext" class="canvas-element" @ready="onCanvasReady"></canvas>
     <scroll-view class="scroll-view">
       <view class="grid-view">
-    <view class="grid-item" v-for="(name, index) in names" :key="index">
-      <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
-    </view>
+        <view class="grid-item" v-for="(name, index) in names" :key="index">
+          <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
+        </view>
       </view>
     </scroll-view>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
+  const CANVAS_ID = 'canvasContext'
 
   function hidpi(canvas : UniCanvasElement) {
     const context = canvas.getContext("2d")!;
@@ -22,40 +24,93 @@
     context.scale(dpr, dpr);
   }
 
+  // #ifdef MP-ALIPAY
+  function hidpiAlipay(canvas : UniCanvasElement, context : CanvasRenderingContext2D) {
+    uni.createSelectorQuery().select('#' + CANVAS_ID).boundingClientRect().exec((ret) => {
+      const rect = ret.length > 0 ? ret[0] as NodeInfo : null
+      const canvasLayoutWidth = rect != null ? rect.width : 0
+      const canvasLayoutHeight = rect != null ? rect.height : 0
+      const dpr = uni.getWindowInfo().pixelRatio
+      canvas.width = canvasLayoutWidth * dpr
+      canvas.height = canvasLayoutHeight * dpr
+      context.scale(dpr, dpr)
+      canvasWidth = canvas.width
+      canvasHeight = canvas.height
+    })
+  }
+  // #endif
+
   const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "createPattern", "getSetImageData"]
-  const API_DRAW = ["stroke", "strokeRect", "strokeText", "fill", "fillRect", "fillText", "drawImage", "drawImageLocal", "clearRect"]
+  const API_DRAW = [
+    "stroke",
+    "strokeRect",
+    "strokeText",
+    "fill",
+    "fillRect",
+    "fillText",
+    "drawImage",
+    // #ifndef MP-ALIPAY 
+    "drawImageLocal",
+    // #endif
+    "clearRect"
+  ]
   const API_STATE = ["beginPath", "closePath", "reset", "transform", "rotate", "resetTransform", "save", "restore", "scale", "translate", "fontTTF"]
   const API_PROPERTIES = ["lineCap", "lineJoin", "lineWidth", "miterLimit", "fillStyle", "strokeStyle", "globalAlpha", "font", "setLineDash", "createLinearGradient", "createRadialGradient", "textAlign"]
 
   let title = 'createCanvasContextAsync'
-  let canvas: UniCanvasElement | null = null
-  let canvasContext: CanvasContext | null = null
-  let renderingContext: CanvasRenderingContext2D | null = null
+  let canvas : UniCanvasElement | null = null
+  let canvasContext : CanvasContext | null = null
+  let renderingContext : CanvasRenderingContext2D | null = null
   let canvasWidth = 0
   let canvasHeight = 0
   let fontLoaded = false
+  // #ifdef MP
+  const apiImageSrc = '../../../static/api.png'
+  const testImageSrc = '../../../static/test-image/logo.png'
+  // #endif
+  // #ifndef MP
+  const apiImageSrc = '/static/api.png'
+  const testImageSrc = '/static/test-image/logo.png'
+  // #endif
   const names = ref([...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"].sort() as string[])
   const instance = getCurrentInstance()!.proxy!
+
+  function onCanvasReady() {
+    // #ifdef MP-ALIPAY
+    uni.createCanvasContextAsync({
+      id: CANVAS_ID,
+      success: (context : CanvasContext) => {
+        canvasContext = context;
+        renderingContext = context.getContext('2d')!;
+        canvas = renderingContext!.canvas;
+
+        hidpiAlipay(canvas!, renderingContext!);
+      }
+    })
+    // #endif
+  }
 
   onReady(() => {
     // HBuilderX 4.25+
     // 异步调用方式, 跨平台写法
+    // #ifndef MP-ALIPAY
     uni.createCanvasContextAsync({
-      id: 'canvas',
+      id: CANVAS_ID,
       component: instance,
       success: (context : CanvasContext) => {
-    canvasContext = context;
-    renderingContext = context.getContext('2d')!;
-    canvas = renderingContext!.canvas;
+        canvasContext = context;
+        renderingContext = context.getContext('2d')!;
+        canvas = renderingContext!.canvas;
 
-    hidpi(canvas!);
-    canvasWidth = canvas!.width;
-    canvasHeight = canvas!.height;
+        hidpi(canvas!);
+        canvasWidth = canvas!.width;
+        canvasHeight = canvas!.height;
       }
     })
+    // #endif
 
     // 同步调用方式，仅支持 app/web
-    // let canvas = uni.getElementById("canvas") as UniCanvasElement
+    // let canvas = uni.getElementById(CANVAS_ID) as UniCanvasElement
     // renderingContext = canvas.getContext("2d")
     // hidpi(canvas);
     // canvas = canvas;
@@ -234,12 +289,12 @@
     const context = renderingContext!
 
     const image = canvasContext!.createImage()
-    image.src = '/static/api.png';
+    image.src = apiImageSrc
     image.onload = () => {
       context.save()
       clearCanvasRect()
       const pattern = context.createPattern(image, "repeat")
-      if (pattern!=null) {
+      if (pattern != null) {
         context.fillStyle = pattern
       }
       context.fillRect(0, 0, 400, 400)
@@ -467,7 +522,7 @@
   function drawImageLocal() {
     const context = renderingContext!
     const image = canvasContext!.createImage();
-    image.src = '/static/test-image/logo.png'
+    image.src = testImageSrc
     image.onload = () => {
       context.drawImage(image, 0, 0, 100, 100)
     }
@@ -724,139 +779,141 @@
     renderingContext!.save()
     switch (name) {
       case "arc":
-    arc();
-    break;
+        arc();
+        break;
       case "arcTo":
-    arcTo();
-    break;
+        arcTo();
+        break;
       case "beginPath":
-    beginPath();
-    break;
+        beginPath();
+        break;
       case "bezierCurveTo":
-    bezierCurveTo();
-    break;
+        bezierCurveTo();
+        break;
       case "clearRect":
-    clearRect();
-    break;
+        clearRect();
+        break;
       case "clip":
-    clip();
-    break;
+        clip();
+        break;
       case "closePath":
-    closePath();
-    break;
+        closePath();
+        break;
       case "getSetImageData":
-    getSetImageData();
-    break;
+        getSetImageData();
+        break;
       case "createPattern":
-    pattern()
-    break;
+        pattern()
+        break;
       case "createLinearGradient":
-    createLinearGradient();
-    break;
+        createLinearGradient();
+        break;
       case "createRadialGradient":
-    createRadialGradient();
-    break;
+        createRadialGradient();
+        break;
       case "fill":
-    fill();
-    break;
+        fill();
+        break;
       case "fillRect":
-    fillRect();
-    break;
+        fillRect();
+        break;
       case "fillText":
-    fillText();
-    break;
+        fillText();
+        break;
       case "lineTo":
-    lineTo();
-    break;
+        lineTo();
+        break;
       case "moveTo":
-    moveTo();
-    break;
+        moveTo();
+        break;
       case "quadraticCurve":
-    quadraticCurveTo();
-    break;
+        quadraticCurveTo();
+        break;
       case "rect":
-    rect();
-    break;
+        rect();
+        break;
       case "reset":
-    reset();
-    break;
+        reset();
+        break;
       case "resetTransform":
-    resetTransform();
-    break;
+        resetTransform();
+        break;
       case "restore":
-    restore();
-    break;
+        restore();
+        break;
       case "rotate":
-    rotate();
-    break;
+        rotate();
+        break;
       case "save":
-    save();
-    break;
+        save();
+        break;
       case "scale":
-    scale();
-    break;
+        scale();
+        break;
       case "stroke":
-    stroke();
-    break;
+        stroke();
+        break;
       case "strokeRect":
-    strokeRect();
-    break;
+        strokeRect();
+        break;
       case "strokeText":
-    strokeText();
-    break;
+        strokeText();
+        break;
       case "transform":
-    transform();
-    break;
+        transform();
+        break;
       case "translate":
-    translate();
-    break;
+        translate();
+        break;
+      // #ifndef MP-ALIPAY
       case "drawImageLocal":
-    drawImageLocal()
-    break;
+        drawImageLocal()
+        break;
+      // #endif
       case "drawImage":
-    drawImage();
-    break;
+        drawImage();
+        break;
       case "measureText":
-    measureText();
-    break;
+        measureText();
+        break;
       case "fillStyle":
-    setFillStyle();
-    break;
+        setFillStyle();
+        break;
       case "strokeStyle":
-    setStrokeStyle();
-    break;
+        setStrokeStyle();
+        break;
       case "globalAlpha":
-    setGlobalAlpha();
-    break;
+        setGlobalAlpha();
+        break;
       case "font":
-    setFontSize();
-    break;
+        setFontSize();
+        break;
       case "lineCap":
-    setLineCap();
-    break;
+        setLineCap();
+        break;
       case "lineJoin":
-    setLineJoin();
-    break;
+        setLineJoin();
+        break;
       case "setLineDash":
-    lineDash();
-    break;
+        lineDash();
+        break;
       case "lineWidth":
-    setLineWidth();
-    break;
+        setLineWidth();
+        break;
       case "miterLimit":
-    setMiterLimit();
-    break;
+        setMiterLimit();
+        break;
       case "textAlign":
-    textAlign();
-    break;
+        textAlign();
+        break;
       case "path2D":
-    path2DMethods();
-    break;
+        path2DMethods();
+        break;
       case "fontTTF":
-    fontTTF();
-    break;
+        fontTTF();
+        break;
       default:
-    break;
+        break;
     }
     renderingContext!.restore()
   }

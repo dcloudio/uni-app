@@ -1,0 +1,153 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h2">加速度计</text>
+		<text>开始监听后可实时查看设备在 X、Y、Z 轴上的加速度数据。</text>
+		<text class="margin-v">当前状态：{{ statusText }}</text>
+
+		<text class="uni-h3">采样频率</text>
+		<radio-group class="option-group" @change="handleIntervalChange">
+			<view class="option-item" v-for="item in intervalOptions" :key="item.value">
+				<view class="option-content">
+					<radio :value="item.value" :checked="activeInterval == item.value" />
+					<text class="option-text">{{ item.label }}</text>
+				</view>
+			</view>
+		</radio-group>
+		<button class="margin-v" type="primary" @tap="startListen">开始监听</button>
+		<button class="margin-v" @tap="stopListen">停止监听</button>
+		<button class="margin-v" @tap="navigateToShake">跳转摇一摇</button>
+
+		<text class="uni-h3">实时数据</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in axisItems" :key="item.key">{{ item.key }}：{{ item.value }}</text>
+		</view>
+
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+	type PageAccelerometerInterval = 'game' | 'ui' | 'normal'
+
+	type IntervalOption = {
+		value : PageAccelerometerInterval
+		label : string
+	}
+
+	type AxisItem = {
+		key : string
+		value : string
+	}
+
+	const intervalOptions : IntervalOption[] = [
+		{ value: 'normal', label: 'normal' },
+		{ value: 'ui', label: 'ui' },
+		{ value: 'game', label: 'game' }
+	]
+	const activeInterval = ref<PageAccelerometerInterval>('normal')
+	const statusText = ref('未启动')
+	const axisX = ref('0.000')
+	const axisY = ref('0.000')
+	const axisZ = ref('0.000')
+	const axisItems = computed((): AxisItem[] => {
+		return [
+			{ key: 'X', value: axisX.value },
+			{ key: 'Y', value: axisY.value },
+			{ key: 'Z', value: axisZ.value }
+		]
+	})
+
+	function formatAxisValue(value : number) : string {
+		return value.toFixed(3)
+	}
+
+	const accelerometerListener : OnAccelerometerChangeCallback = (result : OnAccelerometerChangeCallbackResult) => {
+		axisX.value = formatAxisValue(result.x)
+		axisY.value = formatAxisValue(result.y)
+		axisZ.value = formatAxisValue(result.z)
+	}
+
+	function handleIntervalChange(event : UniRadioGroupChangeEvent) : void {
+		activeInterval.value = event.detail.value as PageAccelerometerInterval
+	}
+
+	function startListen() : void {
+		uni.onAccelerometerChange(accelerometerListener)
+		uni.startAccelerometer({
+			interval: activeInterval.value,
+			success: () => {
+				statusText.value = `监听中 (${activeInterval.value})`
+			},
+			fail: (error) => {
+				statusText.value = error.errMsg != null ? error.errMsg : '启动失败'
+				console.error('startAccelerometer:fail', error)
+			}
+		})
+	}
+
+	function stopListen() : void {
+		uni.stopAccelerometer({
+			success: () => {
+				statusText.value = '已停止'
+			}
+		})
+	}
+
+	function navigateToShake() : void {
+		uni.navigateTo({
+			url: '/pages/API/accelerometer/shake'
+		})
+	}
+
+	onUnload(() => {
+		uni.offAccelerometerChange(accelerometerListener)
+		uni.stopAccelerometer()
+	})
+</script>
+
+<style>
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.option-group {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.option-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-right: 18px;
+		margin-top: 8px;
+	}
+
+	.option-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.option-text {
+		font-size: 14px;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
+	}
+</style>

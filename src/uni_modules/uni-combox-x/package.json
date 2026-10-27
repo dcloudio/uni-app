@@ -1,0 +1,91 @@
+{
+  "id": "uni-combox-x",
+  "displayName": "uni-combox 组合框",
+  "version": "1.0.3",
+  "description": "Combox 组合框组件，支持默认单选和通过 input 插槽启用可输可选模式。",
+  "isExt": true,
+  "extUrl": "https://ext.dcloud.net.cn/plugin?id=29915",
+  "keywords": [
+    "组合框",
+    "combox",
+    "uni-app-x"
+],
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "engines": {
+    "HBuilderX": "",
+    "uni-app": "",
+    "uni-app-x": "^5.31"
+  },
+  "directories": {
+    "example": "../../temps/example_temps"
+  },
+  "dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "type": "component-vue",
+    "darkmode": "√",
+    "i18n": "x",
+    "widescreen": "√",
+    "npmurl": "",
+    "vapor": "√"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "chrome": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          },
+          "app": {
+            "android": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "ios": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            },
+            "harmony": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": {
+                "extVersion": "1.0.2",
+                "minVersion": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

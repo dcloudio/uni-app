@@ -1,0 +1,97 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h2">生物认证</text>
+		<text class="notice">低版本安卓仅支持指纹，高版本 Android 指纹和人脸会弹出统一认证框。</text>
+
+		<text class="uni-h3">设备支持情况</text>
+		<text class="log-text">{{ supportStatus }}</text>
+		<button class="margin-v" @tap="checkSupport">检查支持的认证方式</button>
+
+		<text class="uni-h3">录入状态检查</text>
+		<button class="margin-v" @tap="checkAuth('fingerPrint')">检查指纹</button>
+		<button class="margin-v" @tap="checkAuth('facial')">检查人脸识别</button>
+
+		<text class="uni-h3">认证结果</text>
+		<text class="log-text">{{ authResult }}</text>
+		<button class="margin-v" @tap="startAuth('fingerPrint')" type="primary">指纹认证</button>
+		<button class="margin-v" @tap="startAuth('facial')" type="primary">人脸认证</button>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="ts">
+
+type AuthMode = 'fingerPrint' | 'facial'
+
+const supportStatus = ref('未检查')
+const authResult = ref('等待认证')
+
+const getModeLabel = (mode: AuthMode): string => {
+  return mode == 'fingerPrint' ? '指纹' : '人脸'
+}
+
+const checkSupport = () => {
+  uni.checkIsSupportSoterAuthentication({
+    success: (res) => {
+      supportStatus.value = res.supportMode.length > 0 ?
+        `支持: ${res.supportMode.join(', ')}` :
+        '不支持任何生物认证'
+    },
+    fail: (err) => {
+			console.log('err: ', err);
+      supportStatus.value = `检查失败：[${err.errCode}]${err.errMsg}`
+    }
+  })
+}
+
+const checkAuth = (mode: AuthMode) => {
+  uni.checkIsSoterEnrolledInDevice({
+    checkAuthMode: mode,
+    success: (res) => {
+      // console.log('res: ',res);
+      authResult.value = `${getModeLabel(mode)}${res.isEnrolled ? '已录入' : '未录入'}`
+    },
+    fail: (err) => {
+      console.log('err: ', err);
+      authResult.value = `${getModeLabel(mode)}检查失败：[${err.errCode}]${err.errMsg}`
+    }
+  })
+}
+
+const startAuth = (mode: AuthMode) => {
+  uni.startSoterAuthentication({
+    requestAuthModes: [mode],
+    challenge: '123456', // 正常逻辑应该由服务器生成挑战因子
+    authContent: `请用${getModeLabel(mode)}解锁`,
+    success: (res) => {
+      // console.log('res: ',res);
+      authResult.value = `${getModeLabel(res.authMode as AuthMode)}认证成功`
+    },
+    fail: (err) => {
+      console.log('err: ',err);
+      authResult.value = `${getModeLabel(mode)}认证失败，[${err.errCode}]${err.errMsg}`
+    }
+  })
+}
+</script>
+
+<style>
+  .margin-v {
+    margin: 5px 0;
+  }
+
+	.log-text {
+    padding: 10px;
+		font-size: 14px;
+    border: 1px solid #ccc;
+  }
+
+	.notice {
+	  color: #550000;
+		font-size: 14px;
+		font-style: italic;
+	}
+</style>

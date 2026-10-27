@@ -1,5 +1,4 @@
-jest.setTimeout(50000);
-
+jest.setTimeout(30000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
@@ -10,10 +9,17 @@ const isApp = isAndroid || isIos || isHarmony
 
 let page;
 describe('web-map', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
-    if(!isIos && !isHarmony){
+    if(!isIos && !isHarmony && !isWeb){
       await page.waitFor('map');
     }
     // 等待地图加载完成
@@ -25,15 +31,18 @@ describe('web-map', () => {
 
   if (isApp) {
     it('handleMoveToLocation', async () => {
+      // handleMoveToLocation 的目标坐标需在当前视野之外，才会真正改变视野并触发完整的 regionchange
       await page.callMethod('handleMoveToLocation',false)
-      await page.waitFor(500);
+      await page.waitFor(1000);
       const moveToLocationRes = await page.data('jestResult')
       expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
     });
 
     it('Check EventDetail JsonStringify', async () => {
+      // 读取上一步改变视野后触发的 regionchange 事件数据（target 在当前视野外，detail 才完整）
       const res = await page.data('jestResult')
       expect(res.eventDetailJsonStringify).not.toBe("{}");
+      expect(['begin', 'end']).toContain(res.regionChangeType)
     })
     return
   }
@@ -42,7 +51,7 @@ describe('web-map', () => {
     const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','removeMarker','addPolyline','removePolyline', 'addPolygons','removePolygon', 'addCircles','removeCircle','includePoint']
     for (var i = 0; i < mapMethods.length; i++) {
       await page.callMethod(mapMethods[i])
-      await page.waitFor(2000);
+      await page.waitFor(1000);
       expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
         return 'map-' + mapMethods[i]
       }});

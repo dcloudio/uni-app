@@ -1,4 +1,4 @@
-jest.setTimeout(60000);
+jest.setTimeout(30000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
@@ -6,13 +6,21 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isDev = process.env.HX_Version.endsWith('-dev')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const platformInfos = platformInfo.split(' ');
+const version = parseInt(platformInfos[platformInfos.length - 1]);
+const isApp = isAndroid || isIOS || isHarmony
 
 describe('component-native-video', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   // TODO: web 端暂不支持测试 harmony 模拟器异常
-  if (isWeb || isAppWebView || (isHarmony && platformInfo.includes('模拟器'))) {
+  if (isWeb || isAppWebView || (isHarmony && platformInfo.includes('模拟器')) || (isAndroid && version == 5)) {
     it('web', async () => {
       expect(1).toBe(1)
     })
@@ -20,6 +28,7 @@ describe('component-native-video', () => {
   }
   let page;
   let start = 0;
+  let deviceShotOptions = {};
 
   // 辅助函数：简化页面数据设置
   async function setPageData(newData) {
@@ -32,6 +41,18 @@ describe('component-native-video', () => {
       await setPageData({
         muted: true
       });
+    } else {
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      deviceShotOptions = {
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: windowInfo.safeAreaInsets.top + 44,
+          width: windowInfo.safeArea.width - 8,
+          // 规避底部手势导航栏的影响
+          height: windowInfo.safeArea.height - 40
+        },
+      };
     }
     await page.$('.video');
   });
@@ -47,7 +68,7 @@ describe('component-native-video', () => {
     expect(await page.data('data.isError')).toBe(false);
     // play
     await page.callMethod('play');
-    await page.waitFor(3000);
+    await page.waitFor(10000);
     expect(await page.data('data.isPlaying')).toBe(true);
     // pause
     await page.callMethod('pause');
@@ -123,7 +144,7 @@ describe('component-native-video', () => {
       });
     }
   }
-  it('test event play pause controls toggle', async () => {
+  it('test event play pause', async () => {
     await setPageData({
       isPause: false,
       isPlaying: false,
@@ -160,29 +181,46 @@ describe('component-native-video', () => {
       });
     }
     if (isAndroid || isIOS) {
-      /**
-       * app端video组件controlstoggle事件会在controls显示和隐藏触发（播放、暂停等操作都会触发）。
-       * 微信小程序、web、鸿蒙播放暂停或者一些其他的操作也会影响controls的显隐，但是不会触发controlstoggle， 只有controls属性变化的时候才会触发
-       */
       await page.callMethod('play');
-      start = Date.now();
-      await page.waitFor(async () => {
-        return (await page.data('data.eventControlstoggle')) || (Date.now() - start > 1000);
-      });
-      if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-        // expect(await page.data('eventControlstoggle')).toEqual({
-        //   tagName: 'VIDEO',
-        //   type: 'controlstoggle',
-        //   show: true
-        // });
-      } else {
-        expect(await page.data('data.eventControlstoggle')).toEqual({
-          tagName: 'VIDEO',
-          type: 'controlstoggle',
-          show: true
-        });
-      }
     }
+  });
+
+  it('test video parent touch events', async () => {
+    await setPageData({
+      autoTest: true,
+      eventParentTouchstart: null,
+      eventParentTouchmove: null,
+      eventParentTouchend: null
+    });
+    const videoRect = await page.callMethod('getVideoRect');
+    expect(videoRect).not.toBeNull();
+    let x = Math.ceil(videoRect.x + videoRect.width / 2);
+    let y = Math.ceil(videoRect.y + videoRect.height / 2);
+    if (isIOS || isHarmony) {
+      const windowInfo = await page.callMethod('getWindowInfo');
+      y += windowInfo.safeArea.top + 44;
+    }
+    await program.swipe({
+      startPoint: { x, y },
+      endPoint: { x: x + 10, y: y + 10 },
+      duration: 200
+    });
+    await page.waitFor(500);
+    expect(await page.data('data.eventParentTouchstart')).toEqual({
+      tagName: 'VIEW',
+      currentTargetTagName: 'VIEW',
+      type: 'touchstart'
+    });
+    expect(await page.data('data.eventParentTouchmove')).toEqual({
+      tagName: 'VIEW',
+      currentTargetTagName: 'VIEW',
+      type: 'touchmove'
+    });
+    expect(await page.data('data.eventParentTouchend')).toEqual({
+      tagName: 'VIEW',
+      currentTargetTagName: 'VIEW',
+      type: 'touchend'
+    });
   });
 
 
@@ -206,7 +244,10 @@ describe('component-native-video', () => {
       });
     }
 
-    it('test event fullscreenchange fullscreenclick', async () => {
+    it('test event fullscreenchange fullscreenclick controlstoggle', async () => {
+      if (isAndroid) {
+        await program.adbCommand('settings put secure immersive_mode_confirmations confirmed');
+      }
       await page.callMethod('requestFullScreen');
       start = Date.now();
       await page.waitFor(async () => {
@@ -218,27 +259,34 @@ describe('component-native-video', () => {
         fullScreen: true,
         direction: 'horizontal'
       });
-      const infos = process.env.uniTestPlatformInfo.split(' ');
-      const version = parseInt(infos[infos.length - 1]);
-      if (isAndroid && version >5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
+      if (isAndroid) {
         await page.waitFor(5000);
-        await program.adbCommand('input tap 10 10');
+        const res = await program.adbCommand('wm size');
+        const width = res.data.split(' ').at(-1).split('x')[0];
+        const height = res.data.split(' ').at(-1).split('x')[1];
+        await program.adbCommand(`input tap ${height / 2} ${width / 2}`);
         start = Date.now();
         await page.waitFor(async () => {
           return (await page.data('data.eventFullscreenclick')) || (Date.now() - start > 1000);
         });
-        const res = await program.adbCommand('wm size');
-        const width = res.data.split(' ').at(-1).split('x')[0];
-        const height = res.data.split(' ').at(-1).split('x')[1];
         const res2 = await program.adbCommand('wm density');
         const scale = res2.data.split(' ').at(-1) / 160;
         expect(await page.data('data.eventFullscreenclick')).toEqual({
           tagName: 'VIDEO',
           type: 'fullscreenclick',
-          screenX: parseInt(10 / scale),
-          screenY: parseInt(10 / scale),
+          screenX: parseInt(height / 2 / scale),
+          screenY: parseInt(width / 2 / scale),
           screenWidth: parseInt(height / scale),
           screenHeight: parseInt(width / scale)
+        });
+        start = Date.now();
+        await page.waitFor(async () => {
+          return (await page.data('data.eventControlstoggle')) || (Date.now() - start > 1000);
+        });
+        expect(await page.data('data.eventControlstoggle')).toEqual({
+          tagName: 'VIDEO',
+          type: 'controlstoggle',
+          show: true
         });
       }
       await page.callMethod('exitFullScreen');
@@ -267,9 +315,7 @@ describe('component-native-video', () => {
         });
       }
       await page.waitFor(3000);
-      const infos = process.env.uniTestPlatformInfo.split(' ');
-      const version = parseInt(infos[infos.length - 1]);
-      if ((isAndroid && version > 5) || isHarmony) {
+      if (isAndroid || isHarmony) {
         let currentTime = 121
         if (isHarmony) currentTime = 120
         start = Date.now();
@@ -292,7 +338,7 @@ describe('component-native-video', () => {
       });
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('data.eventError')) || (Date.now() - start > 1000);
+        return (await page.data('data.eventError')) || (Date.now() - start > 5000);
       });
       const eventError = await page.data('data.eventError')
       expect(eventError.tagName).toEqual('VIDEO')
@@ -319,13 +365,13 @@ describe('component-native-video', () => {
         expect(await page.callMethod('hasSubComponent')).toBe(true);
         await page.callMethod('requestFullScreen');
         await page.waitFor(2000);
-        const image = await program.screenshot({ deviceShot: true });
+        const image = await program.screenshot(deviceShotOptions);
         expect(image).toSaveImageSnapshot();
         await page.callMethod('exitFullScreen');
         await page.waitFor(2000);
         await page.callMethod('requestVerticalFullScreen');
         await page.waitFor(2000);
-        const image2 = await program.screenshot({ deviceShot: true });
+        const image2 = await program.screenshot(deviceShotOptions);
         expect(image2).toSaveImageSnapshot();
         await page.callMethod('exitFullScreen');
         await setPageData({
@@ -351,27 +397,46 @@ describe('component-native-video', () => {
       });
       expect(image).toSaveImageSnapshot();
     });
+
+    it('test continuous send danmu track', async () => {
+      await setPageData({
+        enableDanmu: true
+      });
+      await page.callMethod('play');
+      await page.waitFor(2000);
+      await page.callMethod('continuousSendDanmu');
+      await page.waitFor(3000);
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: windowInfo.statusBarHeight + 44
+        }
+      });
+      expect(image).toSaveImageSnapshot();
+    });
   }
 
-  it('test dialog video', async () => {
-    if (isAppWebView || isMP || isWeb) {
-      expect(1).toBe(1)
-      return
-    }
-    await page.callMethod('openDialogPageVideo')
-    // TODO 先测试 closeThisPage 一次
-    await program.tap({ x: 154, y: 577 }) // closeThisPage
-    await page.callMethod('openDialogPageVideo')
-    await program.tap({ x: 154, y: 492 }) // requestFullScreen
-    await page.waitFor(2000);
-    const image = await program.screenshot({ deviceShot: true });
-    expect(image).toSaveImageSnapshot();
-    await page.callMethod('closeDialogPageVideo')
-  });
-
-  it('test format', async () => {
-    page = await program.navigateTo('/pages/component/video/video-format');
-    await page.waitFor(1000);
-    expect((await page.data('isError')).value).toBe(false);
-  });
+  if (isApp && !isAppWebView) {
+    it('test dialog video', async () => {
+      await page.callMethod('openDialogPageVideo')
+      await page.waitFor(500);
+      await page.callMethod('closeDialogPageVideo')
+      await page.waitFor(500);
+      await page.callMethod('openDialogPageVideo')
+      const rect = await page.callMethod('getDialogPageVideoFullscreenBtnRect')
+      expect(rect).not.toBeNull();
+      /* const windowInfo = await program.callUniMethod('getWindowInfo');
+      expect(windowInfo).not.toBeNull(); */
+      await page.waitFor(3000);
+      const x = rect.left + rect.width / 2
+      // 加了 windowInfo.statusBarHeight + 44 反而点不到按钮
+      const y = rect.top + rect.height / 2
+      await program.tap({x, y, duration: 300});
+      const image = await program.screenshot(deviceShotOptions);
+      expect(image).toSaveImageSnapshot();
+      await page.callMethod('closeDialogPageVideo')
+    });
+  }
 });

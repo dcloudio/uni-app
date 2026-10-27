@@ -2,7 +2,7 @@
   <image class="child-image" src="/static/test-image/logo.png"></image>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 </script>
 
 <style>

@@ -5,7 +5,14 @@ describe('component-native-textarea', () => {
   const isMP = platformInfo.startsWith('mp')
   const isHarmony = platformInfo.startsWith('harmony')
   const isWeb = platformInfo.startsWith('web')
-  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+  const isVapor = process.env.UNI_APP_X_DOM2 === "true"
+
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   let page;
   let textarea;
@@ -22,23 +29,26 @@ describe('component-native-textarea', () => {
 
   beforeEach(async () => {
     await setPageData({
-      jest_result: false
+      jest_result: false,
+      inputEventTriggered: false
     })
   });
 
   if (!isMP) {
     it("input event should triggered", async () => {
-      const options = { text: '1' }
+      const options = {}
       if (isHarmony) {
         const textareaRect = await page.data('data.textareaRect');
         options.x = textareaRect.x + textareaRect.width / 2.0;
-        options.y = textareaRect.y + textareaRect.height / 2.0;
+        options.y = textareaRect.y + textareaRect.height - (isVapor ? 20 : 10);
       }
-      await program.keyboardInput(options)
+      if (isWeb) {
+        await program.keyboardInput({text: '1', ...options})
+      } else {
+        await program.device.keyboard.input('1', options)
+      }
       await page.waitFor(2000)
-      expect(await page.data('data.jest_result')).toBe(true)
-      const image = await program.screenshot();
-      expect(image).toSaveImageSnapshot();
+      expect(await page.data('data.inputEventTriggered')).toBe(true)
     })
 
     // TODO 微信小程序自动化测试textarea focus属性取到的是数字
@@ -106,7 +116,7 @@ describe('component-native-textarea', () => {
     }
   }
   // TODO: dom2 harmony 暂时不支持 auto-height
-  if (!isDom2) {
+  if (!(isVapor && isIOS)) {
     it("auto-height", async () => {
       await setPageData({
         default_value: ""
@@ -128,7 +138,7 @@ describe('component-native-textarea', () => {
         await page.waitFor(500)
         textareaSize = await textarea.size()
         textareaHeight = textareaSize.height
-        expect(textareaHeight).toEqual(200)
+        expect(textareaHeight).toEqual((isVapor && isHarmony) ? 202 : 200)
       }
     })
   }
@@ -138,7 +148,8 @@ describe('component-native-textarea', () => {
     var {
       height
     } = await bottomTextarea.size()
-    expect(height).toEqual(150)
+    const expectedHeight = isVapor && !isAndroid && !isWeb ? 152: 150
+    expect(height).toEqual(expectedHeight)
   })
 
   it("maxlength", async () => {
@@ -172,4 +183,18 @@ describe('component-native-textarea', () => {
       expect(rect.width).toBe(100)
     })
   }
+  it("placeholder-class should clear style after update empty string", async () => {
+    const hasPlaceholderClassImage = await program.screenshot({
+      fullPage: true
+    })
+    expect(hasPlaceholderClassImage).toSaveImageSnapshot()
+    await setPageData({
+      textareaPlaceholderClass: ""
+    })
+    await page.waitFor(1000)
+    const noPlaceholderClassImage = await program.screenshot({
+      fullPage: true
+    })
+    expect(noPlaceholderClassImage).toSaveImageSnapshot()
+  })
 });

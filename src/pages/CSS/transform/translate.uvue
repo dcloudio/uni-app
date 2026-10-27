@@ -1,7 +1,4 @@
 <template>
-<!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
     <view class="page">
       <view class="trace">
         <view class="base reserve">
@@ -79,7 +76,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform (translate) </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -154,24 +151,23 @@
         <button type="primary">transform-origin</button>
       </navigator>
 
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
-      <view class="demo-box">
-        <view class="scroll-view-item">
-          <native-view class="scroll-view-base transform" style="transform: translateX(50px);"></native-view>
+      <!-- #ifndef MP-ALIPAY -->
+        <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
+        <view class="demo-box">
+          <view class="scroll-view-item">
+            <test-native-view class="scroll-view-base transform-native" style="transform: translateX(50px);"></test-native-view>
+          </view>
+          <view class="scroll-view-item">
+            <test-native-view class="scroll-view-base transform-native" style="transform: translateY(30px);"></test-native-view>
+          </view>
         </view>
-        <view class="scroll-view-item">
-          <native-view class="scroll-view-base transform" style="transform: translateY(30px);"></native-view>
-        </view>
-      </view>
+      <!-- #endif -->
 
 
     </view>
-    <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const data = reactive({
@@ -210,6 +206,7 @@
     data.transformActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
   }
 
+
   const changeTransformDynamic = (value: string) => {
     data.transformValueDynamic = value
     viewRefDynamic.value?.style.setProperty('transform', value)
@@ -240,6 +237,7 @@
   })
 
   defineExpose({
+    radioChangeTransform,
     data
   })
 </script>
@@ -339,6 +337,10 @@
     height: 120px;
     align-items: center;
     justify-content: center;
+  }
+
+  .transform-native {
+    background-color: #00FFFF80;
   }
 
 </style>

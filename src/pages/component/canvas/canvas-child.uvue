@@ -10,7 +10,7 @@
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 const instance = getCurrentInstance()!.proxy!
 
 // 仅测试
@@ -25,7 +25,9 @@ function _dispatchEvent() {
 onMounted(()=>{
   uni.createCanvasContextAsync({
     id: 'canvas1',
+    // #ifndef MP-ALIPAY
     component: instance,
+    // #endif
     success: (_ : CanvasContext) => {
       testCounter.value++
       _dispatchEvent()
@@ -33,7 +35,9 @@ onMounted(()=>{
   });
   uni.createCanvasContextAsync({
     id: 'canvas2',
+    // #ifndef MP-ALIPAY
     component: instance,
+    // #endif
     success: (_ : CanvasContext) => {
       testCounter.value++
       _dispatchEvent()

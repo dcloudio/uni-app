@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-  <!-- #endif -->
     <view style="flex-grow: 1">
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
@@ -94,7 +91,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-wrap </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -141,12 +138,9 @@
           @confirm="inputChangeFlexWrap"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const flexWrapEnum : ItemType[] = [
@@ -168,6 +162,7 @@
     data.flexWrapActual = viewRef.value?.style.getPropertyValue('flex-wrap') ?? ''
     data.flexWrapActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-wrap') ?? ''
   }
+
 
   const changeFlexWrap = (value : string) => {
     data.flexWrap = value

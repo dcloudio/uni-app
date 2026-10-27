@@ -12,7 +12,7 @@
     </scroll-view>
   </view>
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
 
   type RefresherEventTest = {
     type : string;
@@ -163,5 +163,19 @@
     line-height: 60px;
     text-align: center;
     color: #555;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .scroll {
+      background-color: #1a1a1a;
+    }
+
+    .scroll-item {
+      background-color: #2d2d2d;
+    }
+
+    .scroll-item-title {
+      color: #ffffff;
+    }
   }
 </style>

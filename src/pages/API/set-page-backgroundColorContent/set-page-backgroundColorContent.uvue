@@ -1,10 +1,10 @@
 <template>
   <view class="container" @click="changeColor">
-    <text>点击切换页面容器颜色</text>
+    <text class="container_text">点击切换页面容器颜色</text>
   </view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 
 // Data
@@ -36,6 +36,14 @@ defineExpose({
 </script>
 
 <style>
+  page {
+    background-color: transparent;
+  }
+
+  .container_text {
+    color: var(--text-color, #fff);
+  }
+
   .container {
     flex: 1;
     align-items: center;

@@ -1,20 +1,14 @@
 <template>
-<!-- #ifdef WEB -->
-  <view>
-  <!-- #endif -->
-    <list-view id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
-      <list-item v-for="index in data.item_count" :key="index" class="item" @click="itemClick(index)">
-        <text>item---<text @click.stop="childTextClick(index)">----{{index}}</text></text>
-        <input style="border-width: 1px; border-style: solid;" :placeholder="index + ''"
-          :value="index ==1 ? `第一个` :index " />
-      </list-item>
-    </list-view>
-  <!-- #ifdef WEB -->
-  </view>
-  <!-- #endif -->
+  <list-view id="listview" class="list-view-page" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
+    <list-item v-for="index in data.item_count" :key="index" class="item" @click="itemClick(index)">
+      <text class="text">item---<text class="text" @click.stop="childTextClick(index)">----{{index}}</text></text>
+      <input class="item-input" :placeholder="index + ''"
+        :value="index ==1 ? `第一个` :index " />
+    </list-item>
+  </list-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 
 type DataType = {
   item_count: number,
@@ -59,11 +53,24 @@ defineExpose({
   .item {
     padding: 15px;
     margin: 0 0 5px 0;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 5px;
+  }
+
+  .item-input {
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--border-color, #000000);
+    /* #ifdef VUE3-VAPOR */
+    color: var(--text-color, #000000);
+    /* #endif */
   }
 
   .button_item {
     width: 200px;
+  }
+
+  .text {
+    color: var(--text-color, #000000);
   }
 </style>

@@ -1,39 +1,35 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
-  <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="uni-common-mt">
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <view class="uni-list">
         <view class="uni-list">
-          <view class="uni-list">
-            <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
-              <view class="uni-pd">
-                <view class="uni-label" style="width: 180px">{{
-                  item.label
-                }}</view>
+          <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
+            <view class="uni-pd">
+              <view class="uni-label" style="width: 180px">
+                <text class="system-info-text">
+                  {{ item.label }}
+                </text>
               </view>
-              <view class="uni-list-cell-db">
-                <text class="uni-list-cell-db-text">{{
-                  item.value == "" ? "未获取" : item.value
-                }}</text>
-              </view>
+            </view>
+            <view class="uni-list-cell-db">
+              <text class="uni-list-cell-db-text system-info-text">{{
+                item.value == "" ? "未获取" : item.value
+              }}</text>
             </view>
           </view>
         </view>
-        <view class="uni-padding-wrap">
-          <view class="uni-btn-v">
-            <button type="primary" @tap="getDeviceInfo">获取设备信息</button>
-          </view>
+      </view>
+      <view class="uni-padding-wrap">
+        <view class="uni-btn-v">
+          <button type="primary" @tap="getDeviceInfo">获取设备信息</button>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
-<script setup lang="uts">
-  import { setDevicePixelRatio } from '@/store/index.uts'
+<script setup lang="ts">
+  import { setDevicePixelRatio } from '@/store/index.ts'
 
   type Item = {
     label : string,
@@ -55,15 +51,10 @@
     setDevicePixelRatio(res.devicePixelRatio !== null ? res.devicePixelRatio! : 1)
     data.items = [] as Item[];
 
-    const res_str = JSON.stringify(res);
-    const res_obj = JSON.parseObject(res_str);
-    const res_map = res_obj!.toMap();
-    let keys = [] as string[]
-    res_map.forEach((_, key) => {
-      keys.push(key);
-    });
+    const res_obj = JSON.parse(JSON.stringify(res));
+    const keys = Object.keys(res_obj);
     keys.sort().forEach(key => {
-      const value = res[key];
+      const value = res_obj[key];
       if (value != null) {
         const item = {
           label: key,
@@ -79,5 +70,9 @@
 <style>
   .uni-pd {
     padding-left: 15px;
+  }
+
+  .system-info-text {
+    color: var(--text-color, #333333);
   }
 </style>

@@ -1,9 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 describe('API-getImageInfo', () => {
-  if (isIOS) {
+  if (isIOS || isMP) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
@@ -12,7 +13,7 @@ describe('API-getImageInfo', () => {
 
   let page;
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/get-image-info/get-image-info');
+    page = await program.reLaunch('/pages/API/get-image-info/get-image-info?autoTest=true');
     await page.waitFor('view');
     await page.waitFor(6000);
   });

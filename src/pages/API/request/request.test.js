@@ -3,21 +3,27 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
-const isMp = platformInfo.startsWith('mp')
+const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-const PAGE_PATH = '/pages/API/request/request'
-const methodMap = {
-  "GET": "/api/http/method/get",
-  "POST": "/api/http/method/post",
-  "PUT": "/api/http/method/put",
-  "DELETE": "/api/http/method/delete",
-  "PATCH": "/api/http/method/patch",
-  "OPTIONS": "/api/http/method/options",
-  "HEAD": "/api/http/method/head"
-}
-
 describe('ExtApi-Request', () => {
+  if (isMP) {
+    it('skip', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
+  const PAGE_PATH = '/pages/API/request/request'
+  const methodMap = {
+    "GET": "/api/http/method/get",
+    "POST": "/api/http/method/post",
+    "PUT": "/api/http/method/put",
+    "DELETE": "/api/http/method/delete",
+    "PATCH": "/api/http/method/patch",
+    "OPTIONS": "/api/http/method/options",
+    "HEAD": "/api/http/method/head"
+  }
   let page;
   let res;
 
@@ -92,6 +98,14 @@ describe('ExtApi-Request', () => {
   it('Check HEAD', async () => {
     await request(page, 'HEAD');
   });
+  if (!isMP) {
+    it('Check Request Header Lowercase', async () => {
+      res = await page.callMethod('jest_check_header_lowercase')
+      await page.waitFor(3000);
+      res = await page.data('data.jest_result');
+      expect(res).toBe(true)
+    })
+  }
   it('Request with timeout null', async () => {
     res = await page.callMethod('jest_timeout_null')
     await page.waitFor(2000);

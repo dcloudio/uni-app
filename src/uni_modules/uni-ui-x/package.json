@@ -1,0 +1,109 @@
+{
+  "id": "uni-ui-x",
+  "displayName": "uni-ui-x",
+  "version": "1.0.6",
+  "description": "uni-ui-x是DCloud为uni-app x提供的组件库",
+  "isExt": true,
+  "keywords": [
+    "uni-ui-x",
+    "UI组件库",
+    "ui框架",
+    "ui库",
+    "uni-app-x"
+],
+  "engines": {
+    "HBuilderX": "",
+    "uni-app-x": "^5.08",
+    "uni-app": ""
+  },
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "directories": {
+    "example": "../../temps/example_temps"
+  },
+  "dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "type": "component-vue",
+    "darkmode": "√",
+    "i18n": "x",
+    "widescreen": "√",
+    "npmurl": "",
+    "vapor": "√"
+  },
+  "uni_modules": {
+    "dependencies": [
+      "uni-badge-view",
+      "uni-collapse-x",
+      "uni-drag-cell",
+      "uni-fab-button",
+      "uni-index-bar",
+      "uni-link-x",
+      "uni-nav-bar-x",
+      "uni-number-box-x",
+      "uni-rate-x",
+      "uni-refresh-box",
+      "uni-tab-bar",
+      "uni-time-format",
+      "uni-combobox",
+      "uni-combox-x",
+      "uni-icons",
+      "uni-expandable-text"
+    ],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "x",
+        "aliyun": "x",
+        "alipay": "x"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": {
+              "extVersion": "1.0.3",
+              "minVersion": ""
+            },
+            "chrome": {
+              "extVersion": "1.0.3",
+              "minVersion": ""
+            }
+          },
+          "app": {
+            "android": {
+              "extVersion": "1.0.3",
+              "minVersion": ""
+            },
+            "ios": {
+              "extVersion": "1.0.3",
+              "minVersion": ""
+            },
+            "harmony": {
+              "extVersion": "1.0.3",
+              "minVersion": ""
+            }
+          },
+          "mp": {
+            "weixin": {
+              "extVersion": "1.0.3",
+              "minVersion": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

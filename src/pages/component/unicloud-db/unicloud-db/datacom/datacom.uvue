@@ -1,0 +1,19 @@
+<template>
+  <view>
+    <text class="title">datacom组件</text>
+    <text class="intro-item">1. 引入data-city</text>
+    <text class="intro-item">2. 设置collection属性值为opendb-city-china</text>
+    <text class="intro-item">opendb-city-china为open-db表名，显示省市区数据</text>
+    <data-city class="data-city" collection="opendb-contacts"></data-city>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import dataCity from "./data-city.uvue"
+</script>
+
+<style>
+  .title {
+    font-weight: 500;
+  }
+</style>

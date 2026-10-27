@@ -5,7 +5,7 @@
     </view>
   </view>
 </template>
-<script lang="uts" setup>
+<script lang="ts" setup>
   const props = defineProps({
     title: { type: String, default: "" }
   })
@@ -17,12 +17,12 @@
   }
 
   .common-page-head-title-box {
-    padding: 0 20px;
-    border-bottom: 1px solid #D8D8D8;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border-color, #D8D8D8);
   }
 
   .common-page-head-title {
-    line-height: 40px;
+    line-height: 26px;
     color: #BEBEBE;
   }
 </style>

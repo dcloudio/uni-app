@@ -1,0 +1,154 @@
+<template>
+	<view class="page">
+		<view class="header">
+			<text class="title">Rich-text 撑高</text>
+			<text class="subtitle">200 项 · key 唯一 · 富文本段落数不同</text>
+		</view>
+
+		<list-view id="item-list" class="list" show-scrollbar="false">
+			<list-item v-for="item in items" :key="item.id" class="list-item">
+				<view class="item-content">
+					<view class="item-head">
+						<text class="item-index">{{item.id + 1}}</text>
+						<text class="item-title">{{item.title}}</text>
+					</view>
+					<rich-text class="item-richtext" :nodes="item.html" mode="native"></rich-text>
+				</view>
+			</list-item>
+		</list-view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	type Item = {
+		id: number
+		title: string
+		html: string
+	}
+
+	function createItems(): Item[] {
+		const items: Item[] = []
+		for (let index = 0; index < 200; index++) {
+			const paragraphs = (index % 5) + 1
+			let html = ''
+			for (let p = 0; p < paragraphs; p++) {
+				html += `<p>段落 ${p + 1}：由 rich-text 撑开高度，段落数不同则高度不同。</p>`
+			}
+			items.push({
+				id: index,
+				title: `条目 ${index + 1}`,
+				html: html
+			})
+		}
+		return items
+	}
+
+	const items = reactive(createItems())
+
+	defineExpose({
+		items
+	})
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		--list-demo-page-background: #f5f7fb;
+		--list-demo-panel-background: #ffffff;
+		--list-demo-title-color: #1f2937;
+		--list-demo-text-color: #4b5563;
+		--list-demo-secondary-color: #6b7280;
+		--list-demo-border-color: #eef0f4;
+		--list-demo-badge-background: #e8f0ff;
+		--list-demo-badge-color: #2563eb;
+		background-color: var(--list-demo-page-background);
+		padding: 12px 12px 0;
+	}
+
+	.header {
+		display: flex;
+		flex-direction: column;
+		padding: 4px 4px 12px;
+	}
+
+	.title {
+		font-size: 20px;
+		font-weight: bold;
+		color: var(--list-demo-title-color);
+	}
+
+	.subtitle {
+		margin-top: 4px;
+		font-size: 12px;
+		color: var(--list-demo-secondary-color);
+	}
+
+	.list {
+		flex: 1;
+		background-color: var(--list-demo-panel-background);
+		border-radius: 6px;
+	}
+
+	.list-item {
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--list-demo-border-color);
+	}
+
+	.item-content {
+		display: flex;
+		flex-direction: column;
+		padding: 10px 14px;
+	}
+
+	.item-head {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 8px;
+	}
+
+	.item-index {
+		width: 24px;
+		height: 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border-radius: 12px;
+		background-color: var(--list-demo-badge-background);
+		font-size: 12px;
+		font-weight: bold;
+		color: var(--list-demo-badge-color);
+		text-align: center;
+		line-height: 24px;
+	}
+
+	.item-title {
+		font-size: 15px;
+		font-weight: bold;
+		color: var(--list-demo-title-color);
+		margin-left: 10px;
+	}
+
+	.item-richtext {
+		font-size: 13px;
+		color: var(--list-demo-text-color);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.page {
+			--list-demo-page-background: #1a1a1a;
+			--list-demo-panel-background: #2d2d2d;
+			--list-demo-title-color: #ffffff;
+			--list-demo-text-color: #b8b8b8;
+			--list-demo-secondary-color: #8a8a8a;
+			--list-demo-border-color: #3a3a3a;
+			--list-demo-badge-background: #26344a;
+			--list-demo-badge-color: #7aa7e0;
+		}
+	}
+</style>

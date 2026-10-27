@@ -1,0 +1,14 @@
+/**
+ * HarmonyOS FrameNode 原生按钮的上下文对象
+ */
+export interface INativeButtonFrameNodeContext {
+	/**
+	 * 更新按钮文本
+	 */
+	updateText(text : string) : void
+}
+
+export type CreateNativeButtonFrameNodeContext = (
+	id : string,
+	component ?: ComponentPublicInstance | null
+) => INativeButtonFrameNodeContext | null;

@@ -1,0 +1,17 @@
+let worker: Worker | null = null
+
+export function createTestWorker(callback: (message: string) => void) {
+  worker = uni.createWorker('uni_modules/uts-worker-plugin/workers/index.uts')
+  worker?.onMessage((message: any) => {
+    callback(message as string)
+  })
+}
+
+export function sendTestMessage(message: string) {
+  worker?.postMessage(message)
+}
+
+export function terminateTestWorker() {
+  worker?.terminate()
+  worker = null
+}

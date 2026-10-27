@@ -7,7 +7,7 @@
 			<text class="header-info">{{ listData.length }}项 | 瀑布流动态列数 | 圆角边框阴影</text>
 		</view>
 		<waterflow class="waterflow-container" :max-cross-axis-extent="200" :main-axis-gap="4" :cross-axis-gap="4" @scrolltolower="onScrollToLower">
-			<flow-item v-for="(item, index) in listData" :key="item.id" class="flow-item" :type="item.type">
+			<flow-item v-for="(item, index) in listData" :key="item.id" :type="item.type">
 
 				<!-- ========== Type 1: 单图配文 ========== -->
 				<view v-if="item.type == 1" class="card card-type1">
@@ -72,14 +72,14 @@
 
 			</flow-item>
       <flow-item slot="load-more">
-        <text style="line-height: 50px; text-align: center; font-size: 12px; color: #999999;">{{ hasMore ? '加载中...' : '没有更多' }}</text>
+		<text class="load-more-text">{{ hasMore ? '加载中...' : '没有更多' }}</text>
       </flow-item>
 		</waterflow>
 	</view>
 </template>
 
-<script setup lang="uts">
-import { generateMockList, type ListItemData } from './mock-data.uts'
+<script setup lang="ts">
+import { generateMockList, type ListItemData } from './mock-data.ts'
 
 const fullData = generateMockList()
 const pageSize = 20
@@ -126,7 +126,6 @@ function onImageClick(urls: string[], current: number) {
 <style>
 .page {
 	flex: 1;
-	background-color: #f5f5f5;
 }
 
 .header {
@@ -144,13 +143,9 @@ function onImageClick(urls: string[], current: number) {
 	flex: 1;
 }
 
-.flow-item {
-	flex: 1;
-}
-
 /* ===== 卡片基础样式 ===== */
 .card {
-	background-color: #fff;
+	background-color: var(--list-background-color, #ffffff);
 	border-radius: 8px;
 	padding: 10px;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -164,14 +159,14 @@ function onImageClick(urls: string[], current: number) {
 	margin-bottom: 6px;
 	padding-bottom: 4px;
 	border-bottom-width: 0.5px;
-	border-bottom-color: #eee;
+	border-bottom-color: var(--border-color, #eeeeee);
 	border-bottom-style: solid;
 }
 
 .card-title {
 	font-size: 12px;
 	font-weight: bold;
-	color: #333;
+	color: var(--text-color, #333333);
 	flex: 1;
 }
 
@@ -191,20 +186,15 @@ function onImageClick(urls: string[], current: number) {
 .content-title {
 	font-size: 12px;
 	font-weight: bold;
-	color: #333;
+	color: var(--text-color, #333333);
 	margin-bottom: 4px;
-	/* #ifdef APP-ANDROID || APP-IOS */
-	lines: 2;
-	/* #endif */
 	text-overflow: ellipsis;
 }
 .content-desc {
 	font-size: 10px;
-	color: #666;
+	color: var(--text-color, #666666);
+	opacity: 0.75;
 	margin-bottom: 4px;
-	/* #ifdef APP-ANDROID || APP-IOS */
-	lines: 2;
-	/* #endif */
 	text-overflow: ellipsis;
 }
 
@@ -216,18 +206,19 @@ function onImageClick(urls: string[], current: number) {
 
 .author-text {
 	font-size: 8px;
-	color: #999;
+	color: var(--active-color, #999999);
 }
 
 .view-count {
 	font-size: 8px;
-	color: #aaa;
+	color: var(--active-color, #aaaaaa);
 	margin-left: 6px;
 }
 
 .info-text {
 	font-size: 8px;
-	color: #666;
+	color: var(--text-color, #666666);
+	opacity: 0.75;
 	margin-right: 4px;
 }
 
@@ -236,6 +227,21 @@ function onImageClick(urls: string[], current: number) {
 	color: #2ecc71;
 	margin-left: 6px;
 	font-weight: bold;
+}
+
+.load-more-text {
+	line-height: 50px;
+	text-align: center;
+	font-size: 12px;
+	color: var(--active-color, #999999);
+}
+
+@media (prefers-color-scheme: dark) {
+	.author-text,
+	.view-count,
+	.load-more-text {
+		color: #b8b8b8;
+	}
 }
 
 /* ===== Type 1: 单图配文 ===== */

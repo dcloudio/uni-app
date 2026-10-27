@@ -1,7 +1,4 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
-  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
       <view class="uni-title">
@@ -23,14 +20,12 @@
         <button type="primary" @click="chooseImage">拍摄照片或从相册中选择照片</button>
       </view>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
   type TestStateType = {
-    imageInfoForTest: UTSJSONObject | null
+    imageInfoForTest: UTSJSONObject | null,
+    autoTest: boolean
   }
 
   const title = ref("getImageInfo")
@@ -42,7 +37,8 @@
   const remoteImageInfo = ref("")
   // 自动化测试
   const testState = reactive({
-    imageInfoForTest: null as UTSJSONObject | null
+    imageInfoForTest: null as UTSJSONObject | null,
+    autoTest: false
   } as TestStateType)
 
   const chooseImage = () => {
@@ -67,6 +63,10 @@
       }
     });
   }
+
+  onLoad((options : OnLoadOptions) => {
+    testState.autoTest = options['autoTest'] == 'true'
+  })
 
   onReady(() => {
     uni.getImageInfo({
@@ -95,7 +95,11 @@
       src: remoteImagePath.value,
       success: (res) => {
         console.log("getImageInfo success", JSON.stringify(res));
-        remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        if (testState.autoTest) {
+          remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        } else {
+          remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        }
       },
       fail: (err) => {
         uni.showModal({

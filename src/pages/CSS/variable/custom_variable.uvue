@@ -1,37 +1,108 @@
 <template>
-  <view id="var_1" style="flex:1;--var_margin: 2px;" class="var_1" :class="var_bind">
-    <view>
-      <view class="var_1_1_1">
-        <text class="firstParagraph">此段落应有蓝色背景和绿色文本。</text>
+  <view class="custom-variable-page" style="flex-grow: 1;">
+    <view id="var_1" style="flex:1;--var_margin: 2px;" class="var_1" :class="var_bind">
+      <view>
+        <view class="var_1_1_1">
+          <text class="firstParagraph">此段落应有蓝色背景和绿色文本。</text>
+        </view>
+        <text class="secondParagraph">此段落应有黑色半透明背景和黄色文本。</text>
       </view>
-      <text class="secondParagraph">此段落应有黑色半透明背景和黄色文本。</text>
-    </view>
-    <text style="width: var(--var_width_invalid, 375rpx);background-color:yellowgreen;">无效值width应为375rpx</text>
-    <view id="chanageVarBox" :class="text_style_var_def">
-      <text class="text_style"
-        v-if="text_style_var_1_on">font-size:26px;style:normal;color:#ccc;background-color:#488cff</text>
-      <text class="text_style" v-else>font-size:16px;style:italic;color:#803390;background-color:#48ff32</text>
-    </view>
+      <text class="invalid-width-label" style="width: var(--var_width_invalid, 375rpx);background-color:yellowgreen;">无效值width应为375rpx</text>
+      <view id="chanageVarBox" :class="text_style_var_def">
+        <text class="text_style"
+          v-if="text_style_var_1_on">font-size:26px;style:normal;color:#ccc;background-color:#488cff</text>
+        <text class="text_style" v-else>font-size:16px;style:italic;color:#803390;background-color:#48ff32</text>
+      </view>
 
-    <view class="view_layout_style_container" id="view_container">
-      <view class="view_layout_style"></view>
-      <view class="view_layout_style" style="background-color: blue;--var_align_self: flex-start;"></view>
-    </view>
+      <view class="view_layout_style_container" id="view_container">
+        <view class="view_layout_style"></view>
+        <view class="view_layout_style" style="background-color: blue;--var_align_self: flex-start;"></view>
+      </view>
 
-    <button id="changeVarButton" @tap="do_change_var()">修改自定义变量</button>
-    <view class="test-v-if">
-      <view v-if="var_v_if" style="height:var(--var_height);background-color: var(--var_backgroundColor);">
+      <button id="changeVarButton" @tap="do_change_var()">修改自定义变量</button>
+      <view class="test-v-if">
+        <view v-if="var_v_if" style="height:var(--var_height);background-color: var(--var_backgroundColor);">
+        </view>
+      </view>
+      <button class="test-v-if-button" @tap="do_vif()">v-if测试</button>
+    </view>
+    <view class="shorthand_var_suite" :class="shorthand_var_state_class">
+      <text class="shorthand_var_title">简写交叉测试</text>
+      <text id="shorthandVarStateText" class="shorthand_var_desc">{{ shorthand_var_state_text }}</text>
+      <text class="shorthand_var_desc">
+        预期：默认 state-1 时，红色2px实线边框，宽度120px，margin为10px，padding为8px，横排，蓝色子项 flex-basis 为 50px。
+      </text>
+      <text class="shorthand_var_desc">
+        点击切换后变为 state-2：蓝色4px实线边框，宽度240px，margin为20px，padding为16px，竖排，蓝色子项 flex-basis 为 100px。
+      </text>
+      <button id="toggleShorthandVarButton" @tap="toggle_shorthand_var_suite()">切换简写变量状态</button>
+      <text class="shorthand_var_case_title">复合场景：padding + margin + border + flex + flex-flow</text>
+      <view class="shorthand_composite_stage">
+        <view id="shorthandCompositeContainer" class="shorthand_composite_container">
+          <view id="shorthandCompositeItemMain" class="shorthand_composite_item shorthand_composite_item_main"></view>
+          <view class="shorthand_composite_item shorthand_composite_item_side"></view>
+          <view class="shorthand_composite_item shorthand_composite_item_tail"></view>
+        </view>
       </view>
     </view>
-    <button class="test-v-if-button" @tap="do_vif()">v-if测试</button>
+    <view class="nested_paren_suite">
+      <text class="nested_paren_title">嵌套括号 fallback 测试</text>
+      <text class="nested_paren_desc">测试 var(--main-color, rgba(64,158,255,0.8)) 多层括号嵌套解析</text>
+
+      <text class="nested_paren_case_title">场景1：变量已定义，应用后应显示红色</text>
+      <view class="nested_paren_stage nested_paren_defined">
+        <view class="nested_paren_box" style="background-color: var(--main-color, rgba(64,158,255,0.8));"></view>
+      </view>
+
+      <text class="nested_paren_case_title">场景2：点击修改后应从红色变为绿色，再点击恢复红色</text>
+      <view id="nestedParenChangeStage" class="nested_paren_stage nested_paren_defined">
+        <view class="nested_paren_box" style="background-color: var(--main-color, rgba(64,158,255,0.8));"></view>
+      </view>
+      <button id="changeNestedParenButton" @tap="do_change_nested_paren()">修改嵌套括号变量</button>
+
+      <text class="nested_paren_case_title">场景3：变量未定义应 fallback 到 rgba(64,158,255,0.8) 蓝色半透明；点击设置后变红，再点击清空后恢复 fallback</text>
+      <view id="nestedParenFallbackStage" class="nested_paren_stage">
+        <view class="nested_paren_box" style="background-color: var(--main-color, rgba(64,158,255,0.8));"></view>
+      </view>
+      <button id="toggleNestedParenFallbackButton" @tap="do_toggle_nested_paren_fallback()">切换 fallback 状态（当前：{{ nested_paren_fallback_state_text }}）</button>
+    </view>
+    <view class="important_var_suite">
+      <text class="important_var_title">变量值包含 !important 测试</text>
+      <text class="important_var_desc">
+        场景：同一元素同时命中 .important_var_text_1 与 .important_var_text_2，前者定义 --important-color: blue !important，后者定义 --important-color: red。
+      </text>
+      <text class="important_var_desc">
+        当前测试预期：文本显示为红色，用于覆盖 CSS 变量值中包含 !important 的解析场景。
+      </text>
+      <view class="important_var_stage">
+        <text id="varImportantText" class="important_var_text_1 important_var_text_2 important_var_text">变量值包含 !important</text>
+      </view>
+    </view>
+    <!-- #ifdef APP && VUE3-VAPOR -->
+    <view class="use_computed_style_suite">
+      <text class="use_computed_style_title">useComputedStyle 颜色测试</text>
+      <text class="use_computed_style_desc">在 use-computed-style 中使用 css 变量时，background-color 对应的 value 应为 #ff0000。</text>
+      <vucs class="use-computed-style-red use_computed_style_stage" @colorchange="updateUseComputedStyleBackgroundColor"></vucs>
+    </view>
+    <!-- #endif -->
   </view>
+
 </template>
-<script setup lang="uts">
+<script setup lang="ts">
+  // #ifdef APP && VUE3-VAPOR
+  import vucs from './variable-use-computed-style.uvue'
+  // #endif
+
+  const data = reactive({
+    useComputedStyleBackgroundColor: ''
+  })
 
   const var_bind = ref("var_1_bind_1")
   const var_v_if = ref(false)
   const text_style_var_def = ref("text_style_var_1")
   const text_style_var_1_on = ref(true)
+  const shorthand_var_state_class = ref("shorthand_var_state_1")
+  const shorthand_var_state_text = ref("state-1")
 
   const do_change_var = () => {
     const view_container = uni.getElementById("view_container")
@@ -40,7 +111,6 @@
       text_style_var_1_on.value = false
       view_container?.style?.setProperty("--var_flex_direction", "row")
       view_container?.style?.setProperty("--var_justify_content", "flex-end")
-      view_container?.style?.setProperty("--var_margin", "")
       // 与 style 中的写法表现不一致，且可能与非简写属性存在冲突
       // view_container?.style?.setProperty("border", "var(--var_border)")
       view_container?.style?.setProperty("background-color", "var(--background-color)")
@@ -58,9 +128,61 @@
   const do_vif = () => {
     var_v_if.value = !var_v_if.value
   }
+
+  const toggle_shorthand_var_suite = () => {
+    if (shorthand_var_state_class.value == "shorthand_var_state_1") {
+      shorthand_var_state_class.value = "shorthand_var_state_2"
+      shorthand_var_state_text.value = "state-2"
+    } else {
+      shorthand_var_state_class.value = "shorthand_var_state_1"
+      shorthand_var_state_text.value = "state-1"
+    }
+  }
+
+  const nested_paren_change_on = ref(false)
+  const nested_paren_fallback_on = ref(false)
+  const nested_paren_fallback_state_text = ref("fallback 生效")
+
+  const do_change_nested_paren = () => {
+    const stage = uni.getElementById("nestedParenChangeStage")
+    if (nested_paren_change_on.value) {
+      stage?.style?.setProperty("--main-color", "#ff0000")
+      nested_paren_change_on.value = false
+    } else {
+      stage?.style?.setProperty("--main-color", "#00ff00")
+      nested_paren_change_on.value = true
+    }
+  }
+
+  const do_toggle_nested_paren_fallback = () => {
+    const stage = uni.getElementById("nestedParenFallbackStage")
+    if (nested_paren_fallback_on.value) {
+      stage?.style?.setProperty("--main-color", "")
+      nested_paren_fallback_on.value = false
+      nested_paren_fallback_state_text.value = "fallback 生效：蓝色"
+    } else {
+      stage?.style?.setProperty("--main-color", "#ff0000")
+      nested_paren_fallback_on.value = true
+      nested_paren_fallback_state_text.value = "变量生效：红色"
+    }
+  }
+
+  // #ifdef APP && VUE3-VAPOR
+  const updateUseComputedStyleBackgroundColor = (backgroundColor: string) => {
+    data.useComputedStyleBackgroundColor = backgroundColor
+  }
+  // #endif
+
+  defineExpose({
+    data
+  })
 </script>
 
 <style>
+  .invalid-width-label {
+    color: #1a1a1a;
+  }
+
   .var_1 {
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
@@ -139,4 +261,199 @@
     background-color: brown;
     align-self: var(--var_align_self);
   }
+
+  .shorthand_var_suite {
+    margin-top: 24px;
+    padding: 12px;
+    border: 1px solid var(--border-color, #d0d7de);
+    background-color: var(--list-background-color, #f6f8fa);
+  }
+
+  .shorthand_var_state_1 {
+    --composite-width: 120px;
+    --composite-margin: 10px;
+    --composite-padding: 8px;
+    --composite-border: 2px solid #f00;
+    --composite-flex: 1 0 50px;
+    --composite-flow: row;
+  }
+
+  .shorthand_var_state_2 {
+    --composite-width: 240px;
+    --composite-margin: 20px;
+    --composite-padding: 16px;
+    --composite-border: 4px solid #00f;
+    --composite-flex: 2 0 100px;
+    --composite-flow: column;
+  }
+
+  .shorthand_var_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .shorthand_var_desc {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    color: var(--active-color, #57606a);
+    font-size: 13px;
+  }
+
+  .shorthand_var_case_title {
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: var(--text-color, #24292f);
+  }
+
+  .shorthand_composite_stage {
+    padding: 8px;
+    background-color: var(--active-background-color, #ffffff);
+  }
+
+  .shorthand_composite_container {
+    width: var(--composite-width);
+    margin: var(--composite-margin);
+    padding: var(--composite-padding);
+    border: var(--composite-border);
+    display: flex;
+    flex-flow: var(--composite-flow);
+    align-content: flex-start;
+    background-color: #eef6ff;
+  }
+
+  .shorthand_composite_item {
+    height: 24px;
+    margin: 2px;
+  }
+
+  .shorthand_composite_item_main {
+    flex: var(--composite-flex);
+    background-color: #93c5fd;
+  }
+
+  .shorthand_composite_item_side {
+    width: 40px;
+    background-color: #fca5a5;
+  }
+
+  .shorthand_composite_item_tail {
+    width: 40px;
+    background-color: #c4b5fd;
+  }
+
+  .nested_paren_suite {
+    margin-top: 24px;
+    padding: 12px;
+    border: 1px solid var(--border-color, #d0d7de);
+    background-color: var(--list-background-color, #f6f8fa);
+  }
+
+  .nested_paren_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .nested_paren_desc {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    color: var(--active-color, #57606a);
+    font-size: 13px;
+  }
+
+  .nested_paren_case_title {
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: var(--text-color, #24292f);
+  }
+
+  .nested_paren_stage {
+    height: 60px;
+    padding: 8px;
+    background-color: var(--active-background-color, #ffffff);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .nested_paren_defined {
+    --main-color: #ff0000;
+  }
+
+  .nested_paren_box {
+    width: 100px;
+    height: 40px;
+  }
+
+  .important_var_suite {
+    margin-top: 24px;
+    padding: 12px;
+    border: 1px solid var(--border-color, #d0d7de);
+    background-color: var(--list-background-color, #f6f8fa);
+  }
+
+  .important_var_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .important_var_desc {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    color: var(--active-color, #57606a);
+    font-size: 13px;
+  }
+
+  .important_var_stage {
+    padding: 8px;
+    background-color: var(--active-background-color, #ffffff);
+  }
+
+  .important_var_text_1 {
+    --important-color: blue !important;
+  }
+
+  .important_var_text_2 {
+    --important-color: red;
+  }
+
+  .important_var_text {
+    color: var(--important-color);
+    font-size: 16px;
+  }
+
+  /* #ifdef APP && VUE3-VAPOR */
+  .use_computed_style_suite {
+    margin-top: 24px;
+    padding: 12px;
+    border: 1px solid var(--border-color, #d0d7de);
+    background-color: var(--list-background-color, #f6f8fa);
+  }
+
+  .use_computed_style_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-color, #333333);
+  }
+
+  .use_computed_style_desc {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    color: var(--active-color, #57606a);
+    font-size: 13px;
+  }
+
+  .use_computed_style_stage {
+    padding: 8px;
+  }
+
+  .use-computed-style-red {
+    --color-red: #ff0000;
+    background-color: var(--color-red);
+  }
+  /* #endif */
 </style>

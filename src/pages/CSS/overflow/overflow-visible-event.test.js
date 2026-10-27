@@ -1,3 +1,5 @@
+jest.setTimeout(30000)
+
 describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')

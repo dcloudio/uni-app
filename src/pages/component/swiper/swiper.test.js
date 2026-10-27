@@ -1,11 +1,14 @@
-// @Author-APP-ANDROID:DCloud_Android_DQQ
-jest.setTimeout(30000);
 describe('test swiper', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
   const isHarmony = platformInfo.startsWith('harmony')
-  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+  const isiOS = platformInfo.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
+  const isMpAlipay = platformInfo === 'mp-alipay'
+  const isVapor = process.env.UNI_APP_X_DOM2 === "true"
+  // 支付宝 Lyra Web 模拟器更新 current 后不会触发 change 事件，待模拟器支持后恢复该事件校验。
+  const checkCurrentIt = isMpAlipay ? it.skip : it
 
   let page;
   const detailResWithCurrentItemId = {
@@ -30,7 +33,7 @@ describe('test swiper', () => {
           autoplaySelect: true,
         }
       })
-      const swiperChangeInterval = (isHarmony && !isDom2) ? 2700 : 2500
+      const swiperChangeInterval = (isHarmony && !isVapor) ? 2700 : 2500
       await page.waitFor(swiperChangeInterval)
       expect(await page.data('data.currentValChange')).toEqual(1)
       await page.waitFor(swiperChangeInterval)
@@ -45,7 +48,7 @@ describe('test swiper', () => {
     });
   }
 
-  it('check current', async () => {
+  checkCurrentIt('check current', async () => {
     if(isMP) {
       // 微信小程序表现较为怪异，interval显式的设置非0的情况下，会无视autoplay属性。interval默认值5000
       await page.setData({
@@ -70,7 +73,7 @@ describe('test swiper', () => {
     }
   });
 
-  if (!isDom2) {
+  if (!isVapor && !isMpAlipay) {
   it('check currentId', async () => {
     await page.setData({
       data:{currentItemIdVal: 'C',}
@@ -114,7 +117,7 @@ describe('test swiper', () => {
 
   it('Event change', async () => {
     const changeDetailInfo = await page.data('data.changeDetailTest')
-    if(isWeb || isMP || isHarmony){
+    if(isWeb || (isMP && !isMpAlipay) || isHarmony || (isiOS && isVapor) || (isAndroid && isVapor)){
       expect(changeDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
       expect(changeDetailInfo).toEqual(detailRes)
@@ -126,7 +129,7 @@ describe('test swiper', () => {
     // 等待最后一个动画结束animationfinish
     await page.waitFor(2000)
     const animationfinishDetailInfo = await page.data('data.animationfinishDetailTest')
-    if(isWeb || isMP || isHarmony){
+    if(isWeb || (isMP && !isMpAlipay) || isHarmony || (isiOS && isVapor) || (isAndroid && isVapor)){
       expect(animationfinishDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
       expect(animationfinishDetailInfo).toEqual(detailRes)

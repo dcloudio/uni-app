@@ -1,0 +1,65 @@
+<template>
+  <view>
+    <view class="flex-row">
+      <text class="day1">白天样式：\n默认效果</text>
+      <text class="day1 light-scheme1">白天样式：\n系统为浅色时会变化</text>
+      <text class="day1 dark-scheme1">白天样式：\n系统为深色时会变化</text>
+    </view>
+
+    <view class="flex-row" style="margin-top: 1px;">
+      <text class="night1">夜间样式：\n默认效果</text>
+      <text class="night1 light-scheme1">夜间样式：\n系统为浅色时会变化</text>
+      <text class="night1 dark-scheme1">夜间样式：\n系统为深色时会变化</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+</script>
+
+<style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .day1 {
+    flex: 1;
+    background: #eee;
+    color: black;
+  }
+
+  .night1 {
+    flex: 1;
+    background: #333;
+    color: white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .day1.dark-scheme1 {
+      background: #333;
+      color: white;
+    }
+
+    .night1.dark-scheme1 {
+      background: black;
+      color: #ddd;
+    }
+  }
+
+  @media (prefers-color-scheme: light) {
+    .day1.light-scheme1 {
+      background: white;
+      color: #555;
+    }
+
+    .night1.light-scheme1 {
+      background: #eee;
+      color: black;
+    }
+  }
+
+  .day1,
+  .night1 {
+    padding: 12px;
+  }
+</style>
