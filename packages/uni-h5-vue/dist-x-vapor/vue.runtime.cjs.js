@@ -12187,7 +12187,7 @@ function setProp(el, key, value) {
 }
 function setAttr(el, key, value, isSVG = false, forceHydrate = true, removed = false) {
 	if (shouldSkipFallthroughKey(el, key)) return;
-	if ((key[0] === "d" || key[0] === "D") && key.slice(0, 5).toLowerCase() === "data-" && !el.localName.includes("-")) {
+	if ((key[0] === "d" || key[0] === "D") && key.slice(0, 5).toLowerCase() === "data-") {
 		const dataset = el.dataset;
 		if (dataset instanceof Map) {
 			if (removed) dataset.delete(key);
