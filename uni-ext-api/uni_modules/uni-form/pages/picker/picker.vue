@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-picker__container" :class="['uni-picker-theme--'+theme]">
-		<view class="uni-picker__mask" :class="{'picker__ani-show': show}" @click="close"></view>
+		<view class="uni-picker__mask" :class="{'picker__ani-show': show, 'picker__mask--dark': theme == 'dark'}" @click="close"></view>
 		<view class="uni-picker__inner-box" :class="[show?'picker__ani-box-show':'','inner-box--'+theme]">
 			<view class="uni-picker__header-btn" :class="['header-btn--'+theme]" @click.stop>
 				<text class="uni-picker__header-btn-cancel" :class="['header-btn-cannel--'+theme]" @click="close">{{ cancelText }}</text>
@@ -152,7 +152,7 @@
 	})
 
 	const indicatorStyle = computed(() => {
-		const color = theme.value == 'dark' ? '#3B3B3B' : '#F5F5F5'
+		const color = theme.value == 'dark' ? 'rgba(255,255,255,0.05)' : '#F5F5F5'
 		return `height:50px;background:rgba(255,255,255,0);border-top:1px ${color} solid;border-bottom:1px ${color} solid;`
 	})
 
@@ -193,8 +193,8 @@
 			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255, 255, 255, 0));"
 			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255, 255, 255, 1));"
 		} else {
-			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 1), rgba(44, 44, 43, 0));"
-			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(44, 44, 43, 0), rgba(44, 44, 43, 1));"
+			maskTopStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 1), rgba(35, 35, 35, 0));"
+			maskBottomStyle.value = "background-image: linear-gradient(to bottom, rgba(35, 35, 35, 0), rgba(35, 35, 35, 1));"
 		}
 	}
 
@@ -664,6 +664,10 @@
 		transition-duration: 0.3s;
 	}
 
+	.picker__mask--dark {
+		background-color: rgba(0, 0, 0, .6);
+	}
+
 	.picker__ani-show {
 		opacity: 1;
 	}
@@ -722,18 +726,18 @@
 	}
 
 	.inner-box--dark {
-		background-color: #2C2C2B;
+		background-color: #232323;
 	}
 
 	.header-btn-cannel--dark {
-		color: #fff;
+		color: rgba(255, 255, 255, .8);
 	}
 
 	.view-item--dark {
-		color: #fff;
+		color: rgba(255, 255, 255, .8);
 	}
 
 	.header-btn--dark {
-		border-color: #3B3B3B;
+		border-color: rgba(255, 255, 255, .05);
 	}
 </style>
