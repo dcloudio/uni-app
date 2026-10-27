@@ -7,6 +7,9 @@ import { resolveHBuilderXPluginPath } from './pluginPaths'
 import type { Formatter } from '../logs/format'
 
 const hbxPlugins = {
+  // 普通 uni-app 的 SFC 外部类型解析通过此别名加载 TypeScript，按需依赖 compile-typescript。
+  // uni-app x 编译链通过 resolveUniTypeScript 使用 uni-uts-v1 自带的 TypeScript，
+  // 不走此别名，也不依赖 compile-typescript；注册别名本身不会加载该插件。
   typescript: ['compile-typescript', 'node_modules/typescript'],
   less: ['compile-less', 'node_modules/less'],
   sass: ['compile-dart-sass', 'node_modules/sass'],
