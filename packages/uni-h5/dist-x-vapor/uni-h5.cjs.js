@@ -4447,7 +4447,7 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const t0$w = Vue.template("<img>");
+const t0$v = Vue.template("<img>");
 const t1$c = Vue.template("<div class=uni-tabbar__mid>");
 const t2$4 = Vue.template("<div class=uni-tabbar__iconfont> ");
 const t3$4 = Vue.template("<div>");
@@ -4458,7 +4458,7 @@ const t7$1 = Vue.template("<uni-tabbar><div class=uni-tabbar><div class=uni-tabb
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "TabBar",
     __reserved: true,
@@ -4687,7 +4687,7 @@ const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.renderEffect(() => Vue.setStyle(n8, getMidButtonStyle(_for_item0.value)));
           Vue.setInsertionState(n8);
           Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n7 = t0$w();
+            const n7 = t0$v();
             Vue.renderEffect(() => {
               Vue.setStyle(n7, {
                 width: getMidButton(_for_item0.value).iconWidth,
@@ -4731,7 +4731,7 @@ const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
             });
             Vue.setInsertionState(n19);
             Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n18 = t0$w();
+              const n18 = t0$v();
               Vue.renderEffect(() => Vue.setProp(n18, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
               return n18;
             });
@@ -4776,13 +4776,13 @@ const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
     return n31;
   }
 });
-const t0$v = Vue.template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
+const t0$u = Vue.template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
 const t1$b = Vue.template("<div class=uni-mask>");
 const t2$3 = Vue.template("<uni-left-window><!><div class=uni-left-window>");
 const t3$3 = Vue.template("<uni-right-window><!><div class=uni-right-window>");
 const t4$1 = Vue.template("<uni-layout><!><uni-content><uni-main></uni-main>");
 const t5$1 = Vue.template("<uni-app>", 1);
-const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "Layout",
     __reserved: true,
@@ -5128,7 +5128,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n36, n35);
         Vue.createIf(() => Vue.unref(hasTopWindow) && Vue.unref(TopWindow), () => {
-          const n7 = t0$v();
+          const n7 = t0$u();
           const n5 = Vue.child(n7);
           const n6 = Vue.next(n5);
           Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
@@ -5271,7 +5271,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     Vue.setInsertionState(n49, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n48 = Vue.withComponentId("224fd694", () => Vue.createComponent(_sfc_main$w));
+      const n48 = Vue.withComponentId("224fd694", () => Vue.createComponent(_sfc_main$v));
       Vue.applyVShow(n48, () => Vue.unref(showTabBar));
       return n48;
     });
@@ -5279,8 +5279,8 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
     return n49;
   }
 });
-const t0$u = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$t = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$t = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -5288,12 +5288,12 @@ const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$u();
+    const n0 = t0$t();
     return n0;
   }
 });
-const t0$t = Vue.template("<div class=uni-async-error> ", 1);
-const _sfc_main$t = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$s = Vue.template("<div class=uni-async-error> ", 1);
+const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -5307,7 +5307,7 @@ const _sfc_main$t = /* @__PURE__ */ Vue.defineVaporComponent({
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$t();
+    const n0 = t0$s();
     const x0 = Vue.txt(n0);
     Vue.on(n0, "click", reload);
     Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t12)("uni.async.error"))));
@@ -5365,11 +5365,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$u.name)) {
-    app.component(_sfc_main$u.name, _sfc_main$u);
-  }
   if (!app.component(_sfc_main$t.name)) {
     app.component(_sfc_main$t.name, _sfc_main$t);
+  }
+  if (!app.component(_sfc_main$s.name)) {
+    app.component(_sfc_main$s.name, _sfc_main$s);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -5473,7 +5473,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return Vue.createComponent(_sfc_main$v, null, null, true);
+        return Vue.createComponent(_sfc_main$u, null, null, true);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -5517,11 +5517,9 @@ function useBackgroundColorContent(pageMeta) {
   onThemeChange(update);
   Vue.watchEffect(update);
 }
-let UniVueElement$2 = class UniVueElement extends Object {
-};
-let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
-};
-function useLoadingStyle$1(targetElement, bold) {
+class UniLoadingElement extends UniViewElement {
+}
+function useLoadingStyle(targetElement, bold) {
   const loadingSize = Vue.ref("16px");
   const loadingBorderWidth = Vue.ref("1px");
   Vue.ref("8px");
@@ -5532,18 +5530,17 @@ function useLoadingStyle$1(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$s = Vue.template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$r = Vue.template('<div data-v-212d40c7 uni-view class="default __uni_loading_container__" style="display: flex;"><div data-v-212d40c7 uni-view>', 257);
+const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
     // @ts-ignore
     rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement$1
+      class: UniLoadingElement
     }
   },
-  __name: "index-x",
+  __name: "loading",
   props: {
     paused: { type: Boolean, default: false },
     bold: { type: Boolean, default: false },
@@ -5552,14 +5549,9 @@ const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
   setup(__props) {
     const props2 = __props;
     const LoadingRef = Vue.ref(null);
-    const loadingStyle = Vue.reactive(useLoadingStyle$1(LoadingRef, Vue.computed(() => props2.bold)));
-    const n1 = Vue.createPlainElement("uni-loading-element", {
-      class: "default __uni_loading_container__",
-      style: "display: flex;"
-    }, null, true);
-    Vue.setInsertionState(n1);
-    const n0 = t0$s();
-    Vue.insert(n0, n1);
+    const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
+    const n1 = t0$r();
+    const n0 = Vue.child(n1);
     Vue.setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
     Vue.renderEffect(() => {
       Vue.setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
@@ -5612,7 +5604,7 @@ function usePageHeadTransparent(headRef, {
 }) {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
-const t0$r = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
+const t0$q = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
 const t1$a = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
 const t3$2 = Vue.template("<i class=uni-btn-icon></i>");
@@ -5624,7 +5616,7 @@ const t8 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__t
 const t9 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
 const t11 = Vue.template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
-const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -5830,7 +5822,7 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     Vue.setInsertionState(n19);
     Vue.createIf(() => Vue.unref(hasPages) && !Vue.unref(pageMeta).isQuit, () => {
-      const n3 = t0$r();
+      const n3 = t0$q();
       const n2 = Vue.child(Vue.child(n3));
       Vue.on(n3, "click", onPageHeadBackButton);
       Vue.renderEffect(() => {
@@ -5935,7 +5927,7 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.createIf(
             () => Vue.unref(isXVapor) && Vue.unref(navigationBar).loading,
             () => {
-              const n26 = Vue.withComponentId("96682308", () => Vue.createComponent(_sfc_main$s, { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
+              const n26 = Vue.withComponentId("96682308", () => Vue.createComponent(Vue.unref(_sfc_main$r), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
               return n26;
             },
             () => Vue.createIf(
@@ -6110,15 +6102,15 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
     return n66;
   }
 });
-const t0$q = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$p = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$q();
+    const n3 = t0$p();
     const n2 = Vue.child(n3);
     const n0 = Vue.child(Vue.child(n2));
     const n1 = Vue.child(Vue.next(n0));
@@ -6131,8 +6123,8 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
-const t0$p = Vue.template("<uni-page-wrapper><uni-page-body>");
-const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$o = Vue.template("<uni-page-wrapper><uni-page-body>");
+const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -6163,11 +6155,11 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.withComponentId("2d14e6de", () => Vue.createComponent(_sfc_main$q));
+      const n2 = Vue.withComponentId("2d14e6de", () => Vue.createComponent(_sfc_main$p));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
-    const n8 = t0$p();
+    const n8 = t0$o();
     const n4 = Vue.child(n8);
     Vue.renderEffect(() => Vue.setDynamicProps(n8, [pageRefresh.value]));
     Vue.setInsertionState(n4);
@@ -6181,8 +6173,8 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
     return [n0, n8];
   }
 });
-const t0$o = Vue.template("<uni-page>", 1);
-const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$n = Vue.template("<uni-page>", 1);
+const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "Page",
     __reserved: true,
@@ -6284,18 +6276,18 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
         }
       }
     }
-    const n8 = t0$o();
+    const n8 = t0$n();
     Vue.renderEffect(() => {
       Vue.setAttr(n8, "data-page", Vue.unref(pageMeta).route);
       Vue.setStyle(n8, pageStyle);
     });
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.withComponentId("6ae207a0", () => Vue.createComponent(_sfc_main$r));
+      const n2 = Vue.withComponentId("6ae207a0", () => Vue.createComponent(_sfc_main$q));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.withComponentId("f15f11c4", () => Vue.createComponent(_sfc_main$p, null, Vue.extend(() => {
+    Vue.withComponentId("f15f11c4", () => Vue.createComponent(_sfc_main$o, null, Vue.extend(() => {
       const n3 = Vue.withComponentId("f15f1178", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
@@ -6330,7 +6322,7 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
   }
 });
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$o, {
+  return Object.assign({}, _sfc_main$n, {
     __uniPageComponent: pageComponent
   });
 }
@@ -8345,7 +8337,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           Vue.setInsertionState(_n21);
           Vue.createIf(() => true, () => {
             const _n4 = Vue.createIf(() => props2.refreshState == "pulling" || props2.refreshState == "refreshing", () => {
-              const _n6 = createComponent(_sfc_main$s, {
+              const _n6 = createComponent(_sfc_main$r, {
                 class: "uni-scroll-view-refresh__loading",
                 paused: () => props2.refreshState == "pulling",
                 style: () => ({
@@ -8902,12 +8894,12 @@ class UniCheckboxElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 }
-const t0$n = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
+const t0$m = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
 const t1$9 = Vue.template("<div uni-view role=checkbox>", 1);
 const t2$1 = Vue.template("<span uni-text>");
 const t3$1 = Vue.template("<div uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
-const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -9000,7 +8992,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n6);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n5 = t0$n();
+          const n5 = t0$m();
           const n4 = Vue.child(n5);
           Vue.setAttr(n4, "d", iconPath$1, true);
           Vue.renderEffect(() => Vue.setAttr(n4, "fill", Vue.unref(iconColor), true));
@@ -9031,7 +9023,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n12);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n11 = t0$n();
+          const n11 = t0$m();
           const n10 = Vue.child(n11);
           Vue.setAttr(n10, "d", iconPath$1, true);
           Vue.renderEffect(() => Vue.setAttr(n10, "fill", Vue.unref(iconColor), true));
@@ -9073,8 +9065,8 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const t0$m = Vue.template("<div uni-view>", 1);
-const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$l = Vue.template("<div uni-view>", 1);
+const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -9158,7 +9150,7 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
     };
     Vue.provide(CHECKBOX_GROUP_KEY, ctx);
     Vue.inject(FORM_KEY, null);
-    const n1 = t0$m();
+    const n1 = t0$l();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     return n1;
@@ -9168,8 +9160,8 @@ class UniFlowItemElement extends UniViewElement {
 }
 class UniWaterflowElement extends UniScrollViewElement {
 }
-const t0$l = Vue.template('<div uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
-const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$k = Vue.template('<div uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
+const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "flow-item",
     rootElement: {
@@ -9249,7 +9241,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
       { flush: "post" }
     );
     __expose({ recycleHooks });
-    const n1 = t0$l();
+    const n1 = t0$k();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     Vue.setStaticTemplateRef(n1, element, null, "element");
@@ -9258,8 +9250,8 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniFormElement extends UniViewElement {
 }
-const t0$k = Vue.template("<div uni-view class=uni-form>", 1);
-const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$j = Vue.template("<div uni-view class=uni-form>", 1);
+const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "form",
     // @ts-ignore
@@ -9325,7 +9317,7 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
     const ctx = { registerField, unregisterField, submit, reset };
     Vue.provide(FORM_KEY, ctx);
     __expose({ submit, reset });
-    const n1 = t0$k();
+    const n1 = t0$j();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     return n1;
@@ -9333,8 +9325,8 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniLabelElement extends UniViewElement {
 }
-const t0$j = Vue.template("<div uni-view class=uni-label>", 1);
-const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$i = Vue.template("<div uni-view class=uni-label>", 1);
+const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "label",
     // @ts-ignore
@@ -9407,7 +9399,7 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
         return;
       target.activate(event);
     };
-    const n1 = t0$j();
+    const n1 = t0$i();
     Vue.renderEffect(() => {
       const _disabled = __props.disabled;
       Vue.setProp(n1, "tabindex", _disabled ? -1 : 0);
@@ -9430,8 +9422,8 @@ class UniStickyHeaderElement extends UniViewElement {
 }
 class UniListViewElement extends UniScrollViewElement {
 }
-const t0$i = Vue.template('<div uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
-const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$h = Vue.template('<div uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
+const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "list-item",
     rootElement: {
@@ -9503,7 +9495,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       { flush: "post" }
     );
     __expose({ recycleHooks });
-    const n1 = t0$i();
+    const n1 = t0$h();
     Vue.setInsertionState(n1);
     Vue.createSlot();
     Vue.setStaticTemplateRef(n1, element, null, "element");
@@ -9577,9 +9569,9 @@ class RecycleListItemDataStore {
     return [start, low - start];
   }
 }
-const t0$h = Vue.template("<div uni-view></div>");
+const t0$g = Vue.template("<div uni-view></div>");
 const t1$8 = Vue.template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view class=placeholder></div></div>');
-const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "list-view",
     rootElement: {
@@ -9904,7 +9896,7 @@ const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
         /* NON_STABLE */
       }),
       "default": () => {
-        const n1 = t0$h();
+        const n1 = t0$g();
         Vue.setInsertionState(n1);
         Vue.createSlot("header");
         const n4 = t1$8();
@@ -9913,7 +9905,7 @@ const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
         Vue.setInsertionState(n4, 1);
         Vue.createSlot();
-        const n6 = t0$h();
+        const n6 = t0$g();
         Vue.setStaticTemplateRef(n4, bodyElement, null, "bodyElement");
         Vue.setInsertionState(n6);
         Vue.createSlot("footer");
@@ -9922,57 +9914,6 @@ const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
     }, true));
     Vue.setStaticTemplateRef(n9, scrollElement, null, "scrollElement");
     return n9;
-  }
-});
-let UniVueElement$1 = class UniVueElement2 extends Object {
-};
-class UniLoadingElement2 extends UniVueElement$1 {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = Vue.ref("16px");
-  const loadingBorderWidth = Vue.ref("1px");
-  Vue.ref("8px");
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const t0$g = Vue.template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement2
-    }
-  },
-  __name: "loading",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = Vue.ref(null);
-    const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
-    const n1 = Vue.createPlainElement("uni-loading-element", {
-      class: "default __uni_loading_container__",
-      style: "display: flex;"
-    }, null, true);
-    Vue.setInsertionState(n1);
-    const n0 = t0$g();
-    Vue.insert(n0, n1);
-    Vue.setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
-    Vue.renderEffect(() => {
-      Vue.setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
-      Vue.setStyle(n0, loadingStyle);
-    });
-    return n1;
   }
 });
 class UniMatchMediaElement extends UniViewElement {
@@ -10173,9 +10114,9 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniVueElement3 extends Object {
+class UniVueElement extends Object {
 }
-class UniPageContainerElement extends UniVueElement3 {
+class UniPageContainerElement extends UniVueElement {
 }
 const t0$d = Vue.template("<div uni-view class=uni-page-container-overlay>");
 const t1$6 = Vue.template("<div uni-view>");
@@ -16618,31 +16559,31 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = indexVapor;
 exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
-exports.AsyncErrorComponent = _sfc_main$t;
-exports.AsyncLoadingComponent = _sfc_main$u;
+exports.AsyncErrorComponent = _sfc_main$s;
+exports.AsyncLoadingComponent = _sfc_main$t;
 exports.Button = indexVapor$a;
 exports.Camera = index$3;
 exports.Canvas = indexVapor$b;
-exports.Checkbox = _sfc_main$n;
-exports.CheckboxGroup = _sfc_main$m;
+exports.Checkbox = _sfc_main$m;
+exports.CheckboxGroup = _sfc_main$l;
 exports.Editor = indexVapor$8;
-exports.FlowItem = _sfc_main$l;
-exports.Form = _sfc_main$k;
+exports.FlowItem = _sfc_main$k;
+exports.Form = _sfc_main$j;
 exports.Icon = indexVapor$7;
 exports.Input = Input;
-exports.Label = _sfc_main$j;
-exports.LayoutComponent = _sfc_main$v;
-exports.ListItem = _sfc_main$i;
-exports.ListView = _sfc_main$h;
+exports.Label = _sfc_main$i;
+exports.LayoutComponent = _sfc_main$u;
+exports.ListItem = _sfc_main$h;
+exports.ListView = _sfc_main$g;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
-exports.Loading = _sfc_main$g;
+exports.Loading = _sfc_main$r;
 exports.Map = indexVapor$1;
 exports.MatchMedia = _sfc_main$f;
 exports.MovableArea = indexVapor$6;
 exports.MovableView = indexVapor$5;
 exports.Navigator = _sfc_main$e;
-exports.PageComponent = _sfc_main$o;
+exports.PageComponent = _sfc_main$n;
 exports.PageContainer = _sfc_main$d;
 exports.Picker = _sfc_main$c;
 exports.PickerView = _sfc_main$b;
@@ -16682,8 +16623,8 @@ exports.UniInputElement = UniInputElement;
 exports.UniInputElementImpl = UniInputElement;
 exports.UniLabelElement = UniLabelElement;
 exports.UniLabelElementImpl = UniLabelElement;
-exports.UniLoadingElement = UniLoadingElement2;
-exports.UniLoadingElementImpl = UniLoadingElement2;
+exports.UniLoadingElement = UniLoadingElement;
+exports.UniLoadingElementImpl = UniLoadingElement;
 exports.UniMatchMediaElement = UniMatchMediaElement;
 exports.UniMatchMediaElementImpl = UniMatchMediaElement;
 exports.UniMovableAreaElement = UniMovableAreaElement;

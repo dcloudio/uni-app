@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, insert, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, syncSelectValue, useAttrs as useAttrs$1, useSlots, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -10924,7 +10924,7 @@ const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   },
   LoadFontFaceProtocol
 );
-const t0$F = template("<img>");
+const t0$E = template("<img>");
 const t1$k = template("<div class=uni-tabbar__mid>");
 const t2$b = template("<div class=uni-tabbar__iconfont> ");
 const t3$8 = template("<div>");
@@ -10936,7 +10936,7 @@ const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "TabBar",
     __reserved: true,
@@ -11173,7 +11173,7 @@ const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
           renderEffect(() => setStyle(n8, getMidButtonStyle(_for_item0.value)));
           setInsertionState(n8);
           createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n7 = t0$F();
+            const n7 = t0$E();
             renderEffect(() => {
               setStyle(n7, {
                 width: getMidButton(_for_item0.value).iconWidth,
@@ -11217,7 +11217,7 @@ const _sfc_main$F = /* @__PURE__ */ defineVaporComponent({
             });
             setInsertionState(n19);
             createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n18 = t0$F();
+              const n18 = t0$E();
               renderEffect(() => setProp(n18, "src", unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
               return n18;
             });
@@ -11269,13 +11269,13 @@ function getLayoutState() {
 function setLayoutState(state) {
   globalLayoutState = state;
 }
-const t0$E = template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
+const t0$D = template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
 const t1$j = template("<div class=uni-mask>");
 const t2$a = template("<uni-left-window><!><div class=uni-left-window>");
 const t3$7 = template("<uni-right-window><!><div class=uni-right-window>");
 const t4$4 = template("<uni-layout><!><uni-content><uni-main></uni-main>");
 const t5$3 = template("<uni-app>", 1);
-const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$D = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "Layout",
     __reserved: true,
@@ -11649,7 +11649,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n36, n35);
         createIf(() => unref(hasTopWindow) && unref(TopWindow), () => {
-          const n7 = t0$E();
+          const n7 = t0$D();
           const n5 = child(n7);
           const n6 = next(n5);
           renderEffect(() => setStyle(n5, unref(layoutState).topWindowStyle));
@@ -11792,7 +11792,7 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
     );
     setInsertionState(n49, 1);
     createIf(() => unref(hasTabBar), () => {
-      const n48 = withComponentId("224fd694", () => createComponent$1(_sfc_main$F));
+      const n48 = withComponentId("224fd694", () => createComponent$1(_sfc_main$E));
       applyVShow(n48, () => unref(showTabBar2));
       return n48;
     });
@@ -11800,8 +11800,8 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
     return n49;
   }
 });
-const t0$D = template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$D = /* @__PURE__ */ defineVaporComponent({
+const t0$C = template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$C = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -11809,12 +11809,12 @@ const _sfc_main$D = /* @__PURE__ */ defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$D();
+    const n0 = t0$C();
     return n0;
   }
 });
-const t0$C = template("<div class=uni-async-error> ", 1);
-const _sfc_main$C = /* @__PURE__ */ defineVaporComponent({
+const t0$B = template("<div class=uni-async-error> ", 1);
+const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -11828,7 +11828,7 @@ const _sfc_main$C = /* @__PURE__ */ defineVaporComponent({
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$C();
+    const n0 = t0$B();
     const x0 = txt(n0);
     on$1(n0, "click", reload);
     renderEffect(() => setText(x0, toDisplayString(unref(t12)("uni.async.error"))));
@@ -11887,11 +11887,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$D.name)) {
-    app.component(_sfc_main$D.name, _sfc_main$D);
-  }
   if (!app.component(_sfc_main$C.name)) {
     app.component(_sfc_main$C.name, _sfc_main$C);
+  }
+  if (!app.component(_sfc_main$B.name)) {
+    app.component(_sfc_main$B.name, _sfc_main$B);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -12124,7 +12124,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return createComponent$1(_sfc_main$E, null, null, true);
+        return createComponent$1(_sfc_main$D, null, null, true);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -12234,11 +12234,9 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
-let UniVueElement$2 = class UniVueElement extends HTMLElement {
-};
-let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
-};
-function useLoadingStyle$1(targetElement, bold) {
+class UniLoadingElement extends UniViewElement {
+}
+function useLoadingStyle(targetElement, bold) {
   const loadingSize = ref("16px");
   const loadingBorderWidth = ref("1px");
   const loadingBorderRadius = ref("8px");
@@ -12285,18 +12283,17 @@ function useLoadingStyle$1(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$B = template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
+const t0$A = template('<div data-v-212d40c7 uni-view class="default __uni_loading_container__" style="display: flex;"><div data-v-212d40c7 uni-view>', 257);
+const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
     // @ts-ignore
     rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement$1
+      class: UniLoadingElement
     }
   },
-  __name: "index-x",
+  __name: "loading",
   props: {
     paused: { type: Boolean, default: false },
     bold: { type: Boolean, default: false },
@@ -12305,14 +12302,9 @@ const _sfc_main$B = /* @__PURE__ */ defineVaporComponent({
   setup(__props) {
     const props2 = __props;
     const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle$1(LoadingRef, computed(() => props2.bold)));
-    const n1 = createPlainElement("uni-loading-element", {
-      class: "default __uni_loading_container__",
-      style: "display: flex;"
-    }, null, true);
-    setInsertionState(n1);
-    const n0 = t0$B();
-    insert(n0, n1);
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
+    const n1 = t0$A();
+    const n0 = child(n1);
     setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
     renderEffect(() => {
       setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
@@ -12418,7 +12410,7 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const t0$A = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
+const t0$z = template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
 const t1$i = template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$9 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
 const t3$6 = template("<i class=uni-btn-icon></i>");
@@ -12430,7 +12422,7 @@ const t8 = template("<div class=uni-page-head-bd><div class=uni-page-head__title
 const t9 = template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
 const t11 = template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
-const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -12642,7 +12634,7 @@ const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
     });
     setInsertionState(n19);
     createIf(() => unref(hasPages) && !unref(pageMeta).isQuit, () => {
-      const n3 = t0$A();
+      const n3 = t0$z();
       const n2 = child(child(n3));
       on$1(n3, "click", onPageHeadBackButton);
       renderEffect(() => {
@@ -12747,7 +12739,7 @@ const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
           () => createIf(
             () => unref(isXVapor) && unref(navigationBar).loading,
             () => {
-              const n26 = withComponentId("96682308", () => createComponent$1(_sfc_main$B, { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
+              const n26 = withComponentId("96682308", () => createComponent$1(unref(_sfc_main$A), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
               return n26;
             },
             () => createIf(
@@ -12922,15 +12914,15 @@ const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
     return n66;
   }
 });
-const t0$z = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$z = /* @__PURE__ */ defineVaporComponent({
+const t0$y = template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$z();
+    const n3 = t0$y();
     const n2 = child(n3);
     const n0 = child(child(n2));
     const n1 = child(next(n0));
@@ -13198,8 +13190,8 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const t0$y = template("<uni-page-wrapper><uni-page-body>");
-const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
+const t0$x = template("<uni-page-wrapper><uni-page-body>");
+const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -13237,11 +13229,11 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
       }
     }
     const n0 = createIf(() => unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = withComponentId("2d14e6de", () => createComponent$1(_sfc_main$z));
+      const n2 = withComponentId("2d14e6de", () => createComponent$1(_sfc_main$y));
       setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
-    const n8 = t0$y();
+    const n8 = t0$x();
     const n4 = child(n8);
     renderEffect(() => setDynamicProps(n8, [pageRefresh.value]));
     setInsertionState(n4);
@@ -13255,8 +13247,8 @@ const _sfc_main$y = /* @__PURE__ */ defineVaporComponent({
     return [n0, n8];
   }
 });
-const t0$x = template("<uni-page>", 1);
-const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
+const t0$w = template("<uni-page>", 1);
+const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "Page",
     __reserved: true,
@@ -13358,18 +13350,18 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
         }
       }
     }
-    const n8 = t0$x();
+    const n8 = t0$w();
     renderEffect(() => {
       setAttr(n8, "data-page", unref(pageMeta).route);
       setStyle(n8, pageStyle);
     });
     setInsertionState(n8);
     createIf(() => unref(hasNavigationBar) && unref(navigationBar).style !== "custom", () => {
-      const n2 = withComponentId("6ae207a0", () => createComponent$1(_sfc_main$A));
+      const n2 = withComponentId("6ae207a0", () => createComponent$1(_sfc_main$z));
       return n2;
     });
     setInsertionState(n8, 1);
-    withComponentId("f15f11c4", () => createComponent$1(_sfc_main$y, null, extend$1(() => {
+    withComponentId("f15f11c4", () => createComponent$1(_sfc_main$x, null, extend$1(() => {
       const n3 = withComponentId("f15f1178", () => createDynamicComponent(
         () => unref(pageComponent),
         { $: [
@@ -13404,7 +13396,7 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
   }
 });
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$x, {
+  return Object.assign({}, _sfc_main$w, {
     __uniPageComponent: pageComponent
   });
 }
@@ -16395,7 +16387,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           setInsertionState(_n21);
           createIf(() => true, () => {
             const _n4 = createIf(() => props2.refreshState == "pulling" || props2.refreshState == "refreshing", () => {
-              const _n6 = createComponent(_sfc_main$B, {
+              const _n6 = createComponent(_sfc_main$A, {
                 class: "uni-scroll-view-refresh__loading",
                 paused: () => props2.refreshState == "pulling",
                 style: () => ({
@@ -17236,12 +17228,12 @@ class UniCheckboxElement extends UniViewElement {
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
 }
-const t0$w = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
+const t0$v = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
 const t1$h = template("<div uni-view role=checkbox>", 1);
 const t2$8 = template("<span uni-text>");
 const t3$5 = template("<div uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
-const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -17372,7 +17364,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n6);
         createIf(() => unref(isChecked), () => {
-          const n5 = t0$w();
+          const n5 = t0$v();
           const n4 = child(n5);
           setAttr(n4, "d", iconPath$1, true);
           renderEffect(() => setAttr(n4, "fill", unref(iconColor), true));
@@ -17403,7 +17395,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         });
         setInsertionState(n12);
         createIf(() => unref(isChecked), () => {
-          const n11 = t0$w();
+          const n11 = t0$v();
           const n10 = child(n11);
           setAttr(n10, "d", iconPath$1, true);
           renderEffect(() => setAttr(n10, "fill", unref(iconColor), true));
@@ -17445,8 +17437,8 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
 });
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const t0$v = template("<div uni-view>", 1);
-const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
+const t0$u = template("<div uni-view>", 1);
+const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -17554,7 +17546,7 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
       elementOrderMap.clear();
       elementOrderCounter = 0;
     });
-    const n1 = t0$v();
+    const n1 = t0$u();
     setInsertionState(n1);
     createSlot();
     return n1;
@@ -17564,8 +17556,8 @@ class UniFlowItemElement extends UniViewElement {
 }
 class UniWaterflowElement extends UniScrollViewElement {
 }
-const t0$u = template('<div uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
-const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
+const t0$t = template('<div uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
+const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "flow-item",
     rootElement: {
@@ -17652,7 +17644,7 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
       unregister();
     });
     __expose({ recycleHooks });
-    const n1 = t0$u();
+    const n1 = t0$t();
     setInsertionState(n1);
     createSlot();
     setStaticTemplateRef(n1, element, null, "element");
@@ -17661,8 +17653,8 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
 });
 class UniFormElement extends UniViewElement {
 }
-const t0$t = template("<div uni-view class=uni-form>", 1);
-const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
+const t0$s = template("<div uni-view class=uni-form>", 1);
+const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "form",
     // @ts-ignore
@@ -17728,7 +17720,7 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
     const ctx = { registerField, unregisterField, submit, reset };
     provide(FORM_KEY, ctx);
     __expose({ submit, reset });
-    const n1 = t0$t();
+    const n1 = t0$s();
     setInsertionState(n1);
     createSlot();
     return n1;
@@ -17736,8 +17728,8 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
 });
 class UniLabelElement extends UniViewElement {
 }
-const t0$s = template("<div uni-view class=uni-label>", 1);
-const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
+const t0$r = template("<div uni-view class=uni-label>", 1);
+const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "label",
     // @ts-ignore
@@ -17810,7 +17802,7 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
         return;
       target.activate(event);
     };
-    const n1 = t0$s();
+    const n1 = t0$r();
     renderEffect(() => {
       const _disabled = __props.disabled;
       setProp(n1, "tabindex", _disabled ? -1 : 0);
@@ -17833,8 +17825,8 @@ class UniStickyHeaderElement extends UniViewElement {
 }
 class UniListViewElement extends UniScrollViewElement {
 }
-const t0$r = template('<div uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
-const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
+const t0$q = template('<div uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
+const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "list-item",
     rootElement: {
@@ -17913,7 +17905,7 @@ const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
       unregister();
     });
     __expose({ recycleHooks });
-    const n1 = t0$r();
+    const n1 = t0$q();
     setInsertionState(n1);
     createSlot();
     setStaticTemplateRef(n1, element, null, "element");
@@ -17987,9 +17979,9 @@ class RecycleListItemDataStore {
     return [start, low - start];
   }
 }
-const t0$q = template("<div uni-view></div>");
+const t0$p = template("<div uni-view></div>");
 const t1$g = template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view class=placeholder></div></div>');
-const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
+const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "list-view",
     rootElement: {
@@ -18332,7 +18324,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
         /* NON_STABLE */
       }),
       "default": () => {
-        const n1 = t0$q();
+        const n1 = t0$p();
         setInsertionState(n1);
         createSlot("header");
         const n4 = t1$g();
@@ -18341,7 +18333,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
         setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
         setInsertionState(n4, 1);
         createSlot();
-        const n6 = t0$q();
+        const n6 = t0$p();
         setStaticTemplateRef(n4, bodyElement, null, "bodyElement");
         setInsertionState(n6);
         createSlot("footer");
@@ -18350,93 +18342,6 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
     }, true));
     setStaticTemplateRef(n9, scrollElement, null, "scrollElement");
     return n9;
-  }
-});
-let UniVueElement$1 = class UniVueElement2 extends HTMLElement {
-};
-class UniLoadingElement2 extends UniVueElement$1 {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const t0$p = template("<div data-v-212d40c7 uni-view>", 256);
-const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement2
-    }
-  },
-  __name: "loading",
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    const n1 = createPlainElement("uni-loading-element", {
-      class: "default __uni_loading_container__",
-      style: "display: flex;"
-    }, null, true);
-    setInsertionState(n1);
-    const n0 = t0$p();
-    insert(n0, n1);
-    setStaticTemplateRef(n1, LoadingRef, null, "LoadingRef");
-    renderEffect(() => {
-      setClassName(n0, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
-      setStyle(n0, loadingStyle);
-    });
-    return n1;
   }
 });
 class UniMatchMediaElement extends UniViewElement {
@@ -18657,9 +18562,9 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniVueElement3 extends HTMLElement {
+class UniVueElement extends HTMLElement {
 }
-class UniPageContainerElement extends UniVueElement3 {
+class UniPageContainerElement extends UniVueElement {
 }
 const t0$m = template("<div uni-view class=uni-page-container-overlay>");
 const t1$e = template("<div uni-view>");
@@ -31674,7 +31579,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
     });
     initUniPageHooks();
     const _component_input = __syscom_0$2;
-    const _component_loading = _sfc_main$p;
+    const _component_loading = _sfc_main$A;
     const _component_scroll_view = __syscom_1;
     const n51 = t7();
     const n6 = child(n51);
@@ -32788,7 +32693,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
       setClassName(n4, _showAnim ? 1 : 0, " uni-loading-dialog--show", "uni-loading-dialog");
     });
     setInsertionState(n4);
-    withComponentId("9a8ccad6", () => createComponent$1(_sfc_main$p, {
+    withComponentId("9a8ccad6", () => createComponent$1(_sfc_main$A, {
       class: "uni-loading-dialog__spinner",
       "ios-spinner": () => iosSpinner.value
     }));
@@ -33817,7 +33722,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
       }, 100);
       e2.stopPropagation();
     };
-    const _component_loading = _sfc_main$p;
+    const _component_loading = _sfc_main$A;
     const n10 = t2$2();
     const n0 = child(n10);
     const n1 = next(n0);
@@ -35154,31 +35059,31 @@ export {
   indexVapor as Ad,
   index$5 as AdContentPage,
   index$4 as AdDraw,
-  _sfc_main$C as AsyncErrorComponent,
-  _sfc_main$D as AsyncLoadingComponent,
+  _sfc_main$B as AsyncErrorComponent,
+  _sfc_main$C as AsyncLoadingComponent,
   indexVapor$8 as Button,
   index$3 as Camera,
   indexVapor$9 as Canvas,
-  _sfc_main$w as Checkbox,
-  _sfc_main$v as CheckboxGroup,
+  _sfc_main$v as Checkbox,
+  _sfc_main$u as CheckboxGroup,
   indexVapor$7 as Editor,
-  _sfc_main$u as FlowItem,
-  _sfc_main$t as Form,
+  _sfc_main$t as FlowItem,
+  _sfc_main$s as Form,
   indexVapor$6 as Icon,
   __syscom_0$2 as Input,
-  _sfc_main$s as Label,
-  _sfc_main$E as LayoutComponent,
-  _sfc_main$r as ListItem,
-  _sfc_main$q as ListView,
+  _sfc_main$r as Label,
+  _sfc_main$D as LayoutComponent,
+  _sfc_main$q as ListItem,
+  _sfc_main$p as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$p as Loading,
+  _sfc_main$A as Loading,
   __syscom_0 as Map,
   _sfc_main$o as MatchMedia,
   indexVapor$5 as MovableArea,
   indexVapor$4 as MovableView,
   _sfc_main$n as Navigator,
-  _sfc_main$x as PageComponent,
+  _sfc_main$w as PageComponent,
   _sfc_main$m as PageContainer,
   _sfc_main$l as Picker,
   _sfc_main$k as PickerView,
@@ -35222,8 +35127,8 @@ export {
   UniInputElement as UniInputElementImpl,
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
-  UniLoadingElement2 as UniLoadingElement,
-  UniLoadingElement2 as UniLoadingElementImpl,
+  UniLoadingElement,
+  UniLoadingElement as UniLoadingElementImpl,
   UniMapElement,
   UniMatchMediaElement,
   UniMatchMediaElement as UniMatchMediaElementImpl,

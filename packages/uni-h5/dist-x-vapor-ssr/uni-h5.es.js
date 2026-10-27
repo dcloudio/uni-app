@@ -4459,7 +4459,7 @@ const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "TabBar",
     __reserved: true,
@@ -4734,13 +4734,13 @@ const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$w = _sfc_main$w.setup;
-_sfc_main$w.setup = (props2, ctx) => {
+const _sfc_setup$v = _sfc_main$v.setup;
+_sfc_main$v.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/tabBar.vue");
-  return _sfc_setup$w ? _sfc_setup$w(props2, ctx) : void 0;
+  return _sfc_setup$v ? _sfc_setup$v(props2, ctx) : void 0;
 };
-const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "Layout",
     __reserved: true,
@@ -5198,7 +5198,7 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
         _push(`<!--]-->`);
       }
       if (unref(hasTabBar)) {
-        _push(ssrRenderComponent(_sfc_main$w, {
+        _push(ssrRenderComponent(_sfc_main$v, {
           style: unref(showTabBar) ? null : { display: "none" }
         }, null, _parent));
       } else {
@@ -5208,13 +5208,13 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$v = _sfc_main$v.setup;
-_sfc_main$v.setup = (props2, ctx) => {
+const _sfc_setup$u = _sfc_main$u.setup;
+_sfc_main$u.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/index-vapor.vue");
-  return _sfc_setup$v ? _sfc_setup$v(props2, ctx) : void 0;
+  return _sfc_setup$u ? _sfc_setup$u(props2, ctx) : void 0;
 };
-const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -5229,13 +5229,13 @@ const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$u = _sfc_main$u.setup;
-_sfc_main$u.setup = (props2, ctx) => {
+const _sfc_setup$t = _sfc_main$t.setup;
+_sfc_main$t.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-loading/asyncLoading.vue");
-  return _sfc_setup$u ? _sfc_setup$u(props2, ctx) : void 0;
+  return _sfc_setup$t ? _sfc_setup$t(props2, ctx) : void 0;
 };
-const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -5253,11 +5253,11 @@ const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$t = _sfc_main$t.setup;
-_sfc_main$t.setup = (props2, ctx) => {
+const _sfc_setup$s = _sfc_main$s.setup;
+_sfc_main$s.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-error/asyncError.vue");
-  return _sfc_setup$t ? _sfc_setup$t(props2, ctx) : void 0;
+  return _sfc_setup$s ? _sfc_setup$s(props2, ctx) : void 0;
 };
 let appVm;
 let $uniApp;
@@ -5311,11 +5311,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
-  if (!app.component(_sfc_main$u.name)) {
-    app.component(_sfc_main$u.name, _sfc_main$u);
-  }
   if (!app.component(_sfc_main$t.name)) {
     app.component(_sfc_main$t.name, _sfc_main$t);
+  }
+  if (!app.component(_sfc_main$s.name)) {
+    app.component(_sfc_main$s.name, _sfc_main$s);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -5428,7 +5428,7 @@ function setupApp(comp) {
         return isFunction(res) ? EMPTY_OBJ : res;
       };
       comp2.ssrRender = (_ctx, push, parent) => {
-        push(ssrRenderComponent(_sfc_main$v, null, null, parent));
+        push(ssrRenderComponent(_sfc_main$u, null, null, parent));
       };
     }
   });
@@ -5466,11 +5466,9 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
-let UniVueElement$2 = class UniVueElement extends Object {
-};
-let UniLoadingElement$1 = class UniLoadingElement extends UniVueElement$2 {
-};
-function useLoadingStyle$1(targetElement, bold) {
+class UniLoadingElement extends UniViewElement {
+}
+function useLoadingStyle(targetElement, bold) {
   const loadingSize = ref("16px");
   const loadingBorderWidth = ref("1px");
   const loadingBorderRadius = ref("8px");
@@ -5517,17 +5515,16 @@ function useLoadingStyle$1(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
     // @ts-ignore
     rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement$1
+      class: UniLoadingElement
     }
   },
-  __name: "index-x",
+  __name: "loading",
   __ssrInlineRender: true,
   props: {
     paused: { type: Boolean, default: false },
@@ -5538,22 +5535,23 @@ const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
   setup(__props) {
     const props2 = __props;
     const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle$1(LoadingRef, computed(() => props2.bold)));
+    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<uni-loading-element${ssrRenderAttrs(mergeProps({
+      _push(`<div${ssrRenderAttrs(mergeProps({
+        "uni-view": "",
         class: "default __uni_loading_container__",
         ref_key: "LoadingRef",
         ref: LoadingRef,
         style: { "display": "flex" }
-      }, _attrs), "uni-loading-element")}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></uni-loading-element>`);
+      }, _attrs))}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></div>`);
     };
   }
 });
-const _sfc_setup$s = _sfc_main$s.setup;
-_sfc_main$s.setup = (props2, ctx) => {
+const _sfc_setup$r = _sfc_main$r.setup;
+_sfc_main$r.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../uni-components/src/vue/loading/index-x.vue");
-  return _sfc_setup$s ? _sfc_setup$s(props2, ctx) : void 0;
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-loading/components/loading/loading.vue");
+  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
 };
 function hexToRgba(hex) {
   if (!hex) {
@@ -5652,7 +5650,7 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -5878,7 +5876,7 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
         if (!unref(isXVapor) && unref(navigationBar).loading) {
           _push(`<i class="uni-loading"></i>`);
         } else if (unref(isXVapor) && unref(navigationBar).loading) {
-          _push(ssrRenderComponent(_sfc_main$s, { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }, null, _parent));
+          _push(ssrRenderComponent(unref(_sfc_main$r), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }, null, _parent));
         } else if (unref(navigationBar).titleImage) {
           _push(`<img${ssrRenderAttr("src", unref(navigationBar).titleImage)} class="uni-page-head__title_image">`);
         } else {
@@ -5954,13 +5952,13 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$r = _sfc_main$r.setup;
-_sfc_main$r.setup = (props2, ctx) => {
+const _sfc_setup$q = _sfc_main$q.setup;
+_sfc_main$q.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageHead.vue");
-  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
+  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
 };
-const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
   ...{ name: "PageRefresh" },
   __name: "component",
   __ssrInlineRender: true,
@@ -5974,13 +5972,13 @@ const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$q = _sfc_main$q.setup;
-_sfc_main$q.setup = (props2, ctx) => {
+const _sfc_setup$p = _sfc_main$p.setup;
+_sfc_main$p.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/page-refresh/component.vue");
-  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
+  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
 };
-const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -6014,7 +6012,7 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
     return (_ctx, _push, _parent, _attrs) => {
       _push(`<!--[-->`);
       if (unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh)) {
-        _push(ssrRenderComponent(_sfc_main$q, {
+        _push(ssrRenderComponent(_sfc_main$p, {
           ref_key: "refreshRef",
           ref: refreshRef
         }, null, _parent));
@@ -6036,13 +6034,13 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$p = _sfc_main$p.setup;
-_sfc_main$p.setup = (props2, ctx) => {
+const _sfc_setup$o = _sfc_main$o.setup;
+_sfc_main$o.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageBody.vue");
-  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
+  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
 };
-const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "Page",
     __reserved: true,
@@ -6152,11 +6150,11 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
         style: pageStyle
       }, _attrs), "uni-page")}>`);
       if (unref(hasNavigationBar) && unref(navigationBar).style !== "custom") {
-        _push(ssrRenderComponent(_sfc_main$r, null, null, _parent));
+        _push(ssrRenderComponent(_sfc_main$q, null, null, _parent));
       } else {
         _push(`<!---->`);
       }
-      _push(ssrRenderComponent(_sfc_main$p, null, {
+      _push(ssrRenderComponent(_sfc_main$o, null, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
             ssrRenderDynamicComponent(_push2, resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, _parent2, _scopeId);
@@ -6181,14 +6179,14 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$o = _sfc_main$o.setup;
-_sfc_main$o.setup = (props2, ctx) => {
+const _sfc_setup$n = _sfc_main$n.setup;
+_sfc_main$n.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/index-vapor.vue");
-  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
+  return _sfc_setup$n ? _sfc_setup$n(props2, ctx) : void 0;
 };
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$o, {
+  return Object.assign({}, _sfc_main$n, {
     __uniPageComponent: pageComponent
   });
 }
@@ -9114,7 +9112,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         }, [props2.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", {
           key: 0,
           class: "uni-scroll-view-refresh"
-        }, [(openBlock(), createBlock(Fragment, { key: 0 }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? (openBlock(), createBlock(_sfc_main$s, {
+        }, [(openBlock(), createBlock(Fragment, { key: 0 }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? (openBlock(), createBlock(_sfc_main$r, {
           key: "refresh__loading",
           class: "uni-scroll-view-refresh__loading",
           paused: props2.refreshState == "pulling",
@@ -9839,7 +9837,7 @@ class UniCheckboxElement extends UniViewElement {
   }
 }
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
-const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "checkbox",
     // @ts-ignore
@@ -9996,15 +9994,15 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$n = _sfc_main$n.setup;
-_sfc_main$n.setup = (props2, ctx) => {
+const _sfc_setup$m = _sfc_main$m.setup;
+_sfc_main$m.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/checkbox/checkbox.vue");
-  return _sfc_setup$n ? _sfc_setup$n(props2, ctx) : void 0;
+  return _sfc_setup$m ? _sfc_setup$m(props2, ctx) : void 0;
 };
 class UniCheckboxGroupElement extends UniViewElement {
 }
-const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "checkbox-group",
     // @ts-ignore
@@ -10121,17 +10119,17 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$m = _sfc_main$m.setup;
-_sfc_main$m.setup = (props2, ctx) => {
+const _sfc_setup$l = _sfc_main$l.setup;
+_sfc_main$l.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/checkbox-group/checkbox-group.vue");
-  return _sfc_setup$m ? _sfc_setup$m(props2, ctx) : void 0;
+  return _sfc_setup$l ? _sfc_setup$l(props2, ctx) : void 0;
 };
 class UniFlowItemElement extends UniViewElement {
 }
 class UniWaterflowElement extends UniScrollViewElement {
 }
-const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "flow-item",
     rootElement: {
@@ -10233,15 +10231,15 @@ const _sfc_main$l = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$l = _sfc_main$l.setup;
-_sfc_main$l.setup = (props2, ctx) => {
+const _sfc_setup$k = _sfc_main$k.setup;
+_sfc_main$k.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-waterflow/components/flow-item/flow-item.vue");
-  return _sfc_setup$l ? _sfc_setup$l(props2, ctx) : void 0;
+  return _sfc_setup$k ? _sfc_setup$k(props2, ctx) : void 0;
 };
 class UniFormElement extends UniViewElement {
 }
-const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "form",
     // @ts-ignore
@@ -10319,15 +10317,15 @@ const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$k = _sfc_main$k.setup;
-_sfc_main$k.setup = (props2, ctx) => {
+const _sfc_setup$j = _sfc_main$j.setup;
+_sfc_main$j.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/form/form.vue");
-  return _sfc_setup$k ? _sfc_setup$k(props2, ctx) : void 0;
+  return _sfc_setup$j ? _sfc_setup$j(props2, ctx) : void 0;
 };
 class UniLabelElement extends UniViewElement {
 }
-const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "label",
     // @ts-ignore
@@ -10376,11 +10374,11 @@ const _sfc_main$j = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$j = _sfc_main$j.setup;
-_sfc_main$j.setup = (props2, ctx) => {
+const _sfc_setup$i = _sfc_main$i.setup;
+_sfc_main$i.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/label/label.vue");
-  return _sfc_setup$j ? _sfc_setup$j(props2, ctx) : void 0;
+  return _sfc_setup$i ? _sfc_setup$i(props2, ctx) : void 0;
 };
 class UniListItemElement extends UniViewElement {
 }
@@ -10390,7 +10388,7 @@ class UniStickyHeaderElement extends UniViewElement {
 }
 class UniListViewElement extends UniScrollViewElement {
 }
-const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "list-item",
     rootElement: {
@@ -10484,11 +10482,11 @@ const _sfc_main$i = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$i = _sfc_main$i.setup;
-_sfc_main$i.setup = (props2, ctx) => {
+const _sfc_setup$h = _sfc_main$h.setup;
+_sfc_main$h.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/list-item/list-item.vue");
-  return _sfc_setup$i ? _sfc_setup$i(props2, ctx) : void 0;
+  return _sfc_setup$h ? _sfc_setup$h(props2, ctx) : void 0;
 };
 class RecycleListItemDataStore {
   constructor() {
@@ -10557,7 +10555,7 @@ class RecycleListItemDataStore {
     return [start, low - start];
   }
 }
-const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "list-view",
     rootElement: {
@@ -10946,99 +10944,10 @@ const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$h = _sfc_main$h.setup;
-_sfc_main$h.setup = (props2, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/list-view/list-view.vue");
-  return _sfc_setup$h ? _sfc_setup$h(props2, ctx) : void 0;
-};
-let UniVueElement$1 = class UniVueElement2 extends Object {
-};
-class UniLoadingElement2 extends UniVueElement$1 {
-}
-function useLoadingStyle(targetElement, bold) {
-  const loadingSize = ref("16px");
-  const loadingBorderWidth = ref("1px");
-  const loadingBorderRadius = ref("8px");
-  let observer = null;
-  const calculateLoadingWidth = (element, bold2) => {
-    const { width, height } = element.getBoundingClientRect();
-    const coefficient = bold2 ? 2 : 1;
-    const minSide = Math.min(width, height);
-    const calculatedWidth = minSide / 16 * coefficient;
-    loadingSize.value = `${minSide}px`;
-    loadingBorderWidth.value = `${calculatedWidth}px`;
-    loadingBorderRadius.value = `${minSide / 2}px`;
-  };
-  const setupObserver = (cb) => {
-    const el = targetElement.value;
-    if (!el)
-      return;
-    observer = new ResizeObserver((entries2) => {
-      cb(el);
-    });
-    observer.observe(el);
-  };
-  onMounted(() => {
-    setupObserver((el) => {
-      calculateLoadingWidth(el, bold.value);
-    });
-    watchEffect(() => {
-      const _bold = bold.value;
-      const el = targetElement.value;
-      if (el !== null) {
-        calculateLoadingWidth(el, _bold);
-      }
-    });
-  });
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-    }
-  });
-  return {
-    width: loadingSize,
-    height: loadingSize,
-    borderWidth: loadingBorderWidth
-    // borderRadius: loadingBorderRadius,
-  };
-}
-const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
-  ...{
-    name: "loading",
-    styleIsolation: "app-and-page",
-    // @ts-ignore
-    rootElement: {
-      name: "uni-loading-element",
-      class: UniLoadingElement2
-    }
-  },
-  __name: "loading",
-  __ssrInlineRender: true,
-  props: {
-    paused: { type: Boolean, default: false },
-    bold: { type: Boolean, default: false },
-    iosSpinner: { type: Boolean, default: false }
-  },
-  __vapor: true,
-  setup(__props) {
-    const props2 = __props;
-    const LoadingRef = ref(null);
-    const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<uni-loading-element${ssrRenderAttrs(mergeProps({
-        class: "default __uni_loading_container__",
-        ref_key: "LoadingRef",
-        ref: LoadingRef,
-        style: { "display": "flex" }
-      }, _attrs), "uni-loading-element")}><div uni-view class="${ssrRenderClass([{ "__uni-loading__paused": props2.paused }, "__uni-loading__ __loading-4-3__"])}" style="${ssrRenderStyle(loadingStyle)}"></div></uni-loading-element>`);
-    };
-  }
-});
 const _sfc_setup$g = _sfc_main$g.setup;
 _sfc_main$g.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-loading/components/loading/loading.vue");
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-list-view/components/list-view/list-view.vue");
   return _sfc_setup$g ? _sfc_setup$g(props2, ctx) : void 0;
 };
 class UniMatchMediaElement extends UniViewElement {
@@ -11192,9 +11101,9 @@ _sfc_main$e.setup = (props2, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-navigator/components/navigator/navigator.vue");
   return _sfc_setup$e ? _sfc_setup$e(props2, ctx) : void 0;
 };
-class UniVueElement3 extends Object {
+class UniVueElement extends Object {
 }
-class UniPageContainerElement extends UniVueElement3 {
+class UniPageContainerElement extends UniVueElement {
 }
 const _sfc_main$d = /* @__PURE__ */ defineComponent$2({
   ...{
@@ -18618,31 +18527,31 @@ export {
   indexVapor as Ad,
   index$5 as AdContentPage,
   index$4 as AdDraw,
-  _sfc_main$t as AsyncErrorComponent,
-  _sfc_main$u as AsyncLoadingComponent,
+  _sfc_main$s as AsyncErrorComponent,
+  _sfc_main$t as AsyncLoadingComponent,
   indexVapor$a as Button,
   index$3 as Camera,
   indexVapor$b as Canvas,
-  _sfc_main$n as Checkbox,
-  _sfc_main$m as CheckboxGroup,
+  _sfc_main$m as Checkbox,
+  _sfc_main$l as CheckboxGroup,
   indexVapor$8 as Editor,
-  _sfc_main$l as FlowItem,
-  _sfc_main$k as Form,
+  _sfc_main$k as FlowItem,
+  _sfc_main$j as Form,
   indexVapor$7 as Icon,
   Input,
-  _sfc_main$j as Label,
-  _sfc_main$v as LayoutComponent,
-  _sfc_main$i as ListItem,
-  _sfc_main$h as ListView,
+  _sfc_main$i as Label,
+  _sfc_main$u as LayoutComponent,
+  _sfc_main$h as ListItem,
+  _sfc_main$g as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$g as Loading,
+  _sfc_main$r as Loading,
   indexVapor$1 as Map,
   _sfc_main$f as MatchMedia,
   indexVapor$6 as MovableArea,
   indexVapor$5 as MovableView,
   _sfc_main$e as Navigator,
-  _sfc_main$o as PageComponent,
+  _sfc_main$n as PageComponent,
   _sfc_main$d as PageContainer,
   _sfc_main$c as Picker,
   _sfc_main$b as PickerView,
@@ -18686,8 +18595,8 @@ export {
   UniInputElement as UniInputElementImpl,
   UniLabelElement,
   UniLabelElement as UniLabelElementImpl,
-  UniLoadingElement2 as UniLoadingElement,
-  UniLoadingElement2 as UniLoadingElementImpl,
+  UniLoadingElement,
+  UniLoadingElement as UniLoadingElementImpl,
   UniMatchMediaElement,
   UniMatchMediaElement as UniMatchMediaElementImpl,
   UniMovableAreaElement,
