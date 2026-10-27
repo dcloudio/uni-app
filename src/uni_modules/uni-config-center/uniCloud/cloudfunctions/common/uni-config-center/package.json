@@ -1,9 +1,0 @@
-{
-  "name": "uni-config-center",
-  "version": "0.0.3",
-  "description": "配置中心",
-  "main": "index.js",
-  "keywords": [],
-  "author": "DCloud",
-  "license": "Apache-2.0"
-}
