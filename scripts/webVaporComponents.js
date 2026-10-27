@@ -53,7 +53,11 @@ async function prepareWebVaporComponents({
         fs.removeSync(outputComponents)
       }
       if (fs.existsSync(sourcePackage)) {
-        fs.copyFileSync(sourcePackage, path.join(outputDir, 'package.json'))
+        // 禁用组件的配置单独复制，与整目录同步时使用相同的 LF 换行。
+        fs.writeFileSync(
+          path.join(outputDir, 'package.json'),
+          fs.readFileSync(sourcePackage, 'utf8').replace(/\r\n/g, '\n')
+        )
       }
     }
   }

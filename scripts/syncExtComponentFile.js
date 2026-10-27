@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.syncExtComponentFile = exports.syncExtApiDir = exports.normalizeTrailingNewline = exports.removeSfcStyles = exports.parseSfc = void 0;
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
+const node_buffer_1 = require("node:buffer");
 const compiler_sfc_1 = require("@vue/compiler-sfc");
 const fast_glob_1 = require("fast-glob");
 const prettier_1 = require("prettier");
@@ -90,6 +91,20 @@ function syncExtApiDir(sourceDir, outputDir) {
             .replace(/\.uvue(['"])/g, '.vue$1');
         if (normalized !== content)
             fs_extra_1.default.writeFileSync(newFile, normalized);
+    });
+    // SFC 已在上方处理；其他文本只处理普通文件，避免新逻辑写入软链接目标。
+    (0, fast_glob_1.sync)('**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,css,scss,sass,less,html,ets,kt,kts,java,swift,c,cpp,h,hpp,xml,plist}', { absolute: true, cwd: outputDir, followSymbolicLinks: false }).forEach((file) => {
+        const bytes = fs_extra_1.default.readFileSync(file);
+        // 跳过二进制、非 UTF-8 及二进制 plist，保留原始内容。
+        if (bytes.includes(0) ||
+            !(0, node_buffer_1.isUtf8)(bytes) ||
+            (file.endsWith('.plist') &&
+                bytes.subarray(0, 8).toString() === 'bplist00'))
+            return;
+        const content = bytes.toString('utf8');
+        const normalized = content.replace(/\r\n/g, '\n');
+        if (normalized !== content)
+            fs_extra_1.default.writeFileSync(file, normalized);
     });
 }
 exports.syncExtApiDir = syncExtApiDir;

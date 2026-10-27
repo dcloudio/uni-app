@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
+import { isUtf8 } from 'node:buffer'
 import { parse } from '@vue/compiler-sfc'
 import { sync } from 'fast-glob'
 import { format, resolveConfig } from 'prettier'
@@ -109,6 +110,25 @@ export function syncExtApiDir(sourceDir: string, outputDir: string) {
       if (normalized !== content) fs.writeFileSync(newFile, normalized)
     }
   )
+
+  // SFC 已在上方处理；其他文本只处理普通文件，避免新逻辑写入软链接目标。
+  sync(
+    '**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,css,scss,sass,less,html,ets,kt,kts,java,swift,c,cpp,h,hpp,xml,plist}',
+    { absolute: true, cwd: outputDir, followSymbolicLinks: false }
+  ).forEach((file) => {
+    const bytes = fs.readFileSync(file)
+    // 跳过二进制、非 UTF-8 及二进制 plist，保留原始内容。
+    if (
+      bytes.includes(0) ||
+      !isUtf8(bytes) ||
+      (file.endsWith('.plist') &&
+        bytes.subarray(0, 8).toString() === 'bplist00')
+    )
+      return
+    const content = bytes.toString('utf8')
+    const normalized = content.replace(/\r\n/g, '\n')
+    if (normalized !== content) fs.writeFileSync(file, normalized)
+  })
 }
 
 export function syncExtComponentFile(

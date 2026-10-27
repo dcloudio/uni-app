@@ -65,33 +65,112 @@ describe('框架构建可复现性', () => {
     expect(compiler.compile('', { filename }).filename).toBe('src/Example.vue')
   })
 
-  test('外部 SFC 同步统一换行，连续同步输出一致', () => {
+  test('外部文本同步统一换行，保留资源字节和源码，连续同步输出一致', () => {
     const temp = fs.mkdtempSync(
       path.join(os.tmpdir(), 'framework-sfc.uvue-[fixture]-')
     )
     try {
       const source = path.join(temp, 'source')
       const output = path.join(temp, 'output')
-      const code = '<template>\n<custom />\n</template>\n'
-      for (const ext of ['vue', 'uvue']) {
-        fs.outputFileSync(path.join(source, `${ext}.${ext}`), code)
+      const files = [
+        ['child.uvue', 'child.vue', '<template>\n<view />\n</template>\n'],
+        [
+          'parent.vue',
+          'parent.vue',
+          '<script>\nimport Child from "./child.uvue"\n</script>\n',
+        ],
+        [
+          'interface.uts',
+          'interface.uts.ts',
+          'export const value = "./child.uvue"\n',
+        ],
+        ...[
+          'ts',
+          'js',
+          'json',
+          'md',
+          'css',
+          'html',
+          'ets',
+          'cpp',
+          'h',
+          'swift',
+          'xml',
+          'plist',
+        ].map((ext) => [
+          `nested [dir]/file.${ext}`,
+          `nested [dir]/file.${ext}`,
+          '第一行\n第二行\n',
+        ]),
+      ]
+      const binary = Buffer.from([0, 255, 13, 10, 128, 13, 10])
+      for (const name of [
+        'image.png',
+        'font.ttf',
+        'native.aar',
+        'binary.plist',
+        'binary.xml',
+      ]) {
+        fs.outputFileSync(path.join(source, name), binary)
       }
+      const encodedFiles = {
+        'utf16.xml': Buffer.from([0xff, 0xfe, 0x61, 0, 13, 0, 10, 0]),
+        'nul.xml': Buffer.from([0x61, 0, 13, 10, 0x62]),
+        'header.plist': Buffer.from('bplist00\r\n'),
+      }
+      for (const [name, bytes] of Object.entries(encodedFiles)) {
+        fs.outputFileSync(path.join(source, name), bytes)
+      }
+      for (const newline of ['\n', '\r\n', '\r\n']) {
+        for (const [from, , code] of files) {
+          fs.outputFileSync(
+            path.join(source, from),
+            code.replace(/\n/g, newline)
+          )
+        }
+        syncExtApiDir(source, output)
+        for (const [from, to, code] of files) {
+          expect(fs.readFileSync(path.join(source, from), 'utf8')).toBe(
+            code.replace(/\n/g, newline)
+          )
+          expect(fs.readFileSync(path.join(output, to), 'utf8')).toBe(
+            to.endsWith('.vue') ? code.replace('.uvue"', '.vue"') : code
+          )
+          if (from !== to)
+            expect(fs.existsSync(path.join(output, from))).toBe(false)
+        }
+        for (const name of [
+          'image.png',
+          'font.ttf',
+          'native.aar',
+          'binary.plist',
+          'binary.xml',
+        ]) {
+          expect(fs.readFileSync(path.join(output, name))).toEqual(binary)
+        }
+        for (const [name, bytes] of Object.entries(encodedFiles)) {
+          expect(fs.readFileSync(path.join(output, name))).toEqual(bytes)
+        }
+      }
+    } finally {
+      fs.removeSync(temp)
+    }
+  })
+
+  test('新增文本换行处理不跟随目录软链接', () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'framework-eol-link-'))
+    try {
+      const source = path.join(temp, 'source')
+      const output = path.join(temp, 'output')
+      const external = path.join(temp, 'external')
+      const code = 'export {}\r\n'
+      fs.ensureDirSync(source)
+      fs.outputFileSync(path.join(external, 'index.ts'), code)
+      fs.symlinkSync(external, path.join(source, 'linked'), 'junction')
       syncExtApiDir(source, output)
-      for (const ext of ['vue', 'uvue']) {
-        expect(fs.readFileSync(path.join(output, `${ext}.vue`), 'utf8')).toBe(
-          code
-        )
-        fs.writeFileSync(
-          path.join(source, `${ext}.${ext}`),
-          code.replace(/\n/g, '\r\n')
-        )
-      }
-      syncExtApiDir(source, output)
-      for (const ext of ['vue', 'uvue']) {
-        expect(fs.readFileSync(path.join(output, `${ext}.vue`), 'utf8')).toBe(
-          code
-        )
-      }
+      expect(fs.readFileSync(path.join(external, 'index.ts'), 'utf8')).toBe(
+        code
+      )
     } finally {
       fs.removeSync(temp)
     }

@@ -253,11 +253,21 @@ describe('Web Vapor 组件生成', () => {
 
         const apiFile = path.join(componentsDir, 'uni-progress/api/index.ts')
         fs.outputFileSync(apiFile, 'export const preserved = true')
-        fs.outputJsonSync(path.join(extApiDir, packageFile), {
-          uni_modules: { components: { web } },
-        })
+        const packageContent =
+          JSON.stringify({ uni_modules: { components: { web } } }, null, 2) +
+          '\n'
+        fs.outputFileSync(
+          path.join(extApiDir, packageFile),
+          packageContent.replace(/\n/g, '\r\n')
+        )
         await prepareWebVaporComponents(options)
 
+        expect(
+          fs.readFileSync(path.join(componentsDir, packageFile), 'utf8')
+        ).toBe(packageContent)
+        expect(fs.readFileSync(path.join(extApiDir, packageFile), 'utf8')).toBe(
+          packageContent.replace(/\n/g, '\r\n')
+        )
         expect(fs.readJsonSync(path.join(componentsDir, packageFile))).toEqual(
           fs.readJsonSync(path.join(extApiDir, packageFile))
         )
