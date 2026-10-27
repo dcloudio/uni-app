@@ -243,6 +243,34 @@ UniWebViewContentHeightChangeEvent -- Extends --> UniCustomEvent&ltUniWebViewCon
 
 <!-- UTSCOMJSON.web-view.component_type -->
 
+### ios-allows-inline-media-playback 初始化说明@ios-inline-init
+
+`ios-allows-inline-media-playback` 用于设置是否允许视频在网页内播放（内联播放），仅在 App-iOS 平台生效，默认值为 `false`。
+
+**该属性只在创建 `web-view` 时生效。** 使用变量绑定时，必须在组件创建前确定值，创建后修改绑定值不会生效。
+
+例如，下面在 `script setup` 顶层同步获取设备类型，设置 iPhone 允许内联播放、iPad 不允许内联播放：
+
+```vue
+<template>
+  <web-view
+    src="/hybrid/html/local.html"
+    :ios-allows-inline-media-playback="isInline">
+  </web-view>
+</template>
+
+<script setup lang="uts">
+const isInline = ref(true)
+// #ifdef APP-IOS
+isInline.value = uni.getDeviceInfo().deviceType != 'pad'
+// #endif
+</script>
+```
+
+上述设备判断仅用于演示如何在初始化前动态赋值。业务需要在哪些设备上内联播放，就应在这些设备上设置为 `true`；如果 iPhone 和 iPad 都需要内联播放，无需区分设备，直接设置为 `true` 即可。
+
+不要等到 `onReady` 或网页 `load` 事件触发后再设置该属性。修改 `src` 或调用 `reload()` 也不能使新值生效；确需更改时，应使用新的属性值重新创建 `web-view`。
+
 
 ### 组件宽高说明
 - web和小程序平台上，web-view是全屏的，即页面只能显示一个铺满的web-view。
@@ -263,6 +291,42 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
 - 支持网络路径
 	支持http、https。
 	app平台使用系统Webview组件，由系统Webview管理缓存。
+
+### iOS 视频播放兼容说明@ios-media-playback
+
+从 HBuilderX alpha-5.08、正式版 release-5.14 起，App-iOS 平台的 `web-view` 有以下变化：
+
+- 新增 `ios-allows-inline-media-playback` 属性，默认值为 `false`，即默认不允许内联播放。
+- 不再自动向网页中的 `<video>` 添加 `playsinline` 属性。
+
+依赖旧版本默认行为的网页，升级后可能出现视频改为全屏播放，或摄像头已开启但网页内没有预览画面的情况。对于上述摄像头预览问题，可选择以下任一方式适配。
+
+**方式一：在应用页面中允许内联播放**
+
+将 `web-view` 的 `ios-allows-inline-media-playback` 设置为 `true`。该属性需在组件创建前设置，变量绑定方式见[初始化说明](#ios-inline-init)。
+
+```vue
+<web-view
+  src="/hybrid/html/local.html"
+  :ios-allows-inline-media-playback="true">
+</web-view>
+```
+
+**方式二：在 HTML 中声明视频内联播放**
+
+为需要内联播放的 `<video>` 添加 `playsinline` 和 `webkit-playsinline`。例如，摄像头预览元素可配置为：
+
+```html
+<video
+  id="videoCamera"
+  autoplay
+  muted
+  playsinline
+  webkit-playsinline>
+</video>
+```
+
+两种方式的实现机制不同：`ios-allows-inline-media-playback` 修改 WebView 的原生配置，`playsinline` 在 HTML 中声明单个视频的内联播放方式。对于上述摄像头预览问题，配置其中一项即可，但两者机制不同，建议同时实现。
 
 ### 子组件 @children-tags
 不可以嵌套组件
@@ -790,6 +854,7 @@ webviewController?.setPathAllowingUniversalAccess([
 - app平台web-view组件为系统Webview组件，内核版本号不由uni-app x框架控制。
 - app-android平台，web-view版本不一定是手机默认浏览器的版本。在部分手机上系统web-view的升级需要升级rom，部分手机则可以单独升级Android System Webview包。如需x5等三方webview，需使用uts插件，[见插件市场](https://ext.dcloud.net.cn/search?q=x5)。使用三方webview可减少系统webview的碎片化问题。
 - app-ios平台，web-view的版本与iOS的版本绑定，也即是手机Safari浏览器的版本。WKWebview的限制比Android要多一些，比如无法使用跨域cookie，具体见Apple开发者文档。
+- app-ios平台，升级到 alpha-5.08、release-5.14 及之后版本时，依赖视频内联播放的网页需显式配置播放属性，详见 [iOS 视频播放兼容说明](#ios-media-playback)。`ios-allows-inline-media-playback` 只在组件创建时生效，详见[初始化说明](#ios-inline-init)。
 - app-ios平台不支持padding style（padding-top、padding-left、padding-right、padding-bottom）
 - 页面中的web-view组件数量不宜太多，每个web-view都会占用不少内存。
 - uni.postMessage已不推荐使用（将废弃），功能与uni.webView.postMessage一致，推荐使用uni.webView.postMessage。
