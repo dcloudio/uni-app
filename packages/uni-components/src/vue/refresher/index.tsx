@@ -19,7 +19,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     },
     refresherDefaultStyle: {
       type: String,
-      default: 'black',
+      /**
+       * auto为内部值，蒸汽模式下用户未设置时使用该值
+       */
+      default: __X_VAPOR__ ? 'auto' : 'black',
     },
     refresherBackground: {
       type: String,
@@ -55,6 +58,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const route = props.refresherHeight / props.refresherThreshold
       return (route > 1 ? 1 : route) * 360
     })
+    const refreshColor = computed(() => {
+      switch (props.refresherDefaultStyle) {
+        case 'black':
+        case 'white':
+          return props.refresherDefaultStyle
+        case 'auto':
+        default:
+          return undefined
+      }
+    })
     return () => {
       // Vapor 仅执行一次 render closure，JSX 直接读取 props，避免解构后丢失响应式依赖。
       return (
@@ -77,7 +90,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                         props.refreshState == 'pulling'
                           ? 'rotate(' + refreshRotate.value + 'deg)'
                           : undefined,
-                      color: props.refresherDefaultStyle,
+                      color: refreshColor.value,
                     }}
                   />
                 ) : null

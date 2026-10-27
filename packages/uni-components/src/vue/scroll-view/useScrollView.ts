@@ -89,7 +89,10 @@ export const props = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: 'black',
+    /**
+     * auto为内部值，蒸汽模式下用户未设置时使用该值
+     */
+    default: __X_VAPOR__ ? 'auto' : 'black',
   },
   refresherBackground: {
     type: String,
