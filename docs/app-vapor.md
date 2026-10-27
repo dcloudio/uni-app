@@ -519,7 +519,7 @@ ninja: error: failed recompaction: Permission denied。
 其他还有一些差异，见文档的兼容性说明。
 
 
-## 使用uni-agent，从VDOM模式升级到蒸汽模式@vom2vapor
+## 使用uni-agent，从VDOM模式升级到蒸汽模式@vdom2vapor
 
 在uni-agent中有内置的skill，可以方便的升级vdom到蒸汽。
 
