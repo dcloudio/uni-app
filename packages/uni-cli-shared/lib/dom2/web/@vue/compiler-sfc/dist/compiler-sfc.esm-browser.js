@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-rc.12
+  * @vue/compiler-sfc v3.6.0-rc.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -352,8 +352,6 @@ const MATH_TAGS = "annotation,annotation-xml,maction,maligngroup,malignmark,math
 const VOID_TAGS = "area,base,br,col,embed,hr,img,input,link,meta,param,source,track,wbr";
 const FORMATTING_TAGS = "a,b,big,code,em,font,i,nobr,s,small,strike,strong,tt,u";
 const ALWAYS_CLOSE_TAGS = "title,style,script,noscript,template,object,table,button,textarea,select,iframe,fieldset,form,foreignObject,desc,mi,mo,mn,ms,mtext,annotation-xml";
-const INLINE_TAGS = "a,abbr,acronym,b,bdi,bdo,big,br,button,canvas,cite,code,data,datalist,del,dfn,em,embed,i,iframe,img,input,ins,kbd,label,map,mark,meter,noscript,object,output,picture,progress,q,ruby,s,samp,script,select,small,span,strong,sub,sup,svg,textarea,time,u,tt,var,video";
-const BLOCK_TAGS = "address,article,aside,blockquote,dd,details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,li,main,menu,nav,ol,p,pre,section,table,ul";
 /**
 * Compiler only.
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
@@ -384,16 +382,6 @@ const isFormattingTag = /*@__PURE__*/ makeMap(FORMATTING_TAGS);
 * Do NOT use in runtime code paths unless behind `__DEV__` flag.
 */
 const isAlwaysCloseTag = /*@__PURE__*/ makeMap(ALWAYS_CLOSE_TAGS);
-/**
-* Compiler only.
-* Do NOT use in runtime code paths unless behind `__DEV__` flag.
-*/
-const isInlineTag = /*@__PURE__*/ makeMap(INLINE_TAGS);
-/**
-* Compiler only.
-* Do NOT use in runtime code paths unless behind `__DEV__` flag.
-*/
-const isBlockTag = /*@__PURE__*/ makeMap(BLOCK_TAGS);
 //#endregion
 //#region packages/shared/src/domAttrConfig.ts
 /**
@@ -25975,6 +25963,10 @@ function wrapTemplate$1(node, dirs) {
 const EMPTY_EXPRESSION = createSimpleExpression("", true);
 //#endregion
 //#region packages/compiler-vapor/src/utils.ts
+function isUniBasicElement(node) {
+	const marker = node.tag === "div" ? "uni-view" : node.tag === "span" ? "uni-text" : node.tag === "img" ? "uni-image" : void 0;
+	return marker !== void 0 && node.props.some((prop) => prop.type === 6 && prop.name === marker);
+}
 const findProp = findProp$1;
 /** find directive */
 const findDir = findDir$1;
@@ -26064,6 +26056,22 @@ function getBlockShape(block) {
 	if (root && root.operation && root.operation.type === 15) return 2;
 	return block.node.type === 1 && block.node.children.every((child) => child.type === 2 || child.type === 5) ? 2 : 1;
 }
+/** the number of `v-if` / `v-else-if` nodes in the chain starting at `head` */
+function getIfChainLength(head) {
+	let length = 1;
+	let negative = head.negative;
+	while (negative && negative.type === 15) {
+		length++;
+		negative = negative.negative;
+	}
+	return length;
+}
+function isLongIfChain(head) {
+	return getIfChainLength(head) - 1 > 10;
+}
+function isSlotTemplate(node) {
+	return node.type === 1 && isTemplateNode(node) && node.props.some(isVSlot);
+}
 //#endregion
 //#region packages/compiler-vapor/src/transform.ts
 init_objectSpread2();
@@ -26095,11 +26103,14 @@ var TransformContext = class TransformContext {
 		this.isLastEffectiveChild = true;
 		this.isOnRightmostPath = true;
 		this.isSingleRoot = false;
+		this.isSlotRoot = false;
 		this.templateCloseTags = void 0;
 		this.templateCloseBlocks = false;
+		this.templateScope = 0;
 		this.globalId = 0;
 		this.nextIdMap = null;
 		this.ifIndex = 0;
+		this.ifHeads = /* @__PURE__ */ new Map();
 		this.increaseId = () => {
 			const id = getNextId(this.nextIdMap, this.globalId);
 			this.globalId = getNextId(this.nextIdMap, id + 1);
@@ -26154,8 +26165,10 @@ var TransformContext = class TransformContext {
 		this.dynamic.flags |= 1;
 		return this.dynamic.id = this.increaseId();
 	}
-	nextIfIndex() {
-		return this.ifIndex++;
+	nextIfIndex(count = 1) {
+		const index = this.ifIndex;
+		this.ifIndex += count;
+		return index;
 	}
 	getTemplateNamespace() {
 		return this.node.type === 1 ? this.node.ns : 0;
@@ -26230,6 +26243,7 @@ var TransformContext = class TransformContext {
 		const isLastEffectiveChild = childInfo.isLastEffectiveChild[index];
 		const isOnRightmostPath = this.isOnRightmostPath && isLastEffectiveChild;
 		const isSingleRoot = this.isSingleRootChild(childInfo);
+		const isSlotRoot = this.isSlotRootChild(childInfo);
 		return Object.assign(Object.create(TransformContext.prototype), this, {
 			node,
 			parent: this,
@@ -26246,8 +26260,10 @@ var TransformContext = class TransformContext {
 			isLastEffectiveChild,
 			isOnRightmostPath,
 			isSingleRoot,
+			isSlotRoot,
 			templateCloseTags: this.templateCloseTags,
-			templateCloseBlocks: this.templateCloseBlocks
+			templateCloseBlocks: this.templateCloseBlocks,
+			templateScope: 0
 		});
 	}
 	shiftEffectBoundaries(index, dynamic = this.dynamic) {
@@ -26260,6 +26276,7 @@ var TransformContext = class TransformContext {
 		if (node.type !== 0 && node.type !== 1) return {
 			node,
 			hasSingleRootChild: true,
+			hasSingleSlotRootChild: false,
 			isLastEffectiveChild: []
 		};
 		const cached = childContextInfoCache.get(this);
@@ -26271,18 +26288,29 @@ var TransformContext = class TransformContext {
 			isLastEffectiveChild[i] = !hasFollowingEffectiveChild;
 			if (!isComponentChild(children[i])) hasFollowingEffectiveChild = true;
 		}
+		const hasSingleRoot = hasSingleRootChild(children);
 		const childInfo = {
 			node,
-			hasSingleRootChild: hasSingleRootChild(children),
+			hasSingleRootChild: hasSingleRoot,
+			hasSingleSlotRootChild: node.type === 1 && node.tagType === 1 && !isBuiltInComponent(node.tag) && (children.some(isSlotTemplate) ? hasSingleRootChild(children.filter((child) => !isSlotTemplate(child))) : hasSingleRoot),
 			isLastEffectiveChild
 		};
 		childContextInfoCache.set(this, childInfo);
 		return childInfo;
 	}
+	isSlotRootChild(childInfo) {
+		const node = this.node;
+		if (node.type !== 1) return false;
+		if (node.tagType === 1) return childInfo.hasSingleSlotRootChild;
+		return node.tagType === 3 && childInfo.hasSingleRootChild && (isSlotTemplate(node) || this.isSlotRoot && !findDir$1(node, "for"));
+	}
 	isSingleRootChild(childInfo) {
-		if (this.inVFor || !childInfo.hasSingleRootChild) return false;
-		if (this.node.type === 0) return true;
-		return this.node.type === 1 && (this.node.tagType === 3 || isTransitionNode(this.node) || isKeepAliveTag(this.node.tag)) && !!this.parent && this.isSingleRoot;
+		if (!childInfo.hasSingleRootChild) return false;
+		const node = this.node;
+		if (node.type === 0) return true;
+		if (node.type !== 1 || !this.parent) return false;
+		if (node.tagType === 3) return this.isSingleRoot && !findDir$1(node, "for");
+		return isTransitionNode(node) || isKeepAliveTag(node.tag);
 	}
 };
 function hasSingleRootChild(children) {
@@ -26345,8 +26373,16 @@ function transform(node, options = {}) {
 	};
 	const context = new TransformContext(ir, node, options);
 	transformNode(context);
+	finalizeIfChains(context);
 	ir.node.imports = context.imports;
 	return ir;
+}
+function finalizeIfChains(context) {
+	context.ifHeads.forEach((inVOnce, head) => {
+		if (!isLongIfChain(head)) return;
+		head.once = inVOnce;
+		if (!inVOnce) head.index = context.nextIfIndex(Math.ceil((getIfChainLength(head) + 1) / 2));
+	});
 }
 function transformNode(context) {
 	let { node } = context;
@@ -26670,7 +26706,11 @@ function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, s
 				-2,
 				loc
 			]];
-		} else return genExpression(replacement, context, assignment);
+		} else {
+			const exp = genExpression(replacement, context, assignment);
+			if (parent && parent.type === "ObjectProperty" && parent.shorthand) return [`${name}: `, ...exp];
+			return exp;
+		}
 	}
 	let prefix;
 	let type = bindingMetadata && bindingMetadata[raw];
@@ -27645,6 +27685,7 @@ function genSetHtml(oper, context) {
 //#endregion
 //#region packages/compiler-vapor/src/generators/if.ts
 function genIf(oper, context, isNested = false) {
+	if (!isNested && isLongIfChain(oper)) return genIfChain(oper, context);
 	const { helper } = context;
 	const { condition, positive, negative, once, slotRoot, index, blockShape } = oper;
 	const [frag, push] = buildCodeFragment();
@@ -27691,6 +27732,57 @@ function genBlockShapeName(flags) {
 		case 2: return "MULTI_ROOT";
 	}
 	return "UNKNOWN";
+}
+function genIfChain(oper, context) {
+	const { helper } = context;
+	const [frag, push] = buildCodeFragment();
+	const selector = ["() => ", INDENT_START];
+	const blocks = [];
+	const branchFlags = [];
+	let slotRoot = false;
+	let node = oper;
+	for (let i = 0;; i++) {
+		if (i > 0) selector.push(NEWLINE, ": ");
+		selector.push("(", ...genExpression(node.condition, context), `) ? ${i}`);
+		blocks.push(genBlock(node.positive, context));
+		branchFlags.push(node.blockShape & 35);
+		if (node.slotRoot) slotRoot = true;
+		const { negative } = node;
+		if (negative && negative.type === 15) {
+			node = negative;
+			continue;
+		}
+		selector.push(NEWLINE, `: ${i + 1}`, INDENT_END);
+		if (negative) blocks.push(genBlock(negative, context));
+		branchFlags.push(node.blockShape >> 2 & 3 | (node.blockShape & 64 ? 32 : 0));
+		break;
+	}
+	push(NEWLINE, `const n${oper.id} = `, ...genCall(helper("createIfChain"), selector, genMulti(DELIMITERS_ARRAY, ...blocks), genIfChainBranchFlags(branchFlags, blocks.length), genIfChainFlags(oper.once, slotRoot, oper.index)));
+	return frag;
+}
+function genIfChainBranchFlags(branchFlags, blockCount) {
+	if (branchFlags.every((flags, i) => flags === (i < blockCount ? 1 : 0))) return false;
+	return genMulti(DELIMITERS_ARRAY, ...branchFlags.map((flags) => {
+		const names = [genBlockShapeName(flags)];
+		if (flags & 32) names.push("NO_SCOPE");
+		return genFlags(flags, names);
+	}));
+}
+function genIfChainFlags(once, slotRoot, index) {
+	let flags = 0;
+	const names = [];
+	if (once) {
+		flags |= 16;
+		names.push("ONCE");
+	} else {
+		flags |= index + 1 << 8;
+		names.push(`KEYED_INDEX_${index}`);
+	}
+	if (slotRoot) {
+		flags |= 128;
+		names.push("SLOT_ROOT");
+	}
+	return genFlags(flags, names);
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/prop.ts
@@ -28104,7 +28196,7 @@ function genCreateComponent(operation, context) {
 			", "
 		], ...slotDeclarations) : [],
 		`const n${operation.id} = `,
-		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? operation.key && [
+		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root && (root === true ? "true" : genFlags(root, ["SLOT"])), isRuntimeDynamicComponent ? operation.key && [
 			"() => (",
 			...genExpression(operation.key, context),
 			")"
@@ -28137,9 +28229,12 @@ function genCreateComponent(operation, context) {
 function genDynamicComponentFlags(root, once, slotRoot, ns) {
 	let flags = 0;
 	const names = [];
-	if (root) {
+	if (root === true) {
 		flags |= 1;
 		names.push("SINGLE_ROOT");
+	} else if (root) {
+		flags |= 32;
+		names.push("SLOT_SINGLE_ROOT");
 	}
 	if (once) {
 		flags |= 2;
@@ -29239,6 +29334,7 @@ var CodegenContext = class {
 		};
 		this.delegates = /* @__PURE__ */ new Set();
 		this.dynamicPropNames = /* @__PURE__ */ new Map();
+		this.hoists = [];
 		this.identifiers = Object.create(null);
 		this.expressionReplacements = [];
 		this.scopeLevel = 0;
@@ -29289,7 +29385,7 @@ function generate(ir, options = {}) {
 	if (!inline) push("}");
 	const delegates = genDelegates(context);
 	const templates = genTemplates(ir.template.entries, context);
-	const preamble = genHelperImports(context) + genAssetImports(context) + templates + genDynamicPropNames(context) + delegates;
+	const preamble = genHelperImports(context) + genAssetImports(context) + templates + genDynamicPropNames(context) + context.hoists.join("") + delegates;
 	const newlineCount = [...preamble].filter((c) => c === "\n").length;
 	if (newlineCount && !inline) frag.unshift(...new Array(newlineCount).fill(LF));
 	let [code, map] = codeFragmentToString(frag, context);
@@ -29324,6 +29420,94 @@ function genAssetImports({ ir }) {
 	}
 	return imports;
 }
+//#endregion
+//#region packages/compiler-vapor/src/htmlNesting.ts
+const isPClosingTag = /*@__PURE__*/ makeMap("address,article,aside,blockquote,dd,details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,li,main,menu,nav,ol,p,pre,section,summary,table,ul");
+const isForeign = (ns) => ns !== 0;
+const isScopeBoundaryTag = /*@__PURE__*/ makeMap("caption,object,select,table,td,th");
+const isFormattingMarkerTag = /*@__PURE__*/ makeMap("caption,object,td,th");
+const isSpecialTag = /*@__PURE__*/ makeMap("address,area,article,aside,base,blockquote,body,br,button,caption,col,colgroup,dd,details,div,dl,dt,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,head,header,hgroup,hr,html,iframe,img,input,li,link,main,menu,meta,nav,noscript,object,ol,p,param,pre,script,section,select,source,style,summary,table,tbody,td,template,textarea,tfoot,th,thead,title,tr,track,ul,wbr");
+const endsListItemSearch = (tag) => isSpecialTag(tag) && tag !== "address" && tag !== "div" && tag !== "p";
+/**
+* End tags with handling of their own pop whatever is still open below them.
+* Any other end tag is ignored when it meets a special element on its way up
+* the stack, and a formatting end tag runs the adoption agency around one, so
+* under those an open special descendant has to close itself.
+*/
+const popsOpenDescendants = /*@__PURE__*/ makeMap("address,article,aside,blockquote,button,caption,colgroup,dd,details,dialog,div,dl,dt,fieldset,figcaption,figure,footer,h1,h2,h3,h4,h5,h6,header,hgroup,li,main,menu,nav,object,ol,p,pre,section,summary,table,tbody,td,tfoot,th,thead,tr,ul");
+/**
+* Html start tags that end foreign content: the parser pops the open svg or
+* mathml elements and inserts these in the html namespace, while vdom creates
+* them in the foreign namespace their ast node carries. Only at html
+* integration points (`foreignObject`, `mi`, ...) do html children stay.
+*/
+const isForeignBreakoutTag = /*@__PURE__*/ makeMap("b,blockquote,body,br,code,dd,div,dl,dt,em,embed,h1,h2,h3,h4,h5,h6,head,hr,i,img,li,menu,meta,ol,p,pre,ruby,s,small,span,strong,sub,sup,table,u,ul,var");
+/**
+* Table parts whose text content other than whitespace the parser
+* foster-parents in front of the table.
+*/
+const isFosterParentingTag = /*@__PURE__*/ makeMap("colgroup,table,tbody,tfoot,thead,tr");
+const isImpliedEndTag = /*@__PURE__*/ makeMap("dd,dt,li,optgroup,option,p,rp,rt");
+/**
+* The scope the children of `tag` see, given the scope `tag` itself was
+* written in (0 when it starts a template).
+*/
+function enterOpenScope(scope, tag, ns) {
+	if (isForeign(ns)) {
+		scope &= -104;
+		return scope;
+	}
+	if (isScopeBoundaryTag(tag)) scope &= -8;
+	if (isFormattingMarkerTag(tag)) scope &= -9;
+	if (endsListItemSearch(tag)) scope &= -97;
+	switch (tag) {
+		case "p": return scope | 1;
+		case "button": return scope & -2 | 2;
+		case "ruby": return scope | 4;
+		case "a": return scope | 8;
+		case "form": return scope | 16;
+		case "li": return scope | 32;
+		case "dd":
+		case "dt": return scope | 64;
+	}
+	return scope;
+}
+/**
+* Whether the html parser places an element written under `parent` there, so
+* that both can share a template string. Two layers: `isValidHTMLNesting`
+* rejects what the parent itself cannot hold (table, row, select and raw-text
+* content models, void parents), `closesOpenAncestor` the start tags that end
+* an element still open above. The end-tag omission in transformElement
+* assumes only elements passing both share a template.
+*/
+function keepsInTemplate(tag, ns, parentTag, scope) {
+	return isValidHTMLNesting(parentTag, tag) && !closesOpenAncestor(tag, ns, parentTag, scope);
+}
+/**
+* Whether the html parser, on the start tag of `tag`, closes an element that
+* is still open above it in the same template - the `<p>` of
+* `<p><span><div>`, the `<li>` of `<li><span><li>`, a link inside a link. The
+* element would then end up elsewhere than the compiler expects, so it has to
+* go into a template of its own. Transcribed from the "in body" insertion mode
+* of https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inbody
+* for the native html tags the compiler knows; `scope` is what the parent
+* leaves open (`enterOpenScope`).
+*/
+function closesOpenAncestor(tag, ns, parentTag, scope) {
+	if (isForeign(ns)) return false;
+	if (isPClosingTag(tag) && scope & 1) return true;
+	switch (tag) {
+		case "li": return !!(scope & 32);
+		case "dd":
+		case "dt": return !!(scope & 64);
+		case "button": return !!(scope & 2);
+		case "a": return !!(scope & 8);
+		case "form": return !!(scope & 16);
+		case "rt":
+		case "rp": return !!(scope & 4) && isImpliedEndTag(parentTag);
+	}
+	return false;
+}
 const rpxRE = /"[^"]+"|'[^']+'|url\([^)]+\)|--(?:[\w-]|[^\x00-\x7f]|\\(?:[\da-fA-F]{1,6}(?:\r\n|[ \t\r\n\f])?|[^\r\n\f]))+|(\d*\.?\d+)[ru]px/g;
 const hasRpxRE = /[ru]px/;
 function normalizeRpx(value) {
@@ -29357,7 +29541,7 @@ const transformVBind = (dir, node, context) => {
 		exp = createSimpleExpression("", true, loc);
 	}
 	arg = resolveExpression(arg);
-	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
+	const excludeNumber = node.tagType === 1 || node.tagType === 2 || !!context.options.isCustomElement(node.tag) || modifiersString.includes("prop") || !arg.isStatic || arg.content.toLowerCase().startsWith("data-") && isUniBasicElement(node) || isSpecialBooleanAttr(arg.content) || isCheckboxValueProp(node, arg.content) || !modifiersString.includes("attr") && (isFoldableBooleanAttr(arg.content) || isModelValueProp(node, arg.content));
 	exp = resolveExpression(exp, excludeNumber);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
@@ -29505,7 +29689,7 @@ const transformElement = (node, context) => {
 		const staticKey = dynamicComponentKeys.has(node) ? void 0 : resolveStaticKey(node, context, isComponent);
 		const propsResult = buildProps(node, context, isComponent, isDynamicComponent, getEffectIndex);
 		const singleRoot = context.isSingleRoot;
-		if (isComponent) transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, useCreateElement);
+		if (isComponent) transformComponentElement(node, propsResult, staticKey, singleRoot || context.isSlotRoot && !useCreateElement && 2, context, isDynamicComponent, useCreateElement);
 		else {
 			var _context$options$tran, _context$options;
 			(_context$options$tran = (_context$options = context.options).transformElementProps) === null || _context$options$tran === void 0 || _context$options$tran.call(_context$options, propsResult, node, context, getEffectIndex);
@@ -29518,7 +29702,7 @@ function canOmitEndTag(node, context) {
 	const { block, parent } = context;
 	if (!parent) return false;
 	if (block !== parent.block) return true;
-	if (context.templateCloseTags && (context.templateCloseTags.has(node.tag) || context.templateCloseTags.has("form") || context.templateCloseTags.has("li") && (node.tag === "ul" || node.tag === "ol") || isAlwaysCloseTag(node.tag) || isFormattingTag(node.tag)) || context.templateCloseBlocks && isBlockTag(node.tag)) return false;
+	if (context.templateCloseTags && (context.templateCloseTags.has(node.tag) || context.templateCloseTags.has("form") || context.templateCloseTags.has("li") && (node.tag === "ul" || node.tag === "ol") || isAlwaysCloseTag(node.tag) || isFormattingTag(node.tag)) || context.templateCloseBlocks && isSpecialTag(node.tag)) return false;
 	if (isAlwaysCloseTag(node.tag) && !context.isOnRightmostPath) return false;
 	if (isFormattingTag(node.tag) || parent.node.type === 1 && (node.tag === parent.node.tag || parent.node.ns !== 0 && node.ns !== parent.node.ns)) return context.isOnRightmostPath;
 	return context.isLastEffectiveChild;
@@ -29526,9 +29710,8 @@ function canOmitEndTag(node, context) {
 function getChildTemplateCloseState(context) {
 	const { node } = context;
 	if (node.type !== 1 || node.tagType !== 0 || shouldUseCreateElement(node, context)) return;
-	const inSameTemplateAsParent = isInSameTemplateAsParent(context);
-	const inheritedTags = inSameTemplateAsParent ? context.templateCloseTags : void 0;
-	const inheritedBlocks = inSameTemplateAsParent && context.templateCloseBlocks;
+	const inheritedTags = context.templateCloseTags;
+	const inheritedBlocks = context.templateCloseBlocks;
 	if (context.root === context.effectiveParent || canOmitEndTag(node, context) || isVoidTag(node.tag)) return inheritedTags || inheritedBlocks ? {
 		tags: inheritedTags,
 		blocks: inheritedBlocks
@@ -29537,20 +29720,23 @@ function getChildTemplateCloseState(context) {
 	tags.add(node.tag);
 	return {
 		tags,
-		blocks: inheritedBlocks || isInlineTag(node.tag)
+		blocks: !popsOpenDescendants(node.tag)
 	};
 }
-function isInSameTemplateAsParent(context) {
-	const { parent, node, block } = context;
-	if (!parent || block !== parent.block) return false;
+/**
+* The parent whose template string the element would be written into: a
+* plain element in the same block that is not created with createElement.
+*/
+function getTemplateParent(context) {
+	const { parent, block } = context;
+	if (!parent || block !== parent.block) return;
 	const parentNode = parent.node;
-	if (parentNode.type !== 1 || parentNode.tagType !== 0) return false;
-	return !shouldUseCreateElement(parentNode, parent) && isValidHTMLNesting(parentNode.tag, node.tag);
+	if (parentNode.type === 1 && parentNode.tagType === 0 && !shouldUseCreateElement(parentNode, parent)) return parent;
 }
-function transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, useCreateElement) {
+function transformComponentElement(node, propsResult, staticKey, root, context, isDynamicComponent, useCreateElement) {
 	const dynamicComponent = isDynamicComponent ? resolveDynamicComponent(node) : void 0;
 	let { tag } = node;
-	let asset = true;
+	let asset = !useCreateElement;
 	let slotScopeNamespace;
 	if (!dynamicComponent && !useCreateElement) {
 		const isProp = findProp(node, "is");
@@ -29598,7 +29784,7 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 		slotScopeNamespace,
 		props,
 		asset,
-		root: singleRoot,
+		root,
 		slots: [...context.slots],
 		once: context.inVOnce,
 		dynamic: dynamicComponent,
@@ -29765,7 +29951,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 	template += `>` + children;
 	if (!isVoidTag(tag) && !omitEndTag) template += `</${tag}>`;
 	context.templateRoot = singleRoot;
-	if (context.parent && context.parent.node.type === 1 && !isValidHTMLNesting(context.parent.node.tag, tag)) {
+	if (context.parent && context.parent.node.type === 1 && !isValidHTMLNesting(context.parent.node.tag, tag) || !(context.templateScope & 128) && getTemplateParent(context) !== void 0) {
 		context.reference();
 		context.dynamic.template = context.pushTemplate(template);
 		context.dynamic.flags |= 6;
@@ -30282,7 +30468,7 @@ function mergePropValues(existing, incoming) {
 	existing.values.push(...newValues);
 }
 function shouldUseCreateElement(node, context) {
-	return context.options.isCustomElement(node.tag) || node.tagType === 0 && node.tag === "template";
+	return context.options.isCustomElement(node.tag) || node.tagType === 0 && (node.tag === "template" || node.ns !== 0 && isForeignBreakoutTag(node.tag));
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformChildren.ts
@@ -30290,12 +30476,16 @@ const transformChildren = (node, context) => {
 	const isFragment = node.type === 0 || node.type === 1 && (node.tagType === 3 || node.tagType === 1);
 	if (!isFragment && node.type !== 1) return;
 	const useCreateElement = node.type === 1 && shouldUseCreateElement(node, context);
-	const childTemplateCloseState = !isFragment && !useCreateElement ? getChildTemplateCloseState(context) : void 0;
+	const hostsTemplate = node.type === 1 && node.tagType === 0 && !useCreateElement;
+	const childTemplateCloseState = hostsTemplate ? getChildTemplateCloseState(context) : void 0;
+	const childScope = hostsTemplate ? enterOpenScope(context.templateScope, node.tag, node.ns) : 0;
 	for (const [i, child] of node.children.entries()) {
 		const childContext = context.create(child, i);
-		const isInSameTemplate = childTemplateCloseState && child.type === 1 && child.tagType === 0 && isInSameTemplateAsParent(childContext);
-		childContext.templateCloseTags = isInSameTemplate ? childTemplateCloseState.tags : void 0;
-		childContext.templateCloseBlocks = isInSameTemplate ? childTemplateCloseState.blocks : false;
+		const isInSameTemplate = hostsTemplate && child.type === 1 && child.tagType === 0 && keepsInTemplate(child.tag, child.ns, node.tag, childScope);
+		const closeState = isInSameTemplate ? childTemplateCloseState : void 0;
+		childContext.templateScope = isInSameTemplate ? childScope | 128 : 0;
+		childContext.templateCloseTags = closeState && closeState.tags;
+		childContext.templateCloseBlocks = !!closeState && closeState.blocks;
 		transformNode(childContext);
 		const childDynamic = childContext.dynamic;
 		const createsNode = isFragment || childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true;
@@ -30423,7 +30613,7 @@ const transformText$1 = (node, context) => {
 		const createElementParent = parent && parent.type === 1 && shouldUseCreateElement(parent, context.parent);
 		const isRootText = !parent || parent.type === 0 || parent.type === 1 && (parent.tagType === 3 || parent.tagType === 1);
 		const isRawText = createElementParent || isRootText;
-		if (isRawText && node.content[0] === "<") {
+		if (needsTextNode(parent, node.content, isRawText)) {
 			materializeLiteralTextNode(createSimpleExpression(node.content, true, node.loc), context);
 			return;
 		}
@@ -30439,7 +30629,7 @@ function processInterpolation(context) {
 	const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
 	if (text !== null && parentNode.type !== 0 && (isElementChild || text !== "")) {
 		const isRawText = !isElementChild || parentNode.type === 1 && shouldUseCreateElement(parentNode, context.parent);
-		if (isRawText && text[0] === "<") {
+		if (needsTextNode(parentNode, text, isRawText)) {
 			materializeLiteralTextNode(createSimpleExpression(text, true, context.node.loc), context);
 			return;
 		}
@@ -30504,6 +30694,16 @@ function registerSyntheticTextChild(context, template, values) {
 }
 function processCreateElementTextContainer(children, context) {
 	registerSyntheticTextChild(context, "", processTextLikeChildren(children, context));
+}
+/**
+* Text that cannot be written into a template string and is created
+* imperatively instead: unescaped text starting with "<" (the runtime only
+* turns a template into a text node when it does not start with "<", see
+* `template()` in runtime-vapor), and text other than ascii whitespace in a
+* table part, which the parser would move in front of the table.
+*/
+function needsTextNode(parent, text, isRawText) {
+	return isRawText && text[0] === "<" || !!parent && parent.type === 1 && parent.ns === 0 && isFosterParentingTag(parent.tag) && !isAllWhitespace(text);
 }
 function materializeLiteralTextNode(value, context) {
 	const id = context.reference();
@@ -30859,7 +31059,7 @@ function processIf(node, dir, context) {
 		const [branch, onExit] = createIfBranch(node, context);
 		return () => {
 			onExit();
-			context.dynamic.operation = _objectSpread2(_objectSpread2({
+			const operation = _objectSpread2(_objectSpread2({
 				type: 15,
 				id
 			}, context.effectBoundary()), {}, {
@@ -30869,6 +31069,8 @@ function processIf(node, dir, context) {
 				index: context.root.nextIfIndex(),
 				once: context.inVOnce || isStaticExpression(dir.exp, context.options.bindingMetadata)
 			});
+			context.dynamic.operation = operation;
+			context.root.ifHeads.set(operation, context.inVOnce);
 		};
 	} else {
 		const siblingIf = getSiblingIf(context, true);
@@ -30885,9 +31087,13 @@ function processIf(node, dir, context) {
 			context.options.onError(createCompilerError(30, node.loc));
 			return;
 		}
+		const head = lastIfNode;
 		while (lastIfNode.negative && lastIfNode.negative.type === 15) lastIfNode = lastIfNode.negative;
+		const parent = context.parent;
+		context.inVOnce = parent.inVOnce && !isComponentNode(parent.node) || !!context.root.ifHeads.get(head);
 		if (dir.name === "else-if" && lastIfNode.negative) context.options.onError(createCompilerError(30, node.loc));
 		checkSameKey(node, context);
+		if (!context.inVOnce) context.node = node = extend({}, node, { props: node.props.filter((prop) => prop.type !== 7 || prop.name !== "once") });
 		const comments = context.comment;
 		if (comments.length) {
 			if (!isInTransition(context)) {
@@ -31093,6 +31299,7 @@ const transformSlotOutlet = (node, context) => {
 function createFallback(node, context) {
 	if (!node.children.length) return [];
 	context.isSingleRoot = false;
+	context.isSlotRoot = false;
 	context.node = node = extend({}, node, {
 		type: 1,
 		tag: "template",
@@ -31121,11 +31328,11 @@ const transformVSlot = (node, context) => {
 function transformComponentSlot(node, dir, context) {
 	const { children } = node;
 	const arg = dir && dir.arg;
-	const hasTemplateSlots = children.some(isSlotTemplateChild);
+	const hasTemplateSlots = children.some(isSlotTemplate);
 	const isTransitionHost = isTransitionHostNode(node);
 	const emptyTextNodes = [];
 	const nonSlotTemplateChildren = children.filter((n) => {
-		if (isSlotTemplateChild(n)) return false;
+		if (isSlotTemplate(n)) return false;
 		if (n.type === 3 && (hasTemplateSlots || isTransitionHost)) {
 			ignoreComment(n, context);
 			return false;
@@ -31248,9 +31455,6 @@ function createSlotBlock(slotNode, dir, context) {
 function isNonWhitespaceContent(node) {
 	if (node.type !== 2) return true;
 	return !!node.content.trim();
-}
-function isSlotTemplateChild(node) {
-	return node.type === 1 && isTemplateNode(node) && !!findDir(node, "slot", true);
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformTransition.ts
@@ -31762,6 +31966,44 @@ function isFlowRow(node) {
 	return node.type === 1 && (node.tag === "flow-item" || node.tag === "template" && node.children.length === 1 && node.children[0].type === 1 && node.children[0].tag === "flow-item" && !findDir$1(node.children[0], "for"));
 }
 //#endregion
+//#region packages/compiler-vapor-web/src/transforms/transformDataset.ts
+function createDatasetTransform() {
+	const operations = /* @__PURE__ */ new WeakMap();
+	const hoists = /* @__PURE__ */ new Map();
+	return {
+		transformElementProps(props, node, context) {
+			if (props[0] || !isUniBasicElement(node)) return;
+			const data = Object.create(null);
+			for (const prop of props[1]) if (prop.key.isStatic && prop.key.content.toLowerCase().startsWith("data-") && prop.modifier !== "." && prop.values[0].isStatic) data[prop.key.content] = prop.values[0].content;
+			if (!Object.keys(data).length) return;
+			const operation = {
+				type: 3,
+				element: context.reference(),
+				tag: node.tag,
+				isSVG: false,
+				prop: {
+					key: createSimpleExpression("dataset", true),
+					values: []
+				}
+			};
+			operations.set(operation, JSON.stringify(data));
+			context.registerOperation(operation);
+		},
+		genOperation(operation, context) {
+			if (operation.type !== 3) return;
+			const json = operations.get(operation);
+			if (!json) return;
+			let name = hoists.get(json);
+			if (!name) {
+				name = context.getUniqueLocalName("_dataset");
+				hoists.set(json, name);
+				context.hoists.push(`const ${name} = ${json}\n`);
+			}
+			return [NEWLINE, ...genCall(context.helper("initUniDataset"), `n${operation.element}`, name)];
+		}
+	};
+}
+//#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformUniAppXWeb.ts
 function createUniAppXWebTransform(options = {}) {
 	if (options.ssr) {
@@ -31779,6 +32021,7 @@ function createUniAppXWebTransform(options = {}) {
 	const text = createTextTransform();
 	const recycle = createRecycleForTransform();
 	const componentId = createComponentIdTransform(recycle);
+	const dataset = createDatasetTransform();
 	return {
 		transform: (node, context) => {
 			transformListView(node, context);
@@ -31792,14 +32035,15 @@ function createUniAppXWebTransform(options = {}) {
 			return [exitRecycle, exitComponentId].flat().filter((exit) => !!exit);
 		},
 		transformElementProps: (props, node, context, getEffectIndex) => {
+			dataset.transformElementProps(props, node, context, getEffectIndex);
 			hover.transformElementProps(props, node, context, getEffectIndex);
 			image.transformElementProps(props, node, context, getEffectIndex);
 			text.transformElementProps(props, node, context, getEffectIndex);
 		},
 		genOperation: (operation, context) => {
-			var _hover$genOperation, _componentId$genOpera, _image$genOperation, _text$genOperation;
+			var _hover$genOperation, _componentId$genOpera, _dataset$genOperation, _image$genOperation, _text$genOperation;
 			const hoverOperation = (_hover$genOperation = hover.genOperation) === null || _hover$genOperation === void 0 ? void 0 : _hover$genOperation.call(hover, operation, context);
-			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
+			return ((_componentId$genOpera = componentId.genOperation) === null || _componentId$genOpera === void 0 ? void 0 : _componentId$genOpera.call(componentId, operation, context)) || ((_dataset$genOperation = dataset.genOperation) === null || _dataset$genOperation === void 0 ? void 0 : _dataset$genOperation.call(dataset, operation, context)) || hoverOperation || ((_image$genOperation = image.genOperation) === null || _image$genOperation === void 0 ? void 0 : _image$genOperation.call(image, operation, context)) || ((_text$genOperation = text.genOperation) === null || _text$genOperation === void 0 ? void 0 : _text$genOperation.call(text, operation, context));
 		},
 		genEventHandler: image.genEventHandler
 	};
@@ -44860,7 +45104,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-rc.12";
+const version = "3.6.0-rc.13";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

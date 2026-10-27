@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.12
+  * @vue/server-renderer v3.6.0-rc.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -2505,12 +2505,22 @@ function rerender(id, newRender) {
 function reload(id, newComp) {
 	const record = map.get(id);
 	if (!record) return;
+	let pageComp;
+	if (typeof window !== "undefined" && record.initialDef.__vapor && record.initialDef.__mpType === "page") {
+		const setupPage = window.__setupPage;
+		if (setupPage) pageComp = normalizeClassComponent(setupPage(newComp));
+	}
 	newComp = normalizeClassComponent(newComp);
+	const resolveNewComp = (instance) => pageComp && instance.vapor && instance.$pageInstance === instance ? pageComp : newComp;
 	const isVapor = record.initialDef.__vapor;
 	updateComponentDef(record.initialDef, newComp);
 	const instances = [...record.instances];
 	if (isVapor && newComp.__vapor && !instances.some((instance) => instance.parent && !instance.parent.vapor) && !instances.some((i) => i.ceReload)) {
-		for (const instance of instances) if (instance.root && instance.root.ce && instance !== instance.root) instance.root.ce._removeChildStyle(instance.type);
+		for (const instance of instances) {
+			const oldComp = normalizeClassComponent(instance.type);
+			if (oldComp !== record.initialDef) updateComponentDef(oldComp, resolveNewComp(instance));
+			if (instance.root && instance.root.ce && instance !== instance.root) instance.root.ce._removeChildStyle(instance.type);
+		}
 		const dirtyInstances = new Set(instances);
 		const rerenderedParents = /* @__PURE__ */ new Set();
 		runWithHmrUpdating(() => {
@@ -2521,7 +2531,7 @@ function reload(id, newComp) {
 						rerenderedParents.add(parent);
 						parent.hmrRerender();
 					}
-				} else instance.hmrReload(newComp);
+				} else instance.hmrReload(resolveNewComp(instance));
 			}
 		});
 	} else {
@@ -2531,7 +2541,7 @@ function reload(id, newComp) {
 			const oldComp = normalizeClassComponent(instance.type);
 			let dirtyInstances = hmrDirtyComponents.get(oldComp);
 			if (!dirtyInstances) {
-				if (oldComp !== record.initialDef) updateComponentDef(oldComp, newComp);
+				if (oldComp !== record.initialDef) updateComponentDef(oldComp, resolveNewComp(instance));
 				hmrDirtyComponents.set(oldComp, dirtyInstances = /* @__PURE__ */ new Set());
 			}
 			dirtyInstances.add(instance);
@@ -2920,6 +2930,16 @@ function isRootHook(name) {
 	return PAGE_HOOKS.indexOf(name) > -1;
 }
 //#endregion
+//#region packages/runtime-core/src/vaporInteropState.ts
+/**
+* Set by `vaporInteropPlugin`. Stays false in apps that never import the
+* plugin, so bundlers drop the vapor-in-vdom branches of the renderer.
+*/
+let isVaporInteropEnabled = false;
+function setVaporInteropEnabled() {
+	isVaporInteropEnabled = true;
+}
+//#endregion
 //#region packages/runtime-core/src/components/Teleport.ts
 const TeleportEndKey = Symbol("_vte");
 const isTeleport = (type) => type.__isTeleport;
@@ -2956,7 +2976,7 @@ function getInnerChild(vnode) {
 function setTransitionHooks(vnode, hooks) {
 	if (vnode.shapeFlag & 6 && vnode.component) {
 		vnode.transition = hooks;
-		if (isVaporComponent(vnode.type)) getVaporInterface(vnode.component, vnode).setTransitionHooks(vnode.component, hooks);
+		if (isVaporInteropEnabled && isVaporComponent(vnode.type)) getVaporInterface(vnode.component, vnode).setTransitionHooks(vnode.component, hooks);
 		else {
 			const subTree = vnode.component.subTree;
 			return setTransitionHooks(isTeleport(subTree.type) ? getInnerChild(subTree) || subTree : subTree, hooks);
@@ -2975,7 +2995,7 @@ function setTransitionHooks(vnode, hooks) {
 	return hooks;
 }
 function getTransitionRoot(vnode) {
-	if (vnode.component && !isVaporComponent(vnode.type)) return getTransitionRoot(vnode.component.subTree);
+	if (vnode.component && (!isVaporInteropEnabled || !isVaporComponent(vnode.type))) return getTransitionRoot(vnode.component.subTree);
 	if (vnode.type === Fragment) {
 		const child = isArray(vnode.children) && filterSingleRoot(vnode.children, false);
 		return child ? getTransitionRoot(child) : void 0;
@@ -3231,11 +3251,12 @@ function invokeSlotFallback$1(fallback, owner) {
 function renderSlot(slots, name, props, fallback, noSlotted, branchKey) {
 	if (props == null) props = {};
 	let slot = slots[name];
-	const vaporSlot = slot && slot[rawVaporSlotKey$2];
+	const vaporSlot = isVaporInteropEnabled && slot && slot[rawVaporSlotKey$2];
 	if (vaporSlot) {
 		const ret = (openBlock(), createBlock(VaporSlot$1, props));
 		ret.vs = {
 			slot: vaporSlot,
+			name,
 			outlets: fallback ? [{
 				fallback,
 				owner: currentRenderingInstance
@@ -3266,7 +3287,7 @@ function renderSlot(slots, name, props, fallback, noSlotted, branchKey) {
 	try {
 		const validSlotContent = slot && ensureValidVNode$1(slot(props));
 		let attached = false;
-		if (fallback && validSlotContent && currentRenderingInstance) {
+		if (isVaporInteropEnabled && fallback && validSlotContent && currentRenderingInstance) {
 			const interop = currentRenderingInstance.appContext.vapor;
 			if (interop) attached = interop.attachSlotOutlet(validSlotContent, fallback, currentRenderingInstance);
 		}
@@ -4665,7 +4686,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 				processFragment(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
 				break;
 			case VaporSlot$1:
-				getVaporInterface(parentComponent, n2).slot(n1, n2, container, anchor, parentComponent, parentSuspense, slotScopeIds);
+				if (isVaporInteropEnabled) getVaporInterface(parentComponent, n2).slot(n1, n2, container, anchor, parentComponent, parentSuspense, slotScopeIds);
 				break;
 			default: if (shapeFlag & 1) processElement(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
 			else if (shapeFlag & 6) processComponent(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
@@ -4799,7 +4820,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		let vnodeHook;
 		parentComponent && toggleRecurse(parentComponent, false);
 		if (vnodeHook = newProps.onVnodeBeforeUpdate) invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
-		if (n2.ibu) n2.ibu();
+		if (isVaporInteropEnabled && n2.ibu) n2.ibu();
 		if (dirs) invokeDirectiveHook(n2, n1, parentComponent, "beforeUpdate");
 		parentComponent && toggleRecurse(parentComponent, true);
 		if (isHmrUpdating || dynamicChildren && (!n1.dynamicChildren || n1.dynamicChildren.length !== dynamicChildren.length)) {
@@ -4833,9 +4854,9 @@ function baseCreateRenderer(options, createHydrationFns) {
 				if (n1.children !== n2.children) hostSetElementText(el, n2.children);
 			}
 		} else if (!optimized && dynamicChildren == null) patchProps(el, oldProps, newProps, parentComponent, namespace);
-		if ((vnodeHook = newProps.onVnodeUpdated) || dirs || n2.iu) queuePostRenderEffect(() => {
+		if ((vnodeHook = newProps.onVnodeUpdated) || dirs || isVaporInteropEnabled && n2.iu) queuePostRenderEffect(() => {
 			vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
-			n2.iu && n2.iu();
+			isVaporInteropEnabled && n2.iu && n2.iu();
 			dirs && invokeDirectiveHook(n2, n1, parentComponent, "updated");
 		}, void 0, parentSuspense);
 	};
@@ -5046,7 +5067,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 				} else next = vnode;
 				if (bu) invokeArrayFns(bu);
 				if (vnodeHook = next.props && next.props.onVnodeBeforeUpdate) invokeVNodeHook(vnodeHook, parent, next, vnode);
-				if (next.ibu) next.ibu();
+				if (isVaporInteropEnabled && next.ibu) next.ibu();
 				toggleRecurse(instance, true);
 				startMeasure(instance, `render`);
 				const nextTree = renderComponentRoot$1(instance);
@@ -5059,9 +5080,9 @@ function baseCreateRenderer(options, createHydrationFns) {
 				next.el = nextTree.el;
 				if (originNext === null) updateHOCHostEl(instance, nextTree.el);
 				if (u) queuePostRenderEffect(u, void 0, parentSuspense);
-				if ((vnodeHook = next.props && next.props.onVnodeUpdated) || next.iu) queuePostRenderEffect(() => {
+				if ((vnodeHook = next.props && next.props.onVnodeUpdated) || isVaporInteropEnabled && next.iu) queuePostRenderEffect(() => {
 					vnodeHook && invokeVNodeHook(vnodeHook, parent, next, vnode);
-					next.iu && next.iu();
+					isVaporInteropEnabled && next.iu && next.iu();
 				}, void 0, parentSuspense);
 				devtoolsComponentUpdated(instance);
 				popWarningContext$1();
@@ -5213,7 +5234,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 	};
 	const move = (vnode, container, anchor, moveType, parentComponent, parentSuspense = null) => {
 		const { el, type, transition, children, shapeFlag } = vnode;
-		if (isVaporComponent(type) || type === VaporSlot$1) {
+		if (isVaporInteropEnabled && (isVaporComponent(type) || type === VaporSlot$1)) {
 			getVaporInterface(parentComponent, vnode).move(vnode, container, anchor, moveType, parentSuspense);
 			return;
 		}
@@ -5257,11 +5278,11 @@ function baseCreateRenderer(options, createHydrationFns) {
 		}
 		if (cacheIndex != null && (!vnode.ctx || vnode.ctx === parentComponent)) parentComponent.renderCache[cacheIndex] = void 0;
 		if (shapeFlag & 256) {
-			if (isVaporComponent(vnode.type)) getVaporInterface(parentComponent, vnode).deactivate(vnode, parentComponent.ctx.getStorageContainer(), parentSuspense);
+			if (isVaporInteropEnabled && isVaporComponent(vnode.type)) getVaporInterface(parentComponent, vnode).deactivate(vnode, parentComponent.ctx.getStorageContainer(), parentSuspense);
 			else parentComponent.ctx.deactivate(vnode);
 			return;
 		}
-		if (shapeFlag & 6 && isVaporComponent(type)) {
+		if (isVaporInteropEnabled && shapeFlag & 6 && isVaporComponent(type)) {
 			getVaporInterface(parentComponent, vnode).unmount(vnode, doRemove, parentSuspense);
 			return;
 		}
@@ -5279,7 +5300,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 			if (shapeFlag & 64) vnode.type.remove(vnode, parentComponent, parentSuspense, internals, doRemove);
 			else if (dynamicChildren && !dynamicChildren.hasOnce && (type !== Fragment || patchFlag > 0 && patchFlag & 64)) unmountChildren(dynamicChildren, parentComponent, parentSuspense, false, true);
 			else if (type === Fragment && patchFlag & 384 || !optimized && shapeFlag & 16) unmountChildren(children, parentComponent, parentSuspense);
-			if (type === VaporSlot$1) {
+			if (isVaporInteropEnabled && type === VaporSlot$1) {
 				getVaporInterface(parentComponent, vnode).unmount(vnode, doRemove, parentSuspense);
 				return;
 			}
@@ -5313,7 +5334,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 		if (transition) {
 			let leavingEl = leavingNode && leavingNode.el;
 			let isElement = !!(leavingNode && leavingNode.shapeFlag & 1);
-			if (isFragment && leavingNode && isVaporComponent(leavingNode.type)) {
+			if (isVaporInteropEnabled && isFragment && leavingNode && isVaporComponent(leavingNode.type)) {
 				leavingEl = getVaporInterface(leavingNode.component, leavingNode).getTransitionElement(leavingNode);
 				isElement = !!leavingEl;
 			}
@@ -5352,7 +5373,7 @@ function baseCreateRenderer(options, createHydrationFns) {
 	};
 	const getNextHostNode = (vnode) => {
 		if (vnode.shapeFlag & 6) {
-			if (isVaporComponent(vnode.type)) return hostNextSibling(vnode.anchor);
+			if (isVaporInteropEnabled && isVaporComponent(vnode.type)) return hostNextSibling(vnode.anchor);
 			return getNextHostNode(vnode.component.subTree);
 		}
 		if (vnode.shapeFlag & 128) return vnode.suspense.next();
@@ -5413,7 +5434,7 @@ function resolveChildrenNamespace({ type, props }, currentNamespace) {
 	return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
 }
 function toggleRecurse({ effect, job, vapor }, allowed) {
-	if (!vapor) {
+	if (!isVaporInteropEnabled || !vapor) {
 		if (allowed) {
 			effect.flags |= 128;
 			job.flags |= 2;
@@ -5525,7 +5546,7 @@ function getInheritedScopeIds(vnode, parentComponent, includeVaporRootIds = true
 			currentParent = currentParent.parent;
 		} else break;
 	}
-	const vaporScopeIds = includeVaporRootIds && currentVNode.vaporScopeIds;
+	const vaporScopeIds = isVaporInteropEnabled && includeVaporRootIds && currentVNode.vaporScopeIds;
 	if (vaporScopeIds) inheritedScopeIds.push(...vaporScopeIds);
 	return inheritedScopeIds;
 }
@@ -5778,16 +5799,23 @@ function cloneVaporSlotMeta(vnode, extraProps) {
 	if (!vaporSlot) return vaporSlot;
 	const cloned = {
 		slot: vaporSlot.slot,
+		name: vaporSlot.name,
 		outlets: vaporSlot.outlets,
-		props: vaporSlot.props
+		props: vaporSlot.props,
+		attrs: vaporSlot.attrs && vaporSlot.attrs === EMPTY_OBJ ? {} : vaporSlot.attrs,
+		group: vaporSlot.group
 	};
-	if (vaporSlot.props && extraProps) {
+	const attrs = cloned.attrs;
+	if (extraProps && vaporSlot.props) {
 		let extraSlotProps;
-		for (const key in extraProps) if (key !== "key") {
+		for (const key in extraProps) if (attrs ? !isReservedProp(key) : key !== "key") {
 			if (!extraSlotProps) extraSlotProps = {};
 			extraSlotProps[key] = extraProps[key];
 		}
-		if (extraSlotProps) cloned.props = mergeProps(vaporSlot.props, extraSlotProps);
+		if (extraSlotProps) {
+			if (attrs) cloned.attrs = mergeProps(attrs, extraSlotProps);
+			else cloned.props = mergeProps(vaporSlot.props, extraSlotProps);
+		}
 	}
 	if (vnode.el) {
 		cloned.state = vaporSlot.state;
@@ -6031,7 +6059,7 @@ function setupComponent$1(instance, isSSR = false, optimized = false) {
 	isSSR && setInSSRSetupState(isSSR);
 	const { props, children, vi } = instance.vnode;
 	const isStateful = isStatefulComponent(instance);
-	if (vi) vi(instance);
+	if (isVaporInteropEnabled && vi) vi(instance);
 	else {
 		initProps(instance, props, isStateful, isSSR);
 		initSlots(instance, children, optimized || isSSR);
@@ -6221,7 +6249,7 @@ const computed = (getterOrOptions, debugOptions) => {
 };
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.12";
+const version = "3.6.0-rc.13";
 const warn = warn$1;
 /**
 * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.
@@ -6636,7 +6664,7 @@ const vModelTextInit = (el, trim, number, lazy, set) => {
 		if (e.target.composing) return;
 		(set || el[assignKey])(castValue(el.value, trim, number || el.type === "number"));
 	});
-	if (trim || number) addEventListener(el, "change", () => {
+	if (trim || number || el.type === "number") addEventListener(el, "change", () => {
 		el.value = castValue(el.value, trim, number || el.type === "number");
 	});
 	if (!lazy) {
@@ -7271,7 +7299,10 @@ function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 				slots[name] = wrapped;
 			}
 		}
-		if (!ctx.appContext.vapor) ctx.appContext.vapor = vaporInterface;
+		if (!ctx.appContext.vapor) {
+			ctx.appContext.vapor = vaporInterface;
+			setVaporInteropEnabled();
+		}
 	}
 	const instance = vnode.component = createComponentInstance(vnode, parentComponent, null);
 	const context = instance.appContext.provides[ssrContextKey];

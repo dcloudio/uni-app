@@ -1,9 +1,9 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.12
+  * @vue/server-renderer v3.6.0-rc.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
-import { Comment, Fragment, Static, Text, createApp, createVNode, getCurrentInstance, handleError, initDirectivesForSSR, mergeProps, renderSlot, ssrContextKey, ssrUtils, warn } from "@vue/runtime-dom";
+import { Comment, Fragment, Static, Text, createApp, createVNode, getCurrentInstance, handleError, initDirectivesForSSR, mergeProps, renderSlot, setVaporInteropEnabled, ssrContextKey, ssrUtils, warn } from "@vue/runtime-dom";
 import { NOOP, escapeHtml, escapeHtmlComment, hasOwn, includeBooleanAttr, includeBooleanAttr as ssrIncludeBooleanAttr, isArray, isBooleanAttr, isFunction, isObject, isOn, isPromise, isRenderableAttrValue, isSSRSafeAttrName, isSVGTag, isString, isVoidTag, looseEqual, looseIndexOf, makeMap, normalizeClass, normalizeCssVarValue, normalizeStyle, normalizeUniText, propsToAttrMap, stringifyStyle, toDisplayString } from "@vue/shared";
 import { normalizeRpx } from "@dcloudio/uni-shared";
 //#region packages/server-renderer/src/helpers/ssrRenderAttrs.ts
@@ -327,7 +327,10 @@ function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 				slots[name] = wrapped;
 			}
 		}
-		if (!ctx.appContext.vapor) ctx.appContext.vapor = vaporInterface;
+		if (!ctx.appContext.vapor) {
+			ctx.appContext.vapor = vaporInterface;
+			setVaporInteropEnabled();
+		}
 	}
 	const instance = vnode.component = createComponentInstance(vnode, parentComponent, null);
 	const context = instance.appContext.provides[ssrContextKey];

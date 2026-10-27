@@ -11673,16 +11673,22 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
           },
           () => {
             const n12 = withComponentId("2251cd94", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n11 = withComponentId("2251bf54", () => createComponent$1(VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => unref(routeCache2)
-              }, extend$1(() => {
-                const n10 = withComponentId("2251bdde", () => createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => unref(routeKey)));
-                return n10;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
+              const n11 = withComponentId("2251bf54", () => createComponent$1(
+                VaporKeepAlive,
+                {
+                  "match-by": "key",
+                  cache: () => unref(routeCache2)
+                },
+                extend$1(() => {
+                  const n10 = withComponentId("2251bdde", () => createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => unref(routeKey)));
+                  return n10;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                }),
+                2
+                /* SLOT */
+              ));
               return n11;
             }));
             return n12;
@@ -11752,16 +11758,22 @@ const _sfc_main$E = /* @__PURE__ */ defineVaporComponent({
           },
           () => {
             const n42 = withComponentId("224ff418", () => createComponent$1(unref(VaporRouterView), { type: () => unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n41 = withComponentId("224fe654", () => createComponent$1(VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => unref(routeCache2)
-              }, extend$1(() => {
-                const n40 = withComponentId("224fe510", () => createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => unref(routeKey)));
-                return n40;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
+              const n41 = withComponentId("224fe654", () => createComponent$1(
+                VaporKeepAlive,
+                {
+                  "match-by": "key",
+                  cache: () => unref(routeCache2)
+                },
+                extend$1(() => {
+                  const n40 = withComponentId("224fe510", () => createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => unref(routeKey)));
+                  return n40;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                }),
+                2
+                /* SLOT */
+              ));
               return n41;
             }));
             return n42;
@@ -13364,8 +13376,8 @@ const _sfc_main$x = /* @__PURE__ */ defineVaporComponent({
           () => unref(pageProps)
         ] },
         null,
-        4
-        /* SLOT_ROOT */
+        36
+        /* SLOT_SINGLE_ROOT, SLOT_ROOT */
       ));
       setStaticTemplateRef(n3, "page");
       return n3;
@@ -34117,14 +34129,20 @@ const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
                 const n4 = createIf(
                   () => shouldRenderItem(_for_item0.value.index),
                   () => {
-                    const n6 = withComponentId("01b46f7d-" + _for_item0.value.slot, () => createComponent$1(UniPreviewImageItem, {
-                      index: () => _for_item0.value.index,
-                      src: () => _for_item0.value.src,
-                      longPressAction: () => unref(longPressAction),
-                      tips: () => unref(tips),
-                      reset: () => _for_item0.value.index == unref(resetCurrent),
-                      resetOnSrcChange: true
-                    }));
+                    const n6 = withComponentId("01b46f7d-" + _for_item0.value.slot, () => createComponent$1(
+                      UniPreviewImageItem,
+                      {
+                        index: () => _for_item0.value.index,
+                        src: () => _for_item0.value.src,
+                        longPressAction: () => unref(longPressAction),
+                        tips: () => unref(tips),
+                        reset: () => _for_item0.value.index == unref(resetCurrent),
+                        resetOnSrcChange: true
+                      },
+                      null,
+                      2
+                      /* SLOT */
+                    ));
                     return n6;
                   },
                   null,
@@ -34285,13 +34303,19 @@ const _sfc_main$1 = /* @__PURE__ */ defineVaporComponent({
                 const n4 = createIf(
                   () => shouldRender(_for_key0.value),
                   () => {
-                    const n6 = withComponentId("6f3deadc", () => createComponent$1(UniPreviewImageItem, {
-                      index: () => _for_key0.value,
-                      src: () => _for_item0.value,
-                      longPressAction: () => props2.longPressAction,
-                      tips: () => props2.tips,
-                      reset: () => _for_key0.value == props2.resetCurrent
-                    }));
+                    const n6 = withComponentId("6f3deadc", () => createComponent$1(
+                      UniPreviewImageItem,
+                      {
+                        index: () => _for_key0.value,
+                        src: () => _for_item0.value,
+                        longPressAction: () => props2.longPressAction,
+                        tips: () => props2.tips,
+                        reset: () => _for_key0.value == props2.resetCurrent
+                      },
+                      null,
+                      2
+                      /* SLOT */
+                    ));
                     return n6;
                   },
                   null,

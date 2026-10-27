@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.12
+  * @vue/server-renderer v3.6.0-rc.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -419,7 +419,10 @@ function renderComponentVNode(vnode, parentComponent = null, slotScopeId) {
 				slots[name] = wrapped;
 			}
 		}
-		if (!ctx.appContext.vapor) ctx.appContext.vapor = vaporInterface;
+		if (!ctx.appContext.vapor) {
+			ctx.appContext.vapor = vaporInterface;
+			(0, _vue_runtime_dom.setVaporInteropEnabled)();
+		}
 	}
 	const instance = vnode.component = createComponentInstance(vnode, parentComponent, null);
 	const context = instance.appContext.provides[_vue_runtime_dom.ssrContextKey];

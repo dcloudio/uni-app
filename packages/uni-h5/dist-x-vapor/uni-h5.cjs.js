@@ -5152,16 +5152,22 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
           },
           () => {
             const n12 = Vue.withComponentId("2251cd94", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n11 = Vue.withComponentId("2251bf54", () => Vue.createComponent(Vue.VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => Vue.unref(routeCache2)
-              }, Vue.extend(() => {
-                const n10 = Vue.withComponentId("2251bdde", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => Vue.unref(routeKey)));
-                return n10;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
+              const n11 = Vue.withComponentId("2251bf54", () => Vue.createComponent(
+                Vue.VaporKeepAlive,
+                {
+                  "match-by": "key",
+                  cache: () => Vue.unref(routeCache2)
+                },
+                Vue.extend(() => {
+                  const n10 = Vue.withComponentId("2251bdde", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => Vue.unref(routeKey)));
+                  return n10;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                }),
+                2
+                /* SLOT */
+              ));
               return n11;
             }));
             return n12;
@@ -5231,16 +5237,22 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
           },
           () => {
             const n42 = Vue.withComponentId("224ff418", () => Vue.createComponent(Vue.unref(vueRouter.VaporRouterView), { type: () => Vue.unref(isTabBar) ? "tabBar" : "" }, (_slotProps0) => {
-              const n41 = Vue.withComponentId("224fe654", () => Vue.createComponent(Vue.VaporKeepAlive, {
-                "match-by": "key",
-                cache: () => Vue.unref(routeCache2)
-              }, Vue.extend(() => {
-                const n40 = Vue.withComponentId("224fe510", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 4, () => Vue.unref(routeKey)));
-                return n40;
-              }, {
-                _: 1
-                /* NON_STABLE */
-              })));
+              const n41 = Vue.withComponentId("224fe654", () => Vue.createComponent(
+                Vue.VaporKeepAlive,
+                {
+                  "match-by": "key",
+                  cache: () => Vue.unref(routeCache2)
+                },
+                Vue.extend(() => {
+                  const n40 = Vue.withComponentId("224fe510", () => Vue.createDynamicComponent(() => _slotProps0.Component, null, null, 5, () => Vue.unref(routeKey)));
+                  return n40;
+                }, {
+                  _: 1
+                  /* NON_STABLE */
+                }),
+                2
+                /* SLOT */
+              ));
               return n41;
             }));
             return n42;
@@ -6290,8 +6302,8 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.unref(pageProps)
         ] },
         null,
-        4
-        /* SLOT_ROOT */
+        36
+        /* SLOT_SINGLE_ROOT, SLOT_ROOT */
       ));
       Vue.setStaticTemplateRef(n3, "page");
       return n3;
