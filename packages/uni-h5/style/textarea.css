@@ -1,0 +1,15 @@
+.uni-textarea-placeholder {
+  color: #757575;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-textarea {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+
+  div:where([uni-textarea]) {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+}

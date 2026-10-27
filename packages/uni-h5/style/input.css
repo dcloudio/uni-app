@@ -1,0 +1,15 @@
+.uni-input-placeholder {
+  color: #757575;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-input {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+
+  div:where([uni-input]) {
+    color: #ffffff;
+    background-color: #3b3b3b;
+  }
+}
