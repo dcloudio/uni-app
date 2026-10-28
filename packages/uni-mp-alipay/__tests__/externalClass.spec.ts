@@ -111,7 +111,7 @@ describe('mp-alipay: externalClass 2.0', () => {
   test('动态 externalClass 自动引入 uniView SJS', () => {
     assert(
       '<external-class :box-class="klass" empty-class=""/>',
-      '<external-class box-class="{{uV.c(a,3,0)}}" empty-class="" u-i="10a73a5e-0"/><import-sjs name="uV" from="/common/uniView.sjs"/>\n',
+      '<import-sjs name="uV" from="/common/uniView.sjs"/>\n<external-class box-class="{{uV.c(a,3,0)}}" empty-class="" u-i="10a73a5e-0"/>',
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _ctx.klass }
   return __returned__
