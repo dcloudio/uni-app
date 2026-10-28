@@ -20299,7 +20299,7 @@
     return a2;
   };
   var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
-  const _sfc_main = /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
+  /* @__PURE__ */ defineComponent(__spreadProps(__spreadValues({}, {
     name: "loading",
     styleIsolation: "app-and-page",
     // @ts-ignore
@@ -20367,7 +20367,7 @@
         /**
          * auto为内部值，蒸汽模式下用户未设置时使用该值
          */
-        default: __X_VAPOR__ ? "auto" : "black"
+        default: "black"
       },
       refresherBackground: {
         type: String,
@@ -20404,7 +20404,7 @@
         var route = props2.refresherHeight / props2.refresherThreshold;
         return (route > 1 ? 1 : route) * 360;
       });
-      var refreshColor = computed(() => {
+      computed(() => {
         switch (props2.refresherDefaultStyle) {
           case "black":
           case "white":
@@ -20421,15 +20421,7 @@
           "class": "uni-scroll-view-refresher"
         }, [props2.refresherDefaultStyle !== "none" ? createVNode("div", {
           "class": "uni-scroll-view-refresh"
-        }, [__X_VAPOR__ ? props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? createVNode(_sfc_main, {
-          "key": "refresh__loading",
-          "class": "uni-scroll-view-refresh__loading",
-          "paused": props2.refreshState == "pulling",
-          "style": {
-            transform: props2.refreshState == "pulling" ? "rotate(" + refreshRotate.value + "deg)" : void 0,
-            color: refreshColor.value
-          }
-        }, null, 8, ["paused", "style"]) : null : createVNode("div", {
+        }, [createVNode("div", {
           "class": "uni-scroll-view-refresh-inner"
         }, [props2.refreshState == "pulling" ? createVNode("svg", {
           "key": "refresh__icon",
@@ -20587,7 +20579,7 @@
       /**
        * auto为内部值，蒸汽模式下用户未设置时使用该值
        */
-      default: __X_VAPOR__ ? "auto" : "black"
+      default: "black"
     },
     refresherBackground: {
       type: String,
