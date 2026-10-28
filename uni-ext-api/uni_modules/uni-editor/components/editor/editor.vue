@@ -1,10 +1,10 @@
 <template>
   <!-- #ifndef VUE3-VAPOR -->
-  <uni-editor-element class="container" ref="rootEl">
+  <uni-editor-element :class="['container', themeClass]" ref="rootEl">
   <!-- #endif -->
   <!-- #ifdef VUE3-VAPOR -->
   <!-- 外层需要 view 包裹，否则 getElementById 获取到的是 UniWebViewElement -->
-  <view class="container">
+  <view :class="['container', themeClass]">
   <!-- #endif -->
     <web-view ref="webviewElement" src="/uni_modules/uni-editor/static/editor.html" :bounces="false"
     :verticalScrollBarAccess="false" :horizontalScrollBarAccess="false" :webview-styles="{progress: false}" @message="onMessage"
@@ -55,6 +55,24 @@
   // #endif
   const instance = getCurrentInstance();
   const eventSeed = `${instance?.uid ?? `${Date.now()}-${Math.floor(Math.random() * 1000000)}`}`;
+
+  const themeClass = ref('')
+  const effectiveTheme = ref('light')
+
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  const appBaseInfo = uni.getAppBaseInfo()
+  const deviceInfo = uni.getDeviceInfo()
+  const configuredAppTheme = appBaseInfo.appTheme ?? 'auto'
+  effectiveTheme.value = configuredAppTheme == 'auto' ? (deviceInfo.osTheme ?? 'light') : configuredAppTheme
+  themeClass.value = `uni-editor-${effectiveTheme.value}`
+  const appThemeChangeId = uni.onAppThemeChange((result: AppThemeChangeResult) => {
+    effectiveTheme.value = result.appTheme
+    themeClass.value = `uni-editor-${effectiveTheme.value}`
+  })
+  onUnmounted(() => {
+    uni.offAppThemeChange(appThemeChangeId)
+  })
+  // #endif
 
   // #ifdef VUE3-VAPOR
   // 不依赖form组件内部的变量，因editor组件是可选且依赖可选的webview组件
@@ -266,14 +284,24 @@
   let callbackId = 0
   const callbackMap = new Map<number, UTSJSONObject>()
   const computedStyle = useComputedStyle({
-    properties: ['caret-color'],
+    properties: ['caret-color', 'color'],
     filterProperties: true
   } as UseComputedStyleOptions)
-  const caretColor = computed<string | null>(() => computedStyle.get('caret-color')?.toString() ?? null)
+  const computedCaretColor = computed<string | null>(() => computedStyle.get('caret-color')?.toString() ?? null)
+  const computedTextColor = computed<string | null>(() => computedStyle.get('color')?.toString() ?? null)
+  const caretColor = computed<string>(() => {
+    const value = computedCaretColor.value
+    return value == null || value.length == 0 || value == 'auto' ? '#3393E2' : value
+  })
+  const textColor = computed<string>(() => {
+    const value = computedTextColor.value
+    return value == null || value.length == 0 || value == 'auto' ? (effectiveTheme.value == 'dark' ? '#FFFFFF' : '#000000') : value
+  })
 
-  function updateCaretColor() {
+  function updateEditorStyle() {
     if (isReady) {
       evalJS(`editorSetCaretColor(${JSON.stringify(caretColor.value)})`)
+      evalJS(`editorSetTextColor(${JSON.stringify(textColor.value)})`)
     }
   }
 
@@ -366,7 +394,7 @@
       case 'ready':
         // 编辑器初始化完成
         isReady = true
-        updateCaretColor()
+        updateEditorStyle()
         emit('ready')
         break
 
@@ -514,7 +542,8 @@
       showImgResize: props.showImgResize,
       readOnly: props.readOnly,
       type: props.type,
-      caretColor: caretColor.value
+      caretColor: caretColor.value,
+      textColor: textColor.value
     }
 
     evalJS(`editorInit(${JSON.stringify(config)})`)
@@ -825,7 +854,8 @@
     }
   })
 
-  watch(caretColor, updateCaretColor)
+  watch(caretColor, updateEditorStyle)
+  watch(textColor, updateEditorStyle)
 
   // #ifndef VUE3-VAPOR
   const __UNIEDITOR_FORMAT_EVENT_NAME__ = createEditorEventName('format', eventSeed)
@@ -921,5 +951,21 @@
     height: 100%;
     overflow: hidden;
     min-height: 200px;
+    color: #000000;
+    caret-color: #3393E2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .container {
+      color: #FFFFFF;
+    }
+  }
+
+  .uni-editor-light {
+    color: #000000;
+  }
+
+  .uni-editor-dark {
+    color: #FFFFFF;
   }
 </style>

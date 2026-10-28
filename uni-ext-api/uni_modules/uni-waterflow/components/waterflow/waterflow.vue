@@ -7,8 +7,8 @@
         :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
         :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-background="props.refresherBackground"
         :refresher-triggered="props.refresherTriggered" :associative-container="props.associativeContainer"
-        :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
-        :android-scrollbar-draggable="props.androidScrollbarDraggable" :android-refresher-color="props.androidRefresherColor"
+        :enable-back-to-top="props.enableBackToTop" :refresher-default-style="_refresherDefaultStyle"
+        :android-scrollbar-draggable="props.androidScrollbarDraggable" :android-refresher-color="_androidRefresherColor"
         :waterflow-id="waterflowId satisfies number"
         change:waterflow-id="recycleWaterflowCpp.setWaterflowId" :list="keyList satisfies string[]"
         change:list="recycleWaterflowCpp.updateList" :cross-axis-count="realCrossAxisCount satisfies number"
@@ -112,7 +112,7 @@ const props = defineProps({
     },
     refresherDefaultStyle: {
         type: String,
-        default: 'black'
+        default: ''
     },
     refresherBackground: {
         type: String,
@@ -137,6 +137,13 @@ const props = defineProps({
         type: String,
         default: ''
     }
+})
+
+const _refresherDefaultStyle = computed<string | null>(() => {
+    return props.refresherDefaultStyle === '' ? null : props.refresherDefaultStyle;
+})
+const _androidRefresherColor = computed<string | null>(() => {
+    return props.androidRefresherColor === '' ? null : props.androidRefresherColor;
 })
 
 const realCrossAxisCount = computed(() => {

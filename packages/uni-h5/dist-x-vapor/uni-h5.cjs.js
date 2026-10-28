@@ -251,8 +251,8 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$g = Vue.template("<div uni-canvas uni-view><canvas class=uni-canvas-canvas>", 3);
-const indexVapor$c = /* @__PURE__ */ defineBuiltInComponent({
+const _t0$g = Vue.template("<canvas uni-canvas uni-view class=uni-canvas-canvas>", 3);
+const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   rootElement: {
@@ -1494,7 +1494,7 @@ class UniButtonElement extends UniViewElement {
   }
 }
 const uniTagName$9 = { value: "BUTTON" };
-const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2510,7 +2510,7 @@ const _t1$3 = Vue.template("<textarea>");
 const _t2$2 = Vue.template("<form action class=uni-input-form> ");
 const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$2 = Vue.template("<div>", 1);
-const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$7,
   emits: emits$1,
@@ -6541,7 +6541,7 @@ class UniEditorElement extends UniViewElement {
   }
 }
 const uniTagName$8 = { value: "EDITOR" };
-const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: editorProps,
   emits: editorEmit,
@@ -6631,7 +6631,7 @@ class UniIconElement extends UniViewElement {
   }
 }
 const uniTagName$7 = { value: "ICON" };
-const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: iconProps,
   rootElement: {
@@ -6842,7 +6842,7 @@ class UniMovableAreaElement extends UniViewElement {
   }
 }
 const uniTagName$6 = { value: "MOVABLE-AREA" };
-const indexVapor$7 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -7840,7 +7840,7 @@ class UniMovableViewElement extends UniViewElement {
   }
 }
 const uniTagName$5 = { value: "MOVABLE-VIEW" };
-const indexVapor$6 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -8240,7 +8240,7 @@ class UniRichTextElement extends UniViewElement {
   }
 }
 const uniTagName$4 = { value: "RICH-TEXT" };
-const indexVapor$5 = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: { MODE: 3 },
   props: props$6,
@@ -8755,7 +8755,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   };
 }
 const _t0$6 = Vue.template("<div uni-scroll-view uni-view><div class=uni-scroll-view><div><!><div class=uni-scroll-view-content> ", 1);
-const indexVapor$4 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   props: props$5,
   emits,
@@ -9162,7 +9162,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniFlowItemElement extends UniViewElement {
 }
-class UniWaterflowElement extends UniScrollViewElementImpl {
+class UniWaterflowElement extends UniScrollViewElement {
 }
 const t0$k = Vue.template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
 const _uniElement$f = { value: "FLOW-ITEM" };
@@ -9430,7 +9430,7 @@ class UniStickySectionElement extends UniViewElement {
 }
 class UniStickyHeaderElement extends UniViewElement {
 }
-class UniListViewElement extends UniScrollViewElementImpl {
+class UniListViewElement extends UniScrollViewElement {
 }
 const t0$h = Vue.template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
 const _uniElement$c = { value: "LIST-ITEM" };
@@ -9893,7 +9893,7 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.watch(() => props2.scrollAnchoring, updateScrollAnchorItem);
     Vue.watch(() => props2.initialScrollBottom, queueLayout);
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
-    const n9 = Vue.withComponentId("34459316", () => Vue.createAssetComponent("scroll-view", { onScroll: () => onScroll }, {
+    const n9 = Vue.withComponentId("34459316", () => Vue.createComponent(__syscom_0, { onScroll: () => onScroll }, {
       "refresher": Vue.extend(() => {
         const n7 = Vue.createSlot(
           "refresher",
@@ -10821,7 +10821,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const n6 = Vue.next(n5);
     Vue.initUniElement(n0, _uniElement$8);
     Vue.setInsertionState(n0, n7);
-    const n3 = Vue.withComponentId("8e57cce2", () => Vue.createAssetComponent("scroll-view", {
+    const n3 = Vue.withComponentId("8e57cce2", () => Vue.createComponent(__syscom_0, {
       class: "picker-view-scroll",
       direction: "vertical",
       "show-scrollbar": false,
@@ -12817,7 +12817,7 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     );
     __expose({ renderRange, updateList, updateListIds, updateRenderInfo });
-    const n7 = Vue.withComponentId("2edab972", () => Vue.createAssetComponent("scroll-view", {
+    const n7 = Vue.withComponentId("2edab972", () => Vue.createComponent(__syscom_0, {
       onScroll: () => onScroll,
       onScrollend: () => onScrollEnd
     }, {
@@ -16597,15 +16597,15 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = _sfc_main$s;
 exports.AsyncLoadingComponent = _sfc_main$t;
-exports.Button = indexVapor$b;
+exports.Button = indexVapor$a;
 exports.Camera = index$3;
-exports.Canvas = indexVapor$c;
+exports.Canvas = indexVapor$b;
 exports.Checkbox = _sfc_main$m;
 exports.CheckboxGroup = _sfc_main$l;
-exports.Editor = indexVapor$9;
+exports.Editor = indexVapor$8;
 exports.FlowItem = _sfc_main$k;
 exports.Form = _sfc_main$j;
-exports.Icon = indexVapor$8;
+exports.Icon = indexVapor$7;
 exports.Input = Input;
 exports.Label = _sfc_main$i;
 exports.LayoutComponent = _sfc_main$u;
@@ -16616,8 +16616,8 @@ exports.LivePusher = index$1;
 exports.Loading = _sfc_main$r;
 exports.Map = indexVapor$1;
 exports.MatchMedia = _sfc_main$f;
-exports.MovableArea = indexVapor$7;
-exports.MovableView = indexVapor$6;
+exports.MovableArea = indexVapor$6;
+exports.MovableView = indexVapor$5;
 exports.Navigator = _sfc_main$e;
 exports.PageComponent = _sfc_main$n;
 exports.PageContainer = _sfc_main$d;
@@ -16628,15 +16628,15 @@ exports.Progress = _sfc_main$9;
 exports.Radio = _sfc_main$8;
 exports.RadioGroup = _sfc_main$7;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = indexVapor$5;
-exports.ScrollView = indexVapor$4;
+exports.RichText = indexVapor$4;
+exports.ScrollView = __syscom_0;
 exports.Slider = _sfc_main$6;
 exports.StickyHeader = _sfc_main$5;
 exports.StickySection = _sfc_main$4;
 exports.Swiper = _sfc_main$3;
 exports.SwiperItem = _sfc_main$2;
 exports.Switch = _sfc_main$1;
-exports.Textarea = indexVapor$a;
+exports.Textarea = indexVapor$9;
 exports.UniButtonElement = UniButtonElement;
 exports.UniButtonElementImpl = UniButtonElement;
 exports.UniCanvasElement = UniCanvasElement;

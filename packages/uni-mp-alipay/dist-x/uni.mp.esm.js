@@ -1,9 +1,47 @@
 import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UNI_STATUS_BAR_HEIGHT, UNI_SAFE_AREA_INSET_BOTTOM, customizeEvent, createUniDOMStringMap, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 export { UTS, UTSJSONObject, UTSValueIterable, UniError } from '@dcloudio/uni-shared';
-import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString, camelize } from '@vue/shared';
+import { isFunction, isArray, capitalize, hasOwn, extend, isPlainObject, isString, camelize } from '@vue/shared';
 import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
+function initWindowInfo() {
+    const platform = my;
+    if (isFunction(platform.getWindowInfo)) {
+        return;
+    }
+    // 钉钉沿用支付宝编译平台，但不一定提供 getWindowInfo。
+    platform.getWindowInfo = () => {
+        var _a, _b, _c, _d, _e, _f, _g;
+        const windowInfo = platform.getSystemInfoSync();
+        const { pixelRatio, screenWidth, screenHeight, windowWidth, windowHeight, statusBarHeight, titleBarHeight, } = windowInfo;
+        const safeArea = windowInfo.safeArea || {};
+        const left = (_a = safeArea.left) !== null && _a !== void 0 ? _a : 0;
+        const right = (_b = safeArea.right) !== null && _b !== void 0 ? _b : screenWidth;
+        const top = (_c = safeArea.top) !== null && _c !== void 0 ? _c : statusBarHeight;
+        // 钉钉未提供底部安全区尺寸，不根据机型推测底部留白。
+        const bottom = (_d = safeArea.bottom) !== null && _d !== void 0 ? _d : screenHeight;
+        return {
+            pixelRatio,
+            screenWidth,
+            screenHeight,
+            windowWidth,
+            windowHeight,
+            statusBarHeight,
+            // 默认原生导航下，通过状态栏和标题栏高度估算窗口上边缘。
+            screenTop: (_e = windowInfo.screenTop) !== null && _e !== void 0 ? _e : statusBarHeight + titleBarHeight,
+            safeArea: {
+                left,
+                right,
+                top,
+                bottom,
+                width: (_f = safeArea.width) !== null && _f !== void 0 ? _f : Math.max(0, right - left),
+                height: (_g = safeArea.height) !== null && _g !== void 0 ? _g : Math.max(0, bottom - top),
+            },
+        };
+    };
+}
+
+initWindowInfo();
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS;
 realGlobal.UTSJSONObject = UTSJSONObject;

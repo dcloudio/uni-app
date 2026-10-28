@@ -1,6 +1,6 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, isVNode, createBlock, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, getCurrentInstance, createVNode, defineComponent as defineComponent$2, inject, onMounted, onBeforeUnmount, watch, setAttr, template, warn, unref, ref, mergeProps, reactive, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, onUnmounted, markRaw, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, renderSlot, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, setAttr, template, warn, unref, ref, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, reactive, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, onUnmounted, markRaw, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, renderSlot, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderDynamicComponent, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
@@ -235,59 +235,10 @@ const canvasProps = {
     default: false
   }
 };
-const cacheMap = /* @__PURE__ */ new WeakMap();
-function createVNodeCache(key) {
-  const i = getCurrentInstance();
-  if (i) {
-    if (!cacheMap.has(i))
-      cacheMap.set(i, {});
-    const caches = cacheMap.get(i);
-    return caches[key] || (caches[key] = []);
-  } else {
-    return [];
-  }
-}
-function normalizeVNode(value, flag = 1) {
-  let create = createVNode;
-  let isBlock = false;
-  if (typeof value === "function") {
-    isBlock = true;
-    openBlock();
-    create = createBlock;
-    value = value();
-  }
-  return isVNode(value) ? isBlock ? createBlock(cloneIfMounted(value)) : cloneIfMounted(value) : Array.isArray(value) ? isBlock ? createElementBlock(
-    Fragment,
-    null,
-    value.map((n) => normalizeVNode(() => n)),
-    -2
-  ) : createElementVNode(Fragment, null, value.slice()) : value == null || typeof value === "boolean" ? create(Comment) : create(Text, null, String(value), flag);
-}
-function cloneIfMounted(child) {
-  return child.el === null && child.patchFlag !== -1 || // @ts-ignore
-  child.memo ? child : cloneVNode(child);
-}
-const defineComponent = defineComponent$2;
-defineComponent(
-  (props2, {
-    slots
-  }) => {
-    const defaultSlot = slots.default;
-    return () => (openBlock(true), createElementBlock(
-      Fragment,
-      null,
-      renderList(props2.in, (item, key, index2) => {
-        const result = defaultSlot(item, key, index2);
-        return Array.isArray(result) ? result.length === 1 ? result[0] : normalizeVNode(result) : result;
-      }),
-      128
-    ));
-  },
-  { props: ["in"] }
-);
 const _hoisted_1$5 = {
   "uni-canvas": "",
-  "uni-view": ""
+  "uni-view": "",
+  class: "uni-canvas-canvas"
 };
 const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
@@ -297,10 +248,7 @@ const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
     class: UniCanvasElement
   },
   setup() {
-    const root = (() => {
-      const _cache = createVNodeCache("a7407643");
-      return openBlock(), createBlock("div", _hoisted_1$5, [_cache[0] || (_cache[0] = createVNode("canvas", { class: "uni-canvas-canvas" }, null, -1))]);
-    })();
+    const root = (openBlock(), createBlock("canvas", _hoisted_1$5));
     return root;
   }
 });
@@ -1262,6 +1210,56 @@ const buttonProps = {
     default: false
   }
 };
+const cacheMap = /* @__PURE__ */ new WeakMap();
+function createVNodeCache(key) {
+  const i = getCurrentInstance();
+  if (i) {
+    if (!cacheMap.has(i))
+      cacheMap.set(i, {});
+    const caches = cacheMap.get(i);
+    return caches[key] || (caches[key] = []);
+  } else {
+    return [];
+  }
+}
+function normalizeVNode(value, flag = 1) {
+  let create = createVNode;
+  let isBlock = false;
+  if (typeof value === "function") {
+    isBlock = true;
+    openBlock();
+    create = createBlock;
+    value = value();
+  }
+  return isVNode(value) ? isBlock ? createBlock(cloneIfMounted(value)) : cloneIfMounted(value) : Array.isArray(value) ? isBlock ? createElementBlock(
+    Fragment,
+    null,
+    value.map((n) => normalizeVNode(() => n)),
+    -2
+  ) : createElementVNode(Fragment, null, value.slice()) : value == null || typeof value === "boolean" ? create(Comment) : create(Text, null, String(value), flag);
+}
+function cloneIfMounted(child) {
+  return child.el === null && child.patchFlag !== -1 || // @ts-ignore
+  child.memo ? child : cloneVNode(child);
+}
+const defineComponent = defineComponent$2;
+defineComponent(
+  (props2, {
+    slots
+  }) => {
+    const defaultSlot = slots.default;
+    return () => (openBlock(true), createElementBlock(
+      Fragment,
+      null,
+      renderList(props2.in, (item, key, index2) => {
+        const result = defaultSlot(item, key, index2);
+        return Array.isArray(result) ? result.length === 1 ? result[0] : normalizeVNode(result) : result;
+      }),
+      128
+    ));
+  },
+  { props: ["in"] }
+);
 class UniButtonElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === UniButtonElement && value instanceof UniViewElement && value.hasAttribute("uni-button") || Function.prototype[Symbol.hasInstance].call(this, value);
@@ -10127,7 +10125,7 @@ _sfc_main$l.setup = (props2, ctx) => {
 };
 class UniFlowItemElement extends UniViewElement {
 }
-class UniWaterflowElement extends UniScrollViewElementImpl {
+class UniWaterflowElement extends UniScrollViewElement {
 }
 const _sfc_main$k = /* @__PURE__ */ defineComponent$2({
   ...{
@@ -10386,7 +10384,7 @@ class UniStickySectionElement extends UniViewElement {
 }
 class UniStickyHeaderElement extends UniViewElement {
 }
-class UniListViewElement extends UniScrollViewElementImpl {
+class UniListViewElement extends UniScrollViewElement {
 }
 const _sfc_main$h = /* @__PURE__ */ defineComponent$2({
   ...{

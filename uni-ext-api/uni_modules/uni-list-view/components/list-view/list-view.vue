@@ -7,15 +7,14 @@
         :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
         :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-background="props.refresherBackground"
         :refresher-triggered="props.refresherTriggered" :associative-container="props.associativeContainer"
-        :enable-back-to-top="props.enableBackToTop" :refresher-default-style="props.refresherDefaultStyle"
-        :android-scrollbar-draggable="props.androidScrollbarDraggable" :initial-scroll-bottom="_initialScrollBottom satisfies boolean"
-        :android-refresher-color="props.androidRefresherColor"
-        change:initial-scroll-bottom="recycleListCpp.setInitialScrollBottom" :scroll-anchoring="_scrollAnchoring satisfies boolean" 
-        change:scroll-anchoring="recycleListCpp.setScrollAnchoring" :list-view-id="listViewId satisfies number"
-        change:list-view-id="recycleListCpp.setListViewId" :list="keyList satisfies string[]"
-        change:list="recycleListCpp.updateList" :scroll-into-view-key="scrollIntoViewKey satisfies string"
-        change:scroll-into-view-key="recycleListCpp.setScrollIntoViewKey" :scroll-into-view-id="scrollIntoViewId satisfies string"
-        change:scroll-into-view-id="recycleListCpp.setScrollIntoViewId">
+        :enable-back-to-top="props.enableBackToTop" :refresher-default-style="_refresherDefaultStyle"
+        :android-scrollbar-draggable="props.androidScrollbarDraggable" :android-refresher-color="_androidRefresherColor"
+        :initial-scroll-bottom="_initialScrollBottom satisfies boolean" change:initial-scroll-bottom="recycleListCpp.setInitialScrollBottom" 
+        :scroll-anchoring="_scrollAnchoring satisfies boolean" change:scroll-anchoring="recycleListCpp.setScrollAnchoring" 
+        :list-view-id="listViewId satisfies number" change:list-view-id="recycleListCpp.setListViewId" 
+        :list="keyList satisfies string[]" change:list="recycleListCpp.updateList" 
+        :scroll-into-view-key="scrollIntoViewKey satisfies string" change:scroll-into-view-key="recycleListCpp.setScrollIntoViewKey" 
+        :scroll-into-view-id="scrollIntoViewId satisfies string" change:scroll-into-view-id="recycleListCpp.setScrollIntoViewId">
         <view :ref="recycleListCpp.setListHeaderElement">
             <slot name="header"></slot>
         </view>
@@ -101,7 +100,7 @@ const props = defineProps({
     },
     refresherDefaultStyle: {
         type: String,
-        default: 'black'
+        default: ''
     },
     refresherBackground: {
         type: String,
@@ -207,6 +206,12 @@ const _scrollAnchoring = computed<boolean>(() => {
 })
 const _initialScrollBottom = computed<boolean>(() => {
     return !!props.initialScrollBottom;
+})
+const _refresherDefaultStyle = computed<string | null>(() => {
+    return props.refresherDefaultStyle === '' ? null : props.refresherDefaultStyle;
+})
+const _androidRefresherColor = computed<string | null>(() => {
+    return props.androidRefresherColor === '' ? null : props.androidRefresherColor;
 })
 
 const renderRange = ref<[number, number]>([0, 0]);
