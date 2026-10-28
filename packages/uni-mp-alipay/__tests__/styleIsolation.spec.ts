@@ -87,7 +87,7 @@ describe('mp-alipay: styleIsolation 2.0', () => {
   test('动态 class 自动引入 uniView SJS', () => {
     assert(
       '<view :class="klass"/>',
-      '<view class="{{uV.c(a,3)}}" style="{{\'--status-bar-height:\' + b + \';\' + (\'--uni-safe-area-inset-bottom:\' + c)}}"/><import-sjs name="uV" from="/common/uniView.sjs"/>\n',
+      '<import-sjs name="uV" from="/common/uniView.sjs"/>\n<view class="{{uV.c(a,3)}}" style="{{\'--status-bar-height:\' + b + \';\' + (\'--uni-safe-area-inset-bottom:\' + c)}}"/>',
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: _n(_ctx.klass), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
