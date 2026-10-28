@@ -225,7 +225,7 @@ defineOptions({
 const hasPages = __UNI_FEATURE_PAGES__
 const hasButtons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__
 const hasSearchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__
-const isXVapor = __X_VAPOR__
+const isXVapor = __VAPOR__
 
 const ICON_PATHS = {
   none: '',

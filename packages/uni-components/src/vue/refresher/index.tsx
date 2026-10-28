@@ -22,7 +22,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       /**
        * auto为内部值，蒸汽模式下用户未设置时使用该值
        */
-      default: __X_VAPOR__ ? 'auto' : 'black',
+      default: __VAPOR__ ? 'auto' : 'black',
     },
     refresherBackground: {
       type: String,
@@ -78,7 +78,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         >
           {props.refresherDefaultStyle !== 'none' ? (
             <div class="uni-scroll-view-refresh">
-              {__X_VAPOR__ ? (
+              {__VAPOR__ ? (
                 props.refreshState == 'pulling' ||
                 props.refreshState == 'refreshing' ? (
                   <Loading

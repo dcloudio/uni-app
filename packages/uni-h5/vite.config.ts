@@ -163,29 +163,29 @@ const vaporComponents = isX_VAPOR
   : undefined
 const excludedVaporComponents = vaporComponents
   ? [
-      ...[...resolveWebVaporComponents(vaporComponentsDir, true).keys()].filter(
-        // 这三个组件暂由旧 TSX 编译为 Vapor，新 UVue 版本仍保持排除。
-        (name) =>
-          !vaporComponents.has(name) &&
-          !['button', 'input', 'textarea'].includes(name)
-      ),
-      // TODO 仅框架构建排除尚未适配的 list-view 系列，项目内 easycom 开发不受影响。
-      'list-view',
-      'list-item',
-      'sticky-section',
-      'sticky-header',
-    ]
+    ...[...resolveWebVaporComponents(vaporComponentsDir, true).keys()].filter(
+      // 这三个组件暂由旧 TSX 编译为 Vapor，新 UVue 版本仍保持排除。
+      (name) =>
+        !vaporComponents.has(name) &&
+        !['button', 'input', 'textarea'].includes(name)
+    ),
+    // TODO 仅框架构建排除尚未适配的 list-view 系列，项目内 easycom 开发不受影响。
+    'list-view',
+    'list-item',
+    'sticky-section',
+    'sticky-header',
+  ]
   : undefined
 
 export default defineConfig(async () => {
   // Vue JSX Vapor 插件为 ESM，仅在 Web Vapor 构建中动态加载；普通 H5 继续使用 VDOM JSX 插件。
   const jsxPlugin = isX_VAPOR
     ? (await import('vue-jsx/vite')).default({
-        vapor: true,
-        ...(isX_VAPOR_SSR_BUILD
-          ? { root: path.resolve(__dirname, '../..') }
-          : {}),
-      })
+      vapor: true,
+      ...(isX_VAPOR_SSR_BUILD
+        ? { root: path.resolve(__dirname, '../..') }
+        : {}),
+    })
     : vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement })
 
   return {
@@ -197,7 +197,7 @@ export default defineConfig(async () => {
       __APP_VIEW__: false,
       __NODE_JS__: FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD,
       __X__: isX,
-      __X_VAPOR__: isX_VAPOR,
+      __VAPOR__: isX_VAPOR,
       HTMLElement:
         FORMAT === 'cjs' || isX_VAPOR_SSR_BUILD ? 'Object' : 'HTMLElement',
     },
@@ -236,49 +236,49 @@ export default defineConfig(async () => {
     plugins: [
       ...(isX
         ? [
-            uniUVueTypeScriptPlugin(),
-            prePlugin,
-            ...(isX_VAPOR
-              ? [webVaporComponentStylesPlugin(vaporComponentsDir)]
-              : []),
-            AutoImport(autoImportOptions),
-            extApiPlugin!,
-            uts2ts({ target: 'uni-h5', platform: 'web' }),
-          ]
+          uniUVueTypeScriptPlugin(),
+          prePlugin,
+          ...(isX_VAPOR
+            ? [webVaporComponentStylesPlugin(vaporComponentsDir)]
+            : []),
+          AutoImport(autoImportOptions),
+          extApiPlugin!,
+          uts2ts({ target: 'uni-h5', platform: 'web' }),
+        ]
         : []),
       vue({
         customElement: isX,
         ...(isX_VAPOR
           ? {
-              compiler: require('vue/compiler-sfc'),
-              features: { vapor: true },
-              script: {
-                extraOptions: ({ filename }: { filename: string }) => ({
-                  componentType: isVaporSystemPage(filename)
-                    ? 'page'
-                    : 'component',
-                }),
-              } as any,
-            }
+            compiler: require('vue/compiler-sfc'),
+            features: { vapor: true },
+            script: {
+              extraOptions: ({ filename }: { filename: string }) => ({
+                componentType: isVaporSystemPage(filename)
+                  ? 'page'
+                  : 'component',
+              }),
+            } as any,
+          }
           : {}),
         template: {
           ...(isX_VAPOR && !isX_VAPOR_SSR_BUILD
             ? {
-                compiler: createFrameworkTemplateCompiler(
-                  require('@dcloudio/compiler-vapor-web'),
-                  path.resolve(__dirname, '../..')
-                ),
-              }
+              compiler: createFrameworkTemplateCompiler(
+                require('@dcloudio/compiler-vapor-web'),
+                path.resolve(__dirname, '../..')
+              ),
+            }
             : {}),
           compilerOptions: {
             isNativeTag: realIsH5NativeTag,
             isCustomElement: realIsH5CustomElement,
             ...(isX_VAPOR
               ? {
-                  // 系统页面默认接收 App 样式。
-                  // 直接识别已同步副本，不依赖构建机是否配置了外部源码目录。
-                  isUniPage: isVaporSystemPage,
-                }
+                // 系统页面默认接收 App 样式。
+                // 直接识别已同步副本，不依赖构建机是否配置了外部源码目录。
+                isUniPage: isVaporSystemPage,
+              }
               : {}),
           },
         },
@@ -287,18 +287,18 @@ export default defineConfig(async () => {
       // 需要支持uni-chooseLocation等内置页面编译
       ...(isX
         ? [
-            uniEasycomPlugin({
-              exclude: UNI_EASYCOM_EXCLUDE,
-              // 框架中的 lang="uts" 已在前面转为 ts，再由 plugin-vue 编译模板。
-              // 此处显式传入框架模式，不依赖用户项目初始化的 Vapor 环境变量。
-              vapor: isX_VAPOR,
-              ...(isX_VAPOR
-                ? {
-                    excludeBuiltInComponents: excludedVaporComponents,
-                  }
-                : {}),
-            }),
-          ]
+          uniEasycomPlugin({
+            exclude: UNI_EASYCOM_EXCLUDE,
+            // 框架中的 lang="uts" 已在前面转为 ts，再由 plugin-vue 编译模板。
+            // 此处显式传入框架模式，不依赖用户项目初始化的 Vapor 环境变量。
+            vapor: isX_VAPOR,
+            ...(isX_VAPOR
+              ? {
+                excludeBuiltInComponents: excludedVaporComponents,
+              }
+              : {}),
+          }),
+        ]
         : []),
       ...(isX ? [replacePagePaths(systemPagePaths)] : []),
       ...(isX_VAPOR && !isX_VAPOR_SSR_BUILD ? [checkWebVaporVNodes()] : []),
@@ -318,12 +318,12 @@ export default defineConfig(async () => {
       lib: isX_VAPOR_SSR_BUILD
         ? undefined
         : {
-            entry: path.resolve(
-              __dirname,
-              isX_VAPOR ? 'src/index-vapor.ts' : 'src/index.ts'
-            ),
-            formats: [FORMAT],
-          },
+          entry: path.resolve(
+            __dirname,
+            isX_VAPOR ? 'src/index-vapor.ts' : 'src/index.ts'
+          ),
+          formats: [FORMAT],
+        },
       assetsDir: '.',
       rollupOptions: {
         output: {
@@ -331,10 +331,10 @@ export default defineConfig(async () => {
           dir: isX_VAPOR_SSR_BUILD
             ? 'dist-x-vapor-ssr'
             : isX_VAPOR
-            ? 'dist-x-vapor'
-            : isX
-            ? 'dist-x'
-            : 'dist',
+              ? 'dist-x-vapor'
+              : isX
+                ? 'dist-x'
+                : 'dist',
           freeze: false, // uni 对象需要可被修改
           entryFileNames: 'uni-h5.' + FORMAT + '.js',
         },
