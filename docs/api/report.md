@@ -2,12 +2,6 @@
 
 ::: sourceCode
 ## uni.report(eventKey, param?) @report
-
-> GitCode: https://gitcode.net/dcloud/uni-api
-
-
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-stat
-
 :::
 
 自定义统计上报

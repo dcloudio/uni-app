@@ -84,42 +84,188 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 | `1500105` | 系统或平台不支持该蓝牙能力 | 检查接口兼容性及运行环境，重复调用不能消除此限制。 |
 | `1500104` / `1509000` | 系统调用失败或其他错误 | 记录接口名、`errCode`、`errMsg` 及可用的错误详情，结合真机环境进一步排查。 |
 
-<!-- UTSAPIJSON.openBluetoothAdapter.name -->
+::: sourceCode
+## uni.openBluetoothAdapter(options) @openbluetoothadapter
+:::
 
-<!-- UTSAPIJSON.openBluetoothAdapter.description -->
+初始化蓝牙模块，建议与 uni.closeBluetoothAdapter 成对调用。
 
-<!-- UTSAPIJSON.openBluetoothAdapter.compatibility -->
+### openBluetoothAdapter 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.openBluetoothAdapter.param -->
 
-<!-- UTSAPIJSON.openBluetoothAdapter.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.openBluetoothAdapter.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **OpenBluetoothAdapterOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: [OpenBluetoothAdapterSuccess](#openbluetoothadaptersuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [OpenBluetoothAdapterSuccess](#openbluetoothadaptersuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 |
+| mode | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 需要基础库： `2.10.0`<br/><br/>蓝牙模式，可作为主/从设备，仅 iOS 需要。<br/><br/>可选值：<br/>- 'central': 主机模式;<br/>- 'peripheral': 从机（外围设备）模式;<br/> |
+
+##### mode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| "central" | 支付宝小程序: x |
+| "peripheral" | 支付宝小程序: x | 
+
+#### OpenBluetoothAdapterSuccess 的属性值 @openbluetoothadaptersuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.openBluetoothAdapter.example -->
 
-<!-- UTSAPIJSON.openBluetoothAdapter.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.openBluetoothAdapter)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.openBluetoothAdapter.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=openBluetoothAdapter&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=openBluetoothAdapter&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=openBluetoothAdapter&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=openBluetoothAdapter&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=openBluetoothAdapter)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=openBluetoothAdapter&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 使用说明
 
 - 初始化成功只表示应用可以使用蓝牙适配器，不代表已扫描到设备或建立连接。应在成功回调后开始扫描，再按[中心设备使用流程](./bluetooth-le-central.md#使用流程)连接和通信。
 - 初始化失败时，应根据失败回调处理原因，待相关条件恢复后重新初始化，不要继续扫描或连接。
 
-<!-- UTSAPIJSON.closeBluetoothAdapter.name -->
+::: sourceCode
+## uni.closeBluetoothAdapter(options) @closebluetoothadapter
+:::
 
-<!-- UTSAPIJSON.closeBluetoothAdapter.description -->
+关闭蓝牙模块并释放相关系统资源，建议与 uni.openBluetoothAdapter 成对调用。
 
-<!-- UTSAPIJSON.closeBluetoothAdapter.compatibility -->
+### closeBluetoothAdapter 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.closeBluetoothAdapter.param -->
 
-<!-- UTSAPIJSON.closeBluetoothAdapter.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.closeBluetoothAdapter.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **CloseBluetoothAdapterOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (result: [CloseBluetoothAdapterSuccess](#closebluetoothadaptersuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [CloseBluetoothAdapterSuccess](#closebluetoothadaptersuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+#### CloseBluetoothAdapterSuccess 的属性值 @closebluetoothadaptersuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.closeBluetoothAdapter.example -->
 
-<!-- UTSAPIJSON.closeBluetoothAdapter.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.closeBluetoothAdapter)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.closeBluetoothAdapter.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=closeBluetoothAdapter&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=closeBluetoothAdapter&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=closeBluetoothAdapter&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=closeBluetoothAdapter&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=closeBluetoothAdapter)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=closeBluetoothAdapter&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 <!-- UTSAPIJSON.getBluetoothAdapterState.name -->
@@ -139,38 +285,106 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.getBluetoothAdapterState.tutorial -->
 
 
-<!-- UTSAPIJSON.onBluetoothAdapterStateChange.name -->
+::: sourceCode
+## uni.onBluetoothAdapterStateChange(callback) @onbluetoothadapterstatechange
+:::
 
-<!-- UTSAPIJSON.onBluetoothAdapterStateChange.description -->
+监听蓝牙适配器状态变化事件。
 
-<!-- UTSAPIJSON.onBluetoothAdapterStateChange.compatibility -->
+### onBluetoothAdapterStateChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.onBluetoothAdapterStateChange.param -->
 
-<!-- UTSAPIJSON.onBluetoothAdapterStateChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.onBluetoothAdapterStateChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (result: [BluetoothAdapterState](#bluetoothadapterstate-values)) => void | 是 | 支付宝小程序: x | * | 
+
+### BluetoothAdapterState 的属性值 @bluetoothadapterstate-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| available | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙适配器是否可用。 |
+| discovering | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙适配器是否正在搜索设备。 |
+
+
+
+
+### 返回值 
+
+| 类型 |
+| :- |
+| number |
+ 
+
 
 <!-- UTSAPIJSON.onBluetoothAdapterStateChange.example -->
 
-<!-- UTSAPIJSON.onBluetoothAdapterStateChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBluetoothAdapterStateChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothAdapterStateChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBluetoothAdapterStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBluetoothAdapterStateChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBluetoothAdapterStateChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBluetoothAdapterStateChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBluetoothAdapterStateChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBluetoothAdapterStateChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.offBluetoothAdapterStateChange.name -->
+::: sourceCode
+## uni.offBluetoothAdapterStateChange(listener?) @offbluetoothadapterstatechange
+:::
 
-<!-- UTSAPIJSON.offBluetoothAdapterStateChange.description -->
+移除蓝牙适配器状态变化监听函数。传入监听 ID 时移除对应监听，否则移除全部监听。
 
-<!-- UTSAPIJSON.offBluetoothAdapterStateChange.compatibility -->
+### offBluetoothAdapterStateChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.offBluetoothAdapterStateChange.param -->
 
-<!-- UTSAPIJSON.offBluetoothAdapterStateChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.offBluetoothAdapterStateChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| listener | number \| (result: **BluetoothAdapterState**) => void | 否 | 支付宝小程序: x | * |
+
+#### listener 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| available | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙适配器是否可用。 |
+| discovering | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙适配器是否正在搜索设备。 | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.offBluetoothAdapterStateChange.example -->
 
-<!-- UTSAPIJSON.offBluetoothAdapterStateChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBluetoothAdapterStateChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBluetoothAdapterStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBluetoothAdapterStateChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBluetoothAdapterStateChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBluetoothAdapterStateChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBluetoothAdapterStateChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBluetoothAdapterStateChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 <!-- UTSAPIJSON.startBluetoothDevicesDiscovery.name -->

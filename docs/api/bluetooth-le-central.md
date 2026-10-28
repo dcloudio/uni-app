@@ -218,55 +218,234 @@
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.name -->
+::: sourceCode
+## uni.offBLEConnectionStateChange(listener?) @offbleconnectionstatechange
+:::
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.description -->
+移除 BLE 连接状态变化监听。传 ID 删除对应监听，否则清空全部监听。
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.compatibility -->
+### offBLEConnectionStateChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.param -->
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| listener | number \| (result: **BLEConnectionStateChangeResult**) => void | 否 | 支付宝小程序: x | * |
+
+#### listener 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
+| connected | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 是否处于已连接状态。 | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.offBLEConnectionStateChange.example -->
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBLEConnectionStateChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEConnectionStateChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBLEConnectionStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBLEConnectionStateChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBLEConnectionStateChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBLEConnectionStateChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBLEConnectionStateChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBLEConnectionStateChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.name -->
+::: sourceCode
+## uni.getBLEDeviceRSSI(options) @getbledevicerssi
+:::
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.description -->
+获取已连接设备的信号强度。
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.compatibility -->
+### getBLEDeviceRSSI 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.param -->
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **GetBLEDeviceRSSIOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| success | (result: [GetBLEDeviceRSSISuccess](#getbledevicerssisuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEDeviceRSSISuccess](#getbledevicerssisuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+#### GetBLEDeviceRSSISuccess 的属性值 @getbledevicerssisuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| RSSI | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 信号强度，单位 dBm。 |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEDeviceRSSI.example -->
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEDeviceRSSI)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEDeviceRSSI.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEDeviceRSSI&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEDeviceRSSI&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEDeviceRSSI&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEDeviceRSSI&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEDeviceRSSI)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEDeviceRSSI&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEMTU.name -->
+::: sourceCode
+## uni.getBLEMTU(options) @getblemtu
+:::
 
-<!-- UTSAPIJSON.getBLEMTU.description -->
+获取最大传输单元。
 
-<!-- UTSAPIJSON.getBLEMTU.compatibility -->
+### getBLEMTU 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.getBLEMTU.param -->
 
-<!-- UTSAPIJSON.getBLEMTU.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.getBLEMTU.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **GetBLEMTUOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| writeType | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 写模式，仅 iOS 使用。可选值为 write、writeNoResponse，默认值为 write。 |
+| success | (result: [GetBLEMTUSuccess](#getblemtusuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEMTUSuccess](#getblemtusuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+##### writeType 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "write" | 支付宝小程序: x | 强制回复写，不支持时报错 |
+| "writeNoResponse" | 支付宝小程序: x | 强制无回复写，不支持时报错 |
+
+#### GetBLEMTUSuccess 的属性值 @getblemtusuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，单位 bytes。 |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEMTU.example -->
 
-<!-- UTSAPIJSON.getBLEMTU.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEMTU)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEMTU.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEMTU&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEMTU&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEMTU&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEMTU&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEMTU)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEMTU&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### iOS 注意事项
 
@@ -275,110 +454,487 @@
 - 返回的长度上限不代表外设业务协议支持任意长度的数据，分包还需遵循设备协议。
 
 
-<!-- UTSAPIJSON.setBLEMTU.name -->
+::: sourceCode
+## uni.setBLEMTU(options) @setblemtu
+:::
 
-<!-- UTSAPIJSON.setBLEMTU.description -->
+设置最大传输单元，仅 Android 支持。
 
-<!-- UTSAPIJSON.setBLEMTU.compatibility -->
+### setBLEMTU 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.setBLEMTU.param -->
 
-<!-- UTSAPIJSON.setBLEMTU.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.setBLEMTU.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **SetBLEMTUOptions** | 是 | 支付宝小程序: x | 仅 Android 支持。 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
+| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，取值范围为 (22, 512)，单位 bytes。 |
+| success | (result: [SetBLEMTUSuccess](#setblemtusuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [SetBLEMTUSuccess](#setblemtusuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+#### SetBLEMTUSuccess 的属性值 @setblemtusuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值，与传入参数一致，单位 bytes。 |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.setBLEMTU.example -->
 
-<!-- UTSAPIJSON.setBLEMTU.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.setBLEMTU)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.setBLEMTU.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setBLEMTU&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setBLEMTU&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setBLEMTU&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setBLEMTU&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setBLEMTU)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setBLEMTU&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### iOS 注意事项
 
 iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 `complete`，返回不支持错误。写入前可通过 `getBLEMTU` 查询对应写模式的最大可写长度。
 
 
-<!-- UTSAPIJSON.onBLEMTUChange.name -->
+::: sourceCode
+## uni.onBLEMTUChange(listener) @onblemtuchange
+:::
 
-<!-- UTSAPIJSON.onBLEMTUChange.description -->
+监听 MTU 变化，仅 Android 支持。
 
-<!-- UTSAPIJSON.onBLEMTUChange.compatibility -->
+### onBLEMTUChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.onBLEMTUChange.param -->
 
-<!-- UTSAPIJSON.onBLEMTUChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.onBLEMTUChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| listener | (result: [BLEMTUChangeResult](#blemtuchangeresult-values)) => void | 是 | 支付宝小程序: x | * | 
+
+### BLEMTUChangeResult 的属性值 @blemtuchangeresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
+| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，单位 bytes。 |
+
+
+
+
+### 返回值 
+
+| 类型 |
+| :- |
+| number |
+ 
+
 
 <!-- UTSAPIJSON.onBLEMTUChange.example -->
 
-<!-- UTSAPIJSON.onBLEMTUChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBLEMTUChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLEMTUChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBLEMTUChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBLEMTUChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBLEMTUChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBLEMTUChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBLEMTUChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBLEMTUChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.offBLEMTUChange.name -->
+::: sourceCode
+## uni.offBLEMTUChange(listener?) @offblemtuchange
+:::
 
-<!-- UTSAPIJSON.offBLEMTUChange.description -->
+移除 MTU 变化监听，仅 Android 支持。传 ID 删除对应监听，否则清空全部监听。
 
-<!-- UTSAPIJSON.offBLEMTUChange.compatibility -->
+### offBLEMTUChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.offBLEMTUChange.param -->
 
-<!-- UTSAPIJSON.offBLEMTUChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.offBLEMTUChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| listener | number \| (result: **BLEMTUChangeResult**) => void | 否 | 支付宝小程序: x | * |
+
+#### listener 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
+| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，单位 bytes。 | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.offBLEMTUChange.example -->
 
-<!-- UTSAPIJSON.offBLEMTUChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBLEMTUChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEMTUChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBLEMTUChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBLEMTUChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBLEMTUChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBLEMTUChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBLEMTUChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBLEMTUChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEDeviceServices.name -->
+::: sourceCode
+## uni.getBLEDeviceServices(options) @getbledeviceservices
+:::
 
-<!-- UTSAPIJSON.getBLEDeviceServices.description -->
+获取已连接设备的服务列表。
 
-<!-- UTSAPIJSON.getBLEDeviceServices.compatibility -->
+### getBLEDeviceServices 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.getBLEDeviceServices.param -->
 
-<!-- UTSAPIJSON.getBLEDeviceServices.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.getBLEDeviceServices.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **GetBLEDeviceServicesOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| success | (result: [GetBLEDeviceServicesSuccess](#getbledeviceservicessuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEDeviceServicesSuccess](#getbledeviceservicessuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+#### GetBLEDeviceServicesSuccess 的属性值 @getbledeviceservicessuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| services | Array&lt;**BLEService**&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: x | 设备服务列表。 |
+
+#### services 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| uuid | string | 是 | 支付宝小程序: x | 蓝牙设备服务的 UUID。 |
+| isPrimary | boolean | 是 | 支付宝小程序: x | 该服务是否为主服务。 |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEDeviceServices.example -->
 
-<!-- UTSAPIJSON.getBLEDeviceServices.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEDeviceServices)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEDeviceServices.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEDeviceServices&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEDeviceServices&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEDeviceServices&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEDeviceServices&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEDeviceServices)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEDeviceServices&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.name -->
+::: sourceCode
+## uni.getBLEDeviceCharacteristics(options) @getbledevicecharacteristics
+:::
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.description -->
+获取指定服务的特征列表。
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.compatibility -->
+### getBLEDeviceCharacteristics 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.param -->
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **GetBLEDeviceCharacteristicsOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙服务 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| success | (result: [GetBLEDeviceCharacteristicsSuccess](#getbledevicecharacteristicssuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEDeviceCharacteristicsSuccess](#getbledevicecharacteristicssuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+#### GetBLEDeviceCharacteristicsSuccess 的属性值 @getbledevicecharacteristicssuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| characteristics | Array&lt;**BLECharacteristic**&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: x | 设备特征列表。 |
+
+#### characteristics 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| uuid | string | 是 | 支付宝小程序: x | 蓝牙设备特征的 UUID。 |
+| properties | **BLECharacteristicProperties** | 是 | 支付宝小程序: x | 该特征支持的操作类型。 |
+
+##### properties 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| read | boolean | 是 | 支付宝小程序: x | 该特征是否支持 read 操作。 |
+| write | boolean | 是 | 支付宝小程序: x | 该特征是否支持 write 操作。 |
+| notify | boolean | 是 | 支付宝小程序: x | 该特征是否支持 notify 操作。 |
+| indicate | boolean | 是 | 支付宝小程序: x | 该特征是否支持 indicate 操作。 |
+| writeNoResponse | boolean | 是 | 支付宝小程序: x | 该特征是否支持无回复写操作。 |
+| writeDefault | boolean | 是 | 支付宝小程序: x | 该特征是否支持有回复写操作。 |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEDeviceCharacteristics.example -->
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEDeviceCharacteristics)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEDeviceCharacteristics.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEDeviceCharacteristics&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEDeviceCharacteristics&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEDeviceCharacteristics&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEDeviceCharacteristics&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEDeviceCharacteristics)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEDeviceCharacteristics&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.name -->
+::: sourceCode
+## uni.readBLECharacteristicValue(options) @readblecharacteristicvalue
+:::
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.description -->
+读取蓝牙低功耗设备特征值的二进制数据。注意：必须设备的特征支持 read 才可以成功调用；读取结果通过 onBLECharacteristicValueChange 返回。
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.compatibility -->
+### readBLECharacteristicValue 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.param -->
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **ReadBLECharacteristicValueOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。特征值通过 onBLECharacteristicValueChange 返回。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+#### BLEOperationSuccess 的属性值 @bleoperationsuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.readBLECharacteristicValue.example -->
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.readBLECharacteristicValue)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.readBLECharacteristicValue.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=readBLECharacteristicValue&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=readBLECharacteristicValue&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=readBLECharacteristicValue&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=readBLECharacteristicValue&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=readBLECharacteristicValue)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=readBLECharacteristicValue&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意事项
 
@@ -387,21 +943,102 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 - 多设备或多特征值共用事件监听时，应按事件中的 `deviceId`、`serviceId` 和 `characteristicId` 匹配数据来源。
 
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.name -->
+::: sourceCode
+## uni.writeBLECharacteristicValue(options) @writeblecharacteristicvalue
+:::
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.description -->
+向蓝牙低功耗设备特征值中写入二进制数据。注意：必须设备的特征支持 write 才可以成功调用。
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.compatibility -->
+### writeBLECharacteristicValue 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.param -->
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **WriteBLECharacteristicValueOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
+| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
+| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 蓝牙设备特征对应的二进制值。 |
+| writeType | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征值写模式。可选值为 write、writeNoResponse；不传时 iOS 优先 write，Android 优先 writeNoResponse。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+##### writeType 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "write" | 支付宝小程序: x | 强制回复写，不支持时报错 |
+| "writeNoResponse" | 支付宝小程序: x | 强制无回复写，不支持时报错 |
+
+#### BLEOperationSuccess 的属性值 @bleoperationsuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.writeBLECharacteristicValue.example -->
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.writeBLECharacteristicValue)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.writeBLECharacteristicValue.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=writeBLECharacteristicValue&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=writeBLECharacteristicValue&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=writeBLECharacteristicValue&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=writeBLECharacteristicValue&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=writeBLECharacteristicValue)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=writeBLECharacteristicValue&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意事项
 
@@ -410,21 +1047,102 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 - 无响应写缺少外设对本次写入的协议层确认。若业务需要确认设备已接收或处理数据，应设计应用层应答机制。
 
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.name -->
+::: sourceCode
+## uni.notifyBLECharacteristicValueChange(options) @notifyblecharacteristicvaluechange
+:::
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.description -->
+启用蓝牙低功耗设备特征值变化时的 notify 功能，订阅特征。注意：必须设备的特征支持 notify 或者 indicate 才可以成功调用。另外，必须先启用 uni.notifyBLECharacteristicValueChange 才能监听到设备 characteristicValueChange 事件。
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.compatibility -->
+### notifyBLECharacteristicValueChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.param -->
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **NotifyBLECharacteristicValueChangeOptions** | 是 | 支付宝小程序: x | * |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
+| state | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 是否启用特征值变化通知。 |
+| type | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 特征订阅类型，可选值为 notification、indication，默认值为 indication。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
+| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+
+##### type 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| "notification" | 支付宝小程序: x | 订阅类型 notification |
+| "indication" | 支付宝小程序: x | 订阅类型 indication |
+
+#### BLEOperationSuccess 的属性值 @bleoperationsuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
+| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+
+#### BluetoothFail 的属性值 @bluetoothfail-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
+| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
+| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 支付宝小程序: x |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| -1 | 支付宝小程序: x |
+| 10000 | 支付宝小程序: x |
+| 10001 | 支付宝小程序: x |
+| 10002 | 支付宝小程序: x |
+| 10003 | 支付宝小程序: x |
+| 10004 | 支付宝小程序: x |
+| 10005 | 支付宝小程序: x |
+| 10006 | 支付宝小程序: x |
+| 10007 | 支付宝小程序: x |
+| 10008 | 支付宝小程序: x |
+| 10009 | 支付宝小程序: x |
+| 10012 | 支付宝小程序: x |
+| 10013 | 支付宝小程序: x |
+
+
+
+
+
 
 <!-- UTSAPIJSON.notifyBLECharacteristicValueChange.example -->
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.notifyBLECharacteristicValueChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.notifyBLECharacteristicValueChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=notifyBLECharacteristicValueChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=notifyBLECharacteristicValueChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=notifyBLECharacteristicValueChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=notifyBLECharacteristicValueChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=notifyBLECharacteristicValueChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=notifyBLECharacteristicValueChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意事项
 
@@ -433,38 +1151,110 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 - 不再需要通知时传入 `state: false`。断线重连后如需继续接收通知，应重新发现服务和特征值并再次开启通知。
 
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.name -->
+::: sourceCode
+## uni.onBLECharacteristicValueChange(listener) @onblecharacteristicvaluechange
+:::
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.description -->
+监听蓝牙低功耗设备的特征值变化事件。必须先调用 uni.notifyBLECharacteristicValueChange 接口才能接收到设备推送的 notification。
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.compatibility -->
+### onBLECharacteristicValueChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.param -->
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| listener | (result: [BLECharacteristicValueChangeResult](#blecharacteristicvaluechangeresult-values)) => void | 是 | 支付宝小程序: x | * | 
+
+### BLECharacteristicValueChangeResult 的属性值 @blecharacteristicvaluechangeresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
+| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID。 |
+| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID。 |
+| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | 微信小程序: 4.41; 支付宝小程序: x | 特征最新的二进制值。 |
+
+
+
+
+### 返回值 
+
+| 类型 |
+| :- |
+| number |
+ 
+
 
 <!-- UTSAPIJSON.onBLECharacteristicValueChange.example -->
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBLECharacteristicValueChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLECharacteristicValueChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBLECharacteristicValueChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBLECharacteristicValueChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBLECharacteristicValueChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBLECharacteristicValueChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBLECharacteristicValueChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBLECharacteristicValueChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.name -->
+::: sourceCode
+## uni.offBLECharacteristicValueChange(listener?) @offblecharacteristicvaluechange
+:::
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.description -->
+移除 BLE 特征值变化监听。传 ID 删除对应监听，否则清空全部监听。
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.compatibility -->
+### offBLECharacteristicValueChange 兼容性 <Help /> 
+| 微信小程序 | 支付宝小程序 |
+| :- | :- |
+| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.param -->
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.fileFormats -->
+### 参数 
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.returnValue -->
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| listener | number \| (result: **BLECharacteristicValueChangeResult**) => void | 否 | 支付宝小程序: x | * |
+
+#### listener 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
+| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID。 |
+| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID。 |
+| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | 微信小程序: 4.41; 支付宝小程序: x | 特征最新的二进制值。 | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.offBLECharacteristicValueChange.example -->
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBLECharacteristicValueChange)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLECharacteristicValueChange.html)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBLECharacteristicValueChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBLECharacteristicValueChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBLECharacteristicValueChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBLECharacteristicValueChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBLECharacteristicValueChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBLECharacteristicValueChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 <!-- UTSAPIJSON.ble.example -->
