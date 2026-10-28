@@ -4,6 +4,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 
 ::: sourceCode
 ## uni-drag-cell
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-drag-cell/components/uni-drag-cell
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-drag-cell/components/uni-drag-cell
+
 :::
 
 可拖拽单元格组件

@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.installWgt(options) @installwgt
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-install-wgt
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-install-wgt
+
 :::
 
 安装wgt包   

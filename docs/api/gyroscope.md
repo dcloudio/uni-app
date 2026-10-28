@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.startGyroscope(options?) @startgyroscope
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 
@@ -107,10 +107,10 @@
 ::: sourceCode
 ## uni.stopGyroscope(options?) @stopgyroscope
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 
@@ -200,10 +200,10 @@
 ::: sourceCode
 ## uni.onGyroscopeChange(callback) @ongyroscopechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 
@@ -260,10 +260,10 @@
 ::: sourceCode
 ## uni.offGyroscopeChange(callback?) @offgyroscopechange
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-gyroscope
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 

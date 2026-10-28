@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.convert2AbsFullPath(inputPath) @convert2absfullpath
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-convert2AbsFullPath
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-convert2AbsFullPath
+
 :::
 
 将文件的项目相对地址转换为 运行期对应的绝对地址

@@ -101,6 +101,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 ::: sourceCode
 ## uni-tab
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab
+
 :::
 
 选项卡容器组件
@@ -1221,6 +1227,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 ::: sourceCode
 ## uni-tab-item
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-item
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-item
+
 :::
 
 选项卡项组件
@@ -1258,6 +1270,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 ::: sourceCode
 ## uni-tab-content
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-content
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-content
+
 :::
 
 选项卡内容组件
@@ -1291,6 +1309,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 ::: sourceCode
 ## uni-tab-midbutton
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-midbutton
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tab-bar/components/uni-tab-midbutton
+
 :::
 
 选项卡中间悬浮按钮组件

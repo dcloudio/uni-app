@@ -4,6 +4,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 
 ::: sourceCode
 ## uni-fab-button
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-fab-button/components/uni-fab-button
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-fab-button/components/uni-fab-button
+
 :::
 
 悬浮加号按钮组件

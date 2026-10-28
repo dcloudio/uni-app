@@ -24,7 +24,7 @@ view组件是 uni-app x 最基本的视图容器，它的作用类似于HTML中�
 | hover-stop-propagation | boolean | false | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
 | hover-start-time | number | 50 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
 | hover-stay-time | number | 400 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
-| flatten | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| flatten | boolean | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件。拍平后存在事件、截图及 CSS 等限制，详见[拍平限制说明](https://doc.dcloud.net.cn/uni-app-x/component/common.html#flatten)。 |
 
 #### hover-class说明@hover-class
 
