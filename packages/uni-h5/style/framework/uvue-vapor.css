@@ -130,8 +130,8 @@ uni-app div:where([uni-editor]) {
   justify-content: normal;
 }
 
-/* Canvas 保留旧宿主的尺寸和字体继承，绘图尺寸由内部 canvas 的 width/height 控制。 */
-uni-app div:where([uni-canvas]) {
+/* Canvas 的 CSS 显示尺寸独立于 width/height 绘图缓冲区尺寸，用户样式可覆盖默认值。 */
+uni-app canvas:where([uni-canvas]) {
   width: 300px;
   height: 150px;
   display: block;
@@ -142,14 +142,6 @@ uni-app div:where([uni-canvas]) {
   align-items: normal;
   align-content: normal;
   justify-content: normal;
-}
-
-uni-app div:where([uni-canvas]) > .uni-canvas-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 }
 
 /* WebView 保留旧宿主的 flex 布局和字体继承，iframe 继续占满宿主。 */
@@ -503,12 +495,13 @@ body .uni-modal__btn_primary {
 }
 
 /*
- * Web Vapor 使用原生 div、span、img 承载 view、text、image。
+ * Web Vapor 使用原生 div、span、img、canvas 承载 view、text、image、canvas。
  * 上面的框架规则兼容当前仍使用 uni-* 宿主标签的内置组件；组件完成 Vapor 迁移后，
  * 相关旧宿主规则再逐步移除。
  */
 
 div:where([uni-view]),
+canvas:where([uni-view]),
 span:where([uni-text]),
 img:where([uni-image]) {
   position: relative;
@@ -558,6 +551,7 @@ img:where([uni-image]) {
 }
 
 div:where([uni-view][hidden]),
+canvas:where([uni-view][hidden]),
 span:where([uni-text][hidden]),
 img:where([uni-image][hidden]) {
   display: none !important;

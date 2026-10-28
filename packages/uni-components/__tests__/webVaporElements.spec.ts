@@ -168,6 +168,13 @@ describe('Web Vapor 原生宿主 Element', () => {
         dom.window.HTMLDivElement,
       ],
       [
+        'canvas',
+        'uni-view',
+        'VIEW',
+        elements.UniViewElement,
+        dom.window.HTMLCanvasElement,
+      ],
+      [
         'span',
         'uni-text',
         'TEXT',

@@ -11,7 +11,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup() {
     const root = <canvas uni-canvas="" uni-view="" class="uni-canvas-canvas" />
     //#if !_NODE_JS_
-    // 在外部 ref 可见前绑定内部 canvas；服务端没有原生绘图能力，不做此绑定。
+    // 在外部 ref 可见前绑定根节点的绘图方法；服务端没有原生绘图能力，不做此绑定。
     initCanvasElement(root)
     //#endif
     return root

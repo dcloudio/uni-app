@@ -57,6 +57,13 @@ describe('Web Vapor Canvas 原生宿主', () => {
   beforeAll(async () => {
     const { JSDOM } = jest.requireActual('jsdom')
     dom = new JSDOM('<!DOCTYPE html><body></body>')
+    // 加载真实框架样式，覆盖原生 canvas 的默认显示尺寸。
+    const style = dom.window.document.createElement('style')
+    style.textContent = fs.readFileSync(
+      path.join(root, 'packages/uni-h5/style/framework/uvue-vapor.css'),
+      'utf8'
+    )
+    dom.window.document.head.appendChild(style)
     for (const name of [
       'window',
       'document',
@@ -81,7 +88,7 @@ describe('Web Vapor Canvas 原生宿主', () => {
       __NODE_JS__: false,
       __APP_VIEW__: false,
     })
-    // JSDOM 不提供绘图实现；这里验证参数、this、返回值和异常均原样交给内部 canvas。
+    // JSDOM 不提供绘图实现；这里验证参数、this、返回值和异常均原样交给原生 canvas。
     getContext = jest.fn(function (this: HTMLCanvasElement, type: string) {
       if (type === 'throw') throw new Error('native canvas error')
       if (type !== '2d') return null
@@ -211,7 +218,7 @@ describe('Web Vapor Canvas 原生宿主', () => {
 
   function mount(props: Record<string, Function> = {}) {
     const node = vue.shallowRef()
-    const host = document.createElement('div')
+    const host = document.createElement('uni-app')
     document.body.appendChild(host)
     const app = vue.createVaporApp(
       vue.defineVaporComponent({
@@ -223,9 +230,7 @@ describe('Web Vapor Canvas 原生宿主', () => {
           vue.setStaticTemplateRef(canvas, node)
           vue.onMounted(() => {
             expect(node.value.uniTagName).toBe('CANVAS')
-            expect(node.value.getContext('2d').canvas).toBe(
-              node.value.firstElementChild
-            )
+            expect(node.value.getContext('2d').canvas).toBe(node.value)
           })
           return canvas
         },
@@ -241,7 +246,7 @@ describe('Web Vapor Canvas 原生宿主', () => {
     app.mount(host)
     return {
       element: node.value,
-      canvas: node.value.firstElementChild as HTMLCanvasElement,
+      canvas: node.value as HTMLCanvasElement,
       node,
       vm: app._instance.proxy,
     }
@@ -254,14 +259,24 @@ describe('Web Vapor Canvas 原生宿主', () => {
       'data-payload': () => payload.value,
       onClick: () => click,
     })
-    expect(element.tagName).toBe('DIV')
+    expect(element.tagName).toBe('CANVAS')
+    expect(element).toBe(canvas)
+    expect(element.firstElementChild).toBeNull()
     expect(element).toBeInstanceOf(UniElement)
     expect(element).toBeInstanceOf(elements.UniViewElement)
     expect(element).toBeInstanceOf(UniCanvasElement)
     class Derived extends UniCanvasElement {}
     expect(element).not.toBeInstanceOf(Derived)
     expect(canvas).toBeInstanceOf(dom.window.HTMLCanvasElement)
-    expect(canvas.hasAttribute('uni-view')).toBe(false)
+    expect(canvas.hasAttribute('uni-view')).toBe(true)
+    expect(Object.prototype.hasOwnProperty.call(canvas, 'width')).toBe(false)
+    expect(Object.prototype.hasOwnProperty.call(canvas, 'height')).toBe(false)
+    expect(typeof element.getPage).toBe('function')
+    expect(typeof element.getBoundingClientRectAsync).toBe('function')
+    const plainCanvas = document.createElement('canvas')
+    expect(plainCanvas).not.toBeInstanceOf(UniElement)
+    expect(plainCanvas).not.toBeInstanceOf(UniCanvasElement)
+    expect(plainCanvas.dataset).toBeInstanceOf(dom.window.DOMStringMap)
     expect(element.setAttribute).toBe(dom.window.Element.prototype.setAttribute)
     expect(element.removeAttribute).toBe(
       dom.window.Element.prototype.removeAttribute
@@ -277,8 +292,43 @@ describe('Web Vapor Canvas 原生宿主', () => {
     payload.value = { count: 2 }
     await vue.nextTick()
     expect(node.value).toBe(element)
-    expect(element.firstElementChild).toBe(canvas)
+    expect(element.firstElementChild).toBeNull()
     expect(element.dataset.get('payload')).toBe(payload.value)
+  })
+
+  test('默认显示尺寸不随绘图缓冲区变化，用户样式可覆盖并恢复默认值', async () => {
+    const size = vue.reactive({ width: 640, height: 320 })
+    const style = vue.ref({})
+    const { canvas } = mount({
+      width: () => size.width,
+      height: () => size.height,
+      style: () => style.value,
+    })
+    const expectDisplaySize = (width: string, height: string) => {
+      const computed = dom.window.getComputedStyle(canvas)
+      expect(computed.width).toBe(width)
+      expect(computed.height).toBe(height)
+    }
+    expect(canvas.width).toBe(640)
+    expect(canvas.height).toBe(320)
+    expectDisplaySize('300px', '150px')
+    size.width = 800
+    size.height = 400
+    await vue.nextTick()
+    expect(canvas.width).toBe(800)
+    expect(canvas.height).toBe(400)
+    expectDisplaySize('300px', '150px')
+    canvas.width = 1024
+    canvas.height = 512
+    expectDisplaySize('300px', '150px')
+    style.value = { width: '200px', height: '100px' }
+    await vue.nextTick()
+    expectDisplaySize('200px', '100px')
+    expect(canvas.width).toBe(1024)
+    expect(canvas.height).toBe(512)
+    style.value = {}
+    await vue.nextTick()
+    expectDisplaySize('300px', '150px')
   })
 
   test('尺寸遵循原生 canvas 规则，样式尺寸和绘图缓冲区尺寸相互独立', async () => {
