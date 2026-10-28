@@ -11499,12 +11499,11 @@ function resolveExternalClassProp(propsValues, key, value) {
 	if ((0, _vue_shared.isObject)(value)) {
 		const cached = previous;
 		if (cached && cached._externalClassSource === value) return cached;
-		const result = /* @__PURE__ */ computed$1(() => normalizeExternalClasses(value));
+		const result = /* @__PURE__ */ computed$1(() => normalizeExternalClasses(value).join(" "));
 		result._externalClassSource = value;
 		return result;
 	}
-	const normalized = normalizeExternalClasses(value);
-	return (0, _vue_shared.isArray)(previous) && normalized.join(" ") === (0, _vue_shared.normalizeClass)(previous) ? previous : normalized;
+	return normalizeExternalClasses(value).join(" ");
 }
 //#endregion
 //#region packages/runtime-vapor/src/componentProps.ts

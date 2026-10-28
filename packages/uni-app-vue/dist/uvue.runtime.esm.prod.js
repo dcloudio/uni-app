@@ -5815,7 +5815,7 @@ function resolveExternalClassesPropValue(key, value, options, isAbsent) {
     var opt = options[key];
     if (opt && opt[2
     /* BooleanFlags.externalClasses */]) {
-      return normalizeExternalClasses(value);
+      return normalizeExternalClasses(value).join(" ");
     }
   }
   return value;
@@ -9340,14 +9340,14 @@ var CLASS_AND_STYLES = {
   }
 };
 function transformAttr(el, key, value, instance) {
-  if (!value) {
+  if (!value && value !== "") {
     return [key, value];
   }
   var opts = CLASS_AND_STYLES[el.tagName.toLowerCase()];
   if (opts) {
     var camelized = camelize(key);
     if (opts["class"].indexOf(camelized) > -1) {
-      var classStyle = parseClassList(Array.isArray(value) ? value : [value], instance, el);
+      var classStyle = parseClassList(Array.isArray(value) ? value : value.split(/\s+/), instance, el);
       if (el.tagName === "BUTTON") {
         if (value === "none" || value == "button-hover" && classStyle.size == 0) {
           return [camelized, value];
@@ -9355,7 +9355,7 @@ function transformAttr(el, key, value, instance) {
       }
       return [camelized, classStyle];
     }
-    if (opts["style"].indexOf(camelized) > -1) {
+    if (value && opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
         var sytle = parseStringStyle(camelize(value));
         return [camelized, sytle];

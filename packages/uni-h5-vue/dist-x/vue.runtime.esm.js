@@ -5615,7 +5615,7 @@ function resolveExternalClassesPropValue(key, value, options, isAbsent) {
       2
       /* BooleanFlags.externalClasses */
     ]) {
-      return normalizeExternalClasses(value);
+      return normalizeExternalClasses(value).join(" ");
     }
   }
   return value;

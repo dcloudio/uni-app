@@ -3524,7 +3524,7 @@ function resolveExternalClassesPropValue(key, value, options, isAbsent, sourceIs
       /* BooleanFlags.externalClasses */
     ]) {
       if (__X_STYLE_ISOLATION_UP_ARROW__) {
-        return normalizeExternalClasses(value, sourceIsPage);
+        return normalizeExternalClasses(value, sourceIsPage).join(" ");
       }
       return hyphenate(key);
     }

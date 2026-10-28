@@ -11642,12 +11642,11 @@ function resolveExternalClassProp(propsValues, key, value) {
 	if (isObject(value)) {
 		const cached = previous;
 		if (cached && cached._externalClassSource === value) return cached;
-		const result = /* @__PURE__ */ computed$1(() => normalizeExternalClasses(value));
+		const result = /* @__PURE__ */ computed$1(() => normalizeExternalClasses(value).join(" "));
 		result._externalClassSource = value;
 		return result;
 	}
-	const normalized = normalizeExternalClasses(value);
-	return isArray(previous) && normalized.join(" ") === normalizeClass$1(previous) ? previous : normalized;
+	return normalizeExternalClasses(value).join(" ");
 }
 //#endregion
 //#region \0@oxc-project+runtime@0.146.0/helpers/esm/typeof.js
