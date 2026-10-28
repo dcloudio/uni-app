@@ -33,3 +33,5 @@ export {
   locToStartAndEnd,
   offsetToStartAndEnd,
 } from './vitejs/utils'
+
+export { uniWebVaporElementPlugin } from './uniElement'

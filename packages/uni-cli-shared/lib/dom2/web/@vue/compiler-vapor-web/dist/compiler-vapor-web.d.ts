@@ -17,6 +17,6 @@ interface SSRCompilerOptions extends CompilerOptions$1 {
 }
 //#endregion
 //#region temp/packages/compiler-vapor-web/src/uniElement.d.ts
-export declare function resolveUniElementRoot(ast: RootNode | undefined, name: string): ElementNode | undefined;
+export declare function resolveUniElementRoots(ast: RootNode | undefined, name: string): ElementNode[] | undefined;
 //#endregion
 export { UNI_APP_SCOPE_ID, type VaporCodegenResult };

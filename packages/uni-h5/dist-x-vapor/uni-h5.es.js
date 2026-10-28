@@ -279,11 +279,13 @@ function installWebVaporElements(realm) {
   }
   initVaporDataset(realm);
 }
-class UniCanvasElement extends UniViewElement {
+const _UniCanvasElement = class _UniCanvasElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniCanvasElement && value instanceof UniViewElement && value.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniCanvasElement && value instanceof UniViewElement && value.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-}
+};
+_UniCanvasElement.__uniElement = {};
+let UniCanvasElement = _UniCanvasElement;
 function initCanvasElement(root) {
   const canvas = root.firstElementChild;
   Object.defineProperties(root, {
@@ -2759,9 +2761,9 @@ const indexVapor$8 = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-class UniInputElement extends UniViewElement {
+const _UniInputElement = class _UniInputElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
   focus(options) {
     var _a;
@@ -2773,7 +2775,9 @@ class UniInputElement extends UniViewElement {
   set value(value) {
     this.querySelector("input").value = value;
   }
-}
+};
+_UniInputElement.__uniElement = {};
+let UniInputElement = _UniInputElement;
 const descriptors$1 = {
   uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
@@ -3671,15 +3675,17 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-class UniTextareaElement extends UniViewElement {
+const _UniTextareaElement = class _UniTextareaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
   focus(options) {
     var _a;
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
-}
+};
+_UniTextareaElement.__uniElement = {};
+let UniTextareaElement = _UniTextareaElement;
 const descriptors = {
   uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
@@ -12234,8 +12240,10 @@ function useBackgroundColorContent(pageMeta) {
   watchEffect(update);
   onActivated(update);
 }
-class UniLoadingElement extends UniViewElement {
-}
+const _UniLoadingElement = class _UniLoadingElement extends UniViewElement {
+};
+_UniLoadingElement.__uniElement = {};
+let UniLoadingElement = _UniLoadingElement;
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = ref("16px");
   const loadingBorderWidth = ref("1px");
@@ -12284,7 +12292,7 @@ function useLoadingStyle(targetElement, bold) {
   };
 }
 const t0$A = template('<div data-v-212d40c7 uni-loading uni-view class="default __uni_loading_container__" style="display: flex;"><div data-v-212d40c7 uni-view>', 257);
-const _uniElement$h = { value: "LOADING" };
+const _uniLoadingElement = { value: "LOADING" };
 const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "loading",
@@ -12306,7 +12314,7 @@ const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
     const loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props2.bold)));
     const n0 = t0$A();
     const n1 = child(n0);
-    initUniElement(n0, _uniElement$h);
+    initUniElement(n0, _uniLoadingElement);
     setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
     renderEffect(() => {
       setClassName(n1, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
@@ -16449,11 +16457,13 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniScrollViewElement extends UniViewElement {
+const _UniScrollViewElement = class _UniScrollViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-}
+};
+_UniScrollViewElement.__uniElement = {};
+let UniScrollViewElement = _UniScrollViewElement;
 function initScrollViewElement(root, scrollLeftChanged, scrollTopChanged) {
   const main = root.firstElementChild.firstElementChild;
   Object.defineProperties(root, {
@@ -17210,7 +17220,7 @@ function createSpaceKeyHandlers(isDisabled) {
   }
   return { handleKeydown, handleKeyup, handleBlur };
 }
-class UniCheckboxElement extends UniViewElement {
+const _UniCheckboxElement = class _UniCheckboxElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "CHECKBOX";
@@ -17229,18 +17239,23 @@ class UniCheckboxElement extends UniViewElement {
     this._checked = val;
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
-}
+};
+_UniCheckboxElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniCheckboxElement = _UniCheckboxElement;
 const t0$v = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
-const t1$h = template("<div uni-view role=checkbox>", 1);
+const t1$h = template("<div uni-checkbox uni-view role=checkbox>", 1);
 const t2$8 = template("<span uni-text>");
-const t3$5 = template("<div uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
+const t3$5 = template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
+const _uniCheckboxElement = { value: "CHECKBOX" };
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
     rootElement: {
-      class: UniCheckboxElement
+      class: /* @__PURE__ */ initUniElementType(UniCheckboxElement, "checkbox")
     },
     externalClasses: ["icon-class", "checkbox-class", "checkbox-active-class"]
   },
@@ -17349,66 +17364,68 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n6 = t1$h();
+        const n2 = t1$h();
+        initUniElement(n2, _uniCheckboxElement);
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setClass(n6, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+          setClass(n2, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n6, unref(activeStyle));
-          setProp(n6, "tabindex", _disabled ? -1 : 0);
-          setAttr(n6, "aria-checked", _isChecked);
-          setAttr(n6, "aria-disabled", _disabled);
+          setStyle(n2, unref(activeStyle));
+          setProp(n2, "tabindex", _disabled ? -1 : 0);
+          setAttr(n2, "aria-checked", _isChecked);
+          setAttr(n2, "aria-disabled", _disabled);
         });
-        setInsertionState(n6);
+        setInsertionState(n2);
         createIf(() => unref(isChecked), () => {
-          const n5 = t0$v();
-          const n4 = child(n5);
-          setAttr(n4, "d", iconPath$1, true);
-          renderEffect(() => setAttr(n4, "fill", unref(iconColor), true));
-          return n5;
+          const n6 = t0$v();
+          const n5 = child(n6);
+          setAttr(n5, "d", iconPath$1, true);
+          renderEffect(() => setAttr(n5, "fill", unref(iconColor), true));
+          return n6;
         });
-        on$1(n6, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n6, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n6, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n6, "click", withModifiers(handleTap, ["stop"]));
-        return n6;
+        on$1(n2, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n2, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n2, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n2, "click", withModifiers(handleTap, ["stop"]));
+        return n2;
       },
       () => {
-        const n19 = t3$5();
-        const n12 = child(n19);
+        const n8 = t3$5();
+        const n13 = child(n8);
+        initUniElement(n8, _uniCheckboxElement);
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setProp(n19, "tabindex", _disabled ? -1 : 0);
-          setAttr(n19, "aria-checked", _isChecked);
-          setAttr(n19, "aria-disabled", _disabled);
-          setClass(n12, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
+          setProp(n8, "tabindex", _disabled ? -1 : 0);
+          setAttr(n8, "aria-checked", _isChecked);
+          setAttr(n8, "aria-disabled", _disabled);
+          setClass(n13, ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n12, unref(activeStyle));
+          setStyle(n13, unref(activeStyle));
         });
-        setInsertionState(n12);
+        setInsertionState(n13);
         createIf(() => unref(isChecked), () => {
-          const n11 = t0$v();
-          const n10 = child(n11);
-          setAttr(n10, "d", iconPath$1, true);
-          renderEffect(() => setAttr(n10, "fill", unref(iconColor), true));
-          return n11;
+          const n12 = t0$v();
+          const n11 = child(n12);
+          setAttr(n11, "d", iconPath$1, true);
+          renderEffect(() => setAttr(n11, "fill", unref(iconColor), true));
+          return n12;
         });
-        setInsertionState(n19, 1);
+        setInsertionState(n8, 1);
         createIf(
           () => isStringSlot,
           () => {
-            const n16 = t2$8();
-            setInsertionState(n16);
+            const n17 = t2$8();
+            setInsertionState(n17);
             createSlot(
               "default",
               null,
@@ -17416,20 +17433,20 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n16;
+            return n17;
           },
           () => {
-            const n18 = createSlot();
-            return n18;
+            const n19 = createSlot();
+            return n19;
           },
           1029
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
-        on$1(n19, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n19, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n19, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n19, "click", withModifiers(handleTap, ["stop"]));
-        return n19;
+        on$1(n8, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n8, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n8, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n8, "click", withModifiers(handleTap, ["stop"]));
+        return n8;
       },
       517
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
@@ -17437,10 +17454,12 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniCheckboxGroupElement extends UniViewElement {
-}
+const _UniCheckboxGroupElement = class _UniCheckboxGroupElement extends UniViewElement {
+};
+_UniCheckboxGroupElement.__uniElement = {};
+let UniCheckboxGroupElement = _UniCheckboxGroupElement;
 const t0$u = template("<div uni-checkbox-group uni-view>", 1);
-const _uniElement$g = { value: "CHECKBOX-GROUP" };
+const _uniCheckboxGroupElement = { value: "CHECKBOX-GROUP" };
 const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "checkbox-group",
@@ -17550,18 +17569,22 @@ const _sfc_main$u = /* @__PURE__ */ defineVaporComponent({
       elementOrderCounter = 0;
     });
     const n0 = t0$u();
-    initUniElement(n0, _uniElement$g);
+    initUniElement(n0, _uniCheckboxGroupElement);
     setInsertionState(n0);
     createSlot();
     return n0;
   }
 });
-class UniFlowItemElement extends UniViewElement {
-}
-class UniWaterflowElement extends UniScrollViewElement {
-}
+const _UniFlowItemElement = class _UniFlowItemElement extends UniViewElement {
+};
+_UniFlowItemElement.__uniElement = {};
+let UniFlowItemElement = _UniFlowItemElement;
+const _UniWaterflowElement = class _UniWaterflowElement extends UniScrollViewElement {
+};
+_UniWaterflowElement.__uniElement = {};
+let UniWaterflowElement = _UniWaterflowElement;
 const t0$t = template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
-const _uniElement$f = { value: "FLOW-ITEM" };
+const _uniFlowItemElement = { value: "FLOW-ITEM" };
 const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "flow-item",
@@ -17650,17 +17673,19 @@ const _sfc_main$t = /* @__PURE__ */ defineVaporComponent({
     });
     __expose({ recycleHooks });
     const n0 = t0$t();
-    initUniElement(n0, _uniElement$f);
+    initUniElement(n0, _uniFlowItemElement);
     setInsertionState(n0);
     createSlot();
     setStaticTemplateRef(n0, element, null, "element");
     return n0;
   }
 });
-class UniFormElement extends UniViewElement {
-}
+const _UniFormElement = class _UniFormElement extends UniViewElement {
+};
+_UniFormElement.__uniElement = {};
+let UniFormElement = _UniFormElement;
 const t0$s = template("<div uni-form uni-view class=uni-form>", 1);
-const _uniElement$e = { value: "FORM" };
+const _uniFormElement = { value: "FORM" };
 const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "form",
@@ -17728,16 +17753,18 @@ const _sfc_main$s = /* @__PURE__ */ defineVaporComponent({
     provide(FORM_KEY, ctx);
     __expose({ submit, reset });
     const n0 = t0$s();
-    initUniElement(n0, _uniElement$e);
+    initUniElement(n0, _uniFormElement);
     setInsertionState(n0);
     createSlot();
     return n0;
   }
 });
-class UniLabelElement extends UniViewElement {
-}
+const _UniLabelElement = class _UniLabelElement extends UniViewElement {
+};
+_UniLabelElement.__uniElement = {};
+let UniLabelElement = _UniLabelElement;
 const t0$r = template("<div uni-label uni-view class=uni-label>", 1);
-const _uniElement$d = { value: "LABEL" };
+const _uniLabelElement = { value: "LABEL" };
 const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "label",
@@ -17812,7 +17839,7 @@ const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
       target.activate(event);
     };
     const n0 = t0$r();
-    initUniElement(n0, _uniElement$d);
+    initUniElement(n0, _uniLabelElement);
     renderEffect(() => {
       const _disabled = __props.disabled;
       setProp(n0, "tabindex", _disabled ? -1 : 0);
@@ -17827,16 +17854,24 @@ const _sfc_main$r = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniListItemElement extends UniViewElement {
-}
-class UniStickySectionElement extends UniViewElement {
-}
-class UniStickyHeaderElement extends UniViewElement {
-}
-class UniListViewElement extends UniScrollViewElement {
-}
+const _UniListItemElement = class _UniListItemElement extends UniViewElement {
+};
+_UniListItemElement.__uniElement = {};
+let UniListItemElement = _UniListItemElement;
+const _UniStickySectionElement = class _UniStickySectionElement extends UniViewElement {
+};
+_UniStickySectionElement.__uniElement = {};
+let UniStickySectionElement = _UniStickySectionElement;
+const _UniStickyHeaderElement = class _UniStickyHeaderElement extends UniViewElement {
+};
+_UniStickyHeaderElement.__uniElement = {};
+let UniStickyHeaderElement = _UniStickyHeaderElement;
+const _UniListViewElement = class _UniListViewElement extends UniScrollViewElement {
+};
+_UniListViewElement.__uniElement = {};
+let UniListViewElement = _UniListViewElement;
 const t0$q = template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
-const _uniElement$c = { value: "LIST-ITEM" };
+const _uniListItemElement = { value: "LIST-ITEM" };
 const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "list-item",
@@ -17917,7 +17952,7 @@ const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
     });
     __expose({ recycleHooks });
     const n0 = t0$q();
-    initUniElement(n0, _uniElement$c);
+    initUniElement(n0, _uniListItemElement);
     setInsertionState(n0);
     createSlot();
     setStaticTemplateRef(n0, element, null, "element");
@@ -18356,8 +18391,10 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
     return n9;
   }
 });
-class UniMatchMediaElement extends UniViewElement {
-}
+const _UniMatchMediaElement = class _UniMatchMediaElement extends UniViewElement {
+};
+_UniMatchMediaElement.__uniElement = {};
+let UniMatchMediaElement = _UniMatchMediaElement;
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
   if (isInSSRComponentSetup)
     return;
@@ -18389,7 +18426,7 @@ const onBackPress = /* @__PURE__ */ createLifeCycleHook(
   /* HookFlags.PAGE */
 );
 const t0$o = template("<div uni-match-media uni-view>", 1);
-const _uniElement$b = { value: "MATCH-MEDIA" };
+const _uniMatchMediaElement = { value: "MATCH-MEDIA" };
 const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "match-media",
@@ -18470,23 +18507,26 @@ const _sfc_main$o = /* @__PURE__ */ defineVaporComponent({
       });
     }
     const n0 = t0$o();
-    initUniElement(n0, _uniElement$b);
+    initUniElement(n0, _uniMatchMediaElement);
     setInsertionState(n0);
     createSlot();
     applyVShow(n0, () => unref(show));
     return n0;
   }
 });
-class UniNavigatorElement extends UniViewElement {
-}
-const t0$n = template("<span uni-text>", 1);
-const t1$f = template("<div uni-view>", 1);
+const _UniNavigatorElement = class _UniNavigatorElement extends UniViewElement {
+};
+_UniNavigatorElement.__uniElement = {};
+let UniNavigatorElement = _UniNavigatorElement;
+const t0$n = template("<span uni-navigator uni-text>", 1);
+const t1$f = template("<div uni-navigator uni-view>", 1);
+const _uniNavigatorElement = { value: "NAVIGATOR" };
 const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "navigator",
     // @ts-ignore
     rootElement: {
-      class: UniNavigatorElement
+      class: /* @__PURE__ */ initUniElementType(UniNavigatorElement, "navigator")
     }
   },
   __name: "navigator",
@@ -18551,8 +18591,9 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => isStringSlot,
       () => {
-        const n3 = t0$n();
-        setInsertionState(n3);
+        const n2 = t0$n();
+        initUniElement(n2, _uniNavigatorElement);
+        setInsertionState(n2);
         createSlot(
           "default",
           null,
@@ -18560,15 +18601,16 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
           256
           /* TEXT_MODE */
         );
-        on$1(n3, "click", handleTap);
-        return n3;
+        on$1(n2, "click", handleTap);
+        return n2;
       },
       () => {
-        const n6 = t1$f();
-        setInsertionState(n6);
+        const n5 = t1$f();
+        initUniElement(n5, _uniNavigatorElement);
+        setInsertionState(n5);
         createSlot();
-        on$1(n6, "click", handleTap);
-        return n6;
+        on$1(n5, "click", handleTap);
+        return n5;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -18578,8 +18620,10 @@ const _sfc_main$n = /* @__PURE__ */ defineVaporComponent({
 });
 class UniVueElement extends HTMLElement {
 }
-class UniPageContainerElement extends UniVueElement {
-}
+const _UniPageContainerElement = class _UniPageContainerElement extends UniVueElement {
+};
+_UniPageContainerElement.__uniElement = {};
+let UniPageContainerElement = _UniPageContainerElement;
 const t0$m = template("<div uni-view class=uni-page-container-overlay>");
 const t1$e = template("<div uni-view>");
 const MAX_SLIDER_DISTANCE = 100;
@@ -18926,7 +18970,7 @@ const _sfc_main$m = /* @__PURE__ */ defineVaporComponent({
     return [n0, n3];
   }
 });
-class UniPickerElement extends UniViewElement {
+const _UniPickerElement = class _UniPickerElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "PICKER";
@@ -18942,9 +18986,13 @@ class UniPickerElement extends UniViewElement {
     this._value = val;
     (_a = this.vm) == null ? void 0 : _a.setPickerValue(val);
   }
-}
+};
+_UniPickerElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_value", { value: "", writable: true, enumerable: true, configurable: true });
+} };
+let UniPickerElement = _UniPickerElement;
 const t0$l = template("<div uni-picker uni-view>", 1);
-const _uniElement$a = { value: "PICKER" };
+const _uniPickerElement = { value: "PICKER" };
 const OPEN_LOCK_DURATION = 300;
 const DEFAULT_START_YEAR = 1970;
 const DEFAULT_END_YEAR = 2099;
@@ -19263,17 +19311,19 @@ const _sfc_main$l = /* @__PURE__ */ defineVaporComponent({
       }
     });
     const n0 = t0$l();
-    initUniElement(n0, _uniElement$a);
+    initUniElement(n0, _uniPickerElement);
     setInsertionState(n0);
     createSlot();
     on$1(n0, "click", handleClick);
     return n0;
   }
 });
-class UniPickerViewElement extends UniViewElement {
-}
+const _UniPickerViewElement = class _UniPickerViewElement extends UniViewElement {
+};
+_UniPickerViewElement.__uniElement = {};
+let UniPickerViewElement = _UniPickerViewElement;
 const t0$k = template("<div uni-picker-view uni-view class=uni-picker-view>", 1);
-const _uniElement$9 = { value: "PICKER-VIEW" };
+const _uniPickerViewElement = { value: "PICKER-VIEW" };
 const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "picker-view",
@@ -19392,18 +19442,20 @@ const _sfc_main$k = /* @__PURE__ */ defineVaporComponent({
       columns.splice(0, columns.length);
     });
     const n0 = t0$k();
-    initUniElement(n0, _uniElement$9);
+    initUniElement(n0, _uniPickerViewElement);
     setInsertionState(n0);
     createSlot();
     setStaticTemplateRef(n0, pickViewRef, null, "pickViewRef");
     return n0;
   }
 });
-class UniPickerViewColumnElement extends UniViewElement {
-}
+const _UniPickerViewColumnElement = class _UniPickerViewColumnElement extends UniViewElement {
+};
+_UniPickerViewColumnElement.__uniElement = {};
+let UniPickerViewColumnElement = _UniPickerViewColumnElement;
 const t0$j = template("<div uni-view>");
 const t1$d = template("<div uni-picker-view-column uni-view class=picker-view-column tabindex=0><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
-const _uniElement$8 = { value: "PICKER-VIEW-COLUMN" };
+const _uniPickerViewColumnElement = { value: "PICKER-VIEW-COLUMN" };
 const EPSILON = 1;
 const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -19551,7 +19603,7 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
     const n4 = next(n7);
     const n5 = next(n4);
     const n6 = next(n5);
-    initUniElement(n0, _uniElement$8);
+    initUniElement(n0, _uniPickerViewColumnElement);
     setInsertionState(n0, n7);
     const n3 = withComponentId("8e57cce2", () => createComponent$1(__syscom_1, {
       class: "picker-view-scroll",
@@ -19590,11 +19642,13 @@ const _sfc_main$j = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniProgressElement extends UniViewElement {
-}
+const _UniProgressElement = class _UniProgressElement extends UniViewElement {
+};
+_UniProgressElement.__uniElement = {};
+let UniProgressElement = _UniProgressElement;
 const t0$i = template("<span uni-text class=uni-progress-value> ");
 const t1$c = template("<div uni-progress uni-view class=uni-progress><div uni-view class=uni-progress-background><div uni-view class=uni-progress-fill></div></div>", 1);
-const _uniElement$7 = { value: "PROGRESS" };
+const _uniProgressElement = { value: "PROGRESS" };
 const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "progress",
@@ -19714,7 +19768,7 @@ const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
     const n0 = t1$c();
     const n2 = child(n0);
     const n1 = child(n2);
-    initUniElement(n0, _uniElement$7);
+    initUniElement(n0, _uniProgressElement);
     setStaticTemplateRef(n1, fillRef, null, "fillRef");
     renderEffect(() => {
       setStyle(n2, unref(backgroundStyle));
@@ -19733,7 +19787,7 @@ const _sfc_main$i = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniRadioElement extends UniViewElement {
+const _UniRadioElement = class _UniRadioElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "RADIO";
@@ -19749,18 +19803,23 @@ class UniRadioElement extends UniViewElement {
     this._checked = val;
     (_a = this.vm) == null ? void 0 : _a.setRadioChecked(val);
   }
-}
+};
+_UniRadioElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniRadioElement = _UniRadioElement;
 const t0$h = template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
-const t1$b = template("<div uni-view role=radio>", 1);
+const t1$b = template("<div uni-radio uni-view role=radio>", 1);
 const t2$7 = template("<span uni-text>");
-const t3$4 = template("<div uni-view class=uni-radio role=radio><div uni-view></div>", 1);
+const t3$4 = template("<div uni-radio uni-view class=uni-radio role=radio><div uni-view></div>", 1);
+const _uniRadioElement = { value: "RADIO" };
 const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "radio",
     // @ts-ignore
     rootElement: {
-      class: UniRadioElement
+      class: /* @__PURE__ */ initUniElementType(UniRadioElement, "radio")
     },
     externalClasses: ["icon-class", "radio-class", "radio-active-class"]
   },
@@ -19872,66 +19931,68 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
     const n0 = createIf(
       () => !hasDefaultSlot,
       () => {
-        const n6 = t1$b();
+        const n2 = t1$b();
+        initUniElement(n2, _uniRadioElement);
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setClass(n6, ["uni-radio-view uni-radio-icon", unref(classes)(
+          setClass(n2, ["uni-radio-view uni-radio-icon", unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n6, unref(activeStyle));
-          setProp(n6, "tabindex", _disabled ? -1 : 0);
-          setAttr(n6, "aria-checked", _isChecked);
-          setAttr(n6, "aria-disabled", _disabled);
+          setStyle(n2, unref(activeStyle));
+          setProp(n2, "tabindex", _disabled ? -1 : 0);
+          setAttr(n2, "aria-checked", _isChecked);
+          setAttr(n2, "aria-disabled", _disabled);
         });
-        setInsertionState(n6);
+        setInsertionState(n2);
         createIf(() => unref(isChecked), () => {
-          const n5 = t0$h();
-          const n4 = child(n5);
-          setAttr(n4, "d", iconPath, true);
-          return n5;
+          const n6 = t0$h();
+          const n5 = child(n6);
+          setAttr(n5, "d", iconPath, true);
+          return n6;
         });
-        on$1(n6, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n6, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n6, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n6, "click", withModifiers(handleTap, ["stop"]));
-        return n6;
+        on$1(n2, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n2, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n2, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n2, "click", withModifiers(handleTap, ["stop"]));
+        return n2;
       },
       () => {
-        const n19 = t3$4();
-        const n12 = child(n19);
+        const n8 = t3$4();
+        const n13 = child(n8);
+        initUniElement(n8, _uniRadioElement);
         renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = unref(isChecked);
-          setProp(n19, "tabindex", _disabled ? -1 : 0);
-          setAttr(n19, "aria-checked", _isChecked);
-          setAttr(n19, "aria-disabled", _disabled);
-          setClass(n12, ["uni-radio-view uni-radio-icon", unref(classes)(
+          setProp(n8, "tabindex", _disabled ? -1 : 0);
+          setAttr(n8, "aria-checked", _isChecked);
+          setAttr(n8, "aria-disabled", _disabled);
+          setClass(n13, ["uni-radio-view uni-radio-icon", unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
             [!_disabled, __props.iconClass]
           )]);
-          setStyle(n12, unref(activeStyle));
+          setStyle(n13, unref(activeStyle));
         });
-        setInsertionState(n12);
+        setInsertionState(n13);
         createIf(() => unref(isChecked), () => {
-          const n11 = t0$h();
-          const n10 = child(n11);
-          setAttr(n10, "d", iconPath, true);
-          return n11;
+          const n12 = t0$h();
+          const n11 = child(n12);
+          setAttr(n11, "d", iconPath, true);
+          return n12;
         });
-        setInsertionState(n19, 1);
+        setInsertionState(n8, 1);
         createIf(
           () => isStringSlot,
           () => {
-            const n16 = t2$7();
-            setInsertionState(n16);
+            const n17 = t2$7();
+            setInsertionState(n17);
             createSlot(
               "default",
               null,
@@ -19939,20 +20000,20 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n16;
+            return n17;
           },
           () => {
-            const n18 = createSlot();
-            return n18;
+            const n19 = createSlot();
+            return n19;
           },
           1029
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
-        on$1(n19, "keydown", (e2) => unref(handleKeydown)(e2));
-        on$1(n19, "keyup", (e2) => unref(handleKeyup)(e2));
-        on$1(n19, "blur", (e2) => unref(handleBlur)(e2));
-        on$1(n19, "click", withModifiers(handleTap, ["stop"]));
-        return n19;
+        on$1(n8, "keydown", (e2) => unref(handleKeydown)(e2));
+        on$1(n8, "keyup", (e2) => unref(handleKeyup)(e2));
+        on$1(n8, "blur", (e2) => unref(handleBlur)(e2));
+        on$1(n8, "click", withModifiers(handleTap, ["stop"]));
+        return n8;
       },
       517
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
@@ -19960,10 +20021,12 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniRadioGroupElement extends UniViewElement {
-}
+const _UniRadioGroupElement = class _UniRadioGroupElement extends UniViewElement {
+};
+_UniRadioGroupElement.__uniElement = {};
+let UniRadioGroupElement = _UniRadioGroupElement;
 const t0$g = template("<div uni-radio-group uni-view>", 1);
-const _uniElement$6 = { value: "RADIO-GROUP" };
+const _uniRadioGroupElement = { value: "RADIO-GROUP" };
 const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "radio-group",
@@ -20028,7 +20091,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       }
     });
     const n0 = t0$g();
-    initUniElement(n0, _uniElement$6);
+    initUniElement(n0, _uniRadioGroupElement);
     setInsertionState(n0);
     createSlot();
     return n0;
@@ -20044,7 +20107,7 @@ class UniSliderChangeEvent extends UniCustomEvent$1 {
     super("change", { value });
   }
 }
-class UniSliderElement extends UniViewElement {
+const _UniSliderElement = class _UniSliderElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "SLIDER";
@@ -20061,10 +20124,12 @@ class UniSliderElement extends UniViewElement {
     }
     (_a = this.vm) == null ? void 0 : _a.renderVisuals(val);
   }
-}
+};
+_UniSliderElement.__uniElement = { vm: true };
+let UniSliderElement = _UniSliderElement;
 const t0$f = template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
 const t1$a = template('<div uni-slider uni-view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;"><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view tabIndex=0 role=slider></div></div></div>', 1);
-const _uniElement$5 = { value: "SLIDER" };
+const _uniSliderElement = { value: "SLIDER" };
 const TOUCH_THRESHOLD = 4;
 const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -20488,7 +20553,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     const n1 = child(n2);
     const n4 = next(n2);
     const n3 = child(n4);
-    initUniElement(n0, _uniElement$5);
+    initUniElement(n0, _uniSliderElement);
     setStaticTemplateRef(n1, fillRef, null, "fillRef");
     setStaticTemplateRef(n2, backgroundRef, null, "backgroundRef");
     setStaticTemplateRef(n3, thumbRef, null, "thumbRef");
@@ -20525,7 +20590,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
   }
 });
 const t0$e = template('<div uni-sticky-header uni-view class=uni-sticky-header style="position: sticky; top: 0; width: 100%; z-index: 1">', 1);
-const _uniElement$4 = { value: "STICKY-HEADER" };
+const _uniStickyHeaderElement = { value: "STICKY-HEADER" };
 const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "sticky-header",
@@ -20553,7 +20618,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
       updateHeaderSize(0);
     });
     const n0 = t0$e();
-    initUniElement(n0, _uniElement$4);
+    initUniElement(n0, _uniStickyHeaderElement);
     setInsertionState(n0);
     createSlot();
     setStaticTemplateRef(n0, element, null, "element");
@@ -20561,7 +20626,7 @@ const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
   }
 });
 const t0$d = template('<div uni-sticky-section uni-view class=uni-sticky-section style="position: relative; overflow: visible"><!><div uni-view class=placeholder>', 1);
-const _uniElement$3 = { value: "STICKY-SECTION" };
+const _uniStickySectionElement = { value: "STICKY-SECTION" };
 const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "sticky-section",
@@ -20712,7 +20777,7 @@ const _sfc_main$d = /* @__PURE__ */ defineVaporComponent({
     const n0 = t0$d();
     const n3 = child(n0);
     const n2 = next(n3);
-    initUniElement(n0, _uniElement$3);
+    initUniElement(n0, _uniStickySectionElement);
     setInsertionState(n0, n3);
     createSlot();
     setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
@@ -20761,11 +20826,13 @@ function parsePxRpx(margin) {
   }
   return 0;
 }
-class UniSwiperElement extends UniViewElement {
-}
+const _UniSwiperElement = class _UniSwiperElement extends UniViewElement {
+};
+_UniSwiperElement.__uniElement = {};
+let UniSwiperElement = _UniSwiperElement;
 const t0$c = template("<div uni-view>");
 const t1$9 = template("<div uni-swiper uni-view class=uni-swiper-wrapper><div uni-view></div><div uni-view>", 1);
-const _uniElement$2 = { value: "SWIPER" };
+const _uniSwiperElement = { value: "SWIPER" };
 const DIRECTION_LOCK_THRESHOLD = 5;
 const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -21845,7 +21912,7 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
     const n0 = t1$9();
     const n2 = child(n0);
     const n9 = next(n2);
-    initUniElement(n0, _uniElement$2);
+    initUniElement(n0, _uniSwiperElement);
     renderEffect(() => setClass(n2, ["uni-swiper-container", __props.vertical ? "uni-swiper-container_vertical" : "uni-swiper-container_horizontal"]));
     setInsertionState(n2);
     createSlot();
@@ -21901,15 +21968,19 @@ const _sfc_main$c = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniSwiperItemElement extends UniViewElement {
+const _UniSwiperItemElement = class _UniSwiperItemElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.itemId = null;
   }
-}
+};
+_UniSwiperItemElement.__uniElement = { init() {
+  Object.defineProperty(this, "itemId", { value: null, writable: true, enumerable: true, configurable: true });
+} };
+let UniSwiperItemElement = _UniSwiperItemElement;
 const t0$b = template("<div uni-view class=uni-swiper-item-content>");
 const t1$8 = template('<div uni-swiper-item uni-view class=uni-swiper-item style="position: absolute; visibility: hidden;">', 1);
-const _uniElement$1 = { value: "SWIPER-ITEM" };
+const _uniSwiperItemElement = { value: "SWIPER-ITEM" };
 const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "swiper-item",
@@ -21937,7 +22008,7 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
       });
     });
     const n0 = t1$8();
-    initUniElement(n0, _uniElement$1);
+    initUniElement(n0, _uniSwiperItemElement);
     setInsertionState(n0);
     createIf(
       () => unref(autoHeight),
@@ -21958,7 +22029,7 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-class UniSwitchElement extends UniViewElement {
+const _UniSwitchElement = class _UniSwitchElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "SWITCH";
@@ -21974,9 +22045,13 @@ class UniSwitchElement extends UniViewElement {
     this._checked = val;
     (_a = this.vm) == null ? void 0 : _a.setSwitchChecked(val);
   }
-}
+};
+_UniSwitchElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniSwitchElement = _UniSwitchElement;
 const t0$a = template("<div uni-switch uni-view role=switch><div uni-view>", 1);
-const _uniElement = { value: "SWITCH" };
+const _uniSwitchElement = { value: "SWITCH" };
 const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "switch",
@@ -22089,7 +22164,7 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
     });
     const n0 = t0$a();
     const n1 = child(n0);
-    initUniElement(n0, _uniElement);
+    initUniElement(n0, _uniSwitchElement);
     on$1(n0, "keydown", (e2) => unref(handleKeydown)(e2));
     on$1(n0, "keyup", (e2) => unref(handleKeyup)(e2));
     on$1(n0, "blur", (e2) => unref(handleBlur)(e2));

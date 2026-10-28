@@ -22,6 +22,7 @@ import {
   uniJavaScriptWorkersPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUasmPlugin,
+  uniWebVaporElementPlugin,
   uniWorkersPlugin,
 } from '@dcloudio/uni-cli-shared'
 import * as vueCompilerDom from '@vue/compiler-dom'
@@ -76,6 +77,7 @@ export default () => {
               rewriteRootDir: undefined,
             },
           }),
+          ...(isUniAppXWebVapor() ? [uniWebVaporElementPlugin()] : []),
           resolveUTSCompiler().uts2js({
             platform: 'web',
             dom2: isUniAppXWebVapor(),

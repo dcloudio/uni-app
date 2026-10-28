@@ -240,11 +240,13 @@ class UniImageElement extends NativeUniElement {
     return this === UniImageElement && getUniTagName(value) === "IMAGE" || nativeHasInstance.call(this, value);
   }
 }
-class UniCanvasElement extends UniViewElement {
+const _UniCanvasElement = class _UniCanvasElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniCanvasElement && value instanceof UniViewElement && value.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniCanvasElement && value instanceof UniViewElement && value.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-}
+};
+_UniCanvasElement.__uniElement = {};
+let UniCanvasElement = _UniCanvasElement;
 const canvasProps = {
   disableScroll: {
     type: [Boolean, String],
@@ -1547,9 +1549,9 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-class UniInputElement extends UniViewElement {
+const _UniInputElement = class _UniInputElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
   focus(options) {
     var _a;
@@ -1561,7 +1563,9 @@ class UniInputElement extends UniViewElement {
   set value(value) {
     this.querySelector("input").value = value;
   }
-}
+};
+_UniInputElement.__uniElement = {};
+let UniInputElement = _UniInputElement;
 const descriptors$1 = {
   uniTagName: { value: "INPUT" },
   focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
@@ -2365,15 +2369,17 @@ const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-class UniTextareaElement extends UniViewElement {
+const _UniTextareaElement = class _UniTextareaElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniTextareaElement && value instanceof UniViewElement && value.hasAttribute("uni-textarea") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
   focus(options) {
     var _a;
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
-}
+};
+_UniTextareaElement.__uniElement = {};
+let UniTextareaElement = _UniTextareaElement;
 const descriptors = {
   uniTagName: { value: "TEXTAREA" },
   focus: Object.getOwnPropertyDescriptor(
@@ -5517,8 +5523,10 @@ function useBackgroundColorContent(pageMeta) {
   onThemeChange(update);
   Vue.watchEffect(update);
 }
-class UniLoadingElement extends UniViewElement {
-}
+const _UniLoadingElement = class _UniLoadingElement extends UniViewElement {
+};
+_UniLoadingElement.__uniElement = {};
+let UniLoadingElement = _UniLoadingElement;
 function useLoadingStyle(targetElement, bold) {
   const loadingSize = Vue.ref("16px");
   const loadingBorderWidth = Vue.ref("1px");
@@ -5531,7 +5539,7 @@ function useLoadingStyle(targetElement, bold) {
   };
 }
 const t0$r = Vue.template('<div data-v-212d40c7 uni-loading uni-view class="default __uni_loading_container__" style="display: flex;"><div data-v-212d40c7 uni-view>', 257);
-const _uniElement$h = { value: "LOADING" };
+const _uniLoadingElement = { value: "LOADING" };
 const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "loading",
@@ -5553,7 +5561,7 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
     const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
     const n0 = t0$r();
     const n1 = Vue.child(n0);
-    Vue.initUniElement(n0, _uniElement$h);
+    Vue.initUniElement(n0, _uniLoadingElement);
     Vue.setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
     Vue.renderEffect(() => {
       Vue.setClassName(n1, props2.paused ? 1 : 0, " __uni-loading__paused", "__uni-loading__ __loading-4-3__");
@@ -8399,11 +8407,13 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniScrollViewElement extends UniViewElement {
+const _UniScrollViewElement = class _UniScrollViewElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
-    return this === UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
+    return this === _UniScrollViewElement && value instanceof UniViewElement && value.hasAttribute("uni-scroll-view") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-}
+};
+_UniScrollViewElement.__uniElement = {};
+let UniScrollViewElement = _UniScrollViewElement;
 const props$5 = {
   direction: {
     type: [String],
@@ -8876,7 +8886,7 @@ function createSpaceKeyHandlers(isDisabled) {
   }
   return { handleKeydown, handleKeyup, handleBlur };
 }
-class UniCheckboxElement extends UniViewElement {
+const _UniCheckboxElement = class _UniCheckboxElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "CHECKBOX";
@@ -8895,18 +8905,23 @@ class UniCheckboxElement extends UniViewElement {
     this._checked = val;
     (_a = this.vm) == null ? void 0 : _a.setCheckboxChecked(val);
   }
-}
+};
+_UniCheckboxElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniCheckboxElement = _UniCheckboxElement;
 const t0$m = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
-const t1$9 = Vue.template("<div uni-view role=checkbox>", 1);
+const t1$9 = Vue.template("<div uni-checkbox uni-view role=checkbox>", 1);
 const t2$1 = Vue.template("<span uni-text>");
-const t3$1 = Vue.template("<div uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
+const t3$1 = Vue.template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
+const _uniCheckboxElement = { value: "CHECKBOX" };
 const iconPath$1 = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox",
     // @ts-ignore
     rootElement: {
-      class: UniCheckboxElement
+      class: /* @__PURE__ */ Vue.initUniElementType(UniCheckboxElement, "checkbox")
     },
     externalClasses: ["icon-class", "checkbox-class", "checkbox-active-class"]
   },
@@ -8977,66 +8992,68 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => !hasDefaultSlot,
       () => {
-        const n6 = t1$9();
+        const n2 = t1$9();
+        Vue.initUniElement(n2, _uniCheckboxElement);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
-          Vue.setClass(n6, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
+          Vue.setClass(n2, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
           )]);
-          Vue.setStyle(n6, Vue.unref(activeStyle));
-          Vue.setProp(n6, "tabindex", _disabled ? -1 : 0);
-          Vue.setAttr(n6, "aria-checked", _isChecked);
-          Vue.setAttr(n6, "aria-disabled", _disabled);
+          Vue.setStyle(n2, Vue.unref(activeStyle));
+          Vue.setProp(n2, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n2, "aria-checked", _isChecked);
+          Vue.setAttr(n2, "aria-disabled", _disabled);
         });
-        Vue.setInsertionState(n6);
+        Vue.setInsertionState(n2);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n5 = t0$m();
-          const n4 = Vue.child(n5);
-          Vue.setAttr(n4, "d", iconPath$1, true);
-          Vue.renderEffect(() => Vue.setAttr(n4, "fill", Vue.unref(iconColor), true));
-          return n5;
+          const n6 = t0$m();
+          const n5 = Vue.child(n6);
+          Vue.setAttr(n5, "d", iconPath$1, true);
+          Vue.renderEffect(() => Vue.setAttr(n5, "fill", Vue.unref(iconColor), true));
+          return n6;
         });
-        Vue.on(n6, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
-        Vue.on(n6, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
-        Vue.on(n6, "blur", (e2) => Vue.unref(handleBlur)(e2));
-        Vue.on(n6, "click", Vue.withModifiers(handleTap, ["stop"]));
-        return n6;
+        Vue.on(n2, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n2, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n2, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n2, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n2;
       },
       () => {
-        const n19 = t3$1();
-        const n12 = Vue.child(n19);
+        const n8 = t3$1();
+        const n13 = Vue.child(n8);
+        Vue.initUniElement(n8, _uniCheckboxElement);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
-          Vue.setProp(n19, "tabindex", _disabled ? -1 : 0);
-          Vue.setAttr(n19, "aria-checked", _isChecked);
-          Vue.setAttr(n19, "aria-disabled", _disabled);
-          Vue.setClass(n12, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
+          Vue.setProp(n8, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n8, "aria-checked", _isChecked);
+          Vue.setAttr(n8, "aria-disabled", _disabled);
+          Vue.setClass(n13, ["uni-checkbox-view uni-checkbox-icon", Vue.unref(classes)(
             [_disabled, "uni-checkbox-disabled"],
             [!_disabled && _isChecked, __props.checkboxActiveClass],
             [!_disabled && !_isChecked, __props.checkboxClass],
             [!_disabled, __props.iconClass]
           )]);
-          Vue.setStyle(n12, Vue.unref(activeStyle));
+          Vue.setStyle(n13, Vue.unref(activeStyle));
         });
-        Vue.setInsertionState(n12);
+        Vue.setInsertionState(n13);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n11 = t0$m();
-          const n10 = Vue.child(n11);
-          Vue.setAttr(n10, "d", iconPath$1, true);
-          Vue.renderEffect(() => Vue.setAttr(n10, "fill", Vue.unref(iconColor), true));
-          return n11;
+          const n12 = t0$m();
+          const n11 = Vue.child(n12);
+          Vue.setAttr(n11, "d", iconPath$1, true);
+          Vue.renderEffect(() => Vue.setAttr(n11, "fill", Vue.unref(iconColor), true));
+          return n12;
         });
-        Vue.setInsertionState(n19, 1);
+        Vue.setInsertionState(n8, 1);
         Vue.createIf(
           () => isStringSlot,
           () => {
-            const n16 = t2$1();
-            Vue.setInsertionState(n16);
+            const n17 = t2$1();
+            Vue.setInsertionState(n17);
             Vue.createSlot(
               "default",
               null,
@@ -9044,20 +9061,20 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n16;
+            return n17;
           },
           () => {
-            const n18 = Vue.createSlot();
-            return n18;
+            const n19 = Vue.createSlot();
+            return n19;
           },
           1029
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
-        Vue.on(n19, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
-        Vue.on(n19, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
-        Vue.on(n19, "blur", (e2) => Vue.unref(handleBlur)(e2));
-        Vue.on(n19, "click", Vue.withModifiers(handleTap, ["stop"]));
-        return n19;
+        Vue.on(n8, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n8, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n8, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n8, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n8;
       },
       517
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
@@ -9065,10 +9082,12 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniCheckboxGroupElement extends UniViewElement {
-}
+const _UniCheckboxGroupElement = class _UniCheckboxGroupElement extends UniViewElement {
+};
+_UniCheckboxGroupElement.__uniElement = {};
+let UniCheckboxGroupElement = _UniCheckboxGroupElement;
 const t0$l = Vue.template("<div uni-checkbox-group uni-view>", 1);
-const _uniElement$g = { value: "CHECKBOX-GROUP" };
+const _uniCheckboxGroupElement = { value: "CHECKBOX-GROUP" };
 const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "checkbox-group",
@@ -9154,18 +9173,22 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.provide(CHECKBOX_GROUP_KEY, ctx);
     Vue.inject(FORM_KEY, null);
     const n0 = t0$l();
-    Vue.initUniElement(n0, _uniElement$g);
+    Vue.initUniElement(n0, _uniCheckboxGroupElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     return n0;
   }
 });
-class UniFlowItemElement extends UniViewElement {
-}
-class UniWaterflowElement extends UniScrollViewElement {
-}
+const _UniFlowItemElement = class _UniFlowItemElement extends UniViewElement {
+};
+_UniFlowItemElement.__uniElement = {};
+let UniFlowItemElement = _UniFlowItemElement;
+const _UniWaterflowElement = class _UniWaterflowElement extends UniScrollViewElement {
+};
+_UniWaterflowElement.__uniElement = {};
+let UniWaterflowElement = _UniWaterflowElement;
 const t0$k = Vue.template('<div uni-flow-item uni-view class=uni-flow-item style="position: absolute; top: 0; left: 0; width: 0px">', 1);
-const _uniElement$f = { value: "FLOW-ITEM" };
+const _uniFlowItemElement = { value: "FLOW-ITEM" };
 const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "flow-item",
@@ -9247,17 +9270,19 @@ const _sfc_main$k = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     __expose({ recycleHooks });
     const n0 = t0$k();
-    Vue.initUniElement(n0, _uniElement$f);
+    Vue.initUniElement(n0, _uniFlowItemElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     Vue.setStaticTemplateRef(n0, element, null, "element");
     return n0;
   }
 });
-class UniFormElement extends UniViewElement {
-}
+const _UniFormElement = class _UniFormElement extends UniViewElement {
+};
+_UniFormElement.__uniElement = {};
+let UniFormElement = _UniFormElement;
 const t0$j = Vue.template("<div uni-form uni-view class=uni-form>", 1);
-const _uniElement$e = { value: "FORM" };
+const _uniFormElement = { value: "FORM" };
 const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "form",
@@ -9325,16 +9350,18 @@ const _sfc_main$j = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.provide(FORM_KEY, ctx);
     __expose({ submit, reset });
     const n0 = t0$j();
-    Vue.initUniElement(n0, _uniElement$e);
+    Vue.initUniElement(n0, _uniFormElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     return n0;
   }
 });
-class UniLabelElement extends UniViewElement {
-}
+const _UniLabelElement = class _UniLabelElement extends UniViewElement {
+};
+_UniLabelElement.__uniElement = {};
+let UniLabelElement = _UniLabelElement;
 const t0$i = Vue.template("<div uni-label uni-view class=uni-label>", 1);
-const _uniElement$d = { value: "LABEL" };
+const _uniLabelElement = { value: "LABEL" };
 const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "label",
@@ -9409,7 +9436,7 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
       target.activate(event);
     };
     const n0 = t0$i();
-    Vue.initUniElement(n0, _uniElement$d);
+    Vue.initUniElement(n0, _uniLabelElement);
     Vue.renderEffect(() => {
       const _disabled = __props.disabled;
       Vue.setProp(n0, "tabindex", _disabled ? -1 : 0);
@@ -9424,16 +9451,24 @@ const _sfc_main$i = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniListItemElement extends UniViewElement {
-}
-class UniStickySectionElement extends UniViewElement {
-}
-class UniStickyHeaderElement extends UniViewElement {
-}
-class UniListViewElement extends UniScrollViewElement {
-}
+const _UniListItemElement = class _UniListItemElement extends UniViewElement {
+};
+_UniListItemElement.__uniElement = {};
+let UniListItemElement = _UniListItemElement;
+const _UniStickySectionElement = class _UniStickySectionElement extends UniViewElement {
+};
+_UniStickySectionElement.__uniElement = {};
+let UniStickySectionElement = _UniStickySectionElement;
+const _UniStickyHeaderElement = class _UniStickyHeaderElement extends UniViewElement {
+};
+_UniStickyHeaderElement.__uniElement = {};
+let UniStickyHeaderElement = _UniStickyHeaderElement;
+const _UniListViewElement = class _UniListViewElement extends UniScrollViewElement {
+};
+_UniListViewElement.__uniElement = {};
+let UniListViewElement = _UniListViewElement;
 const t0$h = Vue.template('<div uni-list-item uni-view class=uni-list-item style="position: absolute; top: 0; left: 0; width: 100%">', 1);
-const _uniElement$c = { value: "LIST-ITEM" };
+const _uniListItemElement = { value: "LIST-ITEM" };
 const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "list-item",
@@ -9507,7 +9542,7 @@ const _sfc_main$h = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     __expose({ recycleHooks });
     const n0 = t0$h();
-    Vue.initUniElement(n0, _uniElement$c);
+    Vue.initUniElement(n0, _uniListItemElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     Vue.setStaticTemplateRef(n0, element, null, "element");
@@ -9928,8 +9963,10 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
     return n9;
   }
 });
-class UniMatchMediaElement extends UniViewElement {
-}
+const _UniMatchMediaElement = class _UniMatchMediaElement extends UniViewElement {
+};
+_UniMatchMediaElement.__uniElement = {};
+let UniMatchMediaElement = _UniMatchMediaElement;
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = Vue.getCurrentInstance()) => {
   if (Vue.isInSSRComponentSetup)
     return;
@@ -9941,7 +9978,7 @@ const onResize = /* @__PURE__ */ createLifeCycleHook(
   /* HookFlags.PAGE */
 );
 const t0$f = Vue.template("<div uni-match-media uni-view>", 1);
-const _uniElement$b = { value: "MATCH-MEDIA" };
+const _uniMatchMediaElement = { value: "MATCH-MEDIA" };
 const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "match-media",
@@ -10022,23 +10059,26 @@ const _sfc_main$f = /* @__PURE__ */ Vue.defineVaporComponent({
       });
     }
     const n0 = t0$f();
-    Vue.initUniElement(n0, _uniElement$b);
+    Vue.initUniElement(n0, _uniMatchMediaElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     Vue.applyVShow(n0, () => Vue.unref(show));
     return n0;
   }
 });
-class UniNavigatorElement extends UniViewElement {
-}
-const t0$e = Vue.template("<span uni-text>", 1);
-const t1$7 = Vue.template("<div uni-view>", 1);
+const _UniNavigatorElement = class _UniNavigatorElement extends UniViewElement {
+};
+_UniNavigatorElement.__uniElement = {};
+let UniNavigatorElement = _UniNavigatorElement;
+const t0$e = Vue.template("<span uni-navigator uni-text>", 1);
+const t1$7 = Vue.template("<div uni-navigator uni-view>", 1);
+const _uniNavigatorElement = { value: "NAVIGATOR" };
 const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "navigator",
     // @ts-ignore
     rootElement: {
-      class: UniNavigatorElement
+      class: /* @__PURE__ */ Vue.initUniElementType(UniNavigatorElement, "navigator")
     }
   },
   __name: "navigator",
@@ -10103,8 +10143,9 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => isStringSlot,
       () => {
-        const n3 = t0$e();
-        Vue.setInsertionState(n3);
+        const n2 = t0$e();
+        Vue.initUniElement(n2, _uniNavigatorElement);
+        Vue.setInsertionState(n2);
         Vue.createSlot(
           "default",
           null,
@@ -10112,15 +10153,16 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
           256
           /* TEXT_MODE */
         );
-        Vue.on(n3, "click", handleTap);
-        return n3;
+        Vue.on(n2, "click", handleTap);
+        return n2;
       },
       () => {
-        const n6 = t1$7();
-        Vue.setInsertionState(n6);
+        const n5 = t1$7();
+        Vue.initUniElement(n5, _uniNavigatorElement);
+        Vue.setInsertionState(n5);
         Vue.createSlot();
-        Vue.on(n6, "click", handleTap);
-        return n6;
+        Vue.on(n5, "click", handleTap);
+        return n5;
       },
       261
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
@@ -10130,8 +10172,10 @@ const _sfc_main$e = /* @__PURE__ */ Vue.defineVaporComponent({
 });
 class UniVueElement extends Object {
 }
-class UniPageContainerElement extends UniVueElement {
-}
+const _UniPageContainerElement = class _UniPageContainerElement extends UniVueElement {
+};
+_UniPageContainerElement.__uniElement = {};
+let UniPageContainerElement = _UniPageContainerElement;
 const t0$d = Vue.template("<div uni-view class=uni-page-container-overlay>");
 const t1$6 = Vue.template("<div uni-view>");
 const MAX_SLIDER_DISTANCE = 100;
@@ -10462,7 +10506,7 @@ const _sfc_main$d = /* @__PURE__ */ Vue.defineVaporComponent({
     return [n0, n3];
   }
 });
-class UniPickerElement extends UniViewElement {
+const _UniPickerElement = class _UniPickerElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "PICKER";
@@ -10478,9 +10522,13 @@ class UniPickerElement extends UniViewElement {
     this._value = val;
     (_a = this.vm) == null ? void 0 : _a.setPickerValue(val);
   }
-}
+};
+_UniPickerElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_value", { value: "", writable: true, enumerable: true, configurable: true });
+} };
+let UniPickerElement = _UniPickerElement;
 const t0$c = Vue.template("<div uni-picker uni-view>", 1);
-const _uniElement$a = { value: "PICKER" };
+const _uniPickerElement = { value: "PICKER" };
 const OPEN_LOCK_DURATION = 300;
 const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -10565,17 +10613,19 @@ const _sfc_main$c = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     });
     const n0 = t0$c();
-    Vue.initUniElement(n0, _uniElement$a);
+    Vue.initUniElement(n0, _uniPickerElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     Vue.on(n0, "click", handleClick);
     return n0;
   }
 });
-class UniPickerViewElement extends UniViewElement {
-}
+const _UniPickerViewElement = class _UniPickerViewElement extends UniViewElement {
+};
+_UniPickerViewElement.__uniElement = {};
+let UniPickerViewElement = _UniPickerViewElement;
 const t0$b = Vue.template("<div uni-picker-view uni-view class=uni-picker-view>", 1);
-const _uniElement$9 = { value: "PICKER-VIEW" };
+const _uniPickerViewElement = { value: "PICKER-VIEW" };
 const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "picker-view",
@@ -10677,18 +10727,20 @@ const _sfc_main$b = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     Vue.inject(FORM_KEY, null);
     const n0 = t0$b();
-    Vue.initUniElement(n0, _uniElement$9);
+    Vue.initUniElement(n0, _uniPickerViewElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     Vue.setStaticTemplateRef(n0, pickViewRef, null, "pickViewRef");
     return n0;
   }
 });
-class UniPickerViewColumnElement extends UniViewElement {
-}
+const _UniPickerViewColumnElement = class _UniPickerViewColumnElement extends UniViewElement {
+};
+_UniPickerViewColumnElement.__uniElement = {};
+let UniPickerViewColumnElement = _UniPickerViewColumnElement;
 const t0$a = Vue.template("<div uni-view>");
 const t1$5 = Vue.template("<div uni-picker-view-column uni-view class=picker-view-column tabindex=0><!><div uni-view></div><div uni-view></div><div uni-view>", 1);
-const _uniElement$8 = { value: "PICKER-VIEW-COLUMN" };
+const _uniPickerViewColumnElement = { value: "PICKER-VIEW-COLUMN" };
 const EPSILON = 1;
 const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -10819,7 +10871,7 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     const n4 = Vue.next(n7);
     const n5 = Vue.next(n4);
     const n6 = Vue.next(n5);
-    Vue.initUniElement(n0, _uniElement$8);
+    Vue.initUniElement(n0, _uniPickerViewColumnElement);
     Vue.setInsertionState(n0, n7);
     const n3 = Vue.withComponentId("8e57cce2", () => Vue.createComponent(__syscom_0, {
       class: "picker-view-scroll",
@@ -10858,11 +10910,13 @@ const _sfc_main$a = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniProgressElement extends UniViewElement {
-}
+const _UniProgressElement = class _UniProgressElement extends UniViewElement {
+};
+_UniProgressElement.__uniElement = {};
+let UniProgressElement = _UniProgressElement;
 const t0$9 = Vue.template("<span uni-text class=uni-progress-value> ");
 const t1$4 = Vue.template("<div uni-progress uni-view class=uni-progress><div uni-view class=uni-progress-background><div uni-view class=uni-progress-fill></div></div>", 1);
-const _uniElement$7 = { value: "PROGRESS" };
+const _uniProgressElement = { value: "PROGRESS" };
 const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "progress",
@@ -10976,7 +11030,7 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = t1$4();
     const n2 = Vue.child(n0);
     const n1 = Vue.child(n2);
-    Vue.initUniElement(n0, _uniElement$7);
+    Vue.initUniElement(n0, _uniProgressElement);
     Vue.setStaticTemplateRef(n1, fillRef, null, "fillRef");
     Vue.renderEffect(() => {
       Vue.setStyle(n2, Vue.unref(backgroundStyle));
@@ -10995,7 +11049,7 @@ const _sfc_main$9 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniRadioElement extends UniViewElement {
+const _UniRadioElement = class _UniRadioElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "RADIO";
@@ -11011,18 +11065,23 @@ class UniRadioElement extends UniViewElement {
     this._checked = val;
     (_a = this.vm) == null ? void 0 : _a.setRadioChecked(val);
   }
-}
+};
+_UniRadioElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniRadioElement = _UniRadioElement;
 const t0$8 = Vue.template('<svg class=uni-radio-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
-const t1$3 = Vue.template("<div uni-view role=radio>", 1);
+const t1$3 = Vue.template("<div uni-radio uni-view role=radio>", 1);
 const t2 = Vue.template("<span uni-text>");
-const t3 = Vue.template("<div uni-view class=uni-radio role=radio><div uni-view></div>", 1);
+const t3 = Vue.template("<div uni-radio uni-view class=uni-radio role=radio><div uni-view></div>", 1);
+const _uniRadioElement = { value: "RADIO" };
 const iconPath = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
 const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "radio",
     // @ts-ignore
     rootElement: {
-      class: UniRadioElement
+      class: /* @__PURE__ */ Vue.initUniElementType(UniRadioElement, "radio")
     },
     externalClasses: ["icon-class", "radio-class", "radio-active-class"]
   },
@@ -11103,66 +11162,68 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = Vue.createIf(
       () => !hasDefaultSlot,
       () => {
-        const n6 = t1$3();
+        const n2 = t1$3();
+        Vue.initUniElement(n2, _uniRadioElement);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
-          Vue.setClass(n6, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
+          Vue.setClass(n2, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
             [!_disabled, __props.iconClass]
           )]);
-          Vue.setStyle(n6, Vue.unref(activeStyle));
-          Vue.setProp(n6, "tabindex", _disabled ? -1 : 0);
-          Vue.setAttr(n6, "aria-checked", _isChecked);
-          Vue.setAttr(n6, "aria-disabled", _disabled);
+          Vue.setStyle(n2, Vue.unref(activeStyle));
+          Vue.setProp(n2, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n2, "aria-checked", _isChecked);
+          Vue.setAttr(n2, "aria-disabled", _disabled);
         });
-        Vue.setInsertionState(n6);
+        Vue.setInsertionState(n2);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n5 = t0$8();
-          const n4 = Vue.child(n5);
-          Vue.setAttr(n4, "d", iconPath, true);
-          return n5;
+          const n6 = t0$8();
+          const n5 = Vue.child(n6);
+          Vue.setAttr(n5, "d", iconPath, true);
+          return n6;
         });
-        Vue.on(n6, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
-        Vue.on(n6, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
-        Vue.on(n6, "blur", (e2) => Vue.unref(handleBlur)(e2));
-        Vue.on(n6, "click", Vue.withModifiers(handleTap, ["stop"]));
-        return n6;
+        Vue.on(n2, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n2, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n2, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n2, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n2;
       },
       () => {
-        const n19 = t3();
-        const n12 = Vue.child(n19);
+        const n8 = t3();
+        const n13 = Vue.child(n8);
+        Vue.initUniElement(n8, _uniRadioElement);
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _isChecked = Vue.unref(isChecked);
-          Vue.setProp(n19, "tabindex", _disabled ? -1 : 0);
-          Vue.setAttr(n19, "aria-checked", _isChecked);
-          Vue.setAttr(n19, "aria-disabled", _disabled);
-          Vue.setClass(n12, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
+          Vue.setProp(n8, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n8, "aria-checked", _isChecked);
+          Vue.setAttr(n8, "aria-disabled", _disabled);
+          Vue.setClass(n13, ["uni-radio-view uni-radio-icon", Vue.unref(classes)(
             [_disabled, "uni-radio-disabled"],
             [!_disabled && _isChecked, "uni-radio-active"],
             [!_disabled && _isChecked, __props.radioActiveClass],
             [!_disabled && !_isChecked, __props.radioClass],
             [!_disabled, __props.iconClass]
           )]);
-          Vue.setStyle(n12, Vue.unref(activeStyle));
+          Vue.setStyle(n13, Vue.unref(activeStyle));
         });
-        Vue.setInsertionState(n12);
+        Vue.setInsertionState(n13);
         Vue.createIf(() => Vue.unref(isChecked), () => {
-          const n11 = t0$8();
-          const n10 = Vue.child(n11);
-          Vue.setAttr(n10, "d", iconPath, true);
-          return n11;
+          const n12 = t0$8();
+          const n11 = Vue.child(n12);
+          Vue.setAttr(n11, "d", iconPath, true);
+          return n12;
         });
-        Vue.setInsertionState(n19, 1);
+        Vue.setInsertionState(n8, 1);
         Vue.createIf(
           () => isStringSlot,
           () => {
-            const n16 = t2();
-            Vue.setInsertionState(n16);
+            const n17 = t2();
+            Vue.setInsertionState(n17);
             Vue.createSlot(
               "default",
               null,
@@ -11170,20 +11231,20 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
               256
               /* TEXT_MODE */
             );
-            return n16;
+            return n17;
           },
           () => {
-            const n18 = Vue.createSlot();
-            return n18;
+            const n19 = Vue.createSlot();
+            return n19;
           },
           1029
           /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
         );
-        Vue.on(n19, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
-        Vue.on(n19, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
-        Vue.on(n19, "blur", (e2) => Vue.unref(handleBlur)(e2));
-        Vue.on(n19, "click", Vue.withModifiers(handleTap, ["stop"]));
-        return n19;
+        Vue.on(n8, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
+        Vue.on(n8, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n8, "blur", (e2) => Vue.unref(handleBlur)(e2));
+        Vue.on(n8, "click", Vue.withModifiers(handleTap, ["stop"]));
+        return n8;
       },
       517
       /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
@@ -11191,10 +11252,12 @@ const _sfc_main$8 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniRadioGroupElement extends UniViewElement {
-}
+const _UniRadioGroupElement = class _UniRadioGroupElement extends UniViewElement {
+};
+_UniRadioGroupElement.__uniElement = {};
+let UniRadioGroupElement = _UniRadioGroupElement;
 const t0$7 = Vue.template("<div uni-radio-group uni-view>", 1);
-const _uniElement$6 = { value: "RADIO-GROUP" };
+const _uniRadioGroupElement = { value: "RADIO-GROUP" };
 const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "radio-group",
@@ -11240,7 +11303,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.provide(RADIO_GROUP_KEY, ctx);
     Vue.inject(FORM_KEY, null);
     const n0 = t0$7();
-    Vue.initUniElement(n0, _uniElement$6);
+    Vue.initUniElement(n0, _uniRadioGroupElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     return n0;
@@ -11256,7 +11319,7 @@ class UniSliderChangeEvent extends UniCustomEvent$1 {
     super("change", { value });
   }
 }
-class UniSliderElement extends UniViewElement {
+const _UniSliderElement = class _UniSliderElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "SLIDER";
@@ -11273,10 +11336,12 @@ class UniSliderElement extends UniViewElement {
     }
     (_a = this.vm) == null ? void 0 : _a.renderVisuals(val);
   }
-}
+};
+_UniSliderElement.__uniElement = { vm: true };
+let UniSliderElement = _UniSliderElement;
 const t0$6 = Vue.template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
 const t1$2 = Vue.template('<div uni-slider uni-view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;"><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view tabIndex=0 role=slider></div></div></div>', 1);
-const _uniElement$5 = { value: "SLIDER" };
+const _uniSliderElement = { value: "SLIDER" };
 const TOUCH_THRESHOLD = 4;
 const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -11582,7 +11647,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n1 = Vue.child(n2);
     const n4 = Vue.next(n2);
     const n3 = Vue.child(n4);
-    Vue.initUniElement(n0, _uniElement$5);
+    Vue.initUniElement(n0, _uniSliderElement);
     Vue.setStaticTemplateRef(n1, fillRef, null, "fillRef");
     Vue.setStaticTemplateRef(n2, backgroundRef, null, "backgroundRef");
     Vue.setStaticTemplateRef(n3, thumbRef, null, "thumbRef");
@@ -11619,7 +11684,7 @@ const _sfc_main$6 = /* @__PURE__ */ Vue.defineVaporComponent({
   }
 });
 const t0$5 = Vue.template('<div uni-sticky-header uni-view class=uni-sticky-header style="position: sticky; top: 0; width: 100%; z-index: 1">', 1);
-const _uniElement$4 = { value: "STICKY-HEADER" };
+const _uniStickyHeaderElement = { value: "STICKY-HEADER" };
 const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "sticky-header",
@@ -11637,7 +11702,7 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     });
     const n0 = t0$5();
-    Vue.initUniElement(n0, _uniElement$4);
+    Vue.initUniElement(n0, _uniStickyHeaderElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
     Vue.setStaticTemplateRef(n0, element, null, "element");
@@ -11645,7 +11710,7 @@ const _sfc_main$5 = /* @__PURE__ */ Vue.defineVaporComponent({
   }
 });
 const t0$4 = Vue.template('<div uni-sticky-section uni-view class=uni-sticky-section style="position: relative; overflow: visible"><!><div uni-view class=placeholder>', 1);
-const _uniElement$3 = { value: "STICKY-SECTION" };
+const _uniStickySectionElement = { value: "STICKY-SECTION" };
 const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "sticky-section",
@@ -11787,7 +11852,7 @@ const _sfc_main$4 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = t0$4();
     const n3 = Vue.child(n0);
     const n2 = Vue.next(n3);
-    Vue.initUniElement(n0, _uniElement$3);
+    Vue.initUniElement(n0, _uniStickySectionElement);
     Vue.setInsertionState(n0, n3);
     Vue.createSlot();
     Vue.setStaticTemplateRef(n2, placeholderElement, null, "placeholderElement");
@@ -11836,11 +11901,13 @@ function parsePxRpx(margin) {
   }
   return 0;
 }
-class UniSwiperElement extends UniViewElement {
-}
+const _UniSwiperElement = class _UniSwiperElement extends UniViewElement {
+};
+_UniSwiperElement.__uniElement = {};
+let UniSwiperElement = _UniSwiperElement;
 const t0$3 = Vue.template("<div uni-view>");
 const t1$1 = Vue.template("<div uni-swiper uni-view class=uni-swiper-wrapper><div uni-view></div><div uni-view>", 1);
-const _uniElement$2 = { value: "SWIPER" };
+const _uniSwiperElement = { value: "SWIPER" };
 const DIRECTION_LOCK_THRESHOLD = 5;
 const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -12330,7 +12397,7 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
     const n0 = t1$1();
     const n2 = Vue.child(n0);
     const n9 = Vue.next(n2);
-    Vue.initUniElement(n0, _uniElement$2);
+    Vue.initUniElement(n0, _uniSwiperElement);
     Vue.renderEffect(() => Vue.setClass(n2, ["uni-swiper-container", __props.vertical ? "uni-swiper-container_vertical" : "uni-swiper-container_horizontal"]));
     Vue.setInsertionState(n2);
     Vue.createSlot();
@@ -12386,15 +12453,19 @@ const _sfc_main$3 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniSwiperItemElement extends UniViewElement {
+const _UniSwiperItemElement = class _UniSwiperItemElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.itemId = null;
   }
-}
+};
+_UniSwiperItemElement.__uniElement = { init() {
+  Object.defineProperty(this, "itemId", { value: null, writable: true, enumerable: true, configurable: true });
+} };
+let UniSwiperItemElement = _UniSwiperItemElement;
 const t0$2 = Vue.template("<div uni-view class=uni-swiper-item-content>");
 const t1 = Vue.template('<div uni-swiper-item uni-view class=uni-swiper-item style="position: absolute; visibility: hidden;">', 1);
-const _uniElement$1 = { value: "SWIPER-ITEM" };
+const _uniSwiperItemElement = { value: "SWIPER-ITEM" };
 const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "swiper-item",
@@ -12412,7 +12483,7 @@ const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.inject("handleSwiperItemMounted");
     Vue.inject("handleSwiperItemUnMounted");
     const n0 = t1();
-    Vue.initUniElement(n0, _uniElement$1);
+    Vue.initUniElement(n0, _uniSwiperItemElement);
     Vue.setInsertionState(n0);
     Vue.createIf(
       () => Vue.unref(autoHeight),
@@ -12433,7 +12504,7 @@ const _sfc_main$2 = /* @__PURE__ */ Vue.defineVaporComponent({
     return n0;
   }
 });
-class UniSwitchElement extends UniViewElement {
+const _UniSwitchElement = class _UniSwitchElement extends UniViewElement {
   constructor() {
     super(...arguments);
     this.tagName = "SWITCH";
@@ -12449,9 +12520,13 @@ class UniSwitchElement extends UniViewElement {
     this._checked = val;
     (_a = this.vm) == null ? void 0 : _a.setSwitchChecked(val);
   }
-}
+};
+_UniSwitchElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
+} };
+let UniSwitchElement = _UniSwitchElement;
 const t0$1 = Vue.template("<div uni-switch uni-view role=switch><div uni-view>", 1);
-const _uniElement = { value: "SWITCH" };
+const _uniSwitchElement = { value: "SWITCH" };
 const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "switch",
@@ -12524,7 +12599,7 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     const n0 = t0$1();
     const n1 = Vue.child(n0);
-    Vue.initUniElement(n0, _uniElement);
+    Vue.initUniElement(n0, _uniSwitchElement);
     Vue.on(n0, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
     Vue.on(n0, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
     Vue.on(n0, "blur", (e2) => Vue.unref(handleBlur)(e2));

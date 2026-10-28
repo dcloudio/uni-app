@@ -21405,17 +21405,63 @@ function initUniDataset(el, data) {
 //#endregion
 //#region packages/runtime-vapor-web/src/element.ts
 const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+const initializers = /* @__PURE__ */ new WeakMap();
+function prepareElement(Type) {
+	const descriptors = Object.create(null);
+	const fields = [];
+	let usesVm = false;
+	const types = [Type];
+	let Base = Object.getPrototypeOf(Type);
+	while (Base && (0, _vue_shared.hasOwn)(Base, "__uniElement")) {
+		types.unshift(Base);
+		Base = Object.getPrototypeOf(Base);
+	}
+	for (const type of types) {
+		const metadata = (0, _vue_shared.hasOwn)(type, "__uniElement") && type.__uniElement;
+		if (metadata) {
+			usesVm = usesVm || !!metadata.vm;
+			if (metadata.init) fields.push(metadata.init);
+		}
+		const members = Object.getOwnPropertyDescriptors(type.prototype);
+		for (const key of Reflect.ownKeys(members)) if (key !== "constructor" && key !== "tagName" && key !== "nodeName" && key !== "vm") descriptors[key] = members[key];
+	}
+	const members = Reflect.ownKeys(descriptors).map((key) => ({
+		key,
+		descriptor: descriptors[key]
+	}));
+	if (!members.length && !fields.length && !usesVm) return;
+	return (root, api) => {
+		for (const { key, descriptor } of members) Object.defineProperty(root, key, descriptor);
+		for (const initialize of fields) initialize.call(root);
+		if (usesVm) {
+			root.vm = api;
+			onScopeDispose(() => {
+				root.vm = null;
+			});
+		}
+	};
+}
 function initUniElementType(Type, name) {
+	if (!initializers.has(Type)) initializers.set(Type, prepareElement(Type));
 	if ((0, _vue_shared.hasOwn)(Type, Symbol.hasInstance)) return Type;
 	const marker = `uni-${name}`;
-	const Base = Object.getPrototypeOf(Type);
 	Object.defineProperty(Type, Symbol.hasInstance, { value(value) {
-		return this === Type && value instanceof Base && value.hasAttribute(marker) || nativeHasInstance.call(this, value);
+		const el = value;
+		if (this === Type && (0, _vue_shared.isObject)(value) && el.nodeType === 1 && el.namespaceURI === "http://www.w3.org/1999/xhtml" && el.hasAttribute(marker)) {
+			const tag = el.localName;
+			if (tag === "div" && el.hasAttribute("uni-view") || tag === "span" && el.hasAttribute("uni-text") || tag === "img" && el.hasAttribute("uni-image")) return true;
+		}
+		return nativeHasInstance.call(this, value);
 	} });
 	return Type;
 }
 function initUniElement(root, tagName) {
 	Object.defineProperty(root, "uniTagName", tagName);
+	const instance = getCurrentInstance();
+	if (!instance) return;
+	const options = instance.type;
+	const initialize = options.rootElement && initializers.get(options.rootElement.class);
+	if (initialize) initialize(root, instance.exposed);
 }
 //#endregion
 //#region packages/runtime-vapor-web/src/apiCreateRecycleFor.ts

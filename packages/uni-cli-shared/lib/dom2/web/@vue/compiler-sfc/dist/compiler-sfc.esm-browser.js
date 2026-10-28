@@ -29576,47 +29576,27 @@ function normalizeRpx(value) {
 		return result === 0 ? "0" : `${result}rem`;
 	});
 }
-const UVUE_VAPOR_APP_EASYCOMS = [
-	"ad",
-	"camera",
-	"canvas",
-	"editor",
-	"button",
+const UVUE_VAPOR_WEB_EASYCOMS = [
 	"checkbox",
 	"checkbox-group",
 	"form",
-	"input",
 	"label",
+	"loading",
+	"match-media",
+	"navigator",
 	"picker",
 	"picker-view",
 	"picker-view-column",
+	"progress",
 	"radio",
 	"radio-group",
 	"slider",
-	"switch",
-	"textarea",
-	"list-item",
-	"list-view",
-	"sticky-header",
-	"sticky-section",
-	"live-player",
-	"live-pusher",
-	"loading",
-	"map",
-	"match-media",
-	"navigator",
-	"page-container",
-	"progress",
-	"rich-text",
 	"swiper",
 	"swiper-item",
-	"video",
-	"flow-item",
-	"waterflow",
-	"web-view"
+	"switch"
 ];
-function isDom2AppVueComponentTag(tag) {
-	return UVUE_VAPOR_APP_EASYCOMS.includes(tag);
+function isDom2WebVueComponentTag(tag) {
+	return UVUE_VAPOR_WEB_EASYCOMS.includes(tag);
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
@@ -32105,33 +32085,37 @@ function createDatasetTransform() {
 //#endregion
 //#region packages/compiler-vapor-web/src/uniElement.ts
 const names = /* @__PURE__ */ new Set([...BUILT_IN_TAGS, ...UVUE_WEB_BUILT_IN_TAGS]);
-function resolveUniElementRoot(ast, name) {
-	if (!ast || !(names.has(`uni-${name}`) || isDom2AppVueComponentTag(name))) return;
+function resolveUniElementRoots(ast, name) {
+	if (!ast || !(names.has(`uni-${name}`) || isDom2WebVueComponentTag(name))) return;
 	const roots = ast.children.filter((node) => node.type !== 3 && !(node.type === 2 && !node.content.trim()));
-	if (roots.length !== 1) return;
-	const root = roots[0];
-	if (root.type !== 1 || ![
+	if (!roots.length) return;
+	const elements = roots.filter((node) => node.type === 1);
+	if (elements.length !== roots.length) return;
+	if (elements.length > 1) {
+		if (!elements[0].props.some((prop) => prop.type === 7 && prop.name === "if") || elements.slice(1).some((node) => !node.props.some((prop) => prop.type === 7 && (prop.name === "else-if" || prop.name === "else")))) return;
+	}
+	if (elements.some((root) => ![
 		"view",
 		"text",
 		"image",
 		"cover-view",
 		"cover-image"
-	].includes(root.tag) || root.props.some((prop) => prop.type === 7 && prop.name === "for" || prop.type === 6 && prop.name === `uni-${name}`)) return;
-	return root;
+	].includes(root.tag) || root.props.some((prop) => prop.type === 7 && prop.name === "for" || prop.type === 6 && prop.name === `uni-${name}`))) return;
+	return elements;
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformUniElement.ts
 function createUniElementTransform() {
-	let root;
+	let roots;
 	let name;
 	let descriptor;
-	let elementOperation;
+	const elementOperations = /* @__PURE__ */ new Set();
 	return {
 		transform(node, context) {
 			if (node.type === 0) {
 				name = context.options.bindingMetadata.__uniElement;
-				if (name) root = resolveUniElementRoot(node, name);
-			} else if (root && node.type === 1 && node.loc === root.loc && isUniBasicElement(node)) {
+				if (name) roots = resolveUniElementRoots(node, name);
+			} else if (roots && node.type === 1 && roots.some((root) => node.loc === root.loc) && isUniBasicElement(node)) {
 				if (!node.props.some((prop) => prop.type === 6 && prop.name === `uni-${name}`)) node.props.unshift({
 					type: 6,
 					name: `uni-${name}`,
@@ -32149,14 +32133,14 @@ function createUniElementTransform() {
 						values: []
 					}
 				};
-				elementOperation = operation;
+				elementOperations.add(operation);
 				context.registerOperation(operation);
 			}
 		},
 		genOperation(operation, context) {
-			if (operation !== elementOperation) return;
+			if (operation.type !== 3 || !elementOperations.has(operation)) return;
 			if (!descriptor) {
-				descriptor = context.getUniqueLocalName("_uniElement");
+				descriptor = context.getUniqueLocalName(`_uni${capitalize(camelize(name))}Element`);
 				context.hoists.push(`const ${descriptor} = { value: ${JSON.stringify(name.toUpperCase())} }\n`);
 			}
 			return [NEWLINE, ...genCall(context.helper("initUniElement"), `n${operation.element}`, descriptor)];
@@ -32287,7 +32271,7 @@ var src_exports = /* @__PURE__ */ __exportAll({
 	compile: () => compile,
 	compileSSR: () => compileSSR,
 	parse: () => parse$3,
-	resolveUniElementRoot: () => resolveUniElementRoot
+	resolveUniElementRoots: () => resolveUniElementRoots
 });
 //#endregion
 //#region \0polyfill-node.fs.js
@@ -44712,7 +44696,7 @@ function processUniElement(ctx) {
 	const declaration = ctx.optionsRuntimeDecl;
 	const name = readOption(declaration, "name");
 	const elementClass = readOption(readOption(declaration, "rootElement"), "class");
-	if ((name === null || name === void 0 ? void 0 : name.type) !== "StringLiteral" || (elementClass === null || elementClass === void 0 ? void 0 : elementClass.type) !== "Identifier" || !resolveUniElementRoot(template.ast, name.value)) return;
+	if ((name === null || name === void 0 ? void 0 : name.type) !== "StringLiteral" || (elementClass === null || elementClass === void 0 ? void 0 : elementClass.type) !== "Identifier" || !resolveUniElementRoots(template.ast, name.value)) return;
 	Object.defineProperty(ctx.bindingMetadata, "__uniElement", { value: name.value });
 	const source = descriptor.scriptSetup.content;
 	return source.slice(declaration.start, elementClass.start) + `/*@__PURE__*/${ctx.helper("initUniElementType")}(${elementClass.name}, ${JSON.stringify(name.value)})` + source.slice(elementClass.end, declaration.end);

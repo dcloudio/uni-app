@@ -20,6 +20,7 @@ import {
   stripOptions,
   uniPrePlugin,
   uniUVueTypeScriptPlugin,
+  uniWebVaporElementPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
 import { getPreUVueContext } from '@dcloudio/uni-cli-shared/dist/preprocess/context'
@@ -239,7 +240,10 @@ export default defineConfig(async () => {
           uniUVueTypeScriptPlugin(),
           prePlugin,
           ...(isX_VAPOR
-            ? [webVaporComponentStylesPlugin(vaporComponentsDir)]
+            ? [
+              webVaporComponentStylesPlugin(vaporComponentsDir),
+              ...(!isX_VAPOR_SSR_BUILD ? [uniWebVaporElementPlugin()] : []),
+            ]
             : []),
           AutoImport(autoImportOptions),
           extApiPlugin!,

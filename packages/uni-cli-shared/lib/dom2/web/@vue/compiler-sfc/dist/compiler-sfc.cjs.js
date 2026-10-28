@@ -15470,7 +15470,7 @@ function processUniElement(ctx) {
 	const declaration = ctx.optionsRuntimeDecl;
 	const name = readOption(declaration, "name");
 	const elementClass = readOption(readOption(declaration, "rootElement"), "class");
-	if (name?.type !== "StringLiteral" || elementClass?.type !== "Identifier" || !(0, _dcloudio_compiler_vapor_web.resolveUniElementRoot)(template.ast, name.value)) return;
+	if (name?.type !== "StringLiteral" || elementClass?.type !== "Identifier" || !(0, _dcloudio_compiler_vapor_web.resolveUniElementRoots)(template.ast, name.value)) return;
 	Object.defineProperty(ctx.bindingMetadata, "__uniElement", { value: name.value });
 	const source = descriptor.scriptSetup.content;
 	return source.slice(declaration.start, elementClass.start) + `/*@__PURE__*/${ctx.helper("initUniElementType")}(${elementClass.name}, ${JSON.stringify(name.value)})` + source.slice(elementClass.end, declaration.end);

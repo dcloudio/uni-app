@@ -562,33 +562,37 @@ function createDatasetTransform() {
 //#endregion
 //#region packages/compiler-vapor-web/src/uniElement.ts
 const names = /* @__PURE__ */ new Set([..._dcloudio_uni_shared.BUILT_IN_TAGS, ..._dcloudio_uni_shared.UVUE_WEB_BUILT_IN_TAGS]);
-function resolveUniElementRoot(ast, name) {
-	if (!ast || !(names.has(`uni-${name}`) || (0, _dcloudio_uni_shared.isDom2AppVueComponentTag)(name))) return;
+function resolveUniElementRoots(ast, name) {
+	if (!ast || !(names.has(`uni-${name}`) || (0, _dcloudio_uni_shared.isDom2WebVueComponentTag)(name))) return;
 	const roots = ast.children.filter((node) => node.type !== 3 && !(node.type === 2 && !node.content.trim()));
-	if (roots.length !== 1) return;
-	const root = roots[0];
-	if (root.type !== 1 || ![
+	if (!roots.length) return;
+	const elements = roots.filter((node) => node.type === 1);
+	if (elements.length !== roots.length) return;
+	if (elements.length > 1) {
+		if (!elements[0].props.some((prop) => prop.type === 7 && prop.name === "if") || elements.slice(1).some((node) => !node.props.some((prop) => prop.type === 7 && (prop.name === "else-if" || prop.name === "else")))) return;
+	}
+	if (elements.some((root) => ![
 		"view",
 		"text",
 		"image",
 		"cover-view",
 		"cover-image"
-	].includes(root.tag) || root.props.some((prop) => prop.type === 7 && prop.name === "for" || prop.type === 6 && prop.name === `uni-${name}`)) return;
-	return root;
+	].includes(root.tag) || root.props.some((prop) => prop.type === 7 && prop.name === "for" || prop.type === 6 && prop.name === `uni-${name}`))) return;
+	return elements;
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformUniElement.ts
 function createUniElementTransform() {
-	let root;
+	let roots;
 	let name;
 	let descriptor;
-	let elementOperation;
+	const elementOperations = /* @__PURE__ */ new Set();
 	return {
 		transform(node, context) {
 			if (node.type === 0) {
 				name = context.options.bindingMetadata.__uniElement;
-				if (name) root = resolveUniElementRoot(node, name);
-			} else if (root && node.type === 1 && node.loc === root.loc && (0, _vue_compiler_vapor.isUniBasicElement)(node)) {
+				if (name) roots = resolveUniElementRoots(node, name);
+			} else if (roots && node.type === 1 && roots.some((root) => node.loc === root.loc) && (0, _vue_compiler_vapor.isUniBasicElement)(node)) {
 				if (!node.props.some((prop) => prop.type === 6 && prop.name === `uni-${name}`)) node.props.unshift({
 					type: 6,
 					name: `uni-${name}`,
@@ -606,14 +610,14 @@ function createUniElementTransform() {
 						values: []
 					}
 				};
-				elementOperation = operation;
+				elementOperations.add(operation);
 				context.registerOperation(operation);
 			}
 		},
 		genOperation(operation, context) {
-			if (operation !== elementOperation) return;
+			if (operation.type !== 3 || !elementOperations.has(operation)) return;
 			if (!descriptor) {
-				descriptor = context.getUniqueLocalName("_uniElement");
+				descriptor = context.getUniqueLocalName(`_uni${(0, _vue_shared.capitalize)((0, _vue_shared.camelize)(name))}Element`);
 				context.hoists.push(`const ${descriptor} = { value: ${JSON.stringify(name.toUpperCase())} }\n`);
 			}
 			return [_vue_compiler_vapor.NEWLINE, ...(0, _vue_compiler_vapor.genCall)(context.helper("initUniElement"), `n${operation.element}`, descriptor)];
@@ -723,4 +727,4 @@ exports.UNI_APP_SCOPE_ID = _vue_shared.UNI_APP_SCOPE_ID;
 exports.compile = compile;
 exports.compileSSR = compileSSR;
 exports.parse = parse;
-exports.resolveUniElementRoot = resolveUniElementRoot;
+exports.resolveUniElementRoots = resolveUniElementRoots;
