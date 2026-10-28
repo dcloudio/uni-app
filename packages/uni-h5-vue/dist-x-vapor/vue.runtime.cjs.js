@@ -11445,18 +11445,9 @@ function withCurrentCacheKey(key, fn) {
 }
 //#endregion
 //#region packages/runtime-vapor/src/externalClasses.ts
-function normalizeExternalClasses(value, auxiliary = true) {
+function normalizeExternalClasses(value) {
 	const normalized = (0, _vue_shared.normalizeClass)(value);
-	if (!normalized) return "";
-	if (!auxiliary) return "^" + normalized.replace(/\s+/g, " ^");
-	const classes = normalized.split(/\s+/);
-	let result = "";
-	for (let i = 0; i < classes.length; i++) {
-		const cls = "^" + classes[i];
-		if (i) result += " ";
-		result += cls + " " + cls + "-external";
-	}
-	return result;
+	return normalized ? "^" + normalized.replace(/\s+/g, " ^") : "";
 }
 function resolveExternalClass(el, value) {
 	if (!value || value.indexOf("^") === -1) return value;
@@ -11986,7 +11977,7 @@ function updateProps(instance, rawValues, propsToUpdate) {
 				continue;
 			}
 		} else if (isEmitListener(emitsOptions, key)) continue;
-		else if (key === "class" && (0, _vue_shared.isString)(value) && (instance.scopeId || value.indexOf("^") !== -1) && !instance.type.__reserved && !(instance.type.__externalClasses && instance.type.__externalClasses.has(key))) value = normalizeExternalClasses(value, false);
+		else if (key === "class" && (0, _vue_shared.isString)(value) && (instance.scopeId || value.indexOf("^") !== -1) && !instance.type.__reserved && !(instance.type.__externalClasses && instance.type.__externalClasses.has(key))) value = normalizeExternalClasses(value);
 		if (present) present[key] = true;
 		setPropValue(instance, key, value, isInitial);
 	}

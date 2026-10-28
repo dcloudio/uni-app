@@ -150,9 +150,9 @@ describe('stylePluginExternal', () => {
     })
 
     test('should not process on h5 platform', async () => {
-      const input = '.foo { color: red; }'
+      const input = '.foo { color: red; } .foo-external { color: blue; }'
       const result = await processor.process(input, pageOptions)
-      expect(result.css).toBe('.foo { color: red; }')
+      expect(result.css).toBe(input)
     })
   })
 
