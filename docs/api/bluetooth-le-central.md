@@ -16,12 +16,12 @@
 
 ## 使用流程
 
-<a href="../static/bluetooth-le-central-flow.svg" target="_blank" rel="noopener"><img src="../static/bluetooth-le-central-flow.svg" alt="BLE 中心设备流程：连接设备、发现服务和特征值、按属性收发数据并清理连接"></a>
+![BLE 中心设备流程：连接设备、发现服务和特征值、按属性收发数据并清理连接](../static/bluetooth-le-central-flow.svg)#{.zooming width="400px"}
 
 1. 注册 [uni.onBLEConnectionStateChange](#onbleconnectionstatechange) 和 [uni.onBLECharacteristicValueChange](#onblecharacteristicvaluechange)，分别接收连接状态变化和特征值数据。
 2. 使用扫描返回的 `deviceId`，调用 [uni.createBLEConnection](#createbleconnection) 连接目标设备。
 3. 连接成功后，调用 [uni.getBLEDeviceServices](#getbledeviceservices) 发现服务，再调用 [uni.getBLEDeviceCharacteristics](#getbledevicecharacteristics) 获取目标服务的特征值及其属性。
-4. 按特征值属性调用 [uni.readBLECharacteristicValue](#readblecharacteristicvalue) 或 [uni.writeBLECharacteristicValue](#writeblecharacteristicvalue)。主动读取的数据通过特征值变化事件返回，无需先开启通知。
+4. 按特征值属性调用 [uni.readBLECharacteristicValue](#readblecharacteristicvalue) 或 [uni.writeBLECharacteristicValue](#writeblecharacteristicvalue)。调用 `readBLECharacteristicValue` 前需先注册 `onBLECharacteristicValueChange`，读取结果通过该事件的 `value` 返回；读取不要求先开启通知。
 5. 如需接收外设主动发送的数据，调用 [uni.notifyBLECharacteristicValueChange](#notifyblecharacteristicvaluechange) 开启通知，通过已注册的特征值变化事件监听接收数据。
 6. 按需调用 [uni.getBLEDeviceRSSI](#getbledevicerssi) 获取信号强度；iOS 写入长度与 MTU 的说明见 [uni.getBLEMTU](#getblemtu) 和 [uni.setBLEMTU](#setblemtu)。
 7. 不再需要通知时将其关闭；通信结束后调用 [uni.closeBLEConnection](#closebleconnection)，并移除当前页面或组件注册的事件监听。
@@ -39,13 +39,6 @@
 - **区分通知与事件监听**：关闭外设通知需调用 `notifyBLECharacteristicValueChange` 并传入 `state: false`；`offBLECharacteristicValueChange` 只移除事件监听，不能代替关闭通知。
 - **按监听所属范围清理**：不再使用时移除自身注册的特征值和连接状态监听。当前 iOS 插件可保存 `on*` 返回的监听 ID，并将该 ID 传给对应的 `off*`，避免清空其他页面的监听。
 - **控制写入长度与时序**：单次写入长度由平台和当前连接决定，超长数据需由业务分包；同一连接上的读写与通知配置操作宜按完成回调依次执行。
-
-### iOS 外设固件变更
-
-固件升级若增删服务或特征值、修改 UUID、特征值属性或服务包含关系，可能使 iOS 缓存的 GATT 结构与外设不一致，出现找不到新特征值、属性仍为旧值、读写或开启通知失败等问题。
-
-- **外设侧**：应在 Generic Attribute Service（`0x1801`）中实现 Service Changed 特征值（`0x2A05`），并在 GATT 数据库结构变化后按规范发送 Service Changed indication，告知 iOS 原有服务信息已失效、需要重新发现。这是外设与系统协作处理 GATT 变更的机制，不能用 App 侧“清理缓存”或反复断开重连代替。
-- **应用侧**：当前 iOS 内置蓝牙 API 已处理系统的服务变更通知，使旧的服务和特征值信息失效。应用仍需在连接有效时重新调用 [uni.getBLEDeviceServices](#getbledeviceservices) 和 [uni.getBLEDeviceCharacteristics](#getbledevicecharacteristics)，以新返回的 UUID 和属性为准，再按需调用 [uni.notifyBLECharacteristicValueChange](#notifyblecharacteristicvaluechange) 开启通知，之后进行读写。
 
 
 ::: sourceCode
