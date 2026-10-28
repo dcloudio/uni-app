@@ -84,621 +84,195 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 | `1500105` | 系统或平台不支持该蓝牙能力 | 检查接口兼容性及运行环境，重复调用不能消除此限制。 |
 | `1500104` / `1509000` | 系统调用失败或其他错误 | 记录接口名、`errCode`、`errMsg` 及可用的错误详情，结合真机环境进一步排查。 |
 
-::: sourceCode
-## uni.openBluetoothAdapter(options) @openbluetoothadapter
-:::
+<!-- UTSAPIJSON.openBluetoothAdapter.name -->
 
-初始化蓝牙模块
+<!-- UTSAPIJSON.openBluetoothAdapter.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=openbluetoothadapter](http://uniapp.dcloud.io/api/system/bluetooth?id=openbluetoothadapter)
+<!-- UTSAPIJSON.openBluetoothAdapter.compatibility -->
 
-### openBluetoothAdapter 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.openBluetoothAdapter.param -->
 
+<!-- UTSAPIJSON.openBluetoothAdapter.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | [UniNamespace.OpenBluetoothAdapterOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| mode | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 需要基础库： `2.10.0`<br/><br/>蓝牙模式，可作为主/从设备，仅 iOS 需要。<br/><br/>可选值：<br/>- 'central': 主机模式;<br/>- 'peripheral': 从机（外围设备）模式; |
-
-##### mode 的属性描述
-
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| "central" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| "peripheral" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
-
-
-
-
-
+<!-- UTSAPIJSON.openBluetoothAdapter.returnValue -->
 
 <!-- UTSAPIJSON.openBluetoothAdapter.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.openBluetoothAdapter)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=openBluetoothAdapter&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=openBluetoothAdapter&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=openBluetoothAdapter&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=openBluetoothAdapter&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=openBluetoothAdapter&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=openBluetoothAdapter)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=openBluetoothAdapter&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.openBluetoothAdapter.tutorial -->
 
 ### 使用说明
 
 - 初始化成功只表示应用可以使用蓝牙适配器，不代表已扫描到设备或建立连接。应在成功回调后开始扫描，再按[中心设备使用流程](./bluetooth-le-central.md#使用流程)连接和通信。
 - 初始化失败时，应根据失败回调处理原因，待相关条件恢复后重新初始化，不要继续扫描或连接。
 
-::: sourceCode
-## uni.closeBluetoothAdapter(options) @closebluetoothadapter
-:::
+<!-- UTSAPIJSON.closeBluetoothAdapter.name -->
 
-关闭蓝牙模块
+<!-- UTSAPIJSON.closeBluetoothAdapter.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=closebluetoothadapter](http://uniapp.dcloud.io/api/system/bluetooth?id=closebluetoothadapter)
+<!-- UTSAPIJSON.closeBluetoothAdapter.compatibility -->
 
-### closeBluetoothAdapter 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.closeBluetoothAdapter.param -->
 
+<!-- UTSAPIJSON.closeBluetoothAdapter.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | [UniNamespace.CloseBluetoothAdapterOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回成功关闭模块信息 |
-| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-
-
-
-
+<!-- UTSAPIJSON.closeBluetoothAdapter.returnValue -->
 
 <!-- UTSAPIJSON.closeBluetoothAdapter.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.closeBluetoothAdapter)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=closeBluetoothAdapter&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=closeBluetoothAdapter&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=closeBluetoothAdapter&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=closeBluetoothAdapter&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=closeBluetoothAdapter&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=closeBluetoothAdapter)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=closeBluetoothAdapter&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.closeBluetoothAdapter.tutorial -->
 
 
-::: sourceCode
-## uni.getBluetoothAdapterState(options) @getbluetoothadapterstate
-:::
+<!-- UTSAPIJSON.getBluetoothAdapterState.name -->
 
-获取本机蓝牙适配器状态
+<!-- UTSAPIJSON.getBluetoothAdapterState.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=getbluetoothadapterstate](http://uniapp.dcloud.io/api/system/bluetooth?id=getbluetoothadapterstate)
+<!-- UTSAPIJSON.getBluetoothAdapterState.compatibility -->
 
-### getBluetoothAdapterState 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.getBluetoothAdapterState.param -->
 
+<!-- UTSAPIJSON.getBluetoothAdapterState.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | [UniNamespace.GetBluetoothAdapterStateOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (result: [GetBluetoothAdapterStateSuccess](#getbluetoothadapterstatesuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回本机蓝牙适配器状态 |
-| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-#### GetBluetoothAdapterStateSuccess 的属性值 @getbluetoothadapterstatesuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| discovering | boolean | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否正在搜索设备 |
-| available | boolean | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙适配器是否可用 |
-| errMsg | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功：ok，错误：详细信息 |
-
-
-
-
-
+<!-- UTSAPIJSON.getBluetoothAdapterState.returnValue -->
 
 <!-- UTSAPIJSON.getBluetoothAdapterState.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBluetoothAdapterState)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getBluetoothAdapterState&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBluetoothAdapterState&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBluetoothAdapterState&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBluetoothAdapterState&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBluetoothAdapterState&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBluetoothAdapterState)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBluetoothAdapterState&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.getBluetoothAdapterState.tutorial -->
 
 
-::: sourceCode
-## uni.onBluetoothAdapterStateChange(callback) @onbluetoothadapterstatechange
-:::
+<!-- UTSAPIJSON.onBluetoothAdapterStateChange.name -->
 
-监听蓝牙适配器状态变化事件
+<!-- UTSAPIJSON.onBluetoothAdapterStateChange.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=onbluetoothadapterstatechange](http://uniapp.dcloud.io/api/system/bluetooth?id=onbluetoothadapterstatechange)
+<!-- UTSAPIJSON.onBluetoothAdapterStateChange.compatibility -->
 
-### onBluetoothAdapterStateChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.onBluetoothAdapterStateChange.param -->
 
+<!-- UTSAPIJSON.onBluetoothAdapterStateChange.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (result: [UniNamespace.OnBluetoothAdapterStateChangeResult](#uninamespace-values)) => void | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
-
-### UniNamespace.OnBluetoothAdapterStateChangeResult 的属性值 @uninamespace-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| discovering | boolean | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否正在搜索设备 |
-| available | boolean | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙适配器是否可用 |
-
-
-
-
-
+<!-- UTSAPIJSON.onBluetoothAdapterStateChange.returnValue -->
 
 <!-- UTSAPIJSON.onBluetoothAdapterStateChange.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBluetoothAdapterStateChange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onBluetoothAdapterStateChange&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBluetoothAdapterStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBluetoothAdapterStateChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBluetoothAdapterStateChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBluetoothAdapterStateChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBluetoothAdapterStateChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBluetoothAdapterStateChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.onBluetoothAdapterStateChange.tutorial -->
 
 
-::: sourceCode
-## uni.offBluetoothAdapterStateChange() @offbluetoothadapterstatechange
-:::
+<!-- UTSAPIJSON.offBluetoothAdapterStateChange.name -->
 
-需要基础库： `2.9.0`
+<!-- UTSAPIJSON.offBluetoothAdapterStateChange.description -->
 
-在插件中使用：需要基础库 `2.9.1`
+<!-- UTSAPIJSON.offBluetoothAdapterStateChange.compatibility -->
 
-移除蓝牙适配器状态变化事件的全部监听函数
+<!-- UTSAPIJSON.offBluetoothAdapterStateChange.param -->
 
+<!-- UTSAPIJSON.offBluetoothAdapterStateChange.fileFormats -->
 
-文档: [https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
-
-### offBluetoothAdapterStateChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
-
-
-
-
-
-
-
+<!-- UTSAPIJSON.offBluetoothAdapterStateChange.returnValue -->
 
 <!-- UTSAPIJSON.offBluetoothAdapterStateChange.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBluetoothAdapterStateChange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offBluetoothAdapterStateChange&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBluetoothAdapterStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBluetoothAdapterStateChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBluetoothAdapterStateChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBluetoothAdapterStateChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBluetoothAdapterStateChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBluetoothAdapterStateChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.offBluetoothAdapterStateChange.tutorial -->
 
 
-::: sourceCode
-## uni.startBluetoothDevicesDiscovery(options) @startbluetoothdevicesdiscovery
-:::
+<!-- UTSAPIJSON.startBluetoothDevicesDiscovery.name -->
 
-开始搜索附近的蓝牙设备
+<!-- UTSAPIJSON.startBluetoothDevicesDiscovery.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=startbluetoothdevicesdiscovery](http://uniapp.dcloud.io/api/system/bluetooth?id=startbluetoothdevicesdiscovery)
+<!-- UTSAPIJSON.startBluetoothDevicesDiscovery.compatibility -->
 
-### startBluetoothDevicesDiscovery 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.startBluetoothDevicesDiscovery.param -->
 
+<!-- UTSAPIJSON.startBluetoothDevicesDiscovery.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | [UniNamespace.StartBluetoothDevicesDiscoveryOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| powerLevel | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 扫描模式，越高扫描越快，也越耗电。仅安卓微信客户端 7.0.12 及以上支持。<br/><br/>可选值：<br/>- 'low': 低;<br/>- 'medium': 中;<br/>- 'high': 高; |
-
-##### powerLevel 的属性描述
-
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| "low" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| "medium" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| "high" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
-
-
-
-
-
+<!-- UTSAPIJSON.startBluetoothDevicesDiscovery.returnValue -->
 
 <!-- UTSAPIJSON.startBluetoothDevicesDiscovery.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.startBluetoothDevicesDiscovery)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=startBluetoothDevicesDiscovery&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startBluetoothDevicesDiscovery&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startBluetoothDevicesDiscovery&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startBluetoothDevicesDiscovery&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startBluetoothDevicesDiscovery&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startBluetoothDevicesDiscovery)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startBluetoothDevicesDiscovery&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.startBluetoothDevicesDiscovery.tutorial -->
 
 
-::: sourceCode
-## uni.stopBluetoothDevicesDiscovery(options) @stopbluetoothdevicesdiscovery
-:::
+<!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.name -->
 
-停止搜寻附近的蓝牙外围设备
+<!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=stopbluetoothdevicesdiscovery](http://uniapp.dcloud.io/api/system/bluetooth?id=stopbluetoothdevicesdiscovery)
+<!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.compatibility -->
 
-### stopBluetoothDevicesDiscovery 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.param -->
 
+<!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | [UniNamespace.StopBluetoothDevicesDiscoveryOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (result: [StopBluetoothDevicesDiscoverySuccess](#stopbluetoothdevicesdiscoverysuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回本机蓝牙适配器状态 |
-| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-#### StopBluetoothDevicesDiscoverySuccess 的属性值 @stopbluetoothdevicesdiscoverysuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| errCode | number | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \| |
-
-
-
-
-
+<!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.returnValue -->
 
 <!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.stopBluetoothDevicesDiscovery)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=stopBluetoothDevicesDiscovery&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopBluetoothDevicesDiscovery&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopBluetoothDevicesDiscovery&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopBluetoothDevicesDiscovery&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=stopBluetoothDevicesDiscovery&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=stopBluetoothDevicesDiscovery)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=stopBluetoothDevicesDiscovery&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.tutorial -->
 
 
-::: sourceCode
-## uni.onBluetoothDeviceFound(callback) @onbluetoothdevicefound
-:::
+<!-- UTSAPIJSON.onBluetoothDeviceFound.name -->
 
-监听搜索到新设备的事件
+<!-- UTSAPIJSON.onBluetoothDeviceFound.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=onbluetoothdevicefound](http://uniapp.dcloud.io/api/system/bluetooth?id=onbluetoothdevicefound)
+<!-- UTSAPIJSON.onBluetoothDeviceFound.compatibility -->
 
-### onBluetoothDeviceFound 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.onBluetoothDeviceFound.param -->
 
+<!-- UTSAPIJSON.onBluetoothDeviceFound.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| callback | (result: [UniNamespace.OnBluetoothDeviceFoundResult](#uninamespace-values)) => void | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
-
-### UniNamespace.OnBluetoothDeviceFoundResult 的属性值 @uninamespace-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| devices | Array&lt;**BluetoothDeviceInfo**&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 设备列表信息 |
-
-#### devices 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| name | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备名称，某些设备可能没有 |
-| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于区分设备的 id |
-| RSSI | number | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的信号强度 |
-| advertisData | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的ManufacturerData数据段 （注意：vConsole 无法打印出 ArrayBuffer 类型数据） |
-| advertisServiceUUIDs | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的ServiceUUIDs数据段 |
-| localName | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的LocalName数据段 |
-| serviceData | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的ServiceData数据段 |
-
-
-
-
-
+<!-- UTSAPIJSON.onBluetoothDeviceFound.returnValue -->
 
 <!-- UTSAPIJSON.onBluetoothDeviceFound.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBluetoothDeviceFound)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onBluetoothDeviceFound&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBluetoothDeviceFound&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBluetoothDeviceFound&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBluetoothDeviceFound&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBluetoothDeviceFound&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBluetoothDeviceFound)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBluetoothDeviceFound&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.onBluetoothDeviceFound.tutorial -->
 
 
-::: sourceCode
-## uni.offBluetoothDeviceFound() @offbluetoothdevicefound
-:::
+<!-- UTSAPIJSON.offBluetoothDeviceFound.name -->
 
-需要基础库： `2.9.0`
+<!-- UTSAPIJSON.offBluetoothDeviceFound.description -->
 
-在插件中使用：需要基础库 `2.9.1`
+<!-- UTSAPIJSON.offBluetoothDeviceFound.compatibility -->
 
-移除搜索到新设备的事件的全部监听函数
+<!-- UTSAPIJSON.offBluetoothDeviceFound.param -->
 
+<!-- UTSAPIJSON.offBluetoothDeviceFound.fileFormats -->
 
-文档: [https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothDeviceFound.html](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothDeviceFound.html)
-
-### offBluetoothDeviceFound 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
-
-
-
-
-
-
-
+<!-- UTSAPIJSON.offBluetoothDeviceFound.returnValue -->
 
 <!-- UTSAPIJSON.offBluetoothDeviceFound.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBluetoothDeviceFound)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offBluetoothDeviceFound&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBluetoothDeviceFound&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBluetoothDeviceFound&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBluetoothDeviceFound&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBluetoothDeviceFound&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBluetoothDeviceFound)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBluetoothDeviceFound&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.offBluetoothDeviceFound.tutorial -->
 
 
-::: sourceCode
-## uni.getBluetoothDevices(options) @getbluetoothdevices
-:::
+<!-- UTSAPIJSON.getBluetoothDevices.name -->
 
-获取已搜索到的蓝牙设备
+<!-- UTSAPIJSON.getBluetoothDevices.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=getbluetoothdevices](http://uniapp.dcloud.io/api/system/bluetooth?id=getbluetoothdevices)
+<!-- UTSAPIJSON.getBluetoothDevices.compatibility -->
 
-### getBluetoothDevices 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.getBluetoothDevices.param -->
 
+<!-- UTSAPIJSON.getBluetoothDevices.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | [UniNamespace.GetBluetoothDevicesOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| success | (result: [GetBluetoothDevicesSuccess](#getbluetoothdevicessuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回本机蓝牙适配器状态 |
-| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-#### GetBluetoothDevicesSuccess 的属性值 @getbluetoothdevicessuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| devices | Array&lt;**BluetoothDeviceInfo**&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | uuid 对应的的已连接设备列表 |
-| errMsg | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功：ok，错误：详细信息 |
-
-#### devices 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| name | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备名称，某些设备可能没有 |
-| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于区分设备的 id |
-| RSSI | number | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的信号强度 |
-| advertisData | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的ManufacturerData数据段 （注意：vConsole 无法打印出 ArrayBuffer 类型数据） |
-| advertisServiceUUIDs | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的ServiceUUIDs数据段 |
-| localName | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的LocalName数据段 |
-| serviceData | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当前蓝牙设备的广播数据段中的ServiceData数据段 |
-
-
-
-
-
+<!-- UTSAPIJSON.getBluetoothDevices.returnValue -->
 
 <!-- UTSAPIJSON.getBluetoothDevices.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBluetoothDevices)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getBluetoothDevices&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBluetoothDevices&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBluetoothDevices&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBluetoothDevices&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBluetoothDevices&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBluetoothDevices)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBluetoothDevices&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.getBluetoothDevices.tutorial -->
 
 
-::: sourceCode
-## uni.getConnectedBluetoothDevices(options) @getconnectedbluetoothdevices
-:::
+<!-- UTSAPIJSON.getConnectedBluetoothDevices.name -->
 
-根据uuid获取处于已连接的设备
+<!-- UTSAPIJSON.getConnectedBluetoothDevices.description -->
 
-文档: [http://uniapp.dcloud.io/api/system/bluetooth?id=getconnectedbluetoothdevices](http://uniapp.dcloud.io/api/system/bluetooth?id=getconnectedbluetoothdevices)
+<!-- UTSAPIJSON.getConnectedBluetoothDevices.compatibility -->
 
-### getConnectedBluetoothDevices 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<!-- UTSAPIJSON.getConnectedBluetoothDevices.param -->
 
+<!-- UTSAPIJSON.getConnectedBluetoothDevices.fileFormats -->
 
-### 参数 
-
-| 名称 | 类型 | 必填 | 兼容性 |
-| :- | :- | :- |  :-: |
-| options | [UniNamespace.GetConnectedBluetoothDevicesOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
-
-#### options 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| services | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备主 service 的 uuid 列表 |
-| success | (result: [GetConnectedBluetoothDevicesSuccess](#getconnectedbluetoothdevicessuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回本机蓝牙适配器状态 |
-| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
-
-#### GetConnectedBluetoothDevicesSuccess 的属性值 @getconnectedbluetoothdevicessuccess-values 
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| devices | Array&lt;**GetConnectedBluetoothDevicesSuccessData**&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 搜索到的设备列表 |
-| errMsg | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功：ok，错误：详细信息 |
-
-#### devices 的属性描述
-
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| name | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备名称，某些设备可能没有 |
-| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于区分设备的 id |
-
-
-
-
-
+<!-- UTSAPIJSON.getConnectedBluetoothDevices.returnValue -->
 
 <!-- UTSAPIJSON.getConnectedBluetoothDevices.example -->
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getConnectedBluetoothDevices)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getConnectedBluetoothDevices&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getConnectedBluetoothDevices&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getConnectedBluetoothDevices&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getConnectedBluetoothDevices&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getConnectedBluetoothDevices&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getConnectedBluetoothDevices)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getConnectedBluetoothDevices&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+<!-- UTSAPIJSON.getConnectedBluetoothDevices.tutorial -->
 
 
 ## 通用类型
