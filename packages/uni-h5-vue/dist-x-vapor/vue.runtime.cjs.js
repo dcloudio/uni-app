@@ -11446,14 +11446,15 @@ function withCurrentCacheKey(key, fn) {
 //#endregion
 //#region packages/runtime-vapor/src/externalClasses.ts
 function normalizeExternalClasses(value, auxiliary = true) {
-	const normalized = (0, _vue_shared.normalizeClass)(value).trim();
-	if (!normalized) return [];
+	const normalized = (0, _vue_shared.normalizeClass)(value);
+	if (!normalized) return "";
+	if (!auxiliary) return "^" + normalized.replace(/\s+/g, " ^");
 	const classes = normalized.split(/\s+/);
-	const result = auxiliary ? [] : classes;
+	let result = "";
 	for (let i = 0; i < classes.length; i++) {
 		const cls = "^" + classes[i];
-		if (auxiliary) result.push(cls, cls + "-external");
-		else result[i] = cls;
+		if (i) result += " ";
+		result += cls + " " + cls + "-external";
 	}
 	return result;
 }
@@ -11499,11 +11500,11 @@ function resolveExternalClassProp(propsValues, key, value) {
 	if ((0, _vue_shared.isObject)(value)) {
 		const cached = previous;
 		if (cached && cached._externalClassSource === value) return cached;
-		const result = /* @__PURE__ */ computed$1(() => normalizeExternalClasses(value).join(" "));
+		const result = /* @__PURE__ */ computed$1(() => normalizeExternalClasses(value));
 		result._externalClassSource = value;
 		return result;
 	}
-	return normalizeExternalClasses(value).join(" ");
+	return normalizeExternalClasses(value);
 }
 //#endregion
 //#region packages/runtime-vapor/src/componentProps.ts
@@ -11985,7 +11986,7 @@ function updateProps(instance, rawValues, propsToUpdate) {
 				continue;
 			}
 		} else if (isEmitListener(emitsOptions, key)) continue;
-		else if (key === "class" && (0, _vue_shared.isString)(value) && (instance.scopeId || value.indexOf("^") !== -1) && !instance.type.__reserved && !(instance.type.__externalClasses && instance.type.__externalClasses.has(key))) value = normalizeExternalClasses(value, false).join(" ");
+		else if (key === "class" && (0, _vue_shared.isString)(value) && (instance.scopeId || value.indexOf("^") !== -1) && !instance.type.__reserved && !(instance.type.__externalClasses && instance.type.__externalClasses.has(key))) value = normalizeExternalClasses(value, false);
 		if (present) present[key] = true;
 		setPropValue(instance, key, value, isInitial);
 	}

@@ -5591,11 +5591,21 @@ function toExternalClasses(classes) {
   return trimmed ? trimmed.split(/\s+/).map((item) => "^" + item) : [];
 }
 function normalizeExternalClasses(classes) {
-  const res = toExternalClasses(normalizeClass(classes));
+  const normalized = normalizeClass(classes);
+  if (!normalized)
+    return "";
   if (process.env.UNI_APP_X_NEW_STYLE_ISOLATION) {
-    return res.flatMap((item) => [item, item + "-external"]);
+    const names = normalized.split(/\s+/);
+    let result = "";
+    for (let i = 0; i < names.length; i++) {
+      const name = "^" + names[i];
+      if (i)
+        result += " ";
+      result += name + " " + name + "-external";
+    }
+    return result;
   }
-  return res;
+  return "^" + normalized.replace(/\s+/g, " ^");
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (process.env.UNI_APP_X_NEW_STYLE_ISOLATION && !instance.type.__reserved) {
@@ -5615,7 +5625,7 @@ function resolveExternalClassesPropValue(key, value, options, isAbsent) {
       2
       /* BooleanFlags.externalClasses */
     ]) {
-      return normalizeExternalClasses(value).join(" ");
+      return normalizeExternalClasses(value);
     }
   }
   return value;

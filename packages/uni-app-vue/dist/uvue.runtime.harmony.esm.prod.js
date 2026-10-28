@@ -5791,7 +5791,8 @@ function toExternalClasses(classes) {
   return trimmed ? trimmed.split(/\s+/).map(item => "^" + item) : [];
 }
 function normalizeExternalClasses(classes) {
-  return toExternalClasses(normalizeClass(classes));
+  var normalized = normalizeClass(classes);
+  return normalized ? "^" + normalized.replace(/\s+/g, " ^") : "";
 }
 function normalizeInheritAttrsValue(instance, key, value) {
   if (__X_STYLE_ISOLATION__) {
@@ -5808,7 +5809,7 @@ function resolveExternalClassesPropValue(key, value, options, isAbsent) {
     var opt = options[key];
     if (opt && opt[2
     /* BooleanFlags.externalClasses */]) {
-      return normalizeExternalClasses(value).join(" ");
+      return normalizeExternalClasses(value);
     }
   }
   return value;

@@ -3505,7 +3505,18 @@ function toExternalClasses(classes, sourceIsPage) {
   }) : [];
 }
 function normalizeExternalClasses(classes, sourceIsPage) {
-  return toExternalClasses(normalizeClass(classes), sourceIsPage);
+  const normalized = normalizeClass(classes);
+  if (!normalized)
+    return "";
+  const names = normalized.split(/\s+/);
+  let result = "";
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    if (i)
+      result += " ";
+    result += name.startsWith("~") ? name : sourceIsPage ? "~" + name.replace(/^\^+/, "") : "^" + name;
+  }
+  return result;
 }
 function normalizeInheritAttrsValue(instance, key, value, sourceIsPage) {
   if (__X__ && __X_STYLE_ISOLATION__ && __X_STYLE_ISOLATION_UP_ARROW__ && !instance.type.__reserved) {
@@ -3526,7 +3537,7 @@ function resolveExternalClassesPropValue(key, value, options, isAbsent, sourceIs
       /* BooleanFlags.externalClasses */
     ]) {
       if (__X_STYLE_ISOLATION_UP_ARROW__) {
-        return normalizeExternalClasses(value, sourceIsPage).join(" ");
+        return normalizeExternalClasses(value, sourceIsPage);
       }
       return hyphenate(key);
     }
