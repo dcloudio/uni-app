@@ -200,6 +200,7 @@ function getUniTagName(value) {
   }
   switch (el.localName) {
     case "div":
+    case "canvas":
       return el.hasAttribute("uni-view") ? "VIEW" : void 0;
     case "span":
       return el.hasAttribute("uni-text") ? "TEXT" : void 0;
@@ -256,7 +257,8 @@ function installWebVaporElements(realm) {
   for (const [Host, marker, tagName] of [
     [hosts.HTMLDivElement, "uni-view", "VIEW"],
     [hosts.HTMLSpanElement, "uni-text", "TEXT"],
-    [hosts.HTMLImageElement, "uni-image", "IMAGE"]
+    [hosts.HTMLImageElement, "uni-image", "IMAGE"],
+    [hosts.HTMLCanvasElement, "uni-view", "VIEW"]
   ]) {
     const prototype = Host.prototype;
     if (!("uniTagName" in prototype)) {
@@ -287,14 +289,9 @@ const _UniCanvasElement = class _UniCanvasElement extends UniViewElement {
 _UniCanvasElement.__uniElement = {};
 let UniCanvasElement = _UniCanvasElement;
 function initCanvasElement(root) {
-  const canvas = root.firstElementChild;
+  const canvas = root;
   Object.defineProperties(root, {
     uniTagName: { value: "CANVAS" },
-    width: { get: () => canvas.width, set: (value) => canvas.width = value },
-    height: {
-      get: () => canvas.height,
-      set: (value) => canvas.height = value
-    },
     // 方法只绑定一次，保留原生参数、返回值和异常行为。
     getContext: { value: canvas.getContext.bind(canvas) },
     toBlob: { value: canvas.toBlob.bind(canvas) },

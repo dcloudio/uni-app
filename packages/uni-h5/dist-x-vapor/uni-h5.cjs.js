@@ -217,6 +217,7 @@ function getUniTagName(value) {
   }
   switch (el.localName) {
     case "div":
+    case "canvas":
       return el.hasAttribute("uni-view") ? "VIEW" : void 0;
     case "span":
       return el.hasAttribute("uni-text") ? "TEXT" : void 0;
