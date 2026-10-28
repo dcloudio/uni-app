@@ -6,14 +6,14 @@ import {
   X_VAPOR_BASE_COMPONENTS_STYLE_PATH,
 } from './constants'
 import { isUniAppXWebVapor } from './x'
-import { isDom2WebVueComponentTag } from '@dcloudio/uni-shared'
+import { hasWebVaporComponentStyle } from '@dcloudio/uni-shared'
 
 const RESIZE_SENSOR_CSS = BASE_COMPONENTS_STYLE_PATH + 'resize-sensor.css'
 const REFRESHER_CSS = BASE_COMPONENTS_STYLE_PATH + 'refresher.css'
 
 function componentCss(name: string, isWebVapor: boolean) {
   const stylePath =
-    isWebVapor && isDom2WebVueComponentTag(name)
+    isWebVapor && hasWebVaporComponentStyle(name)
       ? X_VAPOR_BASE_COMPONENTS_STYLE_PATH
       : BASE_COMPONENTS_STYLE_PATH
   return stylePath + name + '.css'

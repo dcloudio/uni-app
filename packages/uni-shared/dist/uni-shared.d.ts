@@ -261,6 +261,8 @@ export declare const H5_BUILT_IN_TAG_NAMES: string[];
 
 export declare const H5_BUILT_IN_TAGS: string[];
 
+export declare function hasWebVaporComponentStyle(tag: string): boolean;
+
 declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
     $uniDataset?: Readonly<Record<string, string>> | Map<string, any>;

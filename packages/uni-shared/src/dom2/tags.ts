@@ -1,4 +1,8 @@
-import { UVUE_VAPOR_APP_EASYCOMS, UVUE_VAPOR_WEB_EASYCOMS } from '../tagsGen'
+import {
+  UVUE_VAPOR_APP_EASYCOMS,
+  UVUE_VAPOR_WEB_EASYCOMS,
+  UVUE_VAPOR_WEB_STYLE_COMPONENTS,
+} from '../tagsGen'
 
 const APP_NATIVE_TAGS = [
   'view',
@@ -37,6 +41,10 @@ export function isDom2AppVueComponentTag(tag: string) {
 
 export function isDom2WebVueComponentTag(tag: string) {
   return UVUE_VAPOR_WEB_EASYCOMS.includes(tag)
+}
+
+export function hasWebVaporComponentStyle(tag: string) {
+  return UVUE_VAPOR_WEB_STYLE_COMPONENTS.includes(tag)
 }
 
 export function isDom2AppUserVueComponentTag(tag: string) {

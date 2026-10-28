@@ -117,6 +117,31 @@ describe('h5 easycom', () => {
     expect(transform(source)).toBe(source)
   })
 
+  test.each([
+    ['button', 'style-x-vapor/button.css'],
+    ['input', 'style/input.css'],
+    ['textarea', 'style/textarea.css'],
+    ['video', 'style/video.css'],
+    ['progress', 'style-x-vapor/progress.css'],
+  ])('Web Vapor 的 %s 使用实际的样式目录', (name, css) => {
+    delete process.env.UNI_HX_VERSION_DEV
+    const code = transform(`const n0 = _createAssetComponent("${name}")`)
+    expect(code).toContain(css)
+    expect(code).toContain("from '@dcloudio/uni-h5'")
+  })
+
+  test.each([
+    ['input', 'style/input.css'],
+    ['textarea', 'style/textarea.css'],
+    ['video', 'style/video.css'],
+  ])('非 Vapor 的 %s 继续使用原来的样式目录', (name, css) => {
+    delete process.env.UNI_APP_X_DOM2
+    delete process.env.UNI_HX_VERSION_DEV
+    const code = transform(`_resolveComponent("${name}")`)
+    expect(code).toContain(css)
+    expect(code).not.toContain('style-x-vapor/')
+  })
+
   test.each(['match-media', 'v-uni-match-media'])(
     'Web Vapor 为 %s 导入内置组件及 Vapor 样式',
     (name) => {

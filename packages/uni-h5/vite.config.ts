@@ -24,7 +24,12 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
 import { getPreUVueContext } from '@dcloudio/uni-cli-shared/dist/preprocess/context'
-import { TAGS, isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
+import {
+  TAGS,
+  isDom2WebVueComponentTag,
+  isH5CustomElement,
+  isH5NativeTag,
+} from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import {
   replacePagePaths,
@@ -282,6 +287,14 @@ export default defineConfig(async () => {
                 // 系统页面默认接收 App 样式。
                 // 直接识别已同步副本，不依赖构建机是否配置了外部源码目录。
                 isUniPage: isVaporSystemPage,
+                // 框架构建不经过项目配置，需要自行识别内置组件。
+                isEasyComponent: (tag: string) => {
+                  const name = tag.startsWith('v-uni-') ? tag.slice(6) : tag
+                  return (
+                    !excludedVaporComponents?.includes(name) &&
+                    isDom2WebVueComponentTag(name)
+                  )
+                },
               }
               : {}),
           },

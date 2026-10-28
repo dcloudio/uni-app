@@ -2761,6 +2761,53 @@ const UVUE_VAPOR_APP_EASYCOMS = [
     'web-view',
 ];
 const UVUE_VAPOR_WEB_EASYCOMS = [
+    'ad',
+    'ad-content-page',
+    'ad-draw',
+    'button',
+    'camera',
+    'canvas',
+    'checkbox',
+    'checkbox-group',
+    'editor',
+    'flow-item',
+    'form',
+    'icon',
+    'input',
+    'label',
+    'list-item',
+    'list-view',
+    'live-player',
+    'live-pusher',
+    'loading',
+    'map',
+    'match-media',
+    'movable-area',
+    'movable-view',
+    'navigator',
+    'page-container',
+    'picker',
+    'picker-view',
+    'picker-view-column',
+    'progress',
+    'radio',
+    'radio-group',
+    'resize-sensor',
+    'rich-text',
+    'scroll-view',
+    'slider',
+    'sticky-header',
+    'sticky-section',
+    'swiper',
+    'swiper-item',
+    'switch',
+    'textarea',
+    'video',
+    'waterflow',
+    'web-view',
+];
+const UVUE_VAPOR_WEB_STYLE_COMPONENTS = [
+    'button',
     'checkbox',
     'checkbox-group',
     'flow-item',
@@ -2819,6 +2866,9 @@ function isDom2AppVueComponentTag(tag) {
 }
 function isDom2WebVueComponentTag(tag) {
     return UVUE_VAPOR_WEB_EASYCOMS.includes(tag);
+}
+function hasWebVaporComponentStyle(tag) {
+    return UVUE_VAPOR_WEB_STYLE_COMPONENTS.includes(tag);
 }
 function isDom2AppUserVueComponentTag(tag) {
     return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
@@ -3073,6 +3123,7 @@ exports.getLen = getLen;
 exports.getPartClass = getPartClass;
 exports.getUniElementPage = getUniElementPage;
 exports.getValueByDataPath = getValueByDataPath;
+exports.hasWebVaporComponentStyle = hasWebVaporComponentStyle;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.initVaporDataset = initVaporDataset;
 exports.invokeArrayFns = invokeArrayFns;

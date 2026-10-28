@@ -7,6 +7,7 @@ import { camelize, capitalize } from '@vue/shared'
 
 import {
   COMPONENT_PREFIX,
+  hasWebVaporComponentStyle,
   isDom2WebVueComponentTag,
   isWebBuiltInComponent,
 } from '@dcloudio/uni-shared'
@@ -92,8 +93,9 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
     name = name.replace(COMPONENT_PREFIX, '')
     return (
       !excludedComponents.has(name) &&
-      (isWebBuiltInComponent(name) ||
-        (isWebVapor && isDom2WebVueComponentTag(name)))
+      (isWebVapor
+        ? isDom2WebVueComponentTag(name)
+        : isWebBuiltInComponent(name))
     )
   }
   return {
@@ -272,8 +274,7 @@ function replaceVaporAssetComponents(
 
 function resolveBuiltInCssImport(name: string, isWebVapor: boolean) {
   const cssImports: string[] = []
-  // TODO Button 切换 App 共用实现、进入生成名单后，移除显式名称判断。
-  if (isWebVapor && (name === 'button' || isDom2WebVueComponentTag(name))) {
+  if (isWebVapor && hasWebVaporComponentStyle(name)) {
     cssImports.push(X_VAPOR_BASE_COMPONENTS_STYLE_PATH + name + '.css')
   } else {
     const isX = process.env.UNI_APP_X === 'true'

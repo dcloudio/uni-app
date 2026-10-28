@@ -12,6 +12,7 @@ import {
   isBuiltInComponent,
   isDom2AppUserVueComponentTag,
   isDom2VueComponentTag,
+  isDom2WebVueComponentTag,
 } from '@dcloudio/uni-shared'
 import {
   EXTNAME_VUE_RE,
@@ -419,6 +420,14 @@ export function initPluginVueOptions(
       ;(compilerOptions as any).isEasyComponent = (tag: string) => {
         return isBuiltInComponent(tag) || !!matchEasycom(tag)
       }
+    }
+  }
+
+  if (isUniAppXWebVapor()) {
+    // Web Vapor 内置组件与项目 Easycom 均应优先于同名 setup 绑定。
+    ;(compilerOptions as any).isEasyComponent = (tag: string) => {
+      const name = tag.startsWith('v-uni-') ? tag.slice(6) : tag
+      return isDom2WebVueComponentTag(name) || !!matchEasycom(name)
     }
   }
 

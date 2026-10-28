@@ -1,6 +1,79 @@
 const fs = require('fs-extra')
 const path = require('path')
 const { sync } = require('fast-glob')
+const { parse } = require('@babel/parser')
+const { hyphenate } = require('@vue/shared')
+
+// Web 自带的 Button 样式不来自内网组件同步。
+const webVaporFrameworkStyles = ['button']
+
+// 两阶段可能从不同仓库启动；统一读取 next 的配置，并以 next 为相对路径基准。
+function resolveWebVaporSourceDir(nextDir) {
+  const envFile = path.resolve(nextDir, '.env')
+  const env = fs.existsSync(envFile)
+    ? require('dotenv').parse(fs.readFileSync(envFile))
+    : {}
+  // 专用配置优先，保留原有 Web 同步变量；原生 UNI_EXT_API_DIR 不参与选择。
+  const configuredDir =
+    (process.env.UNI_APP_WEB_COMPONENTS_DIR ??
+      env.UNI_APP_WEB_COMPONENTS_DIR) ||
+    (process.env.UNI_APP_EXT_API_DIR ?? env.UNI_APP_EXT_API_DIR)
+  const sourceDir = path.resolve(
+    nextDir,
+    configuredDir || '../uni-app/src/uni_modules'
+  )
+  // 仅默认源码缺失时允许沿用已提交产物，显式配置错误不能静默回退。
+  if (
+    configuredDir &&
+    !fs.statSync(sourceDir, { throwIfNoEntry: false })?.isDirectory()
+  ) {
+    throw new Error(`Web 组件源码目录不存在或不是目录：${sourceDir}`)
+  }
+  return sourceDir
+}
+
+// 从已有组件入口读取公开导出，避免再手工维护一份旧 Web 组件名单。
+function resolveWebVaporFrameworkComponents(nextDir) {
+  const entries = [
+    'packages/uni-components/src/vue/index-x-vapor.ts',
+    'packages/uni-h5/src/view/components/index-vapor.ts',
+  ]
+  const components = new Set()
+  for (const entry of entries) {
+    const file = path.resolve(nextDir, entry)
+    const ast = parse(fs.readFileSync(file, 'utf8'), {
+      sourceType: 'module',
+      plugins: ['typescript'],
+    })
+    const defaults = new Set()
+    for (const node of ast.program.body) {
+      if (node.type === 'ImportDeclaration' && node.importKind !== 'type') {
+        for (const specifier of node.specifiers) {
+          if (specifier.type === 'ImportDefaultSpecifier') {
+            defaults.add(specifier.local.name)
+          }
+        }
+      }
+    }
+    for (const node of ast.program.body) {
+      if (node.type !== 'ExportNamedDeclaration' || node.exportKind === 'type')
+        continue
+      for (const specifier of node.specifiers) {
+        if (
+          specifier.type === 'ExportSpecifier' &&
+          specifier.local.type === 'Identifier' &&
+          specifier.exported.type === 'Identifier' &&
+          (node.source
+            ? specifier.local.name === 'default'
+            : defaults.has(specifier.local.name))
+        ) {
+          components.add(hyphenate(specifier.exported.name))
+        }
+      }
+    }
+  }
+  return [...components].sort()
+}
 
 function resolveWebVaporComponentModules(extApiDir, includeExcluded = false) {
   const modules = new Map()
@@ -76,3 +149,6 @@ function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
 
 exports.resolveWebVaporComponents = resolveWebVaporComponents
 exports.resolveWebVaporComponentModules = resolveWebVaporComponentModules
+exports.resolveWebVaporFrameworkComponents = resolveWebVaporFrameworkComponents
+exports.webVaporFrameworkStyles = webVaporFrameworkStyles
+exports.resolveWebVaporSourceDir = resolveWebVaporSourceDir

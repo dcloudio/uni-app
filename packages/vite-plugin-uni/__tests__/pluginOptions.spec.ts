@@ -3,6 +3,7 @@ import fs from 'fs'
 import { initPluginUniOptions } from '../src/utils/plugin'
 import { initPluginVueOptions } from '../src/vue/options'
 import {
+  initEasycoms,
   isUniPageFile,
   normalizePagesJson,
   pagesCacheSet,
@@ -60,6 +61,41 @@ describe('initPluginVueOptions', () => {
         process.env[key] = value
       }
     })
+  })
+
+  test('Web Vapor 识别内置和项目 Easycom，保留普通组件解析', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_PLATFORM = 'h5'
+    process.env.UNI_UTS_PLATFORM = 'web'
+    process.env.UNI_INPUT_DIR = inputDir
+    initEasycoms(
+      path.resolve(
+        __dirname,
+        '../../uni-cli-shared/__tests__/examples/easycom'
+      ),
+      {
+        platform: 'h5',
+        dirs: [],
+      }
+    )
+    const options = initPluginVueOptions(
+      {
+        base: '/',
+        command: 'serve',
+        platform: 'h5',
+        inputDir,
+        outputDir: '/dist',
+        assetsDir: 'assets',
+      } as any,
+      initPluginUniOptions([])
+    )
+    const isEasyComponent = (options.template!.compilerOptions as any)
+      .isEasyComponent
+    expect(isEasyComponent('loading')).toBe(true)
+    expect(isEasyComponent('v-uni-button')).toBe(true)
+    expect(isEasyComponent('test')).toBe(true)
+    expect(isEasyComponent('ordinary-component')).toBe(false)
   })
 
   test.each([

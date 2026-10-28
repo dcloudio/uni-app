@@ -1,7 +1,15 @@
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
-import { resolveWebVaporComponents } from '../webVaporComponentConfig'
+import { execFileSync } from 'child_process'
+import {
+  resolveWebVaporComponents,
+  resolveWebVaporFrameworkComponents,
+} from '../webVaporComponentConfig'
+import {
+  UVUE_VAPOR_WEB_EASYCOMS,
+  UVUE_VAPOR_WEB_STYLE_COMPONENTS,
+} from '../../packages/uni-shared/src/tagsGen'
 import {
   prepareWebVaporComponents,
   webVaporComponentStylesPlugin,
@@ -9,6 +17,100 @@ import {
 import { initScopedPreContext } from '../../packages/uni-cli-shared/src/preprocess/context'
 
 describe('Web Vapor 组件生成', () => {
+  test('框架组件名单来自真实导出，样式名单中的文件均存在', () => {
+    const root = path.resolve(__dirname, '../..')
+    for (const name of resolveWebVaporFrameworkComponents(root)) {
+      expect(UVUE_VAPOR_WEB_EASYCOMS).toContain(name)
+    }
+    for (const name of UVUE_VAPOR_WEB_STYLE_COMPONENTS) {
+      expect(
+        fs.existsSync(
+          path.join(
+            root,
+            'packages/uni-components/style-x-vapor',
+            `${name}.css`
+          )
+        )
+      ).toBe(true)
+    }
+  })
+
+  test('从包含特殊字符的目录读取组件入口，仅收集实际组件导出', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-[entry]-'))
+    try {
+      fs.outputFileSync(
+        path.join(root, 'packages/uni-components/src/vue/index-x-vapor.ts'),
+        `
+        import Input from './input/index-vapor'
+        import type Hidden from './hidden'
+        export { Input, Hidden }
+      `
+      )
+      fs.outputFileSync(
+        path.join(root, 'packages/uni-h5/src/view/components/index-vapor.ts'),
+        `
+        export { default as WebView } from './web-view/index-vapor'
+        export { UniWebViewElement } from './web-view/index-vapor'
+      `
+      )
+      expect(resolveWebVaporFrameworkComponents(root)).toEqual([
+        'input',
+        'web-view',
+      ])
+    } finally {
+      fs.removeSync(root)
+    }
+  })
+
+  test.each(['C:\\workspace\\[repo]', '\\\\server\\share\\[repo]'])(
+    '使用 Windows 文件系统路径读取组件入口：%s',
+    (root) => {
+      const configFile = path.resolve(
+        __dirname,
+        '../webVaporComponentConfig.js'
+      )
+      const output = execFileSync(
+        process.execPath,
+        [
+          '-e',
+          `
+        const Module = require('module')
+        const path = require('path')
+        const fs = require('fs-extra')
+        const configFile = ${JSON.stringify(configFile)}
+        const root = ${JSON.stringify(root)}
+        const files = new Map([
+          [path.win32.resolve(root, 'packages/uni-components/src/vue/index-x-vapor.ts'), "import Input from './input'; export { Input }"],
+          [path.win32.resolve(root, 'packages/uni-h5/src/view/components/index-vapor.ts'), "export { default as WebView } from './web-view'"],
+        ])
+        const load = Module._load
+        Module._load = function (name, parent, ...rest) {
+          if (parent && parent.filename === configFile) {
+            if (name === 'path') return path.win32
+            if (name === 'fs-extra') return {
+              ...fs,
+              statSync: file => ({ isDirectory: () => [path.win32.resolve(root), path.win32.resolve(root, 'components')].includes(file) }),
+              readFileSync: file => {
+                if (!files.has(file)) throw new Error('unexpected path: ' + file)
+                return files.get(file)
+              },
+            }
+          }
+          return load.call(this, name, parent, ...rest)
+        }
+        const config = require(configFile)
+        process.env.UNI_APP_WEB_COMPONENTS_DIR = root
+        if (config.resolveWebVaporSourceDir(root) !== path.win32.resolve(root)) throw new Error('unexpected absolute source path')
+        process.env.UNI_APP_WEB_COMPONENTS_DIR = './components'
+        if (config.resolveWebVaporSourceDir(root) !== path.win32.resolve(root, 'components')) throw new Error('unexpected relative source path')
+        process.stdout.write(JSON.stringify(config.resolveWebVaporFrameworkComponents(root)))
+        `,
+        ],
+        { encoding: 'utf8' }
+      )
+      expect(JSON.parse(output)).toEqual(['input', 'web-view'])
+    }
+  )
   test.each([
     ['dom2', ['button', 'input', 'textarea']],
     [{ exclude: ['input', 'textarea'] }, ['button']],

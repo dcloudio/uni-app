@@ -7,6 +7,34 @@ import { createFrameworkTemplateCompiler } from '../frameworkBuild'
 import { syncExtApiDir, syncExtComponentFile } from '../syncExtComponentFile'
 
 describe('框架构建可复现性', () => {
+  test('真实 Vapor 内联编译优先解析与 prop 同名的内置组件', () => {
+    const code = execFileSync(
+      process.execPath,
+      [
+        '-e',
+        `
+        require('./packages/uni-cli-shared/dist').initWebVaporAliases()
+        const sfc = require('vue/compiler-sfc')
+        const compiler = require('@dcloudio/compiler-vapor-web')
+        const { createFrameworkTemplateCompiler } = require('./scripts/frameworkBuild')
+        const source = '<script setup lang="ts">defineProps<{ loading: boolean }>()</script><template><loading /></template>'
+        const { descriptor } = sfc.parse(source, { filename: '/repo/button.uvue' })
+        const result = sfc.compileScript(descriptor, {
+          id: 'button', inlineTemplate: true, isProd: true, vapor: true,
+          templateOptions: {
+            compiler: createFrameworkTemplateCompiler(compiler, '/repo'),
+            compilerOptions: { isEasyComponent: tag => tag === 'loading' }
+          }
+        })
+        process.stdout.write(result.content)
+        `,
+      ],
+      { cwd: path.resolve(__dirname, '../..'), encoding: 'utf8' }
+    )
+    expect(code).toContain('_createAssetComponent("loading"')
+    expect(code).not.toContain('_createComponent(__props.loading')
+  })
+
   test('真实 Vapor 编译在不同检出目录和路径分隔符下生成相同组件 ID', () => {
     // 独立进程使用构建时的模块别名，避免 Jest 的 VDOM 依赖影响真实编译器。
     const result = JSON.parse(

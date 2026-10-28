@@ -11,6 +11,7 @@ const {
 const {
   resolveWebVaporComponents,
   resolveWebVaporComponentModules,
+  resolveWebVaporSourceDir,
 } = require('./webVaporComponentConfig')
 
 async function prepareWebVaporComponents({
@@ -138,9 +139,7 @@ async function prepareWebVaporComponents({
 }
 
 async function syncWebVaporComponents() {
-  const extApiDir =
-    process.env.UNI_APP_EXT_API_DIR ||
-    path.resolve(__dirname, '../../uni-app/src/uni_modules')
+  const extApiDir = resolveWebVaporSourceDir(path.resolve(__dirname, '..'))
   // 没有外部源码时沿用仓库中的生成文件，普通包构建不强制依赖外部仓库。
   if (!fs.existsSync(extApiDir)) return
   const {
