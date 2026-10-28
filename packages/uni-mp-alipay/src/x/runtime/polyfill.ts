@@ -5,6 +5,10 @@ import {
   UniError,
   getGlobal,
 } from '@dcloudio/uni-shared'
+import { initWindowInfo } from './windowInfo'
+
+initWindowInfo()
+
 const realGlobal = getGlobal()
 realGlobal.UTS = UTS
 realGlobal.UTSJSONObject = UTSJSONObject
