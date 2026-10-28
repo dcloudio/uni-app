@@ -28490,7 +28490,7 @@ const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
 const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
 const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
+const RE_MQ_FEATURE = /^(min|max)?-?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
 class UniMatchMediaElement extends UniViewElement {
   constructor() {
     super();
@@ -28500,11 +28500,15 @@ class UniMatchMediaElement extends UniViewElement {
     return [
       "orientation",
       "width",
-      "minWidth",
-      "maxWidth",
+      "min-width",
+      "max-width",
+      "minwidth",
+      "maxwidth",
       "height",
-      "minHeight",
-      "maxHeight"
+      "min-height",
+      "max-height",
+      "minheight",
+      "maxheight"
     ];
   }
   connectedCallback() {
