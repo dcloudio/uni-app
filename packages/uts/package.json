@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts",
-  "version": "3.0.0-5030320261023001",
+  "version": "3.0.0-5030420261028001",
   "description": "uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
