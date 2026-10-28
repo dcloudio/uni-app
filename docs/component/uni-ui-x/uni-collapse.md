@@ -4,6 +4,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-collapse-
 
 ::: sourceCode
 ## uni-collapse
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse
+
 :::
 
 折叠面板组件
@@ -620,6 +626,12 @@ uni-collapse-item的标题栏的自定义：
 
 ::: sourceCode
 ## uni-collapse-item
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse-item
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse-item
+
 :::
 
 折叠面板子项组件

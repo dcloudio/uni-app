@@ -4,6 +4,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-refresh-b
 
 ::: sourceCode
 ## uni-refresh-box
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-refresh-box/components/uni-refresh-box
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-refresh-box/components/uni-refresh-box
+
 :::
 
 自定义下拉刷新组件

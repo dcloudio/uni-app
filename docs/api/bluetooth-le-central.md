@@ -48,21 +48,53 @@
 - **应用侧**：当前 iOS 内置蓝牙 API 已处理系统的服务变更通知，使旧的服务和特征值信息失效。应用仍需在连接有效时重新调用 [uni.getBLEDeviceServices](#getbledeviceservices) 和 [uni.getBLEDeviceCharacteristics](#getbledevicecharacteristics)，以新返回的 UUID 和属性为准，再按需调用 [uni.notifyBLECharacteristicValueChange](#notifyblecharacteristicvaluechange) 开启通知，之后进行读写。
 
 
-<!-- UTSAPIJSON.createBLEConnection.name -->
+::: sourceCode
+## uni.createBLEConnection(options) @createbleconnection
+:::
 
-<!-- UTSAPIJSON.createBLEConnection.description -->
+连接低功耗蓝牙设备
 
-<!-- UTSAPIJSON.createBLEConnection.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=createbleconnection](http://uniapp.dcloud.io/api/system/ble?id=createbleconnection)
 
-<!-- UTSAPIJSON.createBLEConnection.param -->
 
-<!-- UTSAPIJSON.createBLEConnection.fileFormats -->
 
-<!-- UTSAPIJSON.createBLEConnection.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | [UniNamespace.CreateBLEConnectionOptions](#uninamespace-values) | 是 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| deviceId | string | 是 | 蓝牙设备 id，参考 getDevices 接口 |
+| timeout | number | 否 | 超时时间 |
+| success | (result: any) => void | 否 | 成功则返回本机蓝牙适配器状态 |
+| fail | (result: any) => void | 否 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.createBLEConnection.example -->
 
-<!-- UTSAPIJSON.createBLEConnection.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.createBLEConnection)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=createBLEConnection&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createBLEConnection&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createBLEConnection&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createBLEConnection&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=createBLEConnection&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=createBLEConnection)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=createBLEConnection&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### iOS 使用说明
 
@@ -92,89 +124,289 @@
 重试应设置间隔和次数上限，持续失败时提示用户检查设备。重连成功后，需重新发现服务和特征值，并按需开启通知。仍无法定位时，可按[调试建议](#调试建议)使用蓝牙工具对照验证。
 
 
-<!-- UTSAPIJSON.closeBLEConnection.name -->
+::: sourceCode
+## uni.closeBLEConnection(options) @closebleconnection
+:::
 
-<!-- UTSAPIJSON.closeBLEConnection.description -->
+断开与低功耗蓝牙设备的连接
 
-<!-- UTSAPIJSON.closeBLEConnection.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=closebleconnection](http://uniapp.dcloud.io/api/system/ble?id=closebleconnection)
 
-<!-- UTSAPIJSON.closeBLEConnection.param -->
 
-<!-- UTSAPIJSON.closeBLEConnection.fileFormats -->
 
-<!-- UTSAPIJSON.closeBLEConnection.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | [UniNamespace.CloseBLEConnectionOptions](#uninamespace-values) | 是 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (result: any) => void | 否 | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| deviceId | string | 是 | 蓝牙设备 id，参考 device 对象 | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.closeBLEConnection.example -->
 
-<!-- UTSAPIJSON.closeBLEConnection.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.closeBLEConnection)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=closeBLEConnection&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=closeBLEConnection&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=closeBLEConnection&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=closeBLEConnection&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=closeBLEConnection&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=closeBLEConnection)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=closeBLEConnection&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.onBLEConnectionStateChange.name -->
+::: sourceCode
+## uni.onBLEConnectionStateChange(callback) @onbleconnectionstatechange
+:::
 
-<!-- UTSAPIJSON.onBLEConnectionStateChange.description -->
+监听低功耗蓝牙设备连接状态变化事件
 
-<!-- UTSAPIJSON.onBLEConnectionStateChange.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=onbleconnectionstatechange](http://uniapp.dcloud.io/api/system/ble?id=onbleconnectionstatechange)
 
-<!-- UTSAPIJSON.onBLEConnectionStateChange.param -->
 
-<!-- UTSAPIJSON.onBLEConnectionStateChange.fileFormats -->
 
-<!-- UTSAPIJSON.onBLEConnectionStateChange.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [UniNamespace.OnBLEConnectionStateChangeSuccess](#uninamespace-values)) => void | 是 | 
+
+### UniNamespace.OnBLEConnectionStateChangeSuccess 的属性值 @uninamespace-values 
+
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| deviceId | string | 是 | 蓝牙设备 id，参考 device 对象 |
+| connected | boolean | 是 | 连接目前的状态 |
+
+
+
+
+
 
 <!-- UTSAPIJSON.onBLEConnectionStateChange.example -->
 
-<!-- UTSAPIJSON.onBLEConnectionStateChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBLEConnectionStateChange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onBLEConnectionStateChange&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBLEConnectionStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBLEConnectionStateChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBLEConnectionStateChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBLEConnectionStateChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBLEConnectionStateChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBLEConnectionStateChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.name -->
+::: sourceCode
+## uni.offBLEConnectionStateChange(listener?) @offbleconnectionstatechange
+:::
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.description -->
+需要基础库： `2.9.0`
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.compatibility -->
+在插件中使用：需要基础库 `2.9.1`
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.param -->
+移除蓝牙低功耗连接状态改变事件的监听函数
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.fileFormats -->
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.returnValue -->
+文档: [https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEConnectionStateChange.html](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEConnectionStateChange.html)
+
+### offBLEConnectionStateChange 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| listener | (result: [OnBLEConnectionStateChangeListenerResult](#onbleconnectionstatechangelistenerresult-values)) => void | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+
+### OnBLEConnectionStateChangeListenerResult 的属性值 @onbleconnectionstatechangelistenerresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| connected | boolean | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否处于已连接状态 |
+| deviceId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id |
+
+
+
+
+
 
 <!-- UTSAPIJSON.offBLEConnectionStateChange.example -->
 
-<!-- UTSAPIJSON.offBLEConnectionStateChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBLEConnectionStateChange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offBLEConnectionStateChange&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBLEConnectionStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBLEConnectionStateChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBLEConnectionStateChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBLEConnectionStateChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBLEConnectionStateChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBLEConnectionStateChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.name -->
+::: sourceCode
+## uni.getBLEDeviceRSSI(options) @getbledevicerssi
+:::
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.description -->
+获取蓝牙设备的信号强度。
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=getBLEDeviceRSSI](http://uniapp.dcloud.io/api/system/ble?id=getBLEDeviceRSSI)
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.param -->
+### getBLEDeviceRSSI 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.fileFormats -->
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | [UniNamespace.GetBLEDeviceRSSIOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id |
+| success | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEDeviceRSSI.example -->
 
-<!-- UTSAPIJSON.getBLEDeviceRSSI.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEDeviceRSSI)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getBLEDeviceRSSI&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEDeviceRSSI&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEDeviceRSSI&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEDeviceRSSI&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEDeviceRSSI&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEDeviceRSSI)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEDeviceRSSI&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEMTU.name -->
+::: sourceCode
+## uni.getBLEMTU(option) @getblemtu
+:::
 
-<!-- UTSAPIJSON.getBLEMTU.description -->
+需要基础库： `2.20.1`
 
-<!-- UTSAPIJSON.getBLEMTU.compatibility -->
+在插件中使用：需要基础库 `2.20.1`
 
-<!-- UTSAPIJSON.getBLEMTU.param -->
+获取蓝牙低功耗的最大传输单元。需在 [uni.createBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.createBLEConnection.html) 调用成功后调用。
 
-<!-- UTSAPIJSON.getBLEMTU.fileFormats -->
+**注意**
 
-<!-- UTSAPIJSON.getBLEMTU.returnValue -->
+- 小程序中 MTU 为 ATT_MTU，包含 Op-Code 和 Attribute Handle 的长度，实际可以传输的数据长度为 `ATT_MTU - 3`
+- iOS 系统中 MTU 为固定值；安卓系统中，MTU 会在系统协商成功之后发生改变，建议使用 [uni.onBLEMTUChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLEMTUChange.html) 监听。
+
+
+文档: [https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEMTU.html](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEMTU.html)
+
+### getBLEMTU 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| option | [UniNamespace.GetBLEMTUOption](#uninamespace-values) | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### option 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id |
+| complete | (res: [BluetoothError](#bluetootherror-values)) => void | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| fail | (res: [BluetoothError](#bluetootherror-values)) => void | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| success | (result: [GetBLEMTUSuccessCallbackResult](#getblemtusuccesscallbackresult-values)) => void | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| writeType | string | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 写模式 （iOS 特有参数）<br/><br/>可选值：<br/>- 'write': 有回复写;<br/>- 'writeNoResponse': 无回复写; |
+
+##### writeType 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| "write" | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| "writeNoResponse" | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+
+#### BluetoothError 的属性值 @bluetootherror-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 错误信息<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \| |
+| errCode | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \| |
+
+#### GetBLEMTUSuccessCallbackResult 的属性值 @getblemtusuccesscallbackresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| mtu | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 最大传输单元 |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |  |
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEMTU.example -->
 
-<!-- UTSAPIJSON.getBLEMTU.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEMTU)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getBLEMTU&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEMTU&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEMTU&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEMTU&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEMTU&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEMTU)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEMTU&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### iOS 注意事项
 
@@ -183,110 +415,365 @@
 - 返回的长度上限不代表外设业务协议支持任意长度的数据，分包还需遵循设备协议。
 
 
-<!-- UTSAPIJSON.setBLEMTU.name -->
+::: sourceCode
+## uni.setBLEMTU(options) @setblemtu
+:::
 
-<!-- UTSAPIJSON.setBLEMTU.description -->
+设置蓝牙最大传输单元。需在 uni.createBLEConnection调用成功后调用，mtu 设置范围 (22,512)。安卓5.1以上有效。
 
-<!-- UTSAPIJSON.setBLEMTU.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=setBLEMTU](http://uniapp.dcloud.io/api/system/ble?id=setBLEMTU)
 
-<!-- UTSAPIJSON.setBLEMTU.param -->
+### setBLEMTU 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.setBLEMTU.fileFormats -->
 
-<!-- UTSAPIJSON.setBLEMTU.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | [UniNamespace.SetBLEMTUOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于区分设备的 id |
+| mtu | number | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 最大传输单元(22,512) 区间内，单位 bytes |
+| success | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.setBLEMTU.example -->
 
-<!-- UTSAPIJSON.setBLEMTU.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.setBLEMTU)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=setBLEMTU&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setBLEMTU&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setBLEMTU&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setBLEMTU&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setBLEMTU&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setBLEMTU)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setBLEMTU&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### iOS 注意事项
 
 iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 `complete`，返回不支持错误。写入前可通过 `getBLEMTU` 查询对应写模式的最大可写长度。
 
 
-<!-- UTSAPIJSON.onBLEMTUChange.name -->
+::: sourceCode
+## uni.onBLEMTUChange(listener) @onblemtuchange
+:::
 
-<!-- UTSAPIJSON.onBLEMTUChange.description -->
+需要基础库： `2.20.1`
 
-<!-- UTSAPIJSON.onBLEMTUChange.compatibility -->
+在插件中使用：需要基础库 `2.20.1`
 
-<!-- UTSAPIJSON.onBLEMTUChange.param -->
+监听蓝牙低功耗的最大传输单元变化事件（仅安卓触发）。
 
-<!-- UTSAPIJSON.onBLEMTUChange.fileFormats -->
 
-<!-- UTSAPIJSON.onBLEMTUChange.returnValue -->
+文档: [https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLEMTUChange.html](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLEMTUChange.html)
+
+### onBLEMTUChange 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| listener | (result: [OnBLEMTUChangeListenerResult](#onblemtuchangelistenerresult-values)) => void | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+
+### OnBLEMTUChangeListenerResult 的属性值 @onblemtuchangelistenerresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id |
+| mtu | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 最大传输单元 |
+
+
+
+
+
 
 <!-- UTSAPIJSON.onBLEMTUChange.example -->
 
-<!-- UTSAPIJSON.onBLEMTUChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBLEMTUChange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onBLEMTUChange&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBLEMTUChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBLEMTUChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBLEMTUChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBLEMTUChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBLEMTUChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBLEMTUChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.offBLEMTUChange.name -->
+::: sourceCode
+## uni.offBLEMTUChange(listener?) @offblemtuchange
+:::
 
-<!-- UTSAPIJSON.offBLEMTUChange.description -->
+需要基础库： `2.20.1`
 
-<!-- UTSAPIJSON.offBLEMTUChange.compatibility -->
+在插件中使用：需要基础库 `2.20.1`
 
-<!-- UTSAPIJSON.offBLEMTUChange.param -->
+移除蓝牙低功耗的最大传输单元变化事件的监听函数
 
-<!-- UTSAPIJSON.offBLEMTUChange.fileFormats -->
 
-<!-- UTSAPIJSON.offBLEMTUChange.returnValue -->
+文档: [https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEMTUChange.html](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEMTUChange.html)
+
+### offBLEMTUChange 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| listener | (result: [OnBLEMTUChangeListenerResult](#onblemtuchangelistenerresult-values)) => void | 否 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+
+### OnBLEMTUChangeListenerResult 的属性值 @onblemtuchangelistenerresult-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id |
+| mtu | number | 是 | Web: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x | 最大传输单元 |
+
+
+
+
+
 
 <!-- UTSAPIJSON.offBLEMTUChange.example -->
 
-<!-- UTSAPIJSON.offBLEMTUChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBLEMTUChange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offBLEMTUChange&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBLEMTUChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBLEMTUChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBLEMTUChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBLEMTUChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBLEMTUChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBLEMTUChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEDeviceServices.name -->
+::: sourceCode
+## uni.getBLEDeviceServices(options) @getbledeviceservices
+:::
 
-<!-- UTSAPIJSON.getBLEDeviceServices.description -->
+获取蓝牙设备的所有服务
 
-<!-- UTSAPIJSON.getBLEDeviceServices.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=getbledeviceservices](http://uniapp.dcloud.io/api/system/ble?id=getbledeviceservices)
 
-<!-- UTSAPIJSON.getBLEDeviceServices.param -->
+### getBLEDeviceServices 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.getBLEDeviceServices.fileFormats -->
 
-<!-- UTSAPIJSON.getBLEDeviceServices.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | [UniNamespace.GetBLEDeviceServicesOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id，参考 device 对象 |
+| success | (result: [GetBLEDeviceServicesSuccess](#getbledeviceservicessuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回本机蓝牙适配器状态 |
+| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### GetBLEDeviceServicesSuccess 的属性值 @getbledeviceservicessuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| services | Array&lt;**GetBLEDeviceServicesSuccessData**&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 设备服务列表 |
+| errMsg | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功：ok，错误：详细信息 |
+
+#### services 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| uuid | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备服务的 uuid |
+| isPrimary | boolean | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 该服务是否为主服务 |
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEDeviceServices.example -->
 
-<!-- UTSAPIJSON.getBLEDeviceServices.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEDeviceServices)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getBLEDeviceServices&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEDeviceServices&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEDeviceServices&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEDeviceServices&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEDeviceServices&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEDeviceServices)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEDeviceServices&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.name -->
+::: sourceCode
+## uni.getBLEDeviceCharacteristics(options) @getbledevicecharacteristics
+:::
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.description -->
+获取蓝牙设备指定服务中所有特征值
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=getbledevicecharacteristics](http://uniapp.dcloud.io/api/system/ble?id=getbledevicecharacteristics)
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.param -->
+### getBLEDeviceCharacteristics 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.fileFormats -->
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | [UniNamespace.GetBLEDeviceCharacteristicsOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id，参考 device 对象 |
+| serviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙服务 uuid |
+| success | (result: [GetBLEDeviceCharacteristicsSuccess](#getbledevicecharacteristicssuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回本机蓝牙适配器状态 |
+| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### GetBLEDeviceCharacteristicsSuccess 的属性值 @getbledevicecharacteristicssuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| characteristics | Array&lt;**GetBLEDeviceCharacteristicsSuccessData**&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 设备特征值列表 |
+| errMsg | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功：ok，错误：详细信息 |
+
+#### characteristics 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| uuid | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备服务的 uuid |
+| properties | any | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 该特征值支持的操作类型 |
+
+
+
+
+
 
 <!-- UTSAPIJSON.getBLEDeviceCharacteristics.example -->
 
-<!-- UTSAPIJSON.getBLEDeviceCharacteristics.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBLEDeviceCharacteristics)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getBLEDeviceCharacteristics&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBLEDeviceCharacteristics&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBLEDeviceCharacteristics&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBLEDeviceCharacteristics&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBLEDeviceCharacteristics&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBLEDeviceCharacteristics)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBLEDeviceCharacteristics&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.name -->
+::: sourceCode
+## uni.readBLECharacteristicValue(options) @readblecharacteristicvalue
+:::
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.description -->
+读取低功耗蓝牙设备指定特征值的二进制数据值
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=readblecharacteristicvalue](http://uniapp.dcloud.io/api/system/ble?id=readblecharacteristicvalue)
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.param -->
+### readBLECharacteristicValue 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.fileFormats -->
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | [UniNamespace.ReadBLECharacteristicValueOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id，参考 device 对象 |
+| serviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙特征值对应服务的 uuid |
+| characteristicId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙特征值的 uuid |
+| success | (result: [ReadBLECharacteristicValueSuccess](#readblecharacteristicvaluesuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功则返回本机蓝牙适配器状态 |
+| fail | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### ReadBLECharacteristicValueSuccess 的属性值 @readblecharacteristicvaluesuccess-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 错误码 |
+| errMsg | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 成功：ok，错误：详细信息 |
+
+
+
+
+
 
 <!-- UTSAPIJSON.readBLECharacteristicValue.example -->
 
-<!-- UTSAPIJSON.readBLECharacteristicValue.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.readBLECharacteristicValue)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=readBLECharacteristicValue&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=readBLECharacteristicValue&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=readBLECharacteristicValue&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=readBLECharacteristicValue&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=readBLECharacteristicValue&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=readBLECharacteristicValue)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=readBLECharacteristicValue&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意事项
 
@@ -295,21 +782,60 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 - 多设备或多特征值共用事件监听时，应按事件中的 `deviceId`、`serviceId` 和 `characteristicId` 匹配数据来源。
 
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.name -->
+::: sourceCode
+## uni.writeBLECharacteristicValue(options) @writeblecharacteristicvalue
+:::
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.description -->
+向低功耗蓝牙设备指定特征值写入二进制数据
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=writeblecharacteristicvalue](http://uniapp.dcloud.io/api/system/ble?id=writeblecharacteristicvalue)
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.param -->
+### writeBLECharacteristicValue 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.fileFormats -->
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | [UniNamespace.WriteBLECharacteristicValueOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| writeType | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙特征值的写模式设置，有两种模式，iOS 优先 write，安卓优先 writeNoResponse 。（基础库 2.22.0 开始支持）<br/><br/>可选值：<br/>- 'write': 强制回复写，不支持时报错;<br/>- 'writeNoResponse': 强制无回复写，不支持时报错; |
+
+##### writeType 的属性描述
+
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| "write" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+| "writeNoResponse" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.writeBLECharacteristicValue.example -->
 
-<!-- UTSAPIJSON.writeBLECharacteristicValue.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.writeBLECharacteristicValue)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=writeBLECharacteristicValue&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=writeBLECharacteristicValue&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=writeBLECharacteristicValue&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=writeBLECharacteristicValue&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=writeBLECharacteristicValue&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=writeBLECharacteristicValue)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=writeBLECharacteristicValue&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意事项
 
@@ -318,21 +844,53 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 - 无响应写缺少外设对本次写入的协议层确认。若业务需要确认设备已接收或处理数据，应设计应用层应答机制。
 
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.name -->
+::: sourceCode
+## uni.notifyBLECharacteristicValueChange(options) @notifyblecharacteristicvaluechange
+:::
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.description -->
+启用低功耗蓝牙设备特征值变化时的notify功能，订阅特征值
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=notifyblecharacteristicvaluechange](http://uniapp.dcloud.io/api/system/ble?id=notifyblecharacteristicvaluechange)
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.param -->
+### notifyBLECharacteristicValueChange 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.fileFormats -->
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | [UniNamespace.NotifyBLECharacteristicValueChangeOptions](#uninamespace-values) | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| type | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 需要基础库： `2.4.0`<br/><br/>设置特征订阅类型，有效值有 `notification` 和 `indication` | 
+
+
+
+
+
 
 <!-- UTSAPIJSON.notifyBLECharacteristicValueChange.example -->
 
-<!-- UTSAPIJSON.notifyBLECharacteristicValueChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.notifyBLECharacteristicValueChange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=notifyBLECharacteristicValueChange&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=notifyBLECharacteristicValueChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=notifyBLECharacteristicValueChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=notifyBLECharacteristicValueChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=notifyBLECharacteristicValueChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=notifyBLECharacteristicValueChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=notifyBLECharacteristicValueChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意事项
 
@@ -341,38 +899,99 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 - 不再需要通知时传入 `state: false`。断线重连后如需继续接收通知，应重新发现服务和特征值并再次开启通知。
 
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.name -->
+::: sourceCode
+## uni.onBLECharacteristicValueChange(callback) @onblecharacteristicvaluechange
+:::
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.description -->
+监听低功耗蓝牙设备的特征值变化事件
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.compatibility -->
+文档: [http://uniapp.dcloud.io/api/system/ble?id=onblecharacteristicvaluechange](http://uniapp.dcloud.io/api/system/ble?id=onblecharacteristicvaluechange)
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.param -->
+### onBLECharacteristicValueChange 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.fileFormats -->
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.returnValue -->
+### 参数 
+
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [UniNamespace.OnBLECharacteristicValueChangeSuccess](#uninamespace-values)) => void | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
+
+### UniNamespace.OnBLECharacteristicValueChangeSuccess 的属性值 @uninamespace-values 
+
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙设备 id，参考 device 对象 |
+| serviceId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙特征值对应服务的 uuid |
+| characteristicId | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 蓝牙特征值的 uuid |
+| value | Array&lt;any&gt; | 是 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 特征值最新的值 （注意：vConsole 无法打印出 ArrayBuffer 类型数据） |
+
+
+
+
+
 
 <!-- UTSAPIJSON.onBLECharacteristicValueChange.example -->
 
-<!-- UTSAPIJSON.onBLECharacteristicValueChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBLECharacteristicValueChange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onBLECharacteristicValueChange&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBLECharacteristicValueChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBLECharacteristicValueChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBLECharacteristicValueChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBLECharacteristicValueChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBLECharacteristicValueChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBLECharacteristicValueChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.name -->
+::: sourceCode
+## uni.offBLECharacteristicValueChange() @offblecharacteristicvaluechange
+:::
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.description -->
+需要基础库： `2.9.0`
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.compatibility -->
+在插件中使用：需要基础库 `2.9.1`
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.param -->
+移除蓝牙低功耗设备的特征值变化事件的全部监听函数
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.fileFormats -->
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.returnValue -->
+文档: [https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLECharacteristicValueChange.html](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLECharacteristicValueChange.html)
+
+### offBLECharacteristicValueChange 兼容性 <Help /> 
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
+
+
+
+
+
 
 <!-- UTSAPIJSON.offBLECharacteristicValueChange.example -->
 
-<!-- UTSAPIJSON.offBLECharacteristicValueChange.tutorial -->
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBLECharacteristicValueChange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offBLECharacteristicValueChange&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBLECharacteristicValueChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBLECharacteristicValueChange&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBLECharacteristicValueChange&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBLECharacteristicValueChange&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBLECharacteristicValueChange)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBLECharacteristicValueChange&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 <!-- UTSAPIJSON.ble.example -->

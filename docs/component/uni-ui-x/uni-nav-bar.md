@@ -4,6 +4,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-nav-bar-x
 
 ::: sourceCode
 ## uni-nav-bar
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-nav-bar-x/components/uni-nav-bar
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-nav-bar-x/components/uni-nav-bar
+
 :::
 
 自定义导航栏组件

@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.addPhoneRepeatCalendar(options) @addphonerepeatcalendar
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-calendar
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-calendar
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-calendar
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-calendar
 
 :::
 
@@ -106,10 +106,10 @@
 ::: sourceCode
 ## uni.addPhoneCalendar(options) @addphonecalendar
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-calendar
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-calendar
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-calendar
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-calendar
 
 :::
 

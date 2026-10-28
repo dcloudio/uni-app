@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.vibrateShort(options) @vibrateshort
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+
 :::
 
 使设备发生短时间的振动。
@@ -83,6 +89,12 @@
 
 ::: sourceCode
 ## uni.vibrateLong(options) @vibratelong
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+
 :::
 
 使设备发生长时间的振动。

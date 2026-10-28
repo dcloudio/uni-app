@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getScreenBrightness(options) @getscreenbrightness
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 :::
 
@@ -74,10 +74,10 @@
 ::: sourceCode
 ## uni.setScreenBrightness(options) @setscreenbrightness
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 :::
 
@@ -140,10 +140,10 @@
 ::: sourceCode
 ## uni.setKeepScreenOn(options) @setkeepscreenon
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
 
 :::
 

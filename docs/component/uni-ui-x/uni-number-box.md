@@ -4,6 +4,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-number-bo
 
 ::: sourceCode
 ## uni-number-box
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-number-box-x/components/uni-number-box
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-number-box-x/components/uni-number-box
+
 :::
 
 带加减按钮的数字输入框，常见于购物车商品数量选择
