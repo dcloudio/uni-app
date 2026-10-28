@@ -15,6 +15,8 @@ declare namespace NodeJS {
     UNI_UTS_TARGET_LANGUAGE?: 'javascript' | 'kotlin' | 'swift' | 'arkts'
 
     UNI_CLI_CONTEXT: string
+    // 工程组织方式，HBuilderX 和 HBuilderV 均适用；由启动端在加载编译器前设置。
+    UNI_PROJECT_TYPE?: 'cli' | 'hbuilder'
     UNI_SUBPACKAGE?: string
     UNI_COMPILER_VERSION: string
     UNI_COMPILER_VERSION_TYPE: 'a' | 'r'
