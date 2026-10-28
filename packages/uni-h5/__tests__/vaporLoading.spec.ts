@@ -181,10 +181,11 @@ describe('Loading 的真实 Web Vapor 编译与元素行为', () => {
       const el = ref.value
       expect(el.localName).toBe('div')
       expect(el.hasAttribute('uni-view')).toBe(true)
-      expect(el.hasAttribute('uni-loading')).toBe(false)
-      expect(el.uniTagName).toBe('VIEW')
-      expect(Object.prototype.hasOwnProperty.call(el, 'uniTagName')).toBe(false)
+      expect(el.hasAttribute('uni-loading')).toBe(true)
+      expect(el.uniTagName).toBe('LOADING')
+      expect(Object.prototype.hasOwnProperty.call(el, 'uniTagName')).toBe(true)
       expect(el).toBeInstanceOf(elements.UniViewElement)
+      expect(el).toBeInstanceOf(element.UniLoadingElement)
       expect(document.createElement('div')).not.toBeInstanceOf(
         element.UniLoadingElement
       )

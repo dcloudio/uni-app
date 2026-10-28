@@ -314,7 +314,19 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       ${script}
       export { ctx, handleTap, children };`,
       {
-        '../common.ts': { LABEL_KEY: 'UNI_LABEL_CTX' },
+        '../common.ts': evaluate(
+          preprocess(
+            fs.readFileSync(
+              path.join(
+                root,
+                'uni-ext-api/uni_modules/uni-form/components/common.ts'
+              ),
+              'utf8'
+            ),
+            { type: 'js', context: { WEB: web, APP: !web } }
+          ).code,
+          {}
+        ),
         './global.ts': { UniLabelElement: class {} },
         'test-macros': {
           defineProps: () => props,

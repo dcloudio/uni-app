@@ -68,6 +68,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
       'customElements',
       '__X__',
       '__X_VAPOR__',
+      '__VAPOR__',
       '__NODE_JS__',
     ]) {
       globals.set(name, (global as any)[name])
@@ -76,6 +77,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
     Object.assign(global, {
       __X__: true,
       __X_VAPOR__: true,
+      __VAPOR__: true,
       __NODE_JS__: false,
     })
     // JSDOM 不提供布局和滚动方法；模拟内部容器尺寸与原生方法，业务逻辑使用真实实现。
@@ -176,7 +178,7 @@ describe('Web Vapor ScrollView 原生宿主', () => {
       vue,
       '/vue-jsx/vapor': jsx,
       '../../helpers/component': component,
-      '../loading/index-x.vue': {
+      '../loading': {
         default: vue.defineVaporComponent({
           props: { paused: Boolean },
           setup(props: { paused: boolean }) {
