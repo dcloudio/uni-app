@@ -3020,12 +3020,32 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.ensureKeyboardLayoutObserver()
 	}
 
+	/**
+	 * 重新激活选区控制器。
+	 * TextView 在样式变更（font-size/color 等）时会调用 nullLayouts()，此时 prepareCursorControllers()
+	 * 因 layout 为空而禁用选区控制器，本应由 onLayout 重新激活；但 textarea 高度多为 CSS 固定值，
+	 * 布局尺寸不变不会触发 onLayout，控制器会一直禁用，导致长按无法选中文字。
+	 * 通过切换 cursorVisible 可触发 prepareCursorControllers() 重新激活。
+	 */
+	private rearmSelectionController() {
+		const editText = this.editText
+		if (editText == null || this.destroyed) return
+		if (editText.getLayout() == null) return
+		editText.setCursorVisible(false)
+		editText.setCursorVisible(true)
+	}
+
 	private setTouchScrollListener() {
 		if (this.editText == null) return
 		const self = this
 		this.editText!.setOnTouchListener(new (class implements View.OnTouchListener {
 			override onTouch(v: View, event: MotionEvent): Boolean {
 				const action = event.getActionMasked()
+				if (action == MotionEvent.ACTION_DOWN) {
+					// 保险：聚焦后若又发生样式变更（会置空 layout 并禁用选区控制器），
+					// 在每次按下时重新激活一次，确保长按可以选中文字。
+					self.rearmSelectionController()
+				}
 				if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
 					UniAndroidEditorTouchCache.recordNativeTouch(self.element)
 				}
@@ -3123,6 +3143,13 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 				}
 				if (hasFocus) {
 					self.isFocusing = true
+					// 修复长按无法选中文字（多行且高度固定时）：
+					// 组件同步样式（font-size/color 等）会触发 TextView 的 nullLayouts()，此时
+					// prepareCursorControllers() 因 layout 为空而禁用选区控制器；控制器本应在 onLayout
+					// 里重新激活，但 textarea 高度多为 CSS 固定值，布局尺寸不变不会触发 onLayout，
+					// 控制器就会一直处于禁用状态，表现为长按不选中文字、无系统菜单。
+					// 这里在获得焦点时主动触发一次 prepareCursorControllers 重新激活。
+					self.rearmSelectionController()
 					self.applyCursorColorIfNeeded()
 					self.beginEditValue = self.editText?.getText()?.toString() ?? ''
 					self.trace('focus hasFocus=true keyboardHeight=' + self.keyboardHeight + ' adjustPosition=' + self.adjustPosition + ' cursorSpacing=' + self.cursorSpacing)

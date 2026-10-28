@@ -36,7 +36,13 @@
 		"widescreen": "-"
 	},
 	"uni_modules": {
-    "dependencies": ["uni-framework", "uni-web-view"],
+    "dependencies": [
+			"uni-framework",
+			"uni-web-view",
+			"uni-getDeviceInfo",
+			"uni-getAppBaseInfo",
+			"uni-theme"
+		],
     "components": {
       "app-android": true,
       "app-harmony": true,
