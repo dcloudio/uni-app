@@ -8,6 +8,7 @@
   width: 100%;
   height: 200px;
   min-height: 200px;
+  caret-color: #3393e2;
 }
 
 .ql-container[hidden] {
