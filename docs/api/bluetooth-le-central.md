@@ -225,23 +225,23 @@
 移除 BLE 连接状态变化监听。传 ID 删除对应监听，否则清空全部监听。
 
 ### offBLEConnectionStateChange 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| listener | number \| (result: **BLEConnectionStateChangeResult**) => void | 否 | 支付宝小程序: x | * |
+| listener | number \| (result: **BLEConnectionStateChangeResult**) => void | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### listener 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
-| connected | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 是否处于已连接状态。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID。 |
+| connected | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 是否处于已连接状态。 | 
 
 
 
@@ -270,65 +270,71 @@
 ## uni.getBLEDeviceRSSI(options) @getbledevicerssi
 :::
 
-获取已连接设备的信号强度。
+获取蓝牙低功耗设备的信号强度 (Received Signal Strength Indication, RSSI)。
 
 ### getBLEDeviceRSSI 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **GetBLEDeviceRSSIOptions** | 是 | 支付宝小程序: x | * |
+| options | **GetBLEDeviceRSSIOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
-| success | (result: [GetBLEDeviceRSSISuccess](#getbledevicerssisuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [GetBLEDeviceRSSISuccess](#getbledevicerssisuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| success | (result: [GetBLEDeviceRSSISuccess](#getbledevicerssisuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEDeviceRSSISuccess](#getbledevicerssisuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 #### GetBLEDeviceRSSISuccess 的属性值 @getbledevicerssisuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| RSSI | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 信号强度，单位 dBm。 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| RSSI | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 信号强度，单位 dBm。 |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -357,73 +363,79 @@
 ## uni.getBLEMTU(options) @getblemtu
 :::
 
-获取最大传输单元。
+获取蓝牙低功耗的最大传输单元。需在 uni.createBLEConnection 调用成功后调用。
 
 ### getBLEMTU 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **GetBLEMTUOptions** | 是 | 支付宝小程序: x | * |
+| options | **GetBLEMTUOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
-| writeType | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 写模式，仅 iOS 使用。可选值为 write、writeNoResponse，默认值为 write。 |
-| success | (result: [GetBLEMTUSuccess](#getblemtusuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [GetBLEMTUSuccess](#getblemtusuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| writeType | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 写模式，仅 iOS 使用。可选值为 write、writeNoResponse，默认值为 write。 |
+| success | (result: [GetBLEMTUSuccess](#getblemtusuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEMTUSuccess](#getblemtusuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 ##### writeType 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| "write" | 支付宝小程序: x | 强制回复写，不支持时报错 |
-| "writeNoResponse" | 支付宝小程序: x | 强制无回复写，不支持时报错 |
+| "write" | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 强制回复写，不支持时报错 |
+| "writeNoResponse" | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 强制无回复写，不支持时报错 |
 
 #### GetBLEMTUSuccess 的属性值 @getblemtusuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，单位 bytes。 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| mtu | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 最大传输单元，单位 bytes。 |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -461,63 +473,69 @@
 设置最大传输单元，仅 Android 支持。
 
 ### setBLEMTU 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **SetBLEMTUOptions** | 是 | 支付宝小程序: x | 仅 Android 支持。 |
+| options | **SetBLEMTUOptions** | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 仅 Android 支持。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
-| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，取值范围为 (22, 512)，单位 bytes。 |
-| success | (result: [SetBLEMTUSuccess](#setblemtusuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [SetBLEMTUSuccess](#setblemtusuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID。 |
+| mtu | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 最大传输单元，取值范围为 (22, 512)，单位 bytes。 |
+| success | (result: [SetBLEMTUSuccess](#setblemtusuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [SetBLEMTUSuccess](#setblemtusuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 #### SetBLEMTUSuccess 的属性值 @setblemtusuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值，与传入参数一致，单位 bytes。 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| mtu | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 最终协商的 MTU 值，与传入参数一致，单位 bytes。 |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -553,23 +571,23 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 监听 MTU 变化，仅 Android 支持。
 
 ### onBLEMTUChange 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| listener | (result: [BLEMTUChangeResult](#blemtuchangeresult-values)) => void | 是 | 支付宝小程序: x | * | 
+| listener | (result: [BLEMTUChangeResult](#blemtuchangeresult-values)) => void | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * | 
 
 ### BLEMTUChangeResult 的属性值 @blemtuchangeresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
-| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，单位 bytes。 |
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID。 |
+| mtu | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 最大传输单元，单位 bytes。 |
 
 
 
@@ -607,23 +625,23 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 移除 MTU 变化监听，仅 Android 支持。传 ID 删除对应监听，否则清空全部监听。
 
 ### offBLEMTUChange 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| listener | number \| (result: **BLEMTUChangeResult**) => void | 否 | 支付宝小程序: x | * |
+| listener | number \| (result: **BLEMTUChangeResult**) => void | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### listener 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
-| mtu | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 最大传输单元，单位 bytes。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID。 |
+| mtu | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 最大传输单元，单位 bytes。 | 
 
 
 
@@ -652,72 +670,78 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ## uni.getBLEDeviceServices(options) @getbledeviceservices
 :::
 
-获取已连接设备的服务列表。
+获取蓝牙低功耗设备所有服务 (service)。
 
 ### getBLEDeviceServices 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **GetBLEDeviceServicesOptions** | 是 | 支付宝小程序: x | * |
+| options | **GetBLEDeviceServicesOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
-| success | (result: [GetBLEDeviceServicesSuccess](#getbledeviceservicessuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [GetBLEDeviceServicesSuccess](#getbledeviceservicessuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| success | (result: [GetBLEDeviceServicesSuccess](#getbledeviceservicessuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEDeviceServicesSuccess](#getbledeviceservicessuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 #### GetBLEDeviceServicesSuccess 的属性值 @getbledeviceservicessuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| services | Array&lt;**BLEService**&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: x | 设备服务列表。 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| services | Array&lt;**BLEService**&gt; | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 设备服务列表。 |
 
 #### services 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| uuid | string | 是 | 支付宝小程序: x | 蓝牙设备服务的 UUID。 |
-| isPrimary | boolean | 是 | 支付宝小程序: x | 该服务是否为主服务。 |
+| uuid | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备服务的 UUID。 |
+| isPrimary | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该服务是否为主服务。 |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -746,84 +770,90 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 ## uni.getBLEDeviceCharacteristics(options) @getbledevicecharacteristics
 :::
 
-获取指定服务的特征列表。
+获取蓝牙低功耗设备某个服务中所有特征 (characteristic)。
 
 ### getBLEDeviceCharacteristics 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **GetBLEDeviceCharacteristicsOptions** | 是 | 支付宝小程序: x | * |
+| options | **GetBLEDeviceCharacteristicsOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
-| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙服务 UUID，需要先调用 getBLEDeviceServices 获取。 |
-| success | (result: [GetBLEDeviceCharacteristicsSuccess](#getbledevicecharacteristicssuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [GetBLEDeviceCharacteristicsSuccess](#getbledevicecharacteristicssuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| serviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙服务 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| success | (result: [GetBLEDeviceCharacteristicsSuccess](#getbledevicecharacteristicssuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [GetBLEDeviceCharacteristicsSuccess](#getbledevicecharacteristicssuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 #### GetBLEDeviceCharacteristicsSuccess 的属性值 @getbledevicecharacteristicssuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| characteristics | Array&lt;**BLECharacteristic**&gt; | 是 | 微信小程序: 4.41; 支付宝小程序: x | 设备特征列表。 |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| characteristics | Array&lt;**BLECharacteristic**&gt; | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 设备特征列表。 |
 
 #### characteristics 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| uuid | string | 是 | 支付宝小程序: x | 蓝牙设备特征的 UUID。 |
-| properties | **BLECharacteristicProperties** | 是 | 支付宝小程序: x | 该特征支持的操作类型。 |
+| uuid | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备特征的 UUID。 |
+| properties | **BLECharacteristicProperties** | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该特征支持的操作类型。 |
 
 ##### properties 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| read | boolean | 是 | 支付宝小程序: x | 该特征是否支持 read 操作。 |
-| write | boolean | 是 | 支付宝小程序: x | 该特征是否支持 write 操作。 |
-| notify | boolean | 是 | 支付宝小程序: x | 该特征是否支持 notify 操作。 |
-| indicate | boolean | 是 | 支付宝小程序: x | 该特征是否支持 indicate 操作。 |
-| writeNoResponse | boolean | 是 | 支付宝小程序: x | 该特征是否支持无回复写操作。 |
-| writeDefault | boolean | 是 | 支付宝小程序: x | 该特征是否支持有回复写操作。 |
+| read | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该特征是否支持 read 操作。 |
+| write | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该特征是否支持 write 操作。 |
+| notify | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该特征是否支持 notify 操作。 |
+| indicate | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该特征是否支持 indicate 操作。 |
+| writeNoResponse | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该特征是否支持无回复写操作。 |
+| writeDefault | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 该特征是否支持有回复写操作。 |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -855,64 +885,70 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 读取蓝牙低功耗设备特征值的二进制数据。注意：必须设备的特征支持 read 才可以成功调用；读取结果通过 onBLECharacteristicValueChange 返回。
 
 ### readBLECharacteristicValue 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **ReadBLECharacteristicValueOptions** | 是 | 支付宝小程序: x | * |
+| options | **ReadBLECharacteristicValueOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
-| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
-| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。特征值通过 onBLECharacteristicValueChange 返回。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| serviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。特征值通过 onBLECharacteristicValueChange 返回。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 #### BLEOperationSuccess 的属性值 @bleoperationsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| errCode | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -950,73 +986,79 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 向蓝牙低功耗设备特征值中写入二进制数据。注意：必须设备的特征支持 write 才可以成功调用。
 
 ### writeBLECharacteristicValue 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **WriteBLECharacteristicValueOptions** | 是 | 支付宝小程序: x | * |
+| options | **WriteBLECharacteristicValueOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
-| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
-| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
-| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | 微信小程序: 4.41; 支付宝小程序: 5.31 | 蓝牙设备特征对应的二进制值。 |
-| writeType | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征值写模式。可选值为 write、writeNoResponse；不传时 iOS 优先 write，Android 优先 writeNoResponse。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID。 |
+| serviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
+| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备特征对应的二进制值。 |
+| writeType | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征值写模式。可选值为 write、writeNoResponse；不传时 iOS 优先 write，Android 优先 writeNoResponse。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 ##### writeType 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| "write" | 支付宝小程序: x | 强制回复写，不支持时报错 |
-| "writeNoResponse" | 支付宝小程序: x | 强制无回复写，不支持时报错 |
+| "write" | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 强制回复写，不支持时报错 |
+| "writeNoResponse" | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 强制无回复写，不支持时报错 |
 
 #### BLEOperationSuccess 的属性值 @bleoperationsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| errCode | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -1054,73 +1096,79 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 启用蓝牙低功耗设备特征值变化时的 notify 功能，订阅特征。注意：必须设备的特征支持 notify 或者 indicate 才可以成功调用。另外，必须先启用 uni.notifyBLECharacteristicValueChange 才能监听到设备 characteristicValueChange 事件。
 
 ### notifyBLECharacteristicValueChange 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **NotifyBLECharacteristicValueChangeOptions** | 是 | 支付宝小程序: x | * |
+| options | **NotifyBLECharacteristicValueChangeOptions** | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
-| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
-| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
-| state | boolean | 是 | 微信小程序: 4.41; 支付宝小程序: x | 是否启用特征值变化通知。 |
-| type | string | 否 | 微信小程序: 4.41; 支付宝小程序: x | 特征订阅类型，可选值为 notification、indication，默认值为 indication。 |
-| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用成功的回调函数。 |
-| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用失败的回调函数。 |
-| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | 微信小程序: 4.41; 支付宝小程序: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID，需要已经通过 createBLEConnection 建立连接。 |
+| serviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征对应服务的 UUID，需要先调用 getBLEDeviceServices 获取。 |
+| characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征的 UUID，需要先调用 getBLEDeviceCharacteristics 获取。 |
+| state | boolean | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 是否启用特征值变化通知。 |
+| type | string | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 特征订阅类型，可选值为 notification、indication，默认值为 indication。 |
+| success | (result: [BLEOperationSuccess](#bleoperationsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用成功的回调函数。 |
+| fail | (result: [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用失败的回调函数。 |
+| complete | (result: [BLEOperationSuccess](#bleoperationsuccess-values) \| [BluetoothFail](#bluetoothfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 接口调用结束的回调函数，调用成功、失败都会执行。 | 
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| "notification" | 支付宝小程序: x | 订阅类型 notification |
-| "indication" | 支付宝小程序: x | 订阅类型 indication |
+| "notification" | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 订阅类型 notification |
+| "indication" | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 订阅类型 indication |
 
 #### BLEOperationSuccess 的属性值 @bleoperationsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 调用结果信息。 |
-| errCode | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
+| errMsg | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用结果信息。 |
+| errCode | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误码<br/><br/>\| 错误码 \| 错误信息 \| 说明 \|<br/>\| - \| - \| - \|<br/>\| 0 \| ok \| 正常 \|<br/>\| -1 \| already connect \| 已连接 \|<br/>\| 10000 \| not init \| 未初始化蓝牙适配器 \|<br/>\| 10001 \| not available \| 当前蓝牙适配器不可用 \|<br/>\| 10002 \| no device \| 没有找到指定设备 \|<br/>\| 10003 \| connection fail \| 连接失败 \|<br/>\| 10004 \| no service \| 没有找到指定服务 \|<br/>\| 10005 \| no characteristic \| 没有找到指定特征 \|<br/>\| 10006 \| no connection \| 当前连接已断开 \|<br/>\| 10007 \| property not support \| 当前特征不支持此操作 \|<br/>\| 10008 \| system error \| 其余所有系统上报的异常 \|<br/>\| 10009 \| system not support \| Android 系统特有，系统版本低于 4.3 不支持 BLE \|<br/>\| 10012 \| operate time out \| 连接超时 \|<br/>\| 10013 \| invalid_data \| 连接 deviceId 为空或者是格式不正确 \|<br/> |
 
 #### BluetoothFail 的属性值 @bluetoothfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙通用错误码。 |
-| state | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | iOS CoreBluetooth 状态码。 |
-| mtu | number | 否 | 微信小程序: 4.41; 支付宝小程序: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
-| errSubject | string | 是 | 支付宝小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 | 支付宝小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | uni 蓝牙适配器和 BLE 中心设备 API 可能返回的统一错误码。 |
+| mtu | number | 否 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; HarmonyOS: x | 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。<br/> |
+| errSubject | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | 支付宝小程序: x |  |
+| errMsg | string | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
-| :- |  :-: |
-| -1 | 支付宝小程序: x |
-| 10000 | 支付宝小程序: x |
-| 10001 | 支付宝小程序: x |
-| 10002 | 支付宝小程序: x |
-| 10003 | 支付宝小程序: x |
-| 10004 | 支付宝小程序: x |
-| 10005 | 支付宝小程序: x |
-| 10006 | 支付宝小程序: x |
-| 10007 | 支付宝小程序: x |
-| 10008 | 支付宝小程序: x |
-| 10009 | 支付宝小程序: x |
-| 10012 | 支付宝小程序: x |
-| 10013 | 支付宝小程序: x |
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1500101 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙适配器尚未初始化或运行时未就绪。  |
+| 1500102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前蓝牙适配器不可用（如重置中/状态未知）。  |
+| 1500103 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Service。 |
+| 1500104 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 调用系统蓝牙能力失败，具体原因见 cause。 |
+| 1500105 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前平台或系统不支持该 BLE 能力或操作。 |
+| 1509000 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未知或无法归类的 BLE 错误，具体原因见 cause。 |
+| 1509001 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接 BLE 设备失败。 |
+| 1509002 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到对应的 Characteristic。 |
+| 1509003 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未连接上该 BLE 设备。 |
+| 1509004 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前特征不支持此操作（属性不匹配）。  |
+| 1509005 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE 操作超时。 |
+| 1509006 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未找到该设备，可能尚未扫描到或已移除。  |
+| 1509007 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备已经连接。 |
+| 1509008 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | Android 扫描需位置权限（未授予）。 |
+| 1509010 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | iOS 等待蓝牙状态更新超时。 |
+| 1509601 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | BLE API 参数无效。 |
+| 1509602 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 未获得系统蓝牙权限。  |
+| 1509603 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 系统蓝牙已关闭。  |
+| 1509604 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 当前 BLE 设备仅可被扫描，不接受中心设备连接。 |
+| 1510102 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 连接/设备数已达上限。  |
 
 
 
@@ -1158,25 +1206,25 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 监听蓝牙低功耗设备的特征值变化事件。必须先调用 uni.notifyBLECharacteristicValueChange 接口才能接收到设备推送的 notification。
 
 ### onBLECharacteristicValueChange 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| listener | (result: [BLECharacteristicValueChangeResult](#blecharacteristicvaluechangeresult-values)) => void | 是 | 支付宝小程序: x | * | 
+| listener | (result: [BLECharacteristicValueChangeResult](#blecharacteristicvaluechangeresult-values)) => void | 是 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * | 
 
 ### BLECharacteristicValueChangeResult 的属性值 @blecharacteristicvaluechangeresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
-| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID。 |
-| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID。 |
-| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | 微信小程序: 4.41; 支付宝小程序: x | 特征最新的二进制值。 |
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID。 |
+| serviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征对应服务的 UUID。 |
+| characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征的 UUID。 |
+| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 特征最新的二进制值。 |
 
 
 
@@ -1214,25 +1262,25 @@ iOS 不支持主动设置 MTU，当前插件调用此接口会执行 `fail` 和 
 移除 BLE 特征值变化监听。传 ID 删除对应监听，否则清空全部监听。
 
 ### offBLECharacteristicValueChange 兼容性 <Help /> 
-| 微信小程序 | 支付宝小程序 |
-| :- | :- |
-| 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.34 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| listener | number \| (result: **BLECharacteristicValueChangeResult**) => void | 否 | 支付宝小程序: x | * |
+| listener | number \| (result: **BLECharacteristicValueChangeResult**) => void | 否 | Web: x; 支付宝小程序: x; Android: x; HarmonyOS: x | * |
 
 #### listener 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| deviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙设备 ID。 |
-| serviceId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征对应服务的 UUID。 |
-| characteristicId | string | 是 | 微信小程序: 4.41; 支付宝小程序: x | 蓝牙特征的 UUID。 |
-| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | 微信小程序: 4.41; 支付宝小程序: x | 特征最新的二进制值。 | 
+| deviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙设备 ID。 |
+| serviceId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征对应服务的 UUID。 |
+| characteristicId | string | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 蓝牙特征的 UUID。 |
+| value | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.34; HarmonyOS: x | 特征最新的二进制值。 | 
 
 
 
