@@ -115,6 +115,12 @@ export function generate(
     genNode(node, context)
   })
   if (filter && filter.generate && autoImportFilters.length) {
+    const isAlipayX = isX && process.env.UNI_PLATFORM === 'mp-alipay'
+    const templateCode = context.code
+    // 支付宝 x 兼容钉钉：先输出 SJS 声明，再接回模板，否则动态 class 不生效。
+    if (isAlipayX) {
+      context.code = ''
+    }
     autoImportFilters.forEach((autoImportFilter) => {
       const filterPath =
         (process.env.UNI_SUBPACKAGE
@@ -127,6 +133,9 @@ export function generate(
       ) => string | void
       context.code += generate(autoImportFilter, filterPath, filename) + '\n'
     })
+    if (isAlipayX) {
+      context.code += templateCode
+    }
   }
   emitFile!({ type: 'asset', fileName: filename, source: context.code })
 }
