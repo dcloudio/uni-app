@@ -1339,6 +1339,16 @@
     "easycom": [],
     "customElements": []
   },
+  "uni-location-amap": {
+    "provider": {
+      "service": "location",
+      "name": "amap",
+      "servicePlugin": "uni-location"
+    },
+    "components": [],
+    "easycom": [],
+    "customElements": []
+  },
   "uni-location-system": {
     "provider": {
       "service": "location",
