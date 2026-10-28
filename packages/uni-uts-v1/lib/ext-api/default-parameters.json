@@ -127,12 +127,6 @@
     "offAudioInterruptionEnd": [
       "null"
     ],
-    "offBLEConnectionStateChange": [
-      "null"
-    ],
-    "offBLEMTUChange": [
-      "null"
-    ],
     "offBLEPeripheralConnectionStateChanged": [
       "null"
     ],
@@ -312,6 +306,23 @@
       "null"
     ],
     "stopAccelerometer": [
+      "null"
+    ]
+  },
+  "uni-bluetooth": {
+    "offBluetoothAdapterStateChange": [
+      "null"
+    ],
+    "offBluetoothDeviceFound": [
+      "null"
+    ],
+    "offBLEMTUChange": [
+      "null"
+    ],
+    "offBLEConnectionStateChange": [
+      "null"
+    ],
+    "offBLECharacteristicValueChange": [
       "null"
     ]
   },
