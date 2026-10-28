@@ -127,12 +127,6 @@
     "offAudioInterruptionEnd": [
       "null"
     ],
-    "offBLEConnectionStateChange": [
-      "null"
-    ],
-    "offBLEMTUChange": [
-      "null"
-    ],
     "offBLEPeripheralConnectionStateChanged": [
       "null"
     ],
