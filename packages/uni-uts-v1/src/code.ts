@@ -68,7 +68,7 @@ type Types = {
   interface: Record<string, { returned: boolean; decl: TsInterfaceDeclaration }>
   class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
-  alias: Record<string, {}>
+  alias: Record<string, string>
   uni?: string[]
 }
 
@@ -913,7 +913,12 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
           }
         }
       } else if (node.type === 'TsTypeAliasDeclaration') {
-        if (!isInterface || exportNamed.includes(node.id.value)) {
+        // 私有引用别名也可能被导出的返回值类型间接引用。
+        if (
+          !isInterface ||
+          exportNamed.includes(node.id.value) ||
+          parseTypeAliasReferenceName(node.typeAnnotation)
+        ) {
           parseTypes(node, classTypes, fnTypes, aliasTypes)
         }
       } else if (node.type === 'TsInterfaceDeclaration') {
@@ -966,7 +971,7 @@ function parseTypes(
   decl: TsTypeAliasDeclaration,
   classTypes: Record<string, ClassMeta>,
   fnTypes: Record<string, Param[]>,
-  aliasTypes: Record<string, {}>
+  aliasTypes: Types['alias']
 ) {
   switch (decl.typeAnnotation.type) {
     // export type ShowLoading = ()=>void
@@ -989,8 +994,19 @@ function parseTypes(
       }
       break
     default:
-      aliasTypes[decl.id.value] = {}
+      aliasTypes[decl.id.value] = parseTypeAliasReferenceName(
+        decl.typeAnnotation
+      )
   }
+}
+
+function parseTypeAliasReferenceName(type: TsType): string {
+  while (type.type === 'TsParenthesizedType') {
+    type = type.typeAnnotation
+  }
+  return type.type === 'TsTypeReference' && type.typeName.type === 'Identifier'
+    ? type.typeName.value
+    : ''
 }
 
 function createParams(tsParams: TsFnParameter[]) {
@@ -1298,6 +1314,11 @@ function mergeAstTypes(to: Types, from: Types) {
       if (!hasOwn(to.interface, name)) {
         to.interface[name] = from.interface[name]
       }
+    }
+  }
+  for (const name in from.alias) {
+    if (!hasOwn(to.alias, name)) {
+      to.alias[name] = from.alias[name]
     }
   }
 }
@@ -1617,6 +1638,43 @@ function resolveFunctionParams(
   return result
 }
 
+function resolveInterfaceAlias(types: Types, name: string): string {
+  const visited = new Set<string>()
+  while (!hasOwn(types.interface, name)) {
+    if (visited.has(name) || !hasOwn(types.alias, name)) {
+      return ''
+    }
+    visited.add(name)
+    name = types.alias[name]
+    if (!name) {
+      return ''
+    }
+  }
+  return name
+}
+
+function isJSExportInterface(types: Types, name: string): boolean {
+  const pending = [name]
+  const visited = new Set<string>()
+  while (pending.length) {
+    const name = pending.pop()!
+    if (name === 'JSExport') {
+      return true
+    }
+    const interfaceName = resolveInterfaceAlias(types, name)
+    if (!interfaceName || visited.has(interfaceName)) {
+      continue
+    }
+    visited.add(interfaceName)
+    types.interface[interfaceName].decl.extends.forEach((parent) => {
+      if (parent.expression.type === 'Identifier') {
+        pending.push(parent.expression.value)
+      }
+    })
+  }
+  return false
+}
+
 function parseReturnInterfaceWithCallback(
   types: Types,
   returnType: TsType,
@@ -1625,9 +1683,18 @@ function parseReturnInterfaceWithCallback(
   switch (returnType.type) {
     case 'TsTypeReference':
       if (returnType.typeName.type === 'Identifier') {
-        if (hasOwn(types.interface, returnType.typeName.value)) {
-          callback(returnType.typeName.value)
-          return returnType.typeName.value
+        const name = returnType.typeName.value
+        const interfaceName = resolveInterfaceAlias(types, name)
+        if (interfaceName) {
+          // JSExport 的别名沿用旧逻辑，不新增返回值代理。
+          if (
+            interfaceName !== name &&
+            isJSExportInterface(types, interfaceName)
+          ) {
+            return ''
+          }
+          callback(interfaceName)
+          return interfaceName
         }
       }
       break
