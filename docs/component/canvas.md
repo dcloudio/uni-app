@@ -2,12 +2,6 @@
 
 ::: sourceCode
 ## canvas
-
-> GitCode: https://gitcode.com/dcloud/uni-component/tree/alpha/uni_modules/uni-canvas
-
-
-> GitHub: https://github.com/dcloudio/uni-component/tree/alpha/uni_modules/uni-canvas
-
 :::
 
 > 组件类型：[UniCanvasElement](/api/dom/unicanvaselement.md) 
