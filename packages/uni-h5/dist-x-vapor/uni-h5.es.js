@@ -34524,7 +34524,7 @@ const previewImage = /* @__PURE__ */ defineAsyncApi(
   }
 );
 const targetPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAABGtJREFUeF7tm0tPFEEQx7uHd8DAXsTEg8sNSSBixOgBWKImCx8Aglx2P4EeuQE3bsZPsMsBkS/AYoxhgYMmGB9EAzf2YoSLQJDIc1prZ5fXzky/agYSexJCNlMz0/Xr6n9V9/RQEuKxGY9FiWUnLEJvMWZHnUfTKCEsR6mVg1+2TScis9lsWM2iQT+o6DRlZETiWTlKaTYMGIEBAMcpPU4RQmMSjpeYUkrTQYIIBMBmX9eoZI9zGTFKxiIzC6NcQ0kDVABYve7jQ44xqycym83rBcaBBsBx3p4jhBTEDaN5rvdAhYAGYKu3c053vEsgyzVkFpok7D1NUQCE7LyTPClN18/MJ3UhaANQFbzKJ70nbbc3fhJ7Yz3/J3NgCKM2gK3eLibaaHC66mmCWI03XC85Wv5MDt+9IfBfEIa2HmgB2O7rTjHGEjwA5W138o6Xt7XzTPPnAcCfF+NCEHSHgjKAguqv8TwC52vHX/LMXM8DhIO3Gd61EAVJ1fJZA0BnglKa8mudjvPF++4kB7iRoKMFygBElP9aatpzvPO6tXgetGB3+BkHAss2ZBZ7RO951k4DgL/4VQ8lSdUQVx6E2rw/mSZ7k77BplwXKAHYjPPDv35mXsg5ESMQxd3h576mhRJZehodCABIcxD+mAdPCxhjycjsYlr2mWoAOLM9zPAvOsTLCKpCqASAl/+DAMDTAdV6QAkAr/y9DAChRsCVBBCqBnCyAEYBdFHMoBY4Wv7iqXHhiqCz+OFbBmMUQWeLIcgCfgdjVpPKSpGSBkBDeLNATB3gCSC0pyGzoOSL0kUOAP8VIKgFYBLkNfUVzddQCvN6XzUDQBuUAWzGY7HCGqCnLxhRwBv78HDVKlALgEgUgI0OBF7x45BXnwhpAxCZExQhVDyOSw0HkZ53el+tBC6GrfIQgBvIvAeA1FjxKJ5fFfLTBVgA2X+V5q4BYPS+dgScQvBPiRdFAmCUt7YTer3x5NTxt68ya4FO8CumvrPt0YqA4o1Eh4Ko8ovY6QgfOoB8JATwPtALhO64DwRAWBAwnUfRgIu9VBgOsBcA+x2h1uqvVzShaEApBGcnCN4rcr1c76cpgQA4FcdY1LLYiMjLE7dGFjZHjKlMckSENJAh4Pbg/DYZchyzLKubAyMH+4UYpfNBbIZwhSxKCtPOfUktuDC/tCHg9WA3ADozOp3OCVQDDAAPAiYCXF6rmyGAtOVFVg+MBsgSw7A3GmA0oHRvkRFBI4I4Gx9lNcpkAVliGPYmC5gsYLJAyRZbkwZNGjRpEOUDCNksZeoAWWIY9v91HTD1oDl6t7b+fWNl1bnPRjYO9tc/7W4/HPywivZJnEhnhT4EXne0pFrr6hI3q6vPte/H3h75/nsn27+0orTtXcTZK/FeYLrj9lpNWVm0xrLOtefX4SH8zg0sraB8DicKJPQImL7fMvpvX4vrh9SUsGT/0qr0jm9RZ69EBEAjpu41x8ooHWGFN8iM0Cxj9sTgx1Xp/f46zsO1fwF2PaBfXH1iLwAAAABJRU5ErkJggg==";
-const t0 = template('<div uni-view data-v-212d40c7 class=uni-open-location><div uni-view data-v-212d40c7 class=uni-open-location-map-box><!><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </div></div><div uni-view data-v-212d40c7 class=uni-open-location-nav><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7 class=uni-open-location-nav-btn-bg></div><span uni-text data-v-212d40c7 class="uni-open-location-nav-text uni-open-location-nav-back-text uni-open-location-icons"> </div></div><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7 class=uni-open-location-address><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7> </div><div uni-view data-v-212d40c7 class=uni-open-location-footer-icon-btns><div uni-view data-v-212d40c7 class=uni-open-location-footer-icon-btns-item><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class="uni-open-location-icons uni-open-location-navigation"> </div><span uni-text data-v-212d40c7> ', 1);
+const t0 = template('<div uni-view data-v-212d40c7 class=uni-open-location><div uni-view data-v-212d40c7 class=uni-open-location-map-box><!><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </div></div><div uni-view data-v-212d40c7 class=uni-open-location-nav><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7 class=uni-open-location-nav-btn-bg><div uni-view data-v-212d40c7 class=uni-open-location-nav-back-arrow></div></div></div></div><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7 class=uni-open-location-address><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7> </div><div uni-view data-v-212d40c7 class=uni-open-location-footer-icon-btns><div uni-view data-v-212d40c7 class=uni-open-location-footer-icon-btns-item><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class="uni-open-location-icons uni-open-location-navigation"> </div><span uni-text data-v-212d40c7> ', 1);
 const _sfc_main = /* @__PURE__ */ defineVaporComponent({
   __name: "openLocation",
   setup(__props) {
@@ -34560,10 +34560,8 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       right: 0
     });
     const icon = ref({
-      target: "",
       position: "",
-      navigation: "",
-      back: ""
+      navigation: ""
     });
     const language = ref("zh-Hans");
     const isLandscape2 = ref(false);
@@ -34720,25 +34718,23 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
       isLandscape2.value = systemInfo.deviceOrientation == "landscape";
     });
     initUniPageHooks();
-    const _setTemplateRef = createTemplateRefSetter();
-    const n15 = t0();
-    const n4 = child(n15);
+    const n14 = t0();
+    const n4 = child(n14);
     const n3 = child(n4);
     const n2 = next(n3);
     const n1 = child(n2);
-    const n7 = next(n4);
-    const n6 = child(n7);
-    const n5 = next(child(n6));
-    const n14 = next(n7);
-    let p0 = child(n14);
-    const n8 = child(p0);
-    const n9 = next(n8);
-    const n13 = child(p0 = next(p0));
-    const n11 = child(n13);
-    const n10 = child(n11);
-    const n12 = next(n11);
+    const n6 = next(n4);
+    const n5 = child(n6);
+    const n13 = next(n6);
+    let p0 = child(n13);
+    const n7 = child(p0);
+    const n8 = next(n7);
+    const n12 = child(p0 = next(p0));
+    const n10 = child(n12);
+    const n9 = child(n10);
+    const n11 = next(n10);
     setInsertionState(n4, n3);
-    const n0 = withComponentId("777d2cb6", () => createComponent$1(__syscom_0, {
+    withComponentId("777d2cb6", () => createComponent$1(__syscom_0, {
       class: "uni-open-location-map",
       id: () => unref(mapId),
       latitude: () => unref(latitude),
@@ -34755,41 +34751,38 @@ const _sfc_main = /* @__PURE__ */ defineVaporComponent({
     }));
     const x1 = txt(n1);
     on$1(n2, "click", mapReset);
-    const x5 = txt(n5);
     on$1(n5, "click", back);
+    const x7 = txt(n7);
     const x8 = txt(n8);
     const x9 = txt(n9);
-    const x10 = txt(n10);
-    const x12 = txt(n12);
-    on$1(n13, "click", navigation);
+    const x11 = txt(n11);
+    on$1(n12, "click", navigation);
     renderEffect(() => {
       const _icon = unref(icon);
       const _safeArea = unref(safeArea);
       const _openLocationOptions = unref(openLocationOptions);
       const _safeArea_top = _safeArea.top;
       const __darkClassCom = [unref(darkClassCom)];
-      _setTemplateRef(n0, mapId, null, "mapId");
       setClass(n2, ["uni-open-location-map-reset", __darkClassCom]);
       setClass(n1, ["uni-open-location-icons uni-open-location-map-reset-icon", __darkClassCom]);
       setText(x1, normalizeUniText(toDisplayString(_icon.position)));
-      setStyle(n7, "height:" + (60 + _safeArea_top) + "px;");
-      setClass(n6, ["uni-open-location-nav-btn uni-open-location-nav-back-btn", [unref(landscapeClassCom)]]);
-      setStyle(n6, _safeArea_top > 0 ? "top: " + _safeArea_top + "px;" : "");
-      setText(x5, normalizeUniText(toDisplayString(_icon.back)));
-      setClass(n14, ["uni-open-location-footer", __darkClassCom]);
-      setClass(n8, ["uni-open-location-name-text", __darkClassCom]);
-      setText(x8, normalizeUniText(toDisplayString(_openLocationOptions.name)));
-      setClass(n9, ["uni-open-location-address-text", __darkClassCom]);
-      setText(x9, normalizeUniText(toDisplayString(_openLocationOptions.address)));
-      setClass(n11, ["uni-open-location-footer-icon-box", __darkClassCom]);
-      setText(x10, normalizeUniText(toDisplayString(_icon.navigation)));
-      setClass(n12, ["uni-open-location-footer-btn-text", __darkClassCom]);
-      setText(x12, normalizeUniText(toDisplayString(unref(languageCom)["navigation"])));
+      setStyle(n6, "height:" + (60 + _safeArea_top) + "px;");
+      setClass(n5, ["uni-open-location-nav-btn uni-open-location-nav-back-btn", [unref(landscapeClassCom)]]);
+      setStyle(n5, _safeArea_top > 0 ? "top: " + _safeArea_top + "px;" : "");
+      setClass(n13, ["uni-open-location-footer", __darkClassCom]);
+      setClass(n7, ["uni-open-location-name-text", __darkClassCom]);
+      setText(x7, normalizeUniText(toDisplayString(_openLocationOptions.name)));
+      setClass(n8, ["uni-open-location-address-text", __darkClassCom]);
+      setText(x8, normalizeUniText(toDisplayString(_openLocationOptions.address)));
+      setClass(n10, ["uni-open-location-footer-icon-box", __darkClassCom]);
+      setText(x9, normalizeUniText(toDisplayString(_icon.navigation)));
+      setClass(n11, ["uni-open-location-footer-btn-text", __darkClassCom]);
+      setText(x11, normalizeUniText(toDisplayString(unref(languageCom)["navigation"])));
     });
-    return n15;
+    return n14;
   }
 });
-const _style_0 = "\n@font-face {\n    font-family: UniOpenLocationFontFamily;\n    \n\n    src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');\n}\n.uni-open-location-icons {\n    font-family: 'UniOpenLocationFontFamily';\n    font-size: 16px;\n    font-style: normal;\n}\n.uni-open-location {\n    position: relative;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background: #f8f8f8;\n    z-index: 999;\n    display: flex;\n    flex-direction: column;\n}\n.uni-open-location-map-box {\n    width: 100%;\n    flex: 1;\n}\n.uni-open-location-map {\n    width: 100%;\n    height: 100%;\n}\n.uni-open-location-map-reset {\n    position: absolute;\n    left: 20px;\n    bottom: 40px;\n    width: 40px;\n    height: 40px;\n    box-sizing: border-box;\n    background-color: #ffffff;\n    border-radius: 20px;\n    pointer-events: auto;\n    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 0.3);\n    z-index: 9;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.uni-open-location-map-reset-icon {\n    font-size: 26px;\n    text-align: center;\n    line-height: 40px;\n}\n.uni-open-location-nav {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 60px;\n    background-color: rgba(0, 0, 0, 0);\n    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));\n}\n.uni-open-location-nav-btn {\n    position: absolute;\n    top: 5px;\n    left: 5px;\n    width: 44px;\n    height: 44px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.uni-open-location-nav-btn-bg {\n    width: 20px;\n    height: 20px;\n    background-color: #cbcbcb;\n    border-radius: 10px;\n    overflow: hidden;\n    position: absolute;\n}\n.uni-open-location-nav-back-text.uni-open-location-icons {\n    color: #ffffff;\n    font-size: 26px;\n}\n.uni-open-location-footer {\n    height: 150px;\n    border-radius: 10px 10px 0px 0px;\n    overflow: hidden;\n    background-color: #ffffff;\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 20px;\n}\n.uni-open-location-address {\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n}\n.uni-open-location-name-text {\n    font-size: 18px;\n    font-weight: bold;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.uni-open-location-address-text {\n    font-size: 16px;\n    margin-top: 10px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.uni-open-location-footer-icon-btns {\n    width: 100px;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-end;\n}\n.uni-open-location-footer-icon-btns-item {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n.uni-open-location-footer-icon-box {\n    background-color: #f8f8f8;\n    width: 40px;\n    height: 40px;\n    border-radius: 6px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    margin-bottom: 6px;\n}\n.uni-open-location-navigation.uni-open-location-icons {\n    color: #007aff;\n    font-size: 24px;\n}\n.uni-open-location-footer-btn-text {\n    font-size: 12px;\n    text-align: center;\n}\n.uni-open-location-dark.uni-open-location-map-reset {\n    background-color: #111111;\n}\n.uni-open-location-dark.uni-open-location-map-reset-icon {\n    color: #d1d1d1;\n}\n.uni-open-location-dark.uni-open-location-footer {\n    background-color: #181818;\n}\n.uni-open-location-dark.uni-open-location-name-text {\n    color: #fafafa;\n}\n.uni-open-location-dark.uni-open-location-address-text {\n    color: #fafafa;\n}\n.uni-open-location-dark.uni-open-location-footer-icon-box {\n    background-color: #393939;\n}\n.uni-open-location-dark.uni-open-location-footer-btn-text {\n    color: #909090;\n}\n";
+const _style_0 = "\n@font-face {\n    font-family: UniOpenLocationFontFamily;\n    \n\n    src: url('data:font/woff2;base64,d09GMgABAAAAAAOIAAsAAAAACFwAAAM8AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHFQGYACDBgqCZIJlATYCJAMMCwgABCAFhjMHOxuSBxEVnDPIfhy4sdOwnpu/XCQX6p+Dh3+9r/uQzJ9kYYxdEdgKdrWnlztI1VYMAN93akFQAGXB0t7c9LK+HdVDfoq6/rif/Ot8oLt7tnb7q6CgqKRqsPmA51Fls4lOkwYkU1Cv3gUoo65BABYuBCEjoqKTGVZd0FzLJDRWvYA0XlRXlBXg0JTolniBA4GJTtWIDRggV8o7wPrw8eIrbsIBEkNhrRJfGlnMhQ8hH5JU//9+UM/w6xDQ7hIwAAUs2Zha5LZr0lGxZwkKq06mWbiJRiAntf//H/J0hbnlP54EYWLFDgFgAZXKi+K7NAj4kMSlcq5fC6YWQwtwjhFjxgiU9vBw7qovyOi6l2xz0r/l2DYhHqRyWqu27d5u2w/TOMXA9tVb4X5KrL19684tltXIB8l+yCr+FALO5yRHjvL43QtXnRo4vfpk/wnvt/wO9F/R44//zFKjyifbKyPDK8u72nS3f4R8t92rzGzvDC+vDO9so8rD/qle2B5GtXcWwJLtU2V4WD/HUj2rjSyf1j5ZRrX7gR/6p122y+p4A2uXkesatzw2dnmcS6650/4+9oe1M8eMd4lZ7hLrEmfk7iCmnUaOS1kS47XMMXbY/0Ke2ztyjbjm6ctjXOPbI8bdWXx38fPFz8jH6qn6FPC/X6MGfth3WLXr6fH/4QG/HLYG4KPj8p1QgOnAcScaAb9Hng3W1LoVlK7juUkIQNFwly4JWLYK/kciwCheDFeMhl0gmJjjK5A4sQQUE3FHNBENBjYlYDKRerBYzMrZNqM5j0JoZ2Ae1wkI3PgOkmFiOijcxFJEE3lgME5slJh1xHGwSBWPl7OZJ33L94rRsNB0JZ4lO2e4/WZ+L8gvMo/Gku/Ik9ndmDhev+CPcdS2wipNf9Ct0Bh1ddvuv0eGrqP9dvK9mSOnkojuhhiFisoBs9WrWdk1jau7ST1LqvaK0bDQdCWeJTufYr+T+L0gv8iMy7hNcQf83ndj4nj9gj/GUYeWGI79g26tzU1d3U4hu4e40+S8kMO3k+/NHDmVRLwTYhQq9Z0OmK1eB7jKrrFrOVRWX7Ui/cIGwMIaqoQUSmicikdZx+xDMXvuM7iqAA==') format('woff2');\n}\n.uni-open-location-icons {\n    font-family: 'UniOpenLocationFontFamily';\n    font-size: 16px;\n    font-style: normal;\n}\n.uni-open-location {\n    position: relative;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background: #f8f8f8;\n    z-index: 999;\n    display: flex;\n    flex-direction: column;\n}\n.uni-open-location-map-box {\n    width: 100%;\n    flex: 1;\n}\n.uni-open-location-map {\n    width: 100%;\n    height: 100%;\n}\n.uni-open-location-map-reset {\n    position: absolute;\n    left: 20px;\n    bottom: 40px;\n    width: 40px;\n    height: 40px;\n    box-sizing: border-box;\n    background-color: #ffffff;\n    border-radius: 20px;\n    pointer-events: auto;\n    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 0.3);\n    z-index: 9;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.uni-open-location-map-reset-icon {\n    font-size: 26px;\n    text-align: center;\n    line-height: 40px;\n}\n.uni-open-location-nav {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 60px;\n    background-color: rgba(0, 0, 0, 0);\n    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));\n}\n.uni-open-location-nav-btn {\n    position: absolute;\n    top: 5px;\n    left: 5px;\n    width: 44px;\n    height: 44px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.uni-open-location-nav-btn-bg {\n    width: 26px;\n    height: 26px;\n    box-sizing: border-box;\n    background-color: #ffffff;\n    border-radius: 13px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n.uni-open-location-nav-back-arrow {\n    width: 8px;\n    height: 8px;\n    border-left: 2px solid #cbcbcb;\n    border-bottom: 2px solid #cbcbcb;\n    transform: rotate(45deg);\n    margin-left: 3px;\n}\n.uni-open-location-footer {\n    height: 150px;\n    border-radius: 10px 10px 0px 0px;\n    overflow: hidden;\n    background-color: #ffffff;\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 20px;\n}\n.uni-open-location-address {\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n}\n.uni-open-location-name-text {\n    font-size: 18px;\n    font-weight: bold;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.uni-open-location-address-text {\n    font-size: 16px;\n    margin-top: 10px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.uni-open-location-footer-icon-btns {\n    width: 100px;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-end;\n}\n.uni-open-location-footer-icon-btns-item {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n.uni-open-location-footer-icon-box {\n    background-color: #f8f8f8;\n    width: 40px;\n    height: 40px;\n    border-radius: 6px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    margin-bottom: 6px;\n}\n.uni-open-location-navigation.uni-open-location-icons {\n    color: #007aff;\n    font-size: 24px;\n}\n.uni-open-location-footer-btn-text {\n    font-size: 12px;\n    text-align: center;\n}\n.uni-open-location-dark.uni-open-location-map-reset {\n    background-color: #111111;\n}\n.uni-open-location-dark.uni-open-location-map-reset-icon {\n    color: #d1d1d1;\n}\n.uni-open-location-dark.uni-open-location-footer {\n    background-color: #181818;\n}\n.uni-open-location-dark.uni-open-location-name-text {\n    color: #fafafa;\n}\n.uni-open-location-dark.uni-open-location-address-text {\n    color: #fafafa;\n}\n.uni-open-location-dark.uni-open-location-footer-icon-box {\n    background-color: #393939;\n}\n.uni-open-location-dark.uni-open-location-footer-btn-text {\n    color: #909090;\n}\n";
 const UniOpenLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
 class OpenLocationSuccessImpl {
   constructor(errMsg = "openLocation:ok") {
