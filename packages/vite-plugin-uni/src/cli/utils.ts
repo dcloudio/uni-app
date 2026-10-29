@@ -404,6 +404,14 @@ export function initEnv(
       )
     )
   }
+  if (isUniAppXVapor() && process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE) {
+    console.log(
+      M['vapor.script.engine'].replace(
+        '{engine}',
+        process.env.UNI_APP_X_HARMONY_SCRIPT_ENGINE
+      )
+    )
+  }
   if (isX && !isUniAppXVapor()) {
     console.log(
       formatStyleIsolationVersionMessage(

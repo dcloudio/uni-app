@@ -4,6 +4,7 @@ export default {
   'view.render.compiler.target.bytecode': '字节码',
   'view.render.compiler.target.nativecode': '机器码',
   'vapor.default.script.lang': '当前 uvue/vue 文件默认 script lang：{lang}',
+  'vapor.script.engine': '当前脚本引擎：{engine}',
   'style.isolation.version':
     '当前样式隔离策略：{version}。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
   'style.isolation.version.upgrade':
