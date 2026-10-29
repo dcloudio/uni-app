@@ -2224,6 +2224,39 @@ function offKeyboardHeightChange() {
     $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback);
     onKeyboardHeightChangeCallback = undefined;
 }
+const THEME_CALLBACK_MAP = new Map();
+let CALLBACK_ID = 0;
+const onHostThemeChange = (callback) => {
+    const onHostThemeChangeCallback = (res) => {
+        callback({ hostTheme: res.theme });
+    };
+    const id = ++CALLBACK_ID;
+    THEME_CALLBACK_MAP.set(id, [callback, onHostThemeChangeCallback]);
+    if (isFunction(my.onThemeChange)) {
+        my.onThemeChange(onHostThemeChangeCallback);
+    }
+    return id;
+};
+const offHostThemeChange = (callbackId) => {
+    let id;
+    if (isFunction(callbackId)) {
+        THEME_CALLBACK_MAP.forEach(([cb], key) => {
+            if (cb === callbackId && id === undefined) {
+                id = key;
+            }
+        });
+    }
+    else {
+        id = callbackId;
+    }
+    if (id !== undefined && THEME_CALLBACK_MAP.has(id)) {
+        const [, onHostThemeChangeCallback] = THEME_CALLBACK_MAP.get(id);
+        THEME_CALLBACK_MAP.delete(id);
+        if (isFunction(my.offThemeChange)) {
+            my.offThemeChange(onHostThemeChangeCallback);
+        }
+    }
+};
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -2233,9 +2266,11 @@ var shims = /*#__PURE__*/Object.freeze({
   getStorageSync: getStorageSync,
   offAppRoute: offAppRoute,
   offBeforeAppRoute: offBeforeAppRoute,
+  offHostThemeChange: offHostThemeChange,
   offKeyboardHeightChange: offKeyboardHeightChange,
   onAppRoute: onAppRoute,
   onBeforeAppRoute: onBeforeAppRoute,
+  onHostThemeChange: onHostThemeChange,
   onKeyboardHeightChange: onKeyboardHeightChange,
   removeStorageSync: removeStorageSync,
   rewriteRoute: rewriteRoute,
