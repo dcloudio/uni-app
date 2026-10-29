@@ -18,7 +18,7 @@
       [size == 'mini', 'uni-button-text-size-mini'],
       [size == 'default', 'uni-button-text-size-default']
     )"
-    style="justify-content: center;flex-direction: row;align-items: center"
+    style="display: flex;justify-content: center;flex-direction: row;align-items: center"
     :hover-class="disabled ? 'none' : hoverClasses"
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
@@ -26,7 +26,7 @@
     @click="handleTap"
   >
     <loading
-      class="uni-loading"
+      class="uni-button-loading-icon"
       :class="classes(
         [buttonType == 'default', 'uni-loading-default'],
         [plain && buttonType == 'primary', 'uni-loading-plain-primary'],
@@ -396,6 +396,7 @@
     return props.type == null ? 'default' : props.type
   })
 
+  // #ifdef APP
   const textStyle = useComputedStyle({
 		properties: ['font-size', 'color', 'line-height', 'font-weight', 'text-align'],
 		filterProperties: false
@@ -413,6 +414,17 @@
     })
     return style
   })
+  // #endif
+  // #ifndef APP
+  // Web 没有 useComputedStyle，使用 CSS inherit 传递根元素的文字样式。
+  const loadingTextStyle = computed(() => {
+    let style = 'font-size:inherit;line-height:inherit;font-weight:inherit;text-align:inherit;'
+    if (props.loadingTextClass == null) {
+      style += 'color:inherit;'
+    }
+    return style
+  })
+  // #endif
 
   const formCtx = inject<FormContext | null>(FORM_KEY, null)
 
@@ -532,7 +544,7 @@
     padding: 0 14px;
   }
 
-  .uni-loading {
+  .uni-button-loading-icon {
     width: 14px;
     height: 14px;
     border-color: #ffffff;
