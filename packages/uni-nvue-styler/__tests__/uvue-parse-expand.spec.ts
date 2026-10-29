@@ -830,3 +830,26 @@ test.each([
     ])
   ).toEqual([['gap', '8px 12%']])
 })
+
+test.each(['app-android', 'app-ios', 'app-harmony'])(
+  'limits caret-color support to DOM2 on %s',
+  async (platform) => {
+    const options = { type: 'uvue' as const, platform }
+    const supported = await parse('.foo { caret-color: red; }', {
+      ...options,
+      dom2: true,
+    })
+    expect(supported.messages).toHaveLength(0)
+    expect(supported.code).toContain('caretColor')
+    const unsupported = await parse('.foo { caret-color: red; }', options)
+    expect(unsupported.messages).toHaveLength(1)
+    for (const value of ['auto', 'inherit', 'currentColor']) {
+      const invalid = await parse(`.foo { caret-color: ${value}; }`, {
+        ...options,
+        dom2: true,
+      })
+      expect(invalid.messages).toHaveLength(1)
+      expect(invalid.code).not.toContain('caretColor')
+    }
+  }
+)

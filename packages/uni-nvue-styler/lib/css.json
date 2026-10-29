@@ -2,6 +2,41 @@
   "version": 1.0,
   "properties": [
     {
+      "name": "caret-color",
+      "syntax": "<color>",
+      "restrictions": [
+        "color"
+      ],
+      "unixTags": [
+        "input",
+        "textarea",
+        "editor"
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.35"
+          },
+          "ios": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.35"
+          },
+          "harmony": {
+            "uniVer": "x",
+            "unixVer": "x",
+            "unixVaporVer": "5.35"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
       "name": "backdrop-filter",
       "description": "backdrop-filter 属性设置元素的背景滤镜效果，即对其后方（背景透出）的所有内容添加图形效果（如毛玻璃、背景高斯模糊等）。为了看到效果，必须使元素或其背景至少部分透明。",
       "values": [
