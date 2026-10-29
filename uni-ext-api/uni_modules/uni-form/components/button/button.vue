@@ -761,6 +761,27 @@
     transition: background-color 0.1s, color 0.1s, border-color 0.1s;
   }
 
+  /* #ifdef WEB */
+  /* Web 的组合选择器需要覆盖 plain 普通态的颜色和边框。 */
+  .uni-button.uni-button-view-plain.uni-button-type-primary_view.uni-button-view_plain_primary_hover {
+    color: rgba(0, 122, 255, 0.6);
+    border-color: rgba(0, 122, 255, 0.6);
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-type-default_view.uni-button-view_plain_default_hover {
+    color: rgba(53, 53, 53, 0.6);
+    border-color: rgba(53, 53, 53, 0.6);
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-type-warn_view.uni-button-view_plain_warn_hover {
+    color: rgba(230, 67, 64, 0.6);
+    border-color: rgba(230, 67, 64, 0.6);
+    background-color: transparent;
+  }
+  /* #endif */
+
   .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
     background-color: transparent;
     color: rgba(0, 0, 0, .2);
@@ -809,6 +830,19 @@
       border-color: rgba(150, 150, 150, 0.6);
       background-color: rgba(50, 50, 50, 0.2);
     }
+
+    /* #ifdef WEB */
+    /* 未传 type 的 plain 按钮也需要覆盖暗黑模式的默认背景。 */
+    .uni-button.uni-button-view-plain.uni-button-no-type.uni-button-type-default_view {
+      background-color: transparent;
+    }
+
+    .uni-button.uni-button-view-plain.uni-button-type-default_view.uni-button-view_plain_default_hover {
+      color: rgba(150, 150, 150, 0.6);
+      border-color: rgba(150, 150, 150, 0.6);
+      background-color: rgba(50, 50, 50, 0.2);
+    }
+    /* #endif */
 
     .uni-button.uni-button-disabled.uni-button-view-plain,
     .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
