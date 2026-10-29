@@ -18,7 +18,7 @@
 
 ## 使用流程
 
-<a href="../static/bluetooth-general-flow.svg" target="_blank" rel="noopener"><img src="../static/bluetooth-general-flow.svg" alt="蓝牙通用接口使用流程：注册监听、初始化、扫描发现设备、停止扫描、连接通信及清理资源" width="400"></a>
+<img class="zooming" src="../static/bluetooth-general-flow.svg" alt="蓝牙通用接口使用流程：注册监听、初始化、扫描发现设备、停止扫描、连接通信及清理资源" width="400">
 
 1. 注册 [uni.onBluetoothAdapterStateChange](#onbluetoothadapterstatechange) 和 [uni.onBluetoothDeviceFound](#onbluetoothdevicefound)，分别监听适配器状态和设备发现事件。
 2. 调用 [uni.openBluetoothAdapter](#openbluetoothadapter)，初始化成功后调用 [uni.startBluetoothDevicesDiscovery](#startbluetoothdevicesdiscovery) 开始扫描。
