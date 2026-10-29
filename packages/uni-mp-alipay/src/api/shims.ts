@@ -150,3 +150,52 @@ export function offKeyboardHeightChange() {
   $off('uni:keyboardHeightChange', onKeyboardHeightChangeCallback)
   onKeyboardHeightChangeCallback = undefined
 }
+
+//#if _X_
+type HostThemeChangeCallback = (res: { hostTheme: string }) => void
+
+const THEME_CALLBACK_MAP = new Map<
+  number,
+  [HostThemeChangeCallback, UniApp.OnThemeChangeCallback]
+>()
+let CALLBACK_ID = 0
+
+export const onHostThemeChange = (callback: HostThemeChangeCallback) => {
+  const onHostThemeChangeCallback: UniApp.OnThemeChangeCallback = (res) => {
+    callback({ hostTheme: res.theme })
+  }
+
+  const id = ++CALLBACK_ID
+  THEME_CALLBACK_MAP.set(id, [callback, onHostThemeChangeCallback])
+
+  if (isFunction((my as any).onThemeChange)) {
+    ;(my as any).onThemeChange(onHostThemeChangeCallback)
+  }
+
+  return id
+}
+
+export const offHostThemeChange = (
+  callbackId: number | HostThemeChangeCallback
+) => {
+  let id: number | undefined
+
+  if (isFunction(callbackId)) {
+    THEME_CALLBACK_MAP.forEach(([cb], key) => {
+      if (cb === callbackId && id === undefined) {
+        id = key
+      }
+    })
+  } else {
+    id = callbackId
+  }
+
+  if (id !== undefined && THEME_CALLBACK_MAP.has(id)) {
+    const [, onHostThemeChangeCallback] = THEME_CALLBACK_MAP.get(id)!
+    THEME_CALLBACK_MAP.delete(id)
+    if (isFunction((my as any).offThemeChange)) {
+      ;(my as any).offThemeChange(onHostThemeChangeCallback)
+    }
+  }
+}
+//#endif
