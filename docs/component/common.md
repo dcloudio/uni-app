@@ -49,8 +49,8 @@
   + 不支持 [background-image](../css/background-image.md)、[background-clip](../css/background-clip.md)
   + 不支持 [pointer-events](../css/pointer-events.md)
   + [box-shadow](../css/box-shadow.md) 不支持设置 inset 及 spreadRadius
-  + [display](../css/display.md) 为 fixed 时显示存在缺陷，无法覆盖其它非 fixed 的元素
-  + [transition](../css/transform.md) 动画不支持渲染相关（如background-color）的样式
+  + [position](../css/position.md) 为 fixed 时显示存在缺陷，无法覆盖其它非 fixed 的元素
+  + [transition](../css/transition.md) 动画不支持渲染相关（如background-color）的样式
 * 拍平时css样式[visibility](../css/visibility.md)存在差异
   + app-android平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的子元素默认仍然会显示，子元素的显示状态由其自身的visibility决定
   + app-ios平台visibility支持拍平。view组件visibility设置为hidden时拍平存在缺陷，view的非拍平子元素默认仍然会显示，非拍平子元素的显示状态由其自身的visibility决定，而拍平子元素会跟随此view不可见

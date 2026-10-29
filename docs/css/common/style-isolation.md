@@ -208,6 +208,14 @@ defineOptions中配置externalClasses，从HBuilderX5.0起支持。
 - 由于全局样式是最低优先级，如果传递给组件externalClasses的class是在全局App.uvue中定义的，且期望覆盖组件内部自身class的部分样式，需要给指定的css属性增加`!important;`。
 - 为兼容小程序平台的组件规范，`externalClasses` 必须在组件定义阶段以静态字面量方式声明，且其内容需要在编译时可确定；不支持通过变量、表达式计算、函数返回值等方式动态生成。
 
+##### externalClasses 属性值的兼容性说明 @external-classes-compatibility
+
+HBuilderX 5.35+，组件使用者传入的外部样式类属性值，在组件内获取时由字符串数组调整为空格分隔的字符串。
+
+直接使用该属性值进行 class 绑定不受影响，多个类名仍可使用 `:class="xxxClass"` 绑定，也可与组件内部类名通过数组绑定，例如 `:class="['inner-class', xxxClass]"`。
+
+如果组件代码将该属性值当作数组使用，例如调用 `join()`、`map()` 等数组方法，需要改为按字符串处理。
+
 
 ##### 组件避免外部过度干扰样式
 

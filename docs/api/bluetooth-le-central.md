@@ -16,7 +16,7 @@
 
 ## 使用流程
 
-![BLE 中心设备流程：连接设备、发现服务和特征值、按属性收发数据并清理连接](../static/bluetooth-le-central-flow.svg)#{.zooming width="400px"}
+<a href="../static/bluetooth-le-central-flow.svg" target="_blank" rel="noopener"><img src="../static/bluetooth-le-central-flow.svg" alt="BLE 中心设备流程：连接设备、发现服务和特征值、按属性收发数据并清理连接" width="400"></a>
 
 1. 注册 [uni.onBLEConnectionStateChange](#onbleconnectionstatechange) 和 [uni.onBLECharacteristicValueChange](#onblecharacteristicvaluechange)，分别接收连接状态变化和特征值数据。
 2. 使用扫描返回的 `deviceId`，调用 [uni.createBLEConnection](#createbleconnection) 连接目标设备。
