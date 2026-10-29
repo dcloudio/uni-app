@@ -10,7 +10,13 @@
       "$On"
     ],
     [
+      "$OnCallback"
+    ],
+    [
       "$Once"
+    ],
+    [
+      "$OnceCallback"
     ],
     [
       "AccelerometerErrorCode"
@@ -947,6 +953,9 @@
     ],
     [
       "GetSystemInfoCompleteCallback"
+    ],
+    [
+      "GetSystemInfoFail"
     ],
     [
       "GetSystemInfoOptions"
