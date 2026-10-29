@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import jscc from 'rollup-plugin-jscc'
 import ts from 'typescript'
@@ -231,6 +232,85 @@ describe('Web Vapor 原生宿主 Element', () => {
       )
     ).toEqual(nativeDataset)
     expect(dom.window.HTMLElement.prototype.getPage).toBeUndefined()
+  })
+
+  test('text 的 value 只读且实时读取 DOM 文本，不增加实例属性', () => {
+    install()
+    const text = document.createElement('span') as any
+    text.setAttribute('uni-text', '')
+    expect(text.value).toBe('')
+    text.textContent = '初始文字'
+    expect(text.value).toBe('初始文字')
+    text.firstChild.data = '更新文字'
+    expect(text.value).toBe('更新文字')
+    text.innerHTML = '前<span uni-text>嵌套文字</span>后<!--注释-->'
+    expect(text.value).toBe('前嵌套文字后')
+    expect(text.firstElementChild.value).toBe('嵌套文字')
+    const descriptor = Object.getOwnPropertyDescriptor(
+      dom.window.HTMLSpanElement.prototype,
+      'value'
+    )!
+    expect(descriptor.get).toBe(
+      Object.getOwnPropertyDescriptor(
+        elements.UniTextElement.prototype,
+        'value'
+      )!.get
+    )
+    expect(descriptor.set).toBeUndefined()
+    expect(Reflect.set(text, 'value', '不能写入')).toBe(false)
+    expect(text.firstElementChild).not.toBeNull()
+    expect(Object.keys(text)).toEqual([])
+    install()
+    expect(
+      Object.getOwnPropertyDescriptor(
+        dom.window.HTMLSpanElement.prototype,
+        'value'
+      )
+    ).toEqual(descriptor)
+    expect('value' in document.createElement('div')).toBe(false)
+    expect('value' in document.createElement('img')).toBe(false)
+  })
+
+  test('uni-form Button 的 value 同时支持普通根和 loading 内部 text', () => {
+    install()
+    const source = fs.readFileSync(
+      path.resolve(
+        __dirname,
+        '../../../uni-ext-api/uni_modules/uni-form/components/button/global.ts'
+      ),
+      'utf8'
+    )
+    const code = ts.transpileModule(source, {
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2020,
+      },
+    }).outputText
+    const module = { exports: {} as any }
+    new Function('exports', 'UniTextElement', code)(
+      module.exports,
+      elements.UniTextElement
+    )
+    const descriptor = Object.getOwnPropertyDescriptor(
+      module.exports.UniButtonElement.prototype,
+      'value'
+    )!
+    const root = document.createElement('span') as any
+    root.textContent = '按钮文字'
+    Object.defineProperty(root, 'value', descriptor)
+    root.vm = { isLoading: () => false }
+    expect(root.value).toBe('按钮文字')
+    const loadingRoot = document.createElement('div') as any
+    loadingRoot.innerHTML =
+      '<div uni-loading></div><span uni-text>加载文字</span>'
+    Object.defineProperty(loadingRoot, 'value', descriptor)
+    loadingRoot.vm = {
+      isLoading: () => true,
+      getValue: () => loadingRoot.lastElementChild.value,
+    }
+    expect(loadingRoot.value).toBe('加载文字')
+    loadingRoot.lastElementChild.textContent = '更新文字'
+    expect(loadingRoot.value).toBe('更新文字')
   })
 
   test.each([

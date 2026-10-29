@@ -42,6 +42,12 @@ export class UniViewElement extends NativeUniElement {
   }
 }
 export class UniTextElement extends NativeUniElement {
+  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
+  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
+  get value(): string {
+    return this.textContent ?? ''
+  }
+
   static [Symbol.hasInstance](value: unknown): boolean {
     return (
       (this === UniTextElement && getUniTagName(value) === 'TEXT') ||
@@ -101,6 +107,14 @@ export function installWebVaporElements(realm?: Window) {
     },
   }
   const hosts = realm as unknown as ElementConstructors
+  // text 使用原生 span，不继承逻辑 Element 类；只在安装时复用同一个 getter。
+  if (!('value' in hosts.HTMLSpanElement.prototype)) {
+    Object.defineProperty(
+      hosts.HTMLSpanElement.prototype,
+      'value',
+      Object.getOwnPropertyDescriptor(UniTextElement.prototype, 'value')!
+    )
+  }
   for (const [Host, marker, tagName] of [
     [hosts.HTMLDivElement, 'uni-view', 'VIEW'],
     [hosts.HTMLSpanElement, 'uni-text', 'TEXT'],

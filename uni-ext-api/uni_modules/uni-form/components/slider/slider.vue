@@ -342,7 +342,7 @@
   }
 
   const attrs = useAttrs()
-  const id = attrs.id
+  const id = attrs.id ?? ''
   let unregisterLabelTarget: (() => void) | null = null
 
   // Props 定义

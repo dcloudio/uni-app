@@ -216,6 +216,11 @@ class UniViewElement extends NativeUniElement {
   }
 }
 class UniTextElement extends NativeUniElement {
+  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
+  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
+  get value() {
+    return this.textContent ?? "";
+  }
   static [Symbol.hasInstance](value) {
     return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
   }
@@ -12398,7 +12403,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
   setup(__props, { expose: __expose, emit: __emit }) {
     const emit2 = __emit;
     const attrs = useAttrs$1();
-    const id2 = attrs.id;
+    const id2 = attrs.id ?? "";
     let unregisterLabelTarget = null;
     const props2 = __props;
     ref(null);

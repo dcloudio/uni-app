@@ -215,6 +215,11 @@ class UniViewElement extends NativeUniElement {
   }
 }
 class UniTextElement extends NativeUniElement {
+  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
+  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
+  get value() {
+    return this.textContent ?? "";
+  }
   static [Symbol.hasInstance](value) {
     return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
   }
@@ -254,6 +259,13 @@ function installWebVaporElements(realm) {
     }
   };
   const hosts = realm;
+  if (!("value" in hosts.HTMLSpanElement.prototype)) {
+    Object.defineProperty(
+      hosts.HTMLSpanElement.prototype,
+      "value",
+      Object.getOwnPropertyDescriptor(UniTextElement.prototype, "value")
+    );
+  }
   for (const [Host, marker, tagName] of [
     [hosts.HTMLDivElement, "uni-view", "VIEW"],
     [hosts.HTMLSpanElement, "uni-text", "TEXT"],
@@ -17068,20 +17080,12 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
         formCtx.reset();
       }
     };
-    function checkOpenType() {
-      switch (props2.openType) {
-        case "agreePrivacyAuthorization":
-          uni.agreePrivacyAuthorization();
-          break;
-      }
-    }
     const handleTap = (event) => {
       if (props2.disabled) {
         return;
       }
       emit2("click", event);
       checkFormAndSubmitOrReset();
-      checkOpenType();
     };
     __expose({
       getValue() {
@@ -20141,7 +20145,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
   setup(__props, { expose: __expose, emit: __emit }) {
     const emit2 = __emit;
     const attrs2 = useAttrs$1();
-    const id2 = attrs2.id;
+    const id2 = attrs2.id ?? "";
     let unregisterLabelTarget = null;
     const props2 = __props;
     const containerRef = ref(null);
