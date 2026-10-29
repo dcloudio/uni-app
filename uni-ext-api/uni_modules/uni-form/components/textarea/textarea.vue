@@ -34,7 +34,7 @@
 </template>
 <script setup lang="ts">
 	// #ifdef APP-IOS || APP-HARMONY
-	import { useEditorColor } from "../editor-color.ts"
+	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
 	// #endif
 	import {
 		NativeTextareaView,
@@ -94,7 +94,11 @@
 
 	const style = useComputedStyle({
 		properties: [
-			'font-size', 'color', 'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
+			'font-size', 'color',
+			// #ifdef APP-IOS || APP-HARMONY
+			'caret-color',
+			// #endif
+			'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
 			'direction',
 			// #ifndef APP-ANDROID
 			'height', 'min-height', 'max-height',
@@ -503,6 +507,12 @@
 
 	// #endif
 
+	// #ifdef APP-IOS || APP-HARMONY
+	const caretColor = computed(() => {
+		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
+	})
+	// #endif
+
 	const emit = defineEmits<{
 		(e : 'update:value', value : string) : void
 		(e : 'input', value : UniInputEvent) : void
@@ -721,10 +731,12 @@
 				case 'maxlength':
 					textareaView.updateMaxLength(getMaxLength(props.maxlength))
 					break
+				// #ifndef APP-IOS || APP-HARMONY
 				case 'cursor-color':
 				case 'cursorColor':
 					textareaView.updateCursorColor(props.cursorColor)
 					break
+				// #endif
 				case 'cursor-spacing':
 				case 'cursorSpacing':
 					textareaView.updateCursorSpacing(props.cursorSpacing)
@@ -738,6 +750,7 @@
 		}
 		// #ifdef APP-IOS || APP-HARMONY
 		textareaView.updateColor(valueColor.value)
+		textareaView.updateCursorColor(caretColor.value)
 		// #endif
 		let updatePadding = false
 		style.forEach((value, key) => {
@@ -1084,9 +1097,11 @@
 		watch(() => props.cursorSpacing, (newValue : number) => {
 			textareaView?.updateCursorSpacing(newValue)
 		})
-		watch(() => props.cursorColor, (newValue : string) => {
+		// #ifdef APP-IOS || APP-HARMONY
+		watch(() => caretColor.value, (newValue : string) => {
 			textareaView?.updateCursorColor(newValue)
 		})
+		// #endif
 
 		watch(() => props.focus, (newValue : boolean) => {
 			textareaView?.updateFocus(newValue)

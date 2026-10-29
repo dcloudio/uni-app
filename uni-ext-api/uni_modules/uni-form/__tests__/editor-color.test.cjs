@@ -85,3 +85,12 @@ test('editors share a listener until the last unmount and re-register on remount
   editor.unmount[2]()
   assert.deepEqual(editor.removed, [1, 2])
 })
+
+test('caret-color supports CSS updates, legacy prop precedence and removal', () => {
+  const { resolveEditorCaretColor } = createEditorModule({ appTheme: 'dark' })
+  assert.equal(resolveEditorCaretColor('#ffffff', ''), '#ffffff')
+  assert.equal(resolveEditorCaretColor('#ff0000', '#007aff'), '#007aff')
+  assert.equal(resolveEditorCaretColor('#ff0000', ''), '#ff0000')
+  assert.equal(resolveEditorCaretColor(null, ''), '')
+  assert.equal(resolveEditorCaretColor('', ''), '')
+})

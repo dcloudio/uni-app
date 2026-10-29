@@ -9,6 +9,10 @@ import UIKit
 
 public class UniTextareaView: UITextView {
 
+    public func setEditorCursorColor(_ color: UIColor?) {
+        tintColor = color
+    }
+
     public var lineHeightValue: CGFloat?
     public var letterSpacingValue: CGFloat?
     public var styledTextColor: UIColor = .black

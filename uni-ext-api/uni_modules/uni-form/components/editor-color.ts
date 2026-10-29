@@ -12,6 +12,10 @@ export function resolveEditorColor(color: unknown, isDark: boolean): string {
     : isDark ? '#ffffff' : '#000000'
 }
 
+export function resolveEditorCaretColor(color: unknown, cursorColor: string): string {
+  return cursorColor || (typeof color === 'string' ? color : '')
+}
+
 export function useEditorColor(style: Map<string, any | null>) {
   if (users++ === 0) {
     const info = uni.getSystemInfoSync()

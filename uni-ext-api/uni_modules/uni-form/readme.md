@@ -13,4 +13,7 @@
 的默认值。浅色模式默认背景为 `#ffffff`，文字为 `#000000`。placeholder 在两种主题下
 均为 `#757575`。
 
+iOS、鸿蒙的 input、textarea 支持通过 CSS `caret-color` 设置光标颜色，支持 CSS 变量和媒体查询。
+同时设置 `cursor-color` 时优先使用该属性；移除后回退到 `caret-color`，两者均未设置时恢复系统默认光标颜色。
+
 回归检查：`node --test src/uni_modules/uni-form/__tests__/editor-color.test.cjs`。

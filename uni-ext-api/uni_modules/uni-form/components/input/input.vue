@@ -63,7 +63,7 @@
 <!-- #endif -->
 <script setup lang="ts">
 	// #ifdef APP-IOS || APP-HARMONY
-	import { useEditorColor } from "../editor-color.ts"
+	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
 	// #endif
 	import {
 		// #ifdef APP-ANDROID || APP-IOS
@@ -143,6 +143,9 @@
 	const style = useComputedStyle({
 		properties: [
 			'font-size', 'color',
+			// #ifdef APP-IOS || APP-HARMONY
+			'caret-color',
+			// #endif
 			// #ifndef APP-ANDROID
 			'line-height',
 			// #endif
@@ -497,6 +500,12 @@
 		holdKeyboard: false,
 	});
 
+	// #ifdef APP-IOS || APP-HARMONY
+	const caretColor = computed(() => {
+		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
+	})
+	// #endif
+
 	const emit = defineEmits<{
 		(e : 'update:value', value : string) : void
 		(e : 'input', value : UniInputEvent) : void
@@ -609,7 +618,7 @@
 			getStyleValue('font-family'),
 			getStyleValue('text-align'),
 			getStyleValue('direction'),
-			props.cursorColor
+			caretColor.value
 		]
 		return encodeHarmonyFields(fields)
 	})
@@ -771,10 +780,6 @@
 				case 'maxlength':
 					inputView?.updateMaxLength(getMaxLength(props.maxlength))
 					break
-				case 'cursor-color':
-				case 'cursorColor':
-					inputView?.updateCursorColor(props.cursorColor)
-					break
 				case 'cursor-spacing':
 				case 'cursorSpacing':
 					inputView?.updateCursorSpacing(props.cursorSpacing)
@@ -810,6 +815,7 @@
 			}
 		})
 		inputView?.updateColor(valueColor.value)
+		inputView?.updateCursorColor(caretColor.value)
 	}
 	// #endif
 
@@ -1427,7 +1433,7 @@
 			// #endif
 		})
 		// #ifdef APP-IOS
-		watch(() => props.cursorColor, (newValue : string) => {
+		watch(() => caretColor.value, (newValue : string) => {
 			inputView?.updateCursorColor(newValue)
 		})
 		// #endif

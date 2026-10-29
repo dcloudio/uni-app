@@ -1372,11 +1372,7 @@ export class NativeInputView implements UITextFieldDelegate {
 	
 	// 更新input 光标颜色
 	updateCursorColor(value: string) {
-		if (this.textField == null || value == "") return
-		
-		// 解析颜色字符串并设置 tintColor
-		// 支持 #RRGGBB 格式
-		this.textField!.tintColor = UTSiOS.colorWithString(value)
+		this.textField?.setEditorCursorColor(value == '' ? null : UTSiOS.colorWithString(value))
 	}
 	
 	// 更新input 自动获取焦点，与focus属性对比，此属性只会首次生效。
@@ -1786,8 +1782,7 @@ export class NativeTextareaView implements UITextViewDelegate {
 	}
 
 	updateCursorColor(value: string) {
-		if (this.textView == null || value == '') return
-		this.textView!.tintColor = UTSiOS.colorWithString(value)
+		this.textView?.setEditorCursorColor(value == '' ? null : UTSiOS.colorWithString(value))
 	}
 
 	updateAutoFocus(value: boolean) {

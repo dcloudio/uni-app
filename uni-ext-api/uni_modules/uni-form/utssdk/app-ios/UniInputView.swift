@@ -8,6 +8,10 @@
 import UIKit
 
 public class UniInputView : UITextField {
+
+    public func setEditorCursorColor(_ color: UIColor?) {
+        tintColor = color
+    }
     
     public var padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     public var holdKeyboardEnabled = false
