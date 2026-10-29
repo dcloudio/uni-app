@@ -16,7 +16,6 @@ import {
 } from './web-vapor-elements'
 
 // 这里只保留尚未替换的组件；已接入的 DOM2 组件由生成入口导出。
-// TODO list-view 系列依赖 VNode 遍历，完成 Vapor 适配后再接入，不回退旧组件。
 export {
   Input,
   Textarea,
