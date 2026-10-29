@@ -419,6 +419,12 @@
       "null"
     ]
   },
+  "uni-map-tencent": {
+    "createMapContext": [
+      null,
+      "null"
+    ]
+  },
   "uni-memory": {
     "offMemoryWarning": [
       "null"
@@ -513,12 +519,6 @@
   },
   "uni-live-pusher": {
     "createLivePusherContext": [
-      null,
-      "null"
-    ]
-  },
-  "uni-map-tencent": {
-    "createMapContext": [
       null,
       "null"
     ]
