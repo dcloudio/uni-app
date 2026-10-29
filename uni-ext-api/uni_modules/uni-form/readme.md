@@ -10,7 +10,7 @@
 暗黑模式的默认文字色为 `#ffffff`，表单背景为 `#3b3b3b`。背景通过
 `prefers-color-scheme` 媒体查询切换，文字色同时同步到原生编辑控件；即使没有
 传入 `class` 或 `style` 也会生效。显式设置的 `color` 优先，移除后恢复当前主题
-的默认值。浅色模式保留原有透明背景及默认黑色文字。placeholder 在两种主题下
+的默认值。浅色模式默认背景为 `#ffffff`，文字为 `#000000`。placeholder 在两种主题下
 均为 `#757575`。
 
 回归检查：`node --test src/uni_modules/uni-form/__tests__/editor-color.test.cjs`。

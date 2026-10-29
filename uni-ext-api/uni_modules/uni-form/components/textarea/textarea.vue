@@ -1194,9 +1194,9 @@
 		width: 300px;
 		/* #ifdef APP-ANDROID */
 		height: 150px;
+		/* #endif */
 		/* 暗黑适配：表单默认背景色（开发者用 class/style 可覆盖，页面样式优先级更高） */
 		background-color: #ffffff;
-		/* #endif */
 	}
 
 	@media (prefers-color-scheme: dark) {
