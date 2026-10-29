@@ -669,15 +669,7 @@ class UniAndroidAdjustPositionPlan {
 
 type UniAndroidCursorBottomOffsetResolver = (elementHeight: number) => number
 
-function shouldTraceAndroidInputAdjust(tagName: string): boolean {
-	return tagName.toUpperCase() == 'INPUT'
-}
-
 function logAndroidInputAdjust(message: string) {
-}
-
-function shouldTraceAndroidTextareaAdjust(tagName: string): boolean {
-	return tagName.toUpperCase() == 'TEXTAREA'
 }
 
 function logAndroidTextareaAdjust(message: string) {
@@ -792,6 +784,41 @@ function isScrollAbleTagName(tagName: string): boolean {
 		|| normalizedTagName.indexOf('WEBVIEW') >= 0
 }
 
+/**
+ * 是否为输入框组件自身的根节点（padding/边框所在的盒子）。
+ * input 的 native view 只是 EditText 本体（padding 已被清空为 0），
+ * 用户设置的 padding/边框都落在组件根节点这一层，因此"上推到边框底部"需要用它。
+ */
+function isInputBoxTagName(tagName: string): boolean {
+	const normalizedTagName = tagName.toUpperCase()
+	return normalizedTagName == 'INPUT' || normalizedTagName == 'TEXTAREA'
+}
+
+/**
+ * 求输入框的"可视盒"（含 padding/边框的盒子）：
+ * 只走到输入框组件自身的根节点为止，找不到更大的盒子就返回输入框自身矩形。
+ * 不能一路向上取"更大的祖先"，否则会取到 v-for 包裹层、页面容器等布局节点，
+ * 使目标矩形失真（露出整块页面 / 上推量算错）。
+ * 上推（resolveAdjustTargetRect）与系统滚动（revealFocusedInput）共用同一判定。
+ */
+function resolveInputBoxRect(element: UniNativeViewElement, elementRect: DOMRect): DOMRect {
+	let currentElement = element.parentElement
+	while (currentElement != null) {
+		if (isInputBoxTagName(currentElement.tagName)) {
+			const boxRect = currentElement.getBoundingClientRect()
+			if (boxRect.height > elementRect.height) {
+				return boxRect
+			}
+			return elementRect
+		}
+		if (isScrollAbleTagName(currentElement.tagName)) {
+			break
+		}
+		currentElement = currentElement.parentElement
+	}
+	return elementRect
+}
+
 class UniAndroidAdjustPositionHelper {
 	private static activeHelper: UniAndroidAdjustPositionHelper | null = null
 	private static sessionPageBodyView: View | null = null
@@ -800,8 +827,6 @@ class UniAndroidAdjustPositionHelper {
 	private resolveCursorBottomOffset: UniAndroidCursorBottomOffsetResolver = (elementHeight: number): number => {
 		return Math.max(0, elementHeight)
 	}
-	private useLargerAncestorRect: boolean = true
-	private preferFarthestLargerAncestorRect: boolean = false
 	private allowRootTranslateAfterParentScroll: boolean = false
 	private traceCategory: string = ''
 	private adjustDistanceReduction: number = 0
@@ -868,14 +893,6 @@ class UniAndroidAdjustPositionHelper {
 		this.clearSharedSessionState(true)
 	}
 
-	setUseLargerAncestorRect(value: boolean) {
-		this.useLargerAncestorRect = value
-	}
-
-	setPreferFarthestLargerAncestorRect(value: boolean) {
-		this.preferFarthestLargerAncestorRect = value
-	}
-
 	setAllowRootTranslateAfterParentScroll(value: boolean) {
 		this.allowRootTranslateAfterParentScroll = value
 	}
@@ -884,14 +901,9 @@ class UniAndroidAdjustPositionHelper {
 		this.traceCategory = value
 	}
 
-	private shouldTrace(): boolean {
-		return shouldTraceAndroidInputAdjust(this.element.tagName)
-			|| shouldTraceAndroidTextareaAdjust(this.element.tagName)
-	}
-
 	private trace(message: string) {
 		const tagName = this.element.tagName
-		if (this.traceCategory == 'textarea' || shouldTraceAndroidTextareaAdjust(tagName)) {
+		if (this.traceCategory == 'textarea') {
 			logAndroidTextareaAdjust('helper tag=' + tagName + ' ' + message)
 			return
 		}
@@ -956,7 +968,10 @@ class UniAndroidAdjustPositionHelper {
 			snapshot.scrollHeight = parentElement.scrollHeight
 			parentSnapshots.push(snapshot)
 		}
-		const maxAdjustDistance = Math.max(0, boundingClientRect.y - boundingClientRect.height)
+		// 上推上限：只以目标盒子顶部为界（平移后盒顶不越过窗口顶部）。
+		// 不能再减盒子高度：盒子高度 >= 自身 y 位置时（高 textarea、大 padding 的输入框）
+		// 会被钳成 0，导致明明被键盘遮挡却完全不上推、光标看不见。
+		const maxAdjustDistance = Math.max(0, boundingClientRect.y)
 		const plan = createAndroidAdjustPositionPlan(
 			adjustWindowHeight,
 			keyboardHeight,
@@ -1152,44 +1167,17 @@ class UniAndroidAdjustPositionHelper {
 	}
 
 	private resolveAdjustTargetRect(elementRect: DOMRect): DOMRect {
-		if (!this.useLargerAncestorRect) {
-			return elementRect
-		}
-		let currentElement = this.element.parentElement
-		let depth = 0
-		let matchedRect: DOMRect | null = null
-		let matchedTag = ''
-		let matchedDepth = -1
-		while (currentElement != null) {
-			const currentRect = currentElement.getBoundingClientRect()
-			if (currentRect.height > elementRect.height) {
-				matchedRect = currentRect
-				matchedTag = currentElement.tagName
-				matchedDepth = depth
-				if (!this.preferFarthestLargerAncestorRect) {
-					break
-				}
-			}
-			if (isScrollAbleTagName(currentElement.tagName)) {
-				break
-			}
-			currentElement = currentElement.parentElement
-			depth += 1
-		}
-		if (matchedRect != null) {
+		const boxRect = resolveInputBoxRect(this.element, elementRect)
+		if (boxRect.height > elementRect.height) {
 			this.trace(
 				'resolveAdjustTargetRect tag=' + this.element.tagName
 					+ ' elementY=' + elementRect.y
 					+ ' elementHeight=' + elementRect.height
-					+ ' ancestorDepth=' + matchedDepth
-					+ ' ancestorTag=' + matchedTag
-					+ ' ancestorY=' + matchedRect.y
-					+ ' ancestorHeight=' + matchedRect.height
-					+ ' preferFarthest=' + this.preferFarthestLargerAncestorRect
+					+ ' boxY=' + boxRect.y
+					+ ' boxHeight=' + boxRect.height
 			)
-			return matchedRect
 		}
-		return elementRect
+		return boxRect
 	}
 
 	private resolveNativeWindowHeight(): number {
@@ -2038,7 +2026,7 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 		const rect = new Rect()
 		this.editText!.getDrawingRect(rect)
 		const elementRect = this.element.getBoundingClientRect()
-		const inputRect = this.resolveInputVisualRect(elementRect)
+		const inputRect = resolveInputBoxRect(this.element, elementRect)
 		const nativeWindowHeight = this.resolveNativeWindowHeight()
 		const logicalWindowHeight = this.getKeyboardLogicalWindowHeight()
 		const extraTop = elementRect.y - inputRect.y
@@ -2050,23 +2038,6 @@ export class NativeInputView implements UniAndroidKeyboardClient {
 			rect.bottom += Math.ceil(convertAndroidLogicalToNativePx(extraBottom, nativeWindowHeight, logicalWindowHeight)).toInt()
 		}
 		this.editText!.requestRectangleOnScreen(rect, true)
-	}
-
-	private resolveInputVisualRect(elementRect: DOMRect): DOMRect {
-		let currentElement = this.element.parentElement
-		while (currentElement != null) {
-			if (isScrollAbleTagName(currentElement.tagName)) {
-				break
-			}
-			const currentRect = currentElement.getBoundingClientRect()
-			const currentBottom = currentRect.y + currentRect.height
-			const elementBottom = elementRect.y + elementRect.height
-			if (currentRect.y < elementRect.y || currentBottom > elementBottom || currentRect.height > elementRect.height) {
-				return currentRect
-			}
-			currentElement = currentElement.parentElement
-		}
-		return elementRect
 	}
 
 	getValue(): string {
@@ -2876,7 +2847,6 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.adjustPositionHelper = new UniAndroidAdjustPositionHelper(this.element, (elementHeight: number): number => {
 			return Math.max(0, elementHeight)
 		})
-		this.adjustPositionHelper?.setUseLargerAncestorRect(true)
 		this.adjustPositionHelper?.setAllowRootTranslateAfterParentScroll(true)
 		this.adjustPositionHelper?.setTraceCategory('textarea')
 		this.bindView()
