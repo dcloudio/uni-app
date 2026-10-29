@@ -496,7 +496,6 @@
     }
   }
 
-  // #ifndef WEB
   function checkOpenType() {
     switch (props.openType) {
       case 'agreePrivacyAuthorization':
@@ -504,7 +503,6 @@
         break;
     }
   }
-  // #endif
 
   const handleTap = (event : UniPointerEvent) => {
     if (props.disabled) {
@@ -513,9 +511,7 @@
 
     emit('click', event)
     checkFormAndSubmitOrReset()
-    // #ifndef WEB
     checkOpenType()
-    // #endif
   }
 
   defineExpose({

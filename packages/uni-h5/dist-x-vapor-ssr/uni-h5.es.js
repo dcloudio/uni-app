@@ -1,6 +1,6 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, once, getEnvLocale, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, normalizeTarget, passive, LINEFEED, parseQuery, NAVBAR_HEIGHT, parseUrl, decodedQuery, removeLeadingSlash, stringifyQuery as stringifyQuery$1, EventChannel, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, PRIMARY_COLOR, debounce, ON_RESIZE, ON_WEB_INVOKE_APP_SERVICE, callOptions, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2 } from "@dcloudio/uni-shared";
-import { defineVaporComponent, createPlainElement, openBlock, createBlock, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, setAttr, template, warn, unref, ref, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, mergeProps, reactive, computed, onBeforeMount, nextTick, withDirectives, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, onUnmounted, markRaw, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, renderSlot, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
+import { defineVaporComponent, createPlainElement, openBlock, createBlock, setAttr, template, getCurrentInstance, warn, unref, ref, reactive, onMounted, onBeforeUnmount, watch, computed, inject, onBeforeMount, nextTick, isVNode, createElementBlock, Fragment, createElementVNode, Comment, Text, cloneVNode, renderList, createVNode, defineComponent as defineComponent$2, withDirectives, mergeProps, vShow, onActivated, shallowRef, watchEffect, provide, isReactive, useSSRContext, resolveDynamicComponent, withCtx, KeepAlive, onServerPrefetch, ssrContextKey, onUnmounted, markRaw, toRaw, createFor, createKeyedFragment, createTextNode, renderEffect, setText, remove, setDynamicProps, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, renderSlot, isInSSRComponentSetup, injectHook, queuePostFlushCb, logError } from "vue";
 import { capitalize, camelize, isArray, isString, extend, isFunction, hyphenate, hasOwn, isPlainObject, isObject, toRawType, makeMap as makeMap$1, isPromise, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createMemoryHistory } from "vue-router";
 import { ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderDynamicComponent, ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
@@ -241,7 +241,7 @@ const _hoisted_1$5 = {
   "uni-view": "",
   class: "uni-canvas-canvas"
 };
-const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
+const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   rootElement: {
@@ -253,54 +253,28 @@ const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
-function useVaporFormField(props2, state) {
-  const form = inject("UNI_FORM_CTX", null);
-  if (!form)
-    return;
-  const initialValue = state.value;
-  const getValue = () => state.value;
-  const reset = () => {
-    state.value = initialValue;
-  };
-  watch(
-    () => props2.name,
-    (name, oldName) => {
-      if (oldName)
-        form.unregisterField(oldName);
-      if (name)
-        form.registerField({ name, getValue, reset });
-    },
-    { immediate: true, flush: "sync" }
-  );
-  onBeforeUnmount(() => {
-    if (props2.name)
-      form.unregisterField(props2.name);
-  });
-}
-function useVaporButton(props2, rootRef) {
-  const form = inject("UNI_FORM_CTX", null);
-  const label = inject("UNI_LABEL_CTX", null);
-  if (label) {
-    const fallbackId = `__uni_vapor_button_${getCurrentInstance().uid}`;
-    const child = {
-      // 只注册一次，读取最新 id，不因改名改变 Label 默认激活的顺序。
-      get id() {
-        return props2.id || fallbackId;
-      },
-      activate() {
-        const root = rootRef.value;
-        if (root && !props2.disabled) {
-          root.click();
-        }
-      },
-      getDisabled() {
-        return !!props2.disabled;
-      }
-    };
-    onMounted(() => label.register(child));
-    onBeforeUnmount(() => label.unregister(child.id));
+class UniInputElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-  return form;
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+  get value() {
+    return this.querySelector("input").value;
+  }
+  set value(value) {
+    this.querySelector("input").value = value;
+  }
+}
+const descriptors$1 = {
+  uniTagName: { value: "INPUT" },
+  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
+  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
+};
+function initInputElement(root) {
+  Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
@@ -1059,276 +1033,6 @@ function defineGlobalData(app, defaultGlobalData) {
     }
   });
 }
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref2, emit2) {
-  return (name, evt, detail) => {
-    if (ref2.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-    }
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  return {
-    type: domEvt.__evName || detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
-}
-function useHover(props2) {
-  const hovering = ref(false);
-  let hoverTouch = false;
-  let hoverStartTimer;
-  let hoverStayTimer;
-  function hoverReset() {
-    requestAnimationFrame(() => {
-      clearTimeout(hoverStayTimer);
-      hoverStayTimer = setTimeout(() => {
-        hovering.value = false;
-      }, parseInt(props2.hoverStayTime));
-    });
-  }
-  function onTouchstartPassive(evt) {
-    if (evt.touches.length > 1) {
-      return;
-    }
-    handleHoverStart(evt);
-  }
-  function onMousedown(evt) {
-    if (hoverTouch) {
-      return;
-    }
-    handleHoverStart(evt);
-    window.addEventListener("mouseup", handlePCHoverEnd);
-  }
-  function handleHoverStart(evt) {
-    if (evt._hoverPropagationStopped) {
-      return;
-    }
-    if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
-      return;
-    }
-    if (props2.hoverStopPropagation) {
-      evt._hoverPropagationStopped = true;
-    }
-    hoverTouch = true;
-    hoverStartTimer = setTimeout(() => {
-      hovering.value = true;
-      if (!hoverTouch) {
-        hoverReset();
-      }
-    }, parseInt(props2.hoverStartTime));
-  }
-  function onTouchend() {
-    handleHoverEnd();
-  }
-  function onMouseup() {
-    if (!hoverTouch) {
-      return;
-    }
-    handlePCHoverEnd();
-  }
-  function handleHoverEnd() {
-    hoverTouch = false;
-    if (hovering.value) {
-      hoverReset();
-    }
-  }
-  function handlePCHoverEnd() {
-    handleHoverEnd();
-    window.removeEventListener("mouseup", handlePCHoverEnd);
-  }
-  function onTouchcancel() {
-    hoverTouch = false;
-    hovering.value = false;
-    clearTimeout(hoverStartTimer);
-  }
-  return {
-    hovering,
-    binding: {
-      onTouchstartPassive: withWebEvent(onTouchstartPassive),
-      onMousedown: withWebEvent(onMousedown),
-      onTouchend: withWebEvent(onTouchend),
-      onMouseup: withWebEvent(onMouseup),
-      onTouchcancel: withWebEvent(onTouchcancel)
-    }
-  };
-}
-function useBooleanAttr(props2, keys) {
-  if (isString(keys)) {
-    keys = [keys];
-  }
-  return keys.reduce((res, key) => {
-    if (props2[key]) {
-      res[key] = true;
-    }
-    return res;
-  }, /* @__PURE__ */ Object.create(null));
-}
-const buttonProps = {
-  id: {
-    type: String,
-    default: ""
-  },
-  hoverClass: {
-    type: String,
-    default: "button-hover"
-  },
-  hoverStartTime: {
-    type: [Number, String],
-    default: 20
-  },
-  hoverStayTime: {
-    type: [Number, String],
-    default: 70
-  },
-  hoverStopPropagation: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  formType: {
-    type: String,
-    default: ""
-  },
-  openType: {
-    type: String,
-    default: ""
-  },
-  loading: {
-    type: [Boolean, String],
-    default: false
-  },
-  plain: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-const cacheMap = /* @__PURE__ */ new WeakMap();
-function createVNodeCache(key) {
-  const i = getCurrentInstance();
-  if (i) {
-    if (!cacheMap.has(i))
-      cacheMap.set(i, {});
-    const caches = cacheMap.get(i);
-    return caches[key] || (caches[key] = []);
-  } else {
-    return [];
-  }
-}
-function normalizeVNode(value, flag = 1) {
-  let create = createVNode;
-  let isBlock = false;
-  if (typeof value === "function") {
-    isBlock = true;
-    openBlock();
-    create = createBlock;
-    value = value();
-  }
-  return isVNode(value) ? isBlock ? createBlock(cloneIfMounted(value)) : cloneIfMounted(value) : Array.isArray(value) ? isBlock ? createElementBlock(
-    Fragment,
-    null,
-    value.map((n) => normalizeVNode(() => n)),
-    -2
-  ) : createElementVNode(Fragment, null, value.slice()) : value == null || typeof value === "boolean" ? create(Comment) : create(Text, null, String(value), flag);
-}
-function cloneIfMounted(child) {
-  return child.el === null && child.patchFlag !== -1 || // @ts-ignore
-  child.memo ? child : cloneVNode(child);
-}
-const defineComponent = defineComponent$2;
-defineComponent(
-  (props2, {
-    slots
-  }) => {
-    const defaultSlot = slots.default;
-    return () => (openBlock(true), createElementBlock(
-      Fragment,
-      null,
-      renderList(props2.in, (item, key, index2) => {
-        const result = defaultSlot(item, key, index2);
-        return Array.isArray(result) ? result.length === 1 ? result[0] : normalizeVNode(result) : result;
-      }),
-      128
-    ));
-  },
-  { props: ["in"] }
-);
-class UniButtonElement extends UniViewElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniButtonElement && value instanceof UniViewElement && value.hasAttribute("uni-button") || Function.prototype[Symbol.hasInstance].call(this, value);
-  }
-}
-const uniTagName$9 = { value: "BUTTON" };
-const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Button",
-  props: buttonProps,
-  rootElement: {
-    name: "uni-button",
-    class: UniButtonElement
-  },
-  setup(props2, { slots }) {
-    const rootRef = ref(null);
-    const uniForm = useVaporButton(props2, rootRef);
-    const { hovering, binding } = useHover(props2);
-    withWebEvent((e2, isLabelClick) => {
-      if (props2.disabled) {
-        return e2.stopImmediatePropagation();
-      }
-      if (isLabelClick) {
-        rootRef.value.click();
-      }
-      if (props2.formType === "submit") {
-        uniForm == null ? void 0 : uniForm.submit(e2);
-      } else if (props2.formType === "reset") {
-        uniForm == null ? void 0 : uniForm.reset(e2);
-      }
-    });
-    const root = (openBlock(), createBlock("div", mergeProps({
-      "uni-button": "",
-      "uni-view": "",
-      ref: rootRef,
-      id: props2.id,
-      class: props2.hoverClass !== "none" && hovering.value ? props2.hoverClass : ""
-    }, props2.hoverClass && props2.hoverClass !== "none" && binding, useBooleanAttr(props2, [
-      "disabled",
-      "loading",
-      "plain"
-    ])), [normalizeVNode(() => slots.default && slots.default())], 16));
-    Object.defineProperty(root, "uniTagName", uniTagName$9);
-    return root;
-  }
-});
-class UniInputElement extends UniViewElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
-  }
-  focus(options) {
-    var _a;
-    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
-  }
-  get value() {
-    return this.querySelector("input").value;
-  }
-  set value(value) {
-    this.querySelector("input").value = value;
-  }
-}
-const descriptors$1 = {
-  uniTagName: { value: "INPUT" },
-  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
-  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
-};
-function initInputElement(root) {
-  Object.defineProperties(root, descriptors$1);
-}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -1356,6 +1060,26 @@ function throttle(fn, wait) {
     waitCallback && waitCallback();
   };
   return newFn;
+}
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref2, emit2) {
+  return (name, evt, detail) => {
+    if (ref2.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    }
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = normalizeTarget(el);
+  return {
+    type: domEvt.__evName || detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
 }
 const passiveOptions$2 = /* @__PURE__ */ passive(true);
 const states = [];
@@ -1480,6 +1204,30 @@ function useScopedAttrs() {
   return {
     state
   };
+}
+function useVaporFormField(props2, state) {
+  const form = inject("UNI_FORM_CTX", null);
+  if (!form)
+    return;
+  const initialValue = state.value;
+  const getValue = () => state.value;
+  const reset = () => {
+    state.value = initialValue;
+  };
+  watch(
+    () => props2.name,
+    (name, oldName) => {
+      if (oldName)
+        form.unregisterField(oldName);
+      if (name)
+        form.registerField({ name, getValue, reset });
+    },
+    { immediate: true, flush: "sync" }
+  );
+  onBeforeUnmount(() => {
+    if (props2.name)
+      form.unregisterField(props2.name);
+  });
 }
 function getSelectedTextRange(_, resolve) {
   const activeElement = document.activeElement;
@@ -2041,6 +1789,56 @@ function useInput(props2, { emit: emit2, expose }) {
     onInput
   };
 }
+const cacheMap = /* @__PURE__ */ new WeakMap();
+function createVNodeCache(key) {
+  const i = getCurrentInstance();
+  if (i) {
+    if (!cacheMap.has(i))
+      cacheMap.set(i, {});
+    const caches = cacheMap.get(i);
+    return caches[key] || (caches[key] = []);
+  } else {
+    return [];
+  }
+}
+function normalizeVNode(value, flag = 1) {
+  let create = createVNode;
+  let isBlock = false;
+  if (typeof value === "function") {
+    isBlock = true;
+    openBlock();
+    create = createBlock;
+    value = value();
+  }
+  return isVNode(value) ? isBlock ? createBlock(cloneIfMounted(value)) : cloneIfMounted(value) : Array.isArray(value) ? isBlock ? createElementBlock(
+    Fragment,
+    null,
+    value.map((n) => normalizeVNode(() => n)),
+    -2
+  ) : createElementVNode(Fragment, null, value.slice()) : value == null || typeof value === "boolean" ? create(Comment) : create(Text, null, String(value), flag);
+}
+function cloneIfMounted(child) {
+  return child.el === null && child.patchFlag !== -1 || // @ts-ignore
+  child.memo ? child : cloneVNode(child);
+}
+const defineComponent = defineComponent$2;
+defineComponent(
+  (props2, {
+    slots
+  }) => {
+    const defaultSlot = slots.default;
+    return () => (openBlock(true), createElementBlock(
+      Fragment,
+      null,
+      renderList(props2.in, (item, key, index2) => {
+        const result = defaultSlot(item, key, index2);
+        return Array.isArray(result) ? result.length === 1 ? result[0] : normalizeVNode(result) : result;
+      }),
+      128
+    ));
+  },
+  { props: ["in"] }
+);
 const _hoisted_1$4 = { class: "uni-input-wrapper" };
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
@@ -4458,7 +4256,7 @@ const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "TabBar",
     __reserved: true,
@@ -4733,13 +4531,13 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$v = _sfc_main$v.setup;
-_sfc_main$v.setup = (props2, ctx) => {
+const _sfc_setup$w = _sfc_main$w.setup;
+_sfc_main$w.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/tabBar.vue");
-  return _sfc_setup$v ? _sfc_setup$v(props2, ctx) : void 0;
+  return _sfc_setup$w ? _sfc_setup$w(props2, ctx) : void 0;
 };
-const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "Layout",
     __reserved: true,
@@ -5197,7 +4995,7 @@ const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
         _push(`<!--]-->`);
       }
       if (unref(hasTabBar)) {
-        _push(ssrRenderComponent(_sfc_main$v, {
+        _push(ssrRenderComponent(_sfc_main$w, {
           style: unref(showTabBar) ? null : { display: "none" }
         }, null, _parent));
       } else {
@@ -5207,13 +5005,13 @@ const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$u = _sfc_main$u.setup;
-_sfc_main$u.setup = (props2, ctx) => {
+const _sfc_setup$v = _sfc_main$v.setup;
+_sfc_main$v.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/layout/index-vapor.vue");
-  return _sfc_setup$u ? _sfc_setup$u(props2, ctx) : void 0;
+  return _sfc_setup$v ? _sfc_setup$v(props2, ctx) : void 0;
 };
-const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$u = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -5228,13 +5026,13 @@ const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$t = _sfc_main$t.setup;
-_sfc_main$t.setup = (props2, ctx) => {
+const _sfc_setup$u = _sfc_main$u.setup;
+_sfc_main$u.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-loading/asyncLoading.vue");
-  return _sfc_setup$t ? _sfc_setup$t(props2, ctx) : void 0;
+  return _sfc_setup$u ? _sfc_setup$u(props2, ctx) : void 0;
 };
-const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$t = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -5252,11 +5050,11 @@ const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$s = _sfc_main$s.setup;
-_sfc_main$s.setup = (props2, ctx) => {
+const _sfc_setup$t = _sfc_main$t.setup;
+_sfc_main$t.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/async-error/asyncError.vue");
-  return _sfc_setup$s ? _sfc_setup$s(props2, ctx) : void 0;
+  return _sfc_setup$t ? _sfc_setup$t(props2, ctx) : void 0;
 };
 let appVm;
 let $uniApp;
@@ -5310,11 +5108,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$u.name)) {
+    app.component(_sfc_main$u.name, _sfc_main$u);
+  }
   if (!app.component(_sfc_main$t.name)) {
     app.component(_sfc_main$t.name, _sfc_main$t);
-  }
-  if (!app.component(_sfc_main$s.name)) {
-    app.component(_sfc_main$s.name, _sfc_main$s);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -5427,7 +5225,7 @@ function setupApp(comp) {
         return isFunction(res) ? EMPTY_OBJ : res;
       };
       comp2.ssrRender = (_ctx, push, parent) => {
-        push(ssrRenderComponent(_sfc_main$u, null, null, parent));
+        push(ssrRenderComponent(_sfc_main$v, null, null, parent));
       };
     }
   });
@@ -5514,7 +5312,7 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$s = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -5546,11 +5344,11 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$r = _sfc_main$r.setup;
-_sfc_main$r.setup = (props2, ctx) => {
+const _sfc_setup$s = _sfc_main$s.setup;
+_sfc_main$s.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-loading/components/loading/loading.vue");
-  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
+  return _sfc_setup$s ? _sfc_setup$s(props2, ctx) : void 0;
 };
 function hexToRgba(hex) {
   if (!hex) {
@@ -5649,7 +5447,7 @@ function usePageHeadTransparent(headRef, {
     });
   });
 }
-const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -5875,7 +5673,7 @@ const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
         if (!unref(isXVapor) && unref(navigationBar).loading) {
           _push(`<i class="uni-loading"></i>`);
         } else if (unref(isXVapor) && unref(navigationBar).loading) {
-          _push(ssrRenderComponent(unref(_sfc_main$r), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }, null, _parent));
+          _push(ssrRenderComponent(unref(_sfc_main$s), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }, null, _parent));
         } else if (unref(navigationBar).titleImage) {
           _push(`<img${ssrRenderAttr("src", unref(navigationBar).titleImage)} class="uni-page-head__title_image">`);
         } else {
@@ -5951,13 +5749,13 @@ const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$q = _sfc_main$q.setup;
-_sfc_main$q.setup = (props2, ctx) => {
+const _sfc_setup$r = _sfc_main$r.setup;
+_sfc_main$r.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageHead.vue");
-  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
+  return _sfc_setup$r ? _sfc_setup$r(props2, ctx) : void 0;
 };
-const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$q = /* @__PURE__ */ defineComponent$2({
   ...{ name: "PageRefresh" },
   __name: "component",
   __ssrInlineRender: true,
@@ -5971,13 +5769,13 @@ const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$p = _sfc_main$p.setup;
-_sfc_main$p.setup = (props2, ctx) => {
+const _sfc_setup$q = _sfc_main$q.setup;
+_sfc_main$q.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/page-refresh/component.vue");
-  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
+  return _sfc_setup$q ? _sfc_setup$q(props2, ctx) : void 0;
 };
-const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$p = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -6011,7 +5809,7 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
     return (_ctx, _push, _parent, _attrs) => {
       _push(`<!--[-->`);
       if (unref(hasPullDownRefresh) && !!unref(pageMeta) && (unref(isX) || !!unref(pageMeta).enablePullDownRefresh)) {
-        _push(ssrRenderComponent(_sfc_main$p, {
+        _push(ssrRenderComponent(_sfc_main$q, {
           ref_key: "refreshRef",
           ref: refreshRef
         }, null, _parent));
@@ -6033,13 +5831,13 @@ const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$o = _sfc_main$o.setup;
-_sfc_main$o.setup = (props2, ctx) => {
+const _sfc_setup$p = _sfc_main$p.setup;
+_sfc_main$p.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/pageBody.vue");
-  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
+  return _sfc_setup$p ? _sfc_setup$p(props2, ctx) : void 0;
 };
-const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
+const _sfc_main$o = /* @__PURE__ */ defineComponent$2({
   ...{
     name: "Page",
     __reserved: true,
@@ -6149,11 +5947,11 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
         style: pageStyle
       }, _attrs), "uni-page")}>`);
       if (unref(hasNavigationBar) && unref(navigationBar).style !== "custom") {
-        _push(ssrRenderComponent(_sfc_main$q, null, null, _parent));
+        _push(ssrRenderComponent(_sfc_main$r, null, null, _parent));
       } else {
         _push(`<!---->`);
       }
-      _push(ssrRenderComponent(_sfc_main$o, null, {
+      _push(ssrRenderComponent(_sfc_main$p, null, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
             ssrRenderDynamicComponent(_push2, resolveDynamicComponent(unref(pageComponent)), mergeProps(unref(pageProps), { ref: "page" }), null, _parent2, _scopeId);
@@ -6178,14 +5976,14 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
     };
   }
 });
-const _sfc_setup$n = _sfc_main$n.setup;
-_sfc_main$n.setup = (props2, ctx) => {
+const _sfc_setup$o = _sfc_main$o.setup;
+_sfc_main$o.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("src/framework/components/page/index-vapor.vue");
-  return _sfc_setup$n ? _sfc_setup$n(props2, ctx) : void 0;
+  return _sfc_setup$o ? _sfc_setup$o(props2, ctx) : void 0;
 };
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$n, {
+  return Object.assign({}, _sfc_main$o, {
     __uniPageComponent: pageComponent
   });
 }
@@ -9111,7 +8909,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         }, [props2.refresherDefaultStyle !== "none" ? (openBlock(), createBlock("div", {
           key: 0,
           class: "uni-scroll-view-refresh"
-        }, [(openBlock(), createBlock(Fragment, { key: 0 }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? (openBlock(), createBlock(_sfc_main$r, {
+        }, [(openBlock(), createBlock(Fragment, { key: 0 }, [props2.refreshState == "pulling" || props2.refreshState == "refreshing" ? (openBlock(), createBlock(_sfc_main$s, {
           key: "refresh__loading",
           class: "uni-scroll-view-refresh__loading",
           paused: props2.refreshState == "pulling",
@@ -9815,6 +9613,190 @@ function classes(...classList) {
     return className ?? "";
   });
 }
+class UniButtonElement extends UniTextElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "BUTTON";
+    this.nodeName = "BUTTON";
+    this._value = "";
+  }
+  get value() {
+    var _a, _b;
+    if ((_a = this.vm) == null ? void 0 : _a.isLoading()) {
+      return ((_b = this.vm) == null ? void 0 : _b.getValue()) ?? this._value;
+    }
+    return super.value ?? this._value;
+  }
+}
+const DEFAULT_BUTTON_HOVER_CLASS_NAME = "button-hover";
+const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
+  ...{
+    name: "button",
+    // @ts-ignore
+    rootElement: {
+      class: UniButtonElement
+    },
+    externalClasses: ["hover-class", "loading-class", "loading-text-class"]
+  },
+  __name: "button",
+  __ssrInlineRender: true,
+  props: {
+    disabled: { type: Boolean, default: false },
+    type: { type: String },
+    size: { default: "default", type: String },
+    plain: { type: Boolean, default: false },
+    loadingClass: { type: null },
+    loadingTextClass: { type: null },
+    hoverClass: { type: null },
+    hoverStartTime: { default: 20, type: Number },
+    hoverStayTime: { default: 70, type: Number },
+    hoverStopPropagation: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
+    formType: { type: String },
+    openType: { default: "", type: String },
+    iosLoadingSnow: { type: Boolean, default: false }
+  },
+  emits: ["click"],
+  __vapor: true,
+  setup(__props, { expose: __expose, emit: __emit }) {
+    const props2 = __props;
+    const textRef = ref(null);
+    const buttonType = computed(() => {
+      return props2.type == null ? "default" : props2.type;
+    });
+    const loadingTextStyle = computed(() => {
+      let style = "font-size:inherit;line-height:inherit;font-weight:inherit;text-align:inherit;";
+      if (props2.loadingTextClass == null) {
+        style += "color:inherit;";
+      }
+      return style;
+    });
+    inject(FORM_KEY, null);
+    const enableTransition = ref(false);
+    onMounted(() => {
+      enableTransition.value = true;
+    });
+    computed(() => {
+      let isDefaultHoverClass = false;
+      if (props2.hoverClass != null) {
+        const hoverClass = `${props2.hoverClass}`.replace(/^\^+/, "");
+        if (hoverClass == "" || hoverClass == "none") {
+          return "none";
+        }
+        if (hoverClass != DEFAULT_BUTTON_HOVER_CLASS_NAME) {
+          return `${props2.hoverClass}`;
+        }
+        isDefaultHoverClass = true;
+      }
+      const classes2 = [];
+      if (!props2.plain) {
+        switch (buttonType.value) {
+          case "default":
+            classes2.push("uni-button-view_default_hover");
+            break;
+          case "primary":
+            classes2.push("uni-button-view_primary_hover");
+            break;
+          case "warn":
+            classes2.push("uni-button-view_warn_hover");
+            break;
+        }
+      } else {
+        switch (buttonType.value) {
+          case "default":
+            classes2.push("uni-button-view_plain_default_hover");
+            break;
+          case "primary":
+            classes2.push("uni-button-view_plain_primary_hover");
+            break;
+          case "warn":
+            classes2.push("uni-button-view_plain_warn_hover");
+            break;
+        }
+      }
+      if (isDefaultHoverClass) {
+        classes2.push(`${props2.hoverClass}`);
+      }
+      return classes2.join(" ");
+    });
+    __expose({
+      getValue() {
+        if (textRef.value == null) {
+          return "";
+        }
+        return textRef.value.value;
+      },
+      isLoading() {
+        return props2.loading && !props2.disabled;
+      }
+    });
+    return (_ctx, _push, _parent, _attrs) => {
+      if (__props.loading && !__props.disabled) {
+        _push(`<div${ssrRenderAttrs(mergeProps({
+          "uni-view": "",
+          class: ["uni-button", unref(classes)(
+            [unref(buttonType) == "default", "uni-button-type-default_view"],
+            [unref(buttonType) == "primary", "uni-button-type-primary_view"],
+            [unref(buttonType) == "warn", "uni-button-type-warn_view"],
+            [__props.plain, "uni-button-view-plain"],
+            [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
+            [__props.disabled, "uni-button-disabled"],
+            [__props.size == "mini", "uni-button-size-mini"],
+            [unref(enableTransition), "transition-enabled"],
+            [unref(buttonType) == "default", "uni-button-type-default_text"],
+            [unref(buttonType) == "primary", "uni-button-type-primary_text"],
+            [unref(buttonType) == "warn", "uni-button-type-warn_text"],
+            [__props.plain && __props.loading, "uni-button-text-plain"],
+            [__props.size == "mini", "uni-button-text-size-mini"],
+            [__props.size == "default", "uni-button-text-size-default"]
+          )],
+          style: { "display": "flex", "justify-content": "center", "flex-direction": "row", "align-items": "center" }
+        }, _attrs))}>`);
+        _push(ssrRenderComponent(unref(__props["loading"]), {
+          class: ["uni-button-loading-icon", unref(classes)(
+            [unref(buttonType) == "default", "uni-loading-default"],
+            [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
+            [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
+            __props.loadingClass || ""
+          )]
+        }, null, _parent));
+        _push(`<span uni-text style="${ssrRenderStyle(unref(loadingTextStyle))}" class="${ssrRenderClass([__props.loadingTextClass || "", "uni-button-loading-text"])}">`);
+        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
+        _push(`</span></div>`);
+      } else {
+        _push(`<span${ssrRenderAttrs(mergeProps({
+          "uni-text": "",
+          ref_key: "textRef",
+          ref: textRef,
+          class: ["uni-button uni-button-text", unref(classes)(
+            [unref(buttonType) == "default", "uni-button-type-default_view"],
+            [unref(buttonType) == "primary", "uni-button-type-primary_view"],
+            [unref(buttonType) == "warn", "uni-button-type-warn_view"],
+            [__props.plain, "uni-button-view-plain"],
+            [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
+            [__props.disabled, "uni-button-disabled"],
+            [__props.size == "mini", "uni-button-size-mini"],
+            [unref(enableTransition), "transition-enabled"],
+            [unref(buttonType) == "default", "uni-button-type-default_text"],
+            [unref(buttonType) == "primary", "uni-button-type-primary_text"],
+            [unref(buttonType) == "warn", "uni-button-type-warn_text"],
+            [__props.plain && __props.loading, "uni-button-text-plain"],
+            [__props.size == "mini", "uni-button-text-size-mini"],
+            [__props.size == "default", "uni-button-text-size-default"]
+          )]
+        }, _attrs))}>`);
+        ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
+        _push(`</span>`);
+      }
+    };
+  }
+});
+const _sfc_setup$n = _sfc_main$n.setup;
+_sfc_main$n.setup = (props2, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../../uni-ext-api/uni_modules/uni-form/components/button/button.vue");
+  return _sfc_setup$n ? _sfc_setup$n(props2, ctx) : void 0;
+};
 class UniCheckboxElement extends UniViewElement {
   constructor() {
     super(...arguments);
@@ -18526,11 +18508,11 @@ export {
   indexVapor as Ad,
   index$5 as AdContentPage,
   index$4 as AdDraw,
-  _sfc_main$s as AsyncErrorComponent,
-  _sfc_main$t as AsyncLoadingComponent,
-  indexVapor$a as Button,
+  _sfc_main$t as AsyncErrorComponent,
+  _sfc_main$u as AsyncLoadingComponent,
+  _sfc_main$n as Button,
   index$3 as Camera,
-  indexVapor$b as Canvas,
+  indexVapor$a as Canvas,
   _sfc_main$m as Checkbox,
   _sfc_main$l as CheckboxGroup,
   indexVapor$8 as Editor,
@@ -18539,18 +18521,18 @@ export {
   indexVapor$7 as Icon,
   Input,
   _sfc_main$i as Label,
-  _sfc_main$u as LayoutComponent,
+  _sfc_main$v as LayoutComponent,
   _sfc_main$h as ListItem,
   _sfc_main$g as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
-  _sfc_main$r as Loading,
+  _sfc_main$s as Loading,
   indexVapor$1 as Map,
   _sfc_main$f as MatchMedia,
   indexVapor$6 as MovableArea,
   indexVapor$5 as MovableView,
   _sfc_main$e as Navigator,
-  _sfc_main$n as PageComponent,
+  _sfc_main$o as PageComponent,
   _sfc_main$d as PageContainer,
   _sfc_main$c as Picker,
   _sfc_main$b as PickerView,

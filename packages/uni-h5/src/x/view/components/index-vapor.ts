@@ -6,6 +6,11 @@ export {
   UniElement as UniElementImpl,
 } from '../../../../../uni-components/src/helpers/UniElement'
 
+export { default as Button } from '@dcloudio/uni-ext-component/uni-form/components/button/button.uvue'
+export {
+  UniButtonElement,
+  UniButtonElement as UniButtonElementImpl,
+} from '@dcloudio/uni-ext-component/uni-form/components/button/global.ts'
 export { default as Checkbox } from '@dcloudio/uni-ext-component/uni-form/components/checkbox/checkbox.uvue'
 export {
   UniCheckboxElement,

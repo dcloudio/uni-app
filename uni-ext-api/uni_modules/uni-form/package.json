@@ -50,7 +50,7 @@
       "app-harmony": "dom2",
       "app-ios": "dom2",
       "web": {
-        "exclude": ["button", "input", "textarea"]
+        "exclude": ["input", "textarea"]
       },
       "mp-weixin": "dom2"
     },

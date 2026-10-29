@@ -69,9 +69,6 @@ async function prepareWebVaporComponents({
     for (const file of fs.readdirSync(styleDir)) {
       if (
         path.extname(file) === '.css' &&
-        // Button 暂用旧 Web 实现，样式由框架维护，不能按内网组件名单清理。
-        // TODO 切换 App 共用 Button 后删除此豁免；启用时下方提取会覆盖同名 CSS。
-        file !== 'button.css' &&
         !componentNames.has(path.basename(file, '.css'))
       ) {
         fs.removeSync(path.resolve(styleDir, file))

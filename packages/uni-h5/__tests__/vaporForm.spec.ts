@@ -47,8 +47,6 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
   let dom: any
   let vue: any
   let helpers: any
-  let Button: any
-  let UniButtonElement: any
   let inputElement: any
   let textareaElement: any
   let resizeTextarea: (height: number) => void
@@ -154,28 +152,6 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
       './component-vapor': { defineComponent },
       './animation': { default: {} },
     })
-    const buttonModule = evaluate(await compile('button'), {
-      vue,
-      '/vue-jsx/vapor': evaluate(fs.readFileSync(runtime, 'utf8'), { vue }),
-      '@dcloudio/uni-core': { useI18n: () => ({ t: (v: string) => v }) },
-      '../../helpers/component': builtIn,
-      '../../helpers/form-vapor': helpers,
-      '../web-vapor-elements': nativeElements,
-      '../../helpers/useHover': evaluate(
-        await preprocess('helpers/useHover.ts', true),
-        { vue, './useEvent': { withWebEvent: (fn: Function) => fn } }
-      ),
-      '../../helpers/useEvent': { withWebEvent: (fn: Function) => fn },
-      '../../helpers/useListeners': { useListeners() {} },
-      '../../helpers/useBooleanAttr': jest.requireActual(
-        path.join(root, components, 'helpers/useBooleanAttr')
-      ),
-      '../../components/button': jest.requireActual(
-        path.join(root, components, 'components/button')
-      ),
-    })
-    Button = buttonModule.default
-    UniButtonElement = buttonModule.UniButtonElement
     const fields = evaluate(await preprocess('helpers/useField.ts', true), {
       vue,
       '@vue/shared': shared,
@@ -401,7 +377,7 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
   test('没有 Form/Label 时可独立使用，不产生注入警告', () => {
     mount(() => {
       helpers.useVaporFormField({ name: 'standalone' }, { value: '' })
-      return vue.createComponent(Button)
+      return vue.createComponent(inputs.input)
     })
   })
 
@@ -859,262 +835,6 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     expect(root.querySelector('textarea')!.style.overflowY).toBe('auto')
   })
 
-  test('Button 原生根节点保留 ref、状态属性、dataset 和点击语义', async () => {
-    const node = vue.shallowRef()
-    const props = vue.reactive({
-      disabled: false,
-      loading: false,
-      plain: false,
-    })
-    const data = vue.ref({ count: 1 })
-    const click = jest.fn()
-    const { host } = mount(() => {
-      const component = vue.createComponent(Button, {
-        disabled: () => props.disabled,
-        loading: () => props.loading,
-        plain: () => props.plain,
-        type: () => 'primary',
-        size: () => 'mini',
-        'data-payload': () => data.value,
-        onClick: () => click,
-      })
-      vue.setStaticTemplateRef(component, node)
-      return component
-    })
-    const element = node.value
-    expect(element).toBe(host.querySelector('div[uni-button][uni-view]'))
-    expect(element).toBeInstanceOf(dom.window.HTMLDivElement)
-    expect(element).toBeInstanceOf(UniButtonElement)
-    expect(element).toBeInstanceOf(nativeElements.UniViewElement)
-    class Derived extends UniButtonElement {}
-    expect(element).not.toBeInstanceOf(Derived)
-    expect(element.uniTagName).toBe('BUTTON')
-    expect(customElements.get('uni-button')).toBeUndefined()
-    expect(element.setAttribute).toBe(dom.window.Element.prototype.setAttribute)
-    expect(element.removeAttribute).toBe(
-      dom.window.Element.prototype.removeAttribute
-    )
-    expect(element.getAttribute('type')).toBe('primary')
-    expect(element.getAttribute('size')).toBe('mini')
-    const dataset = element.dataset
-    expect(dataset.get('payload')).toBe(data.value)
-    element.click()
-    expect(click).toHaveBeenCalledTimes(1)
-    props.disabled = props.loading = props.plain = true
-    data.value = { count: 2 }
-    await vue.nextTick()
-    for (const name of ['disabled', 'loading', 'plain']) {
-      expect(element.hasAttribute(name)).toBe(true)
-    }
-    expect(dataset.get('payload')).toBe(data.value)
-    element.click()
-    expect(click).toHaveBeenCalledTimes(1)
-    props.disabled = props.loading = props.plain = false
-    await vue.nextTick()
-    for (const name of ['disabled', 'loading', 'plain']) {
-      expect(element.hasAttribute(name)).toBe(false)
-    }
-    expect(node.value).toBe(element)
-    element.click()
-    expect(click).toHaveBeenCalledTimes(2)
-  })
-
-  test('Button 的 hover 切换保留宿主标记，禁用时不激活 hover', async () => {
-    jest.useFakeTimers()
-    const props = vue.reactive({ hoverClass: 'custom-hover', disabled: false })
-    const { host } = mount(() =>
-      vue.createComponent(Button, {
-        hoverClass: () => props.hoverClass,
-        disabled: () => props.disabled,
-      })
-    )
-    const element = host.querySelector('div[uni-button]')!
-    const touchstart = () => {
-      const event = new dom.window.Event('touchstart', { bubbles: true })
-      Object.defineProperty(event, 'touches', { value: [{}] })
-      element.dispatchEvent(event)
-      jest.advanceTimersByTime(20)
-    }
-    touchstart()
-    await vue.nextTick()
-    expect(element.classList.contains('custom-hover')).toBe(true)
-    expect(element.hasAttribute('uni-button')).toBe(true)
-    element.dispatchEvent(new dom.window.Event('touchcancel'))
-    await vue.nextTick()
-    expect(element.className).toBe('')
-    props.disabled = true
-    await vue.nextTick()
-    touchstart()
-    await vue.nextTick()
-    expect(element.className).toBe('')
-    props.disabled = false
-    props.hoverClass = 'none'
-    await vue.nextTick()
-    touchstart()
-    await vue.nextTick()
-    expect(element.className).toBe('')
-  })
-
-  test('Button 的 Vapor 样式与旧样式仅宿主选择器不同', () => {
-    const styleRoot = path.join(root, 'packages/uni-components/style')
-    const nodeRequire = createRequire(
-      path.join(root, 'packages/uni-h5/package.json')
-    )
-    const postcss = createRequire(nodeRequire.resolve('vite'))('postcss')
-    const normalize = (name: string) => {
-      const sheet = postcss.parse(
-        fs.readFileSync(path.join(styleRoot, name), 'utf8')
-      )
-      sheet.walkComments((comment: any) => comment.remove())
-      return sheet.toString().trim()
-    }
-    expect(normalize('../style-x-vapor/button.css')).toBe(
-      normalize('button.css').replace(
-        /(?<![.\w-])uni-button(?=[\s:,\[])/g,
-        'div:where([uni-button])'
-      )
-    )
-  })
-
-  test('编译后的 Button 对接提交/重置，Label 点击不递归或重复提交', async () => {
-    const form = { submit: jest.fn(), reset: jest.fn() }
-    const label = createLabel()
-    const children = label.children as any[]
-    const props = vue.reactive({ id: '', formType: 'submit', disabled: false })
-    const { app, host } = mount(
-      () =>
-        vue.createComponent(Button, {
-          id: () => props.id,
-          formType: () => props.formType,
-          disabled: () => props.disabled,
-        }),
-      form,
-      label.ctx
-    )
-    const button = host.querySelector('div[uni-button]') as HTMLElement
-    const initialId = children[0].id
-    expect(initialId).toMatch(/^__uni_vapor_button_/)
-    host.addEventListener('click', label.handleTap)
-    button.click()
-    expect(form.submit).toHaveBeenCalledTimes(1)
-    host.click()
-    expect(form.submit).toHaveBeenCalledTimes(2)
-    props.id = 'named'
-    props.formType = 'reset'
-    await vue.nextTick()
-    expect(children.map((child) => child.id)).toEqual(['named'])
-    host.click()
-    expect(form.reset).toHaveBeenCalledTimes(1)
-    props.disabled = true
-    await vue.nextTick()
-    expect(children[0].getDisabled()).toBe(true)
-    host.click()
-    button.click()
-    expect(form.reset).toHaveBeenCalledTimes(1)
-    props.id = ''
-    await vue.nextTick()
-    expect(children.map((child) => child.id)).toEqual([initialId])
-    app.unmount()
-    apps.pop()
-    expect(children).toHaveLength(0)
-  })
-
-  test.each(['checkbox', 'radio', 'switch'])(
-    'Label 选中 %s 时，Button 点击不激活其他控件且正常冒泡',
-    (name) => {
-      const label = createLabel()
-      const activate = jest.fn()
-      label.ctx.register({ id: name, activate, getDisabled: () => false })
-      const form = { submit: jest.fn(), reset: jest.fn() }
-      const { host } = mount(
-        () => vue.createComponent(Button, { formType: () => 'submit' }),
-        form,
-        label.ctx
-      )
-      host.addEventListener('click', label.handleTap)
-      const bubbled = jest.fn()
-      host.addEventListener('click', bubbled)
-      const button = host.querySelector('div[uni-button]') as HTMLElement
-      button.className = 'button-hover'
-      const inner = document.createElement('span')
-      inner.className = 'custom-child'
-      button.appendChild(inner)
-      for (const targetId of ['', name]) {
-        label.props.for = targetId
-        activate.mockClear()
-        form.submit.mockClear()
-        bubbled.mockClear()
-        button.click()
-        inner.click()
-        expect(form.submit).toHaveBeenCalledTimes(2)
-        expect(bubbled).toHaveBeenCalledTimes(2)
-        expect(activate).not.toHaveBeenCalled()
-        // 文本节点作为事件目标时也应识别所属 Button。
-        const text = inner.appendChild(document.createTextNode('提交'))
-        label.handleTap({ target: text })
-        expect(activate).not.toHaveBeenCalled()
-        host.click()
-        expect(activate).toHaveBeenCalledTimes(1)
-      }
-    }
-  )
-
-  test.each(['checkbox', 'radio', 'switch'])(
-    'Button 与 %s 按挂载顺序注册，默认目标及 for 匹配正确',
-    (name) => {
-      for (const buttonFirst of [false, true]) {
-        const label = createLabel()
-        const activate = jest.fn()
-        const form = { submit: jest.fn(), reset: jest.fn() }
-        const Control = vue.defineVaporComponent({
-          setup() {
-            // 与新 Checkbox/Radio/Switch 一致，在 mounted 时注册。
-            vue.onMounted(() => {
-              label.ctx.register({
-                id: name,
-                activate,
-                getDisabled: () => false,
-              })
-            })
-            vue.onUnmounted(() => label.ctx.unregister(name))
-            return document.createElement('span')
-          },
-        })
-        const { app, host } = mount(
-          () =>
-            (buttonFirst ? [Button, Control] : [Control, Button]).map((comp) =>
-              vue.createComponent(comp, {
-                id: () => 'button',
-                formType: () => 'submit',
-              })
-            ),
-          form,
-          label.ctx
-        )
-        expect(label.children.map((child: any) => child.id)).toEqual(
-          buttonFirst ? ['button', name] : [name, 'button']
-        )
-        host.addEventListener('click', label.handleTap)
-        host.click()
-        expect(form.submit).toHaveBeenCalledTimes(buttonFirst ? 1 : 0)
-        expect(activate).toHaveBeenCalledTimes(buttonFirst ? 0 : 1)
-        for (const targetId of [name, 'button']) {
-          label.props.for = targetId
-          form.submit.mockClear()
-          activate.mockClear()
-          host.click()
-          expect(form.submit).toHaveBeenCalledTimes(
-            targetId === 'button' ? 1 : 0
-          )
-          expect(activate).toHaveBeenCalledTimes(targetId === name ? 1 : 0)
-        }
-        app.unmount()
-        apps.pop()
-        expect(label.children).toHaveLength(0)
-      }
-    }
-  )
-
   test('Label 识别新 Button 根类，内部点击正常冒泡且不联动', () => {
     const label = createLabel()
     const activate = jest.fn()
@@ -1145,62 +865,6 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     expect(activate).toHaveBeenCalledTimes(1)
   })
 
-  test('多 Button 的点击不串联，改名不改变默认顺序，并按最新 id 匹配和清理', async () => {
-    const form = { submit: jest.fn(), reset: jest.fn() }
-    const label = createLabel()
-    const register = jest.spyOn(label.ctx, 'register')
-    const first = vue.reactive({ id: 'first' })
-    const { app, host } = mount(
-      () => [
-        vue.createComponent(Button, {
-          id: () => first.id,
-          formType: () => 'submit',
-        }),
-        vue.createComponent(Button, {
-          id: () => 'second',
-          formType: () => 'reset',
-        }),
-      ],
-      form,
-      label.ctx
-    )
-    host.addEventListener('click', label.handleTap)
-    const buttons = host.querySelectorAll<HTMLElement>('div[uni-button]')
-    const inner = document.createElement('span')
-    buttons[1].appendChild(inner)
-    buttons[1].click()
-    inner.click()
-    expect(form.reset).toHaveBeenCalledTimes(2)
-    expect(form.submit).not.toHaveBeenCalled()
-
-    first.id = 'renamed'
-    await vue.nextTick()
-    expect(label.children.map((child: any) => child.id)).toEqual([
-      'renamed',
-      'second',
-    ])
-    expect(register).toHaveBeenCalledTimes(2)
-    host.click()
-    expect(form.submit).toHaveBeenCalledTimes(1)
-    expect(form.reset).toHaveBeenCalledTimes(2)
-
-    label.props.for = 'second'
-    host.click()
-    expect(form.reset).toHaveBeenCalledTimes(3)
-    buttons[0].click()
-    expect(form.submit).toHaveBeenCalledTimes(2)
-    expect(form.reset).toHaveBeenCalledTimes(3)
-    label.props.for = 'renamed'
-    host.click()
-    expect(form.submit).toHaveBeenCalledTimes(3)
-    label.props.disabled = true
-    host.click()
-    expect(form.submit).toHaveBeenCalledTimes(3)
-    app.unmount()
-    apps.pop()
-    expect(label.children).toHaveLength(0)
-  })
-
   test('Input 非 Vapor 保留旧根节点、Custom Element 和 mounted 属性绑定', async () => {
     const vdom = await preprocess('vue/input/index.tsx', false)
     expect(vdom).toContain('class UniInputElement extends UniElement')
@@ -1226,19 +890,14 @@ describe('旧表单组件的 Vapor 过渡适配', () => {
     )
   })
 
-  test.each(['helpers/useField.ts', 'vue/button/index.tsx'])(
-    '%s 按模式隔离新旧协议',
-    async (file) => {
-      const vapor = await preprocess(file, true)
-      const vdom = await preprocess(file, false)
-      expect(vapor).toContain('form-vapor')
-      expect(vapor).not.toMatch(
-        /uniFormKey|uniLabelKey|from ['"].*useFormField|from ['"]\.\.\/form|from ['"]\.\.\/label/
-      )
-      expect(vdom).not.toMatch(/form-vapor|useVaporFormField|useVaporButton/)
-      expect(vdom).toContain(
-        file.includes('button') ? 'uniFormKey' : "useFormField('name', state)"
-      )
-    }
-  )
+  test.each(['helpers/useField.ts'])('%s 按模式隔离新旧协议', async (file) => {
+    const vapor = await preprocess(file, true)
+    const vdom = await preprocess(file, false)
+    expect(vapor).toContain('form-vapor')
+    expect(vapor).not.toMatch(
+      /uniFormKey|uniLabelKey|from ['"].*useFormField|from ['"]\.\.\/form|from ['"]\.\.\/label/
+    )
+    expect(vdom).not.toMatch(/form-vapor|useVaporFormField|useVaporButton/)
+    expect(vdom).toContain("useFormField('name', state)")
+  })
 })

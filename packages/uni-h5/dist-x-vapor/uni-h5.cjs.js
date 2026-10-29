@@ -254,8 +254,8 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$g = Vue.template("<canvas uni-canvas uni-view class=uni-canvas-canvas>", 3);
-const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
+const _t0$f = Vue.template("<canvas uni-canvas uni-view class=uni-canvas-canvas>", 3);
+const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
   rootElement: {
@@ -264,39 +264,36 @@ const indexVapor$b = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup() {
     const root = (() => {
-      const _n0 = _t0$g();
+      const _n0 = _t0$f();
       return _n0;
     })();
     return root;
   }
 });
-function useVaporFormField(props2, state) {
-  const form = Vue.inject("UNI_FORM_CTX", null);
-  if (!form)
-    return;
-  const initialValue = state.value;
-  const getValue = () => state.value;
-  const reset = () => {
-    state.value = initialValue;
-  };
-  Vue.watch(
-    () => props2.name,
-    (name, oldName) => {
-      if (oldName)
-        form.unregisterField(oldName);
-      if (name)
-        form.registerField({ name, getValue, reset });
-    },
-    { immediate: true, flush: "sync" }
-  );
-}
-function useVaporButton(props2, rootRef) {
-  const form = Vue.inject("UNI_FORM_CTX", null);
-  const label = Vue.inject("UNI_LABEL_CTX", null);
-  if (label) {
-    `__uni_vapor_button_${Vue.getCurrentInstance().uid}`;
+const _UniInputElement = class _UniInputElement extends UniViewElement {
+  static [Symbol.hasInstance](value) {
+    return this === _UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
-  return form;
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+  get value() {
+    return this.querySelector("input").value;
+  }
+  set value(value) {
+    this.querySelector("input").value = value;
+  }
+};
+_UniInputElement.__uniElement = {};
+let UniInputElement = _UniInputElement;
+const descriptors$1 = {
+  uniTagName: { value: "INPUT" },
+  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
+  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
+};
+function initInputElement(root) {
+  Object.defineProperties(root, descriptors$1);
 }
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
@@ -1211,370 +1208,6 @@ function defineGlobalData(app, defaultGlobalData) {
     }
   });
 }
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref, emit2) {
-  return (name, evt, detail) => {
-    if (ref.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
-    }
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = uniShared.normalizeTarget(el);
-  return {
-    type: domEvt.__evName || detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
-}
-function useHover(props2) {
-  const hovering = Vue.ref(false);
-  let hoverTouch = false;
-  let hoverStartTimer;
-  let hoverStayTimer;
-  function hoverReset() {
-    requestAnimationFrame(() => {
-      clearTimeout(hoverStayTimer);
-      hoverStayTimer = setTimeout(() => {
-        hovering.value = false;
-      }, parseInt(props2.hoverStayTime));
-    });
-  }
-  function onTouchstartPassive(evt) {
-    if (evt.touches.length > 1) {
-      return;
-    }
-    handleHoverStart(evt);
-  }
-  function onMousedown(evt) {
-    if (hoverTouch) {
-      return;
-    }
-    handleHoverStart(evt);
-    window.addEventListener("mouseup", handlePCHoverEnd);
-  }
-  function handleHoverStart(evt) {
-    if (evt._hoverPropagationStopped) {
-      return;
-    }
-    if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
-      return;
-    }
-    if (props2.hoverStopPropagation) {
-      evt._hoverPropagationStopped = true;
-    }
-    hoverTouch = true;
-    hoverStartTimer = setTimeout(() => {
-      hovering.value = true;
-      if (!hoverTouch) {
-        hoverReset();
-      }
-    }, parseInt(props2.hoverStartTime));
-  }
-  function onTouchend() {
-    handleHoverEnd();
-  }
-  function onMouseup() {
-    if (!hoverTouch) {
-      return;
-    }
-    handlePCHoverEnd();
-  }
-  function handleHoverEnd() {
-    hoverTouch = false;
-    if (hovering.value) {
-      hoverReset();
-    }
-  }
-  function handlePCHoverEnd() {
-    handleHoverEnd();
-    window.removeEventListener("mouseup", handlePCHoverEnd);
-  }
-  function onTouchcancel() {
-    hoverTouch = false;
-    hovering.value = false;
-    clearTimeout(hoverStartTimer);
-  }
-  return {
-    hovering,
-    binding: {
-      onTouchstartPassive: withWebEvent(onTouchstartPassive),
-      onMousedown: withWebEvent(onMousedown),
-      onTouchend: withWebEvent(onTouchend),
-      onMouseup: withWebEvent(onMouseup),
-      onTouchcancel: withWebEvent(onTouchcancel)
-    }
-  };
-}
-function useBooleanAttr(props2, keys) {
-  if (shared.isString(keys)) {
-    keys = [keys];
-  }
-  return keys.reduce((res, key) => {
-    if (props2[key]) {
-      res[key] = true;
-    }
-    return res;
-  }, /* @__PURE__ */ Object.create(null));
-}
-const buttonProps = {
-  id: {
-    type: String,
-    default: ""
-  },
-  hoverClass: {
-    type: String,
-    default: "button-hover"
-  },
-  hoverStartTime: {
-    type: [Number, String],
-    default: 20
-  },
-  hoverStayTime: {
-    type: [Number, String],
-    default: 70
-  },
-  hoverStopPropagation: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  formType: {
-    type: String,
-    default: ""
-  },
-  openType: {
-    type: String,
-    default: ""
-  },
-  loading: {
-    type: [Boolean, String],
-    default: false
-  },
-  plain: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-const createComponent = (type, ...args) => {
-  if (type === Vue.Fragment) {
-    const slots = args[1];
-    return slots ? typeof slots === "function" ? slots() : typeof slots.default === "function" ? slots.default() : [] : [];
-  }
-  return Vue__namespace.createComponentWithFallback(
-    createProxyComponent(Vue__namespace.resolveDynamicComponent(type)),
-    ...args
-  );
-};
-const proxyCache = /* @__PURE__ */ new WeakMap();
-function createProxyComponent(type, normalizeNode2) {
-  if (typeof type === "function") {
-    const existing = proxyCache.get(type);
-    if (existing)
-      return existing;
-    const i = Vue__namespace.currentInstance || Vue.getCurrentInstance();
-    const proxy = new Proxy(type, {
-      apply(target, ctx, args) {
-        if (typeof target.__setup === "function") {
-          target.__setup.apply(ctx, args);
-        }
-        const node = Reflect.apply(target, ctx, args);
-        return node;
-      },
-      get(target, p2, receiver) {
-        const result = Reflect.get(target, p2, receiver);
-        if (p2 === "__vapor" && result === void 0 && i && i.appContext.vapor) {
-          return true;
-        }
-        return result;
-      }
-    });
-    proxyCache.set(type, proxy);
-    return proxy;
-  }
-  return type;
-}
-function createFragment(nodes, anchor = document.createTextNode("")) {
-  const frag = new Vue__namespace.VaporFragment(nodes);
-  frag.anchor = anchor;
-  return frag;
-}
-function normalizeBlock(node, anchor, processFunction = false) {
-  if (node instanceof Node || Vue__namespace.isFragment(node)) {
-    return node;
-  } else if (Vue__namespace.isVaporComponent(node)) {
-    return createFragment(node, anchor);
-  } else if (Array.isArray(node)) {
-    return createFragment(
-      node.map((i) => normalizeBlock(i, void 0, processFunction)),
-      anchor
-    );
-  } else if (processFunction && typeof node === "function") {
-    return resolveValues([node], anchor, true)[0];
-  } else {
-    const result = node == null || typeof node === "boolean" ? "" : String(node);
-    if (anchor) {
-      anchor.textContent = result;
-      return anchor;
-    } else {
-      return document.createTextNode(result);
-    }
-  }
-}
-function resolveValue(current, value, anchor, processFunction = false) {
-  anchor = anchor || (current instanceof Node && current.nodeType === 3 ? current : void 0);
-  const node = normalizeBlock(value, anchor, processFunction);
-  if (current) {
-    if (Vue__namespace.isFragment(current)) {
-      if (current.anchor && current.anchor.parentNode) {
-        Vue__namespace.remove(current.nodes, current.anchor.parentNode);
-        Vue__namespace.insert(node, current.anchor.parentNode, current.anchor);
-        if (!anchor)
-          current.anchor.parentNode.removeChild(current.anchor);
-        if (current.scope)
-          current.scope.stop();
-      }
-    } else if (current instanceof Node) {
-      if (current.nodeType === 3 && (!(node instanceof Node) || node.nodeType !== 3)) {
-        current.textContent = "";
-      }
-      if (Vue__namespace.isFragment(node) && current.parentNode) {
-        Vue__namespace.insert(node, current.parentNode, current);
-        if (!anchor || current.nodeType !== 3) {
-          current.parentNode.removeChild(current);
-        }
-      } else if (node instanceof Node) {
-        if (current.nodeType === 3 && node.nodeType === 3) {
-          current.textContent = node.textContent;
-          return current;
-        } else if (current.parentNode) {
-          current.parentNode.replaceChild(node, current);
-        }
-      }
-    }
-  }
-  return node;
-}
-function resolveValues(values = [], _anchor, processFunction = false) {
-  const nodes = [];
-  const scopes = [];
-  for (const [index2, value] of values.entries()) {
-    const anchor = index2 === values.length - 1 ? _anchor : void 0;
-    if (typeof value === "function") {
-      Vue__namespace.renderEffect(() => {
-        if (scopes[index2])
-          scopes[index2].stop();
-        scopes[index2] = new Vue.EffectScope();
-        nodes[index2] = scopes[index2].run(
-          () => resolveValue(nodes[index2], value(), anchor, processFunction)
-        );
-      });
-    } else {
-      nodes[index2] = resolveValue(nodes[index2], value, anchor, processFunction);
-    }
-  }
-  return nodes;
-}
-function setNodes(anchor, ...values) {
-  const resolvedValues = resolveValues(values, anchor);
-  if (anchor.parentNode)
-    Vue__namespace.insert(resolvedValues, anchor.parentNode, anchor);
-}
-function createNodes(...values) {
-  return resolveValues(values);
-}
-const _t0$f = Vue.template("<div> ", 1);
-class UniButtonElement extends UniViewElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniButtonElement && value instanceof UniViewElement && value.hasAttribute("uni-button") || Function.prototype[Symbol.hasInstance].call(this, value);
-  }
-}
-const uniTagName$9 = { value: "BUTTON" };
-const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Button",
-  props: buttonProps,
-  rootElement: {
-    name: "uni-button",
-    class: UniButtonElement
-  },
-  setup(props2, { slots }) {
-    const rootRef = Vue.ref(null);
-    const uniForm = useVaporButton();
-    const { hovering, binding } = useHover(props2);
-    const onClick = withWebEvent((e2, isLabelClick) => {
-      if (props2.disabled) {
-        return e2.stopImmediatePropagation();
-      }
-      if (isLabelClick) {
-        rootRef.value.click();
-      }
-      if (props2.formType === "submit") {
-        uniForm == null ? void 0 : uniForm.submit(e2);
-      } else if (props2.formType === "reset") {
-        uniForm == null ? void 0 : uniForm.reset(e2);
-      }
-    });
-    const root = (() => {
-      const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n0 = _t0$f();
-      Vue.on(_n0, "click", onClick);
-      const _x0 = Vue.txt(_n0);
-      setNodes(_x0, () => slots.default && slots.default());
-      Vue.renderEffect(() => {
-        Vue.setDynamicProps(_n0, [
-          {
-            "uni-button": "",
-            "uni-view": "",
-            id: props2.id,
-            class: props2.hoverClass !== "none" && hovering.value ? props2.hoverClass : ""
-          },
-          props2.hoverClass && props2.hoverClass !== "none" && binding,
-          useBooleanAttr(props2, [
-            "disabled",
-            "loading",
-            "plain"
-          ])
-        ]);
-        _setTemplateRef(_n0, rootRef);
-      });
-      return _n0;
-    })();
-    Object.defineProperty(root, "uniTagName", uniTagName$9);
-    return root;
-  }
-});
-const _UniInputElement = class _UniInputElement extends UniViewElement {
-  static [Symbol.hasInstance](value) {
-    return this === _UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
-  }
-  focus(options) {
-    var _a;
-    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
-  }
-  get value() {
-    return this.querySelector("input").value;
-  }
-  set value(value) {
-    this.querySelector("input").value = value;
-  }
-};
-_UniInputElement.__uniElement = {};
-let UniInputElement = _UniInputElement;
-const descriptors$1 = {
-  uniTagName: { value: "INPUT" },
-  focus: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "focus"),
-  value: Object.getOwnPropertyDescriptor(UniInputElement.prototype, "value")
-};
-function initInputElement(root) {
-  Object.defineProperties(root, descriptors$1);
-}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -1602,6 +1235,26 @@ function throttle(fn, wait) {
     waitCallback && waitCallback();
   };
   return newFn;
+}
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref, emit2) {
+  return (name, evt, detail) => {
+    if (ref.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref.value, detail || {}));
+    }
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  const target = uniShared.normalizeTarget(el);
+  return {
+    type: domEvt.__evName || detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
 }
 function useUserAction() {
   const state = Vue.reactive({
@@ -1673,6 +1326,26 @@ function useScopedAttrs() {
   return {
     state
   };
+}
+function useVaporFormField(props2, state) {
+  const form = Vue.inject("UNI_FORM_CTX", null);
+  if (!form)
+    return;
+  const initialValue = state.value;
+  const getValue = () => state.value;
+  const reset = () => {
+    state.value = initialValue;
+  };
+  Vue.watch(
+    () => props2.name,
+    (name, oldName) => {
+      if (oldName)
+        form.unregisterField(oldName);
+      if (name)
+        form.registerField({ name, getValue, reset });
+    },
+    { immediate: true, flush: "sync" }
+  );
 }
 function getSelectedTextRange(_, resolve) {
   const activeElement = document.activeElement;
@@ -2224,6 +1897,133 @@ function useInput(props2, { emit: emit2, expose }) {
     onKeyUpEnter,
     onInput
   };
+}
+const createComponent = (type, ...args) => {
+  if (type === Vue.Fragment) {
+    const slots = args[1];
+    return slots ? typeof slots === "function" ? slots() : typeof slots.default === "function" ? slots.default() : [] : [];
+  }
+  return Vue__namespace.createComponentWithFallback(
+    createProxyComponent(Vue__namespace.resolveDynamicComponent(type)),
+    ...args
+  );
+};
+const proxyCache = /* @__PURE__ */ new WeakMap();
+function createProxyComponent(type, normalizeNode2) {
+  if (typeof type === "function") {
+    const existing = proxyCache.get(type);
+    if (existing)
+      return existing;
+    const i = Vue__namespace.currentInstance || Vue.getCurrentInstance();
+    const proxy = new Proxy(type, {
+      apply(target, ctx, args) {
+        if (typeof target.__setup === "function") {
+          target.__setup.apply(ctx, args);
+        }
+        const node = Reflect.apply(target, ctx, args);
+        return node;
+      },
+      get(target, p2, receiver) {
+        const result = Reflect.get(target, p2, receiver);
+        if (p2 === "__vapor" && result === void 0 && i && i.appContext.vapor) {
+          return true;
+        }
+        return result;
+      }
+    });
+    proxyCache.set(type, proxy);
+    return proxy;
+  }
+  return type;
+}
+function createFragment(nodes, anchor = document.createTextNode("")) {
+  const frag = new Vue__namespace.VaporFragment(nodes);
+  frag.anchor = anchor;
+  return frag;
+}
+function normalizeBlock(node, anchor, processFunction = false) {
+  if (node instanceof Node || Vue__namespace.isFragment(node)) {
+    return node;
+  } else if (Vue__namespace.isVaporComponent(node)) {
+    return createFragment(node, anchor);
+  } else if (Array.isArray(node)) {
+    return createFragment(
+      node.map((i) => normalizeBlock(i, void 0, processFunction)),
+      anchor
+    );
+  } else if (processFunction && typeof node === "function") {
+    return resolveValues([node], anchor, true)[0];
+  } else {
+    const result = node == null || typeof node === "boolean" ? "" : String(node);
+    if (anchor) {
+      anchor.textContent = result;
+      return anchor;
+    } else {
+      return document.createTextNode(result);
+    }
+  }
+}
+function resolveValue(current, value, anchor, processFunction = false) {
+  anchor = anchor || (current instanceof Node && current.nodeType === 3 ? current : void 0);
+  const node = normalizeBlock(value, anchor, processFunction);
+  if (current) {
+    if (Vue__namespace.isFragment(current)) {
+      if (current.anchor && current.anchor.parentNode) {
+        Vue__namespace.remove(current.nodes, current.anchor.parentNode);
+        Vue__namespace.insert(node, current.anchor.parentNode, current.anchor);
+        if (!anchor)
+          current.anchor.parentNode.removeChild(current.anchor);
+        if (current.scope)
+          current.scope.stop();
+      }
+    } else if (current instanceof Node) {
+      if (current.nodeType === 3 && (!(node instanceof Node) || node.nodeType !== 3)) {
+        current.textContent = "";
+      }
+      if (Vue__namespace.isFragment(node) && current.parentNode) {
+        Vue__namespace.insert(node, current.parentNode, current);
+        if (!anchor || current.nodeType !== 3) {
+          current.parentNode.removeChild(current);
+        }
+      } else if (node instanceof Node) {
+        if (current.nodeType === 3 && node.nodeType === 3) {
+          current.textContent = node.textContent;
+          return current;
+        } else if (current.parentNode) {
+          current.parentNode.replaceChild(node, current);
+        }
+      }
+    }
+  }
+  return node;
+}
+function resolveValues(values = [], _anchor, processFunction = false) {
+  const nodes = [];
+  const scopes = [];
+  for (const [index2, value] of values.entries()) {
+    const anchor = index2 === values.length - 1 ? _anchor : void 0;
+    if (typeof value === "function") {
+      Vue__namespace.renderEffect(() => {
+        if (scopes[index2])
+          scopes[index2].stop();
+        scopes[index2] = new Vue.EffectScope();
+        nodes[index2] = scopes[index2].run(
+          () => resolveValue(nodes[index2], value(), anchor, processFunction)
+        );
+      });
+    } else {
+      nodes[index2] = resolveValue(nodes[index2], value, anchor, processFunction);
+    }
+  }
+  return nodes;
+}
+function setNodes(anchor, ...values) {
+  const resolvedValues = resolveValues(values, anchor);
+  if (anchor.parentNode)
+    Vue__namespace.insert(resolvedValues, anchor.parentNode, anchor);
+}
+function createNodes(...values) {
+  return resolveValues(values);
 }
 const _t0$e = Vue.template("<input tabindex=-1 class=uni-input-input>");
 const _t1$4 = Vue.template("<input class=uni-input-input>");
@@ -4454,8 +4254,8 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const t0$v = Vue.template("<img>");
-const t1$c = Vue.template("<div class=uni-tabbar__mid>");
+const t0$w = Vue.template("<img>");
+const t1$d = Vue.template("<div class=uni-tabbar__mid>");
 const t2$4 = Vue.template("<div class=uni-tabbar__iconfont> ");
 const t3$4 = Vue.template("<div>");
 const t4$2 = Vue.template("<div class=uni-tabbar__label> ");
@@ -4465,7 +4265,7 @@ const t7$1 = Vue.template("<uni-tabbar><div class=uni-tabbar><div class=uni-tabb
 const DEFAULT_BG_COLOR = "#f7f7fa";
 const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
 const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "TabBar",
     __reserved: true,
@@ -4690,11 +4490,11 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.renderEffect(() => Vue.setStyle(n28, getItemStyle(_for_item0.value)));
         Vue.setInsertionState(n28, n27);
         Vue.createIf(() => isRenderedMidButton(_for_item0.value), () => {
-          const n8 = t1$c();
+          const n8 = t1$d();
           Vue.renderEffect(() => Vue.setStyle(n8, getMidButtonStyle(_for_item0.value)));
           Vue.setInsertionState(n8);
           Vue.createIf(() => getIconPath(_for_item0.value, _for_key0.value), () => {
-            const n7 = t0$v();
+            const n7 = t0$w();
             Vue.renderEffect(() => {
               Vue.setStyle(n7, {
                 width: getMidButton(_for_item0.value).iconWidth,
@@ -4738,7 +4538,7 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             });
             Vue.setInsertionState(n19);
             Vue.createIf(() => _for_item0.value.type !== "midButton", () => {
-              const n18 = t0$v();
+              const n18 = t0$w();
               Vue.renderEffect(() => Vue.setProp(n18, "src", Vue.unref(getRealPath)(getIconPath(_for_item0.value, _for_key0.value))));
               return n18;
             });
@@ -4783,13 +4583,13 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
     return n31;
   }
 });
-const t0$u = Vue.template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
-const t1$b = Vue.template("<div class=uni-mask>");
+const t0$v = Vue.template("<uni-top-window><div class=uni-top-window></div><div class=uni-top-window--placeholder>");
+const t1$c = Vue.template("<div class=uni-mask>");
 const t2$3 = Vue.template("<uni-left-window><!><div class=uni-left-window>");
 const t3$3 = Vue.template("<uni-right-window><!><div class=uni-right-window>");
 const t4$1 = Vue.template("<uni-layout><!><uni-content><uni-main></uni-main>");
 const t5$1 = Vue.template("<uni-app>", 1);
-const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "Layout",
     __reserved: true,
@@ -5135,7 +4935,7 @@ const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
         });
         Vue.setInsertionState(n36, n35);
         Vue.createIf(() => Vue.unref(hasTopWindow) && Vue.unref(TopWindow), () => {
-          const n7 = t0$u();
+          const n7 = t0$v();
           const n5 = Vue.child(n7);
           const n6 = Vue.next(n5);
           Vue.renderEffect(() => Vue.setStyle(n5, Vue.unref(layoutState).topWindowStyle));
@@ -5198,7 +4998,7 @@ const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
           });
           Vue.setInsertionState(n24, n23);
           Vue.createIf(() => Vue.unref(layoutState).apiShowLeftWindow, () => {
-            const n20 = t1$b();
+            const n20 = t1$c();
             Vue.on(n20, "click", () => Vue.unref(layoutState).apiShowLeftWindow = false);
             return n20;
           });
@@ -5222,7 +5022,7 @@ const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
           });
           Vue.setInsertionState(n33, n32);
           Vue.createIf(() => Vue.unref(layoutState).apiShowRightWindow, () => {
-            const n29 = t1$b();
+            const n29 = t1$c();
             Vue.on(n29, "click", () => Vue.unref(layoutState).apiShowRightWindow = false);
             return n29;
           });
@@ -5278,7 +5078,7 @@ const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
     );
     Vue.setInsertionState(n49, 1);
     Vue.createIf(() => Vue.unref(hasTabBar), () => {
-      const n48 = Vue.withComponentId("224fd694", () => Vue.createComponent(_sfc_main$v));
+      const n48 = Vue.withComponentId("224fd694", () => Vue.createComponent(_sfc_main$w));
       Vue.applyVShow(n48, () => Vue.unref(showTabBar));
       return n48;
     });
@@ -5286,8 +5086,8 @@ const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
     return n49;
   }
 });
-const t0$t = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
-const _sfc_main$t = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$u = Vue.template("<div class=uni-async-loading><i class=uni-loading>", 3);
+const _sfc_main$u = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncLoading",
     __reserved: true,
@@ -5295,12 +5095,12 @@ const _sfc_main$t = /* @__PURE__ */ Vue.defineVaporComponent({
   },
   __name: "asyncLoading",
   setup(__props) {
-    const n0 = t0$t();
+    const n0 = t0$u();
     return n0;
   }
 });
-const t0$s = Vue.template("<div class=uni-async-error> ", 1);
-const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$t = Vue.template("<div class=uni-async-error> ", 1);
+const _sfc_main$t = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "AsyncError",
     __reserved: true,
@@ -5314,7 +5114,7 @@ const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
     function reload() {
       window.location.reload();
     }
-    const n0 = t0$s();
+    const n0 = t0$t();
     const x0 = Vue.txt(n0);
     Vue.on(n0, "click", reload);
     Vue.renderEffect(() => Vue.setText(x0, Vue.toDisplayString(Vue.unref(t12)("uni.async.error"))));
@@ -5372,11 +5172,11 @@ function initApp$1(vm) {
     }
   });
   const app = appVm.$.appContext.app;
+  if (!app.component(_sfc_main$u.name)) {
+    app.component(_sfc_main$u.name, _sfc_main$u);
+  }
   if (!app.component(_sfc_main$t.name)) {
     app.component(_sfc_main$t.name, _sfc_main$t);
-  }
-  if (!app.component(_sfc_main$s.name)) {
-    app.component(_sfc_main$s.name, _sfc_main$s);
   }
   initAppVm(appVm);
   defineGlobalData(appVm);
@@ -5480,7 +5280,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return Vue.createComponent(_sfc_main$u, null, null, true);
+        return Vue.createComponent(_sfc_main$v, null, null, true);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -5539,9 +5339,9 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$r = Vue.template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
+const t0$s = Vue.template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
 const _uniLoadingElement = { value: "LOADING" };
-const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$s = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "loading",
     styleIsolation: "app-and-page",
@@ -5560,7 +5360,7 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
     const props2 = __props;
     const LoadingRef = Vue.ref(null);
     const loadingStyle = Vue.reactive(useLoadingStyle(LoadingRef, Vue.computed(() => props2.bold)));
-    const n0 = t0$r();
+    const n0 = t0$s();
     const n1 = Vue.child(n0);
     Vue.initUniElement(n0, _uniLoadingElement);
     Vue.setStaticTemplateRef(n0, LoadingRef, null, "LoadingRef");
@@ -5615,8 +5415,8 @@ function usePageHeadTransparent(headRef, {
 }) {
   Vue.computed(() => hexToRgba(backgroundColor));
 }
-const t0$q = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
-const t1$a = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
+const t0$r = Vue.template('<div class=uni-page-head-btn><svg width=26 height=26 viewBox="0 0 32 32"><path fill=none stroke-width=2 stroke-linecap=round>');
+const t1$b = Vue.template('<svg viewBox="0 0 32 32"><path>', 0, 1);
 const t2$2 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=none stroke=#000 stroke-width=2 stroke-linecap=round>');
 const t3$2 = Vue.template("<i class=uni-btn-icon></i>");
 const t4 = Vue.template("<div>");
@@ -5627,7 +5427,7 @@ const t8 = Vue.template("<div class=uni-page-head-bd><div class=uni-page-head__t
 const t9 = Vue.template('<div class=uni-page-head-search><div><div class=uni-page-head-search-icon><svg width=20 height=20 viewBox="0 0 32 32"><path></div></div>');
 const t10 = Vue.template('<span><i class=uni-btn-icon></i><svg width=14 height=14 viewBox="0 0 32 32"><path fill=#000>');
 const t11 = Vue.template("<uni-page-head><div><div class=uni-page-head-hd></div><!><div class=uni-page-head-ft></div></div>", 1);
-const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
+const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageHead",
     __reserved: true,
@@ -5833,7 +5633,7 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
     });
     Vue.setInsertionState(n19);
     Vue.createIf(() => Vue.unref(hasPages) && !Vue.unref(pageMeta).isQuit, () => {
-      const n3 = t0$q();
+      const n3 = t0$r();
       const n2 = Vue.child(Vue.child(n3));
       Vue.on(n3, "click", onPageHeadBackButton);
       Vue.renderEffect(() => {
@@ -5864,7 +5664,7 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n11 = t1$a();
+              const n11 = t1$b();
               const n10 = Vue.child(n11);
               Vue.renderEffect(() => {
                 const _button = _for_item0.value;
@@ -5938,7 +5738,7 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
           () => Vue.createIf(
             () => Vue.unref(isXVapor) && Vue.unref(navigationBar).loading,
             () => {
-              const n26 = Vue.withComponentId("96682308", () => Vue.createComponent(Vue.unref(_sfc_main$r), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
+              const n26 = Vue.withComponentId("96682308", () => Vue.createComponent(Vue.unref(_sfc_main$s), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }));
               return n26;
             },
             () => Vue.createIf(
@@ -6052,7 +5852,7 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
           Vue.createIf(
             () => _for_item0.value.btnIconPath,
             () => {
-              const n52 = t1$a();
+              const n52 = t1$b();
               const n51 = Vue.child(n52);
               Vue.renderEffect(() => {
                 const _button = _for_item0.value;
@@ -6113,15 +5913,15 @@ const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
     return n66;
   }
 });
-const t0$p = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
-const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$q = Vue.template('<uni-page-refresh><div class=uni-page-refresh><div class=uni-page-refresh-inner><svg class=uni-page-refresh__icon width=24 height=24 viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path><path d="M0 0h24v24H0z" fill=none></svg><svg class=uni-page-refresh__spinner width=24 height=24 viewBox="25 25 50 50"><circle class=uni-page-refresh__path cx=50 cy=50 r=20 fill=none stroke-width=4 stroke-miterlimit=10>', 1);
+const _sfc_main$q = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{ name: "PageRefresh" },
   __name: "component",
   setup(__props) {
     const { pullToRefresh } = usePageMeta();
     const offset = pullToRefresh.offset;
     const color = pullToRefresh.color;
-    const n3 = t0$p();
+    const n3 = t0$q();
     const n2 = Vue.child(n3);
     const n0 = Vue.child(Vue.child(n2));
     const n1 = Vue.child(Vue.next(n0));
@@ -6134,8 +5934,8 @@ const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
     return n3;
   }
 });
-const t0$o = Vue.template("<uni-page-wrapper><uni-page-body>");
-const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$p = Vue.template("<uni-page-wrapper><uni-page-body>");
+const _sfc_main$p = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "PageBody",
     __reserved: true,
@@ -6166,11 +5966,11 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }
     const n0 = Vue.createIf(() => Vue.unref(hasPullDownRefresh) && !!Vue.unref(pageMeta) && (Vue.unref(isX) || !!Vue.unref(pageMeta).enablePullDownRefresh), () => {
-      const n2 = Vue.withComponentId("2d14e6de", () => Vue.createComponent(_sfc_main$p));
+      const n2 = Vue.withComponentId("2d14e6de", () => Vue.createComponent(_sfc_main$q));
       Vue.setStaticTemplateRef(n2, refreshRef, null, "refreshRef");
       return n2;
     });
-    const n8 = t0$o();
+    const n8 = t0$p();
     const n4 = Vue.child(n8);
     Vue.renderEffect(() => Vue.setDynamicProps(n8, [pageRefresh.value]));
     Vue.setInsertionState(n4);
@@ -6184,8 +5984,8 @@ const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
     return [n0, n8];
   }
 });
-const t0$n = Vue.template("<uni-page>", 1);
-const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
+const t0$o = Vue.template("<uni-page>", 1);
+const _sfc_main$o = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "Page",
     __reserved: true,
@@ -6287,18 +6087,18 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         }
       }
     }
-    const n8 = t0$n();
+    const n8 = t0$o();
     Vue.renderEffect(() => {
       Vue.setAttr(n8, "data-page", Vue.unref(pageMeta).route);
       Vue.setStyle(n8, pageStyle);
     });
     Vue.setInsertionState(n8);
     Vue.createIf(() => Vue.unref(hasNavigationBar) && Vue.unref(navigationBar).style !== "custom", () => {
-      const n2 = Vue.withComponentId("6ae207a0", () => Vue.createComponent(_sfc_main$q));
+      const n2 = Vue.withComponentId("6ae207a0", () => Vue.createComponent(_sfc_main$r));
       return n2;
     });
     Vue.setInsertionState(n8, 1);
-    Vue.withComponentId("f15f11c4", () => Vue.createComponent(_sfc_main$o, null, Vue.extend(() => {
+    Vue.withComponentId("f15f11c4", () => Vue.createComponent(_sfc_main$p, null, Vue.extend(() => {
       const n3 = Vue.withComponentId("f15f1178", () => Vue.createDynamicComponent(
         () => Vue.unref(pageComponent),
         { $: [
@@ -6333,7 +6133,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   }
 });
 function createVaporPageRouteComponent(pageComponent) {
-  return Object.assign({}, _sfc_main$n, {
+  return Object.assign({}, _sfc_main$o, {
     __uniPageComponent: pageComponent
   });
 }
@@ -8348,7 +8148,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
           Vue.setInsertionState(_n21);
           Vue.createIf(() => true, () => {
             const _n4 = Vue.createIf(() => props2.refreshState == "pulling" || props2.refreshState == "refreshing", () => {
-              const _n6 = createComponent(_sfc_main$r, {
+              const _n6 = createComponent(_sfc_main$s, {
                 class: "uni-scroll-view-refresh__loading",
                 paused: () => props2.refreshState == "pulling",
                 style: () => ({
@@ -8887,6 +8687,252 @@ function createSpaceKeyHandlers(isDisabled) {
   }
   return { handleKeydown, handleKeyup, handleBlur };
 }
+const _UniButtonElement = class _UniButtonElement extends UniTextElement {
+  constructor() {
+    super(...arguments);
+    this.tagName = "BUTTON";
+    this.nodeName = "BUTTON";
+    this._value = "";
+  }
+  get value() {
+    var _a, _b;
+    if ((_a = this.vm) == null ? void 0 : _a.isLoading()) {
+      return ((_b = this.vm) == null ? void 0 : _b.getValue()) ?? this._value;
+    }
+    return super.value ?? this._value;
+  }
+};
+_UniButtonElement.__uniElement = { vm: true, init() {
+  Object.defineProperty(this, "_value", { value: "", writable: true, enumerable: true, configurable: true });
+} };
+let UniButtonElement = _UniButtonElement;
+const t0$n = Vue.template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center"><!><span uni-text>', 1);
+const t1$a = Vue.template("<span uni-button uni-text>", 1);
+const _uniButtonElement = { value: "BUTTON" };
+const DEFAULT_BUTTON_HOVER_CLASS_NAME = "button-hover";
+const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
+  ...{
+    name: "button",
+    // @ts-ignore
+    rootElement: {
+      class: /* @__PURE__ */ Vue.initUniElementType(UniButtonElement, "button")
+    },
+    externalClasses: ["hover-class", "loading-class", "loading-text-class"]
+  },
+  __name: "button",
+  props: {
+    disabled: { type: Boolean, default: false },
+    type: { type: String },
+    size: { default: "default", type: String },
+    plain: { type: Boolean, default: false },
+    loadingClass: { type: null },
+    loadingTextClass: { type: null },
+    hoverClass: { type: null },
+    hoverStartTime: { default: 20, type: Number },
+    hoverStayTime: { default: 70, type: Number },
+    hoverStopPropagation: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
+    formType: { type: String },
+    openType: { default: "", type: String },
+    iosLoadingSnow: { type: Boolean, default: false }
+  },
+  emits: ["click"],
+  setup(__props, { expose: __expose, emit: __emit }) {
+    const emit2 = __emit;
+    const props2 = __props;
+    const textRef = Vue.ref(null);
+    const buttonType = Vue.computed(() => {
+      return props2.type == null ? "default" : props2.type;
+    });
+    const loadingTextStyle = Vue.computed(() => {
+      let style = "font-size:inherit;line-height:inherit;font-weight:inherit;text-align:inherit;";
+      if (props2.loadingTextClass == null) {
+        style += "color:inherit;";
+      }
+      return style;
+    });
+    const formCtx = Vue.inject(FORM_KEY, null);
+    const enableTransition = Vue.ref(false);
+    const hoverClasses = Vue.computed(() => {
+      let isDefaultHoverClass = false;
+      if (props2.hoverClass != null) {
+        const hoverClass = `${props2.hoverClass}`.replace(/^\^+/, "");
+        if (hoverClass == "" || hoverClass == "none") {
+          return "none";
+        }
+        if (hoverClass != DEFAULT_BUTTON_HOVER_CLASS_NAME) {
+          return `${props2.hoverClass}`;
+        }
+        isDefaultHoverClass = true;
+      }
+      const classes2 = [];
+      if (!props2.plain) {
+        switch (buttonType.value) {
+          case "default":
+            classes2.push("uni-button-view_default_hover");
+            break;
+          case "primary":
+            classes2.push("uni-button-view_primary_hover");
+            break;
+          case "warn":
+            classes2.push("uni-button-view_warn_hover");
+            break;
+        }
+      } else {
+        switch (buttonType.value) {
+          case "default":
+            classes2.push("uni-button-view_plain_default_hover");
+            break;
+          case "primary":
+            classes2.push("uni-button-view_plain_primary_hover");
+            break;
+          case "warn":
+            classes2.push("uni-button-view_plain_warn_hover");
+            break;
+        }
+      }
+      if (isDefaultHoverClass) {
+        classes2.push(`${props2.hoverClass}`);
+      }
+      return classes2.join(" ");
+    });
+    const checkFormAndSubmitOrReset = () => {
+      if (props2.formType != "submit" && props2.formType != "reset") {
+        return;
+      }
+      if (formCtx == null) {
+        return;
+      }
+      if (props2.formType == "submit") {
+        formCtx.submit();
+      } else if (props2.formType == "reset") {
+        formCtx.reset();
+      }
+    };
+    function checkOpenType() {
+      switch (props2.openType) {
+        case "agreePrivacyAuthorization":
+          uni.agreePrivacyAuthorization();
+          break;
+      }
+    }
+    const handleTap = (event) => {
+      if (props2.disabled) {
+        return;
+      }
+      emit2("click", event);
+      checkFormAndSubmitOrReset();
+      checkOpenType();
+    };
+    __expose({
+      getValue() {
+        if (textRef.value == null) {
+          return "";
+        }
+        return textRef.value.value;
+      },
+      isLoading() {
+        return props2.loading && !props2.disabled;
+      }
+    });
+    const _component_loading = _sfc_main$s;
+    const n0 = Vue.createIf(
+      () => __props.loading && !__props.disabled,
+      () => {
+        const n2 = t0$n();
+        const n6 = Vue.child(n2);
+        const n5 = Vue.next(n6);
+        Vue.initUniElement(n2, _uniButtonElement);
+        Vue.renderEffect(() => {
+          const _disabled = __props.disabled;
+          const _buttonType = Vue.unref(buttonType);
+          const _plain = __props.plain;
+          const _size = __props.size;
+          Vue.setHover(n2, _disabled ? "none" : Vue.unref(hoverClasses), __props.hoverStopPropagation, __props.hoverStartTime, __props.hoverStayTime, "");
+          Vue.setClass(n2, ["uni-button", Vue.unref(classes)(
+            [_buttonType == "default", "uni-button-type-default_view"],
+            [_buttonType == "primary", "uni-button-type-primary_view"],
+            [_buttonType == "warn", "uni-button-type-warn_view"],
+            [_plain, "uni-button-view-plain"],
+            [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
+            [_disabled, "uni-button-disabled"],
+            [_size == "mini", "uni-button-size-mini"],
+            [Vue.unref(enableTransition), "transition-enabled"],
+            [_buttonType == "default", "uni-button-type-default_text"],
+            [_buttonType == "primary", "uni-button-type-primary_text"],
+            [_buttonType == "warn", "uni-button-type-warn_text"],
+            [_plain && __props.loading, "uni-button-text-plain"],
+            [_size == "mini", "uni-button-text-size-mini"],
+            [_size == "default", "uni-button-text-size-default"]
+          )]);
+        });
+        Vue.setInsertionState(n2, n6);
+        Vue.withComponentId("0ed9f1c8", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
+          [Vue.unref(buttonType) == "default", "uni-loading-default"],
+          [__props.plain && Vue.unref(buttonType) == "primary", "uni-loading-plain-primary"],
+          [__props.plain && Vue.unref(buttonType) == "warn", "uni-loading-plain-warn"],
+          __props.loadingClass || ""
+        )] }));
+        Vue.renderEffect(() => {
+          Vue.setClass(n5, ["uni-button-loading-text", __props.loadingTextClass || ""]);
+          Vue.setStyle(n5, Vue.unref(loadingTextStyle));
+        });
+        Vue.setInsertionState(n5);
+        Vue.createSlot(
+          "default",
+          null,
+          null,
+          256
+          /* TEXT_MODE */
+        );
+        Vue.setStaticTemplateRef(n5, textRef, null, "textRef");
+        Vue.on(n2, "click", handleTap);
+        return n2;
+      },
+      () => {
+        const n8 = t1$a();
+        Vue.initUniElement(n8, _uniButtonElement);
+        Vue.renderEffect(() => {
+          const _disabled = __props.disabled;
+          const _buttonType = Vue.unref(buttonType);
+          const _plain = __props.plain;
+          const _size = __props.size;
+          Vue.setHover(n8, _disabled ? "none" : Vue.unref(hoverClasses), __props.hoverStopPropagation, __props.hoverStartTime, __props.hoverStayTime, "");
+          Vue.setClass(n8, ["uni-button uni-button-text", Vue.unref(classes)(
+            [_buttonType == "default", "uni-button-type-default_view"],
+            [_buttonType == "primary", "uni-button-type-primary_view"],
+            [_buttonType == "warn", "uni-button-type-warn_view"],
+            [_plain, "uni-button-view-plain"],
+            [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
+            [_disabled, "uni-button-disabled"],
+            [_size == "mini", "uni-button-size-mini"],
+            [Vue.unref(enableTransition), "transition-enabled"],
+            [_buttonType == "default", "uni-button-type-default_text"],
+            [_buttonType == "primary", "uni-button-type-primary_text"],
+            [_buttonType == "warn", "uni-button-type-warn_text"],
+            [_plain && __props.loading, "uni-button-text-plain"],
+            [_size == "mini", "uni-button-text-size-mini"],
+            [_size == "default", "uni-button-text-size-default"]
+          )]);
+        });
+        Vue.setInsertionState(n8);
+        Vue.createSlot(
+          "default",
+          null,
+          null,
+          256
+          /* TEXT_MODE */
+        );
+        Vue.on(n8, "click", handleTap);
+        Vue.setStaticTemplateRef(n8, textRef, null, "textRef");
+        return n8;
+      },
+      261
+      /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_0 */
+    );
+    return n0;
+  }
+});
 const _UniCheckboxElement = class _UniCheckboxElement extends UniViewElement {
   constructor() {
     super(...arguments);
@@ -16683,11 +16729,11 @@ Object.defineProperty(exports, "UniError", {
 exports.Ad = indexVapor;
 exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
-exports.AsyncErrorComponent = _sfc_main$s;
-exports.AsyncLoadingComponent = _sfc_main$t;
-exports.Button = indexVapor$a;
+exports.AsyncErrorComponent = _sfc_main$t;
+exports.AsyncLoadingComponent = _sfc_main$u;
+exports.Button = _sfc_main$n;
 exports.Camera = index$3;
-exports.Canvas = indexVapor$b;
+exports.Canvas = indexVapor$a;
 exports.Checkbox = _sfc_main$m;
 exports.CheckboxGroup = _sfc_main$l;
 exports.Editor = indexVapor$8;
@@ -16696,18 +16742,18 @@ exports.Form = _sfc_main$j;
 exports.Icon = indexVapor$7;
 exports.Input = Input;
 exports.Label = _sfc_main$i;
-exports.LayoutComponent = _sfc_main$u;
+exports.LayoutComponent = _sfc_main$v;
 exports.ListItem = _sfc_main$h;
 exports.ListView = _sfc_main$g;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
-exports.Loading = _sfc_main$r;
+exports.Loading = _sfc_main$s;
 exports.Map = indexVapor$1;
 exports.MatchMedia = _sfc_main$f;
 exports.MovableArea = indexVapor$6;
 exports.MovableView = indexVapor$5;
 exports.Navigator = _sfc_main$e;
-exports.PageComponent = _sfc_main$n;
+exports.PageComponent = _sfc_main$o;
 exports.PageContainer = _sfc_main$d;
 exports.Picker = _sfc_main$c;
 exports.PickerView = _sfc_main$b;

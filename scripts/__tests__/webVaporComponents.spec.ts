@@ -465,7 +465,7 @@ describe('Web Vapor 组件生成', () => {
     }
   )
 
-  test('保留框架 Button 样式，启用 App 共用实现后由提取结果接管', async () => {
+  test('Button 样式随内网组件的启用状态生成', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-vapor-button-'))
     try {
       const extApiDir = path.join(tempDir, 'source [button]')
@@ -493,8 +493,8 @@ describe('Web Vapor 组件生成', () => {
       fs.outputFileSync(buttonStyle, manualStyle)
       fs.outputFileSync(path.join(styleDir, 'obsolete.css'), '.obsolete {}')
       await prepareWebVaporComponents(options)
-      expect(fs.readFileSync(buttonStyle, 'utf8')).toBe(manualStyle)
-      expect(fs.readdirSync(styleDir)).toEqual(['button.css'])
+      expect(fs.existsSync(buttonStyle)).toBe(false)
+      expect(fs.readdirSync(styleDir)).toEqual([])
       expect(
         fs.readFileSync(options.componentsEntryOutput, 'utf8')
       ).not.toContain('default as Button')
@@ -628,4 +628,53 @@ const enabled = true
       fs.removeSync(tempDir)
     }
   })
+})
+
+test('真实 Button 接入使用 uni-form 的组件、Element 和样式，保留非 Vapor 入口', () => {
+  const nextDir = path.resolve(__dirname, '../..')
+  const read = (file: string) =>
+    fs.readFileSync(path.join(nextDir, file), 'utf8')
+  const modulesDir = path.join(nextDir, 'uni-ext-api/uni_modules')
+  const button = resolveWebVaporComponents(modulesDir).get('button')
+  expect(button).toEqual({
+    source: 'uni-form/components/button/button.vue',
+    elementSource: 'uni-form/components/button/global.ts',
+  })
+  expect(resolveWebVaporFrameworkComponents(nextDir)).not.toContain('button')
+  const entry = read('packages/uni-h5/src/x/view/components/index-vapor.ts')
+  expect(entry).toContain(
+    "default as Button } from '@dcloudio/uni-ext-component/uni-form/components/button/button.uvue'"
+  )
+  expect(entry).toMatch(
+    /UniButtonElement,\s+UniButtonElement as UniButtonElementImpl,\s*} from '@dcloudio\/uni-ext-component\/uni-form\/components\/button\/global.ts'/
+  )
+  expect(read('packages/uni-components/src/vue/index-x.ts')).toContain(
+    "import Button, { UniButtonElement } from './button/index'"
+  )
+  expect(UVUE_VAPOR_WEB_EASYCOMS).toContain('button')
+  expect(UVUE_VAPOR_WEB_STYLE_COMPONENTS).toContain('button')
+
+  const { preprocess } = require('../../packages/uni-cli-shared/lib/preprocess')
+  const { parseSfc } = require('../syncExtComponentFile')
+  const { format } = require('prettier')
+  const context = {
+    ...initScopedPreContext('h5', {}, 'web', true).preUVueContext,
+    VUE3_VAPOR: true,
+  }
+  const source = read('uni-ext-api/uni_modules/' + button!.source)
+  const code = preprocess(
+    preprocess(source, context, { type: 'html' }),
+    context,
+    { type: 'js' }
+  )
+  const { descriptor, errors } = parseSfc(code, button!.source)
+  expect(errors).toEqual([])
+  const css = descriptor.styles
+    .map((style: { content: string }) => style.content)
+    .join('\n')
+  expect(
+    format(read('packages/uni-components/style-x-vapor/button.css'), {
+      parser: 'css',
+    })
+  ).toBe(format(css, { parser: 'css' }))
 })

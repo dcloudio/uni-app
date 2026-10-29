@@ -1,310 +1,324 @@
-/* 此文件暂由框架手工维护，复用旧 Web Button 的声明，仅替换为原生 div 宿主。
- * 保持与 ../style/button.css 的状态、尺寸、暗色模式规则一致。
- * TODO 切换 App 共用 Button 后由同步脚本提取组件样式覆盖本文件，
- * 同时删除 scripts/webVaporComponents.js 中 button.css 的清理豁免。
- */
-div:where([uni-button]) {
+.uni-button {
   position: relative;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 14px;
-  padding-right: 14px;
   box-sizing: border-box;
-  font-size: 18px;
-  text-align: center;
-  text-decoration: none;
-  line-height: 2.55555556;
   border-radius: 5px;
-  -webkit-tap-highlight-color: transparent;
+  border-style: solid;
+  border-width: 0.5px;
+  border-color: rgba(0, 0, 0, 0.2);
+  padding: 0 14px;
   overflow: hidden;
-  color: #000000;
-  background-color: #f8f8f8;
-  cursor: pointer;
 }
 
-div:where([uni-button])[hidden] {
-  display: none !important;
+.uni-button-text {
+  text-align: center;
+  padding: 0 14px;
 }
 
-div:where([uni-button]):after {
-  content: ' ';
-  width: 200%;
-  height: 200%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  transform: scale(0.5);
-  transform-origin: 0 0;
-  box-sizing: border-box;
-  border-radius: 10px;
+.uni-button-loading-icon {
+  width: 14px;
+  height: 14px;
+  border-color: #ffffff;
 }
 
-div:where([uni-button])[native] {
-  padding-left: 0;
-  padding-right: 0;
+.uni-loading-default {
+  border-color: #000000;
 }
 
-div:where([uni-button])[native] .uni-button-cover-view-wrapper {
-  border: inherit;
-  border-color: inherit;
-  border-radius: inherit;
-  background-color: inherit;
+.uni-loading-plain-primary {
+  border-color: #007aff;
 }
 
-div:where([uni-button])[native] .uni-button-cover-view-inner {
-  padding-left: 14px;
-  padding-right: 14px;
+.uni-loading-plain-warn {
+  border-color: #e64340;
 }
 
-div:where([uni-button]) uni-cover-view {
-  line-height: inherit;
-  white-space: inherit;
+.uni-button-loading-text {
+  margin-left: 8px;
+  text-align: center;
 }
 
-div:where([uni-button])[type='default'] {
-  color: #000000;
-  background-color: #f8f8f8;
+.uni-button-text-size-mini {
+  font-size: 13px;
+  padding-top: 7.5px;
+  padding-bottom: 7.5px;
 }
 
-div:where([uni-button])[type='primary'] {
-  color: #ffffff;
-  background-color: #007aff;
+.uni-button-text-size-default {
+  font-size: 18px;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
-div:where([uni-button])[type='warn'] {
-  color: #ffffff;
-  background-color: #e64340;
+.uni-button.uni-button-disabled {
+  border-color: rgba(0, 0, 0, 0.2);
 }
 
-div:where([uni-button])[disabled] {
-  color: rgba(255, 255, 255, 0.6);
-  cursor: not-allowed;
+.uni-button-disabled {
+  pointer-events: none;
 }
 
-div:where([uni-button])[disabled][type='default'],
-div:where([uni-button])[disabled]:not([type]) {
+.uni-button-disabled.uni-button-type-default_view {
   color: rgba(0, 0, 0, 0.3);
   background-color: #f7f7f7;
 }
 
-div:where([uni-button])[disabled][type='primary'] {
+.uni-button-disabled.uni-button-type-primary_view {
   background-color: rgba(0, 122, 255, 0.6);
 }
 
-div:where([uni-button])[disabled][type='warn'] {
+.uni-button-disabled.uni-button-type-warn_view {
   background-color: #ec8b89;
 }
 
-div:where([uni-button])[type='primary'][plain] {
+.uni-button-text-plain {
+  color: #000000;
+}
+
+.uni-button-disabled.uni-button-text-plain {
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.uni-button-disabled.uni-button-view-plain {
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.uni-button-type-default_view {
+  background-color: #f8f8f8;
+}
+
+.uni-button-type-primary_view {
+  background-color: #007aff;
+}
+
+.uni-button-type-warn_view {
+  background-color: #e64340;
+}
+
+.uni-button-type-default_text {
+  color: #000000;
+}
+
+.uni-button-type-primary_text {
+  color: #ffffff;
+}
+
+.uni-button-type-warn_text {
+  color: #ffffff;
+}
+
+.uni-button-view-plain {
+  border-width: 1px;
+  border-color: #353535;
+  background-color: transparent;
+}
+
+.uni-button.uni-button-view-plain.uni-button-has-type {
+  background-color: transparent;
+}
+
+.uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
+  border-color: #353535;
+}
+
+.uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
+  color: #353535;
+}
+
+.uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_view {
+  border-color: #007aff;
+}
+
+.uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_text {
   color: #007aff;
-  border: 1px solid #007aff;
-  background-color: transparent;
 }
 
-div:where([uni-button])[type='primary'][plain][disabled] {
-  color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-div:where([uni-button])[type='primary'][plain]:after {
-  border-width: 0;
-}
-
-div:where([uni-button])[type='default'][plain] {
-  color: #353535;
-  border: 1px solid #353535;
-  background-color: transparent;
-}
-
-div:where([uni-button])[type='default'][plain][disabled] {
-  color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-div:where([uni-button])[type='default'][plain]:after {
-  border-width: 0;
-}
-
-div:where([uni-button])[plain] {
-  color: #353535;
-  border: 1px solid #353535;
-  background-color: transparent;
-}
-
-div:where([uni-button])[plain][disabled] {
-  color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-div:where([uni-button])[plain]:after {
-  border-width: 0;
-}
-
-div:where([uni-button])[plain][native] .uni-button-cover-view-inner {
-  padding: 0;
-}
-
-div:where([uni-button])[type='warn'][plain] {
-  color: #e64340;
-  border: 1px solid #e64340;
-  background-color: transparent;
-}
-
-div:where([uni-button])[type='warn'][plain][disabled] {
-  color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-div:where([uni-button])[type='warn'][plain]:after {
-  border-width: 0;
-}
-
-div:where([uni-button])[size='mini'] {
-  display: inline-block;
-  line-height: 2.3;
-  font-size: 13px;
-  padding: 0 1.34em;
-}
-
-div:where([uni-button])[size='mini'][native] {
-  padding: 0;
-}
-
-div:where([uni-button])[size='mini'][native] .uni-button-cover-view-inner {
-  padding: 0 1.34em;
-}
-
-div:where([uni-button])[loading]:not([disabled]) {
-  cursor: progress;
-}
-
-div:where([uni-button])[loading]:before {
-  content: ' ';
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  vertical-align: middle;
-  animation: uni-loading 1s steps(12, end) infinite;
-  background-size: 100%;
-}
-
-div:where([uni-button])[loading][type='primary'] {
-  color: rgba(255, 255, 255, 0.6);
-  background-color: #0062cc;
-}
-
-div:where([uni-button])[loading][type='primary'][plain] {
+.uni-button-text-plain.uni-button-type-primary_text {
   color: #007aff;
-  background-color: transparent;
 }
 
-div:where([uni-button])[loading][type='default'] {
-  color: rgba(0, 0, 0, 0.6);
-  background-color: #dedede;
+.uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_view {
+  border-color: #e64340;
 }
 
-div:where([uni-button])[loading][type='default'][plain] {
-  color: #353535;
-  background-color: transparent;
-}
-
-div:where([uni-button])[loading][type='warn'] {
-  color: rgba(255, 255, 255, 0.6);
-  background-color: #ce3c39;
-}
-
-div:where([uni-button])[loading][type='warn'][plain] {
+.uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-warn_text {
   color: #e64340;
-  background-color: transparent;
 }
 
-div:where([uni-button])[loading][native]:before {
-  content: none;
+.uni-button-text-plain.uni-button-type-warn_text {
+  color: #e64340;
+}
+
+.uni-button.uni-button-disabled.uni-button-view-plain {
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {
+  background-color: #f7f7f7;
 }
 
 .button-hover {
   color: rgba(0, 0, 0, 0.6);
   background-color: #dedede;
+  opacity: 0.8;
+}
+.transition-enabled.button-hover {
+  transition: background-color 0.1s, color 0.1s, opacity 0.1s;
 }
 
-.button-hover[plain] {
+.uni-button-view_primary_hover {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #0062cc;
+}
+.transition-enabled.uni-button-view_primary_hover {
+  transition: background-color 0.1s, color 0.1s;
+}
+
+.uni-button-view_default_hover {
+  color: rgba(0, 0, 0, 0.6);
+  background-color: #dedede;
+}
+.transition-enabled.uni-button-view_default_hover {
+  transition: background-color 0.1s, color 0.1s;
+}
+
+.uni-button-view_warn_hover {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #ce3c39;
+}
+.transition-enabled.uni-button-view_warn_hover {
+  transition: background-color 0.1s, color 0.1s;
+}
+
+.uni-button-view_plain_hover {
   color: rgba(53, 53, 53, 0.6);
   border-color: rgba(53, 53, 53, 0.6);
   background-color: transparent;
 }
-
-.button-hover[type='primary'] {
-  color: rgba(255, 255, 255, 0.6);
-  background-color: #0062cc;
+.transition-enabled.uni-button-view_plain_hover {
+  transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 }
 
-.button-hover[type='primary'][plain] {
+.uni-button-view_plain_primary_hover {
+  color: rgba(0, 122, 255, 0.6);
+  border-color: rgba(0, 122, 255, 0.6);
+  background-color: transparent;
+}
+.transition-enabled.uni-button-view_plain_primary_hover {
+  transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+}
+
+.uni-button-view_plain_default_hover {
+  color: rgba(53, 53, 53, 0.6);
+  border-color: rgba(53, 53, 53, 0.6);
+  background-color: transparent;
+}
+.transition-enabled.uni-button-view_plain_default_hover {
+  transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+}
+
+.uni-button-view_plain_warn_hover {
+  color: rgba(230, 67, 64, 0.6);
+  border-color: rgba(230, 67, 64, 0.6);
+  background-color: transparent;
+}
+.transition-enabled.uni-button-view_plain_warn_hover {
+  transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+}
+
+/* Web 的组合选择器需要覆盖 plain 普通态的颜色和边框。 */
+.uni-button.uni-button-view-plain.uni-button-type-primary_view.uni-button-view_plain_primary_hover {
   color: rgba(0, 122, 255, 0.6);
   border-color: rgba(0, 122, 255, 0.6);
   background-color: transparent;
 }
 
-.button-hover[type='default'] {
-  color: rgba(0, 0, 0, 0.6);
-  background-color: #dedede;
-}
-
-.button-hover[type='default'][plain] {
+.uni-button.uni-button-view-plain.uni-button-type-default_view.uni-button-view_plain_default_hover {
   color: rgba(53, 53, 53, 0.6);
   border-color: rgba(53, 53, 53, 0.6);
   background-color: transparent;
 }
 
-.button-hover[type='warn'] {
-  color: rgba(255, 255, 255, 0.6);
-  background-color: #ce3c39;
-}
-
-.button-hover[type='warn'][plain] {
+.uni-button.uni-button-view-plain.uni-button-type-warn_view.uni-button-view_plain_warn_hover {
   color: rgba(230, 67, 64, 0.6);
   border-color: rgba(230, 67, 64, 0.6);
   background-color: transparent;
 }
 
+.uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
 @media (prefers-color-scheme: dark) {
-  div:where([uni-button]),
-  div:where([uni-button])[type='default'] {
-    color: #d6d6d6;
+  .uni-button-type-default_view {
     background-color: #343434;
   }
 
+  .uni-button-type-default_text {
+    color: #d6d6d6;
+  }
+
   .button-hover,
-  .button-hover[type='default'] {
+  .uni-button-view_default_hover {
     color: #d6d6d6;
     background-color: rgba(255, 255, 255, 0.1);
   }
 
-  div:where([uni-button])[disabled][type='default'],
-  div:where([uni-button])[disabled]:not([type]) {
-    color: rgba(255, 255, 255, 0.2);
+  .uni-button-disabled.uni-button-type-default_view {
     background-color: rgba(255, 255, 255, 0.08);
   }
 
-  div:where([uni-button])[type='primary'][plain][disabled] {
+  .uni-button-disabled.uni-button-type-default_text {
     color: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.2);
   }
 
-  div:where([uni-button])[type='default'][plain] {
-    color: #d6d6d6;
-    border: 1px solid #d6d6d6;
+  .uni-button.uni-button-view-plain.uni-button-type-default_text {
+    color: #353535;
   }
 
-  .button-hover[type='default'][plain] {
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
+    border-color: #353535;
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
+    color: #353535;
+  }
+
+  .button-hover.uni-button-view-plain,
+  .uni-button-view_plain_default_hover {
     color: rgba(150, 150, 150, 0.6);
     border-color: rgba(150, 150, 150, 0.6);
     background-color: rgba(50, 50, 50, 0.2);
   }
 
-  div:where([uni-button])[type='default'][plain][disabled] {
-    border-color: hsla(0, 0%, 100%, 0.2);
-    color: hsla(0, 0%, 100%, 0.2);
+  /* 未传 type 的 plain 按钮也需要覆盖暗黑模式的默认背景。 */
+  .uni-button.uni-button-view-plain.uni-button-no-type.uni-button-type-default_view {
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-view-plain.uni-button-type-default_view.uni-button-view_plain_default_hover {
+    color: rgba(150, 150, 150, 0.6);
+    border-color: rgba(150, 150, 150, 0.6);
+    background-color: rgba(50, 50, 50, 0.2);
+  }
+
+  .uni-button.uni-button-disabled.uni-button-view-plain,
+  .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
+    color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: transparent;
+  }
+
+  .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {
+    color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.08);
   }
 }

@@ -4,9 +4,6 @@ const { sync } = require('fast-glob')
 const { parse } = require('@babel/parser')
 const { hyphenate } = require('@vue/shared')
 
-// Web 自带的 Button 样式不来自内网组件同步。
-const webVaporFrameworkStyles = ['button']
-
 // 两阶段可能从不同仓库启动；统一读取 next 的配置，并以 next 为相对路径基准。
 function resolveWebVaporSourceDir(nextDir) {
   const envFile = path.resolve(nextDir, '.env')
@@ -150,5 +147,4 @@ function resolveWebVaporComponents(extApiDir, includeExcluded = false) {
 exports.resolveWebVaporComponents = resolveWebVaporComponents
 exports.resolveWebVaporComponentModules = resolveWebVaporComponentModules
 exports.resolveWebVaporFrameworkComponents = resolveWebVaporFrameworkComponents
-exports.webVaporFrameworkStyles = webVaporFrameworkStyles
 exports.resolveWebVaporSourceDir = resolveWebVaporSourceDir
