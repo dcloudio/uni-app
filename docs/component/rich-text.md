@@ -55,8 +55,8 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 | mode | string | "web" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 渲染模式 |
 | space | string |   | Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>显示连续空格 |
 | user-select | boolean | false | Web: 5.25; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.25; iOS(VDOM): 4.11; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.25 | 文本是否可选，该属性会使节点显示为 block |
-| selection-handle-color | string | "#4285F4FF" | 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.22; HarmonyOS: x | 选择区域高亮手柄颜色 |
-| selection-background-color | string | "#33B5E566" | 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.22; HarmonyOS: x | 选择区域高亮背景颜色 |
+| selection-handle-color | string | "#4285F4FF" | 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.22; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 选择区域高亮手柄颜色 |
+| selection-background-color | string | "#33B5E566" | 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.22; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25 | 选择区域高亮背景颜色 |
 | @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void |   | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.71 | 内容点击事件 |
 | ~~selectable~~ | boolean | false | Web: 5.24; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 文本是否可选。已废弃，请使用 user-select |
 
