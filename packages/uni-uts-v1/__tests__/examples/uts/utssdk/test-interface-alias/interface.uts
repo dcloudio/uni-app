@@ -1,0 +1,18 @@
+export interface ChannelManager {
+  setPushChannel(channelId: string): void;
+  self(): PushChannelManager;
+  getSecondary(): SecondaryManagerAlias;
+}
+
+export type PushChannelManager = ForwardManager;
+type ForwardManager = InternalManager;
+type InternalManager = ChannelManager;
+export type NestedPushChannelManager = PushChannelManager;
+
+export interface SecondaryManager {
+  getValue(): string;
+}
+export type SecondaryManagerAlias = SecondaryManager;
+
+export type CycleA = CycleB;
+export type CycleB = CycleA;
