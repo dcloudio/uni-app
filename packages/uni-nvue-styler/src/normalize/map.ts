@@ -31,6 +31,7 @@ import { animationNormalizeFactoryMap } from './animation'
 import { normalizeBackdropFilter } from './backdropFilter'
 import { createNormalizeDom2Calc } from './calc'
 import { normalizeGap } from './gap'
+import { createNormalizeCornerRadius } from './borderRadius'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -205,6 +206,13 @@ const dom2NormalizeMap: Record<string, Normalize> = {
   columnGap: normalizeGap,
 }
 
+const cornerRadiusProperties = new Set([
+  'borderTopLeftRadius',
+  'borderTopRightRadius',
+  'borderBottomLeftRadius',
+  'borderBottomRightRadius',
+])
+
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.PERCENTAGE]: normalizePercent,
   [Restriction.NUMBER]: normalizeNumber,
@@ -297,10 +305,13 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
         normalize = createCombinedNormalize([normalizeFlexFlow, normalize])
       }
     }
-    result[prop] = normalizePlatform(
-      dom2 ? createNormalizeDom2Calc(normalize, prop) : normalize,
-      property.uniPlatform
-    )
+    if (dom2) {
+      normalize = createNormalizeDom2Calc(normalize, prop)
+    }
+    if (cornerRadiusProperties.has(prop)) {
+      normalize = createNormalizeCornerRadius(normalize)
+    }
+    result[prop] = normalizePlatform(normalize, property.uniPlatform)
   }
   return result
 }
