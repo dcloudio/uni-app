@@ -1,3 +1,8 @@
+uni-input,
+div:where([uni-input]) {
+  background-color: #ffffff;
+}
+
 .uni-input-placeholder {
   color: #757575;
 }
