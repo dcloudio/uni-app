@@ -72,7 +72,7 @@ uni-app x 的app.uvue对比老 uni-app 有2个变化：
 	
 #### 5.2 隐私协议
 
-老uni的隐私弹框是原生的，UI很难自定义。而uni-app x未提供原生的隐私弹框，需要开发者自己做一个uvue页面来显示隐私协议。
+老uni的隐私弹框是原生的，UI很难自定义。而uni-app x未提供原生的隐私弹框，开发者自己做一个uvue页面来显示隐私协议。
 
 开发者需要在`App.uvue`的`onLaunch`里判断隐私接受状态，通过`dialogPage`的方式弹出自定义隐私协议页面。可以参考 `hello uni-app x` 的`App.uvue`里的`onLaunch`里的`uni.getPrivacySetting`部分。
 
@@ -84,7 +84,7 @@ uni-app x 的 app.uvue 文档[详见](./collocation/app.md)
 
 ### 6. 再次适配css
 
-之前在uni-app中适配过一次css，但[css样式重置](./css/README.md#css-reset)、[样式隔离策略2.0](./css/common/style-isolation.md)，这2个在uni-app下没有，还得在uni-app x环境中再次适配。
+之前在uni-app中适配过一次css，但[css样式重置](./css/README.md#css-reset)、[样式隔离策略2.0](./css/common/style-isolation.md)，这2个在uni-app下没有，还需要在uni-app x环境中再次适配。
 
 之前uni-app中的css改造难免有遗漏，也需要再次核对。
 
@@ -112,16 +112,36 @@ uni-app x不支持plus。
 
 页面中如果有 app-plus 的条件编译，建议改为 app 。uni-app x 中也支持独立的 app-android、app-ios、app-harmony 的条件编译。
 	
-### 9. 升级或改造前端库
+### 9. 内置组件变化
+
+uni-app x多了一批内置组件。loading、list-view、waterflow、sticky-header和sticky-section、page-container。
+
+如果之前使用nvue，那么如下nvue组件和uvue组件的对应关系是：
+- list 改为 list-view
+- recycle-list 改为 list-view
+- waterfall 改为 waterflow
+- cell 按其所属父容器是列表还是瀑布流，分别改为 list-item、flow-item
+- barcode 改为 camera组件，设置mode="scanCode"
+- refresh 改为 uni-ui x 的 [uni-refresh-box](./component/uni-ui-x/uni-refresh-box.html)
+
+如果之前是vue页面，需要注意如下变化
+- 使用v-for构造的长列表，原本使用的是scroll-view。在uvue下需要改成list-view，并且在list-item上进行v-for
+- 使用css sticky的代码，需要在uvue下改成使用吸顶组件，sticky-header和sticky-section
+- uni-app的video组件可以播放flv视频、支持 rtmp/rtsp 协议。但在uni-app x中，这些功能被转移到了live-player组件中。
+- canvas组件：uni-app 的 canvas 使用了微信小程序的旧版规范，和 W3C 规范有差异。微信小程序新版的 canvas 规范已经与 W3C 规范拉齐。uni-app x 中仅支持微信小程序的新版规范。
+- map组件：uni-app 内置支持高德地图、腾讯地图、百度地图。uni-app x 只内置了腾讯地图，高德地图需使用官方插件[uni-amap](https://ext.dcloud.net.cn/plugin?id=25947)，百度地图需在插件市场搜索。
+- uni-app x不再支持movable-view的组件，可以在touchmove中使用UniElement.style?.setProperty('transform', 'translate(' + x + 'px,' + y + 'px)')来高性能拖动组件。该写法兼容小程序。参考[示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/component/global-events/touch-events.uvue)
+
+### 10. 升级或改造前端库
 
 * 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md#uniuiupgrade)
 * 如果使用其他组件库，需要咨询组件作者是否有 uni-app x 版本。如果没有的话，推荐用[uni-ui x](./component/uni-ui-x/README.md)重构。
 
-uni-app x 相比 uni-app 多了不少内置组件，比如`list-view`复用长列表、`waterflow`瀑布流、`page-container`弹框、`sticky`吸顶、`match-media`宽屏适配、loading加载、native-view对接原生view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
+uni-app x 相比 uni-app 多了不少内置组件，比如`waterflow`瀑布流、`page-container`弹框、loading加载。对于内置组件已经满足需求的情况就没必要使用三方组件了。
 
-* 升级uni_modules，比如官方的uni-id-pages、uni-starter、uni-pay、升级中心等库，需要升级到支持蒸汽模式的最新版本。
+* 升级uni_modules，比如官方的uni-id-pages-x、uni-pay-x、uni-starter-x、升级中心等库，需要升级到支持蒸汽模式的最新版本。
 
-### 10. 改造wxs和renderjs为Element API
+### 11. 改造wxs和renderjs为Element API
 
 uni-app x的app平台不再支持wxs和renderjs。
 
@@ -129,13 +149,13 @@ uni-app x 提供了全端统一的UNIElement API，它在编译到微信/支付�
 
 包括moveable组件的使用，也推荐改成UNIElement的操作。
 	
-### 11. mock掉App原生插件（非uts原生插件）的输入输出
+### 12. mock掉App原生插件（非uts原生插件）的输入输出
 
 如果你使用了老的App原生插件，先让uni-agent把App原生插件的输入输出mock掉，后续步骤再处理原生插件，先对前几步的工作进行验证。
 
 这一步要再处理一件事，检查组件库是否适配了[样式隔离策略2.0](./css/common/style-isolation.md)。uni-app x 的蒸汽模式，仅支持[样式隔离策略2.0](./css/common/style-isolation.md)。
 
-### 12. 替换App原生插件和uts兼容模式组件
+### 13. 替换App原生插件和uts兼容模式组件
 	
 如果你之前使用了uts API插件，那么可以在uni-app x下直接复用。
 
@@ -157,14 +177,14 @@ uni-agent让普通前端开发者具备了写原生插件的能力，官方的�
 
 uni-app 的 Android平台整个应用只有一个activity，每个page是view。而uni-app x 的 Android 平台，每个页面都是一个activity。有的uts插件可能未区别这种差异。
 
-### 13. 处理uts/js/ts的差异
+### 14. 处理uts/js/ts的差异
 
 在 HBuilder 5.31以前，蒸汽模式下uts/js/ts都是按uts2js编译。此时script中的lang不能设置，需要置空。同时外部文件后缀需要为uts。
 但此时的uts，不编译为强类型的kt、swift，可以在里面写普通的js/ts代码。
 
 从 5.31+ ，蒸汽模式下支持独立设置uts/js/ts。[详见](./vue/README.md#lang)。
 
-推荐uni-app的老应用升级时选择5.31+。
+推荐uni-app的老应用升级时选择5.31+。这样就可以跳过本步骤。
 	
 ### 小结
 

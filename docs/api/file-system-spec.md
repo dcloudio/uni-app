@@ -225,3 +225,6 @@ FileSystemManager API不支持访问沙盒外目录。
 	+ iOS模拟器文件路径中字母大小写不敏感  
 
 > 为了有更好的兼容性，建议处理文件路径时按大小写敏感原则处理  
+
+### 清除缓存
+在hello uni-app x的模板-关于里有清除缓存的示例，[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/about/about.uvue)
