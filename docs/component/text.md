@@ -180,7 +180,7 @@ text组件在web浏览器渲染（含浏览器、小程序webview渲染模式、
 
 app平台 text 组件虽然支持嵌套，但注意限制：
 1. 子组件不继承父组件样式。这样使用会在编译到web渲染的平台时产生差异。
-2. 子组件设置的排版相关样式（如display、flex、position、width、max-width、min-width、height、max-height、min-height、margin、padding、top、left、right、bottom等），渲染样式（如box-shadow、transform、transition、visibility、z-index等）以及部分text独有样式（如text-align、lines、line-height、white-space、text-overflow、world-break等）不生效
+2. 子组件设置的排版相关样式（如display、flex、position、width、max-width、min-width、height、max-height、min-height、margin、padding、top、left、right、bottom等），渲染样式（如box-shadow、transform、transition、visibility、z-index等）以及部分text独有样式（如text-align、lines、line-height、white-space、text-overflow、word-break等）不生效
 3. 嵌套时建议将文本写在`<text></text>`标签之间，例如：`<text><text>嵌套文本1</text><text>嵌套文本2</text></text>`，避免出现预期外的效果。
 
 HBuilderX 4.51版本+ text组件嵌套时，子组件支持点击事件响应。
