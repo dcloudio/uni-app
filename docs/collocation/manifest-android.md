@@ -786,7 +786,7 @@ Google V8 引擎通过 Android NDK 编译为 .so 动态链接库，且需要针�
 
 在uni-app x项目中使用包含 ICU 功能的 V8 引擎，需在manifest.json中配置：  
 
-- HBuilderX 5.33 及以上版本  
+- HBuilderX 5.35 及以上版本  
   需通过 manifest.json 的`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "v8-icu" 节点，如下示例：  
   ```json
   {
