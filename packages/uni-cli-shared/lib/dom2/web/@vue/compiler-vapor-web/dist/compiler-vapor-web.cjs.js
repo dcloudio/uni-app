@@ -71,6 +71,7 @@ function transformView(node) {
 		return !(prop.name === "bind" && ((_prop$arg = prop.arg) === null || _prop$arg === void 0 ? void 0 : _prop$arg.type) === 4 && prop.arg.isStatic && prop.arg.content === "flatten");
 	});
 	if (!node.props.some((prop) => prop.type === 6 && prop.name === "uni-view")) node.props.unshift({
+		__uniTemplate: true,
 		type: 6,
 		name: "uni-view",
 		nameLoc: node.loc,
@@ -97,6 +98,7 @@ function transformText(node) {
 		return !(prop.name === "bind" && ((_prop$arg = prop.arg) === null || _prop$arg === void 0 ? void 0 : _prop$arg.type) === 4 && prop.arg.isStatic && unsupportedProps.has(prop.arg.content));
 	});
 	if (!node.props.some((prop) => prop.type === 6 && prop.name === "uni-text")) node.props.unshift({
+		__uniTemplate: true,
 		type: 6,
 		name: "uni-text",
 		nameLoc: node.loc,
@@ -141,6 +143,7 @@ function transformImage(node) {
 	node.tagType = 0;
 	node.children = [];
 	if (!node.props.some((prop) => prop.type === 6 && prop.name === "uni-image")) node.props.unshift({
+		__uniTemplate: true,
 		type: 6,
 		name: "uni-image",
 		nameLoc: node.loc,
@@ -568,6 +571,12 @@ function resolveUniElementRoots(ast, name) {
 	if (!roots.length) return;
 	const elements = roots.filter((node) => node.type === 1);
 	if (elements.length !== roots.length) return;
+	if ((name === "list-view" || name === "waterflow") && elements.length === 1 && elements[0].tag === "scroll-view" && elements[0].tagType === 1 && !(0, _vue_compiler_dom.findProp)(elements[0], "key", true, true) && !elements[0].props.some((prop) => prop.type === 7 && [
+		"if",
+		"else-if",
+		"else",
+		"for"
+	].includes(prop.name))) return elements;
 	if (elements.length > 1) {
 		if (!elements[0].props.some((prop) => prop.type === 7 && prop.name === "if") || elements.slice(1).some((node) => !node.props.some((prop) => prop.type === 7 && (prop.name === "else-if" || prop.name === "else")))) return;
 	}
@@ -592,8 +601,29 @@ function createUniElementTransform() {
 			if (node.type === 0) {
 				name = context.options.bindingMetadata.__uniElement;
 				if (name) roots = resolveUniElementRoots(node, name);
+				if ((roots === null || roots === void 0 ? void 0 : roots[0].tag) === "scroll-view") {
+					const root = roots[0];
+					return () => {
+						var _context$dynamic$chil;
+						const element = (_context$dynamic$chil = context.dynamic.children[node.children.indexOf(root)]) === null || _context$dynamic$chil === void 0 ? void 0 : _context$dynamic$chil.id;
+						if (element === void 0) return;
+						const operation = {
+							type: 3,
+							element,
+							tag: root.tag,
+							isSVG: false,
+							prop: {
+								key: (0, _vue_compiler_dom.createSimpleExpression)("uniTagName", true),
+								values: []
+							}
+						};
+						elementOperations.add(operation);
+						context.registerOperation(operation);
+					};
+				}
 			} else if (roots && node.type === 1 && roots.some((root) => node.loc === root.loc) && (0, _vue_compiler_vapor.isUniBasicElement)(node)) {
 				if (!node.props.some((prop) => prop.type === 6 && prop.name === `uni-${name}`)) node.props.unshift({
+					__uniTemplate: true,
 					type: 6,
 					name: `uni-${name}`,
 					nameLoc: node.loc,
@@ -619,6 +649,23 @@ function createUniElementTransform() {
 			if (!descriptor) {
 				descriptor = context.getUniqueLocalName(`_uni${(0, _vue_shared.capitalize)((0, _vue_shared.camelize)(name))}Element`);
 				context.hoists.push(`const ${descriptor} = { value: ${JSON.stringify(name.toUpperCase())} }\n`);
+			}
+			if (operation.tag === "scroll-view") {
+				const element = context.getUniqueLocalName(`_uni${(0, _vue_shared.capitalize)((0, _vue_shared.camelize)(name))}Root`);
+				return [
+					_vue_compiler_vapor.NEWLINE,
+					`const ${element} = `,
+					...(0, _vue_compiler_vapor.genCall)(context.helper("getBlockFirstNode"), `n${operation.element}`),
+					_vue_compiler_vapor.NEWLINE,
+					`if (${element} && ${element}.nodeType === 1) {`,
+					_vue_compiler_vapor.NEWLINE,
+					`  ${element}.setAttribute(${JSON.stringify(`uni-${name}`)}, "")`,
+					_vue_compiler_vapor.NEWLINE,
+					"  ",
+					...(0, _vue_compiler_vapor.genCall)(context.helper("initUniElement"), element, descriptor),
+					_vue_compiler_vapor.NEWLINE,
+					"}"
+				];
 			}
 			return [_vue_compiler_vapor.NEWLINE, ...(0, _vue_compiler_vapor.genCall)(context.helper("initUniElement"), `n${operation.element}`, descriptor)];
 		}

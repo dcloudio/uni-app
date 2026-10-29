@@ -4054,6 +4054,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 	const hasDynamicKeys = isSelect && node.props.some((prop) => prop.type === 7 && (prop.name === "bind" || prop.name === "on") && (!prop.arg || !(0, _vue_compiler_dom.isStaticExp)(prop.arg)));
 	let template = "";
 	template += `<${tag}`;
+	for (const prop of node.props) if (prop.type === 6 && prop.__uniTemplate) template += ` ${prop.name}`;
 	if (scopeId) template += ` ${scopeId}`;
 	const extraScopeId = context.options.extraScopeId;
 	if (extraScopeId && extraScopeId !== scopeId) template += ` ${extraScopeId}`;
@@ -4325,6 +4326,7 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 		} else results.push(...props.map(toDirectiveResult));
 	}
 	for (const prop of props) {
+		if (prop.type === 6 && prop.__uniTemplate) continue;
 		if (prop.type === 7 && !prop.arg) {
 			if (prop.name === "bind") {
 				if (prop.exp) {
