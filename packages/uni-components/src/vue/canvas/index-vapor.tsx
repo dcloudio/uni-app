@@ -9,7 +9,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props: canvasProps,
   rootElement: { name: 'uni-canvas', class: UniCanvasElement },
   setup() {
-    const root = <canvas uni-canvas="" uni-view="" class="uni-canvas-canvas" />
+    // 原生 canvas 直接作为根，不借用 View 身份；公共能力和样式由 uni-canvas 标识接入。
+    const root = <canvas uni-canvas="" class="uni-canvas-canvas" />
     //#if !_NODE_JS_
     // 在外部 ref 可见前绑定根节点的绘图方法；服务端没有原生绘图能力，不做此绑定。
     initCanvasElement(root)

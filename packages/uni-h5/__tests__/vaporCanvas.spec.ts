@@ -133,7 +133,7 @@ describe('Web Vapor Canvas 原生宿主', () => {
     })
     elements.installWebVaporElements(dom.window)
     const element = await load(components + 'vue/canvas/element-vapor.ts', {
-      '../web-vapor-elements': elements,
+      '../../helpers/UniElement': { UniElement },
     })
     UniCanvasElement = element.UniCanvasElement
     const helper = await load(components + 'helpers/component.ts', {
@@ -263,12 +263,13 @@ describe('Web Vapor Canvas 原生宿主', () => {
     expect(element).toBe(canvas)
     expect(element.firstElementChild).toBeNull()
     expect(element).toBeInstanceOf(UniElement)
-    expect(element).toBeInstanceOf(elements.UniViewElement)
+    expect(element).not.toBeInstanceOf(elements.UniViewElement)
     expect(element).toBeInstanceOf(UniCanvasElement)
     class Derived extends UniCanvasElement {}
     expect(element).not.toBeInstanceOf(Derived)
     expect(canvas).toBeInstanceOf(dom.window.HTMLCanvasElement)
-    expect(canvas.hasAttribute('uni-view')).toBe(true)
+    expect(canvas.hasAttribute('uni-view')).toBe(false)
+    expect(canvas.hasAttribute('uni-canvas')).toBe(true)
     expect(Object.prototype.hasOwnProperty.call(canvas, 'width')).toBe(false)
     expect(Object.prototype.hasOwnProperty.call(canvas, 'height')).toBe(false)
     expect(typeof element.getPage).toBe('function')
@@ -294,6 +295,18 @@ describe('Web Vapor Canvas 原生宿主', () => {
     expect(node.value).toBe(element)
     expect(element.firstElementChild).toBeNull()
     expect(element.dataset.get('payload')).toBe(payload.value)
+  })
+
+  test('独立 Canvas 标识保留基础样式和 hidden，不启用 View 布局', () => {
+    const { canvas } = mount()
+    const style = dom.window.getComputedStyle(canvas)
+    expect(style.boxSizing).toBe('border-box')
+    expect(style.flexShrink).toBe('0')
+    expect(style.display).not.toBe('flex')
+    canvas.setAttribute('hidden', '')
+    expect(dom.window.getComputedStyle(canvas).display).toBe('none')
+    canvas.removeAttribute('hidden')
+    expect(dom.window.getComputedStyle(canvas).display).not.toBe('none')
   })
 
   test('默认显示尺寸不随绘图缓冲区变化，用户样式可覆盖并恢复默认值', async () => {

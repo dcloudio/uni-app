@@ -1,12 +1,14 @@
-import { UniViewElement } from '../web-vapor-elements'
+import { UniElement } from '../../helpers/UniElement'
 
 // 只提供逻辑类型与公开成员，根节点是原生 canvas，不构造或注册 Custom Element。
-export class UniCanvasElement extends UniViewElement {
+export class UniCanvasElement extends UniElement {
   static [Symbol.hasInstance](value: unknown): boolean {
+    const el = value as Element | null | undefined
     return (
       (this === UniCanvasElement &&
-        value instanceof UniViewElement &&
-        (value as Element).hasAttribute('uni-canvas')) ||
+        el?.nodeType === 1 &&
+        el.localName === 'canvas' &&
+        el.hasAttribute('uni-canvas')) ||
       Function.prototype[Symbol.hasInstance].call(this, value)
     )
   }

@@ -170,9 +170,9 @@ describe('Web Vapor 原生宿主 Element', () => {
       ],
       [
         'canvas',
-        'uni-view',
-        'VIEW',
-        elements.UniViewElement,
+        'uni-canvas',
+        'CANVAS',
+        UniElement,
         dom.window.HTMLCanvasElement,
       ],
       [
@@ -437,19 +437,15 @@ describe('Web Vapor 原生宿主 Element', () => {
     }
   })
 
-  test('普通 DOM、错配标记、SVG 不属于 UniElement，标记变化立即生效', () => {
+  test('普通 DOM、错配标记不属于 UniElement，标记变化立即生效', () => {
     install()
     for (const el of [
       document.createElement('div'),
       document.createElement('span'),
       document.createElement('img'),
-      document.createElementNS('http://www.w3.org/2000/svg', 'div'),
     ]) {
       el.setAttribute('uni-image', '')
       if (el.localName === 'img') el.removeAttribute('uni-image')
-      if (el.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
-        el.setAttribute('uni-view', '')
-      }
       expect(el).not.toBeInstanceOf(UniElement)
       expect((el as any).__isUniElement).toBeFalsy()
       expect(isBuiltInElement(el as HTMLElement)).toBe(false)
@@ -463,10 +459,24 @@ describe('Web Vapor 原生宿主 Element', () => {
     expect(el).not.toBeInstanceOf(UniElement)
     expect(el.uniTagName).toBeUndefined()
     expect(isBuiltInElement(el)).toBe(false)
-    for (const value of [null, undefined, 1, {}, 'div']) {
+    for (const value of [null, undefined, 1, {}, 'div', { localName: 'div' }]) {
       expect((value as any) instanceof elements.UniViewElement).toBe(false)
       expect((value as any) instanceof UniElement).toBe(false)
     }
+  })
+
+  test('复合组件的公开身份与基础类型分开识别，公共判断不重复查询标识', () => {
+    install()
+    const root = document.createElement('div')
+    root.setAttribute('uni-view', '')
+    Object.defineProperty(root, 'uniTagName', { value: 'PROGRESS' })
+    const read = jest.spyOn(root, 'hasAttribute')
+    expect(root).toBeInstanceOf(UniElement)
+    expect(read).not.toHaveBeenCalled()
+    expect(root).toBeInstanceOf(elements.UniViewElement)
+    expect(read).toHaveBeenCalledTimes(1)
+    expect(read).toHaveBeenCalledWith('uni-view')
+    read.mockRestore()
   })
 
   test('保留 CustomElement 继承判断，子类不能误认普通 view', () => {

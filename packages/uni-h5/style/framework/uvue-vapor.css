@@ -506,7 +506,7 @@ body .uni-modal__btn_primary {
  */
 
 div:where([uni-view]),
-canvas:where([uni-view]),
+canvas:where([uni-canvas]),
 span:where([uni-text]),
 img:where([uni-image]) {
   position: relative;
@@ -556,7 +556,7 @@ img:where([uni-image]) {
 }
 
 div:where([uni-view][hidden]),
-canvas:where([uni-view][hidden]),
+canvas:where([uni-canvas][hidden]),
 span:where([uni-text][hidden]),
 img:where([uni-image][hidden]) {
   display: none !important;

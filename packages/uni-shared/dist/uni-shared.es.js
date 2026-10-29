@@ -1647,7 +1647,7 @@ function initVaporDataset(window) {
         [realm.HTMLDivElement, 'uni-view'],
         [realm.HTMLSpanElement, 'uni-text'],
         [realm.HTMLImageElement, 'uni-image'],
-        [realm.HTMLCanvasElement, 'uni-view'],
+        [realm.HTMLCanvasElement, 'uni-canvas'],
     ]) {
         if (Object.getOwnPropertyDescriptor(Host.prototype, 'dataset'))
             continue;

@@ -3,24 +3,14 @@ import { type UniDOMStringMap, initVaporDataset } from '@dcloudio/uni-shared'
 
 const nativeHasInstance = Function.prototype[Symbol.hasInstance]
 
-function getUniTagName(value: unknown) {
+// 框架标识按约定只用于 HTML 宿主，不额外检查命名空间。
+function isUniNativeElement(
+  value: unknown,
+  tag: string,
+  marker: string
+): boolean {
   const el = value as Element | null | undefined
-  if (
-    !el ||
-    el.nodeType !== 1 ||
-    el.namespaceURI !== 'http://www.w3.org/1999/xhtml'
-  ) {
-    return
-  }
-  switch (el.localName) {
-    case 'div':
-    case 'canvas':
-      return el.hasAttribute('uni-view') ? 'VIEW' : undefined
-    case 'span':
-      return el.hasAttribute('uni-text') ? 'TEXT' : undefined
-    case 'img':
-      return el.hasAttribute('uni-image') ? 'IMAGE' : undefined
-  }
+  return el?.nodeType === 1 && el.localName === tag && el.hasAttribute(marker)
 }
 
 // 仅 dataset 遵循 uni 的 Map 契约，其余原生 DOM 属性不随逻辑 Element 类型重写。
@@ -36,7 +26,8 @@ const NativeUniElement = UniElement as unknown as { new (): NativeUniElement }
 export class UniViewElement extends NativeUniElement {
   static [Symbol.hasInstance](value: unknown): boolean {
     return (
-      (this === UniViewElement && getUniTagName(value) === 'VIEW') ||
+      (this === UniViewElement &&
+        isUniNativeElement(value, 'div', 'uni-view')) ||
       nativeHasInstance.call(this, value)
     )
   }
@@ -50,7 +41,8 @@ export class UniTextElement extends NativeUniElement {
 
   static [Symbol.hasInstance](value: unknown): boolean {
     return (
-      (this === UniTextElement && getUniTagName(value) === 'TEXT') ||
+      (this === UniTextElement &&
+        isUniNativeElement(value, 'span', 'uni-text')) ||
       nativeHasInstance.call(this, value)
     )
   }
@@ -58,7 +50,8 @@ export class UniTextElement extends NativeUniElement {
 export class UniImageElement extends NativeUniElement {
   static [Symbol.hasInstance](value: unknown): boolean {
     return (
-      (this === UniImageElement && getUniTagName(value) === 'IMAGE') ||
+      (this === UniImageElement &&
+        isUniNativeElement(value, 'img', 'uni-image')) ||
       nativeHasInstance.call(this, value)
     )
   }
@@ -80,10 +73,33 @@ export function installWebVaporElements(realm?: Window) {
       configurable: true,
       value(this: typeof UniElement, value: unknown) {
         // 子类必须保持真实继承判断，不能把带标记的 view 误认成 progress 等复合元素。
-        return (
-          (this === UniElement && !!getUniTagName(value)) ||
-          nativeHasInstance.call(this, value)
-        )
+        const el = value as
+          | (Element & { readonly uniTagName?: string })
+          | null
+          | undefined
+        if (this === UniElement && el?.nodeType === 1) {
+          // 已安装的宿主直接复用公开身份，复合组件无需再次分类基础标识。
+          if ('uniTagName' in el)
+            return !!el.uniTagName || nativeHasInstance.call(this, value)
+          // 保留尚未安装扩展的跨 Window 节点识别，不在类型判断中安装原型。
+          let marker: string | undefined
+          switch (el.localName) {
+            case 'div':
+              marker = 'uni-view'
+              break
+            case 'span':
+              marker = 'uni-text'
+              break
+            case 'img':
+              marker = 'uni-image'
+              break
+            case 'canvas':
+              marker = 'uni-canvas'
+              break
+          }
+          if (marker && el.hasAttribute(marker)) return true
+        }
+        return nativeHasInstance.call(this, value)
       },
     })
   }
@@ -119,7 +135,7 @@ export function installWebVaporElements(realm?: Window) {
     [hosts.HTMLDivElement, 'uni-view', 'VIEW'],
     [hosts.HTMLSpanElement, 'uni-text', 'TEXT'],
     [hosts.HTMLImageElement, 'uni-image', 'IMAGE'],
-    [hosts.HTMLCanvasElement, 'uni-view', 'VIEW'],
+    [hosts.HTMLCanvasElement, 'uni-canvas', 'CANVAS'],
   ] as const) {
     const prototype = Host.prototype
     if (!('uniTagName' in prototype)) {

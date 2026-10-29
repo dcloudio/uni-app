@@ -25,7 +25,7 @@ export function initVaporDataset(window: Window) {
     [realm.HTMLDivElement, 'uni-view'],
     [realm.HTMLSpanElement, 'uni-text'],
     [realm.HTMLImageElement, 'uni-image'],
-    [realm.HTMLCanvasElement, 'uni-view'],
+    [realm.HTMLCanvasElement, 'uni-canvas'],
   ] as const) {
     if (Object.getOwnPropertyDescriptor(Host.prototype, 'dataset')) continue
     Object.defineProperty(Host.prototype, 'dataset', {

@@ -209,46 +209,10 @@ let UniElement$1 = class UniElement extends Object {
   }
 };
 const UniElement2 = UniElement$1;
-const nativeHasInstance = Function.prototype[Symbol.hasInstance];
-function getUniTagName(value) {
-  const el = value;
-  if (!el || el.nodeType !== 1 || el.namespaceURI !== "http://www.w3.org/1999/xhtml") {
-    return;
-  }
-  switch (el.localName) {
-    case "div":
-    case "canvas":
-      return el.hasAttribute("uni-view") ? "VIEW" : void 0;
-    case "span":
-      return el.hasAttribute("uni-text") ? "TEXT" : void 0;
-    case "img":
-      return el.hasAttribute("uni-image") ? "IMAGE" : void 0;
-  }
-}
-const NativeUniElement = UniElement2;
-class UniViewElement extends NativeUniElement {
+const _UniCanvasElement = class _UniCanvasElement extends UniElement2 {
   static [Symbol.hasInstance](value) {
-    return this === UniViewElement && getUniTagName(value) === "VIEW" || nativeHasInstance.call(this, value);
-  }
-}
-class UniTextElement extends NativeUniElement {
-  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
-  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
-  get value() {
-    return this.textContent ?? "";
-  }
-  static [Symbol.hasInstance](value) {
-    return this === UniTextElement && getUniTagName(value) === "TEXT" || nativeHasInstance.call(this, value);
-  }
-}
-class UniImageElement extends NativeUniElement {
-  static [Symbol.hasInstance](value) {
-    return this === UniImageElement && getUniTagName(value) === "IMAGE" || nativeHasInstance.call(this, value);
-  }
-}
-const _UniCanvasElement = class _UniCanvasElement extends UniViewElement {
-  static [Symbol.hasInstance](value) {
-    return this === _UniCanvasElement && value instanceof UniViewElement && value.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
+    const el = value;
+    return this === _UniCanvasElement && (el == null ? void 0 : el.nodeType) === 1 && el.localName === "canvas" && el.hasAttribute("uni-canvas") || Function.prototype[Symbol.hasInstance].call(this, value);
   }
 };
 _UniCanvasElement.__uniElement = {};
@@ -259,7 +223,7 @@ const canvasProps = {
     default: false
   }
 };
-const _t0$f = Vue.template("<canvas uni-canvas uni-view class=uni-canvas-canvas>", 3);
+const _t0$f = Vue.template("<canvas uni-canvas class=uni-canvas-canvas>", 3);
 const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Canvas",
   props: canvasProps,
@@ -275,6 +239,32 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
+const nativeHasInstance = Function.prototype[Symbol.hasInstance];
+function isUniNativeElement(value, tag, marker) {
+  const el = value;
+  return (el == null ? void 0 : el.nodeType) === 1 && el.localName === tag && el.hasAttribute(marker);
+}
+const NativeUniElement = UniElement2;
+class UniViewElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniViewElement && isUniNativeElement(value, "div", "uni-view") || nativeHasInstance.call(this, value);
+  }
+}
+class UniTextElement extends NativeUniElement {
+  // Web 直接读取 DOM 文字，不缓存、不触发布局；不提供会删除 Vue 子节点的 setter。
+  // 类上保留 getter，供 Button 等复合 Element 的 super.value 复用。
+  get value() {
+    return this.textContent ?? "";
+  }
+  static [Symbol.hasInstance](value) {
+    return this === UniTextElement && isUniNativeElement(value, "span", "uni-text") || nativeHasInstance.call(this, value);
+  }
+}
+class UniImageElement extends NativeUniElement {
+  static [Symbol.hasInstance](value) {
+    return this === UniImageElement && isUniNativeElement(value, "img", "uni-image") || nativeHasInstance.call(this, value);
+  }
+}
 const _UniInputElement = class _UniInputElement extends UniViewElement {
   static [Symbol.hasInstance](value) {
     return this === _UniInputElement && value instanceof UniViewElement && value.hasAttribute("uni-input") || Function.prototype[Symbol.hasInstance].call(this, value);
