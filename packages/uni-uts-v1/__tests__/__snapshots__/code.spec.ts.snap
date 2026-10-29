@@ -158,6 +158,7 @@ exports[`code genProxyCode 2`] = `
 exports[`code genProxyCode 3`] = `
 {
   "alias": {},
+  "aliasReferences": {},
   "class": {
     "User1": {
       "interfaces": [],

@@ -1,4 +1,4 @@
-import { ChannelManager, PushChannelManager, NestedPushChannelManager, CycleA } from '../interface.uts';
+import { ChannelManager, PushChannelManager, NestedPushChannelManager, ListedManager, SharedJSExportManagerAlias, CycleA } from '../interface.uts';
 import { JSExport } from 'JavaScriptCore';
 
 type PlatformManager = NestedPushChannelManager;
@@ -6,6 +6,8 @@ type PlatformManager = NestedPushChannelManager;
 export function getChannelManager(): ChannelManager { throw new Error('stub'); }
 export function getPushChannelManager(): PushChannelManager { throw new Error('stub'); }
 export function getNestedPushChannelManager(): NestedPushChannelManager { throw new Error('stub'); }
+export function getListedManager(): ListedManager { throw new Error('stub'); }
+export function getSharedJSExportManagerAlias(): SharedJSExportManagerAlias { throw new Error('stub'); }
 export function getPlatformManager(): PlatformManager { throw new Error('stub'); }
 export function getNullableManager(): PushChannelManager | null { return null; }
 export const getManager = (): PushChannelManager => { throw new Error('stub'); };

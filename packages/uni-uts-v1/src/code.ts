@@ -69,6 +69,8 @@ type Types = {
   class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
   alias: Record<string, string>
+  // 包含私有别名，仅供内部引用解析，不参与 meta.types 和 typeParams 的生成。
+  aliasReferences: Record<string, string>
   uni?: string[]
 }
 
@@ -834,6 +836,7 @@ export async function parseInterfaceTypes(
       class: {},
       fn: {},
       alias: {},
+      aliasReferences: {},
       uni: [],
     }
   }
@@ -860,6 +863,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const classTypes: Types['class'] = {}
   const fnTypes: Types['fn'] = {}
   const aliasTypes: Types['alias'] = {}
+  const aliasReferences: Types['aliasReferences'] = {}
   const uniMethods: string[] = []
 
   const exportNamed: string[] = []
@@ -883,6 +887,16 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     }
 
     ast.body.filter((node) => {
+      const declaration =
+        node.type === 'ExportDeclaration' ? node.declaration : node
+      if (declaration.type === 'TsTypeAliasDeclaration') {
+        const referenceName = parseTypeAliasReferenceName(
+          declaration.typeAnnotation
+        )
+        if (referenceName) {
+          aliasReferences[declaration.id.value] = referenceName
+        }
+      }
       if (node.type === 'ExportDeclaration') {
         if (node.declaration.type === 'TsTypeAliasDeclaration') {
           parseTypes(node.declaration, classTypes, fnTypes, aliasTypes)
@@ -913,12 +927,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
           }
         }
       } else if (node.type === 'TsTypeAliasDeclaration') {
-        // 私有引用别名也可能被导出的返回值类型间接引用。
-        if (
-          !isInterface ||
-          exportNamed.includes(node.id.value) ||
-          parseTypeAliasReferenceName(node.typeAnnotation)
-        ) {
+        if (!isInterface || exportNamed.includes(node.id.value)) {
           parseTypes(node, classTypes, fnTypes, aliasTypes)
         }
       } else if (node.type === 'TsInterfaceDeclaration') {
@@ -939,6 +948,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     class: classTypes,
     fn: fnTypes,
     alias: aliasTypes,
+    aliasReferences,
     uni: uniMethods,
   }
 }
@@ -1321,6 +1331,11 @@ function mergeAstTypes(to: Types, from: Types) {
       to.alias[name] = from.alias[name]
     }
   }
+  for (const name in from.aliasReferences) {
+    if (!hasOwn(to.aliasReferences, name)) {
+      to.aliasReferences[name] = from.aliasReferences[name]
+    }
+  }
 }
 
 function parseAst(
@@ -1641,11 +1656,11 @@ function resolveFunctionParams(
 function resolveInterfaceAlias(types: Types, name: string): string {
   const visited = new Set<string>()
   while (!hasOwn(types.interface, name)) {
-    if (visited.has(name) || !hasOwn(types.alias, name)) {
+    if (visited.has(name) || !hasOwn(types.aliasReferences, name)) {
       return ''
     }
     visited.add(name)
-    name = types.alias[name]
+    name = types.aliasReferences[name]
     if (!name) {
       return ''
     }

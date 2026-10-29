@@ -1,3 +1,5 @@
+import { JSExport } from 'JavaScriptCore';
+
 export interface ChannelManager {
   setPushChannel(channelId: string): void;
   self(): PushChannelManager;
@@ -8,6 +10,22 @@ export type PushChannelManager = ForwardManager;
 type ForwardManager = InternalManager;
 type InternalManager = ChannelManager;
 export type NestedPushChannelManager = PushChannelManager;
+
+type ListedManager = ChannelManager;
+export { ListedManager };
+
+type UnusedManager = ChannelManager;
+type PrivateGeneric<T> = Array<T>;
+
+export interface SharedJSExportManager extends JSExport {
+  getValue(): string;
+}
+type InternalJSExportParent = SharedJSExportManager;
+export interface SharedChildJSExportManager extends InternalJSExportParent {
+  getChildValue(): string;
+}
+type InternalJSExportManager = SharedChildJSExportManager;
+export type SharedJSExportManagerAlias = InternalJSExportManager;
 
 export interface SecondaryManager {
   getValue(): string;

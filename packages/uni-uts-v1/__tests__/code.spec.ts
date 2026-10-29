@@ -5,6 +5,7 @@ import {
   type GenProxyCodeOptions,
   genProxyCode,
   genProxyCodeV2,
+  parseInterfaceTypes,
   prepareProxyCodeAndFillOptions,
 } from '../src/code'
 import { ERR_MSG_PLACEHOLDER } from '../src/utils'
@@ -543,12 +544,17 @@ describe('code', () => {
   describe.each([undefined, 'true'] as const)(
     'interface alias return values in iOS (DOM2: %s)',
     (dom2) => {
-      async function prepareInterfaceAliasProxy() {
+      async function prepareInterfaceAliasProxy(
+        overrides: Partial<GenProxyCodeOptions> = {}
+      ) {
         const module = resolve(
           __dirname,
           'examples/uts/utssdk/test-interface-alias'
         )
-        const options = createGenProxyCodeOptions({ platform: 'app-ios' })
+        const options = createGenProxyCodeOptions({
+          platform: 'app-ios',
+          ...overrides,
+        })
         const decls = await withUniAppXEnv(
           { x: 'true', dom2, platform: 'app-ios' },
           () => prepareProxyCodeAndFillOptions(module, options)
@@ -556,12 +562,65 @@ describe('code', () => {
         return { module, options, decls }
       }
 
+      test('only collects exported aliases from interface.uts', async () => {
+        const module = resolve(
+          __dirname,
+          'examples/uts/utssdk/test-interface-alias'
+        )
+        const types = await parseInterfaceTypes(
+          module,
+          createGenProxyCodeOptions({ platform: 'app-ios' })
+        )
+        expect(Object.keys(types.alias).sort()).toEqual(
+          [
+            'PushChannelManager',
+            'NestedPushChannelManager',
+            'ListedManager',
+            'SharedJSExportManagerAlias',
+            'SecondaryManagerAlias',
+            'CycleA',
+            'CycleB',
+          ].sort()
+        )
+      })
+
+      test('excludes private aliases from module and platform metadata', async () => {
+        const { options } = await prepareInterfaceAliasProxy({
+          androidPreprocessor: async (code) => code,
+          iosPreprocessor: async (code) => code,
+        })
+        for (const meta of [
+          options.meta!,
+          options.meta!.android!,
+          options.meta!.ios!,
+        ]) {
+          expect(meta.types).toMatchObject({
+            ChannelManager: 'interface',
+            PushChannelManager: 'typealias',
+            ListedManager: 'typealias',
+            SharedJSExportManagerAlias: 'typealias',
+          })
+          for (const name of [
+            'ForwardManager',
+            'InternalManager',
+            'UnusedManager',
+            'PrivateGeneric',
+            'InternalJSExportParent',
+            'InternalJSExportManager',
+          ]) {
+            expect(meta.types).not.toHaveProperty(name)
+            expect(meta.typeParams).not.toContain(name)
+          }
+        }
+      })
+
       test('uses one canonical proxy for cross-file, forward, and local aliases', async () => {
         const { module, options, decls } = await prepareInterfaceAliasProxy()
         for (const method of [
           'getChannelManager',
           'getPushChannelManager',
           'getNestedPushChannelManager',
+          'getListedManager',
           'getPlatformManager',
           'getNullableManager',
           'getManager',
@@ -636,6 +695,7 @@ describe('code', () => {
           'getExportedManagerAlias',
           'getNestedExportedManagerAlias',
           'getChildExportedManagerAlias',
+          'getSharedJSExportManagerAlias',
           'getCyclicManager',
         ]) {
           expect(
