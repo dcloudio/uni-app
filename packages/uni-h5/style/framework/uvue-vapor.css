@@ -366,10 +366,15 @@ uni-app .uni-scroll-view-content {
   min-height: 0px;
 }
 
-/* 设置默认的光标颜色 */
+/* 默认色放在组件根节点，支持通过 caret-color 和 CSS 变量覆盖。 */
+div:where([uni-input]),
+div:where([uni-textarea]) {
+  caret-color: #3393e2;
+}
+
 uni-app .uni-input-input,
 uni-app .uni-textarea-textarea {
-  caret-color: #3393e2;
+  caret-color: inherit;
 }
 
 uni-app .uni-input-input:disabled,
