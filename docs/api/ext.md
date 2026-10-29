@@ -6,7 +6,6 @@
 - 谷歌登录：[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%B0%B7%E6%AD%8C%E7%99%BB%E5%BD%95&orderBy=Relevance&uni-appx=1)
 - 谷歌支付：[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%B0%B7%E6%AD%8C%E6%94%AF%E4%BB%98&orderBy=Relevance&uni-appx=1)
 - 蓝牙：Bluetooth。[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%93%9D%E7%89%99&orderBy=Relevance&cat1=8&cat2=81)
-- NFC：[见插件市场](https://ext.dcloud.net.cn/search?q=nfc&orderBy=Relevance&cat1=8&cat2=81)
 
 ## plus api替代@plus
 uni-app x 中不再支持plus和weex的API。
