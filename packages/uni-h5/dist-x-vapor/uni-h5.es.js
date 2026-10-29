@@ -1,7 +1,7 @@
 import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, getUniElementPage, initVaporDataset, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, LINEFEED, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, createUniDOMStringMap, parseUrl, stringifyQuery as stringifyQuery$1, decodedQuery, ON_THEME_CHANGE, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, setUniElementPage, ON_UNLOAD, SCHEME_RE, DATA_RE, addFont, ON_NAVIGATION_BAR_CHANGE, RESPONSIVE_MIN_WIDTH, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, scrollTo, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import * as Vue from "vue";
-import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, initUniElementType, initUniElement, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
+import { defineVaporComponent, createPlainElement, template, inject, getCurrentInstance, onMounted, onBeforeUnmount, watch, withModifiers, setAttr, warn, unref, ref, onUnmounted, Fragment, EffectScope, createTemplateRefSetter, on as on$1, txt, renderEffect, setDynamicProps, reactive, computed, onBeforeMount, nextTick, child, applyVShow, setInsertionState, createIf, setBlockKey, setValue as setValue$1, setProp, setStyle, onActivated, next, setClassName, shallowRef, watchEffect, provide, injectHook, isReactive, markRaw, querySelectorInComponent, querySelectorAllInComponent, setClass, createFor, setText, toDisplayString, withComponentId, createDynamicComponent, setStaticTemplateRef, createComponent as createComponent$1, VaporKeepAlive, extend as extend$1, onServerPrefetch, initUniPageHooks, onBeforeActivate, onBeforeDeactivate, initUniElementType, initUniElement, setHtml, createSlot, toRaw, createKeyedFragment, createTextNode, remove as remove$1, effectScope, insert, syncSelectValue, useAttrs as useAttrs$1, useSlots, getBlockFirstNode, isInSSRComponentSetup, normalizeUniText, queuePostFlushCb, logError, setUniPageHooksInitializer, setRealPathResolver, setNativeEventNormalizer, createVaporApp, VaporTransition, createComponentWithFallback, setHover, nthChild, withImageEventDetail, setImageMode, setImageSrc } from "vue";
 import { capitalize, camelize, isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, hyphenate, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, EMPTY_OBJ, Namespaces } from "@vue/shared";
 import { useRoute, isNavigationFailure, VaporRouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -12288,7 +12288,7 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$A = template('<div data-v-212d40c7 uni-loading uni-view class="default __uni_loading_container__" style="display: flex;"><div data-v-212d40c7 uni-view>', 257);
+const t0$A = template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
 const _uniLoadingElement = { value: "LOADING" };
 const _sfc_main$A = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -18026,11 +18026,12 @@ class RecycleListItemDataStore {
 }
 const t0$p = template("<div uni-view></div>");
 const t1$g = template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view class=placeholder></div></div>');
+const _uniListViewElement = { value: "LIST-VIEW" };
 const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "list-view",
     rootElement: {
-      class: UniListViewElement
+      class: /* @__PURE__ */ initUniElementType(UniListViewElement, "list-view")
     }
   },
   __name: "list-view",
@@ -18386,6 +18387,11 @@ const _sfc_main$p = /* @__PURE__ */ defineVaporComponent({
       }
     }, true));
     setStaticTemplateRef(n9, scrollElement, null, "scrollElement");
+    const _uniListViewRoot = getBlockFirstNode(n9);
+    if (_uniListViewRoot && _uniListViewRoot.nodeType === 1) {
+      _uniListViewRoot.setAttribute("uni-list-view", "");
+      initUniElement(_uniListViewRoot, _uniListViewElement);
+    }
     return n9;
   }
 });
@@ -22192,11 +22198,12 @@ const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
   }
 });
 const t0$9 = template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view class=placeholder></div></div>');
+const _uniWaterflowElement = { value: "WATERFLOW" };
 const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
   ...{
     name: "waterflow",
     rootElement: {
-      class: UniWaterflowElement
+      class: /* @__PURE__ */ initUniElementType(UniWaterflowElement, "waterflow")
     }
   },
   __name: "waterflow",
@@ -22499,6 +22506,11 @@ const _sfc_main$9 = /* @__PURE__ */ defineVaporComponent({
       }
     }, true));
     setStaticTemplateRef(n7, scrollElement, null, "scrollElement");
+    const _uniWaterflowRoot = getBlockFirstNode(n7);
+    if (_uniWaterflowRoot && _uniWaterflowRoot.nodeType === 1) {
+      _uniWaterflowRoot.setAttribute("uni-waterflow", "");
+      initUniElement(_uniWaterflowRoot, _uniWaterflowElement);
+    }
     return n7;
   }
 });
@@ -29676,10 +29688,10 @@ function getPickerPopupStyle(popover, windowWidth, windowHeight, contentHeight) 
     }
   };
 }
-const t0$8 = template("<span data-v-212d40c7 uni-text> ");
-const t1$7 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </span><span data-v-212d40c7 uni-text class=uni-picker__header-btn-ok> </div>");
-const t2$6 = template("<div data-v-212d40c7 uni-view class=uni-picker__view>");
-const t3$3 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view>", 1);
+const t0$8 = template("<span uni-text data-v-212d40c7> ");
+const t1$7 = template("<div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7 class=uni-picker__header-btn-ok> </div>");
+const t2$6 = template("<div uni-view data-v-212d40c7 class=uni-picker__view>");
+const t3$3 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7>", 1);
 const _sfc_main$8 = /* @__PURE__ */ defineVaporComponent({
   __name: "picker",
   setup(__props) {
@@ -30654,13 +30666,13 @@ function triggerFailCallback(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const t0$7 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__title__text> </div>");
-const t1$6 = template("<div data-v-212d40c7 uni-view class=divider>", 2);
-const t2$5 = template("<div data-v-212d40c7 uni-view class=divider>");
-const t3$2 = template("<div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__cell__text> ");
-const t4$2 = template("<div data-v-212d40c7 uni-view class=uni-action-sheet_dialog__safe-area>");
-const t5$1 = template("<div data-v-212d40c7 uni-view>");
-const t6$1 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><!><div data-v-212d40c7 uni-view></div></div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class=uni-action-sheet_dialog__action__text> </div>", 1);
+const t0$7 = template("<div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class=uni-action-sheet_dialog__title__text> </div>");
+const t1$6 = template("<div uni-view data-v-212d40c7 class=divider>", 2);
+const t2$5 = template("<div uni-view data-v-212d40c7 class=divider>");
+const t3$2 = template("<div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class=uni-action-sheet_dialog__cell__text> ");
+const t4$2 = template("<div uni-view data-v-212d40c7 class=uni-action-sheet_dialog__safe-area>");
+const t5$1 = template("<div uni-view data-v-212d40c7>");
+const t6$1 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><!><div uni-view data-v-212d40c7></div></div><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class=uni-action-sheet_dialog__action__text> </div>", 1);
 const _sfc_main$7 = /* @__PURE__ */ defineVaporComponent({
   __name: "actionSheet",
   setup(__props) {
@@ -31093,14 +31105,14 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$6 = template("<span data-v-212d40c7 uni-text class=uni-choose-location-poi-search-cancel> ");
-const t1$5 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-error><span data-v-212d40c7 uni-text> ");
-const t2$4 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-loading><span data-v-212d40c7 uni-text> ");
-const t3$1 = template("<div data-v-212d40c7 uni-view class=uni-choose-location-poi-search-loading>");
-const t4$1 = template('<span data-v-212d40c7 uni-text class="uni-choose-location-icons uni-choose-location-poi-item-selected-icon"> ');
-const t5 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><!><div data-v-212d40c7 uni-view></div>");
-const t6 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div>");
-const t7 = template('<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><!><div data-v-212d40c7 uni-view class=uni-choose-location-map-target><span data-v-212d40c7 uni-text class="uni-choose-location-icons uni-choose-location-map-target-icon"> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><div data-v-212d40c7 uni-view class=uni-choose-location-nav><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-choose-location-nav-text uni-choose-location-nav-back-text"> </div><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text"> </div></div>', 1);
+const t0$6 = template("<span uni-text data-v-212d40c7 class=uni-choose-location-poi-search-cancel> ");
+const t1$5 = template("<div uni-view data-v-212d40c7 class=uni-choose-location-poi-search-error><span uni-text data-v-212d40c7> ");
+const t2$4 = template("<div uni-view data-v-212d40c7 class=uni-choose-location-poi-search-loading><span uni-text data-v-212d40c7> ");
+const t3$1 = template("<div uni-view data-v-212d40c7 class=uni-choose-location-poi-search-loading>");
+const t4$1 = template('<span uni-text data-v-212d40c7 class="uni-choose-location-icons uni-choose-location-poi-item-selected-icon"> ');
+const t5 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </div><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </div></div><!><div uni-view data-v-212d40c7></div>");
+const t6 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </div>");
+const t7 = template('<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><!><div uni-view data-v-212d40c7 class=uni-choose-location-map-target><span uni-text data-v-212d40c7 class="uni-choose-location-icons uni-choose-location-map-target-icon"> </div><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </div></div><div uni-view data-v-212d40c7 class=uni-choose-location-nav><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class="uni-choose-location-nav-text uni-choose-location-nav-back-text"> </div><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text"> </div></div>', 1);
 const _sfc_main$6 = /* @__PURE__ */ defineVaporComponent({
   __name: "chooseLocation",
   setup(__props) {
@@ -32274,11 +32286,11 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$5 = template("<span data-v-212d40c7 uni-text class=uni-modal-dialog__title> ");
-const t1$4 = template("<span data-v-212d40c7 uni-text class=uni-modal-dialog__message> ");
-const t2$3 = template('<div data-v-212d40c7 uni-view class="uni-modal-dialog__action uni-modal-dialog__action--cancel"><span data-v-212d40c7 uni-text class=uni-modal-dialog__action-text> ');
-const t3 = template("<div data-v-212d40c7 uni-view class=uni-modal-dialog__split>", 2);
-const t4 = template('<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view class=uni-modal-dialog__inner><div data-v-212d40c7 uni-view class=uni-modal-dialog__title__container></div><div data-v-212d40c7 uni-view></div><div data-v-212d40c7 uni-view class=uni-modal-dialog__divider></div><div data-v-212d40c7 uni-view class=uni-modal-dialog__actions><!><!><div data-v-212d40c7 uni-view class="uni-modal-dialog__action uni-modal-dialog__action--confirm"><span data-v-212d40c7 uni-text class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"> ', 1);
+const t0$5 = template("<span uni-text data-v-212d40c7 class=uni-modal-dialog__title> ");
+const t1$4 = template("<span uni-text data-v-212d40c7 class=uni-modal-dialog__message> ");
+const t2$3 = template('<div uni-view data-v-212d40c7 class="uni-modal-dialog__action uni-modal-dialog__action--cancel"><span uni-text data-v-212d40c7 class=uni-modal-dialog__action-text> ');
+const t3 = template("<div uni-view data-v-212d40c7 class=uni-modal-dialog__split>", 2);
+const t4 = template('<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7 class=uni-modal-dialog__inner><div uni-view data-v-212d40c7 class=uni-modal-dialog__title__container></div><div uni-view data-v-212d40c7></div><div uni-view data-v-212d40c7 class=uni-modal-dialog__divider></div><div uni-view data-v-212d40c7 class=uni-modal-dialog__actions><!><!><div uni-view data-v-212d40c7 class="uni-modal-dialog__action uni-modal-dialog__action--confirm"><span uni-text data-v-212d40c7 class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"> ', 1);
 const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
   __name: "uniModal",
   setup(__props) {
@@ -32754,8 +32766,8 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
     );
   }
 );
-const t0$4 = template("<span data-v-212d40c7 uni-text class=uni-loading-dialog__title> ");
-const t1$3 = template("<div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view>", 1);
+const t0$4 = template("<span uni-text data-v-212d40c7 class=uni-loading-dialog__title> ");
+const t1$3 = template("<div uni-view data-v-212d40c7><div uni-view data-v-212d40c7>", 1);
 const _sfc_main$4 = /* @__PURE__ */ defineVaporComponent({
   __name: "showLoading",
   setup(__props) {
@@ -33871,9 +33883,9 @@ const _sfc_main$3 = /* @__PURE__ */ defineVaporComponent({
 });
 const _style_0$3 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
 const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["styles", [_style_0$3]]]);
-const t0$2 = template("<div data-v-212d40c7 uni-view class=uni-preview-image-number-indicator-layout><span data-v-212d40c7 uni-text class=uni-preview-image-number-indicator> ");
-const t1$1 = template("<div data-v-212d40c7 uni-view>");
-const t2$1 = template("<div data-v-212d40c7 uni-view class=uni-preview-image-default-indicator-layout>");
+const t0$2 = template("<div uni-view data-v-212d40c7 class=uni-preview-image-number-indicator-layout><span uni-text data-v-212d40c7 class=uni-preview-image-number-indicator> ");
+const t1$1 = template("<div uni-view data-v-212d40c7>");
+const t2$1 = template("<div uni-view data-v-212d40c7 class=uni-preview-image-default-indicator-layout>");
 const _sfc_main$2 = /* @__PURE__ */ defineVaporComponent({
   __name: "previewImage",
   __multiRoot: true,
@@ -34534,7 +34546,7 @@ const previewImage = /* @__PURE__ */ defineAsyncApi(
   }
 );
 const targetPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAABGtJREFUeF7tm0tPFEEQx7uHd8DAXsTEg8sNSSBixOgBWKImCx8Aglx2P4EeuQE3bsZPsMsBkS/AYoxhgYMmGB9EAzf2YoSLQJDIc1prZ5fXzky/agYSexJCNlMz0/Xr6n9V9/RQEuKxGY9FiWUnLEJvMWZHnUfTKCEsR6mVg1+2TScis9lsWM2iQT+o6DRlZETiWTlKaTYMGIEBAMcpPU4RQmMSjpeYUkrTQYIIBMBmX9eoZI9zGTFKxiIzC6NcQ0kDVABYve7jQ44xqycym83rBcaBBsBx3p4jhBTEDaN5rvdAhYAGYKu3c053vEsgyzVkFpok7D1NUQCE7LyTPClN18/MJ3UhaANQFbzKJ70nbbc3fhJ7Yz3/J3NgCKM2gK3eLibaaHC66mmCWI03XC85Wv5MDt+9IfBfEIa2HmgB2O7rTjHGEjwA5W138o6Xt7XzTPPnAcCfF+NCEHSHgjKAguqv8TwC52vHX/LMXM8DhIO3Gd61EAVJ1fJZA0BnglKa8mudjvPF++4kB7iRoKMFygBElP9aatpzvPO6tXgetGB3+BkHAss2ZBZ7RO951k4DgL/4VQ8lSdUQVx6E2rw/mSZ7k77BplwXKAHYjPPDv35mXsg5ESMQxd3h576mhRJZehodCABIcxD+mAdPCxhjycjsYlr2mWoAOLM9zPAvOsTLCKpCqASAl/+DAMDTAdV6QAkAr/y9DAChRsCVBBCqBnCyAEYBdFHMoBY4Wv7iqXHhiqCz+OFbBmMUQWeLIcgCfgdjVpPKSpGSBkBDeLNATB3gCSC0pyGzoOSL0kUOAP8VIKgFYBLkNfUVzddQCvN6XzUDQBuUAWzGY7HCGqCnLxhRwBv78HDVKlALgEgUgI0OBF7x45BXnwhpAxCZExQhVDyOSw0HkZ53el+tBC6GrfIQgBvIvAeA1FjxKJ5fFfLTBVgA2X+V5q4BYPS+dgScQvBPiRdFAmCUt7YTer3x5NTxt68ya4FO8CumvrPt0YqA4o1Eh4Ko8ovY6QgfOoB8JATwPtALhO64DwRAWBAwnUfRgIu9VBgOsBcA+x2h1uqvVzShaEApBGcnCN4rcr1c76cpgQA4FcdY1LLYiMjLE7dGFjZHjKlMckSENJAh4Pbg/DYZchyzLKubAyMH+4UYpfNBbIZwhSxKCtPOfUktuDC/tCHg9WA3ADozOp3OCVQDDAAPAiYCXF6rmyGAtOVFVg+MBsgSw7A3GmA0oHRvkRFBI4I4Gx9lNcpkAVliGPYmC5gsYLJAyRZbkwZNGjRpEOUDCNksZeoAWWIY9v91HTD1oDl6t7b+fWNl1bnPRjYO9tc/7W4/HPywivZJnEhnhT4EXne0pFrr6hI3q6vPte/H3h75/nsn27+0orTtXcTZK/FeYLrj9lpNWVm0xrLOtefX4SH8zg0sraB8DicKJPQImL7fMvpvX4vrh9SUsGT/0qr0jm9RZ69EBEAjpu41x8ooHWGFN8iM0Cxj9sTgx1Xp/f46zsO1fwF2PaBfXH1iLwAAAABJRU5ErkJggg==";
-const t0 = template('<div data-v-212d40c7 uni-view class=uni-open-location><div data-v-212d40c7 uni-view class=uni-open-location-map-box><!><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text> </div></div><div data-v-212d40c7 uni-view class=uni-open-location-nav><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view class=uni-open-location-nav-btn-bg></div><span data-v-212d40c7 uni-text class="uni-open-location-nav-text uni-open-location-nav-back-text uni-open-location-icons"> </div></div><div data-v-212d40c7 uni-view><div data-v-212d40c7 uni-view class=uni-open-location-address><span data-v-212d40c7 uni-text> </span><span data-v-212d40c7 uni-text> </div><div data-v-212d40c7 uni-view class=uni-open-location-footer-icon-btns><div data-v-212d40c7 uni-view class=uni-open-location-footer-icon-btns-item><div data-v-212d40c7 uni-view><span data-v-212d40c7 uni-text class="uni-open-location-icons uni-open-location-navigation"> </div><span data-v-212d40c7 uni-text> ', 1);
+const t0 = template('<div uni-view data-v-212d40c7 class=uni-open-location><div uni-view data-v-212d40c7 class=uni-open-location-map-box><!><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7> </div></div><div uni-view data-v-212d40c7 class=uni-open-location-nav><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7 class=uni-open-location-nav-btn-bg></div><span uni-text data-v-212d40c7 class="uni-open-location-nav-text uni-open-location-nav-back-text uni-open-location-icons"> </div></div><div uni-view data-v-212d40c7><div uni-view data-v-212d40c7 class=uni-open-location-address><span uni-text data-v-212d40c7> </span><span uni-text data-v-212d40c7> </div><div uni-view data-v-212d40c7 class=uni-open-location-footer-icon-btns><div uni-view data-v-212d40c7 class=uni-open-location-footer-icon-btns-item><div uni-view data-v-212d40c7><span uni-text data-v-212d40c7 class="uni-open-location-icons uni-open-location-navigation"> </div><span uni-text data-v-212d40c7> ', 1);
 const _sfc_main = /* @__PURE__ */ defineVaporComponent({
   __name: "openLocation",
   setup(__props) {

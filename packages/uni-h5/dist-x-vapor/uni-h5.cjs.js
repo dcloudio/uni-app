@@ -5539,7 +5539,7 @@ function useLoadingStyle(targetElement, bold) {
     // borderRadius: loadingBorderRadius,
   };
 }
-const t0$r = Vue.template('<div data-v-212d40c7 uni-loading uni-view class="default __uni_loading_container__" style="display: flex;"><div data-v-212d40c7 uni-view>', 257);
+const t0$r = Vue.template('<div uni-loading uni-view data-v-212d40c7 class="default __uni_loading_container__" style="display: flex;"><div uni-view data-v-212d40c7>', 257);
 const _uniLoadingElement = { value: "LOADING" };
 const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -9619,11 +9619,12 @@ class RecycleListItemDataStore {
 }
 const t0$g = Vue.template("<div uni-view></div>");
 const t1$8 = Vue.template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view class=placeholder></div></div>');
+const _uniListViewElement = { value: "LIST-VIEW" };
 const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "list-view",
     rootElement: {
-      class: UniListViewElement
+      class: /* @__PURE__ */ Vue.initUniElementType(UniListViewElement, "list-view")
     }
   },
   __name: "list-view",
@@ -9961,6 +9962,11 @@ const _sfc_main$g = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }, true));
     Vue.setStaticTemplateRef(n9, scrollElement, null, "scrollElement");
+    const _uniListViewRoot = Vue.getBlockFirstNode(n9);
+    if (_uniListViewRoot && _uniListViewRoot.nodeType === 1) {
+      _uniListViewRoot.setAttribute("uni-list-view", "");
+      Vue.initUniElement(_uniListViewRoot, _uniListViewElement);
+    }
     return n9;
   }
 });
@@ -12630,11 +12636,12 @@ const _sfc_main$1 = /* @__PURE__ */ Vue.defineVaporComponent({
   }
 });
 const t0 = Vue.template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view class=placeholder></div></div>');
+const _uniWaterflowElement = { value: "WATERFLOW" };
 const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
     name: "waterflow",
     rootElement: {
-      class: UniWaterflowElement
+      class: /* @__PURE__ */ Vue.initUniElementType(UniWaterflowElement, "waterflow")
     }
   },
   __name: "waterflow",
@@ -12922,6 +12929,11 @@ const _sfc_main = /* @__PURE__ */ Vue.defineVaporComponent({
       }
     }, true));
     Vue.setStaticTemplateRef(n7, scrollElement, null, "scrollElement");
+    const _uniWaterflowRoot = Vue.getBlockFirstNode(n7);
+    if (_uniWaterflowRoot && _uniWaterflowRoot.nodeType === 1) {
+      _uniWaterflowRoot.setAttribute("uni-waterflow", "");
+      Vue.initUniElement(_uniWaterflowRoot, _uniWaterflowElement);
+    }
     return n7;
   }
 });
