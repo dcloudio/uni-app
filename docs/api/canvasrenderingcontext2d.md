@@ -143,6 +143,44 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 | "optimizeLegibility" | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑易读性，而不是渲染速度和几何精确性。这启用了字距调整和可选连字。 |
 | "geometricPrecision" | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑几何精确性，而不是渲染速度和易读性。字体的某些方面（例如字距调整）不会线性缩放。对于大的缩放比例，你可能会看到不太美观的文本渲染，但大小是你所期望的（不会被向上或向下舍入到底层操作系统支持的最接近的字体大小）。 |
 
+#### CanvasGradient 的方法 @canvasgradient-values 
+
+#### addColorStop(stop: number, color: string): void @addcolorstop
+addColorStop
+添加颜色的渐变点。小于最小 stop 的部分会按最小 stop 的 color 来渲染，大于最大 stop 的部分会按最大 stop 的 color 来渲染, 最大支持5个分段
+##### addColorStop 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.25 | 4.25 | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| stop | number | 是 | 表示渐变中开始与结束之间的位置，范围 0-1 |
+| color | string | 是 | 渐变点的颜色 | 
+
+
+
+#### CanvasGradient 的方法 @canvasgradient-values 
+
+#### addColorStop(stop: number, color: string): void @addcolorstop
+addColorStop
+添加颜色的渐变点。小于最小 stop 的部分会按最小 stop 的 color 来渲染，大于最大 stop 的部分会按最大 stop 的 color 来渲染, 最大支持5个分段
+##### addColorStop 兼容性 <Help /> 
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.25 | 4.25 | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| stop | number | 是 | 表示渐变中开始与结束之间的位置，范围 0-1 |
+| color | string | 是 | 渐变点的颜色 | 
+
+
+
 
 
 
