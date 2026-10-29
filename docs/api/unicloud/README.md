@@ -23,7 +23,7 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | config | **UniCloudInitOptions** | 是 |   |  |
-| mixinDatacom | any | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.9，腾讯云 3.91，支付宝云 3.98; iOS: 4.11; HarmonyOS: 4.61 | datacom组件的mixin，包含unicloud-db组件的所有属性 |
+| mixinDatacom | any | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 阿里云 3.9，腾讯云 3.91，支付宝云 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | datacom组件的mixin，包含unicloud-db组件的所有属性 |
 | datacomProps | **DatacomPropsType** | 是 | Web: 5.32; 微信小程序: 5.32; 支付宝小程序: 5.32; Android(VDOM): x; Android(Vapor): 5.32; iOS(VDOM): x; iOS(Vapor): 5.32; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.32 | datacom 属性定义，供页面/组件 defineProps 展开使用 |
 | SSEChannel | [SSEChannel](#ssechannel-values) | 是 | Web: 4.71; 微信小程序: 4.71; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 |
 | useDatacom | (props: [DatacomProps](#datacomprops-values)) => [Datacom](#datacom-values) | 是 | Web: 5.32; 微信小程序: 5.32; 支付宝小程序: 5.32; Android(VDOM): x; Android(Vapor): 5.32; iOS(VDOM): x; iOS(Vapor): 5.32; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.32 | datacom 组合式逻辑，替换原 mixinDatacom | 
