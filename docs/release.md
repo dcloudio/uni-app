@@ -1,3 +1,14 @@
+#### 5.34.2026102909
+##### uni-app x
+* 修复 编译器 部分情况下使用match-media发行产物运行报错 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=34135)
+* Web平台 修复 组件 match-media min-width、min-height 等属性失效 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=34231)
+* Web平台 修复 DOM API UniElement 发行后 uniPage 属性无法获取所属的页面对象 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=33667)
+* Android平台 蒸汽模式 修复 组件 textarea 长按无法选中文字、不显示系统菜单 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=34153)
+* iOS平台 VDOM模式、鸿蒙平台 VDOM模式 修复 5.31版本引发的 vue script lang=ts 的 uvue 文件未按 uts 编译 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=34188)
+* iOS平台 蒸汽模式 修复 5.25版本引发的 打开横屏显示的二级页面后返回竖屏 tabbar 页面布局错乱 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=34055)
+* 鸿蒙平台 蒸汽模式 修复 组件 rich-text mode 为 native 时在模拟器渲染内容为空白 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=34046)
+* 鸿蒙平台 蒸汽模式 修复 组件 image 在低版本鸿蒙系统下设置 data uri 的 SVG 图片时可能显示模糊 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=34008)
+
 #### 5.33.2026102401
 ##### uni-app x
 * 【重要】Android平台 蒸汽模式、iOS平台 蒸汽模式 新增 应用资源wgt热更新 [文档](https://doc.dcloud.net.cn/uni-app-x/api/install-wgt.html#tips) <https://issues.dcloud.net.cn/pages/issues/detail?id=32098>
