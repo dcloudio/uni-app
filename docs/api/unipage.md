@@ -25,7 +25,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 | width | number | 是 | Web: 4.63; 微信小程序: 4.63; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口宽度 |
 | height | number | 是 | Web: 4.63; 微信小程序: 4.63; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口高度 |
 | statusBarHeight | number | 是 | Web: 4.63; 微信小程序: 4.63; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面状态栏高度 |
-| ~~$vm~~ | [VueComponent](#vuecomponent-values) | 否 | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
+| ~~$vm~~ | **VueComponent** | 否 | Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
 
 #### vm 的属性描述
 
@@ -61,6 +61,239 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 | right | number | 是 | Android: 4.51; iOS: 4.51 | 安全区域右侧插入位置（距离右边边界距离） |
 | top | number | 是 | Android: 4.51; iOS: 4.51 | 安全区顶部插入位置（距离顶部边界距离） |
 | bottom | number | 是 | Android: 4.51; iOS: 4.51 | 安全区域底部插入位置（距离底部边界距离） |
+
+#### $vm 的属性描述
+
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| $data | Map\<string, any> | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $props | Map\<string, any> | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $attrs | Map\<string, any> | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $slots | Map\<string, any> | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $refs | Map\<string, any> | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $parent | VueComponent | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $root | VueComponent | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $options | VueComponentOptions | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $el | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+| $page | [UniPage](/api/unipage.md) | 是 | Web: 4.31; 微信小程序: √; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
+
+#### VueComponent 的方法 @vuecomponent-values 
+
+#### $nextTick(task?: (() => void)): Promise\<void>; @$nexttick
+$nextTick
+
+##### $nextTick 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| task | () => void | 否 | 
+
+
+##### 返回值 
+
+| 类型 |
+| :- |
+| Promise\<void> |
+ 
+
+#### $forceUpdate(): void; @$forceupdate
+$forceUpdate
+
+##### $forceUpdate 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | x | 4.11 | x | x | 4.61 | x |
+
+
+
+
+#### $callMethod(method: string, ...args: Array\<any>): any \| null; @$callmethod
+$callMethod
+
+##### $callMethod 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| method | string | 是 |
+| args | Array&lt;any&gt; | 否 | 
+
+
+##### 返回值 
+
+| 类型 | 必备 |
+| :- | :- |
+| any | 否 |
+ 
+
+#### $emit(event: string, ...do_not_transform_spread: Array\<any>): void; @$emit
+$emit
+
+##### $emit 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| event | string | 是 |
+| do_not_transform_spread | Array&lt;any&gt; | 否 | 
+
+
+
+#### $watch(source: any, // string \| Function,    value: Function, options?: WatchOptions): WatchStopHandle; @$watch
+$watch
+
+##### $watch 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| source | any | 是 |
+| value | () => void | 否 |
+| options | **WatchOptions** | 否 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| flush | string | 否 |
+| immediate | boolean | 否 |
+| deep | boolean | 否 |
+| onTrack | (event: DebuggerEvent) => void | 否 |
+| onTrigger | (event: DebuggerEvent) => void | 否 | 
+
+
+##### 返回值 
+
+| 类型 |
+| :- |
+| () => void |
+ 
+
+#### VueComponent 的方法 @vuecomponent-values 
+
+#### $nextTick(task?: (() => void)): Promise\<void>; @$nexttick
+$nextTick
+
+##### $nextTick 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| task | () => void | 否 | 
+
+
+##### 返回值 
+
+| 类型 |
+| :- |
+| Promise\<void> |
+ 
+
+#### $forceUpdate(): void; @$forceupdate
+$forceUpdate
+
+##### $forceUpdate 兼容性 <Help /> 
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | x | 4.11 | x | x | 4.61 | x |
+
+
+
+
+#### $callMethod(method: string, ...args: Array\<any>): any \| null; @$callmethod
+$callMethod
+
+##### $callMethod 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| method | string | 是 |
+| args | Array&lt;any&gt; | 否 | 
+
+
+##### 返回值 
+
+| 类型 | 必备 |
+| :- | :- |
+| any | 否 |
+ 
+
+#### $emit(event: string, ...do_not_transform_spread: Array\<any>): void; @$emit
+$emit
+
+##### $emit 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| event | string | 是 |
+| do_not_transform_spread | Array&lt;any&gt; | 否 | 
+
+
+
+#### $watch(source: any, // string \| Function,    value: Function, options?: WatchOptions): WatchStopHandle; @$watch
+$watch
+
+##### $watch 兼容性 <Help /> 
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| source | any | 是 |
+| value | () => void | 否 |
+| options | **WatchOptions** | 否 |
+
+#### options 的属性描述
+
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| flush | string | 否 |
+| immediate | boolean | 否 |
+| deep | boolean | 否 |
+| onTrack | (event: DebuggerEvent) => void | 否 |
+| onTrigger | (event: DebuggerEvent) => void | 否 | 
+
+
+##### 返回值 
+
+| 类型 |
+| :- |
+| () => void |
+ 
 
 
 
