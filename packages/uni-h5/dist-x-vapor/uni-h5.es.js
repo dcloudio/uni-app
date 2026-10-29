@@ -16464,7 +16464,8 @@ let UniScrollViewElement = _UniScrollViewElement;
 function initScrollViewElement(root, scrollLeftChanged, scrollTopChanged) {
   const main = root.firstElementChild.firstElementChild;
   Object.defineProperties(root, {
-    uniTagName: { value: "SCROLL-VIEW" },
+    // ListView/Waterflow 复用此宿主时覆盖逻辑名称，滚动属性和方法仍保持本组件的绑定。
+    uniTagName: { value: "SCROLL-VIEW", configurable: true },
     scrollHeight: { get: () => main.scrollHeight },
     scrollWidth: { get: () => main.scrollWidth },
     // 属性赋值保留方向限制和 scrollWithAnimation；原生方法仍直接操作内部容器。
