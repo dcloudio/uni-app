@@ -64,6 +64,8 @@ uni-ui x 没有写死的颜色和文字:
 | uni-collapse				| [折叠面板](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)				|
 | uni-combobox				| [组合框](https://ext.dcloud.net.cn/plugin?name=uni-combobox)						|
 | uni-combox-x				| [已废弃组合框](https://ext.dcloud.net.cn/plugin?name=uni-combox-x)					|
+| uni-data-checkbox		| [数据选择器](https://ext.dcloud.net.cn/plugin?name=uni-data-checkbox-x)	|
+| uni-forms						| [表单](https://ext.dcloud.net.cn/plugin?name=uni-forms-x)								|
 | uni-drag-cell				| [可拖拽排序组件](https://ext.dcloud.net.cn/plugin?name=uni-drag-cell)		|
 | uni-expandable-text	| [可折叠文本](https://ext.dcloud.net.cn/plugin?name=uni-expandable-text)													|
 | uni-fab-button			| [uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)	|
@@ -98,7 +100,7 @@ uni-ui 无法直接升级 uni-ui x，组件名称、用法都有变化。
 |uni-collapse					|折叠面板								|改用[uni-collapse](https://ext.dcloud.net.cn/plugin?name=uni-collapse-x)		|
 |uni-combox						|组合框									|改用[uni-combobox](https://ext.dcloud.net.cn/plugin?name=uni-combobox)																										|
 |uni-countdown				|倒计时									|无																									|
-|uni-data-checkbox		|数据选择器							|无																									|
+|uni-data-checkbox		|数据选择器							|改用[uni-data-checkbox](https://ext.dcloud.net.cn/plugin?name=uni-data-checkbox-x)	|
 |uni-data-picker			|数据驱动的picker选择器	|组件本身支持uni-app x vdom														|
 |uni-dateformat				|日期格式化							|改用[uni-time-format](https://ext.dcloud.net.cn/plugin?name=uni-time-format)	|
 |uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date													|
@@ -107,7 +109,7 @@ uni-ui 无法直接升级 uni-ui x，组件名称、用法都有变化。
 |uni-fab							|悬浮按钮								|改用[uni-fab-button](https://ext.dcloud.net.cn/plugin?name=uni-fab-button)									|
 |uni-fav							|收藏按钮								|无																									|
 |uni-file-picker			|文件选择上传						|无																									|
-|uni-forms						|表单										|改用[uni-forms](https://ext.dcloud.net.cn/plugin?name=uni-forms)|
+|uni-forms						|表单										|改用[uni-forms](https://ext.dcloud.net.cn/plugin?name=uni-forms-x)|
 |uni-goods-nav				|商品导航								|无																									|
 |uni-grid							|宫格										|无																									|
 |uni-group						|分组										|无																									|
