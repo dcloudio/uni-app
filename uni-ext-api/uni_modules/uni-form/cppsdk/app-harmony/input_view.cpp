@@ -685,6 +685,9 @@ void NativeInputView::ensureInputNode() {
   if (!cursor_color_.empty()) {
     updateCursorColor(cursor_color_);
   }
+  if (!selection_color_.empty()) {
+    updateSelectionColor(selection_color_);
+  }
   applyRequestedSelection();
   // Configure the TextInput while it is detached. Binding first makes every
   // setAttribute call invalidate the live render tree, which is especially
@@ -1059,6 +1062,16 @@ void NativeInputView::updateCursorColor(const std::string &value) {
     resetAttribute(NODE_TEXT_INPUT_CARET_COLOR);
   } else {
     setColorAttribute(NODE_TEXT_INPUT_CARET_COLOR, value);
+  }
+}
+
+void NativeInputView::updateSelectionColor(const std::string &value) {
+  selection_color_ = value;
+  ensureInputNode();
+  if (value.empty()) {
+    resetAttribute(NODE_TEXT_INPUT_SELECTED_BACKGROUND_COLOR);
+  } else {
+    setColorAttribute(NODE_TEXT_INPUT_SELECTED_BACKGROUND_COLOR, value);
   }
 }
 

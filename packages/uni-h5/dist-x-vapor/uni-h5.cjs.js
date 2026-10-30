@@ -239,6 +239,88 @@ const indexVapor$a = /* @__PURE__ */ defineBuiltInComponent({
     return root;
   }
 });
+const selectionProperty = "--uni-selection-background-color";
+const selectionAttribute = "data-uni-selection";
+const probeBackgroundProperty = "--uni-selection-probe-background-color";
+const fieldSelectionProps = {
+  selectionClass: {
+    type: String,
+    default: ""
+  }
+};
+const fieldSelectionProbeStyle = "display: none !important;";
+function clearSelection(field) {
+  field.style.removeProperty(selectionProperty);
+  field.removeAttribute(selectionAttribute);
+}
+function resolveSelectionColor(probe) {
+  const color = getComputedStyle(probe).backgroundColor;
+  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
+    probe.style.setProperty(probeBackgroundProperty, "#000000");
+    try {
+      return getComputedStyle(probe).backgroundColor === color ? color : "";
+    } finally {
+      probe.style.removeProperty(probeBackgroundProperty);
+    }
+  }
+  return color;
+}
+function updateSelection(field, color) {
+  if (!color) {
+    clearSelection(field);
+    return;
+  }
+  if (field.style.getPropertyValue(selectionProperty) !== color) {
+    field.style.setProperty(selectionProperty, color);
+  }
+  if (!field.hasAttribute(selectionAttribute)) {
+    field.setAttribute(selectionAttribute, "");
+  }
+}
+function observeSelection(probe, field) {
+  let refreshFrame = null;
+  function refreshSelection() {
+    refreshFrame = null;
+    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
+      return;
+    }
+    updateSelection(field, resolveSelectionColor(probe));
+    refreshFrame = requestAnimationFrame(refreshSelection);
+  }
+  function startRefresh() {
+    if (refreshFrame === null) {
+      refreshSelection();
+    }
+  }
+  function stopRefresh() {
+    if (refreshFrame !== null) {
+      cancelAnimationFrame(refreshFrame);
+      refreshFrame = null;
+    }
+  }
+  field.addEventListener("focus", startRefresh);
+  field.addEventListener("blur", stopRefresh);
+  startRefresh();
+  return () => {
+    field.removeEventListener("focus", startRefresh);
+    field.removeEventListener("blur", stopRefresh);
+    stopRefresh();
+    clearSelection(field);
+  };
+}
+function useFieldSelection(props2, fieldRef) {
+  const selectionRef = Vue.ref(null);
+  Vue.watch(
+    [() => props2.selectionClass, fieldRef, selectionRef],
+    ([className, field, probe], _, onCleanup) => {
+      if (className && field && probe) {
+        onCleanup(observeSelection(probe, field));
+      }
+    },
+    { immediate: true, flush: "post" }
+  );
+  return selectionRef;
+}
 const nativeHasInstance = Function.prototype[Symbol.hasInstance];
 function isUniNativeElement(value, tag, marker) {
   const el = value;
@@ -1719,16 +1801,22 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const props$8 = /* @__PURE__ */ shared.extend({}, props$9, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
+const webSelectionProps$1 = fieldSelectionProps;
+const props$8 = /* @__PURE__ */ shared.extend(
+  {},
+  props$9,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
   },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
+  webSelectionProps$1
+);
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
 }
@@ -1824,6 +1912,7 @@ function useInput(props2, { emit: emit2, expose }) {
       return;
     }
   });
+  const selectionRef = useFieldSelection(props2, fieldRef);
   Vue.watch(
     () => state.value,
     (value) => {
@@ -1883,6 +1972,7 @@ function useInput(props2, { emit: emit2, expose }) {
     fieldRef,
     state,
     scopedAttrsState,
+    selectionRef,
     fixDisabledColor,
     type,
     autocomplete,
@@ -2020,10 +2110,11 @@ function setNodes(anchor, ...values) {
 function createNodes(...values) {
   return resolveValues(values);
 }
-const _t0$e = Vue.template("<input tabindex=-1 class=uni-input-input>");
-const _t1$4 = Vue.template("<input class=uni-input-input>");
+const _t0$e = Vue.template("<input tabindex=-1>");
+const _t1$4 = Vue.template("<input>");
 const _t2$3 = Vue.template("<form action novalidate class=uni-input-form> ");
-const _t3$3 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper><div> </div>", 1);
+const _t3$3 = Vue.template("<div uni-input uni-view><div class=uni-input-wrapper> <div> </div>", 1);
+const _t4$3 = Vue.template("<div>", 1);
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$8,
@@ -2033,7 +2124,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     class: UniInputElement
   },
   setup(props2, context) {
-    const { rootRef, fieldRef, state, scopedAttrsState, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
+    const { rootRef, fieldRef, state, scopedAttrsState, selectionRef, fixDisabledColor, type, autocomplete, inputmode, cache, step, onKeyUpEnter, onInput } = useInput(props2, context);
     const renderInput = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
@@ -2051,6 +2142,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           Vue.setProp(_n2, "type", type.value);
           Vue.setProp(_n2, "maxlength", state.maxlength);
           Vue.setProp(_n2, "step", step.value);
+          Vue.setClass(_n2, props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input");
           Vue.setStyle(_n2, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
           Vue.setProp(_n2, "inputmode", inputmode.value);
           _setTemplateRef(_n2, fieldRef);
@@ -2069,6 +2161,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           Vue.setProp(_n4, "step", step.value);
           Vue.setProp(_n4, "enterkeyhint", props2.confirmType);
           Vue.setProp(_n4, "pattern", props2.type === "number" ? "[0-9]*" : void 0);
+          Vue.setClass(_n4, props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input");
           Vue.setStyle(_n4, props2.cursorColor ? { caretColor: props2.cursorColor } : {});
           Vue.setProp(_n4, "autocomplete", autocomplete.value);
           Vue.setProp(_n4, "inputmode", inputmode.value);
@@ -2080,29 +2173,43 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n7 = _t3$3();
-      const _n6 = Vue.child(_n7);
-      const _n0 = Vue.child(_n6);
-      Vue.applyVShow(_n0, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
-      const _x0 = Vue.txt(_n0);
-      setNodes(_x0, () => props2.placeholder);
-      Vue.renderEffect(() => Vue.setDynamicProps(_n0, [scopedAttrsState.attrs, {
+      const _n8 = _t3$3();
+      const _n7 = Vue.child(_n8);
+      const _n0 = Vue.child(_n7, true);
+      const _n1 = Vue.next(_n0);
+      setNodes(_n0, () => props2.selectionClass && (() => {
+        const _setTemplateRef2 = Vue.createTemplateRefSetter();
+        const _n02 = _t4$3();
+        Vue.renderEffect(() => {
+          Vue.setDynamicProps(_n02, [scopedAttrsState.attrs, {
+            class: ["uni-field-selection-probe", props2.selectionClass],
+            "aria-hidden": "true",
+            style: fieldSelectionProbeStyle
+          }]);
+          _setTemplateRef2(_n02, selectionRef);
+        });
+        return _n02;
+      })());
+      Vue.applyVShow(_n1, () => !(state.value.length || cache.value === "-" || cache.value.includes(".")));
+      const _x1 = Vue.txt(_n1);
+      setNodes(_x1, () => props2.placeholder);
+      Vue.renderEffect(() => Vue.setDynamicProps(_n1, [scopedAttrsState.attrs, {
         style: props2.placeholderStyle,
         class: ["uni-input-placeholder", props2.placeholderClass]
       }]));
-      Vue.setInsertionState(_n6, 1);
+      Vue.setInsertionState(_n7, 2);
       Vue.createIf(() => props2.confirmType === "search", () => {
-        const _n3 = _t2$3();
-        Vue.on(_n3, "submit", (event) => event.preventDefault());
-        const _x3 = Vue.txt(_n3);
-        setNodes(_x3, () => renderInput());
-        return _n3;
+        const _n4 = _t2$3();
+        Vue.on(_n4, "submit", (event) => event.preventDefault());
+        const _x4 = Vue.txt(_n4);
+        setNodes(_x4, () => renderInput());
+        return _n4;
       }, () => {
-        const _n5 = createNodes(() => renderInput());
-        return _n5;
+        const _n6 = createNodes(() => renderInput());
+        return _n6;
       }, 265);
-      Vue.renderEffect(() => _setTemplateRef(_n7, rootRef));
-      return _n7;
+      Vue.renderEffect(() => _setTemplateRef(_n8, rootRef));
+      return _n8;
     })();
     initInputElement(root);
     return root;
@@ -2193,29 +2300,36 @@ function initTextareaElement(root, state) {
     set: setValue
   });
 }
-const props$7 = /* @__PURE__ */ shared.extend({}, props$9, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  autoHeight: {
-    type: [Boolean, String],
-    default: false
-  },
-  confirmType: {
-    type: String,
-    default: "return",
-    validator(val) {
-      return ConfirmTypes.concat("return").includes(val);
+const webSelectionProps = fieldSelectionProps;
+const props$7 = /* @__PURE__ */ shared.extend(
+  {},
+  props$9,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    autoHeight: {
+      type: [Boolean, String],
+      default: false
+    },
+    confirmType: {
+      type: String,
+      default: "return",
+      validator(val) {
+        return ConfirmTypes.concat("return").includes(val);
+      }
     }
-  }
-});
+  },
+  webSelectionProps
+);
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
 const emits$1 = ["confirm", "change", "linechange", ...emit];
 function useTextarea(props2, { emit: emit2, expose }) {
   const rootRef = Vue.ref(null);
   const wrapperRef = Vue.ref(null);
   const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+  const selectionRef = useFieldSelection(props2, fieldRef);
   const valueCompute = Vue.computed(() => state.value.split(uniShared.LINEFEED));
   const isDone = Vue.computed(() => ConfirmTypes.includes(props2.confirmType));
   const heightRef = Vue.ref(0);
@@ -2298,6 +2412,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
     fieldRef,
     state,
     scopedAttrsState,
+    selectionRef,
     fixDisabledColor,
     valueCompute,
     lineRef,
@@ -2310,7 +2425,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
 const _t0$c = Vue.template("<textarea tabindex=-1>");
 const _t1$3 = Vue.template("<textarea>");
 const _t2$2 = Vue.template("<form action class=uni-input-form> ");
-const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper><div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
+const _t3$2 = Vue.template("<div uni-textarea uni-view><div class=uni-textarea-wrapper> <div> </div><div class=uni-textarea-line> </div><div> </div>", 1);
 const _t4$2 = Vue.template("<div>", 1);
 const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
@@ -2321,7 +2436,7 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
     class: UniTextareaElement
   },
   setup(props2, context) {
-    const { rootRef, wrapperRef, fieldRef, state, scopedAttrsState, fixDisabledColor, valueCompute, lineRef, onResize: onResize2, onChange: onChange2, onKeyDownEnter, onKeyUpEnter } = useTextarea(props2, context);
+    const { rootRef, wrapperRef, fieldRef, state, scopedAttrsState, selectionRef, fixDisabledColor, valueCompute, lineRef, onResize: onResize2, onChange: onChange2, onKeyDownEnter, onKeyUpEnter } = useTextarea(props2, context);
     const renderTextarea = () => (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
       const _n0 = Vue.createIf(() => props2.disabled && fixDisabledColor, () => {
@@ -2337,7 +2452,11 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
           Vue.setValue(_n2, state.value);
           Vue.setProp(_n2, "readonly", !!props2.disabled);
           Vue.setProp(_n2, "maxlength", state.maxlength);
-          Vue.setClassName(_n2, 1 | 0, [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
+          Vue.setClassName(_n2, 1 | (!!props2.selectionClass ? 2 : 0) | 0, [
+            " uni-textarea-textarea",
+            " uni-field-selection",
+            " uni-textarea-textarea-fix-margin"
+          ]);
           Vue.setStyle(_n2, {
             overflowY: props2.autoHeight ? "hidden" : "auto",
             /* eslint-disable no-restricted-syntax */
@@ -2358,7 +2477,11 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
           Vue.setProp(_n4, "maxlength", state.maxlength);
           Vue.setProp(_n4, "enterkeyhint", props2.confirmType);
           Vue.setProp(_n4, "inputmode", props2.inputmode);
-          Vue.setClassName(_n4, 1 | 0, [" uni-textarea-textarea", " uni-textarea-textarea-fix-margin"]);
+          Vue.setClassName(_n4, 1 | (!!props2.selectionClass ? 2 : 0) | 0, [
+            " uni-textarea-textarea",
+            " uni-field-selection",
+            " uni-textarea-textarea-fix-margin"
+          ]);
           Vue.setStyle(_n4, {
             overflowY: props2.autoHeight ? "hidden" : "auto",
             /* eslint-disable no-restricted-syntax */
@@ -2372,16 +2495,30 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
     })();
     const root = (() => {
       const _setTemplateRef = Vue.createTemplateRefSetter();
-      const _n11 = _t3$2();
-      const _n10 = Vue.child(_n11);
-      const _n0 = Vue.child(_n10);
+      const _n12 = _t3$2();
+      const _n11 = Vue.child(_n12);
+      const _n0 = Vue.child(_n11, true);
       const _n1 = Vue.next(_n0);
-      const _n4 = Vue.next(_n1);
-      const _n2 = Vue.child(_n4, true);
-      Vue.applyVShow(_n0, () => !state.value.length);
-      const _x0 = Vue.txt(_n0);
-      setNodes(_x0, () => props2.placeholder);
-      setNodes(_n2, () => valueCompute.value.map((item) => (() => {
+      const _n2 = Vue.next(_n1);
+      const _n5 = Vue.next(_n2);
+      const _n3 = Vue.child(_n5, true);
+      setNodes(_n0, () => props2.selectionClass && (() => {
+        const _setTemplateRef2 = Vue.createTemplateRefSetter();
+        const _n02 = _t4$2();
+        Vue.renderEffect(() => {
+          Vue.setDynamicProps(_n02, [scopedAttrsState.attrs, {
+            class: ["uni-field-selection-probe", props2.selectionClass],
+            "aria-hidden": "true",
+            style: fieldSelectionProbeStyle
+          }]);
+          _setTemplateRef2(_n02, selectionRef);
+        });
+        return _n02;
+      })());
+      Vue.applyVShow(_n1, () => !state.value.length);
+      const _x1 = Vue.txt(_n1);
+      setNodes(_x1, () => props2.placeholder);
+      setNodes(_n3, () => valueCompute.value.map((item) => (() => {
         const _n52 = _t4$2();
         Vue.setInsertionState(_n52);
         Vue.createIf(() => item.trim(), () => {
@@ -2394,35 +2531,35 @@ const indexVapor$9 = /* @__PURE__ */ defineBuiltInComponent({
         return _n52;
       })()));
       Vue.renderEffect(() => {
-        Vue.setAttr(_n11, "auto-height", props2.autoHeight);
-        Vue.setDynamicProps(_n0, [scopedAttrsState.attrs, {
+        Vue.setAttr(_n12, "auto-height", props2.autoHeight);
+        Vue.setDynamicProps(_n1, [scopedAttrsState.attrs, {
           style: props2.placeholderStyle,
           class: ["uni-textarea-placeholder", props2.placeholderClass]
         }]);
-        _setTemplateRef(_n1, lineRef);
-        Vue.setClassName(_n4, 1 | (props2.autoHeight ? 2 : 0), [" uni-textarea-compute", " uni-textarea-compute-auto-height"]);
+        _setTemplateRef(_n2, lineRef);
+        Vue.setClassName(_n5, 1 | (props2.autoHeight ? 2 : 0), [" uni-textarea-compute", " uni-textarea-compute-auto-height"]);
       });
-      Vue.setInsertionState(_n4, 1);
+      Vue.setInsertionState(_n5, 1);
       createComponent(ResizeSensor, {
         initial: true,
         onResize: () => onResize2
       });
-      Vue.setInsertionState(_n10, 3);
+      Vue.setInsertionState(_n11, 4);
       Vue.createIf(() => props2.confirmType === "search", () => {
-        const _n7 = _t2$2();
-        Vue.on(_n7, "submit", (event) => event.preventDefault());
-        const _x7 = Vue.txt(_n7);
-        setNodes(_x7, () => renderTextarea());
-        return _n7;
+        const _n8 = _t2$2();
+        Vue.on(_n8, "submit", (event) => event.preventDefault());
+        const _x8 = Vue.txt(_n8);
+        setNodes(_x8, () => renderTextarea());
+        return _n8;
       }, () => {
-        const _n9 = createNodes(() => renderTextarea());
-        return _n9;
+        const _n10 = createNodes(() => renderTextarea());
+        return _n10;
       }, 265);
       Vue.renderEffect(() => {
-        _setTemplateRef(_n10, wrapperRef);
-        _setTemplateRef(_n11, rootRef);
+        _setTemplateRef(_n11, wrapperRef);
+        _setTemplateRef(_n12, rootRef);
       });
-      return _n11;
+      return _n12;
     })();
     initTextareaElement(root, state);
     return root;
@@ -9156,7 +9293,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
         selectedValues.value.splice(i, 1);
       }
     };
-    const updateSelection = (value, checked) => {
+    const updateSelection2 = (value, checked) => {
       if (checked) {
         ensureIncluded(value);
       } else {
@@ -9175,7 +9312,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
       register: (value, checked, setChecked) => {
         childSetters.set(value, setChecked);
         elementOrderMap.set(value, elementOrderCounter++);
-        updateSelection(value, checked);
+        updateSelection2(value, checked);
         if (initialSelected.value.indexOf(value) == -1 && checked) {
           initialSelected.value.push(value);
         }
@@ -9186,7 +9323,7 @@ const _sfc_main$l = /* @__PURE__ */ Vue.defineVaporComponent({
         elementOrderMap.delete(value);
       },
       toggle: (value, checked, emitChange) => {
-        updateSelection(value, checked);
+        updateSelection2(value, checked);
         if (emitChange) {
           dispatchEvent();
         }

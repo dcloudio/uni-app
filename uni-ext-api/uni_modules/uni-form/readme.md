@@ -16,4 +16,9 @@
 iOS、鸿蒙的 input、textarea 支持通过 CSS `caret-color` 设置光标颜色，支持 CSS 变量和媒体查询。
 同时设置 `cursor-color` 时优先使用该属性；移除后回退到 `caret-color`，两者均未设置时恢复系统默认光标颜色。
 
+### input / textarea selection-class
+
+iOS、鸿蒙和 Web 端的 input、textarea 支持 `selection-class` 外部样式类，通过 `background-color` 设置文字选区颜色，支持 CSS 变量和媒体查询。
+移除类名或对应颜色后恢复默认选区颜色。
+
 回归检查：`node --test src/uni_modules/uni-form/__tests__/editor-color.test.cjs`。

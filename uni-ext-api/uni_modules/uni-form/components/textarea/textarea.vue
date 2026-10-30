@@ -25,6 +25,9 @@
 			<native-view style="height: 100%; width: 100%;" @init="onViewInit"></native-view>
 			<!-- #endif -->
 		</view>
+		<!-- #ifdef APP-IOS || APP-HARMONY -->
+		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
+		<!-- #endif -->
 	</view>
 	<!-- #endif -->
 	<!-- #endif -->
@@ -34,6 +37,7 @@
 </template>
 <script setup lang="ts">
 	// #ifdef APP-IOS || APP-HARMONY
+	import SelectionStyle from "../selection-style.vue"
 	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
 	// #endif
 	import {
@@ -206,7 +210,12 @@
 			class: UniTextareaElement
 			// #endif
 		},
-		externalClasses: ['placeholder-class']
+		externalClasses: [
+			'placeholder-class',
+			// #ifdef APP-IOS || APP-HARMONY
+			'selection-class',
+			// #endif
+		]
 	})
 
 	interface ModelModifiers {
@@ -293,6 +302,10 @@
 	 }
 	 */
 		placeholderClass ?: string.ClassString;
+		// #ifdef APP-IOS || APP-HARMONY
+		/** Background color of the native text selection (选区背景色样式类). */
+		selectionClass ?: string.ClassString;
+		// #endif
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -431,6 +444,9 @@
 		placeholder: '',
 		placeholderStyle: '',
 		placeholderClass: '',
+		// #ifdef APP-IOS || APP-HARMONY
+		selectionClass: '',
+		// #endif
 		maxlength: -1,
 		cursorSpacing: 0,
 		cursorColor: '',
@@ -508,6 +524,15 @@
 	// #ifdef APP-IOS || APP-HARMONY
 	const caretColor = computed(() => {
 		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
+	})
+
+	const selectionColor = ref('')
+	function onSelectionColorChange(color: string) {
+		selectionColor.value = color
+		textareaView?.updateSelectionColor(color)
+	}
+	watch(() => props.selectionClass, value => {
+		if (value == '') onSelectionColorChange('')
 	})
 	// #endif
 
@@ -758,6 +783,7 @@
 		// #ifdef APP-IOS || APP-HARMONY
 		textareaView.updateColor(valueColor.value)
 		textareaView.updateCursorColor(caretColor.value)
+		textareaView.updateSelectionColor(selectionColor.value)
 		// #endif
 		let updatePadding = false
 		style.forEach((value, key) => {

@@ -47,11 +47,15 @@
         @blur="onBlur"
         @change="onChange"
         @confirm="onConfirm"
+        :selection-color="selectionColor satisfies string" change:selection-color="inputCpp.updateSelectionColor"
         :input-configuration="harmonyInputConfiguration satisfies string" change:input-configuration="inputCpp.applyConfiguration"
         :input-runtime-state="harmonyInputRuntimeState satisfies string" change:input-runtime-state="inputCpp.applyRuntimeState"
       ></native-view>
       <!-- #endif -->
     </view>
+		<!-- #ifdef APP-IOS || APP-HARMONY -->
+		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
+		<!-- #endif -->
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef WEB -->
@@ -63,6 +67,7 @@
 <!-- #endif -->
 <script setup lang="ts">
 	// #ifdef APP-IOS || APP-HARMONY
+	import SelectionStyle from "../selection-style.vue"
 	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
 	// #endif
 	import {
@@ -263,7 +268,12 @@
 			class: UniInputElementImpl
 			// #endif
 		},
-		externalClasses: ['placeholder-class']
+		externalClasses: [
+			'placeholder-class',
+			// #ifdef APP-IOS || APP-HARMONY
+			'selection-class',
+			// #endif
+		]
 	})
 
 	interface ModelModifiers {
@@ -354,6 +364,10 @@
 	 }
 	 */
 		placeholderClass ?: string.ClassString;
+		// #ifdef APP-IOS || APP-HARMONY
+		/** Background color of the native text selection (选区背景色样式类). */
+		selectionClass ?: string.ClassString;
+		// #endif
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -484,6 +498,9 @@
 		placeholder: '',
 		placeholderStyle: '',
 		placeholderClass: '',
+		// #ifdef APP-IOS || APP-HARMONY
+		selectionClass: '',
+		// #endif
 		maxlength: -1,
 		cursorSpacing: 0,
 		cursorColor: '',
@@ -501,6 +518,17 @@
 	// #ifdef APP-IOS || APP-HARMONY
 	const caretColor = computed(() => {
 		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
+	})
+
+	const selectionColor = ref('')
+	function onSelectionColorChange(color: string) {
+		selectionColor.value = color
+		// #ifdef APP-IOS
+		inputView?.updateSelectionColor(color)
+		// #endif
+	}
+	watch(() => props.selectionClass, value => {
+		if (value == '') onSelectionColorChange('')
 	})
 	// #endif
 
@@ -822,6 +850,7 @@
 		})
 		inputView?.updateColor(valueColor.value)
 		inputView?.updateCursorColor(caretColor.value)
+		inputView?.updateSelectionColor(selectionColor.value)
 	}
 	// #endif
 

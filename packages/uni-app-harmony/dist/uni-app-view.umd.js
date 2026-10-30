@@ -16538,6 +16538,7 @@
       }
     }
   }
+  var webSelectionProps$1 = {};
   var props$m = /* @__PURE__ */ extend({}, props$n, {
     placeholderClass: {
       type: String,
@@ -16547,7 +16548,7 @@
       type: String,
       default: ""
     }
-  });
+  }, webSelectionProps$1);
   function isPaste(event) {
     return event.inputType === "insertFromPaste";
   }
@@ -16664,6 +16665,7 @@
         }
       }
     });
+    var selectionRef = void 0;
     watch(() => state.value, (value) => {
       if (props2.type === "number" && !(cache2.value === "-" && value === "")) {
         cache2.value = value.toString();
@@ -16715,6 +16717,7 @@
       fieldRef,
       state,
       scopedAttrsState,
+      selectionRef,
       fixDisabledColor,
       type,
       autocomplete,
@@ -16735,6 +16738,7 @@
         fieldRef,
         state,
         scopedAttrsState,
+        selectionRef,
         fixDisabledColor,
         type,
         autocomplete,
@@ -16760,7 +16764,7 @@
           } : {},
           "inputmode": inputmode.value,
           "onFocus": (event) => event.target.blur()
-        }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
+        }, null, 46, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : createVNode("input", {
           "key": "input",
           "ref": fieldRef,
           "value": state.value,
@@ -16778,12 +16782,12 @@
           "autocomplete": autocomplete.value,
           "onKeyup": onKeyUpEnter,
           "inputmode": inputmode.value
-        }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
+        }, null, 46, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
         return createVNode("uni-input", {
           "ref": rootRef
         }, [createVNode("div", {
           "class": "uni-input-wrapper"
-        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        }, [false, withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
           "style": props2.placeholderStyle,
           "class": ["uni-input-placeholder", props2.placeholderClass]
         }), [props2.placeholder], 16), [[vShow, !(state.value.length || cache2.value === "-" || cache2.value.includes("."))]]), props2.confirmType === "search" ? createVNode("form", {
@@ -22227,6 +22231,7 @@
     var i2 = _toPrimitive(t2, "string");
     return "symbol" == typeof i2 ? i2 : i2 + "";
   }
+  var webSelectionProps = {};
   var props$d = /* @__PURE__ */ extend({}, props$n, {
     placeholderClass: {
       type: String,
@@ -22243,7 +22248,7 @@
         return ConfirmTypes.concat("return").includes(val);
       }
     }
-  });
+  }, webSelectionProps);
   var fixMargin = false;
   var ConfirmTypes = ["done", "go", "next", "search", "send"];
   function setFixMargin() {
@@ -22265,6 +22270,7 @@
       fixDisabledColor,
       trigger: trigger2
     } = useField(props2, rootRef, emit2);
+    var selectionRef = void 0;
     var valueCompute = computed(() => state.value.split(LINEFEED));
     var isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
     var heightRef = ref(0);
@@ -22334,6 +22340,7 @@
       fieldRef,
       state,
       scopedAttrsState,
+      selectionRef,
       fixDisabledColor,
       valueCompute,
       lineRef,
@@ -22354,6 +22361,7 @@
         fieldRef,
         state,
         scopedAttrsState,
+        selectionRef,
         fixDisabledColor,
         valueCompute,
         lineRef,
@@ -22372,6 +22380,7 @@
           "maxlength": state.maxlength,
           "class": {
             "uni-textarea-textarea": true,
+            "uni-field-selection": false,
             "uni-textarea-textarea-fix-margin": fixMargin
           },
           "style": _objectSpread2({
@@ -22390,6 +22399,7 @@
           "inputmode": props2.inputmode,
           "class": {
             "uni-textarea-textarea": true,
+            "uni-field-selection": false,
             "uni-textarea-textarea-fix-margin": fixMargin
           },
           "style": _objectSpread2({
@@ -22407,7 +22417,7 @@
         }, [createVNode("div", {
           "ref": wrapperRef,
           "class": "uni-textarea-wrapper"
-        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+        }, [false, withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
           "style": props2.placeholderStyle,
           "class": ["uni-textarea-placeholder", props2.placeholderClass]
         }), [props2.placeholder], 16), [[vShow, !state.value.length]]), createVNode("div", {

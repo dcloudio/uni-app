@@ -14,6 +14,21 @@
   padding: 0 14px;
 }
 
+/*
+   * Web 的 loading 文本会继承按钮根节点的对齐方式，所以根节点需要默认居中。
+   * App 未收到外部对齐样式时，会保留内部文本已有的居中样式，无需这条补充规则。
+   *
+   * uni-app 保留原来只对应用内部生效的范围，div 只匹配 loading 状态的根节点。
+   * class 放在 :where() 内，让开发者的 .custom { text-align: right } 能覆盖这里的默认居中。
+   * 若直接写成 .uni-button，按钮样式后加载时就可能把 .custom 的右对齐覆盖掉。
+   */
+uni-app div:where(.uni-button) {
+  text-align: center;
+  /* 以下两项保持迁移前的显示行为，与文字居中无关。 */
+  unicode-bidi: normal;
+  align-content: normal;
+}
+
 .uni-button-loading-icon {
   width: 14px;
   height: 14px;
@@ -35,6 +50,9 @@
 .uni-button-loading-text {
   margin-left: 8px;
   text-align: center;
+
+  /* 允许文案收缩到图标旁的剩余宽度，使长文本自动换行。 */
+  flex-shrink: 1;
 }
 
 .uni-button-text-size-mini {

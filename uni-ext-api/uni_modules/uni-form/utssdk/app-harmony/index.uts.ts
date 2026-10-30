@@ -343,6 +343,8 @@ export interface UniInputFileOptions {
 	textDirection?: string
 	// @ts-expect-error
 	caretColor?: ResourceColor
+	// @ts-expect-error ArkUI provides ResourceColor during Harmony compilation.
+	selectedBackgroundColor?: ResourceColor
 }
 
 interface EventHandlers {
@@ -498,6 +500,11 @@ class NativeInputFileView {
 
 	updateCursorColor(value: string) {
 		this.params.caretColor = UTSHarmony.colorWithString(value == '' ? defaultCursorColor : value)
+		this.updateParams()
+	}
+
+	updateSelectionColor(value: string) {
+		this.params.selectedBackgroundColor = value == '' ? undefined : UTSHarmony.colorWithString(value)
 		this.updateParams()
 	}
 

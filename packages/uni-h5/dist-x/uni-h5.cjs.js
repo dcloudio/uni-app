@@ -5172,6 +5172,88 @@ function useImageSize(rootRef, props2, state) {
     resetSize
   };
 }
+const selectionProperty = "--uni-selection-background-color";
+const selectionAttribute = "data-uni-selection";
+const probeBackgroundProperty = "--uni-selection-probe-background-color";
+const fieldSelectionProps = {
+  selectionClass: {
+    type: String,
+    default: ""
+  }
+};
+const fieldSelectionProbeStyle = "display: none !important;";
+function clearSelection(field) {
+  field.style.removeProperty(selectionProperty);
+  field.removeAttribute(selectionAttribute);
+}
+function resolveSelectionColor(probe) {
+  const color = getComputedStyle(probe).backgroundColor;
+  if (color === "transparent" || color.replace(/\s/g, "") === "rgba(0,0,0,0)") {
+    probe.style.setProperty(probeBackgroundProperty, "#000000");
+    try {
+      return getComputedStyle(probe).backgroundColor === color ? color : "";
+    } finally {
+      probe.style.removeProperty(probeBackgroundProperty);
+    }
+  }
+  return color;
+}
+function updateSelection(field, color) {
+  if (!color) {
+    clearSelection(field);
+    return;
+  }
+  if (field.style.getPropertyValue(selectionProperty) !== color) {
+    field.style.setProperty(selectionProperty, color);
+  }
+  if (!field.hasAttribute(selectionAttribute)) {
+    field.setAttribute(selectionAttribute, "");
+  }
+}
+function observeSelection(probe, field) {
+  let refreshFrame = null;
+  function refreshSelection() {
+    refreshFrame = null;
+    if (!field.isConnected || field.ownerDocument.activeElement !== field) {
+      return;
+    }
+    updateSelection(field, resolveSelectionColor(probe));
+    refreshFrame = requestAnimationFrame(refreshSelection);
+  }
+  function startRefresh() {
+    if (refreshFrame === null) {
+      refreshSelection();
+    }
+  }
+  function stopRefresh() {
+    if (refreshFrame !== null) {
+      cancelAnimationFrame(refreshFrame);
+      refreshFrame = null;
+    }
+  }
+  field.addEventListener("focus", startRefresh);
+  field.addEventListener("blur", stopRefresh);
+  startRefresh();
+  return () => {
+    field.removeEventListener("focus", startRefresh);
+    field.removeEventListener("blur", stopRefresh);
+    stopRefresh();
+    clearSelection(field);
+  };
+}
+function useFieldSelection(props2, fieldRef) {
+  const selectionRef = vue.ref(null);
+  vue.watch(
+    [() => props2.selectionClass, fieldRef, selectionRef],
+    ([className, field, probe], _, onCleanup) => {
+      if (className && field && probe) {
+        onCleanup(observeSelection(probe, field));
+      }
+    },
+    { immediate: true, flush: "post" }
+  );
+  return selectionRef;
+}
 function throttle(fn, wait) {
   let last = 0;
   let timeout;
@@ -5624,16 +5706,22 @@ function useField(props2, rootRef, emit2, beforeInput) {
 }
 uniShared.once(() => {
 });
-const props$h = /* @__PURE__ */ shared.extend({}, props$i, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
+const webSelectionProps$1 = fieldSelectionProps;
+const props$h = /* @__PURE__ */ shared.extend(
+  {},
+  props$i,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
   },
-  textContentType: {
-    type: String,
-    default: ""
-  }
-});
+  webSelectionProps$1
+);
 function isPaste(event) {
   return event.inputType === "insertFromPaste";
 }
@@ -5729,6 +5817,7 @@ function useInput(props2, { emit: emit2, expose }) {
       return;
     }
   });
+  const selectionRef = useFieldSelection(props2, fieldRef);
   vue.watch(
     () => state.value,
     (value) => {
@@ -5788,6 +5877,7 @@ function useInput(props2, { emit: emit2, expose }) {
     fieldRef,
     state,
     scopedAttrsState,
+    selectionRef,
     fixDisabledColor,
     type,
     autocomplete,
@@ -5808,6 +5898,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       fieldRef,
       state,
       scopedAttrsState,
+      selectionRef,
       fixDisabledColor,
       type,
       autocomplete,
@@ -5827,13 +5918,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "type": type.value,
         "maxlength": state.maxlength,
         "step": step.value,
-        "class": "uni-input-input",
+        "class": props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
         "inputmode": inputmode.value,
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
+      }, null, 46, ["value", "readonly", "type", "maxlength", "step", "inputmode", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "value": state.value,
@@ -5844,19 +5935,25 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "step": step.value,
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
-        "class": "uni-input-input",
+        "class": props2.selectionClass ? "uni-input-input uni-field-selection" : "uni-input-input",
         "style": props2.cursorColor ? {
           caretColor: props2.cursorColor
         } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": inputmode.value
-      }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
+      }, null, 46, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
         "class": "uni-input-wrapper"
-      }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
+      }, [props2.selectionClass && vue.createVNode("div", vue.mergeProps({
+        "ref": selectionRef
+      }, scopedAttrsState.attrs, {
+        "class": ["uni-field-selection-probe", props2.selectionClass],
+        "aria-hidden": "true",
+        "style": fieldSelectionProbeStyle
+      }), null, 16), vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-input-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? vue.createVNode("form", {
@@ -9720,23 +9817,29 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$8 = /* @__PURE__ */ shared.extend({}, props$i, {
-  placeholderClass: {
-    type: String,
-    default: "input-placeholder"
-  },
-  autoHeight: {
-    type: [Boolean, String],
-    default: false
-  },
-  confirmType: {
-    type: String,
-    default: "return",
-    validator(val) {
-      return ConfirmTypes.concat("return").includes(val);
+const webSelectionProps = fieldSelectionProps;
+const props$8 = /* @__PURE__ */ shared.extend(
+  {},
+  props$i,
+  {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    autoHeight: {
+      type: [Boolean, String],
+      default: false
+    },
+    confirmType: {
+      type: String,
+      default: "return",
+      validator(val) {
+        return ConfirmTypes.concat("return").includes(val);
+      }
     }
-  }
-});
+  },
+  webSelectionProps
+);
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
 const emits = ["confirm", "change", "linechange", ...emit];
@@ -9744,6 +9847,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
   const rootRef = vue.ref(null);
   const wrapperRef = vue.ref(null);
   const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } = useField(props2, rootRef, emit2);
+  const selectionRef = useFieldSelection(props2, fieldRef);
   const valueCompute = vue.computed(() => state.value.split(uniShared.LINEFEED));
   const isDone = vue.computed(() => ConfirmTypes.includes(props2.confirmType));
   const heightRef = vue.ref(0);
@@ -9826,6 +9930,7 @@ function useTextarea(props2, { emit: emit2, expose }) {
     fieldRef,
     state,
     scopedAttrsState,
+    selectionRef,
     fixDisabledColor,
     valueCompute,
     lineRef,
@@ -9846,6 +9951,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       fieldRef,
       state,
       scopedAttrsState,
+      selectionRef,
       fixDisabledColor,
       valueCompute,
       lineRef,
@@ -9864,6 +9970,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state.maxlength,
         "class": {
           "uni-textarea-textarea": true,
+          "uni-field-selection": !!props2.selectionClass,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
@@ -9884,6 +9991,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "inputmode": props2.inputmode,
         "class": {
           "uni-textarea-textarea": true,
+          "uni-field-selection": !!props2.selectionClass,
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
@@ -9903,7 +10011,13 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "ref": wrapperRef,
         "class": "uni-textarea-wrapper"
-      }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
+      }, [props2.selectionClass && vue.createVNode("div", vue.mergeProps({
+        "ref": selectionRef
+      }, scopedAttrsState.attrs, {
+        "class": ["uni-field-selection-probe", props2.selectionClass],
+        "aria-hidden": "true",
+        "style": fieldSelectionProbeStyle
+      }), null, 16), vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-textarea-placeholder", props2.placeholderClass]
       }), [props2.placeholder], 16), [[vue.vShow, !state.value.length]]), vue.createVNode("div", {
