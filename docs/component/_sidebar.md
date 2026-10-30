@@ -75,6 +75,7 @@
   * [概述](./uni-ui-x/README.md)
   * [uni-badge-view | 数字角标](./uni-ui-x/uni-badge-view.md)
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
+  * [uni-combobox | 组合框](./uni-ui-x/uni-combobox.md)
   * [uni-combox | 组合框](./uni-ui-x/uni-combox.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
   * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
