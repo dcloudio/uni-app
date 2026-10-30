@@ -18,7 +18,9 @@ export function defineComponent(options: any) {
 }
 
 export function createUnsupportedRender(name: string) {
-  const element = createPlainElement('uni-' + name, null, null, true)
+  // 未支持组件仅用普通 div 显示提示；组件标识用于识别，不添加 uni-view 或专有 Element 能力。
+  const element = createPlainElement('div', null, null, true)
+  element.setAttribute('uni-' + name, '')
   element.textContent = name + ' is unsupported'
   return element
 }

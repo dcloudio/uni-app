@@ -238,22 +238,6 @@ div:where([uni-resize-sensor]) > div:last-child > div {
   height: 200%;
 }
 
-/* 尚不支持的组件仍生成 uni-* 占位节点，保留其基础布局与 hidden 行为。 */
-uni-app uni-ad-draw,
-uni-app uni-camera,
-uni-app uni-live-player,
-uni-app uni-live-pusher {
-  position: relative;
-  box-sizing: border-box;
-  flex-shrink: 0;
-  flex-grow: 0;
-  flex-basis: auto;
-  /* 默认情况下，元素不会缩短至小于内容框尺寸，若想改变这一状况，请设置元素的min-width 与 min-height属性。https://developer.mozilla.org/zh-CN/docs/Web/CSS/flex */
-  min-height: 0px;
-  min-width: 0px;
-  border-width: medium;
-}
-
 /* 保留 RichText 的内联布局与字体继承，不套用基础 view 的 flex 和裁剪默认值。 */
 uni-app div:where([uni-rich-text]) {
   display: inline;
@@ -270,14 +254,6 @@ uni-app div:where([uni-rich-text]) {
 uni-app div:where([uni-rich-text])[selectable="true"] {
   user-select: text;
   -webkit-user-select: text;
-}
-
-/* 占位节点也遵循 hidden 语义。 */
-uni-app uni-ad-draw[hidden],
-uni-app uni-camera[hidden],
-uni-app uni-live-player[hidden],
-uni-app uni-live-pusher[hidden] {
-  display: none !important;
 }
 
 /* 与开发者元素接触的容器 */
@@ -427,6 +403,12 @@ img:where([uni-image]) {
   object-position: center;
 }
 
+/* 未支持组件使用普通 div 占位，也须保持 hidden 优先于业务 display 样式。 */
+div:where([uni-ad-content-page][hidden]),
+div:where([uni-ad-draw][hidden]),
+div:where([uni-camera][hidden]),
+div:where([uni-live-player][hidden]),
+div:where([uni-live-pusher][hidden]),
 div:where([uni-view][hidden]),
 canvas:where([uni-canvas][hidden]),
 span:where([uni-text][hidden]),

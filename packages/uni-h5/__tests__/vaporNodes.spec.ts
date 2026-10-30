@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import jscc from 'rollup-plugin-jscc'
 import ts from 'typescript'
@@ -172,7 +173,7 @@ describe('Web Vapor 手写节点', () => {
   test.each([false, true])(
     '未支持组件保留各模式的节点结果（Vapor=%s）',
     async (vapor) => {
-      const block = {}
+      const block = { setAttribute: jest.fn() }
       const createPlainElement = jest.fn(() => block)
       const createElementBlock = jest.fn(() => block)
       const openBlock = jest.fn()
@@ -186,13 +187,10 @@ describe('Web Vapor 手写节点', () => {
       const result = runtime.createUnsupportedRender('video')
       if (vapor) {
         expect(result).toBe(block)
-        expect(createPlainElement).toHaveBeenCalledWith(
-          'uni-video',
-          null,
-          null,
-          true
-        )
-        expect(block).toEqual({ textContent: 'video is unsupported' })
+        expect(createPlainElement).toHaveBeenCalledWith('div', null, null, true)
+        expect(block.setAttribute).toHaveBeenCalledTimes(1)
+        expect(block.setAttribute).toHaveBeenCalledWith('uni-video', '')
+        expect(block).toMatchObject({ textContent: 'video is unsupported' })
       } else {
         expect(createElementBlock).not.toHaveBeenCalled()
         expect(result()).toBe(block)
@@ -359,7 +357,7 @@ describe('RichText Vapor 节点规则', () => {
   })
 })
 
-describe('RichText Vapor 真实运行时更新', () => {
+describe('Web Vapor 真实运行时节点', () => {
   let vue: any
   let nodeList2Block: Function
   let nodeList2VNode: Function
@@ -536,6 +534,61 @@ describe('RichText Vapor 真实运行时更新', () => {
     listsCreated.mockClear()
     childScopesCreated.mockClear()
   })
+
+  test.each([
+    'ad-content-page',
+    'ad-draw',
+    'camera',
+    'live-player',
+    'live-pusher',
+  ])(
+    '未支持组件 %s 使用普通 div，保留属性透传与强制 hidden 样式',
+    async (name) => {
+      const style = document.createElement('style')
+      style.textContent = fs.readFileSync(
+        path.join(root, 'packages/uni-h5/style/framework/uvue-vapor.css'),
+        'utf8'
+      )
+      document.body.appendChild(style)
+      const { createUnsupportedRender } = await load(
+        'packages/uni-components/src/helpers/component-vapor.ts',
+        true,
+        { vue }
+      )
+      const host = document.createElement('div')
+      document.body.appendChild(host)
+      const app = vue.createVaporApp(
+        vue.defineVaporComponent({
+          setup: () => createUnsupportedRender(name),
+        }),
+        { id: 'unsupported', hidden: true }
+      )
+      app.config.errorHandler = errors
+      apps.push(app)
+      app.mount(host)
+      const element = host.firstElementChild as HTMLElement
+      expect(element.localName).toBe('div')
+      expect(element.getAttribute('uni-' + name)).toBe('')
+      expect(element.hasAttribute('uni-view')).toBe(false)
+      expect(element.textContent).toBe(name + ' is unsupported')
+      expect(element.id).toBe('unsupported')
+      expect(element.hidden).toBe(true)
+      expect(window.getComputedStyle(element).display).toBe('none')
+      // JSDOM 的内联样式优先级计算不完整，直接验证匹配的框架规则带有 !important。
+      const hiddenRule = Array.from(style.sheet!.cssRules).find(
+        (rule): rule is CSSStyleRule =>
+          'selectorText' in rule &&
+          element.matches((rule as CSSStyleRule).selectorText) &&
+          (rule as CSSStyleRule).style.getPropertyValue('display') === 'none'
+      )!
+      expect(hiddenRule).toBeDefined()
+      expect(hiddenRule.style.getPropertyPriority('display')).toBe('important')
+      element.hidden = false
+      element.style.display = 'flex'
+      expect(element.matches(hiddenRule.selectorText)).toBe(false)
+      expect(window.getComputedStyle(element).display).toBe('flex')
+    }
+  )
 
   test.each([false, true])(
     '拆分后的 RichText 保留 ref、深层文本和 selectable 更新（Vapor=%s）',
