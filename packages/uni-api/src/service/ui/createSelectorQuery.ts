@@ -173,6 +173,13 @@ class SelectorQuery implements UniApp.SelectorQuery {
 
   in(component?: ComponentPublicInstance | ComponentInternalInstance) {
     this._component = resolveComponentInstance(component)
+    /**
+     * 如下逻辑用于处理下述场景
+     * 在B页面延迟1s调用createSelectQuery不传context，调用in方法传入当前实例。在1s内从B页面返回A页面
+     * 等createSelectorQuery执行时，context已经不再是B页面的实例，而是A页面的实例
+     * 但是this._component仍然是B页面的实例，两者无法对应导致findElem报错
+     * web端findElem仅依赖component实例，不会报错
+     */
     if (this._component && this._component.$root) {
       const root = resolveComponentInstance(this._component.$root)
       if (root) {
