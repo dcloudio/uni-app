@@ -8944,7 +8944,7 @@ _UniCheckboxElement.__uniElement = { vm: true, init() {
   Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
 } };
 let UniCheckboxElement = _UniCheckboxElement;
-const t0$m = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
+const t0$m = Vue.template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
 const t1$9 = Vue.template("<div uni-checkbox uni-view role=checkbox>", 1);
 const t2$1 = Vue.template("<span uni-text>");
 const t3$1 = Vue.template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
@@ -8985,12 +8985,6 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
         return { color: props2.color };
       }
       return {};
-    });
-    const iconColor = Vue.computed(() => {
-      if (props2.disabled) {
-        return "currentColor";
-      }
-      return props2.color != "" ? props2.color : "#007aff";
     });
     const group = Vue.inject(CHECKBOX_GROUP_KEY, null);
     Vue.inject(LABEL_KEY, null);
@@ -9047,7 +9041,6 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
           const n6 = t0$m();
           const n5 = Vue.child(n6);
           Vue.setAttr(n5, "d", iconPath$1, true);
-          Vue.renderEffect(() => Vue.setAttr(n5, "fill", Vue.unref(iconColor), true));
           return n6;
         });
         Vue.on(n2, "keydown", (e2) => Vue.unref(handleKeydown)(e2));
@@ -9079,7 +9072,6 @@ const _sfc_main$m = /* @__PURE__ */ Vue.defineVaporComponent({
           const n12 = t0$m();
           const n11 = Vue.child(n12);
           Vue.setAttr(n11, "d", iconPath$1, true);
-          Vue.renderEffect(() => Vue.setAttr(n11, "fill", Vue.unref(iconColor), true));
           return n12;
         });
         Vue.setInsertionState(n8, 1);

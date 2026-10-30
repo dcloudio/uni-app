@@ -9849,12 +9849,6 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
       }
       return {};
     });
-    const iconColor = computed(() => {
-      if (props2.disabled) {
-        return "currentColor";
-      }
-      return props2.color != "" ? props2.color : "#007aff";
-    });
     const group = inject(CHECKBOX_GROUP_KEY, null);
     const labelCtx = inject(LABEL_KEY, null);
     let unregisterLabelTarget = null;
@@ -9932,7 +9926,7 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
           "aria-disabled": __props.disabled
         }, _attrs))}>`);
         if (unref(isChecked)) {
-          _push(`<svg class="uni-checkbox-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath$1)}${ssrRenderAttr("fill", unref(iconColor))}></path></svg>`);
+          _push(`<svg class="uni-checkbox-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath$1)} fill="currentColor"></path></svg>`);
         } else {
           _push(`<!---->`);
         }
@@ -9952,7 +9946,7 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
           [!__props.disabled, __props.iconClass]
         ), "uni-checkbox-view uni-checkbox-icon"])}" style="${ssrRenderStyle(unref(activeStyle))}">`);
         if (unref(isChecked)) {
-          _push(`<svg class="uni-checkbox-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath$1)}${ssrRenderAttr("fill", unref(iconColor))}></path></svg>`);
+          _push(`<svg class="uni-checkbox-svg" viewBox="0 0 32 32"><path${ssrRenderAttr("d", iconPath$1)} fill="currentColor"></path></svg>`);
         } else {
           _push(`<!---->`);
         }

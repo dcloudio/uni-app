@@ -17232,7 +17232,7 @@ _UniCheckboxElement.__uniElement = { vm: true, init() {
   Object.defineProperty(this, "_checked", { value: false, writable: true, enumerable: true, configurable: true });
 } };
 let UniCheckboxElement = _UniCheckboxElement;
-const t0$v = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path>', 0, 1);
+const t0$v = template('<svg class=uni-checkbox-svg viewBox="0 0 32 32"><path fill=currentColor>', 0, 1);
 const t1$h = template("<div uni-checkbox uni-view role=checkbox>", 1);
 const t2$8 = template("<span uni-text>");
 const t3$5 = template("<div uni-checkbox uni-view class=uni-checkbox role=checkbox><div uni-view></div>", 1);
@@ -17273,12 +17273,6 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
         return { color: props2.color };
       }
       return {};
-    });
-    const iconColor = computed(() => {
-      if (props2.disabled) {
-        return "currentColor";
-      }
-      return props2.color != "" ? props2.color : "#007aff";
     });
     const group = inject(CHECKBOX_GROUP_KEY, null);
     const labelCtx = inject(LABEL_KEY, null);
@@ -17373,7 +17367,6 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           const n6 = t0$v();
           const n5 = child(n6);
           setAttr(n5, "d", iconPath$1, true);
-          renderEffect(() => setAttr(n5, "fill", unref(iconColor), true));
           return n6;
         });
         on$1(n2, "keydown", (e2) => unref(handleKeydown)(e2));
@@ -17405,7 +17398,6 @@ const _sfc_main$v = /* @__PURE__ */ defineVaporComponent({
           const n12 = t0$v();
           const n11 = child(n12);
           setAttr(n11, "d", iconPath$1, true);
-          renderEffect(() => setAttr(n11, "fill", unref(iconColor), true));
           return n12;
         });
         setInsertionState(n8, 1);

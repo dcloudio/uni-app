@@ -143,9 +143,7 @@
 	const style = useComputedStyle({
 		properties: [
 			'font-size', 'color',
-			// #ifdef APP-IOS || APP-HARMONY
 			'caret-color',
-			// #endif
 			// #ifndef APP-ANDROID
 			'line-height',
 			// #endif
@@ -684,7 +682,15 @@
 	watch(() => props.cursorSpacing, (newValue : number) => {
 		inputView?.updateCursorSpacing(newValue)
 	})
-	watch(() => props.cursorColor, (newValue : string) => {
+	// 光标色：优先 cursor-color 属性；未设置时取 CSS caret-color（支持 css 变量控制），都没有则跟原生默认
+	const resolvedCursorColor = computed(() : string => {
+		if (props.cursorColor != '') {
+			return props.cursorColor
+		}
+		const caretColor = style.get('caret-color')
+		return caretColor == null ? '' : caretColor
+	})
+	watch(resolvedCursorColor, (newValue : string) => {
 		inputView?.updateCursorColor(newValue)
 	})
 
@@ -846,7 +852,7 @@
 			props.holdKeyboard,
 			props.password,
 			getMaxLength(props.maxlength),
-			props.cursorColor,
+			resolvedCursorColor.value,
 			props.cursorSpacing
 		);
 		// #endif

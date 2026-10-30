@@ -21,7 +21,7 @@
     @click.stop="handleTap"
   >
     <svg v-if="isChecked" class="uni-checkbox-svg" viewBox="0 0 32 32">
-      <path :d="iconPath" :fill="iconColor"></path>
+      <path :d="iconPath" fill="currentColor"></path>
     </svg>
   </view>
   <!-- #endif -->
@@ -65,7 +65,7 @@
       :style="activeStyle"
     >
       <svg v-if="isChecked" class="uni-checkbox-svg" viewBox="0 0 32 32">
-        <path :d="iconPath" :fill="iconColor"></path>
+        <path :d="iconPath" fill="currentColor"></path>
       </svg>
     </view>
     <!-- #endif -->
@@ -312,13 +312,6 @@
 
   // #ifdef WEB
   const iconPath = 'M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z'
-
-  const iconColor = computed(() : string => {
-    if (props.disabled) {
-      return 'currentColor'
-    }
-    return props.color != '' ? props.color : '#007aff'
-  })
   // #endif
 
   const group = inject<CheckboxGroupContext | null>(CHECKBOX_GROUP_KEY, null)

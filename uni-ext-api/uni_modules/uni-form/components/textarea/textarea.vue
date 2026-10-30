@@ -95,9 +95,7 @@
 	const style = useComputedStyle({
 		properties: [
 			'font-size', 'color',
-			// #ifdef APP-IOS || APP-HARMONY
 			'caret-color',
-			// #endif
 			'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
 			'direction',
 			// #ifndef APP-ANDROID
@@ -528,6 +526,7 @@
 	function syncAndroidTextareaStyleProps() {
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
 		textareaView?.updateColor(resolvedTextColor.value)
+		textareaView?.updateCursorColor(resolvedCursorColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		textareaView?.updateFontWeight(style.get('font-weight'))
@@ -627,7 +626,15 @@
 	watch(() => props.cursorSpacing, (newValue : number) => {
 		textareaView?.updateCursorSpacing(newValue)
 	})
-	watch(() => props.cursorColor, (newValue : string) => {
+	// 光标色：优先 cursor-color 属性；未设置时取 CSS caret-color（支持 css 变量控制），都没有则跟原生默认
+	const resolvedCursorColor = computed(() : string => {
+		if (props.cursorColor != '') {
+			return props.cursorColor
+		}
+		const caretColor = style.get('caret-color')
+		return caretColor == null ? '' : caretColor
+	})
+	watch(resolvedCursorColor, (newValue : string) => {
 		textareaView?.updateCursorColor(newValue)
 	})
 
