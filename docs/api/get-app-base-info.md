@@ -131,6 +131,14 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 - 云打包时需在“App打包”界面中配置，详情参考[配置渠道包](../tutorial/app-package.md#channel)。
 - 离线打包时需在原生工程中配置，详情参考[Android平台配置应用渠道包](../native/use/android.md#androidmanifest)
 
+#### app平台注意事项
+- app-andorid/app-ios平台使用标准基座运行时以下字段获取的是标准基座的信息，如需获取`manifest.json`中配置的应用信息需要打自定义基座
+  + appVersion
+  + appVersionCode
+  + channel
+  + packageName
+  + signature（app-android平台固定为io.dcloud.uniappx，app-ios平台为真机运行时在`App证书签名`界面配置的Bundle ID）
+  + bundleId（仅app-ios平台支持，真机运行时在`App证书签名`界面配置的Bundle ID）
 
 ### 示例
 
