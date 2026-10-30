@@ -287,7 +287,8 @@ function markRecycleFor(node) {
 	const key = (0, _vue_compiler_dom.findProp)(node, "key");
 	if (!key) return false;
 	node.__recycleFor = true;
-	(node.tag === "template" ? node.children[0] : node).props.push({
+	if (node.tag === "template") return true;
+	node.props.push({
 		type: 7,
 		name: "bind",
 		arg: (0, _vue_compiler_dom.createSimpleExpression)("itemKey", true),
@@ -296,6 +297,15 @@ function markRecycleFor(node) {
 		loc: node.loc
 	});
 	return true;
+}
+function toViewElement(node) {
+	node.tag = "view";
+	node.tagType = 0;
+	node.props = node.props.filter((prop) => {
+		var _prop$arg;
+		if (prop.type === 6) return prop.name !== "type";
+		return !(prop.name === "bind" && ((_prop$arg = prop.arg) === null || _prop$arg === void 0 ? void 0 : _prop$arg.type) === 4 && prop.arg.isStatic && prop.arg.content === "type");
+	});
 }
 function createRecycleForTransform() {
 	const types = /* @__PURE__ */ new WeakMap();
@@ -432,25 +442,20 @@ function createComponentIdTransform(recycle) {
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformListView.ts
-const transformListView = (node) => {
+function transformListView(node) {
+	if (node.type === 1 && node.tag === "list-item") {
+		if (!node.__recycleFor) toViewElement(node);
+		return;
+	}
 	if (node.type !== 1 || node.tag !== "list-view" && node.tag !== "sticky-section") return;
 	const container = node;
 	if (container.__recycleForProcessed) return;
 	container.__recycleForProcessed = true;
-	const rowIndex = node.children.findIndex((child) => isListRow(child) && (0, _vue_compiler_dom.findDir)(child, "for") && !(0, _vue_compiler_dom.findDir)(child, "if"));
 	if (node.tag === "sticky-section") {
+		const rowIndex = node.children.findIndex((child) => isListRow(child) && (0, _vue_compiler_dom.findDir)(child, "for") && !(0, _vue_compiler_dom.findDir)(child, "if"));
 		if (rowIndex >= 0) markRecycleFor(node.children[rowIndex]);
 		return;
 	}
-	const sections = node.children.filter((child) => child.type === 1 && child.tag === "sticky-section");
-	let start = rowIndex;
-	let end = rowIndex;
-	if (sections.length) {
-		start = node.children.indexOf(sections[0]);
-		end = node.children.indexOf(sections[sections.length - 1]);
-	} else if (rowIndex < 0 || !markRecycleFor(node.children[rowIndex])) return;
-	const header = [];
-	const footer = [];
 	const defaultChildren = [];
 	const refresher = [];
 	const namedSlots = [];
@@ -468,30 +473,43 @@ const transformListView = (node) => {
 				continue;
 			}
 		}
-		if (i < start) header.push(child);
-		else if (i > end) footer.push(child);
-		else defaultChildren.push(child);
+		defaultChildren.push(child);
 	}
+	const rowIndex = defaultChildren.findIndex((child) => isListRow(child) && (0, _vue_compiler_dom.findDir)(child, "for") && !(0, _vue_compiler_dom.findDir)(child, "if"));
+	const sections = defaultChildren.filter((child) => child.type === 1 && child.tag === "sticky-section");
+	let start = rowIndex < 0 ? defaultChildren.length : rowIndex;
+	let end = start;
+	if (sections.length) {
+		start = defaultChildren.indexOf(sections[0]);
+		end = defaultChildren.indexOf(sections[sections.length - 1]);
+	} else if (rowIndex >= 0) markRecycleFor(defaultChildren[rowIndex]);
+	const header = defaultChildren.slice(0, start);
+	const footer = defaultChildren.slice(end + 1);
 	node.children = [
 		...header.length ? [wrapTemplate("header", header)] : [],
-		...defaultChildren,
+		...defaultChildren.slice(start, end + 1),
 		...footer.length ? [wrapTemplate("footer", footer)] : [],
 		...refresher.length ? [wrapTemplate("refresher", refresher)] : [],
 		...namedSlots
 	];
-};
+}
 function isListRow(node) {
 	return node.type === 1 && (node.tag === "list-item" || node.tag === "template" && node.children.length === 1 && node.children[0].type === 1 && node.children[0].tag === "list-item" && !(0, _vue_compiler_dom.findDir)(node.children[0], "for"));
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformWaterflow.ts
-const transformWaterflow = (node) => {
+function transformWaterflow(node) {
+	if (node.type === 1 && node.tag === "flow-item") {
+		if (!node.__recycleFor) toViewElement(node);
+		return;
+	}
 	if (node.type !== 1 || node.tag !== "waterflow") return;
 	const container = node;
 	if (container.__recycleForProcessed) return;
 	container.__recycleForProcessed = true;
-	const row = node.children.find((child) => isFlowRow(child) && (0, _vue_compiler_dom.findDir)(child, "for") && !(0, _vue_compiler_dom.findDir)(child, "if"));
-	if (!row || !markRecycleFor(row)) return;
+	const row = node.children.find((child) => isFlowRow(child) && (0, _vue_compiler_dom.findDir)(child, "for") && !(0, _vue_compiler_dom.findDir)(child, "if") && !(0, _vue_compiler_dom.findDir)(child, "slot", true) && !child.props.some((prop) => prop.type === 6 && prop.name === "slot" && prop.value && (prop.value.content === "refresher" || prop.value.content === "load-more")));
+	if (!row) return;
+	markRecycleFor(row);
 	const defaultChildren = [];
 	const refresher = [];
 	const loadMore = [];
@@ -520,7 +538,7 @@ const transformWaterflow = (node) => {
 		...loadMore.length ? [wrapTemplate("load-more", loadMore)] : [],
 		...namedSlots
 	];
-};
+}
 function isFlowRow(node) {
 	return node.type === 1 && (node.tag === "flow-item" || node.tag === "template" && node.children.length === 1 && node.children[0].type === 1 && node.children[0].tag === "flow-item" && !(0, _vue_compiler_dom.findDir)(node.children[0], "for"));
 }
@@ -676,6 +694,8 @@ function createUniElementTransform() {
 function createUniAppXWebTransform(options = {}) {
 	if (options.ssr) {
 		const transform = (node, context) => {
+			transformListView(node);
+			transformWaterflow(node);
 			transformView(node);
 			transformText(node);
 			transformSSRImage(node, context);
@@ -693,8 +713,8 @@ function createUniAppXWebTransform(options = {}) {
 	const element = createUniElementTransform();
 	return {
 		transform: (node, context) => {
-			transformListView(node, context);
-			transformWaterflow(node, context);
+			transformListView(node);
+			transformWaterflow(node);
 			const exitRecycle = recycle.transform(node, context);
 			const exitComponentId = componentId.transform(node, context);
 			transformView(node);
