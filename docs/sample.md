@@ -41,6 +41,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 ### 其他
 - 黔警通：[Android](https://sj.qq.com/appdetail/com.qxnga.qjt)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hmos.com.qxnga.qjt)
 - 发票匣：[Android](https://sj.qq.com/appdetail/com.juxiang.fapiaoxia)、[iOS](https://apps.apple.com/cn/app/%E5%8F%91%E7%A5%A8%E5%8C%A3/id6593679748)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.juxiang.hfapiaoxia&amp;channelId=SHARE&amp;source=appshare)
+- 名流健康：[Android](https://appgallery.huawei.com/app/C117491537)、[iOS](https://apps.apple.com/cn/app/%E5%90%8D%E6%B5%81%E5%81%A5%E5%BA%B7/id6772873103)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.mljk.hmmingliujiankang)
 - 时欢：[Android](https://sj.qq.com/appdetail/com.yunyuinteractive.bts)
 - AI名车宝典：[Android](https://sj.qq.com/appdetail/com.mcbd.aimcbd.util)、[iOS](https://apps.apple.com/cn/app/ai%E5%90%8D%E8%BD%A6%E5%AE%9D%E5%85%B8/id6446267335)
 - 中维商城：[Android](https://sj.qq.com/appdetail/com.wx45.app)
@@ -78,6 +79,16 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 融小付生活：[Android](https://sj.qq.com/appdetail/com.hbyqs.rxflife)
 - LOSFER翻译：[Android](https://sj.qq.com/appdetail/cn.losfer.translater)
 - 真鱿趣：[Android](https://sj.qq.com/appdetail/com.yyouren.uniappx_rl)
+- TradeLink：[Android](https://h5coml.vivo.com.cn/h5coml/appdetail_h5/browser_v2/index.html?appId=4938905)、[iOS](https://apps.apple.com/cn/app/tradelink/id6762267907)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hongmeng.tradelink.saas)
+- 牛约堡门店管家：[Android](https://appgallery.huawei.com/app/C117996821)	
+- 橡皮同学：[Android](https://appgallery.huawei.com/app/C119140061)	
+- 省心极速版：[Android](https://appgallery.huawei.com/app/C114376433)、[iOS](https://apps.apple.com/cn/app/%E7%9C%81%E5%BF%83%E6%9E%81%E9%80%9F%E7%89%88/id6746467864)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.shengxinfasthm.app)
+- 上医健民：[Android](https://sj.qq.com/appdetail/cn.healthgod.mkt)
+- 豆粒：[Android](https://sj.qq.com/appdetail/com.douli.sfwal.app)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.douli.sfwal.app)
+- Kepenk：[Android](https://app.mi.com/details?id=uni.app.Kepenk)	
+- 麻花优选：[Android](https://app.mi.com/details?id=com.lianliantao.yuetuan)
+- 萝卜医学：[Android](https://app.so.com/detail/index?pname=cn.mlk.radishdoctor&id=4696616)
+- 远火：[Android](https://appgallery.huawei.com/app/C113426533)、[iOS](https://apps.apple.com/cn/app/%E8%BF%9C%E7%81%AB/id6741806983)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=hm.yuanhuo.cn)
 
 由于 uni-app x 没有运行时数据采集，所以DCloud并不知道哪些开发者在真实使用uni-app x。\
 希望大型开发者，能主动给本文档提交pr，贡献案例，帮助uni-app x生态发展。
@@ -100,7 +111,6 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 - 大咖复刻（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.ahzx.dkfk)
 - 名人妙语通（教育）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.ahzx.mrmyt)
 - OC智联（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=cn.ocdw.app.oczl)
-- 远火（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=hm.yuanhuo.cn)
 - 月月好（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.menstrual.period)
 - 格式转换专家（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.gszh.app)
 - 数学公式导航仪（工具）：[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.ahzx.sxgsdhy)
