@@ -1198,6 +1198,24 @@
           "swift": true,
           "arkts": true
         }
+      },
+      "onKeyboardAnimationChange": {
+        "name": "onKeyboardAnimationChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "offKeyboardAnimationChange": {
+        "name": "offKeyboardAnimationChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
       }
     },
     "components": [],
