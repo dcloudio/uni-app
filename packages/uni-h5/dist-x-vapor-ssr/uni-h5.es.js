@@ -9847,7 +9847,6 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [unref(buttonType) == "default", "uni-button-type-default_view"],
             [unref(buttonType) == "primary", "uni-button-type-primary_view"],
             [unref(buttonType) == "warn", "uni-button-type-warn_view"],
-            [__props.plain, "uni-button-view-plain"],
             [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
             [__props.disabled, "uni-button-disabled"],
             [__props.size == "mini", "uni-button-size-mini"],
@@ -9856,6 +9855,7 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [unref(buttonType) == "primary", "uni-button-type-primary_text"],
             [unref(buttonType) == "warn", "uni-button-type-warn_text"],
             [__props.plain && __props.loading, "uni-button-text-plain"],
+            [__props.plain, "uni-button-view-plain"],
             [__props.size == "mini", "uni-button-text-size-mini"],
             [__props.size == "default", "uni-button-text-size-default"]
           )],
@@ -9881,7 +9881,6 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [unref(buttonType) == "default", "uni-button-type-default_view"],
             [unref(buttonType) == "primary", "uni-button-type-primary_view"],
             [unref(buttonType) == "warn", "uni-button-type-warn_view"],
-            [__props.plain, "uni-button-view-plain"],
             [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
             [__props.disabled, "uni-button-disabled"],
             [__props.size == "mini", "uni-button-size-mini"],
@@ -9890,6 +9889,7 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [unref(buttonType) == "primary", "uni-button-type-primary_text"],
             [unref(buttonType) == "warn", "uni-button-type-warn_text"],
             [__props.plain && __props.loading, "uni-button-text-plain"],
+            [__props.plain, "uni-button-view-plain"],
             [__props.size == "mini", "uni-button-text-size-mini"],
             [__props.size == "default", "uni-button-text-size-default"]
           )]

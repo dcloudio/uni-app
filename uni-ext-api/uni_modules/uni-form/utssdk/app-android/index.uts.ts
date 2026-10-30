@@ -2810,6 +2810,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	private pendingSelectionApply: boolean = false
 	private cursorSpacing: number = 0
 	private autoHeight: boolean = false
+	private minHeight: number = -1
+	private maxHeight: number = -1
 	private hasReceivedAutoHeightProp: boolean = false
 	private isBatchUpdating: boolean = false
 	private pendingBatchHeightRefresh: boolean = false
@@ -3020,7 +3022,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 					UniAndroidEditorTouchCache.recordNativeTouch(self.element)
 				}
 				const parent = v.getParent()
-				const canScroll = !self.autoHeight && self.isTextareaContentScrollable()
+				const canScroll = self.isTextareaContentScrollable()
 				if (canScroll) {
 					switch (action) {
 						case MotionEvent.ACTION_DOWN:
@@ -3041,7 +3043,7 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	}
 
 	private isTextareaContentScrollable(): boolean {
-		if (this.editText == null || this.autoHeight) return false
+		if (this.editText == null) return false
 		return this.calculateContentHeight() > this.resolveTextareaHeight() + 1
 	}
 
@@ -3370,7 +3372,22 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		this.autoHeight = toBoolean(value)
 		this.trace('updateAutoHeight autoHeight=' + this.autoHeight)
 		if (this.editText != null) {
-			this.editText!.setVerticalScrollBarEnabled(!this.autoHeight)
+			this.editText!.setVerticalScrollBarEnabled(!this.autoHeight || this.maxHeight >= 0)
+		}
+		this.refreshTextareaHeightForTextLayoutChange()
+	}
+
+	updateMinHeight(value: string) {
+		const height = parsePixelStyleValue(value)
+		this.minHeight = height == null ? -1 : height
+		this.refreshTextareaHeightForTextLayoutChange()
+	}
+
+	updateMaxHeight(value: string) {
+		const height = parsePixelStyleValue(value)
+		this.maxHeight = height == null ? -1 : height
+		if (this.editText != null) {
+			this.editText!.setVerticalScrollBarEnabled(!this.autoHeight || this.maxHeight >= 0)
 		}
 		this.refreshTextareaHeightForTextLayoutChange()
 	}
@@ -3740,9 +3757,20 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		return Math.max(0, nativeContentHeight)
 	}
 
+	private resolveClampedAutoHeight(contentHeight: number): number {
+		let height = contentHeight
+		if (this.minHeight >= 0 && height < this.minHeight) {
+			height = this.minHeight
+		}
+		if (this.maxHeight >= 0 && height > this.maxHeight) {
+			height = this.maxHeight
+		}
+		return height
+	}
+
 	private resolveTextareaHeight(): number {
 		if (this.autoHeight) {
-			return this.calculateContentHeight()
+			return this.resolveClampedAutoHeight(this.calculateContentHeight())
 		}
 		const editText = this.editText
 		const nativeHeight = editText?.getHeight() ?? editText?.getMeasuredHeight() ?? 0
@@ -3768,6 +3796,20 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 		if (height <= 0) {
 			height = this.calculateContentNativeHeightForMeasureWidth(0)
 		}
+		const nativeWindowHeight = this.resolveNativeWindowHeight()
+		const logicalWindowHeight = this.getKeyboardLogicalWindowHeight()
+		if (this.minHeight >= 0) {
+			const nativeMinHeight = convertAndroidLogicalToNativePx(this.minHeight, nativeWindowHeight, logicalWindowHeight)
+			if (height < nativeMinHeight) {
+				height = nativeMinHeight
+			}
+		}
+		if (this.maxHeight >= 0) {
+			const nativeMaxHeight = convertAndroidLogicalToNativePx(this.maxHeight, nativeWindowHeight, logicalWindowHeight)
+			if (height > nativeMaxHeight) {
+				height = nativeMaxHeight
+			}
+		}
 		if (heightMode == 'AtMost' && res.height >= 0) {
 			height = Math.min(height, res.height)
 		}
@@ -3785,7 +3827,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 
 	private ensureCursorVisibleAfterLayout() {
 		const editText = this.editText
-		if (editText == null || this.autoHeight) return
+		if (editText == null) return
+		if (this.autoHeight && !this.isTextareaContentScrollable()) return
 		const self = this
 		editText.post(class implements Runnable {
 			override run() {
@@ -3796,7 +3839,8 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 
 	private scrollCursorIntoView() {
 		const editText = this.editText
-		if (this.destroyed || editText == null || this.autoHeight) return
+		if (this.destroyed || editText == null) return
+		if (this.autoHeight && !this.isTextareaContentScrollable()) return
 		const layout = editText.getLayout()
 		if (layout == null) return
 		const selectionEnd = editText.getSelectionEnd()

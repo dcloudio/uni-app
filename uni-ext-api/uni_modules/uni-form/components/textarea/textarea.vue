@@ -102,8 +102,9 @@
 			'caret-color',
 			'line-height', 'letter-spacing', 'font-weight', 'font-style', 'font-family', 'text-align',
 			'direction',
+			'min-height', 'max-height',
 			// #ifndef APP-ANDROID
-			'height', 'min-height', 'max-height',
+			'height',
 			// #endif
 			// #ifdef APP-HARMONY || APP-IOS
 			'padding-top', 'padding-right', 'padding-bottom', 'padding-left'
@@ -684,6 +685,14 @@
 		rememberAndroidTextareaHeightIfNeeded()
 	})
 
+	watch(() => style.get('min-height'), (value : string) => {
+		textareaView?.updateMinHeight(rpx2px(value))
+	})
+
+	watch(() => style.get('max-height'), (value : string) => {
+		textareaView?.updateMaxHeight(rpx2px(value))
+	})
+
 	watch(() => props.cursor, (newValue : number) => {
 		textareaView?.updateCursor(newValue)
 	})
@@ -825,14 +834,10 @@
 					// #endif
 					break
 				case 'min-height':
-					// #ifndef APP-ANDROID
 					textareaView.updateMinHeight(rpx2px(value as string))
-					// #endif
 					break
 				case 'max-height':
-					// #ifndef APP-ANDROID
 					textareaView.updateMaxHeight(rpx2px(value as string))
-					// #endif
 					break
 				case 'padding-top':
 				case 'padding-right':

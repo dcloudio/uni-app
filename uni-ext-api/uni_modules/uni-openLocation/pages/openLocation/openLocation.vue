@@ -10,7 +10,7 @@
     </view>
     <view class="uni-open-location-nav" :style="'height:' + (60 + safeArea.top) + 'px;'">
       <view class="uni-open-location-nav-btn uni-open-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''">
-        <uni-back-arrow-circle class="uni-open-location-back-circle" :auto-back="false" @click="back"></uni-back-arrow-circle>
+        <uni-back-arrow-circle class="uni-open-location-back-circle" :class="[darkClassCom]" :auto-back="false" @click="back"></uni-back-arrow-circle>
       </view>
     </view>
     <view class="uni-open-location-footer" :class="[darkClassCom]">
@@ -531,6 +531,10 @@
     opacity: 0.6;
   }
   /* #endif */
+
+  .uni-open-location-dark.uni-open-location-back-circle {
+    --back-arrow-color: #000000;
+  }
 
   .uni-open-location-dark.uni-open-location-map-reset {
     background-color: #111111;

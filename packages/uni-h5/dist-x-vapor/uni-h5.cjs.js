@@ -8972,14 +8972,13 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _buttonType = Vue.unref(buttonType);
-          const _plain = __props.plain;
           const _size = __props.size;
+          const _plain = __props.plain;
           Vue.setHover(n2, _disabled ? "none" : Vue.unref(hoverClasses), __props.hoverStopPropagation, __props.hoverStartTime, __props.hoverStayTime, "");
           Vue.setClass(n2, ["uni-button", Vue.unref(classes)(
             [_buttonType == "default", "uni-button-type-default_view"],
             [_buttonType == "primary", "uni-button-type-primary_view"],
             [_buttonType == "warn", "uni-button-type-warn_view"],
-            [_plain, "uni-button-view-plain"],
             [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
             [_disabled, "uni-button-disabled"],
             [_size == "mini", "uni-button-size-mini"],
@@ -8988,12 +8987,13 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
             [_buttonType == "primary", "uni-button-type-primary_text"],
             [_buttonType == "warn", "uni-button-type-warn_text"],
             [_plain && __props.loading, "uni-button-text-plain"],
+            [_plain, "uni-button-view-plain"],
             [_size == "mini", "uni-button-text-size-mini"],
             [_size == "default", "uni-button-text-size-default"]
           )]);
         });
         Vue.setInsertionState(n2, n6);
-        Vue.withComponentId("0ed9f1c8", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
+        Vue.withComponentId("0ed9f4ec", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
           [Vue.unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && Vue.unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && Vue.unref(buttonType) == "warn", "uni-loading-plain-warn"],
@@ -9021,14 +9021,13 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
         Vue.renderEffect(() => {
           const _disabled = __props.disabled;
           const _buttonType = Vue.unref(buttonType);
-          const _plain = __props.plain;
           const _size = __props.size;
+          const _plain = __props.plain;
           Vue.setHover(n8, _disabled ? "none" : Vue.unref(hoverClasses), __props.hoverStopPropagation, __props.hoverStartTime, __props.hoverStayTime, "");
           Vue.setClass(n8, ["uni-button uni-button-text", Vue.unref(classes)(
             [_buttonType == "default", "uni-button-type-default_view"],
             [_buttonType == "primary", "uni-button-type-primary_view"],
             [_buttonType == "warn", "uni-button-type-warn_view"],
-            [_plain, "uni-button-view-plain"],
             [__props.type != null, "uni-button-has-type", "uni-button-no-type"],
             [_disabled, "uni-button-disabled"],
             [_size == "mini", "uni-button-size-mini"],
@@ -9037,6 +9036,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
             [_buttonType == "primary", "uni-button-type-primary_text"],
             [_buttonType == "warn", "uni-button-type-warn_text"],
             [_plain && __props.loading, "uni-button-text-plain"],
+            [_plain, "uni-button-view-plain"],
             [_size == "mini", "uni-button-text-size-mini"],
             [_size == "default", "uni-button-text-size-default"]
           )]);

@@ -1,4 +1,5 @@
 <template>
+  <!-- App 单 class 按属性顺序覆盖，plain 放在基础文字类之后。 -->
   <view
     v-if="loading && !disabled"
     class="uni-button"
@@ -6,7 +7,6 @@
       [buttonType == 'default', 'uni-button-type-default_view'],
       [buttonType == 'primary', 'uni-button-type-primary_view'],
       [buttonType == 'warn', 'uni-button-type-warn_view'],
-      [plain, 'uni-button-view-plain'],
       [type != null, 'uni-button-has-type', 'uni-button-no-type'],
       [disabled, 'uni-button-disabled'],
       [size == 'mini', 'uni-button-size-mini'],
@@ -15,6 +15,7 @@
       [buttonType == 'primary', 'uni-button-type-primary_text'],
       [buttonType == 'warn', 'uni-button-type-warn_text'],
       [plain && loading, 'uni-button-text-plain'],
+      [plain, 'uni-button-view-plain'],
       [size == 'mini', 'uni-button-text-size-mini'],
       [size == 'default', 'uni-button-text-size-default']
     )"
@@ -52,7 +53,6 @@
       [buttonType == 'default', 'uni-button-type-default_view'],
       [buttonType == 'primary', 'uni-button-type-primary_view'],
       [buttonType == 'warn', 'uni-button-type-warn_view'],
-      [plain, 'uni-button-view-plain'],
       [type != null, 'uni-button-has-type', 'uni-button-no-type'],
       [disabled, 'uni-button-disabled'],
       [size == 'mini', 'uni-button-size-mini'],
@@ -61,6 +61,7 @@
       [buttonType == 'primary', 'uni-button-type-primary_text'],
       [buttonType == 'warn', 'uni-button-type-warn_text'],
       [plain && loading, 'uni-button-text-plain'],
+      [plain, 'uni-button-view-plain'],
       [size == 'mini', 'uni-button-text-size-mini'],
       [size == 'default', 'uni-button-text-size-default']
     )"
@@ -641,10 +642,12 @@
   }
 
   .uni-button-disabled.uni-button-type-primary_view {
+    color: rgba(255, 255, 255, .6);
     background-color: rgba(0, 122, 255, .6);
   }
 
   .uni-button-disabled.uni-button-type-warn_view {
+    color: rgba(255, 255, 255, .6);
     background-color: #ec8b89;
   }
 
@@ -689,6 +692,7 @@
   }
 
   .uni-button-view-plain {
+    color: #353535;
     border-width: 1px;
     border-color: #353535;
     background-color: transparent;
@@ -743,10 +747,9 @@
   .button-hover {
     color: rgba(0, 0, 0, 0.6);
     background-color: #dedede;
-    opacity: 0.8;
   }
   .transition-enabled.button-hover {
-    transition: background-color 0.1s, color 0.1s, opacity 0.1s;
+    transition: background-color 0.1s, color 0.1s;
   }
 
   .uni-button-view_primary_hover {
@@ -828,6 +831,7 @@
     border-color: rgba(230, 67, 64, 0.6);
     background-color: transparent;
   }
+
   /* #endif */
 
   .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
@@ -859,44 +863,46 @@
       color: rgba(255, 255, 255, 0.2);
     }
 
-    .uni-button.uni-button-view-plain.uni-button-type-default_text {
+    /* 保持普通 plain 的优先级，使外部自定义颜色和背景仍可覆盖。 */
+    .uni-button-view-plain {
       color: #353535;
+      background-color: transparent;
     }
 
     .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
-      border-color: #353535;
+      border-color: #d6d6d6;
       background-color: transparent;
     }
 
     .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_text {
-      color: #353535;
+      color: #d6d6d6;
     }
 
-    .button-hover.uni-button-view-plain,
-    .uni-button-view_plain_default_hover {
+    .uni-button-view-plain.uni-button-has-type.uni-button-view_plain_default_hover {
       color: rgba(150, 150, 150, 0.6);
       border-color: rgba(150, 150, 150, 0.6);
       background-color: rgba(50, 50, 50, 0.2);
     }
 
     /* #ifdef WEB */
-    /* 未传 type 的 plain 按钮也需要覆盖暗黑模式的默认背景。 */
-    .uni-button.uni-button-view-plain.uni-button-no-type.uni-button-type-default_view {
-      background-color: transparent;
-    }
-
-    .uni-button.uni-button-view-plain.uni-button-type-default_view.uni-button-view_plain_default_hover {
+    /* 仅显式 type="default" 的 plain 按钮使用暗色按下态。 */
+    .uni-button.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view.uni-button-view_plain_default_hover {
       color: rgba(150, 150, 150, 0.6);
       border-color: rgba(150, 150, 150, 0.6);
       background-color: rgba(50, 50, 50, 0.2);
     }
     /* #endif */
 
-    .uni-button.uni-button-disabled.uni-button-view-plain,
-    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type {
+    /* 与内置 button 保持一致：暗色 plain 仅显式 default/primary 使用白色禁用边框和文字。 */
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view,
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-primary_view {
       color: rgba(255, 255, 255, 0.2);
       border-color: rgba(255, 255, 255, 0.2);
       background-color: transparent;
+    }
+
+    .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-has-type.uni-button-type-default_view {
+      background-color: rgba(255, 255, 255, .08);
     }
 
     .uni-button.uni-button-disabled.uni-button-view-plain.uni-button-no-type {

@@ -11013,6 +11013,12 @@ class SelectorQuery {
     }
     in(component) {
         this._component = resolveComponentInstance(component);
+        if (this._component && this._component.$root) {
+            const root = resolveComponentInstance(this._component.$root);
+            if (root) {
+                this._page = root;
+            }
+        }
         return this;
     }
     select(selector) {

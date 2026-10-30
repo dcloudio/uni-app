@@ -11,7 +11,7 @@
   const props = withDefaults(defineProps<{
     autoBack?: boolean
   }>(), {
-    autoBack: true
+    autoBack: false
   })
 
   const emit = defineEmits(['click'])
