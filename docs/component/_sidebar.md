@@ -77,6 +77,7 @@
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
   * [uni-combobox | 组合框](./uni-ui-x/uni-combobox.md)
   * [uni-combox | 组合框](./uni-ui-x/uni-combox.md)
+  * [uni-data-picker | 数据选择器](./uni-ui-x/uni-data-picker.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
   * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
