@@ -48,6 +48,13 @@ describe('Web Vapor ResizeSensor 原生宿主', () => {
   beforeAll(async () => {
     const { JSDOM } = jest.requireActual('jsdom')
     dom = new JSDOM('<!doctype html><body></body>')
+    // PageBody 不经过 Easycom，单独加载 Vapor 全局样式也必须包含首次显示动画。
+    const style = dom.window.document.createElement('style')
+    style.textContent = fs.readFileSync(
+      path.join(root, 'packages/uni-h5/style/framework/uvue-vapor.css'),
+      'utf8'
+    )
+    dom.window.document.head.appendChild(style)
     for (const name of [
       'window',
       'document',
@@ -199,6 +206,20 @@ describe('Web Vapor ResizeSensor 原生宿主', () => {
       ) as HTMLElement,
     }
   }
+
+  test('仅加载 Vapor 全局样式时，首次显示动画也有对应关键帧', () => {
+    const { element } = mount()
+    const animation = dom.window.getComputedStyle(element).animation
+    expect(animation).toBe('once-show 1ms')
+    const rules = Array.from(document.styleSheets[0].cssRules)
+    const keyframes = rules.find(
+      (rule) =>
+        rule.type === dom.window.CSSRule.KEYFRAMES_RULE &&
+        (rule as CSSKeyframesRule).name === animation.split(' ')[0]
+    ) as CSSKeyframesRule
+    expect(keyframes).toBeDefined()
+    expect((keyframes.cssRules[0] as CSSKeyframeRule).style.top).toBe('0')
+  })
 
   test.each([true, false])(
     '初次测量、滚动更新和尺寸去重保持一致：Vapor=%s',

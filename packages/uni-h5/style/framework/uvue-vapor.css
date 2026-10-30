@@ -1,6 +1,8 @@
 /*
  * Web Vapor 使用独立的完整框架样式入口。
- * 这里保留当前尚未迁移的 uni-* 宿主组件样式，并追加原生宿主的 Vapor 规则；
+ * 维护框架布局、原生宿主基础样式及内置组件的 Vapor 适配规则。
+ * 组件的 Vapor 适配规则体积较小，集中加载以避免额外的样式请求和依赖维护；
+ * 不写入与 VDOM 共用的组件 CSS，避免影响非 Vapor 模式。
  * VDOM 模式继续使用 uvue.css，两个入口不会同时加载。
  */
 
@@ -16,7 +18,6 @@ body, uni-page-body {
 uni-app uni-page-body {
   height: 100%;
   overflow: visible;
-  position: relative;
 }
 
 uni-app uni-page-body,
@@ -196,6 +197,13 @@ uni-app div:where([uni-ad]) {
   justify-content: normal;
 }
 
+/* PageBody 直接使用 ResizeSensor；首次显示动画不能依赖其他组件引入旧 CSS。 */
+@keyframes once-show {
+  from {
+    top: 0;
+  }
+}
+
 /* 内部尺寸传感器不使用 uni-view，避免套用业务组件的布局和 Element 能力。 */
 div:where([uni-resize-sensor]),
 div:where([uni-resize-sensor]) > div {
@@ -211,7 +219,6 @@ div:where([uni-resize-sensor]) {
   display: block;
   z-index: -1;
   visibility: hidden;
-  /* 复用 resize-sensor.css 中的首次显示动画。 */
   animation: once-show 1ms;
 }
 
@@ -231,24 +238,11 @@ div:where([uni-resize-sensor]) > div:last-child > div {
   height: 200%;
 }
 
-/* uni-app uni-* */
+/* 尚不支持的组件仍生成 uni-* 占位节点，保留其基础布局与 hidden 行为。 */
 uni-app uni-ad-draw,
-uni-app uni-ad-fullscreen-video,
-uni-app uni-ad-interactive,
-uni-app uni-ad-interstitial,
-uni-app uni-ad-rewarded-video,
-uni-app uni-animation-view,
-uni-app uni-audio,
-uni-app uni-block,
 uni-app uni-camera,
-uni-app uni-custom-tab-bar,
 uni-app uni-live-player,
-uni-app uni-live-pusher,
-uni-app uni-navigation-bar,
-uni-app uni-open-data,
-uni-app uni-page-meta,
-uni-app uni-template,
-uni-app uni-unicloud-db {
+uni-app uni-live-pusher {
   position: relative;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -278,24 +272,11 @@ uni-app div:where([uni-rich-text])[selectable="true"] {
   -webkit-user-select: text;
 }
 
-/* uni-app uni-* */
+/* 占位节点也遵循 hidden 语义。 */
 uni-app uni-ad-draw[hidden],
-uni-app uni-ad-fullscreen-video[hidden],
-uni-app uni-ad-interactive[hidden],
-uni-app uni-ad-interstitial[hidden],
-uni-app uni-ad-rewarded-video[hidden],
-uni-app uni-animation-view[hidden],
-uni-app uni-audio[hidden],
-uni-app uni-block[hidden],
 uni-app uni-camera[hidden],
-uni-app uni-custom-tab-bar[hidden],
 uni-app uni-live-player[hidden],
-uni-app uni-live-pusher[hidden],
-uni-app uni-navigation-bar[hidden],
-uni-app uni-open-data[hidden],
-uni-app uni-page-meta[hidden],
-uni-app uni-template[hidden],
-uni-app uni-unicloud-db[hidden] {
+uni-app uni-live-pusher[hidden] {
   display: none !important;
 }
 
@@ -303,11 +284,7 @@ uni-app uni-unicloud-db[hidden] {
 uni-app uni-page-body,
 uni-app uni-left-window .uni-left-window,
 uni-app uni-right-window .uni-right-window,
-uni-app uni-top-window .uni-top-window,
-uni-app uni-animation-view,
-uni-app uni-block,
-uni-app uni-unicloud-db,
-uni-app uni-custom-tab-bar {
+uni-app uni-top-window .uni-top-window {
   display: flex;
   align-items: stretch;
   align-content: stretch;
@@ -318,23 +295,8 @@ uni-app uni-custom-tab-bar {
 uni-app uni-page-body,
 uni-app uni-left-window .uni-left-window,
 uni-app uni-right-window .uni-right-window,
-uni-app uni-top-window .uni-top-window,
-uni-app uni-unicloud-db {
+uni-app uni-top-window .uni-top-window {
   flex-direction: column;
-}
-
-/* Button 使用独立状态样式，保留旧宿主的块布局与 flex 默认值。 */
-uni-app div:where([uni-button]) {
-  margin: 0;
-  display: block;
-  font-size: 18px;
-  text-align: center;
-  /* div 的浏览器默认值为 isolate，旧宿主为 normal。 */
-  unicode-bidi: normal;
-  flex-direction: row;
-  align-items: normal;
-  align-content: normal;
-  justify-content: normal;
 }
 
 /* 透传scroll-view的flex-direction样式 */
@@ -406,98 +368,13 @@ body .uni-toast__content {
   color: #ffffff;
 }
 
-body .uni-modal {
-  border-radius: 12px;
-}
-
-body .uni-modal__hd {
-  padding: 32px 24px 16px;
-}
-
-body .uni-modal__title {
-  font-weight: 700;
-  font-size: 17px;
-  line-height: 1.4;
-  -webkit-line-clamp: unset;
-}
-
-body .uni-modal__bd {
-  font-size: 17px;
-  padding: 0 24px;
-  margin-bottom: 32px;
-  min-height: unset;
-  max-height: 300px;
-  overflow: hidden auto;
-  hyphens: auto;
-}
-
-body .uni-modal__textarea {
-  display: block;
-  width: 100%;
-  height: 48px;
-  font-size: 17px;
-  line-height: 24px;
-  padding: 0px 8px;
-}
-
-body .uni-modal__ft {
-  line-height: 56px;
-  font-size: 17px;
-}
-
-body .uni-modal__btn {
-  font-weight: 700;
-}
-
-body .uni-modal__btn_primary {
-  color: #576b95;
-}
-
-@media screen and (max-width: 500px) {
-  body .uni-actionsheet {
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    background-color: #f7f7f7;
-    overflow: hidden;
-  }
-
-  body .uni-actionsheet__menu {
-    border-radius: 0px;
-    background-color: #ffffff;
-  }
-
-  body .uni-actionsheet__action {
-    border-radius: 0px;
-    margin-top: 8px;
-  }
-
-  body .uni-actionsheet__cell,
-  body .uni-actionsheet__title {
-    padding: 16px;
-    line-height: 24px;
-  }
-
-  body .uni-actionsheet__cell {
-    font-size: 17px;
-  }
-
-  body .uni-actionsheet__title {
-    font-size: 14px;
-    color: #747474;
-  }
-}
-
 :is(.uni-video-slots *) {
   pointer-events: auto;
 }
 
 /*
  * Web Vapor 使用原生 div、span、img、canvas 承载 view、text、image、canvas。
- * 上面的框架规则兼容当前仍使用 uni-* 宿主标签的内置组件；组件完成 Vapor 迁移后，
- * 相关旧宿主规则再逐步移除。
+ * 复合组件使用 view/text/image 作为根节点时，也复用对应基础规则。
  */
 
 div:where([uni-view]),

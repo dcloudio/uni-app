@@ -677,4 +677,25 @@ test('真实 Button 接入使用 uni-form 的组件、Element 和样式，保留
       parser: 'css',
     })
   ).toBe(format(css, { parser: 'css' }))
+  expect(css).toContain('uni-app div:where(.uni-button)')
+  // Web Vapor 的 loading 根节点适配不进入旧 Web 和 App 的组件样式。
+  for (const overrides of [
+    { WEB: true, VUE3_VAPOR: false },
+    { WEB: false, APP: true, VUE3_VAPOR: true },
+  ]) {
+    const preContext = { ...context, ...overrides }
+    const { descriptor } = parseSfc(
+      preprocess(
+        preprocess(source, preContext, { type: 'html' }),
+        preContext,
+        { type: 'js' }
+      ),
+      button!.source
+    )
+    expect(
+      descriptor.styles
+        .map((style: { content: string }) => style.content)
+        .join('\n')
+    ).not.toContain('uni-app div:where(.uni-button)')
+  }
 })
