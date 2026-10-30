@@ -53,7 +53,7 @@ uni-dialogPage-release.aar，uni-event-release.aar，uni-crash-release.aar，uni
 uni-storage-release.aar，uni-exit-release.aar，uni-theme-release.aar，
 uni-getAppBaseInfo-release.aar，uni-getDeviceInfo-release.aar，uni-getSystemInfo-release.aar，uni-getAccessibilityInfo-release.aar，
 uni-getAppAuthorizeSetting-release.aar，uni-getSystemSetting-release.aar，
-uni-openAppAuthorizeSetting-release.aar，uni-prompt-release.aar，uni-rpx2px-release.aar，uni-secure-network-release.aar，uni-uasm-release.aar，uni-convert2AbsFullPath-release.aar(HBuilder 5.31+)共25个aar拷贝到uni-app x模块的libs下，如果没有libs需要手动创建，参考下图：
+uni-openAppAuthorizeSetting-release.aar，uni-prompt-release.aar，uni-rpx2px-release.aar，uni-secure-network-release.aar，uni-uasm-release.aar，uni-convert2AbsFullPath-release.aar(HBuilder 5.32+)共25个aar拷贝到uni-app x模块的libs下，如果没有libs需要手动创建，参考下图：
 
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/android/main_libs_vapor_v2.png)
 
