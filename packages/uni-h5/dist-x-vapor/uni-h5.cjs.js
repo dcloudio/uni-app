@@ -8996,7 +8996,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
           [Vue.unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && Vue.unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && Vue.unref(buttonType) == "warn", "uni-loading-plain-warn"],
-          __props.loadingClass ?? "uni-button-loading-color-inherit"
+          __props.loadingClass || "uni-button-loading-color-inherit"
         )] }));
         Vue.renderEffect(() => {
           Vue.setClass(n5, ["uni-button-loading-text", __props.loadingTextClass || ""]);

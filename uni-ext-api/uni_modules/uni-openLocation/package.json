@@ -8,9 +8,9 @@
   ],
   "repository": "",
   "engines": {
-    "HBuilderX": "^4.41",
+    "HBuilderX": "^4.71",
     "uni-app": "",
-    "uni-app-x": "^4.36"
+    "uni-app-x": "^4.71"
   },
   "dcloudext": {
     "type": "uts",

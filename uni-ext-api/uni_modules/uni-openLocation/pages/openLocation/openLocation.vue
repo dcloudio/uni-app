@@ -9,10 +9,8 @@
       </view>
     </view>
     <view class="uni-open-location-nav" :style="'height:' + (60 + safeArea.top) + 'px;'">
-      <view class="uni-open-location-nav-btn uni-open-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''" @click="back">
-        <view class="uni-open-location-nav-btn-bg">
-          <view class="uni-open-location-nav-back-arrow"></view>
-        </view>
+      <view class="uni-open-location-nav-btn uni-open-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''">
+        <uni-back-arrow-circle class="uni-open-location-back-circle" :auto-back="false" @click="back"></uni-back-arrow-circle>
       </view>
     </view>
     <view class="uni-open-location-footer" :class="[darkClassCom]">
@@ -37,6 +35,7 @@
 </template>
 
 <script lang="ts" setup>
+  import UniBackArrowCircle from './uni-back-arrow-circle.vue';
   import { openSchema } from '@/uni_modules/uni-openLocation';
   // #ifdef APP
   import { canOpenURL } from '@/uni_modules/uni-openLocation';
@@ -453,24 +452,10 @@
     align-items: center;
   }
 
-  .uni-open-location-nav-btn-bg {
-    width: 26px;
-    height: 26px;
-    box-sizing: border-box;
+  .uni-open-location-back-circle {
+    --back-arrow-color: #cacbc6;
+    --back-arrow-width: 2px;
     background-color: #ffffff;
-    border-radius: 13px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .uni-open-location-nav-back-arrow {
-    width: 8px;
-    height: 8px;
-    border-left: 2px solid #cbcbcb;
-    border-bottom: 2px solid #cbcbcb;
-    transform: rotate(45deg);
-    margin-left: 3px;
   }
 
   .uni-open-location-footer {

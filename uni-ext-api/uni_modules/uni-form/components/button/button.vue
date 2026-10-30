@@ -31,8 +31,11 @@
         [buttonType == 'default', 'uni-loading-default'],
         [plain && buttonType == 'primary', 'uni-loading-plain-primary'],
         [plain && buttonType == 'warn', 'uni-loading-plain-warn'],
-        loadingClass ?? 'uni-button-loading-color-inherit'
+        loadingClass || 'uni-button-loading-color-inherit'
       )"
+      <!-- #ifdef APP -->
+      :style="loadingIconStyle"
+      <!-- #endif -->
       <!-- #ifdef APP-IOS -->
       :ios-spinner="iosLoadingSnow"
       <!-- #endif -->
@@ -401,6 +404,19 @@
 		properties: ['font-size', 'color', 'line-height', 'font-weight', 'text-align'],
 		filterProperties: false
 	})
+
+  // App 不支持颜色继承，传入解析后的颜色；color 同时用于 iOS 雪花图标。
+  const loadingIconStyle = computed(() => {
+    const style = {}
+    if (props.loadingClass == null) {
+      const color = textStyle.get('color')
+      if (color != null) {
+        style['color'] = color
+        style['border-color'] = color
+      }
+    }
+    return style
+  })
 
   const loadingTextStyle = computed(() => {
     if (props.loadingTextClass == null) {
