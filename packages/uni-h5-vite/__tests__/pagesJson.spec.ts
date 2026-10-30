@@ -53,7 +53,12 @@ describe('h5 pages.json page route', () => {
     const plugin = uniPagesJsonPlugin() as any
     plugin.configResolved({
       command: navigationBuild ? 'build' : 'serve',
-      define: navigationBuild ? { __UNI_FEATURE_NAVIGATIONBAR__: true } : {},
+      define: navigationBuild
+        ? {
+            __UNI_FEATURE_NAVIGATIONBAR__: true,
+            __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: true,
+          }
+        : {},
       isProduction: navigationBuild,
     })
     return plugin.transform.call(
@@ -79,6 +84,12 @@ describe('h5 pages.json page route', () => {
       expect(code).not.toContain(
         "import '@dcloudio/uni-components/style-x/loading.css'"
       )
+      expect(
+        code.includes("import '@dcloudio/uni-h5/style/vapor/input.css'")
+      ).toBe(vapor)
+      expect(
+        code.includes("import '@dcloudio/uni-components/style/input.css'")
+      ).toBe(!vapor)
     }
   )
 

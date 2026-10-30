@@ -188,8 +188,9 @@ describe('Web Vapor 手写节点', () => {
       if (vapor) {
         expect(result).toBe(block)
         expect(createPlainElement).toHaveBeenCalledWith('div', null, null, true)
-        expect(block.setAttribute).toHaveBeenCalledTimes(1)
+        expect(block.setAttribute).toHaveBeenCalledTimes(2)
         expect(block.setAttribute).toHaveBeenCalledWith('uni-video', '')
+        expect(block.setAttribute).toHaveBeenCalledWith('uni-view', '')
         expect(block).toMatchObject({ textContent: 'video is unsupported' })
       } else {
         expect(createElementBlock).not.toHaveBeenCalled()
@@ -542,7 +543,7 @@ describe('Web Vapor 真实运行时节点', () => {
     'live-player',
     'live-pusher',
   ])(
-    '未支持组件 %s 使用普通 div，保留属性透传与强制 hidden 样式',
+    '未支持组件 %s 使用 uni-view 基础布局，保留属性透传、hidden 优先级和隐藏后的恢复行为',
     async (name) => {
       const style = document.createElement('style')
       style.textContent = fs.readFileSync(
@@ -569,12 +570,12 @@ describe('Web Vapor 真实运行时节点', () => {
       const element = host.firstElementChild as HTMLElement
       expect(element.localName).toBe('div')
       expect(element.getAttribute('uni-' + name)).toBe('')
-      expect(element.hasAttribute('uni-view')).toBe(false)
+      expect(element.hasAttribute('uni-view')).toBe(true)
       expect(element.textContent).toBe(name + ' is unsupported')
       expect(element.id).toBe('unsupported')
       expect(element.hidden).toBe(true)
       expect(window.getComputedStyle(element).display).toBe('none')
-      // JSDOM 的内联样式优先级计算不完整，直接验证匹配的框架规则带有 !important。
+      // JSDOM 的内联样式优先级计算不完整，直接验证匹配的基础规则带有 !important。
       const hiddenRule = Array.from(style.sheet!.cssRules).find(
         (rule): rule is CSSStyleRule =>
           'selectorText' in rule &&
@@ -584,6 +585,8 @@ describe('Web Vapor 真实运行时节点', () => {
       expect(hiddenRule).toBeDefined()
       expect(hiddenRule.style.getPropertyPriority('display')).toBe('important')
       element.hidden = false
+      expect(window.getComputedStyle(element).display).toBe('flex')
+      expect(window.getComputedStyle(element).flexDirection).toBe('column')
       element.style.display = 'flex'
       expect(element.matches(hiddenRule.selectorText)).toBe(false)
       expect(window.getComputedStyle(element).display).toBe('flex')

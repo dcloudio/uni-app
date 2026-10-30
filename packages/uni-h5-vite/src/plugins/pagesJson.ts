@@ -17,6 +17,7 @@ import {
   normalizePagesRoute,
   parseManifestJsonOnce,
   preUVueJson,
+  resolveWebVaporComponentStyle,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR } from '../utils'
 
@@ -185,7 +186,11 @@ function generateCssCode(config: ResolvedConfig) {
     cssFiles.push(H5_FRAMEWORK_STYLE_PATH + 'pageRefresh.css')
   }
   if (define.__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__) {
-    cssFiles.push(BASE_COMPONENTS_STYLE_PATH + 'input.css')
+    cssFiles.push(
+      isUniAppXWebVapor()
+        ? resolveWebVaporComponentStyle('input')!
+        : BASE_COMPONENTS_STYLE_PATH + 'input.css'
+    )
   }
   const enableTreeShaking = isEnableTreeShaking(
     parseManifestJsonOnce(process.env.UNI_INPUT_DIR)

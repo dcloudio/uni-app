@@ -1,0 +1,38 @@
+/* Vapor 独立组件样式；基础节点及根节点重置由 uvue-vapor.css 提供。 */
+.uni-scroll-view {
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  /* display: flex; 时在安卓下会导致scrollWidth和offsetWidth一样 */
+  height: 100%;
+  max-height: inherit;
+}
+
+.uni-scroll-view-scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.uni-scroll-view-scrollbar-hidden {
+  -moz-scrollbars: none;
+  scrollbar-width: none;
+}
+
+.uni-scroll-view-content {
+  width: 100%;
+  height: 100%;
+}
+
+/* 将根节点的布局设置传到实际承载插槽内容的滚动容器。 */
+uni-app .uni-scroll-view,
+uni-app .uni-scroll-view-content {
+  flex-direction: inherit;
+  align-items: inherit;
+  align-content: inherit;
+  justify-content: inherit;
+  flex-wrap: inherit;
+}
+
+uni-app .uni-scroll-view-content {
+  display: flex;
+  min-height: 0px;
+}

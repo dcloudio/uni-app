@@ -1,6 +1,11 @@
 import { API_DEPS_CSS, COMPONENT_DEPS_CSS } from '../src/deps'
 
 describe('API 样式依赖', () => {
+  const scrollViewCss = [
+    '@dcloudio/uni-h5/style/vapor/scroll-view.css',
+    '@dcloudio/uni-components/style/refresher.css',
+    '@dcloudio/uni-components/style-x-vapor/loading.css',
+  ]
   const originalEnv = {
     UNI_APP_X: process.env.UNI_APP_X,
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
@@ -34,18 +39,36 @@ describe('API 样式依赖', () => {
           ...vdomComponentDeps['scroll-view'],
           '@dcloudio/uni-components/style-x-vapor/loading.css',
         ],
-        'list-view': [
-          ...vdomComponentDeps['list-view'],
-          '@dcloudio/uni-components/style-x-vapor/loading.css',
+        'picker-view-column': [
+          ...vdomComponentDeps['picker-view-column'],
+          ...scrollViewCss,
         ],
-        picker: vdomComponentDeps.picker.map((style) =>
-          /\/picker-view(?:-column)?\.css$/.test(style)
-            ? style.replace('/style/', '/style-x-vapor/')
-            : style
-        ),
+        'list-view': [vdomComponentDeps['list-view'][0], ...scrollViewCss],
+        waterflow: [vdomComponentDeps['list-view'][0], ...scrollViewCss],
+        picker: [
+          ...vdomComponentDeps.picker.map((style) =>
+            /\/picker-view(?:-column)?\.css$/.test(style)
+              ? style.replace('/style/', '/style-x-vapor/')
+              : style
+          ),
+          ...scrollViewCss,
+        ],
       })
       expect(vaporDeps).toEqual({
         ...vdomDeps,
+        showModal: [
+          '@dcloudio/uni-h5/style/vapor/textarea.css',
+          ...scrollViewCss,
+        ],
+        showActionSheet: scrollViewCss,
+        chooseLocation: [
+          '@dcloudio/uni-components/style//view.css',
+          '@dcloudio/uni-components/style//text.css',
+          '@dcloudio/uni-h5/style/vapor/input.css',
+          '@dcloudio/uni-h5/style//map.css',
+          ...scrollViewCss,
+          '@dcloudio/uni-components/style//image.css',
+        ],
         showLoading: ['@dcloudio/uni-components/style-x-vapor/loading.css'],
         previewImage: vdomDeps.previewImage.map((style) =>
           /\/swiper(?:-item)?\.css$/.test(style)
@@ -87,6 +110,22 @@ describe('API 样式依赖', () => {
         '@dcloudio/uni-components/style/resize-sensor.css',
         '@dcloudio/uni-components/style/picker-view.css',
         '@dcloudio/uni-components/style/picker-view-column.css',
+      ])
+      expect(COMPONENT_DEPS_CSS(isX)['picker-view-column']).toEqual([
+        '@dcloudio/uni-components/style/resize-sensor.css',
+      ])
+      expect(COMPONENT_DEPS_CSS(isX)['list-view']).toEqual([
+        '@dcloudio/uni-components/style/resize-sensor.css',
+        '@dcloudio/uni-components/style/refresher.css',
+      ])
+      expect(COMPONENT_DEPS_CSS(isX)).not.toHaveProperty('waterflow')
+      expect(API_DEPS_CSS(isX).showActionSheet).toEqual(
+        isX ? [] : ['@dcloudio/uni-h5/style/api/action-sheet.css']
+      )
+      expect(API_DEPS_CSS(isX).showModal).toEqual([
+        isX
+          ? '@dcloudio/uni-components/style/textarea.css'
+          : '@dcloudio/uni-h5/style/api/modal.css',
       ])
     }
   )

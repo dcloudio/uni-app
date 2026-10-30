@@ -1,0 +1,10 @@
+/* Ad 保留旧宿主的块布局和字体继承，广告 SDK 仍使用内部容器。 */
+uni-app div:where([uni-ad]) {
+  display: block;
+  font-size: inherit;
+  text-align: inherit;
+  flex-direction: row;
+  align-items: normal;
+  align-content: normal;
+  justify-content: normal;
+}

@@ -7,7 +7,6 @@ import { camelize, capitalize } from '@vue/shared'
 
 import {
   COMPONENT_PREFIX,
-  hasWebVaporComponentStyle,
   isDom2WebVueComponentTag,
   isWebBuiltInComponent,
 } from '@dcloudio/uni-shared'
@@ -17,7 +16,6 @@ import {
   EXTNAME_VUE_TEMPLATE,
   H5_COMPONENTS_STYLE_PATH,
   X_BASE_COMPONENTS_STYLE_PATH,
-  X_VAPOR_BASE_COMPONENTS_STYLE_PATH,
   addImportDeclaration,
   buildInCssSet,
   genResolveEasycomCode,
@@ -26,12 +24,22 @@ import {
   matchEasycom,
   normalizePath,
   parseVueRequest,
+  resolveWebVaporComponentStyle,
 } from '@dcloudio/uni-cli-shared'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 const VAPOR_EASYCOM_IMPORT =
   "import { createComponent as __createEasycomComponent } from 'vue';"
 const xBaseComponents = ['slider', 'switch', 'loading', 'page-container']
+// Vapor 未支持组件仅用带 uni-view 的节点显示提示，无需独立 CSS，也不能回退加载旧宿主 CSS。
+// 已接入组件的样式优先于此名单；非 Vapor 仍按原路径加载。
+const vaporPlaceholderComponents = new Set([
+  'ad-content-page',
+  'ad-draw',
+  'camera',
+  'live-player',
+  'live-pusher',
+])
 const baseComponents = [
   // 'audio',
   'button',
@@ -274,9 +282,10 @@ function replaceVaporAssetComponents(
 
 function resolveBuiltInCssImport(name: string, isWebVapor: boolean) {
   const cssImports: string[] = []
-  if (isWebVapor && hasWebVaporComponentStyle(name)) {
-    cssImports.push(X_VAPOR_BASE_COMPONENTS_STYLE_PATH + name + '.css')
-  } else {
+  const vaporStyle = isWebVapor && resolveWebVaporComponentStyle(name)
+  if (vaporStyle) {
+    cssImports.push(vaporStyle)
+  } else if (!isWebVapor || !vaporPlaceholderComponents.has(name)) {
     const isX = process.env.UNI_APP_X === 'true'
     if (isX && xBaseComponents.includes(name)) {
       cssImports.push(X_BASE_COMPONENTS_STYLE_PATH + name + '.css')

@@ -1,7 +1,11 @@
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
-import { initEasycoms, normalizePath } from '@dcloudio/uni-cli-shared'
+import {
+  buildInCssSet,
+  initEasycoms,
+  normalizePath,
+} from '@dcloudio/uni-cli-shared'
 import { uniEasycomPlugin } from '../src/plugins/easycom'
 import { resolveWebVaporComponents } from '../../../scripts/webVaporComponentConfig'
 import { prepareWebVaporComponents } from '../../../scripts/webVaporComponents'
@@ -44,6 +48,7 @@ describe('h5 easycom', () => {
   })
 
   afterEach(() => {
+    buildInCssSet.clear()
     Object.entries(originalEnv).forEach(([name, value]) => {
       if (value === undefined) {
         delete process.env[name]
@@ -119,9 +124,9 @@ describe('h5 easycom', () => {
 
   test.each([
     ['button', 'style-x-vapor/button.css'],
-    ['input', 'style/input.css'],
-    ['textarea', 'style/textarea.css'],
-    ['video', 'style/video.css'],
+    ['input', 'style/vapor/input.css'],
+    ['textarea', 'style/vapor/textarea.css'],
+    ['video', 'style/vapor/video.css'],
     ['progress', 'style-x-vapor/progress.css'],
   ])('Web Vapor 的 %s 使用实际的样式目录', (name, css) => {
     delete process.env.UNI_HX_VERSION_DEV
@@ -141,6 +146,94 @@ describe('h5 easycom', () => {
     expect(code).toContain(css)
     expect(code).not.toContain('style-x-vapor/')
   })
+
+  test.each([
+    'ad',
+    'ad-content-page',
+    'ad-draw',
+    'camera',
+    'live-player',
+    'live-pusher',
+    'web-view',
+  ])('%s 按模式加载样式，占位组件复用基础 View 样式', (name) => {
+    delete process.env.UNI_HX_VERSION_DEV
+    for (const vapor of [false, true]) {
+      if (vapor) process.env.UNI_APP_X_DOM2 = 'true'
+      else delete process.env.UNI_APP_X_DOM2
+      for (const command of ['serve', 'build']) {
+        buildInCssSet.clear()
+        const plugin = uniEasycomPlugin({}) as any
+        plugin.configResolved({ command, build: { cssCodeSplit: true } })
+        const code = plugin.transform.call(
+          { parse: parseAst },
+          `_resolveComponent("${name}")`,
+          `${inputDir}/pages/index/index.uvue?vue&type=template`
+        ).code
+        expect(code).toContain("from '@dcloudio/uni-h5'")
+        const styles = code + '\n' + [...buildInCssSet].join('\n')
+        const legacyStyle = `@dcloudio/uni-h5/style/${name}.css`
+        const vaporStyle = `@dcloudio/uni-h5/style/vapor/${name}.css`
+        if (vapor && name !== 'ad' && name !== 'web-view') {
+          expect(styles).not.toContain('.css')
+        } else {
+          expect(styles).toContain(vapor ? vaporStyle : legacyStyle)
+          expect(styles).not.toContain(vapor ? legacyStyle : vaporStyle)
+        }
+        if (name === 'web-view') {
+          expect(styles).toContain(
+            '@dcloudio/uni-components/style/resize-sensor.css'
+          )
+        }
+      }
+    }
+  })
+
+  test.each(['input', 'textarea', 'scroll-view', 'video', 'web-view'])(
+    '%s 在 Vapor 中只加载一份完整组件样式，开发和发行保持一致',
+    (name) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      for (const command of ['serve', 'build']) {
+        buildInCssSet.clear()
+        const plugin = uniEasycomPlugin({}) as any
+        plugin.configResolved({ command, build: { cssCodeSplit: true } })
+        const code = plugin.transform.call(
+          { parse: parseAst },
+          `const n0 = _createAssetComponent("${name}")`,
+          `${inputDir}/pages/index/index.uvue?vue&type=template`
+        ).code
+        const styles = code + '\n' + [...buildInCssSet].join('\n')
+        expect(styles).toContain(`@dcloudio/uni-h5/style/vapor/${name}.css`)
+        expect(styles).not.toContain(`@dcloudio/uni-h5/style/${name}.css`)
+        expect(styles).not.toContain(
+          `@dcloudio/uni-components/style/${name}.css`
+        )
+      }
+    }
+  )
+
+  test.each(['picker-view-column', 'picker', 'list-view', 'waterflow'])(
+    '发行仅使用 %s 时也收集内部 ScrollView 的完整样式',
+    (name) => {
+      delete process.env.UNI_HX_VERSION_DEV
+      const plugin = uniEasycomPlugin({}) as any
+      plugin.configResolved({ command: 'build', build: { cssCodeSplit: true } })
+      plugin.transform.call(
+        { parse: parseAst },
+        `const n0 = _createAssetComponent("${name}")`,
+        `${inputDir}/pages/index/index.uvue?vue&type=template`
+      )
+      for (const style of [
+        '@dcloudio/uni-h5/style/vapor/scroll-view.css',
+        '@dcloudio/uni-components/style/refresher.css',
+        '@dcloudio/uni-components/style-x-vapor/loading.css',
+      ]) {
+        expect(buildInCssSet.has(style)).toBe(true)
+      }
+      expect(
+        buildInCssSet.has('@dcloudio/uni-components/style/scroll-view.css')
+      ).toBe(false)
+    }
+  )
 
   test.each(['match-media', 'v-uni-match-media'])(
     'Web Vapor 为 %s 导入内置组件及 Vapor 样式',
@@ -265,9 +358,9 @@ describe('h5 easycom', () => {
       )
       expect(code).toContain("from '@dcloudio/uni-h5'")
       expect(code).toContain(
-        `@dcloudio/uni-components/${
-          name === 'button' ? 'style-x-vapor' : 'style'
-        }/${name}.css`
+        name === 'button'
+          ? '@dcloudio/uni-components/style-x-vapor/button.css'
+          : `@dcloudio/uni-h5/style/vapor/${name}.css`
       )
       if (name !== 'button') expect(code).not.toContain('style-x-vapor')
       expect(code).not.toContain('uni_modules/uni-form')
@@ -453,7 +546,7 @@ describe('h5 easycom', () => {
       )
 
       expect(code).toContain(
-        `import '@dcloudio/uni-components/style/${name}.css';`
+        `import '@dcloudio/uni-h5/style/vapor/${name}.css';`
       )
       expect(code).not.toContain(
         `import '@dcloudio/uni-components/style-x-vapor/${name}.css';`

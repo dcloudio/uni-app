@@ -40,6 +40,37 @@ describe('h5 API 样式注入', () => {
     fs.removeSync(inputDir)
   })
 
+  test.each(['showModal', 'showActionSheet', 'chooseLocation'])(
+    '发行仅调用 %s 时也加载内部 ScrollView 的完整样式',
+    (name) => {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      for (const combine of [false, true]) {
+        buildInCssSet.clear()
+        const plugin = uniInjectPlugin() as any
+        plugin.configResolved({
+          command: 'build',
+          build: { cssCodeSplit: combine },
+        })
+        const { code } = plugin.transform.call(
+          { parse: parseAst },
+          `uni.${name}({});`,
+          path.join(inputDir, 'main.js')
+        )
+        const styles = combine ? [...buildInCssSet].join('\n') : code
+        for (const style of [
+          '@dcloudio/uni-h5/style/vapor/scroll-view.css',
+          '@dcloudio/uni-components/style/refresher.css',
+          '@dcloudio/uni-components/style-x-vapor/loading.css',
+        ]) {
+          expect(styles).toContain(style)
+        }
+        expect(styles).not.toContain(
+          '@dcloudio/uni-components/style/scroll-view.css'
+        )
+      }
+    }
+  )
+
   test.each([
     [false, false],
     [false, true],
