@@ -31,7 +31,7 @@
         [buttonType == 'default', 'uni-loading-default'],
         [plain && buttonType == 'primary', 'uni-loading-plain-primary'],
         [plain && buttonType == 'warn', 'uni-loading-plain-warn'],
-        loadingClass || ''
+        loadingClass ?? 'uni-button-loading-color-inherit'
       )"
       <!-- #ifdef APP-IOS -->
       :ios-spinner="iosLoadingSnow"
@@ -582,6 +582,13 @@
   .uni-loading-plain-warn {
     border-color: #e64340;
   }
+
+  /* #ifdef WEB */
+  .uni-button-loading-icon.uni-button-loading-color-inherit {
+    color: inherit;
+    border-color: currentColor;
+  }
+  /* #endif */
 
   .uni-button-loading-text {
     margin-left: 8px;

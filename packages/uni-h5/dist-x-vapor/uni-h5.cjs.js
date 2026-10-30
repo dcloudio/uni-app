@@ -38,7 +38,8 @@ function defineComponent(options) {
   return Vue.defineVaporComponent(options);
 }
 function createUnsupportedRender$1(name) {
-  const element = Vue.createPlainElement("uni-" + name, null, null, true);
+  const element = Vue.createPlainElement("div", null, null, true);
+  element.setAttribute("uni-" + name, "");
   element.textContent = name + " is unsupported";
   return element;
 }
@@ -8995,7 +8996,7 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
           [Vue.unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && Vue.unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && Vue.unref(buttonType) == "warn", "uni-loading-plain-warn"],
-          __props.loadingClass || ""
+          __props.loadingClass ?? "uni-button-loading-color-inherit"
         )] }));
         Vue.renderEffect(() => {
           Vue.setClass(n5, ["uni-button-loading-text", __props.loadingTextClass || ""]);

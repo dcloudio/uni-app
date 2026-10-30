@@ -47,6 +47,11 @@ uni-app div:where(.uni-button) {
   border-color: #e64340;
 }
 
+.uni-button-loading-icon.uni-button-loading-color-inherit {
+  color: inherit;
+  border-color: currentColor;
+}
+
 .uni-button-loading-text {
   margin-left: 8px;
   text-align: center;

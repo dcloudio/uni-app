@@ -22,7 +22,8 @@ function defineComponent$1(options) {
   return defineVaporComponent(options);
 }
 function createUnsupportedRender$1(name) {
-  const element = createPlainElement("uni-" + name, null, null, true);
+  const element = createPlainElement("div", null, null, true);
+  element.setAttribute("uni-" + name, "");
   element.textContent = name + " is unsupported";
   return element;
 }
@@ -9864,7 +9865,7 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [unref(buttonType) == "default", "uni-loading-default"],
             [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
             [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
-            __props.loadingClass || ""
+            __props.loadingClass ?? "uni-button-loading-color-inherit"
           )]
         }, null, _parent));
         _push(`<span uni-text style="${ssrRenderStyle(unref(loadingTextStyle))}" class="${ssrRenderClass([__props.loadingTextClass || "", "uni-button-loading-text"])}">`);

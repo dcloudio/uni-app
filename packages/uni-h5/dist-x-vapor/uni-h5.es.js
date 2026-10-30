@@ -21,7 +21,8 @@ function defineComponent(options) {
   return defineVaporComponent(options);
 }
 function createUnsupportedRender$1(name) {
-  const element = createPlainElement("uni-" + name, null, null, true);
+  const element = createPlainElement("div", null, null, true);
+  element.setAttribute("uni-" + name, "");
   element.textContent = name + " is unsupported";
   return element;
 }
@@ -17283,7 +17284,7 @@ const _sfc_main$w = /* @__PURE__ */ defineVaporComponent({
           [unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && unref(buttonType) == "warn", "uni-loading-plain-warn"],
-          __props.loadingClass || ""
+          __props.loadingClass ?? "uni-button-loading-color-inherit"
         )] }));
         renderEffect(() => {
           setClass(n5, ["uni-button-loading-text", __props.loadingTextClass || ""]);
@@ -32683,7 +32684,8 @@ const _sfc_main$5 = /* @__PURE__ */ defineVaporComponent({
       () => createIf(() => content.value.length > 0, () => {
         const n9 = withComponentId("876dbf60", () => createComponentWithFallback(_component_scroll_view, {
           class: "uni-modal-dialog__scroll",
-          "show-scrollbar": "true",
+          "show-scrollbar": false,
+          bounces: false,
           style: () => ({ maxHeight: maxScrollHeight.value })
         }, () => {
           const n8 = t1$4();

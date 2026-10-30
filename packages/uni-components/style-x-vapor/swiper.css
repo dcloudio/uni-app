@@ -13,7 +13,8 @@
 }
 
 .uni-swiper-container {
-  position: relative;
+  position: absolute;
+
   overflow: visible;
 }
 

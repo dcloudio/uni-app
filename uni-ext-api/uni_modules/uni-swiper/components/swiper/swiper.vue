@@ -1721,7 +1721,12 @@ onBeforeUnmount(() => {
 /* #endif */
 
 .uni-swiper-container {
+	/* #ifdef WEB */
+	position: absolute;
+	/* #endif */
+	/* #ifndef WEB */
 	position: relative;
+	/* #endif */
 	overflow: visible;
 }
 
