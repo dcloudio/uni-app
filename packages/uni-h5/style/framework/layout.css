@@ -7,6 +7,8 @@ uni-content {
 uni-main {
   flex: 1;
   width: 100%;
+  /* 解除 flex 子项默认的内容最小宽度限制，避免主区域被内容撑宽、挤压左右窗口。 */
+  min-width: 0;
 }
 
 uni-top-window + uni-content {
