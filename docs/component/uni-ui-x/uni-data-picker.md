@@ -1,10 +1,9 @@
-::: sourceCode
-## uni-data-picker
-:::
 ## uni-data-picker 级联选择器
 
 > **组件名：uni-data-picker**
 > 关联组件：`uni-data-picker-view`。
+
+本 Component 是 uni ext component，需下载插件：[uni-data-picker](https://ext.dcloud.net.cn/plugin?name=uni-data-picker-x)
 
 `<uni-data-picker>` 是一个datacom规范的级联选择组件，支持单列和多列级联选择，列数没有限制。
 候选数据支持本地数据、uniCloud 云数据库数据，也支持通过默认插槽完全自定义输入框。
