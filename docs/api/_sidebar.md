@@ -163,7 +163,6 @@
   * [DOMRect](dom/domrect.md)
   * [CSSStyleDeclaration](dom/cssstyledeclaration.md)
   * [DrawableContext](dom/drawablecontext.md)
-  * [UniResizeObserver](dom/uniresizeobserver.md)
 * uniCloud客户端API
   * [概述](unicloud/README.md)
   * [云函数](unicloud/function.md)
