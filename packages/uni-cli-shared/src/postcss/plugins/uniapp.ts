@@ -6,9 +6,11 @@ import {
   createRpx2Unit,
   defaultRpx2Unit,
   isBuiltInComponent,
+  isDom2WebVueComponentTag,
 } from '@dcloudio/uni-shared'
 import { BG_PROPS } from './constants'
 import { adaptAlipayPageBackground } from './alipayPageBackground'
+import { isUniAppXWebVapor } from '../../x'
 
 export interface UniAppCssProcessorOptions {
   unit?: string // 目标单位，默认rem
@@ -21,13 +23,17 @@ const defaultUniAppCssProcessorOptions = extend({}, defaultRpx2Unit)
 function transform(
   selector: selectorParser.Node,
   state: { body: boolean },
-  { rewriteTag }: TransformOptions
+  { rewriteTag, vapor }: TransformOptions
 ) {
   if (selector.type !== 'tag') {
     return
   }
 
   const { value } = selector
+  if (vapor && value !== 'page') {
+    rewriteVaporTag(selector)
+    return
+  }
   selector.value = rewriteTag(value)
   if (value === 'page' && selector.value === 'uni-page-body') {
     state.body = true
@@ -55,6 +61,50 @@ type RewriteTag = (tag: string) => string
 
 interface TransformOptions {
   rewriteTag: RewriteTag
+  vapor?: boolean
+}
+
+function rewriteVaporTag(selector: selectorParser.Tag) {
+  // 显式命名空间属于原生 CSS，不将 svg|image 等当成 uni 组件。
+  if (selector.namespace !== undefined) return
+  let tag = selector.value.replace(/^v-uni-/, '')
+  if (tag === 'cover-view') tag = 'view'
+  if (tag === 'cover-image') tag = 'image'
+  if (!isBuiltInComponent(tag) && !isDom2WebVueComponentTag(tag)) return
+
+  let host = 'div'
+  if (tag === 'text') host = 'span'
+  else if (tag === 'image') host = 'img'
+  else if (tag === 'canvas') host = 'canvas'
+  // Button、Navigator 会使用 View 或 Text 根，切换分支后仍须匹配。
+  else if (tag === 'button' || tag === 'navigator') host = ':is(div,span)'
+
+  // 框架样式及本插件产物可能再次经过此处。统一识别紧邻的纯属性
+  // :where，已有身份时只转换宿主；不推导分支、后代或否定选择器。
+  const marker = `uni-${tag}`
+  const next = selector.next()
+  const hasMarker =
+    next?.type === 'pseudo' &&
+    next.value === ':where' &&
+    next.nodes.length === 1 &&
+    next.nodes[0].nodes.every((node) => node.type === 'attribute') &&
+    next.nodes[0].nodes.some(
+      (node) =>
+        node.type === 'attribute' &&
+        node.attribute === marker &&
+        node.namespace === undefined &&
+        !node.operator
+    )
+
+  // 用 div:where([uni-view]) 而不是 [uni-view]：保留原标签的 (0,0,1)
+  // 优先级，避免属性选择器的 (0,1,0) 改变与 class、scoped 样式的覆盖关系。
+  // :is(div,span) 同样只有标签权重；已有标识直接参与匹配，不排除复合组件根。
+  const nodes = selectorParser().astSync(
+    host + (hasMarker ? '' : `:where([${marker}])`)
+  ).first!.nodes
+  nodes[0].spaces.before = selector.spaces.before
+  nodes[nodes.length - 1].spaces.after = selector.spaces.after
+  selector.replaceWith(...nodes)
 }
 
 function walkRules(options: TransformOptions) {
@@ -102,7 +152,6 @@ function rewriteUniH5Tags(tag: string) {
   if (tag === 'page') {
     return 'uni-page-body'
   }
-  // TODO: Web Vapor 需将 view、text、image 转换为对应的 attribute 宿主选择器。
   if (isBuiltInComponent(tag)) {
     return COMPONENT_SELECTOR_PREFIX + tag
   }
@@ -147,6 +196,7 @@ const uniapp = (opts?: UniAppCssProcessorOptions) => {
             root.walkRules(
               walkRules({
                 rewriteTag,
+                vapor: isUniAppXWebVapor(),
               })
             )
           }
