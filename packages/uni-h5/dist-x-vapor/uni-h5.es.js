@@ -23,6 +23,7 @@ function defineComponent(options) {
 function createUnsupportedRender$1(name) {
   const element = createPlainElement("div", null, null, true);
   element.setAttribute("uni-" + name, "");
+  element.setAttribute("uni-view", "");
   element.textContent = name + " is unsupported";
   return element;
 }

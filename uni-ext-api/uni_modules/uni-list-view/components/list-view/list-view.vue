@@ -3,7 +3,7 @@
     <scroll-view :ref="recycleListCpp.setElement" :scroll-top="props.scrollTop" :show-scrollbar="props.showScrollbar"
         :scroll-with-animation="props.scrollWithAnimation" :type="props.type" :bounces="props.bounces"
         :android-overscroll="props.androidOverscroll" :upper-threshold="props.upperThreshold"
-        :lower-threshold="props.lowerThreshold" :scroll-left="props.scrollLeft"
+        :lower-threshold="props.lowerThreshold"
         :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
         :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-background="props.refresherBackground"
         :refresher-triggered="props.refresherTriggered" :associative-container="props.associativeContainer"
@@ -45,6 +45,7 @@ defineOptions({
 /**
  * 不支持如下属性
  * - direction
+ * - scrollLeft
  */
 const props = defineProps({
     androidOverscroll: {
@@ -72,10 +73,6 @@ const props = defineProps({
         default: 50
     },
     scrollTop: {
-        type: Number,
-        default: 0
-    },
-    scrollLeft: {
         type: Number,
         default: 0
     },
