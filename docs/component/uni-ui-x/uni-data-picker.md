@@ -1,9 +1,6 @@
 ::: sourceCode
 ## uni-data-picker
 :::
-
-
-
 ## uni-data-picker 级联选择器
 
 > **组件名：uni-data-picker**
@@ -338,43 +335,3 @@
 - 云端数据依赖 uniCloud 服务空间，未关联服务空间时查询会失败，错误信息会通过默认插槽的 `error` 参数或组件的 `error-class` 区域展示。
 - 组件已内置基础暗黑模式样式（`prefers-color-scheme: dark`）。如需更精细的暗色主题，可通过外部 `class` 与 externalClass 组合覆盖颜色。
 - 以下参数已预留，当前版本暂未参与内部逻辑：`page-data`、`multiple`、`manual`、`load-time`、`preload`、`step-searh`、`page-indistinct`。
-
-### [查看文档](https://uniapp.dcloud.io/component/uniui/uni-data-picker)
-
-
-
-
-### 属性 
-| 名称 | 类型 |
-| :- | :- |
-| placeholder | string |
-| readonly | boolean |
-| split | string |
-| ellipsis | boolean |
-| inputClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
-| errorClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
-| popupTitle | string |
-| popupClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
-| coverClass | string([string.ClassString](/uts/data-type.md#ide-string)) |
-| @popupopened | Event |
-| @popupclosed | Event |
-| @nodeclick | Event |
-| @change | Event |
-| @input | Event |
-| @update:modelValue | Event |
-| @inputclick | Event |
-
-<!-- UTSCOMJSON.uni-data-picker.fileFormates -->
-
-
-
-<!-- UTSCOMJSON.uni-data-picker.component_type -->
-
-
-
-
-
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-data-picker)
-
