@@ -1,3 +1,13 @@
+/* Reserve the probe fallback before application layers, including lazy styles. */
+@layer uni-field-selection;
+
+/* Keep the legacy class fallback before application and lazy component styles. */
+@supports not (background-color: revert-layer) {
+  .uni-field-selection-probe {
+    background-color: var(--uni-selection-probe-background-color);
+  }
+}
+
 * {
   margin: 0;
   -webkit-tap-highlight-color: transparent;

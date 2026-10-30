@@ -1,3 +1,4 @@
+import { fieldSelectionProbeStyle } from '../../helpers/useFieldSelection'
 import type { HTMLAttributes } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import ResizeSensor from '../resize-sensor/index-vapor'
@@ -21,6 +22,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       fieldRef,
       state,
       scopedAttrsState,
+      selectionRef,
       fixDisabledColor,
       valueCompute,
       lineRef,
@@ -42,6 +44,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             maxlength={state.maxlength}
             class={{
               'uni-textarea-textarea': true,
+              'uni-field-selection':
+                __PLATFORM__ === 'h5' && !!props.selectionClass,
               'uni-textarea-textarea-fix-margin': fixMargin,
             }}
             style={{
@@ -65,6 +69,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             inputmode={props.inputmode as HTMLAttributes['inputmode']}
             class={{
               'uni-textarea-textarea': true,
+              'uni-field-selection':
+                __PLATFORM__ === 'h5' && !!props.selectionClass,
               'uni-textarea-textarea-fix-margin': fixMargin,
             }}
             style={{
@@ -87,6 +93,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         auto-height={props.autoHeight}
       >
         <div ref={wrapperRef} class="uni-textarea-wrapper">
+          {__PLATFORM__ === 'h5' && props.selectionClass && (
+            <div
+              ref={selectionRef}
+              {...scopedAttrsState.attrs}
+              class={['uni-field-selection-probe', props.selectionClass]}
+              aria-hidden="true"
+              style={fieldSelectionProbeStyle}
+            />
+          )}
           <div
             v-show={!state.value.length}
             {...scopedAttrsState.attrs}
