@@ -34,9 +34,9 @@
 | :- | :- | :- |  :-: | :- |
 | cross-axis-count | number \| string | 2 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 交叉轴元素数量 |
 | main-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 主轴方向间隔 |
-| cross-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 交叉轴方向间隔 |
-| max-cross-axis-extent | number \| string | 0 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | flow-item交叉轴方向最大尺寸 |
-| padding | Array | \[0,0,0,0\] | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距。蒸汽模式已废弃此属性，推荐使用 css padding 属性 |
+| cross-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.41; Android(Vapor): 5.11; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 交叉轴方向间隔 |
+| max-cross-axis-extent | number \| string | 0 | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | flow-item交叉轴方向最大尺寸 |
+| padding | Array | \[0,0,0,0\] | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.41; Android(Vapor): x; iOS(VDOM): 4.41; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距。蒸汽模式已废弃此属性，推荐使用 css padding 属性 |
 | associative-container | string |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 关联的滚动容器 |
 | bounces | boolean \| string | true | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 控制是否回弹效果 |
 | android-overscroll | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: x | Android平台是否开启弹簧回弹效果，开启后默认下拉刷新使用圆弧loading样式（推动页面内容），否则默认下拉刷新使用Android系统悬浮圆环样式（不推动页面内容） |
@@ -54,9 +54,8 @@
 | refresher-default-style | string | "black" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置下拉刷新默认样式，支持设置 black \| white \| none， none 表示不使用默认样式 |
 | refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置下拉刷新区域背景颜色，默认透明。Android 平台下，当 android-overscroll=false 时，默认下拉刷新使用悬浮圆环样式，此时背景默认不再透明，而是由 refresher-default-style 决定 |
 | refresher-triggered | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
-| enable-back-to-top | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.41; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | iOS点击顶部状态栏滚动条返回顶部，只支持竖向 |
+| enable-back-to-top | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: 4.41; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | 点击顶部状态栏滚动条返回顶部 |
 | custom-nested-scroll | boolean \| string | false | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
-| scroll-left | number |   | 微信小程序: x; 支付宝小程序: x |   |
 | @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新控件被下拉 |
 | @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新被触发 |
 | @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 下拉刷新被复位 |

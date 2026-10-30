@@ -39,7 +39,6 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 | upper-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
 | lower-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
 | scroll-top | number | 0 | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置竖向滚动条位置 |
-| scroll-left | number | 0 | Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置横向滚动条位置 |
 | show-scrollbar | boolean \| string | true | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 控制是否出现滚动条 |
 | scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: 5.08; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): 5.25; iOS(VDOM): 4.11; iOS(Vapor): 5.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.25 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
 | scroll-with-animation | boolean \| string | false | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
@@ -71,7 +70,7 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | none | Web: 4.02; 微信小程序: 4.41; 支付宝小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 禁止滚动 |
-| horizontal | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: x; HarmonyOS: x | 横向滚动 |
+| horizontal | Web: x; 微信小程序: 4.41; Android(VDOM): 4.0; Android(Vapor): x; iOS: x; HarmonyOS: x | 横向滚动 |
 | vertical | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 竖向滚动 |
 
 #### associative-container 的属性描述
