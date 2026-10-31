@@ -1,0 +1,46 @@
+import { AddPhoneContactOptions, ChooseContactOptions } from './interface.uts';
+export const API_ADD_PHONE_CONTACT = 'addPhoneContact'
+export const API_CHOOSE_CONTACT = 'chooseContact'
+
+export const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {}
+
+
+export const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
+  ['firstName', { type: 'string', required: true }],
+  ['photoFilePath', { type: 'string' }],
+  ['nickName', { type: 'string' }],
+  ['lastName', { type: 'string' }],
+  ['middleName', { type: 'string' }],
+  ['remark', { type: 'string' }],
+  ['mobilePhoneNumber', { type: 'string' }],
+  ['weChatNumber', { type: 'string' }],
+  ['addressCountry', { type: 'string' }],
+  ['addressState', { type: 'string' }],
+  ['addressCity', { type: 'string' }],
+  ['addressStreet', { type: 'string' }],
+  ['addressPostalCode', { type: 'string' }],
+  ['organization', { type: 'string' }],
+  ['title', { type: 'string' }],
+  ['workFaxNumber', { type: 'string' }],
+  ['workPhoneNumber', { type: 'string' }],
+  ['hostNumber', { type: 'string' }],
+  ['email', { type: 'string' }],
+  ['url', { type: 'string' }],
+  ['workAddressCountry', { type: 'string' }],
+  ['workAddressState', { type: 'string' }],
+  ['workAddressCity', { type: 'string' }],
+  ['workAddressStreet', { type: 'string' }],
+  ['workAddressPostalCode', { type: 'string' }],
+  ['homeFaxNumber', { type: 'string' }],
+  ['homePhoneNumber', { type: 'string' }],
+  ['homeAddressCountry', { type: 'string' }],
+  ['homeAddressState', { type: 'string' }],
+  ['homeAddressCity', { type: 'string' }],
+  ['homeAddressStreet', { type: 'string' }],
+  ['homeAddressPostalCode', { type: 'string' }]
+]
+);
+
+export const ChooseContactApiOptions: ApiOptions<ChooseContactOptions> = {}
+
+export const ChooseContactApiProtocol = new Map<string, ProtocolOptions>([]);

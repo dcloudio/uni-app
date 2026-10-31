@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Combobox 组合框组件，支持默认单选和通过 input 插槽启用可输可选模式。",
   "isExt": true,
-  "extUrl": "",
+  "extUrl": "https://ext.dcloud.net.cn/plugin?id=30347",
   "keywords": [
     "组合框",
     "combox",

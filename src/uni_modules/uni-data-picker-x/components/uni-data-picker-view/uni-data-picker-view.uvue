@@ -1,0 +1,149 @@
+<template>
+  <view class="uni-data-picker-view">
+    <text v-if="dataPicker.error!=null" class="error-text" :class="errorClass">{{dataPicker.error!.errMsg}}</text>
+    <scroll-view v-if="!dataPicker.isCloudDataList" direction="horizontal" :show-scrollbar="false">
+      <view class="selected-node-list">
+        <template v-for="(item, index) in dataPicker.selectedNodes">
+          <text class="selected-node-item"
+            :class="[tabItemClass, index==dataPicker.selectedIndex ? 'selected-node-item-active' : '']"
+            @click="dataPicker.onTabSelect(index)">
+            {{item[dataPicker.mappingTextName]}}
+          </text>
+        </template>
+      </view>
+    </scroll-view>
+    <list-view ref="listView" class="list-view" :class="listViewClass" :scroll-y="true" @scroll="onListScroll">
+      <list-item class="list-item" :class="listItemClass" v-for="(item, index) in dataPicker.currentDataList" :key="index"
+        @click="dataPicker.onNodeClick(item)">
+        <text class="item-text" :class="[listItemTextClass, (item['disable'] as boolean) ? 'item-text-disabled' : '']"
+          flatten>{{item[dataPicker.mappingTextName]}}</text>
+        <text class="check" :class="listItemCheckClass"
+          v-if="item[dataPicker.mappingValueName] == dataPicker.selectedNodes[dataPicker.selectedIndex][dataPicker.mappingValueName]"
+          flatten></text>
+      </list-item>
+    </list-view>
+    <view class="loading-cover" v-if="dataPicker.loading">
+      <slot name="picker-view-loading" :loading="dataPicker.loading">
+        <loading class="loading-size" :class="loadingClass"></loading>
+      </slot>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import { dataPickerProps, useDataPicker } from "./uni-data-picker.ts"
+
+  /**
+   * DataPickerview
+   * @description uni-data-picker-view
+   * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
+   * @property {Array} localdata 本地数据，参考
+   * @property {Boolean} step-searh = [true|false] 是否分布查询
+   * @value true 启用分布查询，仅查询当前选中节点
+   * @value false 关闭分布查询，一次查询出所有数据
+   * @property {String|DBFieldString} self-field 分布查询当前字段名称
+   * @property {String|DBFieldString} parent-field 分布查询父字段名称
+   * @property {String|DBCollectionString} collection 表名
+   * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
+   * @property {String} orderby 排序字段及正序倒叙设置
+   * @property {String|JQLString} where 查询条件
+   */
+  const props = defineProps({
+    ...dataPickerProps,
+    // 协商内嵌到 uni-data-picker 中，默认不加载数据，由 uni-data-picker 根据参数加载数据
+    inDataPicker: {
+      type: Boolean,
+      default: false
+    },
+    ellipsis: {
+      type: Boolean,
+      default: true
+    },
+    tabItemClass: {
+      type: String,
+      default: ''
+    },
+    listViewClass: {
+      type: String,
+      default: ''
+    },
+    listItemClass: {
+      type: String,
+      default: ''
+    },
+    listItemTextClass: {
+      type: String,
+      default: ''
+    },
+    listItemCheckClass: {
+      type: String,
+      default: ''
+    },
+    loadingClass: {
+      type: String,
+      default: ''
+    },
+    errorClass: {
+      type: String,
+      default: ''
+    }
+  })
+  defineOptions({
+    externalClasses: ['tab-item-class', 'list-view-class', 'list-item-class', 'list-item-text-class', 'list-item-check-class', 'loading-class', 'error-class']
+  })
+
+  const dataPicker = useDataPicker(props)
+
+  const emit = defineEmits(['nodeclick', 'change', 'update:modelValue'])
+
+  const listView = ref<UniElement | null>(null)
+  const listScrollTop = ref(0)
+
+  function onListScroll(e : UniScrollEvent) {
+    listScrollTop.value = e.detail.scrollTop
+  }
+
+  function getScrollTop() : number {
+    return listScrollTop.value
+  }
+
+  dataPicker.onFinish = () => {
+    const nodes = dataPicker.getChangeNodes()
+    if (nodes.length > 0) {
+      emit('update:modelValue', nodes[nodes.length - 1][dataPicker.mappingValueName])
+    }
+    emit('change', {detail: {value: nodes}})
+  }
+  dataPicker.emitNodeClick = (nodeData : UTSJSONObject) => {
+    nextTick(() => {
+      if (dataPicker.selectedNodes.length > 1) {
+        listView?.value!.scrollTo(0, 0)
+      }
+    })
+    emit('nodeclick', nodeData)
+  }
+
+  const onNodeClick = function (nodeData : UTSJSONObject) {
+    dataPicker.onNodeClick(nodeData)
+  }
+
+  if (!props.inDataPicker) {
+    dataPicker.loadData()
+  }
+
+  const loadData = function (selectedPaths: any) {
+    if (selectedPaths.length > 0) {
+      dataPicker.selectedPaths = selectedPaths
+    }
+    dataPicker.loadData()
+  }
+
+  defineExpose({
+    loadData,
+    getScrollTop
+  })
+</script>
+
+<style>
+  @import url("uni-data-picker-view.css");
+</style>

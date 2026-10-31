@@ -1,0 +1,436 @@
+import { GetUniverifyManager, UniverifyManager, GetUniVerifyManager, UniVerifyManager, UniVerifyManagerPreLoginOptions, UniVerifyManagerPreLoginSuccess, UniVerifyManagerPreLoginFail, UniVerifyManagerLoginOptions, UniVerifyManagerCustomLoginOptions, UniVerifyManagerLoginSuccess, UniVerifyManagerLoginFail } from "../interface.uts";
+import { UniVerifyManagerPreLoginFailImpl, UniVerifyManagerLoginFailImpl, UniVerifyManagerSourceError, UniVerifyManagerOperatorSourceError } from '../unierror.uts';
+import { checkPermission, getPermissionCheckResult } from '../permission.uts';
+import { uniVerifyLogin, uniVerifyClose } from '../commonLogin.uts';
+
+import GYManager from "com.g.gysdk.GYManager";
+import GYResponse from "com.g.gysdk.GYResponse";
+import GyCallBack from "com.g.gysdk.GyCallBack";
+
+import PackageManager from "android.content.pm.PackageManager";
+import Context from "android.content.Context";
+import View from "android.view.View";
+import ViewGroup from 'android.view.ViewGroup';
+import Rect from 'android.graphics.Rect';
+
+/**
+ * 超时时间
+ */
+const TIMEOUT : Int = 5000;
+
+/**
+ * 基座标识
+ * 0 表示 非标准基座
+ * 1 表示 uni-app标准基座
+ * 2 表示 uni-app x标准基座
+ */
+let baseFlag : number = 0;
+
+/**
+ * 个验appid
+ */
+let GYAppId : string = "";
+
+/**
+ * uni appid
+ */
+let appId : string = "";
+
+/**
+ * 预登录数据
+ */
+let preLoginData : UniVerifyManagerPreLoginSuccess | null = null;
+
+export const getUniverifyManager : GetUniverifyManager = function () : UniverifyManager {
+	return UniVerifyManagerImpl.instance;
+}
+
+export const getUniVerifyManager : GetUniVerifyManager = function () : UniVerifyManager {
+	return UniVerifyManagerImpl.instance;
+}
+
+/**
+ * UniVerifyManager 实现类
+ */
+class UniVerifyManagerImpl implements UniVerifyManager {
+	
+	static instance = new UniVerifyManagerImpl();
+
+	constructor() {
+		const ctx = UTSAndroid.getAppContext();
+		const pkgName = ctx?.getPackageName();
+		switch (pkgName) {
+			case "io.dcloud.HBuilder":
+				baseFlag = 1;
+				break;
+			case "io.dcloud.uniappx":
+				baseFlag = 2;
+				break;
+		}
+		// GYManager.getInstance().preInit(ctx)
+		GYManager.getInstance().init(ctx, new (class implements GyCallBack {
+			override onSuccess(res : GYResponse) {
+				// console.debug("init success => " + res + " version => " + getVersion());
+			}
+
+			override onFailed(res : GYResponse) {
+				// console.debug("init fail => " + res + " version => " + getVersion());
+			}
+		}));
+		appId = UTSAndroid.getAppId();
+		GYAppId = getMetaValue(ctx, pkgName, "GY_APP_ID");
+		checkPermission(appId, GYAppId);
+	}
+
+	override preLogin(options : UniVerifyManagerPreLoginOptions) : void {
+		checkPermission(appId, GYAppId);
+		const result = getPermissionCheckResult();
+		if (result.valid) {
+			GYManager.getInstance().ePreLogin(TIMEOUT, new (class implements GyCallBack {
+				override onSuccess(res : GYResponse) {
+					if (res.isSuccess()) { // 预登录成功
+						// console.debug("pre login success => " + res);
+						const preLoginResult = GYManager.getInstance().getPreLoginResult();
+						let slogan = "";
+						switch (preLoginResult.getOperator()) {
+							case "CM":
+								slogan = "中国移动提供认证服务";
+								break;
+							case "CU":
+								slogan = "认证服务由联通统一认证提供";
+								break;
+							case "CT":
+								slogan = "天翼账号提供认证服务";
+								break;
+						}
+						const success : UniVerifyManagerPreLoginSuccess = {
+							number: JSON.parseObject(res.getMsg())?.getString("number") ?? "",
+							slogan: slogan,
+							privacyName: preLoginResult.getPrivacyName(),
+							privacyUrl: preLoginResult.getPrivacyUrl()
+						};
+						preLoginData = success;
+						options.success?.(success);
+						options.complete?.(success);
+					} else {
+						// console.debug("pre login fail => " + res);
+						const fail : UniVerifyManagerPreLoginFail = new UniVerifyManagerPreLoginFailImpl(res.getCode(), null, buildSourceError(res));
+						options.fail?.(fail);
+						options.complete?.(fail);
+					}
+				}
+				override onFailed(res : GYResponse) {
+					// console.debug("pre login fail => " + res);
+					const fail : UniVerifyManagerPreLoginFail = new UniVerifyManagerPreLoginFailImpl(res.getCode(), null, buildSourceError(res));
+					options.fail?.(fail);
+					options.complete?.(fail);
+				}
+			}));
+		} else {
+			const fail : UniVerifyManagerPreLoginFail = new UniVerifyManagerPreLoginFailImpl(result.code, result.desc);
+			options.fail?.(fail);
+			options.complete?.(fail);
+		}
+	}
+
+	override login(options : UniVerifyManagerLoginOptions) : void {
+		const appid = appId;
+		const data : UTSJSONObject = {
+			appId: appid,
+			gyAppId: GYAppId,
+			isPreLogin: this.isPreLoginValid(),
+			number: preLoginData?.number ?? '',
+			slogan: preLoginData?.slogan ?? '',
+			privacyName: preLoginData?.privacyName ?? '',
+			privacyUrl: preLoginData?.privacyUrl ?? ''
+		};
+		uniVerifyLogin(options, data);
+	}
+
+	override customLogin(options : UniVerifyManagerCustomLoginOptions) : void {
+		checkPermission(appId, GYAppId);
+		const result = getPermissionCheckResult();
+		if (result.valid) {
+			if (verificationPassed(options, preLoginData)) {
+				if (privacyChecked(options)) {
+					GYManager.getInstance().login(TIMEOUT, null, new (class implements GyCallBack {
+						override onSuccess(res : GYResponse) {
+							if (res.isSuccess()) { // 登录成功
+								// console.debug("login success => " + res);
+								const openId = baseFlag + "00" + res.getGyuid();
+								const accessToken = JSON.parseObject(res.getMsg())?.getJSON("data")?.getString("token") ?? "";
+								const success : UniVerifyManagerLoginSuccess = {
+									openId: openId,
+									accessToken: accessToken
+								};
+								options.success?.(success);
+								options.complete?.(success);
+							} else {
+								// console.debug("login fail => " + res);
+								const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(res.getCode(), null, buildSourceError(res));
+								options.fail?.(fail);
+								options.complete?.(fail);
+							}
+						}
+
+						override onFailed(res : GYResponse) {
+							// console.debug("login fail => " + res);
+							const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(res.getCode(), null, buildSourceError(res));
+							options.fail?.(fail);
+							options.complete?.(fail);
+						}
+					}));
+				} else {
+					const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(40001);
+					options.fail?.(fail);
+					options.complete?.(fail);
+				}
+			} else {
+				const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(40002);
+				options.fail?.(fail);
+				options.complete?.(fail);
+			}
+		} else {
+			const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(result.code, result.desc);
+			options.fail?.(fail);
+			options.complete?.(fail);
+		}
+	}
+
+	override close() : void {
+		uniVerifyClose(this.isPreLoginValid());
+	}
+
+	override isPreLoginValid() : boolean {
+		return GYManager.getInstance().isPreLoginResultValid();
+	}
+}
+
+function buildSourceError(res : GYResponse) : UniVerifyManagerSourceError | null {
+	const msgObj = JSON.parse<UTSJSONObject>(res.getMsg());
+	if (msgObj == null) return null;
+	let operatorSourceError : SourceError | null = null;
+	const metadataObj = msgObj.getJSON('metadata');
+	if (metadataObj != null) {
+		operatorSourceError = new UniVerifyManagerOperatorSourceError(JSON.stringify(metadataObj));
+		operatorSourceError.code = parseInt(metadataObj.getString('resultCode', '-1'));
+		let operator = '';
+		switch (res.getOperator()) {
+			case "CM":
+				operator = "移动";
+				break;
+			case "CU":
+				operator = "联通";
+				break;
+			case "CT":
+				operator = "电信";
+				break;
+		}
+		operatorSourceError.subject = operator;
+	}
+	const msgMap = msgObj.toMap();
+	msgMap.delete('metadata');
+	const gyMessgaeObj : UTSJSONObject = {
+		gyuid: res.getGyuid(),
+		code: res.getCode(),
+		msg: new UTSJSONObject(msgMap),
+		operator: res.getOperator(),
+		success: res.isSuccess()
+	};
+	const gySourceError = new UniVerifyManagerSourceError(
+		msgObj.getNumber('errorCode', -1),
+		JSON.stringify(gyMessgaeObj),
+		res.getGyuid(),
+		msgObj.getString('process_id', ''),
+		parseInt(msgObj.getString('operatorType', '-1')),
+		operatorSourceError
+	);
+	return gySourceError;
+}
+
+/**
+ * 设置渠道
+ */
+function setChannel(channel : string) {
+	GYManager.getInstance().setChannel(channel);
+}
+
+/**
+ * 获取SDK版本号
+ */
+function getVersion() : string {
+	return GYManager.getInstance().getVersion();
+}
+
+/**
+ * AndroidManifest.xml 中获取 <meta-data />
+ */
+@Suppress("DEPRECATION")
+function getMetaValue(ctx : Context | null, pkgName : string | null, key : string) : string {
+	if (ctx == null || pkgName == null) return "";
+	return ctx.getPackageManager().getApplicationInfo(pkgName, PackageManager.GET_META_DATA).metaData?.getString(key, "") ?? "";
+}
+
+// #ifndef VUE3-VAPOR
+function privacyChecked(options : UniVerifyManagerCustomLoginOptions) : boolean {
+	return (options.privacyCheckBoxElement as UniCheckboxElement).checked;
+}
+
+function verificationPassed(options : UniVerifyManagerCustomLoginOptions, data : UniVerifyManagerPreLoginSuccess | null) : boolean {
+	if (data == null) return false;
+	// 校验登录页是否被其他activity遮挡
+	if (options.numberTextElement.getAndroidActivity() != UTSAndroid.getTopPageActivity()
+		|| UTSAndroid.getUniActivity() != UTSAndroid.getTopPageActivity()) {
+		return false;
+	}
+	// 校验必要元素类型是否正确
+	if (!(options.numberTextElement instanceof UniTextElement)
+		|| !(options.sloganTextElement instanceof UniTextElement)
+		|| !(options.loginButtonElement instanceof UniButtonElement)
+		|| !(options.privacyCheckBoxElement instanceof UniCheckboxElement)
+		|| !(options.privacyTextElement instanceof UniTextElement)) {
+		return false;
+	}
+	const numberTextElement = options.numberTextElement as UniTextElement;
+	const sloganTextElement = options.sloganTextElement as UniTextElement;
+	const loginButtonElement = options.loginButtonElement as UniTextElement;
+	const privacyCheckBoxElement = options.privacyCheckBoxElement as UniCheckboxElement;
+	const privacyTextElement = options.privacyTextElement as UniTextElement;
+	// 校验必要元素是否显示
+	if (!visibleVerification(numberTextElement)
+		|| !visibleVerification(sloganTextElement)
+		|| !visibleVerification(loginButtonElement)
+		|| !visibleVerification(privacyCheckBoxElement)
+		|| !visibleVerification(privacyTextElement)) {
+		return false;
+	}
+	// 校验必要元素尺寸是否正常
+	const density = UTSAndroid.getTopPageActivity()?.getResources()?.getDisplayMetrics()?.density ?? 0;
+	if (!sizeVerification(numberTextElement, density)
+		|| !sizeVerification(sloganTextElement, density)
+		|| !sizeVerification(loginButtonElement, density)
+		|| !sizeVerification(privacyCheckBoxElement, density)
+		|| !sizeVerification(privacyTextElement, density)) {
+		return false;
+	}
+	// 校验必要元素是否动态修改
+	if (numberTextElement.value != data.number
+		|| sloganTextElement.value != data.slogan
+		|| !loginButtonElement.value.includes('登录') && !loginButtonElement.value.includes('注册')
+		|| !privacyTextElement.value.includes(data.privacyName)) {
+		return false;
+	}
+	// 校验元素是否遮挡
+	let body : UniElement | null = numberTextElement;
+	while (body != null && body.tagName != 'BODY') {
+		body = body.parentElement;
+	}
+	if (body != null && (!overlapVerification(body, numberTextElement)
+		|| !overlapVerification(body, sloganTextElement)
+		|| !overlapVerification(body, loginButtonElement)
+		|| !overlapVerification(body, privacyCheckBoxElement)
+		|| !overlapVerification(body, privacyTextElement))) {
+		return false;
+	}
+	return true;
+}
+
+function visibleVerification(element : UniElement) : boolean {
+	return element.getAndroidView()?.getVisibility() == View.VISIBLE;
+}
+
+function sizeVerification(element : UniElement, density : number) : boolean {
+	return element.offsetWidth * density > 10 && element.offsetHeight * density > 10;
+}
+
+function overlapVerification(parent : UniElement, target : UniElement) {
+	const children = parent.children;
+	for (let i = 0; i < children.length; i++) {
+		if (children[i].tagName == 'COMMENT' || children[i] == target) continue;
+		if (!isParent(children[i], target) && isOverlap(children[i], target)) {
+			return false;
+		}
+		if (!overlapVerification(children[i], target)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function isParent(parent : UniElement, target : UniElement) {
+	let current = target.parentElement;
+	while (current != parent) {
+		current = current?.parentElement;
+		if (current == null) return false;
+	}
+	return true;
+}
+
+function isOverlap(other : UniElement, target : UniElement) : boolean {
+	const otherRect = new Rect(), targetRect = new Rect();
+	other.getAndroidView()?.getGlobalVisibleRect(otherRect);
+	target.getAndroidView()?.getGlobalVisibleRect(targetRect);
+	if (Rect.intersects(otherRect, targetRect)) {
+		let current : UniElement | null = other;
+		let otherDepth = 1, targetDepth = 1;
+		while (current != null && current.tagName != 'BODY') {
+			current = current.parentElement;
+			otherDepth++;
+		}
+		current = target;
+		while (current != null && current.tagName != 'BODY') {
+			current = current.parentElement;
+			targetDepth++;
+		}
+		if (otherDepth == targetDepth) {
+			if (hasZIndex(other, target)) {
+				if (isOverlapWithZIndex(other, target)) return true;
+			} else if (isOverlapWithViewIndex(other, target)) return true;
+		} else {
+			let diffDepth = Math.abs(otherDepth - targetDepth);
+			let brother : UniElement | null;
+			if (otherDepth < targetDepth) brother = target;
+			else brother = other;
+			while (diffDepth > 0) {
+				brother = brother?.parentElement;
+				diffDepth--;
+			}
+			if (brother != null) {
+				if (otherDepth < targetDepth) {
+					if (hasZIndex(other, brother)) {
+						if (isOverlapWithZIndex(other, brother)) return true;
+					} else if (isOverlapWithViewIndex(other, brother)) return true;
+				} else {
+					if (hasZIndex(brother, target)) {
+						if (isOverlapWithZIndex(brother, target)) return true;
+					} else if (isOverlapWithViewIndex(brother, target)) return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+function isOverlapWithZIndex(other : UniElement, target : UniElement) : boolean {
+	return parseInt((other.style['z-index'] ?? '0') as string) > parseInt((target.style['z-index'] ?? '0') as string);
+}
+
+function isOverlapWithViewIndex(other : UniElement, target : UniElement) : boolean {
+	const parent = other.parentElement?.getAndroidView() as ViewGroup | null;
+	return (parent?.indexOfChild(other.getAndroidView()) ?? -1) > (parent?.indexOfChild(target.getAndroidView()) ?? -1);
+}
+
+function hasZIndex(a : UniElement, b : UniElement) : boolean {
+	return a.style['z-index'] != null || b.style['z-index'] != null;
+}
+// #endif
+
+// #ifdef VUE3-VAPOR
+function privacyChecked(options : UniVerifyManagerCustomLoginOptions) : boolean {
+  return options.privacyCheckBoxElementChecked ?? false;
+}
+
+function verificationPassed(options : UniVerifyManagerCustomLoginOptions, data : UniVerifyManagerPreLoginSuccess | null) : boolean {
+  return true;
+}
+// #endif

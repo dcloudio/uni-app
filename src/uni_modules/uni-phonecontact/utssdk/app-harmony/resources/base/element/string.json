@@ -1,0 +1,12 @@
+{
+  "string": [
+    {
+      "name": "permission_read_contacts",
+      "value": "正在申请读取联系人权限，以便为您提供相应的服务"
+    },
+    {
+      "name": "permission_write_contacts",
+      "value": "正在申请获取写入联系人权限，以便为您提供相应的服务"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+<template>
+	<uni-forms>
+		<view class="uni-card-radius uni-card-color">
+			<uni-forms-item label="用户名" label-class="label-class">
+				<input placeholder="请输入用户名"/>
+			</uni-forms-item>
+			<uni-forms-item label="密码" label-class="label-class">
+				<input placeholder="请输入密码"/>
+			</uni-forms-item>
+		</view>
+	</uni-forms>
+	<text class="uni-subtitle-text">分组标题</text>
+	<uni-forms>
+		<view class="uni-card uni-card-color">
+			<uni-forms-item label="用户名" label-class="label-class label-width" class="underline">
+				<input placeholder="请输入用户名"/>
+			</uni-forms-item>
+			<uni-forms-item label="密码" label-class="label-class">
+				<input placeholder="请输入密码"/>
+			</uni-forms-item>
+		</view>
+	</uni-forms>
+	<uni-forms>
+		<view class="uni-card uni-card-color">
+			<uni-forms-item label="是否指定按下样式类" label-class="label-class label-width" class="underline">
+				<switch></switch>
+			</uni-forms-item>
+			<uni-forms-item label="是否阻止本节点的祖先节点出现点击态" label-class="label-class label-width" class="underline">
+				<switch></switch>
+			</uni-forms-item>
+			<uni-forms-item label="按住后多久出现点击态(ms)" label-class="label-class label-width" label-position="top" class="underline">
+				<slider :min="50" :max="200" :step="50" show-value></slider>
+			</uni-forms-item>
+			<uni-forms-item label="手指松开后点击态保留时间(ms)" label-class="label-class label-width" label-position="top">
+				<slider :min="50" :max="400" :step="50" show-value></slider>
+			</uni-forms-item>
+		</view>
+	</uni-forms>
+</template>
+<!--
+form-item的问题
+label 在左边的时候
+	font-size不要设！在上面可以默认14px，但在左边时不能设默认值的
+	垂直不对齐！
+	不能内置写死width:70px！默认不能写宽度！
+	新增属性show-arrow，默认false，设置为true时，显示向右箭头。参考折叠面板组件，用一个两边border的view旋转实现
+新增一个 description属性，类似于label，但字体更小、颜色更浅。位置始终在label的下方，不要设宽度。同样需要配套的description-class属性，方便自定义样式。
+ -->
+<script setup lang="ts">
+
+</script>
+
+<style>
+.uni-card {
+  margin: 10px 0px;
+	padding: 10px;
+}
+.uni-card-radius {
+  margin: 10px;
+	padding: 10px;
+  border-radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  .uni-card-color {
+    background-color: #1e1e1e;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .uni-card-color {
+    background-color: #FFFFFF;
+  }
+}
+.label-class {
+  font-weight: bold;
+  color: #878787;
+	margin-left: 8px;
+}
+.label-width {
+  width: auto
+}
+.underline {
+  border-bottom: 0.5px solid #ccc;
+}
+</style>

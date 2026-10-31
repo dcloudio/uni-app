@@ -1,0 +1,85 @@
+import { AddPhoneContactErrorCode, ChooseContactErrorCode, IAddPhoneContactFail, IChooseContactFail } from './interface.uts'
+
+export const AddPhoneContactUniErrorSubject = 'uni-addPhoneContact'
+export const ChooseContactUniErrorSubject = 'uni-phoneContact'
+
+export const ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER : AddPhoneContactErrorCode = 601
+export const ADD_PHONE_CONTACT_ERR_PERMISSION_DENIED : AddPhoneContactErrorCode = 602
+export const ADD_PHONE_CONTACT_ERR_SAVE_FAILED : AddPhoneContactErrorCode = 603
+export const ADD_PHONE_CONTACT_ANDROID_ACTIVITY_UNAVAILABLE_PLATFORM_CODE : number = 701
+export const ADD_PHONE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE : number = 702
+export const ADD_PHONE_CONTACT_IOS_PERMISSION_REQUEST_FAILED_PLATFORM_CODE : number = 801
+export const ADD_PHONE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE : number = 802
+export const ADD_PHONE_CONTACT_HARMONY_PERMISSION_REQUEST_FAILED_PLATFORM_CODE : number = 501
+export const ADD_PHONE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE : number = 502
+
+export const CHOOSE_CONTACT_ERR_PERMISSION_DENIED : ChooseContactErrorCode = 601
+export const CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER : ChooseContactErrorCode = 602
+export const CHOOSE_CONTACT_ERR_OPERATION_FAILED : ChooseContactErrorCode = 603
+export const CHOOSE_CONTACT_ANDROID_ACTIVITY_UNAVAILABLE_PLATFORM_CODE : number = 703
+export const CHOOSE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE : number = 704
+export const CHOOSE_CONTACT_IOS_PERMISSION_REQUEST_FAILED_PLATFORM_CODE : number = 803
+export const CHOOSE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE : number = 804
+export const CHOOSE_CONTACT_HARMONY_PERMISSION_REQUEST_FAILED_PLATFORM_CODE : number = 503
+export const CHOOSE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE : number = 504
+
+export const AddPhoneContactUniErrors : Map<number, string> = new Map([
+	[ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER, 'addPhoneContact:fail invalid parameter'],
+	[ADD_PHONE_CONTACT_ERR_PERMISSION_DENIED, 'addPhoneContact:fail permission denied'],
+	[ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail save contact failed']
+])
+
+export const ChooseContactUniErrors : Map<number, string> = new Map([
+	[CHOOSE_CONTACT_ERR_PERMISSION_DENIED, 'chooseContact:fail permission denied'],
+	[CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER, 'chooseContact:fail selected contact has no phone number'],
+	[CHOOSE_CONTACT_ERR_OPERATION_FAILED, 'chooseContact:fail choose contact failed']
+])
+
+export class AddPhoneContactFailImpl extends UniError implements IAddPhoneContactFail {
+	override errCode : AddPhoneContactErrorCode
+
+	constructor(errCode : AddPhoneContactErrorCode) {
+		super()
+		this.errCode = errCode
+		this.errSubject = AddPhoneContactUniErrorSubject
+	}
+}
+
+function createPlatformCodeData(platformCode : number) : UTSJSONObject {
+	const data : UTSJSONObject = {
+		platformCode: platformCode
+	}
+	return data
+}
+
+@UTSiOS.keyword("private")
+export function createAddPhoneContactFail(errCode : AddPhoneContactErrorCode, errMsg : string | null = null, platformCode : number | null = null) : AddPhoneContactFailImpl {
+	const error = new AddPhoneContactFailImpl(errCode)
+	const defaultMessage = AddPhoneContactUniErrors.get(errCode)
+	error.errMsg = errMsg != null ? errMsg : (defaultMessage != null ? defaultMessage : '')
+	if (platformCode != null) {
+		error.data = createPlatformCodeData(platformCode)
+	}
+	return error
+}
+
+export class ChooseContactFailImpl extends UniError implements IChooseContactFail {
+	override errCode : ChooseContactErrorCode
+
+	constructor(errCode : ChooseContactErrorCode) {
+		super()
+		this.errCode = errCode
+		this.errSubject = ChooseContactUniErrorSubject
+	}
+}
+
+@UTSiOS.keyword("private")
+export function createChooseContactFail(errCode : ChooseContactErrorCode, errMsg : string | null = null, platformCode : number | null = null) : ChooseContactFailImpl {
+	const error = new ChooseContactFailImpl(errCode)
+	const defaultMessage = ChooseContactUniErrors.get(errCode)
+	error.errMsg = errMsg != null ? errMsg : (defaultMessage != null ? defaultMessage : '')
+	if (platformCode != null) {
+		error.data = createPlatformCodeData(platformCode)
+	}
+	return error
+}

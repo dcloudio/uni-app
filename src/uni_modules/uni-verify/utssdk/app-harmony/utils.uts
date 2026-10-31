@@ -1,0 +1,143 @@
+import { UniVerifyManagerCustomLoginOptions, UniVerifyManagerPreLoginSuccess } from '../interface.uts';
+
+export function verifyOptions(options : UniVerifyManagerCustomLoginOptions, preLoginSuccess : UniVerifyManagerPreLoginSuccess): number {
+  // 1. 验证有没有弹窗
+  // @ts-ignore
+  const pages = globalThis.getCurrentPages() as UniPageImpl[];
+  if (pages.length == 0) {
+    return 40002
+  }
+  let topPage : UniPage = pages[pages.length - 1];
+  if (topPage == null) {
+      return 40002;
+  }
+  /* const dialogPages = topPage.getDialogPages();
+
+  if (dialogPages.length > 0) {
+    topPage = dialogPages[dialogPages.length - 1];
+  } else {
+    return 40002
+  } */
+
+  const rootView = ((topPage.vm as object)['$el'] as UniElement | null)?.parentElement as UniElement | null;
+  if (!rootView) {
+    return 40002
+  }
+
+  // 2. 验证传参数是否正确
+  const res =
+    verifyNumberTextElement(options.numberTextElement, preLoginSuccess.number) ??
+    verifySloganTextElement(options.sloganTextElement, preLoginSuccess.slogan) ??
+    verifyLoginButtonElement(options.loginButtonElement) ??
+    verifyPrivacyCheckBoxElement(options.privacyCheckBoxElement) ??
+    verifyPrivacyTextElement(options.privacyTextElement, preLoginSuccess.privacyName, preLoginSuccess.privacyUrl)
+  if (typeof res == 'number') return res
+
+  return 0
+}
+
+function verifyUniElementFrameNode(element : UniElement): number | null {
+  if (element.isConnected === false) {
+    return 40002
+  }
+  // #ifndef VUE3-VAPOR
+  // @ts-ignore
+  const elementFrameNode = (element as UniElementImpl).frameNode
+  if (elementFrameNode == null) {
+    return 40002
+  }
+  if (!elementFrameNode.isVisible()) {
+    return 40002
+  }
+  if (elementFrameNode.getOpacity() === 0) {
+    return 40002
+  }
+  const measuredSize = elementFrameNode.getMeasuredSize()
+  if (measuredSize.width < 10 || measuredSize.height < 10) {
+    return 40002
+  }
+  // #endif
+  return null
+}
+
+function verifyNumberTextElement(element : UniElement, number : string): number | null {
+  if (element.tagName !== 'TEXT') {
+    return 40002
+  }
+  if ((element as UniTextElement).value != number) {
+    return 40002
+  }
+  return verifyUniElementFrameNode(element)
+}
+
+function verifySloganTextElement(element : UniElement, slogan : string): number | null {
+  if (element.tagName !== 'TEXT') {
+    return 40002
+  }
+  if ((element as UniTextElement).value != slogan) {
+    return 40002
+  }
+  return verifyUniElementFrameNode(element)
+}
+
+function verifyLoginButtonElement(element : UniElement): number | null {
+  if (element.tagName !== 'BUTTON') {
+    return 40002
+  }
+  let loginButtonTextIllegal = true
+  // #ifndef VUE3-VAPOR
+  // @ts-expect-error
+  const loginButtonTextElement = element.children[1] as UniTextElement;
+  loginButtonTextIllegal = loginButtonTextElement && loginButtonTextElement.tagName === 'TEXT' &&
+    loginButtonTextElement.value.includes("登录") == false &&
+    loginButtonTextElement.value.includes("注册") == false
+  // #endif
+  // #ifdef VUE3-VAPOR
+  const text = element.getAttribute('value') ?? ''
+  loginButtonTextIllegal = text.length <= 0 || (text.includes("登录") == false && text.includes("注册") == false)
+  // #endif
+  if (loginButtonTextIllegal) {
+    return 40002
+  }
+  return verifyUniElementFrameNode(element)
+}
+
+function verifyPrivacyCheckBoxElement(element : UniElement): number | null {
+  if (element.tagName !== 'CHECKBOX') {
+    return 40002
+  }
+
+  // #ifdef VUE3-VAPOR
+  if ((element as ESObject).checked !== true) {
+    return 40001
+  }
+  // #endif
+
+  // #ifndef VUE3-VAPOR
+  if (element!.firstChild == null) {
+    return 40002
+  }
+  const checkBoxViewElement = element!.firstChild!
+  if (checkBoxViewElement.firstChild == null) {
+    return 40001
+  }
+  const checkboxTextElement = checkBoxViewElement.firstChild!
+  if (checkboxTextElement.tagName !== 'TEXT') {
+    return 40002
+  }
+  if ((checkboxTextElement as UniTextElement).value != "\uEA08") {
+    return 40001
+  }
+  // #endif
+  return verifyUniElementFrameNode(element)
+}
+
+function verifyPrivacyTextElement(element : UniElement, privacyName : string, privacyUrl : string): number | null {
+  if (element.tagName !== 'TEXT') {
+    return 40002
+  }
+  if ((element as UniTextElement).value.includes(privacyName) == false) {
+    return 40002
+  }
+  return verifyUniElementFrameNode(element)
+}

@@ -1,0 +1,30 @@
+{
+	"simulatorArchitectures": [
+		"x86_64"
+	],
+	"frameworks": [
+		"CoreGraphics.framework",
+		"Accelerate.framework",
+		"SystemConfiguration.framework",
+		"AssetsLibrary.framework",
+		"CoreTelephony.framework",
+		"QuartzCore.framework",
+		"CoreFoundation.framework",
+		"CoreLocation.framework",
+		"ImageIO.framework",
+		"CoreMedia.framework",
+		"CoreMotion.framework",
+		"AVFoundation.framework",
+		"WebKit.framework",
+		"libresolv.tbd",
+		"libz.tbd",
+		"libc++.tbd",
+		"libc++.1.tbd",
+		"libc++abi.tbd",
+		"AudioToolbox.framework",
+		"CFNetwork.framework",
+		"MobileCoreServices.framework",
+		"libz.1.2.8.tbd",
+		"AdSupport.framework"
+	]
+}

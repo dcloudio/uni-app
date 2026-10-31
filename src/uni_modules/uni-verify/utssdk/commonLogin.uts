@@ -1,0 +1,146 @@
+import { UniVerifyManagerLoginOptions, UniVerifyManagerLoginSuccess, UniVerifyManagerLoginFail, UniVerifyManagerErrorCode } from './interface.uts';
+import { UniVerifyManagerLoginFailImpl } from './unierror.uts';
+import { checkPermission, getPermissionCheckResult } from './permission.uts';
+// #ifdef APP-IOS
+import { DispatchQueue } from 'Dispatch';
+// #endif
+
+let uni_verify_islogining : boolean = false;
+let uni_verify_closeevent : string | null = null;
+
+export function uniVerifyClose(isPreLogin: boolean): void{
+	if(uni_verify_closeevent != null){
+		const params = { isPreLogin: isPreLogin };
+		uni.$emit(uni_verify_closeevent!, params);
+	}
+}
+
+export type UniVerifyLoginInfo = {
+	appId: string
+	gyAppId: string
+	isPreLogin: boolean
+	privacyUrl: string
+	privacyName: string
+	number: string
+	slogan: string
+}
+export function uniVerifyLogin(options : UniVerifyManagerLoginOptions,info: UTSJSONObject): void {
+	// #ifdef APP-IOS
+	const appId = info["appId"] as string;
+	const GYAppId = info["gyAppId"] as string;
+	checkPermission(appId, GYAppId).then(() => {
+		DispatchQueue.main.async(execute = () : void => {
+			const result = getPermissionCheckResult();
+			if (!result.valid) {
+				const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(result.code as UniVerifyManagerErrorCode, result.desc);
+				options.fail?.(fail);
+				options.complete?.(fail);
+				return
+			}
+			uniVerifyLoginIn(options, info);
+		})
+	})
+	// #endif
+
+	// #ifndef APP-IOS
+	const appId = info["appId"]  as string;
+	const GYAppId = info["gyAppId"]  as string;
+	checkPermission(appId, GYAppId);
+	const result = getPermissionCheckResult();
+	if (!result.valid) {
+		const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(result.code as UniVerifyManagerErrorCode, result.desc);
+		options.fail?.(fail);
+		options.complete?.(fail);
+		return
+	}
+	uniVerifyLoginIn(options, info);
+	// #endif
+
+}
+
+function uniVerifyLoginIn(options : UniVerifyManagerLoginOptions,info: UTSJSONObject): void {
+	const isPreLogin = info["isPreLogin"] as boolean;
+	if(isPreLogin == false){
+		const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(30007);
+		options.fail?.(fail);
+		options.complete?.(fail);
+		return;
+	}
+	if (uni_verify_islogining == true){
+		const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(30008);
+		options.fail?.(fail);
+		options.complete?.(fail);
+		return;
+	}
+	uni_verify_islogining = true;
+
+	const style = options.uniVerifyStyle ?? options.univerifyStyle; //兼容旧版本
+	
+	let loginBtnText = "一键登录";
+	let fullScreen = "false";
+	let logoPath = "";
+	let backgroundColor = "";
+	if (style != null) {
+		if (style!.loginBtnText != null) {
+			loginBtnText = style!.loginBtnText!
+		}
+		const isFullScreen = style!.fullScreen;
+		if (isFullScreen != null) {
+			fullScreen = isFullScreen == true ? "true" : "false";
+		}
+		if (style!.logoPath != null) {
+			logoPath = style!.logoPath!;
+		}
+		if (style!.backgroundColor != null) {
+			backgroundColor = style!.backgroundColor!;
+		}
+	}
+	
+	let privacyUrl = info["privacyUrl"]  as string;
+	let privacyName = info["privacyName"]  as string;
+	let phoneNumber = info["number"]  as string;
+	let slogan = info["slogan"]  as string;
+	
+	const eventId = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+	const baseEventName = `uni_verify_${eventId}`
+	const successEventName = `${baseEventName}_success`
+	const failEventName = `${baseEventName}_fail`
+	const closeEventName = `${baseEventName}_close`
+	const unloadEventName = `${baseEventName}_unload` // 页面销毁
+	
+	uni_verify_closeevent = closeEventName;
+	
+	uni.$on(successEventName, (res: UTSJSONObject) => {
+		const success : UniVerifyManagerLoginSuccess = {
+			openId: res["openId"] as string,
+			accessToken: res["accessToken"] as string
+		};
+		options.success?.(success)
+		options.complete?.(success)
+	})
+	uni.$on(failEventName, (res: UTSJSONObject) => {
+		uni_verify_islogining = false;
+		uni_verify_closeevent = "";
+		const code = res["code"] as number;
+		const cause : SourceError | null = res["cause"] as SourceError | null;
+		const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(code as UniVerifyManagerErrorCode, null, cause);
+		options.fail?.(fail)
+		options.complete?.(fail)
+	})
+	
+	uni.$on(unloadEventName, (res: UTSJSONObject) => {
+		uni_verify_islogining = false;
+		uni_verify_closeevent = "";
+	})
+	
+	const animationType = fullScreen == "true" ? 'slide-in-bottom' : 'none';
+	uni.openDialogPage({
+		url: `/uni_modules/uni-verify/pages/verifyTemplatePage/verifyTemplatePage?successEventName=${successEventName}&failEventName=${failEventName}&closeEventName=${closeEventName}&unloadEventName=${unloadEventName}&fullScreen=${fullScreen}&loginBtnText=${loginBtnText}&logoPath=${logoPath}&backgroundColor=${backgroundColor}&phoneNumber=${phoneNumber}&privacyName=${privacyName}&slogan=${slogan}&privacyUrl=${privacyUrl}`,
+		animationType: animationType,
+		fail(err) {
+			uni_verify_islogining = false;
+			uni_verify_closeevent = "";
+			console.log(err);
+		}
+	})
+}

@@ -1,0 +1,6 @@
+framework module ToygerService {
+  umbrella header "ToygerService.h"
+
+  export *
+  module * { export * }
+}

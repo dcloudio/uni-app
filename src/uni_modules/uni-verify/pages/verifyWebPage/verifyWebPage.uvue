@@ -1,0 +1,124 @@
+<template>
+  <view class="uni_verify_web_background" :style="backgroundStyle">
+    <view class="uni_verify_web_container">
+      <view class="uni_verify_web_nav">
+        <view class="uni_verify_web_left_content">
+          <text class="uni_verify_web_left_icon" @click="onBack()" :style="titleStyle">{{backIcon}}</text>
+        </view>
+
+        <view class="uni_verify_web_title_content">
+          <text class="uni_verify_web_title" :style="titleStyle">{{title}}</text>
+        </view>
+
+      </view>
+      <web-view class="uni_verify_web_webview_container" :src="url"></web-view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  const page = getCurrentInstance()?.proxy?.$page
+
+  const url = ref('')
+  const title = ref('')
+  const animationType = ref('slide-out-bottom')
+  const backIcon = ref('\ue601')
+  const backgroundStyle = ref('')
+  const titleStyle = ref('')
+
+  onLoad((options : OnLoadOptions) => {
+    if (options['url'] != null) {
+      url.value = options['url'] as string
+    }
+    if (options['title'] != null) {
+      title.value = options['title'] as string
+    }
+    if (options['animationType'] != null) {
+      animationType.value = options['animationType'] as string
+    }
+    if (options['theme'] != null) {
+      const theme = options['theme'] as string
+      const frontColor = theme == "dark" ? "white" : "black"
+      const backgroundColor = theme == "dark" ? "#181818" : "#ffffff"
+      backgroundStyle.value = "backgroundColor:" + backgroundColor
+      const titleColor = theme == "dark" ? "#ffffff" : "#181818"
+      titleStyle.value = "color:" + titleColor
+      let style = { navigationBarTextStyle: frontColor, disableSwipeBack: true }
+      page?.setPageStyle(style)
+    }
+  })
+
+  function onBack() {
+    uni.closeDialogPage({
+      dialogPage: page,
+      animationType: animationType.value,
+      fail(err) {
+        console.log(err)
+      }
+    })
+  }
+</script>
+
+<style>
+  .uni_verify_web_background {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+  }
+
+  .uni_verify_web_nav {
+    height: 45px;
+    width: 100%;
+    position: relative;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .uni_verify_web_left_content {
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 100%;
+  }
+
+  .uni_verify_web_left_icon {
+    top: 5px;
+    height: 100%;
+    font-family: uni-icon;
+    font-size: 26px;
+  }
+
+  .uni_verify_web_title_content {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 45px;
+    right: 45px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .uni_verify_web_title {
+    color: black;
+    font-size: 17px;
+  }
+
+  .uni_verify_web_container {
+    padding-top: var(--uni-safe-area-inset-top);
+    /* #ifndef APP-HARMONY */
+    padding-top: env(safe-area-inset-top, 0px);
+    /* #endif */
+    width: 100%;
+    position: absolute;
+    height: 100%;
+  }
+
+  .uni_verify_web_webview_container {
+    background-color: #f1f1f1;
+    padding-top: 10px;
+    flex: 1;
+    width: 100%;
+  }
+</style>

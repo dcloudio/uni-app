@@ -1,0 +1,394 @@
+import { AddPhoneContact, AddPhoneContactComplete, AddPhoneContactCompleteCallback, AddPhoneContactErrorCode, AddPhoneContactFail, AddPhoneContactFailCallback, AddPhoneContactOptions, AddPhoneContactSuccess, AddPhoneContactSuccessCallback, ChooseContact, ChooseContactComplete, ChooseContactCompleteCallback, ChooseContactErrorCode, ChooseContactFail, ChooseContactFailCallback, ChooseContactOptions, ChooseContactSuccess, ChooseContactSuccessCallback } from '../interface.uts'
+import { ContactActionMode, prepareAddPhoneContactOptions, showAddPhoneContactActionSheet, validateAddPhoneContactOptions } from '../common.uts'
+import { contact } from '@kit.ContactsKit'
+import { fileUri } from '@kit.CoreFileKit'
+import { BusinessError } from '@kit.BasicServicesKit'
+import { ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, ADD_PHONE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE, CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER, CHOOSE_CONTACT_ERR_OPERATION_FAILED, CHOOSE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE, createAddPhoneContactFail, createChooseContactFail } from '../unierror.uts'
+
+function resolveSuccess(options : AddPhoneContactOptions) : void {
+	const result : AddPhoneContactSuccess = {}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectWithCode(options : AddPhoneContactOptions, errCode : AddPhoneContactErrorCode, errMsg : string, platformCode : number | null = null) : void {
+	const error = createAddPhoneContactFail(errCode, errMsg, platformCode)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function resolveChooseContactSuccess(options : ChooseContactOptions, displayName : string, phoneNumber : string, phoneNumberList : Array<string>) : void {
+	const result : ChooseContactSuccess = {
+		displayName: displayName,
+		phoneNumber: phoneNumber,
+		phoneNumberList: phoneNumberList,
+		errMsg: 'chooseContact:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectChooseContactWithCode(options : ChooseContactOptions, errCode : ChooseContactErrorCode, errMsg : string, platformCode : number | null = null) : void {
+	const error = createChooseContactFail(errCode, errMsg, platformCode)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function hasText(value : string | null | undefined) : boolean {
+	return value != null && value.length > 0
+}
+
+function buildFullName(lastName : string | null | undefined, middleName : string | null | undefined, firstName : string | null | undefined) : string {
+	let fullName = ''
+	if (lastName != null) {
+		fullName += lastName
+	}
+	if (middleName != null) {
+		fullName += middleName
+	}
+	if (firstName != null) {
+		fullName += firstName
+	}
+	return fullName
+}
+
+function composeAddress(country : string | null | undefined, state : string | null | undefined, city : string | null | undefined, street : string | null | undefined) : string {
+	let address = ''
+	if (country != null) {
+		address += country
+	}
+	if (state != null) {
+		address += state
+	}
+	if (city != null) {
+		address += city
+	}
+	if (street != null) {
+		address += street
+	}
+	return address
+}
+
+function appendUniquePhoneNumber(phoneNumbers : Array<string>, phoneNumber : string | null | undefined) : void {
+	if (phoneNumber == null) {
+		return
+	}
+	const normalizedPhoneNumber = phoneNumber as string
+	if (normalizedPhoneNumber.length == 0) {
+		return
+	}
+	let index = 0
+	while (index < phoneNumbers.length) {
+		if (phoneNumbers[index] == normalizedPhoneNumber) {
+			return
+		}
+		index++
+	}
+	phoneNumbers.push(normalizedPhoneNumber)
+}
+
+function getChooseContactDisplayName(selectedContact : contact.Contact) : string {
+	const name = selectedContact.name
+	if (name != null) {
+		const fullName = name.fullName
+		if (fullName.length > 0) {
+			return fullName
+		}
+		let mergedName = ''
+		if (name.familyName != null) {
+			mergedName += name.familyName
+		}
+		if (name.middleName != null) {
+			mergedName += name.middleName
+		}
+		if (name.givenName != null) {
+			mergedName += name.givenName
+		}
+		if (mergedName.length > 0) {
+			return mergedName
+		}
+	}
+	return ''
+}
+
+function getChooseContactPhoneNumbers(selectedContact : contact.Contact) : Array<string> {
+	const phoneNumbers = new Array<string>()
+	const selectedContactPhoneNumbers = selectedContact.phoneNumbers
+	if (selectedContactPhoneNumbers == null) {
+		return phoneNumbers
+	}
+	let index = 0
+	while (index < selectedContactPhoneNumbers.length) {
+		appendUniquePhoneNumber(phoneNumbers, selectedContactPhoneNumbers[index].phoneNumber)
+		index++
+	}
+	return phoneNumbers
+}
+
+function createNickName(value : string) : contact.NickName {
+	const nickName : contact.NickName = {
+		nickName: value
+	}
+	return nickName
+}
+
+function createEmail(emailValue : string, displayName : string) : contact.Email {
+	const email : contact.Email = {
+		email: emailValue,
+		displayName: displayName
+	}
+	return email
+}
+
+function createImAddress(value : string) : contact.ImAddress {
+	const imAddress : contact.ImAddress = {
+		imAddress: value,
+		labelName: 'InstantMessage',
+		labelId: contact.ImAddress.CUSTOM_LABEL
+	}
+	return imAddress
+}
+
+function createPortrait(uri : string) : contact.Portrait {
+	const portrait : contact.Portrait = {
+		uri: uri
+	}
+	return portrait
+}
+
+function normalizePortraitUri(photoFilePath : string | null) : string | null {
+	if (photoFilePath == null) {
+		return null
+	}
+	const normalizedPath = photoFilePath as string
+	if (normalizedPath.length == 0) {
+		return null
+	}
+	if (normalizedPath.startsWith('file://') || normalizedPath.startsWith('content://')) {
+		return normalizedPath
+	}
+	return fileUri.getUriFromPath(normalizedPath)
+}
+
+function createWebsite(websiteValue : string) : contact.Website {
+	const website : contact.Website = {
+		website: websiteValue
+	}
+	return website
+}
+
+function createNote(noteContent : string) : contact.Note {
+	const note : contact.Note = {
+		noteContent: noteContent
+	}
+	return note
+}
+
+function createOrganization(name : string, title : string) : contact.Organization {
+	const organization : contact.Organization = {
+		name: name,
+		title: title
+	}
+	return organization
+}
+
+function createPhoneNumber(phoneNumberValue : string, labelId : number) : contact.PhoneNumber {
+	const phoneNumber : contact.PhoneNumber = {
+		phoneNumber: phoneNumberValue,
+		labelId: labelId
+	}
+	return phoneNumber
+}
+
+function createPostalAddress(city : string, country : string, postcode : string, street : string, postalAddressValue : string, labelId : number) : contact.PostalAddress {
+	const postalAddress : contact.PostalAddress = {
+		city: city,
+		country: country,
+		postcode: postcode,
+		street: street,
+		postalAddress: postalAddressValue,
+		labelId: labelId
+	}
+	return postalAddress
+}
+
+type HarmonyContactPayload = {
+	name : contact.Name
+	nickName : contact.NickName | null
+	emails : Array<contact.Email> | null
+	imAddresses : Array<contact.ImAddress> | null
+	portrait : contact.Portrait | null
+	websites : Array<contact.Website> | null
+	note : contact.Note | null
+	organization : contact.Organization | null
+	phoneNumbers : Array<contact.PhoneNumber> | null
+	postalAddresses : Array<contact.PostalAddress> | null
+}
+
+function createHarmonyContact(options : AddPhoneContactOptions, portraitUri : string | null = null) : contact.Contact {
+	const firstName = options.firstName ?? ''
+	const middleName = options.middleName ?? ''
+	const lastName = options.lastName ?? ''
+	const contactInfo : HarmonyContactPayload = {
+		name: {
+			givenName: firstName,
+			fullName: buildFullName(lastName, middleName, firstName)
+		},
+		nickName: null,
+		emails: null,
+		imAddresses: null,
+		portrait: null,
+		websites: null,
+		note: null,
+		organization: null,
+		phoneNumbers: null,
+		postalAddresses: null
+	}
+
+	if (hasText(options.nickName)) {
+		contactInfo.nickName = createNickName(options.nickName ?? '')
+	}
+
+	if (hasText(options.lastName)) {
+		contactInfo.name!.familyName = options.lastName ?? ''
+	}
+
+	if (hasText(options.middleName)) {
+		contactInfo.name!.middleName = options.middleName ?? ''
+	}
+
+	if (hasText(options.email)) {
+		contactInfo.emails = [createEmail(options.email ?? '', '邮箱')]
+	}
+
+	if (hasText(options.weChatNumber)) {
+		contactInfo.imAddresses = [createImAddress(options.weChatNumber ?? '')]
+	}
+
+	if (portraitUri != null) {
+		contactInfo.portrait = createPortrait(portraitUri)
+	}
+
+	if (hasText(options.url)) {
+		contactInfo.websites = [createWebsite(options.url ?? '')]
+	}
+
+	if (hasText(options.remark)) {
+		contactInfo.note = createNote(options.remark ?? '')
+	}
+
+	if (hasText(options.organization) || hasText(options.title)) {
+		contactInfo.organization = createOrganization(options.organization ?? '', options.title ?? '')
+	}
+
+	const phoneNumbers : contact.PhoneNumber[] = []
+	if (hasText(options.homePhoneNumber)) {
+		phoneNumbers.push(createPhoneNumber(options.homePhoneNumber ?? '', contact.PhoneNumber.NUM_HOME))
+	}
+	if (hasText(options.mobilePhoneNumber)) {
+		phoneNumbers.push(createPhoneNumber(options.mobilePhoneNumber ?? '', contact.PhoneNumber.NUM_MOBILE))
+	}
+	if (hasText(options.homeFaxNumber)) {
+		phoneNumbers.push(createPhoneNumber(options.homeFaxNumber ?? '', contact.PhoneNumber.NUM_FAX_HOME))
+	}
+	if (hasText(options.workFaxNumber)) {
+		phoneNumbers.push(createPhoneNumber(options.workFaxNumber ?? '', contact.PhoneNumber.NUM_FAX_WORK))
+	}
+	if (hasText(options.workPhoneNumber)) {
+		phoneNumbers.push(createPhoneNumber(options.workPhoneNumber ?? '', contact.PhoneNumber.NUM_WORK))
+	}
+	if (hasText(options.hostNumber)) {
+		phoneNumbers.push(createPhoneNumber(options.hostNumber ?? '', contact.PhoneNumber.NUM_COMPANY_MAIN))
+	}
+	if (phoneNumbers.length > 0) {
+		contactInfo.phoneNumbers = phoneNumbers
+	}
+
+	const postalAddresses : contact.PostalAddress[] = []
+	if (hasText(options.homeAddressCity) || hasText(options.homeAddressCountry) || hasText(options.homeAddressPostalCode) || hasText(options.homeAddressStreet) || hasText(options.homeAddressState)) {
+		postalAddresses.push(createPostalAddress(options.homeAddressCity ?? '', options.homeAddressCountry ?? '', options.homeAddressPostalCode ?? '', options.homeAddressStreet ?? '', composeAddress(options.homeAddressCountry, options.homeAddressState, options.homeAddressCity, options.homeAddressStreet), contact.PostalAddress.ADDR_HOME))
+	}
+	if (hasText(options.workAddressCity) || hasText(options.workAddressCountry) || hasText(options.workAddressPostalCode) || hasText(options.workAddressStreet) || hasText(options.workAddressState)) {
+		postalAddresses.push(createPostalAddress(options.workAddressCity ?? '', options.workAddressCountry ?? '', options.workAddressPostalCode ?? '', options.workAddressStreet ?? '', composeAddress(options.workAddressCountry, options.workAddressState, options.workAddressCity, options.workAddressStreet), contact.PostalAddress.ADDR_WORK))
+	}
+	if (hasText(options.addressCity) || hasText(options.addressCountry) || hasText(options.addressPostalCode) || hasText(options.addressStreet) || hasText(options.addressState)) {
+		postalAddresses.push(createPostalAddress(options.addressCity ?? '', options.addressCountry ?? '', options.addressPostalCode ?? '', options.addressStreet ?? '', composeAddress(options.addressCountry, options.addressState, options.addressCity, options.addressStreet), contact.PostalAddress.CUSTOM_LABEL))
+	}
+	if (postalAddresses.length > 0) {
+		contactInfo.postalAddresses = postalAddresses
+	}
+
+	return contactInfo as unknown as contact.Contact
+}
+
+export const addPhoneContact : AddPhoneContact = function (options : AddPhoneContactOptions) {
+	if (!validateAddPhoneContactOptions(options, (errMsg : string) => {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER, errMsg)
+	})) {
+		return
+	}
+
+	const context = UTSHarmony.getUIAbilityContext()
+	if (context == null) {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail harmony ability context is null', ADD_PHONE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE)
+		return
+	}
+	showAddPhoneContactActionSheet((mode : ContactActionMode) => {
+		prepareAddPhoneContactOptions(options, (preparedOptions : AddPhoneContactOptions) => {
+			const portraitUri = normalizePortraitUri(preparedOptions.photoFilePath)
+			const preparedContactInfo = createHarmonyContact(preparedOptions, portraitUri)
+			let task : Promise<number>
+			if (mode == 'create') {
+				task = contact.addContactViaUI(context, preparedContactInfo)
+			} else {
+				task = contact.saveToExistingContactViaUI(context, preparedContactInfo)
+			}
+			task.then((_ : number) => {
+				resolveSuccess(preparedOptions)
+			}).catch((err : BusinessError) => {
+				rejectWithCode(preparedOptions, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, `addPhoneContact:fail ${err.message}`, ADD_PHONE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE)
+			})
+		})
+	}, () => {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail user cancelled', ADD_PHONE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE)
+	})
+}
+
+export const chooseContact : ChooseContact = function (options : ChooseContactOptions) {
+	const selectionOptions : contact.ContactSelectionOptions = {
+		isMultiSelect: false
+	}
+	contact.selectContacts(selectionOptions).then((selectedContacts : Array<contact.Contact>) => {
+		if (selectedContacts.length == 0) {
+			rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, 'chooseContact:fail user cancelled', CHOOSE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE)
+			return
+		}
+		const selectedContact = selectedContacts[0]
+		const phoneNumberList = getChooseContactPhoneNumbers(selectedContact)
+		if (phoneNumberList.length == 0) {
+			rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER, 'chooseContact:fail selected contact has no phone number')
+			return
+		}
+		resolveChooseContactSuccess(options, getChooseContactDisplayName(selectedContact), phoneNumberList[0], phoneNumberList)
+	}).catch((err : BusinessError) => {
+		rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, `chooseContact:fail ${err.message}`, CHOOSE_CONTACT_HARMONY_NATIVE_FAILED_PLATFORM_CODE)
+	})
+}
+export {
+    AddPhoneContact,
+    AddPhoneContactComplete,
+    AddPhoneContactCompleteCallback,
+    AddPhoneContactFail,
+    AddPhoneContactFailCallback,
+    AddPhoneContactOptions,
+    AddPhoneContactSuccess,
+    AddPhoneContactSuccessCallback,
+    ChooseContact,
+    ChooseContactComplete,
+    ChooseContactCompleteCallback,
+    ChooseContactFail,
+    ChooseContactFailCallback,
+    ChooseContactOptions,
+    ChooseContactSuccess,
+    ChooseContactSuccessCallback
+} from '../interface.uts';

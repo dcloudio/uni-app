@@ -1,0 +1,688 @@
+<template>
+	<view v-if="(mode === 'button' || mode === 'tag') && isLocal" class="uni-data-checkbox__group" :class="groupClass">
+		<view v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="optionClick(item)">
+			<text class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
+			<view v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
+		</view>
+	</view>
+	<checkbox-group v-else-if="multiple && isLocal" class="uni-data-checkbox__group" :class="groupClass" @change="change">
+		<label v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="onLabelClick(item)">
+			<checkbox v-if="icon !== 'right'" class="uni-data-checkbox__control" :class="[item._controlClass, checkboxClass, item.selected ? checkboxSelectedClass : '']" :value="item._v" :checked="item.selected" :disabled="disabled || item.disabled" />
+			<text class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
+			<view v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
+		</label>
+	</checkbox-group>
+	<radio-group v-else-if="isLocal" class="uni-data-checkbox__group" :class="groupClass" @change="change">
+		<label v-for="(item, index) in dataList" :key="item._v" class="uni-data-checkbox__label" :class="[item._labelClass, labelClass, item.selected ? labelSelectedClass : '']" @click="onLabelClick(item)">
+			<radio v-if="icon !== 'right'" class="uni-data-checkbox__control" :class="[item._controlClass, checkboxClass, item.selected ? checkboxSelectedClass : '']" :value="item._v" :checked="item.selected" :disabled="disabled || item.disabled" />
+			<text class="uni-data-checkbox__text" :class="[item._textClass, textClass, item.selected ? textSelectedClass : '']">{{ item._text }}</text>
+			<view v-if="icon === 'right'" class="uni-data-checkbox__icon" :class="[item._iconClass, iconClass]"></view>
+		</label>
+	</radio-group>
+	<view v-else class="uni-data-checkbox__loading">
+		<loading v-if="datacom.loading"></loading>
+		<text v-else-if="datacom.errorMessage" :class="emptyTextClass">{{ datacom.errorMessage }}</text>
+		<text v-else :class="emptyTextClass">{{ emptyMessage }}</text>
+	</view>
+</template>
+
+<script setup lang="ts">
+/**
+ * DataCheckbox 枚举类平铺型选择组件
+ * @description 通过本地数据或 datacom 数据渲染单选、多选选项
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.33",
+ *       "unixVaporVer": "5.33"
+ *     },
+ *     "ios": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.33",
+ *       "unixVaporVer": "5.33"
+ *     },
+ *     "harmony": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.33",
+ *       "unixVaporVer": "5.33"
+ *     }
+ *   },
+ *   "mp": {
+ *     "weixin": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.33"
+ *     },
+ *     "alipay": {
+ *       "uniVer": "x",
+ *       "unixVer": "5.33"
+ *     }
+ *   },
+ *   "web": {
+ *     "uniVer": "x",
+ *     "unixVer": "5.33"
+ *   }
+ * }
+ * @property {String} mode = [default|list|button|tag] 显示模式，默认值 default
+ * @value default 默认平铺模式
+ * @value list 纵向列表模式
+ * @value button 分段按钮模式
+ * @value tag 标签模式
+ * @property {Boolean} multiple = [true|false] 是否启用多选，默认值 false
+ * @property {Array|String|Number} value 当前值的兼容属性，推荐使用 v-model，默认值为空字符串
+ * @property {Array|String|Number} modelValue v-model 绑定值；单选为字符串或数字，多选为数组，默认值为空字符串
+ * @property {Array} localdata 本地候选数据，数据项默认使用 text、value、disabled、disable、selected 字段，默认值 []
+ * @property {String|Number} min 多选模式的最少选择数量，默认值为空字符串
+ * @property {String|Number} max 多选模式的最多选择数量，默认值为空字符串
+ * @property {String} icon = [left|right] 选中标记位置，默认值 left
+ * @value left 在选项左侧显示原生选择控件
+ * @value right 隐藏左侧选择控件，在选项右侧显示选中标记
+ * @property {String} emptyText 云端数据为空时显示的文字，默认值 暂无数据
+ * @property {Object} map 自定义文字字段和值字段，默认值 { text: 'text', value: 'value' }
+ * @property {Boolean} disabled 是否禁用全部选项，默认值 false
+ * @property {String} labelClass 选项外层容器的 external class，默认值为空字符串
+ * @property {String} textClass 选项文字的 external class，默认值为空字符串
+ * @property {String} checkboxClass 左侧单选或复选控件的 external class，默认值为空字符串
+ * @property {String} labelSelectedClass 已选项外层容器的 external class，默认值为空字符串
+ * @property {String} textSelectedClass 已选项文字的 external class，默认值为空字符串
+ * @property {String} checkboxSelectedClass 已选选择控件的 external class，默认值为空字符串
+ * @property {String} iconClass 右侧选中标记的 external class，默认值为空字符串
+ * @property {String} emptyTextClass 空数据或加载失败提示文字的 external class，默认值为空字符串
+ * @property {String} collection uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据，需要 HBuilder 5.32 或更高版本并关联服务空间，默认值为空字符串
+ * @property {Object|Array} options datacom 查询选项，默认值 {}
+ * @property {String} action datacom clientDB action 名称，默认值为空字符串
+ * @property {String} field datacom 查询字段，默认值为空字符串
+ * @property {String|Object} where datacom 查询条件，默认值为空字符串
+ * @property {String} orderby datacom 排序条件，默认值为空字符串
+ * @property {String} pageData = [add|replace] datacom 多次加载结果的处理方式，默认值 add
+ * @value add 追加到已有数据
+ * @value replace 替换已有数据
+ * @property {Number} pageCurrent datacom 当前页码，默认值 1
+ * @property {Number} pageSize datacom 每页数据条数，默认值 20
+ * @property {Boolean|String} getcount 是否返回总数，默认值 false
+ * @property {Boolean|String} gettree 是否按树形结构查询，默认值 false
+ * @property {Boolean|String} gettreepath 是否查询树形节点路径，默认值 false
+ * @property {String} startwith 树形查询起始条件，默认值为空字符串
+ * @property {Number} limitlevel 树形查询最大层级，默认值 10
+ * @property {String} groupby 分组字段，默认值为空字符串
+ * @property {String} groupField 分组后返回的字段，默认值为空字符串
+ * @property {Boolean|String} distinct 是否对查询结果去重，默认值 false
+ * @property {Boolean} manual datacom 手动加载标记，具体加载时机由 datacom 处理，默认值 false
+ * @event {Function} update:modelValue 用户选择变化时更新绑定值
+ * @event {Function} change 用户选择变化时触发，参数为 { detail: { value, data } }
+ */
+defineOptions({
+	name: 'UniDataCheckbox',
+	externalClasses: [
+		'label-class', 'text-class', 'checkbox-class',
+		'label-selected-class', 'text-selected-class', 'checkbox-selected-class',
+		'icon-class', 'empty-text-class'
+	]
+})
+
+const props = defineProps({
+	...uniCloud.datacomProps,
+	// 未关联服务空间时 datacomProps 可能不可用，本地数据能力不能依赖它。
+	/**
+	 * @description 本地候选数据；数据项默认使用 text、value、disabled、disable、selected 字段
+	 * @default []
+	 */
+	localdata: { type: Array, default: () => [] },
+	/**
+	 * @description uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据，需要 HBuilder 5.32 或更高版本并关联服务空间
+	 * @default ""
+	 */
+	collection: { type: String, default: '' },
+	/**
+	 * @description 展示模式
+	 * @default "default"
+	 * @value default 默认平铺模式
+	 * @value list 纵向列表模式
+	 * @value button 分段按钮模式
+	 * @value tag 标签模式
+	 */
+	mode: { type: String, default: 'default' },
+	/**
+	 * @description 是否启用多选
+	 * @default false
+	 */
+	multiple: { type: Boolean, default: false },
+	/**
+	 * @description 当前值的兼容属性，推荐使用 v-model；组件更新时只触发 update:modelValue
+	 * @default ""
+	 */
+	value: { type: [Array, String, Number], default: '' },
+	/**
+	 * @description v-model 绑定值；单选为字符串或数字，多选为数组
+	 * @default ""
+	 */
+	modelValue: { type: [Array, String, Number], default: '' },
+	/**
+	 * @description 多选模式的最少选择数量
+	 * @default ""
+	 */
+	min: { type: [Number, String], default: '' },
+	/**
+	 * @description 多选模式的最多选择数量
+	 * @default ""
+	 */
+	max: { type: [Number, String], default: '' },
+	/**
+	 * @description 选中标记位置
+	 * @default "left"
+	 * @value left 在选项左侧显示原生选择控件
+	 * @value right 隐藏左侧选择控件，在选项右侧显示选中标记
+	 */
+	icon: { type: String, default: 'left' },
+	/**
+	 * @description 云端数据为空时显示的文字
+	 * @default "暂无数据"
+	 */
+	emptyText: { type: String, default: '暂无数据' },
+	/**
+	 * @description 自定义候选数据的文字字段和值字段
+	 * @default { text: 'text', value: 'value' }
+	 */
+	map: { type: Object, default: () => ({ text: 'text', value: 'value' }) },
+	/**
+	 * @description 每个选项外层容器的自定义样式类
+	 * @default ""
+	 */
+	labelClass: { type: String, default: '' },
+	/**
+	 * @description 每个选项文字的自定义样式类
+	 * @default ""
+	 */
+	textClass: { type: String, default: '' },
+	/**
+	 * @description 左侧单选或复选控件的自定义样式类
+	 * @default ""
+	 */
+	checkboxClass: { type: String, default: '' },
+	/**
+	 * @description 已选项外层容器的自定义样式类
+	 * @default ""
+	 */
+	labelSelectedClass: { type: String, default: '' },
+	/**
+	 * @description 已选项文字的自定义样式类
+	 * @default ""
+	 */
+	textSelectedClass: { type: String, default: '' },
+	/**
+	 * @description 已选单选或复选控件的自定义样式类
+	 * @default ""
+	 */
+	checkboxSelectedClass: { type: String, default: '' },
+	/**
+	 * @description icon 为 right 时右侧选中标记的自定义样式类
+	 * @default ""
+	 */
+	iconClass: { type: String, default: '' },
+	/**
+	 * @description 云端数据为空或加载失败提示文字的自定义样式类
+	 * @default ""
+	 */
+	emptyTextClass: { type: String, default: '' },
+	/**
+	 * @description 是否禁用全部选项
+	 * @default false
+	 */
+	disabled: { type: Boolean, default: false }
+})
+
+const emit = defineEmits<{
+	/**
+	 * @description 用户选择变化时更新绑定值；单选参数为字符串或数字，多选参数为数组
+	 */
+	'update:modelValue': [value: any],
+	/**
+	 * @description 用户选择变化时触发；event.detail.value 为当前值，event.detail.data 为当前完整数据项
+	 */
+	change: [event: any]
+}>()
+const dataList = ref([])
+const range = ref([])
+const fallbackDatacom: any = reactive({
+	loading: false,
+	errorMessage: '',
+	resData: [],
+	easyGet: () => {},
+	refresh: () => {},
+	reset: () => {
+		fallbackDatacom.resData = []
+		range.value = []
+		dataList.value = []
+	}
+})
+const shouldUseDatacom = props.localdata.length === 0 && props.collection !== ''
+const canUseDatacom = shouldUseDatacom && typeof uniCloud.useDatacom === 'function'
+const datacom: any = canUseDatacom ? uniCloud.useDatacom(props) : fallbackDatacom
+
+if (shouldUseDatacom && !canUseDatacom) {
+	fallbackDatacom.errorMessage = 'datacom 不可用，请关联 uniCloud 服务空间并检查 HBuilder 版本'
+}
+
+// 是否使用本地/已就绪数据；配置 datacom 且尚无数据时派生为 false（显示 loading/空态）
+const isLocal = computed(() => !(props.localdata.length === 0 && props.collection && dataList.value.length === 0))
+const emptyMessage = computed(() => isLocal.value ? '' : props.emptyText)
+
+const currentValue = computed(() => props.value === '' ? props.modelValue : props.value)
+const groupClass = computed(() => props.mode === 'list' ? 'uni-data-checkbox__group--list' : props.mode === 'button' ? 'uni-data-checkbox__group--button' : '')
+
+function joinClasses(parts) {
+	let cls = ''
+	for (let i = 0; i < parts.length; i++) {
+		const part = parts[i]
+		if (part != null && part !== '') cls += cls === '' ? part : ' ' + part
+	}
+	return cls
+}
+
+// 依据选中/禁用状态一次性预计算每项的 class，避免模板内逐项调用方法
+function withClasses(list) {
+	const mode = props.mode
+	const iconRight = props.icon === 'right'
+	const total = list.length
+	for (let i = 0; i < total; i++) {
+		const item = list[i]
+		const selected = item.selected
+		const disabled = item.disabled || props.disabled
+		item._labelClass = joinClasses([
+			'uni-data-checkbox__label--' + mode,
+			selected && mode !== 'list' ? 'uni-data-checkbox__label--selected' : '',
+			disabled ? 'uni-data-checkbox__label--disabled' : '',
+			iconRight ? 'uni-data-checkbox__label--right-icon' : '',
+			mode === 'tag' && selected ? 'uni-data-checkbox__label--tag-selected' : '',
+			mode === 'tag' && disabled ? 'uni-data-checkbox__label--tag-disabled' : '',
+			mode === 'tag' && selected && disabled ? 'uni-data-checkbox__label--tag-selected-disabled' : '',
+			mode === 'button' && i === 0 ? 'uni-data-checkbox__label--button-first' : '',
+			mode === 'button' && i === total - 1 ? 'uni-data-checkbox__label--button-last' : '',
+			mode === 'button' && selected ? 'uni-data-checkbox__label--button-selected' : '',
+			mode === 'button' && disabled ? 'uni-data-checkbox__label--button-disabled' : '',
+			mode === 'button' && selected && disabled ? 'uni-data-checkbox__label--button-selected-disabled' : ''
+		])
+		item._textClass = joinClasses([
+			'uni-data-checkbox__text--' + mode,
+			mode !== 'button' && selected ? 'uni-data-checkbox__text--selected' : '',
+			mode === 'tag' && selected ? 'uni-data-checkbox__text--tag-selected' : '',
+			mode === 'button' && selected ? 'uni-data-checkbox__text--button-selected' : '',
+			disabled ? 'uni-data-checkbox__text--disabled' : '',
+			selected && disabled ? 'uni-data-checkbox__text--selected-disabled' : '',
+			mode === 'button' && selected && disabled ? 'uni-data-checkbox__text--button-selected-disabled' : ''
+		])
+		item._controlClass = joinClasses([
+			selected ? 'uni-data-checkbox__control--selected' : '',
+			disabled ? 'uni-data-checkbox__control--disabled' : '',
+			selected && disabled ? 'uni-data-checkbox__control--selected-disabled' : ''
+		])
+		item._iconClass = joinClasses([
+			selected ? 'uni-data-checkbox__icon--selected' : '',
+			disabled ? 'uni-data-checkbox__icon--disabled' : '',
+			selected && disabled ? 'uni-data-checkbox__icon--selected-disabled' : ''
+		])
+	}
+	return list
+}
+
+// 单趟遍历生成渲染视图对象：归一化字段 + 预计算 class
+function buildDataList(value, useSourceSelected = false) {
+	const multiple = props.multiple
+	const mapValue = props.map.value
+	const mapText = props.map.text
+	const raw = range.value
+	const total = raw.length
+	const selectedSet = new Set<any>()
+	if (multiple) {
+		if (Array.isArray(value) && (value.length > 0 || !useSourceSelected)) {
+			for (let i = 0; i < value.length; i++) selectedSet.add(value[i])
+		} else if (useSourceSelected && (value === '' || value == null || Array.isArray(value))) {
+			for (let i = 0; i < total; i++) {
+				if (raw[i].selected) selectedSet.add(raw[i][mapValue])
+			}
+		}
+	}
+	const list = []
+	let selectedCount = 0
+	for (let i = 0; i < total; i++) {
+		const source = raw[i]
+		const selected = multiple ? selectedSet.has(source[mapValue]) : value === source[mapValue]
+		if (selected) selectedCount++
+		list.push({
+			_text: source[mapText],
+			_v: String(source[mapValue]),
+			selected: selected,
+			disabled: !!(source.disable || source.disabled)
+		})
+	}
+	if (multiple) {
+		const min = Number(props.min) || 0
+		const max = props.max === '' ? '' : Number(props.max)
+		for (let i = 0; i < total; i++) {
+			const item = list[i]
+			if (selectedCount <= min && item.selected) item.disabled = true
+			if (max !== '' && selectedCount >= max && !item.selected) item.disabled = true
+		}
+	}
+	return withClasses(list)
+}
+
+function refresh(value, useSourceSelected = false) {
+	dataList.value = buildDataList(value, useSourceSelected)
+}
+
+function setRange(value) {
+	range.value = value || []
+	refresh(currentValue.value, true)
+}
+
+watch(() => props.localdata, value => setRange(value), { deep: true, immediate: true })
+watch(currentValue, value => refresh(value))
+watch(() => props.map, () => refresh(currentValue.value), { deep: true })
+watch(() => datacom.resData, value => {
+	if (Array.isArray(value)) setRange(value)
+}, { deep: true })
+
+if (canUseDatacom) {
+	datacom.easyGet()
+}
+
+function valueEquals(itemValue, value) {
+	return String(itemValue) === String(value)
+}
+
+function onLabelClick(item) {
+	// icon 在右侧时不再渲染原生 checkbox/radio，选中改由点击手动处理
+	if (props.icon === 'right') optionClick(item)
+}
+
+function optionClick(item) {
+	if (props.disabled || item.disabled) return
+	const itemValue = item._v
+	if (props.multiple) {
+		const selected = []
+		const list = dataList.value
+		for (let i = 0; i < list.length; i++) {
+			if (list[i].selected) selected.push(list[i]._v)
+		}
+		const idx = selected.indexOf(itemValue)
+		const values = idx >= 0 ? selected.filter(value => value !== itemValue) : selected.concat([itemValue])
+		applyChange(values)
+	} else {
+		applyChange(itemValue)
+	}
+}
+
+function applyChange(values) {
+	const mapValue = props.map.value
+	const raw = range.value
+	let detail = { value: [], data: [] }
+	if (props.multiple) {
+		const valueSet = new Set<string>()
+		for (let i = 0; i < values.length; i++) valueSet.add(String(values[i]))
+		for (let i = 0; i < raw.length; i++) {
+			const item = raw[i]
+			if (valueSet.has(String(item[mapValue]))) {
+				detail.value.push(item[mapValue])
+				detail.data.push(item)
+			}
+		}
+	} else {
+		for (let i = 0; i < raw.length; i++) {
+			if (valueEquals(raw[i][mapValue], values)) {
+				detail = { value: raw[i][mapValue], data: raw[i] }
+				break
+			}
+		}
+	}
+	emit('update:modelValue', detail.value)
+	emit('change', { detail })
+	refresh(detail.value)
+}
+
+function change(event) {
+	applyChange(event.detail.value)
+}
+
+defineExpose({
+	/**
+	 * @description 加载云端数据
+	 */
+	loadData: datacom.easyGet,
+	/**
+	 * @description 按当前查询条件重新加载云端数据
+	 */
+	refresh: datacom.refresh,
+	/**
+	 * @description 清空当前查询结果和分页状态，不会删除云数据库数据
+	 */
+	clear: datacom.reset
+})
+</script>
+
+<style>
+.uni-data-checkbox__group {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+.uni-data-checkbox__group--list {
+	flex-direction: column;
+}
+.uni-data-checkbox__label {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	position: relative;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 25px;
+}
+.uni-data-checkbox__label--list {
+	width: 100%;
+	margin: 0;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 8px;
+	padding-right: 8px;
+	border-top-width: 0;
+	border-top-style: solid;
+	border-top-color: var(--divider-color, #eeeeee);
+}
+/* .uni-data-checkbox__label--border { border-top-width: 1px; } */
+.uni-data-checkbox__group--button {
+	flex-wrap: nowrap;
+	align-self: flex-start;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--input-border-color, #dcdfe6);
+	border-radius: 6px;
+	overflow: hidden;
+}
+.uni-data-checkbox__label--button {
+	flex-grow: 0;
+	justify-content: center;
+	margin: 0;
+	padding: 7px 16px;
+	border-width: 0;
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: var(--input-border-color, #dcdfe6);
+	border-radius: 0;
+	background-color: transparent;
+}
+.uni-data-checkbox__label--button-first {
+	border-left-width: 0;
+	border-top-left-radius: 6px;
+	border-bottom-left-radius: 6px;
+}
+.uni-data-checkbox__label--button-last {
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+.uni-data-checkbox__label--button-selected {
+	background-color: #2979ff;
+	border-left-color: #2979ff;
+}
+.uni-data-checkbox__label--button-disabled {
+	background-color: #f5f6f7;
+	border-left-color: #d8dce1;
+}
+.uni-data-checkbox__label--button-selected-disabled {
+	background-color: #e1e4e8;
+	border-left-color: #c7cbd1;
+}
+.uni-data-checkbox__text--button {
+	margin-left: 0;
+	color: var(--text-color, #333333);
+}
+.uni-data-checkbox__label--tag {
+	padding: 6px 14px;
+	margin-right: 8px;
+	border-width: 0;
+	border-radius: 8px;
+	background-color: var(--active-background-color, #f2f2f2);
+}
+.uni-data-checkbox__label--selected {
+	border-color: var(--tips-color, #2979ff);
+}
+.uni-data-checkbox__label--tag-selected {
+	background-color: var(--tips-background-color, #ecf5ff);
+}
+.uni-data-checkbox__label--tag-disabled {
+	background-color: #f5f6f7;
+}
+.uni-data-checkbox__label--tag-selected-disabled {
+	background-color: #e4e7eb;
+}
+.uni-data-checkbox__control {
+	flex-shrink: 0;
+}
+.uni-data-checkbox__control--disabled {
+	opacity: 0.5;
+}
+.uni-data-checkbox__text {
+	margin-left: 5px;
+	font-size: 14px;
+	color: var(--text-color, #333333);
+}
+.uni-data-checkbox__text--tag {
+	margin-left: 0;
+	color: var(--text-color, #333333);
+}
+.uni-data-checkbox__text--disabled {
+	color: #a8abb2;
+}
+.uni-data-checkbox__text--selected-disabled {
+	color: #8f959c;
+}
+.uni-data-checkbox__text--button-selected {
+	color: #ffffff;
+}
+.uni-data-checkbox__text--button-selected-disabled {
+	color: #8f959c;
+}
+.uni-data-checkbox__icon {
+	width: 6px;
+	height: 12px;
+	margin-left: auto;
+	margin-right: 5px;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: var(--input-border-color, #dcdfe6);
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: var(--input-border-color, #dcdfe6);
+	transform: rotate(45deg);
+	opacity: 0;
+}
+.uni-data-checkbox__icon--selected {
+	opacity: 1;
+	border-color: var(--tips-color, #2979ff);
+}
+.uni-data-checkbox__icon--disabled {
+	opacity: 0;
+}
+.uni-data-checkbox__icon--selected-disabled {
+	opacity: 1;
+	border-color: #9aa0a6;
+}
+.uni-data-checkbox__loading {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	height: 36px;
+	color: var(--secondary-text-color, #999999);
+}
+
+/* App 端组件内的自定义变量继承不稳定，暗黑状态直接覆盖具体属性。 */
+@media (prefers-color-scheme: dark) {
+	.uni-data-checkbox__label--list {
+		border-top-color: rgba(255, 255, 255, 0.12);
+	}
+	.uni-data-checkbox__group--button {
+		border-color: rgba(255, 255, 255, 0.18);
+	}
+	.uni-data-checkbox__label--button {
+		border-left-color: rgba(255, 255, 255, 0.18);
+	}
+	.uni-data-checkbox__label--button-selected {
+		background-color: #2979ff;
+		border-left-color: #2979ff;
+	}
+	.uni-data-checkbox__label--button-disabled {
+		background-color: #262626;
+		border-left-color: #3d3d3d;
+	}
+	.uni-data-checkbox__label--button-selected-disabled {
+		background-color: #3a3a3a;
+		border-left-color: #555555;
+	}
+	.uni-data-checkbox__label--tag {
+		background-color: #3b3b3b;
+	}
+	.uni-data-checkbox__label--selected {
+		border-color: #91caff;
+	}
+	.uni-data-checkbox__label--tag-selected {
+		background-color: #0b1b3a;
+	}
+	.uni-data-checkbox__label--tag-disabled {
+		background-color: #262626;
+	}
+	.uni-data-checkbox__label--tag-selected-disabled {
+		background-color: #363636;
+	}
+	.uni-data-checkbox__text,
+	.uni-data-checkbox__text--button,
+	.uni-data-checkbox__text--tag {
+		color: #ffffff;
+	}
+	.uni-data-checkbox__text--disabled {
+		color: #6f6f6f;
+	}
+	.uni-data-checkbox__text--selected-disabled {
+		color: #929292;
+	}
+	.uni-data-checkbox__text--button-selected {
+		color: #ffffff;
+	}
+	.uni-data-checkbox__text--button-selected-disabled {
+		color: #a0a0a0;
+	}
+	.uni-data-checkbox__icon {
+		border-right-color: rgba(255, 255, 255, 0.18);
+		border-bottom-color: rgba(255, 255, 255, 0.18);
+	}
+	.uni-data-checkbox__icon--selected {
+		border-color: #91caff;
+	}
+	.uni-data-checkbox__icon--selected-disabled {
+		border-color: #777777;
+	}
+	.uni-data-checkbox__loading {
+		color: rgba(255, 255, 255, 0.65);
+	}
+}
+</style>

@@ -1,0 +1,358 @@
+import Activity from 'android.app.Activity'
+import Manifest from 'android.Manifest'
+import Intent from 'android.content.Intent'
+import Uri from 'android.net.Uri'
+import ContactsContract from 'android.provider.ContactsContract'
+import { AddPhoneContact, AddPhoneContactComplete, AddPhoneContactCompleteCallback, AddPhoneContactErrorCode, AddPhoneContactFail, AddPhoneContactFailCallback, AddPhoneContactOptions, AddPhoneContactSuccess, AddPhoneContactSuccessCallback, ChooseContact, ChooseContactComplete, ChooseContactCompleteCallback, ChooseContactErrorCode, ChooseContactFail, ChooseContactFailCallback, ChooseContactOptions, ChooseContactSuccess, ChooseContactSuccessCallback } from '../interface.uts'
+import { ContactActionMode, prepareAddPhoneContactOptions, showAddPhoneContactActionSheet, validateAddPhoneContactOptions } from '../common.uts'
+import { ADD_PHONE_CONTACT_ANDROID_ACTIVITY_UNAVAILABLE_PLATFORM_CODE, ADD_PHONE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE, ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, CHOOSE_CONTACT_ANDROID_ACTIVITY_UNAVAILABLE_PLATFORM_CODE, CHOOSE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE, CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER, CHOOSE_CONTACT_ERR_OPERATION_FAILED, CHOOSE_CONTACT_ERR_PERMISSION_DENIED, createAddPhoneContactFail, createChooseContactFail } from '../unierror.uts'
+// @ts-ignore Android 原生混编类由 Kotlin 提供
+import AddPhoneContactNative from 'uts.sdk.modules.uniAddPhoneContact.AddPhoneContactNative'
+
+const ADD_PHONE_CONTACT_REQUEST_CODE : Int = 12451
+const CHOOSE_CONTACT_REQUEST_CODE : Int = 12452
+let resultCallback : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+let chooseContactResultCallback : ((requestCode : Int, resultCode : Int, data ?: Intent) => void) | null = null
+
+type ChooseContactSelection = {
+	displayName : string
+	phoneNumber : string
+	phoneNumberList : Array<string>
+}
+
+function resolveSuccess(options : AddPhoneContactOptions) : void {
+	const result : AddPhoneContactSuccess = {}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectWithCode(options : AddPhoneContactOptions, errCode : AddPhoneContactErrorCode, errMsg : string, platformCode : number | null = null) : void {
+	const error = createAddPhoneContactFail(errCode, errMsg, platformCode)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function resolveChooseContactSuccess(options : ChooseContactOptions, selection : ChooseContactSelection) : void {
+	const result : ChooseContactSuccess = {
+		displayName: selection.displayName,
+		phoneNumber: selection.phoneNumber,
+		phoneNumberList: selection.phoneNumberList,
+		errMsg: 'chooseContact:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectChooseContactWithCode(options : ChooseContactOptions, errCode : ChooseContactErrorCode, errMsg : string, platformCode : number | null = null) : void {
+	const error = createChooseContactFail(errCode, errMsg, platformCode)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function hasText(value : string | null | undefined) : boolean {
+	if (value == null) {
+		return false
+	}
+	const text = value as string
+	return text.length > 0
+}
+
+function composeName(options : AddPhoneContactOptions) : string {
+	let fullName = ''
+	if (options.lastName != null) {
+		fullName += options.lastName
+	}
+	if (options.middleName != null) {
+		fullName += options.middleName
+	}
+	if (options.firstName != null) {
+		fullName += options.firstName
+	}
+	return fullName
+}
+
+function composeAddress(country : string | null | undefined, state : string | null | undefined, city : string | null | undefined, street : string | null | undefined, postalCode : string | null | undefined) : string {
+	let address = ''
+	if (country != null) {
+		address += country
+	}
+	if (state != null) {
+		if (address.length > 0) {
+			address += ' '
+		}
+		address += state
+	}
+	if (city != null) {
+		if (address.length > 0) {
+			address += ' '
+		}
+		address += city
+	}
+	if (street != null) {
+		if (address.length > 0) {
+			address += ' '
+		}
+		address += street
+	}
+	if (postalCode != null) {
+		if (address.length > 0) {
+			address += ' '
+		}
+		address += postalCode
+	}
+	return address
+}
+
+function composeNote(options : AddPhoneContactOptions) : string {
+	return options.remark ?? ''
+}
+
+function appendUniquePhoneNumber(phoneNumbers : Array<string>, phoneNumber : string | null | undefined) : void {
+	if (phoneNumber == null) {
+		return
+	}
+	const normalizedPhoneNumber = phoneNumber as string
+	if (normalizedPhoneNumber.length == 0) {
+		return
+	}
+	let index = 0
+	while (index < phoneNumbers.length) {
+		if (phoneNumbers[index] == normalizedPhoneNumber) {
+			return
+		}
+		index++
+	}
+	phoneNumbers.push(normalizedPhoneNumber)
+}
+
+function queryAndroidPhoneNumbers(activity : Activity, contactId : string | null | undefined, selectedPhoneNumber : string) : Array<string> {
+	const phoneNumbers = new Array<string>()
+	appendUniquePhoneNumber(phoneNumbers, selectedPhoneNumber)
+	if (contactId == null) {
+		return phoneNumbers
+	}
+	const contactIdValue = contactId as string
+	if (contactIdValue.length == 0) {
+		return phoneNumbers
+	}
+	const projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
+	const selection = `${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?`
+	const selectionArgs = arrayOf(contactIdValue)
+	const cursor = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, selection, selectionArgs, null)
+	if (cursor == null) {
+		return phoneNumbers
+	}
+	if (cursor.moveToFirst()) {
+		do {
+			const phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+			appendUniquePhoneNumber(phoneNumbers, phoneNumber)
+		} while (cursor.moveToNext())
+	}
+	cursor.close()
+	return phoneNumbers
+}
+
+function resolveChooseContactSelection(activity : Activity, data : Intent | null | undefined) : ChooseContactSelection | null {
+	if (data == null) {
+		return null
+	}
+	const intent = data as Intent
+	const uri : Uri | null = intent.data
+	if (uri == null) {
+		return null
+	}
+	const projection = arrayOf(
+		ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+		ContactsContract.CommonDataKinds.Phone.NUMBER,
+		ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+	)
+	const cursor = activity.getContentResolver().query(uri, projection, null, null, null)
+	if (cursor == null) {
+		return null
+	}
+	if (!cursor.moveToFirst()) {
+		cursor.close()
+		return null
+	}
+	const displayName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)) ?? ''
+	const selectedPhoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)) ?? ''
+	const contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.CONTACT_ID))
+	cursor.close()
+	const phoneNumberList = queryAndroidPhoneNumbers(activity, contactId, selectedPhoneNumber)
+	return {
+		displayName: displayName,
+		phoneNumber: selectedPhoneNumber,
+		phoneNumberList: phoneNumberList
+	}
+}
+
+function requestChooseContactPermission(activity : Activity, onGranted : () => void, onDenied : () => void) : void {
+	const permissions : UTSArray<string> = [Manifest.permission.READ_CONTACTS]
+	if (UTSAndroid.checkSystemPermissionGranted(activity, permissions)) {
+		onGranted()
+		return
+	}
+	UTSAndroid.requestSystemPermission(activity, permissions, (allRight : boolean, grantedList : UTSArray<string>) : void => {
+		if (allRight || grantedList.length > 0) {
+			onGranted()
+			return
+		}
+		onDenied()
+	}, (_ : boolean, _deniedList : UTSArray<string>) : void => {
+		onDenied()
+	})
+}
+
+function applyContactExtras(intent : Intent, options : AddPhoneContactOptions, activity : Activity) : void {
+	intent.putExtra(ContactsContract.Intents.Insert.NAME, composeName(options))
+	if (hasText(options.organization)) {
+		intent.putExtra(ContactsContract.Intents.Insert.COMPANY, options.organization ?? '')
+	}
+	if (hasText(options.title)) {
+		intent.putExtra(ContactsContract.Intents.Insert.JOB_TITLE, options.title ?? '')
+	}
+	if (hasText(options.mobilePhoneNumber)) {
+		intent.putExtra(ContactsContract.Intents.Insert.PHONE, options.mobilePhoneNumber ?? '')
+	}
+	if (hasText(options.workPhoneNumber)) {
+		intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_PHONE, options.workPhoneNumber ?? '')
+	}
+	if (hasText(options.homePhoneNumber)) {
+		intent.putExtra(ContactsContract.Intents.Insert.TERTIARY_PHONE, options.homePhoneNumber ?? '')
+	}
+	if (hasText(options.email)) {
+		intent.putExtra(ContactsContract.Intents.Insert.EMAIL, options.email ?? '')
+	}
+	const address = composeAddress(options.addressCountry, options.addressState, options.addressCity, options.addressStreet, options.addressPostalCode)
+	if (address.length > 0) {
+		intent.putExtra(ContactsContract.Intents.Insert.POSTAL, address)
+	}
+	const note = composeNote(options)
+	if (note.length > 0) {
+		intent.putExtra(ContactsContract.Intents.Insert.NOTES, note)
+	}
+	AddPhoneContactNative.applySupplementalInsertData(intent, options.url, options.weChatNumber, options.workAddressCountry, options.workAddressState, options.workAddressCity, options.workAddressStreet, options.workAddressPostalCode, options.homeAddressCountry, options.homeAddressState, options.homeAddressCity, options.homeAddressStreet, options.homeAddressPostalCode, options.workFaxNumber, options.homeFaxNumber)
+
+	if (hasText(options.photoFilePath)) {
+		AddPhoneContactNative.applyAvatarInsertData(intent, activity, options.photoFilePath)
+	}
+}
+
+function startContactEditorActivity(options : AddPhoneContactOptions, mode : ContactActionMode) : void {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail android activity is null', ADD_PHONE_CONTACT_ANDROID_ACTIVITY_UNAVAILABLE_PLATFORM_CODE)
+		return
+	}
+
+	let intent : Intent
+	if (mode == 'existing') {
+		intent = new Intent(Intent.ACTION_INSERT_OR_EDIT)
+		intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE)
+	} else {
+		intent = new Intent(ContactsContract.Intents.Insert.ACTION)
+		intent.setType(ContactsContract.Contacts.CONTENT_TYPE)
+	}
+	applyContactExtras(intent, options, activity)
+
+	const callback = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+		if (requestCode != ADD_PHONE_CONTACT_REQUEST_CODE) {
+			return
+		}
+		if (resultCallback != null) {
+			UTSAndroid.offAppActivityResult(resultCallback)
+		}
+		resultCallback = null
+		if (resultCode == Activity.RESULT_CANCELED) {
+			rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail user cancelled', ADD_PHONE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE)
+			return
+		}
+		resolveSuccess(options)
+	}
+	resultCallback = callback
+	UTSAndroid.onAppActivityResult(callback)
+	activity.startActivityForResult(intent, ADD_PHONE_CONTACT_REQUEST_CODE)
+}
+
+function startChooseContactActivity(options : ChooseContactOptions) : void {
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, 'chooseContact:fail android activity is null', CHOOSE_CONTACT_ANDROID_ACTIVITY_UNAVAILABLE_PLATFORM_CODE)
+		return
+	}
+	requestChooseContactPermission(activity, () => {
+		const intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+		const callback = (requestCode : Int, resultCode : Int, data ?: Intent) => {
+			if (requestCode != CHOOSE_CONTACT_REQUEST_CODE) {
+				return
+			}
+			if (chooseContactResultCallback != null) {
+				UTSAndroid.offAppActivityResult(chooseContactResultCallback)
+			}
+			chooseContactResultCallback = null
+			if (resultCode == Activity.RESULT_CANCELED) {
+				rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, 'chooseContact:fail user cancelled', CHOOSE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE)
+				return
+			}
+			const selection = resolveChooseContactSelection(activity, data)
+			if (selection == null) {
+				rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, 'chooseContact:fail unable to resolve selected contact', CHOOSE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE)
+				return
+			}
+			if (selection.phoneNumberList.length == 0) {
+				rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER, 'chooseContact:fail selected contact has no phone number')
+				return
+			}
+			resolveChooseContactSuccess(options, selection)
+		}
+		chooseContactResultCallback = callback
+		UTSAndroid.onAppActivityResult(callback)
+		activity.startActivityForResult(intent, CHOOSE_CONTACT_REQUEST_CODE)
+	}, () => {
+		rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_PERMISSION_DENIED, 'chooseContact:fail permission denied')
+	})
+}
+
+export const addPhoneContact : AddPhoneContact = function (options : AddPhoneContactOptions) {
+	if (!validateAddPhoneContactOptions(options, (errMsg : string) => {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER, errMsg)
+	})) {
+		return
+	}
+
+	const activity = UTSAndroid.getUniActivity()
+	if (activity == null) {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail android activity is null', ADD_PHONE_CONTACT_ANDROID_ACTIVITY_UNAVAILABLE_PLATFORM_CODE)
+		return
+	}
+	showAddPhoneContactActionSheet((mode : ContactActionMode) => {
+		prepareAddPhoneContactOptions(options, (preparedOptions : AddPhoneContactOptions) => {
+			startContactEditorActivity(preparedOptions, mode)
+		})
+	}, () => {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail user cancelled', ADD_PHONE_CONTACT_ANDROID_NATIVE_FAILED_PLATFORM_CODE)
+	})
+}
+
+export const chooseContact : ChooseContact = function (options : ChooseContactOptions) {
+	startChooseContactActivity(options)
+}
+
+export {
+	AddPhoneContact,
+	AddPhoneContactComplete,
+	AddPhoneContactCompleteCallback,
+	AddPhoneContactFail,
+	AddPhoneContactFailCallback,
+	AddPhoneContactOptions,
+	AddPhoneContactSuccess,
+	AddPhoneContactSuccessCallback,
+	ChooseContact,
+	ChooseContactComplete,
+	ChooseContactCompleteCallback,
+	ChooseContactFail,
+	ChooseContactFailCallback,
+	ChooseContactOptions,
+	ChooseContactSuccess,
+	ChooseContactSuccessCallback
+} from '../interface.uts'

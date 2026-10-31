@@ -1,0 +1,13 @@
+{
+	"dependencies": [
+		"com.getui:gtc-dcloud:3.2.16.7"
+	],
+	"parameters": {
+		"appid": {
+			"placeholder": [
+				"GETUI_APPID",
+				"GY_APP_ID"
+			]
+		}
+	}
+}

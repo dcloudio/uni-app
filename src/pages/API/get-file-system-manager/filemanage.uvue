@@ -172,7 +172,6 @@
 
 	const clearFile = () => {
     const fileManager = uni.getFileSystemManager()
-    // TODO 3个App平台表现不一致 @颜伊林
     fileManager.rmdir({
       "dirPath":uni.env.CACHE_PATH,
       "recursive":true,

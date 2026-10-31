@@ -1,0 +1,635 @@
+<template>
+  <view class="uni-data-tree">
+    <view
+      class="uni-data-tree-input"
+      @click="handleInput"
+      <!-- #ifdef WEB -->
+      :tabindex="readonly ? '-1' : '0'"
+      @keydown="onInputKeydown"
+      <!-- #endif -->
+    >
+      <slot :data="dataPicker.selectedPaths" :error="dataPicker.error">
+        <view class="input-value" :class="inputClass">
+          <text v-if="dataPicker.error!=null" class="error-text" :class="errorClass">{{dataPicker.error!.errMsg}}</text>
+          <scroll-view v-if="dataPicker.selectedPaths.length" class="selected-path" direction="horizontal"
+            :show-scrollbar="false">
+            <view class="selected-list" flatten>
+              <template v-for="(item, index) in dataPicker.selectedPaths" :key="index">
+                <text class="text-color">{{item[dataPicker.mappingTextName]}}</text>
+                <text v-if="index<dataPicker.selectedPaths.length-1" class="input-split-line">{{split}}</text>
+              </template>
+            </view>
+          </scroll-view>
+          <text v-else-if="dataPicker.error==null&&!dataPicker.loading" class="placeholder">{{placeholder}}</text>
+          <view v-if="!readonly" class="arrow-area">
+            <view class="input-arrow"></view>
+          </view>
+        </view>
+      </slot>
+      <view v-if="dataPicker.loading && !isOpened" class="selected-loading">
+        <slot name="picker-loading" :loading="dataPicker.loading">
+          <loading></loading>
+        </slot>
+      </view>
+    </view>
+    <view ref="coverRef" class="uni-data-tree-cover" :class="[coverClass, active ? 'uni-data-tree-cover-active' : '']" v-if="isOpened" @click="handleClose"></view>
+    <view class="uni-data-tree-dialog"
+      :class="[popupClass, active ? 'uni-data-tree-dialog-active' : '', dragTransitionOff ? 'uni-data-tree-dialog-drag' : '']"
+      :style="dialogStyle" v-if="isOpened">
+      <view class="dialog-caption" @touchstart="onTitleTouchStart" @touchmove="onTitleTouchMove"
+        @touchend="onTouchEnd" @touchcancel="onTouchEnd">
+        <view class="dialog-title-view" flatten>
+          <text class="dialog-title" flatten>{{popupTitle}}</text>
+        </view>
+        <view class="dialog-close" @click="handleClose">
+          <view class="dialog-close-plus" data-id="close" flatten></view>
+          <view class="dialog-close-plus dialog-close-rotate" data-id="close" flatten></view>
+        </view>
+      </view>
+      <view class="dialog-body" @touchstart="onBodyTouchStart" @touchmove="onBodyTouchMove"
+        @touchend="onTouchEnd" @touchcancel="onTouchEnd">
+        <uni-data-picker-view ref="pickerView" v-bind="props" :in-data-picker="true" style="flex: 1;"
+          @change="onpickerviewchange" @nodeclick="onpickerviewnodeclick" />
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import { dataPickerProps, useDataPicker } from "../uni-data-picker-view/uni-data-picker.ts"
+
+  /**
+   * DataPicker 级联选择
+   * @description 支持单列、和多列级联选择。列数没有限制，如果屏幕显示不全，顶部tab区域会左右滚动。
+   * @tutorial https://ext.dcloud.net.cn/plugin?id=xxx
+   * @property {String} popup-title 弹出窗口标题
+   * @property {String} popup-class 弹出窗口自定义样式类名
+   * @property {String} cover-class 遮罩层自定义样式类名
+   * @property {Array} localdata 本地数据，参考
+   * @property {Boolean} border = [true|false] 是否有边框
+   * @property {Boolean} readonly = [true|false] 是否仅读
+   * @property {Boolean} preload = [true|false] 是否预加载数据
+   * @value true 开启预加载数据，点击弹出窗口后显示已加载数据
+   * @value false 关闭预加载数据，点击弹出窗口后开始加载数据
+   * @property {Boolean} step-searh = [true|false] 是否分布查询
+   * @value true 启用分布查询，仅查询当前选中节点
+   * @value false 关闭分布查询，一次查询出所有数据
+   * @property {String|DBFieldString} self-field 分布查询当前字段名称
+   * @property {String|DBFieldString} parent-field 分布查询父字段名称
+   * @property {String|DBCollectionString} collection 表名
+   * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
+   * @property {String} orderby 排序字段及正序倒叙设置
+   * @property {String|JQLString} where 查询条件
+   * @event {Function} popupshow 弹出的选择窗口打开时触发此事件
+   * @event {Function} popuphide 弹出的选择窗口关闭时触发此事件
+   */
+  const props = defineProps({
+    ...dataPickerProps,
+    placeholder: {
+      type: String,
+      default: ''
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    split: {
+      type: String,
+      default: '/'
+    },
+    ellipsis: {
+      type: Boolean,
+      default: true
+    },
+    inputClass: {
+      type: String,
+      default: ''
+    },
+    errorClass: {
+      type: String,
+      default: ''
+    },
+    popupTitle: {
+      type: String,
+      default: ''
+    },
+    popupClass: {
+      type: String,
+      default: ''
+    },
+    coverClass: {
+      type: String,
+      default: ''
+    }
+  })
+  defineOptions({
+    externalClasses: ['input-class', 'error-class', 'popup-class', 'cover-class']
+  })
+
+  const dataPicker = useDataPicker(props)
+
+  const emit = defineEmits(['popupopened', 'popupclosed', 'nodeclick', 'change', 'input', 'update:modelValue', 'inputclick'])
+
+  const isOpened = ref(false)
+  const active = ref(false)
+  const pickerView = ref<ComponentPublicInstance | null>(null)
+  const coverRef = ref<UniElement | null>(null)
+  // 拖拽期间的位移，通过模板 :style 绑定下发，替代 element.style.setProperty（规避部分平台的兼容问题）
+  const dialogStyle = ref('')
+  // 拖拽期间禁用过渡。必须用 class 开关而不能写内联 transition-duration：
+  // App 端同一属性被内联样式设置过后，再清空内联样式不会恢复 class 上的过渡，会导致后续关闭无动画
+  const dragTransitionOff = ref(false)
+
+  const POPUP_DURATION = 250
+  const DRAG_CLOSE_THRESHOLD = 60
+  let startY = 0
+  let hasStart = false
+  let dragging = false
+  let animating = false
+  let curOffset = 0
+  let lastY = 0
+  let lastY2 = 0
+
+  // #ifndef WEB
+  onBackPress(() => {
+    if (isOpened.value) {
+      hide()
+      return true
+    }
+    return false
+  })
+  // #endif
+
+  function load() {
+    if (dataPicker.isLocalData) {
+      dataPicker.loadLocalData()
+    } else if (dataPicker.isCloudDataList || dataPicker.isCloudDataTree) {
+      dataPicker.loadCloudDataPath()
+    }
+  }
+
+  function resetDrag() {
+    startY = 0
+    hasStart = false
+    dragging = false
+    curOffset = 0
+    lastY = 0
+    lastY2 = 0
+  }
+
+  function getTouchY(touch : Touch) : number {
+    if (touch.screenY > 0) {
+      return touch.screenY
+    }
+    if (touch.clientY > 0) {
+      return touch.clientY
+    }
+    return touch.pageY
+  }
+
+  function applyOffset(offset : number) {
+    curOffset = offset
+    dialogStyle.value = 'transform: translateY(' + offset.toFixed(2) + 'px);'
+  }
+
+  // 清除拖拽期间写入的内联样式，交回 CSS 过渡动画
+  function clearDragStyle() {
+    dialogStyle.value = ''
+    dragTransitionOff.value = false
+  }
+
+  // 打开：纯 CSS 过渡动画（.uni-data-tree-dialog-active）
+  function show() {
+    if (isOpened.value) {
+      return
+    }
+    resetDrag()
+    isOpened.value = true
+    nextTick(() => {
+      pickerView.value!.loadData(dataPicker.selectedPaths)
+      if (isWideScreenPopup()) {
+        // 宽屏无动画，直接显示
+        active.value = true
+        return
+      }
+      animating = true
+      // 等首帧渲染完成后再切换 active，触发 CSS 过渡
+      setTimeout(() => {
+        if (!isOpened.value) {
+          animating = false
+          return
+        }
+        active.value = true
+        setTimeout(() => {
+          animating = false
+        }, POPUP_DURATION)
+      }, 20)
+    })
+    emit('popupopened')
+  }
+
+  // 关闭：纯 CSS 过渡动画，动画结束后再卸载
+  function hide() {
+    if (!isOpened.value || !active.value) {
+      return
+    }
+    animating = true
+    // 先在切换 active 之前清除拖拽期间的过渡禁用状态，保证关闭时用 CSS 的 250ms 过渡
+    clearDragStyle()
+    active.value = false
+
+    // 宽屏无动画，立即卸载；否则等过渡动画结束
+    const delay = isWideScreenPopup() ? 0 : POPUP_DURATION + 50
+    setTimeout(() => {
+      animating = false
+      resetDrag()
+      isOpened.value = false
+      emit('popupclosed')
+    }, delay)
+  }
+
+  // 松手未达关闭阈值：清除内联样式，由 CSS 过渡回弹到原位
+  function resume() {
+    clearDragStyle()
+    dragging = false
+    curOffset = 0
+  }
+
+  function getListScrollTop() : number {
+    const inst = pickerView.value
+    if (inst == null) {
+      return 0
+    }
+    return inst.getScrollTop()
+  }
+
+  // 与 H5 宽屏媒体查询（min-width: 768px）保持一致，宽屏下无过渡动画
+  function isWideScreenPopup() : boolean {
+    // #ifdef H5
+    return uni.getWindowInfo().windowWidth >= 768
+    // #endif
+    // #ifndef H5
+    return false
+    // #endif
+  }
+
+  function onTitleTouchStart(_e : TouchEvent) {
+    if (animating) {
+      return
+    }
+    resetDrag()
+    dragTransitionOff.value = true
+  }
+
+  function onBodyTouchStart(e : TouchEvent) {
+    onTitleTouchStart(e)
+  }
+
+  // 拖拽处理：allowDrag 为 true（标题栏）时不校验内部滚动位置
+  function handleDragMove(touchY : number, allowDrag : boolean) {
+    if (animating) {
+      return
+    }
+    lastY2 = lastY
+    lastY = touchY
+    if (!allowDrag) {
+      // 内部列表未滚动到顶部时不接管手势
+      if (getListScrollTop() > 0.01 && !dragging) {
+        return
+      }
+    }
+    if (!hasStart) {
+      startY = touchY
+      hasStart = true
+    }
+    const offset = touchY - startY
+    if (offset > 0) {
+      dragging = true
+      applyOffset(offset)
+    } else if (curOffset > 0) {
+      let back = startY - touchY
+      if (back > curOffset) {
+        back = 0
+        dragging = false
+      }
+      applyOffset(back)
+    }
+  }
+
+  function onTitleTouchMove(e : TouchEvent) {
+    if (animating) {
+      return
+    }
+    handleDragMove(getTouchY(e.touches[0]), true)
+    // #ifdef WEB
+    if (dragging) {
+      e.preventDefault()
+    }
+    // #endif
+  }
+
+  function onBodyTouchMove(e : TouchEvent) {
+    if (animating) {
+      return
+    }
+    handleDragMove(getTouchY(e.touches[0]), false)
+    // #ifdef WEB
+    if (dragging) {
+      e.preventDefault()
+    }
+    // #endif
+  }
+
+  function onTouchEnd(_e : TouchEvent) {
+    if (animating) {
+      return
+    }
+    if (!dragging && curOffset <= 0) {
+      clearDragStyle()
+      resetDrag()
+      return
+    }
+    // 拖动超过阈值，或快速下滑动量，则关闭
+    let shouldClose = curOffset > DRAG_CLOSE_THRESHOLD
+    if (!shouldClose) {
+      shouldClose = curOffset > 0 && (lastY - lastY2) > 3
+    }
+    if (shouldClose) {
+      hide()
+    } else if (curOffset > 0) {
+      resume()
+    } else {
+      clearDragStyle()
+      resetDrag()
+    }
+  }
+
+  function handleInput() {
+    if (props.readonly) {
+      emit('inputclick')
+    } else {
+      show()
+    }
+  }
+
+  function handleClose() {
+    hide()
+  }
+
+  // #ifdef WEB
+  function onInputKeydown(event : KeyboardEvent) {
+    if (isOpened.value && event.key == 'Escape') {
+      event.preventDefault()
+      hide()
+    }
+  }
+  // #endif
+
+  const onpickerviewchange = (e : any) => {
+    dataPicker.selectedPaths = e.detail.value
+    const nodes = e.detail.value as Array<UTSJSONObject>
+    if (nodes.length > 0) {
+      emit('update:modelValue', nodes[nodes.length - 1][dataPicker.mappingValueName])
+    }
+    emit('change', e)
+    hide()
+  }
+
+  const onpickerviewnodeclick = (e : any) => {
+    emit('nodeclick', e)
+  }
+
+  load()
+</script>
+
+<style>
+  @import url("../uni-data-picker-view/uni-data-picker-view.css");
+
+  .uni-data-tree {
+    position: relative;
+  }
+
+  .uni-data-tree-input {
+    position: relative;
+  }
+
+  .selected-loading {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .error-text {
+    flex: 1;
+    font-size: 12px;
+    color: #DD524D;
+  }
+
+  .input-value {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 5px 5px;
+    padding-right: 5px;
+    overflow: hidden;
+    min-height: 28px;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+  }
+
+  .selected-path {
+    flex: 1;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .load-more {
+    width: 40px;
+  }
+
+  .selected-list {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .selected-item {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .text-color {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .placeholder {
+    color: grey;
+    font-size: 14px;
+  }
+
+  .input-split-line {
+    opacity: .5;
+    margin-left: 1px;
+    margin-right: 1px;
+  }
+
+  .arrow-area {
+    position: relative;
+    padding: 0 12px;
+    margin-left: auto;
+    justify-content: center;
+    transform: rotate(-45deg);
+    transform-origin: center;
+  }
+
+  .input-arrow {
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid #999;
+    border-bottom: 2px solid #999;
+  }
+
+  .uni-data-tree-cover {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .4);
+    flex-direction: column;
+    z-index: 100;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 250ms;
+    transition-timing-function: ease-out;
+  }
+
+  .uni-data-tree-cover-active {
+    opacity: 1;
+  }
+
+  .uni-data-tree-dialog {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 80%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    flex-direction: column;
+    z-index: 102;
+    overflow: hidden;
+    transform: translateY(100%);
+    transition-property: transform;
+    transition-duration: 250ms;
+    transition-timing-function: ease-out;
+  }
+
+  .uni-data-tree-dialog-active {
+    transform: translateY(0);
+  }
+
+  .uni-data-tree-dialog-drag {
+    transition-duration: 0ms;
+  }
+
+  .dialog-body {
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .dialog-caption {
+    position: relative;
+    flex-direction: row;
+    background-color: #ffffff;
+  }
+
+  .dialog-title-view {
+    flex: 1;
+  }
+
+  .dialog-title {
+    align-self: center;
+    padding: 0 10px;
+    line-height: 44px;
+  }
+
+  .dialog-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 15px;
+  }
+
+  .dialog-close-plus {
+    width: 16px;
+    height: 2px;
+    background-color: #666;
+    border-radius: 2px;
+    transform: rotate(45deg);
+  }
+
+  .dialog-close-rotate {
+    position: absolute;
+    transform: rotate(-45deg);
+  }
+
+  /* #ifdef H5 */
+  @media all and (min-width: 768px) {
+    .uni-data-tree-dialog {
+      position: unset;
+      height: auto;
+      width: 100%;
+      min-height: 200px;
+      max-height: 50vh;
+      overflow: unset;
+      /* 宽屏下不使用滑入/滑出动画，直接显示 */
+      transform: none;
+      transition-duration: 0ms;
+    }
+
+    .uni-data-tree-dialog-active {
+      transform: none;
+    }
+
+    .uni-data-tree-cover {
+      opacity: 1;
+      transition-duration: 0ms;
+    }
+
+    .dialog-caption {
+      display: none;
+    }
+  }
+  /* #endif */
+
+  @media (prefers-color-scheme: dark) {
+    .input-value {
+      border-color: #646464;
+    }
+
+    .input-split-line {
+      color: #999;
+    }
+
+    .text-color {
+      color: #ccc;
+    }
+
+    .dialog-caption {
+      background-color: #2b2b2b;
+    }
+
+    .dialog-title {
+      color: #ccc;
+    }
+  }
+</style>

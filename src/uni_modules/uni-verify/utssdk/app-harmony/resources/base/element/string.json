@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "gy_oaid_tracking",
+      "value": "用于创建唯一的 gyuid 标识"
+    },
+    {
+      "name": "set_network_info",
+      "value": "正在申请配置数据网络权限，以便为您提供相应的服务"
+    },
+    {
+      "name": "get_network_info",
+      "value": "正在申请获取数据网络信息权限，以便为您提供相应的服务"
+    },
+    {
+      "name": "get_wifi_info",
+      "value": "正在申请获取 Wi-Fi 信息权限，以便为您提供相应的服务"
+    }
+  ]
+}

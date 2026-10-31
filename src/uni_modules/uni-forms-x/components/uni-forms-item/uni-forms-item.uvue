@@ -1,0 +1,865 @@
+<template>
+	<!-- 顶部布局包成一个根，写在表单项上的 class、style 才能包住下面的控件。 -->
+	<view v-if="isTop" class="uni-forms-item uni-forms-item--top" :class="[errorStateClass, errorFrameClass]" v-bind="$attrs">
+		<slot v-if="hasLabelSlot" name="label"></slot>
+		<text
+			v-else-if="required && label == ''"
+			flatten
+			class="uni-forms-item__required uni-forms-item__label-text--top"
+			:class="requiredClass"
+		>*</text>
+		<view v-else-if="required" class="uni-forms-item__label uni-forms-item__label--top" :style="topLabelStyle">
+			<text flatten class="uni-forms-item__required uni-forms-item__top-font" :class="requiredClass">*</text>
+			<text flatten class="uni-forms-item__label-text uni-forms-item__label-text--flex uni-forms-item__top-font" :class="labelClass" :style="labelTextAlignStyle">{{ label }}</text>
+		</view>
+		<text
+			v-else-if="label != ''"
+			flatten
+			class="uni-forms-item__label-text uni-forms-item__label-text--top"
+			:class="labelClass"
+			:style="topLabelTextStyle"
+		>{{ label }}</text>
+		<text
+			v-if="description != ''"
+			flatten
+			class="uni-forms-item__description uni-forms-item__description--top"
+			:class="descriptionClass"
+		>{{ description }}</text>
+		<slot></slot>
+		<text
+			v-if="message != ''"
+			flatten
+			class="uni-forms-item__error-message"
+			:class="errorMessageClass"
+		>{{ message }}</text>
+		<view v-if="showBorder" class="uni-forms-item__line"></view>
+	</view>
+
+	<!-- 左侧布局：标签列与控件垂直居中。说明在标签下方。错误单独一行，不参与这次居中。 -->
+	<view v-if="!isTop" class="uni-forms-item" :class="[borderClass, errorStateClass, errorFrameClass]" v-bind="$attrs">
+		<view class="uni-forms-item__row">
+			<view v-if="hasLabelBlock" class="uni-forms-item__label-block" :style="labelBlockStyle">
+				<slot v-if="hasLabelSlot" name="label"></slot>
+				<text
+					v-else-if="required && label == ''"
+					flatten
+					class="uni-forms-item__required"
+					:class="requiredClass"
+				>*</text>
+				<view v-else-if="required" class="uni-forms-item__label" :class="labelFillClass" :style="labelInnerStyle">
+					<text flatten class="uni-forms-item__required" :class="requiredClass">*</text>
+					<text flatten class="uni-forms-item__label-text uni-forms-item__label-text--flex" :class="labelClass" :style="labelTextAlignStyle">{{ label }}</text>
+				</view>
+				<text
+					v-else-if="label != ''"
+					flatten
+					class="uni-forms-item__label-text"
+					:class="[labelClass, labelFillClass]"
+					:style="labelTextAlignStyle"
+				>{{ label }}</text>
+				<text
+					v-if="description != ''"
+					flatten
+					class="uni-forms-item__description"
+					:class="descriptionClass"
+				>{{ description }}</text>
+			</view>
+			<view class="uni-forms-item__body" :class="contentClass">
+				<slot></slot>
+			</view>
+			<view v-if="showArrow" class="uni-forms-item__arrow-wrap">
+				<view class="uni-forms-item__arrow"></view>
+			</view>
+		</view>
+		<view v-if="message != ''" class="uni-forms-item__error-row">
+			<view v-if="hasLabelBlock && labelWidthValue != ''" class="uni-forms-item__label-block uni-forms-item__label-block--spacer" :style="labelBlockStyle"></view>
+			<view class="uni-forms-item__error-main" :class="leftErrorIndentClass">
+				<text flatten class="uni-forms-item__error-message uni-forms-item__error-message--left" :class="errorMessageClass">{{ message }}</text>
+			</view>
+			<view v-if="showArrow" class="uni-forms-item__arrow-wrap"></view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	/**
+	 * uni-forms-item 表单项
+	 * @description 提供字段路径、标签布局、错误展示和字段上下文，必须放在 uni-forms 内使用才能参与表单管理
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 * @property {String|Array} name 表单字段路径，支持嵌套路径和数组路径，默认值为空字符串
+	 * @property {Array} rules 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则，默认值 null
+	 * @property {Boolean} required 是否显示红色必填标记；字段是否必填由 rules 决定，默认值 false
+	 * @property {String} label 标签文本，默认值为空字符串
+	 * @property {String} description 标签下方的说明文字，默认值为空字符串
+	 * @property {Boolean} showArrow 是否在左侧布局行尾显示向右箭头，默认值 false
+	 * @property {String|Number} labelWidth 标签宽度；不设置时跟随表单或不设固定宽度，默认值为空字符串
+	 * @property {String} labelAlign = [left|center|right] 标签文字对齐方式；不设置时跟随表单，默认值为空字符串
+	 * @value left 左对齐
+	 * @value center 居中对齐
+	 * @value right 右对齐
+	 * @property {String} labelPosition = [left|top] 标签位置；不设置时跟随表单，默认值为空字符串
+	 * @value left 标签与控件单行横排
+	 * @value top 标签在控件上方，竖排显示
+	 * @property {String} validateTrigger = [bind|blur|submit] 当前字段校验触发时机；不设置时跟随表单
+	 * @value bind 表单数据变化时触发
+	 * @value blur 表单项失焦时触发
+	 * @value submit 调用表单校验方法时触发
+	 * @property {String|Boolean} errorMessage 覆盖组件内部错误信息；传入 false 时不显示错误文字，默认值为空字符串
+	 * @property {String} labelClass 标签文本自定义样式类，默认值为空字符串
+	 * @property {String} descriptionClass 说明文字自定义样式类，默认值为空字符串
+	 * @property {String} requiredClass 必填标记自定义样式类，默认值为空字符串
+	 * @property {String} contentClass 左侧布局中控件所在列的自定义样式类，顶部布局没有这一层，默认值为空字符串
+	 * @property {String} errorMessageClass 错误文字自定义样式类，默认值为空字符串
+	 * @property {String} errorClass toast 失败时表单项错误边框的自定义样式类，默认值为空字符串
+	 */
+	import { UNI_FORM_CONTEXT, UNI_FORM_ITEM_CONTEXT, pathKey } from '../common'
+	import type {
+		UniFormContext,
+		UniFormFieldContext,
+		UniFormIssue,
+		UniFormPath,
+		UniFormRule,
+		UniFormTrigger
+	} from '../common'
+	import { hasLegacyRulesForTrigger, normalizeLegacyValue } from '../validation'
+
+	defineOptions({
+		name: 'UniFormsItem',
+		inheritAttrs: false,
+		externalClasses: [
+			'label-class',
+			'description-class',
+			'required-class',
+			'content-class',
+			'error-message-class',
+			'error-class'
+		]
+	})
+
+	type Props = {
+		/**
+		 * @description 表单字段路径，支持点号路径、数组下标路径和路径数组；参与表单校验时必填
+		 * @default ""
+		 */
+		name?: UniFormPath,
+		/**
+		 * @description 当前字段的 DB Schema 风格校验规则，覆盖表单中同名字段的规则
+		 * @default null
+		 */
+		rules?: UniFormRule[] | null,
+		/**
+		 * @description 是否显示红色必填标记；字段是否必填由 rules 决定
+		 * @default false
+		 */
+		required?: boolean,
+		/**
+		 * @description 标签文字
+		 * @default ""
+		 */
+		label?: string,
+		/**
+		 * @description 标签下方的说明文字
+		 * @default ""
+		 */
+		description?: string,
+		/**
+		 * @description 是否在单行横排布局的行尾显示向右箭头
+		 * @default false
+		 */
+		showArrow?: boolean,
+		/**
+		 * @description 当前项的标签宽度，数字按 px 处理；不设置时跟随表单
+		 * @default ""
+		 */
+		labelWidth?: string | number,
+		/**
+		 * @description 当前项的标签文字对齐方式；不设置时跟随表单
+		 * @default ""
+		 * @value left 左对齐
+		 * @value center 居中对齐
+		 * @value right 右对齐
+		 */
+		labelAlign?: string,
+		/**
+		 * @description 当前项的标签位置；不设置时跟随表单
+		 * @default ""
+		 * @value left 标签与控件单行横排
+		 * @value top 标签在控件上方，竖排显示
+		 */
+		labelPosition?: string,
+		/**
+		 * @description 当前字段的校验触发时机；不设置时跟随表单
+		 * @value bind 表单数据变化时触发
+		 * @value blur 表单项失焦时触发
+		 * @value submit 调用表单校验方法时触发
+		 */
+		validateTrigger?: UniFormTrigger,
+		/**
+		 * @description 覆盖组件内部错误信息；传入 false 时不显示错误文字
+		 * @default ""
+		 */
+		errorMessage?: string | boolean,
+		/**
+		 * @description 标签文字的自定义样式类
+		 * @default ""
+		 */
+		labelClass?: string.ClassString,
+		/**
+		 * @description 标签辅助说明的自定义样式类
+		 * @default ""
+		 */
+		descriptionClass?: string.ClassString,
+		/**
+		 * @description 必填标记的自定义样式类
+		 * @default ""
+		 */
+		requiredClass?: string.ClassString,
+		/**
+		 * @description 单行横排布局中控件区域的自定义样式类，顶部布局不使用
+		 * @default ""
+		 */
+		contentClass?: string.ClassString,
+		/**
+		 * @description 控件下方错误文字的自定义样式类
+		 * @default ""
+		 */
+		errorMessageClass?: string.ClassString,
+		/**
+		 * @description toast 错误提示方式下表单项错误边框的自定义样式类
+		 * @default ""
+		 */
+		errorClass?: string.ClassString
+	}
+
+	const props = withDefaults(defineProps<Props>(), {
+		name: '',
+		rules: null,
+		required: false,
+		label: '',
+		description: '',
+		showArrow: false,
+		labelWidth: '',
+		labelAlign: '',
+		labelPosition: '',
+		errorMessage: '',
+		labelClass: '',
+		descriptionClass: '',
+		requiredClass: '',
+		contentClass: '',
+		errorMessageClass: '',
+		errorClass: ''
+	})
+
+	defineSlots<{
+		/**
+		 * @description 表单控件内容
+		 */
+		default(props: {}) : any,
+		/**
+		 * @description 自定义标签；使用后不再渲染 label 属性和必填标记
+		 */
+		label(props: {}) : any
+	}>()
+
+	const form = inject<UniFormContext | null>(UNI_FORM_CONTEXT, null)
+	const slots = useSlots()
+	const localRules = ref<UniFormRule[] | null>(null)
+	const localErrorMessage = ref<string>('')
+	const validateState = ref<string>('untouched')
+	const pending = ref<boolean>(false)
+	let validationSequence = 0
+	let activeValidationTrigger : UniFormTrigger | null = null
+	let skipNextModelChange = false
+
+	const fieldName = computed<UniFormPath>(() : UniFormPath => props.name ?? '')
+	const fieldKey = computed<string>(() : string => pathKey(fieldName.value))
+	const fieldValue = computed<any>(() : any => form == null ? undefined : form.getFieldValue(fieldName.value))
+	const effectiveRules = computed<UniFormRule[] | null>(() : UniFormRule[] | null => localRules.value ?? props.rules)
+
+	const message = computed<string>(() : string => {
+		if (props.errorMessage === false) {
+			return ''
+		}
+		if (typeof props.errorMessage == 'string' && props.errorMessage != '') {
+			return props.errorMessage
+		}
+		return localErrorMessage.value
+	})
+
+	const positionValue = computed<string>(() : string => {
+		if (props.labelPosition != '') {
+			return props.labelPosition
+		}
+		return form == null ? 'left' : form.getLabelPosition()
+	})
+	const isTop = computed<boolean>(() : boolean => positionValue.value == 'top')
+	const showBorder = computed<boolean>(() : boolean => form != null && form.getBorder())
+	const borderClass = computed<string>(() : string => showBorder.value ? 'uni-forms-item--border' : '')
+	/**
+	 * 只有 toast 提示时，才给失败的表单项加红框。下方已经写出错误文案时不再套框。
+	 * @returns 错误态类名，不是 toast 或尚未失败时为空
+	 */
+	const errorStateClass = computed<string>(() : string => {
+		if (validateState.value != 'error' || form == null || form.getErrShowType() != 'toast') {
+			return ''
+		}
+		return 'uni-forms-item--error'
+	})
+	/**
+	 * 红框出现时才挂上外部样式类，通过或不是 toast 时不作用到这一项。
+	 * @returns 页面传入的 error-class，或空字符串
+	 */
+	const errorFrameClass = computed<string.ClassString>(() : string.ClassString => {
+		return errorStateClass.value == '' ? '' : props.errorClass
+	})
+	const hasLabelSlot = computed<boolean>(() : boolean => slots['label'] != null)
+
+	/**
+	 * 把标签宽度转成样式里能用的宽度字符串。
+	 * 模板里的 label-width="80" 传到脚本后是字符串，纯数字要补 px，否则网页会丢掉这条宽度。
+	 * @param value 数字或宽度字符串
+	 * @returns 带单位的 CSS 宽度
+	 */
+	function toWidth(value: string | number): string {
+		if (value == null || value == '') {
+			return 'auto'
+		}
+		const text = value.toString().trim()
+		if (text == '' || text == 'auto') {
+			return 'auto'
+		}
+		if (/^-?\d+(\.\d+)?$/.test(text)) {
+			return text + 'px'
+		}
+		return text
+	}
+
+	/**
+	 * 左侧标签列的显式宽度。这一项和父表单都没写 label-width 时返回空字符串，样式里就不写 width。
+	 * @returns 带单位的宽度，或空字符串
+	 */
+	const labelWidthValue = computed<string>(() : string => {
+		if (props.labelWidth != '') {
+			return toWidth(props.labelWidth)
+		}
+		if (form != null) {
+			const inheritedWidth = form.getLabelWidth()
+			if (inheritedWidth != '') {
+				return toWidth(inheritedWidth)
+			}
+		}
+		return ''
+	})
+	/**
+	 * 左侧是否渲染标签列。没有标签、说明、必填标记和标签插槽时不占位。
+	 */
+	const hasLabelBlock = computed<boolean>(() : boolean => {
+		if (hasLabelSlot.value || props.required) {
+			return true
+		}
+		if (props.label != '') {
+			return true
+		}
+		return props.description != ''
+	})
+	/**
+	 * 标签列的宽度样式。没有显式宽度时返回空字符串。
+	 * @returns 行内样式，或空字符串
+	 */
+	const labelBlockStyle = computed<string>(() : string => {
+		if (labelWidthValue.value == '') {
+			return ''
+		}
+		return 'width:' + labelWidthValue.value
+	})
+	/**
+	 * 写了标签宽度时，让标签文字铺满这一列，label-align 才能在列内生效。
+	 * @returns 铺满宽度的类名，或空字符串
+	 */
+	const labelFillClass = computed<string>(() : string => {
+		return labelWidthValue.value == '' ? '' : 'uni-forms-item__label-fill'
+	})
+	/**
+	 * 左侧错误文字是否留出和控件列一样的左间距。
+	 * 设了标签宽度时缩进 8px，和控件对齐。没设宽度时错误横跨整行，不再缩进。
+	 * @returns 缩进类名，或空字符串
+	 */
+	const leftErrorIndentClass = computed<string>(() : string => {
+		if (!hasLabelBlock.value || labelWidthValue.value != '') {
+			return 'uni-forms-item__error-main--indent'
+		}
+		return ''
+	})
+	/**
+	 * 标签文字的水平对齐，取值 left、center、right。
+	 */
+	const horizontalAlign = computed<string>(() : string => {
+		const value = props.labelAlign != '' ? props.labelAlign : (form == null ? 'left' : form.getLabelAlign())
+		if (value == 'center' || value == 'right') {
+			return value
+		}
+		return 'left'
+	})
+	/**
+	 * 星号和标签并排时，容器的主轴对齐。
+	 */
+	const flexJustify = computed<string>(() : string => {
+		if (horizontalAlign.value == 'center') {
+			return 'center'
+		}
+		if (horizontalAlign.value == 'right') {
+			return 'flex-end'
+		}
+		return 'flex-start'
+	})
+	const labelTextAlignStyle = computed(() => {
+		return {
+			textAlign: horizontalAlign.value
+		}
+	})
+	const topLabelStyle = computed(() => {
+		return {
+			justifyContent: flexJustify.value
+		}
+	})
+	const topLabelTextStyle = computed(() => {
+		return {
+			textAlign: horizontalAlign.value
+		}
+	})
+	/**
+	 * 星号和标签并排时的主轴对齐。宽度写在外层标签列上，这里不再写 width。
+	 */
+	const labelInnerStyle = computed(() => {
+		return {
+			justifyContent: flexJustify.value
+		}
+	})
+
+	/**
+	 * @description 校验当前表单项并更新错误状态
+	 * @param trigger 本次校验的触发时机
+	 * @param force 是否忽略触发时机配置并强制校验
+	 * @param includeSchema 是否同时执行 Standard Schema 校验
+	 * @param notify 是否向表单发送 validate 事件
+	 */
+	async function validate(trigger: UniFormTrigger = 'submit', force: boolean = false, includeSchema: boolean = true, notify: boolean = true): Promise<UniFormIssue | null> {
+		if (form == null || fieldKey.value == '') {
+			return null
+		}
+		// A blur caused by pressing the submit button must not cancel the
+		// submit validation that is already running for this field.
+		if (trigger != 'submit' && activeValidationTrigger == 'submit') {
+			return null
+		}
+		if (!force && !form.shouldValidateField(trigger, fieldName.value, props.validateTrigger, effectiveRules.value)) {
+			// Input changes invalidate the previous result even when validation is
+			// configured for submit. A blur caused by pressing submit must not clear
+			// an error while that submit validation is still running (guarded above).
+			if (trigger == 'bind' || (trigger == 'blur' && validateState.value != 'error')) {
+				clearValidate()
+			}
+			return null
+		}
+		const fieldRules = form.getFieldRules(fieldName.value, effectiveRules.value)
+		const hasApplicableLegacyRules = hasLegacyRulesForTrigger(fieldRules, trigger)
+		if (!hasApplicableLegacyRules && !includeSchema) {
+			return null
+		}
+		const previousValidateState = validateState.value
+		pending.value = true
+		validateState.value = 'validating'
+		const currentSequence = ++validationSequence
+		activeValidationTrigger = trigger
+		const issue = await form.validateFieldValue(fieldName.value, fieldValue.value, effectiveRules.value, props.validateTrigger, trigger, includeSchema)
+		if (currentSequence != validationSequence) {
+			return null
+		}
+		activeValidationTrigger = null
+		pending.value = false
+		// A field may be registered for the form-level trigger while all of its
+		// individual rules belong to another trigger. In that case a null result
+		// must not erase an existing error from submit or blur validation.
+		if (issue == null && trigger != 'submit' && !hasApplicableLegacyRules) {
+			validateState.value = previousValidateState
+			return null
+		}
+		setError(issue)
+		if (notify) {
+			form.notifyValidation(issue)
+		} else if (issue != null) {
+			form.notifyValidation(issue, false)
+		}
+		return issue
+	}
+
+	function setError(issue: UniFormIssue | null): void {
+		const showUndertext = form == null || form.getErrShowType() == 'undertext'
+		localErrorMessage.value = issue == null || showUndertext ? (issue == null ? '' : issue.errorMessage) : ''
+		validateState.value = issue == null ? 'success' : 'error'
+	}
+
+	/**
+	 * 忽略这一轮模型写回触发的字段监听，到下一个时间片再恢复。
+	 * 避免整表校验成功后的转换值再触发一轮校验。
+	 */
+	function skipNextChange(): void {
+		skipNextModelChange = true
+		nextTick(() => skipNextModelChange = false)
+	}
+
+	/**
+	 * @description 设置当前字段的值
+	 * @param value 字段值
+	 */
+	function setValue(value: any): void {
+		if (form != null) {
+			skipNextChange()
+			form.setFieldValue(fieldName.value, normalizeLegacyValue(value, effectiveRules.value))
+		}
+	}
+
+	/**
+	 * @description 通知表单字段值已变化，并按 bind 触发时机执行校验
+	 * @param value 新字段值；不传时使用表单模型中的当前值
+	 * @param force 是否强制执行校验
+	 */
+	async function onFieldChange(value?: any, force: boolean = false): Promise<UniFormIssue | null> {
+		if (value !== undefined) {
+			setValue(value)
+		}
+		return validate(force ? 'submit' : 'bind', force, force)
+	}
+
+	/**
+	 * @description 通知表单字段已失焦，并按 blur 触发时机执行校验
+	 * @param value 新字段值；不传时使用表单模型中的当前值
+	 */
+	async function onFieldBlur(value?: any): Promise<UniFormIssue | null> {
+		if (value !== undefined) {
+			setValue(value)
+		}
+		return validate('blur')
+	}
+
+	/**
+	 * @description 清除当前表单项的校验状态和错误信息
+	 */
+	function clearValidate(): void {
+		validationSequence += 1
+		activeValidationTrigger = null
+		localErrorMessage.value = ''
+		validateState.value = 'untouched'
+		pending.value = false
+	}
+
+	const fieldContext: UniFormFieldContext = {
+		name: fieldName.value,
+		key: fieldKey.value,
+		errorMessage: localErrorMessage,
+		validateState,
+		pending,
+		getValue: () : any => fieldValue.value,
+		setValue,
+		onFieldChange,
+		onFieldBlur,
+		validate,
+		clearValidate,
+		setError,
+		getRules: () : UniFormRule[] | null => effectiveRules.value,
+		getLabel: () : string => props.label,
+		skipNextChange
+	}
+
+	provide(UNI_FORM_ITEM_CONTEXT, fieldContext)
+
+	/**
+	 * 字段路径变化后重新注册。沿用同一个字段对象，校验和重置仍走原来的方法。
+	 * 用字段对象上保存的旧键比较，不依赖 watch 是否传入旧值。
+	 * @param key 当前字段键
+	 */
+	function syncFieldIdentity(key : string): void {
+		if (form == null || key == fieldContext.key) {
+			return
+		}
+		form.unregisterField(fieldContext)
+		fieldContext.name = fieldName.value
+		fieldContext.key = key
+		form.registerField(fieldContext)
+	}
+
+	watch(fieldKey, syncFieldIdentity)
+
+	watch(() : any => fieldValue.value, (value: any, oldValue: any) => {
+		if (value != oldValue) {
+			if (skipNextModelChange) {
+				return
+			}
+			const normalizedValue = normalizeLegacyValue(value, effectiveRules.value)
+			if (normalizedValue !== value) {
+				setValue(normalizedValue)
+				onFieldChange()
+				return
+			}
+			if (form != null) {
+				form.notifyModelChange()
+			}
+			onFieldChange()
+		}
+	})
+
+	onMounted(() => {
+		if (form != null) {
+			form.registerField(fieldContext)
+		}
+	})
+
+	onUnmounted(() => {
+		validationSequence += 1
+		if (form != null) {
+			form.unregisterField(fieldContext)
+		}
+	})
+
+	/**
+	 * @description 设置当前项规则；传入 null 时恢复 rules 属性
+	 * @param rules 当前字段的规则数组
+	 */
+	function setRules(rules: UniFormRule[] | null): void {
+		localRules.value = rules
+		clearValidate()
+	}
+
+	defineExpose({
+		setRules,
+		setValue,
+		onFieldChange,
+		onFieldBlur,
+		validate,
+		clearValidate
+	})
+</script>
+
+<style>
+	.uni-forms-item {
+		width: 100%;
+		flex-direction: column;
+		box-sizing: border-box;
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
+
+	.uni-forms-item--top {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	.uni-forms-item__row {
+		width: 100%;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.uni-forms-item__label-block {
+		flex-shrink: 0;
+		flex-direction: column;
+		justify-content: center;
+		align-items: stretch;
+	}
+
+	.uni-forms-item__label-block--spacer {
+		height: 1px;
+		overflow: hidden;
+	}
+
+	.uni-forms-item__label {
+		flex-direction: row;
+		align-items: flex-start;
+		box-sizing: border-box;
+	}
+
+	.uni-forms-item__label--top {
+		width: 100%;
+		margin-top: 8px;
+		margin-bottom: 6px;
+	}
+
+	.uni-forms-item__label-fill {
+		width: 100%;
+	}
+
+	.uni-forms-item__required {
+		margin-right: 4px;
+		flex-shrink: 0;
+		color: #dd524d;
+	}
+
+	.uni-forms-item__top-font {
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	.uni-forms-item__label-text--flex {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.uni-forms-item__label-text--top {
+		width: 100%;
+		margin-top: 8px;
+		margin-bottom: 6px;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	.uni-forms-item__description {
+		margin-top: 2px;
+		font-size: 12px;
+		line-height: 18px;
+		color: #999999;
+	}
+
+	.uni-forms-item__description--top {
+		margin-top: -2px;
+		margin-bottom: 6px;
+	}
+
+	.uni-forms-item__body {
+		min-width: 0;
+		flex: 1;
+		margin-left: 8px;
+		flex-direction: column;
+		justify-content: center;
+		box-sizing: border-box;
+	}
+
+	/* 外层留出旋转后的占位，避免箭头尖角画出这一行。 */
+	.uni-forms-item__arrow-wrap {
+		width: 16px;
+		height: 16px;
+		margin-left: 8px;
+		flex-shrink: 0;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	/* 相邻两条边转 45 度，得到向右箭头。做法与折叠面板的箭头相同。 */
+	.uni-forms-item__arrow {
+		width: 8px;
+		height: 8px;
+		border-top-width: 1px;
+		border-top-style: solid;
+		border-top-color: #999999;
+		border-right-width: 1px;
+		border-right-style: solid;
+		border-right-color: #999999;
+		transform: rotate(45deg);
+	}
+
+	.uni-forms-item__error-row {
+		width: 100%;
+		margin-top: 4px;
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
+	.uni-forms-item__error-message {
+		width: 100%;
+		margin-top: 4px;
+		font-size: 12px;
+		line-height: 18px;
+		color: #dd524d;
+	}
+
+	.uni-forms-item__error-main {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.uni-forms-item__error-message--left {
+		margin-top: 0px;
+	}
+
+	.uni-forms-item__error-main--indent {
+		margin-left: 8px;
+	}
+
+	.uni-forms-item__line {
+		width: 100%;
+		height: 0.5px;
+		margin-top: 10px;
+		background-color: var(--divider-color, #e5e5e5);
+	}
+
+	.uni-forms-item--border {
+		border-bottom-width: 0.5px;
+		border-bottom-style: solid;
+		border-bottom-color: var(--divider-color, #e5e5e5);
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+
+	.uni-forms-item--error {
+		margin-top: 6px;
+		margin-bottom: 6px;
+		padding-top: 10px;
+		padding-right: 8px;
+		padding-bottom: 10px;
+		padding-left: 8px;
+		border-radius: 8px;
+		/* 浅色默认浅红底。暗黑模式由主题变量或下面的媒体查询换成深色底，避免白字贴在浅粉底上。 */
+		background-color: var(--forms-error-background-color, #fff2f0);
+		border-top-width: 1px;
+		border-right-width: 1px;
+		border-bottom-width: 1px;
+		border-left-width: 1px;
+		border-top-style: solid;
+		border-right-style: solid;
+		border-bottom-style: solid;
+		border-left-style: solid;
+		border-top-color: #ff4d4f;
+		border-right-color: #ff4d4f;
+		border-bottom-color: #ff4d4f;
+		border-left-color: #ff4d4f;
+	}
+
+	/* 宿主没提供主题变量时，系统暗色仍使用深色错误底。 */
+	@media (prefers-color-scheme: dark) {
+		.uni-forms-item--error {
+			background-color: var(--forms-error-background-color, #3a1a1c);
+		}
+	}
+</style>

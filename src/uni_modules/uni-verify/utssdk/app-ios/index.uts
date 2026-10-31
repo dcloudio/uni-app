@@ -1,0 +1,279 @@
+import {
+	GetUniverifyManager, UniverifyManager, GetUniVerifyManager, UniVerifyManager,
+	UniVerifyManagerPreLoginOptions, UniVerifyManagerPreLoginFail,
+	UniVerifyManagerPreLoginSuccess, UniVerifyManagerLoginOptions,
+	UniVerifyManagerLoginSuccess, UniVerifyManagerLoginFail,
+	UniVerifyManagerCustomLoginOptions
+} from "../interface.uts";
+import { UniVerifyManagerPreLoginFailImpl, UniVerifyManagerLoginFailImpl, UniVerifyManagerSourceError } from '../unierror.uts';
+import { checkPermission, getPermissionCheckResult } from '../permission.uts';
+import { GeYanSdk, GyOneLoginPro, GyContentModel } from "GeYanSdk" assert { type: "implementationOnly" };
+import {  NSDictionary, Bundle , NSMutableDictionary } from "Foundation"
+import { DispatchQueue } from 'Dispatch';
+import { UTSiOS } from "DCloudUTSFoundation";
+import { verifyOptions } from './utils.uts';
+import { uniVerifyLogin,uniVerifyClose } from '../commonLogin.uts';
+
+export const getUniverifyManager : GetUniverifyManager = function () : UniverifyManager {
+	return UniVerifyManagerImpl.share;
+}
+
+export const getUniVerifyManager : GetUniVerifyManager = function () : UniVerifyManager {
+	return UniVerifyManagerImpl.share;
+}
+
+/**
+ * UniVerifyManager 实现类
+ */
+class UniVerifyManagerImpl implements UniVerifyManager {
+	static share = new UniVerifyManagerImpl()
+
+	/**
+	 * 预登录数据
+	 */
+	preLoginResult : UniVerifyManagerPreLoginSuccess | null = null;
+
+	/**
+	 * 基座标识
+	 * 0 表示 非标准基座
+	 * 1 表示 uni-app标准基座
+	 * 2 表示 uni-app x标准基座
+	 */
+	baseFlag : number = 0;
+
+	/**
+	 * 个验appid
+	 */
+	GYAppId : string = "";
+
+	/**
+	 * uni appid
+	 */
+	appId : string = "";
+
+	override init() {
+		super.init()
+		let bundleId : string = Bundle.main.bundleIdentifier!;
+		if (bundleId == "io.dcloud.HBuilder") {
+			this.baseFlag = 1;
+		} else if (bundleId == "io.dcloud.uniappx") {
+			this.baseFlag = 2;
+		}
+
+		this.appId = UTSiOS.getAppId();
+		const geyan : [AnyHashable: Any] | null = Bundle.main.infoDictionary?.["geyan"] as [AnyHashable: Any] | null;
+		if (geyan != null) {
+			const geyanParams = geyan as [AnyHashable: Any];
+			this.GYAppId = geyanParams["appid"] as string;
+		}
+		this.initGeYan()
+	}
+	private initGeYan() {
+		GeYanSdk.setPreLoginTimeout(30)
+		GeYanSdk.start(withAppId = this.GYAppId, withCallback = (isSuccess, error, gyUid) : void => {
+			if (isSuccess) {
+				console.debug("初始化成功，用户ID " + (gyUid as string));
+			} else {
+				console.debug("初始化失败，错误信息: " + (error?.localizedDescription as string) ?? "未知错误");
+			}
+		});
+	}
+
+	preLogin(options : UniVerifyManagerPreLoginOptions) : void {
+		checkPermission(this.appId, this.GYAppId).then(() => {
+			DispatchQueue.main.async(execute = () : void => {
+				const result = getPermissionCheckResult();
+				if (!result.valid) {
+					const fail : UniVerifyManagerPreLoginFail = new UniVerifyManagerPreLoginFailImpl(result.code, result.desc);
+					options.fail?.(fail);
+					options.complete?.(fail);
+					return
+				}
+				this.getToken(options);
+			})
+		})
+	}
+
+	customLogin(options : UniVerifyManagerCustomLoginOptions) : void {
+		checkPermission(this.appId, this.GYAppId).then(() => {
+			DispatchQueue.main.async(execute = () : void => {
+				const result = getPermissionCheckResult();
+				if (!result.valid) {
+					const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(result.code, result.desc);
+					options.fail?.(fail);
+					options.complete?.(fail);
+					return
+				}
+				this.customLoginIn(options);
+			})
+		})
+	}
+	private customLoginIn(options : UniVerifyManagerCustomLoginOptions) {
+		const contentModel : GyContentModel = GyContentModel.current();
+		let phoneNumber : string = contentModel.pn;
+		let slogan : string = contentModel.slogan;
+		let term : string = contentModel.term;
+		if (this.preLoginResult != null) {
+			if (phoneNumber.length == 0) {
+				phoneNumber = this.preLoginResult!.number;
+			}
+			if (slogan.length == 0) {
+				slogan = this.preLoginResult!.slogan;
+			}
+			if (term.length == 0) {
+				term = this.preLoginResult!.privacyName;
+			}
+		}
+		const contentInfo = { "pn": phoneNumber, "slogan": slogan, "term": term }
+		const errorCode = verifyOptions(options, contentInfo);
+		if (errorCode != 0) {
+			const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(errorCode);
+			options.fail?.(fail);
+			options.complete?.(fail);
+			return;
+		}
+
+		GyOneLoginPro.requestToken(completion = (dic) => {
+			const result : NSDictionary | null = dic as NSDictionary | null
+			if (result == null) {
+				const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(30006);
+				options.fail?.(fail);
+				options.complete?.(fail);
+				return;
+			}
+			const code = this.getNumberValue(result!, "code", 30006);
+			if (code == 30000) {
+				const gyuid = this.getStringValue(result!, "gyuid", "");
+				const openId = this.baseFlag.toString() + "00" + gyuid
+				const accessToken = this.getStringValue(result!, "token", "");
+				const success : UniVerifyManagerLoginSuccess = {
+					openId: openId,
+					accessToken: accessToken
+				};
+				options.success?.(success);
+				options.complete?.(success);
+			} else {
+				const cause = this.getSourceError(result!);
+				const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(code, null, cause);
+				options.fail?.(fail);
+				options.complete?.(fail);
+			}
+
+		})
+	}
+
+	private getNumberValue(result: NSDictionary, key: string, defaultValue: number) : number {
+		const numberValue : number | null = result[key] as number | null;
+		if (numberValue != null) {
+			return numberValue!;
+		}
+		const stringValue : string | null = result[key] as string | null;
+		if (stringValue != null) {
+			const parsedValue = parseInt(stringValue!);
+			if (parsedValue == parsedValue) {
+				return parsedValue;
+			}
+		}
+		return defaultValue;
+	}
+
+	private getStringValue(result: NSDictionary, key: string, defaultValue: string) : string {
+		const stringValue : string | null = result[key] as string | null;
+		return stringValue ?? defaultValue;
+	}
+	
+	private getSourceError(result: NSDictionary) : UniVerifyManagerSourceError{
+		const code = this.getNumberValue(result, "code", 30004);
+		const operatorType = this.getNumberValue(result, "operatorType", 0);
+		let operatorCause : SourceError | null = null;
+		let message = "";
+		const metaData : NSDictionary | null = result["metadata"] as NSDictionary | null;
+		if (metaData != null){
+			//构造运营商信息 cause
+			const subCode = this.getNumberValue(metaData!, "resultCode", code);
+			const subSubject : string = this.getOperatorWithType(operatorType);
+			const subMessage = JSON.stringify(metaData) ?? "";
+			
+			operatorCause = new SourceError(subMessage);
+			operatorCause!.code = subCode;
+			operatorCause!.subject = subSubject;
+			
+			const mutableResult : NSMutableDictionary | null = result.mutableCopy() as NSMutableDictionary | null;
+			if (mutableResult != null) {
+				mutableResult!.removeObject(forKey = "metadata");
+				message = JSON.stringify(mutableResult) ?? "";
+			} else {
+				message = JSON.stringify(result) ?? "";
+			}
+		}else{
+			message = JSON.stringify(result) ?? "";
+		}
+		
+		const gyuid = this.getStringValue(result, "gyuid", "");
+		const processID = this.getStringValue(result, "processID", "");
+		const errorCode = this.getNumberValue(result, "errorCode", code);
+		const cause : UniVerifyManagerSourceError = new UniVerifyManagerSourceError(errorCode,message,gyuid,processID,operatorType,operatorCause);
+		return cause;
+	}
+	
+	private getOperatorWithType(type: number) : string{
+		let typeStr = "其他";
+		if (type == 1){
+			typeStr = "移动";
+		}else if(type == 2){
+			typeStr = "联通";
+		}else if(type == 3){
+			typeStr = "电信";
+		}
+		return typeStr;
+	}
+
+
+	private getToken(options : UniVerifyManagerPreLoginOptions) {
+		GeYanSdk.preGetToken((preDic) => {
+			const res : NSDictionary | null = preDic as NSDictionary | null;
+			if (res == null) {
+				const fail : UniVerifyManagerPreLoginFail = new UniVerifyManagerPreLoginFailImpl(30005);
+				options.fail?.(fail);
+				options.complete?.(fail);
+				return;
+			}
+			const code = this.getNumberValue(res!, "code", 30005);
+			if (code == 30000) { // 预登录成功
+				const contentModel : GyContentModel = GyContentModel.current();
+				const success : UniVerifyManagerPreLoginSuccess = {
+					number: contentModel.pn,
+					slogan: contentModel.slogan,
+					privacyName: contentModel.term,
+					privacyUrl: contentModel.link
+				};
+				this.preLoginResult = success;
+				options.success?.(success);
+				options.complete?.(success);
+			} else {
+				const cause = this.getSourceError(res!);
+				const fail : UniVerifyManagerPreLoginFail = new UniVerifyManagerPreLoginFailImpl(code, null, cause);
+				options.fail?.(fail);
+				options.complete?.(fail);
+			}
+		});
+	}
+
+	isPreLoginValid() : boolean {
+		return this.isPreLogin();
+	}
+	private isPreLogin() : boolean {
+		return GeYanSdk.isPreGettedTokenValidate();
+	}
+	login(options : UniVerifyManagerLoginOptions) : void {
+		let privacyUrl = this.preLoginResult?.privacyUrl ?? "";
+		let privacyName = this.preLoginResult?.privacyName ?? "";
+		let phoneNumber = this.preLoginResult?.number ?? "";
+		let slogan = this.preLoginResult?.slogan ?? "";
+		const info = { privacyUrl: privacyUrl, privacyName: privacyName, number: phoneNumber, slogan: slogan, appId:this.appId,gyAppId:this.GYAppId,isPreLogin:this.isPreLogin() };
+		uniVerifyLogin(options, info);
+	}
+	close() : void {
+		uniVerifyClose(this.isPreLogin());
+	}
+}

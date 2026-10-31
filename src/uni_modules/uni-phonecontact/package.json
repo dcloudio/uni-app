@@ -1,0 +1,80 @@
+{
+  "id": "uni-phoneContact",
+  "displayName": "uni-phoneContact",
+  "version": "1.0.0",
+  "description": "uni-phoneContact",
+  "keywords": [
+    "uni-phoneContact"
+  ],
+  "repository": "",
+  "engines": {
+    "HBuilderX": "^3.6.8"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "",
+      "data": "",
+      "permissions": "android.permission.READ_CONTACTS"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [
+      "uni-media",
+      "uni-getAppBaseInfo",
+      "uni-actionSheet"
+    ],
+    "uni-ext-api": {
+      "uni": {
+        "addPhoneContact": {
+          "name": "addPhoneContact",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        },
+        "chooseContact": {
+          "name": "chooseContact",
+          "app": {
+            "js": false,
+            "kotlin": true,
+            "swift": true,
+            "arkts": true
+          }
+        }
+      }
+    },
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "u",
+        "aliyun": "u"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "u",
+          "vue3": "u"
+        },
+        "App": {
+          "app-android": "u",
+          "app-ios": "u",
+          "app-harmony": "u"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+import { StartFacialRecognitionVerifyOptions, StartFacialRecognitionVerifyScreenOrientation } from "./interface.uts"
+
+export const API_GET_FACIAL_RECOGNITION_META_INFO = 'getFacialRecognitionMetaInfo'
+// #region StartFacialRecognitionVerify
+export const API_START_FACIAL_RECOGNITION_VERIFY = 'startFacialRecognitionVerify'
+export const ScreenOrientations: StartFacialRecognitionVerifyScreenOrientation[] = ['land', 'port']
+export const StartFacialRecognitionVerifyApiOptions: ApiOptions<StartFacialRecognitionVerifyOptions> = {
+  formatArgs: new Map<string, Function>([
+    [
+      'screenOrientation',
+      function (screenOrientation: StartFacialRecognitionVerifyScreenOrientation, params: StartFacialRecognitionVerifyOptions) {
+        if (screenOrientation && !ScreenOrientations.includes(screenOrientation)) {
+          params.screenOrientation = ScreenOrientations[0]
+        }
+      }
+    ]
+  ])
+}
+export const StartFacialRecognitionVerifyApiProtocol = new Map<string, ProtocolOptions>([
+  [
+    'certifyId',
+    {
+      type: 'string',
+      required: true
+    }
+  ],
+  [
+    'progressBarColor',
+    {
+      type: 'string'
+    }
+  ],
+  [
+    'screenOrientation',
+    {
+      type: 'string'
+    }
+  ]
+])
+// #endregion

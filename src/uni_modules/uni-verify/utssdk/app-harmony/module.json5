@@ -1,0 +1,42 @@
+{
+  "module": {
+    "name": "uni_modules__uni_verify",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1"
+    ],
+    "requestPermissions": [
+      {
+        //允许应用程序联网，用于访问网关和认证服务器
+        "name": "ohos.permission.INTERNET",
+      },
+      {
+        //获取网络状态，判断是否数据、wifi等
+        "name": "ohos.permission.GET_NETWORK_INFO",
+        "reason": "$string:get_network_info"
+      },
+      {
+        //允许获取wifi信息
+        "name": "ohos.permission.GET_WIFI_INFO",
+        "reason": "$string:get_wifi_info"
+      },
+      {
+        //允许应用配置数据网络
+        "name": "ohos.permission.SET_NETWORK_INFO",
+        "reason": "$string:set_network_info"
+      },
+      {
+        //用于创建唯一的gyuid标识
+        "name": "ohos.permission.APP_TRACKING_CONSENT",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ]
+        },
+        "reason": "$string:gy_oaid_tracking"
+      }
+    ]
+  }
+}

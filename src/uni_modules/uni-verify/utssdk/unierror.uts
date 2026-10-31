@@ -1,0 +1,132 @@
+import { UniVerifyManagerErrorCode, UniVerifyManagerPreLoginFail, UniVerifyManagerLoginFail } from './interface.uts';
+
+/**
+ * 统一错误主题（模块）名称
+ */
+export const UniVerifyErrorSubject = 'uni-verify';
+
+/**
+ * 统一错误描述信息
+ */
+export const UniVerifyErrors : Map<UniVerifyManagerErrorCode, string> = new Map([
+	// [30002, 'user click other login'],
+	// [30003, 'user close page'],
+	[30001, 'user cancel'],
+	[30004, 'other error'],
+	[30005, 'prelogin error'],
+	[30006, 'login error'],
+	[30007, 'prelogin is not valid'],
+	[30008, 'The last request is in progress, please try again later'],
+	[40001, 'not agree terms'],
+	[40002, 'illegal ui']
+]);
+
+/**
+ * 错误实现
+ */
+export class UniVerifyManagerPreLoginFailImpl extends UniError implements UniVerifyManagerPreLoginFail {
+  override errCode: UniVerifyManagerErrorCode
+	constructor(errCode : UniVerifyManagerErrorCode, errMsg : string | null = null, cause : SourceError | null = null) {
+		super();
+		this.errSubject = UniVerifyErrorSubject;
+		this.errCode = errCode;
+		// #ifndef APP-HARMONY
+		// @ts-ignore
+		this.errMsg = UniVerifyErrors[errCode] ?? errMsg ?? "";
+		// #endif
+		// #ifdef APP-HARMONY
+		this.errMsg = UniVerifyErrors.get(errCode) ?? errMsg ?? "";
+		// #endif
+		if (cause != null) {
+			this.cause = cause as Error;
+		}
+	}
+}
+
+export class UniVerifyManagerLoginFailImpl extends UniError implements UniVerifyManagerLoginFail {
+  override errCode: UniVerifyManagerErrorCode
+	constructor(errCode : UniVerifyManagerErrorCode, errMsg : string | null = null, cause : SourceError | null = null) {
+		super();
+		this.errSubject = UniVerifyErrorSubject;
+		this.errCode = errCode;
+		// #ifndef APP-HARMONY
+		// @ts-ignore
+		this.errMsg = UniVerifyErrors[errCode] ?? errMsg ?? "";
+		// #endif
+		// #ifdef APP-HARMONY
+		this.errMsg = UniVerifyErrors.get(errCode) ?? errMsg ?? "";
+		// #endif
+		if (cause != null) {
+			this.cause = cause as Error;
+		}
+	}
+}
+
+export class UniVerifyManagerSourceError extends SourceError {
+	public gyuid : string
+	public processID : string
+	public operatorType : number
+	constructor(code : number, message : string, gyuid : string, processID : string, operatorType : number,cause: SourceError | null = null) {
+		// #ifdef APP-ANDROID || APP-HARMONY
+		super(message)
+		// #endif
+
+		this.gyuid = gyuid;
+		this.processID = processID;
+		this.operatorType = operatorType;
+
+		// #ifdef APP-IOS
+		super()
+		this.message = message;
+		// #endif
+		this.code = code
+		this.subject = "gysdk";
+		if (cause != null) {
+			this.cause = cause as Error;
+		}
+	}
+	// #ifdef APP-ANDROID || APP-HARMONY
+	// #ifdef APP-ANDROID
+	override toJSON() : any | null {
+		const res = super.toJSON();
+		if (res instanceof UTSJSONObject) {
+	// #endif
+	// #ifdef APP-HARMONY
+	override toJSON() : any {
+		const res = super.toJSON();
+		if (res) {
+	// #endif
+			res['code'] = this.code;
+			res['subject'] = this.subject;
+			res['gyuid'] = this.gyuid;
+			res['processID'] = this.processID;
+			res['operatorType'] = this.operatorType;
+		}
+		return res;
+	}
+	// #endif
+}
+
+export class UniVerifyManagerOperatorSourceError extends SourceError {
+
+	constructor(message : string) {
+		// #ifdef APP-ANDROID || APP-HARMONY
+		super(message)
+		// #endif
+
+		// #ifdef APP-IOS
+		super()
+		this.message = message;
+		// #endif
+	}
+	// #ifdef APP-ANDROID || APP-HARMONY
+	override toJSON() : any | null {
+		const res = super.toJSON();
+		if (res instanceof UTSJSONObject) {
+			res['code'] = this.code;
+			res['subject'] = this.subject;
+		}
+		return res;
+	}
+	// #endif
+}

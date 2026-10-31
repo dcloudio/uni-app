@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+	package="uts.sdk.modules.DCloudUniVerify">
+	<application>
+		<!-- 个推appid配置 -->
+		<meta-data android:name="GETUI_APPID" android:value="${GETUI_APPID}" />
+		<!-- 个验appid配置 -->
+		<meta-data android:name="GY_APP_ID" android:value="${GY_APP_ID}" />
+		<!-- 个验渠道配置 -->
+		<meta-data android:name="GT_INSTALL_CHANNEL" android:value="HBuilder" />
+	</application>
+</manifest>

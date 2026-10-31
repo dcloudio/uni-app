@@ -1,0 +1,154 @@
+<template>
+	<scroll-view class="page">
+		<view class="section">
+			<text class="title">uni-data-checkbox 右侧对勾</text>
+			<view class="frame">
+				<uni-data-checkbox
+					v-model="componentValue"
+					mode="list"
+					icon="right"
+					:localdata="options"
+					@change="onComponentChange"
+				/>
+			</view>
+			<text class="result">当前值：{{ componentValue }}，change 次数：{{ componentChangeCount }}</text>
+		</view>
+
+		<view class="section">
+			<text class="title">radio-group + label</text>
+			<view class="frame">
+				<radio-group class="group">
+					<label
+						v-for="item in options"
+						:key="item.value"
+						class="row"
+						@click="onLabelClick(item)"
+					>
+						<text class="row-text">{{ item.text }}</text>
+						<view class="check" :class="{ 'check--selected': labelValue === item.value }"></view>
+					</label>
+				</radio-group>
+			</view>
+			<text class="result">当前值：{{ labelValue }}，click 次数：{{ labelClickCount }}</text>
+		</view>
+
+		<view class="section">
+			<text class="title">view + view</text>
+			<view class="frame group">
+				<view
+					v-for="item in options"
+					:key="item.value"
+					class="row"
+					@click="onViewClick(item)"
+				>
+					<text class="row-text">{{ item.text }}</text>
+					<view class="check" :class="{ 'check--selected': viewValue === item.value }"></view>
+				</view>
+			</view>
+			<text class="result">当前值：{{ viewValue }}，click 次数：{{ viewClickCount }}</text>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+const options = [
+	{ text: '选项一', value: 0 },
+	{ text: '选项二', value: 1 },
+	{ text: '选项三', value: 2 }
+]
+
+const componentValue = ref(0)
+const componentChangeCount = ref(0)
+const labelValue = ref(0)
+const labelClickCount = ref(0)
+const viewValue = ref(0)
+const viewClickCount = ref(0)
+
+const onComponentChange = () => {
+	componentChangeCount.value++
+}
+
+const onLabelClick = (item) => {
+	labelValue.value = item.value
+	labelClickCount.value++
+	console.log('label click:', item.value)
+}
+
+const onViewClick = (item) => {
+	viewValue.value = item.value
+	viewClickCount.value++
+	console.log('view click:', item.value)
+}
+</script>
+
+<style>
+.page {
+	flex: 1;
+	padding-top: 10px;
+	background-color: var(--background-color, #f5f5f5);
+}
+
+.section {
+	padding: 16px;
+	margin-bottom: 10px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.title {
+	margin-bottom: 12px;
+	font-size: 16px;
+	font-weight: bold;
+	color: var(--text-color, #333333);
+}
+
+.frame {
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--divider-color, #e2e5e9);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.group {
+	flex-direction: column;
+}
+
+.row {
+	flex-direction: row;
+	align-items: center;
+	padding: 12px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: var(--divider-color, #e2e5e9);
+}
+
+.row-text {
+	flex: 1;
+	font-size: 14px;
+	color: var(--text-color, #333333);
+}
+
+.check {
+	width: 7px;
+	height: 13px;
+	margin-right: 5px;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: var(--tips-color, #007aff);
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: var(--tips-color, #007aff);
+	transform: rotate(45deg);
+	opacity: 0;
+}
+
+.check--selected {
+	opacity: 1;
+}
+
+.result {
+	margin-top: 10px;
+	font-size: 13px;
+	color: var(--secondary-text-color, #657180);
+}
+</style>

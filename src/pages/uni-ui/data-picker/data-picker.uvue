@@ -1,0 +1,262 @@
+<template>
+  <scroll-view class="page">
+    <text class="desc">uni-data-picker 支持本地数据、云端数据和自定义插槽；下面示例会把 change、nodeclick、popupopened、popupclosed、inputclick 的触发结果实时显示在页面底部。</text>
+
+    <text class="title">单列本地数据</text>
+    <view class="uni-px-5 uni-pb-5">
+      <uni-data-picker placeholder="请选择城市" popup-title="请选择" tab-placeholder="请选择" :localdata="cityList"
+        v-model="cityValue" @change="onchange" @nodeclick="onnodeclick" @popupopened="onpopupopened"
+        @popupclosed="onpopupclosed" @inputclick="inputclick"></uni-data-picker>
+    </view>
+
+    <text class="title">多列本地数据</text>
+    <view class="uni-px-5 uni-pb-5">
+      <uni-data-picker placeholder="请选择班级" popup-title="请选择" tab-placeholder="请选择" :localdata="classDataTree"
+        v-model="classValue" @change="onchange" @nodeclick="onnodeclick" @popupopened="onpopupopened"
+        @popupclosed="onpopupclosed" @inputclick="inputclick"></uni-data-picker>
+    </view>
+
+    <text class="title">只读模式（点击输入框触发 inputclick）</text>
+    <view class="uni-px-5 uni-pb-5">
+      <uni-data-picker placeholder="只读状态，不可选择" popup-title="请选择" tab-placeholder="请选择" :localdata="classDataTree"
+        :readonly="true" v-model="classValue" @inputclick="inputclick"></uni-data-picker>
+    </view>
+
+    <text class="title">externalClass 自定义输入框、弹出框样式</text>
+    <view class="uni-px-5 uni-pb-5">
+      <uni-data-picker placeholder="请选择班级" popup-title="请选择" tab-placeholder="请选择" :localdata="classDataTree"
+        v-model="externalClassValue" input-class="demo-picker-input" error-class="demo-picker-error"
+        popup-class="demo-picker-popup" cover-class="demo-picker-cover" @change="onchange"
+        @nodeclick="onnodeclick" @popupopened="onpopupopened" @popupclosed="onpopupclosed"></uni-data-picker>
+    </view>
+
+    <text class="title">自定义插槽</text>
+    <uni-data-picker v-slot:default="{ data, error }" title="请选择" :localdata="classDataTree" tab-placeholder="请选择"
+      v-model="classValue">
+      <view class="input-border">
+        <view v-if="error" class="error">
+          <text>{{ error }}</text>
+        </view>
+        <view v-else-if="data.length" class="input-selected">
+          <view v-for="(item, index) in data" :key="index" class="selected-item">
+            <text>{{ item.text }}</text>
+          </view>
+        </view>
+        <view v-else><text>请选择</text></view>
+      </view>
+    </uni-data-picker>
+
+    <text class="title">Cloud 数据 (树形)</text>
+    <uni-data-picker placeholder="请选择地址" popup-title="请选择所在地区" tab-placeholder="请选择" :preload="true"
+      :step-searh="true" self-field="code" parent-field="parent_code" collection="opendb-city-china" orderby="value asc"
+      :page-size="50" field="code as value, name as text, eq(type, 2) as isleaf" v-model="address"
+      @nodeclick="onnodeclick" @change="onchange" @popupopened="onpopupopened" @popupclosed="onpopupclosed">
+    </uni-data-picker>
+
+    <text class="title">事件结果</text>
+    <view class="event-panel">
+      <view class="event-row">
+        <text class="event-label">最近事件</text>
+        <text class="event-value">{{ eventState.lastEvent }}</text>
+      </view>
+      <view class="event-row">
+        <text class="event-label">弹窗状态</text>
+        <text class="event-value">{{ eventState.popupState }}</text>
+      </view>
+      <view class="event-row">
+        <text class="event-label">change</text>
+        <text class="event-value">{{ eventState.changeValue }}</text>
+      </view>
+      <view class="event-row">
+        <text class="event-label">nodeclick</text>
+        <text class="event-value">{{ eventState.nodeClick }}</text>
+      </view>
+      <view class="event-row">
+        <text class="event-label">inputclick</text>
+        <text class="event-value">{{ eventState.inputClickCount }} 次</text>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  type EventState = {
+    lastEvent : string,
+    popupState : string,
+    changeValue : string,
+    nodeClick : string,
+    inputClickCount : number
+  }
+
+  const address = ref('110101')
+  const classValue = ref('1-2')
+  const externalClassValue = ref('')
+  const classDataTree = ref(buildClassDataTree())
+  const cityValue = ref('')
+  const cityList = ref(buildCityList())
+
+  const eventState = reactive<EventState>({
+    lastEvent: '暂无',
+    popupState: '未打开',
+    changeValue: '暂无',
+    nodeClick: '暂无',
+    inputClickCount: 0
+  })
+
+  function buildCityList() : Array<UTSJSONObject> {
+    const cityNames : Array<string> = ['北京市', '上海市', '广州市', '深圳市', '杭州市', '成都市', '武汉市', '西安市', '南京市', '重庆市']
+    const list : Array<UTSJSONObject> = []
+    cityNames.forEach((name : string, index : number) => {
+      const item : UTSJSONObject = {
+        text: name,
+        value: `${index + 1}`
+      }
+      list.push(item)
+    })
+    return list
+  }
+
+  function buildClassDataTree() : Array<UTSJSONObject> {
+    const tree : Array<UTSJSONObject> = []
+    for (let i = 1; i <= 10; i++) {
+      const children : Array<UTSJSONObject> = []
+      for (let j = 1; j <= 50; j++) {
+        const child : UTSJSONObject = {
+          text: `${i}.${j}班`,
+          value: `${i}-${j}`
+        }
+        children.push(child)
+      }
+      const node : UTSJSONObject = {
+        text: `${i}年级`,
+        value: `${i}-0`,
+        children: children
+      }
+      tree.push(node)
+    }
+    return tree
+  }
+
+  function formatNodes(nodes : Array<UTSJSONObject>) : string {
+    if (nodes.length == 0) {
+      return '空'
+    }
+    const parts : Array<string> = []
+    nodes.forEach((node : UTSJSONObject) => {
+      parts.push(`${node['text']}(${node['value']})`)
+    })
+    return parts.join(' / ')
+  }
+
+  function onnodeclick(e : any) {
+    const node = e as UTSJSONObject
+    eventState.lastEvent = 'nodeclick'
+    eventState.nodeClick = `${node['text']}(${node['value']})`
+    console.log('nodeclick', node)
+  }
+
+  function onpopupopened(e : any) {
+    eventState.lastEvent = 'popupopened'
+    eventState.popupState = '已打开'
+    console.log('onpopupopened')
+  }
+
+  function onpopupclosed(e : any) {
+    eventState.lastEvent = 'popupclosed'
+    eventState.popupState = '已关闭'
+    console.log('onpopupclosed')
+  }
+
+  function onchange(e : any) {
+    const nodes = e.detail.value as Array<UTSJSONObject>
+    eventState.lastEvent = 'change'
+    eventState.changeValue = formatNodes(nodes)
+    console.log('onchange', nodes)
+  }
+
+  function inputclick(e : any) {
+    eventState.lastEvent = 'inputclick'
+    eventState.inputClickCount += 1
+    console.log('inputclick')
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    padding: 15px;
+  }
+
+  .desc {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--text-color, #64748b);
+  }
+
+  .title {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 20px 0 5px 0;
+    color: var(--text-color, #333333);
+  }
+
+  .input-border {
+    border: 1px solid #b3e5fc;
+    border-radius: 5px;
+    padding: 2px 4px;
+  }
+
+  .input-selected {
+    flex-direction: row;
+    line-height: 2;
+  }
+
+  /* externalClass：自定义 uni-data-picker 输入框 */
+  .demo-picker-input {
+    background-color: #f0fdf4;
+    border-color: #22c55e;
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+
+  .demo-picker-error {
+    color: #ea580c;
+  }
+
+  /* externalClass：自定义 uni-data-picker 弹出框和遮罩层 */
+  .demo-picker-popup {
+    height: 300px;
+    background-color: #f0fdf4;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+  }
+
+  .demo-picker-cover {
+    background-color: rgba(34, 197, 94, 0.25);
+  }
+
+  .event-panel {
+    background-color: var(--active-background-color, #f8fafc);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+  }
+
+  .event-row {
+    flex-direction: row;
+    padding: 4px 0;
+  }
+
+  .event-label {
+    width: 76px;
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .event-value {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-color, #0f172a);
+  }
+</style>

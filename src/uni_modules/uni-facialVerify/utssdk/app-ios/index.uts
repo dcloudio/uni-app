@@ -1,0 +1,118 @@
+import { UTSiOS, JSON } from "DCloudUTSFoundation"
+import { AliyunFaceAuthFacade } from "AliyunFaceAuthFacade" assert { type: "implementationOnly" };
+import { ZIMResponse, ZIMResponseCode } from "DTFIdentityManager" assert { type: "implementationOnly" };
+import { DispatchQueue } from 'Dispatch';
+import { CharacterSet } from 'Foundation';
+import {
+	StartFacialRecognitionVerifySuccess,
+	StartFacialRecognitionVerifyOptions,
+	GetFacialRecognitionMetaInfo,
+	StartFacialRecognitionVerify
+} from "../interface.uts"
+import { FacialRecognitionVerifyErrorImpl } from "../unierror.uts"
+
+let isLoadService : boolean = false;
+let faceAuth : FacialRecognition = new FacialRecognition();
+
+export const startFacialRecognitionVerify : StartFacialRecognitionVerify = function (faceStyle : StartFacialRecognitionVerifyOptions) {
+	faceAuth.initSDK();
+	faceAuth.startVerify(faceStyle);
+}
+
+export const getFacialRecognitionMetaInfo : GetFacialRecognitionMetaInfo = function () : string {
+	faceAuth.initSDK();
+	return faceAuth.getMetaInfo();
+}
+
+class FacialRecognition {
+	initSDK() {
+		faceInit()
+	}
+	startVerify(options : StartFacialRecognitionVerifyOptions){
+		faceStartVerify(options)
+	}
+	getMetaInfo() : string {
+		return faceGetMetaInfo()
+	}
+	private faceInit(){
+		if (isLoadService == false) {
+			isLoadService = true;
+			AliyunFaceAuthFacade.initSDK()
+		}
+	}
+	private faceGetMetaInfo() : string {
+		const metaInfo = AliyunFaceAuthFacade.getMetaInfo()
+		const meta = JSON.stringify(metaInfo)
+		if (meta != null) {
+			return meta!
+		} else {
+			return ""
+		}
+	}
+	
+	private faceStartVerify(options : StartFacialRecognitionVerifyOptions) {
+		if (options.certifyId != null && options.certifyId.length > 0) {
+			const extParams = new Map<string, any>();
+			if (options.progressBarColor != null) {
+				const characterSet = new CharacterSet(charactersIn = "#")
+				const progressBarColor = options.progressBarColor!.trimmingCharacters(in = characterSet)
+				extParams.set("ext_params_key_ocr_face_circle_color", progressBarColor);
+			}
+			DispatchQueue.main.async(execute = () : void => {
+				extParams.set("currentCtr", UTSiOS.getCurrentViewController());
+				AliyunFaceAuthFacade.verify(with = options.certifyId, extParams = extParams, onCompletion = (response : ZIMResponse | null) : void => {
+					if (response != null) {
+						this.handleResponse(options, response!)
+					}
+				})
+			})
+		} else {
+			let result = new FacialRecognitionVerifyErrorImpl(10001, null)
+			options.fail?.(result)
+			options.complete?.(result)
+		}
+	}
+	private handleResponse(options : StartFacialRecognitionVerifyOptions, response : ZIMResponse) {
+		let causeError = new SourceError()
+		causeError.code = Number.from(response.code.rawValue) 
+		causeError.message = response.retMessageSub ?? ""
+		
+		let errorMessage = '刷脸异常'
+		let errorCode = 10010
+		if (response.code == ZIMResponseCode.ZIMResponseSuccess) {
+			errorCode = 0
+			errorMessage = '刷脸完成'
+		}
+		if (response.code == ZIMResponseCode.ZIMInternalError) {
+			errorCode = 10010
+			errorMessage = '刷脸异常'
+		}
+		if (response.code == ZIMResponseCode.ZIMInterrupt) {
+			errorCode = 10011
+			errorMessage = '验证中断'
+		}
+		if (response.code == ZIMResponseCode.ZIMNetworkfail) {
+			errorCode = 10012
+			errorMessage = '网络异常'
+		}
+		if (response.code == ZIMResponseCode.ZIMTIMEError) {
+			errorCode = 10020
+			errorMessage = '设备设置时间异常'
+		}
+		if (response.code == ZIMResponseCode.ZIMResponseFail) {
+			errorCode = 10013
+			errorMessage = '刷脸失败'
+		}
+		
+		if (errorCode == 0) {
+			let result : StartFacialRecognitionVerifySuccess = { "errSubject": 'uni-startFacialRecognitionVerify', "errCode": errorCode, "errMsg": errorMessage, "cause": causeError }
+			options.success?.(result)
+			options.complete?.(result)
+		} else {
+			let result = new FacialRecognitionVerifyErrorImpl(errorCode, causeError)
+			options.fail?.(result)
+			options.complete?.(result)
+		}
+		
+	}
+}

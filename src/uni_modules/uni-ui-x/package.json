@@ -61,7 +61,9 @@
       "uni-combobox",
       "uni-combox-x",
       "uni-icons",
-      "uni-expandable-text"
+      "uni-expandable-text",
+      "uni-forms-x",
+      "uni-data-checkbox-x"
     ],
     "encrypt": [],
     "platforms": {

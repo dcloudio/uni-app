@@ -1,0 +1,6 @@
+framework module faceguard {
+  umbrella header "faceguard.h"
+
+  export *
+  module * { export * }
+}

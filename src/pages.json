@@ -3141,11 +3141,50 @@
 						"navigationBarTitleText": "Icons 图标"
 					}
 				},
+				{
+					"path": "forms/form-item",
+					"style": {
+						"navigationBarTitleText": "表单项布局"
+					}
+				},
+				{
+					"path": "forms/formcard",
+					"style": {
+						"navigationBarTitleText": "表单卡片"
+					}
+				},
+				{
+					"path": "data-checkbox/data-checkbox",
+					"style": {
+						"navigationBarTitleText": "uni-data-checkbox"
+					}
+				},
+				{
+					"path": "data-checkbox/alipay-label-event",
+					"style": {
+						"navigationBarTitleText": "label 点击验证"
+					}
+				},
 				// #ifdef VUE3-VAPOR || MP
 				{
 					"path": "expandable-text/expandable-text",
 					"style": {
 						"navigationBarTitleText": "可折叠文本"
+					}
+				}
+				// #endif
+				// #ifdef VUE3-VAPOR
+				,
+				{
+					"path": "data-picker/data-picker",
+					"style": {
+						"navigationBarTitleText": "uni-data-picker"
+					}
+				},
+				{
+					"path": "data-picker/data-picker-view",
+					"style": {
+						"navigationBarTitleText": "uni-data-picker-view"
 					}
 				}
 				// #endif

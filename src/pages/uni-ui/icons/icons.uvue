@@ -141,6 +141,7 @@
 		background-color: var(--list-background-color, #ffffff);
 		flex-direction: row;
 		flex-wrap: wrap;
+		align-items: flex-start;
 	}
 
 	.surface-dark {
@@ -149,15 +150,17 @@
 
 	.icon-item {
 		width: 25%;
-		min-height: 84px;
-		padding: 10px 4px;
-		align-items: center;
-		justify-content: center;
+		padding: 12px 4px 10px;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: flex-start;
 	}
 
 	.icon-label {
+		width: 100%;
 		margin-top: 8px;
 		font-size: 12px;
+		line-height: 16px;
 		text-align: center;
 		color: var(--text-color, #333333);
 		opacity: 0.65;
@@ -173,6 +176,12 @@
 	}
 
 	.icon-glyph {
+		width: 30px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		align-self: center;
+		flex-shrink: 0;
 		color: var(--text-color, #333333);
 		font-size: 30px;
 		opacity: 0.65;

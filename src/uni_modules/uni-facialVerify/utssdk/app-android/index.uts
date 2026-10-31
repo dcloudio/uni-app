@@ -1,0 +1,137 @@
+import { getUniActivity } from "io.dcloud.uts.android";
+
+import ZIMFacade from 'com.alipay.face.api.ZIMFacade';
+import ZIMCallback from 'com.alipay.face.api.ZIMCallback';
+import ZIMResponse from 'com.alipay.face.api.ZIMResponse';
+import ZIMFacadeBuilder from 'com.alipay.face.api.ZIMFacadeBuilder';
+import Build from 'android.os.Build';
+
+import {
+	StartFacialRecognitionVerifySuccess,
+	StartFacialRecognitionVerifyOptions,
+	GetFacialRecognitionMetaInfo,
+	StartFacialRecognitionVerify
+} from "../interface.uts"
+import { FacialRecognitionVerifyErrorImpl } from "../unierror.uts"
+import Color from 'android.graphics.Color';
+
+
+export const startFacialRecognitionVerify : StartFacialRecognitionVerify = function (faceStyle : StartFacialRecognitionVerifyOptions) {
+	if(!isSupport()) {
+		let uniError = new FacialRecognitionVerifyErrorImpl(10002, null)
+		faceStyle?.fail?.(uniError)
+		faceStyle?.complete?.(uniError)
+		return;
+	}
+	init()
+	startFaceVerify(faceStyle)
+}
+
+export const getFacialRecognitionMetaInfo : GetFacialRecognitionMetaInfo = function () : string {
+	if(!isSupport()) {
+		return ""
+	}
+	init()
+	return ZIMFacade.getMetaInfos(getUniActivity())
+}
+
+
+let isInit : boolean = false;
+function init() {
+	if (!isInit && isSupport()) {
+		isInit = true
+		ZIMFacade.install(getUniActivity())
+	}
+}
+
+function isSupport():boolean {
+	return (Build.CPU_ABI.indexOf("x86") < 0)
+}
+
+function startFaceVerify(faceStyle : StartFacialRecognitionVerifyOptions) {
+	if (!isNotNull(faceStyle.certifyId)) {
+		let uniError = new FacialRecognitionVerifyErrorImpl(10001, null)
+		faceStyle?.fail?.(uniError)
+		faceStyle?.complete?.(uniError)
+		return;
+	}
+	var extParam = hashMapOf<string, string>();
+
+	if (isNotNull(faceStyle.progressBarColor)) {
+		try {
+			Color.parseColor(faceStyle.progressBarColor!);
+			extParam.put("ext_params_key_face_progress_color", faceStyle.progressBarColor!)
+		} catch (e : Exception) {
+		}
+	}
+	if (isNotNull(faceStyle.screenOrientation)) {
+		let orit = "ext_params_val_screen_port"
+		if (faceStyle.screenOrientation == "land") {
+			orit = "ext_params_val_screen_land"
+		}
+		extParam.put("ext_params_key_screen_orientation", orit)
+	}
+	ZIMFacadeBuilder.create(getUniActivity()).verify(faceStyle.certifyId, true, extParam, new AliFaceCallBack(faceStyle))
+}
+
+function isNotNull(value ?: string | null) : boolean {
+	return value != null && value.length > 0
+}
+
+class AliFaceCallBack implements ZIMCallback {
+
+	faceStyle : StartFacialRecognitionVerifyOptions | null
+	constructor(faceStyle : StartFacialRecognitionVerifyOptions | null) {
+		this.faceStyle = faceStyle
+	}
+
+	override response(response : ZIMResponse) : boolean {
+		let code : number = 10010
+		let errorMsg = "刷脸异常";
+		if (null != response) {
+			switch (response.code) {
+				case 1000:
+					code = 0
+					errorMsg = "刷脸完成"
+					break
+				case 1001:
+					code = 10010
+					errorMsg = "刷脸异常"
+					break
+				case 2002:
+					code = 10012
+					errorMsg = "网络异常"
+					break
+				case 1003:
+					code = 10011
+					errorMsg = "验证中断"
+					break
+				case 2006:
+					code = 10013
+					errorMsg = "刷脸验证失败"
+					break
+				case 2003:
+					code = 10020
+					errorMsg = '设备设置时间异常'
+					break
+			}
+			let cause = new SourceError()
+			cause.code = response.code
+			cause.message = response.reason
+			let uniError = new FacialRecognitionVerifyErrorImpl(code, cause)
+			if (response.code == 1000) {
+				let uniSuccess : StartFacialRecognitionVerifySuccess = { "errSubject": "uni-startFacialRecognitionVerify", "errCode": code, "errMsg": errorMsg };
+				uniSuccess.cause = cause
+				this.faceStyle?.success?.(uniSuccess)
+			} else {
+				this.faceStyle?.fail?.(uniError)
+			}
+			this.faceStyle?.complete?.(uniError)
+		} else {
+			let uniError = new FacialRecognitionVerifyErrorImpl(10010, null)
+			this.faceStyle?.fail?.(uniError)
+			this.faceStyle?.complete?.(uniError)
+		}
+		return true;
+	}
+}

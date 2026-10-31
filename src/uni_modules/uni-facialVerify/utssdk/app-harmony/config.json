@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "authbase": "./libs/authbase-1.2.2-241219.har",
+    "livenessverify": "./libs/livenessverify-1.2.2-241219.har",
+    "ocrverify": "./libs/ocrverify-1.2.2-241219.har",
+    "aliyunfacade": "./libs/aliyunfacade-1.2.2-241219.har",
+    "aliyunfaceguard": "./libs/aliyunfaceguard-1.0.6-20241219.har"
+  }
+}

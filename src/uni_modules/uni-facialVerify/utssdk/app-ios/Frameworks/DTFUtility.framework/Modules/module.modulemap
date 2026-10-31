@@ -1,0 +1,6 @@
+framework module DTFUtility {
+  umbrella header "DTFUtility.h"
+
+  export *
+  module * { export * }
+}

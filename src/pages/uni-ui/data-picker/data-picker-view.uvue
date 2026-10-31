@@ -1,0 +1,275 @@
+<template>
+  <scroll-view class="page">
+    <text class="desc">uni-data-picker-view 是不带弹窗的选择面板，可单独嵌入页面使用；下面示例会把 change、nodeclick 的触发结果实时显示在页面底部。</text>
+
+    <view class="demo-section">
+      <text class="title">单列本地数据</text>
+      <view class="result-row">
+        <text class="result-label">选择结果：</text>
+        <text class="result-value" :class="cityResult == '未选择' ? 'result-value-empty' : ''">{{ cityResult }}</text>
+      </view>
+      <uni-data-picker-view class="data-picker-view" :localdata="cityList" tab-placeholder="请选择" v-model="cityValue"
+        @nodeclick="onnodeclick" @change="onCityChange">
+      </uni-data-picker-view>
+    </view>
+
+    <view class="demo-section">
+      <text class="title">多列本地数据（树形）</text>
+      <view class="result-row">
+        <text class="result-label">选择结果：</text>
+        <text class="result-value" :class="classResult == '未选择' ? 'result-value-empty' : ''">{{ classResult }}</text>
+      </view>
+      <uni-data-picker-view class="data-picker-view" :localdata="classDataTree" tab-placeholder="请选择"
+        v-model="classValue" @nodeclick="onnodeclick" @change="onClassChange">
+      </uni-data-picker-view>
+    </view>
+
+    <view class="demo-section">
+      <text class="title">云端数据（树形）</text>
+      <view class="result-row">
+        <text class="result-label">选择结果：</text>
+        <text class="result-value" :class="addressResult == '未选择' ? 'result-value-empty' : ''">{{ addressResult }}</text>
+      </view>
+      <uni-data-picker-view class="data-picker-view" :preload="true" :step-searh="true" self-field="code"
+        parent-field="parent_code" collection="opendb-city-china" orderby="value asc" field="code as value, name as text"
+        tab-placeholder="请选择" :page-size="50" v-model="address" @nodeclick="onnodeclick" @change="onAddressChange">
+      </uni-data-picker-view>
+    </view>
+
+    <view class="demo-section">
+      <text class="title">externalClass 自定义面板样式</text>
+      <view class="result-row">
+        <text class="result-label">选择结果：</text>
+        <text class="result-value" :class="externalResult == '未选择' ? 'result-value-empty' : ''">{{ externalResult }}</text>
+      </view>
+      <uni-data-picker-view class="data-picker-view" :preload="true" :step-searh="true" self-field="code"
+        parent-field="parent_code" collection="opendb-city-china" orderby="value asc" field="code as value, name as text"
+        tab-placeholder="请选择" :page-size="50" v-model="externalAddress" list-view-class="demo-list-view"
+        list-item-class="demo-list-item" list-item-check-class="demo-check" error-class="demo-picker-view-error"
+        @nodeclick="onnodeclick" @change="onExternalChange">
+      </uni-data-picker-view>
+    </view>
+
+    <text class="title">事件结果</text>
+    <view class="event-panel">
+      <view class="event-row">
+        <text class="event-label">最近事件</text>
+        <text class="event-value">{{ eventState.lastEvent }}</text>
+      </view>
+      <view class="event-row">
+        <text class="event-label">change</text>
+        <text class="event-value">{{ eventState.changeValue }}</text>
+      </view>
+      <view class="event-row">
+        <text class="event-label">nodeclick</text>
+        <text class="event-value">{{ eventState.nodeClick }}</text>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="ts">
+  type EventState = {
+    lastEvent : string,
+    changeValue : string,
+    nodeClick : string
+  }
+
+  const address = ref('110101')
+  const cityValue = ref('')
+  const classValue = ref('1-2')
+  const externalAddress = ref('110101')
+  const cityResult = ref('未选择')
+  const classResult = ref('未选择')
+  const addressResult = ref('未选择')
+  const externalResult = ref('未选择')
+  const cityList = ref(buildCityList())
+  const classDataTree = ref(buildClassDataTree())
+
+  function buildCityList() : Array<UTSJSONObject> {
+    const cityNames : Array<string> = ['北京市', '上海市', '广州市', '深圳市', '杭州市', '成都市', '武汉市', '西安市', '南京市', '重庆市']
+    const list : Array<UTSJSONObject> = []
+    cityNames.forEach((name : string, index : number) => {
+      const item : UTSJSONObject = {
+        text: name,
+        value: `${index + 1}`
+      }
+      list.push(item)
+    })
+    return list
+  }
+
+  function buildClassDataTree() : Array<UTSJSONObject> {
+    const tree : Array<UTSJSONObject> = []
+    for (let i = 1; i <= 10; i++) {
+      const children : Array<UTSJSONObject> = []
+      for (let j = 1; j <= 50; j++) {
+        const child : UTSJSONObject = {
+          text: `${i}.${j}班`,
+          value: `${i}-${j}`
+        }
+        children.push(child)
+      }
+      const node : UTSJSONObject = {
+        text: `${i}年级`,
+        value: `${i}-0`,
+        children: children
+      }
+      tree.push(node)
+    }
+    return tree
+  }
+
+  const eventState = reactive<EventState>({
+    lastEvent: '暂无',
+    changeValue: '暂无',
+    nodeClick: '暂无'
+  })
+
+  function formatNodes(nodes : Array<UTSJSONObject>) : string {
+    if (nodes.length == 0) {
+      return '空'
+    }
+    const parts : Array<string> = []
+    nodes.forEach((node : UTSJSONObject) => {
+      parts.push(`${node['text']}(${node['value']})`)
+    })
+    return parts.join(' / ')
+  }
+
+  function onnodeclick(e : any) {
+    const node = e as UTSJSONObject
+    eventState.lastEvent = 'nodeclick'
+    eventState.nodeClick = `${node['text']}(${node['value']})`
+    console.log('nodeclick', node)
+  }
+
+  function onchange(e : any) {
+    const nodes = e.detail.value as Array<UTSJSONObject>
+    eventState.lastEvent = 'change'
+    eventState.changeValue = formatNodes(nodes)
+    console.log('onchange', nodes)
+  }
+
+  function onCityChange(e : any) {
+    cityResult.value = formatNodes(e.detail.value as Array<UTSJSONObject>)
+    onchange(e)
+  }
+
+  function onClassChange(e : any) {
+    classResult.value = formatNodes(e.detail.value as Array<UTSJSONObject>)
+    onchange(e)
+  }
+
+  function onAddressChange(e : any) {
+    addressResult.value = formatNodes(e.detail.value as Array<UTSJSONObject>)
+    onchange(e)
+  }
+
+  function onExternalChange(e : any) {
+    externalResult.value = formatNodes(e.detail.value as Array<UTSJSONObject>)
+    onchange(e)
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    padding: 15px;
+  }
+
+  .desc {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--text-color, #64748b);
+  }
+
+  .title {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 20px 0 5px 0;
+    color: var(--text-color, #333333);
+  }
+
+  .demo-section {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+
+  .data-picker-view {
+    height: 300px;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+  }
+
+  .result-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 0;
+  }
+
+  .result-label {
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .result-value {
+    font-size: 13px;
+    font-weight: bold;
+    color: #0084cc;
+    background-color: rgba(0, 170, 255, 0.12);
+    border: 1px solid rgba(0, 170, 255, 0.35);
+    border-radius: 5px;
+    padding: 3px 10px;
+  }
+
+  .result-value-empty {
+    font-weight: normal;
+    color: #94a3b8;
+    background-color: rgba(148, 163, 184, 0.12);
+    border-color: rgba(148, 163, 184, 0.3);
+  }
+
+  /* externalClass：自定义 uni-data-picker-view 面板 */
+  .demo-list-view {
+    background-color: #f8fafc;
+  }
+
+  .demo-list-item {
+    background-color: #f0fdf4;
+  }
+
+  .demo-check {
+    border-color: #22c55e;
+  }
+
+  .demo-picker-view-error {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+
+  .event-panel {
+    background-color: var(--active-background-color, #f8fafc);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+  }
+
+  .event-row {
+    flex-direction: row;
+    padding: 4px 0;
+  }
+
+  .event-label {
+    width: 76px;
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .event-value {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-color, #0f172a);
+  }
+</style>

@@ -1,0 +1,60 @@
+<template>
+  <native-view class="uni-canvas" @init="onNativeViewInit"></native-view>
+</template>
+
+<script setup lang="uts">
+  import { UniNativeCanvas, UniCanvasElement } from "@/uni_modules/uni-canvas-dom2";
+
+  defineOptions({
+    name: 'canvas',
+    // @ts-ignore
+    rootElement: {
+      name: 'uni-canvas-element',
+      class: UniCanvasElement,
+    }
+  });
+
+  let canvasView : UniNativeCanvas | null = null
+
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  const style = useComputedStyle({
+    properties: ['background-color'],
+    filterProperties: true
+  } as UseComputedStyleOptions)
+  const backgroundColor = computed<string>(() => {
+    return style.get('background-color')?.toString() ?? '#00000000'
+  })
+
+  watch([backgroundColor], () => {
+    canvasView?.updateBackground(backgroundColor.value)
+  })
+  // #endif
+
+  interface CanvasProps {
+    width ?: number;
+    height ?: number;
+  }
+  const props = withDefaults(defineProps<CanvasProps>(), {
+    width: 0,
+    height: 0,
+  });
+
+  function onNativeViewInit(e : UniNativeViewInitEvent) {
+    canvasView = new UniNativeCanvas(e.detail.element);
+    // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+    canvasView?.updateBackground(backgroundColor.value)
+    // #endif
+  }
+
+  onUnmounted(() => {
+    canvasView?.destroy()
+  })
+</script>
+
+<style>
+  .uni-canvas {
+    width: 300px;
+    height: 150px;
+    overflow: hidden;
+  }
+</style>

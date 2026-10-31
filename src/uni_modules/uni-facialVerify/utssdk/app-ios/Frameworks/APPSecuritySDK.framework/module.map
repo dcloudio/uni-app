@@ -1,0 +1,9 @@
+module APPSecuritySDK {
+    header "Headers/APSecureSdk.h"
+    header "Headers/APDID.h"
+    header "Headers/APDeviceColor.h"
+    header "Headers/APSign.h"
+    header "Headers/APDynamic.h"
+    header "Headers/ASSTokenResult.h"
+    export *
+}

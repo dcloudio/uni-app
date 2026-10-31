@@ -1,0 +1,6 @@
+framework module DTFIdentityManager {
+  umbrella header "DTFIdentityManager.h"
+
+  export *
+  module * { export * }
+}

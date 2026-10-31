@@ -1,0 +1,99 @@
+import { HashMap } from '@kit.ArkTS';
+import { ZimConstant, ZimFacade, ZimResponse, ZimCallBack } from 'aliyunfacade';
+import {
+  StartFacialRecognitionVerify, StartFacialRecognitionVerifyOptions, StartFacialRecognitionVerifySuccess,
+  GetFacialRecognitionMetaInfo, FacialRecognitionVerifyErrorCode
+} from '../interface.uts';
+import { API_GET_FACIAL_RECOGNITION_META_INFO, API_START_FACIAL_RECOGNITION_VERIFY, StartFacialRecognitionVerifyApiOptions, StartFacialRecognitionVerifyApiProtocol } from '../protocol.uts';
+import { onNativePageReady } from '@dcloudio/uni-runtime';
+import { FacialRecognitionVerifyUniErrors, FacialRecognitionVerifyErrorImpl, UniError_StartFacialRecognitionVerify } from '../unierror.uts';
+import { BusinessError } from '@ohos.base';
+
+export {
+  StartFacialRecognitionVerify, StartFacialRecognitionVerifyOptions, StartFacialRecognitionVerifySuccess,
+  GetFacialRecognitionMetaInfo, FacialRecognitionVerifyErrorCode, StartFacialRecognitionVerifyScreenOrientation
+} from '../interface.uts';
+
+onNativePageReady().then(() => {
+  ZimFacade.init(UTSHarmony.getUIAbilityContext()!)
+})
+
+export const getFacialRecognitionMetaInfo : GetFacialRecognitionMetaInfo = defineSyncApi<string>(
+  API_GET_FACIAL_RECOGNITION_META_INFO,
+  () => {
+    return ZimFacade.getMetaInfos(UTSHarmony.getUIAbilityContext())
+  }
+) as GetFacialRecognitionMetaInfo;
+
+function transformErrCode(errCode : string) : number {
+  switch (errCode) {
+    case 'Z1008':
+    case 'Z1009':
+    case 'Z1049':
+    case 'Z1050':
+    case 'Z1051':
+    case 'Z1052':
+    case 'Z1053':
+    case 'Z1054':
+    case 'Z6004':
+      return 10011
+    case 'Z1005':
+    case 'Z1006':
+    case 'Z1013':
+      return 10013
+    case 'Z1037': return 10001
+    case '1001': return 10010
+    case '1003': return 10010
+    case '2002': return 10012
+    case '2003': return 10020
+    case '2006': return 10013
+  }
+  return 0
+}
+
+export const startFacialRecognitionVerify : StartFacialRecognitionVerify = defineAsyncApi<StartFacialRecognitionVerifyOptions, StartFacialRecognitionVerifySuccess>(
+  API_START_FACIAL_RECOGNITION_VERIFY,
+  (args : StartFacialRecognitionVerifyOptions, executor : ApiExecutor<StartFacialRecognitionVerifySuccess>) => {
+    try {
+      let params : HashMap<string, string> = new HashMap();
+      // SDK 全屏显示，默认为true
+      params.set(ZimConstant.KEY_NEED_FULL_SCREEN, 'true');
+      // SDK 展示对客弹窗信息，默认为true
+      params.set(ZimConstant.KEY_USE_MESSAGE_BOX, 'true');
+      if (!args.certifyId.length) {
+        const errCode = 10001
+        const errMsg = FacialRecognitionVerifyUniErrors.get(errCode)
+        executor.reject(errMsg, { errCode } as ApiError);
+      }
+      ZimFacade.verify(UTSHarmony.getUIAbilityContext(), args.certifyId, {
+        onComplete: (response : ZimResponse) => {
+          let errCode = transformErrCode(response.code);
+          let cause : SourceError = new SourceError()
+          cause.code = parseFloat(response.code)
+          cause.message = JSON.stringify(response)
+          cause.subject = UniError_StartFacialRecognitionVerify
+
+          if (response.code === '1000') {
+            executor.resolve({
+              errCode: 0,
+              errMsg: 'startFacialRecognitionVerify:ok',
+              errSubject: UniError_StartFacialRecognitionVerify,
+              cause
+            } as StartFacialRecognitionVerifySuccess);
+          } else {
+            const errSubCode = transformErrCode(response.subCode);
+            if (errSubCode != 0) errCode = errSubCode
+            const error = new FacialRecognitionVerifyErrorImpl(errCode as FacialRecognitionVerifyErrorCode, cause)
+            executor.reject(error.errMsg, error as ApiError);
+          }
+        }
+      } as ZimCallBack, params)
+    } catch (error) {
+      const err = error as BusinessError
+      const errMsg = FacialRecognitionVerifyUniErrors.get(transformErrCode(err.code + '')) || err.message
+      executor.reject(errMsg, { errCode: err.code } as ApiError);
+    }
+  },
+  StartFacialRecognitionVerifyApiProtocol,
+  StartFacialRecognitionVerifyApiOptions
+) as StartFacialRecognitionVerify;

@@ -1,0 +1,208 @@
+/**
+ * 错误码
+ */
+export type FacialRecognitionVerifyErrorCode =
+/**
+ * 刷脸异常
+ */
+10010 |
+/**
+ * 网络异常
+ */
+10012 |
+/**
+ * 验证中断
+ */
+10011 |
+/**
+ * 刷脸验证失败
+ */
+10013 |
+/**
+ * 设备设置时间异常
+ */
+10020 |
+/**
+ * certifyId 不能为空
+ */
+10001 |
+/**
+ * 当前设备不支持
+ */
+10002;
+
+/**
+ * 认证时屏幕方向
+ */
+export type StartFacialRecognitionVerifyScreenOrientation =
+/**
+ * 横屏
+ */
+"land" |
+/**
+ * 竖屏
+ */
+"port";
+
+export interface IFacialRecognitionVerifyError extends IUniError {
+	errCode : FacialRecognitionVerifyErrorCode
+};
+
+export type StartFacialRecognitionVerifySuccess = {
+	/**
+	 * 错误码
+	 */
+	errCode : number,
+	/**
+	 * 调用API的名称
+	 */
+	errSubject : string,
+	/**
+	 * 错误的详细信息
+	 */
+	errMsg : string,
+	/**
+	 * 错误来源
+	 */
+	cause ?: SourceError
+}
+
+export type StartFacialRecognitionVerifySuccessCallback = (res : StartFacialRecognitionVerifySuccess) => void
+export type StartFacialRecognitionVerifyFailCallback = (res : IFacialRecognitionVerifyError) => void
+export type StartFacialRecognitionVerifyCompleteCallback = (res : any) => void
+
+export type StartFacialRecognitionVerifyOptions = {
+	/**
+	 * certifyId 调用实人认证的id
+	 */
+	certifyId : string,
+	/**
+	 * 活体检测页面的进度条颜色。
+	 *
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9+"
+	 *		},
+	 *    "ios": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "4.11"
+	 *    },
+	 *    "harmony": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *	}
+	 * }
+	 *
+	 */
+	progressBarColor ?: string | null,
+	/**
+	 * 认证界面UI朝向。
+	 * @type {StartFacialRecognitionVerifyScreenOrientation}
+	 * @defaultValue "port"
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"uniVer": "√",
+	 *			"unixVer": "3.9+"
+	 *		},
+	 *    "ios": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "4.11"
+	 *    },
+	 *    "harmony": {
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+	 *	}
+	 * }
+	 */
+	screenOrientation ?: StartFacialRecognitionVerifyScreenOrientation | null,
+	/**
+	 * 成功回调
+	 */
+	success ?: StartFacialRecognitionVerifySuccessCallback | null,
+	/**
+	 * 失败回调
+	 */
+	fail ?: StartFacialRecognitionVerifyFailCallback | null,
+	/**
+	 * 完成回调
+	 */
+	complete ?: StartFacialRecognitionVerifyCompleteCallback | null
+}
+
+/**
+ * 获取阿里云实人认证meta info
+ */
+export type GetFacialRecognitionMetaInfo = () => string
+
+/**
+ * 启动人脸识别
+ */
+export type StartFacialRecognitionVerify = (faceStyle : StartFacialRecognitionVerifyOptions) => void
+
+export interface Uni {
+	/**
+	 * 获取阿里云实人认证meta info
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/facialRecognitionVerify.html#getfacialrecognitionmetainfo
+	 * @description 获取阿里云实人认证meta info
+	 * @uniPlatform {
+	 *  "app": {
+	 *		"android": {
+	 *      "uniVer": "3.7.4",
+	 *			"unixVer": "3.9+"
+	 *		},
+	 *    "ios": {
+	 *      "uniVer": "3.7.4",
+	 *      "unixVer": "4.11"
+	 *    },
+   *    "harmony": {
+   *      "uniVer": "4.31",
+   *      "unixVer": "4.61",
+   *      "unixVaporVer": "5.0"
+   *    }
+	 *  },
+	 *  "web": {
+	 * 		"uniVer": "4.84",
+   *    "unixVer": "4.84"
+	 *  }
+	 * }
+	 * @uniVueVersion 2,3
+	 */
+	getFacialRecognitionMetaInfo() : string,
+	/**
+	 * 启动人脸识别
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html#startfacialrecognitionverify
+	 * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html#startfacialrecognitionverify
+	 * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/plugins/facialRecognitionVerify.html#startfacialrecognitionverify
+	 * @description 启动人脸识别
+	 * @uniPlatform {
+	 *  "app": {
+	 *		"android": {
+	 *			"uniVer": "3.7.4",
+	 *			"unixVer": "3.9+"
+	 *		},
+	 *    "ios": {
+	 *      "uniVer": "3.7.4",
+	 *      "unixVer": "4.11"
+	 *    },
+   *    "harmony": {
+   *      "uniVer": "4.31",
+   *      "unixVer": "4.61",
+   *      "unixVaporVer": "5.0"
+   *    }
+	 *	},
+	 *  "web": {
+	 * 		"uniVer": "x",
+   *    "unixVer": "x"
+	 *  }
+	 * }
+	 * @uniVueVersion 2,3
+	 */
+	startFacialRecognitionVerify(faceStyle : StartFacialRecognitionVerifyOptions) : void
+}

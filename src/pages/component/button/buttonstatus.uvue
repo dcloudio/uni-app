@@ -61,6 +61,10 @@
       <button class="margin-10 loading-class" :disabled="disabled_boolean" loading loading-class="custom-loading">
         自定义 loading 状态
       </button>
+
+      <button class="margin-10" :disabled="disabled_boolean" loading>
+        测试长文本换行测试长文本换行测试长文本换行测试长文本换行
+      </button>
       <!-- #endif -->
 
       <!-- #ifdef VUE3-VAPOR && APP-IOS -->

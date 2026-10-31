@@ -10,18 +10,39 @@ type Values = {
     height ?: number
 }
 
+// #ifdef WEB
+const RE_MQ_FEATURE = /^(min|max)?-?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
+// #endif
+// #ifndef WEB
 const RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
+// #endif
 
 export class UniMatchMediaElement extends UniViewElementImpl implements UniCustomElement {
     static get observedAttributes() : Array<string> {
         return [
             'orientation',
             'width',
+            // #ifdef WEB
+            'min-width',
+            'max-width',
+            'minwidth',
+            'maxwidth',
+            // #endif
+            // #ifndef WEB
             'minWidth',
             'maxWidth',
+            // #endif
             'height',
+            // #ifdef WEB
+            'min-height',
+            'max-height',
+            'minheight',
+            'maxheight',
+            // #endif
+            // #ifndef WEB
             'minHeight',
             'maxHeight',
+            // #endif
         ]
     }
 

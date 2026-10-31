@@ -1,0 +1,158 @@
+import { AddPhoneContactOptions } from './interface.uts'
+
+export type ContactActionMode = 'create' | 'existing'
+
+const CONTACT_AVATAR_COMPRESS_QUALITY = 80
+const CONTACT_AVATAR_COMPRESS_WIDTH = 200
+const CONTACT_AVATAR_COMPRESS_HEIGHT = 200
+
+type ContactActionSheetTexts = {
+	createNew : string
+	addToExisting : string
+}
+
+function hasText(value : string | null | undefined) : boolean {
+	if (value == null) {
+		return false
+	}
+	const text = value as string
+	return text.length > 0
+}
+
+function cloneAddPhoneContactOptions(options : AddPhoneContactOptions) : AddPhoneContactOptions {
+	return {
+		photoFilePath: options.photoFilePath,
+		nickName: options.nickName,
+		lastName: options.lastName,
+		middleName: options.middleName,
+		firstName: options.firstName,
+		remark: options.remark,
+		mobilePhoneNumber: options.mobilePhoneNumber,
+		weChatNumber: options.weChatNumber,
+		addressCountry: options.addressCountry,
+		addressState: options.addressState,
+		addressCity: options.addressCity,
+		addressStreet: options.addressStreet,
+		addressPostalCode: options.addressPostalCode,
+		organization: options.organization,
+		title: options.title,
+		workFaxNumber: options.workFaxNumber,
+		workPhoneNumber: options.workPhoneNumber,
+		hostNumber: options.hostNumber,
+		email: options.email,
+		url: options.url,
+		workAddressCountry: options.workAddressCountry,
+		workAddressState: options.workAddressState,
+		workAddressCity: options.workAddressCity,
+		workAddressStreet: options.workAddressStreet,
+		workAddressPostalCode: options.workAddressPostalCode,
+		homeFaxNumber: options.homeFaxNumber,
+		homePhoneNumber: options.homePhoneNumber,
+		homeAddressCountry: options.homeAddressCountry,
+		homeAddressState: options.homeAddressState,
+		homeAddressCity: options.homeAddressCity,
+		homeAddressStreet: options.homeAddressStreet,
+		homeAddressPostalCode: options.homeAddressPostalCode,
+		success: options.success,
+		fail: options.fail,
+		complete: options.complete
+	}
+}
+
+function normalizeLanguageTag(language : string | null) : string {
+	if (language == null) {
+		return ''
+	}
+	const tag = language as string
+	return tag
+}
+
+function isTraditionalChinese(language : string) : boolean {
+	return language == 'zh-HK' || language == 'zh-TW' || language == 'zh-MO' || language == 'zh-Hant'
+}
+
+function isSimplifiedChinese(language : string) : boolean {
+	return language == 'zh-CN' || language == 'zh-SG' || language == 'zh-Hans' || language == 'zh' || language == 'zh-Hans-CN'
+}
+
+@UTSiOS.keyword("private")
+function getActionSheetTexts() : ContactActionSheetTexts {
+	const language = normalizeLanguageTag(uni.getAppBaseInfo().appLanguage)
+	if (isSimplifiedChinese(language)) {
+		return {
+			createNew: '创建新联系人',
+			addToExisting: '添加到现有联系人'
+		}
+	}
+	if (isTraditionalChinese(language)) {
+		return {
+			createNew: '新增聯絡人',
+			addToExisting: '加入現有聯絡人'
+		}
+	}
+	if (language == 'fr' || language.startsWith('fr-')) {
+		return {
+			createNew: 'Creer un nouveau contact',
+			addToExisting: 'Ajouter a un contact existant'
+		}
+	}
+	if (language == 'la' || language.startsWith('la-')) {
+		return {
+			createNew: 'Crea contactum novum',
+			addToExisting: 'Adde ad contactum existentem'
+		}
+	}
+	return {
+		createNew: 'Create New Contact',
+		addToExisting: 'Add to Existing Contact'
+	}
+}
+
+export function validateAddPhoneContactOptions(options : AddPhoneContactOptions, reject : (errMsg : string) => void) : boolean {
+	const firstName = options.firstName
+	if (firstName == null || firstName.length == 0) {
+		reject('addPhoneContact:fail parameter.firstName should not be empty')
+		return false
+	}
+	return true
+}
+
+export function prepareAddPhoneContactOptions(options : AddPhoneContactOptions, onPrepared : (preparedOptions : AddPhoneContactOptions) => void) : void {
+	if (!hasText(options.photoFilePath)) {
+		onPrepared(options)
+		return
+	}
+	const preparedOptions = cloneAddPhoneContactOptions(options)
+	uni.compressImage({
+		src: options.photoFilePath ?? '',
+		quality: CONTACT_AVATAR_COMPRESS_QUALITY,
+		compressedWidth: CONTACT_AVATAR_COMPRESS_WIDTH,
+		compressedHeight: CONTACT_AVATAR_COMPRESS_HEIGHT,
+		success: (result : CompressImageSuccess) => {
+			if (result.tempFilePath.length > 0) {
+				preparedOptions.photoFilePath = result.tempFilePath
+			}
+			onPrepared(preparedOptions)
+		},
+		fail: (_ : CompressImageFail) => {
+			onPrepared(preparedOptions)
+		}
+	})
+}
+
+export function showAddPhoneContactActionSheet(onSelect : (mode : ContactActionMode) => void, onCancel : () => void) : void {
+	const texts = getActionSheetTexts()
+	uni.showActionSheet({
+		itemList: [texts.createNew, texts.addToExisting],
+		success: (result : ShowActionSheetSuccess) => {
+			if (result.tapIndex == 0) {
+				onSelect('create')
+				return
+			}
+			onSelect('existing')
+		},
+		fail: (_ : ShowActionSheetFail) => {
+			onCancel()
+		}
+	})
+}

@@ -1,0 +1,479 @@
+/**
+ * Wifi 函数通用入参封装
+ */
+export type WifiOption = {
+	success ?: (res : UniWifiResult) => void;
+	fail ?: (res : UniError) => void;
+	complete ?: (res : any) => void;
+};
+
+/**
+ * Wifi 链接参数封装
+ */
+export type WifiConnectOption = {
+	SSID ?: string;
+	BSSID ?: string;
+	password ?: string;
+	maunal ?: boolean;
+	partialInfo ?: boolean; //ios不生效
+	success ?: (res : UniWifiResult) => void;
+	fail ?: (res : UniError) => void;
+	complete ?: (res : any) => void;
+}
+
+/**
+ * 获取当前链接的wifi信息
+ */
+export type GetConnectedWifiOptions = {
+	partialInfo ?: boolean
+	success ?: (res : UniWifiResult) => void
+	fail ?: (res : UniError) => void
+	complete ?: (res : any) => void
+}
+
+/*
+ * 对外暴露的wifi信息
+ */
+export type UniWifiInfo = {
+	SSID : string;
+	BSSID ?: string;
+	secure ?: boolean;
+	signalStrength ?: number;
+	frequency ?: number;
+}
+
+export type UniWifiInfoWithPartialInfo = {
+	SSID : string;
+}
+
+
+export type UniWifiResult = {
+	errCode : number,
+	errSubject : string,
+	errMsg : string,
+	wifi : UniWifiInfo | null
+}
+
+export type UniWifiCallback = () => void
+
+export type UniGetWifiListCallback = (wifiInfo:UTSJSONObject) => void
+
+export type UniWifiResultCallback = (wifiInfo:UniWifiResult) => void
+
+export type UniWifiResultCallbackWithPartialInfo = (wifiInfo:UniWifiInfoWithPartialInfo) => void
+
+
+export type StartWifi = (option : WifiOption) => void
+
+export type StopWifi = (option : WifiOption) => void
+
+export type GetWifiList = (option : WifiOption) => void
+
+export type OnGetWifiList = (callback : UniGetWifiListCallback) => void
+
+export type OffGetWifiList = (callback : UniWifiCallback) => void
+
+export type GetConnectedWifi = (option : GetConnectedWifiOptions) => void
+
+export type ConnectWifi = (option : WifiConnectOption) => void
+
+export type OnWifiConnected = (callback : UniWifiResultCallback) => void
+
+export type OnWifiConnectedWithPartialInfo = (callback : UniWifiResultCallbackWithPartialInfo) => void
+
+export type OffWifiConnected = (callback : UniWifiCallback | null) => void
+
+export type OffWifiConnectedWithPartialInfo = (callback : UniWifiResultCallbackWithPartialInfo | null) => void
+
+export type SetWifiList = (option : WifiOption) => void
+
+
+/**
+ * 错误码
+ * - 12000 尚未初始化
+ * - 12001 当前系统不支持相关能力
+ * - 12002 密码错误
+ * - 12005 Android 特有，未打开 Wi-Fi 开关
+ * - 12007 用户拒绝授权链接 Wi-Fi
+ * - 12010 系统其他错误
+ * - 12013 系统保存的 Wi-Fi 配置过期，建议忘记 Wi-Fi 后重试，仅 Android 支持
+ */
+export type WifiErrorCode = 12000 |12001 | 12002 |  12005 | 12007 | 12010 | 12013;
+
+export interface WifiFail extends IUniError{
+	errCode: WifiErrorCode
+};
+
+
+
+interface Uni {
+	/**
+	 * 初始化Wi-Fi模块
+	 *
+	 * @param {WifiOption} option
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#startwifi
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { after: 'stopWifi' }
+	 */
+	startWifi(option : WifiOption): void,
+	/**
+	 * 关闭 Wi-Fi 模块
+	 *
+	 * @param {WifiOption} option
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#stopwifi
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "x"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { before: 'startWifi' }
+	 */
+	stopWifi(option : WifiOption) : void,
+	/**
+	 * @param {WifiConnectOption} option
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#connectWifi
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": ">=4.4 && <10.0",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest {
+		generated: false,
+		pollution: false,
+		cases:[
+			{
+				before: 'startWifi',
+				after: 'stopWifi',
+				input: [{
+					maunal:false,
+					SSID:"Xiaomi_20D0",
+					password:"streamApp!2016",
+				}],
+				output:{
+						callbackType: 'success',
+						value: { errCode: 12013 ,errMsg: "connectWifi:wifi config may be expired",errSubject: "uni-connectWifi"}
+					}
+			}
+		]
+	}
+	*/
+	connectWifi(option : WifiConnectOption) : void,
+	/**
+	 * 请求获取 Wi-Fi 列表。wifiList 数据会在 onGetWifiList 注册的回调中返回。
+	 * @param {WifiOption} option
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#getWifiList
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { before: 'startWifi', after: 'stopWifi' }
+	*/
+	getWifiList(option : WifiOption) : void,
+	/**
+	 * 监听获取到 Wi-Fi 列表数据事件。
+	 *
+	 * @param {UniWifiCallback} callback
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#onGetWifiList
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest  { expectCallback: true }
+	 * @autotest {
+		 generated: false,
+		 pollution: false,
+		 expectCallback: true,
+		 before: 'startWifi',
+		 after: 'onGetWifiListAfter',
+		 cases: [
+			 {
+				 output: {
+					 value: 0,
+					 returnKey: '.wifiList.length',
+					 jestExpectSyntax: 'toBeGreaterThan'
+				 },
+			 }
+		 ]
+	}
+	 */
+	onGetWifiList(callback : UniGetWifiListCallback) : void,
+	/**
+	 * 移除获取到 Wi-Fi 列表数据事件的监听函数。
+	 *
+	 * @param {UniWifiCallback} callback
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#offGetWifiList
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { expectCallback: true }
+	 */
+	offGetWifiList(callback : UniWifiCallback) : void,
+	/**
+	 * 获取已连接的 Wi-Fi 信息
+	 *
+	 * @param {GetConnectedWifiOptions} option
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#getConnectedWifi
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { before: 'startWifi', after: 'stopWifi' }
+	 */
+	getConnectedWifi(option : GetConnectedWifiOptions) : void,
+	/**
+	 * 监听连接上 Wi-Fi 的事件
+	 *
+	 * @param {UniWifiCallback} callback
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#onWifiConnected
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { expectCallback: true }
+	 */
+	onWifiConnected(callback : UniWifiResultCallback) : void,
+	/**
+	 * 监听连接上 Wi-Fi 的事件。
+	 *
+	 * @param {UniWifiCallback} callback
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#onWifiConnectedWithPartialInfo
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { expectCallback: true }
+	 */
+	onWifiConnectedWithPartialInfo(callback : UniWifiResultCallbackWithPartialInfo) : void,
+	/**
+	 * 移除连接上 Wi-Fi 的事件的监听函数。
+	 *
+	 * @param {UniWifiCallback} callback
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#offWifiConnected
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "4.4.4",
+	 *            "uniVer": "3.7.0",
+	 *            "unixVer": "3.9.0"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "12.0",
+	 *            "uniVer": "3.7.7",
+	 *            "unixVer": "4.11"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { expectCallback: true }
+	 */
+	offWifiConnected(callback : UniWifiCallback | null) : void,
+	/**
+	 * 移除连接上 Wi-Fi 的事件的监听函数。
+	 *
+	 * @param {UniWifiCallback} callback
+	 * @tutorial https://uniapp.dcloud.net.cn/api/system/wifi.html#offWifiConnectedWithPartialInfo
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "x",
+	 *            "uniVer": "x",
+	 *            "unixVer": "x"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "x",
+	 *            "uniVer": "x",
+	 *            "unixVer": "x"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 * @uniVersion 3.7.7
+	 * @uniVueVersion 2,3  //支持的vue版本
+	 * @autotest { expectCallback: true }
+	 */
+	offWifiConnectedWithPartialInfo(callback : UniWifiResultCallbackWithPartialInfo | null) : void,
+	/**
+	 * SetWifiList  暂未实现
+	 *
+	 * @uniPlatform {
+	 *    "app": {
+	 *        "android": {
+	 *            "osVer": "x",
+	 *            "uniVer": "x",
+	 *            "unixVer": "x"
+	 *        },
+	 *        "ios": {
+	 *            "osVer": "x",
+	 *            "uniVer": "x",
+	 *            "unixVer": "x"
+	 *   	  },
+     *    "harmony": {
+     *      "osVer": "x",
+     *      "uniVer": "x",
+     *      "unixVer": "x"
+     *    }
+	 *    }
+	 * }
+	 */
+	setWifiList(option : WifiOption) : void,
+}

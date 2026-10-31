@@ -1,0 +1,73 @@
+{
+  "id": "uni-data-picker-x",
+  "displayName": "uni-data-picker-x 数据驱动的picker选择器",
+  "version": "1.0.0",
+  "description": "单列、多列级联选择器，常用于省市区城市选择、公司部门选择、多级分类等场景",
+  "keywords": [
+    "uni-ui",
+    "uniui",
+    "picker",
+    "级联",
+    "省市区"
+],
+  "repository": "https://gitcode.com/dcloud/uni-ui-x",
+  "engines": {
+    "HBuilderX": "",
+    "uni-app-x": "^5.33",
+    "uni-app": ""
+  },
+  "directories": {
+    "example": ""
+  },
+  "dcloudext": {
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": ""
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "无",
+      "permissions": "无"
+    },
+    "npmurl": "https://www.npmjs.com/package/@dcloudio/uni-ui",
+    "type": "component-vue",
+    "darkmode": "√",
+    "widescreen": "√",
+    "vapor": "√",
+    "i18n": "x"
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "√",
+        "aliyun": "√",
+        "alipay": "√"
+      },
+      "client": {
+        "uni-app-x": {
+          "web": {
+            "safari": "√",
+            "chrome": "√"
+          },
+          "app": {
+            "android": "√",
+            "ios": "√",
+            "harmony": "√"
+        },
+        "mp": {
+            "weixin": "-"
+        }
+        }
+      }
+    }
+  }
+}

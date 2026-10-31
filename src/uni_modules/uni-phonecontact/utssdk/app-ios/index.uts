@@ -1,0 +1,183 @@
+import { AddPhoneContact, AddPhoneContactComplete, AddPhoneContactCompleteCallback, AddPhoneContactErrorCode, AddPhoneContactFail, AddPhoneContactFailCallback, AddPhoneContactOptions, AddPhoneContactSuccess, AddPhoneContactSuccessCallback, ChooseContact, ChooseContactComplete, ChooseContactCompleteCallback, ChooseContactErrorCode, ChooseContactFail, ChooseContactFailCallback, ChooseContactOptions, ChooseContactSuccess, ChooseContactSuccessCallback } from '../interface.uts'
+import { ContactActionMode, prepareAddPhoneContactOptions, showAddPhoneContactActionSheet, validateAddPhoneContactOptions } from '../common.uts'
+import { ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER, ADD_PHONE_CONTACT_ERR_PERMISSION_DENIED, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, ADD_PHONE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE, ADD_PHONE_CONTACT_IOS_PERMISSION_REQUEST_FAILED_PLATFORM_CODE, CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER, CHOOSE_CONTACT_ERR_OPERATION_FAILED, CHOOSE_CONTACT_ERR_PERMISSION_DENIED, CHOOSE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE, CHOOSE_CONTACT_IOS_PERMISSION_REQUEST_FAILED_PLATFORM_CODE, createAddPhoneContactFail, createChooseContactFail } from '../unierror.uts'
+
+function buildNativeContact(options : AddPhoneContactOptions) : UTSJSONObject {
+	const contact : UTSJSONObject = {
+		photoFilePath: options.photoFilePath,
+		nickName: options.nickName,
+		lastName: options.lastName,
+		middleName: options.middleName,
+		firstName: options.firstName,
+		remark: options.remark,
+		mobilePhoneNumber: options.mobilePhoneNumber,
+		weChatNumber: options.weChatNumber,
+		addressCountry: options.addressCountry,
+		addressState: options.addressState,
+		addressCity: options.addressCity,
+		addressStreet: options.addressStreet,
+		addressPostalCode: options.addressPostalCode,
+		organization: options.organization,
+		title: options.title,
+		workFaxNumber: options.workFaxNumber,
+		workPhoneNumber: options.workPhoneNumber,
+		hostNumber: options.hostNumber,
+		email: options.email,
+		url: options.url,
+		workAddressCountry: options.workAddressCountry,
+		workAddressState: options.workAddressState,
+		workAddressCity: options.workAddressCity,
+		workAddressStreet: options.workAddressStreet,
+		workAddressPostalCode: options.workAddressPostalCode,
+		homeFaxNumber: options.homeFaxNumber,
+		homePhoneNumber: options.homePhoneNumber,
+		homeAddressCountry: options.homeAddressCountry,
+		homeAddressState: options.homeAddressState,
+		homeAddressCity: options.homeAddressCity,
+		homeAddressStreet: options.homeAddressStreet,
+		homeAddressPostalCode: options.homeAddressPostalCode
+	}
+	return contact
+}
+
+function resolveSuccess(options : AddPhoneContactOptions) : void {
+	const result : AddPhoneContactSuccess = {}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectWithCode(options : AddPhoneContactOptions, errCode : AddPhoneContactErrorCode, errMsg : string, platformCode : number | null = null) : void {
+	const error = createAddPhoneContactFail(errCode, errMsg, platformCode)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function resolveChooseContactSuccess(options : ChooseContactOptions, displayName : string, phoneNumber : string, phoneNumberList : Array<string>) : void {
+	const result : ChooseContactSuccess = {
+		displayName: displayName,
+		phoneNumber: phoneNumber,
+		phoneNumberList: phoneNumberList,
+		errMsg: 'chooseContact:ok'
+	}
+	options.success?.(result)
+	options.complete?.(result)
+}
+
+function rejectChooseContactWithCode(options : ChooseContactOptions, errCode : ChooseContactErrorCode, errMsg : string, platformCode : number | null = null) : void {
+	const error = createChooseContactFail(errCode, errMsg, platformCode)
+	options.fail?.(error)
+	options.complete?.(error)
+}
+
+function presentContactEditor(options : AddPhoneContactOptions) : void {
+	AddPhoneContactNative.presentNewContactEditor(buildNativeContact(options), (saved : boolean, errMsg : string | null) => {
+		if (!saved) {
+			const message = errMsg != null && errMsg.length > 0 ? errMsg : 'ios native failed'
+			rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, `addPhoneContact:fail ${message}`, ADD_PHONE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE)
+			return
+		}
+		resolveSuccess(options)
+	})
+}
+
+function presentExistingContactEditor(options : AddPhoneContactOptions) : void {
+	AddPhoneContactNative.presentExistingContactEditor(buildNativeContact(options), (saved : boolean, errMsg : string | null) => {
+		if (!saved) {
+			const message = errMsg != null && errMsg.length > 0 ? errMsg : 'ios native failed'
+			rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, `addPhoneContact:fail ${message}`, ADD_PHONE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE)
+			return
+		}
+		resolveSuccess(options)
+	})
+}
+
+function presentContactEditorByMode(options : AddPhoneContactOptions, mode : ContactActionMode) : void {
+	if (mode == 'existing') {
+		presentExistingContactEditor(options)
+		return
+	}
+	presentContactEditor(options)
+}
+
+function requestPermissionAndPresent(options : AddPhoneContactOptions, mode : ContactActionMode) : void {
+	AddPhoneContactNative.requestPermission((granted : boolean, errMsg : string | null) => {
+		if (!granted) {
+			const message = errMsg != null && errMsg.length > 0 ? errMsg : 'permission denied'
+			if (errMsg != null && errMsg.length > 0) {
+				rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, `addPhoneContact:fail ${message}`, ADD_PHONE_CONTACT_IOS_PERMISSION_REQUEST_FAILED_PLATFORM_CODE)
+				return
+			}
+			rejectWithCode(options, ADD_PHONE_CONTACT_ERR_PERMISSION_DENIED, `addPhoneContact:fail ${message}`)
+			return
+		}
+		presentContactEditorByMode(options, mode)
+	})
+}
+
+function requestPermissionAndChooseContact(options : ChooseContactOptions) : void {
+	AddPhoneContactNative.requestPermission((granted : boolean, errMsg : string | null) => {
+		if (!granted) {
+			const message = errMsg != null && errMsg.length > 0 ? errMsg : 'permission denied'
+			if (errMsg != null && errMsg.length > 0) {
+				rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, `chooseContact:fail ${message}`, CHOOSE_CONTACT_IOS_PERMISSION_REQUEST_FAILED_PLATFORM_CODE)
+				return
+			}
+			rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_PERMISSION_DENIED, `chooseContact:fail ${message}`)
+			return
+		}
+		AddPhoneContactNative.presentChooseContact((displayName : string | null, phoneNumber : string | null, phoneNumberList : Array<string> | null, nativeErrMsg : string | null) => {
+			if (nativeErrMsg != null && nativeErrMsg.length > 0) {
+				const message = nativeErrMsg as string
+				if (message == 'selected contact has no phone number') {
+					rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_NO_PHONE_NUMBER, `chooseContact:fail ${message}`)
+					return
+				}
+				rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, `chooseContact:fail ${message}`, CHOOSE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE)
+				return
+			}
+			if (displayName == null || phoneNumber == null || phoneNumberList == null) {
+				rejectChooseContactWithCode(options, CHOOSE_CONTACT_ERR_OPERATION_FAILED, 'chooseContact:fail invalid native result', CHOOSE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE)
+				return
+			}
+			resolveChooseContactSuccess(options, displayName, phoneNumber, phoneNumberList)
+		})
+	})
+}
+
+export const addPhoneContact : AddPhoneContact = function (options : AddPhoneContactOptions) {
+	if (!validateAddPhoneContactOptions(options, (errMsg : string) => {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_INVALID_PARAMETER, errMsg)
+	})) {
+		return
+	}
+	showAddPhoneContactActionSheet((mode : ContactActionMode) => {
+		prepareAddPhoneContactOptions(options, (preparedOptions : AddPhoneContactOptions) => {
+			requestPermissionAndPresent(preparedOptions, mode)
+		})
+	}, () => {
+		rejectWithCode(options, ADD_PHONE_CONTACT_ERR_SAVE_FAILED, 'addPhoneContact:fail user cancelled', ADD_PHONE_CONTACT_IOS_NATIVE_FAILED_PLATFORM_CODE)
+	})
+}
+
+export const chooseContact : ChooseContact = function (options : ChooseContactOptions) {
+	requestPermissionAndChooseContact(options)
+}
+
+export {
+	AddPhoneContact,
+	AddPhoneContactComplete,
+	AddPhoneContactCompleteCallback,
+	AddPhoneContactFail,
+	AddPhoneContactFailCallback,
+	AddPhoneContactOptions,
+	AddPhoneContactSuccess,
+	AddPhoneContactSuccessCallback,
+	ChooseContact,
+	ChooseContactComplete,
+	ChooseContactCompleteCallback,
+	ChooseContactFail,
+	ChooseContactFailCallback,
+	ChooseContactOptions,
+	ChooseContactSuccess,
+	ChooseContactSuccessCallback
+} from '../interface.uts'

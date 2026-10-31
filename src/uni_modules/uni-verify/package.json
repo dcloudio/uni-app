@@ -1,0 +1,114 @@
+{
+	"id": "uni-verify",
+	"displayName": "uni-verify",
+	"version": "1.0.0",
+	"description": "uni-verify",
+	"keywords": [
+		"uni-verify"
+	],
+	"repository": "",
+	"engines": {
+		"HBuilderX": "^3.94"
+	},
+	"dcloudext": {
+		"type": "uts",
+		"sale": {
+			"regular": {
+				"price": "0.00"
+			},
+			"sourcecode": {
+				"price": "0.00"
+			}
+		},
+		"contact": {
+			"qq": ""
+		},
+		"declaration": {
+			"ads": "",
+			"data": "",
+			"permissions": ""
+		},
+		"npmurl": ""
+	},
+	"uni_modules": {
+		"pages": {
+			"app-harmony": ["dom1", "dom2"]
+		},
+		"uni-ext-api": {
+			"uni": {
+				"getUniverifyManager": {
+					"name": "getUniverifyManager",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true,
+						"arkts": true
+					}
+				},
+				"getUniVerifyManager": {
+					"name": "getUniVerifyManager",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true,
+						"arkts": true
+					}
+				}
+			}
+		},
+		"dependencies": [
+			"uni-prompt",
+			"uni-network",
+			"uni-framework",
+			"uni-getAppBaseInfo",
+			"uni-getDeviceInfo",
+      "uni-event",
+      "uni-dialogPage"
+		],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "u",
+				"aliyun": "u"
+			},
+			"client": {
+				"Vue": {
+					"vue2": "u",
+					"vue3": "u"
+				},
+				"App": {
+					"app-android": "u",
+					"app-ios": "u"
+				},
+				"H5-mobile": {
+					"Safari": "u",
+					"Android Browser": "u",
+					"微信浏览器(Android)": "u",
+					"QQ浏览器(Android)": "u"
+				},
+				"H5-pc": {
+					"Chrome": "u",
+					"IE": "u",
+					"Edge": "u",
+					"Firefox": "u",
+					"Safari": "u"
+				},
+				"小程序": {
+					"微信": "u",
+					"阿里": "u",
+					"百度": "u",
+					"字节跳动": "u",
+					"QQ": "u",
+					"钉钉": "u",
+					"快手": "u",
+					"飞书": "u",
+					"京东": "u"
+				},
+				"快应用": {
+					"华为": "u",
+					"联盟": "u"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,198 @@
+import { UniVerifyManagerCustomLoginOptions } from '../interface.uts';
+import { UTSiOS } from "DCloudUTSFoundation";
+import { UIView } from 'UIKit';
+
+export function verifyOptions(options : UniVerifyManagerCustomLoginOptions,verifyInfo: UTSJSONObject) : number{
+	// #ifndef VUE3-VAPOR
+	const pages : Array<UniPage> = getCurrentPages();
+	if(pages.length == 0){
+		return 40002
+	}
+	const topPage : UniPage = pages[pages.length - 1];
+	let rootView = topPage.getIOSView();
+	const dialogs  = topPage.getDialogPages();
+	
+	if(dialogs.length > 0){
+		const topDialog : UniPage = dialogs[dialogs.length - 1];
+		rootView = topDialog.getIOSView();
+	}
+	
+	if(rootView == null){
+		return 40002
+	}
+	
+	// phone number
+	const numberTextElement : UniElement | null = options.numberTextElement;
+	if((numberTextElement instanceof UniTextElement) == false){
+		return 40002
+	}
+	const pn : string = verifyInfo['pn'] as string
+	if((numberTextElement as UniTextElement).value != pn){
+		return 40002
+	}
+	const numberTextView = numberTextElement!.getIOSView();
+	if (numberTextView == null){
+		return 40002
+	}
+	if(verifyVisibility(numberTextView!,rootView!) == false){
+		return 40002
+	}
+	
+	
+	// slogan
+	const sloganTextElement : UniElement | null = options.sloganTextElement;
+	if((sloganTextElement instanceof UniTextElement) == false){
+		return 40002
+	}
+	const slogan : string = verifyInfo['slogan'] as string
+	if((sloganTextElement as UniTextElement).value != slogan){
+		return 40002
+	}
+	const sloganTextView = sloganTextElement!.getIOSView();
+	if (sloganTextView == null){
+		return 40002
+	}
+	if(verifyVisibility(sloganTextView!,rootView!) == false){
+		return 40002
+	}
+
+	
+	// login button
+	const loginButtonElement : UniElement | null = options.loginButtonElement;
+	if((loginButtonElement instanceof UniButtonElement) == false){
+		return 40002
+	}
+	const loginButtonTitle = (loginButtonElement as UniButtonElement).value;
+	if(loginButtonTitle.includes("登录") == false && loginButtonTitle.includes("注册") == false){
+		return 40002
+	}
+	const loginButtonView = loginButtonElement!.getIOSView();
+	if (loginButtonView == null){
+		return 40002
+	}
+	if(verifyVisibility(loginButtonView!,rootView!) == false){
+		return 40002
+	}
+	
+	//test checkbox
+	const checkBoxElement : UniElement | null = options.privacyCheckBoxElement;
+	if((checkBoxElement instanceof UniCheckboxElement) == false){
+		return 40002
+	}
+	const isCheck = (checkBoxElement as UniCheckboxElement).checked;
+	if(isCheck == false){
+		return 40001
+	}
+	const checkboxView = checkBoxElement.getIOSView();
+	if (checkboxView == null){
+		return 40002
+	}
+	if(verifyVisibility(checkboxView!,rootView!) == false){
+		return 40002
+	}
+	
+	// term
+	const privacyTextElement : UniElement | null = options.privacyTextElement;
+	if((privacyTextElement instanceof UniTextElement) == false){
+		return 40002
+	}
+	const term : string = verifyInfo['term'] as string
+	if((privacyTextElement as UniTextElement).value.includes(term) == false){
+		return 40002
+	}
+	const privacyTextView = privacyTextElement!.getIOSView();
+	if (privacyTextView == null){
+		return 40002
+	}
+	if(verifyVisibility(privacyTextView!,rootView!) == false){
+		return 40002
+	}
+	// #endif
+	
+	// #ifdef VUE3-VAPOR
+	if(options.privacyCheckBoxElementChecked == false){
+		return 40001
+	}
+	// #endif
+	return 0
+}
+
+function verifyVisibility(targetview: UIView,rootview: UIView) : boolean{
+	if(targetview.isHidden){
+		return false;
+	}
+	if(targetview.alpha == 0){
+		return false;
+	}
+	if (targetview.superview == null){
+	    return false;
+	}
+	if (targetview.window == null) {
+	    return false;
+	}
+	if (CGSizeEqualToSize(targetview.frame.size, CGSizeZero)) {
+	    return false;
+	}
+	const width = targetview.frame.size.width;
+	const height = targetview.frame.size.height;
+	if (width < 10 || height < 10) {
+	    return false;
+	}
+	
+	if (targetview.isDescendant(of = rootview) == false){
+		return false;
+	}
+
+	return checkConverage(rootview,targetview,rootview);
+}
+
+function checkConverage(view: UIView,target: UIView,root: UIView) : boolean{
+	const targetFrameInRoot = target.convert(target.bounds, to = root);
+	for (let i = 0; i < view.subviews.length; i++) {
+		const subview = view.subviews[i];
+		if(subview != target && subview.isHidden == false && subview.alpha > 0 && target.isDescendant(of = subview) == false){
+			const subviewFrameInRoot = subview.convert(subview.bounds, to = root)
+			if(subviewFrameInRoot.intersects(targetFrameInRoot)){
+				//frame有交集 去找公共父视图
+				const superview : UIView | null = commonSuperviewOfView(target,subview);
+				if (superview != null){
+					const targetSuperview : UIView | null = findInContainerView(target,superview!);
+					const otherSuperview : UIView | null = findInContainerView(subview,superview!);
+					if(targetSuperview != null && otherSuperview != null){
+						const target_index = superview!.subviews.indexOf(targetSuperview!);
+						const other_index = superview!.subviews.indexOf(otherSuperview!);
+						if (target_index < other_index){
+							return false
+						}
+					}
+				}
+			}
+		}
+		if (checkConverage(subview,target,root) == false){
+			return false
+		}
+	}
+	return true
+}
+
+function commonSuperviewOfView(target: UIView,view: UIView) : UIView | null{
+	let currentView : UIView | null = view;
+	while (currentView != null){
+		if(target.isDescendant(of =currentView!)){
+			return currentView;
+		}
+		currentView = currentView!.superview;
+	}
+	return null;
+}
+
+function findInContainerView(view: UIView,superview: UIView) : UIView | null{
+	for (let i = 0; i < superview.subviews.length; i++) {
+		const subview = superview.subviews[i];
+		if(view.isDescendant(of =subview)){
+			return subview;
+		}
+	}
+	return null;
+}
+

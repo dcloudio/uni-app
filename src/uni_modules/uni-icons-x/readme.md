@@ -19,7 +19,7 @@
 
 | 属性名 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| type | String | `''` | 图标名称，取值范围见 [图标列表](#图标列表)；未传入或取值不存在时组件不显示图标 |
+| type | String | `''` | 图标名称，取值范围见 [属性表中的合法值](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/uni-icons.html#属性)；未传入或取值不存在时组件不显示图标 |
 
 `type` 为字符串联合类型，在 IDE 中编写 `type="..."` 时会自动提示全部可选图标名称。
 
@@ -46,7 +46,7 @@
 
 ## 自定义字体
 
-组件内部通过 `@font-face` 引入 `uniicons.ttf`，如需替换为自定义字体，可自行覆盖根节点的 `font-family`：
+组件内部通过 `@font-face` 引入字体：Web 平台使用 `uniicons.woff2`，其他平台使用 `uniicons.ttf`。如需替换为自定义字体，可自行覆盖根节点的 `font-family`：
 
 ```html
 <template>

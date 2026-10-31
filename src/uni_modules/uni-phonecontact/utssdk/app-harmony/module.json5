@@ -1,0 +1,27 @@
+{
+  "module": {
+    "name": "uni_modules__uni_phonecontact",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1"
+    ],
+    "requestPermissions": [
+      // {
+      //   "name": "ohos.permission.READ_CONTACTS",
+      //   "reason": "$string:permission_read_contacts",
+      //   "usedScene": {
+      //     "when": "inuse"
+      //   }
+      // },
+      // {
+      //   "name": "ohos.permission.WRITE_CONTACTS",
+      //   "reason": "$string:permission_write_contacts",
+      //   "usedScene": {
+      //     "when": "inuse"
+      //   }
+      // }
+    ]
+  }
+}

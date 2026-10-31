@@ -1,0 +1,1068 @@
+<template>
+	<view>
+		<slot></slot>
+	</view>
+</template>
+
+<script setup lang="ts">
+	/**
+	 * Forms 表单
+	 * @description 通过 v-model 收集字段值，提供字段注册、DB Schema 兼容校验、Standard Schema 可选校验和重置能力
+	 * @uniPlatform {
+	 *   "app": {
+	 *     "android": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.21"
+	 *     },
+	 *     "ios": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.11"
+	 *     },
+	 *     "harmony": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07",
+	 *       "unixVaporVer": "5.07"
+	 *     }
+	 *   },
+	 *   "mp": {
+	 *     "weixin": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.07"
+	 *     },
+	 *     "alipay": {
+	 *       "uniVer": "x",
+	 *       "unixVer": "5.31"
+	 *     }
+	 *   },
+	 *   "web": {
+	 *     "uniVer": "x",
+	 *     "unixVer": "5.07"
+	 *   }
+	 * }
+	 * @property {Object} value [已废弃] 旧版表单数据属性，默认值 null
+	 * @property {Object} modelValue 表单数据，支持 v-model，默认值 null
+	 * @property {Object} model [已废弃] 旧版表单数据属性，优先级高于 modelValue，默认值 null
+	 * @property {Object} rules DB Schema 风格校验规则，键为字段路径，默认值 {}
+	 * @property {Object} schema Standard Schema 兼容对象，例如由 Valibot 应用侧传入，默认值 null
+	 * @property {String} errShowType = [undertext|toast|modal] 校验错误提示方式，默认值 toast
+	 * @value undertext 在表单项下方显示错误文字
+	 * @value toast 弹出第一条错误，并为失败项显示错误边框
+	 * @value modal 弹出第一条错误，不显示表单项错误文字
+	 * @property {String} validateTrigger = [bind|blur|submit] 默认校验触发时机，默认值 submit
+	 * @value bind 表单数据变化时触发
+	 * @value blur 表单项失焦时触发
+	 * @value submit 调用 validate 或 validateField 时触发
+	 * @property {String} labelPosition = [left|top] 标签位置，默认值 left
+	 * @value left 标签与控件单行横排
+	 * @value top 标签在控件上方，竖排显示
+	 * @property {String|Number} labelWidth 单行横排布局的标签宽度，默认值为空字符串
+	 * @property {String} labelAlign = [left|center|right] 标签文字对齐方式，默认值 left
+	 * @value left 左对齐
+	 * @value center 居中对齐
+	 * @value right 右对齐
+	 * @property {Boolean} border 是否显示字段分隔线，默认值 false
+	 * @event {Function} update:modelValue 表单数据更新时触发，参数为新的表单数据
+	 * @event {Function} validate 校验结果发生变化时触发，参数为 null 或错误对象/数组
+	 * @event {Function} submit [已废弃] 调用 submit 方法时触发
+	 */
+	import {
+		UNI_FORM_CONTEXT,
+		cloneModel,
+		deletePath,
+		getPath,
+		normalizePath,
+		objectKeys,
+		pathKey,
+		setPath,
+		updatePath
+	} from '../common'
+	import type {
+		UniFormContext,
+		UniFormFieldContext,
+		UniFormIssue,
+		UniFormModel,
+		UniFormPath,
+		UniFormRule,
+		UniFormRuleGroup,
+		UniFormRules,
+		UniFormTrigger
+	} from '../common'
+	import {
+		cancelledValidationResult,
+		createLegacyValidator,
+		duplicateFieldMessage,
+		formValuesDiffer,
+		isSchemaCacheHit,
+		normalizeLegacyValue,
+		resolveFieldRuleGroup,
+		schemaIssuesForOtherFields,
+		schemaIssuesForRequest,
+		shouldApplySchemaValue,
+		validateLegacyRules,
+		validateStandardSchema
+	} from '../validation'
+	import type { StandardSchemaRun } from '../validation'
+
+	defineOptions({
+		name: 'UniForms'
+	})
+
+	type Props = {
+		/**
+		 * @description [已废弃] 旧版表单数据属性，推荐使用 modelValue
+		 * @default null
+		 */
+		value?: UniFormModel | null,
+		/**
+		 * @description 表单数据，支持 v-model 双向绑定
+		 * @default null
+		 */
+		modelValue?: UniFormModel | null,
+		/**
+		 * @description [已废弃] 旧版表单数据属性，优先级高于 modelValue
+		 * @default null
+		 */
+		model?: UniFormModel | null,
+		/**
+		 * @description DB Schema 风格校验规则，键为字段路径
+		 * @default {}
+		 */
+		rules?: UniFormRules,
+		/**
+		 * @description Standard Schema 兼容对象，例如由 Valibot、Zod 等校验库创建
+		 * @default null
+		 */
+		schema?: any,
+		/**
+		 * @description 校验错误提示方式
+		 * @default "toast"
+		 * @value undertext 在表单项下方显示错误文字
+		 * @value toast 弹出第一条错误，并为失败项显示错误边框
+		 * @value modal 弹窗显示第一条错误
+		 */
+		errShowType?: string,
+		/**
+		 * @description 默认校验触发时机
+		 * @default "submit"
+		 * @value bind 表单数据变化时触发
+		 * @value blur 表单项失焦时触发
+		 * @value submit 调用 validate 或 validateField 时触发
+		 */
+		validateTrigger?: UniFormTrigger,
+		/**
+		 * @description 标签位置
+		 * @default "left"
+		 * @value left 标签与控件单行横排
+		 * @value top 标签在控件上方，竖排显示
+		 */
+		labelPosition?: string,
+		/**
+		 * @description 单行横排布局的标签宽度，数字按 px 处理
+		 * @default ""
+		 */
+		labelWidth?: string | number,
+		/**
+		 * @description 标签文字对齐方式
+		 * @default "left"
+		 * @value left 左对齐
+		 * @value center 居中对齐
+		 * @value right 右对齐
+		 */
+		labelAlign?: string,
+		/**
+		 * @description 是否显示字段分隔线
+		 * @default false
+		 */
+		border?: boolean
+	}
+
+	const props = withDefaults(defineProps<Props>(), {
+		value: null,
+		modelValue: null,
+		model: null,
+		rules: () : UniFormRules => ({}),
+		schema: null,
+		errShowType: 'toast',
+		validateTrigger: 'submit' as UniFormTrigger,
+		labelPosition: 'left',
+		labelWidth: '',
+		labelAlign: 'left',
+		border: false
+	})
+
+	const emit = defineEmits<{
+		/**
+		 * @description 表单数据更新时触发，参数为更新后的表单数据
+		 */
+		'update:modelValue': [value: UniFormModel],
+		/**
+		 * @description 校验结果变化时触发；通过时参数为 null，未通过时为错误对象或错误数组
+		 */
+		validate: [result: UniFormIssue | UniFormIssue[] | null],
+		/**
+		 * @description [已废弃] 调用 submit 方法时触发，推荐使用 validate 方法
+		 */
+		submit: [event: any]
+	}>()
+
+	defineSlots<{
+		/**
+		 * @description 表单内容，通常放置 uni-forms-item
+		 */
+		default(props: {}) : any
+	}>()
+
+	const fallbackModel = ref<UniFormModel>({})
+	const fields = ref<UniFormFieldContext[]>([])
+	const initialModel = ref<UniFormModel>({})
+	const localRules = ref<UniFormRules | null>(null)
+	/**
+	 * 合并两份规则表。后者的同名字段覆盖前者。
+	 * @param base 原规则表
+	 * @param overrides 要覆盖进去的规则表
+	 * @returns 合并后的新对象，不修改入参
+	 */
+	function mergeRuleMaps(
+		base: UniFormRules | null | undefined,
+		overrides: UniFormRules | null | undefined
+	): UniFormRules {
+		const result: any = {}
+		const sources: any[] = [base, overrides]
+		sources.forEach((source: any) => {
+			if (source == null) {
+				return
+			}
+			objectKeys(source).forEach((key: string) => {
+				if (key == '__proto__' || key == 'prototype' || key == 'constructor') {
+					return
+				}
+				result[key] = source[key]
+			})
+		})
+		return result
+	}
+	const effectiveRules = computed<UniFormRules>(() : UniFormRules => {
+		if (localRules.value == null) {
+			return props.rules ?? {}
+		}
+		return mergeRuleMaps(props.rules, localRules.value)
+	})
+	const lastPopupMessage = ref<string>('')
+	let legacyRulesSource: UniFormRules | null = null
+	let legacyValidators: any = {}
+	let legacyValidatorRules: any = {}
+	let legacyValidatorLabels: any = {}
+	let validationSequence = 0
+	let modelRevision = 0
+	let suppressModelNotify = false
+	let standardSchemaCache: { schema: any, revision: number, task: Promise<StandardSchemaRun> } | null = null
+
+	function clearLegacyValidatorCache(): void {
+		legacyRulesSource = null
+		legacyValidators = {}
+		legacyValidatorRules = {}
+		legacyValidatorLabels = {}
+	}
+
+	const currentModel = computed<UniFormModel>(() : UniFormModel => {
+		if (props.model != null) {
+			return props.model
+		}
+		if (props.modelValue != null) {
+			return props.modelValue
+		}
+		if (props.value != null) {
+			return props.value
+		}
+		return fallbackModel.value
+	})
+
+	function groupRules(group: UniFormRuleGroup | UniFormRule[] | null | undefined): UniFormRule[] {
+		if (Array.isArray(group)) {
+			return group
+		}
+		return group?.rules ?? []
+	}
+
+	/**
+	 * 判断普通对象上是否写了这个字段。
+	 * @param target 规则表或其他普通对象
+	 * @param property 字段名
+	 */
+	function hasOwnRule(target: object, property: string): boolean {
+		return (target as any)[property] !== undefined
+	}
+
+	function hasCustomValidation(group: UniFormRuleGroup | UniFormRule[] | null | undefined): boolean {
+		return groupRules(group).some((rule: UniFormRule): boolean => {
+			return typeof rule.validateExpr == 'function' || typeof rule.validateFunction == 'function'
+		})
+	}
+
+	/**
+	 * 取字段规则。表单项规则会替换表单上的规则列表，但表单规则组里的 label 仍然保留。
+	 * @param name 字段路径
+	 * @param itemRules 表单项自己的规则，没有时用表单规则
+	 */
+	function getFieldRules(name: UniFormPath, itemRules?: UniFormRule[] | null): UniFormRuleGroup {
+		return resolveFieldRuleGroup(lookupFormRuleGroup(name), itemRules)
+	}
+
+	/**
+	 * 从表单规则表里找出这个字段的规则组。
+	 * @param name 字段路径
+	 */
+	function lookupFormRuleGroup(name: UniFormPath): UniFormRuleGroup {
+		const key = pathKey(name)
+		const rules = effectiveRules.value as any
+		const normalizedName = normalizePath(name).join('.')
+		let source = (hasOwnRule(rules, key) ? rules[key] : null) ?? (hasOwnRule(rules, normalizedName) ? rules[normalizedName] : null)
+		if (source == null) {
+			const matchingKey = objectKeys(rules).find((ruleKey: string): boolean => pathKey(ruleKey) == key)
+			if (matchingKey != null) {
+				source = rules[matchingKey]
+			}
+		}
+		if (Array.isArray(source)) {
+			return { rules: source }
+		}
+		return source ?? { rules: [] }
+	}
+
+	function getFieldValue(name: UniFormPath): any {
+		return getPath(currentModel.value, name)
+	}
+
+	function getLegacyValidator(name: UniFormPath): any {
+		const rules = effectiveRules.value
+		if (legacyRulesSource !== rules) {
+			clearLegacyValidatorCache()
+			legacyRulesSource = rules
+		}
+		const key = pathKey(name)
+		const fieldGroup = getFieldRules(name)
+		const fieldRules = fieldGroup.rules ?? []
+		const fieldLabel = fieldGroup.label
+		if (legacyValidators[key] == null || legacyValidatorRules[key] !== fieldRules || legacyValidatorLabels[key] !== fieldLabel) {
+			const normalizedRules: any = {}
+			normalizedRules[key] = { label: fieldLabel, rules: fieldRules }
+			legacyValidators[key] = createLegacyValidator(normalizedRules)
+			legacyValidatorRules[key] = fieldRules
+			legacyValidatorLabels[key] = fieldLabel
+		}
+		return legacyValidators[key]
+	}
+
+	function notifyModelChange(): void {
+		validationSequence += 1
+		invalidateSchemaCache()
+	}
+
+	/**
+	 * 只让 schema 缓存失效，不打断正在进行的整表校验。
+	 * 原地改模型时引用不变，不能靠取消校验来刷新缓存。
+	 */
+	function invalidateSchemaCache(): void {
+		modelRevision += 1
+		standardSchemaCache = null
+	}
+
+	/**
+	 * 写入时沿用该字段当前生效的规则。
+	 * 表单项自己的 rules 会替换表单规则，不能再按表单规则把值改一遍。
+	 * @param name 字段路径
+	 * @returns 表单项规则；没有挂载字段时返回 null，随后使用表单规则
+	 */
+	function rulesForWrite(name: UniFormPath): UniFormRule[] | null {
+		const field = fields.value.find((item: UniFormFieldContext): boolean => item.key == pathKey(name))
+		if (field == null) {
+			return null
+		}
+		return field.getRules()
+	}
+
+	function setFieldValue(name: UniFormPath, value: any): void {
+		notifyModelChange()
+		const source = currentModel.value
+		const normalizedValue = normalizeLegacyValue(value, getFieldRules(name, rulesForWrite(name)))
+		const next = updatePath(source ?? {}, name, normalizedValue) as UniFormModel
+		// Keep legacy :modelValue/:model usage working while emitting the v-model update.
+		if (source != null) {
+			setPath(source, name, normalizedValue)
+		}
+		if (props.model == null && props.modelValue == null && props.value == null) {
+			fallbackModel.value = next
+		}
+		emit('update:modelValue', next)
+	}
+
+	function getFieldTrigger(name: UniFormPath, itemTrigger?: UniFormTrigger, itemRules?: UniFormRule[] | null): UniFormTrigger {
+		if (itemTrigger != null) {
+			return itemTrigger
+		}
+		const group = getFieldRules(name, itemRules)
+		return group.validateTrigger || group.trigger || props.validateTrigger
+	}
+
+	function shouldValidate(trigger: UniFormTrigger, itemTrigger?: UniFormTrigger): boolean {
+		return trigger == 'submit' || (itemTrigger || props.validateTrigger) == trigger
+	}
+
+	function shouldValidateField(trigger: UniFormTrigger, name: UniFormPath, itemTrigger?: UniFormTrigger, itemRules?: UniFormRule[] | null): boolean {
+		if (trigger == 'submit') {
+			return true
+		}
+		if (getFieldTrigger(name, itemTrigger, itemRules) == trigger) {
+			return true
+		}
+		const rules = groupRules(getFieldRules(name, itemRules))
+		return rules.some((rule: UniFormRule): boolean => (rule.validateTrigger || rule.trigger) == trigger)
+	}
+
+	/**
+	 * 错误文案里的标签。规则组自己写了 label 时仍用规则组的。
+	 * 没有时用表单项上的标签，两边都没有才退回字段路径。
+	 * @param name 字段路径
+	 * @returns 传给旧校验器的默认标签
+	 */
+	function labelForField(name: UniFormPath): string {
+		const field = fields.value.find((item: UniFormFieldContext): boolean => item.key == pathKey(name))
+		const visibleLabel = field == null ? '' : field.getLabel()
+		if (visibleLabel != '') {
+			return visibleLabel
+		}
+		return pathKey(name)
+	}
+
+	async function validateFieldValue(
+		name: UniFormPath,
+		value: any,
+		itemRules?: UniFormRule[] | null,
+		itemTrigger?: UniFormTrigger,
+		trigger: UniFormTrigger = 'submit',
+		includeSchema: boolean = true,
+		validator?: any
+	): Promise<UniFormIssue | null> {
+		const group = getFieldRules(name, itemRules)
+		const validationData = hasCustomValidation(group) ? cloneModel(currentModel.value) : currentModel.value
+		const legacyIssue = await validateLegacyRules(
+			value,
+			group,
+			trigger,
+			validationData,
+			labelForField(name),
+			name,
+			itemRules == null ? (validator ?? getLegacyValidator(name)) : validator
+		)
+		if (!includeSchema) {
+			return legacyIssue
+		}
+		const schemaRun = await readSchemaRun(true)
+		const key = pathKey(name)
+		publishOtherSchemaIssues(schemaRun.issues, key)
+		if (legacyIssue != null) {
+			return legacyIssue
+		}
+		return schemaRun.issues.find((issue: UniFormIssue): boolean => issue.key == key) ?? null
+	}
+
+	/**
+	 * 把同一次 schema 结果里其它字段的错误写到对应表单项。
+	 * 只覆盖有 schema 错误的项，不清掉它们已经显示的规则错误。
+	 * @param issues schema 的全部错误
+	 * @param currentKey 当前正在校验的字段，由调用方自己 setError
+	 */
+	function publishOtherSchemaIssues(issues: UniFormIssue[], currentKey: string): void {
+		schemaIssuesForOtherFields(issues, currentKey).forEach((issue: UniFormIssue) => {
+			const field = fields.value.find((item: UniFormFieldContext): boolean => item.key == issue.key)
+			if (field != null) {
+				field.setError(issue)
+			}
+		})
+	}
+
+	/**
+	 * 跑 Standard Schema。模型在等待期间变了就丢弃这次结果，再跑一遍。
+	 * 同一 schema、同一模型版本复用上一次的 Promise，失焦不会把整份 schema 再跑一遍。
+	 * @param allowRetry 为 false 时不再重试，避免模型连续变化时递归
+	 * @returns 错误列表，以及成功时可以写回的转换值
+	 */
+	async function readSchemaRun(allowRetry: boolean): Promise<StandardSchemaRun> {
+		if (props.schema == null) {
+			return { issues: [], value: undefined }
+		}
+		let task: Promise<StandardSchemaRun>
+		const revision = modelRevision
+		const cached = standardSchemaCache
+		if (cached != null && isSchemaCacheHit(cached, props.schema, revision)) {
+			task = cached.task
+		} else {
+			task = validateStandardSchema(props.schema, cloneModel(currentModel.value))
+			standardSchemaCache = {
+				schema: props.schema,
+				revision: revision,
+				task
+			}
+		}
+		const result = await task
+		if (allowRetry && revision != modelRevision) {
+			return readSchemaRun(false)
+		}
+		return {
+			issues: cloneIssues(result.issues),
+			value: result.value
+		}
+	}
+
+	/**
+	 * 对外的 schema 校验入口，参数保持原来的一个字段名。
+	 * @param name 只保留这个字段的错误；不传则返回全部
+	 */
+	function validateSchema(name?: UniFormPath): Promise<UniFormIssue[]> {
+		return readSchemaRun(true).then((result: StandardSchemaRun): UniFormIssue[] => {
+			if (name == null) {
+				return result.issues
+			}
+			const key = pathKey(name)
+			return result.issues.filter((issue: UniFormIssue): boolean => issue.key == key)
+		})
+	}
+
+	/**
+	 * 弹出第一个错误。undertext 不弹，已经弹过的不再重复。
+	 * 这里不发 validate 事件，避免给原有监听多一次回调。
+	 * @param message 要展示的错误文案
+	 */
+	function showValidationPopup(message: string): void {
+		if (message == '' || lastPopupMessage.value != '' || props.errShowType == 'undertext') {
+			return
+		}
+		lastPopupMessage.value = message
+		if (props.errShowType == 'toast') {
+			uni.showToast({
+				title: message,
+				icon: 'none'
+			})
+		} else if (props.errShowType == 'modal') {
+			uni.showModal({
+				title: '提示',
+				content: message
+			})
+		}
+	}
+
+	/**
+	 * 把校验结果告诉外部。整表校验时 emitEvent 传 false，只保留弹窗，最后由 finishValidation 发一次整组结果。
+	 * @param issue 当前错误，通过时为 null
+	 * @param emitEvent 是否发出 validate 事件
+	 */
+	function notifyValidation(issue: UniFormIssue | null, emitEvent: boolean = true): void {
+		if (emitEvent) {
+			emit('validate', issue)
+		}
+		if (issue == null) {
+			if (emitEvent) {
+				lastPopupMessage.value = ''
+			}
+			return
+		}
+		showValidationPopup(issue.errorMessage)
+	}
+
+	/**
+	 * toast / modal 下，没有对应表单项的 schema 错误也要露出第一条。
+	 * 已经由字段弹出过的不再追加。
+	 * @param issues 本次收集到的全部错误
+	 * @param validatedFields 已经参与展示的字段
+	 */
+	function revealUnmatchedPopup(issues: UniFormIssue[], validatedFields: UniFormFieldContext[]): void {
+		const hidden = issues.find((issue: UniFormIssue): boolean => {
+			if (issue.key == '') {
+				return true
+			}
+			return !validatedFields.some((field: UniFormFieldContext): boolean => field.key == issue.key)
+		})
+		if (hidden != null) {
+			showValidationPopup(hidden.errorMessage)
+		}
+	}
+
+	function cloneIssues(issues: UniFormIssue[]): UniFormIssue[] {
+		return issues.map((issue: UniFormIssue): UniFormIssue => {
+			return {
+				key: issue.key,
+				path: issue.path.slice(),
+				errorMessage: issue.errorMessage,
+				source: issue.source
+			}
+		})
+	}
+
+	function registerField(field: UniFormFieldContext): void {
+		validationSequence += 1
+		const existingIndex = fields.value.findIndex((item: UniFormFieldContext): boolean => item.key == field.key)
+		if (existingIndex == -1) {
+			fields.value.push(field)
+		} else {
+			if (fields.value[existingIndex] != field && field.key != '') {
+				console.warn(duplicateFieldMessage(field.key))
+			}
+			fields.value[existingIndex] = field
+		}
+		if (getPath(initialModel.value, field.name) === undefined) {
+			const value = getFieldValue(field.name)
+			if (value !== undefined) {
+				setPath(initialModel.value, field.name, cloneModel(value))
+			}
+		}
+	}
+
+	function unregisterField(field: UniFormFieldContext): void {
+		validationSequence += 1
+		const key = field.key
+		fields.value = fields.value.filter((item: UniFormFieldContext): boolean => item != field)
+		const stillUsed = fields.value.some((item: UniFormFieldContext): boolean => item.key == key)
+		if (!stillUsed) {
+			deletePath(initialModel.value, field.name)
+		}
+	}
+
+	function getModel(): UniFormModel {
+		return currentModel.value
+	}
+
+	function warnMultipleModelProps(): void {
+		const count = [props.model, props.modelValue, props.value].filter((item: UniFormModel | null | undefined): boolean => item != null).length
+		if (count > 1) {
+			console.warn('uni-forms 同时传入了 model、modelValue 和 value，将按 model > modelValue > value 使用')
+		}
+	}
+
+	const formContext: UniFormContext = {
+		registerField,
+		unregisterField,
+		getFieldValue,
+		setFieldValue,
+		getFieldRules,
+		shouldValidate,
+		shouldValidateField,
+		validateFieldValue,
+		validateSchema,
+		notifyModelChange,
+		notifyValidation,
+		getBorder: () : boolean => props.border,
+		getLabelWidth: () : string | number => props.labelWidth,
+		getLabelPosition: () : string => props.labelPosition,
+		getLabelAlign: () : string => props.labelAlign,
+		getErrShowType: () : string => props.errShowType,
+		getModel
+	}
+
+	provide(UNI_FORM_CONTEXT, formContext)
+
+	function applyModelUpdate(next: UniFormModel, changedNames: UniFormPath[]): void {
+		notifyModelChange()
+		const source = currentModel.value
+		if (source != null) {
+			changedNames.forEach((name: UniFormPath) => {
+				const value = getPath(next, name)
+				if (value === undefined) {
+					deletePath(source, name)
+				} else {
+					setPath(source, name, cloneModel(value))
+				}
+			})
+		}
+		if (props.model == null && props.modelValue == null && props.value == null) {
+			fallbackModel.value = next
+		}
+		emit('update:modelValue', next)
+	}
+
+	function resolveNameList(value: any): UniFormPath[] {
+		if (value == null || value == '') {
+			return []
+		}
+		if (typeof value == 'string') {
+			return [value]
+		}
+		if (Array.isArray(value)) {
+			return value.map((item: any): UniFormPath => item)
+		}
+		return []
+	}
+
+	function buildResult(selectedFields: UniFormFieldContext[], keepItem: any): UniFormModel {
+		const result: UniFormModel = {}
+		selectedFields.forEach((field: UniFormFieldContext) => {
+			setPath(result, field.name, cloneModel(getFieldValue(field.name)))
+		})
+		resolveNameList(keepItem).forEach((name: UniFormPath) => {
+			const value = getFieldValue(name)
+			if (value !== undefined) {
+				setPath(result, name, cloneModel(value))
+			}
+		})
+		return result
+	}
+
+	function mergeIssue(list: UniFormIssue[], issue: UniFormIssue): void {
+		const exists = list.some((item: UniFormIssue): boolean => item.key == issue.key && item.errorMessage == issue.errorMessage)
+		if (!exists) {
+			list.push(issue)
+		}
+	}
+
+	type ValidationResult = { issues: UniFormIssue[], data: UniFormModel, stale?: boolean }
+
+	async function runValidation(keepItem: any, onlyNames: any, validateAllWhenEmpty: boolean): Promise<ValidationResult> {
+		const runId = ++validationSequence
+		lastPopupMessage.value = ''
+		const names = resolveNameList(onlyNames)
+		const selectedFields = fields.value.filter((field: UniFormFieldContext): boolean => {
+			return names.length == 0 ? validateAllWhenEmpty : names.some((name: UniFormPath): boolean => pathKey(name) == field.key)
+		})
+		const issues: UniFormIssue[] = []
+		const legacyIssues: UniFormIssue[] = []
+		const validatedFields: UniFormFieldContext[] = []
+		for (const field of selectedFields) {
+			if (runId != validationSequence) {
+				return { issues: [], data: cloneModel(currentModel.value) as UniFormModel, stale: true }
+			}
+			validatedFields.push(field)
+			const issue = await field.validate('submit', true, false, false)
+			if (issue != null) {
+				legacyIssues.push(issue)
+				mergeIssue(issues, issue)
+			}
+		}
+		if (runId != validationSequence) {
+			return { issues: [], data: cloneModel(currentModel.value) as UniFormModel, stale: true }
+		}
+		const shouldReadSchema = validateAllWhenEmpty || names.length > 0
+		const emptySchemaRun: StandardSchemaRun = { issues: [], value: undefined }
+		const schemaRun = shouldReadSchema ? await readSchemaRun(true) : emptySchemaRun
+		if (runId != validationSequence) {
+			return { issues: [], data: cloneModel(currentModel.value) as UniFormModel, stale: true }
+		}
+		const schemaIssues = schemaIssuesForRequest(
+			schemaRun.issues,
+			names.map((name: UniFormPath): string => pathKey(name)),
+			validateAllWhenEmpty
+		)
+		schemaIssues.forEach((issue: UniFormIssue) => {
+			mergeIssue(issues, issue)
+		})
+		validatedFields.forEach((field: UniFormFieldContext) => {
+			const hasLegacyIssue = legacyIssues.some((issue: UniFormIssue): boolean => issue.key == field.key)
+			if (!hasLegacyIssue) {
+				const schemaIssue = schemaIssues.find((issue: UniFormIssue): boolean => issue.key == field.key) ?? null
+				if (schemaIssue != null) {
+					field.setError(schemaIssue)
+					notifyValidation(schemaIssue, false)
+				} else if (shouldReadSchema && field.validateState != null && field.validateState.value == 'error') {
+					field.setError(null)
+				}
+			}
+		})
+		revealUnmatchedPopup(issues, validatedFields)
+		if (runId != validationSequence) {
+			return { issues: [], data: cloneModel(currentModel.value) as UniFormModel, stale: true }
+		}
+		if (shouldApplySchemaValue(validateAllWhenEmpty, issues.length, schemaRun.value)) {
+			applySchemaOutput(schemaRun.value, selectedFields, keepItem)
+		}
+		if (runId != validationSequence) {
+			return { issues: [], data: cloneModel(currentModel.value) as UniFormModel, stale: true }
+		}
+		return {
+			issues,
+			data: buildResult(selectedFields, keepItem)
+		}
+	}
+
+	/**
+	 * 整表校验成功后，把 schema 转换值写进已注册字段和 keepItem 指定的字段。
+	 * 写入时跳过字段监听，并忽略紧接着的模型替换，避免这次写回取消刚刚通过的校验。
+	 * @param output schema 成功时返回的模型
+	 * @param selectedFields 本次校验的字段
+	 * @param keepItem 需要一并提交、但没有表单项的字段
+	 */
+	function applySchemaOutput(output: any, selectedFields: UniFormFieldContext[], keepItem: any): void {
+		const targets: { name: UniFormPath, field: UniFormFieldContext | null }[] = []
+		selectedFields.forEach((field: UniFormFieldContext) => {
+			targets.push({ name: field.name, field })
+		})
+		resolveNameList(keepItem).forEach((name: UniFormPath) => {
+			const listed = targets.some((item: { name: UniFormPath, field: UniFormFieldContext | null }): boolean => pathKey(item.name) == pathKey(name))
+			if (!listed) {
+				targets.push({ name, field: null })
+			}
+		})
+		const pending: { name: UniFormPath, field: UniFormFieldContext | null, value: any }[] = []
+		targets.forEach((item: { name: UniFormPath, field: UniFormFieldContext | null }) => {
+			const nextValue = getPath(output, item.name)
+			if (nextValue === undefined) {
+				return
+			}
+			if (!formValuesDiffer(getFieldValue(item.name), nextValue)) {
+				return
+			}
+			pending.push({ name: item.name, field: item.field, value: nextValue })
+		})
+		if (pending.length == 0) {
+			return
+		}
+		suppressModelNotify = true
+		pending.forEach((item: { name: UniFormPath, field: UniFormFieldContext | null, value: any }) => {
+			if (item.field != null) {
+				item.field.skipNextChange()
+			}
+			const source = currentModel.value
+			if (source != null) {
+				setPath(source, item.name, cloneModel(item.value))
+			}
+		})
+		const snapshot = cloneModel(currentModel.value ?? {}) as UniFormModel
+		if (props.model == null && props.modelValue == null && props.value == null) {
+			fallbackModel.value = snapshot
+		}
+		emit('update:modelValue', snapshot)
+		nextTick(() => {
+			suppressModelNotify = false
+		})
+	}
+
+	function finishValidation(result: ValidationResult, callback: any, submitEvent: boolean): void {
+		if (result.stale == true) {
+			// 被新一次校验取消时，回调也要结束。errors 不是 null，调用方不会把它当成通过。
+			// 不发 validate / submit，避免取消被看成一次新的校验结果。
+			if (typeof callback == 'function') {
+				callback(cancelledValidationResult(), result.data)
+			}
+			return
+		}
+		const errors = result.issues.length == 0 ? null : result.issues
+		emit('validate', errors)
+		if (submitEvent) {
+			emit('submit', {
+				detail: {
+					value: result.data,
+					errors
+				}
+			})
+		}
+		if (typeof callback == 'function') {
+			callback(errors, result.data)
+		}
+	}
+
+	/**
+	 * @description 校验整张表单；不传 callback 时返回 Promise，通过时返回表单数据，失败时拒绝并返回错误数组
+	 * @param keepItem 未注册为表单项但需要保留在校验结果中的字段路径或字段路径数组
+	 * @param callback 校验完成回调，参数为 errors 和 data
+	 */
+	function validate(keepItem?: any, callback?: any): any {
+		if (typeof keepItem == 'function') {
+			callback = keepItem
+			keepItem = []
+		}
+		const task = runValidation(keepItem, [], true)
+		if (typeof callback == 'function') {
+			task.then((result: ValidationResult) => finishValidation(result, callback, false))
+			return null
+		}
+		return task.then((result: ValidationResult) => {
+			finishValidation(result, null, false)
+			if (result.stale == true) {
+				return Promise.reject(cancelledValidationResult())
+			}
+			if (result.issues.length > 0) {
+				return Promise.reject(result.issues)
+			}
+			return result.data
+		})
+	}
+
+	/**
+	 * @description 校验指定字段；不传 callback 时返回 Promise
+	 * @param names 字段路径或字段路径数组
+	 * @param callback 校验完成回调，参数为 errors 和 data
+	 */
+	function validateField(names?: any, callback?: any): any {
+		if (typeof names == 'function') {
+			callback = names
+			names = []
+		}
+		const task = runValidation([], names, false)
+		if (typeof callback == 'function') {
+			task.then((result: ValidationResult) => finishValidation(result, callback, false))
+			return null
+		}
+		return task.then((result: ValidationResult) => {
+			finishValidation(result, null, false)
+			if (result.stale == true) {
+				return Promise.reject(cancelledValidationResult())
+			}
+			if (result.issues.length > 0) {
+				return Promise.reject(result.issues)
+			}
+			return result.data
+		})
+	}
+
+	/**
+	 * @description 清除指定字段的校验状态和错误信息，不传字段时清除全部
+	 * @param names 字段路径或字段路径数组
+	 */
+	function clearValidate(names?: any): void {
+		validationSequence += 1
+		const requested = resolveNameList(names)
+		fields.value.forEach((field: UniFormFieldContext) => {
+			if (requested.length == 0 || requested.some((name: UniFormPath): boolean => pathKey(name) == field.key)) {
+				field.clearValidate()
+			}
+		})
+	}
+
+	/**
+	 * @description 将指定字段恢复为表单挂载时的初始值并清除校验状态，不传字段时重置全部
+	 * @param names 字段路径或字段路径数组
+	 */
+	function resetFields(names?: any): void {
+		const requested = resolveNameList(names)
+		const selected = fields.value.filter((field: UniFormFieldContext): boolean => {
+			return requested.length == 0 || requested.some((name: UniFormPath): boolean => pathKey(name) == field.key)
+		})
+		const next = cloneModel(currentModel.value ?? {}) as UniFormModel
+		selected.forEach((field: UniFormFieldContext) => {
+			const initialValue = getPath(initialModel.value, field.name)
+			if (initialValue === undefined) {
+				deletePath(next, field.name)
+			} else {
+				setPath(next, field.name, cloneModel(initialValue))
+			}
+			field.clearValidate()
+		})
+		validationSequence += 1
+		applyModelUpdate(next, selected.map((field: UniFormFieldContext): UniFormPath => field.name))
+		// Model watchers run after this method. Clear any bind-triggered validation
+		// caused by the reset write so reset never immediately shows old errors.
+		nextTick(() => selected.forEach((field: UniFormFieldContext) => field.clearValidate()))
+	}
+
+	/**
+	 * @description resetFields 的别名
+	 * @param names 字段路径或字段路径数组
+	 */
+	function reset(names?: any): void {
+		resetFields(names)
+	}
+
+	/**
+	 * @description 动态合并表单规则；传入 null 时清除 setRules 写入的规则并恢复 rules 属性
+	 * @param rules 要合并进去的规则表；null 表示清空本地覆盖
+	 */
+	function setRules(rules: UniFormRules | null): void {
+		validationSequence += 1
+		if (rules == null) {
+			localRules.value = null
+			clearLegacyValidatorCache()
+			fields.value.forEach((field: UniFormFieldContext) => field.clearValidate())
+			return
+		}
+		localRules.value = mergeRuleMaps(localRules.value, rules)
+		clearLegacyValidatorCache()
+		fields.value.forEach((field: UniFormFieldContext) => field.clearValidate())
+	}
+
+	/**
+	 * @description 设置字段值；字段已注册时同时触发该字段的强制校验
+	 * @param name 字段路径
+	 * @param value 字段值
+	 */
+	function setValue(name: UniFormPath, value: any): any {
+		const field = fields.value.find((item: UniFormFieldContext): boolean => item.key == pathKey(name))
+		if (field != null) {
+			return field.onFieldChange(value, true)
+		}
+		// 字段还没挂载时仍然写入模型。没有字段可校验，返回值保持 null。
+		setFieldValue(name, value)
+		return null
+	}
+
+	/**
+	 * @description [已废弃] 校验并触发 submit 事件，推荐使用 validate 方法
+	 * @param keepItem 未注册为表单项但需要保留在结果中的字段路径或字段路径数组
+	 * @param callback 校验完成回调
+	 * @param type 兼容参数
+	 */
+	function submit(keepItem?: any, callback?: any, type?: any): any {
+		if (!type) {
+			console.warn('submit 方法即将废弃，请使用 validate 方法代替！')
+		}
+		if (typeof keepItem == 'function') {
+			callback = keepItem
+			keepItem = []
+		}
+		const task = runValidation(keepItem, [], true)
+		if (typeof callback == 'function') {
+			task.then((result: ValidationResult) => finishValidation(result, callback, true))
+			return null
+		}
+		return task.then((result: ValidationResult) => {
+			finishValidation(result, null, true)
+			if (result.stale == true) {
+				return Promise.reject(cancelledValidationResult())
+			}
+			if (result.issues.length > 0) {
+				return Promise.reject(result.issues)
+			}
+			return result.data
+		})
+	}
+
+	watch(() => currentModel.value, () => {
+		// 整表校验成功后写回转换值时，这次模型替换不能把刚刚通过的校验取消掉。
+		if (suppressModelNotify) {
+			return
+		}
+		// Replacing the external model must cancel validators that captured an older value.
+		notifyModelChange()
+	})
+
+	watch(() => currentModel.value, () => {
+		// 只刷新 schema 缓存。不增加 validationSequence，避免本次写入触发的深度监听把紧接着的提交校验取消掉。
+		invalidateSchemaCache()
+	}, { deep: true })
+
+	watch(() => props.schema, () => {
+		validationSequence += 1
+		standardSchemaCache = null
+	})
+
+	watch(() => props.rules, () => {
+		validationSequence += 1
+		clearLegacyValidatorCache()
+		fields.value.forEach((field: UniFormFieldContext) => field.clearValidate())
+	}, { deep: true })
+
+	onMounted(() => {
+		warnMultipleModelProps()
+		initialModel.value = cloneModel(currentModel.value ?? {}) as UniFormModel
+	})
+
+	defineExpose({
+		setRules,
+		setValue,
+		validate,
+		validateField,
+		clearValidate,
+		resetFields,
+		reset,
+		submit
+	})
+</script>
+

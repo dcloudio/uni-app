@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@getui/gysdk": "./libs/GY-HM-1.1.1.har"
+  }
+}

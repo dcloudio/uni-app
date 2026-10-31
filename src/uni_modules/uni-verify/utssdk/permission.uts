@@ -1,0 +1,106 @@
+// #ifdef APP-IOS
+import { DispatchQueue } from 'Dispatch';
+// #endif
+
+interface checkPermissionResponse {
+	desc: string,
+	errCode: number,
+	ret: number
+	errMsg: string
+}
+
+/**
+ * 校验账号权限
+ */
+export function checkPermission(appid: string, gyid: string): Promise<void> {
+	return new Promise<void>((resolve, reject) => {
+		const requestPermission = () : void => {
+			uni.request({
+				header: null,
+				timeout: null,
+				dataType: null,
+				responseType: null,
+				sslVerify: null,
+				withCredentials: null,
+				firstIpv4: null,
+				complete: null,
+				enableChunked: null,
+				url: "https://s1.dcloud.net.cn/unilogin/check-permission",
+				method: "POST",
+				data: {
+					"appid": appid,
+					"gyid": gyid
+				},
+				success: (res: RequestSuccess<any>) => {
+					// #ifndef APP-HARMONY
+					const responseData : UTSJSONObject | null = res.data as UTSJSONObject | null;
+					const response = responseData?.getJSON("data");
+					const ret = response?.getNumber("ret", 0) ?? 0;
+					if (ret != 0) {
+						// 无权限
+						result.valid = false;
+						result.code = ret;
+						result.desc = response?.getString("desc") ?? "";
+						resolve()
+						return
+					}
+					// #endif
+
+					// #ifdef APP-HARMONY
+					let response = res.data as checkPermissionResponse
+					if (response != null && response.ret != 0) {
+						// 无权限
+						result.valid = false;
+						result.code = response.ret
+						result.desc = response.desc
+						resolve()
+						return
+					}
+					// #endif
+
+					result.valid = true;
+					result.code = 0;
+					result.desc = "";
+					resolve()
+				},
+				fail: (err: RequestFail) => {
+					result.valid = true;
+					result.code = 0;
+					result.desc = "";
+					resolve()
+				}
+			} as RequestOptions<any>)
+		}
+
+		// #ifdef APP-IOS
+		DispatchQueue.main.async(execute = () : void => {
+			requestPermission()
+		})
+		// #endif
+		// #ifndef APP-IOS
+		requestPermission()
+		// #endif
+	})
+}
+
+/**
+ * 获取权限校验结果
+ */
+export function getPermissionCheckResult(): PermissionCheckResult {
+	return result;
+}
+
+const result: PermissionCheckResult = {
+	valid: true,
+	code: 0,
+	desc: ""
+};
+
+/**
+ * 权限校验结果
+ */
+export type PermissionCheckResult = {
+	valid: boolean,
+	code: number,
+	desc: string
+}

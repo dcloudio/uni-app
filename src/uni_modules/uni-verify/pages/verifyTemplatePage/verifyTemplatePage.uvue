@@ -1,0 +1,338 @@
+<template>
+	<view class="uni_verify_template_container">
+		<view id="uni-verify-id-page-content" @transitionend="transitionEndFunc()"
+			:class="isFullScreen ? 'uni_verify_template_full_content' : 'uni_verify_template_half_content'"
+			:style="contentStyle">
+			<view
+				:class="isFullScreen ? 'uni_verify_template_full_safe_content' : 'uni_verify_template_half_safe_content'">
+				<view class="uni_verify_template_close_container">
+					<text class="uni_verify_template_close_icon" @click="closeFunc">{{closeIcon}}</text>
+				</view>
+				<view class="uni_verify_template_info_container">
+					<image class="uni_verify_template_logo_icon" :src="logoPath"></image>
+					<text id="uni-verify-id-number-text" class="uni_verify_template_phone_number">{{phoneNumber}}</text>
+					<text id="uni-verify-id-slogan-text" class="uni_verify_template_slogan">{{slogan}}</text>
+					<button id="uni-verify-id-login-button" class="uni_verify_template_login_button"
+						@click="loginIn">{{buttonTitle}}</button>
+				</view>
+				<view class="uni_verify_template_privacy_container">
+					<checkbox id="uni-verify-id-privacy-checkbox" class="uni_verify_template_privacy_checkbox"
+						:checked="false">
+					</checkbox>
+					<text class="uni_verify_template_privacy_normal">登录即同意</text>
+					<text id="uni-verify-id-privacy-text" class="uni_verify_template_privacy_href"
+						@click="pushPrivacyUrl">{{privacyName}}</text>
+				</view>
+			</view>
+
+		</view>
+	</view>
+
+</template>
+
+<script setup lang="uts">
+	const page = getCurrentInstance()?.proxy?.$page
+	
+	const successEventName = ref('')
+	const failEventName = ref('')
+	const closeEventName = ref('')
+	const unloadEventName = ref('')
+	const uniVerifyManager = ref<UniVerifyManager | null>(null)
+	const isFullScreen = ref(false) // 是否全屏
+	const privacyUrl = ref('')
+	const privacyName = ref('')
+	const phoneNumber = ref('')
+	const slogan = ref('')
+	const buttonTitle = ref('一键登录')
+	const logoPath = ref('')
+	const contentStyle = ref('')
+	const closeIcon = ref('\uE650')
+	const theme = ref('')
+	const isPreLogin = ref(true) // 预登录状态
+	const isCloseTransition = ref(false) // 标记 transition 后是否需要关闭页面
+
+	function close() {
+		const animationType = isFullScreen.value == true ? 'slide-out-bottom' : 'none'
+		uni.closeDialogPage({
+			dialogPage: page,
+			animationType: animationType
+		})
+
+		if (isPreLogin.value == true) {
+			const loginFail = { code: 30001 }
+			uni.$emit(failEventName.value, loginFail)
+		}
+		uni.$off(successEventName.value)
+		uni.$off(failEventName.value)
+		uni.$off(closeEventName.value)
+	}
+
+	function closeFunc() {
+		if (isFullScreen.value == true) {
+			close()
+		} else {
+			isCloseTransition.value = true
+			const pageElement = page?.getElementById("uni-verify-id-page-content")
+			pageElement?.style?.setProperty('transform', `translate(0%,100%)`)
+		}
+	}
+
+	function transitionEndFunc() {
+		if (isCloseTransition.value == true) {
+			isCloseTransition.value = false
+			close()
+		}
+	}
+
+	function pushPrivacyUrl() {
+		let url = '/uni_modules/uni-verify/pages/verifyWebPage/verifyWebPage?url=' + privacyUrl.value + '&title=' + privacyName.value + '&animationType=slide-out-bottom' + '&theme=' + theme.value
+		uni.openDialogPage({
+			url: url,
+			animationType: 'slide-in-bottom',
+			fail(err) {
+				console.log(err)
+			}
+		})
+	}
+
+	function loginIn() {
+		const privacyCheckBoxElement = page?.getElementById('uni-verify-id-privacy-checkbox')
+		const numberTextElement = page?.getElementById('uni-verify-id-number-text')
+		const sloganTextElement = page?.getElementById('uni-verify-id-slogan-text')
+		const loginButtonElement = page?.getElementById('uni-verify-id-login-button')
+		const privacyTextElement = page?.getElementById('uni-verify-id-privacy-text')
+		if (numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null) {
+			uniVerifyManager.value?.customLogin({
+				numberTextElement: numberTextElement!,
+				sloganTextElement: sloganTextElement!,
+				loginButtonElement: loginButtonElement!,
+				privacyCheckBoxElement: privacyCheckBoxElement!,
+				privacyTextElement: privacyTextElement!,
+				success: (res : UniVerifyManagerLoginSuccess) => {
+					const loginSuccess = { openId: res.openId, accessToken: res.accessToken }
+					uni.$emit(successEventName.value, loginSuccess)
+				},
+				fail: (error : UniVerifyManagerLoginFail) => {
+					if (error.errCode == 40001) {
+						uni.showToast({
+							title: "请同意服务条款",
+							duration: 2000
+						})
+						return
+					}
+					console.log(error)
+					const loginFail = { code: error.errCode, cause: error.cause }
+					uni.$emit(failEventName.value, loginFail)
+
+				}
+			})
+		}
+	}
+	
+	onLoad((options : OnLoadOptions) => {
+		if (options['successEventName'] != null) {
+			successEventName.value = options['successEventName'] as string
+		}
+		if (options['failEventName'] != null) {
+			failEventName.value = options['failEventName'] as string
+		}
+	
+		if (options['closeEventName'] != null) {
+			closeEventName.value = options['closeEventName'] as string
+			uni.$on(closeEventName.value, (res : UTSJSONObject) => {
+				if (res["isPreLogin"] != null) {
+					isPreLogin.value = res["isPreLogin"] as boolean
+				}
+				closeFunc()
+			})
+		}
+		if (options['unloadEventName'] != null) {
+			unloadEventName.value = options['unloadEventName'] as string
+		}
+	
+		if (options['fullScreen'] != null) {
+			const fullScreen = options['fullScreen'] as string
+			isFullScreen.value = fullScreen == "true" ? true : false
+		}
+		if (options['logoPath'] != null) {
+			logoPath.value = options['logoPath'] as string
+		}
+		if (options['loginBtnText'] != null) {
+			buttonTitle.value = options['loginBtnText'] as string
+		}
+		const appInfo = uni.getAppBaseInfo()
+		let themeValue = "light"
+		const appTheme = appInfo.appTheme
+		if (appTheme != null && appTheme != "auto") {
+			themeValue = appTheme!
+		} else if (appTheme == "auto") {
+			const deviceInfo = uni.getDeviceInfo()
+			const osTheme = deviceInfo.osTheme
+			if (osTheme != null) {
+				themeValue = osTheme!
+			}
+		}
+		theme.value = themeValue
+		const frontColor = theme.value == "dark" ? "white" : "black"
+		let style = { navigationBarTextStyle: frontColor, disableSwipeBack: true }
+		page?.setPageStyle(style)
+		if (options['backgroundColor'] != null) {
+			const backgroundColor = options['backgroundColor'] as string
+			if (backgroundColor != null && backgroundColor.length > 0) {
+				contentStyle.value = "backgroundColor:" + backgroundColor
+			} else {
+				const color = themeValue == "dark" ? "#181818" : "#ffffff"
+				contentStyle.value = "backgroundColor:" + color
+			}
+		}
+		if (options['privacyName'] != null) {
+			privacyName.value = options['privacyName'] as string
+		}
+		if (options['phoneNumber'] != null) {
+			phoneNumber.value = options['phoneNumber'] as string
+		}
+		if (options['slogan'] != null) {
+			slogan.value = options['slogan'] as string
+		}
+		if (options['privacyUrl'] != null) {
+			const privacyUrlValue = options['privacyUrl'] as string
+			const url = decodeURIComponent(privacyUrlValue)
+			if (url != null) {
+				privacyUrl.value = url as string
+			}
+	
+		}
+		uniVerifyManager.value = uni.getUniVerifyManager()
+	})
+	
+	onBackPress((_ : OnBackPressOptions) : boolean | null => {
+		closeFunc()
+		return true
+	})
+	
+	onReady(() => {
+		const pageElement = page?.getElementById("uni-verify-id-page-content")
+		pageElement?.style?.setProperty('transform', `translate(0%,0%)`)
+	})
+	
+	onShow(() => {
+		const frontColor = theme.value == "dark" ? "white" : "black"
+		let style = { navigationBarTextStyle: frontColor, disableSwipeBack: true }
+		page?.setPageStyle(style)
+	})
+	
+	onUnload(() => {
+		uni.$emit(unloadEventName.value, {})
+		uni.$off(unloadEventName.value)
+	})
+</script>
+
+<style>
+	.uni_verify_template_container {
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.3);
+	}
+
+	.uni_verify_template_half_content {
+		width: 100%;
+		top: 30%;
+		height: 70%;
+		background-color: white;
+		transform: translate(0%, 100%);
+		transition-property: transform;
+		transition-duration: 0.3s;
+	}
+
+	.uni_verify_template_full_content {
+		width: 100%;
+		height: 100%;
+		background-color: white;
+	}
+
+	.uni_verify_template_full_safe_content {
+		padding-top: var(--uni-safe-area-inset-top);
+		/* #ifndef APP-HARMONY */
+		padding-top: env(safe-area-inset-top, 0px);
+		/* #endif */
+		width: 100%;
+		height: 100%;
+	}
+
+	.uni_verify_template_half_safe_content {
+		width: 100%;
+		height: 100%;
+	}
+
+	.uni_verify_template_close_container {
+		padding-top: 20px;
+		width: 100%;
+		left: 90%
+	}
+
+	.uni_verify_template_close_icon {
+		color: gray;
+		font-family: uni-icon;
+		font-size: 24px;
+	}
+
+	.uni_verify_template_info_container {
+		top: 30px;
+		width: 100%;
+		height: 100%;
+		align-items: center;
+	}
+
+	.uni_verify_template_logo_icon {
+		margin-top: 30px;
+		width: 80px;
+		height: 80px;
+	}
+
+	.uni_verify_template_phone_number {
+		margin-top: 20px;
+		font-size: 24px;
+		font-weight: bold;
+		color: gray;
+	}
+
+	.uni_verify_template_slogan {
+		margin-top: 10px;
+		font-size: 12px;
+		color: gray;
+	}
+
+	.uni_verify_template_login_button {
+		color: white;
+		background-color: #3973FF;
+		margin-top: 40px;
+		font-size: 18px;
+		width: 200px;
+		height: 48px;
+	}
+
+	.uni_verify_template_privacy_checkbox {
+		padding-left: 3px;
+		transform: scale(0.65);
+	}
+
+	.uni_verify_template_privacy_container {
+		position: absolute;
+		bottom: 50px;
+		flex-direction: row;
+		width: 100%;
+		justify-content: center;
+	}
+
+	.uni_verify_template_privacy_normal {
+		padding-top: 4px;
+		font-size: 14px;
+		color: gray;
+	}
+
+	.uni_verify_template_privacy_href {
+		padding-top: 4px;
+		font-size: 14px;
+		color: #3973FF;
+	}
+</style>

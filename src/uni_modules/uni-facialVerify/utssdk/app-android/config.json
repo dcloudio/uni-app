@@ -1,0 +1,8 @@
+{
+	"dependencies": [
+		"com.squareup.okhttp3:okhttp:3.11.0",
+		"com.squareup.okio:okio:1.14.0",
+		"com.alibaba:fastjson:1.2.83_noneautotype"
+	],
+	"minSdkVersion": "21"
+}

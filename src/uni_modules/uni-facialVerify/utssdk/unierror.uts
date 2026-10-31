@@ -1,0 +1,28 @@
+import { IFacialRecognitionVerifyError, FacialRecognitionVerifyErrorCode } from "./interface.uts";
+
+export const UniError_StartFacialRecognitionVerify = 'uni-startFacialRecognitionVerify';
+
+export const FacialRecognitionVerifyUniErrors : Map<number, string> = new Map([
+	[10001, "certifyId 不能为空"],
+	[10002, "当前设备不支持"],
+	[10010, "刷脸异常"],
+	[10012, "网络异常"],
+	[10011, "验证中断"],
+	[10013, "刷脸验证失败"],
+	[10020, "设备设置时间异常"]
+])
+
+export class FacialRecognitionVerifyErrorImpl extends UniError implements IFacialRecognitionVerifyError {
+	// #ifdef APP-ANDROID || APP-HARMONY
+	override errCode : FacialRecognitionVerifyErrorCode
+	// #endif
+	constructor(errCode : FacialRecognitionVerifyErrorCode, causeError : SourceError | null) {
+		super()
+		this.errSubject = UniError_StartFacialRecognitionVerify
+		this.errCode = errCode
+		this.errMsg = FacialRecognitionVerifyUniErrors[errCode] ?? "";
+		if (causeError != null) {
+			this.cause = causeError as Error;
+		}
+	}
+}

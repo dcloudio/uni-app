@@ -1,11 +1,11 @@
 # uni-map-amap
 
-当前版本：`1.3.0`
+当前版本：`1.4.0`
 
 `uni-map-amap` 是基于高德地图原生 SDK 实现的 uni-app x 地图组件。
- 自 `1.1.0` 起支持iOS，iOS 功能与 Android之前保持一致。
- 自 `1.2.0` 起Android支持Vapor模式。
- 自 `1.3.0` 起iOS全面拉齐与内置map组件的功能差异，兼容VDOM、Vapor模式
+ 自 `1.1.0` 起支持iOS，iOS 功能与 Android之前保持一致；
+ 自 `1.2.0` 起Android支持Vapor模式；
+ 自 `1.3.0` 起iOS全面拉齐与内置map组件的功能差异，兼容VDOM、Vapor模式；
  自 `1.4.0` 起Android全面拉齐与内置map组件的功能差异。
  
 
@@ -145,4 +145,4 @@ Android 和 iOS 使用不同类型的 Key，需要分别在高德开放平台创
 - 上架应用前，请根据实际业务完善隐私政策和权限用途说明。
 - Android 与 iOS 的 API Key 不能混用。
 - 由于该插件有三方依赖，因此开发调试时需要自定义基座；
-- iOS、Android 均支持 Vapor、VDOM 模式；不同模式下组件根节点结构由框架自动适配，业务侧无需修改地图组件调用方式。
+- iOS、Android 均支持 Vapor、VDOM 模式。

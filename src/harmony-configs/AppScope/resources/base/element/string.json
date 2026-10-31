@@ -1,9 +1,5 @@
 {
   "string": [
-    {
-      "name": "app_name",
-      "value": "DCloud开发者中心系统"
-    },
 		{
 			"name": "permission_location_tips",
 			"value": "正在申请获取您的位置信息，以便为您提供相应的服务"

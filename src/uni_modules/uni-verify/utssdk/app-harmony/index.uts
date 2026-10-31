@@ -1,0 +1,538 @@
+import { GyAuthThemeConfig, GyConfig, GyManager, GyResponse, OnAuthLoginPageListener, SpanEntity } from '@getui/gysdk';
+import { getAbilityContext, getRealPath, onNativePageReady } from '@dcloudio/uni-runtime'
+import { promptAction } from '@kit.ArkUI';
+import { bundleManager } from '@kit.AbilityKit';
+import { fileUri } from '@kit.CoreFileKit'
+
+import { GetUniVerifyManager, UniVerifyManager, UniVerifyManagerCustomLoginOptions, UniVerifyManagerErrorCode, UniVerifyManagerLoginOptions, UniVerifyManagerLoginSuccess, UniVerifyManagerPreLoginOptions, UniVerifyManagerPreLoginSuccess, UniVerifyManagerPreLoginFail, UniVerifyManagerLoginFail } from "../interface.uts";
+import { UniVerifyManagerLoginFailImpl, UniVerifyManagerPreLoginFailImpl, UniVerifyManagerSourceError } from '../unierror.uts';
+import { checkPermission, getPermissionCheckResult } from '../permission.uts';
+import { API_GET_UNI_VERIFY_MANAGER } from "../protocol.uts";
+import { OptionsCallBack, CallBack } from './callback.uts'
+// #ifdef UNI-APP-X
+import { UniVerifyLoginInfo, uniVerifyLogin, uniVerifyClose } from '../commonLogin.uts'
+import { verifyOptions } from './utils.uts';
+// @ts-ignore
+import { createNoUIDialogController } from './AuthPageComponent.ets'
+// #endif
+
+// #ifndef UNI-APP-X
+// @ts-ignore
+import { AuthPageComponent, setGyManagerInstanceCallback, createDialogController } from './AuthPageComponent.ets'
+// #endif
+
+export {
+  GetUniVerifyManager, UniVerifyManager, UniverifyManager, UniVerifyManagerCustomLoginOptions, UniVerifyManagerErrorCode, UniVerifyManagerLoginOptions, UniVerifyManagerLoginSuccess, UniVerifyManagerPreLoginOptions, UniVerifyManagerPreLoginSuccess, UniVerifyManagerLoginStyle, UniVerifyManagerPreLoginFail, UniVerifyManagerLoginFail
+} from "../interface.uts";
+
+const TIMEOUT = 10000;
+
+/**
+ * 基座标识，鸿蒙没有基座
+ * 0 表示 非标准基座
+ * 1 表示 uni-app标准基座
+ * 2 表示 uni-app x标准基座
+ */
+let baseFlag: number = 0;
+
+interface PrivacyItem {
+  name : string,
+  url : string
+}
+
+interface Privacy {
+  "CM" : PrivacyItem,
+  "CU" : PrivacyItem,
+  "CT" : PrivacyItem
+}
+
+const PRIVACY : Privacy = {
+  CM: {
+    name: '中国移动认证服务条款',
+    url: 'https://wap.cmpassport.com/resources/html/contract.html'
+  },
+  CU: {
+    name: '联通统一认证服务条款',
+    url: 'https://opencloud.wostore.cn/authz/resource/html/disclaimer.html?fromsdk=true'
+  },
+  CT: {
+    name: '天翼账号服务与隐私协议',
+    url: 'https://e.189.cn/sdk/agreement/detail.do?hidetop=true'
+  }
+}
+
+interface OPERATOR_METADATA_DATA {
+  msg: string
+  result: string
+}
+
+interface OPERATOR_METADATA {
+  errno?: number, // 0
+  data?: OPERATOR_METADATA_DATA // "{}"
+  // TODO 个推官网只有上面两个字段，经实测，暂时发现会返回两种
+  resultCode?: string // "1106"
+  resultData?: string // ""
+  resultMsg?: string  // "msg"
+}
+
+interface GY_APP_CONFIG {
+  appid: string
+  channel: string
+}
+
+function getGYAppConfig(): GY_APP_CONFIG {
+  const flags = bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION
+    | bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_METADATA
+  const bundleInfo = bundleManager.getBundleInfoForSelfSync(flags);
+  let appid = "";
+  let channel = 'huawei'
+  const array = bundleInfo.appInfo.metadataArray;
+  array.forEach((moduleMetadata) => {
+    moduleMetadata.metadata.forEach((metadata: bundleManager.Metadata) => {
+      if ("GETUI_VERIFY_APPID" === metadata.name) {
+        appid = metadata.value;
+      }
+      if ("GT_INSTALL_CHANNEL" === metadata.name) {
+        channel = metadata.value;
+      }
+    })
+  })
+  if (appid.length === 0) {
+    array.forEach((moduleMetadata) => {
+      moduleMetadata.metadata.forEach((metadata: bundleManager.Metadata) => {
+        if ("GETUI_APPID" === metadata.name) {
+          appid = metadata.value;
+        }
+      })
+    })
+  }
+  return {
+    appid,
+    channel
+  } as GY_APP_CONFIG
+}
+
+function createFailError(response: GyResponse): UniVerifyManagerSourceError {
+  let data = response.getData() as Record<string, Object>
+
+  let subject: string = "其他";
+  switch (response.getOperator()) {
+    case "CM":
+      subject = "移动";
+      break;
+    case "CU":
+      subject = "联通";
+      break;
+    case "CT":
+      subject = "电信";
+      break;
+  }
+
+  let cause: SourceError = new SourceError()
+  cause.code = -1
+  cause.subject = subject
+
+  let metadata: OPERATOR_METADATA | null = null
+  if (data.metadata) {
+    try {
+      metadata = JSON.parse(data.metadata as string) as OPERATOR_METADATA
+    } catch (error) {
+      metadata = null
+    }
+
+    if (metadata == null && typeof data.metadata === 'string') {
+        metadata = {
+            resultMsg: data.metadata
+        }
+    }
+
+    // 移除 metadata 字段
+    const newObj: Record<string, Object> = {};
+    Object.keys(data).forEach((key: string) => {
+      if (key != 'metadata') newObj[key] = data[key]
+    })
+    data = newObj
+    cause.message = metadata?.data?.msg ?? metadata?.resultMsg ?? ''
+    const codeString = metadata?.data?.result ?? metadata?.resultCode
+    try {
+      if (typeof codeString === 'string') {
+        cause.code = parseInt(codeString)
+      }
+    } catch (error) {
+      //TODO handle the exception
+    }
+    cause.message = JSON.stringify({
+      errorDesc: cause.message,
+      errorCode: cause.code
+    })
+  }
+
+  return new UniVerifyManagerSourceError(
+    data.errorCode as number,
+    JSON.stringify(data),
+    response.getGyuid(),
+    data.processId as string,
+    data.operatorType as number,
+    cause
+  )
+}
+
+class UniVerifyManagerImpl implements UniVerifyManager {
+  // DCloud appId
+  private appId: string = ''
+
+  // 个推 appId
+  private GYAppId: string = ''
+  private GyVersion: string = ''
+  private GyManager: GyManager
+  private config: GyAuthThemeConfig
+
+  private checked: boolean = false
+  private preLoginValid: boolean = false
+
+  private curPromise: Promise<void> = Promise.resolve()
+  /**
+   * 预登录数据
+   */
+  private preLoginSuccess : UniVerifyManagerPreLoginSuccess | null = null
+  private testMode: boolean = false
+
+  constructor(testMode: boolean = false) {
+    this.GyManager = GyManager.getInstance()
+    this.GyManager.setTestMode(testMode)
+    this.testMode = testMode
+
+    this.curPromise = this.init().then(async () => {
+      await checkPermission(this.appId, this.GYAppId)
+    })
+    this.GyVersion = this.GyManager.getVersion()
+    this.appId = UTSHarmony.getAppId()
+
+    // TODO openId 鸿蒙没有基座
+    /* switch (pkgName) {
+      case "io.dcloud.HBuilder":
+        baseFlag = 1;
+        break;
+      case "io.dcloud.uniappx":
+        baseFlag = 2;
+        break;
+    } */
+
+    // #ifndef UNI-APP-X
+    setGyManagerInstanceCallback(() => {
+      this.GyManager.closeAuthLoginPage()
+    })
+    // #endif
+
+    this.config = new GyAuthThemeConfig()
+      // #ifndef UNI-APP-X
+      .setLoginPageComponent(AuthPageComponent)
+      .setLogoImgPath('')
+      .setNumberColor(Color.Black)//带星手机号的颜色
+      .setNumberSize(20)
+      .setSloganTextColor(Color.Gray)
+      .setSloganTextSize(14)
+      .setLoginBtnText("一键登录")
+      .setLoginBtnWidth('50%')
+      // .setLoginBtnColor(Color.Blue)
+      .setLoginBtnTextSize(18)
+      .setLoginBtnTextColor(Color.White)
+      // .setCheckedColor(Color.Blue)
+      .setCheckBoxSize(16, 16)
+      .setShowPrivacyUncheckedToast(false)
+      .setClauses([
+        {
+          text: "登录即同意",
+          isProtocol: false,
+          fontColor: Color.Gray,
+          fontSize: 16,
+          fontWeight: FontWeight.Normal,
+        },
+        {
+          text: "&&Clause&&",
+          isProtocol: true,
+          fontColor: "#3973ff",
+          fontSize: 16,
+          fontWeight: FontWeight.Normal,
+        },
+        {
+          text: "并使用本机号码登录",
+          isProtocol: false,
+          fontColor: Color.Gray,
+          fontSize: 16,
+          fontWeight: FontWeight.Normal
+        }
+      ] as SpanEntity[])
+      .setOnAuthLoginPageListener({
+        onCheckedChanged: (checked): void => {
+          this.checked = checked
+        },
+        onAuthLogin: (message, callback?): void => {
+          if (callback) {
+            promptAction.showToast({
+              message: '请同意服务条款',
+              duration: 2000,
+              alignment: Alignment.Center
+            } as promptAction.ShowToastOptions)
+          }
+        }
+      } as OnAuthLoginPageListener)
+      // #endif
+  }
+
+  private resetStatus() {
+    this.checked = false
+    this.preLoginValid = false
+  }
+
+  private async init() {
+    const GYAppConfig = getGYAppConfig()
+    this.GYAppId = GYAppConfig.appid
+    if (this.GYAppId.length === 0) {
+      const msg = "uni一键登录初始化失败：modules.json metadata GETUI_VERIFY_APPID is empty"
+      console.error(msg)
+    }
+    await this.GyManager.init(
+      new GyConfig(getAbilityContext()!)
+        .setDebug(false)
+        .setPreLoginUseCache(true)
+        .setChannel(GYAppConfig.channel)
+        .setAppid(this.GYAppId)
+    )
+    this.preLoginValid = await this.GyManager.isPreLoginResultValid()
+  }
+
+  private async dcloudCheck(cb?: OptionsCallBack): Promise<void> {
+    return this.curPromise
+      .then((): Promise<void> => {
+        const result = getPermissionCheckResult()
+        if (!result.valid) {
+          return Promise.reject(new UniVerifyManagerPreLoginFailImpl(result.code as UniVerifyManagerErrorCode, result.desc));
+        }
+        return Promise.resolve();
+      })
+      .catch((err: UniError) => {
+        if (err) {
+            if (typeof (err as UniVerifyManagerPreLoginFail).errSubject === 'string') {
+                cb?.fail(err);
+            } else {
+                cb?.fail(new UniVerifyManagerPreLoginFailImpl(30004, err.message));
+            }
+        }
+        return Promise.reject()
+      })
+  }
+
+  private async ePreLogin(cb?: OptionsCallBack): Promise<void> {
+    return this.dcloudCheck(cb)
+      .then(async () => {
+        const response = await this.GyManager.ePreLogin(TIMEOUT)
+        const data = response.getData() as Record<string, Object>
+        if (response.isSuccess()) {
+          this.preLoginValid = true
+          let slogan = "";
+          let privacyName = '';
+          let privacyUrl = ''
+          switch (response.getOperator()) {
+            case "CM": {
+              slogan = "中国移动提供认证服务";
+              privacyName = PRIVACY.CM.name
+              privacyUrl = PRIVACY.CM.url
+              break;
+            }
+            case "CU": {
+              slogan = "认证服务由联通统一认证提供";
+              privacyName = PRIVACY.CU.name
+              privacyUrl = PRIVACY.CU.url
+              break;
+            }
+            case "CT": {
+              slogan = "天翼账号提供认证服务";
+              privacyName = PRIVACY.CT.name
+              privacyUrl = PRIVACY.CT.url
+              break;
+            }
+          }
+          // @ts-ignore
+          /* if (typeof response.getPrivacyName === 'function') {
+            // @ts-ignore
+            privacyName = response.getPrivacyName()
+          } */
+          this.preLoginSuccess = {
+            number: data.number ?? "",
+            slogan: slogan,
+            privacyName,
+            privacyUrl
+          } as UniVerifyManagerPreLoginSuccess;
+          cb?.success(this.preLoginSuccess)
+        } else {
+          this.preLoginValid = false
+          let sourceError: UniVerifyManagerSourceError | null = null
+          try {
+            sourceError = createFailError(response)
+          } catch (error) {
+            //TODO handle the exception
+          }
+          cb?.fail(
+            new UniVerifyManagerPreLoginFailImpl(
+              response.getCode() as UniVerifyManagerErrorCode,
+              data.errorDesc as string,
+              sourceError
+            )
+          )
+        }
+      })
+  }
+
+  preLogin(options: UniVerifyManagerPreLoginOptions): void {
+    const { success, fail, complete } = options
+    const cb = new OptionsCallBack({ success, fail, complete } as CallBack)
+    this.ePreLogin(cb)
+  }
+  async login(options: UniVerifyManagerLoginOptions): Promise<void> {
+    // 在登录成功之后，如果没有关闭个推授权页面，再次点击登录按钮会没有反应
+    const { success, fail, complete } = options
+    const cb = new OptionsCallBack({ success, fail, complete } as CallBack)
+    const isPreLoginResultValid = await this.GyManager.isPreLoginResultValid()
+    if (!isPreLoginResultValid) {
+      await this.ePreLogin()
+    }
+
+    // #ifdef UNI-APP-X
+    let privacyUrl = this.preLoginSuccess?.privacyUrl ?? "";
+    let privacyName = this.preLoginSuccess?.privacyName ?? "";
+    let phoneNumber = this.preLoginSuccess?.number ?? "";
+    let slogan = this.preLoginSuccess?.slogan ?? "";
+    const info : UniVerifyLoginInfo = {
+      privacyUrl: privacyUrl,
+      privacyName: privacyName,
+      number: phoneNumber,
+      slogan: slogan,
+      appId: this.appId,
+      gyAppId: this.GYAppId,
+      isPreLogin: this.isPreLoginValid()
+    };
+    uniVerifyLogin(options, JSON.parse<UTSJSONObject>(JSON.stringify(info))!);
+    // #endif
+
+    // #ifndef UNI-APP-X
+    const { univerifyStyle, uniVerifyStyle } = options
+    const style = univerifyStyle || uniVerifyStyle
+    const config = this.config.clone()
+    if (style?.fullScreen === true) {
+      config.setWindowMode(undefined)
+      config.setLogoMargin({ top: 150 } as Margin)
+    } else {
+      const page = await onNativePageReady() as Object
+      config.setWindowMode(createDialogController.bind(page)())
+      config.setLogoMargin({ top: 80 } as Margin)
+    }
+    if (style?.logoPath) {
+      config.setLogoImgPath(fileUri.getUriFromPath(getRealPath(style.logoPath)))
+    }
+    if (style?.loginBtnText) {
+      config.setLoginBtnText(style.loginBtnText)
+    }
+    const loginResponse = await this.GyManager.eAccountLogin(TIMEOUT, config)
+    this.processLoginResponse(cb, loginResponse)
+    // #endif
+  }
+  close(): void {
+    // #ifdef UNI-APP-X
+    uniVerifyClose(this.isPreLoginValid())
+    // #endif
+    // #ifndef UNI-APP-X
+    this.GyManager.closeAuthLoginPage()
+    // #endif
+  }
+  isPreLoginValid(): boolean {
+    return this.preLoginValid
+  }
+  getCheckBoxState(): boolean {
+    return this.checked
+  }
+  async customLogin(options: UniVerifyManagerCustomLoginOptions): Promise<void> {
+    // #ifdef UNI-APP-X
+    const isPreLoginResultValid = await this.GyManager.isPreLoginResultValid()
+    if (!isPreLoginResultValid) {
+      await this.ePreLogin()
+    }
+    const { success, fail, complete } = options
+    const cb = new OptionsCallBack({ success, fail, complete } as CallBack)
+
+    const errCode = verifyOptions(options, this.preLoginSuccess!)
+    if (errCode != 0) {
+      const fail : UniVerifyManagerLoginFail = new UniVerifyManagerLoginFailImpl(errCode as UniVerifyManagerErrorCode);
+      cb.fail(fail);
+      return;
+    }
+
+    const page = await onNativePageReady() as Object
+
+    const loginResponse = await this.GyManager.login(TIMEOUT, createNoUIDialogController.bind(page)())
+    this.processLoginResponse(cb, loginResponse)
+    // #endif
+    // #ifndef UNI-APP-X
+    throw new UniError("Method not implemented.");
+    // #endif
+  }
+  private processLoginResponse(cb: OptionsCallBack, loginResponse: GyResponse) {
+    if (loginResponse.isSuccess()) {
+      const data = loginResponse.getData() as Record<string, Object>
+      try {
+        cb.success({
+          openId: `${baseFlag}00${loginResponse.getGyuid()}`,
+          accessToken: data.token
+        } as UniVerifyManagerLoginSuccess)
+      } finally {
+        // 登录流程结束后再清状态，避免 success 回调里读取到已重置的状态
+        this.resetStatus()
+      }
+    } else {
+      let code = loginResponse.getCode() as UniVerifyManagerErrorCode
+      const data = loginResponse.getData() as Record<string, Object>
+      if (data.errorCode === -20301) {
+        code = 30001
+      }
+      let sourceError: UniVerifyManagerSourceError | null = null
+      try {
+        sourceError = createFailError(loginResponse)
+      } catch (error) {
+        //TODO handle the exception
+      }
+      cb.fail(
+        new UniVerifyManagerLoginFailImpl(
+          code,
+          data.errorDesc as string,
+          sourceError
+        )
+      )
+    }
+  }
+  setTestMode(testMode: boolean) {
+      this.GyManager.setTestMode(testMode);
+  }
+  getTestMode(): boolean {
+      return this.testMode
+  }
+}
+
+let uniVerifyManager: UniVerifyManager | null = null;
+
+export const getUniVerifyManager: GetUniVerifyManager = defineSyncApi<UniVerifyManager>(API_GET_UNI_VERIFY_MANAGER, (testMode: boolean = false) => {
+  if (uniVerifyManager == null) {
+    uniVerifyManager = new UniVerifyManagerImpl(testMode);
+  } else if ((uniVerifyManager as UniVerifyManagerImpl).getTestMode() !== testMode) {
+    (uniVerifyManager as UniVerifyManagerImpl).setTestMode(testMode)
+  }
+  return uniVerifyManager
+}) as GetUniVerifyManager
+
+export const getUniverifyManager: GetUniVerifyManager = defineSyncApi<UniVerifyManager>(API_GET_UNI_VERIFY_MANAGER, (testMode: boolean = false) => {
+  if (uniVerifyManager == null) {
+    uniVerifyManager = new UniVerifyManagerImpl(testMode);
+  } else if ((uniVerifyManager as UniVerifyManagerImpl).getTestMode() !== testMode) {
+    (uniVerifyManager as UniVerifyManagerImpl).setTestMode(testMode)
+  }
+  return uniVerifyManager
+}) as GetUniVerifyManager
