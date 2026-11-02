@@ -1775,6 +1775,8 @@ export interface TsConstructSignatureDeclaration extends Node, HasSpan {
 }
 export interface TsPropertySignature extends Node, HasSpan {
   type: 'TsPropertySignature'
+  /** Parsed from the interface member's @UTSJS.keepAlive JSDoc tag. */
+  keepAlive?: boolean
   readonly: boolean
   key: Expression
   computed: boolean
@@ -1802,6 +1804,8 @@ export interface TsSetterSignature extends Node, HasSpan {
 }
 export interface TsMethodSignature extends Node, HasSpan {
   type: 'TsMethodSignature'
+  /** Parsed from the interface member's @UTSJS.keepAlive JSDoc tag. */
+  keepAlive?: boolean
   readonly: boolean
   key: Expression
   computed: boolean

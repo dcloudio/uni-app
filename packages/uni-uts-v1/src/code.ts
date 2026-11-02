@@ -24,6 +24,7 @@ import type {
   Param,
   Span,
   TsFnParameter,
+  TsFunctionType,
   TsInterfaceDeclaration,
   TsParameterProperty,
   TsType,
@@ -71,6 +72,8 @@ type Types = {
   alias: Record<string, string>
   // 包含私有别名，仅供内部引用解析，不参与 meta.types 和 typeParams 的生成。
   aliasReferences: Record<string, string>
+  // 内部函数类型定义，供 interface 的函数属性生成方法代理，不参与对外元数据。
+  functionTypes: Record<string, TsFunctionType>
   uni?: string[]
 }
 
@@ -837,6 +840,7 @@ export async function parseInterfaceTypes(
       fn: {},
       alias: {},
       aliasReferences: {},
+      functionTypes: {},
       uni: [],
     }
   }
@@ -847,6 +851,7 @@ export async function parseInterfaceTypes(
       preprocessor ? await preprocessor(code, interfaceFilename) : code,
       {
         filename: relative(interfaceFilename, options.inputDir!),
+        comments: true,
         noColor: !isColorSupported(),
       }
     )
@@ -864,6 +869,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const fnTypes: Types['fn'] = {}
   const aliasTypes: Types['alias'] = {}
   const aliasReferences: Types['aliasReferences'] = {}
+  const functionTypes: Types['functionTypes'] = {}
   const uniMethods: string[] = []
 
   const exportNamed: string[] = []
@@ -890,6 +896,9 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
       const declaration =
         node.type === 'ExportDeclaration' ? node.declaration : node
       if (declaration.type === 'TsTypeAliasDeclaration') {
+        if (declaration.typeAnnotation.type === 'TsFunctionType') {
+          functionTypes[declaration.id.value] = declaration.typeAnnotation
+        }
         const referenceName = parseTypeAliasReferenceName(
           declaration.typeAnnotation
         )
@@ -949,6 +958,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     fn: fnTypes,
     alias: aliasTypes,
     aliasReferences,
+    functionTypes,
     uni: uniMethods,
   }
 }
@@ -1227,6 +1237,7 @@ async function parseCode(
   try {
     const ast = await parseUtsCode(code, {
       filename: relative(filename, inputDir),
+      comments: true,
       noColor: !isColorSupported(),
     })
     return parseAst(
@@ -1334,6 +1345,11 @@ function mergeAstTypes(to: Types, from: Types) {
   for (const name in from.aliasReferences) {
     if (!hasOwn(to.aliasReferences, name)) {
       to.aliasReferences[name] = from.aliasReferences[name]
+    }
+  }
+  for (const name in from.functionTypes) {
+    if (!hasOwn(to.functionTypes, name)) {
+      to.functionTypes[name] = from.functionTypes[name]
     }
   }
 }
@@ -1777,11 +1793,71 @@ function parseKeepAlive(decl: HasDecorator) {
   })
 }
 
+function resolveInterfaceFunctionType(
+  types: Types,
+  type: TsType
+): TsFunctionType | undefined {
+  while (true) {
+    if (type.type === 'TsFunctionType') {
+      return type
+    }
+    if (type.type === 'TsParenthesizedType') {
+      type = type.typeAnnotation
+      continue
+    }
+    if (type.type === 'TsUnionType') {
+      const members = type.types.filter(
+        (member) =>
+          member.type !== 'TsKeywordType' ||
+          (member.kind !== 'null' && member.kind !== 'undefined')
+      )
+      if (members.length === 1) {
+        type = members[0]
+        continue
+      }
+    }
+    break
+  }
+  let name = parseTypeAliasReferenceName(type)
+  const visited = new Set<string>()
+  while (name && !visited.has(name)) {
+    if (hasOwn(types.functionTypes, name)) {
+      return types.functionTypes[name]
+    }
+    visited.add(name)
+    name = types.aliasReferences[name]
+  }
+}
+
 function parseInterfaceBody(
   types: Types,
   decl: TsInterfaceDeclaration
 ): TsTypeElement[] {
-  const elements = decl.body.body.slice()
+  // 原生为 interface 的函数属性生成 ByJs 方法；JS 代理也应按方法生成，
+  // 才能携带 JSDoc keepAlive、参数及返回值信息，不能把它当作普通属性。
+  const elements = decl.body.body.map((item): TsTypeElement => {
+    if (item.type === 'TsPropertySignature' && item.typeAnnotation) {
+      const fn = resolveInterfaceFunctionType(
+        types,
+        item.typeAnnotation.typeAnnotation
+      )
+      if (fn) {
+        return {
+          type: 'TsMethodSignature',
+          span: item.span,
+          readonly: item.readonly,
+          key: item.key,
+          computed: item.computed,
+          optional: item.optional,
+          keepAlive: item.keepAlive,
+          params: fn.params,
+          typeAnn: fn.typeAnnotation,
+          typeParams: fn.typeParams,
+        }
+      }
+    }
+    return item
+  })
   decl.extends.forEach((extend) => {
     if (
       extend.expression.type === 'Identifier' &&
@@ -1830,7 +1906,7 @@ function genInterfaceDeclaration(
         const name = item.key.value
         const value: ProxyClassMethod = {
           async: isReturnPromise(item.typeAnn),
-          keepAlive: false,
+          keepAlive: !!item.keepAlive,
           params: resolveFunctionParams(
             types,
             tsParamsToParams(item.params),
@@ -2040,7 +2116,7 @@ function genClassDeclarationFromInterface(
         const name = item.key.value
         methods[name + (isElement ? '' : 'ByJs')] = {
           async: isReturnPromise(item.typeAnn),
-          keepAlive: false,
+          keepAlive: !!item.keepAlive,
           params: resolveFunctionParams(
             types,
             tsParamsToParams(item.params),
