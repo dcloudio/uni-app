@@ -4678,8 +4678,8 @@ const _sfc_main$w = /* @__PURE__ */ Vue.defineVaporComponent({
             });
             return n19;
           }),
-          1029
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_3 */
+          1037
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_3 */
         );
         Vue.setInsertionState(n26, 1);
         Vue.createIf(() => _for_item0.value.text, () => {
@@ -5117,8 +5117,8 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             const n14 = Vue.withComponentId("2251b652", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n14;
           }),
-          517
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+          525
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_1 */
         );
         Vue.setInsertionState(n34, 1);
         Vue.createIf(() => Vue.unref(hasLeftWindow) && Vue.unref(LeftWindow), () => {
@@ -5202,8 +5202,8 @@ const _sfc_main$v = /* @__PURE__ */ Vue.defineVaporComponent({
             const n44 = Vue.withComponentId("224fdd9c", () => Vue.createDynamicComponent(() => Vue.unref(firstPageComponent)));
             return n44;
           }),
-          2309
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_8 */
+          2317
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_8 */
         );
         return n38;
       },
@@ -5837,8 +5837,8 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
               773
               /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_2 */
             ),
-            517
-            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_1 */
+            525
+            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_1 */
           );
           Vue.on(n18, "click", (e2) => _for_item0.value.onClick(e2));
           return n18;
@@ -5890,11 +5890,11 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
               1801
               /* TRUE_SINGLE_ROOT, FALSE_MULTI_ROOT, KEYED_INDEX_6 */
             ),
-            1541
-            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_5 */
+            1549
+            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_5 */
           ),
-          1285
-          /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_4 */
+          1293
+          /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_4 */
         );
         return n32;
       },
@@ -6025,8 +6025,8 @@ const _sfc_main$r = /* @__PURE__ */ Vue.defineVaporComponent({
               3077
               /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_11 */
             ),
-            2821
-            /* TRUE_SINGLE_ROOT, FALSE_SINGLE_ROOT, KEYED_INDEX_10 */
+            2829
+            /* TRUE_SINGLE_ROOT, FALSE_ELSE_IF, KEYED_INDEX_10 */
           );
           Vue.on(n59, "click", (e2) => _for_item0.value.onClick(e2));
           return n59;

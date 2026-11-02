@@ -1,5 +1,5 @@
 /**
-  * @vue/server-renderer v3.6.0-rc.13
+  * @vue/server-renderer v3.6.0-rc.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -6249,7 +6249,7 @@ const computed = (getterOrOptions, debugOptions) => {
 };
 //#endregion
 //#region packages/runtime-core/src/index.ts
-const version = "3.6.0-rc.13";
+const version = "3.6.0-rc.14";
 const warn = warn$1;
 /**
 * SSR utils for \@vue/server-renderer. Only exposed in ssr-possible builds.

@@ -3376,6 +3376,7 @@ interface DevtoolsHook {
 }
 declare function setDevtoolsHook$1(hook: DevtoolsHook, target: any): void;
 declare const devtoolsComponentAdded: DevtoolsComponentHook;
+declare const devtoolsComponentRemoved: (component: GenericComponentInstance) => void;
 type DevtoolsComponentHook = (component: GenericComponentInstance) => void;
 //#endregion
 //#region packages/runtime-core/src/hmr.d.ts
@@ -25431,7 +25432,7 @@ declare function parseEventName(name: string): [string, EventListenerOptions | u
 //#region packages/runtime-dom/src/modules/attrs.d.ts
 declare const xlinkNS = "http://www.w3.org/1999/xlink";
 declare namespace index_d_exports$1 {
-  export { AllowedAttrs, AllowedComponentProps, AnchorHTMLAttributes, App, AppConfig, AppContext, AppMountFn, AppUnmountFn, AreaHTMLAttributes, AriaAttributes, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, Attrs, AudioHTMLAttributes, BaseHTMLAttributes, BaseTransition, BaseTransitionProps, BaseTransitionPropsValidators, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, Comment$2 as Comment, CompatVue, Component, ComponentCustomElementInterface, ComponentCustomOptions, ComponentCustomProperties, ComponentCustomProps, ComponentInjectOptions, ComponentInstance, ComponentInternalInstance, ComponentInternalOptions, ComponentObjectPropsOptions, ComponentOptions, ComponentOptionsBase, ComponentOptionsMixin, ComponentOptionsWithArrayProps, ComponentOptionsWithObjectProps, ComponentOptionsWithoutProps, ComponentPropsOptions, ComponentProvideOptions, ComponentPublicInstance, ComponentTypeEmits, ComputedGetter, ComputedOptions, ComputedRef, ComputedSetter, ConcreteComponent, CreateAppFunction, CreateComponentPublicInstance, CreateComponentPublicInstanceWithMixins, CustomElementOptions, CustomRefFactory, DataHTMLAttributes, DebuggerEvent, DebuggerEventExtraInfo, DebuggerOptions, DeepReadonly, DefineComponent, DefineProps, DefineSetupFnComponent, DelHTMLAttributes, DeprecationTypes, DetailsHTMLAttributes, DialogHTMLAttributes, Directive$1 as Directive, DirectiveArguments$1 as DirectiveArguments, DirectiveBinding, DirectiveHook, DirectiveModifiers, EffectScheduler, EffectScope, ElementNamespace, ElementWithTransition, EmbedHTMLAttributes, EmitFn, EmitsOptions, EmitsToProps, ErrorCodes, ErrorTypeStrings, Events, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, FieldsetHTMLAttributes, FormHTMLAttributes, Fragment, FunctionDirective, FunctionPlugin, FunctionalComponent, GenericAppContext, GenericComponent, GenericComponentInstance, GlobalComponents, GlobalDirectives, HMRRuntime, HTMLAttributes, HtmlHTMLAttributes, HydrationRenderer, HydrationStrategy, HydrationStrategyFactory, IframeHTMLAttributes, ImgHTMLAttributes, InjectionKey, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeepAlive, KeepAliveContext, KeepAliveProps, KeygenHTMLAttributes, LabelHTMLAttributes, LegacyConfig, LiHTMLAttributes, LifecycleHook, LinkHTMLAttributes, MapHTMLAttributes, MaybeRef, MaybeRefOrGetter, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, MethodOptions, MismatchTypes, ModelRef, MoveType, MultiWatchSources, NULL_DYNAMIC_COMPONENT, NativeElements, NormalizedPropsOptions, ObjectDirective, ObjectEmitsOptions, ObjectHTMLAttributes, ObjectPlugin, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OptionMergeFunction, OutputHTMLAttributes, ParamHTMLAttributes, Plugin, ProgressHTMLAttributes, Prop, PropType, PublicInstanceProxyHandlers, PublicProps, QuoteHTMLAttributes, Raw, Reactive, ReactiveEffect, ReactiveEffectOptions, ReactiveEffectRunner, ReactiveFlags$1 as ReactiveFlags, Ref, RenderFunction, RenderResultExtensions, Renderer, RendererElement, RendererInternals, RendererNode, RendererOptions, ReservedProps, RootHydrateFunction, RootRenderFunction, RuntimeCompilerOptions, SVGAttributes, SchedulerJob, SchedulerJobFlags, ScriptHTMLAttributes, SelectHTMLAttributes, SetupContext, ShallowReactive, ShallowRef, ShallowUnwrapRef, ShortEmitsToObject, Slot, Slots, SlotsType, SourceHTMLAttributes, Static, StyleHTMLAttributes, StyleValue, Suspense, SuspenseBoundary, SuspenseProps, TableHTMLAttributes, TdHTMLAttributes, Teleport, TeleportProps, TeleportTargetElement, TemplateRef, Text$1 as Text, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, ToRef, ToRefs, TrackHTMLAttributes, TrackOpTypes, Transition, TransitionElement, TransitionGroup, TransitionGroupProps, TransitionHooks, TransitionHooksContext, TransitionProps, TransitionPropsValidators, TransitionState, TriggerOpTypes, TypeEmitsToOptions, UnwrapNestedRefs, UnwrapRef, VNode, VNodeArrayChildren, VNodeChild, VNodeHook, VNodeNormalizedChildren, VNodeNormalizedRef, VNodeProps, VNodeRef, VNodeTypes, VShowElement, VaporInVdomInterface, VaporSlot$1 as VaporSlot, VdomInVaporInterface, VdomSlotOptions, VdomSlotOutlet, VideoHTMLAttributes, VueElement, VueElementBase, VueElementConstructor, WatchCallback, WatchEffect, WatchHandle, WatchOptions, WatchEffectOptions as WatchOptionsBase, WatchSource, WatchStopHandle, WebViewHTMLAttributes, WritableComputedOptions, WritableComputedRef, activate, assertNumber, baseApplyTranslation, baseEmit, baseNormalizePropsOptions, baseResolveTransitionHooks, callPendingCbs, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, checkTransitionMode, cloneVNode, compatUtils, computed, createApp, createAppAPI, createAsyncComponentContext, createBlock, createCanSetSetupRefChecker, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createInternalObject, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, currentInstance, customRef, deactivate, defaultPropGetter, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, devtools, devtoolsComponentAdded, effect, effectScope, endMeasure, ensureHydrationRenderer, ensureRenderer, ensureValidVNode, enterCbKey, expose, filterModelListeners, filterSingleRoot, flushOnAppMount, forceReflow, getAttributeMismatch, getComponentName, getContainerType, getCurrentInstance, getCurrentScope, getCurrentWatcher, getFunctionalFallthrough, getInheritedScopeIds, getNextUid, getPublicPropertiesMap, getOrigins as getTransitionGroupOrigins, getPosition as getTransitionGroupPosition, getOriginShift as getTransitionGroupShift, getTransitionRawChildren, guardReactiveProps, h, handleError, handleMovedChildren, hasCSSTransform, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, invalidateMount, invokeDirectiveHook, invokeKeepAliveHooks, invokeSlotFallback, invokeVNodeHook, isAsyncWrapper, isEmitListener, isFunctionalFallthroughKey, isHydrating$1 as isHydrating, isHydratingEnabled, isInSSRComponentSetup, isKeepAlive, isKeepAliveEnabled, isMapEqual, isMemoSame, isMismatchAllowed, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isSetEqual, isShallow, isSuspenseEnabled, isTeleportDeferred, isTeleportDisabled, isTemplateNode, isTemplateRefKey, isTransitionEnabled$1 as isTransitionEnabled, isUnchangedResourceProp, isVNode, isValidHtmlOrSvgAttribute, isVaporInteropEnabled, knownTemplateRefs, leaveCbKey, logError, logMismatchError, markAsyncBoundary, markRaw, matches, mergeDefaults, mergeModels, mergeProps, nextTick, nextUid, nodeOps, normalizeClass, normalizeContainer, normalizeProps, normalizeRef, normalizeStyle, normalizeVNode, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseEventName, patchClass, patchProp, patchStyle, pendingGroups as pendingTransitionGroups, performAsyncHydrate, performTransitionEnter, performTransitionLeave, popScopeId, popWarningContext, prepareTransitionLeave, prepareTransitionSwitch, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, queuePostRenderEffect, rawVaporSlotKey, reactive, readonly, ref$1 as ref, registerHMR, registerRuntimeCompiler, render, renderList, renderSlot, resetKeepAliveHookState, resetShapeFlag, resolveComponent, resolveCssVars, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTarget as resolveTeleportTarget, resolveTransitionChild, resolveTransitionHooks, resolveTransitionProps, restoreCurrentInstance, setBlockTracking, setCurrentInstance, setCurrentRenderingInstance, setDevtoolsHook, setIsHydratingEnabled, setRef, setTransitionHooks, setVaporInteropEnabled, setVarsOnNode, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp, shouldSetAsPropForVueCE, shouldUpdateComponent, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, svgNS, toClassSet, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toStyleMap, toValue, transformVNodeArgs, triggerRef, unref, unregisterHMR, unsafeToTrustedHTML, useAsyncComponentState, useAttrs, useCssModule, useCssVars, useHost, useId, useInstanceOption, useModel, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, version, vtcKey, warn, warnExtraneousAttributes, warnPropMismatch, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeepAliveEnabled, withKeys, withMemo, withModifiers, withScopeId, withSuspenseEnabled, withTransitionEnabled, xlinkNS };
+  export { AllowedAttrs, AllowedComponentProps, AnchorHTMLAttributes, App, AppConfig, AppContext, AppMountFn, AppUnmountFn, AreaHTMLAttributes, AriaAttributes, AsyncComponentInternalOptions, AsyncComponentLoader, AsyncComponentOptions, Attrs, AudioHTMLAttributes, BaseHTMLAttributes, BaseTransition, BaseTransitionProps, BaseTransitionPropsValidators, BlockquoteHTMLAttributes, ButtonHTMLAttributes, CSSProperties, CanvasHTMLAttributes, ClassValue, ColHTMLAttributes, ColgroupHTMLAttributes, Comment$2 as Comment, CompatVue, Component, ComponentCustomElementInterface, ComponentCustomOptions, ComponentCustomProperties, ComponentCustomProps, ComponentInjectOptions, ComponentInstance, ComponentInternalInstance, ComponentInternalOptions, ComponentObjectPropsOptions, ComponentOptions, ComponentOptionsBase, ComponentOptionsMixin, ComponentOptionsWithArrayProps, ComponentOptionsWithObjectProps, ComponentOptionsWithoutProps, ComponentPropsOptions, ComponentProvideOptions, ComponentPublicInstance, ComponentTypeEmits, ComputedGetter, ComputedOptions, ComputedRef, ComputedSetter, ConcreteComponent, CreateAppFunction, CreateComponentPublicInstance, CreateComponentPublicInstanceWithMixins, CustomElementOptions, CustomRefFactory, DataHTMLAttributes, DebuggerEvent, DebuggerEventExtraInfo, DebuggerOptions, DeepReadonly, DefineComponent, DefineProps, DefineSetupFnComponent, DelHTMLAttributes, DeprecationTypes, DetailsHTMLAttributes, DialogHTMLAttributes, Directive$1 as Directive, DirectiveArguments$1 as DirectiveArguments, DirectiveBinding, DirectiveHook, DirectiveModifiers, EffectScheduler, EffectScope, ElementNamespace, ElementWithTransition, EmbedHTMLAttributes, EmitFn, EmitsOptions, EmitsToProps, ErrorCodes, ErrorTypeStrings, Events, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, FieldsetHTMLAttributes, FormHTMLAttributes, Fragment, FunctionDirective, FunctionPlugin, FunctionalComponent, GenericAppContext, GenericComponent, GenericComponentInstance, GlobalComponents, GlobalDirectives, HMRRuntime, HTMLAttributes, HtmlHTMLAttributes, HydrationRenderer, HydrationStrategy, HydrationStrategyFactory, IframeHTMLAttributes, ImgHTMLAttributes, InjectionKey, InputAutoCompleteAttribute, InputHTMLAttributes, InputTypeHTMLAttribute, InsHTMLAttributes, IntrinsicElementAttributes, KeepAlive, KeepAliveContext, KeepAliveProps, KeygenHTMLAttributes, LabelHTMLAttributes, LegacyConfig, LiHTMLAttributes, LifecycleHook, LinkHTMLAttributes, MapHTMLAttributes, MaybeRef, MaybeRefOrGetter, MediaHTMLAttributes, MenuHTMLAttributes, MetaHTMLAttributes, MeterHTMLAttributes, MethodOptions, MismatchTypes, ModelRef, MoveType, MultiWatchSources, NULL_DYNAMIC_COMPONENT, NativeElements, NormalizedPropsOptions, ObjectDirective, ObjectEmitsOptions, ObjectHTMLAttributes, ObjectPlugin, OlHTMLAttributes, OptgroupHTMLAttributes, OptionHTMLAttributes, OptionMergeFunction, OutputHTMLAttributes, ParamHTMLAttributes, Plugin, ProgressHTMLAttributes, Prop, PropType, PublicInstanceProxyHandlers, PublicProps, QuoteHTMLAttributes, Raw, Reactive, ReactiveEffect, ReactiveEffectOptions, ReactiveEffectRunner, ReactiveFlags$1 as ReactiveFlags, Ref, RenderFunction, RenderResultExtensions, Renderer, RendererElement, RendererInternals, RendererNode, RendererOptions, ReservedProps, RootHydrateFunction, RootRenderFunction, RuntimeCompilerOptions, SVGAttributes, SchedulerJob, SchedulerJobFlags, ScriptHTMLAttributes, SelectHTMLAttributes, SetupContext, ShallowReactive, ShallowRef, ShallowUnwrapRef, ShortEmitsToObject, Slot, Slots, SlotsType, SourceHTMLAttributes, Static, StyleHTMLAttributes, StyleValue, Suspense, SuspenseBoundary, SuspenseProps, TableHTMLAttributes, TdHTMLAttributes, Teleport, TeleportProps, TeleportTargetElement, TemplateRef, Text$1 as Text, TextareaHTMLAttributes, ThHTMLAttributes, TimeHTMLAttributes, ToRef, ToRefs, TrackHTMLAttributes, TrackOpTypes, Transition, TransitionElement, TransitionGroup, TransitionGroupProps, TransitionHooks, TransitionHooksContext, TransitionProps, TransitionPropsValidators, TransitionState, TriggerOpTypes, TypeEmitsToOptions, UnwrapNestedRefs, UnwrapRef, VNode, VNodeArrayChildren, VNodeChild, VNodeHook, VNodeNormalizedChildren, VNodeNormalizedRef, VNodeProps, VNodeRef, VNodeTypes, VShowElement, VaporInVdomInterface, VaporSlot$1 as VaporSlot, VdomInVaporInterface, VdomSlotOptions, VdomSlotOutlet, VideoHTMLAttributes, VueElement, VueElementBase, VueElementConstructor, WatchCallback, WatchEffect, WatchHandle, WatchOptions, WatchEffectOptions as WatchOptionsBase, WatchSource, WatchStopHandle, WebViewHTMLAttributes, WritableComputedOptions, WritableComputedRef, activate, assertNumber, baseApplyTranslation, baseEmit, baseNormalizePropsOptions, baseResolveTransitionHooks, callPendingCbs, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, checkTransitionMode, cloneVNode, compatUtils, computed, createApp, createAppAPI, createAsyncComponentContext, createBlock, createCanSetSetupRefChecker, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createInternalObject, createPropsRestProxy, createRenderer, createSSRApp, createSlots, createStaticVNode, createTextVNode, createVNode, currentInstance, customRef, deactivate, defaultPropGetter, defineAsyncComponent, defineComponent, defineCustomElement, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSSRCustomElement, defineSlots, devtools, devtoolsComponentAdded, devtoolsComponentRemoved, effect, effectScope, endMeasure, ensureHydrationRenderer, ensureRenderer, ensureValidVNode, enterCbKey, expose, filterModelListeners, filterSingleRoot, flushOnAppMount, forceReflow, getAttributeMismatch, getComponentName, getContainerType, getCurrentInstance, getCurrentScope, getCurrentWatcher, getFunctionalFallthrough, getInheritedScopeIds, getNextUid, getPublicPropertiesMap, getOrigins as getTransitionGroupOrigins, getPosition as getTransitionGroupPosition, getOriginShift as getTransitionGroupShift, getTransitionRawChildren, guardReactiveProps, h, handleError, handleMovedChildren, hasCSSTransform, hasInjectionContext, hydrate, hydrateOnIdle, hydrateOnInteraction, hydrateOnMediaQuery, hydrateOnVisible, initCustomFormatter, initDirectivesForSSR, initFeatureFlags, inject, injectHook, invalidateMount, invokeDirectiveHook, invokeKeepAliveHooks, invokeSlotFallback, invokeVNodeHook, isAsyncWrapper, isEmitListener, isFunctionalFallthroughKey, isHydrating$1 as isHydrating, isHydratingEnabled, isInSSRComponentSetup, isKeepAlive, isKeepAliveEnabled, isMapEqual, isMemoSame, isMismatchAllowed, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isSetEqual, isShallow, isSuspenseEnabled, isTeleportDeferred, isTeleportDisabled, isTemplateNode, isTemplateRefKey, isTransitionEnabled$1 as isTransitionEnabled, isUnchangedResourceProp, isVNode, isValidHtmlOrSvgAttribute, isVaporInteropEnabled, knownTemplateRefs, leaveCbKey, logError, logMismatchError, markAsyncBoundary, markRaw, matches, mergeDefaults, mergeModels, mergeProps, nextTick, nextUid, nodeOps, normalizeClass, normalizeContainer, normalizeProps, normalizeRef, normalizeStyle, normalizeVNode, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, onWatcherCleanup, openBlock, parseEventName, patchClass, patchProp, patchStyle, pendingGroups as pendingTransitionGroups, performAsyncHydrate, performTransitionEnter, performTransitionLeave, popScopeId, popWarningContext, prepareTransitionLeave, prepareTransitionSwitch, provide, proxyRefs, pushScopeId, pushWarningContext, queueJob, queuePostFlushCb, queuePostRenderEffect, rawVaporSlotKey, reactive, readonly, ref$1 as ref, registerHMR, registerRuntimeCompiler, render, renderList, renderSlot, resetKeepAliveHookState, resetShapeFlag, resolveComponent, resolveCssVars, resolveDirective, resolveDynamicComponent, resolveFilter, resolvePropValue, resolveTarget as resolveTeleportTarget, resolveTransitionChild, resolveTransitionHooks, resolveTransitionProps, restoreCurrentInstance, setBlockTracking, setCurrentInstance, setCurrentRenderingInstance, setDevtoolsHook, setIsHydratingEnabled, setRef, setTransitionHooks, setVaporInteropEnabled, setVarsOnNode, shallowReactive, shallowReadonly, shallowRef, shouldSetAsProp, shouldSetAsPropForVueCE, shouldUpdateComponent, simpleSetCurrentInstance, ssrContextKey, ssrUtils, startMeasure, stop, svgNS, toClassSet, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toStyleMap, toValue, transformVNodeArgs, triggerRef, unref, unregisterHMR, unsafeToTrustedHTML, useAsyncComponentState, useAttrs, useCssModule, useCssVars, useHost, useId, useInstanceOption, useModel, useSSRContext, useShadowRoot, useSlots, useTemplateRef, useTransitionState, vModelCheckbox, vModelCheckboxInit, vModelCheckboxUpdate, vModelDynamic, getValue as vModelGetValue, vModelRadio, vModelSelect, vModelSelectInit, vModelSetSelected, vModelText, vModelTextInit, vModelTextUpdate, vShow, vShowHidden, vShowOriginalDisplay, validateComponentName, validateProps, version, vtcKey, warn, warnExtraneousAttributes, warnPropMismatch, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeepAliveEnabled, withKeys, withMemo, withModifiers, withScopeId, withSuspenseEnabled, withTransitionEnabled, xlinkNS };
 }
 /**
  * This is a stub implementation to prevent the need to use dom types.
@@ -25567,7 +25568,17 @@ declare function locateClaimedEnd(start: CommentAnchor): Node | null;
  * `claimUntrackedAnchor` for an anchor that must stay invisible to traversal.
  */
 declare function claimAnchor<T extends Node>(node: T): T;
+/**
+ * Runs a block fn as the owner of any mismatch its roots report. Owners trim
+ * the server nodes the block no longer adopts when they leave their range.
+ * One whose range also holds roots that other owners adopt (an adopted slot
+ * fallback) may only trim after a mismatch, which only this helper knows: it
+ * passes the range's `close` to have it done here.
+ */
+declare function hydrateBlock<T extends Block$1>(fn: () => T, close?: Node): T;
 declare function enterHydrationBoundary(close: Node | null): () => void;
+/** Trim the unclaimed SSR nodes left between the cursor and `close`. */
+declare function trimHydrationBoundary(close: Node | null): void;
 //#endregion
 //#region packages/runtime-vapor/src/slotBoundary.d.ts
 interface SlotBoundaryContext {
@@ -26384,12 +26395,13 @@ type ExternalClassElement = Element & {
 };
 declare function resolveExternalClass(el: ExternalClassElement, value: string): string;
 declare namespace index_d_exports {
-  export { Block$1 as Block, DefineVaporComponent, DefineVaporSetupFnComponent, DynamicFragment, ForBlock, ForFragment, FragmentClaim, FunctionalVaporComponent, HydrationCursor, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveCache, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, advanceHydrationNode, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyTransitionHooks, applyVShow, child, claimAnchor, createAssetComponent, createComment, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createFragmentClaim, createIf, createIfChain, createInvoker, createItemRef, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, currentHydrationNode, currentRenderContext, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, enterHydrationBoundary, enterHydrationCursor, extend, findBlockBoundary, finishBlockCreation, getBlockFirstNode, getDefaultValue, getRestElement, insert$1 as insert, insertFragment, insertNode, insertionAnchor, insertionIndex, insertionParent, isComment, isFragment, isTransitionEnabled, isValidSlot, isVaporComponent, isHydrating as isVaporHydrating, locateClaimedEnd, move$1 as move, next, nextLogicalSibling, nthChild, on, onBinding, remove, removeNode, renderEffect, resetInsertionState, resolveExternalClass, resolveFragmentAnchor, setAttr, setBlockKey, setClass, setClassName, setCurrentHydrationNode, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setLastLocatedLogicalChild, setListener, setNativeEventNormalizer, setProp, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setValue, syncSelectValue, template, txt, useVaporCssVars, vaporInteropPlugin, withOnce, withRenderContext, withVaporDirectives, withVaporKeys, withVaporModifiers };
+  export { Block$1 as Block, CommentAnchor, DefineVaporComponent, DefineVaporSetupFnComponent, DynamicFragment, ForBlock, ForFragment, FragmentClaim, FunctionalVaporComponent, HydrationCursor, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveCache, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, advanceHydrationNode, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyTransitionHooks, applyVShow, child, claimAnchor, createAssetComponent, createComment, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createFragmentClaim, createIf, createIfChain, createInvoker, createItemRef, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, currentHydrationNode, currentRenderContext, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, enterHydrationBoundary, enterHydrationCursor, extend, findBlockBoundary, finishBlockCreation, getBlockFirstNode, getDefaultValue, getRestElement, hydrateBlock, insert$1 as insert, insertFragment, insertNode, insertionAnchor, insertionIndex, insertionParent, isComment, isFragment, isTransitionEnabled, isValidSlot, isVaporComponent, isHydrating as isVaporHydrating, locateClaimedEnd, move$1 as move, next, nextLogicalSibling, nthChild, on, onBinding, remove, removeNode, renderEffect, resetInsertionState, resolveExternalClass, resolveFragmentAnchor, setAttr, setBlockKey, setClass, setClassName, setCurrentHydrationNode, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setLastLocatedLogicalChild, setListener, setNativeEventNormalizer, setProp, setStaticTemplateRef, setStyle, setTemplateRefBinding, setText, setValue, syncSelectValue, template, trimHydrationBoundary, txt, useVaporCssVars, vaporInteropPlugin, withOnce, withRenderContext, withVaporDirectives, withVaporKeys, withVaporModifiers };
 }
 //#endregion
 //#region temp/packages/compiler-vapor/src/ir/component.d.ts
 export interface IRProp extends Omit<DirectiveTransformResult$1, "value"> {
   values: SimpleExpressionNode[];
+  normalize?: "class" | "style";
 }
 export declare enum IRDynamicPropsKind {
   EXPRESSION = 0,
@@ -26493,6 +26505,8 @@ export interface BlockIRNode extends BaseIRNode {
   effect: IREffect[];
   operation: OperationNode[];
   returns: number[];
+  deferredOperationIndex: number;
+  deferredEffectIndex: number;
 }
 export interface RootIRNode {
   type: IRNodeTypes.ROOT;
@@ -26503,6 +26517,11 @@ export interface RootIRNode {
   directive: Set<string>;
   block: BlockIRNode;
   hasTemplateRef: boolean;
+  reservedNames: ReservedNames;
+}
+export interface ReservedNames {
+  names: Set<string>;
+  ids: Map<string, Set<number>>;
 }
 export interface IRTemplate {
   content: string;
@@ -26512,6 +26531,8 @@ export interface IRTemplate {
 }
 export declare class TemplateRegistry {
   entries: IRTemplate[];
+  private indexes;
+  intern(content: string, ns: Namespace, root: boolean, isStatic: boolean): number;
   keys(): string[];
 }
 export interface IfIRNode extends BaseIRNode, EffectBoundary, InsertionState {
@@ -26636,7 +26657,6 @@ export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary, Inser
   type: IRNodeTypes.CREATE_COMPONENT_NODE;
   id: number;
   tag: string;
-  slotScopeNamespace?: string;
   props: IRProps[];
   slots: IRSlots[];
   asset: boolean;
@@ -26677,6 +26697,31 @@ export declare enum DynamicFlag {
    */
   INSERT = 4
 }
+/**
+ * How the parent reaches a child codegen holds on to. Decided once the
+ * parent's children are final (`planAccess`), printed by `genChildren`.
+ */
+export declare enum DynamicAccess {
+  /** `const n<id> = ...` */
+  REFERENCE = 0,
+  /** `let p<n> = ...`, a cursor later lookups may reassign */
+  PLACEHOLDER = 1,
+  /** `p<n> = ...`, reassigning the previous cursor */
+  REUSE = 2,
+  /** no variable: written into the lookup of its only descendant access */
+  INLINE = 3,
+  /** `(p<n> = ...)` written inline, reassigning the previous cursor */
+  INLINE_REUSE = 4
+}
+export interface IRDynamicAccess {
+  kind: DynamicAccess;
+  /** position among the parent's rendered child nodes */
+  index: number;
+  /** reached with `next()` from the previous access instead of the parent */
+  adjacent: boolean;
+  /** the located node, for `REFERENCE` */
+  id?: number;
+}
 export interface IRDynamicInfo {
   id?: number;
   flags: DynamicFlag;
@@ -26686,6 +26731,7 @@ export interface IRDynamicInfo {
   hasDynamicChild?: boolean;
   isText?: boolean;
   operation?: OperationNode;
+  access?: IRDynamicAccess;
 }
 export interface IREffect {
   expressions: SimpleExpressionNode[];
@@ -28625,7 +28671,6 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   options: Required<Omit<TransformOptions$2, "filename" | keyof CompilerCompatOptions | "transformElementProps">> & Pick<TransformOptions$2, "transformElementProps">;
   template: string;
   templateRoot: boolean;
-  templateIndexMap: Map<string, number>;
   childrenTemplate: (string | null)[];
   dynamic: IRDynamicInfo;
   imports: ImportItem[];
@@ -28644,13 +28689,20 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   templateCloseTags: Set<string> | undefined;
   templateCloseBlocks: boolean;
   templateScope: number;
+  ifHead: IfIRNode | null;
+  ifTail: IfIRNode | null;
+  order: number;
+  effectOrder: Map<IREffect, number>;
   private globalId;
   private nextIdMap;
   private ifIndex;
+  private nextOrder;
   ifHeads: Map<IfIRNode, boolean>;
-  constructor(ir: RootIRNode, node: T, options?: TransformOptions$2);
+  private childInfo;
+  constructor(ir: RootIRNode, node: T, options?: TransformOptions$2, parent?: TransformContext<RootNode | ElementNode> | null, index?: number);
   enterBlock(ir: BlockIRNode, isVFor?: boolean): () => void;
-  increaseId: () => number;
+  private allocateOrder;
+  increaseId(): number;
   private initNextIdMap;
   reference(): number;
   nextIfIndex(count?: number): number;
@@ -28661,14 +28713,14 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     static?: boolean;
   }): number;
   registerTemplate(): number;
-  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getIndex?: () => number, preserveOrder?: boolean): boolean;
+  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getOrder?: () => number, preserveOrder?: boolean): boolean;
   registerOperation(...node: OperationNode[]): void;
   effectBoundary(): {
     operationIndex: number;
     effectIndex: number;
   };
+  finalizeBlock(block: BlockIRNode): void;
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
-  private shiftEffectBoundaries;
   private getChildContextInfo;
   private isSlotRootChild;
   private isSingleRootChild;
@@ -28683,7 +28735,9 @@ declare const LF: unique symbol;
 declare const INDENT_START: unique symbol;
 declare const INDENT_END: unique symbol;
 type FalsyValue = false | null | undefined;
-export type CodeFragment = typeof NEWLINE | typeof LF | typeof INDENT_START | typeof INDENT_END | string | [code: string, newlineIndex?: number, loc?: SourceLocation, name?: string] | FalsyValue;
+/** code with its source position; the newline index tells it apart from a nested list */
+type MappedFragment = [code: string, newlineIndex: number, loc?: SourceLocation, name?: string];
+export type CodeFragment = typeof NEWLINE | typeof LF | typeof INDENT_START | typeof INDENT_END | string | MappedFragment | CodeFragment[] | FalsyValue;
 type CodeFragments = Exclude<CodeFragment, any[]> | CodeFragment[];
 export declare function buildCodeFragment(...frag: CodeFragment[]): [CodeFragment[], (...items: CodeFragment[]) => number, (...items: CodeFragment[]) => number];
 type CodeFragmentDelimiters = [left: CodeFragments, right: CodeFragments, delimiter: CodeFragments, placeholder?: CodeFragments];
@@ -28702,6 +28756,8 @@ export declare class CodegenContext {
   options: Required<Omit<CodegenOptions, "genOperation" | "genEventHandler">> & Pick<CodegenOptions, "genOperation" | "genEventHandler">;
   bindingNames: Set<string>;
   helpers: Map<string, string>;
+  helperAliases: Set<string>;
+  hoistedHandlers: Map<IRProp | SetEventIRNode, string>;
   needsTemplateRefSetter: boolean;
   inSlotBlock: boolean;
   helper: (name: CoreHelper | VaporHelper) => string;
@@ -28727,7 +28783,6 @@ export declare class CodegenContext {
   private isNameAvailable;
   private findAvailableName;
   private lastTIndex;
-  private initNextIdMap;
   tName(i: number): string;
   pName(i: number): string;
   kName(i: number): string;
@@ -28816,6 +28871,7 @@ export declare const transformVSlot: NodeTransform;
 //#region packages/compiler-vapor/src/ir/component.d.ts
 interface IRProp$1 extends Omit<DirectiveTransformResult, "value"> {
   values: SimpleExpressionNode[];
+  normalize?: "class" | "style";
 }
 declare enum IRDynamicPropsKind$1 {
   EXPRESSION = 0,
@@ -28917,6 +28973,8 @@ interface BlockIRNode$1 extends BaseIRNode$1 {
   effect: IREffect$1[];
   operation: OperationNode$1[];
   returns: number[];
+  deferredOperationIndex: number;
+  deferredEffectIndex: number;
 }
 interface RootIRNode$1 {
   type: IRNodeTypes$1.ROOT;
@@ -28927,6 +28985,11 @@ interface RootIRNode$1 {
   directive: Set<string>;
   block: BlockIRNode$1;
   hasTemplateRef: boolean;
+  reservedNames: ReservedNames$1;
+}
+interface ReservedNames$1 {
+  names: Set<string>;
+  ids: Map<string, Set<number>>;
 }
 interface IRTemplate$1 {
   content: string;
@@ -28936,6 +28999,8 @@ interface IRTemplate$1 {
 }
 declare class TemplateRegistry$1 {
   entries: IRTemplate$1[];
+  private indexes;
+  intern(content: string, ns: Namespace, root: boolean, isStatic: boolean): number;
   keys(): string[];
 }
 interface IfIRNode$1 extends BaseIRNode$1, EffectBoundary$1, InsertionState$1 {
@@ -29060,7 +29125,6 @@ interface CreateComponentIRNode$1 extends BaseIRNode$1, EffectBoundary$1, Insert
   type: IRNodeTypes$1.CREATE_COMPONENT_NODE;
   id: number;
   tag: string;
-  slotScopeNamespace?: string;
   props: IRProps$1[];
   slots: IRSlots$1[];
   asset: boolean;
@@ -29100,6 +29164,31 @@ declare enum DynamicFlag$1 {
    */
   INSERT = 4
 }
+/**
+ * How the parent reaches a child codegen holds on to. Decided once the
+ * parent's children are final (`planAccess`), printed by `genChildren`.
+ */
+declare enum DynamicAccess$1 {
+  /** `const n<id> = ...` */
+  REFERENCE = 0,
+  /** `let p<n> = ...`, a cursor later lookups may reassign */
+  PLACEHOLDER = 1,
+  /** `p<n> = ...`, reassigning the previous cursor */
+  REUSE = 2,
+  /** no variable: written into the lookup of its only descendant access */
+  INLINE = 3,
+  /** `(p<n> = ...)` written inline, reassigning the previous cursor */
+  INLINE_REUSE = 4
+}
+interface IRDynamicAccess$1 {
+  kind: DynamicAccess$1;
+  /** position among the parent's rendered child nodes */
+  index: number;
+  /** reached with `next()` from the previous access instead of the parent */
+  adjacent: boolean;
+  /** the located node, for `REFERENCE` */
+  id?: number;
+}
 interface IRDynamicInfo$1 {
   id?: number;
   flags: DynamicFlag$1;
@@ -29109,6 +29198,7 @@ interface IRDynamicInfo$1 {
   hasDynamicChild?: boolean;
   isText?: boolean;
   operation?: OperationNode$1;
+  access?: IRDynamicAccess$1;
 }
 interface IREffect$1 {
   expressions: SimpleExpressionNode[];
@@ -29159,7 +29249,6 @@ declare class TransformContext$1<T extends AllNode = AllNode> {
   options: Required<Omit<TransformOptions$1, "filename" | keyof CompilerCompatOptions | "transformElementProps">> & Pick<TransformOptions$1, "transformElementProps">;
   template: string;
   templateRoot: boolean;
-  templateIndexMap: Map<string, number>;
   childrenTemplate: (string | null)[];
   dynamic: IRDynamicInfo$1;
   imports: ImportItem[];
@@ -29178,13 +29267,20 @@ declare class TransformContext$1<T extends AllNode = AllNode> {
   templateCloseTags: Set<string> | undefined;
   templateCloseBlocks: boolean;
   templateScope: number;
+  ifHead: IfIRNode$1 | null;
+  ifTail: IfIRNode$1 | null;
+  order: number;
+  effectOrder: Map<IREffect$1, number>;
   private globalId;
   private nextIdMap;
   private ifIndex;
+  private nextOrder;
   ifHeads: Map<IfIRNode$1, boolean>;
-  constructor(ir: RootIRNode$1, node: T, options?: TransformOptions$1);
+  private childInfo;
+  constructor(ir: RootIRNode$1, node: T, options?: TransformOptions$1, parent?: TransformContext$1<RootNode | ElementNode> | null, index?: number);
   enterBlock(ir: BlockIRNode$1, isVFor?: boolean): () => void;
-  increaseId: () => number;
+  private allocateOrder;
+  increaseId(): number;
   private initNextIdMap;
   reference(): number;
   nextIfIndex(count?: number): number;
@@ -29195,14 +29291,14 @@ declare class TransformContext$1<T extends AllNode = AllNode> {
     static?: boolean;
   }): number;
   registerTemplate(): number;
-  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode$1 | OperationNode$1[], getIndex?: () => number, preserveOrder?: boolean): boolean;
+  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode$1 | OperationNode$1[], getOrder?: () => number, preserveOrder?: boolean): boolean;
   registerOperation(...node: OperationNode$1[]): void;
   effectBoundary(): {
     operationIndex: number;
     effectIndex: number;
   };
+  finalizeBlock(block: BlockIRNode$1): void;
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext$1<T>;
-  private shiftEffectBoundaries;
   private getChildContextInfo;
   private isSlotRootChild;
   private isSingleRootChild;

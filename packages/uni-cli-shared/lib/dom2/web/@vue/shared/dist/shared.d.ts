@@ -431,7 +431,12 @@ export declare enum VaporVForFlags {
 export declare enum VaporBlockShape {
   EMPTY = 0,
   SINGLE_ROOT = 1,
-  MULTI_ROOT = 2
+  MULTI_ROOT = 2,
+  /**
+   * A `createIf` false branch that is the `v-else-if` rest of the chain: a
+   * nested `createIf` that renders the chain's later branches.
+   */
+  ELSE_IF = 3
 }
 /**
  * Bit layout for vapor `createIf` flags.
@@ -504,6 +509,12 @@ export declare enum VaporSlotFlags {
   TEXT_MODE = 256
 }
 export declare function isForwardedSlot(flags: number): boolean;
+/**
+ * The data of the comment a vapor server render opens the branch of a `v-if`
+ * chain with, `<!--[1-->`: the digits are the branch's position in the chain,
+ * and `<!--]-->` closes it like a fragment.
+ */
+export declare function isVaporBranchStart(data: string): boolean;
 export declare function slotNotifiesBoundary(flags: number): boolean;
 /**
  * Per-slot-function metadata attached by the compiler as `fn._`.

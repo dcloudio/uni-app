@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-ssr v3.6.0-rc.13
+  * @vue/compiler-ssr v3.6.0-rc.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -57,21 +57,46 @@ const ssrHelpers = {
 //#region packages/compiler-ssr/src/transforms/ssrVIf.ts
 const ssrTransformIf = (0, _vue_compiler_dom.createStructuralDirectiveTransform)(/^(?:if|else|else-if)$/, _vue_compiler_dom.processIf);
 function ssrProcessIf(node, context, disableNestedFragments = false, disableComment = false) {
-	const [rootBranch] = node.branches;
-	const ifStatement = (0, _vue_compiler_dom.createIfStatement)(rootBranch.condition, processIfBranch(rootBranch, context, disableNestedFragments));
+	const { branches } = node;
+	const ranged = !!context.options.vapor && hasLookalikeBranches(branches);
+	const [rootBranch] = branches;
+	const ifStatement = (0, _vue_compiler_dom.createIfStatement)(rootBranch.condition, processIfBranch(rootBranch, context, disableNestedFragments, ranged && 0));
 	context.pushStatement(ifStatement);
 	let currentIf = ifStatement;
-	for (let i = 1; i < node.branches.length; i++) {
-		const branch = node.branches[i];
-		const branchBlockStatement = processIfBranch(branch, context, disableNestedFragments);
+	for (let i = 1; i < branches.length; i++) {
+		const branch = branches[i];
+		const branchBlockStatement = processIfBranch(branch, context, disableNestedFragments, ranged && i);
 		if (branch.condition) currentIf = currentIf.alternate = (0, _vue_compiler_dom.createIfStatement)(branch.condition, branchBlockStatement);
 		else currentIf.alternate = branchBlockStatement;
 	}
 	if (!currentIf.alternate && (!disableComment || context.options.vapor)) currentIf.alternate = (0, _vue_compiler_dom.createBlockStatement)([(0, _vue_compiler_dom.createCallExpression)(`_push`, ["`<!---->`"])]);
 }
-function processIfBranch(branch, context, disableNestedFragments = false) {
+function processIfBranch(branch, context, disableNestedFragments = false, index = false) {
+	if (index !== false) {
+		const childContext = createChildContext(context);
+		childContext.pushStringPart(`<!--[${index}-->`);
+		processChildren(branch, childContext);
+		childContext.pushStringPart(`<!--]-->`);
+		return (0, _vue_compiler_dom.createBlockStatement)(childContext.body);
+	}
 	const { children } = branch;
 	return processChildrenAsStatement(branch, context, !disableNestedFragments && (children.length !== 1 || children[0].type !== 1) && !(children.length === 1 && children[0].type === 11));
+}
+/**
+* Whether two branches of a chain could start with the same node. Branches
+* that each render one plain element, all of different tags, are told apart
+* by the tag.
+*/
+function hasLookalikeBranches(branches) {
+	if (branches.length < 2) return false;
+	const tags = /* @__PURE__ */ new Set();
+	for (const { children } of branches) {
+		const nodes = children.filter((child) => child.type !== 3);
+		const root = nodes.length === 1 ? nodes[0] : void 0;
+		if (!root || root.type !== 1 || root.tagType !== 0 || tags.has(root.tag)) return true;
+		tags.add(root.tag);
+	}
+	return false;
 }
 //#endregion
 //#region packages/compiler-ssr/src/transforms/ssrVFor.ts
