@@ -24,9 +24,7 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 
 
 ### createInterstitialAd 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.31","4.31"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -55,9 +53,7 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 show
 广告加载成功之后，调用此方法展示广告
 ##### show 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 
 
@@ -72,9 +68,7 @@ show
 load
 加载广告
 ##### load 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 
 
@@ -89,9 +83,7 @@ load
 destroy
 销毁广告
 ##### destroy 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 
 
@@ -100,9 +92,7 @@ destroy
 onLoad
 绑定广告 load 事件的监听器
 ##### onLoad 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 ##### 参数 
 
@@ -116,9 +106,7 @@ onLoad
 offLoad
 解除绑定 load 事件的监听器
 ##### offLoad 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 ##### 参数 
 
@@ -132,9 +120,7 @@ offLoad
 onError
 绑定 error 事件的监听器
 ##### onError 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 ##### 参数 
 
@@ -158,9 +144,7 @@ onError
 offError
 解除绑定 error 事件的监听器
 ##### offError 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 ##### 参数 
 
@@ -184,9 +168,7 @@ offError
 onClose
 绑定 close 事件的监听器
 ##### onClose 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 ##### 参数 
 
@@ -200,9 +182,7 @@ onClose
 offClose
 解除绑定 close 事件的监听器
 ##### offClose 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 ##### 参数 
 
@@ -216,9 +196,7 @@ offClose
 onAdClicked
 绑定广告可点击屏幕区域事件的监听器
 ##### onAdClicked 兼容性 <Help /> 
-| Web | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | 4.31 |
+Web: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31
 
 ##### 参数 
 

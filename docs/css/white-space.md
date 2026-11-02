@@ -6,9 +6,7 @@ white-space 属性用于设置如何处理元素中的空白字符（空格、�
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.0 | 4.11 | 4.61 |
+Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

@@ -14,9 +14,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 获取阿里云实人认证meta info
 
 ### getFacialRecognitionMetaInfo 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.84 | 3.9 | 4.11 | 4.61 |
+Web: 4.84; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -33,9 +31,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 启动人脸识别
 
 ### startFacialRecognitionVerify 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.9","4.11","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

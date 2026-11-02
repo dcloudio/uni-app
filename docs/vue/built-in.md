@@ -5,7 +5,7 @@
 |  | 兼容性 |
 | :- | :- |
 | v-text | Web: 4.0; 微信小程序: √; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x |
-| v-html | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS: x; HarmonyOS: x |
+| v-html | Web(VDOM): 4.0; Web(Vapor): x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS: x; HarmonyOS: x |
 | v-show | Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-if | Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-else | Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
@@ -14,7 +14,7 @@
 | v-on | Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-bind | Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-model | Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
-| v-slot | Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-slot | Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.11; 微信小程序(Vapor): x; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-pre | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | v-once | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | v-memo | Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
@@ -1952,9 +1952,7 @@ export default {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web(VDOM)","group":"Web","subtitle":"VDOM"},{"title":"Web(Vapor)","group":"Web","subtitle":"Vapor"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.11","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.61","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ##### 属性 
@@ -2129,9 +2127,7 @@ export default {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ##### 属性 
@@ -2198,9 +2194,7 @@ export default {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ##### 属性 
@@ -2262,9 +2256,7 @@ export default {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 5.14 | 5.31 | 4.0 | 5.25 | 4.11 | 5.25 | 4.61 | 5.25 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web(VDOM)","group":"Web","subtitle":"VDOM"},{"title":"Web(Vapor)","group":"Web","subtitle":"Vapor"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.14","5.31","4.0","5.25","4.11","5.25","4.61","5.25"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ##### 属性 
@@ -2459,9 +2451,7 @@ export default {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 `<template>` 有2个用途：
@@ -2675,9 +2665,7 @@ export default {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.11 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 ##### 属性 
@@ -2758,9 +2746,7 @@ export default {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.99 | 4.11 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.99","4.11","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ##### 属性 
@@ -2882,11 +2868,7 @@ export default {
 
 ## 特殊 Attributes @special-attributes
 
-|  | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| key | 4.0 | √ | 5.31 | 3.9 | 4.11 | 4.61 |
-| ref | 4.0 | √ | 5.31 | 3.9 | 4.11 | 4.61 |
-| is | 4.0 | √ | 5.31 | 3.99 | 4.11 | 4.61 |
+: key; Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; : ref; Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; : is; Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61
 
 ### key
 

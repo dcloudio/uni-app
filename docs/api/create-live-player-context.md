@@ -10,9 +10,7 @@
 [live-player组件文档](../component/live-player.md)
 
 ### createLivePlayerContext 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.81","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -35,9 +33,7 @@
 play
 播放
 ##### play 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -59,9 +55,7 @@ play
 pause
 暂停
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -83,9 +77,7 @@ pause
 stop
 停止
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -107,9 +99,7 @@ stop
 resume
 恢复
 ##### resume 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -131,9 +121,7 @@ resume
 mute
 静音
 ##### mute 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -155,9 +143,7 @@ mute
 requestFullScreen
 全屏
 ##### requestFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -179,9 +165,7 @@ requestFullScreen
 exitFullScreen
 退出全屏
 ##### exitFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 

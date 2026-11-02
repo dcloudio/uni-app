@@ -41,9 +41,7 @@
 请求支付
 
 ### requestVirtualPayment 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS 系统版本","group":"iOS","subtitle":"系统版本"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","15.0","4.25"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
@@ -225,9 +223,7 @@ uni.requestVirtualPayment({
 获取各平台虚拟支付的管理类，用于操作各平台专有的API。
 
 ### getVirtualPaymentManager 兼容性 <Help /> 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS 系统版本","group":"iOS","subtitle":"系统版本"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","15.0","4.25","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -252,9 +248,7 @@ uni.getVirtualPaymentManager(): 用来创建各个平台虚拟支付的管理类
 restoreTransactions
 恢复苹果服务器已支付的交易列表
 ##### restoreTransactions 兼容性 <Help /> 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 15.0 | 4.25 | x |
+Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x
 
 ##### 参数 
 
@@ -314,9 +308,7 @@ restoreTransactions
 getUnfinishedTransactions
 获取苹果服务器已支付且未关闭的交易列表
 ##### getUnfinishedTransactions 兼容性 <Help /> 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 15.0 | 4.25 | x |
+Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x
 
 ##### 参数 
 
@@ -367,9 +359,7 @@ getUnfinishedTransactions
 finishTransaction
 关闭苹果服务器订单
 ##### finishTransaction 兼容性 <Help /> 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 15.0 | 4.25 | x |
+Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x
 
 ##### 参数 
 

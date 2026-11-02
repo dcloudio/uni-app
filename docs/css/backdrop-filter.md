@@ -6,9 +6,7 @@ backdrop-filter 属性设置元素的背景滤镜效果，即对其后方（背�
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 5.25 | x | 5.25 | x | 5.25 |
+Web: 4.0; Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25
 
 
 

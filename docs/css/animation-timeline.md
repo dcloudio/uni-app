@@ -6,9 +6,7 @@ The animation-timeline CSS property specifies the timeline that is used to contr
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | x | x | x |
+Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

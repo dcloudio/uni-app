@@ -352,9 +352,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.31 | 5.08 | 5.07 | 5.07 |
+Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.08; iOS: 5.07; HarmonyOS: 5.07
 
 
 ### 属性 

@@ -26,15 +26,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.25 |
+iOS: x; iOS UTS 插件: 4.25
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -59,15 +55,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -92,15 +84,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -121,15 +109,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getAppId.tutorial -->
@@ -152,15 +136,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getAppName.tutorial -->
@@ -183,15 +163,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.18 |
+iOS: x; iOS UTS 插件: 4.18
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getAppTheme.tutorial -->
@@ -214,15 +190,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getAppVersion.tutorial -->
@@ -245,15 +217,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getAppVersionCode.tutorial -->
@@ -276,15 +244,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getAppWgtVersion.tutorial -->
@@ -307,15 +271,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -336,15 +296,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -365,15 +321,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getDeviceId.tutorial -->
@@ -396,15 +348,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getInnerVersion.tutorial -->
@@ -427,15 +375,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getModel.tutorial -->
@@ -458,15 +402,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -487,15 +427,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getOsLanguage.tutorial -->
@@ -522,15 +458,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -551,15 +483,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.getSystemSetting.tutorial -->
@@ -582,15 +510,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 
@@ -611,15 +535,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.isSimulator.tutorial -->
@@ -642,15 +562,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| iOS | iOS UTS 插件 |
-| :- | :- |
-| x | 4.11 |
+iOS: x; iOS UTS 插件: 4.11
 
 
 **uni-app 兼容性 <Help />**
-| iOS UTS 插件 |
-| :- |
-| √ |
+iOS UTS 插件: √
 
 
 <!-- UTSJSON.UTSiOS.isUniMp.tutorial -->

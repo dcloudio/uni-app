@@ -24,9 +24,7 @@
 
 
 #### onLaunch 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.0 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61
 
 
 #### 参数 
@@ -61,9 +59,7 @@
 
 
 #### onShow 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.0 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61
 
 
 #### 参数 
@@ -109,9 +105,7 @@
 
 
 #### onHide 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.0 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61
 
 
 
@@ -131,9 +125,7 @@
 
 
 #### onExit 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.72 |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.72
 
 
 
@@ -162,9 +154,7 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 :::
 #### onError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.21 | 4.21 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.21; iOS: 4.21; HarmonyOS: 4.61
 
 
 #### 参数 
@@ -188,9 +178,7 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 #### onLastPageBackPress 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.71 |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.71
 
 
 
@@ -215,9 +203,7 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 #### onPageNotFound 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | x | x | x |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 
 #### 参数 
@@ -249,9 +235,7 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 #### onUnhandledRejection 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | x | x | x |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 
 
@@ -270,9 +254,7 @@ onError里打印的错误，是拦截转发的。可能会丢失错误堆栈，�
 
 
 #### onThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | x | x | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 
 监听主题变化一般不推荐这个生命周期。而是使用uni api方式。详见：[uni-app x主题适配](../api/theme-change.md)

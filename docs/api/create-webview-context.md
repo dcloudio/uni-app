@@ -31,9 +31,7 @@ let wv = uni.getElementById("wv1") as UniWebViewElement
 ```
 
 ### createWebViewContext 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 3.9.0 | 4.11 | 5.08 |
+Android: 3.9.0; iOS: 4.11; HarmonyOS: 5.08
 
 
 ### 参数 
@@ -58,9 +56,7 @@ let wv = uni.getElementById("wv1") as UniWebViewElement
 back
 后退到 web-view 组件网页加载历史的上一页，如果不存在上一页则没有任何效果。
 ##### back 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 3.9.0 | 4.11 | 4.61 |
+Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -69,9 +65,7 @@ back
 forward
 前进到 web-view 组件网页加载历史的下一页，如果不存在下一页则没有任何效果。
 ##### forward 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 3.9.0 | 4.11 | 4.61 |
+Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -80,9 +74,7 @@ forward
 reload
 重新加载 web-view 组件当前页面。
 ##### reload 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 3.9.0 | 4.11 | 4.61 |
+Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -91,9 +83,7 @@ reload
 stop
 停止加载 web-view 组件当前网页，该方法不能阻止已经加载的 html 文档，但是能够阻止未完成的图片及延迟加载的资源。
 ##### stop 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 3.9.0 | 4.11 | 4.61 |
+Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -102,9 +92,7 @@ stop
 evalJS
 在网页中执行指定的js脚本，在 uvue 页面中可通过此方法向 web-view 组件加载的页面发送数据
 ##### evalJS 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 3.9.0 | 4.11 | 4.61 |
+Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -118,9 +106,7 @@ evalJS
 getContentHeight
 获取webview内容高度
 ##### getContentHeight 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.63 | 4.63 | 5.08 |
+Android: 4.63; iOS: 4.63; HarmonyOS: 5.08
 
 
 
@@ -135,9 +121,7 @@ getContentHeight
 loadData
 在web-view组件中加载页面内容
 ##### loadData 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.71 | 4.71 | 4.71 |
+Android: 4.71; iOS: 4.71; HarmonyOS: 4.71
 
 ##### 参数 
 
@@ -201,9 +185,7 @@ loadData
 - app-android 平台在蒸汽模式下仅支持`V`大写的方式 ，不再支持向下兼容写法。
 
 ### createWebviewContext 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9.0 | 4.11 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.9.0","4.11","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -226,9 +208,7 @@ loadData
 back
 后退到 web-view 组件网页加载历史的上一页，如果不存在上一页则没有任何效果。
 ##### back 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+Web: x; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -237,9 +217,7 @@ back
 forward
 前进到 web-view 组件网页加载历史的下一页，如果不存在下一页则没有任何效果。
 ##### forward 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+Web: x; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -248,9 +226,7 @@ forward
 reload
 重新加载 web-view 组件当前页面。
 ##### reload 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+Web: x; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -259,9 +235,7 @@ reload
 stop
 停止加载 web-view 组件当前网页，该方法不能阻止已经加载的 html 文档，但是能够阻止未完成的图片及延迟加载的资源。
 ##### stop 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+Web: x; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -270,9 +244,7 @@ stop
 evalJS
 在网页中执行指定的js脚本，在 uvue 页面中可通过此方法向 web-view 组件加载的页面发送数据
 ##### evalJS 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.9.0 | 4.11 | 4.61 |
+Web: x; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -286,9 +258,7 @@ evalJS
 getContentHeight
 获取webview内容高度
 ##### getContentHeight 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.63 | 4.63 | 5.08 |
+Web: x; Android: 4.63; iOS: 4.63; HarmonyOS: 5.08
 
 
 
@@ -303,9 +273,7 @@ getContentHeight
 loadData
 在web-view组件中加载页面内容
 ##### loadData 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.71 | 4.71 | 4.71 |
+Web: x; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71
 
 ##### 参数 
 

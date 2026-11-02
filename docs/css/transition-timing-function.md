@@ -6,9 +6,7 @@ CSS 属性受到 transition effect的影响，会产生不断变化的中间值�
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

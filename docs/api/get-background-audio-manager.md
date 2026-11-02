@@ -46,9 +46,7 @@
 - App 平台会将应用的Cookie与UA信息自动带入到请求链接
 
 ### getBackgroundAudioManager 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 4.41 | 4.41 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","4.41","4.41","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -83,9 +81,7 @@
 play
 播放
 ##### play 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -94,9 +90,7 @@ play
 pause
 暂停
 ##### pause 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -105,9 +99,7 @@ pause
 seek
 跳转到指定位置，单位 s
 ##### seek 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -121,9 +113,7 @@ seek
 stop
 停止
 ##### stop 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -132,9 +122,7 @@ stop
 onCanplay
 背景音频进入可以播放状态，但不保证后面可以流畅播放
 ##### onCanplay 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -148,9 +136,7 @@ onCanplay
 onPlay
 背景音频播放事件
 ##### onPlay 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -164,9 +150,7 @@ onPlay
 onPause
 背景音频暂停事件
 ##### onPause 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -180,9 +164,7 @@ onPause
 onStop
 背景音频停止事件
 ##### onStop 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -196,9 +178,7 @@ onStop
 onEnded
 背景音频自然播放结束事件
 ##### onEnded 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -212,9 +192,7 @@ onEnded
 onSeeking
 音频进行 seek 操作事件
 ##### onSeeking 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -228,9 +206,7 @@ onSeeking
 onSeeked
 音频完成 seek 操作事件
 ##### onSeeked 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -244,9 +220,7 @@ onSeeked
 onTimeUpdate
 背景音频播放进度更新事件
 ##### onTimeUpdate 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -260,9 +234,7 @@ onTimeUpdate
 onPrev
 用户在系统音乐播放面板点击上一曲事件
 ##### onPrev 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -276,9 +248,7 @@ onPrev
 onNext
 用户在系统音乐播放面板点击下一曲事件
 ##### onNext 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -292,9 +262,7 @@ onNext
 onError
 背景音频播放错误事件
 ##### onError 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.61 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -329,9 +297,7 @@ onError
 onWaiting
 音频加载中事件，当音频因为数据不足，需要停下来加载时会触发
 ##### onWaiting 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | x |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: x
 
 ##### 参数 
 
@@ -345,9 +311,7 @@ onWaiting
 offCanplay
 取消监听背景音频可播放事件
 ##### offCanplay 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -356,9 +320,7 @@ offCanplay
 offPlay
 取消监听背景音频播放事件
 ##### offPlay 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -367,9 +329,7 @@ offPlay
 offPause
 取消监听背景音频暂停事件
 ##### offPause 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -378,9 +338,7 @@ offPause
 offStop
 取消监听背景音频停止事件
 ##### offStop 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -389,9 +347,7 @@ offStop
 offEnded
 取消监听背景音频自然播放结束事件
 ##### offEnded 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -400,9 +356,7 @@ offEnded
 offSeeking
 取消监听音频进行 seek 操作事件
 ##### offSeeking 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -411,9 +365,7 @@ offSeeking
 offSeeked
 取消监听音频完成 seek 操作事件
 ##### offSeeked 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -422,9 +374,7 @@ offSeeked
 offTimeUpdate
 取消监听背景音频播放进度更新事件
 ##### offTimeUpdate 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -433,9 +383,7 @@ offTimeUpdate
 offPrev
 取消监听用户在系统音乐播放面板点击上一曲事件
 ##### offPrev 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -444,9 +392,7 @@ offPrev
 offNext
 取消监听用户在系统音乐播放面板点击下一曲事件
 ##### offNext 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -455,9 +401,7 @@ offNext
 offError
 背景音频播放错误事件
 ##### offError 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | 5.0 |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -466,9 +410,7 @@ offError
 offWaiting
 取消监听音频加载中事件
 ##### offWaiting 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 5.0 | 5.0 | x |
+Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: x
 
 
 

@@ -45,9 +45,7 @@
 - 4.51 版本以上 App-iOS 平台支持Cache功能，缓存路径、默认大小和自动清理机制和 Android 一样；
 
 ### createInnerAudioContext 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -80,9 +78,7 @@
 pause
 暂停
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -91,9 +87,7 @@ pause
 stop
 停止
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -102,9 +96,7 @@ stop
 play
 播放
 ##### play 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -113,9 +105,7 @@ play
 seek
 跳转到指定位置，单位 s
 ##### seek 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -129,9 +119,7 @@ seek
 destroy
 销毁当前实例
 ##### destroy 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 
 
@@ -140,9 +128,7 @@ destroy
 onCanplay
 音频进入可以播放状态，但不保证后面可以流畅播放
 ##### onCanplay 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -156,9 +142,7 @@ onCanplay
 onPlay
 音频播放事件
 ##### onPlay 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -172,9 +156,7 @@ onPlay
 onPause
 音频暂停事件
 ##### onPause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -188,9 +170,7 @@ onPause
 onStop
 音频停止事件
 ##### onStop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -204,9 +184,7 @@ onStop
 onEnded
 音频自然播放结束事件
 ##### onEnded 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -220,9 +198,7 @@ onEnded
 onTimeUpdate
 音频播放进度更新事件
 ##### onTimeUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -236,9 +212,7 @@ onTimeUpdate
 onError
 音频播放错误事件
 ##### onError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -273,9 +247,7 @@ onError
 onWaiting
 音频加载中事件，当音频因为数据不足，需要停下来加载时会触发
 ##### onWaiting 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -289,9 +261,7 @@ onWaiting
 onSeeking
 音频进行 seek 操作事件
 ##### onSeeking 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -305,9 +275,7 @@ onSeeking
 onSeeked
 音频完成 seek 操作事件
 ##### onSeeked 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -321,9 +289,7 @@ onSeeked
 offCanplay
 取消监听 onCanplay 事件
 ##### offCanplay 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -337,9 +303,7 @@ offCanplay
 offPlay
 取消监听 onPlay 事件
 ##### offPlay 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -353,9 +317,7 @@ offPlay
 offPause
 取消监听 onPause 事件
 ##### offPause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -369,9 +331,7 @@ offPause
 offStop
 取消监听 onStop 事件
 ##### offStop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -385,9 +345,7 @@ offStop
 offEnded
 取消监听 onEnded 事件
 ##### offEnded 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -401,9 +359,7 @@ offEnded
 offTimeUpdate
 取消监听 onTimeUpdate 事件
 ##### offTimeUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -417,9 +373,7 @@ offTimeUpdate
 offError
 取消监听 onWaiting 事件
 ##### offError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -454,9 +408,7 @@ offError
 offWaiting
 取消监听 onWaiting 事件
 ##### offWaiting 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -470,9 +422,7 @@ offWaiting
 offSeeking
 取消监听 onSeeking 事件
 ##### offSeeking 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -486,9 +436,7 @@ offSeeking
 offSeeked
 取消监听 onSeeked 事件
 ##### offSeeked 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.33 | 4.41 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.33; iOS: 4.41; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -940,9 +888,7 @@ offSeeked
 设置 InnerAudioContext 的播放选项，需要在InnerAudioContext对象调用音频播放前设置才生效。
 
 ### setInnerAudioOption 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.73 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","4.73","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

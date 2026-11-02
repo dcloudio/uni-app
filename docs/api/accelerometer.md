@@ -3,9 +3,7 @@
 监听加速度数据变化事件
 
 ### onAccelerometerChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 5.08 | 5.08 | 5.08 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08
 
 
 ### 参数 
@@ -52,9 +50,7 @@
 监听加速度数据变化事件
 
 ### offAccelerometerChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 5.08 | 5.08 | 5.08 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08
 
 
 ### 参数 
@@ -98,9 +94,7 @@
 
 
 ### startAccelerometer 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 5.08 | 5.08 | 5.08 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08
 
 
 ### 参数 
@@ -193,9 +187,7 @@
 
 
 ### stopAccelerometer 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 5.08 | 5.08 | 5.08 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5.08; HarmonyOS: 5.08
 
 
 ### 参数 

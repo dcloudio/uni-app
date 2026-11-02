@@ -14,9 +14,7 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 7.1.1 | 5.08 | 5.08 | 5.08 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android 系统版本","group":"Android","subtitle":"系统版本"},{"title":"Android","group":"Android","subtitle":"uni-app x"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","7.1.1","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 属性 

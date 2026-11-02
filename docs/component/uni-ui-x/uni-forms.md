@@ -4,12 +4,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-forms-x
 
 ::: sourceCode
 ## uni-forms
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-forms-x/components/uni-forms
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-forms-x/components/uni-forms
-
 :::
 
 通过 v-model 收集字段值，提供字段注册、DB Schema 兼容校验、Standard Schema 可选校验和重置能力
@@ -335,9 +329,7 @@ function onBlur(value : string) {
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.31 | 5.07 | 5.07 | 5.07 |
+Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 5.07; HarmonyOS: 5.07
 
 
 ### 属性 

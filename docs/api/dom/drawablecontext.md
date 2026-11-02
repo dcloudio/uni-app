@@ -3,9 +3,7 @@
 
 
 ### DrawableContext 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+ Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -30,9 +28,7 @@
 创建一个新的空路径
 
 ##### beginPath 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -46,9 +42,7 @@
 绘制一段弧线
 
 ##### arc 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -72,9 +66,7 @@
 将一个新的路径的起始点移动到 (x，y) 坐标
 
 ##### moveTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -94,9 +86,7 @@
 创建一个矩形路径
 
 ##### rect 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -118,9 +108,7 @@
 将路径的最后一个点连接到 (x，y) 坐标
 
 ##### lineTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -140,9 +128,7 @@
 闭合路径，将最后一个点与起点连接起来。如果图形已经封闭，或者只有一个点，那么此方法不会产生任何效果。
 
 ##### closePath 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -156,9 +142,7 @@
 绘制当前或已经存在的路径的边框。
 
 ##### stroke 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -172,9 +156,7 @@
 绘制一个矩形框
 
 ##### strokeRect 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -196,9 +178,7 @@
 绘制空心字符
 
 ##### strokeText 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -219,9 +199,7 @@
 填充当前或已存在的路径
 
 ##### fill 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -240,9 +218,7 @@
 绘制一个实心矩形
 
 ##### fillRect 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -264,9 +240,7 @@
 绘制实心字符
 
 ##### fillText 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -287,9 +261,7 @@
 清空绘制数据
 
 ##### reset 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -303,9 +275,7 @@
 将所有绘制内容更新到画布上
 
 ##### update 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -319,9 +289,7 @@
 设置虚线样式
 
 ##### setLineDash 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -340,9 +308,7 @@
 创建三次方贝塞尔曲线路径
 
 ##### bezierCurveTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 

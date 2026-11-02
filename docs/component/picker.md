@@ -14,9 +14,7 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 5.08 | 5.08 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61
 
 
 picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹出形态。

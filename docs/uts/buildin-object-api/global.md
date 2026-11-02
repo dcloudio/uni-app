@@ -24,15 +24,11 @@ eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | x | x | x |
+Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | √ |
+Android UTS 插件: x; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 
@@ -105,15 +101,11 @@ parseInt(string, radix) 解析一个字符串并返回指定基数的十进制�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -183,15 +175,11 @@ parseFloat() 函数解析一个参数（直接收字符串类型的参数，其�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -263,15 +251,11 @@ isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -300,15 +284,11 @@ isFinite() 函数用来判断被传入的参数值是否为一个有限数值（
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -347,15 +327,11 @@ decodeURI() 函数能解码由encodeURI 创建或其他流程得到的统一资�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -394,15 +370,11 @@ decodeURIComponent() 方法用于解码由 encodeURIComponent 方法或者其他
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -1431,15 +1403,11 @@ encodeURI() 函数通过将特定字符的每个实例替换为一个、两个�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -1478,15 +1446,11 @@ encodeURIComponent() 函数通过将特定字符的每个实例替换成代表�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.91 | 4.11 | √ |
+Android UTS 插件: 3.91; iOS UTS 插件: 4.11; HarmonyOS UTS 插件: √
 
 
 
@@ -1526,15 +1490,11 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| √ | 4.25 | 4.61 | x |
+Web: √; Android: 4.25; iOS: 4.61; HarmonyOS: x
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.25 | 4.61 | x |
+Android UTS 插件: 4.25; iOS UTS 插件: 4.61; HarmonyOS UTS 插件: x
 
 
 
@@ -1578,15 +1538,11 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| √ | 4.25 | 4.61 | x |
+Web: √; Android: 4.25; iOS: 4.61; HarmonyOS: x
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.25 | 4.61 | x |
+Android UTS 插件: 4.25; iOS UTS 插件: 4.61; HarmonyOS UTS 插件: x
 
 
 
@@ -1619,15 +1575,11 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | x |
+Web: 4.0; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | x |
+Android UTS 插件: x; iOS UTS 插件: x; HarmonyOS UTS 插件: x
 
 
 
@@ -1656,15 +1608,11 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | x |
+Web: 4.0; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | x |
+Android UTS 插件: x; iOS UTS 插件: x; HarmonyOS UTS 插件: x
 
 
 

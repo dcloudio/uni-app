@@ -104,9 +104,7 @@
 
 
 ### 兼容性 <Help />
-| 微信小程序 | 支付宝小程序 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 5.33 | 5.33 | 5.31 | 5.31 | 5.31 |
+Web(Vapor): 5.41; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor): 5.31; iOS(Vapor): 5.31; HarmonyOS(Vapor): 5.31
 
 
 ### 属性 

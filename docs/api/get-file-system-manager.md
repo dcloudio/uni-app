@@ -13,9 +13,7 @@
 获取文件管理器
 
 ### getFileSystemManager 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","3.9.0","4.11","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 文件管理器对象，用于操作应用可访问的本地文件空间，在app平台是应用沙盒目录。
@@ -65,9 +63,7 @@
 access
 判断文件/目录是否存在
 ##### access 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -129,9 +125,7 @@ access
 accessSync
 FileSystemManager.access 的同步版本
 ##### accessSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -145,9 +139,7 @@ FileSystemManager.access 的同步版本
 appendFile
 在文件结尾追加内容
 ##### appendFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -219,9 +211,7 @@ appendFile
 appendFileSync
 FileSystemManager.appendFile 的同步版本
 ##### appendFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -237,9 +227,7 @@ FileSystemManager.appendFile 的同步版本
 close
 关闭文件
 ##### close 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -301,9 +289,7 @@ close
 closeSync
 同步关闭文件
 ##### closeSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -323,9 +309,7 @@ closeSync
 copyFile
 复制文件
 ##### copyFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -388,9 +372,7 @@ copyFile
 copyFileSync
 FileSystemManager.copyFile 的同步版本
 ##### copyFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -405,9 +387,7 @@ FileSystemManager.copyFile 的同步版本
 fstat
 获取文件的状态信息
 ##### fstat 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -445,9 +425,7 @@ fstat
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -462,9 +440,7 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -520,9 +496,7 @@ isFile
 fstatSync
 同步获取文件的状态信息
 ##### fstatSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -557,9 +531,7 @@ fstatSync
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -574,9 +546,7 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -592,9 +562,7 @@ isFile
 ftruncate
 对文件内容进行截断操作
 ##### ftruncate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -657,9 +625,7 @@ ftruncate
 ftruncateSync
 同步对文件内容进行截断操作
 ##### ftruncateSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -680,9 +646,7 @@ ftruncateSync
 getFileInfo
 获取该本地临时文件 或 本地缓存文件 信息
 ##### getFileInfo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -761,9 +725,7 @@ getFileInfo
 getSavedFileList
 获取该已保存的本地缓存文件列表
 ##### getSavedFileList 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -830,9 +792,7 @@ getSavedFileList
 mkdir
 创建目录
 ##### mkdir 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -895,9 +855,7 @@ mkdir
 mkdirSync
 FileSystemManager.mkdir 的同步版本
 ##### mkdirSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -912,9 +870,7 @@ FileSystemManager.mkdir 的同步版本
 open
 打开文件，返回文件描述符
 ##### open 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -998,9 +954,7 @@ open
 openSync
 同步打开文件，返回文件描述符
 ##### openSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1042,9 +996,7 @@ openSync
 readFile
 读取本地文件内容
 ##### readFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1121,9 +1073,7 @@ readFile
 readFileSync
 FileSystemManager.readFile 的同步版本参数
 ##### readFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1144,9 +1094,7 @@ FileSystemManager.readFile 的同步版本参数
 read
 读文件
 ##### read 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1219,9 +1167,7 @@ read
 readSync
 读文件
 ##### readSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1257,9 +1203,7 @@ readSync
 readdir
 读取目录内文件列表
 ##### readdir 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1327,9 +1271,7 @@ readdir
 readdirSync
 FileSystemManager.readdir 的同步版本
 ##### readdirSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1349,9 +1291,7 @@ FileSystemManager.readdir 的同步版本
 readZipEntry
 读取压缩包内的文件
 ##### readZipEntry 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1445,9 +1385,7 @@ readZipEntry
 rmdir
 删除目录
 ##### rmdir 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1510,9 +1448,7 @@ rmdir
 rmdirSync
 FileSystemManager.rmdir 的同步版本
 ##### rmdirSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1527,9 +1463,7 @@ FileSystemManager.rmdir 的同步版本
 rename
 重命名文件。可以把文件从 oldPath 移动到 newPath
 ##### rename 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1592,9 +1526,7 @@ rename
 renameSync
 FileSystemManager.rename 的同步版本
 ##### renameSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1609,9 +1541,7 @@ FileSystemManager.rename 的同步版本
 removeSavedFile
 删除该小程序下已保存的本地缓存文件
 ##### removeSavedFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1673,9 +1603,7 @@ removeSavedFile
 readCompressedFile
 读取指定压缩类型的本地文件内容
 ##### readCompressedFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -1744,9 +1672,7 @@ readCompressedFile
 readCompressedFileSync
 同步读取指定压缩类型的本地文件内容
 ##### readCompressedFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -1767,9 +1693,7 @@ readCompressedFileSync
 saveFile
 保存临时文件到本地。此接口会移动临时文件，因此调用成功后，tempFilePath 将不可用。
 ##### saveFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1838,9 +1762,7 @@ saveFile
 saveFileSync
 FileSystemManager.saveFile 的同步版本。自 `4.71` 起，返回 `unifile://` 协议的路径
 ##### saveFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1861,9 +1783,7 @@ FileSystemManager.saveFile 的同步版本。自 `4.71` 起，返回 `unifile://
 stat
 获取文件 Stats 对象
 ##### stat 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -1909,9 +1829,7 @@ stat
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -1926,9 +1844,7 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -1984,9 +1900,7 @@ isFile
 statSync
 FileSystemManager.stat 的同步版本
 ##### statSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2023,9 +1937,7 @@ FileSystemManager.stat 的同步版本
 isDirectory
 判断当前文件是否一个目录
 ###### isDirectory 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -2040,9 +1952,7 @@ isDirectory
 isFile
 判断当前文件是否一个普通文件
 ###### isFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.31 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.31; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -2058,9 +1968,7 @@ isFile
 truncate
 对文件内容进行截断操作
 ##### truncate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2123,9 +2031,7 @@ truncate
 truncateSync
 对文件内容进行截断操作 (truncate 的同步版本)
 ##### truncateSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2140,9 +2046,7 @@ truncateSync
 unlink
 删除文件
 ##### unlink 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2204,9 +2108,7 @@ unlink
 unlinkSync
 FileSystemManager.unlink 的同步版本
 ##### unlinkSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2220,9 +2122,7 @@ FileSystemManager.unlink 的同步版本
 unzip
 解压文件
 ##### unzip 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2285,9 +2185,7 @@ unzip
 unzipSync
 解压文件
 ##### unzipSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.31 | 5.31 | 7.0 (26.0.0) | 5.31 |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.31; iOS: 5.31; HarmonyOS 系统版本: 7.0 (26.0.0); HarmonyOS: 5.31
 
 ##### 参数 
 
@@ -2314,9 +2212,7 @@ unzipSync
 writeFile
 写文件
 ##### writeFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2388,9 +2284,7 @@ writeFile
 writeFileSync
 FileSystemManager.writeFile 的同步版本
 ##### writeFileSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.51 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.51
 
 ##### 参数 
 
@@ -2406,9 +2300,7 @@ FileSystemManager.writeFile 的同步版本
 write
 写入文件
 ##### write 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -2489,9 +2381,7 @@ write
 writeSync
 同步写入文件
 ##### writeSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.13 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 

@@ -298,9 +298,7 @@ onShow和onHide是成对出现的。
 页面尺寸改变时触发
 
 #### onResize 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 #### 参数 
@@ -338,9 +336,7 @@ onShow和onHide是成对出现的。
 比如 [onReachBottomDistance](./collocation/pagesjson#pages-globalstyle) 设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
 
 #### onReachBottom 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 | 5.08 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08
 
 
 
@@ -354,9 +350,7 @@ onShow和onHide是成对出现的。
 监听用户滑动页面事件。
 
 #### onPageScroll 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.13 | 5.21 | 4.61 | 5.08 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08
 
 
 #### 参数 
@@ -384,9 +378,7 @@ onShow和onHide是成对出现的。
 监听页面返回
 
 #### onBackPress 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 #### 参数 
@@ -503,9 +495,7 @@ onShow和onHide是成对出现的。
 当前是 tab 页时，点击 tab 时触发
 
 #### onTabItemTap 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 5.26 | 5.26 | 5.26 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.26; iOS: 5.26; HarmonyOS: 5.26
 
 
 #### 参数 
@@ -534,9 +524,7 @@ onShow和onHide是成对出现的。
 监听原生标题栏按钮点击事件
 
 #### onNavigationBarButtonTap 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 #### 参数 
@@ -560,9 +548,7 @@ onShow和onHide是成对出现的。
 
 
 #### onNavigationBarSearchInputChanged 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 #### 参数 
@@ -586,9 +572,7 @@ onShow和onHide是成对出现的。
 
 
 #### onNavigationBarSearchInputConfirmed 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 #### 参数 

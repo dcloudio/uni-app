@@ -13,9 +13,7 @@
 拨打电话
 
 ### makePhoneCall 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.63 | 4.63 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.63; iOS: 4.63; HarmonyOS: 4.61
 
 
 ::: warning 注意

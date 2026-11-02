@@ -6,9 +6,7 @@ direction CSS 属性用于设置文本水平溢出的方向。
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 5.25 | x | 5.25 | x | 5.25 |
+Web: 4.0; Android(VDOM): x; Android(Vapor): 5.25; iOS(VDOM): x; iOS(Vapor): 5.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.25
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

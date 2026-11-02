@@ -61,15 +61,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### Constructor(fn)
@@ -131,15 +127,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ## 实例方法
@@ -212,15 +204,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### then(onFulfilled, onRejected?)
@@ -295,15 +283,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### then(onFulfilled, onRejected?)
@@ -378,15 +362,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### then(onFulfilled, onRejected?)
@@ -461,15 +441,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### then(onFulfilled, onRejected?)
@@ -544,15 +520,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### catch()
@@ -616,15 +588,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### catch(onRejected)
@@ -692,15 +660,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### catch(onRejected)
@@ -768,15 +732,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### catch(onRejected)
@@ -844,15 +804,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### catch(onRejected)
@@ -920,15 +876,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### finally(callback)
@@ -1001,15 +953,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### resolve()
@@ -1061,15 +1009,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### resolve(value)
@@ -1125,15 +1069,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### resolve(value)
@@ -1189,15 +1129,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### reject(value?)
@@ -1252,15 +1188,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### all(arr)
@@ -1327,15 +1259,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### race(arr)
@@ -1397,15 +1325,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### any(arr)
@@ -1484,15 +1408,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 ### allSettled(arr)
@@ -1556,15 +1476,11 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 4.31 |
+Web: 4.0; Android: 3.9; iOS: 4.11; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | 4.31 | √ |
+Android UTS 插件: 3.9; iOS UTS 插件: 4.31; HarmonyOS UTS 插件: √
 
 
 

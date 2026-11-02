@@ -3,9 +3,7 @@
 native-view 元素对象
 
 ### UniNativeViewElement 兼容性 <Help /> 
- | Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+ Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ```mermaid
 graph LR
@@ -24,9 +22,7 @@ UniNativeViewElement -- Extends --> UniElement
 绑定安卓平台原生view
 
 ##### bindAndroidView 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | x | x |
+Android: 4.31; iOS: x; HarmonyOS: x
 
 
 ##### 参数 
@@ -45,9 +41,7 @@ UniNativeViewElement -- Extends --> UniElement
 绑定IOS平台原生view
 
 ##### bindIOSView 兼容性 <Help /> 
-| Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- |
-| x | x | 4.31 | x |
+Android: x; iOS: x; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: x
 
 
 ##### 参数 
@@ -66,9 +60,7 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙 FrameNode
 
 ##### bindHarmonyFrameNode 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | 4.61 | 5.31 |
+Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31
 
 
 ##### 参数 
@@ -87,9 +79,7 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙 wrapperBuilder
 
 ##### bindHarmonyWrappedBuilder 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | 4.61 |
+Android: x; iOS: x; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -115,9 +105,7 @@ UniNativeViewElement -- Extends --> UniElement
 获取鸿蒙 FrameNode
 
 ##### getHarmonyFrameNode 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | 4.61 | 5.31 |
+Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.31
 
 
 
@@ -137,9 +125,7 @@ UniNativeViewElement -- Extends --> UniElement
 获取鸿蒙 BuilderNode
 
 ##### getHarmonyBuilderNode 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | 4.61 | x |
+Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -159,9 +145,7 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙控制器
 
 ##### bindHarmonyController 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | 4.61 |
+Android: x; iOS: x; HarmonyOS: 4.61
 
 
 ##### 参数 

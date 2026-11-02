@@ -38,9 +38,7 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 
 存在uni-app-x节点则表示为uni-app x项目
 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -54,9 +52,7 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 
 App平台（原生App）配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 3.9 | 4.11 | 4.61 |
+Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -260,9 +256,7 @@ app内置模块配置
 
 [uni-ad广告联盟](https://uniad.dcloud.net.cn/)模块
 
-| Android | iOS |
-| :- | :- |
-| 4.0 | 4.22 |
+Android: 4.0; iOS: 4.22
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -277,9 +271,7 @@ app内置模块配置
 
 [系统定位](https://doc.dcloud.net.cn/uni-app-x/api/get-location.html)模块, HBuilderX 4.61- 之前是`uni-getLocation`
 
-| Android | iOS |
-| :- | :- |
-| 3.91 | 4.11 |
+Android: 3.91; iOS: 4.11
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -291,9 +283,7 @@ app内置模块配置
 
 [请求支付](https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html)模块
 
-| Android | iOS |
-| :- | :- |
-| 4.02 | 4.18 |
+Android: 4.02; iOS: 4.18
 
 | 属性 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
@@ -305,9 +295,7 @@ app内置模块配置
 
 微信支付
 
-| Android | iOS |
-| :- | :- |
-| 4.11 | 4.18 |
+Android: 4.11; iOS: 4.18
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -332,9 +320,7 @@ ios平台微信支付配置信息
 
 App-Android平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.71 | x | x |
+Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -440,9 +426,7 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 [Android平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#moduleslocation)模块Provider配置
 
-| Android |
-| :- |
-| 3.91 |
+Android: 3.91
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -465,9 +449,7 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 [Android平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#modulesmap)模块Provider配置
 
-| Android |
-| :- |
-| 4.31 |
+Android: 4.31
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -489,9 +471,7 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 [Android平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#modulespayment)模块Provider配置
 
-| Android |
-| :- |
-| 4.02 |
+Android: 4.02
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -503,9 +483,7 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 iOS App平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | 4.71 | x |
+Web: x; 微信小程序: x; Android: x; iOS: 4.71; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -570,9 +548,7 @@ app内置模块配置
 
 [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置
 
-| iOS |
-| :- |
-| 4.11 |
+iOS: 4.11
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -595,9 +571,7 @@ app内置模块配置
 
 [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置
 
-| iOS |
-| :- |
-| 4.31 |
+iOS: 4.31
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -619,9 +593,7 @@ app内置模块配置
 
 [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置
 
-| iOS |
-| :- |
-| 4.18 |
+iOS: 4.18
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -645,9 +617,7 @@ app内置模块配置
 
 HarmonyOS平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 |
+Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61
 
 | 属性 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
@@ -658,9 +628,7 @@ HarmonyOS平台配置
 
 HarmonyOS分发配置
 
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -702,9 +670,7 @@ HarmonyOS分发模块配置
 
 微信OAuth模块
 
-| HarmonyOS |
-| :- |
-| 4.75 |
+HarmonyOS: 4.75
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -715,9 +681,7 @@ HarmonyOS分发模块配置
 
 share 模块
 
-| HarmonyOS |
-| :- |
-| 4.75 |
+HarmonyOS: 4.75
 
 | 属性 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
@@ -728,9 +692,7 @@ share 模块
 
 微信 share 模块
 
-| HarmonyOS |
-| :- |
-| 4.75 |
+HarmonyOS: 4.75
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -741,9 +703,7 @@ share 模块
 
 Web平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -876,9 +836,7 @@ Web平台配置
 
 <!-- MANIFESTJSON.mp-weixin.description -->
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | √ | x | x | x |
+Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |
@@ -906,9 +864,7 @@ Web平台配置
 
 用于HBuilderX可视化界面相关操作配置
 
-| Web | Android | iOS |
-| :- | :- | :- |
-| x | 4.31 | 4.31 |
+Web: x; Android: 4.31; iOS: 4.31
 
 | 属性 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |

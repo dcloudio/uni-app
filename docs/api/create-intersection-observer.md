@@ -4,9 +4,7 @@
 
 
 ### createIntersectionObserver 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -38,9 +36,7 @@
 relativeTo
 使用选择器指定一个节点，作为参照区域之一
 ##### relativeTo 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+Android: x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -61,9 +57,7 @@ relativeTo
 relativeToViewport
 指定页面显示区域作为参照区域之一
 ##### relativeToViewport 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+Android: x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -83,9 +77,7 @@ relativeToViewport
 observe
 指定目标节点并开始监听相交状态变化情况
 ##### observe 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+Android: x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -128,9 +120,7 @@ observe
 disconnect
 停止监听
 ##### disconnect 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| x | x | x |
+Android: x; iOS: x; HarmonyOS: x
 
 
 

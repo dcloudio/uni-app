@@ -4,9 +4,7 @@
 
 
 ### navigateTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | √ | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -106,9 +104,7 @@
 
 
 ### redirectTo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | √ | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -186,9 +182,7 @@
 
 
 ### reLaunch 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | √ | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -266,9 +260,7 @@
 
 
 ### switchTab 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | √ | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -346,9 +338,7 @@
 
 
 ### navigateBack 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | √ | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 

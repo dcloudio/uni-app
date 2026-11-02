@@ -928,9 +928,7 @@ defineExpose({
 
 
 ##### stopPropagation 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.0 | 4.61 |
+Web: 4.0; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61
 
 
 
@@ -945,9 +943,7 @@ defineExpose({
 
 
 ##### preventDefault 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.55 | 4.61 |
+Web: 4.0; Android: 3.9; iOS: 4.55; HarmonyOS: 4.61
 
 
 
@@ -1166,9 +1162,7 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 
 
 ### UniNativeViewEvent 兼容性 <Help /> 
- | Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.31 | 4.31 | 4.61 |
+ Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 <!-- CUSTOMTYPEJSON.UniNativeViewEvent.example -->
 

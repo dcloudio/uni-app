@@ -13,9 +13,7 @@
 发起网络请求。
 
 ### request 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -103,9 +101,7 @@
 abort
 中断网络请求。
 ##### abort 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -114,9 +110,7 @@ abort
 onChunkReceived
 监听 Transfer-Encoding Chunk Received 事件。
 ##### onChunkReceived 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 5.31 | 4.71 | 4.71 | 4.71 |
+Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71
 
 ##### 参数 
 
@@ -142,9 +136,7 @@ onChunkReceived
 offChunkReceived
 移除 Transfer-Encoding Chunk Received 事件的监听函数。
 ##### offChunkReceived 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 5.31 | 4.71 | 4.71 | 4.71 |
+Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71
 
 ##### 参数 
 
@@ -164,9 +156,7 @@ offChunkReceived
 onHeadersReceived
 监听 HTTP Response Header 事件。
 ##### onHeadersReceived 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 5.31 | 4.71 | 4.71 | 4.71 |
+Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71
 
 ##### 参数 
 
@@ -194,9 +184,7 @@ onHeadersReceived
 offHeadersReceived
 移除 HTTP Response Header 事件的监听函数。
 ##### offHeadersReceived 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 5.31 | 4.71 | 4.71 | 4.71 |
+Web: 4.71; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71
 
 ##### 参数 
 

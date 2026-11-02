@@ -3,9 +3,7 @@
 web-view 组件的 DOM 元素对象。
 
 ### UniWebViewElement 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 | 4.61 |
+ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61
 
 ```mermaid
 graph LR
@@ -24,9 +22,7 @@ UniWebViewElement -- Extends --> UniElement
 后退
 
 ##### back 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25
 
 
 
@@ -40,9 +36,7 @@ UniWebViewElement -- Extends --> UniElement
 前进
 
 ##### forward 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25
 
 
 
@@ -56,9 +50,7 @@ UniWebViewElement -- Extends --> UniElement
 重新加载
 
 ##### reload 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25
 
 
 
@@ -72,9 +64,7 @@ UniWebViewElement -- Extends --> UniElement
 停止加载
 
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25
 
 
 
@@ -88,9 +78,7 @@ UniWebViewElement -- Extends --> UniElement
 原生和WebView通信（执行JS脚本）
 
 ##### evalJS 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25
 
 
 ##### 参数 
@@ -109,9 +97,7 @@ UniWebViewElement -- Extends --> UniElement
 获取webview内容高度
 
 ##### getContentHeight 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | 4.63 | 4.63 |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.63; iOS: 4.63
 
 
 
@@ -131,9 +117,7 @@ UniWebViewElement -- Extends --> UniElement
 加载页面内容
 
 ##### loadData 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | 4.65 | 4.65 |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.65; iOS: 4.65
 
 
 ##### 参数 

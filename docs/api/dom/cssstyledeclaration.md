@@ -13,9 +13,7 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 对CSS指定样式设置一个新值，如有此样式已存在则更新。
 
 ##### setProperty 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.51 | 4.51 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -36,9 +34,7 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 对CSS指定样式设置一个新值，如有此样式已存在则更新。  **已废弃，仅为了向下兼容保留**
 
 ##### setProperty 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -59,9 +55,7 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 获取CSS指定的样式值，如果指定的样式不存在则返回空字符串。
 
 ##### getPropertyValue 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.51 | 4.51 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -479,9 +473,7 @@ App平台获取样式值与Web平台存在部分差异：
 删除CSS指定的样式值
 
 ##### removeProperty 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.51 | 4.51 | 4.61 | x |
+Web: 4.0; Android: 4.51; iOS: 4.51; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ##### 参数 

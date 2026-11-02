@@ -14,9 +14,7 @@
 
 
 ### getLaunchOptionsSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -189,9 +187,7 @@
 uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用的 onShow 和 onLaunch 的区别，详见[应用生命周期](../collocation/app.md#applifecycle)
 
 ### getEnterOptionsSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 

@@ -7,20 +7,7 @@ App平台，支持的选择器比web少。这源于开发进度、性能、运�
 
 uni-app x 额外引入了 `page` 选择器，该选择器是小程序规范，uni-app x 中全平台均支持。
 
-| 名称 | 示例 | Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) | 描述 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 通配选择器 | * {} | 4.0 | x |   | x | x | x | x |  |
-| 类选择器 | .class {} | 4.0 | 3.9 |   | 4.11 | 5.11 | 4.61 | 5.0 |  |
-| 元素选择器 | \[tag] {} | 4.0 | x |   | x | x | x | x | App平台蒸汽模式支持page选择器 |
-| ID 选择器 | #\[id] {} | 4.0 | x |   | x | x | x | x |  |
-| 属性选择器 | \[attr] {} | 4.0 | x |   | x | x | x | x |  |
-| 分组选择器 | .a, .b {} | 4.0 | 3.9 |   | 4.11 | 5.11 | 4.61 | 5.0 |  |
-| 直接子代选择器 | .a > .b {} | 4.0 | 3.9 | x | 4.11 | x | 4.61 | x |  |
-| 后代选择器 | .a .b {} | 4.0 | 3.9 | x | 4.11 | x | 4.61 | x |  |
-| 一般兄弟选择器 | .a ~ .b {} | 4.0 | 3.9 | x | 4.11 | x | 4.61 | x |  |
-| 紧邻兄弟选择器 | .a + .b {} | 4.0 | 3.9 | x | 4.11 | x | 4.61 | x |  |
-| 伪类选择器 | :active {} | 4.0 | x |   | x | x | x | x |  |
-| 伪元素选择器 | ::before {} | 4.0 | x |   | x | x | x | x |  |
+名称: 通配选择器; 示例: * {}; Web: 4.0; Android(VDOM): x; Android(Vapor):  ; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x; 描述: ; 名称: 类选择器; 示例: .class {}; Web: 4.0; Android(VDOM): 3.9; Android(Vapor):  ; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; 描述: ; 名称: 元素选择器; 示例: [tag] {}; Web: 4.0; Android(VDOM): x; Android(Vapor):  ; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x; 描述: App平台蒸汽模式支持page选择器; 名称: ID 选择器; 示例: #[id] {}; Web: 4.0; Android(VDOM): x; Android(Vapor):  ; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x; 描述: ; 名称: 属性选择器; 示例: [attr] {}; Web: 4.0; Android(VDOM): x; Android(Vapor):  ; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x; 描述: ; 名称: 分组选择器; 示例: .a, .b {}; Web: 4.0; Android(VDOM): 3.9; Android(Vapor):  ; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; 描述: ; 名称: 直接子代选择器; 示例: .a &amp;gt; .b {}; Web: 4.0; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; 描述: ; 名称: 后代选择器; 示例: .a .b {}; Web: 4.0; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; 描述: ; 名称: 一般兄弟选择器; 示例: .a ~ .b {}; Web: 4.0; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; 描述: ; 名称: 紧邻兄弟选择器; 示例: .a + .b {}; Web: 4.0; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; 描述: ; 名称: 伪类选择器; 示例: :active {}; Web: 4.0; Android(VDOM): x; Android(Vapor):  ; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x; 描述: ; 名称: 伪元素选择器; 示例: ::before {}; Web: 4.0; Android(VDOM): x; Android(Vapor):  ; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x; 描述: 
 
 ## App平台不支持情况的替代方案
 ### 伪类

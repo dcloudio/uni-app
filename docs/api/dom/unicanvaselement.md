@@ -21,9 +21,7 @@ UniCanvasElement -- Extends --> UniElement
 
 
 ### UniCanvasElement 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.21 | x | x | 4.25 | 4.25 | 4.61 |
+ Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 <!-- CUSTOMTYPEJSON.UniCanvasElement.example -->
 
@@ -33,9 +31,7 @@ UniCanvasElement -- Extends --> UniElement
 返回 Canvas 的绘图上下文
 
 ##### getContext 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.21 | x | x | 4.25 | 4.25 | 4.61 |
+Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -60,9 +56,7 @@ UniCanvasElement -- Extends --> UniElement
 创造 Blob 对象
 
 ##### toBlob 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.21 | x | x | x | x | x |
+Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 
 ##### 参数 
@@ -120,9 +114,7 @@ UniCanvasElement -- Extends --> UniElement
 如果传入的类型非“image/png”，但是返回的值以“data:image/png”开头，那么该传入的类型是不支持的。
 
 ##### toDataURL 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.21 | x | x | 4.25 | 4.25 | x | 4.61 |
+Web: 4.21; 微信小程序: x; 支付宝小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 
 ##### 参数 

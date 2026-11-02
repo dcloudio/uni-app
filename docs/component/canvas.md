@@ -2,12 +2,6 @@
 
 ::: sourceCode
 ## canvas
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas/components/canvas
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas/components/canvas
-
 :::
 
 > 组件类型：[UniCanvasElement](/api/dom/unicanvaselement.md) 
@@ -16,9 +10,7 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.21 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.21; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 * 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。

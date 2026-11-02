@@ -58,15 +58,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreAttachFragment.tutorial -->
@@ -100,15 +96,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onAttachFragment.tutorial -->
@@ -141,15 +133,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreUserInteraction.tutorial -->
@@ -182,15 +170,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onUserInteraction.tutorial -->
@@ -223,15 +207,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.82 | x | 5.21 |
+Android(VDOM): 4.82; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPictureInPictureModeChanged.tutorial -->
@@ -264,15 +244,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreUserLeaveHint.tutorial -->
@@ -305,15 +281,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onUserLeaveHint.tutorial -->
@@ -349,15 +321,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreActivityResult.tutorial -->
@@ -393,15 +361,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onActivityResult.tutorial -->
@@ -437,15 +401,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreRequestPermissionsResult.tutorial -->
@@ -481,15 +441,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onRequestPermissionsResult.tutorial -->
@@ -525,15 +481,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreApplyThemeResource.tutorial -->
@@ -569,15 +521,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onApplyThemeResource.tutorial -->
@@ -614,15 +562,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreCreateView.tutorial -->
@@ -659,15 +603,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onCreateView.tutorial -->
@@ -702,15 +642,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreTitleChanged.tutorial -->
@@ -745,15 +681,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onTitleChanged.tutorial -->
@@ -788,15 +720,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreChildTitleChanged.tutorial -->
@@ -831,15 +759,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onChildTitleChanged.tutorial -->
@@ -873,15 +797,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreContextMenuClosed.tutorial -->
@@ -915,15 +835,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onContextMenuClosed.tutorial -->
@@ -959,15 +875,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreCreateContextMenu.tutorial -->
@@ -1003,15 +915,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onCreateContextMenu.tutorial -->
@@ -1045,15 +953,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreOptionsMenuClosed.tutorial -->
@@ -1087,15 +991,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onOptionsMenuClosed.tutorial -->
@@ -1129,15 +1029,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPrePrepareNavigateUpTaskStack.tutorial -->
@@ -1171,15 +1067,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPrepareNavigateUpTaskStack.tutorial -->
@@ -1213,15 +1105,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreProvideAssistData.tutorial -->
@@ -1255,15 +1143,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onProvideAssistData.tutorial -->
@@ -1297,15 +1181,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onPreProvideAssistContent.tutorial -->
@@ -1339,15 +1219,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityCallback.onProvideAssistContent.tutorial -->
@@ -1387,15 +1263,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityComponentCallback.onPreConfigurationChanged.tutorial -->
@@ -1429,15 +1301,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityComponentCallback.onConfigurationChanged.tutorial -->
@@ -1470,15 +1338,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityComponentCallback.onPreLowMemory.tutorial -->
@@ -1511,15 +1375,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityComponentCallback.onLowMemory.tutorial -->
@@ -1553,15 +1413,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityComponentCallback.onPreTrimMemory.tutorial -->
@@ -1595,15 +1451,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityComponentCallback.onTrimMemory.tutorial -->
@@ -1644,15 +1496,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onPreKeyDown.tutorial -->
@@ -1687,15 +1535,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onKeyDown.tutorial -->
@@ -1730,15 +1574,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onPreKeyLongPress.tutorial -->
@@ -1773,15 +1613,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onKeyLongPress.tutorial -->
@@ -1816,15 +1652,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onPreKeyUp.tutorial -->
@@ -1859,15 +1691,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onKeyUp.tutorial -->
@@ -1903,15 +1731,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onPreKeyMultiple.tutorial -->
@@ -1947,15 +1771,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityKeyEventCallback.onKeyMultiple.tutorial -->
@@ -1995,15 +1815,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPreCreate.tutorial -->
@@ -2037,15 +1853,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onCreate.tutorial -->
@@ -2078,15 +1890,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPreStart.tutorial -->
@@ -2119,15 +1927,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onStart.tutorial -->
@@ -2160,15 +1964,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPreRestart.tutorial -->
@@ -2201,15 +2001,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onRestart.tutorial -->
@@ -2242,15 +2038,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPreResume.tutorial -->
@@ -2283,15 +2075,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onResume.tutorial -->
@@ -2324,15 +2112,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPrePause.tutorial -->
@@ -2365,15 +2149,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPause.tutorial -->
@@ -2406,15 +2186,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPreStop.tutorial -->
@@ -2447,15 +2223,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onStop.tutorial -->
@@ -2488,15 +2260,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onPreDestroy.tutorial -->
@@ -2529,15 +2297,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityLifeCycleCallback.onDestroy.tutorial -->
@@ -2576,15 +2340,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreDetachedFromWindow.tutorial -->
@@ -2617,15 +2377,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onDetachedFromWindow.tutorial -->
@@ -2658,15 +2414,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreContentChanged.tutorial -->
@@ -2699,15 +2451,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onContentChanged.tutorial -->
@@ -2741,15 +2489,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreWindowAttributesChanged.tutorial -->
@@ -2783,15 +2527,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onWindowAttributesChanged.tutorial -->
@@ -2825,15 +2565,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreWindowFocusChanged.tutorial -->
@@ -2867,15 +2603,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onWindowFocusChanged.tutorial -->
@@ -2908,15 +2640,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreAttachedToWindow.tutorial -->
@@ -2949,15 +2677,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onAttachedToWindow.tutorial -->
@@ -2992,15 +2716,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPrePanelClosed.tutorial -->
@@ -3035,15 +2755,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPanelClosed.tutorial -->
@@ -3076,15 +2792,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreSearchRequested.tutorial -->
@@ -3117,15 +2829,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onSearchRequested.tutorial -->
@@ -3159,15 +2867,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreWindowStartingActionMode.tutorial -->
@@ -3201,15 +2905,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onWindowStartingActionMode.tutorial -->
@@ -3243,15 +2943,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreWindowStartingActionMode_1.tutorial -->
@@ -3286,15 +2982,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onWindowStartingActionMode_1.tutorial -->
@@ -3328,15 +3020,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreActionModeFinished.tutorial -->
@@ -3370,15 +3058,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onActionModeFinished.tutorial -->
@@ -3412,15 +3096,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreActionModeStarted.tutorial -->
@@ -3454,15 +3134,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onActionModeStarted.tutorial -->
@@ -3498,15 +3174,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPreProvideKeyboardShortcuts.tutorial -->
@@ -3542,15 +3214,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onProvideKeyboardShortcuts.tutorial -->
@@ -3584,15 +3252,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPrePointerCaptureChanged.tutorial -->
@@ -3626,15 +3290,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.onPointerCaptureChanged.tutorial -->
@@ -3668,15 +3328,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.dispatchPreKeyEvent.tutorial -->
@@ -3710,15 +3366,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 <!-- UTSJSON.UniActivityWindowCallback.dispatchKeyEvent.tutorial -->

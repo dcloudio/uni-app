@@ -2,12 +2,6 @@
 
 ::: sourceCode
 ## uni.createCanvasContextAsync(options) @createcanvascontextasync
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas
-
 :::
 
 获取CanvasContext对象实例
@@ -26,9 +20,7 @@ uni.createCanvasContextAsync 方法可以异步获取页面上指定id的canvas�
 - [CanvasRenderingContext2D文档](./canvasrenderingcontext2d.md)
 
 ### createCanvasContextAsync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -71,9 +63,7 @@ getContext
 toBlob
 创造 Blob 对象
 ##### toBlob 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 5.31 | x | x |
+Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x
 
 ##### 参数 
 
@@ -89,9 +79,7 @@ toBlob
 toDataURL
 返回一个包含图片展示的 data URI
 ##### toDataURL 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
@@ -106,9 +94,7 @@ toDataURL
 createImage
 返回一个包含图片展示的 data URI
 ##### createImage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
@@ -123,9 +109,7 @@ createImage
 createPath2D
 返回一个包含图片展示的 data URI
 ##### createPath2D 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 
 
@@ -140,9 +124,7 @@ createPath2D
 requestAnimationFrame
 在下一次重绘之前，调用用户提供的回调函数
 ##### requestAnimationFrame 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -162,9 +144,7 @@ requestAnimationFrame
 cancelAnimationFrame
 取消一个先前通过调用 uni.requestAnimationFrame() 方法添加到计划中的动画帧请求
 ##### cancelAnimationFrame 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 5.31 | 4.25 | 4.25 | 4.61 |
+Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61
 
 ##### 参数 
 

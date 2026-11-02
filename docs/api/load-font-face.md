@@ -14,9 +14,7 @@
 
 
 ### loadFontFace 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | √ | 4.10 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.10; HarmonyOS: 4.61
 
 
 ### 参数 
