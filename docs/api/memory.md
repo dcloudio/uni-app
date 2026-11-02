@@ -1,4 +1,14 @@
+<!-- ## uni.onMemoryWarning(callback) @onmemorywarning -->
+
+::: sourceCode
 ## uni.onMemoryWarning(callback) @onmemorywarning
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-memory
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-memory
+
+:::
 
 监听内存不足告警事件。当系统内存不足时，会触发该事件，开发者可以在回调函数中获取当前内存使用情况，并进行相应的处理。
 
@@ -37,7 +47,17 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+<!-- ## uni.offMemoryWarning(callback?) @offmemorywarning -->
+
+::: sourceCode
 ## uni.offMemoryWarning(callback?) @offmemorywarning
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-memory
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-memory
+
+:::
 
 取消监听内存不足告警事件。
 
