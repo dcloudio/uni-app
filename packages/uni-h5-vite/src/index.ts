@@ -43,6 +43,7 @@ import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
 import { uniApiPlugin } from './plugins/api'
+import { uniMouseToTouchPlugin } from './plugins/mouseToTouch'
 import { rewriteCompilerSfcParse } from './utils/polyfill'
 
 if (
@@ -130,6 +131,7 @@ export default () => {
     uniRenderjsPlugin(),
     ...(h5BasicSslPlugin ? [h5BasicSslPlugin] : []),
     uniH5Plugin(),
+    uniMouseToTouchPlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
       : []),
