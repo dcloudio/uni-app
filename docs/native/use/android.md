@@ -309,16 +309,16 @@ buildscript {
 		...
         classpath(files('../plugins/uts-kotlin-compiler-plugin-0.0.1.jar'))
         classpath(files('../plugins/uts-kotlin-gradle-plugin-0.0.1.jar'))
-        classpath(files('../plugins/auto-register-gradle-plugin-1.0.0.jar')) // 仅蒸汽模式（Vapor）支持
+        classpath(files('../plugins/auto-register-gradle-plugin-1.0.0.jar')) // 仅蒸汽模式（Vapor）
     }
 }
 ```
 
-**注意：文件uts-kotlin-compiler-plugin-0.0.1.jar、uts-kotlin-gradle-plugin-0.0.1.jar和auto-register-gradle-plugin-1.0.0.jar等jar位于原生SDK中，示例中放到了项目根目录的`plugins`文件夹下。参考：**
+**注意：上述jar位于原生SDK中，示例中放到了项目根目录的`plugins`文件夹下。参考：**
 
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/android/gradle_plugins_vapor.png)
 
-然后在`uniappx`模块的build.gradle下添加插件`io.dcloud.uts.kotlin`的依赖。参考：
+然后在`uniappx`模块的build.gradle下添加插件。参考：
 
 ::: preview
 
@@ -328,7 +328,7 @@ buildscript {
 plugins {
 	...
     id 'io.dcloud.uts.kotlin'
-    id 'io.dcloud.uts.auto-register' // 仅蒸汽模式（Vapor）支持
+    id 'io.dcloud.uts.auto-register' // 仅蒸汽模式（Vapor）
 }
 ```
 
@@ -338,11 +338,26 @@ plugins {
 plugins {
 	...
     id("io.dcloud.uts.kotlin")
-    id("io.dcloud.uts.auto-register") // 仅蒸汽模式（Vapor）支持
+    id("io.dcloud.uts.auto-register") // 仅蒸汽模式（Vapor）
 }
 ```
 
 :::
+
+#### 配置ksp插件
+
+::: warning 注意
+仅蒸汽模式（Vapor）需要配置
+:::
+
+蒸汽模式的`auto-register-gradle-plugin`依赖ksp，需在项目根目录的build.gradle添加ksp插件依赖。参考：
+
+```groovy
+plugins {
+	...
+    id 'com.google.devtools.ksp' version '2.3.11' apply false
+}
+```
 
 ### 修改项目的settings.gradle
 
