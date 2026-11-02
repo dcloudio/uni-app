@@ -102,6 +102,8 @@ export function initEnv(
   type: 'unknown' | 'dev' | 'build',
   options: CliOptions
 ) {
+  // 默认隐藏浏览器数据过期提示，保留用户显式设置的值
+  process.env.BROWSERSLIST_IGNORE_OLD_DATA ??= 'true'
   if (initialized) {
     return
   }
