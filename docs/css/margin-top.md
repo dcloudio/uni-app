@@ -6,9 +6,7 @@ margin-top CSS 属性用于设置元素的顶部外边距外边距区域。正�
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

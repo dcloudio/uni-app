@@ -36,9 +36,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 CreateWorker
 
 ### createWorker 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | 5.31 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.21 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"Android(Vapor) UTS 插件","group":"Android","subtitle":"Vapor UTS 插件"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS UTS 插件","group":"iOS","subtitle":"UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.81","4.41","5.31","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.21","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.81","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -71,9 +69,7 @@ CreateWorker
 onMessage
 监听 主线程/Worker线程 向当前线程发送的消息的事件。
 ##### onMessage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+Web: 4.81; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 4.81; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81
 
 ##### 参数 
 
@@ -87,9 +83,7 @@ onMessage
 onError
 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
 ##### onError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | x | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+Web: 4.81; 微信小程序: 4.41; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81
 
 ##### 参数 
 
@@ -126,9 +120,7 @@ onError
 postMessage
 向 主线程/Worker线程 发送的消息。
 ##### postMessage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+Web: 4.81; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 4.81; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81
 
 ##### 参数 
 
@@ -151,9 +143,7 @@ terminate
 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
 
 ##### terminate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.81 | 4.41 | 5.31 | 4.81 | x | 5.21 | x | 4.81 | 4.81 |
+Web: 4.81; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 4.81; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21; iOS: x; iOS UTS 插件: 4.81; HarmonyOS: 4.81
 
 
 

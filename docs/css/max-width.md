@@ -6,9 +6,7 @@ max-width 属性用来给元素设置最大宽度值。定义了 max-width 的�
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

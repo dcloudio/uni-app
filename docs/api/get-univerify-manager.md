@@ -3,9 +3,7 @@
 获取一键登录管理对象
 
 ### getUniVerifyManager 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.42 | 4.42 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.42","4.42","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ::: info
@@ -80,9 +78,7 @@ uni-id-pages插件，已经内置一键登录，从云端到客户端均已开�
 preLogin
 预登录
 ##### preLogin 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.99 | 4.18 | 4.61 |
+Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -141,9 +137,7 @@ preLogin
 login
 标准登录
 ##### login 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.99 | 4.18 | 4.61 |
+Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -220,9 +214,7 @@ login
 customLogin
 自定义授权页登录
 ##### customLogin 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.41 | 4.41 | 4.71 |
+Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71
 
 ##### 参数 
 
@@ -284,9 +276,7 @@ customLogin
 close
 关闭授权页(仅支持标准登录)
 ##### close 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.99 | 4.18 | 4.61 |
+Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61
 
 
 
@@ -295,9 +285,7 @@ close
 isPreLoginValid
 预登录是否有效
 ##### isPreLoginValid 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 3.99 | 4.18 | 4.61 |
+Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61
 
 
 

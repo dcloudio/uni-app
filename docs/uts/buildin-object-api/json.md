@@ -65,15 +65,11 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 Jav
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.JSON.parse.tutorial -->
@@ -114,15 +110,11 @@ JSON.parse支持传入[泛型](../generics.md)，parse结果可以直接返回�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | 3.9 | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: 3.9; HarmonyOS UTS 插件: √
 
 
 ### stringify(value, replacer?, space?)
@@ -202,15 +194,11 @@ JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### parseObject\<T\>(text: string)
@@ -248,15 +236,11 @@ JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | 3.9 | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: 3.9; HarmonyOS UTS 插件: √
 
 
 ### parseArray(text: string)
@@ -291,15 +275,11 @@ JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### parseArray\<T\>(text: string)
@@ -334,15 +314,11 @@ JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 
@@ -367,15 +343,11 @@ JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS |
-| :- | :- | :- |
-| x | 4.53 | x |
+Web: x; Android: 4.53; iOS: x
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 |
-| :- | :- |
-| 4.53 | x |
+Android UTS 插件: 4.53; iOS UTS 插件: x
 
 
 <!-- UTSJSON.IJSONStringify.toJSON.tutorial -->

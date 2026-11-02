@@ -45,9 +45,7 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 
 默认页面的窗口表现
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -104,9 +102,7 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 
 H5 特有配置
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -117,9 +113,7 @@ H5 特有配置
 
 导航栏设置
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -135,9 +129,7 @@ H5 特有配置
 
 下拉刷新
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -156,9 +148,7 @@ H5 特有配置
 
 在下拉可刷新状态时下拉刷新控件显示的内容
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -169,9 +159,7 @@ H5 特有配置
 
 在释放可刷新状态时下拉刷新控件显示的内容
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -181,9 +169,7 @@ H5 特有配置
 
 在正在刷新状态时下拉刷新控件显示的内容
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -194,9 +180,7 @@ H5 特有配置
 
 支付宝小程序特有配置
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 5.31 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -217,9 +201,7 @@ H5 特有配置
 
 微信小程序特有配置
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -297,9 +279,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 配置页面窗口表现，配置项参考下方 [pageStyle](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style)。
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -392,9 +372,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 导航栏阴影，配置参考下方 [导航栏阴影](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style)
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -420,9 +398,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 支付宝小程序特有配置
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 5.31 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -441,9 +417,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 微信小程序特有配置
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -463,9 +437,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 底部 tab 的表现
 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 5.22 | 4.11 | 5.14 | 4.61 | 5.11 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.9; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -555,9 +527,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 字体图标，优先级高于 iconPath
 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 3.9 | x | 4.18 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -571,9 +541,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 中间按钮 仅在 list 项为偶数时有效
 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | √ | 5.22 | √ | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): √; iOS(Vapor): x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -589,9 +557,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 上窗体
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -603,9 +569,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia)
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -615,9 +579,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 左窗体
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -629,9 +591,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia)
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -641,9 +601,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 右窗体
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -655,9 +613,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia)
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -669,9 +625,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 启动模式
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -702,9 +656,7 @@ easycom是uni-app提供的一种简化组件使用的方式。一般情况下组
 
 组件自动引入规则
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -715,9 +667,7 @@ easycom是uni-app提供的一种简化组件使用的方式。一般情况下组
 
 根据用户登录状态、页面是否要求登录、以及接口返回的用户token验证状态自动跳转登录页面。详细教程：[详见](https://doc.dcloud.net.cn/uniCloud/uni-id/summary.html#uni-id-router)
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.99 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -758,9 +708,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 
 配置页面窗口表现，配置项参考下方 [pageStyle](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style)。
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | x | x | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -819,9 +767,7 @@ preloadRule 中，key 是页面路径，value 是进入此页面的预下载配�
 
 声明分包预下载的规则
 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | x | x | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |

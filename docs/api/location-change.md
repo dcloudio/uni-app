@@ -3,9 +3,7 @@
 监听实时地理位置变化事件
 
 ### onLocationChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.81 | 4.81 | 5.0.0(11) | 4.81 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81
 
 
 ### 参数 
@@ -58,9 +56,7 @@
 移除实时地理位置变化事件。
 
 ### offLocationChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.81 | 4.81 | 5.0.0(11) | 4.81 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81
 
 
 ### 参数 
@@ -107,9 +103,7 @@
 监听持续定位接口返回失败时触发。
 
 ### onLocationChangeError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.81 | 4.81 | 5.0.0(11) | 4.81 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81
 
 
 ### 参数 
@@ -185,9 +179,7 @@
 移除监听持续定位接口返回失败事件。
 
 ### offLocationChangeError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.81 | 4.81 | 5.0.0(11) | 4.81 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81
 
 
 ### 参数 
@@ -257,9 +249,7 @@
 开启应用进入前台时接收位置消息。
 
 ### startLocationUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.81 | 4.81 | 5.0.0(11) | 4.81 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81
 
 
 ### 参数 
@@ -350,9 +340,7 @@
 关闭监听实时位置变化，前后台都停止消息接收。
 
 ### stopLocationUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.81 | 4.81 | 5.0.0(11) | 4.81 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81
 
 
 ### 参数 
@@ -446,9 +434,7 @@
 开始监听实时地理位置信息变化事件，应用进入前后台时均接收实时地理位置信息。
 
 ### startLocationUpdateBackground 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.81 | 4.81 | 5.0.0(11) | 4.81 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81
 
 
 ### 参数 

@@ -3,9 +3,7 @@
 image 组件的 DOM 元素对象。
 
 ### UniImageElement 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 | x |
+ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: x
 
 ```mermaid
 graph LR

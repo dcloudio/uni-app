@@ -3,9 +3,7 @@
 text 组件的 DOM 元素对象。
 
 ### UniTextElement 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.0 | 4.11 | 4.25 | 4.61 |
+ Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61
 
 ```mermaid
 graph LR
@@ -41,9 +39,7 @@ UniTextElement -- Extends --> UniElement
 设置文本内容
 
 ##### setTextLayout 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: x; HarmonyOS: x
 
 
 ##### 参数 
@@ -58,9 +54,7 @@ UniTextElement -- Extends --> UniElement
 setText
 设置文本
 ###### setText 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -74,9 +68,7 @@ setText
 setColor
 设置文本颜色
 ###### setColor 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -90,9 +82,7 @@ setColor
 setFontFamily
 设置字体名称
 ###### setFontFamily 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -106,9 +96,7 @@ setFontFamily
 setFontSize
 设置字体大小
 ###### setFontSize 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -122,9 +110,7 @@ setFontSize
 setFontStyle
 设置字体样式
 ###### setFontStyle 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -138,9 +124,7 @@ setFontStyle
 setFontWeight
 设置字体粗细
 ###### setFontWeight 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -154,9 +138,7 @@ setFontWeight
 setLineHeight
 设置行高
 ###### setLineHeight 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -170,9 +152,7 @@ setLineHeight
 setTextAlign
 设置文字水平对齐方式
 ###### setTextAlign 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -186,9 +166,7 @@ setTextAlign
 setTextOverflow
 设置文字溢出裁剪方式
 ###### setTextOverflow 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -202,9 +180,7 @@ setTextOverflow
 setTextShadow
 设置文字阴影
 ###### setTextShadow 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -218,9 +194,7 @@ setTextShadow
 setTextDecorationLine
 设置文本修饰类型
 ###### setTextDecorationLine 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -234,9 +208,7 @@ setTextDecorationLine
 setWhiteSpace
 设置处理空白字符
 ###### setWhiteSpace 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -250,9 +222,7 @@ setWhiteSpace
 append
 添加子文本对象
 ###### append 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -266,9 +236,7 @@ append
 measure
 测量文本大小
 ###### measure 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -309,9 +277,7 @@ measure
 获取内容宽高
 
 ##### getContentSize 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: x; HarmonyOS: x
 
 
 

@@ -49,9 +49,7 @@
 服务器回调的详细机制、回调参数、签名校验和完整配置流程，详见 [激励视频广告服务器回调](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#callback)。
 
 ### createDramaAd 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.32 | √ | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.32","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -81,9 +79,7 @@
 getList
 获取短剧列表，用于自建聚合页渲染；分页参数 page 从 1 开始，结果经 options.success / options.fail 回调返回
 ##### getList 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -166,9 +162,7 @@ getList
 getRecommendedList
 分页获取推荐短剧列表，结果经 options.success / options.fail 回调返回
 ##### getRecommendedList 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -251,9 +245,7 @@ getRecommendedList
 getCollectionList
 分页获取用户收藏的短剧列表，结果经 options.success / options.fail 回调返回
 ##### getCollectionList 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -336,9 +328,7 @@ getCollectionList
 getHistoryList
 分页获取用户观看记录的短剧列表，结果经 options.success / options.fail 回调返回
 ##### getHistoryList 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -421,9 +411,7 @@ getHistoryList
 search
 根据关键词搜索短剧，isFuzzy 为 true 时模糊匹配（默认 true），结果经 options.success / options.fail 回调返回
 ##### search 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -507,9 +495,7 @@ search
 getInfo
 获取指定短剧信息，参数 dramaId 与 dramaIds 二选一，结果经 options.success / options.fail 回调返回
 ##### getInfo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -591,9 +577,7 @@ getInfo
 open
 打开短剧播放页播放指定短剧；支持起播集数 episode、单次激励视频解锁集数 lock、初始免费观看集数 free 与服务端回调透传 urlCallback，结果经 options.success / options.fail 回调返回
 ##### open 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -660,9 +644,7 @@ open
 destroy
 销毁短剧广告实例并释放资源；API 模式请在页面 onUnmounted 时调用
 ##### destroy 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 
 
@@ -671,9 +653,7 @@ destroy
 onLoad
 短剧模块加载成功时触发（res.providerType 为渠道类型）；open() 打开的播放页就绪后会再次触发（res.type 为 "detail" 并携带 dramaId）
 ##### onLoad 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -687,9 +667,7 @@ onLoad
 offLoad
 取消 onLoad(callback) 注册的监听
 ##### offLoad 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -703,9 +681,7 @@ offLoad
 onError
 发生错误时触发（模块加载失败、查询前置校验失败等），回调参数为 IUniDramaError（errCode / errMsg）
 ##### onError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -752,9 +728,7 @@ onError
 offError
 取消 onError(callback) 注册的监听
 ##### offError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -801,9 +775,7 @@ offError
 onPlayEvent
 播放相关事件，事件数据包含 event（如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay）与 info
 ##### onPlayEvent 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -824,9 +796,7 @@ onPlayEvent
 offPlayEvent
 取消 onPlayEvent(callback) 注册的监听
 ##### offPlayEvent 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -847,9 +817,7 @@ offPlayEvent
 onAdEvent
 短剧内广告相关事件，事件数据包含 event（如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError）与 info
 ##### onAdEvent 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -870,9 +838,7 @@ onAdEvent
 offAdEvent
 取消 onAdEvent(callback) 注册的监听
 ##### offAdEvent 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -893,9 +859,7 @@ offAdEvent
 onUnlockEvent
 短剧解锁相关事件（激励视频解锁成功等）
 ##### onUnlockEvent 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 
@@ -909,9 +873,7 @@ onUnlockEvent
 offUnlockEvent
 取消 onUnlockEvent(callback) 注册的监听
 ##### offUnlockEvent 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.32 | √ | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
 
 ##### 参数 
 

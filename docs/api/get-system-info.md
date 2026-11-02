@@ -15,9 +15,7 @@
 异步获取系统信息
 
 ### getSystemInfo 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)的2个API获取系统信息。
@@ -469,9 +467,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 如果希望使用同步方式，推荐使用分拆后的API：[uni.getDeviceInfo](./get-device-info.md)、[uni.getWindowInfo](./get-window-info.md)、[uni.getAppBaseInfo](./get-app-base-info.md)。
 
 ### getSystemInfoSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 

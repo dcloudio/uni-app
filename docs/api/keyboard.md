@@ -14,9 +14,7 @@
 
 
 ### hideKeyboard 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.71 | 4.71 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -71,9 +69,7 @@
 在input和textarea组件上也有事件用于监听键盘高度变化。本API为全局API，可以全局监听键盘弹出收起和高度变化，尤其是App内嵌web-view中的键盘变化，无法在组件上监听，只能使用本API全局监听。
 
 ### onKeyboardHeightChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 4.71 | 4.71 | 5.08 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","4.71","4.71","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -133,9 +129,7 @@
 移除键盘高度变化事件的监听函数
 
 ### offKeyboardHeightChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 4.71 | 4.71 | 5.08 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","4.71","4.71","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

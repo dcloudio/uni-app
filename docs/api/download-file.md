@@ -13,9 +13,7 @@
 下载文件资源到本地，客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径。
 
 ### downloadFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 下载文件常见场景是apk的下载更新，[app升级中心](https://doc.dcloud.net.cn/uniCloud/upgrade-center.html)是一个现成的开源项目，实现下载进度在通知栏显示等复杂交互，可直接使用。
@@ -90,9 +88,7 @@
 abort
 中断下载任务
 ##### abort 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -101,9 +97,7 @@ abort
 onProgressUpdate
 监听下载进度变化。
 ##### onProgressUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 

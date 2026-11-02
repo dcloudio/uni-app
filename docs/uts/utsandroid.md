@@ -24,15 +24,11 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```uts
@@ -67,15 +63,11 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 5.21 | x | 5.21 |
+Android(VDOM): 5.21; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| x |
+Android UTS 插件: x
 
 
 
@@ -98,15 +90,11 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -176,15 +164,11 @@ console.log(UTSAndroid.convert2AbsFullPath('../../../io.dcloud.HBuilder/apps/HBu
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.95 | x | 5.21 |
+Android(VDOM): 3.95; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 3.95 |
+Android UTS 插件: 3.95
 
 
 ```ts
@@ -212,15 +196,11 @@ console.log("pagePX",pagePX)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.exit.tutorial -->
@@ -243,15 +223,11 @@ console.log("pagePX",pagePX)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.99 | x | 5.21 |
+Android(VDOM): 3.99; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getAppCachePath.tutorial -->
@@ -274,15 +250,11 @@ console.log("pagePX",pagePX)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getAppContext.tutorial -->
@@ -310,15 +282,11 @@ console.log("packageName",packageName)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getAppName.tutorial -->
@@ -341,15 +309,11 @@ console.log("packageName",packageName)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getAppId.tutorial -->
@@ -372,15 +336,11 @@ console.log("packageName",packageName)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.18 |
+Android UTS 插件: 4.18
 
 
 <!-- UTSJSON.UTSAndroid.getAppTheme.tutorial -->
@@ -403,15 +363,11 @@ console.log("packageName",packageName)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getAppVersion.tutorial -->
@@ -456,15 +412,11 @@ async
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -510,15 +462,11 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.14 | x | 5.21 |
+Android(VDOM): 4.14; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.14 |
+Android UTS 插件: 4.14
 
 
 <!-- UTSJSON.UTSAndroid.getExtApiProvider.tutorial -->
@@ -627,15 +575,11 @@ text
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.99 | x | 5.21 |
+Android(VDOM): 3.99; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 3.99 |
+Android UTS 插件: 3.99
 
 
 ```ts
@@ -665,15 +609,11 @@ context.startActivity(intent);
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.02 | x | 5.21 |
+Android(VDOM): 4.02; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.02 |
+Android UTS 插件: 4.02
 
 
 
@@ -692,15 +632,11 @@ context.startActivity(intent);
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.02 | x | 5.21 |
+Android(VDOM): 4.02; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.02 |
+Android UTS 插件: 4.02
 
 
 
@@ -723,15 +659,11 @@ context.startActivity(intent);
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.65 | x | 5.21 |
+Android(VDOM): 4.65; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.65 |
+Android UTS 插件: 4.65
 
 
 
@@ -754,15 +686,11 @@ context.startActivity(intent);
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.0 | x | 5.21 |
+Android(VDOM): 4.0; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.0 |
+Android UTS 插件: 4.0
 
 
 ```uts
@@ -804,15 +732,11 @@ export function getJavaClassTest() : boolean {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getInnerVersion.tutorial -->
@@ -835,15 +759,11 @@ export function getJavaClassTest() : boolean {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getOsTheme.tutorial -->
@@ -868,15 +788,11 @@ export function getJavaClassTest() : boolean {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ::: warning 注意事项
@@ -938,15 +854,11 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -973,15 +885,11 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.0 | x | 5.21 |
+Android(VDOM): 4.0; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.0 |
+Android UTS 插件: 4.0
 
 
 ```ts
@@ -1007,15 +915,11 @@ console.log(UTSAndroid.getTopPageActivity())
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.getUniActivity.tutorial -->
@@ -1049,15 +953,11 @@ if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageMan
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```ts
@@ -1084,15 +984,11 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.isUniMp.tutorial -->
@@ -1114,15 +1010,11 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 <!-- UTSJSON.UTSAndroid.isUniAppX.tutorial -->
@@ -1150,15 +1042,11 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```uts
@@ -1207,15 +1095,11 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```ts
@@ -1246,15 +1130,11 @@ UTSAndroid.onAppActivityBack(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```ts
@@ -1285,15 +1165,11 @@ UTSAndroid.offAppActivityBack(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```ts
@@ -1323,15 +1199,11 @@ onAppActivityDestroy 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1363,15 +1235,11 @@ UTSAndroid.offAppActivityDestroy(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```ts
@@ -1401,15 +1269,11 @@ onAppActivityPause 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```ts
@@ -1440,15 +1304,11 @@ UTSAndroid.offAppActivityPause(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1479,15 +1339,11 @@ onAppActivityResume 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1519,15 +1375,11 @@ UTSAndroid.onAppActivityResume(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1570,15 +1422,11 @@ onAppActivityResult 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 ```ts
@@ -1609,15 +1457,11 @@ UTSAndroid.offAppActivityResult(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1640,15 +1484,11 @@ onAppConfigChange 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1671,15 +1511,11 @@ onAppConfigChange 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1702,15 +1538,11 @@ onAppTrimMemory 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | 5.21 |
+Android(VDOM): 3.90; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| √ |
+Android UTS 插件: √
 
 
 
@@ -1734,15 +1566,11 @@ onAppTrimMemory 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.18 |
+Android UTS 插件: 4.18
 
 
 
@@ -1765,15 +1593,11 @@ onActivityCallback对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 |
-| :- | :- | :- |
-| 4.18 | x | 5.21 |
+Android(VDOM): 4.18; Android(Vapor): x; Android(Vapor) UTS 插件: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 |
-| :- |
-| 4.18 |
+Android UTS 插件: 4.18
 
 
 

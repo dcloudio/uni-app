@@ -3,9 +3,7 @@
 一个 DOMRect 代表一个矩形。
 
 ### DOMRect 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.11 | 5.31 | 3.9 | 4.11 | 4.61 |
+ Web: 4.0; 微信小程序: 4.11; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 `DOMRect`表示的盒子的类型由返回它的方法或属性指定。例如: [UniElement.getBoundingClientRect()](./unielement.md#getboundingclientrect)指定使用此类对象限制范围内容的矩形。
 

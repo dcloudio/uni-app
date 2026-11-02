@@ -4,12 +4,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-chec
 
 ::: sourceCode
 ## uni-data-checkbox
-
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-checkbox-x/components/uni-data-checkbox
-
-
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-checkbox-x/components/uni-data-checkbox
-
 :::
 
 通过本地数据或 datacom 数据渲染单选、多选选项
@@ -360,34 +354,32 @@ function onChange(event : any) {
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.33 | 5.33 | 5.33 | 5.33 | 5.33 | 5.33 |
+Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android: 5.33; iOS: 5.33; HarmonyOS: 5.33
 
 
 ### 属性 
 | 名称 | 类型 | 描述 |
 | :- | :- | :- |
-| mode | string |  |
-| multiple | boolean |  |
-| value | Array \| string \| number |   |
-| modelValue | Array \| string \| number |   |
-| localdata | Array |   |
-| min | string \| number |   |
-| max | string \| number |   |
-| icon | string |  |
-| emptyText | string |   |
-| map | object |   |
-| disabled | boolean |   |
-| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| checkboxClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| labelSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| textSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| checkboxSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| emptyTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| collection | string |   |
+| mode | string | 展示模式 |
+| multiple | boolean | 是否启用多选 |
+| value | Array \| string \| number | 当前值的兼容属性，推荐使用 v-model；组件更新时只触发 update:modelValue |
+| modelValue | Array \| string \| number | v-model 绑定值；单选为字符串或数字，多选为数组 |
+| localdata | Array | 本地候选数据；数据项默认使用 text、value、disabled、disable、selected 字段 |
+| min | number \| string | 多选模式的最少选择数量 |
+| max | number \| string | 多选模式的最多选择数量 |
+| icon | string | 选中标记位置 |
+| emptyText | string | 云端数据为空时显示的文字 |
+| map | object | 自定义候选数据的文字字段和值字段 |
+| disabled | boolean | 是否禁用全部选项 |
+| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 每个选项外层容器的自定义样式类 |
+| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 每个选项文字的自定义样式类 |
+| checkboxClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 左侧单选或复选控件的自定义样式类 |
+| labelSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 已选项外层容器的自定义样式类 |
+| textSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 已选项文字的自定义样式类 |
+| checkboxSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 已选单选或复选控件的自定义样式类 |
+| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | icon 为 right 时右侧选中标记的自定义样式类 |
+| emptyTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 云端数据为空或加载失败提示文字的自定义样式类 |
+| collection | string | uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据，需要 HBuilder 5.32 或更高版本并关联服务空间 |
 | options | object \| Array |   |
 | action | string |   |
 | field | string |   |

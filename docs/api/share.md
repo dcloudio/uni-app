@@ -16,9 +16,7 @@
 > Android、iOS平台从 HBuilderX5.08 版本开始支持微信分享  
 
 ### share 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 4.81 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08","5.08","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

@@ -11,16 +11,7 @@
 
 ## 响应式: 核心
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| ref() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
-| computed() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
-| reactive() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
-| readonly() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watchEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watchPostEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watchSyncEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watch() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+: ref(); Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61; : computed(); Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61; : reactive(); Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61; : readonly(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : watchEffect(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : watchPostEffect(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : watchSyncEffect(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : watch(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61
 
 ### 示例代码 @example
 
@@ -1862,16 +1853,7 @@ const updateReadonlyData = () => {
 
 ## 响应式: 工具
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| isRef() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| unref() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| toRef() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| toValue() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| toRefs() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| isProxy() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| isReactive() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| isReadonly() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+: isRef(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : unref(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : toRef(); Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : toValue(); Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : toRefs(); Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : isProxy(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : isReactive(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; : isReadonly(); Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 ::: warning 注意
@@ -2894,11 +2876,7 @@ const triggerRefState = () => {
 
 ## 组合选项 @options-composition
 
-|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
-| inject | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
-| mixins | 4.0 | 4.41 | 3.99 | x | 4.11 | x | 4.61 | x |
+: provide; Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序(VDOM): 4.41; 微信小程序(Vapor):  ; Android(VDOM): 3.99; Android(Vapor): 5.21; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; : inject; Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序(VDOM): 4.41; 微信小程序(Vapor):  ; Android(VDOM): 3.99; Android(Vapor): 5.21; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; : mixins; Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 ### inject
 
@@ -3406,9 +3384,7 @@ const updateTitle = () => {
 
 
 ##### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 5.31 | 3.9 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 
 
 ##### 属性 

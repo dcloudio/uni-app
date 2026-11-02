@@ -60,9 +60,7 @@ uni-app 通过 provider 机制来统一不同的SDK，屏蔽他们的差异。
 getProvider的同步方法
 
 ### getProviderSync 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | 4.25 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.25","4.25","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -145,9 +143,7 @@ getProvider的同步方法
 
 
 ### UniProvider 兼容性 <Help /> 
- | Android | iOS |
-| :- | :- |
-| 4.18 | 4.18 |
+ Android: 4.18; iOS: 4.18
 
 <!-- CUSTOMTYPEJSON.UniProvider.example -->
 
@@ -293,9 +289,7 @@ getProvider的同步方法
 获取服务供应商  **已废弃，4.25及以后版本请使用getProviderSync()方法代替**
 
 ### getProvider 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.18 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.11","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

@@ -13,9 +13,7 @@
 创建一个监听权限申请的对象。
 
 ### createRequestPermissionListener 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 app-android平台，可使用本API监听应用权限申请确认框的弹出和关闭。不管是哪处的业务代码在申请权限，当弹出和关闭权限申请确认框时均会触发本监听事件。
@@ -41,9 +39,7 @@ app-android平台，可使用本API监听应用权限申请确认框的弹出和
 onRequest
 监听申请系统权限
 ##### onRequest 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.0 | x | x |
+Web: x; Android: 4.0; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -57,9 +53,7 @@ onRequest
 onConfirm
 监听弹出系统权限授权框
 ##### onConfirm 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.0 | x | x |
+Web: x; Android: 4.0; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -73,9 +67,7 @@ onConfirm
 onComplete
 监听权限申请完成
 ##### onComplete 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.0 | x | x |
+Web: x; Android: 4.0; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -89,9 +81,7 @@ onComplete
 stop
 取消所有监听
 ##### stop 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.0 | x | x |
+Web: x; Android: 4.0; iOS: x; HarmonyOS: x
 
 
 

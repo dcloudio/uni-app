@@ -17,7 +17,7 @@
 | app.version | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.config | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.config.errorHandler | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.11; HarmonyOS: 4.61 |
-| app.config.globalProperties | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| app.config.globalProperties | Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | globalData | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
 | onLaunch() | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
 | onShow() | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
@@ -587,11 +587,7 @@ uni-app x 新增了 [onLastPageBackPress](../collocation/App.md#applifecycle) �
 
 ## 通用 @general
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| version | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| nextTick() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| defineComponent() | 4.0 | 4.41 | x | x | x |
+: version; Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61; : nextTick(); Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61; : defineComponent(); Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x
 
 
 

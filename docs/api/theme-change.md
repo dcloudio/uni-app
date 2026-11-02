@@ -299,9 +299,7 @@ uni.setAppTheme用于设置App当前主题。开发者仍需为不同主题定�
 uni-app x的UI相关的API（比如showModal），也会响应setAppTheme。
 
 ### setAppTheme 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.18","4.18","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -388,9 +386,7 @@ uni.setAppTheme({
 - HBuilderX 4.19版本调整为：应用的light/dark主题真正发生变化时触发监听回调。无论是手动设置setAppTheme还是跟随osTheme变化，只要真正变化了就会触发本监听。回调参数中的 appTheme 值只能是"light" | "dark"。
 
 ### onAppThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.18","4.18","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -447,9 +443,7 @@ val callbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 取消监听应用主题变化
 
 ### offAppThemeChange 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.18","4.18","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -490,9 +484,7 @@ uni.offAppThemeChange(this.appThemeChangeId)
 开启监听系统主题变化
 
 ### onOsThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.18","4.18","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -553,9 +545,7 @@ val callbackId = uni.onOsThemeChange((res: OsThemeChangeResult)=> {
 取消监听系统主题变化
 
 ### offOsThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.18 | 4.18 | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.18","4.18","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -598,9 +588,7 @@ uni.offOsThemeChange(callbackId)
 监听宿主题状态变化。
 
 ### onHostThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.35 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.35","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -664,9 +652,7 @@ uni.offOsThemeChange(callbackId)
 取消监听宿主题状态变化。
 
 ### offHostThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.35 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.35","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -709,9 +695,7 @@ uni.offOsThemeChange(callbackId)
 监听系统主题状态变化。  **已废弃，在web、小程序上推荐使用 onHostThemeChange**
 
 ### onThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -767,9 +751,7 @@ uni.offOsThemeChange(callbackId)
 取消监听系统主题状态变化。  **已废弃，在web、小程序上推荐使用 offHostThemeChange**
 
 ### offThemeChange 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.71"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

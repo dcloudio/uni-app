@@ -15,9 +15,7 @@
 参考：[video组件](../component/video.md)
 
 ### createVideoContext 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | √ | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS: 4.11; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -63,9 +61,7 @@ let v1 = uni.createVideoContext("video1", getCurrentInstance()!.proxy!)
 play
 播放
 ##### play 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -74,9 +70,7 @@ play
 pause
 暂停
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -85,9 +79,7 @@ pause
 seek
 跳转到指定位置
 ##### seek 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -101,9 +93,7 @@ seek
 stop
 停止视频
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -112,9 +102,7 @@ stop
 sendDanmu
 发送弹幕
 ##### sendDanmu 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -147,9 +135,7 @@ playbackRate
 - Android 平台
   - \[0.1, 8] 任意值（异常值时按 1.0 处理）
 ##### playbackRate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -163,9 +149,7 @@ playbackRate
 requestFullScreen
 进入全屏
 ##### requestFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -193,9 +177,7 @@ requestFullScreen
 exitFullScreen
 退出全屏
 ##### exitFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.9.0 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 4.11; HarmonyOS: 4.61
 
 
 

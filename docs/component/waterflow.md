@@ -16,9 +16,7 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.41 | 4.81 | 5.02 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","4.41","4.81","5.02"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 在App中，waterflow 底层实现与list-view底层实现方式基本一致，仅子组件排列方式存在差异，适用于多元素瀑布流长列表场景，子组件滑动出屏幕会及时回收复用。性能优于 scroll-view
@@ -725,9 +723,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.41 | 4.81 | 5.02 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","4.41","4.81","5.02"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 waterflow 的子组件，配合 waterflow 内部业务实现 flow-item 回收复用，实现高性能的瀑布流长列表组件。flow-item 组件宽度由 waterflow 的 cross-axis-count 属性决定，所以设置与宽度相关的style样式都不生效。

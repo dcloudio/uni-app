@@ -17,9 +17,7 @@ Lottie 动画
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| √ | √ | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 5.0 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["√","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.9","4.11","5.0"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 标准基座并不包含本插件，下载插件后需编写调用代码并打包自定义基座才可运行。

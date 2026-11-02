@@ -27,15 +27,11 @@ console.log(map.get('key1')) // 跨端用法
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Map.Constructor.tutorial -->
@@ -59,15 +55,11 @@ console.log(map.get('key1')) // 跨端用法
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Map.Constructor_1.tutorial -->
@@ -101,15 +93,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 
@@ -145,15 +133,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### delete(key)
@@ -191,15 +175,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### forEach(callbackfn, thisArg?)
@@ -238,15 +218,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 
@@ -286,15 +262,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Map.forEach_1.tutorial -->
@@ -335,15 +307,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Map.forEach_2.tutorial -->
@@ -379,15 +347,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### has(key)
@@ -424,15 +388,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### set(key, value)
@@ -470,15 +430,11 @@ Map 对象的成员数量。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 注意：由于Map的key是唯一的，给同一个key多次set值时，会用新值替换老值。

@@ -113,9 +113,7 @@ onBeforeAppRoute -> onShow -> onAppRoute
 
 
 ### onAppRoute 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | 5.31 | 5.25 | 5.25 | 5.25 |
+Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25
 
 
 ### 参数 
@@ -219,9 +217,7 @@ uni.offAppRoute(appRouteCallback)
 
 
 ### offAppRoute 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | 5.31 | 5.25 | 5.25 | 5.25 |
+Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25
 
 
 ### 参数 
@@ -331,9 +327,7 @@ uni.offAppRoute()
 
 
 ### onBeforeAppRoute 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | 5.31 | 5.25 | 5.25 | 5.25 |
+Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25
 
 
 ### 参数 
@@ -436,9 +430,7 @@ onLaunch(() => {
 
 
 ### offBeforeAppRoute 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | 5.31 | 5.25 | 5.25 | 5.25 |
+Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 5.25; HarmonyOS: 5.25
 
 
 ### 参数 
@@ -539,9 +531,7 @@ uni.offBeforeAppRoute()
 
 
 ### rewriteRoute 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.25 | 5.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.25 | 5.25 | 5.25 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["5.25","5.25","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.25","5.25","5.25"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

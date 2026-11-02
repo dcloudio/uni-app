@@ -24,9 +24,7 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 小程序下有时用本API获取部分组件的上下文context，但这个写法不跨平台。跨平台的获取组件context，应该使用uni.createXXContext()。
 
 ### createSelectorQuery 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -122,9 +120,7 @@ scrollOffset
 fields
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### fields 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.25 | 4.25 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25
 
 ##### 参数 
 
@@ -159,9 +155,7 @@ fields
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 5.04 | 5.04 | 5.04 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.04; iOS: 5.04; HarmonyOS: 5.04
 
 ##### 参数 
 
@@ -182,9 +176,7 @@ node
 获取 Node 节点实例。目前支持 Canvas 的获取。
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### node 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 4.25 | 4.25 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 4.25
 
 ##### 参数 
 

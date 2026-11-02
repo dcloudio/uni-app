@@ -13,9 +13,7 @@
 将本地资源上传到开发者服务器。
 
 ### uploadFile 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 推荐上传到uniCloud，uniCloud提供了更便宜CDN和更好的易用性，[详见](https://doc.dcloud.net.cn/uniCloud/ext-storage/intro.html)
@@ -94,9 +92,7 @@
 abort
 中断上传任务。
 ##### abort 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 
 
@@ -105,9 +101,7 @@ abort
 onProgressUpdate
 监听上传进度变化。
 ##### onProgressUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 4.11 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61
 
 ##### 参数 
 

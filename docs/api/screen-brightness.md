@@ -3,19 +3,17 @@
 ::: sourceCode
 ## uni.getScreenBrightness(options) @getscreenbrightness
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 :::
 
 获取屏幕亮度。
 
 ### getScreenBrightness 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 5.08 | 5.08 | 4.81 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -74,19 +72,17 @@
 ::: sourceCode
 ## uni.setScreenBrightness(options) @setscreenbrightness
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 :::
 
 设置屏幕亮度。
 
 ### setScreenBrightness 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 5.08 | 5.08 | 4.81 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -140,19 +136,17 @@
 ::: sourceCode
 ## uni.setKeepScreenOn(options) @setkeepscreenon
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 :::
 
 设置是否保持常亮状态。仅在当前应用生效，离开应用后设置失效。
 
 ### setKeepScreenOn 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 4.41 | 5.31 | 5.08 | 5.08 | 4.81 |
+Web: 5.08; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81
 
 
 ### 参数 

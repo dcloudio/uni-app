@@ -10,9 +10,7 @@
 [live-pusher组件文档](../component/live-pusher.md)
 
 ### createLivePusherContext 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.81","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -35,9 +33,7 @@
 start
 开始推流
 ##### start 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -59,9 +55,7 @@ start
 stop
 停止推流
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -83,9 +77,7 @@ stop
 switchCamera
 切换前后摄像头
 ##### switchCamera 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -107,9 +99,7 @@ switchCamera
 toggleTorch
 开关闪光灯
 ##### toggleTorch 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -131,9 +121,7 @@ toggleTorch
 pause
 暂停推流
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -155,9 +143,7 @@ pause
 resume
 恢复推流
 ##### resume 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -179,9 +165,7 @@ resume
 getMaxZoom
 获取最大缩放值
 ##### getMaxZoom 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -203,9 +187,7 @@ getMaxZoom
 setZoom
 设置缩放
 ##### setZoom 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -228,9 +210,7 @@ setZoom
 startPreview
 开启摄像头预览
 ##### startPreview 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -252,9 +232,7 @@ startPreview
 stopPreview
 关闭摄像头预览
 ##### stopPreview 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -276,9 +254,7 @@ stopPreview
 snapshot
 快照
 ##### snapshot 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.81 | 4.81 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x
 
 ##### 参数 
 
@@ -300,9 +276,7 @@ snapshot
 sendMessage
 
 ##### sendMessage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | HarmonyOS |
-| :- | :- | :- | :- |
-| x | x | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x
 
 ##### 参数 
 

@@ -83,9 +83,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 $nextTick
 
 ##### $nextTick 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -105,9 +103,7 @@ $nextTick
 $forceUpdate
 
 ##### $forceUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | x | 4.11 | x | x | 4.61 | x |
+Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -116,9 +112,7 @@ $forceUpdate
 $callMethod
 
 ##### $callMethod 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -139,9 +133,7 @@ $callMethod
 $emit
 
 ##### $emit 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -156,9 +148,7 @@ $emit
 $watch
 
 ##### $watch 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -192,9 +182,7 @@ $watch
 $nextTick
 
 ##### $nextTick 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -214,9 +202,7 @@ $nextTick
 $forceUpdate
 
 ##### $forceUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | x | 4.11 | x | x | 4.61 | x |
+Web(VDOM): 4.0; Web(Vapor): x; 微信小程序(VDOM): 4.41; 微信小程序(Vapor): x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -225,9 +211,7 @@ $forceUpdate
 $callMethod
 
 ##### $callMethod 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -248,9 +232,7 @@ $callMethod
 $emit
 
 ##### $emit 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -265,9 +247,7 @@ $emit
 $watch
 
 ##### $watch 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | x | 4.61 |
+Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -306,9 +286,7 @@ $watch
 pages.json里的页面配置，即page下的style节点的内容，可以通过本API获取。但注意这里获取的是UniPage上的最终生效值，不是pages.json里的原始配置。
 
 ##### getPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
+Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 
 
@@ -330,9 +308,7 @@ pages.json里的页面配置，即page下的style节点的内容，可以通过�
 pages.json里的内容是静态的，通过本API可以动态设置UniPage的Style，但并非所有页面样式都支持动态配置，具体见下PageStyle。
 
 ##### setPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
+Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -388,9 +364,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 用于 dialogPage 获取所属父页面
 
 ##### getParentPage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
+Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 
 
@@ -410,9 +384,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 获取当前页面的 dialog 子页面集合
 
 ##### getDialogPages 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
+Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 
 
@@ -435,9 +407,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getElementById 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | x | 4.31 | 4.31 | 4.61 |
+Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -463,9 +433,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getAndroidView 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.31 | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.31; iOS: x; HarmonyOS: x
 
 
 
@@ -486,9 +454,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getAndroidActivity 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: x
 
 
 
@@ -509,9 +475,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getIOSView 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.33 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; iOS(VDOM) UTS 插件: 4.33; HarmonyOS: x
 
 
 
@@ -532,9 +496,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ##### getHTMLElement 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | x | x | x | x |
+Web: 4.31; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS: x
 
 
 
@@ -558,9 +520,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 用于逆转先前调用 [UniElement.requestFullscreen](/dom/unielement.md#requestfullscreen) 的效果。
 
 ##### exitFullscreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.61 |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.61; iOS: x; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -610,9 +570,7 @@ createElement
 
 
 ##### createElement 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.63 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.63; HarmonyOS(Vapor): x
 
 
 ##### 参数 
@@ -639,9 +597,7 @@ onLayoutChange
 监听页面布局变化更新事件
 
 ##### onLayoutChange 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -674,9 +630,7 @@ offLayoutChange
 取消监听页面布局变化更新事件
 
 ##### offLayoutChange 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -697,9 +651,7 @@ onRenderChange
 监听页面渲染变化更新事件
 
 ##### onRenderChange 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -733,9 +685,7 @@ offRenderChange
 取消监听页面渲染变化更新事件
 
 ##### offRenderChange 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -756,9 +706,7 @@ onTouchStart
 监听页面触摸开始事件
 
 ##### onTouchStart 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -785,9 +733,7 @@ offTouchStart
 取消监听页面触摸开始事件
 
 ##### offTouchStart 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -808,9 +754,7 @@ onTouchEnd
 监听页面触摸结束事件
 
 ##### onTouchEnd 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -837,9 +781,7 @@ offTouchEnd
 取消监听页面触摸结束事件
 
 ##### offTouchEnd 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| x | x | x | 5.0 |
+Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0
 
 
 ##### 参数 
@@ -860,9 +802,7 @@ querySelector
 返回页面中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项，则返回null
 
 ##### querySelector 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.0 | x | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
+Web: 5.0; 微信小程序: x; 支付宝小程序: x; Android: 5.0; iOS: 5.0; iOS(VDOM) UTS 插件: 5.21; HarmonyOS: 5.0; HarmonyOS(VDOM) UTS 插件: x
 
 
 ##### 参数 
@@ -889,9 +829,7 @@ querySelectorAll
 返回页面中与指定选择器或选择器组匹配的元素列表。
 
 ##### querySelectorAll 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.0; iOS: 5.0; iOS(VDOM) UTS 插件: 5.21; HarmonyOS: 5.0; HarmonyOS(VDOM) UTS 插件: x
 
 
 ##### 参数 
@@ -916,9 +854,7 @@ querySelectorAll
 设置当前页面样式。详细属性配置请参考PageStyle  **已废弃，仅为了向下兼容保留**
 
 ##### $setPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.13 | x | x | 4.13 | 4.13 | 4.61 |
+Web: 4.13; 微信小程序: x; 支付宝小程序: x; Android: 4.13; iOS: 4.13; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -937,9 +873,7 @@ querySelectorAll
 获取当前页面样式。详细属性配置请参考PageStyle  **已废弃，仅为了向下兼容保留**
 
 ##### $getPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.13 | x | x | 4.13 | 4.13 | 4.61 |
+Web: 4.13; 微信小程序: x; 支付宝小程序: x; Android: 4.13; iOS: 4.13; HarmonyOS: 4.61
 
 
 
@@ -972,9 +906,7 @@ querySelectorAll
 > ② 截图高度固定为屏幕高度（不管内容多少都是一屏高）
 
 ##### takeSnapshot 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.02 | 5.02 | x | 5.02 | x |
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x
 
 
 ##### 参数 

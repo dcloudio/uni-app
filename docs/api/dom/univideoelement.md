@@ -3,9 +3,7 @@
 video元素对象
 
 ### UniVideoElement 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+ Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 ```mermaid
 graph LR
@@ -23,9 +21,7 @@ UniVideoElement -- Extends --> UniElement
 播放
 
 ##### play 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 
@@ -39,9 +35,7 @@ UniVideoElement -- Extends --> UniElement
 暂停
 
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 
@@ -55,9 +49,7 @@ UniVideoElement -- Extends --> UniElement
 跳转到指定位置
 
 ##### seek 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 ##### 参数 
@@ -76,9 +68,7 @@ UniVideoElement -- Extends --> UniElement
 停止视频
 
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 
@@ -92,9 +82,7 @@ UniVideoElement -- Extends --> UniElement
 发送弹幕
 
 ##### sendDanmu 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 ##### 参数 
@@ -121,9 +109,7 @@ UniVideoElement -- Extends --> UniElement
 设置倍速播放
 
 ##### playbackRate 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 ##### 参数 
@@ -142,9 +128,7 @@ UniVideoElement -- Extends --> UniElement
 进入全屏
 
 ##### requestFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 ##### 参数 
@@ -177,9 +161,7 @@ UniVideoElement -- Extends --> UniElement
 退出全屏
 
 ##### exitFullScreen 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 |
-| :- | :- | :- |
-| 4.0 | x | x |
+Web: 4.0; 微信小程序: x; 支付宝小程序: x
 
 
 

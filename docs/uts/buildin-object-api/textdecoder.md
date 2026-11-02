@@ -22,15 +22,11 @@ TextDecoder 接口表示一个文本解码器，一个解码器只支持一种�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| √ | 4.31 | 4.71 | 4.71 |
+Web: √; Android: 4.31; iOS: 4.71; HarmonyOS: 4.71
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | x | √ |
+Android UTS 插件: √; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.TextDecoder.encoding.tutorial -->
@@ -88,15 +84,11 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| √ | 4.31 | 4.71 | 4.71 |
+Web: √; Android: 4.31; iOS: 4.71; HarmonyOS: 4.71
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | x | √ |
+Android UTS 插件: √; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.TextDecoder.decode.tutorial -->
@@ -122,15 +114,11 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| √ | 4.31 | x | 4.71 |
+Web: √; Android: 4.31; iOS: x; HarmonyOS: 4.71
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | x | √ |
+Android UTS 插件: √; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.TextDecoder.decode_1.tutorial -->
@@ -156,15 +144,11 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| √ | 4.31 | 4.71 | 4.71 |
+Web: √; Android: 4.31; iOS: 4.71; HarmonyOS: 4.71
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | x | √ |
+Android UTS 插件: √; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.TextDecoder.decode_2.tutorial -->

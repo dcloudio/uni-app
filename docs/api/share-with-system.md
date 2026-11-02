@@ -15,9 +15,7 @@
 系统分享不同于SDK分享。不需要配置三方SDK的key信息。手机上安装的、可接受分享的应用都会出现在列表中。
 
 ### shareWithSystem 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.33 | 4.33 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.33","4.33","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 

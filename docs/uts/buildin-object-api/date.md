@@ -80,15 +80,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.Constructor.tutorial -->
@@ -122,15 +118,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.Constructor_1.tutorial -->
@@ -170,15 +162,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.Constructor_2.tutorial -->
@@ -218,15 +206,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### UTC(year, monthIndex, date?, hours?, minutes?, seconds?, ms?)
@@ -256,15 +240,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.UTC.tutorial -->
@@ -298,15 +278,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### toDateString()
@@ -334,15 +310,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### toTimeString()
@@ -370,15 +342,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | x | 4.61 |
+Web: 4.0; Android: 3.90; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | x | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.toTimeString.tutorial -->
@@ -400,15 +368,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.toLocaleString.tutorial -->
@@ -430,15 +394,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.toLocaleDateString.tutorial -->
@@ -460,15 +420,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.toLocaleTimeString.tutorial -->
@@ -498,15 +454,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.valueOf.tutorial -->
@@ -536,15 +488,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.11 | x | 4.61 |
+Web: 4.0; Android: 4.11; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.11 | x | √ |
+Android UTS 插件: 4.11; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 ### toUTCString()
@@ -564,15 +512,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.toUTCString.tutorial -->
@@ -606,15 +550,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.11 | x | 4.61 |
+Web: 4.0; Android: 4.11; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.11 | x | √ |
+Android UTS 插件: 4.11; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 ### getTime()
@@ -648,15 +588,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getFullYear()
@@ -695,15 +631,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getUTCFullYear()
@@ -723,15 +655,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.getUTCFullYear.tutorial -->
@@ -772,15 +700,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getUTCMonth()
@@ -800,15 +724,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.getUTCMonth.tutorial -->
@@ -866,15 +786,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getUTCDate()
@@ -894,15 +810,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.getUTCDate.tutorial -->
@@ -953,15 +865,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getUTCDay()
@@ -981,15 +889,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.getUTCDay.tutorial -->
@@ -1029,15 +933,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getUTCHours()
@@ -1057,15 +957,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.getUTCHours.tutorial -->
@@ -1105,15 +1001,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getUTCMinutes()
@@ -1133,15 +1025,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.getUTCMinutes.tutorial -->
@@ -1181,15 +1069,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### getUTCSeconds()
@@ -1209,15 +1093,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.getUTCSeconds.tutorial -->
@@ -1254,15 +1134,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### setMilliseconds(ms)
@@ -1297,15 +1173,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### setUTCMilliseconds(ms)
@@ -1329,15 +1201,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.setUTCMilliseconds.tutorial -->
@@ -1374,15 +1242,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### setUTCSeconds(sec)
@@ -1406,15 +1270,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.setUTCSeconds.tutorial -->
@@ -1451,15 +1311,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### setUTCMinutes(min)
@@ -1483,15 +1339,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.setUTCMinutes.tutorial -->
@@ -1528,15 +1380,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### setUTCHours(hours)
@@ -1560,15 +1408,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.setUTCHours.tutorial -->
@@ -1608,15 +1452,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### setUTCDate(date)
@@ -1640,15 +1480,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.setUTCDate.tutorial -->
@@ -1685,15 +1521,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 ### setUTCMonth(month)
@@ -1717,15 +1549,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 |
+Web: 4.0; Android: 4.71; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.setUTCMonth.tutorial -->
@@ -1762,15 +1590,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | √ | √ |
+Android UTS 插件: 3.90; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 
@@ -1795,15 +1619,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | x |
+Web: 4.0; Android: 4.71; Android(VDOM) UTS 插件: x; iOS: x; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 4.71 | x | √ |
+Android UTS 插件: 4.71; iOS UTS 插件: x; HarmonyOS UTS 插件: √
 
 
 <!-- UTSJSON.Date.setUTCFullYear.tutorial -->
@@ -1840,15 +1660,11 @@ let date = new Date("Hello World")
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 |
+Web: 4.0; Android: 3.90; iOS: 4.11; HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | √ |
+Android UTS 插件: √; iOS UTS 插件: √; HarmonyOS UTS 插件: √
 
 
 

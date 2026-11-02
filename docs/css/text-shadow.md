@@ -6,9 +6,7 @@ text-shadow 为文字添加阴影。可以为文字与 decoration 添加多个�
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 4.61 | 4.61 | 4.61 |
+Web: 4.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

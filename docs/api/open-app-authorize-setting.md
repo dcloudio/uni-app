@@ -13,9 +13,7 @@
 跳转系统授权管理页
 
 ### openAppAuthorizeSetting 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.51 | 4.51 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","4.51","4.51","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 _注：App平台其实早期版本也可以使用_

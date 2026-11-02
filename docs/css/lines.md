@@ -6,9 +6,7 @@ text 组件专有样式，设置文本的最大行数。
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.9 | x | 4.11 | x | 4.61 | x |
+Web: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

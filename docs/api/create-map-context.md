@@ -5,9 +5,7 @@
 参考：[Map组件](../component/map.md)
 
 ### createMapContext 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.31","4.31","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -30,9 +28,7 @@
 getCenterLocation
 获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 uni.openLocation
 ##### getCenterLocation 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -83,9 +79,7 @@ getCenterLocation
 moveToLocation
 将地图中心移动到当前定位点，需要配合map组件的show-location使用
 ##### moveToLocation 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -131,9 +125,7 @@ moveToLocation
 translateMarker
 平移marker，带动画
 ##### translateMarker 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -190,9 +182,7 @@ translateMarker
 includePoints
 缩放视野展示所有经纬度
 ##### includePoints 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -244,9 +234,7 @@ includePoints
 getRegion
 获取当前地图的视野范围
 ##### getRegion 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -311,9 +299,7 @@ getRegion
 getScale
 获取当前地图的缩放级别
 ##### getScale 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -363,9 +349,7 @@ getScale
 addGroundOverlay
 创建自定义图片图层，图片会随着地图缩放而缩放
 ##### addGroundOverlay 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | x |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x
 
 ##### 参数 
 
@@ -436,9 +420,7 @@ addGroundOverlay
 addMarkers
 添加 marker
 ##### addMarkers 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -603,9 +585,7 @@ addMarkers
 moveAlong
 沿指定路径移动 marker，用于轨迹回放等场景。动画完成时触发回调事件，若动画进行中，对同一 marker 再次调用 moveAlong 方法，前一次的动画将被打断。
 ##### moveAlong 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -659,9 +639,7 @@ moveAlong
 removeGroundOverlay
 移除自定义图片图层
 ##### removeGroundOverlay 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | x |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x
 
 ##### 参数 
 
@@ -706,9 +684,7 @@ removeGroundOverlay
 removeMarkers
 移除 marker
 ##### removeMarkers 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | 4.61 |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -753,9 +729,7 @@ removeMarkers
 updateGroundOverlay
 更新自定义图片图层。
 ##### updateGroundOverlay 兼容性 <Help /> 
-| 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| x | 4.31 | 4.31 | x |
+支付宝小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x
 
 ##### 参数 
 

@@ -25,15 +25,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 5.21 |
+HarmonyOS: 5.21
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 5.21 |
+HarmonyOS UTS 插件: 5.21
 
 
 <!-- UTSJSON.UTSHarmony.colorWithString.tutorial -->
@@ -60,15 +56,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.61 |
+HarmonyOS UTS 插件: 4.61
 
 
 <!-- UTSJSON.UTSHarmony.convert2AbsFullPath.tutorial -->
@@ -95,15 +87,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.devicePX2px.tutorial -->
@@ -126,15 +114,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| x |
+HarmonyOS: x
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.exit.tutorial -->
@@ -157,15 +141,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| 5.0.0 (12) | 4.71 |
+HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 4.71
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.71 |
+HarmonyOS UTS 插件: 4.71
 
 
 <!-- UTSJSON.UTSHarmony.getAppTheme.tutorial -->
@@ -188,15 +168,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.getCurrentWindow.tutorial -->
@@ -219,15 +195,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| 5.0.0 (12) | 4.71 |
+HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 4.71
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.71 |
+HarmonyOS UTS 插件: 4.71
 
 
 <!-- UTSJSON.UTSHarmony.getOsTheme.tutorial -->
@@ -254,15 +226,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.61 |
+HarmonyOS UTS 插件: 4.61
 
 
 <!-- UTSJSON.UTSHarmony.getResourcePath.tutorial -->
@@ -285,15 +253,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.getUIAbilityContext.tutorial -->
@@ -324,15 +288,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityCreate.tutorial -->
@@ -359,15 +319,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityNewWant.tutorial -->
@@ -394,15 +350,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityShare.tutorial -->
@@ -429,15 +381,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityWindowStageCreate.tutorial -->
@@ -466,15 +414,11 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| HarmonyOS |
-| :- |
-| 4.61 |
+HarmonyOS: 4.61
 
 
 **uni-app 兼容性 <Help />**
-| HarmonyOS UTS 插件 |
-| :- |
-| 4.31 |
+HarmonyOS UTS 插件: 4.31
 
 
 <!-- UTSJSON.UTSHarmony.requestSystemPermission.tutorial -->

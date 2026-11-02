@@ -13,9 +13,7 @@
 录音管理
 
 ### getRecorderManager 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","4.61","4.61","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 web平台可通过插件拉齐，[详见](https://ext.dcloud.net.cn/search?q=getRecorderManager&orderBy=Relevance&cat1=4&cat2=41&uni-app-platforms=&uni-app-x-platforms=)
@@ -60,9 +58,7 @@ web平台可通过插件拉齐，[详见](https://ext.dcloud.net.cn/search?q=get
 start
 开始录音
 ##### start 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -97,9 +93,7 @@ start
 pause
 暂停录音,App-Android平台在Android 7.0及以后版本支持
 ##### pause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 7.0 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: 7.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 
 
@@ -108,9 +102,7 @@ pause
 resume
 继续录音，App-Android平台在Android 7.0及以后版本支持
 ##### resume 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 7.0 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: 7.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 
 
@@ -119,9 +111,7 @@ resume
 stop
 停止录音
 ##### stop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 
 
@@ -130,9 +120,7 @@ stop
 onStart
 录音开始事件
 ##### onStart 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -146,9 +134,7 @@ onStart
 offStart
 取消监听录音开始事件
 ##### offStart 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 5.0 | 5.0 | 5.0 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -157,9 +143,7 @@ offStart
 onPause
 录音暂停事件,App-Android平台在Android 7.0及以后版本支持
 ##### onPause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 7.0 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: 7.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -173,9 +157,7 @@ onPause
 offPause
 取消监听录音暂停事件
 ##### offPause 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 7.0 | 5.0 | 5.0 | 5.0 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: 7.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -184,9 +166,7 @@ offPause
 onStop
 录音停止事件，会回调文件地址
 ##### onStop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -206,9 +186,7 @@ onStop
 offStop
 取消监听录音停止事件
 ##### offStop 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 5.0 | 5.0 | 5.0 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -217,9 +195,7 @@ offStop
 onFrameRecorded
 已录制完指定帧大小的文件，会回调录音分片结果数据。如果设置了 frameSize ，则会回调此事件
 ##### onFrameRecorded 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | x | x | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
@@ -233,9 +209,7 @@ onFrameRecorded
 offFrameRecorded
 取消监听帧回调事件
 ##### offFrameRecorded 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | x | x | x |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x
 
 
 
@@ -244,9 +218,7 @@ offFrameRecorded
 onError
 录音错误事件, 会回调错误信息
 ##### onError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -283,9 +255,7 @@ onError
 offError
 取消监听录音错误事件
 ##### offError 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 5.0 | 5.0 | 5.0 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -294,9 +264,7 @@ offError
 onResume
 监听录音继续事件,App-Android平台在Android 7.0及以后版本支持
 ##### onResume 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 7.0 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: 7.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -310,9 +278,7 @@ onResume
 offResume
 取消监听录音继续事件
 ##### offResume 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 7.0 | 5.0 | 5.0 | 5.0 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android 系统版本: 7.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -321,9 +287,7 @@ offResume
 onInterruptionBegin
 监听录音因为受到系统占用而被中断开始事件
 ##### onInterruptionBegin 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -337,9 +301,7 @@ onInterruptionBegin
 offInterruptionBegin
 取消监听录音因为受到系统占用而被中断开始事件
 ##### offInterruptionBegin 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 5.0 | 5.0 | 5.0 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 
@@ -348,9 +310,7 @@ offInterruptionBegin
 onInterruptionEnd
 监听录音中断结束事件
 ##### onInterruptionEnd 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 4.61 | 4.61 | 4.61 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61
 
 ##### 参数 
 
@@ -364,9 +324,7 @@ onInterruptionEnd
 offInterruptionEnd
 取消监听录音中断结束事件
 ##### offInterruptionEnd 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 5.31 | 5.0 | 5.0 | 5.0 |
+Web: x; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0
 
 
 

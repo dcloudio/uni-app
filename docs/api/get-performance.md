@@ -4,9 +4,7 @@
 
 
 ### getPerformance 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.31 | 3.91 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","3.91","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.25","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.61","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -23,9 +21,7 @@
 createObserver
 创建全局性能事件监听器
 ##### createObserver 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 ##### 参数 
 
@@ -39,9 +35,7 @@ createObserver
 getEntries
 该方法返回当前列表中的所有性能数据
 ###### getEntries 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 
 
@@ -72,9 +66,7 @@ getEntries
 getEntriesByType
 获取当前列表中所有类型为 \[entryType] 的性能数据
 ###### getEntriesByType 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 ##### 参数 
 
@@ -110,9 +102,7 @@ getEntriesByType
 getEntriesByName
 获取当前列表中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ###### getEntriesByName 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 ##### 参数 
 
@@ -158,9 +148,7 @@ getEntriesByName
 observe
 开始监听
 ###### observe 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 ##### 参数 
 
@@ -182,9 +170,7 @@ observe
 disconnect
 停止监听
 ###### disconnect 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 
 
@@ -194,9 +180,7 @@ disconnect
 getEntries
 该方法返回当前缓冲区中的所有性能数据
 ##### getEntries 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 
 
@@ -227,9 +211,7 @@ getEntries
 getEntriesByType
 获取当前缓冲区中所有类型为 \[entryType] 的性能数据
 ##### getEntriesByType 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 ##### 参数 
 
@@ -265,9 +247,7 @@ getEntriesByType
 getEntriesByName
 获取当前缓冲区中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ##### getEntriesByName 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 ##### 参数 
 
@@ -304,9 +284,7 @@ getEntriesByName
 setBufferSize
 设置缓冲区大小，默认缓冲 30 条性能数据
 ##### setBufferSize 兼容性 <Help /> 
-| Web |
-| :- |
-| x |
+Web: x
 
 ##### 参数 
 

@@ -6,9 +6,7 @@ text-decoration 属性用于设置元素中文本的修饰线外观，是 text-d
 
 
 ### uni-app x 兼容性 <Help />
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | x | x | x |
+Web: 4.0; Android: x; iOS: x; HarmonyOS: x
 
 
 ### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility

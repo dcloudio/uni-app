@@ -9,9 +9,7 @@
 `UniApp` 对象可同时在 uts 插件和 uvue 页面中使用，但 `vm` 属性及其相关的 `globalData` 仍然只能在 uvue 页面中使用。
 
 ### getApp 兼容性 <Help /> 
-| Web | 微信小程序 | Android | Android(Vapor) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | √ | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | √ | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"Android","group":"Android","subtitle":"uni-app x"},{"title":"Android(Vapor) UTS 插件","group":"Android","subtitle":"Vapor UTS 插件"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"iOS(Vapor) UTS 插件","group":"iOS","subtitle":"Vapor UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.0","√","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","√","4.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -35,9 +33,7 @@
 getAndroidApplication
 获取 Android 应用 Application 上下文
 ##### getAndroidApplication 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.31 | x | x | x |
+Web: x; 微信小程序: x; Android(VDOM): 4.31; Android(Vapor): x; iOS: x; HarmonyOS: x
 
 
 
@@ -52,9 +48,7 @@ getAndroidApplication
 getHarmonyAbility
 获取 鸿蒙应用 Ability 实例
 ##### getHarmonyAbility 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 
 
@@ -69,9 +63,7 @@ getHarmonyAbility
 restart
 重启应用
 ##### restart 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 5.31 | x | 5.31 | x |
+Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.31; iOS(VDOM): x; iOS(Vapor): 5.31; HarmonyOS: x
 
 ##### 参数 
 

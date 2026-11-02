@@ -14,9 +14,7 @@
 
 
 ### showTabBar 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -109,9 +107,7 @@
 
 
 ### hideTabBar 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -204,9 +200,7 @@
 
 
 ### showTabBarRedDot 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -299,9 +293,7 @@
 
 
 ### hideTabBarRedDot 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -394,9 +386,7 @@
 
 
 ### setTabBarBadge 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -490,9 +480,7 @@
 
 
 ### removeTabBarBadge 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 
@@ -585,9 +573,7 @@
 
 
 ### setTabBarStyle 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.0 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["4.0","4.41","5.31","3.91","5.22","4.11","5.14","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.0"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -702,9 +688,7 @@
 
 
 ### setTabBarItem 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.31 | 3.91 | 5.22 | 4.11 | 5.14 | 4.61 |
+Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61
 
 
 ### 参数 

@@ -19,9 +19,7 @@
 - [camera组件文档](../component/camera.md)
 
 ### createCameraContext 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.61","4.61","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -39,9 +37,7 @@ onCameraFrame
 获取 Camera 实时帧数据
 
 ##### onCameraFrame 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -70,9 +66,7 @@ onCameraFrame
 start
 开始监听帧数据
 ###### start 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -95,9 +89,7 @@ stop
 停止监听帧数据
 
 ###### stop 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -120,9 +112,7 @@ stop
 onAndroidCameraOriginalFrame
 获取Android平台的原始帧数据，**获取到了ImageProxy使用后一定要close，否则App会触发崩溃**
 ##### onAndroidCameraOriginalFrame 兼容性 <Help /> 
-| HarmonyOS |
-| :- |
-| x |
+HarmonyOS: x
 
 ##### 参数 
 
@@ -136,9 +126,7 @@ onAndroidCameraOriginalFrame
 offAndroidCameraOriginalFrame
 停止获取Android平台的原始帧数据
 ##### offAndroidCameraOriginalFrame 兼容性 <Help /> 
-| HarmonyOS |
-| :- |
-| x |
+HarmonyOS: x
 
 
 
@@ -147,9 +135,7 @@ offAndroidCameraOriginalFrame
 getCurrentZoom
 获取当前缩放级别
 ##### getCurrentZoom 兼容性 <Help /> 
-| HarmonyOS |
-| :- |
-| x |
+HarmonyOS: x
 
 
 
@@ -165,9 +151,7 @@ setZoom
 设置缩放级别
 
 ##### setZoom 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -191,9 +175,7 @@ takePhoto
 拍摄照片
 
 ##### takePhoto 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -258,9 +240,7 @@ startRecord
 开始录像
 
 ##### startRecord 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -284,9 +264,7 @@ startRecord
 timeoutCallback
 超过录制时长上限时会结束录像并触发此回调，录像异常退出时也会触发此回调
 ###### timeoutCallback 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 
@@ -328,9 +306,7 @@ stopRecord
 结束录像
 
 ##### stopRecord 兼容性 <Help /> 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | x |
+Android: 4.61; iOS: 4.61; HarmonyOS: x
 
 ##### 参数 
 

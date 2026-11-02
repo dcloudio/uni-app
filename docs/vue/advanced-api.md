@@ -2,15 +2,7 @@
 
 ## 渲染函数
 
-|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| h() | 4.0 | x | 3.99 | x | 4.11 | x | 4.61 | x |
-| mergeProps() | 4.0 | x | 4.0 | x | 4.11 | x | 4.61 | x |
-| cloneVNode() | 4.0 | x | 4.0 | x | x | x | x | x |
-| isVNode() | 4.0 | x | √ | x | 4.11 | x | 4.61 | x |
-| resolveComponent() | 4.0 | x | √ | x | 4.11 | x | 4.61 | x |
-| withDirectives() | 4.0 | 4.41 | x | x | 4.11 | x | 4.61 | x |
-| withModifiers() | 4.0 | x | √ | x | 4.11 | x | 4.61 | x |
+: h(); Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; : mergeProps(); Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; : cloneVNode(); Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x; : isVNode(); Web(VDOM): 4.0; Web(Vapor): x; 微信小程序: x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; : resolveComponent(); Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; : withDirectives(); Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x; : withModifiers(); Web(VDOM): 4.0; Web(Vapor):  ; 微信小程序: x; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x
 
 ### 示例代码 @example
 

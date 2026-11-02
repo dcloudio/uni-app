@@ -3,9 +3,7 @@
 用于监视 UniElement 元素的大小变化。它可以观察一个或多个
 
 ### UniResizeObserver 兼容性 <Help /> 
- | Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.16 | x | x | 4.13 | 4.18 | 4.61 |
+ Web: 4.16; 微信小程序: x; 支付宝小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61
 
 小程序自身未提供ResizeObserver。社区有三方库可模拟实现，虽性能不及原生ResizeObserver，但在需要时也可以使用。参考[lime-resize](https://ext.dcloud.net.cn/plugin?id=14117)
 
@@ -60,9 +58,7 @@
 取消所有的对 UniElement 目标的监视
 
 ##### disconnect 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.16 | x | x | 4.13 | 4.18 | 4.61 |
+Web: 4.16; 微信小程序: x; 支付宝小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61
 
 
 
@@ -76,9 +72,7 @@
 监视指定 UniElement 大小变化
 
 ##### observe 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.16 | x | x | 4.13 | 4.18 | 4.61 |
+Web: 4.16; 微信小程序: x; 支付宝小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61
 
 
 ##### 参数 
@@ -97,9 +91,7 @@
 结束对指定的 UniElement 的监视
 
 ##### unobserve 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.16 | x | x | 4.13 | 4.18 | 4.61 |
+Web: 4.16; 微信小程序: x; 支付宝小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61
 
 
 ##### 参数 

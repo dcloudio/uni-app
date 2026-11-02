@@ -24,9 +24,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 > HBuilderX5.25及以上版本 Android平台 调整为不再主动申请通知权限，可调用 [uni.requestSystemPermission](../api/request-system-permission.md) 主动申请通知权限
 
 ### getPushClientId 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -65,9 +63,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 > Android平台 HBuilderX 5.25及以上版本、鸿蒙平台自 HBuilderX 5.31及以上版本，新增 options 参数（requestPermission 属性），配置是否主动申请通知权限。
 
 ### onPushMessage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -114,9 +110,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 关闭推送消息监听事件，iOS端调用会关闭所有监听。
 
 ### offPushMessage 兼容性 <Help /> 
-| Web | 微信小程序 | 支付宝小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -172,9 +166,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 ### createPushMessage 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -225,9 +217,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 ### getPushChannelManager 兼容性 <Help /> 
-| Web | Android | iOS |
-| :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.25","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -245,9 +235,7 @@ setPushChannel
 设置推送渠道
 
 ##### setPushChannel 兼容性 <Help /> 
-| Web | Android | iOS |
-| :- | :- | :- |
-| x | 3.98 | x |
+Web: x; Android: 3.98; iOS: x
 
 ##### 参数 
 
@@ -274,9 +262,7 @@ getAllChannels
 获取当前应用注册的所有的通知渠道。
 
 ##### getAllChannels 兼容性 <Help /> 
-| Web | Android | iOS |
-| :- | :- | :- |
-| x | 3.98 | x |
+Web: x; Android: 3.98; iOS: x
 
 
 
@@ -301,9 +287,7 @@ getAllChannels
 
 
 ### setAppBadgeNumber 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | 4.25 | 4.61 |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.25","4.25","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -338,9 +322,7 @@ getAllChannels
   **已废弃，仅为了向下兼容保留，建议使用`getPushChannelManager`。**
 
 ### getChannelManager 兼容性 <Help /> 
-| Web | Android | iOS |
-| :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"Android"},{"title":"iOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -358,9 +340,7 @@ setPushChannel
 设置推送渠道
 
 ##### setPushChannel 兼容性 <Help /> 
-| Web | Android | iOS |
-| :- | :- | :- |
-| x | 3.98 | x |
+Web: x; Android: 3.98; iOS: x
 
 ##### 参数 
 
@@ -387,9 +367,7 @@ getAllChannels
 获取当前应用注册的所有的通知渠道。
 
 ##### getAllChannels 兼容性 <Help /> 
-| Web | Android | iOS |
-| :- | :- | :- |
-| x | 3.98 | x |
+Web: x; Android: 3.98; iOS: x
 
 
 
