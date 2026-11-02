@@ -718,5 +718,63 @@ describe('code', () => {
     }
   )
 
+  describe.each([undefined, 'true'] as const)(
+    'interface JSDoc keepAlive in iOS (DOM2: %s)',
+    (dom2) => {
+      test('uses interface tags for methods and callable properties without class decorators', async () => {
+        const module = resolve(
+          __dirname,
+          'examples/uts/utssdk/test-jsdoc-keep-alive'
+        )
+        const options = createGenProxyCodeOptions({ platform: 'app-ios' })
+        const decls = await withUniAppXEnv(
+          { x: 'true', dom2, platform: 'app-ios' },
+          () => prepareProxyCodeAndFillOptions(module, options)
+        )
+        const iface = decls.find(
+          (decl) => decl.type === 'InterfaceDeclaration' && decl.cls === 'BA'
+        )
+        expect(iface).toMatchObject({
+          options: {
+            methods: {
+              helloByJs: { keepAlive: true, params: [] },
+              methodByJs: { keepAlive: true },
+              aliasByJs: { keepAlive: true },
+              selfByJs: {
+                keepAlive: true,
+                return: { type: 'interface', options: 'BA' },
+              },
+              inheritedByJs: { keepAlive: true },
+              ordinaryByJs: { keepAlive: false },
+              nearMatchByJs: { keepAlive: false },
+              lineCommentByJs: { keepAlive: false },
+              blockCommentByJs: { keepAlive: false },
+            },
+            props: ['label'],
+          },
+        })
+        expect(
+          decls.find(
+            (decl) => decl.type === 'Class' && decl.cls === 'ExportedBA'
+          )
+        ).toMatchObject({
+          options: {
+            methods: {
+              pingByJs: { keepAlive: true },
+              pongByJs: { keepAlive: true },
+            },
+          },
+        })
+        const code = await genProxyCode(module, decls, options)
+        expect(code).toContain('"helloByJs":{"async":false,"keepAlive":true')
+        expect(code).toContain(
+          '"ordinaryByJs":{"async":false,"keepAlive":false'
+        )
+        expect(code).not.toContain('worldByJs')
+        expect(options.meta!.types).not.toHaveProperty('Hello')
+      })
+    }
+  )
+
   defineGenProxyCodeV2Tests()
 })

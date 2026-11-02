@@ -201,6 +201,63 @@ exports[`code genProxyCode 3`] = `
       },
     ],
   },
+  "functionTypes": {
+    "ShowToast": {
+      "params": [
+        {
+          "optional": false,
+          "span": {
+            "ctxt": 0,
+            "end": 37,
+            "start": 26,
+          },
+          "type": "Identifier",
+          "typeAnnotation": {
+            "span": {
+              "ctxt": 0,
+              "end": 37,
+              "start": 29,
+            },
+            "type": "TsTypeAnnotation",
+            "typeAnnotation": {
+              "kind": "string",
+              "span": {
+                "ctxt": 0,
+                "end": 37,
+                "start": 31,
+              },
+              "type": "TsKeywordType",
+            },
+          },
+          "value": "msg",
+        },
+      ],
+      "span": {
+        "ctxt": 0,
+        "end": 46,
+        "start": 25,
+      },
+      "type": "TsFunctionType",
+      "typeAnnotation": {
+        "span": {
+          "ctxt": 0,
+          "end": 46,
+          "start": 39,
+        },
+        "type": "TsTypeAnnotation",
+        "typeAnnotation": {
+          "kind": "void",
+          "span": {
+            "ctxt": 0,
+            "end": 46,
+            "start": 42,
+          },
+          "type": "TsKeywordType",
+        },
+      },
+      "typeParams": null,
+    },
+  },
   "interface": {
     "FileSystemManager": {
       "decl": {
