@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.openLocation(options) @openlocation
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-openLocation
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-openLocation
+
+:::
 
 ::: warning 注意
 

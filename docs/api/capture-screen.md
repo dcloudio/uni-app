@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.onUserCaptureScreen(callback?) @onusercapturescreen
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-usercapturescreen
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-usercapturescreen
+
+:::
 
 开启截屏监听
 
@@ -41,7 +49,16 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+
+::: sourceCode
 ## uni.offUserCaptureScreen(callback?) @offusercapturescreen
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-usercapturescreen
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-usercapturescreen
+
+:::
 
 关闭截屏监听
 
@@ -84,7 +101,16 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+
+::: sourceCode
 ## uni.setUserCaptureScreen(options) @setusercapturescreen
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-usercapturescreen
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-usercapturescreen
+
+:::
 
 设置防截屏
 

@@ -1,4 +1,12 @@
-## uni.saveVideoToPhotosAlbum(options) @saveVideoToPhotosAlbum
+::: sourceCode
+## uni.saveVideoToPhotosAlbum(options) @savevideotophotosalbum
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+:::
 
 保存视频到系统相册
 

@@ -1,4 +1,12 @@
-## uni.compressImage(options) @compressImage
+::: sourceCode
+## uni.compressImage(options) @compressimage
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+:::
 
 压缩图片
 

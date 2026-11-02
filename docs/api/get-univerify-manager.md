@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.getUniVerifyManager() @getuniverifymanager
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-verify
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-verify
+
+:::
 
 获取一键登录管理对象
 

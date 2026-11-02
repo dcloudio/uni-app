@@ -1,6 +1,8 @@
 本文档仅为部分API介绍，完整的国际化指南，另见[文档](../i18n.md)
 
+::: sourceCode
 ## uni.getLocale() @getlocale
+:::
 
 获取当前设置的语言
 
@@ -26,7 +28,9 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.locale.getLocale)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/api/ui/locale.html#getlocale)
 
+::: sourceCode
 ## uni.setLocale(locale) @setlocale
+:::
 
 设置当前语言
 
@@ -49,7 +53,9 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.locale.setLocale)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/api/ui/locale.html#setlocale)
 
+::: sourceCode
 ## uni.onLocaleChange(callback) @onlocalechange
+:::
 
 设置当前语言
 
@@ -86,3 +92,4 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | errMsg | string | 是 | 错误信息 |
+

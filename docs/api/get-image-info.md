@@ -1,4 +1,12 @@
-## uni.getImageInfo(options) @getImageInfo
+::: sourceCode
+## uni.getImageInfo(options) @getimageinfo
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+:::
 
 获取图片信息
 

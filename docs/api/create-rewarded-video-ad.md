@@ -1,4 +1,6 @@
+::: sourceCode
 ## uni.createRewardedVideoAd(option) @createrewardedvideoad
+:::
 
 创建激励视频广告对象
 

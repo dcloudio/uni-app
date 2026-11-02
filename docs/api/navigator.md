@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.navigateTo(options) @navigateto
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+:::
 
 保留当前页面，跳转到应用内的某个页面
 
@@ -98,7 +106,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.redirectTo(options) @redirectto
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+:::
 
 关闭当前页面，跳转到应用内的某个页面
 
@@ -176,7 +192,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.reLaunch(options) @relaunch
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+:::
 
 关闭所有页面，打开到应用内的某个页面
 
@@ -254,7 +278,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.switchTab(options) @switchtab
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+:::
 
 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
 
@@ -332,7 +364,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): √; A
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.navigateBack(options?) @navigateback
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+
+:::
 
 关闭当前页面，返回上一页面或多级页面
 

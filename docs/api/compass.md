@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.onCompassChange(callback) @oncompasschange
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+:::
 
 监听罗盘数据变化事件。频率：5 次/秒，接口调用后会自动开始监听
 
@@ -39,7 +47,16 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.offCompassChange(callback) @offcompasschange
+
+::: sourceCode
+## uni.offCompassChange(callback?) @offcompasschange
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+:::
 
 取消监听罗盘数据
 
@@ -80,7 +97,17 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+
+
+::: sourceCode
 ## uni.startCompass(options?) @startcompass
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+:::
 
 开始监听罗盘数据
 
@@ -160,7 +187,17 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+
+
+::: sourceCode
 ## uni.stopCompass(options?) @stopcompass
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+
+:::
 
 停止监听罗盘数据
 
@@ -565,3 +602,4 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | errMsg | string | 是 | 错误信息 |
+

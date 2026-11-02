@@ -1,4 +1,6 @@
+::: sourceCode
 ## uploadFile(options) @uploadfile
+:::
 
 上传文件到云存储
 
@@ -68,7 +70,9 @@ onUploadProgress
 
 <!-- UTSUNICLOUDAPIJSON.uploadFile.example -->
 
+::: sourceCode
 ## chooseAndUploadFile(options) @chooseanduploadfile
+:::
 
 选择并上传文件
 
@@ -227,7 +231,9 @@ onUploadProgress
 - 4.18之前uni-app-x在app端仅支持选择图片，即type参数仅能设为`image`。
 - 4.18及之后的版本uni-app-x在app端仅支持选择图片、视频，即type参数仅能设为`image`、`video`。
 
+::: sourceCode
 ## getTempFileURL(options) @gettempfileurl
+:::
 
 获取文件临时URL
 
