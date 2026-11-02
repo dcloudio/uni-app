@@ -764,9 +764,7 @@ const TemplateFlags = {
 	"STATIC": 2,
 	"2": "STATIC",
 	"UNI_PAGE_SCOPE": 256,
-	"256": "UNI_PAGE_SCOPE",
-	"UNI_RUNTIME_SCOPE": 512,
-	"512": "UNI_RUNTIME_SCOPE"
+	"256": "UNI_PAGE_SCOPE"
 };
 const UNI_APP_SCOPE_ID = "data-v-212d40c7";
 /**

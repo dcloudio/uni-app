@@ -19716,8 +19716,8 @@ function template(html, flags = 0, ns) {
 		}
 		if (!node && html[0] !== "<") return /* @__PURE__ */ createTextNode(html);
 		let prototype = node || (node = parseTemplate(html, ns));
-		if (flags & 768) {
-			const ids = flags & 512 ? getUniScopeIds() : getPageScopeIds();
+		if (flags & 256) {
+			const ids = getPageScopeIds();
 			if (ids) prototype = getStampedTemplate(prototype, ids);
 		}
 		const ret = cloneTemplate(prototype);

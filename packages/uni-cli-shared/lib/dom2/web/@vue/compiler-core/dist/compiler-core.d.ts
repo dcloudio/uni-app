@@ -262,6 +262,7 @@ export interface CommentNode extends Node {
   content: string;
 }
 export interface AttributeNode extends Node {
+  __uniTemplate?: true;
   type: NodeTypes.ATTRIBUTE;
   name: string;
   nameLoc: SourceLocation;

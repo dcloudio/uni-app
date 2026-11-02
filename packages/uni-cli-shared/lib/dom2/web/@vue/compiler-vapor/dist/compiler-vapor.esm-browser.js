@@ -23035,29 +23035,33 @@ function transformComponentElement(node, propsResult, staticKey, root, context, 
 	let asset = !useCreateElement;
 	let slotScopeNamespace;
 	if (!dynamicComponent && !useCreateElement) {
+		var _isEasyComponent, _ref;
 		const isProp = findProp(node, "is");
 		if (isProp && isProp.type === 6 && isVueIsValue(isProp)) tag = isProp.value.content.slice(4);
-		const resolved = resolveSlotScopeReference(tag, context) || resolveSetupReference(tag, context);
-		if (resolved) {
-			tag = resolved;
-			asset = false;
-		}
-		const builtInTag = isBuiltInComponent(tag);
-		if (builtInTag) {
-			tag = builtInTag;
-			asset = false;
-		}
-		const dotIndex = tag.indexOf(".");
-		if (dotIndex > 0) {
-			slotScopeNamespace = resolveSlotScopeReference(tag.slice(0, dotIndex), context);
-			const ns = slotScopeNamespace || resolveSetupReference(tag.slice(0, dotIndex), context);
-			if (ns) {
-				tag = ns + tag.slice(dotIndex);
+		const isEasyCom = (_isEasyComponent = (_ref = context.options).isEasyComponent) === null || _isEasyComponent === void 0 ? void 0 : _isEasyComponent.call(_ref, tag);
+		if (!isEasyCom) {
+			const resolved = resolveSlotScopeReference(tag, context) || resolveSetupReference(tag, context);
+			if (resolved) {
+				tag = resolved;
 				asset = false;
+			}
+			const builtInTag = isBuiltInComponent(tag);
+			if (builtInTag) {
+				tag = builtInTag;
+				asset = false;
+			}
+			const dotIndex = tag.indexOf(".");
+			if (dotIndex > 0) {
+				slotScopeNamespace = resolveSlotScopeReference(tag.slice(0, dotIndex), context);
+				const ns = slotScopeNamespace || resolveSetupReference(tag.slice(0, dotIndex), context);
+				if (ns) {
+					tag = ns + tag.slice(dotIndex);
+					asset = false;
+				}
 			}
 		}
 		if (asset) {
-			if (context.selfName && capitalize(camelize(tag)) === context.selfName) tag += `__self`;
+			if (!isEasyCom && context.selfName && capitalize(camelize(tag)) === context.selfName) tag += `__self`;
 			context.component.add(tag);
 		}
 	}
@@ -23165,6 +23169,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 	const hasDynamicKeys = isSelect && node.props.some((prop) => prop.type === 7 && (prop.name === "bind" || prop.name === "on") && (!prop.arg || !isStaticExp(prop.arg)));
 	let template = "";
 	template += `<${tag}`;
+	for (const prop of node.props) if (prop.type === 6 && prop.__uniTemplate) template += ` ${prop.name}`;
 	if (scopeId) template += ` ${scopeId}`;
 	const extraScopeId = context.options.extraScopeId;
 	if (extraScopeId && extraScopeId !== scopeId) template += ` ${extraScopeId}`;
@@ -23435,6 +23440,7 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 		} else results.push(...props.map(toDirectiveResult));
 	}
 	for (const prop of props) {
+		if (prop.type === 6 && prop.__uniTemplate) continue;
 		if (prop.type === 7 && !prop.arg) {
 			if (prop.name === "bind") {
 				if (prop.exp) {

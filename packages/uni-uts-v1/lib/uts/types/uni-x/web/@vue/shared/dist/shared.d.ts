@@ -490,8 +490,7 @@ export declare enum VaporIfFlags {
 export declare enum TemplateFlags {
   ROOT = 1,
   STATIC = 2,
-  UNI_PAGE_SCOPE = 256,
-  UNI_RUNTIME_SCOPE = 512
+  UNI_PAGE_SCOPE = 256
 }
 export declare const UNI_APP_SCOPE_ID = "data-v-212d40c7";
 /**

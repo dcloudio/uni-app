@@ -15408,9 +15408,9 @@ function resolveUniStyleIsolation(node, value) {
 	if (!node) return value;
 	node = (0, _vue_compiler_dom.unwrapTSNode)(node);
 	if (node.type === "ExportDefaultDeclaration") return resolveUniStyleIsolation(node.declaration, value);
-	if (node.type !== "ObjectExpression") return null;
+	if (node.type !== "ObjectExpression") return value;
 	for (const prop of node.properties) if (prop.type === "SpreadElement") value = resolveUniStyleIsolation(prop.argument, value);
-	else if (prop.computed && prop.key.type !== "StringLiteral") value = null;
+	else if (prop.computed && prop.key.type !== "StringLiteral") continue;
 	else if (prop.key.type === "Identifier" && prop.key.name === "styleIsolation" || prop.key.type === "StringLiteral" && prop.key.value === "styleIsolation") {
 		const expression = prop.type === "ObjectProperty" && (0, _vue_compiler_dom.unwrapTSNode)(prop.value);
 		value = expression && expression.type === "StringLiteral" ? expression.value : null;

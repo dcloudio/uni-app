@@ -29818,29 +29818,33 @@ function transformComponentElement(node, propsResult, staticKey, root, context, 
 	let asset = !useCreateElement;
 	let slotScopeNamespace;
 	if (!dynamicComponent && !useCreateElement) {
+		var _isEasyComponent, _ref;
 		const isProp = findProp(node, "is");
 		if (isProp && isProp.type === 6 && isVueIsValue(isProp)) tag = isProp.value.content.slice(4);
-		const resolved = resolveSlotScopeReference(tag, context) || resolveSetupReference(tag, context);
-		if (resolved) {
-			tag = resolved;
-			asset = false;
-		}
-		const builtInTag = isBuiltInComponent(tag);
-		if (builtInTag) {
-			tag = builtInTag;
-			asset = false;
-		}
-		const dotIndex = tag.indexOf(".");
-		if (dotIndex > 0) {
-			slotScopeNamespace = resolveSlotScopeReference(tag.slice(0, dotIndex), context);
-			const ns = slotScopeNamespace || resolveSetupReference(tag.slice(0, dotIndex), context);
-			if (ns) {
-				tag = ns + tag.slice(dotIndex);
+		const isEasyCom = (_isEasyComponent = (_ref = context.options).isEasyComponent) === null || _isEasyComponent === void 0 ? void 0 : _isEasyComponent.call(_ref, tag);
+		if (!isEasyCom) {
+			const resolved = resolveSlotScopeReference(tag, context) || resolveSetupReference(tag, context);
+			if (resolved) {
+				tag = resolved;
 				asset = false;
+			}
+			const builtInTag = isBuiltInComponent(tag);
+			if (builtInTag) {
+				tag = builtInTag;
+				asset = false;
+			}
+			const dotIndex = tag.indexOf(".");
+			if (dotIndex > 0) {
+				slotScopeNamespace = resolveSlotScopeReference(tag.slice(0, dotIndex), context);
+				const ns = slotScopeNamespace || resolveSetupReference(tag.slice(0, dotIndex), context);
+				if (ns) {
+					tag = ns + tag.slice(dotIndex);
+					asset = false;
+				}
 			}
 		}
 		if (asset) {
-			if (context.selfName && capitalize(camelize(tag)) === context.selfName) tag += `__self`;
+			if (!isEasyCom && context.selfName && capitalize(camelize(tag)) === context.selfName) tag += `__self`;
 			context.component.add(tag);
 		}
 	}
@@ -29948,6 +29952,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 	const hasDynamicKeys = isSelect && node.props.some((prop) => prop.type === 7 && (prop.name === "bind" || prop.name === "on") && (!prop.arg || !isStaticExp(prop.arg)));
 	let template = "";
 	template += `<${tag}`;
+	for (const prop of node.props) if (prop.type === 6 && prop.__uniTemplate) template += ` ${prop.name}`;
 	if (scopeId) template += ` ${scopeId}`;
 	const extraScopeId = context.options.extraScopeId;
 	if (extraScopeId && extraScopeId !== scopeId) template += ` ${extraScopeId}`;
@@ -30218,6 +30223,7 @@ function buildProps(node, context, isComponent, isDynamicComponent, getEffectInd
 		} else results.push(...props.map(toDirectiveResult));
 	}
 	for (const prop of props) {
+		if (prop.type === 6 && prop.__uniTemplate) continue;
 		if (prop.type === 7 && !prop.arg) {
 			if (prop.name === "bind") {
 				if (prop.exp) {
@@ -31597,6 +31603,7 @@ function transformView(node) {
 		return !(prop.name === "bind" && ((_prop$arg = prop.arg) === null || _prop$arg === void 0 ? void 0 : _prop$arg.type) === 4 && prop.arg.isStatic && prop.arg.content === "flatten");
 	});
 	if (!node.props.some((prop) => prop.type === 6 && prop.name === "uni-view")) node.props.unshift({
+		__uniTemplate: true,
 		type: 6,
 		name: "uni-view",
 		nameLoc: node.loc,
@@ -31623,6 +31630,7 @@ function transformText(node) {
 		return !(prop.name === "bind" && ((_prop$arg = prop.arg) === null || _prop$arg === void 0 ? void 0 : _prop$arg.type) === 4 && prop.arg.isStatic && unsupportedProps.has(prop.arg.content));
 	});
 	if (!node.props.some((prop) => prop.type === 6 && prop.name === "uni-text")) node.props.unshift({
+		__uniTemplate: true,
 		type: 6,
 		name: "uni-text",
 		nameLoc: node.loc,
@@ -31667,6 +31675,7 @@ function transformImage(node) {
 	node.tagType = 0;
 	node.children = [];
 	if (!node.props.some((prop) => prop.type === 6 && prop.name === "uni-image")) node.props.unshift({
+		__uniTemplate: true,
 		type: 6,
 		name: "uni-image",
 		nameLoc: node.loc,
@@ -31811,7 +31820,8 @@ function markRecycleFor(node) {
 	const key = findProp$1(node, "key");
 	if (!key) return false;
 	node.__recycleFor = true;
-	(node.tag === "template" ? node.children[0] : node).props.push({
+	if (node.tag === "template") return true;
+	node.props.push({
 		type: 7,
 		name: "bind",
 		arg: createSimpleExpression("itemKey", true),
@@ -31820,6 +31830,15 @@ function markRecycleFor(node) {
 		loc: node.loc
 	});
 	return true;
+}
+function toViewElement(node) {
+	node.tag = "view";
+	node.tagType = 0;
+	node.props = node.props.filter((prop) => {
+		var _prop$arg;
+		if (prop.type === 6) return prop.name !== "type";
+		return !(prop.name === "bind" && ((_prop$arg = prop.arg) === null || _prop$arg === void 0 ? void 0 : _prop$arg.type) === 4 && prop.arg.isStatic && prop.arg.content === "type");
+	});
 }
 function createRecycleForTransform() {
 	const types = /* @__PURE__ */ new WeakMap();
@@ -31952,25 +31971,20 @@ function createComponentIdTransform(recycle) {
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformListView.ts
-const transformListView = (node) => {
+function transformListView(node) {
+	if (node.type === 1 && node.tag === "list-item") {
+		if (!node.__recycleFor) toViewElement(node);
+		return;
+	}
 	if (node.type !== 1 || node.tag !== "list-view" && node.tag !== "sticky-section") return;
 	const container = node;
 	if (container.__recycleForProcessed) return;
 	container.__recycleForProcessed = true;
-	const rowIndex = node.children.findIndex((child) => isListRow(child) && findDir$1(child, "for") && !findDir$1(child, "if"));
 	if (node.tag === "sticky-section") {
+		const rowIndex = node.children.findIndex((child) => isListRow(child) && findDir$1(child, "for") && !findDir$1(child, "if"));
 		if (rowIndex >= 0) markRecycleFor(node.children[rowIndex]);
 		return;
 	}
-	const sections = node.children.filter((child) => child.type === 1 && child.tag === "sticky-section");
-	let start = rowIndex;
-	let end = rowIndex;
-	if (sections.length) {
-		start = node.children.indexOf(sections[0]);
-		end = node.children.indexOf(sections[sections.length - 1]);
-	} else if (rowIndex < 0 || !markRecycleFor(node.children[rowIndex])) return;
-	const header = [];
-	const footer = [];
 	const defaultChildren = [];
 	const refresher = [];
 	const namedSlots = [];
@@ -31988,30 +32002,43 @@ const transformListView = (node) => {
 				continue;
 			}
 		}
-		if (i < start) header.push(child);
-		else if (i > end) footer.push(child);
-		else defaultChildren.push(child);
+		defaultChildren.push(child);
 	}
+	const rowIndex = defaultChildren.findIndex((child) => isListRow(child) && findDir$1(child, "for") && !findDir$1(child, "if"));
+	const sections = defaultChildren.filter((child) => child.type === 1 && child.tag === "sticky-section");
+	let start = rowIndex < 0 ? defaultChildren.length : rowIndex;
+	let end = start;
+	if (sections.length) {
+		start = defaultChildren.indexOf(sections[0]);
+		end = defaultChildren.indexOf(sections[sections.length - 1]);
+	} else if (rowIndex >= 0) markRecycleFor(defaultChildren[rowIndex]);
+	const header = defaultChildren.slice(0, start);
+	const footer = defaultChildren.slice(end + 1);
 	node.children = [
 		...header.length ? [wrapTemplate("header", header)] : [],
-		...defaultChildren,
+		...defaultChildren.slice(start, end + 1),
 		...footer.length ? [wrapTemplate("footer", footer)] : [],
 		...refresher.length ? [wrapTemplate("refresher", refresher)] : [],
 		...namedSlots
 	];
-};
+}
 function isListRow(node) {
 	return node.type === 1 && (node.tag === "list-item" || node.tag === "template" && node.children.length === 1 && node.children[0].type === 1 && node.children[0].tag === "list-item" && !findDir$1(node.children[0], "for"));
 }
 //#endregion
 //#region packages/compiler-vapor-web/src/transforms/transformWaterflow.ts
-const transformWaterflow = (node) => {
+function transformWaterflow(node) {
+	if (node.type === 1 && node.tag === "flow-item") {
+		if (!node.__recycleFor) toViewElement(node);
+		return;
+	}
 	if (node.type !== 1 || node.tag !== "waterflow") return;
 	const container = node;
 	if (container.__recycleForProcessed) return;
 	container.__recycleForProcessed = true;
-	const row = node.children.find((child) => isFlowRow(child) && findDir$1(child, "for") && !findDir$1(child, "if"));
-	if (!row || !markRecycleFor(row)) return;
+	const row = node.children.find((child) => isFlowRow(child) && findDir$1(child, "for") && !findDir$1(child, "if") && !findDir$1(child, "slot", true) && !child.props.some((prop) => prop.type === 6 && prop.name === "slot" && prop.value && (prop.value.content === "refresher" || prop.value.content === "load-more")));
+	if (!row) return;
+	markRecycleFor(row);
 	const defaultChildren = [];
 	const refresher = [];
 	const loadMore = [];
@@ -32040,7 +32067,7 @@ const transformWaterflow = (node) => {
 		...loadMore.length ? [wrapTemplate("load-more", loadMore)] : [],
 		...namedSlots
 	];
-};
+}
 function isFlowRow(node) {
 	return node.type === 1 && (node.tag === "flow-item" || node.tag === "template" && node.children.length === 1 && node.children[0].type === 1 && node.children[0].tag === "flow-item" && !findDir$1(node.children[0], "for"));
 }
@@ -32091,6 +32118,12 @@ function resolveUniElementRoots(ast, name) {
 	if (!roots.length) return;
 	const elements = roots.filter((node) => node.type === 1);
 	if (elements.length !== roots.length) return;
+	if ((name === "list-view" || name === "waterflow") && elements.length === 1 && elements[0].tag === "scroll-view" && elements[0].tagType === 1 && !findProp$1(elements[0], "key", true, true) && !elements[0].props.some((prop) => prop.type === 7 && [
+		"if",
+		"else-if",
+		"else",
+		"for"
+	].includes(prop.name))) return elements;
 	if (elements.length > 1) {
 		if (!elements[0].props.some((prop) => prop.type === 7 && prop.name === "if") || elements.slice(1).some((node) => !node.props.some((prop) => prop.type === 7 && (prop.name === "else-if" || prop.name === "else")))) return;
 	}
@@ -32115,8 +32148,29 @@ function createUniElementTransform() {
 			if (node.type === 0) {
 				name = context.options.bindingMetadata.__uniElement;
 				if (name) roots = resolveUniElementRoots(node, name);
+				if ((roots === null || roots === void 0 ? void 0 : roots[0].tag) === "scroll-view") {
+					const root = roots[0];
+					return () => {
+						var _context$dynamic$chil;
+						const element = (_context$dynamic$chil = context.dynamic.children[node.children.indexOf(root)]) === null || _context$dynamic$chil === void 0 ? void 0 : _context$dynamic$chil.id;
+						if (element === void 0) return;
+						const operation = {
+							type: 3,
+							element,
+							tag: root.tag,
+							isSVG: false,
+							prop: {
+								key: createSimpleExpression("uniTagName", true),
+								values: []
+							}
+						};
+						elementOperations.add(operation);
+						context.registerOperation(operation);
+					};
+				}
 			} else if (roots && node.type === 1 && roots.some((root) => node.loc === root.loc) && isUniBasicElement(node)) {
 				if (!node.props.some((prop) => prop.type === 6 && prop.name === `uni-${name}`)) node.props.unshift({
+					__uniTemplate: true,
 					type: 6,
 					name: `uni-${name}`,
 					nameLoc: node.loc,
@@ -32143,6 +32197,23 @@ function createUniElementTransform() {
 				descriptor = context.getUniqueLocalName(`_uni${capitalize(camelize(name))}Element`);
 				context.hoists.push(`const ${descriptor} = { value: ${JSON.stringify(name.toUpperCase())} }\n`);
 			}
+			if (operation.tag === "scroll-view") {
+				const element = context.getUniqueLocalName(`_uni${capitalize(camelize(name))}Root`);
+				return [
+					NEWLINE,
+					`const ${element} = `,
+					...genCall(context.helper("getBlockFirstNode"), `n${operation.element}`),
+					NEWLINE,
+					`if (${element} && ${element}.nodeType === 1) {`,
+					NEWLINE,
+					`  ${element}.setAttribute(${JSON.stringify(`uni-${name}`)}, "")`,
+					NEWLINE,
+					"  ",
+					...genCall(context.helper("initUniElement"), element, descriptor),
+					NEWLINE,
+					"}"
+				];
+			}
 			return [NEWLINE, ...genCall(context.helper("initUniElement"), `n${operation.element}`, descriptor)];
 		}
 	};
@@ -32152,6 +32223,8 @@ function createUniElementTransform() {
 function createUniAppXWebTransform(options = {}) {
 	if (options.ssr) {
 		const transform = (node, context) => {
+			transformListView(node);
+			transformWaterflow(node);
 			transformView(node);
 			transformText(node);
 			transformSSRImage(node, context);
@@ -32169,8 +32242,8 @@ function createUniAppXWebTransform(options = {}) {
 	const element = createUniElementTransform();
 	return {
 		transform: (node, context) => {
-			transformListView(node, context);
-			transformWaterflow(node, context);
+			transformListView(node);
+			transformWaterflow(node);
 			const exitRecycle = recycle.transform(node, context);
 			const exitComponentId = componentId.transform(node, context);
 			transformView(node);
@@ -32233,9 +32306,10 @@ function compile(source, options = {}) {
 	var _options$bindingMetad, _options$isUniPage, _options$expressionPl;
 	const resolvedOptions = _objectSpread2(_objectSpread2({}, options), resolveParserOptions(options));
 	const isolation = (_options$bindingMetad = options.bindingMetadata) === null || _options$bindingMetad === void 0 ? void 0 : _options$bindingMetad.__uniStyleIsolation;
+	if (isolation === null) throw new SyntaxError("Web Vapor 的 styleIsolation 必须在编译期确定，请使用字符串字面量，例如 styleIsolation: 'isolated'。");
 	const isPage = (_options$isUniPage = options.isUniPage) === null || _options$isUniPage === void 0 ? void 0 : _options$isUniPage.call(options, options.filename || "");
-	if (isolation !== null && (isPage ? isolation !== "isolated" : isolation === "app" || isolation === "app-shared" || isolation === "app-and-page")) resolvedOptions.extraScopeId = UNI_APP_SCOPE_ID;
-	resolvedOptions.templateFlags = isolation === null ? 512 : !isPage && isolation === "app-and-page" ? 256 : 0;
+	if (isPage ? isolation !== "isolated" : isolation === "app" || isolation === "app-shared" || isolation === "app-and-page") resolvedOptions.extraScopeId = UNI_APP_SCOPE_ID;
+	resolvedOptions.templateFlags = !isPage && isolation === "app-and-page" ? 256 : 0;
 	if (options.isTS && !((_options$expressionPl = options.expressionPlugins) === null || _options$expressionPl === void 0 ? void 0 : _options$expressionPl.includes("typescript"))) resolvedOptions.expressionPlugins = [...options.expressionPlugins || [], "typescript"];
 	const ast = typeof source === "string" ? parse$6(source, resolvedOptions) : source;
 	const [nodeTransforms, directiveTransforms] = getBaseTransformPreset();
@@ -44633,9 +44707,9 @@ function resolveUniStyleIsolation(node, value) {
 	if (!node) return value;
 	node = unwrapTSNode(node);
 	if (node.type === "ExportDefaultDeclaration") return resolveUniStyleIsolation(node.declaration, value);
-	if (node.type !== "ObjectExpression") return null;
+	if (node.type !== "ObjectExpression") return value;
 	for (const prop of node.properties) if (prop.type === "SpreadElement") value = resolveUniStyleIsolation(prop.argument, value);
-	else if (prop.computed && prop.key.type !== "StringLiteral") value = null;
+	else if (prop.computed && prop.key.type !== "StringLiteral") continue;
 	else if (prop.key.type === "Identifier" && prop.key.name === "styleIsolation" || prop.key.type === "StringLiteral" && prop.key.value === "styleIsolation") {
 		const expression = prop.type === "ObjectProperty" && unwrapTSNode(prop.value);
 		value = expression && expression.type === "StringLiteral" ? expression.value : null;

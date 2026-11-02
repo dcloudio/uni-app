@@ -28307,6 +28307,7 @@ interface CommentNode$1 extends Node$1 {
   content: string;
 }
 interface AttributeNode extends Node$1 {
+  __uniTemplate?: true;
   type: NodeTypes.ATTRIBUTE;
   name: string;
   nameLoc: SourceLocation$1;
