@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.13
+  * @vue/shared v3.6.0-rc.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -710,7 +710,9 @@ const VaporBlockShape = {
 	"SINGLE_ROOT": 1,
 	"1": "SINGLE_ROOT",
 	"MULTI_ROOT": 2,
-	"2": "MULTI_ROOT"
+	"2": "MULTI_ROOT",
+	"ELSE_IF": 3,
+	"3": "ELSE_IF"
 };
 /**
 * Bit layout for vapor `createIf` flags.
@@ -766,6 +768,19 @@ const VaporSlotFlags = {
 function isForwardedSlot(flags) {
 	return !!(flags & 4);
 }
+/**
+* The data of the comment a vapor server render opens the branch of a `v-if`
+* chain with, `<!--[1-->`: the digits are the branch's position in the chain,
+* and `<!--]-->` closes it like a fragment.
+*/
+function isVaporBranchStart(data) {
+	if (data.length < 2 || data.charCodeAt(0) !== 91) return false;
+	for (let i = 1; i < data.length; i++) {
+		const c = data.charCodeAt(i);
+		if (c < 48 || c > 57) return false;
+	}
+	return true;
+}
 function slotNotifiesBoundary(flags) {
 	return isForwardedSlot(flags) && !(flags & 2);
 }
@@ -804,4 +819,4 @@ const VaporSingleRoot = {
 	"2": "SLOT"
 };
 //#endregion
-export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSingleRoot, VaporSlotFlags, VaporSlotStability, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isForwardedSlot, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, slotNotifiesBoundary, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
+export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSingleRoot, VaporSlotFlags, VaporSlotStability, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isForwardedSlot, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVaporBranchStart, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, slotNotifiesBoundary, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

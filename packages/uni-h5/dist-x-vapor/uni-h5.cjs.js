@@ -8840,8 +8840,8 @@ _UniButtonElement.__uniElement = { vm: true, init() {
   Object.defineProperty(this, "_value", { value: "", writable: true, enumerable: true, configurable: true });
 } };
 let UniButtonElement = _UniButtonElement;
-const t0$n = Vue.template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center"><!><span uni-text>', 1);
-const t1$a = Vue.template("<span uni-button uni-text>", 1);
+const t0$n = Vue.template('<div uni-button uni-view style="display: flex;justify-content: center;flex-direction: row;align-items: center" role=button><!><span uni-text>', 1);
+const t1$a = Vue.template("<span uni-button uni-text role=button>", 1);
 const _uniButtonElement = { value: "BUTTON" };
 const DEFAULT_BUTTON_HOVER_CLASS_NAME = "button-hover";
 const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
@@ -8874,6 +8874,37 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
   setup(__props, { expose: __expose, emit: __emit }) {
     const emit2 = __emit;
     const props2 = __props;
+    const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    function handleKeydown(event) {
+      var _a;
+      if (event.key !== "Enter") {
+        handleSpaceKeydown(event);
+        return;
+      }
+      if (event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      event.preventDefault();
+      if (!props2.disabled && !event.repeat) {
+        (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      }
+    }
+    const loadingRootRef = Vue.ref(null);
+    Vue.watch(() => props2.loading && !props2.disabled, (_loading, wasLoading) => {
+      const element = wasLoading ? loadingRootRef.value : textRef.value;
+      if (element == null || document.activeElement !== element) {
+        return;
+      }
+      handleBlur();
+      Vue.nextTick(() => {
+        if (!props2.disabled && document.activeElement === document.body) {
+          const element2 = props2.loading && !props2.disabled ? loadingRootRef.value : textRef.value;
+          if (element2 instanceof Object) {
+            element2.focus();
+          }
+        }
+      });
+    });
     const textRef = Vue.ref(null);
     const buttonType = Vue.computed(() => {
       return props2.type == null ? "default" : props2.type;
@@ -8991,9 +9022,11 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
             [_size == "mini", "uni-button-text-size-mini"],
             [_size == "default", "uni-button-text-size-default"]
           )]);
+          Vue.setProp(n2, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n2, "aria-disabled", _disabled);
         });
         Vue.setInsertionState(n2, n6);
-        Vue.withComponentId("0ed9f4ec", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
+        Vue.withComponentId("0ed9fc4b", () => Vue.createComponentWithFallback(_component_loading, { class: () => ["uni-button-loading-icon", Vue.unref(classes)(
           [Vue.unref(buttonType) == "default", "uni-loading-default"],
           [__props.plain && Vue.unref(buttonType) == "primary", "uni-loading-plain-primary"],
           [__props.plain && Vue.unref(buttonType) == "warn", "uni-loading-plain-warn"],
@@ -9012,7 +9045,11 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
           /* TEXT_MODE */
         );
         Vue.setStaticTemplateRef(n5, textRef, null, "textRef");
+        Vue.on(n2, "keydown", handleKeydown);
+        Vue.on(n2, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n2, "blur", (e2) => Vue.unref(handleBlur)(e2));
         Vue.on(n2, "click", handleTap);
+        Vue.setStaticTemplateRef(n2, loadingRootRef, null, "loadingRootRef");
         return n2;
       },
       () => {
@@ -9040,6 +9077,8 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
             [_size == "mini", "uni-button-text-size-mini"],
             [_size == "default", "uni-button-text-size-default"]
           )]);
+          Vue.setProp(n8, "tabindex", _disabled ? -1 : 0);
+          Vue.setAttr(n8, "aria-disabled", _disabled);
         });
         Vue.setInsertionState(n8);
         Vue.createSlot(
@@ -9049,6 +9088,9 @@ const _sfc_main$n = /* @__PURE__ */ Vue.defineVaporComponent({
           256
           /* TEXT_MODE */
         );
+        Vue.on(n8, "keydown", handleKeydown);
+        Vue.on(n8, "keyup", (e2) => Vue.unref(handleKeyup)(e2));
+        Vue.on(n8, "blur", (e2) => Vue.unref(handleBlur)(e2));
         Vue.on(n8, "click", handleTap);
         Vue.setStaticTemplateRef(n8, textRef, null, "textRef");
         return n8;

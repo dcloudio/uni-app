@@ -4603,21 +4603,21 @@ const _sfc_main$w = /* @__PURE__ */ defineComponent$2({
         }
         _push(`<div class="uni-tabbar__bd" style="${ssrRenderStyle({ height: unref(tabBar).height })}">`);
         if (getIconfontText(item, index2)) {
-          _push(`<div class="${ssrRenderClass(getIconClass(item))}" style="${ssrRenderStyle(getIconStyle())}">`);
+          _push(`<!--[0--><div class="${ssrRenderClass(getIconClass(item))}" style="${ssrRenderStyle(getIconStyle())}">`);
           if (item.type !== "midButton") {
             _push(`<div class="uni-tabbar__iconfont" style="${ssrRenderStyle(getIconfontStyle(item, index2))}">${ssrInterpolate(getIconfontText(item, index2))}</div>`);
           } else {
             _push(`<!---->`);
           }
-          _push(`</div>`);
+          _push(`</div><!--]-->`);
         } else if (getIconPath(item, index2)) {
-          _push(`<div class="${ssrRenderClass(getIconClass(item))}" style="${ssrRenderStyle(getIconStyle())}">`);
+          _push(`<!--[1--><div class="${ssrRenderClass(getIconClass(item))}" style="${ssrRenderStyle(getIconStyle())}">`);
           if (item.type !== "midButton") {
             _push(`<img${ssrRenderAttr("src", unref(getRealPath)(getIconPath(item, index2)))}>`);
           } else {
             _push(`<!---->`);
           }
-          _push(`</div>`);
+          _push(`</div><!--]-->`);
         } else {
           _push(`<!---->`);
         }
@@ -4990,7 +4990,7 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
         class: unref(clazz)
       }, _attrs), "uni-app")}>`);
       if (unref(hasResponsive)) {
-        _push(`<uni-layout class="${ssrRenderClass({
+        _push(`<!--[0--><uni-layout class="${ssrRenderClass({
           "uni-app--showtopwindow": unref(hasTopWindow) && unref(layoutState).showTopWindow,
           "uni-app--showleftwindow": unref(hasLeftWindow) && unref(layoutState).showLeftWindow,
           "uni-app--showrightwindow": unref(hasRightWindow) && unref(layoutState).showRightWindow
@@ -5008,6 +5008,7 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
         }
         _push(`<uni-content><uni-main>`);
         if (unref(hasPages) && ((_a = unref(route)) == null ? void 0 : _a.meta.route)) {
+          _push(`<!--[0-->`);
           _push(ssrRenderComponent(unref(VaporRouterView), {
             type: unref(isTabBar) ? "tabBar" : ""
           }, {
@@ -5028,8 +5029,11 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
             }),
             _: 1
           }, _parent));
+          _push(`<!--]-->`);
         } else if (!unref(hasPages)) {
+          _push(`<!--[1-->`);
           ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(firstPageComponent)), null, null, _parent);
+          _push(`<!--]-->`);
         } else {
           _push(`<!---->`);
         }
@@ -5072,10 +5076,11 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
         } else {
           _push(`<!---->`);
         }
-        _push(`</uni-content></uni-layout>`);
+        _push(`</uni-content></uni-layout><!--]-->`);
       } else {
-        _push(`<!--[-->`);
+        _push(`<!--[1-->`);
         if (unref(hasPages) && ((_b = unref(route)) == null ? void 0 : _b.meta.route)) {
+          _push(`<!--[0-->`);
           _push(ssrRenderComponent(unref(VaporRouterView), {
             type: unref(isTabBar) ? "tabBar" : ""
           }, {
@@ -5096,8 +5101,11 @@ const _sfc_main$v = /* @__PURE__ */ defineComponent$2({
             }),
             _: 1
           }, _parent));
+          _push(`<!--]-->`);
         } else if (!unref(hasPages)) {
+          _push(`<!--[1-->`);
           ssrRenderDynamicComponent(_push, resolveDynamicComponent(unref(firstPageComponent)), null, null, _parent);
+          _push(`<!--]-->`);
         } else {
           _push(`<!---->`);
         }
@@ -5775,22 +5783,24 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
       }
       _push(`</div>`);
       if (!unref(hasSearchInput) || !unref(navigationBar).searchInput) {
-        _push(`<div class="uni-page-head-bd"><div class="uni-page-head__title" style="${ssrRenderStyle({
+        _push(`<!--[0--><div class="uni-page-head-bd"><div class="uni-page-head__title" style="${ssrRenderStyle({
           fontSize: unref(navigationBar).titleSize,
           opacity: unref(navigationBar).type === "transparent" ? 0 : 1
         })}">`);
         if (!unref(isXVapor) && unref(navigationBar).loading) {
-          _push(`<i class="uni-loading"></i>`);
+          _push(`<!--[0--><i class="uni-loading"></i><!--]-->`);
         } else if (unref(isXVapor) && unref(navigationBar).loading) {
+          _push(`<!--[1-->`);
           _push(ssrRenderComponent(unref(_sfc_main$s), { style: { "display": "inline-block", "width": "20px", "height": "20px", "margin-top": "7px" } }, null, _parent));
+          _push(`<!--]-->`);
         } else if (unref(navigationBar).titleImage) {
-          _push(`<img${ssrRenderAttr("src", unref(navigationBar).titleImage)} class="uni-page-head__title_image">`);
+          _push(`<!--[2--><img${ssrRenderAttr("src", unref(navigationBar).titleImage)} class="uni-page-head__title_image"><!--]-->`);
         } else {
-          _push(`<!--[-->${ssrInterpolate(unref(navigationBar).titleText)}<!--]-->`);
+          _push(`<!--[3-->${ssrInterpolate(unref(navigationBar).titleText)}<!--]-->`);
         }
-        _push(`</div></div>`);
+        _push(`</div></div><!--]-->`);
       } else {
-        _push(`<div class="uni-page-head-search" style="${ssrRenderStyle({
+        _push(`<!--[1--><div class="uni-page-head-search" style="${ssrRenderStyle({
           borderRadius: unref(navigationBar).searchInput.borderRadius,
           backgroundColor: unref(navigationBar).searchInput.backgroundColor
         })}"><div style="${ssrRenderStyle({ color: unref(navigationBar).searchInput.placeholderColor })}" class="${ssrRenderClass([
@@ -5804,6 +5814,7 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
         }
         _push(`</div>`);
         if (unref(navigationBar).searchInput.disabled) {
+          _push(`<!--[0-->`);
           _push(ssrRenderComponent(unref(Input), {
             disabled: true,
             style: { color: unref(navigationBar).searchInput.color },
@@ -5812,7 +5823,9 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
             "confirm-type": "search",
             onClick: ($event) => unref(searchOnClick) && unref(searchOnClick)($event)
           }, null, _parent));
+          _push(`<!--]-->`);
         } else {
+          _push(`<!--[1-->`);
           _push(ssrRenderComponent(unref(Input), {
             focus: unref(navigationBar).searchInput.autoFocus,
             style: { color: unref(navigationBar).searchInput.color },
@@ -5824,8 +5837,9 @@ const _sfc_main$r = /* @__PURE__ */ defineComponent$2({
             onInput: ($event) => unref(searchOnInput) && unref(searchOnInput)($event),
             onConfirm: ($event) => unref(searchOnConfirm) && unref(searchOnConfirm)($event)
           }, null, _parent));
+          _push(`<!--]-->`);
         }
-        _push(`</div>`);
+        _push(`</div><!--]-->`);
       }
       _push(`<div class="uni-page-head-ft">`);
       if (unref(hasButtons) && unref(buttons)) {
@@ -9722,6 +9736,37 @@ function classes(...classList) {
     return className ?? "";
   });
 }
+function createSpaceKeyHandlers(isDisabled) {
+  let spacePressed = false;
+  function handleKeydown(event) {
+    if (event.key !== " " || event.target !== event.currentTarget || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (!event.repeat) {
+      spacePressed = !isDisabled();
+    }
+  }
+  function handleKeyup(event) {
+    var _a;
+    if (event.key !== " " || event.target !== event.currentTarget) {
+      return;
+    }
+    const shouldActivate = spacePressed;
+    spacePressed = false;
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    event.preventDefault();
+    if (shouldActivate && !isDisabled()) {
+      (_a = event.currentTarget) == null ? void 0 : _a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    }
+  }
+  function handleBlur() {
+    spacePressed = false;
+  }
+  return { handleKeydown, handleKeyup, handleBlur };
+}
 class UniButtonElement extends UniTextElement {
   constructor() {
     super(...arguments);
@@ -9769,6 +9814,23 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
   __vapor: true,
   setup(__props, { expose: __expose, emit: __emit }) {
     const props2 = __props;
+    const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props2.disabled);
+    const loadingRootRef = ref(null);
+    watch(() => props2.loading && !props2.disabled, (_loading, wasLoading) => {
+      const element = wasLoading ? loadingRootRef.value : textRef.value;
+      if (element == null || document.activeElement !== element) {
+        return;
+      }
+      handleBlur();
+      nextTick(() => {
+        if (!props2.disabled && document.activeElement === document.body) {
+          const element2 = props2.loading && !props2.disabled ? loadingRootRef.value : textRef.value;
+          if (element2 instanceof Object) {
+            element2.focus();
+          }
+        }
+      });
+    });
     const textRef = ref(null);
     const buttonType = computed(() => {
       return props2.type == null ? "default" : props2.type;
@@ -9859,7 +9921,12 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [__props.size == "mini", "uni-button-text-size-mini"],
             [__props.size == "default", "uni-button-text-size-default"]
           )],
-          style: { "display": "flex", "justify-content": "center", "flex-direction": "row", "align-items": "center" }
+          style: { "display": "flex", "justify-content": "center", "flex-direction": "row", "align-items": "center" },
+          ref_key: "loadingRootRef",
+          ref: loadingRootRef,
+          tabindex: __props.disabled ? -1 : 0,
+          role: "button",
+          "aria-disabled": __props.disabled
         }, _attrs))}>`);
         _push(ssrRenderComponent(unref(__props["loading"]), {
           class: ["uni-button-loading-icon", unref(classes)(
@@ -9892,7 +9959,10 @@ const _sfc_main$n = /* @__PURE__ */ defineComponent$2({
             [__props.plain, "uni-button-view-plain"],
             [__props.size == "mini", "uni-button-text-size-mini"],
             [__props.size == "default", "uni-button-text-size-default"]
-          )]
+          )],
+          tabindex: __props.disabled ? -1 : 0,
+          role: "button",
+          "aria-disabled": __props.disabled
         }, _attrs))}>`);
         ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
         _push(`</span>`);
@@ -10026,7 +10096,7 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (!hasDefaultSlot) {
-        _push(`<div${ssrRenderAttrs(mergeProps({
+        _push(`<!--[0--><div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
           class: ["uni-checkbox-view uni-checkbox-icon", unref(classes)(
             [__props.disabled, "uni-checkbox-disabled"],
@@ -10045,9 +10115,9 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
         } else {
           _push(`<!---->`);
         }
-        _push(`</div>`);
+        _push(`</div><!--]-->`);
       } else {
-        _push(`<div${ssrRenderAttrs(mergeProps({
+        _push(`<!--[1--><div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
           class: "uni-checkbox",
           tabindex: __props.disabled ? -1 : 0,
@@ -10067,13 +10137,15 @@ const _sfc_main$m = /* @__PURE__ */ defineComponent$2({
         }
         _push(`</div>`);
         if (isStringSlot) {
-          _push(`<span uni-text>`);
+          _push(`<!--[0--><span uni-text>`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-          _push(`</span>`);
+          _push(`</span><!--]-->`);
         } else {
+          _push(`<!--[1-->`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
+          _push(`<!--]-->`);
         }
-        _push(`</div>`);
+        _push(`</div><!--]-->`);
       }
     };
   }
@@ -12299,7 +12371,7 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (!hasDefaultSlot) {
-        _push(`<div${ssrRenderAttrs(mergeProps({
+        _push(`<!--[0--><div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
           class: ["uni-radio-view uni-radio-icon", unref(classes)(
             [__props.disabled, "uni-radio-disabled"],
@@ -12319,9 +12391,9 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
         } else {
           _push(`<!---->`);
         }
-        _push(`</div>`);
+        _push(`</div><!--]-->`);
       } else {
-        _push(`<div${ssrRenderAttrs(mergeProps({
+        _push(`<!--[1--><div${ssrRenderAttrs(mergeProps({
           "uni-view": "",
           class: "uni-radio",
           tabindex: __props.disabled ? -1 : 0,
@@ -12342,13 +12414,15 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent$2({
         }
         _push(`</div>`);
         if (isStringSlot) {
-          _push(`<span uni-text>`);
+          _push(`<!--[0--><span uni-text>`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent, null, true);
-          _push(`</span>`);
+          _push(`</span><!--]-->`);
         } else {
+          _push(`<!--[1-->`);
           ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
+          _push(`<!--]-->`);
         }
-        _push(`</div>`);
+        _push(`</div><!--]-->`);
       }
     };
   }
@@ -13928,11 +14002,13 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent$2({
         ref: swiperItem
       }, _attrs))}>`);
       if (unref(autoHeight)) {
-        _push(`<div uni-view class="uni-swiper-item-content">`);
+        _push(`<!--[0--><div uni-view class="uni-swiper-item-content">`);
         ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-        _push(`</div>`);
+        _push(`</div><!--]-->`);
       } else {
+        _push(`<!--[1-->`);
         ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
+        _push(`<!--]-->`);
       }
       _push(`</div>`);
     };

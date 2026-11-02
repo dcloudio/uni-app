@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.13
+  * @vue/shared v3.6.0-rc.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -712,7 +712,9 @@ const VaporBlockShape = {
 	"SINGLE_ROOT": 1,
 	"1": "SINGLE_ROOT",
 	"MULTI_ROOT": 2,
-	"2": "MULTI_ROOT"
+	"2": "MULTI_ROOT",
+	"ELSE_IF": 3,
+	"3": "ELSE_IF"
 };
 /**
 * Bit layout for vapor `createIf` flags.
@@ -767,6 +769,19 @@ const VaporSlotFlags = {
 };
 function isForwardedSlot(flags) {
 	return !!(flags & 4);
+}
+/**
+* The data of the comment a vapor server render opens the branch of a `v-if`
+* chain with, `<!--[1-->`: the digits are the branch's position in the chain,
+* and `<!--]-->` closes it like a fragment.
+*/
+function isVaporBranchStart(data) {
+	if (data.length < 2 || data.charCodeAt(0) !== 91) return false;
+	for (let i = 1; i < data.length; i++) {
+		const c = data.charCodeAt(i);
+		if (c < 48 || c > 57) return false;
+	}
+	return true;
 }
 function slotNotifiesBoundary(flags) {
 	return isForwardedSlot(flags) && !(flags & 2);
@@ -877,6 +892,7 @@ exports.isSet = isSet;
 exports.isSpecialBooleanAttr = isSpecialBooleanAttr;
 exports.isString = isString;
 exports.isSymbol = isSymbol;
+exports.isVaporBranchStart = isVaporBranchStart;
 exports.isVoidTag = isVoidTag;
 exports.looseEqual = looseEqual;
 exports.looseIndexOf = looseIndexOf;

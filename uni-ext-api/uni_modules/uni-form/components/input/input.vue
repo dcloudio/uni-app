@@ -53,9 +53,8 @@
       ></native-view>
       <!-- #endif -->
     </view>
-		<!-- #ifdef APP-IOS || APP-HARMONY -->
+		<!-- 选区颜色探针：读取 selection-class 的 background-color -->
 		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
-		<!-- #endif -->
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef WEB -->
@@ -66,8 +65,10 @@
 <script module="inputCpp" lang="cpp" class-name="NativeInputView" src="../../cppsdk/app-harmony/input_view.h" namespace="uniappx::form"></script>
 <!-- #endif -->
 <script setup lang="ts">
-	// #ifdef APP-IOS || APP-HARMONY
+	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
 	import SelectionStyle from "../selection-style.vue"
+	// #endif
+	// #ifdef APP-IOS || APP-HARMONY
 	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
 	// #endif
 	import {
@@ -270,9 +271,7 @@
 		},
 		externalClasses: [
 			'placeholder-class',
-			// #ifdef APP-IOS || APP-HARMONY
 			'selection-class',
-			// #endif
 		]
 	})
 
@@ -364,10 +363,8 @@
 	 }
 	 */
 		placeholderClass ?: string.ClassString;
-		// #ifdef APP-IOS || APP-HARMONY
 		/** Background color of the native text selection (选区背景色样式类). */
 		selectionClass ?: string.ClassString;
-		// #endif
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -498,9 +495,7 @@
 		placeholder: '',
 		placeholderStyle: '',
 		placeholderClass: '',
-		// #ifdef APP-IOS || APP-HARMONY
 		selectionClass: '',
-		// #endif
 		maxlength: -1,
 		cursorSpacing: 0,
 		cursorColor: '',
@@ -519,11 +514,13 @@
 	const caretColor = computed(() => {
 		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
 	})
+	// #endif
 
+	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
 	const selectionColor = ref('')
 	function onSelectionColorChange(color: string) {
 		selectionColor.value = color
-		// #ifdef APP-IOS
+		// #ifdef APP-IOS || APP-ANDROID
 		inputView?.updateSelectionColor(color)
 		// #endif
 	}
@@ -546,6 +543,7 @@
 	function syncAndroidInputStyleProps() {
 		inputView?.updateFontSize(rpx2px(style.get('font-size')))
 		inputView?.updateColor(resolvedTextColor.value)
+		inputView?.updateSelectionColor(selectionColor.value)
 		inputView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		inputView?.updateFontWeight(style.get('font-weight'))
 		inputView?.updateFontStyle(style.get('font-style'))

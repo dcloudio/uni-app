@@ -24,6 +24,15 @@
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
     :hover-stop-propagation="hoverStopPropagation"
+    <!-- #ifdef WEB -->
+    ref="loadingRootRef"
+    :tabindex="disabled ? -1 : 0"
+    role="button"
+    :aria-disabled="disabled"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    <!-- #endif -->
     @click="handleTap"
   >
     <loading
@@ -69,6 +78,14 @@
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
     :hover-stop-propagation="hoverStopPropagation"
+    <!-- #ifdef WEB -->
+    :tabindex="disabled ? -1 : 0"
+    role="button"
+    :aria-disabled="disabled"
+    @keydown="handleKeydown"
+    @keyup="handleKeyup"
+    @blur="handleBlur"
+    <!-- #endif -->
     @click="handleTap"
   >
     <slot></slot>
@@ -76,6 +93,9 @@
 </template>
 
 <script lang="ts" setup>
+  // #ifdef WEB
+  import { createSpaceKeyHandlers } from '../common.ts'
+  // #endif
   import { FORM_KEY, classes } from '../common.ts'
   import { UniButtonElement } from './global.ts'
   import { FormContext } from '../types.ts'
@@ -384,6 +404,43 @@
     openType: '',
     iosLoadingSnow: false
   })
+
+  // #ifdef WEB
+  const { handleKeydown: handleSpaceKeydown, handleKeyup, handleBlur } = createSpaceKeyHandlers(() => props.disabled)
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Enter') {
+      handleSpaceKeydown(event)
+      return
+    }
+    if (event.target !== event.currentTarget || event.defaultPrevented ||
+        event.altKey || event.ctrlKey || event.metaKey) {
+      return
+    }
+    event.preventDefault()
+    if (!props.disabled && !event.repeat) {
+      event.currentTarget?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    }
+  }
+
+  const loadingRootRef = ref<HTMLElement | null>(null)
+  watch(() => props.loading && !props.disabled, (_loading, wasLoading) => {
+    const element = wasLoading ? loadingRootRef.value : textRef.value
+    if (element == null || document.activeElement !== element) {
+      return
+    }
+    // Switching loading state replaces the root; retain focus without stealing it from another control.
+    handleBlur()
+    nextTick(() => {
+      if (!props.disabled && document.activeElement === document.body) {
+        const element = props.loading && !props.disabled ? loadingRootRef.value : textRef.value
+        if (element instanceof HTMLElement) {
+          element.focus()
+        }
+      }
+    })
+  })
+  // #endif
 
   defineOptions({
     name: 'button',

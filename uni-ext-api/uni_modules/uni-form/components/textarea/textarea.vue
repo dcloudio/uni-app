@@ -9,6 +9,8 @@
 				@blur="onBlur" @keyboardheightchange="onKeyboardHeightChange" @change="onChange"
 				@linechange="onLineChange" @confirm="onConfirm"></native-view>
 		</view>
+		<!-- 选区颜色探针：读取 selection-class 的 background-color -->
+		<SelectionStyle v-if="props.selectionClass != ''" :class="props.selectionClass" @change="onSelectionColorChange" />
 	</view>
 	<!-- #endif -->
 	<!-- #ifndef APP-ANDROID -->
@@ -36,8 +38,10 @@
 	<!-- #endif -->
 </template>
 <script setup lang="ts">
-	// #ifdef APP-IOS || APP-HARMONY
+	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
 	import SelectionStyle from "../selection-style.vue"
+	// #endif
+	// #ifdef APP-IOS || APP-HARMONY
 	import { resolveEditorCaretColor, useEditorColor } from "../editor-color.ts"
 	// #endif
 	import {
@@ -213,9 +217,7 @@
 		},
 		externalClasses: [
 			'placeholder-class',
-			// #ifdef APP-IOS || APP-HARMONY
 			'selection-class',
-			// #endif
 		]
 	})
 
@@ -303,10 +305,8 @@
 	 }
 	 */
 		placeholderClass ?: string.ClassString;
-		// #ifdef APP-IOS || APP-HARMONY
 		/** Background color of the native text selection (选区背景色样式类). */
 		selectionClass ?: string.ClassString;
-		// #endif
 		/**
 	 * @uniPlatform {
 	   "app": {
@@ -445,9 +445,7 @@
 		placeholder: '',
 		placeholderStyle: '',
 		placeholderClass: '',
-		// #ifdef APP-IOS || APP-HARMONY
 		selectionClass: '',
-		// #endif
 		maxlength: -1,
 		cursorSpacing: 0,
 		cursorColor: '',
@@ -526,7 +524,9 @@
 	const caretColor = computed(() => {
 		return resolveEditorCaretColor(style.get('caret-color'), props.cursorColor)
 	})
+	// #endif
 
+	// #ifdef APP-IOS || APP-HARMONY || APP-ANDROID
 	const selectionColor = ref('')
 	function onSelectionColorChange(color: string) {
 		selectionColor.value = color
@@ -553,6 +553,7 @@
 		textareaView?.updateFontSize(rpx2px(style.get('font-size')))
 		textareaView?.updateColor(resolvedTextColor.value)
 		textareaView?.updateCursorColor(resolvedCursorColor.value)
+		textareaView?.updateSelectionColor(selectionColor.value)
 		textareaView?.updateLineHeight(rpx2px(style.get('line-height')))
 		textareaView?.updateLetterSpacing(rpx2px(style.get('letter-spacing')))
 		textareaView?.updateFontWeight(style.get('font-weight'))

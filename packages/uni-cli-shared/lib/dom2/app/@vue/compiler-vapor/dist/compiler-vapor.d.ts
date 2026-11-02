@@ -22559,6 +22559,7 @@ export interface IRProp extends Omit<DirectiveTransformResult, "value"> {
    * fixed by uts synthetic data-* group for dom2 dataset callbacks.
    */
   datasetProps?: IRProp[];
+  normalize?: "class" | "style";
 }
 export declare enum IRDynamicPropsKind {
   EXPRESSION = 0,
@@ -22666,6 +22667,8 @@ export interface BlockIRNode extends BaseIRNode {
   effect: IREffect[];
   operation: OperationNode[];
   returns: number[];
+  deferredOperationIndex: number;
+  deferredEffectIndex: number;
 }
 export interface RootIRNode {
   type: IRNodeTypes.ROOT;
@@ -22676,6 +22679,11 @@ export interface RootIRNode {
   directive: Set<string>;
   block: BlockIRNode;
   hasTemplateRef: boolean;
+  reservedNames: ReservedNames;
+}
+export interface ReservedNames {
+  names: Set<string>;
+  ids: Map<string, Set<number>>;
 }
 export interface IRTemplate {
   content: string;
@@ -22685,6 +22693,8 @@ export interface IRTemplate {
 }
 export declare class TemplateRegistry {
   entries: IRTemplate[];
+  private indexes;
+  intern(content: string, ns: Namespace, root: boolean, isStatic: boolean): number;
   keys(): string[];
 }
 export interface IfIRNode extends BaseIRNode, EffectBoundary, InsertionState {
@@ -22829,7 +22839,6 @@ export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary, Inser
   type: IRNodeTypes.CREATE_COMPONENT_NODE;
   id: number;
   tag: string;
-  slotScopeNamespace?: string;
   props: IRProps[];
   slots: IRSlots[];
   asset: boolean;
@@ -22887,6 +22896,31 @@ export declare enum DynamicFlag {
    */
   INSERT = 4
 }
+/**
+ * How the parent reaches a child codegen holds on to. Decided once the
+ * parent's children are final (`planAccess`), printed by `genChildren`.
+ */
+export declare enum DynamicAccess {
+  /** `const n<id> = ...` */
+  REFERENCE = 0,
+  /** `let p<n> = ...`, a cursor later lookups may reassign */
+  PLACEHOLDER = 1,
+  /** `p<n> = ...`, reassigning the previous cursor */
+  REUSE = 2,
+  /** no variable: written into the lookup of its only descendant access */
+  INLINE = 3,
+  /** `(p<n> = ...)` written inline, reassigning the previous cursor */
+  INLINE_REUSE = 4
+}
+export interface IRDynamicAccess {
+  kind: DynamicAccess;
+  /** position among the parent's rendered child nodes */
+  index: number;
+  /** reached with `next()` from the previous access instead of the parent */
+  adjacent: boolean;
+  /** the located node, for `REFERENCE` */
+  id?: number;
+}
 export interface IRDynamicInfo {
   id?: number;
   flags: DynamicFlag;
@@ -22898,6 +22932,7 @@ export interface IRDynamicInfo {
   operation?: OperationNode;
   type?: NodeTypes;
   tag?: string;
+  access?: IRDynamicAccess;
 }
 export interface IREffect {
   expressions: SimpleExpressionNode[];
@@ -22948,7 +22983,6 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   options: Required<Omit<TransformOptions$1, "filename" | keyof CompilerCompatOptions>>;
   template: string;
   templateRoot: boolean;
-  templateIndexMap: Map<string, number>;
   childrenTemplate: (string | null)[];
   dynamic: IRDynamicInfo;
   imports: ImportItem[];
@@ -22967,13 +23001,20 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   templateCloseTags: Set<string> | undefined;
   templateCloseBlocks: boolean;
   templateScope: number;
+  ifHead: IfIRNode | null;
+  ifTail: IfIRNode | null;
+  order: number;
+  effectOrder: Map<IREffect, number>;
   private globalId;
   private nextIdMap;
   private ifIndex;
+  private nextOrder;
   ifHeads: Map<IfIRNode, boolean>;
-  constructor(ir: RootIRNode, node: T, options?: TransformOptions$1);
+  private childInfo;
+  constructor(ir: RootIRNode, node: T, options?: TransformOptions$1, parent?: TransformContext<RootNode | ElementNode> | null, index?: number);
   enterBlock(ir: BlockIRNode, isVFor?: boolean): () => void;
-  increaseId: () => number;
+  private allocateOrder;
+  increaseId(): number;
   private initNextIdMap;
   reference(): number;
   nextIfIndex(count?: number): number;
@@ -22984,14 +23025,14 @@ export declare class TransformContext<T extends AllNode = AllNode> {
     static?: boolean;
   }): number;
   registerTemplate(): number;
-  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getIndex?: () => number, preserveOrder?: boolean, getOperationIndex?: () => number): boolean;
+  registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getOrder?: () => number, preserveOrder?: boolean, getOperationIndex?: () => number): boolean;
   registerOperation(...node: OperationNode[]): void;
   effectBoundary(): {
     operationIndex: number;
     effectIndex: number;
   };
+  finalizeBlock(block: BlockIRNode): void;
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
-  private shiftEffectBoundaries;
   private shiftOperationBoundaries;
   private getChildContextInfo;
   private isSlotRootChild;
@@ -23019,6 +23060,8 @@ export declare class CodegenContext {
   options: Required<CodegenOptions>;
   bindingNames: Set<string>;
   helpers: Map<string, string>;
+  helperAliases: Set<string>;
+  hoistedHandlers: Map<IRProp | SetEventIRNode, string>;
   needsTemplateRefSetter: boolean;
   inSlotBlock: boolean;
   helper: (name: CoreHelper | VaporHelper) => string;
@@ -23043,7 +23086,6 @@ export declare class CodegenContext {
   private isNameAvailable;
   private findAvailableName;
   private lastTIndex;
-  private initNextIdMap;
   tName(i: number): string;
   pName(i: number): string;
   kName(i: number): string;
@@ -23066,7 +23108,9 @@ export declare const LF: unique symbol;
 export declare const INDENT_START: unique symbol;
 export declare const INDENT_END: unique symbol;
 type FalsyValue = false | null | undefined;
-export type CodeFragment = typeof NEWLINE | typeof LF | typeof INDENT_START | typeof INDENT_END | string | [code: string, newlineIndex?: number, loc?: SourceLocation, name?: string] | FalsyValue;
+/** code with its source position; the newline index tells it apart from a nested list */
+type MappedFragment = [code: string, newlineIndex: number, loc?: SourceLocation, name?: string];
+export type CodeFragment = typeof NEWLINE | typeof LF | typeof INDENT_START | typeof INDENT_END | string | MappedFragment | CodeFragment[] | FalsyValue;
 export type CodeFragments = Exclude<CodeFragment, any[]> | CodeFragment[];
 export declare function buildCodeFragment(...frag: CodeFragment[]): [CodeFragment[], (...items: CodeFragment[]) => number, (...items: CodeFragment[]) => number];
 export type CodeFragmentDelimiters = [left: CodeFragments, right: CodeFragments, delimiter: CodeFragments, placeholder?: CodeFragments];
@@ -23167,6 +23211,8 @@ export declare function isKeepAliveTag(tag: string): boolean;
 export declare function isTeleportTag(tag: string): boolean;
 export declare function isBuiltInComponent(tag: string): string | undefined;
 export declare function isLongIfChain(head: IfIRNode): boolean;
+export declare function isVModelOperation(oper: OperationNode): oper is DirectiveIRNode;
+export declare function isVModelListener(oper: OperationNode, modelElements: Set<number>): boolean;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/expression.d.ts
 type SourceRange = {
@@ -23215,12 +23261,10 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/block.d.ts
 type SlotRootStabilityContext = Pick<CodegenContext, "ir">;
-export declare function isVModelOperation(oper: OperationNode): oper is DirectiveIRNode;
-export declare function isVModelListener(oper: OperationNode, modelElements: Set<number>): boolean;
-export declare function markSlotRootOperations(block: BlockIRNode, context: SlotRootStabilityContext): void;
+export declare function markSlotRootOperations(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
 export declare function markSlotRootOperationsForDom2(block: BlockIRNode, context: SlotRootStabilityContext): void;
 export declare function hasStableSlotRoot(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
-export declare function collectSingleUseAssetComponents(block: BlockIRNode): Set<string>;
+export declare function collectSingleUseAssetComponents(block: BlockIRNode, assetComponents: Set<string>): Set<string>;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
 export declare function genDynamicComponentFlags(root: boolean | VaporSingleRoot | undefined, once: boolean | undefined, slotRoot: boolean | undefined, nsOrExtra?: Namespace | [flag: number, name: string][], ns?: Namespace): string | false;
