@@ -1191,7 +1191,7 @@
         "app": {
           "js": false,
           "kotlin": false,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -1200,7 +1200,7 @@
         "app": {
           "js": false,
           "kotlin": false,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
