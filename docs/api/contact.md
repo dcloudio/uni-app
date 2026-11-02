@@ -1,5 +1,11 @@
 ::: sourceCode
 ## uni.addPhoneContact(options) @addphonecontact
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+
 :::
 
 添加手机通讯录联系人。用户可以选择将该表单以「新增联系人」或「添加到已有联系人」的方式，写入手机系统通讯录。
@@ -99,6 +105,12 @@
 
 ::: sourceCode
 ## uni.chooseContact(options) @choosecontact
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+
 :::
 
 拉起手机通讯录，选择联系人
