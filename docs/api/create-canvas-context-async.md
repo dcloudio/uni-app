@@ -2,6 +2,12 @@
 
 ::: sourceCode
 ## uni.createCanvasContextAsync(options) @createcanvascontextasync
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas
+
 :::
 
 获取CanvasContext对象实例
