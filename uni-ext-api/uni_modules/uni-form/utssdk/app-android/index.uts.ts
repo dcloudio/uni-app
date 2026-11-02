@@ -3848,7 +3848,9 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 
 	private resolveMeasuredTextareaHeight(res: UniNativeMeasureSpecification): number {
 		const heightMode = res.heightMode.toString()
-		if (heightMode == 'Exactly') {
+		// auto-height 时高度只由内容（及 min/max-height）决定，不接受父容器的测量约束：
+		// 否则内容会被父容器压回去（如 scroll-view 场景），父容器拿不到溢出高度、无法滚动。
+		if (heightMode == 'Exactly' && !this.autoHeight) {
 			return Math.max(0, res.height)
 		}
 		if (!this.autoHeight) {
@@ -3871,9 +3873,6 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 			if (height > nativeMaxHeight) {
 				height = nativeMaxHeight
 			}
-		}
-		if (heightMode == 'AtMost' && res.height >= 0) {
-			height = Math.min(height, res.height)
 		}
 		return Math.max(0, height)
 	}
