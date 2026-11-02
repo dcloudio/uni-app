@@ -145,15 +145,18 @@ function resolveUniCliPlatform() {
   return 'h5'
 }
 
+// 在归一化前记录外部开关，避免将初始化生成的 DOM2 状态误认为外部配置。
+const externalDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+
 export function normalizeUniAppXVaporEnv() {
-  // App 使用 UNI_APP_X_VAPOR 作为对外开关；Web 仅在项目根目录存在 .vapor 时启用。
+  // App 使用 UNI_APP_X_VAPOR 作为对外开关；Web 还支持 .vapor 和 DOM2 环境变量。
   const utsPlatform = process.env.UNI_UTS_PLATFORM
   const uniPlatform = process.env.UNI_PLATFORM
   const cliPlatform = resolveUniCliPlatform()
   const platform = cliPlatform || utsPlatform || uniPlatform
-  const webVaporConfigured = isWebPlatform(platform) && hasWebVaporConfig()
-  // Web 以项目根目录的 .vapor 作为显式开关。HBuilderX dev 不会预先注入
-  // UNI_APP_X，因此这里需要同步补齐 uni-app x 环境标记。
+  const webVaporConfigured =
+    isWebPlatform(platform) && (externalDom2 || hasWebVaporConfig())
+  // HBuilderX dev 不会预先注入 UNI_APP_X，因此这里需要同步补齐 uni-app x 环境标记。
   const isWebVapor = webVaporConfigured
   if (isWebVapor) {
     process.env.UNI_APP_X = 'true'

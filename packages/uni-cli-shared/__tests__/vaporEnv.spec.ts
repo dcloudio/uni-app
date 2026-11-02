@@ -1,7 +1,11 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { normalizeUniAppXVaporEnv } from '../src/hbx/alias'
+
+function normalizeUniAppXVaporEnv() {
+  // 设置环境后再加载模块，模拟编译进程启动时读取外部开关。
+  require('../src/hbx/alias').normalizeUniAppXVaporEnv()
+}
 
 describe('normalizeUniAppXVaporEnv', () => {
   const originalArgv = process.argv
@@ -33,6 +37,7 @@ describe('normalizeUniAppXVaporEnv', () => {
   }
 
   beforeEach(() => {
+    jest.resetModules()
     process.argv = originalArgv
     envNames.forEach((name) => Reflect.deleteProperty(process.env, name))
   })
@@ -106,7 +111,6 @@ describe('normalizeUniAppXVaporEnv', () => {
     (platform) => {
       setProjectDir()
       process.env.UNI_APP_X_VAPOR = 'true'
-      process.env.UNI_APP_X_DOM2 = 'true'
       process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
       process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
       process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
@@ -117,6 +121,23 @@ describe('normalizeUniAppXVaporEnv', () => {
       expect(process.env.UNI_APP_X_DOM2).toBeUndefined()
       expect(process.env.UNI_APP_X_DOM2_DYNAMIC).toBeUndefined()
       expect(process.env.UNI_APP_X_VAPOR_RENDER_TARGET).toBeUndefined()
+    }
+  )
+
+  test.each(['h5', 'web'])(
+    '%s 平台通过 DOM2 环境变量启用 Vapor',
+    (platform) => {
+      setProjectDir()
+      process.env.UNI_PLATFORM = platform as NodeJS.ProcessEnv['UNI_PLATFORM']
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR = 'false'
+
+      normalizeUniAppXVaporEnv()
+
+      expect(process.env.UNI_APP_X).toBe('true')
+      expect(process.env.UNI_APP_X_VAPOR).toBe('true')
+      expect(process.env.UNI_APP_X_DOM2).toBe('true')
+      expect(process.env.UNI_APP_STYLE_ISOLATION_VERSION).toBe('2')
     }
   )
 
@@ -249,6 +270,24 @@ describe('normalizeUniAppXVaporEnv', () => {
     expect(process.env.UNI_APP_X_VAPOR).toBe('true')
     expect(process.env.UNI_APP_X_DOM2).toBe('true')
   })
+
+  test.each([true, false])(
+    '平台从未知变为 Web 时区分外部 DOM2 开关：%s',
+    (externalDom2) => {
+      process.argv = ['node', '/project/scripts/build.js']
+      setProjectDir()
+      process.env.UNI_APP_X_VAPOR = 'true'
+      if (externalDom2) process.env.UNI_APP_X_DOM2 = 'true'
+
+      normalizeUniAppXVaporEnv()
+      expect(process.env.UNI_APP_X_DOM2).toBe('true')
+
+      process.env.UNI_PLATFORM = 'h5'
+      normalizeUniAppXVaporEnv()
+      expect(process.env.UNI_APP_X_DOM2 === 'true').toBe(externalDom2)
+      expect(process.env.UNI_APP_X_VAPOR === 'true').toBe(externalDom2)
+    }
+  )
 
   test('uni CLI 未指定平台时默认 h5 且无 .vapor 时关闭 Vapor', () => {
     process.argv = ['node', '/project/node_modules/.bin/uni']
