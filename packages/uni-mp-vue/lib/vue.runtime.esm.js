@@ -4722,6 +4722,15 @@ function setResult(result, k, v) {
 function hasComponentEffect(instance) {
   return queue.includes(instance.update);
 }
+const pendingMPInstances = /* @__PURE__ */ new Set();
+function nextTickMP(fn) {
+  const promise = nextTick$1().then(
+    () => Promise.all(
+      Array.from(pendingMPInstances, (instance) => nextTick(instance))
+    )
+  ).then(NOOP);
+  return fn ? promise.then(this ? fn.bind(this) : fn) : promise;
+}
 function flushCallbacks(instance) {
   const ctx = instance.ctx;
   const callbacks = ctx.__next_tick_callbacks;
@@ -4844,8 +4853,12 @@ function patch(instance, data, oldData) {
       ctx.__next_tick_pending = true;
       mpInstance.setData(diffData, () => {
         ctx.__next_tick_pending = false;
+        pendingMPInstances.delete(instance);
         flushCallbacks(instance);
       });
+      if (ctx.__next_tick_pending) {
+        pendingMPInstances.add(instance);
+      }
       flushPreFlushCbs();
     } else {
       flushCallbacks(instance);
@@ -5417,4 +5430,4 @@ function withModifiers() {
 function createVNode() {
 }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createPropsRestProxy, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick$1 as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createPropsRestProxy, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTickMP as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
