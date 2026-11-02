@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.onAccelerometerChange(callback) @onaccelerometerchange
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+:::
 
 监听加速度数据变化事件
 
@@ -45,7 +53,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 
 <md-hperm :permissions="[{ name: 'ohos.permission.ACCELEROMETER', desc: '注册监听时如果当前未启动，会自动调用 startAccelerometer()，因此间接触发权限申请。' }]" />
 
-## uni.offAccelerometerChange(callback) @offaccelerometerchange
+::: sourceCode
+## uni.offAccelerometerChange(callback?) @offaccelerometerchange
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+:::
 
 监听加速度数据变化事件
 
@@ -88,7 +104,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.startAccelerometer(options) @startaccelerometer
+
+::: sourceCode
+## uni.startAccelerometer(options?) @startaccelerometer
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+:::
 
 开始监听加速度数据变化事件
 
@@ -181,7 +206,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 
 <md-hperm permissions="ohos.permission.ACCELEROMETER" />
 
-## uni.stopAccelerometer(options) @stopaccelerometer
+::: sourceCode
+## uni.stopAccelerometer(options?) @stopaccelerometer
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+
+:::
 
 停止监听加速度数据变化事件
 

@@ -15,9 +15,11 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 * Android离线推送消息，需要开通厂商通道，在UniPush2.0中进行配置 [文档](https://uniapp.dcloud.net.cn/unipush-v2.html#%E7%AC%AC%E4%BA%8C%E6%AD%A5-%E9%85%8D%E7%BD%AE)
 * iOS平台配置证书时，请注意开通推送能力，否则云打包会报错，配置如下图：
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/uni-push/iOS/ios-profile-push-notification.jpg)
-* iOS平台可以通过[info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#usagedescription)配置通知权限描述 
+* iOS平台可以通过[info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#usagedescription)配置通知权限描述
 
+::: sourceCode
 ## uni.getPushClientId(options) @getpushclientid
+:::
 
 获取客户端唯一的推送标识
 
@@ -56,7 +58,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.getPushClientId)
 - [参见uni-app相关文档](http://uniapp.dcloud.io/api/plugins/push.html#getpushclientid)
 
-## uni.onPushMessage(callback) @onpushmessage
+::: sourceCode
+## uni.onPushMessage(callback, options?) @onpushmessage
+:::
 
 启动监听推送消息事件
 
@@ -105,7 +109,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 * 如果多次监听`onPushMessage`，那么事件也会多次触发，所以当不需要监听的时候需要`offPushMessage`。
 
+::: sourceCode
 ## uni.offPushMessage(callback) @offpushmessage
+:::
 
 关闭推送消息监听事件，iOS端调用会关闭所有监听。
 
@@ -160,7 +166,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 
+::: sourceCode
 ## uni.createPushMessage(options) @createpushmessage
+:::
 
 创建本地通知栏消息
 
@@ -211,7 +219,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 | errMsg | string | 是 | 错误信息 |
 
 
+::: sourceCode
 ## uni.getPushChannelManager() @getpushchannelmanager
+:::
 
 获取通知渠道管理器，Android 8系统以上才可以设置通知渠道，Android 8系统以下返回null，[通知渠道介绍](https://developer.android.com/develop/ui/views/notifications/channels?hl=zh-cn)，iOS不支持。
 
@@ -281,7 +291,9 @@ Web: x; Android: 3.98; iOS: x
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.createPushMessage)
 
+::: sourceCode
 ## uni.setAppBadgeNumber(num, options?) @setappbadgenumber
+:::
 
 设置应用图标上显示的角标数字，注意：不同手机厂商的角标显示规则不同，有部分设备的rom版本不支持显示角标，另有部分rom需要在应用的通知管理里开启`桌面角标`配置，才可以设置角标成功。
 
@@ -877,6 +889,3 @@ channelManager.setPushChannel({
 * uni-push是一个独立的模块，HBuilderX4.25以前版本标准基座中并不包含，HBuilder4.25及以上版本标准基座中包含，可直接在标准基座体验创建本地通知消息相关业务。由于push消息推送功能需要关联包名及签名信息，完整消息推送功能需打包自定义基座。
 * 创建本地通知栏，理论上可以和个推的服务无关。但目前也都包含在push模块里了。如果您不需要服务器推送，只需要本地创建通知栏，也需要打包push模块才行。
 * 部分手机创建本地通知时，App如果在后台状态，点击通知消息并不会拉起App，原因是厂商增加了后台弹窗权限，需要用户手动打开此权限。
-
-
-    

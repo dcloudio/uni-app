@@ -1,4 +1,6 @@
+::: sourceCode
 ## uni.canvasToTempFilePath(options, componentInstance) @canvastotempfilepath
+:::
 
 把当前画布指定区域的内容导出生成指定大小的图片
 

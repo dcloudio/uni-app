@@ -1,4 +1,6 @@
+::: sourceCode
 ## callFunction(options) @callfunction
+:::
 
 > 4.13版本起安卓端使用`UniCloudCallFunctionResult`必须传入泛型，比如`UniCloudCallFunctionResult<UTSJSONObject>`，其中泛型类型为其result属性的类型
 

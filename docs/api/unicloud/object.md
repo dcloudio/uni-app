@@ -1,4 +1,6 @@
+::: sourceCode
 ## importObject(objectName, options?) @importobject
+:::
 
 引用云对象
 

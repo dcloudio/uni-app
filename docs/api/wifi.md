@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.startWifi(option) @startwifi
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 初始化Wi-Fi模块
 
@@ -62,7 +70,15 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.stopWifi(option) @stopwifi
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 关闭 Wi-Fi 模块
 
@@ -126,7 +142,15 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.connectWifi(option) @connectwifi
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 
 
@@ -191,7 +215,15 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.setWifiList(option) @setwifilist
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 SetWifiList  暂未实现
 
@@ -254,7 +286,15 @@ SetWifiList  暂未实现
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.getWifiList(option) @getwifilist
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 请求获取 Wi-Fi 列表。wifiList 数据会在 onGetWifiList 注册的回调中返回。
 
@@ -317,7 +357,15 @@ SetWifiList  暂未实现
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.onGetWifiList(UniWifiCallback) @ongetwifilist
+::: sourceCode
+## uni.onGetWifiList(callback) @ongetwifilist
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 监听获取到 Wi-Fi 列表数据事件。
 
@@ -354,7 +402,15 @@ SetWifiList  暂未实现
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.offGetWifiList(UniWifiCallback) @offgetwifilist
+::: sourceCode
+## uni.offGetWifiList(callback) @offgetwifilist
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 移除获取到 Wi-Fi 列表数据事件的监听函数。
 
@@ -391,7 +447,15 @@ SetWifiList  暂未实现
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.getConnectedWifi(option) @getconnectedwifi
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 获取已连接的 Wi-Fi 信息
 
@@ -456,7 +520,15 @@ SetWifiList  暂未实现
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.onWifiConnected(UniWifiCallback) @onwificonnected
+::: sourceCode
+## uni.onWifiConnected(callback) @onwificonnected
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 监听连接上 Wi-Fi 的事件
 
@@ -512,7 +584,15 @@ SetWifiList  暂未实现
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.onWifiConnectedWithPartialInfo(UniWifiCallback) @onwificonnectedwithpartialinfo
+::: sourceCode
+## uni.onWifiConnectedWithPartialInfo(callback) @onwificonnectedwithpartialinfo
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 监听连接上 Wi-Fi 的事件。
 
@@ -555,7 +635,15 @@ Android: 3.9.0; iOS: 4.11
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.offWifiConnected(callback?) @offwificonnected
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-wifi
+
+:::
 
 移除连接上 Wi-Fi 的事件的监听函数。
 

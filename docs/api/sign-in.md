@@ -1,4 +1,12 @@
+::: sourceCode
 ## uni.login(options) @login
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-oauth
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-oauth
+
+:::
 
 登录
 
@@ -219,7 +227,15 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 - **app需要在根目录manifest.json文件中配置`uni-oauth`节点，详见 [uni-oauth模块配置](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html#uni-oauth)**
 - iOS平台微信登录、苹果登录均需要配置在根目录manifest.json文件中配置`uni-oauth`节点，并且只要支持任何三方登录，均需要同时支持苹果登录
 
+::: sourceCode
 ## uni.getUserInfo(options) @getuserinfo
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-oauth
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-oauth
+
+:::
 
 获取用户信息
 

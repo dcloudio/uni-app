@@ -1,4 +1,6 @@
+::: sourceCode
 ## uni.createInterstitialAd(option) @createinterstitialad
+:::
 
 创建插屏广告对象
 

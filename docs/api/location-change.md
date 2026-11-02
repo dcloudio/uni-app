@@ -1,4 +1,12 @@
-## uni.onLocationChange(callback) @onlocationchange
+::: sourceCode
+## uni.onLocationChange(listener) @onlocationchange
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+:::
 
 监听实时地理位置变化事件
 
@@ -51,7 +59,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.offLocationChange(callback) @offlocationchange
+::: sourceCode
+## uni.offLocationChange(listener?) @offlocationchange
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+:::
 
 移除实时地理位置变化事件。
 
@@ -98,7 +114,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.onLocationChangeError(callback) @onlocationchangeerror
+::: sourceCode
+## uni.onLocationChangeError(listener) @onlocationchangeerror
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+:::
 
 监听持续定位接口返回失败时触发。
 
@@ -174,7 +198,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.offLocationChangeError(callback) @offlocationchangeerror
+::: sourceCode
+## uni.offLocationChangeError(listener?) @offlocationchangeerror
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+:::
 
 移除监听持续定位接口返回失败事件。
 
@@ -244,7 +276,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+::: sourceCode
 ## uni.startLocationUpdate(options) @startlocationupdate
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+:::
 
 开启应用进入前台时接收位置消息。
 
@@ -335,7 +375,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 
 <md-hperm :permissions="['ohos.permission.APPROXIMATELY_LOCATION', 'ohos.permission.LOCATION', { name: 'ohos.permission.LOCATION_IN_BACKGROUND', desc: '自身只启动前台持续定位；但如果后续调用 uni.startLocationUpdateBackground 且已有 watchId，会额外检查后台定位权限。' }]" />
 
+::: sourceCode
 ## uni.stopLocationUpdate(options) @stoplocationupdate
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+:::
 
 关闭监听实时位置变化，前后台都停止消息接收。
 
@@ -413,7 +461,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## uni.startLocationUpdateBackground(option) @startlocationupdatebackground
+::: sourceCode
+## uni.startLocationUpdateBackground(options) @startlocationupdatebackground
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+
+:::
 ### 注意
 - iOS平台：如果应用需要后台定位能力，需要在 info.plist 中配置 UIBackgroundModes 的 location，注意需在Xcode工程中添加相对应 Capabilities 中的 Background Modes，并且勾选 Location updates。
 ```xml
@@ -842,3 +898,4 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 | 名称 | 类型 | 必备 | 描述 |
 | :- | :- | :- | :- |
 | errMsg | string | 是 | 错误信息 |
+

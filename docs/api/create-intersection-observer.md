@@ -1,4 +1,12 @@
-## uni.createIntersectionObserver(component, options) @createintersectionobserver
+::: sourceCode
+## uni.createIntersectionObserver(component, options?) @createintersectionobserver
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createIntersectionObserver
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createIntersectionObserver
+
+:::
 
 创建并返回一个 IntersectionObserver 对象实例
 

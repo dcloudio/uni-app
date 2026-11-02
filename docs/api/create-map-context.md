@@ -1,4 +1,6 @@
+::: sourceCode
 ## uni.createMapContext(mapId, component?) @createmapcontext
+:::
 
 创建并返回 map 上下文 mapContext 对象
 

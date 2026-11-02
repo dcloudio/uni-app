@@ -1,4 +1,12 @@
-## uni.getVideoInfo(options) @getVideoInfo
+::: sourceCode
+## uni.getVideoInfo(options) @getvideoinfo
+
+> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+
+> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+
+:::
 
 获取视频详细信息
 
