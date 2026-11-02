@@ -1203,7 +1203,7 @@
         "name": "onKeyboardAnimationChange",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": true
         }
@@ -1212,7 +1212,7 @@
         "name": "offKeyboardAnimationChange",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true,
           "arkts": true
         }
