@@ -11427,7 +11427,7 @@ const _UniRadioGroupElement = class _UniRadioGroupElement extends UniViewElement
 };
 _UniRadioGroupElement.__uniElement = {};
 let UniRadioGroupElement = _UniRadioGroupElement;
-const t0$7 = Vue.template("<div uni-radio-group uni-view>", 1);
+const t0$7 = Vue.template("<div uni-radio-group uni-view role=radiogroup>", 1);
 const _uniRadioGroupElement = { value: "RADIO-GROUP" };
 const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
   ...{
@@ -11466,6 +11466,30 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
       setSelectedValue(val);
       emit2("change", new UniRadioGroupChangeEvent(val));
     }
+    function handleKeydown(event) {
+      const direction = event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : 0;
+      if (direction === 0 || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      const target = event.target;
+      const group = event.currentTarget;
+      if (!(target instanceof Object) || !(group instanceof Object) || !target.matches('[role="radio"]') || target.closest('[role="radiogroup"]') !== group) {
+        return;
+      }
+      const radios = Array.from(group.querySelectorAll('[role="radio"]')).filter(
+        (radio) => radio.getAttribute("aria-disabled") !== "true" && radio.closest('[role="radiogroup"]') === group
+      );
+      const index2 = radios.indexOf(target);
+      if (index2 < 0) {
+        return;
+      }
+      event.preventDefault();
+      const next = radios[(index2 + direction + radios.length) % radios.length];
+      if (next !== target) {
+        next.focus();
+        next.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      }
+    }
     const ctx = {
       selectedValue,
       change,
@@ -11477,6 +11501,7 @@ const _sfc_main$7 = /* @__PURE__ */ Vue.defineVaporComponent({
     Vue.initUniElement(n0, _uniRadioGroupElement);
     Vue.setInsertionState(n0);
     Vue.createSlot();
+    Vue.on(n0, "keydown", handleKeydown);
     return n0;
   }
 });

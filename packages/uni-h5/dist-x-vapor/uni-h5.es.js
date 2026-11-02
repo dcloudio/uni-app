@@ -20156,7 +20156,7 @@ const _UniRadioGroupElement = class _UniRadioGroupElement extends UniViewElement
 };
 _UniRadioGroupElement.__uniElement = {};
 let UniRadioGroupElement = _UniRadioGroupElement;
-const t0$h = template("<div uni-radio-group uni-view>", 1);
+const t0$h = template("<div uni-radio-group uni-view role=radiogroup>", 1);
 const _uniRadioGroupElement = { value: "RADIO-GROUP" };
 const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -20196,6 +20196,30 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
       setSelectedValue(val);
       emit2("change", new UniRadioGroupChangeEvent(val));
     }
+    function handleKeydown(event) {
+      const direction2 = event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : 0;
+      if (direction2 === 0 || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      const target = event.target;
+      const group = event.currentTarget;
+      if (!(target instanceof HTMLElement) || !(group instanceof HTMLElement) || !target.matches('[role="radio"]') || target.closest('[role="radiogroup"]') !== group) {
+        return;
+      }
+      const radios = Array.from(group.querySelectorAll('[role="radio"]')).filter(
+        (radio) => radio.getAttribute("aria-disabled") !== "true" && radio.closest('[role="radiogroup"]') === group
+      );
+      const index2 = radios.indexOf(target);
+      if (index2 < 0) {
+        return;
+      }
+      event.preventDefault();
+      const next2 = radios[(index2 + direction2 + radios.length) % radios.length];
+      if (next2 !== target) {
+        next2.focus();
+        next2.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      }
+    }
     const ctx = {
       selectedValue,
       change,
@@ -20225,6 +20249,7 @@ const _sfc_main$h = /* @__PURE__ */ defineVaporComponent({
     initUniElement(n0, _uniRadioGroupElement);
     setInsertionState(n0);
     createSlot();
+    on$1(n0, "keydown", handleKeydown);
     return n0;
   }
 });

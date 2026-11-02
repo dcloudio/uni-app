@@ -12427,7 +12427,10 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent$2({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ "uni-view": "" }, _attrs))}>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({
+        "uni-view": "",
+        role: "radiogroup"
+      }, _attrs))}>`);
       ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
       _push(`</div>`);
     };
