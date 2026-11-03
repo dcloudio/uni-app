@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.onLocationChange(listener) @onlocationchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> issues: https://issues.dcloud.net.cn/?mid=api.location.onLocationChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
 
 :::
 
@@ -45,27 +45,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 <!-- UTSAPIJSON.onLocationChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.onLocationChange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.onLocationChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onLocationChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onLocationChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onLocationChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onLocationChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onLocationChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onLocationChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.offLocationChange(listener?) @offlocationchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> issues: https://issues.dcloud.net.cn/?mid=api.location.offLocationChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
 
 :::
 
@@ -100,27 +87,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 <!-- UTSAPIJSON.offLocationChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.offLocationChange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.offLocationChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offLocationChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offLocationChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offLocationChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offLocationChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offLocationChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offLocationChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.onLocationChangeError(listener) @onlocationchangeerror
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> issues: https://issues.dcloud.net.cn/?mid=api.location.onLocationChangeError
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
 
 :::
 
@@ -184,27 +158,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 <!-- UTSAPIJSON.onLocationChangeError.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.onLocationChangeError)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.onLocationChangeError.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onLocationChangeError&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onLocationChangeError&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onLocationChangeError&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onLocationChangeError&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onLocationChangeError)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onLocationChangeError&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.offLocationChangeError(listener?) @offlocationchangeerror
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> issues: https://issues.dcloud.net.cn/?mid=api.location.offLocationChangeError
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
 
 :::
 
@@ -262,27 +223,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 <!-- UTSAPIJSON.offLocationChangeError.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.offLocationChangeError)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.offLocationChangeError.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offLocationChangeError&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offLocationChangeError&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offLocationChangeError&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offLocationChangeError&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offLocationChangeError)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offLocationChangeError&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.startLocationUpdate(options) @startlocationupdate
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> issues: https://issues.dcloud.net.cn/?mid=api.location.startLocationUpdate
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
 
 :::
 
@@ -357,19 +305,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 <!-- UTSAPIJSON.startLocationUpdate.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.startLocationUpdate)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.startLocationUpdate.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startLocationUpdate&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startLocationUpdate&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startLocationUpdate&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startLocationUpdate&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startLocationUpdate)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startLocationUpdate&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意
 
@@ -378,10 +313,10 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 ::: sourceCode
 ## uni.stopLocationUpdate(options) @stoplocationupdate
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> issues: https://issues.dcloud.net.cn/?mid=api.location.stopLocationUpdate
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
 
 :::
 
@@ -447,27 +382,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 <!-- UTSAPIJSON.stopLocationUpdate.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.stopLocationUpdate)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.stopLocationUpdate.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopLocationUpdate&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopLocationUpdate&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopLocationUpdate&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=stopLocationUpdate&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=stopLocationUpdate)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=stopLocationUpdate&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.startLocationUpdateBackground(options) @startlocationupdatebackground
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> issues: https://issues.dcloud.net.cn/?mid=api.location.startLocationUpdateBackground
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-location
 
 :::
 ### 注意
@@ -558,19 +480,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.81; iOS: 4
 <!-- UTSAPIJSON.startLocationUpdateBackground.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.startLocationUpdateBackground)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.startLocationUpdateBackground.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startLocationUpdateBackground&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startLocationUpdateBackground&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startLocationUpdateBackground&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startLocationUpdateBackground&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startLocationUpdateBackground)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startLocationUpdateBackground&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

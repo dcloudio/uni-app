@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.showTabBar(options?) @showtabbar
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.showTabBar
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -76,30 +76,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.showTabBar)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#showtabbar)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.showTabBar.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=showTabBar&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=showTabBar&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=showTabBar&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=showTabBar&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=showTabBar)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=showTabBar&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.hideTabBar(options?) @hidetabbar -->
 
 ::: sourceCode
 ## uni.hideTabBar(options?) @hidetabbar
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.hideTabBar
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -169,30 +155,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.hideTabBar)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#hidetabbar)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.hideTabBar.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=hideTabBar&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=hideTabBar&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=hideTabBar&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=hideTabBar&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=hideTabBar)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=hideTabBar&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.showTabBarRedDot(options) @showtabbarreddot -->
 
 ::: sourceCode
 ## uni.showTabBarRedDot(options) @showtabbarreddot
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.showTabBarRedDot
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -262,30 +234,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.showTabBarRedDot)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#showtabbarreddot)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.showTabBarRedDot.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=showTabBarRedDot&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=showTabBarRedDot&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=showTabBarRedDot&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=showTabBarRedDot&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=showTabBarRedDot)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=showTabBarRedDot&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.hideTabBarRedDot(options) @hidetabbarreddot -->
 
 ::: sourceCode
 ## uni.hideTabBarRedDot(options) @hidetabbarreddot
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.hideTabBarRedDot
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -355,30 +313,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.hideTabBarRedDot)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#hidetabbarreddot)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.hideTabBarRedDot.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=hideTabBarRedDot&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=hideTabBarRedDot&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=hideTabBarRedDot&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=hideTabBarRedDot&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=hideTabBarRedDot)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=hideTabBarRedDot&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.setTabBarBadge(options) @settabbarbadge -->
 
 ::: sourceCode
 ## uni.setTabBarBadge(options) @settabbarbadge
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.setTabBarBadge
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -449,30 +393,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.setTabBarBadge)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbarbadge)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.setTabBarBadge.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setTabBarBadge&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setTabBarBadge&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setTabBarBadge&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setTabBarBadge&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setTabBarBadge)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setTabBarBadge&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.removeTabBarBadge(options) @removetabbarbadge -->
 
 ::: sourceCode
 ## uni.removeTabBarBadge(options) @removetabbarbadge
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.removeTabBarBadge
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -542,30 +472,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.removeTabBarBadge)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#removetabbarbadge)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.removeTabBarBadge.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=removeTabBarBadge&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=removeTabBarBadge&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=removeTabBarBadge&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=removeTabBarBadge&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=removeTabBarBadge)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=removeTabBarBadge&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.setTabBarStyle(options) @settabbarstyle -->
 
 ::: sourceCode
 ## uni.setTabBarStyle(options) @settabbarstyle
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.setTabBarStyle
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -573,7 +489,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 ### setTabBarStyle 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["4.0","4.41","5.31","3.91","5.22","4.11","5.14","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.0"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.setTabBarStyle.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=setTabBarStyle&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["4.0","4.41","5.31","3.91","5.22","4.11","5.14","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.0"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -657,30 +573,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.setTabBarStyle)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbarstyle)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.setTabBarStyle.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setTabBarStyle&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setTabBarStyle&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setTabBarStyle&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setTabBarStyle&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setTabBarStyle)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setTabBarStyle&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.setTabBarItem(options) @settabbaritem -->
 
 ::: sourceCode
 ## uni.setTabBarItem(options) @settabbaritem
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> issues: https://issues.dcloud.net.cn/?mid=api.page.setTabBar.setTabBarItem
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-tabBar
 
 :::
 
@@ -766,20 +668,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 3.91; 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.setTabBar.setTabBarItem)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/tabbar.html#settabbaritem)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.setTabBarItem.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setTabBarItem&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setTabBarItem&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setTabBarItem&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setTabBarItem&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setTabBarItem)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setTabBarItem&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 注意：小程序上无法通过本API动态添加和删除tabbar的item。
 

@@ -1,17 +1,17 @@
 ::: sourceCode
 ## uni.addPhoneContact(options) @addphonecontact
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+> issues: https://issues.dcloud.net.cn/?mid=api.device.contact.addPhoneContact
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
 
 :::
 
 添加手机通讯录联系人。用户可以选择将该表单以「新增联系人」或「添加到已有联系人」的方式，写入手机系统通讯录。
 
 ### addPhoneContact 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/contact/wx.addPhoneContact.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=addPhoneContact&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -86,35 +86,21 @@
 <!-- UTSAPIJSON.addPhoneContact.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.contact.addPhoneContact)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/contact.html#addphonecontact)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/contact/wx.addPhoneContact.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=addPhoneContact&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=addPhoneContact&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=addPhoneContact&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=addPhoneContact&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=addPhoneContact)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=addPhoneContact&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.chooseContact(options) @choosecontact
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+> issues: https://issues.dcloud.net.cn/?mid=api.device.contact.chooseContact
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-phonecontact
 
 :::
 
 拉起手机通讯录，选择联系人
 
 ### chooseContact 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/contact/wx.chooseContact.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=chooseContact&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -166,19 +152,6 @@
 <!-- UTSAPIJSON.chooseContact.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.contact.chooseContact)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/contact/wx.chooseContact.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=chooseContact&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=chooseContact&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=chooseContact&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=chooseContact&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=chooseContact)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=chooseContact&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- UTSAPIJSON.contact.example -->
 

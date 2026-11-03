@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.previewImage(options) @previewimage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-previewImage
+> issues: https://issues.dcloud.net.cn/?mid=api.media.previewImage.previewImage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-previewImage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-previewImage
 
 :::
 
@@ -407,20 +407,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.media.previewImage.previewImage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/media/image.html#unipreviewimageobject)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/media/image/wx.previewImage.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=previewImage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=previewImage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=previewImage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=previewImage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=previewImage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=previewImage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 开源自定义@custom
 内置的previewImage弹出的界面，无法充分自定义。所以uni-app x提供了开源的previewImage页面，开发者可以自己定义UI。
@@ -436,17 +422,17 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 ::: sourceCode
 ## uni.closePreviewImage(options) @closepreviewimage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-previewImage
+> issues: https://issues.dcloud.net.cn/?mid=api.media.previewImage.closePreviewImage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-previewImage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-previewImage
 
 :::
 
 关闭图片预览
 
 ### closePreviewImage 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.9","4.11","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=closePreviewImage&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=closePreviewImage&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.9","4.11","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -496,20 +482,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 <!-- UTSAPIJSON.closePreviewImage.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.media.previewImage.closePreviewImage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/media/image.html#closepreviewimage)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=closePreviewImage&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=closePreviewImage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=closePreviewImage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=closePreviewImage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=closePreviewImage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=closePreviewImage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=closePreviewImage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 通用类型
 

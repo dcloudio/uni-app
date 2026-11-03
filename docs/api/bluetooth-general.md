@@ -86,12 +86,15 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 ::: sourceCode
 ## uni.openBluetoothAdapter(options) @openbluetoothadapter
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.openBluetoothAdapter
+
 :::
 
 初始化蓝牙模块，建议与 uni.closeBluetoothAdapter 成对调用。
 
 ### openBluetoothAdapter 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.openBluetoothAdapter.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=openBluetoothAdapter&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -167,19 +170,6 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.openBluetoothAdapter.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.openBluetoothAdapter)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.openBluetoothAdapter.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=openBluetoothAdapter&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=openBluetoothAdapter&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=openBluetoothAdapter&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=openBluetoothAdapter&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=openBluetoothAdapter)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=openBluetoothAdapter&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 使用说明
 
@@ -188,12 +178,15 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 
 ::: sourceCode
 ## uni.closeBluetoothAdapter(options) @closebluetoothadapter
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.closeBluetoothAdapter
+
 :::
 
 关闭蓝牙模块并释放相关系统资源，建议与 uni.openBluetoothAdapter 成对调用。
 
 ### closeBluetoothAdapter 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.closeBluetoothAdapter.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=closeBluetoothAdapter&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -261,29 +254,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.closeBluetoothAdapter.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.closeBluetoothAdapter)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.closeBluetoothAdapter.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=closeBluetoothAdapter&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=closeBluetoothAdapter&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=closeBluetoothAdapter&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=closeBluetoothAdapter&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=closeBluetoothAdapter)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=closeBluetoothAdapter&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.getBluetoothAdapterState(options) @getbluetoothadapterstate
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.getBluetoothAdapterState
+
 :::
 
 获取本机蓝牙适配器状态。
 
 ### getBluetoothAdapterState 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.getBluetoothAdapterState.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=getBluetoothAdapterState&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -352,29 +335,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.getBluetoothAdapterState.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBluetoothAdapterState)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.getBluetoothAdapterState.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBluetoothAdapterState&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBluetoothAdapterState&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBluetoothAdapterState&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBluetoothAdapterState&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBluetoothAdapterState)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBluetoothAdapterState&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.onBluetoothAdapterStateChange(callback) @onbluetoothadapterstatechange
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.onBluetoothAdapterStateChange
+
 :::
 
 监听蓝牙适配器状态变化事件。
 
 ### onBluetoothAdapterStateChange 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothAdapterStateChange.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=onBluetoothAdapterStateChange&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -404,29 +377,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.onBluetoothAdapterStateChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBluetoothAdapterStateChange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothAdapterStateChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBluetoothAdapterStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBluetoothAdapterStateChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBluetoothAdapterStateChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBluetoothAdapterStateChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBluetoothAdapterStateChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBluetoothAdapterStateChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.offBluetoothAdapterStateChange(listener?) @offbluetoothadapterstatechange
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.offBluetoothAdapterStateChange
+
 :::
 
 移除蓝牙适配器状态变化监听函数。传入监听 ID 时移除对应监听，否则移除全部监听。
 
 ### offBluetoothAdapterStateChange 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=offBluetoothAdapterStateChange&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -450,29 +413,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.offBluetoothAdapterStateChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBluetoothAdapterStateChange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBluetoothAdapterStateChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBluetoothAdapterStateChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBluetoothAdapterStateChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBluetoothAdapterStateChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBluetoothAdapterStateChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBluetoothAdapterStateChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.startBluetoothDevicesDiscovery(options) @startbluetoothdevicesdiscovery
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.startBluetoothDevicesDiscovery
+
 :::
 
 开始搜寻附近的蓝牙外围设备。此操作比较耗费系统资源，搜索到需要的设备后应及时调用 uni.stopBluetoothDevicesDiscovery 停止搜索。
 
 ### startBluetoothDevicesDiscovery 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.startBluetoothDevicesDiscovery.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=startBluetoothDevicesDiscovery&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -552,29 +505,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.startBluetoothDevicesDiscovery.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.startBluetoothDevicesDiscovery)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.startBluetoothDevicesDiscovery.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startBluetoothDevicesDiscovery&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startBluetoothDevicesDiscovery&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startBluetoothDevicesDiscovery&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startBluetoothDevicesDiscovery&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startBluetoothDevicesDiscovery)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startBluetoothDevicesDiscovery&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.stopBluetoothDevicesDiscovery(options) @stopbluetoothdevicesdiscovery
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.stopBluetoothDevicesDiscovery
+
 :::
 
 停止搜寻附近的蓝牙外围设备。
 
 ### stopBluetoothDevicesDiscovery 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.stopBluetoothDevicesDiscovery.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=stopBluetoothDevicesDiscovery&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -642,29 +585,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.stopBluetoothDevicesDiscovery.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.stopBluetoothDevicesDiscovery)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.stopBluetoothDevicesDiscovery.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopBluetoothDevicesDiscovery&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopBluetoothDevicesDiscovery&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopBluetoothDevicesDiscovery&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=stopBluetoothDevicesDiscovery&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=stopBluetoothDevicesDiscovery)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=stopBluetoothDevicesDiscovery&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.onBluetoothDeviceFound(listener) @onbluetoothdevicefound
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.onBluetoothDeviceFound
+
 :::
 
 监听搜索到新设备的事件。回调上报的设备会加入 uni.getBluetoothDevices 返回的设备列表。
 
 ### onBluetoothDeviceFound 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothDeviceFound.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=onBluetoothDeviceFound&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -706,29 +639,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.onBluetoothDeviceFound.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.onBluetoothDeviceFound)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothDeviceFound.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBluetoothDeviceFound&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBluetoothDeviceFound&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBluetoothDeviceFound&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBluetoothDeviceFound&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBluetoothDeviceFound)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBluetoothDeviceFound&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.offBluetoothDeviceFound(listener?) @offbluetoothdevicefound
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.offBluetoothDeviceFound
+
 :::
 
 移除搜索到新设备的事件监听。传入监听 ID 时移除对应监听，否则移除全部监听。
 
 ### offBluetoothDeviceFound 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothDeviceFound.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=offBluetoothDeviceFound&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -764,29 +687,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.offBluetoothDeviceFound.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.offBluetoothDeviceFound)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothDeviceFound.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBluetoothDeviceFound&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBluetoothDeviceFound&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBluetoothDeviceFound&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBluetoothDeviceFound&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBluetoothDeviceFound)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBluetoothDeviceFound&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.getBluetoothDevices(options) @getbluetoothdevices
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.getBluetoothDevices
+
 :::
 
 获取蓝牙模块生效期间所有搜索到的蓝牙设备，包括已经和本机处于连接状态的设备。
 
 ### getBluetoothDevices 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.getBluetoothDevices.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=getBluetoothDevices&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -867,29 +780,19 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.getBluetoothDevices.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getBluetoothDevices)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.getBluetoothDevices.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getBluetoothDevices&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getBluetoothDevices&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getBluetoothDevices&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getBluetoothDevices&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getBluetoothDevices)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getBluetoothDevices&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.getConnectedBluetoothDevices(options) @getconnectedbluetoothdevices
+
+> issues: https://issues.dcloud.net.cn/?mid=api.device.ble.getConnectedBluetoothDevices
+
 :::
 
 根据主服务 UUID 获取已连接的蓝牙设备。
 
 ### getConnectedBluetoothDevices 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.getConnectedBluetoothDevices.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=getConnectedBluetoothDevices&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -965,19 +868,6 @@ iOS 应用进行后台蓝牙操作需声明 `bluetooth-central` 后台模式，�
 <!-- UTSAPIJSON.getConnectedBluetoothDevices.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.ble.getConnectedBluetoothDevices)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.getConnectedBluetoothDevices.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getConnectedBluetoothDevices&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getConnectedBluetoothDevices&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getConnectedBluetoothDevices&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getConnectedBluetoothDevices&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getConnectedBluetoothDevices)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getConnectedBluetoothDevices&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ## 通用类型

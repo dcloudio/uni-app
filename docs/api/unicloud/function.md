@@ -1,5 +1,8 @@
 ::: sourceCode
 ## callFunction(options) @callfunction
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.cloudFunction.callFunction
+
 :::
 
 > 4.13版本起安卓端使用`UniCloudCallFunctionResult`必须传入泛型，比如`UniCloudCallFunctionResult<UTSJSONObject>`，其中泛型类型为其result属性的类型
@@ -49,8 +52,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.cloudFunction.callFunction)
 
 <!-- UTSUNICLOUDAPIJSON.unicloud-call-function.example -->
 

@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.$on(eventName, callback) @$on
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> issues: https://issues.dcloud.net.cn/?mid=api.base.eventBus.$on
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
 
 :::
 
@@ -37,19 +37,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 <!-- UTSAPIJSON.$on.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.eventBus.$on)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/window/communication.html#on)
 
 <!-- ## uni.$off(eventName, callback) @$off -->
 
 ::: sourceCode
 ## uni.$off(eventName, callback?) @$off
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> issues: https://issues.dcloud.net.cn/?mid=api.base.eventBus.$off
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
 
 :::
 
@@ -74,19 +71,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 <!-- UTSAPIJSON.$off.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.eventBus.$off)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/window/communication.html#off)
 
 <!-- ## uni.$once(eventName, callback) @$once -->
 
 ::: sourceCode
 ## uni.$once(eventName, callback) @$once
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> issues: https://issues.dcloud.net.cn/?mid=api.base.eventBus.$once
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
 
 :::
 
@@ -117,19 +111,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 <!-- UTSAPIJSON.$once.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.eventBus.$once)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/window/communication.html#once)
 
 <!-- ## uni.$emit(eventName, args?) @$emit -->
 
 ::: sourceCode
 ## uni.$emit(eventName, args?) @$emit
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> issues: https://issues.dcloud.net.cn/?mid=api.base.eventBus.$emit
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-event
 
 :::
 
@@ -162,9 +153,6 @@ uni.$emit('fn', {"a": 1})
 <!-- UTSAPIJSON.$emit.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.eventBus.$emit)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/window/communication.html#emit)
 
 ## 示例
 

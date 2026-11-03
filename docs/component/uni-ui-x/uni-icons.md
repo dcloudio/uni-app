@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 ::: sourceCode
 ## uni-icons
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-icons-x/components/uni-icons
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-icons
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-icons-x/components/uni-icons
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-icons-x/components/uni-icons
 
 :::
 
@@ -325,9 +325,9 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 	</scroll-view>
 </template>
 
-<script setup lang="uts">
+<script setup lang="ts">
 	import { state } from '@/store/index.ts'
-	import { iconlist, iconType } from './icons_type'
+	import { iconlist, iconType } from './icons_type.uts'
 
 	const activeIndex = ref(-1)
 	const checked = ref(false)
@@ -427,6 +427,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 		background-color: var(--list-background-color, #ffffff);
 		flex-direction: row;
 		flex-wrap: wrap;
+		align-items: flex-start;
 	}
 
 	.surface-dark {
@@ -435,15 +436,17 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 
 	.icon-item {
 		width: 25%;
-		min-height: 84px;
-		padding: 10px 4px;
-		align-items: center;
-		justify-content: center;
+		padding: 12px 4px 10px;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: flex-start;
 	}
 
 	.icon-label {
+		width: 100%;
 		margin-top: 8px;
 		font-size: 12px;
+		line-height: 16px;
 		text-align: center;
 		color: var(--text-color, #333333);
 		opacity: 0.65;
@@ -459,6 +462,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 	}
 
 	.icon-glyph {
+		width: 30px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		align-self: center;
+		flex-shrink: 0;
 		color: var(--text-color, #333333);
 		font-size: 30px;
 		opacity: 0.65;
@@ -484,5 +493,3 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-icons-x
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-icons)

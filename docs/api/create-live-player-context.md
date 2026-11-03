@@ -2,6 +2,9 @@
 
 ::: sourceCode
 ## uni.createLivePlayerContext(livePlayerId, component?) @createliveplayercontext
+
+> issues: https://issues.dcloud.net.cn/?mid=api.component.createLivePlayerContext
+
 :::
 
 创建并返回 live-player 组件上下文 LivePlayerContext 对象
@@ -10,7 +13,7 @@
 [live-player组件文档](../component/live-player.md)
 
 ### createLivePlayerContext 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.81","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=createLivePlayerContext&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.81","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -188,20 +191,6 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 4.81; iOS: 4.81; Har
 <!-- UTSAPIJSON.createLivePlayerContext.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.component.createLivePlayerContext)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/media/live-player-context.html#createLivePlayerContext)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createLivePlayerContext&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createLivePlayerContext&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createLivePlayerContext&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=createLivePlayerContext&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=createLivePlayerContext)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=createLivePlayerContext&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 示例代码另见[live-player组件文档](../component/live-player.md)
 

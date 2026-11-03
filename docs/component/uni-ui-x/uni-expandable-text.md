@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni-expandable-text
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-expandable-text/components/uni-expandable-text
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-expandable-text
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-expandable-text/components/uni-expandable-text
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-expandable-text/components/uni-expandable-text
 
 :::
 
@@ -129,9 +129,140 @@ Web(Vapor): 5.41; 微信小程序: 5.33; 支付宝小程序: 5.33; Android(Vapor
 
 
 
+### 示例
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/uni-ui/expandable-text/expandable-text.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/uni-ui/expandable-text/expandable-text.uvue) 
+>
+> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+
+::: preview
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/uni-ui/expandable-text/expandable-text
+```uvue
+<template>
+	<!-- 行尾内联模式目前底层有bug，暂不启用 -->
+	<!-- <uni-expandable-text
+		:text="data.articleText"
+		:lines="1"
+		:inline="true"
+		expand-text="展开"
+		collapse-text="收起"
+		text-class="custom-text"
+		trigger-class="custom-trigger"
+		style="width:100px;margin-bottom: 8px"
+	/> -->
+	<text class="uni-h4">空字符串</text>
+	<uni-expandable-text />
+	<text class="uni-h4">默认模式</text>
+	<uni-expandable-text ref="expandabeltext1" :text="data.articleText" :style="data.dynamicStyle" text-class="test-default-text" trigger-class="test-default-trigger" />
+	<text class="uni-h4">lines=1模式。监听change事件</text>
+		<uni-expandable-text :text="data.articleText" :lines="1" @change="triggerEvent" trigger-class="test-single-line-trigger" style="wrefth:100px;" />
+	<text class="uni-h4">lines=2模式。展开后不显示trigger</text>
+		<uni-expandable-text :text="data.articleText" :lines="2" :show-collapse="false" trigger-class="test-no-collapse-trigger" style="width:100px;" />
+	<text class="uni-h4">lines=2，自定义正文和trigger文字和样式</text>
+	<uni-expandable-text
+		ref="expandabeltext4"
+		:text="data.articleText"
+		:lines="2"
+		text-class="custom-text"
+		expand-text="展开"
+		collapse-text="自定义收起文字"
+		trigger-class="custom-trigger-bold"
+		:style="'width:'+ data.dynamicWidth2 +'px'"
+	/>
+	<text class="uni-h4">测试动态调整文字内容、组件宽度，trigger是否正常的出现和消失</text>
+	<button @click="changeArticleText" style="margin-top: 10px;">缩短显示文字内容，line行可以显示完整时不再出现trigger</button>
+	<button @click="changeDynamicStyle" style="margin-top: 4px;">缩短默认模式的正文width，1行显示不全时自动出现trigger</button>
+	<button @click="changeDynamicWidth" style="margin-top: 4px;">加宽最后一个组件的正文width，2行可以显示完整时不再出现trigger</button>
+	<button @click="resetChange" style="margin-top: 4px;">reset上述3个修改</button>
+	<text class="uni-h4">测试组件方法</text>
+	<button @click="toggle" style="margin-top: 10px;">最后一个组件的toggle()</button>
+	<button @click="expand" style="margin-top: 4px;">最后一个组件的expand()</button>
+	<button @click="collapse" style="margin-top: 4px;">最后一个组件的collapse()</button>
+	<!-- #ifdef MP -->
+	<button @click="checkOverflow()" style="margin-top: 4px;">小程序无resize监听，手动检查是否溢出checkOverflow</button>
+	<!-- #endif -->
+
+</template>
+
+<script setup lang="ts">
+
+type Data = {
+	articleText: string
+	dynamicStyle: string
+	dynamicWidth2: number
+}
+
+const data = reactive<Data>({
+	articleText: "uni-app x 蒸汽模式。uni-app x 蒸汽模式。",
+	dynamicStyle: "",
+	dynamicWidth2: 100
+})
+const triggerEvent = (expanded: boolean) => {
+	  console.log('触发change事件，当前展开状态：', expanded)
+}
+const changeArticleText = () => {
+  data.articleText = "uni-app x 蒸汽模式。"
+}
+const changeDynamicStyle = () => {
+  data.dynamicStyle = "width: 100px"
+}
+const changeDynamicWidth = () => {
+  data.dynamicWidth2 = 180
+}
+const resetChange = () => {
+	data.dynamicStyle = ""
+	data.articleText = "uni-app x 蒸汽模式。uni-app x 蒸汽模式。"
+	data.dynamicWidth2 = 100
+}
+const expandabeltext1 = ref<CallEasyMethodComponentPublicInstance | null>(null)
+const expandabeltext4 = ref<CallEasyMethodComponentPublicInstance | null>(null)
+// #ifdef MP
+const checkOverflow = () => {
+	expandabeltext1.value?.checkOverflow()
+	expandabeltext4.value?.checkOverflow()
+}
+// #endif
+const toggle = () => {
+	expandabeltext4.value?.toggle()
+}
+const expand = () => {
+	expandabeltext4.value?.expand()
+}
+const collapse = () => {
+	expandabeltext4.value?.collapse()
+}
 
 
+defineExpose({
+	data
+})
+</script>
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-expandable-text)
+<style>
+page{
+  padding: 10px;
+}
+
+/* 外部控制正文样式 */
+.custom-text {
+  font-size: 15px;
+  color: #00aa00;
+  line-height: 2em;
+}
+
+/* 外部控制展开/收起按钮样式 */
+.custom-trigger {
+  color: #ff5500;
+  font-size: 14px;
+}
+
+.custom-trigger-bold {
+  color: #007aff;
+  font-weight: bold;
+}
+</style>
+
+```
+:::
+
+
 

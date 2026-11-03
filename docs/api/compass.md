@@ -1,17 +1,17 @@
 ::: sourceCode
 ## uni.onCompassChange(callback) @oncompasschange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> issues: https://issues.dcloud.net.cn/?mid=api.device.onCompassChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
 
 :::
 
 监听罗盘数据变化事件。频率：5 次/秒，接口调用后会自动开始监听
 
 ### onCompassChange 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.onCompassChange.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=onCompassChange&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -32,36 +32,22 @@
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.onCompassChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#oncompasschange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.onCompassChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onCompassChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onCompassChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onCompassChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onCompassChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onCompassChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onCompassChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.offCompassChange(callback?) @offcompasschange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> issues: https://issues.dcloud.net.cn/?mid=api.device.offCompassChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
 
 :::
 
 取消监听罗盘数据
 
 ### offCompassChange 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.offCompassChange.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=offCompassChange&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -82,30 +68,16 @@
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.offCompassChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#offcompasschange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.offCompassChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offCompassChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offCompassChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offCompassChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offCompassChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offCompassChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offCompassChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 
 ::: sourceCode
 ## uni.startCompass(options?) @startcompass
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> issues: https://issues.dcloud.net.cn/?mid=api.device.startCompass
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
 
 :::
 
@@ -172,30 +144,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.startCompass)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#startcompass)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.startCompass.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startCompass&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startCompass&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startCompass&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startCompass&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startCompass)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startCompass&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 
 ::: sourceCode
 ## uni.stopCompass(options?) @stopcompass
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> issues: https://issues.dcloud.net.cn/?mid=api.device.stopCompass
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-compass
 
 :::
 
@@ -262,20 +220,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.stopCompass)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/compass.html#stopcompass)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.stopCompass.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopCompass&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopCompass&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopCompass&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=stopCompass&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=stopCompass)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=stopCompass&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

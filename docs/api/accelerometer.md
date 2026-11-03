@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.onAccelerometerChange(callback) @onaccelerometerchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> issues: https://issues.dcloud.net.cn/?mid=api.device.onAccelerometerChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
 
 :::
 
@@ -34,20 +34,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 <!-- UTSAPIJSON.onAccelerometerChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.onAccelerometerChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#onaccelerometerchange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.onAccelerometerChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onAccelerometerChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onAccelerometerChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onAccelerometerChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onAccelerometerChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onAccelerometerChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onAccelerometerChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意
 
@@ -56,10 +42,10 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 ::: sourceCode
 ## uni.offAccelerometerChange(callback?) @offaccelerometerchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> issues: https://issues.dcloud.net.cn/?mid=api.device.offAccelerometerChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
 
 :::
 
@@ -89,29 +75,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 <!-- UTSAPIJSON.offAccelerometerChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.offAccelerometerChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#offaccelerometerchange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.offAccelerometerChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offAccelerometerChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offAccelerometerChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offAccelerometerChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offAccelerometerChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offAccelerometerChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offAccelerometerChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ::: sourceCode
 ## uni.startAccelerometer(options?) @startaccelerometer
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> issues: https://issues.dcloud.net.cn/?mid=api.device.startAccelerometer
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
 
 :::
 
@@ -187,20 +159,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 <!-- UTSAPIJSON.startAccelerometer.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.startAccelerometer)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#startaccelerometer)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.startAccelerometer.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startAccelerometer&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startAccelerometer&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startAccelerometer&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startAccelerometer&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startAccelerometer)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startAccelerometer&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意
 
@@ -209,10 +167,10 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 ::: sourceCode
 ## uni.stopAccelerometer(options?) @stopaccelerometer
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> issues: https://issues.dcloud.net.cn/?mid=api.device.stopAccelerometer
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-accelerometer
 
 :::
 
@@ -279,20 +237,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 5
 <!-- UTSAPIJSON.stopAccelerometer.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.stopAccelerometer)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#stopaccelerometer)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.stopAccelerometer.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopAccelerometer&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopAccelerometer&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopAccelerometer&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=stopAccelerometer&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=stopAccelerometer)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=stopAccelerometer&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

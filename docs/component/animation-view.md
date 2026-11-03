@@ -3,10 +3,10 @@
 ::: sourceCode
 ## animation-view
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-animation-view/components/animation-view
+> issues: https://issues.dcloud.net.cn/?mid=component.media.animation-view
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-animation-view/components/animation-view
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-animation-view/components/animation-view
 
 :::
 
@@ -17,7 +17,7 @@ Lottie 动画
 
 
 ### 兼容性 <Help />
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["√","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.9","4.11","5.0"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=animation-view&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=animation-view&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["√","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.9","4.11","5.0"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 标准基座并不包含本插件，下载插件后需编写调用代码并打包自定义基座才可运行。
@@ -47,19 +47,6 @@ Lottie 动画
 
 
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.media.animation-view)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/animation-view.html)
-- [插件市场](https://ext.dcloud.net.cn/plugin?id=28623)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=animation-view&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=animation-view&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=animation-view&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=animation-view&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=animation-view&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=animation-view)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=animation-view&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+

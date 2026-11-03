@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getSystemInfo(options) @getsysteminfo
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
+> issues: https://issues.dcloud.net.cn/?mid=api.device.getSystemInfo.getSystemInfo
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
 
 :::
 
@@ -434,30 +434,16 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.getSystemInfo.getSystemInfo)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/info.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/system/wx.getSystemInfo.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getSystemInfo&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getSystemInfo&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getSystemInfo&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getSystemInfo&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getSystemInfo)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getSystemInfo&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.getSystemInfoSync() @getsysteminfosync -->
 
 ::: sourceCode
 ## uni.getSystemInfoSync() @getsysteminfosync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
+> issues: https://issues.dcloud.net.cn/?mid=api.device.getSystemInfo.getSystemInfoSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getSystemInfo
 
 :::
 
@@ -680,20 +666,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 <!-- UTSAPIJSON.getSystemInfoSync.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.getSystemInfo.getSystemInfoSync)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/info.html#getsysteminfosync)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/system/wx.getSystemInfoSync.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getSystemInfoSync&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getSystemInfoSync&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getSystemInfoSync&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getSystemInfoSync&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getSystemInfoSync)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getSystemInfoSync&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 通用类型
 

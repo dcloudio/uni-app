@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.createRequestPermissionListener() @createrequestpermissionlistener
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createRequestPermissionListener
+> issues: https://issues.dcloud.net.cn/?mid=api.device.createRequestPermissionListener
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createRequestPermissionListener
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createRequestPermissionListener
 
 :::
 
@@ -179,9 +179,6 @@ Web: x; Android: 4.0; iOS: x; HarmonyOS: x
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.createRequestPermissionListener)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/create-request-permission-listener.html)
 
 ## Tips
 

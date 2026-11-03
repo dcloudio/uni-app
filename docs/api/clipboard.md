@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getClipboardData(options) @getclipboarddata
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> issues: https://issues.dcloud.net.cn/?mid=api.device.clipboard.getClipboardData
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
 
 :::
 
@@ -60,30 +60,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4
 <md-hperm permissions="ohos.permission.READ_PASTEBOARD" />
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.clipboard.getClipboardData)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/clipboard.html#getclipboarddata)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/clipboard/wx.getClipboardData.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getClipboardData&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getClipboardData&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getClipboardData&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getClipboardData&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getClipboardData)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getClipboardData&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.setClipboardData(options) @setclipboarddata -->
 
 ::: sourceCode
 ## uni.setClipboardData(options) @setclipboarddata
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> issues: https://issues.dcloud.net.cn/?mid=api.device.clipboard.setClipboardData
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-clipboard
 
 :::
 
@@ -126,20 +112,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.71; iOS: 4
 <!-- UTSAPIJSON.setClipboardData.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.clipboard.setClipboardData)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/clipboard.html#setclipboarddata)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/clipboard/wx.setClipboardData.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setClipboardData&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setClipboardData&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setClipboardData&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setClipboardData&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setClipboardData)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setClipboardData&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

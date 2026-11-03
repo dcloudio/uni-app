@@ -16,17 +16,17 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 ::: sourceCode
 ## uni.getPrivacySetting(options) @getprivacysetting
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> issues: https://issues.dcloud.net.cn/?mid=api.base.privacy.getPrivacySetting
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
 
 :::
 
 获取隐私协议状态
 
 ### getPrivacySetting 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","4.31","4.31","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/open-api/privacy/wx.getPrivacySetting.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=getPrivacySetting&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","4.31","4.31","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -56,29 +56,16 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 <!-- UTSAPIJSON.getPrivacySetting.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.privacy.getPrivacySetting)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/privacy/wx.getPrivacySetting.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getPrivacySetting&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getPrivacySetting&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getPrivacySetting&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getPrivacySetting&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getPrivacySetting)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getPrivacySetting&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.resetPrivacyAuthorization() @resetprivacyauthorization -->
 
 ::: sourceCode
 ## uni.resetPrivacyAuthorization() @resetprivacyauthorization
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> issues: https://issues.dcloud.net.cn/?mid=api.base.privacy.resetPrivacyAuthorization
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
 
 :::
 
@@ -97,29 +84,16 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 <!-- UTSAPIJSON.resetPrivacyAuthorization.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.privacy.resetPrivacyAuthorization)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=resetPrivacyAuthorization&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=resetPrivacyAuthorization&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=resetPrivacyAuthorization&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=resetPrivacyAuthorization&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=resetPrivacyAuthorization&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=resetPrivacyAuthorization)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=resetPrivacyAuthorization&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.onPrivacyAuthorizationChange(callback) @onprivacyauthorizationchange -->
 
 ::: sourceCode
 ## uni.onPrivacyAuthorizationChange(callback) @onprivacyauthorizationchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> issues: https://issues.dcloud.net.cn/?mid=api.base.privacy.onPrivacyAuthorizationChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
 
 :::
 
@@ -153,29 +127,16 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 <!-- UTSAPIJSON.onPrivacyAuthorizationChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.privacy.onPrivacyAuthorizationChange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onPrivacyAuthorizationChange&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onPrivacyAuthorizationChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onPrivacyAuthorizationChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onPrivacyAuthorizationChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onPrivacyAuthorizationChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onPrivacyAuthorizationChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onPrivacyAuthorizationChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.offPrivacyAuthorizationChange(id) @offprivacyauthorizationchange -->
 
 ::: sourceCode
 ## uni.offPrivacyAuthorizationChange(id) @offprivacyauthorizationchange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> issues: https://issues.dcloud.net.cn/?mid=api.base.privacy.offPrivacyAuthorizationChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-privacy
 
 :::
 
@@ -197,19 +158,6 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 <!-- UTSAPIJSON.offPrivacyAuthorizationChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.privacy.offPrivacyAuthorizationChange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offPrivacyAuthorizationChange&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offPrivacyAuthorizationChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offPrivacyAuthorizationChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offPrivacyAuthorizationChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offPrivacyAuthorizationChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offPrivacyAuthorizationChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offPrivacyAuthorizationChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

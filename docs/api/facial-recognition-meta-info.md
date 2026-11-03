@@ -12,10 +12,10 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 ::: sourceCode
 ## uni.getFacialRecognitionMetaInfo() @getfacialrecognitionmetainfo
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-facialVerify
+> issues: https://issues.dcloud.net.cn/?mid=api.loginVerify.facialRecognitionMetaInfo.getFacialRecognitionMetaInfo
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-facialVerify
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-facialVerify
 
 :::
 
@@ -30,18 +30,15 @@ Web: 4.84; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 <!-- UTSAPIJSON.getFacialRecognitionMetaInfo.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.loginVerify.facialRecognitionMetaInfo.getFacialRecognitionMetaInfo)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/plugins/facialRecognitionVerify.html#getfacialrecognitionmetainfo)
 
 
 ::: sourceCode
 ## uni.startFacialRecognitionVerify(faceStyle) @startfacialrecognitionverify
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-facialVerify
+> issues: https://issues.dcloud.net.cn/?mid=api.loginVerify.facialRecognitionMetaInfo.startFacialRecognitionVerify
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-facialVerify
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-facialVerify
 
 :::
 
@@ -112,9 +109,6 @@ Web: 4.84; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61
 <!-- UTSAPIJSON.startFacialRecognitionVerify.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.loginVerify.facialRecognitionMetaInfo.startFacialRecognitionVerify)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/plugins/facialRecognitionVerify.html#startfacialrecognitionverify)
 
 ## 示例
 

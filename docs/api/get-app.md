@@ -1,4 +1,9 @@
+::: sourceCode
 ## getApp() @getapp
+
+> issues: https://issues.dcloud.net.cn/?mid=api.global.getApp
+
+:::
 
 `getApp()` 函数用于获取当前应用实例，可通过应用实例调用 App.uvue methods 中定义的方法, [详见](#appmethods)。
 
@@ -9,7 +14,7 @@
 `UniApp` 对象可同时在 uts 插件和 uvue 页面中使用，但 `vm` 属性及其相关的 `globalData` 仍然只能在 uvue 页面中使用。
 
 ### getApp 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"Android","group":"Android","subtitle":"uni-app x"},{"title":"Android(Vapor) UTS 插件","group":"Android","subtitle":"Vapor UTS 插件"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"iOS(Vapor) UTS 插件","group":"iOS","subtitle":"Vapor UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.0","√","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","√","4.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=getApp&amp;sector=miniprogram"},{"title":"Android","group":"Android","subtitle":"uni-app x"},{"title":"Android(Vapor) UTS 插件","group":"Android","subtitle":"Vapor UTS 插件"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"iOS(Vapor) UTS 插件","group":"iOS","subtitle":"Vapor UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.0","√","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","√","4.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 
@@ -342,20 +347,6 @@ restart，并非真正的应用整体重启，而是前端wgt应用重启。js�
 **调整** ：HBuilderX 4.31 `getApp()` 返回值调整为 `UniApp` 类型，调用 `App.uvue` 中定义的全局方法，需要由 `getApp().methodName()` 调整为 `getApp().vm?.methodName()`。
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.global.getApp)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/tutorial/page.html#getapp)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getApp&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getApp&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getApp&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getApp&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getApp&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getApp)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getApp&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 通用类型
 

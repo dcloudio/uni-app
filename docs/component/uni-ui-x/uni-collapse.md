@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-collapse-
 ::: sourceCode
 ## uni-collapse
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-collapse
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse
 
 :::
 
@@ -618,17 +618,15 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-collapse)
 
 
 ::: sourceCode
 ## uni-collapse-item
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse-item
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-collapse-item
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse-item
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-collapse-x/components/uni-collapse-item
 
 :::
 
@@ -767,5 +765,3 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-collapse-item)

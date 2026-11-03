@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.vibrateShort(options) @vibrateshort
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+> issues: https://issues.dcloud.net.cn/?mid=api.device.vibrate.vibrateShort
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
 
 :::
 
@@ -12,7 +12,7 @@
 
 
 ### vibrateShort 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/vibrate/wx.vibrateShort.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=vibrateShort&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -70,28 +70,14 @@
 <!-- UTSAPIJSON.vibrateShort.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.vibrate.vibrateShort)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/vibrate.html#vibrateshort)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/vibrate/wx.vibrateShort.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=vibrateShort&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=vibrateShort&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=vibrateShort&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=vibrateShort&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=vibrateShort)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=vibrateShort&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.vibrateLong(options) @vibratelong
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+> issues: https://issues.dcloud.net.cn/?mid=api.device.vibrate.vibrateLong
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-vibrate
 
 :::
 
@@ -99,7 +85,7 @@
 
 
 ### vibrateLong 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/vibrate/wx.vibrateLong.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=vibrateLong&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -148,20 +134,6 @@
 <!-- UTSAPIJSON.vibrateLong.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.vibrate.vibrateLong)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/vibrate.html#vibratelong)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/vibrate/wx.vibrateLong.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=vibrateLong&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=vibrateLong&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=vibrateLong&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=vibrateLong&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=vibrateLong)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=vibrateLong&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

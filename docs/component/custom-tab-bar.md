@@ -2,13 +2,16 @@
 
 ::: sourceCode
 ## custom-tab-bar
+
+> issues: https://issues.dcloud.net.cn/?mid=component.page-meta.custom-tab-bar
+
 :::
 
 自定义tabBar
 
 
 ### 兼容性 <Help />
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.24","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=custom-tab-bar&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=custom-tab-bar&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.24","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 属性 
@@ -36,7 +39,7 @@
 
 ### 小程序自定义 tabBar
 
-本页介绍的 `<custom-tab-bar>` 组件仅支持 Web。微信小程序、支付宝小程序提供的平台自定义 tabBar 能力与本组件不同，本页的组件属性和事件不适用于这些平台。
+本页介绍的 `<custom-tab-bar>` 组件仅支持 Web，微信小程序、支付宝小程序提供的平台自定义 tabBar 能力与本组件不同，本页的组件属性和事件不适用于这些平台。
 
 在 uni-app x 项目中，可通过 `pages.json` 配置启用对应平台的自定义 tabBar，并在项目根目录下添加该平台约定的 tabBar 组件目录。
 
@@ -181,18 +184,6 @@ onShow(() => {
 
 详见 [支付宝小程序自定义 tabBar 文档](https://opendocs.alipay.com/mini/03jry7)。
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.page-meta.custom-tab-bar)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/custom-tab-bar.html)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=custom-tab-bar&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=custom-tab-bar&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=custom-tab-bar&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=custom-tab-bar&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=custom-tab-bar&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=custom-tab-bar)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=custom-tab-bar&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+

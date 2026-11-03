@@ -1,17 +1,17 @@
 ::: sourceCode
 ## uni.startGyroscope(options?) @startgyroscope
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> issues: https://issues.dcloud.net.cn/?mid=api.device.gyroscope.startGyroscope
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 
 开始监听陀螺仪数据。
 
 ### startGyroscope 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.startGyroscope.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=startGyroscope&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -83,20 +83,6 @@
 <!-- UTSAPIJSON.startGyroscope.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.startGyroscope)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#startgyroscope)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.startGyroscope.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startGyroscope&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startGyroscope&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startGyroscope&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startGyroscope&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startGyroscope)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startGyroscope&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意
 
@@ -105,17 +91,17 @@
 ::: sourceCode
 ## uni.stopGyroscope(options?) @stopgyroscope
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> issues: https://issues.dcloud.net.cn/?mid=api.device.gyroscope.stopGyroscope
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 
 停止监听陀螺仪数据变化事件。
 
 ### stopGyroscope 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.stopGyroscope.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=stopGyroscope&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -178,28 +164,14 @@
 <!-- UTSAPIJSON.stopGyroscope.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.stopGyroscope)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#stopgyroscope)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.stopGyroscope.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopGyroscope&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopGyroscope&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopGyroscope&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=stopGyroscope&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=stopGyroscope)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=stopGyroscope&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.onGyroscopeChange(callback) @ongyroscopechange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> issues: https://issues.dcloud.net.cn/?mid=api.device.gyroscope.onGyroscopeChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 
@@ -207,7 +179,7 @@
 支付宝小程序频率为 500ms/次，微信小程序频率根据 uni.startGyroscope 的 interval 参数设置。事件只有在调用 uni.startGyroscope 后才会开始监听，使用 uni.stopGyroscope 可以停止监听。
 
 ### onGyroscopeChange 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.onGyroscopeChange.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=onGyroscopeChange&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -232,20 +204,6 @@
 <!-- UTSAPIJSON.onGyroscopeChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.onGyroscopeChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#ongyroscopechange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.onGyroscopeChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onGyroscopeChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onGyroscopeChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onGyroscopeChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onGyroscopeChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onGyroscopeChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onGyroscopeChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 注意
 
@@ -254,17 +212,17 @@
 ::: sourceCode
 ## uni.offGyroscopeChange(callback?) @offgyroscopechange
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> issues: https://issues.dcloud.net.cn/?mid=api.device.gyroscope.offGyroscopeChange
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-gyroscope
 
 :::
 
 停止监听陀螺仪数据变化事件
 
 ### offGyroscopeChange 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.offGyroscopeChange.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=offGyroscopeChange&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS(VDOM) UTS 插件","group":"iOS","subtitle":"VDOM UTS 插件"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.08"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -289,20 +247,6 @@
 <!-- UTSAPIJSON.offGyroscopeChange.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.gyroscope.offGyroscopeChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/gyroscope.html#offgyroscopechange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.offGyroscopeChange.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offGyroscopeChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offGyroscopeChange&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offGyroscopeChange&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offGyroscopeChange&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offGyroscopeChange)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offGyroscopeChange&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

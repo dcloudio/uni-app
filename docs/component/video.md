@@ -3,10 +3,10 @@
 ::: sourceCode
 ## video
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-video/components/video
+> issues: https://issues.dcloud.net.cn/?mid=component.media.video
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-video/components/video
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-video/components/video
 
 :::
 
@@ -1438,21 +1438,9 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.media.video)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/video.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/video.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=video&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=video&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=video&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=video&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=video)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=video&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
 
 #### 本地文件播放
 本地视频文件，有2种方式：

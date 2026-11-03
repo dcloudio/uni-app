@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.addInterceptor(name, interceptor) @addinterceptor
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-interceptor
+> issues: https://issues.dcloud.net.cn/?mid=api.base.interceptor.addInterceptor
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-interceptor
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-interceptor
 
 :::
 
@@ -25,18 +25,15 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.97; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.interceptor.addInterceptor)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/interceptor.html)
 
 
 ::: sourceCode
 ## uni.removeInterceptor(name, interceptor?) @removeinterceptor
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-interceptor
+> issues: https://issues.dcloud.net.cn/?mid=api.base.interceptor.removeInterceptor
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-interceptor
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-interceptor
 
 :::
 
@@ -57,9 +54,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.97; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.interceptor.removeInterceptor)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/interceptor.html#removeinterceptor)
 
 ## 示例
 

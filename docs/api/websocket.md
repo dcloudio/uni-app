@@ -12,10 +12,10 @@
 ::: sourceCode
 ## uni.connectSocket(options) @connectsocket
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> issues: https://issues.dcloud.net.cn/?mid=api.network.websocket.connectSocket
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
 
 :::
 
@@ -207,30 +207,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.websocket.connectSocket)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/websocket.html#connectsocket)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/SocketTask.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=connectSocket&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=connectSocket&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=connectSocket&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=connectSocket&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=connectSocket)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=connectSocket&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.~~onSocketOpen(options)~~ @onsocketopen -->
 
 ::: sourceCode
 ## uni.~~onSocketOpen(options)~~ @onsocketopen
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> issues: https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketOpen
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
 
 :::
 
@@ -256,30 +242,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketOpen)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketopen)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.onSocketOpen.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onSocketOpen&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onSocketOpen&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onSocketOpen&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onSocketOpen&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onSocketOpen)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onSocketOpen&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.~~onSocketError(callback)~~ @onsocketerror -->
 
 ::: sourceCode
 ## uni.~~onSocketError(callback)~~ @onsocketerror
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> issues: https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketError
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
 
 :::
 
@@ -305,30 +277,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketError)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketerror)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.onSocketError.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onSocketError&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onSocketError&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onSocketError&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onSocketError&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onSocketError)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onSocketError&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.~~sendSocketMessage(options)~~ @sendsocketmessage -->
 
 ::: sourceCode
 ## uni.~~sendSocketMessage(options)~~ @sendsocketmessage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> issues: https://issues.dcloud.net.cn/?mid=api.network.websocket.sendSocketMessage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
 
 :::
 
@@ -375,20 +333,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.websocket.sendSocketMessage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/websocket.html#sendsocketmessage)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.sendSocketMessage.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=sendSocketMessage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=sendSocketMessage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=sendSocketMessage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=sendSocketMessage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=sendSocketMessage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=sendSocketMessage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 注意事项
 
@@ -399,10 +343,10 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 ::: sourceCode
 ## uni.~~onSocketMessage(callback)~~ @onsocketmessage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> issues: https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketMessage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
 
 :::
 
@@ -428,30 +372,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketMessage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketmessage)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.onSocketMessage.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onSocketMessage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onSocketMessage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onSocketMessage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onSocketMessage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onSocketMessage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onSocketMessage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.~~closeSocket(options)~~ @closesocket -->
 
 ::: sourceCode
 ## uni.~~closeSocket(options)~~ @closesocket
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> issues: https://issues.dcloud.net.cn/?mid=api.network.websocket.closeSocket
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
 
 :::
 
@@ -481,30 +411,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.websocket.closeSocket)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/websocket.html#closesocket)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.closeSocket.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=closeSocket&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=closeSocket&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=closeSocket&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=closeSocket&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=closeSocket)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=closeSocket&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.~~onSocketClose(callback)~~ @onsocketclose -->
 
 ::: sourceCode
 ## uni.~~onSocketClose(callback)~~ @onsocketclose
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> issues: https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketClose
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-websocket
 
 :::
 
@@ -531,20 +447,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.network.websocket.onSocketClose)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/request/websocket.html#onsocketclose)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.onSocketClose.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onSocketClose&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onSocketClose&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onSocketClose&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onSocketClose&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onSocketClose)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onSocketClose&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

@@ -2,6 +2,9 @@
 
 ::: sourceCode
 ## view
+
+> issues: https://issues.dcloud.net.cn/?mid=component.view-container.view
+
 :::
 
 > 组件类型：UniViewElement 
@@ -252,20 +255,8 @@ if (view != null && view instanceof UIView) {
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.view-container.view)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/view.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/view.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=view&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=view&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=view&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=view&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=view)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=view&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
 
 view是Drawable的组件，也就是可以在view上调用绘制API自绘内容。它类似canvas，但不需要单独的canvas组件，在view上就可以直接draw。[详见](../dom/drawablecontext.md)

@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.openLocation(options) @openlocation
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-openLocation
+> issues: https://issues.dcloud.net.cn/?mid=api.location.openLocation
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-openLocation
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-openLocation
 
 :::
 
@@ -228,16 +228,3 @@ Web: 4.0; 微信小程序: 5.11; 支付宝小程序: 5.31; Android: 5.11; iOS: 5
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.location.openLocation)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.openLocation.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=openLocation&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=openLocation&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=openLocation&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=openLocation&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=openLocation)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=openLocation&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)

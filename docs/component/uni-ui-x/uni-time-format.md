@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-time-form
 ::: sourceCode
 ## uni-time-format
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-time-format/components/uni-time-format
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-time-format
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-time-format/components/uni-time-format
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-time-format/components/uni-time-format
 
 :::
 
@@ -349,5 +349,3 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-time-format)

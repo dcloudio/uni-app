@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.getElementById(id) @getelementbyid
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getElementById
+> issues: https://issues.dcloud.net.cn/?mid=api.dom.getElementById
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getElementById
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-getElementById
 
 :::
 
@@ -179,8 +179,6 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.dom.getElementById)
 
 ## 通用类型
 

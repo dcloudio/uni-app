@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-number-bo
 ::: sourceCode
 ## uni-number-box
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-number-box-x/components/uni-number-box
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-number-box
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-number-box-x/components/uni-number-box
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-number-box-x/components/uni-number-box
 
 :::
 
@@ -285,5 +285,3 @@ defineExpose({
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-number-box)

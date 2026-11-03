@@ -1,5 +1,8 @@
 ::: sourceCode
 ## importObject(objectName, options?) @importobject
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.cloudObject.importObject
+
 :::
 
 引用云对象
@@ -94,8 +97,6 @@ _getArgs
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.cloudObject.importObject)
 
 ### uni-app x内使用云对象的特殊说明@strictly-typed-object
 

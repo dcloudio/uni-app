@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 ::: sourceCode
 ## uni-drag-cell
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-drag-cell/components/uni-drag-cell
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-drag-cell
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-drag-cell/components/uni-drag-cell
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-drag-cell/components/uni-drag-cell
 
 :::
 
@@ -338,16 +338,6 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-drag-cell
 - 九宫格图片选择
 
 如果是超长列表、虚拟滚动列表，应该使用专门为大数据量设计的方案。
-
-### 平台说明
-
-#### Web
-
-- 支持 pointer / touch 交互
-
-#### Android
-
-- 支持触摸拖拽
 
 
 
@@ -988,5 +978,3 @@ Web: 5.07; 微信小程序: 5.07; 支付宝小程序: 5.31; Android: 5.08; iOS: 
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-drag-cell)

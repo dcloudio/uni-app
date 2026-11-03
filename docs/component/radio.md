@@ -3,10 +3,10 @@
 ::: sourceCode
 ## radio
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/radio
+> issues: https://issues.dcloud.net.cn/?mid=component.form-component.radio.radio
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/radio
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/radio
 
 :::
 
@@ -30,8 +30,8 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | activeBackgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007AFF" | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio选中时的背景颜色，优先级大于color属性 |
 | activeBorderColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio选中时的边框颜色 |
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.18; 微信小程序: x; 支付宝小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.18 | radio的图标颜色 |
-| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框图标的类名 |
-| radio-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框的类名 |
+| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框图标区域的公共类名 |
+| radio-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框未选中的类名 |
 | radio-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; 支付宝小程序: x; Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 单选框选中的类名 |
 | ~~color~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007AFF" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio的颜色 (使用foreColor替代) |
 | ~~iconColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio的图标颜色 (使用foreColor替代) |
@@ -388,18 +388,6 @@ App平台蒸汽模式从 5.25+ 起内置适配 radio 默认样式的暗黑模式
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.form-component.radio.radio)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/radio.html#radio)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/radio.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=radio&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=radio&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=radio&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=radio&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=radio)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=radio&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+

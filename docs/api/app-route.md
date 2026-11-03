@@ -102,10 +102,10 @@ onBeforeAppRoute -> onShow -> onAppRoute
 ::: sourceCode
 ## uni.onAppRoute(callback) @onapproute
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.app-route.onAppRoute
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -171,19 +171,6 @@ Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 
 <!-- UTSAPIJSON.onAppRoute.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.app-route.onAppRoute)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onAppRoute.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onAppRoute&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onAppRoute&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onAppRoute&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onAppRoute&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onAppRoute)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onAppRoute&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 使用说明@on-app-route-usage
 
@@ -206,10 +193,10 @@ uni.offAppRoute(appRouteCallback)
 ::: sourceCode
 ## uni.offAppRoute(callback?) @offapproute
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.app-route.offAppRoute
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -275,19 +262,6 @@ Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 
 <!-- UTSAPIJSON.offAppRoute.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.app-route.offAppRoute)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offAppRoute.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offAppRoute&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offAppRoute&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offAppRoute&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offAppRoute&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offAppRoute)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offAppRoute&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 移除监听器@off-app-route-usage
 
@@ -316,10 +290,10 @@ uni.offAppRoute()
 ::: sourceCode
 ## uni.onBeforeAppRoute(callback) @onbeforeapproute
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.app-route.onBeforeAppRoute
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -384,19 +358,6 @@ Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 
 <!-- UTSAPIJSON.onBeforeAppRoute.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.app-route.onBeforeAppRoute)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onBeforeAppRoute.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onBeforeAppRoute&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onBeforeAppRoute&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onBeforeAppRoute&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=onBeforeAppRoute&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=onBeforeAppRoute)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=onBeforeAppRoute&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 使用说明@on-before-app-route-usage
 
@@ -419,10 +380,10 @@ onLaunch(() => {
 ::: sourceCode
 ## uni.offBeforeAppRoute(callback?) @offbeforeapproute
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.app-route.offBeforeAppRoute
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -487,19 +448,6 @@ Web: 5.25; 微信小程序: 5.25; 支付宝小程序: 5.31; Android: 5.25; iOS: 
 <!-- UTSAPIJSON.offBeforeAppRoute.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.app-route.offBeforeAppRoute)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offBeforeAppRoute.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offBeforeAppRoute&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offBeforeAppRoute&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offBeforeAppRoute&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=offBeforeAppRoute&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=offBeforeAppRoute)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=offBeforeAppRoute&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 移除监听器@off-before-app-route-usage
 
@@ -520,10 +468,10 @@ uni.offBeforeAppRoute()
 ::: sourceCode
 ## uni.rewriteRoute(options) @rewriteroute
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.app-route.rewriteRoute
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -531,7 +479,7 @@ uni.offBeforeAppRoute()
 
 
 ### rewriteRoute 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["5.25","5.25","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.25","5.25","5.25"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.rewriteRoute.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=rewriteRoute&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["5.25","5.25","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.25","5.25","5.25"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -580,19 +528,6 @@ uni.offBeforeAppRoute()
 <!-- UTSAPIJSON.rewriteRoute.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.app-route.rewriteRoute)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.rewriteRoute.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=rewriteRoute&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=rewriteRoute&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=rewriteRoute&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=rewriteRoute&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=rewriteRoute)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=rewriteRoute&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ### 路由重写规则@rewrite-route-rules
 
