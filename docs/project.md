@@ -71,7 +71,7 @@ uni-app x的项目结构与[uni-app老版的项目结构](https://uniapp.dcloud.
 	</code>
 </pre>
 
-uni-app x 目前仅支持代码在根目录、非代码在unpackage目录的项目目录结构。
+uni-app x 目前仅支持以项目根目录组织源码和源资源的项目结构，编译缓存及运行、发行产物存放在unpackage目录。
 
 老uni-app同时支持node cli创建的src/dist项目结构，但双模式并存引发了很多问题：
 1. 官方和三方插件作者，都要测试双模式是否正常支持，生态成本大。
