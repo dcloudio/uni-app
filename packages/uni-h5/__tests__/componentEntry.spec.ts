@@ -128,7 +128,7 @@ describe('Web 框架组件入口', () => {
     )
     expect(vapor).not.toMatch(/uniFormKey|UniFormCtx|vue\/form/)
     expect(standard).toContain("export { uniFormKey } from './vue/form'")
-    for (const name of ['Button', 'Input', 'Textarea']) {
+    for (const name of ['Input', 'Textarea']) {
       expect(components).toContain(`  ${name},`)
       expect(components).toContain(`  Uni${name}Element,`)
     }
@@ -142,7 +142,8 @@ describe('Web 框架组件入口', () => {
       path.join(root, 'src/x/view/components/index-vapor.ts'),
       'utf8'
     )
-    expect(entry).not.toMatch(/default as (Button|Input|Textarea)\b/)
+    expect(entry).not.toMatch(/default as (Input|Textarea)\b/)
+    expect(entry).toContain('default as Button')
     expect(entry).toContain('default as Progress')
     expect(entry).toContain('default as Picker')
     expect(entry).toContain('default as Loading')
