@@ -11708,6 +11708,11 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$1({
         }
       }
     );
+    function onKeydown(event) {
+      if (showPageContainer.value && (event.key === "Escape" || event.key === "Esc")) {
+        closeContainer();
+      }
+    }
     onBackPress(() => {
       if (showPageContainer.value) {
         closeContainer();
@@ -11716,11 +11721,13 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent$1({
       return false;
     });
     onMounted(() => {
+      document.addEventListener("keydown", onKeydown);
       if (props2.show) {
         openContainer();
       }
     });
     onBeforeUnmount(() => {
+      document.removeEventListener("keydown", onKeydown);
       clearTransitionTimer();
     });
     return (_ctx, _push, _parent, _attrs) => {
