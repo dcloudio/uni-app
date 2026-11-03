@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.base64ToArrayBuffer(base64) @base64toarraybuffer
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-base64ToArrayBuffer
+> issues: https://issues.dcloud.net.cn/?mid=api.base.base64.base64ToArrayBuffer
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-base64ToArrayBuffer
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-base64ToArrayBuffer
 
 :::
 
@@ -33,30 +33,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.base64.base64ToArrayBuffer)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/base64ToArrayBuffer.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/wx.base64ToArrayBuffer.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=base64ToArrayBuffer&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=base64ToArrayBuffer&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=base64ToArrayBuffer&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=base64ToArrayBuffer&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=base64ToArrayBuffer)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=base64ToArrayBuffer&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.arrayBufferToBase64(arrayBuffer) @arraybuffertobase64 -->
 
 ::: sourceCode
 ## uni.arrayBufferToBase64(arrayBuffer) @arraybuffertobase64
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-arrayBufferToBase64
+> issues: https://issues.dcloud.net.cn/?mid=api.base.base64.arrayBufferToBase64
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-arrayBufferToBase64
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-arrayBufferToBase64
 
 :::
 
@@ -83,20 +69,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.base64.arrayBufferToBase64)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/arrayBufferToBase64.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/wx.arrayBufferToBase64.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=arrayBufferToBase64&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=arrayBufferToBase64&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=arrayBufferToBase64&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=arrayBufferToBase64&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=arrayBufferToBase64)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=arrayBufferToBase64&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

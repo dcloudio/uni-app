@@ -1,5 +1,8 @@
 ::: sourceCode
 ## uni.createDramaAd(options) @createdramaad
+
+> issues: https://issues.dcloud.net.cn/?mid=api.ad.createDramaAd
+
 :::
 
 创建短剧广告实例：创建即自动加载短剧模块（自动加载模式），加载结果经 onLoad / onError 上报
@@ -49,20 +52,20 @@
 服务器回调的详细机制、回调参数、签名校验和完整配置流程，详见 [激励视频广告服务器回调](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#callback)。
 
 ### createDramaAd 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.32","√","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=createDramaAd&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=createDramaAd&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.32","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **CreateDramaAdOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 用于创建短剧广告（DramaAd）实例时传入的配置项类型，目前仅包含必填的 adpid |
+| options | **CreateDramaAdOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 用于创建短剧广告（DramaAd）实例时传入的配置项类型，目前仅包含必填的 adpid |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| adpid | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧广告位标识<br/>必填；在 uni-ad 平台申请短剧广告位获取的 adpid。<br/>adpid 为空、无效或广告位未开通时，创建后经 onError 上报 -5001 / -5002 / -5003。 | 
+| adpid | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧广告位标识<br/>必填；在 uni-ad 平台申请短剧广告位获取的 adpid。<br/>adpid 为空、无效或广告位未开通时，创建后经 onError 上报 -5001 / -5002 / -5003。 | 
 
 
 
@@ -79,82 +82,82 @@
 getList
 获取短剧列表，用于自建聚合页渲染；分页参数 page 从 1 开始，结果经 options.success / options.fail 回调返回
 ##### getList 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
-| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询成功的回调函数 |
-| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询失败的回调函数 |
-| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询成功的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页短剧列表 |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧标题 |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 封面图片 URL |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧简介 |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类 ID |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类名称 |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前观看到的集数 |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧总集数 |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -162,82 +165,82 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 getRecommendedList
 分页获取推荐短剧列表，结果经 options.success / options.fail 回调返回
 ##### getRecommendedList 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
-| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询成功的回调函数 |
-| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询失败的回调函数 |
-| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询成功的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页短剧列表 |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧标题 |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 封面图片 URL |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧简介 |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类 ID |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类名称 |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前观看到的集数 |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧总集数 |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -245,82 +248,82 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 getCollectionList
 分页获取用户收藏的短剧列表，结果经 options.success / options.fail 回调返回
 ##### getCollectionList 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
-| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询成功的回调函数 |
-| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询失败的回调函数 |
-| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询成功的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页短剧列表 |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧标题 |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 封面图片 URL |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧简介 |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类 ID |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类名称 |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前观看到的集数 |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧总集数 |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -328,82 +331,82 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 getHistoryList
 分页获取用户观看记录的短剧列表，结果经 options.success / options.fail 回调返回
 ##### getHistoryList 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
+| options | **DramaListOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表查询参数（getList / getRecommendedList / getCollectionList / getHistoryList 通用） page 从 1 开始、pageSize 默认 20；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
-| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
-| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询成功的回调函数 |
-| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询失败的回调函数 |
-| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
+| order | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 列表排序方式；不传默认 "default"。<br/>仅 getList 生效：推荐列表（getRecommendedList）、收藏列表（getCollectionList）、观看历史（getHistoryList）忽略该参数 |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询成功的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页短剧列表 |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧标题 |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 封面图片 URL |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧简介 |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类 ID |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类名称 |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前观看到的集数 |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧总集数 |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -411,83 +414,83 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 search
 根据关键词搜索短剧，isFuzzy 为 true 时模糊匹配（默认 true），结果经 options.success / options.fail 回调返回
 ##### search 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaSearchOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | search 搜索参数 searchWord 必填；isFuzzy 默认 true（模糊匹配）；搜索结果经 success / fail / complete 回调返回。 |
+| options | **DramaSearchOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | search 搜索参数 searchWord 必填；isFuzzy 默认 true（模糊匹配）；搜索结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| searchWord | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 搜索关键词，必填 |
-| isFuzzy | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 是否模糊匹配；不传默认 true（模糊匹配） |
-| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
-| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
-| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 搜索成功的回调函数 |
-| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 搜索失败的回调函数 |
-| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 搜索结束的回调函数（成功失败都会执行） | 
+| searchWord | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 搜索关键词，必填 |
+| isFuzzy | boolean | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 是否模糊匹配；不传默认 true（模糊匹配） |
+| page | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 页码，从 1 开始；不传默认 1 |
+| pageSize | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 每页短剧数量；不传默认 20 |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 搜索成功的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 搜索失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 搜索结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页短剧列表 |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧标题 |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 封面图片 URL |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧简介 |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类 ID |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类名称 |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前观看到的集数 |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧总集数 |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -495,81 +498,81 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 getInfo
 获取指定短剧信息，参数 dramaId 与 dramaIds 二选一，结果经 options.success / options.fail 回调返回
 ##### getInfo 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaInfoOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | getInfo 查询参数 dramaId / dramaIds 二选一，同时传入时优先 dramaIds；查询结果经 success / fail / complete 回调返回。 |
+| options | **DramaInfoOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | getInfo 查询参数 dramaId / dramaIds 二选一，同时传入时优先 dramaIds；查询结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 单个短剧 ID；与 dramaIds 二选一，两者同时传入时优先使用 dramaIds |
-| dramaIds | Array&lt;number&gt; | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 批量短剧 ID 列表；与 dramaId 二选一，两者同时传入时优先使用 dramaIds |
-| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询成功的回调函数 |
-| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询失败的回调函数 |
-| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
+| dramaId | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 单个短剧 ID；与 dramaIds 二选一，两者同时传入时优先使用 dramaIds |
+| dramaIds | Array&lt;number&gt; | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 批量短剧 ID 列表；与 dramaId 二选一，两者同时传入时优先使用 dramaIds |
+| success | (res: [DramaListResult](#dramalistresult-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询成功的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 查询结束的回调函数（成功失败都会执行） | 
 
 ###### DramaListResult 的属性值 @dramalistresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页短剧列表 |
-| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
+| dramas | Array&lt;**DramaInfo**&gt; | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前页短剧列表 |
+| extra | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道扩展信息（如分页游标等），无扩展数据时为空对象 |
 
 #### dramas 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
-| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧标题 |
-| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 封面图片 URL |
-| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧简介 |
-| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类 ID |
-| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分类名称 |
-| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前观看到的集数 |
-| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧总集数 |
-| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
-| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
-| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
-| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
-| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |   | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧唯一标识（统一为 string，由渠道原始 ID 转换而来） |
+| title | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧标题 |
+| coverUrl | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 封面图片 URL |
+| desc | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧简介 |
+| categoryId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类 ID |
+| categoryName | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分类名称 |
+| currentEpisode | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 当前观看到的集数 |
+| totalEpisodes | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧总集数 |
+| groupId | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 分组 ID（渠道侧的短剧分组/专辑标识） |
+| unlockIndex | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 已解锁集数索引（当前可观看进度） |
+| styleType | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 样式类型标识，取值由渠道定义 |
+| duration | number | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧时长（单位由渠道定义，通常为秒） |
+| rawInfo | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 渠道原始数据（短剧信息的原始 JSON 快照），可能为 null；<br/>字段可能因渠道差异，业务侧做好空值兼容 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -577,66 +580,66 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 open
 打开短剧播放页播放指定短剧；支持起播集数 episode、单次激励视频解锁集数 lock、初始免费观看集数 free 与服务端回调透传 urlCallback，结果经 options.success / options.fail 回调返回
 ##### open 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **DramaOpenOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | open 打开短剧播放页参数 free 初始免费观看集数、lock 单次激励视频可解锁的集数；打开结果经 success / fail / complete 回调返回。 |
+| options | **DramaOpenOptions** | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | open 打开短剧播放页参数 free 初始免费观看集数、lock 单次激励视频可解锁的集数；打开结果经 success / fail / complete 回调返回。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧 ID（与 DramaInfo.dramaId 一致，统一为 string） |
-| episode | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 起播集数，默认 1 |
-| lock | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 单次激励视频解锁的集数，默认 1 |
-| free | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 初始免费观看集数，默认 1 |
-| urlCallback | **DramaUrlCallback** | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 服务端回调透传参数：激励发放时回传服务器校验。 |
-| success | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 播放页打开成功的回调函数 |
-| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 播放页打开失败的回调函数 |
-| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 打开结束的回调函数（成功失败都会执行） | 
+| dramaId | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧 ID（与 DramaInfo.dramaId 一致，统一为 string） |
+| episode | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 起播集数，默认 1 |
+| lock | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 单次激励视频解锁的集数，默认 1 |
+| free | number | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 初始免费观看集数，默认 1 |
+| urlCallback | **DramaUrlCallback** | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 服务端回调透传参数：激励发放时回传服务器校验。 |
+| success | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 播放页打开成功的回调函数 |
+| fail | (err: [IUniDramaError](#iunidramaerror-values)) => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 播放页打开失败的回调函数 |
+| complete | () => void | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 打开结束的回调函数（成功失败都会执行） | 
 
 ##### urlCallback 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| userId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 用户唯一标识：激励视频解锁发放时，用于服务端回调校验；不传则不透传 |
-| extra | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 服务端回调透传的附加参数（业务自定义，回调时原样回传）；不传则不透传 |
+| userId | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 用户唯一标识：激励视频解锁发放时，用于服务端回调校验；不传则不透传 |
+| extra | string | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 服务端回调透传的附加参数（业务自定义，回调时原样回传）；不传则不透传 |
 
 ###### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -644,7 +647,7 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 destroy
 销毁短剧广告实例并释放资源；API 模式请在页面 onUnmounted 时调用
 ##### destroy 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 
 
@@ -653,13 +656,13 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 onLoad
 短剧模块加载成功时触发（res.providerType 为渠道类型）；open() 打开的播放页就绪后会再次触发（res.type 为 "detail" 并携带 dramaId）
 ##### onLoad 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
 
@@ -667,13 +670,13 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 offLoad
 取消 onLoad(callback) 注册的监听
 ##### offLoad 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
 
@@ -681,46 +684,46 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 onError
 发生错误时触发（模块加载失败、查询前置校验失败等），回调参数为 IUniDramaError（errCode / errMsg）
 ##### onError 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误回调，err 为 IUniDramaError（errCode 错误码 / errMsg 错误描述） | 
+| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 错误回调，err 为 IUniDramaError（errCode 错误码 / errMsg 错误描述） | 
 
 ##### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -728,46 +731,46 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 offError
 取消 onError(callback) 注册的监听
 ##### offError 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误回调，err 为 IUniDramaError（errCode 错误码 / errMsg 错误描述） | 
+| callback | (err: [IUniDramaError](#iunidramaerror-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 错误回调，err 为 IUniDramaError（errCode 错误码 / errMsg 错误描述） | 
 
 ##### IUniDramaError 的属性值 @iunidramaerror-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧错误码 |
-| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 错误信息中包含的数据 |
+| errCode | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 短剧错误码 |
+| errSubject | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 错误信息中包含的数据 |
 | cause | [Error](/err-spec.md#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x |  |
+| errMsg | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
-| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
-| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
-| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
-| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
-| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
-| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
-| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
-| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
-| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
-| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
-| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
-| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
-| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
-| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
-| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
-| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
-| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
+| -5001 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | adpid 为空：创建实例时未传入短剧广告位标识——传入在 uni-ad 后台申请的 adpid |
+| -5002 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 无效的 adpid 或短剧容器未就绪：核对 adpid 是否正确、组件是否完成挂载 |
+| -5003 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告位未开通：在 uni-ad 后台申请短剧广告位并确保审核通过 |
+| -5005 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告加载失败：网络异常或当前无广告填充——稍后重试 |
+| -5006 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告已展示过：需重新加载后才能再次展示 |
+| -5007 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 未获取到广告配置：请检查广告是否开启，或 appid 与广告后台是否一致 |
+| -5008 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告不可用或已过期：广告素材失效——重新发起请求 |
+| -5009 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告类型不符：adpid 对应的广告类型与请求不符——核对后台申请的广告位类型 |
+| -5010 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面缺失或已销毁：页面未就绪时发起创建/请求——请在页面存活期间调用 |
+| -5011 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧实例已销毁：destroy() 后仍调用实例方法——重新 uni.createDramaAd 创建实例 |
+| -5012 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧模块未加载完成：onLoad 触发前调用了查询方法——注册 onLoad 监听，模块就绪后再查询 |
+| -5013 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告播放失败：素材下载或播放异常——重新加载 |
+| -5015 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 当前页面环境不支持承载短剧页面——常规 uni-app x 页面不会出现，如遇到请反馈问题 |
+| -5016 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧首页/详情页创建失败：渠道页面创建异常——重试，持续失败请检查基座与包名配置 |
+| -5017 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧页面内部初始化异常——重试，仍失败请反馈问题 |
+| -5018 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 宿主页面内容未就绪——重试 |
+| -5020 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 短剧运行时加载失败：当前基座缺少短剧原生类——必须使用云打包的自定义基座（manifest.json 配置 uni-ad 模块并含 gm-content 渠道） |
+| -5500 | Web: x; 微信小程序: x; 支付宝小程序: x; iOS: x; HarmonyOS: x | 广告 SDK 启动失败：uni-ad SDK 初始化 start 未成功（多为网络异常或模块未配置）——检查网络与 uni-ad 模块配置后重试 |
 
 
 
@@ -775,20 +778,20 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 onPlayEvent
 播放相关事件，事件数据包含 event（如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay）与 info
 ##### onPlayEvent 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -796,20 +799,20 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 offPlayEvent
 取消 onPlayEvent(callback) 注册的监听
 ##### offPlayEvent 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -817,20 +820,20 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 onAdEvent
 短剧内广告相关事件，事件数据包含 event（如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError）与 info
 ##### onAdEvent 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -838,20 +841,20 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 offAdEvent
 取消 onAdEvent(callback) 注册的监听
 ##### offAdEvent 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
+| callback | (res: [DramaEventResult](#dramaeventresult-values)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 播放/广告事件回调，res 为 DramaEventResult（event 事件名 + info 事件附加信息） | 
 
 ##### DramaEventResult 的属性值 @dramaeventresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
-| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |   | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
+| event | string | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件名：播放事件如 playStart / playEnd / pause / resume / seek / playComplete / nextPlaylet / playError / fullDisplay；<br/>广告事件如 show / click / close / skip / reward / loadSuccess / loadFail / videoPlayEnd / showError |
+| info | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 事件附加信息，字段随事件不同而不同（如 code / message / position / endTime / result），无附加信息时为空对象 |
 
 
 
@@ -859,13 +862,13 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 onUnlockEvent
 短剧解锁相关事件（激励视频解锁成功等）
 ##### onUnlockEvent 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
 
@@ -873,13 +876,13 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 offUnlockEvent
 取消 onUnlockEvent(callback) 注册的监听
 ##### offUnlockEvent 兼容性 <Help /> 
-Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; HarmonyOS: x
+Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: x; HarmonyOS: x | 简单事件回调，res 为事件数据对象（模块加载成功时含 providerType；播放页就绪时含 type / dramaId） | 
 
 
  
@@ -892,19 +895,6 @@ Web: x; 微信小程序: x; 支付宝小程序: x; Android: 5.32; iOS: √; Harm
 <!-- UTSAPIJSON.createDramaAd.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ad.createDramaAd)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=createDramaAd&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createDramaAd&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createDramaAd&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createDramaAd&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=createDramaAd&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=createDramaAd)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=createDramaAd&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 通用类型
 

@@ -2,6 +2,9 @@
 
 ::: sourceCode
 ## text
+
+> issues: https://issues.dcloud.net.cn/?mid=component.basic-content.text
+
 :::
 
 > 组件类型：[UniTextElement](/api/dom/unitextelement.md) 
@@ -114,12 +117,14 @@ HBuilderX5.0版本开始 web平台调整 [white-space](../css/white-space.md) �
 默认值为 `pre-line`。
 如上示例2中将合并空格（连续空格合并为1个空格），制表符转换为空格，保留换行符进行渲染，a和b之间只有1个空格。
 
-uni-app x中有text组件，这是一个web没有的组件。且uni-app x在非web平台，包括小程序平台，都不支持<br>换行，所以uni-app x设计为text组件中的`\n`默认不会忽略，而是换行。
+uni-app x中有text组件，这是一个web没有的组件。且uni-app x在非web平台，包括小程序平台，都不支持`<br>`换行，所以uni-app x设计为text组件中的`\n`默认不会忽略，而是换行。
 
 不管app平台默认值keep，还是web平台默认值pre-line，都是这个表现。
 
 web的默认值preline，虽然支持\n换行，同时会合并\n以外的其他多个连续空白字符为1个。这是web与app的不同。app为了提升性能，默认值为keep，即默认不会合并连续的空白字符。
 
+**微信小程序平台**
+微信小程序会把字符串中的`\n`转为`<br/>`进行渲染。导致`\n`在微信小程序中不会受white-space样式影响。
 
 ### 实体字符
 `实体字符`（Entity Character）是在标记语言（如 vue/uvue 的 template 中）或编程中，用来表示那些具有特殊含义、无法直接输入或显示的字符的一种编码方式。
@@ -1273,21 +1278,9 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
 ```
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.basic-content.text)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/text.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/text.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=text&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=text&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=text&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=text&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=text)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=text&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
 
 ## max-lines
 

@@ -3,10 +3,10 @@
 ::: sourceCode
 ## picker-view
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view
+> issues: https://issues.dcloud.net.cn/?mid=component.form-component.picker-view.picker-view
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view
 
 :::
 
@@ -25,7 +25,7 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 | name | string | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | value | number\[\] | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件值，作为键值对的一部分与表单(form组件)一同提交 |
 | indicator-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指示器样式 |
-| indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | 设置选择器中间选中框的类名 |
+| indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 指示器类 |
 | mask-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | 设置蒙层的样式 |
 | mask-top-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩顶部类 |
 | mask-bottom-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: x; 微信小程序: x; 支付宝小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩底部类 |
@@ -300,31 +300,19 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.form-component.picker-view.picker-view)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/picker-view.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/picker-view.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=picker-view&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=picker-view&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=picker-view&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=picker-view&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=picker-view)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=picker-view&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
 
 <!-- ## picker-view-column -->
 
 ::: sourceCode
 ## picker-view-column
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view-column
+> issues: https://issues.dcloud.net.cn/?mid=component.form-component.picker-view.picker-view-column
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view-column
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/picker-view-column
 
 :::
 
@@ -348,21 +336,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 
 
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.form-component.picker-view.picker-view-column)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/picker-view.html#picker-view-column)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/picker-view-column.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=picker-view-column&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=picker-view-column&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=picker-view-column&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=picker-view-column&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=picker-view-column)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=picker-view-column&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
 
 ## tips
 - picker里如放置较长内容，应该使用list-view而不是scroll-view。

@@ -22,10 +22,10 @@ uni-app的Storage在不同端的实现不同：
 ::: sourceCode
 ## uni.setStorage(options) @setstorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.setStorage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -59,30 +59,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.setStorage.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.setStorage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#setstorage)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.setStorage.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setStorage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setStorage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setStorage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setStorage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setStorage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setStorage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.setStorageSync(key, data) @setstoragesync -->
 
 ::: sourceCode
 ## uni.setStorageSync(key, data) @setstoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.setStorageSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -107,30 +93,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.setStorageSync.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.setStorageSync)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#setstoragesync)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.setStorageSync.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setStorageSync&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setStorageSync&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setStorageSync&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setStorageSync&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setStorageSync)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setStorageSync&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.getStorage(options) @getstorage -->
 
 ::: sourceCode
 ## uni.getStorage(options) @getstorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -179,30 +151,16 @@ getStorageSync的返回值类型为any。因为set的时候任意类型都可以
 <!-- UTSAPIJSON.getStorage.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorage)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorage.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getStorage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getStorage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getStorage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getStorage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getStorage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getStorage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.getStorageSync(key) @getstoragesync -->
 
 ::: sourceCode
 ## uni.getStorageSync(key) @getstoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorageSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -244,30 +202,16 @@ getStorageSync的返回值类型为any。因为set的时候任意类型都可以
 <!-- UTSAPIJSON.getStorageSync.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorageSync)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#getstoragesync)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorageSync.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getStorageSync&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getStorageSync&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getStorageSync&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getStorageSync&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getStorageSync)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getStorageSync&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.getStorageInfo(options) @getstorageinfo -->
 
 ::: sourceCode
 ## uni.getStorageInfo(options) @getstorageinfo
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorageInfo
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -307,30 +251,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.getStorageInfo.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorageInfo)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorageinfo)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorageInfo.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getStorageInfo&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getStorageInfo&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getStorageInfo&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getStorageInfo&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getStorageInfo)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getStorageInfo&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.getStorageInfoSync() @getstorageinfosync -->
 
 ::: sourceCode
 ## uni.getStorageInfoSync() @getstorageinfosync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorageInfoSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -362,30 +292,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.getStorageInfoSync.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.getStorageInfoSync)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#getstorageinfosync)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorageInfoSync.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getStorageInfoSync&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getStorageInfoSync&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getStorageInfoSync&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getStorageInfoSync&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getStorageInfoSync)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getStorageInfoSync&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.removeStorage(options) @removestorage -->
 
 ::: sourceCode
 ## uni.removeStorage(options) @removestorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.removeStorage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -418,30 +334,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.removeStorage.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.removeStorage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#removestorage)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.removeStorage.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=removeStorage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=removeStorage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=removeStorage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=removeStorage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=removeStorage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=removeStorage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.removeStorageSync(key) @removestoragesync -->
 
 ::: sourceCode
 ## uni.removeStorageSync(key) @removestoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.removeStorageSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -465,30 +367,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.removeStorageSync.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.removeStorageSync)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#removestoragesync)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.removeStorageSync.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=removeStorageSync&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=removeStorageSync&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=removeStorageSync&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=removeStorageSync&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=removeStorageSync)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=removeStorageSync&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.clearStorage(option?) @clearstorage -->
 
 ::: sourceCode
 ## uni.clearStorage(option?) @clearstorage
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.clearStorage
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -520,30 +408,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.clearStorage.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.clearStorage)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#clearstorage)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.clearStorage.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=clearStorage&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=clearStorage&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=clearStorage&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=clearStorage&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=clearStorage)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=clearStorage&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.clearStorageSync() @clearstoragesync -->
 
 ::: sourceCode
 ## uni.clearStorageSync() @clearstoragesync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> issues: https://issues.dcloud.net.cn/?mid=api.storage.storage.clearStorageSync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-storage
 
 :::
 
@@ -562,20 +436,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9.0; iOS: 
 <!-- UTSAPIJSON.clearStorageSync.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.storage.storage.clearStorageSync)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/storage/storage.html#clearstoragesync)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.clearStorageSync.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=clearStorageSync&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=clearStorageSync&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=clearStorageSync&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=clearStorageSync&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=clearStorageSync)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=clearStorageSync&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

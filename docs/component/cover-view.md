@@ -1,4 +1,9 @@
-## cover-view
+::: sourceCode
+## ~~cover-view~~
+
+> issues: https://issues.dcloud.net.cn/?mid=component.view-container.cover.cover-view
+
+:::
 
 覆盖在原生组件之上的文本视图，可覆盖的原生组件包括map、video、canvas、camera，只支持嵌套cover-view、cover-image
 
@@ -93,18 +98,6 @@ app 端并不是在运行时实现了cover-view组件，仅仅是编译器把cov
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.view-container.cover.cover-view)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/cover-view.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/cover-view.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=cover-view&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=cover-view&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=cover-view&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=cover-view&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=cover-view)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=cover-view&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+

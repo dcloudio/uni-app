@@ -19,6 +19,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ::: sourceCode
 ## uni.getPushClientId(options) @getpushclientid
+
+> issues: https://issues.dcloud.net.cn/?mid=api.push.uni-push.getPushClientId
+
 :::
 
 获取客户端唯一的推送标识
@@ -26,7 +29,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 > HBuilderX5.25及以上版本 Android平台 调整为不再主动申请通知权限，可调用 [uni.requestSystemPermission](../api/request-system-permission.md) 主动申请通知权限
 
 ### getPushClientId 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=getPushClientId&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=getPushClientId&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -54,12 +57,12 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.getPushClientId)
-- [参见uni-app相关文档](http://uniapp.dcloud.io/api/plugins/push.html#getpushclientid)
 
 ::: sourceCode
 ## uni.onPushMessage(callback, options?) @onpushmessage
+
+> issues: https://issues.dcloud.net.cn/?mid=api.push.uni-push.onPushMessage
+
 :::
 
 启动监听推送消息事件
@@ -67,7 +70,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 > Android平台 HBuilderX 5.25及以上版本、鸿蒙平台自 HBuilderX 5.31及以上版本，新增 options 参数（requestPermission 属性），配置是否主动申请通知权限。
 
 ### onPushMessage 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=onPushMessage&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=onPushMessage&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -101,9 +104,6 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.onPushMessage)
-- [参见uni-app相关文档](http://uniapp.dcloud.io/api/plugins/push.html#onpushmessage)
 
 ### 注意事项
 
@@ -111,12 +111,15 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ::: sourceCode
 ## uni.offPushMessage(callback) @offpushmessage
+
+> issues: https://issues.dcloud.net.cn/?mid=api.push.uni-push.offPushMessage
+
 :::
 
 关闭推送消息监听事件，iOS端调用会关闭所有监听。
 
 ### offPushMessage 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=offPushMessage&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=offPushMessage&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.27","4.41","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","3.98","4.18","4.61"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -143,9 +146,6 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.offPushMessage)
-- [参见uni-app相关文档](http://uniapp.dcloud.io/api/plugins/push.html#offpushmessage)
 
 ### 注意事项
 
@@ -168,6 +168,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ::: sourceCode
 ## uni.createPushMessage(options) @createpushmessage
+
+> issues: https://issues.dcloud.net.cn/?mid=api.push.uni-push.createPushMessage
+
 :::
 
 创建本地通知栏消息
@@ -205,9 +208,6 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.getChannelManager)
-- [参见uni-app相关文档](http://uniapp.dcloud.io/api/plugins/push.html#createpushmessage)
 
 ## 通用类型
 
@@ -221,6 +221,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ::: sourceCode
 ## uni.getPushChannelManager() @getpushchannelmanager
+
+> issues: https://issues.dcloud.net.cn/?mid=api.push.uni-push.getPushChannelManager
+
 :::
 
 获取通知渠道管理器，Android 8系统以上才可以设置通知渠道，Android 8系统以下返回null，[通知渠道介绍](https://developer.android.com/develop/ui/views/notifications/channels?hl=zh-cn)，iOS不支持。
@@ -288,11 +291,12 @@ Web: x; Android: 3.98; iOS: x
 <!-- UTSAPIJSON.getPushChannelManager.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.createPushMessage)
 
 ::: sourceCode
 ## uni.setAppBadgeNumber(num, options?) @setappbadgenumber
+
+> issues: https://issues.dcloud.net.cn/?mid=api.push.uni-push.setAppBadgeNumber
+
 :::
 
 设置应用图标上显示的角标数字，注意：不同手机厂商的角标显示规则不同，有部分设备的rom版本不支持显示角标，另有部分rom需要在应用的通知管理里开启`桌面角标`配置，才可以设置角标成功。
@@ -322,12 +326,12 @@ Web: x; Android: 3.98; iOS: x
 <!-- UTSAPIJSON.setAppBadgeNumber.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.getPushChannelManager)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/plugins/push.html#setappbadgenumber)
 
 ::: sourceCode
 ## uni.~~getChannelManager()~~ @getchannelmanager
+
+> issues: https://issues.dcloud.net.cn/?mid=api.push.uni-push.getChannelManager
+
 :::
 
 获取通知渠道管理器，Android 8系统以上才可以设置通知渠道，Android 8系统以下返回null，[通知渠道介绍](https://developer.android.com/develop/ui/views/notifications/channels?hl=zh-cn) ，iOS不支持。
@@ -393,9 +397,6 @@ Web: x; Android: 3.98; iOS: x
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.push.uni-push.setAppBadgeNumber)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/plugins/push.html#getchannelmanager)
 
 #### 注意事项
 

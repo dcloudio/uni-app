@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-combox-x
 ::: sourceCode
 ## uni-combox
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-combox-x/components/uni-combox
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-combox
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-combox-x/components/uni-combox
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-combox-x/components/uni-combox
 
 :::
 
@@ -165,7 +165,7 @@ uni-combox 组合框组件。
 
 
 ### 兼容性 <Help />
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["5.31","5.31","5.31","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.31"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/doc/search?q=uni-combox&amp;sector=miniprogram"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=uni-combox&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS(VDOM)","group":"iOS","subtitle":"VDOM"},{"title":"iOS(Vapor)","group":"iOS","subtitle":"Vapor"},{"title":"HarmonyOS(VDOM)","group":"HarmonyOS","subtitle":"VDOM"},{"title":"HarmonyOS(Vapor)","group":"HarmonyOS","subtitle":"Vapor"}],"rows":[["5.31","5.31","5.31","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.31"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 属性 
@@ -205,7 +205,7 @@ uni-combox 组合框组件。
 <template>
 	<scroll-view class="page">
 		<view class="section">
-			<text class="page-title">uni-combox 组合框</text>
+			<text class="page-title">uni-combox 组合框（已废弃，请使用 uni-combobox）</text>
 			<text class="page-desc">默认单选模式只能从候选项中选择；传入 input 插槽后，可输入并按左侧匹配过滤候选项。</text>
 		</view>
 
@@ -266,6 +266,17 @@ uni-combox 组合框组件。
 		</view>
 
 		<view class="section">
+			<text class="section-title">无边框：class 覆盖</text>
+			<uni-combox
+				field-class="borderless-combox-deprecated"
+				:options="cityOptions"
+				v-model="borderlessValue"
+				placeholder="无边框组合框"
+			/>
+			<text class="result-text">当前选择：{{ borderlessValue }}</text>
+		</view>
+
+		<view class="section">
 			<text class="section-title">arrow-class：右侧箭头样式</text>
 			<uni-combox
 				:options="statusOptions"
@@ -306,6 +317,17 @@ uni-combox 组合框组件。
 				option-text-highlight-class="demo-option-highlight"
 			/>
 			<text class="result-text">打开后当前匹配项会使用高亮文字样式：{{ optionTextHighlightClassValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">option-row-highlight-class：高亮项背景样式</text>
+			<uni-combox
+				:options="cityOptions"
+				v-model="optionRowHighlightValue"
+				options-content-class="demo-full-highlight-content"
+				option-row-highlight-class="demo-option-row-highlight"
+			/>
+			<text class="result-text">打开后当前选中项背景铺满候选区域并去除圆角：{{ optionRowHighlightValue }}</text>
 		</view>
 
 		<view class="section">
@@ -361,10 +383,12 @@ uni-combox 组合框组件。
 const optionsValue = ref<string>('')
 const placeholderValue = ref<string>('')
 const disabledValue = ref<string>('三年级')
+const borderlessValue = ref<string>('')
 const arrowClassValue = ref<string>('')
 const optionsViewClassValue = ref<string>('')
 const optionTextClassValue = ref<string>('')
 const optionTextHighlightClassValue = ref<string>('杭州')
+const optionRowHighlightValue = ref<string>('杭州')
 const resultTextClassValue = ref<string>('三年级')
 const updateEventValue = ref<string>('')
 const updateEventText = ref<string>('未触发')
@@ -485,6 +509,10 @@ function onCityChange(value : string) {
 	background-color: transparent;
 }
 
+.borderless-combox-deprecated {
+	border-width: 0;
+}
+
 .demo-arrow {
 	border-right-color: var(--tips-color, #16a34a);
 	border-bottom-color: var(--tips-color, #16a34a);
@@ -508,6 +536,22 @@ function onCityChange(value : string) {
 	font-weight: bold;
 }
 
+.demo-full-highlight-content {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.demo-option-row-highlight {
+	border-radius: 0;
+	background-color: #dbeafe;
+}
+
+@media (prefers-color-scheme: dark) {
+	.demo-option-row-highlight {
+		background-color: #3b3b3b;
+	}
+}
+
 .demo-result-text {
 	color: var(--tips-color, #2563eb);
 	font-weight: bold;
@@ -519,5 +563,3 @@ function onCityChange(value : string) {
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-combox)

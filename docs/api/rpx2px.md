@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.rpx2px(number) @rpx2px
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-rpx2px
+> issues: https://issues.dcloud.net.cn/?mid=api.ui.rpx2px
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-rpx2px
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-rpx2px
 
 :::
 
@@ -113,9 +113,6 @@ Web: 4.02; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.02; iOS: 
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ui.rpx2px)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/font.html#upx2px)
 
 ## 通用类型
 

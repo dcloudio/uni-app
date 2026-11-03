@@ -2,6 +2,9 @@
 
 ::: sourceCode
 ## unicloud-db
+
+> issues: https://issues.dcloud.net.cn/?mid=component.unicloud.unicloud-db
+
 :::
 
 > 组件类型：[UniCloudDBElement](#uniclouddbelement) 
@@ -447,18 +450,6 @@ defineExpose({
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.unicloud.unicloud-db)
 - [unicloud-db组件教程](https://doc.dcloud.net.cn/uniCloud/unicloud-db.html)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=unicloud-db&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=unicloud-db&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=unicloud-db&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=unicloud-db&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=unicloud-db&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=unicloud-db)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=unicloud-db&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+

@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.startPullDownRefresh(options?) @startpulldownrefresh
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
+> issues: https://issues.dcloud.net.cn/?mid=api.page.pullDownRefresh.startPullDownRefresh
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
 
 :::
 
@@ -62,30 +62,16 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.pullDownRefresh.startPullDownRefresh)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/pulldown.html#startpulldownrefresh)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/pull-down-refresh/wx.startPullDownRefresh.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startPullDownRefresh&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startPullDownRefresh&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startPullDownRefresh&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=startPullDownRefresh&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=startPullDownRefresh)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=startPullDownRefresh&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.stopPullDownRefresh() @stoppulldownrefresh -->
 
 ::: sourceCode
 ## uni.stopPullDownRefresh() @stoppulldownrefresh
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
+> issues: https://issues.dcloud.net.cn/?mid=api.page.pullDownRefresh.stopPullDownRefresh
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-pullDownRefresh
 
 :::
 
@@ -110,20 +96,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.91; iOS: 4
 <!-- UTSAPIJSON.stopPullDownRefresh.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.pullDownRefresh.stopPullDownRefresh)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/ui/pulldown.html#stoppulldownrefresh)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ui/pull-down-refresh/wx.stopPullDownRefresh.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopPullDownRefresh&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopPullDownRefresh&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopPullDownRefresh&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=stopPullDownRefresh&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=stopPullDownRefresh)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=stopPullDownRefresh&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

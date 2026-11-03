@@ -3,17 +3,17 @@
 ::: sourceCode
 ## uni.getScreenBrightness(options) @getscreenbrightness
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> issues: https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.getScreenBrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 :::
 
 获取屏幕亮度。
 
 ### getScreenBrightness 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.getScreenBrightness.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=getScreenBrightness&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -52,37 +52,23 @@
 <!-- UTSAPIJSON.getScreenBrightness.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.getScreenBrightness)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/brightness.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.getScreenBrightness.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getScreenBrightness&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getScreenBrightness&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getScreenBrightness&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=getScreenBrightness&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=getScreenBrightness)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=getScreenBrightness&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.setScreenBrightness(options) @setscreenbrightness -->
 
 ::: sourceCode
 ## uni.setScreenBrightness(options) @setscreenbrightness
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> issues: https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setScreenBrightness
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 :::
 
 设置屏幕亮度。
 
 ### setScreenBrightness 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.setScreenBrightness.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=setScreenBrightness&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.41","5.31","5.08","5.08","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -116,30 +102,16 @@
 <!-- UTSAPIJSON.setScreenBrightness.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setScreenBrightness)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/brightness.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.setScreenBrightness.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setScreenBrightness&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setScreenBrightness&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setScreenBrightness&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setScreenBrightness&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setScreenBrightness)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setScreenBrightness&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 <!-- ## uni.setKeepScreenOn(options) @setkeepscreenon -->
 
 ::: sourceCode
 ## uni.setKeepScreenOn(options) @setkeepscreenon
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> issues: https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setKeepScreenOn
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenbrightness
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-screenBrightness
 
 :::
 
@@ -186,20 +158,6 @@ Web: 5.08; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 5.08; iOS: 
 <!-- UTSAPIJSON.setKeepScreenOn.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setKeepScreenOn)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/brightness.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.setKeepScreenOn.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setKeepScreenOn&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setKeepScreenOn&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setKeepScreenOn&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=setKeepScreenOn&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=setKeepScreenOn)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=setKeepScreenOn&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

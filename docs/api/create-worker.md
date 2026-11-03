@@ -26,17 +26,17 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 ::: sourceCode
 ## uni.createWorker(url) @createworker
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWorker
+> issues: https://issues.dcloud.net.cn/?mid=api.worker.createWorker
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWorker
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-createWorker
 
 :::
 
 CreateWorker
 
 ### createWorker 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"Android(Vapor) UTS 插件","group":"Android","subtitle":"Vapor UTS 插件"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS UTS 插件","group":"iOS","subtitle":"UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.81","4.41","5.31","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.21","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.81","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=createWorker&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android(VDOM)","group":"Android","subtitle":"VDOM"},{"title":"Android(Vapor)","group":"Android","subtitle":"Vapor"},{"title":"Android(Vapor) UTS 插件","group":"Android","subtitle":"Vapor UTS 插件"},{"title":"iOS","group":"iOS","subtitle":"uni-app x"},{"title":"iOS UTS 插件","group":"iOS","subtitle":"UTS 插件"},{"title":"HarmonyOS"}],"rows":[["4.81","4.41","5.31","4.81","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","5.21","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","4.81","4.81"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 ### 参数 
@@ -501,19 +501,6 @@ Web: 4.81; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): 4.81;
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.worker.createWorker)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createWorker&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createWorker&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createWorker&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=createWorker&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=createWorker)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=createWorker&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 通用类型
 

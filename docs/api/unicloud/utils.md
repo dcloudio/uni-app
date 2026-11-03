@@ -1,5 +1,8 @@
 ::: sourceCode
 ## onResponse(callback) @onresponse
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.utils.onResponse
+
 :::
 
 监听响应事件
@@ -26,11 +29,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.utils.onResponse)
 
 ::: sourceCode
 ## offResponse(callback) @offresponse
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.utils.offResponse
+
 :::
 
 移除响应事件监听
@@ -57,11 +61,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.utils.offResponse)
 
 ::: sourceCode
 ## onRefreshToken(callback) @onrefreshtoken
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.utils.onRefreshToken
+
 :::
 
 监听token刷新事件
@@ -87,11 +92,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.utils.onRefreshToken)
 
 ::: sourceCode
 ## offRefreshToken(callback) @offrefreshtoken
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.utils.offRefreshToken
+
 :::
 
 移除token刷新事件监听
@@ -117,11 +123,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.utils.offRefreshToken)
 
 ::: sourceCode
 ## getCurrentUserInfo() @getcurrentuserinfo
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.utils.getCurrentUserInfo
+
 :::
 
 获取token内缓存的用户信息
@@ -149,11 +156,12 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.utils.getCurrentUserInfo)
 
 ::: sourceCode
 ## connectWebSocket(options) @connectwebsocket
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.utils.connectWebSocket
+
 :::
 
 连接 WebSocket
@@ -185,5 +193,3 @@ Web: 4.24; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.28; iOS: 
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.utils.connectWebSocket)

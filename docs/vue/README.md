@@ -146,7 +146,7 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 按uts2js执行时，uts里也可以使用ts/js的写法。此时写类型不严谨的js时，可能触发类型校验告警，但忽略即可。
 
 ##### 5.31+，js/ts/uts变成3种独立策略@utstsjs
-	
+
 页面script的lang可以设置uts、ts和js。
 
 页面外链的脚本文件，也可以独立使用 `*.js`、`*.ts`、`*.uts`。不再统一执行uts2js。
@@ -167,10 +167,10 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 	+ 把部分js内置API返回值从undefined改为null
 
 	不使用uts时，将无法再使用UTSJSONObject，UTSJSONObject变成了普通的object，type会被擦除，运行时内置API被改成`null`的会还原为`undefined`。。
-	
+
 	如果你之前使用过UTSJSONObject的专有方法，比如getString、getNumber、getArray等方法，在5.31+运行，由于默认按ts编译，会造成控制台报警找不到相关类型和方法：
 	`getString is not a function`、`getNumber is not a function`、`getArray is not a function`。UTSJSONObject实例方法：`parse`,`get`,`set`,`getAny`,`getBoolean`,`getNumber`,`getString`,`getArray`,`getJSON`,`toMap`。
-	
+
 	此时有如下处理方案：
 	1. 把相关页面的script的lang，显式指定为uts。
 	2. 把UTSJSONObject的写法，改成普通object写法，即`.`点运算符。（推荐，可以获得更快的编译速度和更好的AI支持度）
@@ -178,7 +178,7 @@ VDOM模式lang的值域只有uts。Android平台按uts2kt执行，此时要求�
 	`JSON.parseArray`、`JSON.parseObject`在非uts环境下也无法使用，使用`JSON.parse`方法代替即可。
 
 	undefined转null的js内置API：
-	
+
 		```js
 		Array.prototype.pop
 		Array.prototype.shift
@@ -404,8 +404,6 @@ Web: 4.0; 微信小程序: √; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.1
 
 
 
-##### 参见
-
 
 
 ### Class 与 Style 绑定 @class-style
@@ -522,9 +520,9 @@ useCssModule('classes')
 
 ### CSS 中的 v-bind() @css-v-bind
 
-|App|Web|
-|:-:|:-:|
-|x  |4.13+  |
+|App(Vapor)|App(VDOM)|Web|微信小程序|支付宝小程序|
+|:-:|:-:|:-:|:-:|:-:|
+|5.36|x|4.13|4.41|5.31|
 
 [示例](./data-bind.md#v-bind-css-data)
 

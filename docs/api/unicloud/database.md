@@ -1,4 +1,9 @@
+::: sourceCode
 ## databaseForJQL() @databaseforjql
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.database.databaseForJQL
+
+:::
 
 uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](https://doc.dcloud.net.cn/uniCloud/clientdb.html)。
 
@@ -1172,7 +1177,5 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.16; iOS: 4
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.database.databaseForJQL)
 
 <!-- UTSUNICLOUDAPIJSON.unicloud-database.example -->

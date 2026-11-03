@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.createCanvasContextAsync(options) @createcanvascontextasync
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas
+> issues: https://issues.dcloud.net.cn/?mid=api.canvas.createCanvasContextAsync
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-canvas
 
 :::
 
@@ -166,8 +166,6 @@ Web: 4.25; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.25; iOS: 
 <!-- UTSAPIJSON.createCanvasContextAsync.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.canvas.createCanvasContextAsync)
 
 ## 通用类型
 

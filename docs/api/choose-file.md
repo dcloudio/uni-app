@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.chooseFile(options) @choosefile
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+> issues: https://issues.dcloud.net.cn/?mid=api.media.chooseFile
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-media
 
 :::
 
@@ -29,9 +29,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4
 | :- | :- | :- |  :-: | :- |
 | count | number | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
 | type | string | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
-| extension | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值 |
+| extension | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持 |
 | sizeType | any | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: x | original 原图，compressed 压缩图，默认二者都有, App平台不支持 |
-| sourceType | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | album 从相册选图，camera 使用相机，默认二者都有 |
+| sourceType | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: x; iOS: x; HarmonyOS: 4.61 | album 从相册选图，camera 使用相机，默认二者都有, App平台不支持 |
 | success | (result: [ChooseFileSuccess](#choosefilesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles |
 | fail | (result: [ChooseFileFail](#choosefilefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -56,17 +56,17 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 选择的文件名称 |
-| path | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 文件路径 |
-| size | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 文件大小，单位 B |
+| name | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择的文件名称 |
+| path | string | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件路径 |
+| size | number | 是 | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件大小，单位 B |
 | type | string | 是 |   | 选择的文件类型<br/>可选值：<br/>- 'video': 选择了视频文件;<br/>- 'image': 选择了图片文件;<br/>- 'audio': 选择了音频文件;<br/>- 'file': 选择了除图片和视频的文件; |
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| "video" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 视频类型 |
-| "image" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 图片类型 |
+| "video" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
+| "image" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
 | "audio" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
 | "file" | Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 4.51; iOS: 4.61; HarmonyOS: x | 除图片和音视频类型的文件 |
 
@@ -379,20 +379,6 @@ Android端返回的路径是content协议。
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.media.chooseFile)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/media/file.html#choosefile)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=chooseFile&doc_type=miniprogram)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=chooseFile&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=chooseFile&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=chooseFile&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=chooseFile&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=chooseFile)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=chooseFile&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 
 ## tips

@@ -3,10 +3,10 @@
 ::: sourceCode
 ## textarea
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/textarea
+> issues: https://issues.dcloud.net.cn/?mid=component.form-component.textarea
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/textarea
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-form/components/textarea
 
 :::
 
@@ -783,21 +783,9 @@ if (view != null && view instanceof UITextView) {
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.form-component.textarea)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/textarea.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/textarea.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=textarea&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=textarea&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=textarea&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=textarea&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=textarea)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=textarea&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
 
 ## 键盘上推专题
 input和textarea组件都一个属性`adjust-position`，默认为true，即软键盘弹出时，默认上推页面以显示出输入框，避免输入框被软键盘遮挡。

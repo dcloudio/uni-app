@@ -1,10 +1,10 @@
 ::: sourceCode
 ## uni.navigateTo(options) @navigateto
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.navigator.navigateTo
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -91,28 +91,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 <!-- UTSAPIJSON.navigateTo.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.navigator.navigateTo)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/router.html#navigateto)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=navigateTo&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=navigateTo&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=navigateTo&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=navigateTo&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=navigateTo)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=navigateTo&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.redirectTo(options) @redirectto
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.navigator.redirectTo
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -177,28 +163,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 <!-- UTSAPIJSON.redirectTo.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.navigator.redirectTo)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/router.html#redirectto)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.redirectTo.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=redirectTo&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=redirectTo&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=redirectTo&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=redirectTo&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=redirectTo)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=redirectTo&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.reLaunch(options) @relaunch
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.navigator.reLaunch
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -263,28 +235,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 <!-- UTSAPIJSON.reLaunch.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.navigator.reLaunch)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/router.html#relaunch)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.reLaunch.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=reLaunch&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=reLaunch&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=reLaunch&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=reLaunch&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=reLaunch)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=reLaunch&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.switchTab(options) @switchtab
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.navigator.switchTab
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -349,28 +307,14 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android(VDOM): √; A
 <!-- UTSAPIJSON.switchTab.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.navigator.switchTab)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/router.html#switchtab)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.switchTab.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=switchTab&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=switchTab&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=switchTab&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=switchTab&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=switchTab)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=switchTab&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ::: sourceCode
 ## uni.navigateBack(options?) @navigateback
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> issues: https://issues.dcloud.net.cn/?mid=api.page.navigator.navigateBack
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-route
 
 :::
 
@@ -452,20 +396,6 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: √; iOS(VDO
 <!-- UTSAPIJSON.navigateBack.example -->
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.page.navigator.navigateBack)
-- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/router.html#navigateback)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateBack.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=navigateBack&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=navigateBack&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=navigateBack&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=navigateBack&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=navigateBack)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=navigateBack&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 示例
 

@@ -1,5 +1,8 @@
 ::: sourceCode
 ## uploadFile(options) @uploadfile
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.cloudStorage.uploadFile
+
 :::
 
 上传文件到云存储
@@ -65,13 +68,14 @@ onUploadProgress
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.cloudStorage.uploadFile)
 
 <!-- UTSUNICLOUDAPIJSON.uploadFile.example -->
 
 ::: sourceCode
 ## chooseAndUploadFile(options) @chooseanduploadfile
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.cloudStorage.getTempFileURL
+
 :::
 
 选择并上传文件
@@ -221,8 +225,6 @@ onUploadProgress
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.cloudStorage.getTempFileURL)
 
 <!-- UTSUNICLOUDAPIJSON.chooseAndUploadFile.example -->
 
@@ -233,6 +235,9 @@ onUploadProgress
 
 ::: sourceCode
 ## getTempFileURL(options) @gettempfileurl
+
+> issues: https://issues.dcloud.net.cn/?mid=api.unicloud.cloudStorage.chooseAndUploadFile
+
 :::
 
 获取文件临时URL
@@ -275,7 +280,5 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 阿里云 3.
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.unicloud.cloudStorage.chooseAndUploadFile)
 
 <!-- UTSUNICLOUDAPIJSON.unicloud-file-api.example -->

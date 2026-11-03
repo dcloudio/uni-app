@@ -76,9 +76,9 @@
   * [uni-badge-view | 数字角标](./uni-ui-x/uni-badge-view.md)
   * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
   * [uni-combobox | 组合框](./uni-ui-x/uni-combobox.md)
-  * [uni-combox | 组合框](./uni-ui-x/uni-combox.md)
-  * [uni-data-picker | 数据选择器](./uni-ui-x/uni-data-picker.md)
-  * [uni-data-checkbox | 数据选择器](./uni-ui-x/uni-data-checkbox.md)
+  * [~~uni-combox | 组合框~~](./uni-ui-x/uni-combox.md)
+  * [uni-data-picker | 级联选择器](./uni-ui-x/uni-data-picker.md)
+  * [uni-data-checkbox | 枚举类平铺型选择器](./uni-ui-x/uni-data-checkbox.md)
   * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
   * [uni-expandable-text | 可折叠文本](./uni-ui-x/uni-expandable-text.md)
   * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
@@ -86,12 +86,12 @@
   * [uni-icons | 字体图标](./uni-ui-x/uni-icons.md)
   * [uni-index-bar | 索引条](./uni-ui-x/uni-index-bar.md)
   * [uni-link | 链接](./uni-ui-x/uni-link.md)
-  * [uni-number-box | 数字输入框](./uni-ui-x/uni-number-box.md)
   * [uni-nav-bar | 自定义导航栏](./uni-ui-x/uni-nav-bar.md)
+  * [uni-number-box | 数字输入框](./uni-ui-x/uni-number-box.md)
   * [uni-rate | 评分](./uni-ui-x/uni-rate.md)
+  * [uni-refresh-box | 自定义下拉刷新](./uni-ui-x/uni-refresh-box.md)
   * [uni-time-format | 时间格式化](./uni-ui-x/uni-time-format.md)
   * [uni-tab-bar | 选项卡容器](./uni-ui-x/uni-tab.md)
-  * [uni-refresh-box | 自定义下拉刷新](./uni-ui-x/uni-refresh-box.md)
 * 微信专用组件
   * Skyline
     * 手势系统

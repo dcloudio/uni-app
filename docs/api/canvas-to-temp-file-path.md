@@ -1,12 +1,15 @@
 ::: sourceCode
 ## uni.canvasToTempFilePath(options, componentInstance) @canvastotempfilepath
+
+> issues: https://issues.dcloud.net.cn/?mid=api.canvas.canvasToTempFilePath
+
 :::
 
 把当前画布指定区域的内容导出生成指定大小的图片
 
 
 ### canvasToTempFilePath 兼容性 <Help /> 
-<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序"},{"title":"支付宝小程序"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
+<CompatibilityTable mode="table" table='{"headers":[{"title":"Web"},{"title":"微信小程序","href":"https://developers.weixin.qq.com/miniprogram/dev/api/canvas/wx.canvasToTempFilePath.html"},{"title":"支付宝小程序","href":"https://open.alipay.com/portal/zhichi/search?keyword=canvasToTempFilePath&amp;pageIndex=1&amp;pageSize=10&amp;source=doc_top&amp;type=all"},{"title":"Android"},{"title":"iOS"},{"title":"HarmonyOS"}],"rows":[["4.0","4.41","5.31","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;","&lt;a style=\"color:unset;\" href=\"https://vote.dcloud.net.cn/#/?name=uni-app%20x\"&gt;x&lt;/a&gt;"]],"status":"PARTIALLY_SUPPORTED"}' />
 
 
 * 截图或海报需求，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。
@@ -47,20 +50,6 @@
 
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=api.canvas.canvasToTempFilePath)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/canvas/canvasToTempFilePath.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/wx.canvasToTempFilePath.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=canvasToTempFilePath&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=canvasToTempFilePath&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=canvasToTempFilePath&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=canvasToTempFilePath&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=canvasToTempFilePath)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=canvasToTempFilePath&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
 ## 通用类型
 

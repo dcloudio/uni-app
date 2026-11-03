@@ -3,10 +3,10 @@
 ::: sourceCode
 ## navigator
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-navigator/components/navigator
+> issues: https://issues.dcloud.net.cn/?mid=component.navigation.navigator
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-navigator/components/navigator
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-navigator/components/navigator
 
 :::
 
@@ -153,21 +153,9 @@ Web: 4.0; 微信小程序: 4.41; 支付宝小程序: 5.31; Android: 3.9; iOS: 4.
 
 :::
 
-
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.navigation.navigator)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/navigator.html)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/navigator.html)
-- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=navigator&pageIndex=1&pageSize=10&source=doc_top&type=all)
-- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=navigator&scope=devdocs&source=docs)
-- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=navigator&secondType=all&type=1)
-- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=navigator&topicFilter=)
-- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=navigator)
-- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
-- [快手小程序文档](https://developers.kuaishou.com/page?keyword=navigator&from=docs)
-- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
-- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
-- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
 
 ## Tips
 navigator组件是对uni.navigateTo API的易用性封装，无需编写method方法，直接跳转页面。跳转后的新页面在onload生命周期中接收参数，详见[页面onLoad生命周期](../page.md#onload)

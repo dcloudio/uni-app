@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-index-bar
 ::: sourceCode
 ## uni-index-bar
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-index-bar/components/uni-index-bar
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-index-bar
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-index-bar/components/uni-index-bar
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-index-bar/components/uni-index-bar
 
 :::
 
@@ -266,6 +266,7 @@ Web: 5.07; 微信小程序: 5.08; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 
 	.city-list {
 		background-color: var(--list-background-color, #ffffff);
+		/* scrollbar-width: thin; */
 	}
 
 	.city-item {
@@ -297,5 +298,3 @@ Web: 5.07; 微信小程序: 5.08; 支付宝小程序: 5.31; Android: 5.07; iOS: 
 :::
 
 
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-index-bar)

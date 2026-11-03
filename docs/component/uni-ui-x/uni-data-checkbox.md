@@ -5,10 +5,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-data-chec
 ::: sourceCode
 ## uni-data-checkbox
 
-> GitCode: https://gitcode.com/dcloud/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-checkbox-x/components/uni-data-checkbox
+> issues: https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-data-checkbox
 
 
-> GitHub: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-checkbox-x/components/uni-data-checkbox
+> 源码: https://github.com/dcloudio/uni-app/tree/uni-app-x-alpha/src/uni_modules/uni-data-checkbox-x/components/uni-data-checkbox
 
 :::
 
@@ -366,26 +366,26 @@ Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android: 5.33; iOS: 
 ### 属性 
 | 名称 | 类型 | 描述 |
 | :- | :- | :- |
-| mode | string |  |
-| multiple | boolean |  |
-| value | Array \| string \| number |   |
-| modelValue | Array \| string \| number |   |
-| localdata | Array |   |
-| min | string \| number |   |
-| max | string \| number |   |
-| icon | string |  |
-| emptyText | string |   |
-| map | object |   |
-| disabled | boolean |   |
-| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| checkboxClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| labelSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| textSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| checkboxSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| emptyTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) |   |
-| collection | string |   |
+| mode | string | 展示模式 |
+| multiple | boolean | 是否启用多选 |
+| value | Array \| string \| number | 当前值的兼容属性，推荐使用 v-model；组件更新时只触发 update:modelValue |
+| modelValue | Array \| string \| number | v-model 绑定值；单选为字符串或数字，多选为数组 |
+| localdata | Array | 本地候选数据；数据项默认使用 text、value、disabled、disable、selected 字段 |
+| min | number \| string | 多选模式的最少选择数量 |
+| max | number \| string | 多选模式的最多选择数量 |
+| icon | string | 选中标记位置 |
+| emptyText | string | 云端数据为空时显示的文字 |
+| map | object | 自定义候选数据的文字字段和值字段 |
+| disabled | boolean | 是否禁用全部选项 |
+| labelClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 每个选项外层容器的自定义样式类 |
+| textClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 每个选项文字的自定义样式类 |
+| checkboxClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 左侧单选或复选控件的自定义样式类 |
+| labelSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 已选项外层容器的自定义样式类 |
+| textSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 已选项文字的自定义样式类 |
+| checkboxSelectedClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 已选单选或复选控件的自定义样式类 |
+| iconClass | string([string.ClassString](/uts/data-type.md#ide-string)) | icon 为 right 时右侧选中标记的自定义样式类 |
+| emptyTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | 云端数据为空或加载失败提示文字的自定义样式类 |
+| collection | string | uniCloud 数据库集合名称；设置后且未提供 localdata 时使用云端数据，需要 HBuilder 5.32 或更高版本并关联服务空间 |
 | options | object \| Array |   |
 | action | string |   |
 | field | string |   |
@@ -444,8 +444,438 @@ Web: 5.33; 微信小程序: 5.33; 支付宝小程序: 5.33; Android: 5.33; iOS: 
 
 
 
+### 示例
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/uni-ui/data-checkbox/data-checkbox.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/uni-ui/data-checkbox/data-checkbox.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/uni-ui/data-checkbox/data-checkbox
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/uni-ui/data-checkbox/data-checkbox
+
+>示例
+```vue
+<template>
+	<scroll-view class="page" :class="{ 'page-dark': isDarkMode }">
+		<view class="intro">
+			<text class="page-title">uni-data-checkbox 数据选择器</text>
+			<text class="page-desc">使用本地数据完成单选、多选、选择约束和多种展示模式，并通过 external class 调整选项样式。</text>
+		</view>
+
+		<view class="group-header">
+			<text class="group-title">基础用法</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">单选与事件</text>
+			<text class="section-desc">数字 0 作为有效默认值，同时监听 modelValue 和 change。</text>
+			<uni-data-checkbox
+				v-model="sexValue"
+				:localdata="sex"
+				label-class="demo-inline-label"
+				label-selected-class="test-zero-selected"
+				@update:modelValue="onUpdate"
+				@change="onChange"
+			/>
+			<view class="result-block">
+				<text class="result-text">当前值：{{ sexValue }}</text>
+				<text class="event-text">最近事件：{{ latestEvent }}</text>
+			</view>
+		</view>
+
+		<view class="section">
+			<text class="section-title">多选与事件</text>
+			<text class="section-desc">支持数组模型和默认选中项。</text>
+			<uni-data-checkbox
+				v-model="sexMultiValue"
+				:localdata="hobby"
+				multiple
+				label-class="demo-inline-label"
+				text-class="test-dynamic-text"
+				@update:modelValue="onMultiUpdate"
+				@change="onMultiChange"
+			/>
+			<view class="result-block">
+				<text class="result-text">当前值：{{ JSON.stringify(sexMultiValue) }}</text>
+				<text class="event-text">最近事件：{{ latestMultiEvent }}</text>
+			</view>
+		</view>
+
+		<view class="section">
+			<text class="section-title">选择数量限制</text>
+			<text class="section-desc">最多选择 3 项，数据中的 disable 可单独禁用选项。</text>
+			<uni-data-checkbox
+				v-model="sexMultiMaxValue"
+				:localdata="hobbyMore"
+				:max="3"
+				multiple
+				label-class="demo-inline-label"
+			/>
+			<text class="result-text result-standalone">当前值：{{ JSON.stringify(sexMultiMaxValue) }}</text>
+		</view>
+
+		<view class="group-header">
+			<text class="group-title">展示模式</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">Button 模式</text>
+			<uni-data-checkbox v-model="buttonValue" mode="button" :localdata="buttonOptions" />
+			<text class="result-text result-standalone">当前值：{{ buttonValue }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">Tag 模式与字段映射</text>
+			<text class="section-desc">使用 map 映射 name/code 字段，并限制选择 1 至 3 项。</text>
+			<uni-data-checkbox
+				v-model="tagValue"
+				mode="tag"
+				multiple
+				:localdata="mappedOptions"
+				:map="mappedFields"
+				:min="1"
+				:max="3"
+				label-class="demo-tag-label"
+				text-class="demo-tag-text test-map-text"
+			/>
+			<text class="result-text result-standalone">当前值：{{ JSON.stringify(tagValue) }}</text>
+		</view>
+
+		<view class="section">
+			<text class="section-title">List 模式与图标位置</text>
+			<text class="subsection-title">默认图标</text>
+			<view class="list-frame">
+				<uni-data-checkbox
+					v-model="listValue"
+					mode="list"
+					:localdata="hobby"
+					label-class="demo-list-label"
+					text-class="demo-list-text"
+					label-selected-class="demo-list-selected"
+					icon-class="demo-right-icon"
+				/>
+			</view>
+
+			<text class="subsection-title subsection-spaced">右侧对勾</text>
+			<view class="list-frame">
+				<uni-data-checkbox
+					v-model="listRightValue"
+					mode="list"
+					icon="right"
+					:localdata="hobby"
+					label-class="demo-list-label"
+					text-class="demo-list-text"
+					label-selected-class="demo-list-selected"
+					icon-class="demo-right-icon"
+				/>
+			</view>
+
+			<text class="subsection-title subsection-spaced">左右对齐</text>
+			<view class="list-frame">
+				<uni-data-checkbox
+					v-model="listAlignValue"
+					mode="list"
+					:localdata="alignOptions"
+					label-class="demo-list-label demo-list-align"
+					text-class="demo-list-text-align"
+					label-selected-class="demo-list-selected"
+					text-selected-class="demo-list-text-selected"
+				/>
+			</view>
+		</view>
+
+		<view class="group-header">
+			<text class="group-title">状态与样式</text>
+		</view>
+
+		<view class="section section-last">
+			<text class="section-title">禁用状态与外部样式</text>
+			<text class="section-desc">组合全局 disabled、数据项 disabled、min/max 与 external class。</text>
+			<uni-data-checkbox
+				v-model="disabledValues"
+				multiple
+				:localdata="disabledOptions"
+				:min="1"
+				:max="2"
+				disabled
+				empty-text="暂无可选数据"
+				empty-text-class="demo-empty-text"
+				label-class="demo-inline-label"
+				label-selected-class="test-default-selected"
+			/>
+			<text class="result-text result-standalone">当前值：{{ JSON.stringify(disabledValues) }}</text>
+		</view>
+	</scroll-view>
+</template>
+
+<script setup lang="ts">
+import { state } from '@/store/index.ts'
+
+const isDarkMode = computed(() : boolean => state.isDarkMode)
+
+function syncNavigationBar() : void {
+	// #ifdef APP
+	const dark = isDarkMode.value
+	uni.setNavigationBarColor({
+		frontColor: dark ? '#ffffff' : '#000000',
+		backgroundColor: dark ? '#1a1a1a' : '#efeff4'
+	})
+	// #endif
+}
+
+watch(isDarkMode, syncNavigationBar, { immediate: true })
+onShow(syncNavigationBar)
+
+const sex = [
+	{ text: '男', value: 0 },
+	{ text: '女', value: 1 },
+	{ text: '未知', value: 2 }
+]
+const hobby = reactive([
+	{ text: '足球', value: 0 },
+	{ text: '篮球', value: 1 },
+	{ text: '游泳', value: 2 }
+])
+const buttonOptions = [
+	{ text: '选项一', value: 'normal' },
+	{ text: '选项二', value: 'other' },
+	{ text: '选项三', value: 'third' }
+]
+const mappedOptions = [
+	{ name: '流行', code: 'pop', label: 'POP', id: 'p' },
+	{ name: '摇滚', code: 'rock', label: 'ROCK', id: 'r' },
+	{ name: '爵士', code: 'jazz', label: 'JAZZ', id: 'j' },
+	{ name: '蓝调', code: 'blues', label: 'BLUES', id: 'b' },
+	{ name: '古典', code: 'classic', label: 'CLASSIC', id: 'c' }
+]
+const disabledOptions = [
+	{ text: '固定选中', value: 'fixed', selected: true },
+	{ text: '不可用', value: 'unavailable', disabled: true },
+	{ text: '普通选项', value: 'available' }
+]
+
+const sexValue = ref(0)
+const sexMultiValue = ref([1])
+const sexMultiMaxValue = ref([])
+const hobbyMore = [
+	{ text: '足球', value: 0 },
+	{ text: '篮球', value: 1 },
+	{ text: '游泳', value: 2 },
+	{ text: '乒乓球', value: 3 },
+	{ text: '羽毛球', value: 4 },
+	{ text: '网球', value: 5, disable: true }
+]
+const buttonValue = ref('normal')
+const tagValue = ref(['pop'])
+const listValue = ref(1)
+const listRightValue = ref(1)
+const alignOptions = [
+	{ text: '50毫秒', value: 50 },
+	{ text: '200毫秒', value: 200 },
+	{ text: '400毫秒', value: 400 }
+]
+const listAlignValue = ref(200)
+const disabledValues = ref([])
+const mappedFields = reactive({ text: 'name', value: 'code' })
+const latestEvent = ref('未触发')
+const latestMultiEvent = ref('未触发')
+
+const onUpdate = (event) => {
+	latestEvent.value = 'update:modelValue：' + JSON.stringify(event)
+	console.log('onUpdate:', event)
+}
+const onChange = (event) => {
+	latestEvent.value = 'change：' + JSON.stringify(event.detail.value)
+	console.log('onChange:', event)
+}
+const onMultiUpdate = (event) => {
+	latestMultiEvent.value = 'update:modelValue：' + JSON.stringify(event)
+	console.log('onMultiUpdate:', event)
+}
+const onMultiChange = (event) => {
+	latestMultiEvent.value = 'change：' + JSON.stringify(event.detail.value)
+	console.log('onMultiChange:', event)
+}
+
+const clearDisabledValues = () => {
+	disabledValues.value = []
+}
+
+const updateFirstHobby = () => {
+	hobby[0].text = '足球（已更新）'
+}
+
+const useAlternateMap = () => {
+	mappedFields.text = 'label'
+	mappedFields.value = 'id'
+}
+
+defineExpose({
+	clearDisabledValues,
+	updateFirstHobby,
+	useAlternateMap
+})
+</script>
+
+<style>
+.page {
+	flex: 1;
+	background-color: var(--background-color, #f5f5f5);
+	--data-checkbox-demo-error-color: #dd524d;
+}
+
+.page-dark {
+	--data-checkbox-demo-error-color: #ff7875;
+}
+
+.intro {
+	padding: 18px 16px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.page-title {
+	font-size: 20px;
+	font-weight: bold;
+	color: var(--text-color, #222222);
+}
+
+.page-desc {
+	margin-top: 8px;
+	font-size: 14px;
+	line-height: 21px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.group-header {
+	padding: 18px 16px 6px;
+}
+
+.group-title {
+	font-size: 14px;
+	font-weight: bold;
+	color: var(--secondary-text-color, #657180);
+}
+
+.section {
+	padding: 16px;
+	margin-top: 10px;
+	background-color: var(--content-background-color, #ffffff);
+}
+
+.section-last {
+	padding-bottom: 32px;
+}
+
+.section-title {
+	margin-bottom: 12px;
+	font-size: 16px;
+	font-weight: bold;
+	color: var(--text-color, #333333);
+}
+
+.section-desc {
+	margin-top: -4px;
+	margin-bottom: 12px;
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.subsection-title {
+	margin-bottom: 8px;
+	font-size: 13px;
+	font-weight: bold;
+	color: var(--secondary-text-color, #657180);
+}
+
+.subsection-spaced {
+	margin-top: 18px;
+}
+
+.result-block,
+.result-standalone {
+	margin-top: 10px;
+}
+
+.result-block {
+	flex-direction: column;
+}
+
+.result-text,
+.event-text {
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--secondary-text-color, #657180);
+}
+
+.event-text {
+	margin-top: 2px;
+}
+
+.list-frame {
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--divider-color, #e2e5e9);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.demo-inline-label {
+	margin-right: 20px;
+	margin-bottom: 8px;
+}
+
+.demo-tag-label {
+	margin-right: 8px;
+	margin-bottom: 8px;
+	border-radius: 6px;
+}
+
+.demo-tag-text {
+	font-size: 14px;
+}
+
+.demo-list-label {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+.demo-list-text {
+	flex: 1;
+}
+
+.demo-list-align {
+	justify-content: space-between;
+}
+
+.demo-list-text-align {
+	flex: 1;
+	text-align: right;
+}
+
+.demo-list-selected {
+	background-color: var(--active-background-color, #f2f7ff);
+}
+
+.demo-list-text-selected {
+	color: var(--tips-color, #007aff);
+}
+
+.demo-right-icon {
+	width: 7px;
+	height: 13px;
+}
+
+.demo-empty-text {
+	color: var(--data-checkbox-demo-error-color, #dd524d);
+}
+
+@media (prefers-color-scheme: dark) {
+	.page {
+		--data-checkbox-demo-error-color: #ff7875;
+	}
+}
+</style>
+
+```
+
+:::
 
 
-
-### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=uni-ui-x.uni-data-checkbox)
