@@ -47,7 +47,33 @@ uni-app x 在不同平台（Android、iOS、鸿蒙、微信小程序、web）、
 
 例如，Android 需要区分页面模式与插件环境时，表格会按如下方式展示：
 
-Web: 4.0; Android(VDOM): 4.25; Android(Vapor): 5.22; Android(VDOM) UTS 插件: 4.26; Android(Vapor) UTS 插件: 5.23; iOS: 4.11; HarmonyOS: 4.61
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2" scope="col">Web</th>
+      <th colspan="4" scope="colgroup">Android</th>
+      <th rowspan="2" scope="col">iOS</th>
+      <th rowspan="2" scope="col">HarmonyOS</th>
+    </tr>
+    <tr>
+      <th scope="col">VDOM</th>
+      <th scope="col">Vapor</th>
+      <th scope="col">VDOM UTS 插件</th>
+      <th scope="col">Vapor UTS 插件</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>4.0</td>
+      <td>4.25</td>
+      <td>5.22</td>
+      <td>4.26</td>
+      <td>5.23</td>
+      <td>4.11</td>
+      <td>4.61</td>
+    </tr>
+  </tbody>
+</table>
 
 同一平台最终只剩一列时，仅显示平台或对应环境的名称，不额外增加一层表头。
 
