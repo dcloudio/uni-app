@@ -11,7 +11,8 @@ import { findVmByVueId } from '@dcloudio/uni-mp-core'
 import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
 
-export { initLifetimes } from './componentLifetimes'
+import { instances } from './componentLifetimes'
+export { initLifetimes, instances } from './componentLifetimes'
 
 export const mocks = [
   '__route__',
@@ -31,11 +32,6 @@ interface RelationOptions {
   nodeId: number
   webviewId: string
 }
-
-export const instances: Record<
-  string,
-  ComponentPublicInstance | MPComponentInstance
-> = Object.create(null)
 
 export function initRelation(
   mpInstance: MPComponentInstance,
@@ -116,7 +112,10 @@ export function handleLink(
   // }
 
   if (__VUE_OPTIONS_API__ && parentVm) {
-    ;(parentVm as any).$children.push(vm)
+    const children = (parentVm as any).$children
+    if (children.indexOf(vm) === -1) {
+      children.push(vm)
+    }
   }
   vm.$callCreatedHook()
   // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢
