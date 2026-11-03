@@ -358,7 +358,7 @@ export function resolveUniAppXHarmonyScriptEngine(
   manifestJson: Record<string, any>
 ) {
   const harmonyScriptEngine =
-    manifestJson['app-harmony']?.['distribute']?.['scriptEngine'] ??
+    manifestJson['app-harmony']?.['distribute']?.['runtime'] ??
     defaultUniAppXHarmonyScriptEngine
   switch (harmonyScriptEngine) {
     case 'arkts':
