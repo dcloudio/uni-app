@@ -814,6 +814,11 @@ void NativeInputView::setColorAttribute(ArkUI_NodeAttributeType type,
 
   uint32_t argb = 0;
   if (!parseCssColor(value, argb)) return;
+  if (type == NODE_TEXT_INPUT_SELECTED_BACKGROUND_COLOR &&
+      (argb >> 24) == 0xFF) {
+    // Match ArkTS selectedBackgroundColor: opaque colors use 20% opacity.
+    argb = (argb & 0x00FFFFFFu) | 0x33000000u;
+  }
   ArkUI_NumberValue values[] = {{.u32 = argb}};
   ArkUI_AttributeItem item = {values, 1};
   UniAppX_ArkUIModuleInterface->setAttribute(input_node_, type, &item);
