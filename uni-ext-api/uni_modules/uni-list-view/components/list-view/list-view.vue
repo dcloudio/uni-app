@@ -19,7 +19,7 @@
             <slot name="header"></slot>
         </view>
         <view>
-            <view class="placeholder" :ref="recycleListCpp.setPlaceholderElement"></view>
+            <view style="width: 1px;" :ref="recycleListCpp.setPlaceholderElement"></view>
             <slot></slot>
         </view>
         <view>
@@ -232,9 +232,6 @@ defineExpose({
 });
 </script>
 <style>
-.placeholder {
-    width: 1px;
-}
 </style>
 <!-- #endif -->
 <!-- #ifdef WEB -->
@@ -244,7 +241,7 @@ defineExpose({
             <slot name="header" />
         </view>
         <view ref="bodyElement" style="position: relative; overflow: visible; overflow-anchor: none">
-            <view ref="placeholderElement" class="placeholder" />
+            <view ref="placeholderElement" style="width: 1px; flex-shrink: 0;" />
             <slot />
         </view>
         <view>
@@ -639,9 +636,5 @@ defineExpose({
 </script>
 
 <style>
-    .placeholder {
-        width: 1px;
-        flex-shrink: 0;
-    }
 </style>
 <!-- #endif -->

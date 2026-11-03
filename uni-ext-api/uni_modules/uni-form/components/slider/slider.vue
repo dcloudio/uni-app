@@ -1,8 +1,12 @@
 <template>
-  <view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;">
-    <view ref="containerRef" class="slider-track" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd" @touchcancel="handleTouchCancel"
+  <view class="container">
+    <view ref="containerRef" class="slider-track"
+      <!-- #ifndef WEB -->
+      @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd" @touchcancel="handleTouchCancel"
+      <!-- #endif -->
       <!-- #ifdef WEB -->
-      @mousedown="handleMouseDown" @mousemove="handleMouseMove" @mouseup="handleMouseUp"
+      @pointerdown="handlePointerDown" @pointermove="handlePointerMove" @pointerup="handlePointerUp"
+      @pointercancel="handlePointerCancel" @lostpointercapture="handlePointerCancel"
       <!-- #endif -->
     >
       <!-- 背景轨道 -->
@@ -384,7 +388,6 @@
   let trackLeft = 0
   let rafId = 0
   let ticking = false
-  let isTouchDevice = false
   let cachedDecimalPlaces = -1 // 缓存 step 小数位数，-1表示未缓存
   let cachedStep = props.step // 缓存 step 值，便于检测变化
   let lastValue = 0 // 用于判断是否触发 change
@@ -412,12 +415,21 @@
   let touchStartY = 0 // 触摸起始 Y 坐标
   const TOUCH_THRESHOLD = 4 // 触摸阈值（像素）
 
-  function removeMouseListeners() {
-    // #ifdef WEB
-    window.removeEventListener('mousemove', handleMouseMove)
-    window.removeEventListener('mouseup', handleMouseUp)
-    // #endif
+  // #ifdef WEB
+  let activePointerId = -1
+  let pointerTarget : HTMLElement | null = null
+  let pointerClientX = 0
+
+  function releasePointerCapture() {
+    const target = pointerTarget
+    const pointerId = activePointerId
+    activePointerId = -1
+    pointerTarget = null
+    if (target != null && target.hasPointerCapture(pointerId)) {
+      target.releasePointerCapture(pointerId)
+    }
   }
+  // #endif
 
   function resetInteractionState() {
     if (rafId != 0) {
@@ -427,6 +439,9 @@
     ticking = false
     isDragging.value = false
     lastValue = currentValue.value
+    // #ifdef WEB
+    releasePointerCapture()
+    // #endif
   }
 
   function preventDefaultEvent(e : UniTouchEvent) {
@@ -548,14 +563,12 @@
     return newValue
   }
 
+  // #ifndef WEB
   // 触摸开始
   function handleTouchStart(e : UniTouchEvent) {
     if (props.disabled == true) {
       return
     }
-
-    // 标记为触摸设备
-    isTouchDevice = true
 
     // 记录触摸起始位置
     if (e.touches.length > 0) {
@@ -643,47 +656,79 @@
       ticking = true
     }
   }
+  // #endif
 
-  // #region Mouse End Resize	// 鼠标移动处理 (使用 rAF 优化)
   // #ifdef WEB
-  function handleMouseMove(e : MouseEvent) {
-    if (isDragging.value == false || props.disabled == true) {
+  function finishPointerInteraction(clientX : number) {
+    if (props.disabled) {
+      resetInteractionState()
       return
     }
+    // 松开可能早于待执行的 rAF，先应用最终位置再派发 change。
+    if (_activeStatus != -1) renderVisuals(calculateValue(clientX))
+    const value = currentValue.value
+    const changed = lastValue !== value
+    // 先结束本轮交互，避免 change 回调内开始的新交互被旧清理覆盖。
+    resetInteractionState()
+    if (changed) emit('change', new UniSliderChangeEvent(value))
+  }
+
+  function handlePointerMove(e : PointerEvent) {
+    if (e.pointerId != activePointerId || props.disabled == true) {
+      return
+    }
+
+    // 多键同时按下时，左键释放可能只有 pointermove，没有 pointerup。
+    if (e.pointerType == 'mouse' && (e.buttons & 1) == 0) {
+      finishPointerInteraction(e.clientX)
+      return
+    }
+
+    if (_activeStatus == 0) {
+      const deltaX = Math.abs(e.clientX - touchStartX)
+      const deltaY = Math.abs(e.clientY - touchStartY)
+      if (deltaX <= TOUCH_THRESHOLD && deltaY <= TOUCH_THRESHOLD) return
+      _activeStatus = deltaX > deltaY ? 1 : -1
+    }
+    if (_activeStatus != 1) return
 
     if (e.cancelable) {
       e.preventDefault()
     }
+    e.stopPropagation()
+    pointerClientX = e.clientX
 
     if (ticking == false) {
-      rafId = requestAnimationFrame(() => {
-        const newValue = calculateValue(e.clientX)
-          if (newValue === currentValue.value) {
-            ticking = false
-            return
-          }
+      ticking = true
+      const pointerId = activePointerId
+      const frameId = requestAnimationFrame(() => {
+        if (rafId != frameId) return
+        rafId = 0
+        ticking = false
+        if (activePointerId != pointerId || props.disabled) return
+        const newValue = calculateValue(pointerClientX)
+        if (newValue === currentValue.value) return
         renderVisuals(newValue)
         emit('changing', new UniSliderChangeEvent(currentValue.value))
-        ticking = false
       })
-      ticking = true
+      rafId = frameId
     }
   }
 
-  // 鼠标按下
-  function handleMouseDown(e : MouseEvent) {
-    if (props.disabled == true) {
+  function handlePointerDown(e : PointerEvent) {
+    if (props.disabled == true || activePointerId != -1 || !e.isPrimary || e.button != 0) {
       return
     }
 
-    // 如果是触摸设备，忽略鼠标事件
-    if (isTouchDevice == true) {
-      return
-    }
-
-    e.preventDefault()
     lastValue = currentValue.value
     isDragging.value = true
+    touchStartX = e.clientX
+    touchStartY = e.clientY
+    _activeStatus = e.pointerType == 'mouse' ? 1 : 0
+    activePointerId = e.pointerId
+    pointerTarget = e.currentTarget as HTMLElement
+    // 捕获后即使指针移出轨道也能继续拖动，无需给 window 添加监听。
+    pointerTarget.setPointerCapture(e.pointerId)
 
     // 缓存轨道尺寸
     const containerEl = containerRef.value
@@ -693,30 +738,22 @@
       trackWidth = rect.width
     }
 
-    // 立即更新到点击位置
-    const newValue = calculateValue(e.clientX)
-    renderVisuals(newValue)
-
-    // 绑定全局鼠标事件
-    window.removeEventListener('mousemove', handleMouseMove)
-    window.removeEventListener('mouseup', handleMouseUp)
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
+    if (e.pointerType == 'mouse') {
+      e.preventDefault()
+      renderVisuals(calculateValue(e.clientX))
+    }
   }
 
-  // 鼠标释放
-  function handleMouseUp() {
-    if (isDragging.value == false) {
+  function handlePointerUp(e : PointerEvent) {
+    if (e.pointerId != activePointerId || e.button != 0) {
       return
     }
 
-    if (lastValue !== currentValue.value) {
-      emit('change', new UniSliderChangeEvent(currentValue.value))
-    }
-    resetInteractionState()
-    removeMouseListeners()
+    finishPointerInteraction(e.clientX)
+  }
 
-    // 移除全局鼠标事件
+  function handlePointerCancel(e : PointerEvent) {
+    if (e.pointerId == activePointerId) resetInteractionState()
   }
   // 键盘事件处理
   function handleKeyDown(e : KeyboardEvent) {
@@ -764,7 +801,6 @@
     // 重新渲染当前值
     renderVisuals(currentValue.value)
   }
-  // #endregion
 
   // 初始化渲染
   renderVisuals(currentValue.value)
@@ -858,8 +894,8 @@
     resetInteractionState()
   })
   onBeforeUnmount(() => {
-    removeMouseListeners()
     // #ifdef WEB
+    resetInteractionState()
     window.removeEventListener('resize', handleResize)
     // #endif
   })
@@ -870,6 +906,18 @@
 </script>
 
 <style>
+  /* #ifdef WEB */
+  slider
+  /* #endif */
+  /* #ifndef WEB */
+  .container
+  /* #endif */
+  {
+    width: 100%;
+    flex-direction: row;
+    overflow: visible;
+  }
+
   .slider-track {
     position: relative;
     flex: 1;
@@ -878,6 +926,8 @@
     overflow: visible;
     /* #ifdef WEB */
     cursor: pointer;
+    touch-action: pan-y;
+    user-select: none;
     /* #endif */
   }
 

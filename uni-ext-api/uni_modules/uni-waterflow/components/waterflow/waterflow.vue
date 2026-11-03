@@ -20,7 +20,7 @@
         :scroll-into-view-key="scrollIntoViewKey satisfies string"
         change:scroll-into-view-key="recycleWaterflowCpp.setScrollIntoViewKey">
         <slot></slot>
-        <view class="placeholder" :ref="recycleWaterflowCpp.setPlaceholderElement"></view>
+        <view style="width: 1px;" :ref="recycleWaterflowCpp.setPlaceholderElement"></view>
         <slot name="refresher"></slot>
         <slot name="load-more"></slot>
     </scroll-view>
@@ -240,9 +240,6 @@ defineExpose({
 });
 </script>
 <style>
-.placeholder {
-    width: 1px;
-}
 </style>
 <!-- #endif -->
 <!-- #ifdef WEB -->
@@ -250,7 +247,7 @@ defineExpose({
     <scroll-view ref="scrollElement" @scroll="onScroll" @scrollend="onScrollEnd">
         <view style="position: relative; overflow-anchor: none">
             <slot />
-            <view ref="placeholderElement" class="placeholder" />
+            <view ref="placeholderElement" style="width: 1px; flex-shrink: 0;" />
         </view>
         <template #refresher>
             <slot name="refresher" />
@@ -578,9 +575,5 @@ defineExpose({
 </script>
 
 <style>
-    .placeholder {
-        width: 1px;
-        flex-shrink: 0;
-    }
 </style>
 <!-- #endif -->

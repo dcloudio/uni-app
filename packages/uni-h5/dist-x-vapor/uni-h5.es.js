@@ -17691,7 +17691,7 @@ class RecycleListItemDataStore {
   }
 }
 const t0$q = template("<div uni-view></div>");
-const t1$g = template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view class=placeholder></div></div>');
+const t1$g = template('<div uni-view style="position: relative; overflow: visible; overflow-anchor: none"><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
 const _uniListViewElement = { value: "LIST-VIEW" };
 const _sfc_main$q = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -19823,7 +19823,7 @@ const _UniSliderElement = class _UniSliderElement extends UniViewElement {
 _UniSliderElement.__uniElement = { vm: true };
 let UniSliderElement = _UniSliderElement;
 const t0$g = template('<span uni-text style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;"> ');
-const t1$a = template('<div uni-slider uni-view style="width: 100%;flex-direction: row;box-sizing: border-box;overflow: visible;padding: 4px;"><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view tabIndex=0 role=slider></div></div></div>', 1);
+const t1$a = template("<div uni-slider uni-view class=container><div uni-view class=slider-track><div uni-view><div uni-view></div></div><div uni-view><div uni-view tabIndex=0 role=slider></div></div></div>", 1);
 const _uniSliderElement = { value: "SLIDER" };
 const TOUCH_THRESHOLD = 4;
 const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
@@ -19901,7 +19901,6 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     let trackLeft = 0;
     let rafId = 0;
     let ticking = false;
-    let isTouchDevice = false;
     let cachedDecimalPlaces = -1;
     let cachedStep = props2.step;
     let lastValue = 0;
@@ -19919,9 +19918,17 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     let _activeStatus = 0;
     let touchStartX = 0;
     let touchStartY = 0;
-    function removeMouseListeners() {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+    let activePointerId = -1;
+    let pointerTarget = null;
+    let pointerClientX = 0;
+    function releasePointerCapture() {
+      const target = pointerTarget;
+      const pointerId = activePointerId;
+      activePointerId = -1;
+      pointerTarget = null;
+      if (target != null && target.hasPointerCapture(pointerId)) {
+        target.releasePointerCapture(pointerId);
+      }
     }
     function resetInteractionState() {
       if (rafId != 0) {
@@ -19931,12 +19938,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       ticking = false;
       isDragging.value = false;
       lastValue = currentValue.value;
-    }
-    function preventDefaultEvent(e2) {
-      if (e2.cancelable) {
-        e2.preventDefault();
-      }
-      e2.stopPropagation();
+      releasePointerCapture();
     }
     function lerp(start, end, t12) {
       const clampedT = Math.max(0, Math.min(1, t12));
@@ -19997,128 +19999,92 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
       return newValue;
     }
-    function handleTouchStart(e2) {
-      if (props2.disabled == true) {
+    function finishPointerInteraction(clientX) {
+      if (props2.disabled) {
+        resetInteractionState();
         return;
       }
-      isTouchDevice = true;
-      if (e2.touches.length > 0) {
-        lastValue = currentValue.value;
-        _activeStatus = 0;
-        touchStartX = e2.touches[0].clientX;
-        touchStartY = e2.touches[0].clientY;
-        const containerEl = containerRef.value;
-        if (containerEl != null) {
-          const rect = containerEl.getBoundingClientRect();
-          trackWidth = rect.width;
-          trackLeft = rect.left;
-        }
-      }
-    }
-    function handleTouchEnd(e2) {
-      if (_activeStatus == 0 && e2.changedTouches.length > 0) {
-        const newValue = calculateValue(e2.changedTouches[0].clientX);
-        renderVisuals(newValue);
-      }
-      if (lastValue !== currentValue.value) {
-        emit2("change", new UniSliderChangeEvent(currentValue.value));
-      }
+      if (_activeStatus != -1)
+        renderVisuals(calculateValue(clientX));
+      const value = currentValue.value;
+      const changed = lastValue !== value;
       resetInteractionState();
+      if (changed)
+        emit2("change", new UniSliderChangeEvent(value));
     }
-    function handleTouchCancel() {
-      resetInteractionState();
-    }
-    function handleTouchMove(e2) {
-      if (props2.disabled == true) {
+    function handlePointerMove(e2) {
+      if (e2.pointerId != activePointerId || props2.disabled == true) {
         return;
       }
-      if (_activeStatus == 0 && e2.touches.length > 0) {
-        const deltaX = Math.abs(e2.touches[0].clientX - touchStartX);
-        const deltaY = Math.abs(e2.touches[0].clientY - touchStartY);
-        if (deltaX > TOUCH_THRESHOLD || deltaY > TOUCH_THRESHOLD) {
-          if (deltaX > deltaY) {
-            _activeStatus = 1;
-          } else {
-            _activeStatus = -1;
-            return;
-          }
-        } else {
+      if (e2.pointerType == "mouse" && (e2.buttons & 1) == 0) {
+        finishPointerInteraction(e2.clientX);
+        return;
+      }
+      if (_activeStatus == 0) {
+        const deltaX = Math.abs(e2.clientX - touchStartX);
+        const deltaY = Math.abs(e2.clientY - touchStartY);
+        if (deltaX <= TOUCH_THRESHOLD && deltaY <= TOUCH_THRESHOLD)
           return;
-        }
+        _activeStatus = deltaX > deltaY ? 1 : -1;
       }
-      if (_activeStatus != 1) {
+      if (_activeStatus != 1)
         return;
-      }
-      preventDefaultEvent(e2);
-      if (ticking == false) {
-        rafId = requestAnimationFrame(() => {
-          if (e2.touches.length > 0) {
-            const newValue = calculateValue(e2.touches[0].clientX);
-            if (newValue === currentValue.value) {
-              ticking = false;
-              return;
-            }
-            renderVisuals(newValue);
-            emit2("changing", new UniSliderChangeEvent(currentValue.value));
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
-    function handleMouseMove(e2) {
-      if (isDragging.value == false || props2.disabled == true) {
-        return;
-      }
       if (e2.cancelable) {
         e2.preventDefault();
       }
+      e2.stopPropagation();
+      pointerClientX = e2.clientX;
       if (ticking == false) {
-        rafId = requestAnimationFrame(() => {
-          const newValue = calculateValue(e2.clientX);
-          if (newValue === currentValue.value) {
-            ticking = false;
+        ticking = true;
+        const pointerId = activePointerId;
+        const frameId = requestAnimationFrame(() => {
+          if (rafId != frameId)
             return;
-          }
+          rafId = 0;
+          ticking = false;
+          if (activePointerId != pointerId || props2.disabled)
+            return;
+          const newValue = calculateValue(pointerClientX);
+          if (newValue === currentValue.value)
+            return;
           renderVisuals(newValue);
           emit2("changing", new UniSliderChangeEvent(currentValue.value));
-          ticking = false;
         });
-        ticking = true;
+        rafId = frameId;
       }
     }
-    function handleMouseDown(e2) {
-      if (props2.disabled == true) {
+    function handlePointerDown(e2) {
+      if (props2.disabled == true || activePointerId != -1 || !e2.isPrimary || e2.button != 0) {
         return;
       }
-      if (isTouchDevice == true) {
-        return;
-      }
-      e2.preventDefault();
       lastValue = currentValue.value;
       isDragging.value = true;
+      touchStartX = e2.clientX;
+      touchStartY = e2.clientY;
+      _activeStatus = e2.pointerType == "mouse" ? 1 : 0;
+      activePointerId = e2.pointerId;
+      pointerTarget = e2.currentTarget;
+      pointerTarget.setPointerCapture(e2.pointerId);
       const containerEl = containerRef.value;
       if (containerEl != null) {
         const rect = containerEl.getBoundingClientRect();
         trackLeft = rect.left;
         trackWidth = rect.width;
       }
-      const newValue = calculateValue(e2.clientX);
-      renderVisuals(newValue);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
+      if (e2.pointerType == "mouse") {
+        e2.preventDefault();
+        renderVisuals(calculateValue(e2.clientX));
+      }
     }
-    function handleMouseUp() {
-      if (isDragging.value == false) {
+    function handlePointerUp(e2) {
+      if (e2.pointerId != activePointerId || e2.button != 0) {
         return;
       }
-      if (lastValue !== currentValue.value) {
-        emit2("change", new UniSliderChangeEvent(currentValue.value));
-      }
-      resetInteractionState();
-      removeMouseListeners();
+      finishPointerInteraction(e2.clientX);
+    }
+    function handlePointerCancel(e2) {
+      if (e2.pointerId == activePointerId)
+        resetInteractionState();
     }
     function handleKeyDown(e2) {
       if (props2.disabled == true) {
@@ -20235,7 +20201,7 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
       resetInteractionState();
     });
     onBeforeUnmount(() => {
-      removeMouseListeners();
+      resetInteractionState();
       window.removeEventListener("resize", handleResize);
     });
     __expose({
@@ -20253,13 +20219,11 @@ const _sfc_main$g = /* @__PURE__ */ defineVaporComponent({
     setStaticTemplateRef(n2, backgroundRef, null, "backgroundRef");
     setStaticTemplateRef(n3, thumbRef, null, "thumbRef");
     setStaticTemplateRef(n4, handleRef, null, "handleRef");
-    on$1(n5, "touchstart", handleTouchStart);
-    on$1(n5, "touchmove", handleTouchMove);
-    on$1(n5, "touchend", handleTouchEnd);
-    on$1(n5, "touchcancel", handleTouchCancel);
-    on$1(n5, "mousedown", handleMouseDown);
-    on$1(n5, "mousemove", handleMouseMove);
-    on$1(n5, "mouseup", handleMouseUp);
+    on$1(n5, "pointerdown", handlePointerDown);
+    on$1(n5, "pointermove", handlePointerMove);
+    on$1(n5, "pointerup", handlePointerUp);
+    on$1(n5, "pointercancel", handlePointerCancel);
+    on$1(n5, "lostpointercapture", handlePointerCancel);
     setStaticTemplateRef(n5, containerRef, null, "containerRef");
     renderEffect(() => {
       const _props = props2;
@@ -20320,7 +20284,7 @@ const _sfc_main$f = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-const t0$e = template('<div uni-sticky-section uni-view class=uni-sticky-section style="position: relative; overflow: visible"><!><div uni-view class=placeholder>', 1);
+const t0$e = template('<div uni-sticky-section uni-view class=uni-sticky-section style="position: relative; overflow: visible"><!><div uni-view style="width: 1px; flex-shrink: 0;">', 1);
 const _uniStickySectionElement = { value: "STICKY-SECTION" };
 const _sfc_main$e = /* @__PURE__ */ defineVaporComponent({
   ...{
@@ -21888,7 +21852,7 @@ const _sfc_main$b = /* @__PURE__ */ defineVaporComponent({
     return n0;
   }
 });
-const t0$a = template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view class=placeholder></div></div>');
+const t0$a = template('<div uni-view style="position: relative; overflow-anchor: none"><!><div uni-view style="width: 1px; flex-shrink: 0;"></div></div>');
 const _uniWaterflowElement = { value: "WATERFLOW" };
 const _sfc_main$a = /* @__PURE__ */ defineVaporComponent({
   ...{

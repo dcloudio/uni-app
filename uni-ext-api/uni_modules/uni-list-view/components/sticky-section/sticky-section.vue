@@ -9,7 +9,7 @@
         change:scroll-into-view-key="recycleListSectionCpp.setScrollIntoViewKey" style="position: relative;"
         :style="{ overflow: props.pushPinnedHeader ? 'hidden' : 'visible' }">
         <view :style="{ overflow: props.pushPinnedHeader ? 'hidden' : 'visible' }">
-            <view class="placeholder" :ref="recycleListSectionCpp.setPlaceholderElement"></view>
+            <view style="width: 1px;" :ref="recycleListSectionCpp.setPlaceholderElement"></view>
             <slot></slot>
         </view>
     </view>
@@ -120,16 +120,13 @@ defineExpose({
 })
 </script>
 <style>
-.placeholder {
-    width: 1px;
-}
 </style>
 <!-- #endif -->
 <!-- #ifdef WEB -->
 <template>
     <view ref="element" class="uni-sticky-section" style="position: relative; overflow: visible">
         <slot />
-        <view ref="placeholderElement" class="placeholder" />
+        <view ref="placeholderElement" style="width: 1px; flex-shrink: 0;" />
     </view>
 </template>
 
@@ -307,9 +304,5 @@ defineExpose({
 </script>
 
 <style>
-    .placeholder {
-        width: 1px;
-        flex-shrink: 0;
-    }
 </style>
 <!-- #endif -->

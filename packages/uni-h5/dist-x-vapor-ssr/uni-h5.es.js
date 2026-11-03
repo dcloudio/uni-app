@@ -10631,7 +10631,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
           if (_push2) {
             _push2(`<div uni-view${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "header", {}, null, _push2, _parent2, _scopeId);
-            _push2(`</div><div uni-view style="${ssrRenderStyle({ "position": "relative", "overflow": "visible", "overflow-anchor": "none" })}"${_scopeId}><div uni-view class="placeholder"${_scopeId}></div>`);
+            _push2(`</div><div uni-view style="${ssrRenderStyle({ "position": "relative", "overflow": "visible", "overflow-anchor": "none" })}"${_scopeId}><div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"${_scopeId}></div>`);
             ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
             _push2(`</div><div uni-view${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "footer", {}, null, _push2, _parent2, _scopeId);
@@ -10655,7 +10655,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent$2({
                   "uni-view": "",
                   ref_key: "placeholderElement",
                   ref: placeholderElement,
-                  class: "placeholder"
+                  style: { "width": "1px", "flex-shrink": "0" }
                 }, null, 512),
                 renderSlot(_ctx.$slots, "default")
               ], 512),
@@ -12187,13 +12187,8 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     const initialValue = props2.value;
     const currentValue = ref(props2.value);
     const isDragging = ref(false);
-    let trackWidth = 0;
-    let trackLeft = 0;
-    let rafId = 0;
-    let ticking = false;
     let cachedDecimalPlaces = -1;
     let cachedStep = props2.step;
-    let lastValue = 0;
     const thumbTranslateX = ref(0);
     const trackActiveScaleX = ref(0);
     const effectiveMax = computed(() => {
@@ -12205,22 +12200,21 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
         return min;
       return min + Math.floor(range / step) * step;
     });
-    function removeMouseListeners() {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+    let activePointerId = -1;
+    let pointerTarget = null;
+    function releasePointerCapture() {
+      const target = pointerTarget;
+      const pointerId = activePointerId;
+      activePointerId = -1;
+      pointerTarget = null;
+      if (target != null && target.hasPointerCapture(pointerId)) {
+        target.releasePointerCapture(pointerId);
+      }
     }
     function resetInteractionState() {
-      if (rafId != 0) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
-      }
-      ticking = false;
       isDragging.value = false;
-      lastValue = currentValue.value;
-    }
-    function lerp(start, end, t2) {
-      const clampedT = Math.max(0, Math.min(1, t2));
-      return start * (1 - clampedT) + end * clampedT;
+      currentValue.value;
+      releasePointerCapture();
     }
     function getDecimalPlaces(num) {
       if (num == 0)
@@ -12259,55 +12253,6 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       const fillScale = percentage - 1e-3;
       applyVisualPosition(percentage, fillScale);
     }
-    function calculateValue(clientX) {
-      if (trackWidth <= 0) {
-        return currentValue.value;
-      }
-      const containerWidth = trackWidth;
-      const containerLeft = trackLeft;
-      const min = Number.isFinite(props2.min) ? props2.min : 0;
-      const max = Number.isFinite(props2.max) ? props2.max : min;
-      if (max <= min)
-        return min;
-      let currentX = clientX - containerLeft;
-      currentX = Math.max(0, Math.min(currentX, containerWidth));
-      const ratio = currentX / containerWidth;
-      let newValue = lerp(min, max, ratio);
-      newValue = applyStepPrecision(newValue);
-      newValue = Math.max(min, Math.min(newValue, effectiveMax.value));
-      return newValue;
-    }
-    function handleMouseMove(e2) {
-      if (isDragging.value == false || props2.disabled == true) {
-        return;
-      }
-      if (e2.cancelable) {
-        e2.preventDefault();
-      }
-      if (ticking == false) {
-        rafId = requestAnimationFrame(() => {
-          const newValue = calculateValue(e2.clientX);
-          if (newValue === currentValue.value) {
-            ticking = false;
-            return;
-          }
-          renderVisuals(newValue);
-          emit2("changing", new UniSliderChangeEvent(currentValue.value));
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
-    function handleMouseUp() {
-      if (isDragging.value == false) {
-        return;
-      }
-      if (lastValue !== currentValue.value) {
-        emit2("change", new UniSliderChangeEvent(currentValue.value));
-      }
-      resetInteractionState();
-      removeMouseListeners();
-    }
     function handleKeyDown(e2) {
       if (props2.disabled == true) {
         return;
@@ -12338,8 +12283,6 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       });
     }
     function handleResize() {
-      trackWidth = 0;
-      trackLeft = 0;
       renderVisuals(currentValue.value);
     }
     renderVisuals(currentValue.value);
@@ -12423,7 +12366,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
       resetInteractionState();
     });
     onBeforeUnmount(() => {
-      removeMouseListeners();
+      resetInteractionState();
       window.removeEventListener("resize", handleResize);
     });
     __expose({
@@ -12433,7 +12376,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent$2({
     return (_ctx, _push, _parent, _attrs) => {
       _push(`<div${ssrRenderAttrs(mergeProps({
         "uni-view": "",
-        style: { "width": "100%", "flex-direction": "row", "box-sizing": "border-box", "overflow": "visible", "padding": "4px" }
+        class: "container"
       }, _attrs))}><div uni-view class="slider-track"><div uni-view class="${ssrRenderClass([props2.trackClass, "slider-track-bg"])}"><div uni-view class="${ssrRenderClass([props2.trackActiveClass, "slider-track-fill"])}" style="${ssrRenderStyle({ transform: `scaleX(${unref(trackActiveScaleX)})` })}"></div></div><div uni-view style="${ssrRenderStyle([{ "overflow": "visible", "align-self": "flex-start", "z-index": "2" }, { width: "100%", transform: `translateX(${unref(thumbTranslateX)}%)` }])}"><div uni-view tabIndex="0" role="slider"${ssrRenderAttr("aria-valuenow", unref(currentValue))}${ssrRenderAttr("aria-valuemin", __props.min)}${ssrRenderAttr("aria-valuemax", __props.max)} class="${ssrRenderClass([props2.thumbClass, "slider-handle"])}" style="${ssrRenderStyle({ transform: `translateX(-${unref(thumbTranslateX)}%)` })}"></div></div></div>`);
       if (props2.showValue) {
         _push(`<span uni-text flatten style="${ssrRenderStyle({ "width": "35px", "color": "#888", "font-size": "14px", "align-self": "center", "margin-left": "5px", "white-space": "nowrap" })}">${ssrInterpolate(unref(currentValue), true)}</span>`);
@@ -12655,7 +12598,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent$2({
         style: { "position": "relative", "overflow": "visible" }
       }, _attrs))}>`);
       ssrRenderSlot(_ctx.$slots, "default", {}, null, _push, _parent);
-      _push(`<div uni-view class="placeholder"></div></div>`);
+      _push(`<div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"></div></div>`);
     };
   }
 });
@@ -14029,7 +13972,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
           if (_push2) {
             _push2(`<div uni-view style="${ssrRenderStyle({ "position": "relative", "overflow-anchor": "none" })}"${_scopeId}>`);
             ssrRenderSlot(_ctx.$slots, "default", {}, null, _push2, _parent2, _scopeId);
-            _push2(`<div uni-view class="placeholder"${_scopeId}></div></div>`);
+            _push2(`<div uni-view style="${ssrRenderStyle({ "width": "1px", "flex-shrink": "0" })}"${_scopeId}></div></div>`);
             ssrRenderSlot(_ctx.$slots, "load-more", {}, null, _push2, _parent2, _scopeId);
           } else {
             return [
@@ -14042,7 +13985,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent$2({
                   "uni-view": "",
                   ref_key: "placeholderElement",
                   ref: placeholderElement,
-                  class: "placeholder"
+                  style: { "width": "1px", "flex-shrink": "0" }
                 }, null, 512)
               ]),
               renderSlot(_ctx.$slots, "load-more")
