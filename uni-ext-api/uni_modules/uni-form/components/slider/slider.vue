@@ -6,39 +6,17 @@
       <!-- #endif -->
     >
       <!-- 背景轨道 -->
-      <view
-        <!-- #ifndef APP-ANDROID -->
-        flatten
-        <!-- #endif -->
-        ref="backgroundRef" class="slider-track-bg" :class="props.trackClass">
+      <view flatten ref="backgroundRef" class="slider-track-bg" :class="props.trackClass">
         <!-- 填充条(左边线) -->
-        <view
-          <!-- #ifndef APP-ANDROID -->
-          flatten
-          <!-- #endif -->
-          <!-- #ifdef APP-ANDROID -->
-          android-layer-type="hardware"
-          <!-- #endif -->
-          ref="fillRef" class="slider-track-fill"
-          :class="props.trackActiveClass"
-          :style="{ transform: `scaleX(${trackActiveScaleX})` }">
+        <view flatten ref="fillRef" class="slider-track-fill"
+          :class="props.trackActiveClass" :style="{ transform: `scaleX(${trackActiveScaleX})` }">
         </view>
       </view>
 
       <!-- 滑块 -->
-      <view
-        <!-- #ifndef APP-ANDROID -->
-        flatten
-        <!-- #endif -->
-        ref="handleRef" style="overflow: visible; align-self: flex-start;z-index: 2;"
+      <view flatten ref="handleRef" style="overflow: visible; align-self: flex-start;z-index: 2;"
         :style="{ width: '100%', transform: `translateX(${thumbTranslateX}%)` }">
-        <view
-          <!-- #ifndef APP-ANDROID -->
-          flatten
-          <!-- #endif -->
-          <!-- #ifdef APP-ANDROID -->
-          android-layer-type="hardware"
-          <!-- #endif -->
+        <view flatten
           <!-- #ifdef WEB -->
           tabIndex="0" role="slider" :aria-valuenow="currentValue" :aria-valuemin="min" :aria-valuemax="max"
           <!-- #endif -->
@@ -50,11 +28,7 @@
     </view>
 
     <!-- 显示当前值 -->
-    <text
-      <!-- #ifndef APP-ANDROID -->
-      flatten
-      <!-- #endif -->
-      v-if="props.showValue" style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;">
+    <text flatten v-if="props.showValue" style="width: 35px;color: #888;font-size: 14px;align-self: center;margin-left: 5px;white-space: nowrap;">
       {{ currentValue }}
     </text>
   </view>
@@ -99,7 +73,7 @@
        }
      }
      */
-    name : string
+    name ?: string
     /**
      * slider 最小值
      * @uniPlatform {
@@ -118,7 +92,7 @@
        }
      }
      */
-    min : number
+    min ?: number
     /**
      * slider 最大值
      * @uniPlatform {
@@ -137,7 +111,7 @@
        }
      }
      */
-    max : number
+    max ?: number
     /**
      * slider 步长，取值必须大于 0，并且可被(max - min)整除
      * @uniPlatform {
@@ -156,7 +130,7 @@
        }
      }
      */
-    step : number
+    step ?: number
     /**
      * slider 当前取值
      * @uniPlatform {
@@ -175,7 +149,7 @@
        }
      }
      */
-    value : number
+    value ?: number
     /**
      * 是否禁用
      * @uniPlatform {
@@ -194,7 +168,7 @@
        }
      }
      */
-    disabled : boolean
+    disabled ?: boolean
     /**
      * 是否显示当前 value
      * @uniPlatform {
@@ -213,9 +187,9 @@
        }
      }
      */
-    showValue : boolean
+    showValue ?: boolean
     /** 滑块左侧已选择部分的线条颜色 */
-    activeColor : string.ColorString
+    activeColor ?: string.ColorString
     /** 滑块左侧已选择部分的线条颜色，优先级高于 activeColor
      * @uniPlatform {
        "app": {
@@ -231,7 +205,7 @@
        }
      }
     */
-    activeBackgroundColor : string.ColorString
+    activeBackgroundColor ?: string.ColorString
     /** 背景条的颜色
      * @uniPlatform {
        "app": {
@@ -247,7 +221,7 @@
        }
      }
     */
-    backgroundColor : string.ColorString
+    backgroundColor ?: string.ColorString
     /** 滑块的大小，取值范围为 12 到 28，单位为 px；未设置时使用 thumbClass 或默认样式
      * @uniPlatform {
        "app": {
@@ -263,9 +237,9 @@
        }
      }
     */
-    blockSize : number | null
+    blockSize ?: number | null
     /** 滑块的颜色 (使用foreColor替代) */
-    blockColor : string.ColorString
+    blockColor ?: string.ColorString
     /** 滑块的颜色
      * @uniPlatform {
        "app": {
@@ -281,7 +255,7 @@
        }
      }
     */
-    foreColor : string.ColorString
+    foreColor ?: string.ColorString
     /**
      * slider 背景条样式类名
      * @uniPlatform {
@@ -300,7 +274,7 @@
        }
      }
      */
-    trackClass : string.ClassString
+    trackClass ?: string.ClassString
     /**
      * slider 滑块左侧已选择部分的线条样式类名
      * @uniPlatform {
@@ -319,7 +293,7 @@
        }
      }
      */
-    trackActiveClass : string.ClassString
+    trackActiveClass ?: string.ClassString
     /**
      * slider 滑块样式类名
      * @uniPlatform {
@@ -338,7 +312,7 @@
        }
      }
      */
-    thumbClass : string.ClassString
+    thumbClass ?: string.ClassString
   }
 
   const attrs = useAttrs()
@@ -414,8 +388,14 @@
   let cachedDecimalPlaces = -1 // 缓存 step 小数位数，-1表示未缓存
   let cachedStep = props.step // 缓存 step 值，便于检测变化
   let lastValue = 0 // 用于判断是否触发 change
+  // #ifdef WEB
   const thumbTranslateX = ref(0)
   const trackActiveScaleX = ref(0)
+  // #endif
+  // #ifndef WEB
+  let thumbTranslateX = 0
+  let trackActiveScaleX = 0
+  // #endif
 
   // 计算有效的最大值（考虑 step）
   const effectiveMax = computed(() : number => {
@@ -501,6 +481,8 @@
     const handleEl = handleRef.value
     if (handleEl != null) {
       handleEl.style.setProperty('transform', `translateX(${percentage * 100}%)`)
+    } else {
+      thumbTranslateX = percentage * 100
     }
     const thumbEl = thumbRef.value
     if (thumbEl != null) {
@@ -509,6 +491,8 @@
     const fillEl = fillRef.value
     if (fillEl != null) {
       fillEl.style.setProperty('transform', `scaleX(${fillScale})`)
+    } else {
+      trackActiveScaleX = fillScale
     }
     // #endif
   }

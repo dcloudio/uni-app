@@ -3831,19 +3831,21 @@ export class NativeTextareaView implements UniAndroidKeyboardClient {
 	}
 
 	private resolveTextareaHeight(): number {
-		if (this.autoHeight) {
-			return this.resolveClampedAutoHeight(this.calculateContentHeight())
-		}
 		const editText = this.editText
-		const nativeHeight = editText?.getHeight() ?? editText?.getMeasuredHeight() ?? 0
+		let nativeHeight = editText?.getHeight() ?? 0
+		if (nativeHeight <= 0) {
+			nativeHeight = editText?.getMeasuredHeight() ?? 0
+		}
 		if (nativeHeight > 0) {
-			return convertAndroidNativePxToLogicalPx(
+			const actual = convertAndroidNativePxToLogicalPx(
 				nativeHeight,
 				this.resolveNativeWindowHeight(),
 				this.getKeyboardLogicalWindowHeight()
 			)
+			// flex 可将 auto-height 的可视高度限制在内容高度以内。
+			return this.autoHeight ? Math.min(actual, this.resolveClampedAutoHeight(this.calculateContentHeight())) : actual
 		}
-		return 0
+		return this.autoHeight ? this.resolveClampedAutoHeight(this.calculateContentHeight()) : 0
 	}
 
 	private resolveMeasuredTextareaHeight(res: UniNativeMeasureSpecification): number {

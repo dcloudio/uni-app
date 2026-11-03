@@ -1138,6 +1138,7 @@ export class NativeInputView implements UITextFieldDelegate {
 			return Math.max(0, elementHeight)
 		})
 		super.init()
+		this.element.setMeasureCallback((_width: Float, _height: Float): void => {})
 		this.bindView();
 		this.bindElementImpl()
 	}

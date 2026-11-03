@@ -5,7 +5,7 @@
 		<view class="uni-textarea-container">
 			<text class="uni-textarea-placeholder" v-if="showPlaceholder" :class="placeholderClass"
 				:style="placeholderStyle">{{props.placeholder}}</text>
-			<native-view :style="androidTextareaNativeViewStyle" @init="onViewInit" @input="onInput" @focus="onFocus"
+			<native-view style="height: 100%; width: 100%;" @init="onViewInit" @input="onInput" @focus="onFocus"
 				@blur="onBlur" @keyboardheightchange="onKeyboardHeightChange" @change="onChange"
 				@linechange="onLineChange" @confirm="onConfirm"></native-view>
 		</view>
@@ -483,10 +483,6 @@
 			androidTextareaHeightBeforeAuto = height
 		}
 	}
-
-	const androidTextareaNativeViewStyle = computed(() => {
-		return isAndroidTextareaAutoHeight() ? 'width: 100%;' : 'height: 100%; width: 100%;'
-	})
 
 	function syncAndroidTextareaAutoHeightStyle() {
 		const wrapper = textareaWrapperRef.value
