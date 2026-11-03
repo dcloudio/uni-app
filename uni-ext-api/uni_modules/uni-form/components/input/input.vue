@@ -1310,7 +1310,7 @@
 	}
 	// #endif
 	const handleTouchStart = () => {
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		// #ifdef APP-ANDROID || APP-HARMONY
 		markEditorTouchStart()
 		// #endif
 		// #ifdef APP-HARMONY
@@ -1358,19 +1358,12 @@
 		}
 		// #endif
 
-		// #ifdef APP-ANDROID || APP-IOS
+		// #ifdef APP-ANDROID
 		pageTouchEndId = proxy?.$page.onTouchEnd(() => {
 			const recentEditorTouch = hasRecentEditorTouch()
-			// #ifdef APP-ANDROID
 			if (isFocusing.value && !isTouching && !recentEditorTouch) {
 				inputView?.handlePageTouchEndFocus()
 			}
-			// #endif
-			// #ifdef APP-IOS
-			if (!isTouching && !recentEditorTouch) {
-				inputView?.handlePageTouchEndFocus()
-			}
-			// #endif
 		})
 		// #endif
 
@@ -1602,9 +1595,11 @@
 		removeHarmonyKeyboardHeightListener()
 		inputElement = null
 		// #endif
+		// #ifdef APP-ANDROID || APP-HARMONY
 		if (pageTouchEndId != null) {
 			proxy?.$page.offTouchEnd(pageTouchEndId)
 		}
+		// #endif
 
 		const formCtx = inject<{ unregisterField : (name : string) => void } | null>(FORM_KEY, null)
 		if (labelCtx != null) labelCtx.unregister(id)

@@ -897,6 +897,7 @@ Component = function (options) {
 };
 
 // @ts-expect-error
+const instances = Object.create(null);
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);
@@ -985,7 +986,6 @@ const mocks = [
 function isPage(mpInstance) {
     return (mpInstance.__nodeId__ === 0 || mpInstance.__nodeid__ === 0);
 }
-const instances = Object.create(null);
 function initRelation(mpInstance, detail) {
     var _a, _b, _c;
     // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
@@ -1050,7 +1050,10 @@ function handleLink({ detail: { vuePid, nodeId, webviewId, pageVm }, }) {
     //   vm.$.parent = parentVm.$
     // }
     if (__VUE_OPTIONS_API__ && parentVm) {
-        parentVm.$children.push(vm);
+        const children = parentVm.$children;
+        if (children.indexOf(vm) === -1) {
+            children.push(vm);
+        }
     }
     vm.$callCreatedHook();
     // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢

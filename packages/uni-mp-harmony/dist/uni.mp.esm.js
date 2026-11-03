@@ -906,6 +906,7 @@ Component = function (options) {
 };
 
 // @ts-expect-error
+const instances = Object.create(null);
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);
@@ -995,7 +996,6 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     }
 }
 
-const instances = Object.create(null);
 function parse(componentOptions, { handleLink }) {
     componentOptions.methods.__l = handleLink;
 }

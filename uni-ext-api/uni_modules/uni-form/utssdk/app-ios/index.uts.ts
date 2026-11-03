@@ -1472,13 +1472,6 @@ export class NativeInputView implements UITextFieldDelegate {
 		}
 	}
 
-	handlePageTouchEndFocus() {
-		if (this.textField == null) return
-		if (!this.state.holdKeyboard && this.textField!.isFirstResponder) {
-			this.textField!.resignFirstResponder()
-		}
-	}
-
 	updateFontSize(value: string) {
 		const size = UniInputFontUtil.parseFontSize(value, this.element.uniPage.pageBody.width) ?? UNI_INPUT_DEFAULT_FONT_SIZE
 		this.state.fontSize = size
@@ -2012,13 +2005,6 @@ export class NativeTextareaView implements UITextViewDelegate {
 		this.hasExplicitMaxHeight = height != null
 		this.maxHeightLimit = height == null ? -1 : height
 		this.refreshAutoHeightBehavior()
-	}
-
-	handlePageTouchEndFocus() {
-		if (this.textView == null) return
-		if (!this.state.holdKeyboard && this.textView!.isFirstResponder) {
-			this.textView!.resignFirstResponder()
-		}
 	}
 
 	private applySelectionRange() {

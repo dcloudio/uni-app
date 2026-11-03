@@ -1020,7 +1020,7 @@
 	// #endif
 
 	const handleTouchStart = () => {
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		// #ifdef APP-ANDROID || APP-HARMONY
 		markEditorTouchStart()
 		// #endif
 		isTouching = true
@@ -1035,7 +1035,7 @@
 	}
 
 	onMounted(() => {
-		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		// #ifdef APP-ANDROID || APP-HARMONY
 		pageTouchEndId = proxy?.$page.onTouchEnd(() => {
 			const recentEditorTouch = hasRecentEditorTouch()
 			// #ifdef APP-ANDROID
@@ -1043,7 +1043,7 @@
 				textareaView?.handlePageTouchEndFocus()
 			}
 			// #endif
-			// #ifndef APP-ANDROID
+			// #ifdef APP-HARMONY
 			if (!isTouching && !recentEditorTouch) {
 				textareaView?.handlePageTouchEndFocus()
 			}
@@ -1227,7 +1227,7 @@
 		// #ifdef APP-HARMONY
 		textareaElement = null
 		// #endif
-		// #ifndef APP-IOS
+		// #ifdef APP-ANDROID || APP-HARMONY
 		if (pageTouchEndId != null) {
 			proxy?.$page.offTouchEnd(pageTouchEndId)
 		}
