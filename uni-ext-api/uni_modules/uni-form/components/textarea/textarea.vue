@@ -183,13 +183,14 @@
 
 	const placeholderStyle = computed(() => {
 		let styleText = ''
+		// Explicitly reset the variable when the component font-size is removed.
+		let placeholderFontSize = '16px'
 		let styleFontSize = style.get('font-size')
 		if (typeof styleFontSize == 'string') {
 			styleFontSize = rpx2px(styleFontSize)
 			if (styleFontSize.endsWith('px')) {
 				// TODO: 该方案存在 placeholder 先显示默认大小，如果开发者给组件设置了 font-size, 再更新为设置的字体大小问题
-				// TODO: 该方案会导致开发者设置的组件大小对 placeholder 的字体大小影响高于 placeholder-class 中设置的字体大小
-				styleText += `font-size:${parseInt(styleFontSize)}px;`
+				placeholderFontSize = `${parseInt(styleFontSize)}px`
 			}
 		}
 		const styleDirection = style.get('direction')
@@ -199,7 +200,7 @@
 		// #ifdef APP-IOS || APP-HARMONY
 		styleText += textareaPaddingStyle.value
 		// #endif
-		return `${styleText}${props.placeholderStyle}`
+		return `--uni-textarea-placeholder-font-size:${placeholderFontSize};${styleText}${props.placeholderStyle}`
 	})
 
 	defineOptions({
@@ -1270,6 +1271,6 @@
 		top: 0;
 		left: 0;
 		color: #757575;
-		font-size: 16px;
+		font-size: var(--uni-textarea-placeholder-font-size, 16px);
 	}
 </style>

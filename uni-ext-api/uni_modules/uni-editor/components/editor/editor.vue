@@ -298,13 +298,6 @@
     return value == null || value.length == 0 || value == 'auto' ? (effectiveTheme.value == 'dark' ? '#FFFFFF' : '#000000') : value
   })
 
-  function updateEditorStyle() {
-    if (isReady) {
-      evalJS(`editorSetCaretColor(${JSON.stringify(caretColor.value)})`)
-      evalJS(`editorSetTextColor(${JSON.stringify(textColor.value)})`)
-    }
-  }
-
   // #ifdef VUE3-VAPOR
   let formValue = ''
   const formCtx = inject<EditorInFormContext | null>(FORM_KEY, null)
@@ -313,6 +306,25 @@
   function LOG(...args : string[]) {
     // 此处供开发时调试
     // console.log(`${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} [Editor LOG]`, ...args)
+  }
+
+  /**
+   * 执行 JS 代码。安卓 VDOM 要求方法定义在调用之前。
+   */
+  function evalJS(js : string) {
+    if (webviewElement.value == null) {
+      LOG('WebView element not ready')
+      return
+    }
+    LOG('Eval JS:', js)
+    webviewElement.value!.evalJS(js)
+  }
+
+  function updateEditorStyle() {
+    if (isReady) {
+      evalJS(`editorSetCaretColor(${JSON.stringify(caretColor.value)})`)
+      evalJS(`editorSetTextColor(${JSON.stringify(textColor.value)})`)
+    }
   }
 
   /**
@@ -487,18 +499,6 @@
         LOG('Unknown message type:', eventType)
         break
     }
-  }
-
-  /**
-   * 执行 JS 代码
-   */
-  function evalJS(js : string) {
-    if (webviewElement.value == null) {
-      LOG('WebView element not ready')
-      return
-    }
-    LOG('Eval JS:', js)
-    webviewElement.value!.evalJS(js)
   }
 
   // #ifdef VUE3-VAPOR

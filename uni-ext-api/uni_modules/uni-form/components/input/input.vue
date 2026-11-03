@@ -214,20 +214,19 @@
 	})
 	const placeholderStyle = computed(() => {
 		let styleText = ''
+		// Explicitly reset the variable when the component font-size is removed.
+		let placeholderFontSize = '16px'
+		let styleFontSize = style.get('font-size')
 		// #ifdef APP-HARMONY
 		const appendStyle = (name: string, value: string) => {
 			if (value != '') {
 				styleText += `${name}:${value};`
 			}
 		}
-		const hasPlaceholderClass = props.placeholderClass != null && props.placeholderClass != ''
-		if (!hasPlaceholderClass) {
-			let styleFontSize = style.get('font-size')
-			if (typeof styleFontSize == 'string') {
-				styleFontSize = rpx2px(styleFontSize)
-				if (styleFontSize.endsWith('px')) {
-					styleText += `font-size:${parseFloat(styleFontSize)}px;`
-				}
+		if (typeof styleFontSize == 'string') {
+			styleFontSize = rpx2px(styleFontSize)
+			if (styleFontSize.endsWith('px')) {
+				placeholderFontSize = `${parseFloat(styleFontSize)}px`
 			}
 		}
 		const styleDirection = style.get('direction')
@@ -242,13 +241,11 @@
 		appendStyle('font-family', getStyleValue('font-family'))
 		// #endif
 		// #ifndef APP-HARMONY
-		let styleFontSize = style.get('font-size')
 		if (typeof styleFontSize == 'string') {
 			styleFontSize = rpx2px(styleFontSize)
 			if (styleFontSize.endsWith('px')) {
 				// TODO: 该方案存在 placeholder 先显示默认大小，如果开发者给组件设置了 font-size, 再更新为设置的字体大小问题
-				// TODO: 该方案会导致开发者设置的组件大小对 placeholder 中设置的字体大小影响高于 placeholder-class 中设置的字体大小
-				styleText += `font-size:${parseInt(styleFontSize)}px;`
+				placeholderFontSize = `${parseInt(styleFontSize)}px`
 			}
 		}
 		const styleDirection = style.get('direction')
@@ -256,7 +253,7 @@
 			styleText += `direction:${styleDirection};`
 		}
 		// #endif
-		return `${styleText}${props.placeholderStyle}`
+		return `--uni-input-placeholder-font-size:${placeholderFontSize};${styleText}${props.placeholderStyle}`
 	})
 
 	defineOptions({
@@ -1646,6 +1643,7 @@
 	}
 
 	.uni-input-placeholder {
+		font-size: var(--uni-input-placeholder-font-size, 16px);
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);

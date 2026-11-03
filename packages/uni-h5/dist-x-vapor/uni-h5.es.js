@@ -28788,25 +28788,6 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
   },
   PreloadPageProtocol
 );
-if (process.env.NODE_ENV !== "production" && !process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("Preload pages in uni-app-x development mode.");
-    __uniRoutes.reduce((prev, route) => {
-      return prev.then(() => {
-        return new Promise((resolve) => {
-          preloadPage({
-            url: route.alias || route.path,
-            complete() {
-              setTimeout(() => {
-                resolve();
-              }, 200);
-            }
-          });
-        });
-      });
-    }, Promise.resolve());
-  });
-}
 const _t0$1 = template('<i class="uni-toast__icon uni-loading">', 3);
 function createToastIcon$1(icon) {
   switch (icon) {
