@@ -25,7 +25,7 @@ uni-app x 的组件和API，大多是uts语言开发的。和开发者做的uts�
 
 ## 蒸汽模式案例
 
-- uni-ai x：开源、跨平台AI聊天流式markdown渲染项目。 [Android](https://web-ext-storage.dcloud.net.cn/ext/uni-ai-x/__UNI__8A096E7_0917211824.apk)、[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
+- uni-ai x：开源、跨平台AI聊天流式markdown渲染项目。 [下载应用](https://web-ext-storage.dcloud.net.cn/uni-app-x/uni-ai-x/uni-ai-x-portal.html)、[源码](https://ext.dcloud.net.cn/plugin?name=uni-ai-x)
 
 ### 应用商店下载量千万级
 - 抱抱海心理咨询：[Android](https://appgallery.huawei.com/app/C119009491)、[iOS](https://apps.apple.com/cn/app/%E6%8A%B1%E6%8A%B1%E6%B5%B7%E5%BF%83%E7%90%86%E5%92%A8%E8%AF%A2/id6809343318)、[鸿蒙](https://appgallery.huawei.com/app/detail?id=com.dahe.psy.hmos)、微信小程序搜索"抱抱海心理"
